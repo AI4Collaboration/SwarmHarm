@@ -1,0 +1,50 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 93a1b9ad38..7f42a83189 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -780,6 +780,16 @@ class VarsWithSources(MutableMapping):
+     def __len__(self):
+         return len(self.data)
+ 
++    def __or__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++        return self.data | dict(other)
++
++    def __ror__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++        return dict(other) | self.data
++
+     # Prevent duplicate debug messages by defining our own __contains__ pointing at the underlying dict
+     def __contains__(self, key):
+         return self.data.__contains__(key)
+diff --git a/test/units/utils/test_vars.py b/test/units/utils/test_vars.py
+index 9be33de429..c94acafa7f 100644
+--- a/test/units/utils/test_vars.py
++++ b/test/units/utils/test_vars.py
+@@ -27,6 +27,7 @@ from unittest import mock
+ from units.compat import unittest
+ from ansible.errors import AnsibleError
+ from ansible.utils.vars import combine_vars, merge_hash
++from ansible.vars.manager import VarsWithSources
+ 
+ 
+ class TestVariableUtils(unittest.TestCase):
+@@ -89,6 +90,16 @@ class TestVariableUtils(unittest.TestCase):
+             for test in self.combine_vars_replace_data:
+                 self.assertEqual(combine_vars(test['a'], test['b']), test['result'])
+ 
++    def test_combine_vars_replace_vars_with_sources(self):
++        with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'replace'):
++            a = dict(a=1, shared='left')
++            b = VarsWithSources(dict(b=2, shared='right'))
++            result = combine_vars(a, b)
++
++            self.assertIsInstance(result, dict)
++            self.assertEqual(result, dict(a=1, b=2, shared='right'))
++            self.assertEqual(a | b, result)
++
+     def test_combine_vars_merge(self):
+         with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'merge'):
+             for test in self.combine_vars_merge_data:

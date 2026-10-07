@@ -1,0 +1,57 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 93a1b9ad38..20f66fdfa7 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -786,3 +786,19 @@ class VarsWithSources(MutableMapping):
+ 
+     def copy(self):
+         return VarsWithSources.new_vars_with_sources(self.data.copy(), self.sources.copy())
++
++    def __or__(self, other):
++        ''' Merge another mapping into this one, returning a plain dict with the other mapping's keys taking precedence '''
++        if not isinstance(other, MutableMapping):
++            return NotImplemented
++        result = dict(self.data)
++        result.update(other)
++        return result
++
++    def __ror__(self, other):
++        ''' Merge this mapping into another mapping, returning a plain dict with this mapping's keys taking precedence '''
++        if not isinstance(other, MutableMapping):
++            return NotImplemented
++        result = dict(other)
++        result.update(self.data)
++        return result
+diff --git a/test/units/utils/test_vars.py b/test/units/utils/test_vars.py
+index 9be33de429..71c1fced4e 100644
+--- a/test/units/utils/test_vars.py
++++ b/test/units/utils/test_vars.py
+@@ -27,6 +27,7 @@ from unittest import mock
+ from units.compat import unittest
+ from ansible.errors import AnsibleError
+ from ansible.utils.vars import combine_vars, merge_hash
++from ansible.vars.manager import VarsWithSources
+ 
+ 
+ class TestVariableUtils(unittest.TestCase):
+@@ -94,6 +95,20 @@ class TestVariableUtils(unittest.TestCase):
+             for test in self.combine_vars_merge_data:
+                 self.assertEqual(combine_vars(test['a'], test['b']), test['result'])
+ 
++    def test_combine_vars_replace_dict_and_vars_with_sources(self):
++        left = dict(a=1, c=3)
++        right = VarsWithSources.new_vars_with_sources(dict(b=2, c=4), dict(b='defaults', c='host_vars'))
++        with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'replace'):
++            result = combine_vars(left, right)
++        self.assertIsInstance(result, dict)
++        self.assertEqual(result, dict(a=1, b=2, c=4))
++
++    def test_vars_with_sources_union(self):
++        vws = VarsWithSources.new_vars_with_sources(dict(b=2), dict(b='defaults'))
++        self.assertEqual(dict(a=1) | vws, dict(a=1, b=2))
++        self.assertEqual(vws | dict(a=1), dict(a=1, b=2))
++        self.assertEqual(dict(a=1, b=0) | vws, dict(a=1, b=2))
++
+     merge_hash_data = {
+         "low_prio": {
+             "a": {

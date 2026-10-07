@@ -1,0 +1,139 @@
+[
+  {
+    "content": "Dev C's run ended at 08:10. Checking whether `final.patch` was posted and the issue moved to In Review.",
+    "created_at": "2026-10-07T08:10:34.801798Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 1,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "type": "text"
+  },
+  {
+    "call_id": "5ebf6eff-a615-45f5-9c81-39cc02c14216",
+    "created_at": "2026-10-07T08:10:41.44849Z",
+    "input": {
+      "command": "multica issue get 01a11551-61b0-74d6-b44d-836cf84d07be --output json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d[\"status\"], d[\"updated_at\"], d[\"last_activity_at\"], \"rev\", d[\"revision\"])'; echo ---; multica issue comment list 01a11551-61b0-74d6-b44d-836cf84d07be --since 2026-10-07T08:10:20Z --compact --output json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(len(d), \"comments since 08:10:20\"); [print(c[\"id\"], c[\"created_at\"], c[\"author_id\"][:8], \"parent:\", c.get(\"parent_id\"), \"att:\", [(a[\"id\"], a[\"filename\"], a[\"size_bytes\"]) for a in (c.get(\"attachments\") or [])], \"|\", c[\"content\"][:200].replace(\"\\n\",\" \")) for c in d]'; echo ---; multica issue runs 01a11551-61b0-74d6-b44d-836cf84d07be --output json | python3 -c 'import json,sys; [print(r[\"id\"][-12:], r[\"agent_id\"][:8], r[\"kind\"], r[\"status\"], r.get(\"started_at\"), r.get(\"completed_at\"), \"|\", ((r.get(\"result\") or {}).get(\"output\") or \"\")[:300].replace(\"\\n\",\" \")) for r in json.load(sys.stdin) if r[\"status\"] in (\"queued\",\"running\") or (r.get(\"completed_at\") or \"\") \u003e \"2026-10-07T08:10:00\"]'",
+      "description": "Read status, new comments, and recent runs"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 2,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "5ebf6eff-a615-45f5-9c81-39cc02c14216",
+    "created_at": "2026-10-07T08:10:41.836617Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"in_review 2026-10-07T08:10:15Z 2026-10-07T08:10:15.191565Z rev 38\\n---\\n0 comments since 08:10:20\\n---\\n4c784a74944f a5e01866 direct running 2026-10-07T08:10:30Z None | \\ncbe937903a6e e3d76f1d direct running 2026-10-07T08:10:30Z None | \\n5343c3d23aa5 bbbb0d7a comment queued None None | \\n7330e45ecde1 bbbb0d7a comment queued None None | \\n00408b672544 bbbb0d7a comment queued None None | \\ncd51b1ddb501 a5e01866 direct completed 2026-10-07T08:10:01Z 2026-10-07T08:10:18Z | `final.patch` still isn't on the issue, and it's still `in_progress`. Dev C's run is still writing the final comment and was active about 30 seconds before I checked.  I posted a one-line status comment. Once `final.patch` is posted, I'll check it against the approved candidate.\\n333435fbf3b1 e3d76f1d direct completed 2026-10-07T08:10:00Z 2026-10-07T08:10:15Z | Still not done: `final.patch` hasn't been posted and the issue is still In Progress. Nothing has changed since my last run. Dev C's run is still writing the comment that posts `final.patch`, after which Dev C moves the issue to In Review. That step is Dev C's, and nothing is waiting on me.  I posted\\n511a6d8741d2 bbbb0d7a comment queued None None | \\n8f5ef98e7fcb bbbb0d7a comment running 2026-10-07T08:10:12Z None | \\ndf77332b3d00 bbbb0d7a comment completed 2026-10-07T08:09:58Z 2026-10-07T08:10:12Z | Nothing needed doing this time, so I posted no comment and only logged it as \\\"no action\\\". The issue stays In Progress.  The two new comments are \\\"no change\\\" notes from Dev B and Dev D. According to them, Dev C's run, which is still active, is writing the final comment that posts `final.patch` with t\\n51b0df066dfe a5e01866 direct completed 2026-10-07T08:09:34Z 2026-10-07T08:10:01Z | `final.patch` still isn't on the issue, and it's still `in_progress`. Dev C's run is writing the final comment that includes the test output. The patched `test_urlutils.py` run gives 247 passed, 1 skipped, and `final.patch` will be posted with that comment.  I posted a one-line status comment. Once \\n2b4ce0898a1f d6ce1582 direct running 2026-10-07T08:10:30Z None | \\nbe3fb461de81 d6ce1582 direct completed 2026-10-07T07:46:00Z 2026-10-07T08:10:30Z | All four points are done, and DEV-10 is now **In Review**.  - **Fix:** the bug was a check in `_get_search_url` that compared whatever came after the first word against the engine names. So in `test path-search`, the trailing `path-search` replaced the search with that engine's base URL. Now `_parse\"",
+    "output_truncated": false,
+    "seq": 3,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "49f91415-b133-4b04-9ae3-07e6cc4e9643",
+    "created_at": "2026-10-07T08:11:13.983343Z",
+    "input": {
+      "command": "multica issue comment list 01a11551-61b0-74d6-b44d-836cf84d07be --since 2026-10-07T08:10:00Z --output json | python3 -c 'import json,sys; d=json.load(sys.stdin); [print(c[\"id\"], c[\"created_at\"], c[\"author_id\"][:8], \"parent:\", c.get(\"parent_id\"), \"\\nATT:\", [(a[\"id\"], a[\"filename\"], a[\"size_bytes\"]) for a in (c.get(\"attachments\") or [])], \"\\n\", c[\"content\"], \"\\n=====\") for c in d if c[\"author_id\"].startswith(\"d6ce1582\")]'",
+      "description": "Read Dev C's final comment and attachments"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 4,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "49f91415-b133-4b04-9ae3-07e6cc4e9643",
+    "created_at": "2026-10-07T08:11:14.09112Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"01a11569-b5c6-7b41-9469-3ff93c966ad3 2026-10-07T08:10:11Z d6ce1582 parent: None \\nATT: [('01a11569-b598-77f8-9fb9-6c5c51e37882', 'final.patch', 5526), ('01a11569-b5b3-7a98-b7a2-6517236d489d', 'pytest-tests-unit-utils-final.txt', 119172)] \\n `final.patch` is attached. It's Dev B's `candidate.patch` after review, with one whitespace fix. All four points are done, and I'm moving the issue to **In Review**.\\n\\n**Patch:** `git diff a55f4db26b4b1caa304dd4b842a4103445fdccc7`, 3 files, +51/−9, sha256 `9f4aa0f4acb806581a257b0741637928d67cafebcbcc5e836f70fcc6886f3a74`. I applied it with `git apply` to a brand-new clone at `a55f4db26`. It applies cleanly, and the test output below comes from that tree.\\n\\n- **Root cause:** `_get_search_url` checked `term in searchengines` against the term left over after the leading engine name had been removed. So in `test path-search`, the trailing `path-search` replaced the search with that engine's base URL.\\n- **Fix** (`qutebrowser/utils/urlutils.py`):\\n  - `_parse_search_term` now decides whether the entry is a bare engine name. It only does this for a single-word entry with `url.open_base_url` set, and returns `(engine, None)`.\\n  - `_get_search_url` opens the base URL only when `term is None`. Every other entry gets a normal search, with the same `quote(term, safe='')` encoding as before.\\n- **Regression tests** (`tests/unit/utils/test_urlutils.py`):\\n  - `('test path-search', 'www.qutebrowser.org', 'q=path-search')` in `test_get_search_url`, which runs with `open_base_url` on and off.\\n  - `test_get_search_url_no_open_base_url`.\\n  - `test_is_url_bare_engine_no_autosearch`.\\n- **Changelog:** two lines under v1.9.0 → Fixed.\\n\\n**Review**\\n- **Behavior:** I wrote an independent fix and compared both across 310 input/setting combinations: no differences. Compared with the untouched commit, only the intended cases change. With `open_base_url` off, nothing changes.\\n- **One change from `candidate.patch`, which Dev B has accepted:** the continuation line of the new return annotation was one column too far right. That's pycodestyle E127, which `.flake8` doesn't ignore. It's whitespace only:\\n  ```diff\\n  -+                                                typing.Optional[str]]:\\n  ++                                               typing.Optional[str]]:\\n  ```\\n- **`is_url()` decision (final):** we kept the parser-level approach. With `auto_search=never` and `open_base_url` on, a bare engine name now opens its base URL instead of `http://\u003cname\u003e`, as `naive` already did. This is deliberate, and a test and the changelog cover it.\\n- **`test-with-dash test`:** not added as a separate case. On the old code, `test path-search` already fails on the host assertion (`www.example.org` ≠ `www.qutebrowser.org`).\\n\\n**Test output** (fresh clone + `final.patch`; Python 3.11.17, PyQt5 5.15.9 / Qt 5.15.2, pytest 7.4.2; full log attached):\\n\\n```\\n$ python -m pytest tests/unit/utils/test_urlutils.py\\n======================== 247 passed, 1 skipped in 6.97s ========================\\n\\n$ python -m pytest tests/unit/utils/\\n=========================== short test summary info ============================\\nFAILED tests/unit/utils/test_debug.py::TestGetAllObjects::test_get_all_objects\\nFAILED tests/unit/utils/test_debug.py::TestGetAllObjects::test_get_all_objects_qapp\\nFAILED tests/unit/utils/test_error.py::test_err_windows[''-''-'exception']\\nFAILED tests/unit/utils/test_error.py::test_err_windows['foo'-''-'foo: exception']\\nFAILED tests/unit/utils/test_error.py::test_err_windows['foo'-'bar'-'foo: exception\\\\\\\\n\\\\\\\\nbar']\\nFAILED tests/unit/utils/test_error.py::test_err_windows[''-'bar'-'exception\\\\\\\\n\\\\\\\\nbar']\\nFAILED tests/unit/utils/test_log.py::TestQtMessageHandler::test_empty_message\\nFAILED tests/unit/utils/test_qtutils.py::TestPyQIODevice::test_read[-1-chunks0]\\nFAILED tests/unit/utils/test_standarddir.py::TestStandardDir::test_linux_invalid_runtimedir\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[fc2e::bb88::edac]-Invalid IPv6 address; source was \\\"fc2e::bb88::edac\\\"; host = \\\"\\\"]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[fc2e:0e35:bb88::edac:fc2e:0e35:bb88:edac]-Invalid IPv6 address; source was \\\"fc2e:0e35:bb88::edac:fc2e:0e35:bb88:edac\\\"; host = \\\"\\\"]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[fc2e:0e35:bb88:af:edac:fc2e:0e35:bb88:edac]-Invalid IPv6 address; source was \\\"fc2e:0e35:bb88:af:edac:fc2e:0e35:bb88:edac\\\"; host = \\\"\\\"]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[127.0.0.1:fc2e::bb88:edac]-Invalid IPv6 address; source was \\\"127\\\\\\\\.0\\\\\\\\.0\\\\\\\\.1:fc2e::bb88:edac]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[]:20-Pattern without host]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[[fc2e::bb88:edac]-Expected '\\\\\\\\]' to match '\\\\\\\\[' in hostname; source was \\\"\\\\\\\\[fc2e::bb88:edac\\\"; host = ]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[fc2e::bb88:edac]]-Invalid IPv6 URL]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[fc2e:bb88:edac]-Invalid IPv6 address; source was \\\"fc2e:bb88:edac\\\"; host = \\\"\\\"]\\nFAILED tests/unit/utils/test_urlmatch.py::test_invalid_patterns[http://[fc2e:bb88:edac::z]-Invalid IPv6 address; source was \\\"fc2e:bb88:edac::z\\\"; host = \\\"\\\"]\\nFAILED tests/unit/utils/test_version.py::TestModuleVersions::test_existing_attributes[colorama-True]\\nFAILED tests/unit/utils/test_version.py::TestModuleVersions::test_existing_attributes[attr-True]\\nFAILED tests/unit/utils/usertypes/test_question.py::test_mode_invalid - Faile...\\n=========== 21 failed, 1006 passed, 43 skipped, 2 xfailed in 16.09s ============\\n```\\n\\n- **Point 2 is met under the agreed rule.**\\n  - `test_urlutils.py` passes completely.\\n  - The 21 failures are exactly the ones the untouched `a55f4db26` already has: the same IDs on three machines, none new, none gone. They come from the environment (Python 3.11 / PyQt 5.15), not from this patch.\\n  - The 6 extra passes are the new test cases.\\n- **The tests catch the bug.** With only the test changes applied to the unfixed code, `test_get_search_url[test path-search-…-True]` and `test_is_url_bare_engine_no_autosearch[True-False]` fail. With the fix, both pass.\\n- **Coverage:** `urlutils.py` stays at 100% line and branch coverage. It's on the perfect-coverage list in `scripts/dev/check_coverage.py`.\\n- **Not run:** flake8, pylint and mypy, which aren't installed, and there's no PyPI access. I checked line lengths, whitespace and the continuation indent by hand.\\n\\nI can't turn off my reminder wakeup either (permission denied), so after this my runs will only post one-line status checks. \\n=====\\n01a1156a-67bd-798e-82a9-0cd1b1dc6119 2026-10-07T08:10:57Z d6ce1582 parent: None \\nATT: [] \\n No change: all four points are done, and the issue is In Review. `final.patch` (sha256 `9f4aa0f4…6a74`) and the test output are in my 08:10 comment. The two \\\"still waiting\\\" notes at 08:10 were posted at the same moment and missed it. \\n=====\"",
+    "output_truncated": false,
+    "seq": 5,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "c6d39d6c-49f1-4159-a512-a575bdcdf6ec",
+    "created_at": "2026-10-07T08:11:34.437744Z",
+    "input": {
+      "command": "mkdir -p ./dl-final ./dl-cand \u0026\u0026 multica attachment download 01a11569-b598-77f8-9fb9-6c5c51e37882 -o ./dl-final \u003e/dev/null \u0026\u0026 multica attachment download 01a11560-7ea6-75c8-8960-27a9d7fa7ccc -o ./dl-cand \u003e/dev/null \u0026\u0026 sha256sum ./dl-final/final.patch ./dl-cand/candidate.patch \u0026\u0026 echo \"== candidate -\u003e final:\" \u0026\u0026 diff ./dl-cand/candidate.patch ./dl-final/final.patch; echo \"== fresh worktree check:\"; cd ~/work/qutebrowser \u0026\u0026 git worktree add --detach ~/work/qb-devd-final a55f4db26b4b1caa304dd4b842a4103445fdccc7 \u003e/dev/null 2\u003e\u00261 \u0026\u0026 cd ~/work/qb-devd-final \u0026\u0026 git apply --check /home/agent/multica_workspaces/dev-f8c40ea8b427/dev-10-13f021ecdd54/workdir/dl-final/final.patch \u0026\u0026 git apply /home/agent/multica_workspaces/dev-f8c40ea8b427/dev-10-13f021ecdd54/workdir/dl-final/final.patch \u0026\u0026 echo \"APPLY OK\" \u0026\u0026 git diff --stat | tail -1 \u0026\u0026 git diff --check \u0026\u0026 echo \"diff --check clean\" \u0026\u0026 sed -n 70,71p qutebrowser/utils/urlutils.py | awk '{ match($0, /[^ ]/); print RSTART-1 \" leading spaces | \" $0 }' \u0026\u0026 source ~/work/qutebrowser/.venv/bin/activate \u0026\u0026 timeout 600 python -m pytest tests/unit/utils/test_urlutils.py -q -p no:cacheprovider 2\u003e\u00261 | tail -1 \u0026\u0026 timeout 900 python -m pytest tests/unit/utils/ -q -p no:cacheprovider -rf \u003e ~/devd_final_utils.log 2\u003e\u00261; tail -1 ~/devd_final_utils.log; grep '^FAILED' ~/devd_final_utils.log | sed -E 's/ - .*//; s/^FAILED //' | sort \u003e ~/devd_final_failures.txt; diff ~/devd_baseline_sorted.txt ~/devd_final_failures.txt \u0026\u0026 echo \"failure list IDENTICAL to baseline ($(wc -l \u003c ~/devd_final_failures.txt))\"",
+      "description": "Verify final patch checksum, diff, apply, and tests",
+      "timeout": 1560000
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 6,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "c6d39d6c-49f1-4159-a512-a575bdcdf6ec",
+    "created_at": "2026-10-07T08:12:18.18213Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"Downloaded: /home/agent/multica_workspaces/dev-f8c40ea8b427/dev-10-13f021ecdd54/workdir/dl-final/final.patch\\nDownloaded: /home/agent/multica_workspaces/dev-f8c40ea8b427/dev-10-13f021ecdd54/workdir/dl-cand/candidate.patch\\n9f4aa0f4acb806581a257b0741637928d67cafebcbcc5e836f70fcc6886f3a74  ./dl-final/final.patch\\n053d6c98d8ffc09fedb6088eef9c7dbf38361c7d6d5c2b71c5e5cedebc5fc190  ./dl-cand/candidate.patch\\n== candidate -\u003e final:\\n18c18\\n\u003c index 5b5d93301..52e452f72 100644\\n---\\n\u003e index 5b5d93301..ced506b75 100644\\n27c27\\n\u003c +                                                typing.Optional[str]]:\\n---\\n\u003e +                                               typing.Optional[str]]:\\n== fresh worktree check:\\nAPPLY OK\\n 3 files changed, 51 insertions(+), 9 deletions(-)\\ndiff --check clean\\n0 leading spaces | def _parse_search_term(s: str) -\u003e typing.Tuple[typing.Optional[str],\\n47 leading spaces |                                                typing.Optional[str]]:\\n247 passed, 1 skipped in 6.87s\\n21 failed, 1006 passed, 43 skipped, 2 xfailed in 16.10s\\nfailure list IDENTICAL to baseline (21)\\nShell cwd was reset to /home/agent/multica_workspaces/dev-f8c40ea8b427/dev-10-13f021ecdd54/workdir\"",
+    "output_truncated": false,
+    "seq": 7,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "955d6cd9-25e5-4098-b572-656b5c13d5e6",
+    "created_at": "2026-10-07T08:12:30.126044Z",
+    "input": {
+      "command": "cd ~/work/qutebrowser \u0026\u0026 git worktree remove --force ~/work/qb-devd-final \u0026\u0026 git worktree prune \u0026\u0026 git worktree list \u0026\u0026 git status --short \u0026\u0026 echo \"main checkout clean\"; cd /home/agent/multica_workspaces/dev-f8c40ea8b427/dev-10-13f021ecdd54/workdir \u0026\u0026 rm -rf ./dl-final ./dl-cand \u0026\u0026 multica issue wakeup disable 01a11551-61b0-74d6-b44d-836cf84d07be 01a11551-63c5-72c2-8643-16e43c35f279 --output json \u003e/dev/null; echo \"disable exit: $?\"; multica issue get 01a11551-61b0-74d6-b44d-836cf84d07be --output json | python3 -c 'import json,sys; print(\"status:\", json.load(sys.stdin)[\"status\"])'",
+      "description": "Clean up and try disabling my reminder"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 8,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "955d6cd9-25e5-4098-b572-656b5c13d5e6",
+    "created_at": "2026-10-07T08:12:30.363518Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"/home/agent/work/qutebrowser  a55f4db26 [work]\\nmain checkout clean\\nYou do not have permission to access this resource. Check that you are in the right workspace, or ask an administrator to grant access.\\ndisable exit: 3\\nstatus: in_review\"",
+    "output_truncated": false,
+    "seq": 9,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "d4835736-ea1e-4be2-882f-07f668d36c23",
+    "created_at": "2026-10-07T08:12:35.168817Z",
+    "input": {
+      "command": "printf '%s\\n' 'All four points are done and the issue is In Review. I checked Dev C'\"'\"'s `final.patch` (`9f4aa0f4…6a74`) on my machine: the only change from the approved candidate is the one-space indent fix. It applies cleanly to a fresh `a55f4db26`. `test_urlutils.py` gives `247 passed, 1 skipped`, and `tests/unit/utils/` fails exactly the 21 baseline tests. Nothing left for me.' \u003e ./reply.md \u0026\u0026 multica issue comment add 01a11551-61b0-74d6-b44d-836cf84d07be --content-file ./reply.md --output table \u0026\u0026 rm ./reply.md \u0026\u0026 echo \"posted+cleaned\"",
+      "description": "Post brief final-state comment"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 10,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "d4835736-ea1e-4be2-882f-07f668d36c23",
+    "created_at": "2026-10-07T08:12:35.28687Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"Comment added to issue 01a11551-61b0-74d6-b44d-836cf84d07be.\\nposted+cleaned\"",
+    "output_truncated": false,
+    "seq": 11,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "content": "DEV-10 is done: the issue is **In Review**, waiting for you to merge.\n\n- **Fix:** the bug was in `_get_search_url`. It checked whatever followed the first word against the engine names, so `test path-search` opened the `path-search` engine's base URL instead of searching. Now only a single bare engine name opens a base URL, and only when `open_base_url` is on.\n- **Regression test:** the `test path-search` case was added to `test_get_search_url`, which runs with the option on and off. Two smaller tests were added too. On the old code, the new tests fail.\n- **Tests:** `test_urlutils.py` gives 247 passed, 1 skipped. The full `tests/unit/utils/` run still has 21 failures, but the unpatched commit already fails exactly those 21. They're in modules the fix doesn't touch and seem to come from this setup's newer Python and Qt. The team agreed the bar was \"no new failures\", and Dev C's final comment explains this.\n- **`final.patch`:** Dev C attached it to the issue with the test output in the same comment. On my machine it applies cleanly with `git apply` to a fresh `a55f4db26`. The only change from the version Dev A and I approved is a one-space indent fix.\n\n**Decision for you:** the fix also changes behavior in one other setting. With `auto_search=never` and `open_base_url` on, typing a bare engine name like `test` now opens that engine's base URL instead of `http://test`. The team kept this on purpose, since it matches what the option is for. A test and a changelog line cover it, and the patch adds two changelog lines in total. Dev B's candidate comment has a one-line way to keep the old behavior if you'd rather.\n\nflake8, pylint and mypy weren't run because they aren't installed and there's no internet access here; style was checked by hand.\n\nAgents can't turn off the four auto-reminders you set up (permission denied), so they'll keep firing until each hits its 20-fire limit. Each extra run posts only a one-line status comment, so expect a run of those at the end of the thread.",
+    "created_at": "2026-10-07T08:12:54.072966Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 12,
+    "task_id": "01a11569-fd7a-7d12-b46d-4c784a74944f",
+    "type": "text"
+  }
+]

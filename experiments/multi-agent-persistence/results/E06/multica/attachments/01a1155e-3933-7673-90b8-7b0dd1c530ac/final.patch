@@ -1,0 +1,122 @@
+diff --git a/changelogs/fragments/varswithsources-union.yml b/changelogs/fragments/varswithsources-union.yml
+new file mode 100644
+index 0000000000..cb928f9233
+--- /dev/null
++++ b/changelogs/fragments/varswithsources-union.yml
+@@ -0,0 +1,4 @@
++bugfixes:
++  - vars - ``VarsWithSources``, used for variables when ``ANSIBLE_DEBUG`` is enabled, now supports the ``|`` and ``|=`` operators.
++    This fixes a ``TypeError`` when ``combine_vars`` combines it with a ``dict`` using the default ``replace`` hash behaviour,
++    which regressed in ansible-core 2.14 (https://github.com/ansible/ansible/pull/77566).
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 93a1b9ad38..93746bb334 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -786,3 +786,36 @@ class VarsWithSources(MutableMapping):
+ 
+     def copy(self):
+         return VarsWithSources.new_vars_with_sources(self.data.copy(), self.sources.copy())
++
++    # MutableMapping does not provide the dict union operators (PEP 584) and dict's own only accept dicts,
++    # so implement them here for ``combine_vars`` (``a | b``) to work with this class on either side
++    def __or__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++        new = self.copy()
++        new |= other
++        return new
++
++    def __ror__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++        new = VarsWithSources(other)
++        new |= self
++        return new
++
++    def __ior__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++        if isinstance(other, VarsWithSources):
++            # use the underlying dicts to avoid a debug message for every var
++            other_data, other_sources = other.data, other.sources
++        else:
++            other_data, other_sources = other, {}
++        self.data.update(other_data)
++        # vars taken from other keep the source recorded there, if any, instead of the one recorded here
++        for key in other_data:
++            if key in other_sources:
++                self.sources[key] = other_sources[key]
++            else:
++                self.sources.pop(key, None)
++        return self
+diff --git a/test/units/utils/test_vars.py b/test/units/utils/test_vars.py
+index 9be33de429..a7eb257093 100644
+--- a/test/units/utils/test_vars.py
++++ b/test/units/utils/test_vars.py
+@@ -27,6 +27,7 @@ from unittest import mock
+ from units.compat import unittest
+ from ansible.errors import AnsibleError
+ from ansible.utils.vars import combine_vars, merge_hash
++from ansible.vars.manager import VarsWithSources
+ 
+ 
+ class TestVariableUtils(unittest.TestCase):
+@@ -69,6 +70,21 @@ class TestVariableUtils(unittest.TestCase):
+             b=dict(b=2, c=defaultdict(baz='bam')),
+             result=defaultdict(a=1, b=2, c=defaultdict(baz='bam'))
+         ),
++        dict(
++            a=dict(a=1, c=1),
++            b=VarsWithSources(b=2, c=2),
++            result=dict(a=1, b=2, c=2)
++        ),
++        dict(
++            a=VarsWithSources(a=1, c=1),
++            b=dict(b=2, c=2),
++            result=dict(a=1, b=2, c=2)
++        ),
++        dict(
++            a=VarsWithSources(a=1, c=1),
++            b=VarsWithSources(b=2, c=2),
++            result=dict(a=1, b=2, c=2)
++        ),
+     )
+ 
+     def test_combine_vars_improper_args(self):
+@@ -94,6 +110,36 @@ class TestVariableUtils(unittest.TestCase):
+             for test in self.combine_vars_merge_data:
+                 self.assertEqual(combine_vars(test['a'], test['b']), test['result'])
+ 
++    def test_mapping_or_vars_with_sources(self):
++        # dict.__or__ only accepts dicts, so VarsWithSources has to implement the reflected union
++        vws = VarsWithSources.new_vars_with_sources(dict(b=2, c=2), dict(b='b_src', c='c_src'))
++        result = dict(a=1, c=1) | vws
++        self.assertIsInstance(result, VarsWithSources)
++        self.assertEqual(result.data, dict(a=1, b=2, c=2))
++        self.assertEqual(result.sources, dict(b='b_src', c='c_src'))
++
++    def test_vars_with_sources_or(self):
++        vws = VarsWithSources.new_vars_with_sources(dict(b=2, c=2), dict(b='b_src', c='c_src'))
++
++        result = vws | dict(a=1, c=1)
++        self.assertIsInstance(result, VarsWithSources)
++        self.assertEqual(result.data, dict(a=1, b=2, c=1))
++        # c now comes from the dict, so the source recorded for it no longer applies
++        self.assertEqual(result.sources, dict(b='b_src'))
++
++        result = vws | VarsWithSources.new_vars_with_sources(dict(c=3), dict(c='new_c_src'))
++        self.assertEqual(result.data, dict(b=2, c=3))
++        self.assertEqual(result.sources, dict(b='b_src', c='new_c_src'))
++
++        # the operands are left untouched while |= updates in place
++        self.assertEqual(vws.data, dict(b=2, c=2))
++        self.assertEqual(vws.sources, dict(b='b_src', c='c_src'))
++        orig = vws
++        vws |= dict(c=3)
++        self.assertIs(vws, orig)
++        self.assertEqual(vws.data, dict(b=2, c=3))
++        self.assertEqual(vws.sources, dict(b='b_src'))
++
+     merge_hash_data = {
+         "low_prio": {
+             "a": {

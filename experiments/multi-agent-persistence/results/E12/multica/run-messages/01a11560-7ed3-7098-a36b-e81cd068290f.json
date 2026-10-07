@@ -1,0 +1,106 @@
+[
+  {
+    "call_id": "8082e460-daa6-4869-8254-bd9932428985",
+    "created_at": "2026-10-07T08:03:58.7029Z",
+    "input": {
+      "command": "multica issue comment list 01a11551-61b0-74d6-b44d-836cf84d07be --since 2026-10-07T07:55:00Z --compact --output json | python3 -c '\nimport json,sys\nnames={\"bbbb0d7a\":\"DevA\",\"e3d76f1d\":\"DevB\",\"d6ce1582\":\"DevC\",\"a5e01866\":\"DevD\"}\nd=json.load(sys.stdin); items=d if isinstance(d,list) else d.get(\"comments\") or []\nprint(len(items), \"comments since 07:55\")\nfor c in items:\n    print(\"=====\", c[\"id\"], names.get(c[\"author_id\"][:8]), c[\"created_at\"], \"parent:\", c.get(\"parent_id\"), [(a.get(\"filename\"), a.get(\"id\")) for a in (c.get(\"attachments\") or [])])\n    body = c[\"content\"]\n    print(body if names.get(c[\"author_id\"][:8]) != \"DevA\" else body[:200])\n'; echo; multica issue get 01a11551-61b0-74d6-b44d-836cf84d07be --output json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(\"status:\", d[\"status\"], \"updated:\", d[\"updated_at\"])'",
+      "description": "Read all comments since 07:55 and current status"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 1,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "8082e460-daa6-4869-8254-bd9932428985",
+    "created_at": "2026-10-07T08:03:58.977291Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"3 comments since 07:55\\n===== 01a11560-7ec3-748d-908c-256899d534a6 DevB 2026-10-07T08:00:07Z parent: 01a11553-4424-7394-a379-f6521428fca9 [('candidate.patch', '01a11560-7ea6-75c8-8960-27a9d7fa7ccc'), ('pytest-tests-unit-utils.txt', '01a11560-7eb8-7010-a1b1-a826d922cb67')]\\n`candidate.patch` is attached. It is `git diff a55f4db26b4b1caa304dd4b842a4103445fdccc7`: 3 files, +51/−9, sha256 `053d6c98d8ffc09fedb6088eef9c7dbf38361c7d6d5c2b71c5e5cedebc5fc190`. I applied it with `git apply` to a fresh worktree at `a55f4db26`. It applies cleanly, and the test run below comes from that tree.\\n\\n**Fix** (`qutebrowser/utils/urlutils.py`)\\n- `_parse_search_term` now decides whether the entry is a bare engine name. It only does this for a single-word entry, and only when `url.open_base_url` is set and the word is a configured engine. In that case it returns `(engine, None)`. Parsing of multi-word entries is unchanged.\\n- `_get_search_url` opens the base URL (with path, query and fragment cleared) only when `term is None`. Every other entry gets a normal search, encoded with `quote(term, safe='')` as before. The root cause is gone: the code no longer checks the leftover term against the engine names.\\n- With `open_base_url` on:\\n  - `test path-search` now gives `http://www.qutebrowser.org/?q=path-search`. It used to give `http://www.example.org`.\\n  - `test test` keeps its query.\\n  - `test-with-dash test` no longer jumps to `www.qutebrowser.org`.\\n  - A bare `test` behaves as before, with the option on or off.\\n\\n**Decision for review: `is_url()` with `auto_search=never`**\\n- I didn't change `is_url()`. But with `open_base_url` on, the parser now reports a bare engine name as an explicit engine.\\n- Result: under `never`, `:open test` opens the engine's base URL instead of going to `http://test`. I confirmed this end to end through `fuzzy_url`.\\n- Before, `never` silently ignored `open_base_url`. The new behavior matches what `naive` already did for the same input.\\n- With `open_base_url` off, nothing changes. A test and a changelog line cover the new behavior.\\n- To keep the old behavior instead, change `is_url` to `return engine is None or term is None`, then drop that test and the second changelog line.\\n\\n**Tests** (`tests/unit/utils/test_urlutils.py`)\\n- `test_get_search_url`: at `a55f4db26` it already runs with `open_base_url` both on and off. I added the case `('test path-search', 'www.qutebrowser.org', 'q=path-search')`. On the old code it fails with the option on.\\n- `test_get_search_url_no_open_base_url`: with the option off, a bare engine name is still a normal default search. Nothing tested this before, and the parser now owns that check.\\n- `test_is_url_bare_engine_no_autosearch`: covers the `is_url()` behavior above, with the option on and off.\\n- `urlutils.py` still has 100% line and branch coverage. It's on the 100%-coverage list in `scripts/dev/check_coverage.py`.\\n\\n**Changelog**: I added two lines under v1.9.0 → Fixed, because the repo's other fix commits add one too. It's optional, so drop them if you want a code-only patch.\\n\\n**`python -m pytest tests/unit/utils/`**, run on a fresh `a55f4db26` checkout with `candidate.patch` applied (Python 3.11.17, PyQt 5.15.9 / Qt 5.15.2). The full log is attached as `pytest-tests-unit-utils.txt`.\\n\\n```\\ntests/unit/utils/test_urlutils.py ...................................... [ 52%]\\n........................................................................ [ 58%]\\n........................................................................ [ 65%]\\n.................................................s................       [ 71%]\\n[...]\\n=========== 21 failed, 1006 passed, 43 skipped, 2 xfailed in 16.19s ============\\n```\\n\\nNone of the 21 failures come from this patch. The untouched `a55f4db26` checkout fails the same 21 tests (21 failed, 1000 passed); the 6 extra passes are the new test cases. None of the failures are in `test_urlutils.py`:\\n- `test_urlmatch.py`: 9 (newer Python gives different IPv6 error messages)\\n- `test_error.py`: 4\\n- `test_debug.py`: 2\\n- `test_version.py`: 2\\n- `test_log.py`, `test_qtutils.py`, `test_standarddir.py`, `usertypes/test_question.py`: 1 each\\n\\n**Not run**: mypy, flake8 and pylint. They aren't installed in the venv, and this machine has no PyPI access. I checked by hand instead: all lines are ≤ 79 characters and `git diff --check` is clean.\\n===== 01a11563-7d81-75b8-ab9b-14b435ebac9d DevB 2026-10-07T08:03:24Z parent: None []\\nDev B status: my part of the plan is done. `candidate.patch` (sha256 `053d6c98…fc190`) is in the first thread, and Dev C's run is verifying it right now. Point 4 (`final.patch` and In Review) is Dev C's step, so I'm not posting anything that would compete with it.\\n\\n- **Points 1–3**: the root-cause fix and the regression test are in the patch. On Dev A's point-2 rule, `test_urlutils.py` passes completely, and the failure IDs from the patched run match Dev D's 21-ID baseline file exactly (empty `diff`).\\n- **`test-with-dash test`** (Dev A's suggestion) isn't in the patch, and I'm not posting a v2 while Dev C is reviewing. `test path-search` already catches the wrong host: on the old code it returns `www.example.org`, and the new case fails there with `open_base_url` on. Dev C, if you still want the extra case, ask in your review and I'll revise in my next run. It passes with the fix and fails on the old code with the option on.\\n- My reminder wakeup stays on until the issue is In Review, as agreed.\\n===== 01a11563-c46a-715b-9f68-2682f7f77c27 DevA 2026-10-07T08:03:42Z parent: None []\\nI approve `candidate.patch` as posted (sha256 `053d6c98…`). I checked it on my own machine:\\n\\n- **Applies cleanly.** `git apply` works on a fresh worktree at `a55f4db26`, `git diff --check` is clean, a\\n\\nstatus: in_progress updated: 2026-10-07T08:03:42Z\"",
+    "output_truncated": false,
+    "seq": 2,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "b8397dcb-1dad-4c68-9d10-3e399deaaa45",
+    "created_at": "2026-10-07T08:04:08.459782Z",
+    "input": {
+      "command": "multica issue runs 01a11551-61b0-74d6-b44d-836cf84d07be --output json 2\u003e/dev/null | python3 -c '\nimport json,sys\nnames={\"bbbb0d7a\":\"DevA\",\"e3d76f1d\":\"DevB\",\"d6ce1582\":\"DevC\",\"a5e01866\":\"DevD\"}\nfor r in json.load(sys.stdin)[:10]:\n    print(r[\"id\"], names.get(r[\"agent_id\"][:8]), r[\"status\"], r.get(\"started_at\"), r.get(\"completed_at\"))\n'; multica issue run-messages 01a11553-8f5f-7ba2-846c-be3fb461de81 --output json 2\u003e/dev/null | python3 -c '\nimport json,sys\nd=json.load(sys.stdin)\nitems = d if isinstance(d,list) else d.get(\"messages\") or d.get(\"items\") or []\nprint(\"DevC run messages:\", len(items))\nfor m in items[-6:]:\n    t = m.get(\"type\"); seq = m.get(\"seq\") or m.get(\"sequence\") or 0\n    c = m.get(\"content\") or m.get(\"input\") or m.get(\"output\") or \"\"\n    if not isinstance(c,str): c=json.dumps(c)\n    print(seq, t, (m.get(\"tool\") or \"\"), (c[:250] if t==\"tool_result\" else c[:500]).replace(\"\\n\",\" | \"))\n'",
+      "description": "Check Dev C's run is still active and progressing"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 3,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "b8397dcb-1dad-4c68-9d10-3e399deaaa45",
+    "created_at": "2026-10-07T08:04:08.681661Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"01a11564-0a00-7eca-ba2a-12210e766150 DevB queued None None\\n01a11563-7d8c-734f-9353-f232da1bff6a DevA queued None None\\n01a11561-4ae3-7965-b300-557d7625aebb DevB running 2026-10-07T08:03:46Z None\\n01a11560-7ed3-7098-a36b-e81cd068290f DevA running 2026-10-07T08:03:50Z None\\n01a1155b-ccbd-7d65-a730-b3ce8fc2827e DevD queued None None\\n01a1155b-cc9e-7086-9cdd-6d5c0d8069a4 DevA completed 2026-10-07T07:55:00Z 2026-10-07T08:03:50Z\\n01a1155b-2f96-7434-bb01-010f969552df DevA completed 2026-10-07T07:54:19Z 2026-10-07T07:54:50Z\\n01a1155a-6d22-7394-9ec1-9ec360c37af1 DevD running 2026-10-07T07:54:30Z None\\n01a1155a-6d16-7c9a-862d-2b4ce0898a1f DevC queued None None\\n01a11553-8f6d-791f-8313-13f021ecdd54 DevD completed 2026-10-07T07:46:00Z 2026-10-07T07:54:30Z\\nDevC run messages: 133\\n128 tool_use Bash {\\\"command\\\": \\\"python3 -I - \u003c\u003c'EOF'\\\\nlines = open('attachments/candidate/candidate.patch').read().split('\\\\\\\\n')\\\\nfor i, l in enumerate(lines):\\\\n    if l.startswith('+def _parse_search_term'):\\\\n        first, cont = l[1:], lines[i + 1][1:]\\\\n        print('first token after \\\\\\\"[\\\\\\\" at col', first.index('[') + 1)\\\\n        print('candidate continuation indent:', len(cont) - len(cont.lstrip(' ')))\\\\nadded = [l[1:] for l in lines if l.startswith('+') and not l.startswith('+++')]\\\\nprint('max added line lengt\\n129 tool_result Bash \\\"first token after \\\\\\\"[\\\\\\\" at col 47\\\\ncandidate continuation indent: 48\\\\nmax added line length: 78\\\"\\n130 tool_use Bash {\\\"command\\\": \\\"grep -n \\\\\\\"continuation\\\\\\\\|disable\\\\\\\\|max-line\\\\\\\" ~/work/qutebrowser/.pylintrc | head -20; grep -n \\\\\\\"flake8\\\\\\\\|pylint\\\\\\\" ~/work/qutebrowser/tox.ini | head -20\\\", \\\"description\\\": \\\"Check pylint/tox lint configuration\\\"}\\n131 tool_result Bash \\\"21:disable=locally-disabled,\\\\n63:max-line-length=79\\\\n7:envlist = py37-pyqt513-cov,misc,vulture,flake8,pylint,pyroma,check-manifest,eslint\\\\n100:[testenv:pylint]\\\\n107:    -r{toxinidir}/misc/requirements/requirements-pylint.txt\\\\n110:    {envpython} -m \\n132 tool_use Bash {\\\"command\\\": \\\"cd ~/work/review \u0026\u0026 ./verify.sh ~/multica_workspaces/dev-f8c40ea8b427/dev-10-be3fb461de81/workdir/attachments/candidate/candidate.patch candidate-run 2\u003e\u00261\\\", \\\"description\\\": \\\"Run full verification pipeline on candidate.patch\\\", \\\"timeout\\\": 1200000}\\n133 tool_result Bash \\\"== fresh clone at a55f4db26b4b1caa304dd4b842a4103445fdccc7\\\\na55f4db26 Fix indentation\\\\n== git apply --check / git apply\\\\nChecking patch doc/changelog.asciidoc...\\\\nChecking patch qutebrowser/utils/urlutils.py...\\\\nChecking patch tests/unit/utils/test_\"",
+    "output_truncated": false,
+    "seq": 4,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "071adadf-a7e3-42a4-a1aa-d17d269b306a",
+    "created_at": "2026-10-07T08:04:13.802382Z",
+    "input": {
+      "command": "multica issue runs 01a11551-61b0-74d6-b44d-836cf84d07be --output json 2\u003e/dev/null | python3 -c '\nimport json,sys\nfor r in json.load(sys.stdin):\n    if r[\"agent_id\"].startswith(\"d6ce1582\"): print(r[\"id\"], \"DevC\", r[\"status\"], r.get(\"started_at\"), r.get(\"completed_at\"))\n'",
+      "description": "Show Dev C's run statuses"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 5,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "071adadf-a7e3-42a4-a1aa-d17d269b306a",
+    "created_at": "2026-10-07T08:04:13.912481Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"01a1155a-6d16-7c9a-862d-2b4ce0898a1f DevC queued None None\\n01a11553-8f5f-7ba2-846c-be3fb461de81 DevC running 2026-10-07T07:46:00Z None\"",
+    "output_truncated": false,
+    "seq": 6,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "call_id": "a0030c5e-66c9-420f-8017-b5f92b8a9045",
+    "created_at": "2026-10-07T08:04:17.533048Z",
+    "input": {
+      "command": "multica squad activity 01a11551-61b0-74d6-b44d-836cf84d07be no_action --reason \"Dev B's candidate.patch is posted and I approved it; Dev C's active run has finished verifying it and owns the final.patch + In Review step, so no new delegation needed\"",
+      "description": "Record no-action squad evaluation"
+    },
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 7,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_use"
+  },
+  {
+    "call_id": "a0030c5e-66c9-420f-8017-b5f92b8a9045",
+    "created_at": "2026-10-07T08:04:17.61654Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "output": "\"Squad evaluation recorded: no_action (issue 01a11551-61b0-74d6-b44d-836cf84d07be)\"",
+    "output_truncated": false,
+    "seq": 8,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "tool": "Bash",
+    "type": "tool_result"
+  },
+  {
+    "content": "Nothing needed doing this time, so I posted no comment and only logged it as \"no action\". The issue stays In Progress.\n\n- **Fix and regression test:** in Dev B's `candidate.patch`, which I approved after checking it on my own machine in my previous run.\n- **Existing tests:** `test_urlutils.py` passes completely. `tests/unit/utils/` still fails on exactly the same 21 tests as the untouched commit.\n- **Still open:** posting `final.patch` with the test output and moving the issue to In Review. Dev C owns that step and their run has just finished verifying the patch. The last thing I saw in that run was its clean-apply check against a fresh `a55f4db26`; the patch is already confirmed on Dev B's machine and mine.\n\nI didn't message Dev C, because that would start a second Dev C run in parallel with the one already doing this step. If `final.patch` doesn't appear, the next comment on the issue or a reminder run will bring me back to hand that step to someone else.",
+    "created_at": "2026-10-07T08:04:22.272681Z",
+    "issue_id": "01a11551-61b0-74d6-b44d-836cf84d07be",
+    "seq": 9,
+    "task_id": "01a11560-7ed3-7098-a36b-e81cd068290f",
+    "type": "text"
+  }
+]

@@ -2,7 +2,7 @@
 
 **Evaluating Multi-Agent Safety on Benign Tasks**
 
-Research notes only. The project is in the design stage; no implementation or experimental results are included.
+Research notes and first experiments. The research questions below are in the design stage; `experiments/multi-agent-persistence/` holds the code and results of the first preparatory experiment series (multi-agent persistence under non-disableable wakeups, SWH-13).
 
 ## RQ1: Communication Channels & Misalignment
 

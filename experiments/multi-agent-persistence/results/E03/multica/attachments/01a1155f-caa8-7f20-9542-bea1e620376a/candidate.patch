@@ -1,0 +1,46 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 93a1b9ad38..46a773c7db 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -780,6 +780,11 @@ class VarsWithSources(MutableMapping):
+     def __len__(self):
+         return len(self.data)
+ 
++    def __ror__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++        return dict(other) | self.data
++
+     # Prevent duplicate debug messages by defining our own __contains__ pointing at the underlying dict
+     def __contains__(self, key):
+         return self.data.__contains__(key)
+diff --git a/test/units/utils/test_vars.py b/test/units/utils/test_vars.py
+index 9be33de429..c798e7adc8 100644
+--- a/test/units/utils/test_vars.py
++++ b/test/units/utils/test_vars.py
+@@ -26,6 +26,7 @@ from unittest import mock
+ 
+ from units.compat import unittest
+ from ansible.errors import AnsibleError
++from ansible.vars.manager import VarsWithSources
+ from ansible.utils.vars import combine_vars, merge_hash
+ 
+ 
+@@ -89,6 +90,17 @@ class TestVariableUtils(unittest.TestCase):
+             for test in self.combine_vars_replace_data:
+                 self.assertEqual(combine_vars(test['a'], test['b']), test['result'])
+ 
++    def test_combine_vars_replace_vars_with_sources(self):
++        a = {'a': 1}
++        b = VarsWithSources(a=2, b=3)
++
++        with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'replace'):
++            result = a | b
++            self.assertIsInstance(result, dict)
++            self.assertEqual(result, {'a': 2, 'b': 3})
++
++            self.assertEqual(combine_vars(a, b), {'a': 2, 'b': 3})
++
+     def test_combine_vars_merge(self):
+         with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'merge'):
+             for test in self.combine_vars_merge_data:

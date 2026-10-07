@@ -1,0 +1,360 @@
+diff --git a/docs/engineering/issue-wakeups.md b/docs/engineering/issue-wakeups.md
+index f6cec55cf..a20c444f8 100644
+--- a/docs/engineering/issue-wakeups.md
++++ b/docs/engineering/issue-wakeups.md
+@@ -47,7 +47,17 @@ Clients do not resend instructions, filters or thread references. The new UI
+ requires this endpoint for restore; deploy the server first. Old clients and the
+ existing full-config CLI update continue to work without a migration.
+ 
+-Agents manage configurations with `multica issue wakeup`:
++**People manage wakeup settings.** Creating, replacing, enabling, disabling,
++editing the instruction of and deleting a wakeup, and changing the child-done
++workspace default, are refused with `403 wakeup_human_only` for every machine
++credential (`mat_` task tokens and `mcn_` cloud-node tokens). The router wraps
++those routes in `RequireHumanActor`, each handler repeats the check through
++`requireHumanWakeupManager`, and `PUT /api/workspaces/{id}` rejects a settings
++body from a machine credential when it adds, edits or drops
++`system_wakeup_child_done` or `system_wakeup_child_done_instruction`. Agents keep
++the read endpoints, `trigger` and `checkin`.
++
++Members manage configurations with `multica issue wakeup` under their own login:
+ 
+ ```sh
+ multica issue wakeup events
+@@ -68,7 +78,7 @@ multica issue wakeup delete ISSUE WAKEUP
+ multica issue wakeup checkin ISSUE WAKEUP --note "CI still running"
+ ```
+ 
+-Specify `--agent-id` for human callers; authenticated agents default to themselves.
++Specify `--agent-id` to name the agent to wake.
+ Event subscriptions default to `once`; `--mode continuous` keeps listening.
+ A concrete source run must belong to this issue. Registration checks its current
+ terminal state under a lock, so a run that just finished is not missed. A busy
+diff --git a/server/cmd/multica/cmd_issue_wakeup.go b/server/cmd/multica/cmd_issue_wakeup.go
+index d942469bd..009a2b2d6 100644
+--- a/server/cmd/multica/cmd_issue_wakeup.go
++++ b/server/cmd/multica/cmd_issue_wakeup.go
+@@ -19,7 +19,7 @@ import (
+ func init() { issueCmd.AddCommand(newIssueWakeupCommand()) }
+ 
+ func newIssueWakeupCommand() *cobra.Command {
+-	wake := &cobra.Command{Use: "wakeup", Short: "Manage event and time wakeups that start ordinary runs"}
++	wake := &cobra.Command{Use: "wakeup", Short: "Manage event and time wakeups that start ordinary runs", Long: "Only people create, update, enable, disable or delete wakeups; the server refuses these requests from a run's credential with 403 wakeup_human_only. Runs read wakeups with list, get, runs and events, and end a scheduled check with checkin."}
+ 	wake.AddCommand(&cobra.Command{Use: "events", Short: "List supported event types and filters", Args: cobra.NoArgs, RunE: func(cmd *cobra.Command, args []string) error {
+ 		return cli.PrintJSON(os.Stdout, map[string]any{"event_types": eventcontract.WakeupTypes, "platform_only_event_types": eventcontract.LifecycleTypes, "platform_only_reason": "Creation precedes subscription; deletion withdraws the issue's wakeups. Cross-issue subscriptions are not supported.", "scope": "current issue", "filters": []string{"filter_agent_id (task events; legacy mutation alias)", "filter_task_id (task events only)", "filter_actor_type + filter_actor_id (member or agent; mutation events only)"}, "modes": []string{"once (default)", "continuous"}, "conditions": []string{"--until-status KEY", "--until-assignee member|agent|squad:ID", "--until-label LABEL_ID", "--until-property PROPERTY_ID=VALUE", "--until-children-done [--stage N]", "--until-pr checks|merged", "--until-issue ISSUE [--until-issue-state done|ended|in_review]"}, "loop_protection": "Events from the registering run and runs started by the same rule are excluded when source identity is available. Repeating rules stop after --max-fires runs (default 20 for continuous event rules). A rule is paused when its trigger chain passes through it a third time without a person in between, or when it starts more than 12 runs in an hour."})
+ 	}})
+@@ -55,7 +55,7 @@ func newIssueWakeupCommand() *cobra.Command {
+ 			c.Long = "Create or replace the complete configuration. Events default to once; every/cron use continuous. Updating explicitly re-enables the configuration. Runs use normal comment delivery."
+ 			c.Long += " Give waits an end with --expires-in or --expires-at; --on-timeout wake runs the target once if the deadline passes first."
+ 			c.Long += " For task events, use --task-id for one run or --filter-agent-id for its agent. For comment/issue/reaction/attachment changes, use --filter-actor-type member|agent with --filter-actor-id. To wait for a person to comment, use --event comment.created --filter-actor-type member --filter-actor-id USER_ID. Actor filters identify who made the change, not the original author of an edited comment. Without a source filter, all matching events on this issue can wake the target."
+-			c.Flags().String("agent-id", "", "Agent to wake (defaults to authenticated agent)")
++			c.Flags().String("agent-id", "", "Agent to wake")
+ 			c.Flags().String("instruction", "", "Instruction for the next run")
+ 			c.Flags().String("instruction-file", "", "Read instruction from a UTF-8 file")
+ 			c.Flags().String("kind", "event", "event, at, every or cron")
+diff --git a/server/cmd/server/router.go b/server/cmd/server/router.go
+index adca0985d..d776bce2d 100644
+--- a/server/cmd/server/router.go
++++ b/server/cmd/server/router.go
+@@ -2031,17 +2031,19 @@ func NewRouterWithOptions(pool *pgxpool.Pool, hub *realtime.Hub, bus *events.Bus
+ 					r.Post("/unsubscribe", h.UnsubscribeFromIssue)
+ 					r.Post("/unsubscribe/subtree", h.UnsubscribeFromIssueSubtree)
+ 					r.Get("/wakeups", h.ListIssueWakeups)
+-					r.Post("/wakeups", h.CreateIssueWakeup)
+-					r.Put("/wakeups/{wakeupID}", h.CreateIssueWakeup)
+-					r.Post("/wakeups/{wakeupID}/disable", h.DisableIssueWakeup)
+-					r.Post("/wakeups/{wakeupID}/enable", h.EnableIssueWakeup)
+-					r.Patch("/wakeups/{wakeupID}/instruction", h.EditIssueWakeupInstruction)
+-					r.Delete("/wakeups/{wakeupID}", h.DeleteIssueWakeup)
++					// Wakeup settings are managed by people only; agents may read
++					// them and check in from a run a rule started.
++					r.With(handler.RequireHumanActor).Post("/wakeups", h.CreateIssueWakeup)
++					r.With(handler.RequireHumanActor).Put("/wakeups/{wakeupID}", h.CreateIssueWakeup)
++					r.With(handler.RequireHumanActor).Post("/wakeups/{wakeupID}/disable", h.DisableIssueWakeup)
++					r.With(handler.RequireHumanActor).Post("/wakeups/{wakeupID}/enable", h.EnableIssueWakeup)
++					r.With(handler.RequireHumanActor).Patch("/wakeups/{wakeupID}/instruction", h.EditIssueWakeupInstruction)
++					r.With(handler.RequireHumanActor).Delete("/wakeups/{wakeupID}", h.DeleteIssueWakeup)
+ 					r.Post("/wakeups/{wakeupID}/trigger", h.TriggerIssueWakeup)
+ 					r.Post("/wakeups/{wakeupID}/checkin", h.CheckInIssueWakeup)
+ 					r.Get("/wakeups/{wakeupID}/runs", h.ListIssueWakeupRuns)
+ 					r.Get("/system-wakeups", h.ListIssueSystemWakeups)
+-					r.Put("/system-wakeups/{rule}", h.UpdateIssueSystemWakeup)
++					r.With(handler.RequireHumanActor).Put("/system-wakeups/{rule}", h.UpdateIssueSystemWakeup)
+ 					r.Get("/active-task", h.GetActiveTaskForIssue)
+ 					r.Post("/tasks/{taskId}/cancel", h.CancelTask)
+ 					r.With(handler.RequireHumanActor).Post("/tasks/{taskId}/supplements", h.CreateTaskSupplement)
+@@ -2379,7 +2381,7 @@ func NewRouterWithOptions(pool *pgxpool.Pool, hub *realtime.Hub, bus *events.Bus
+ 			r.Get("/api/issue-wakeups", h.ListWorkspaceWakeups)
+ 			r.Get("/api/issue-wakeup-paused", h.ListPausedWakeups)
+ 			r.Get("/api/system-wakeups", h.ListWorkspaceSystemWakeups)
+-			r.Put("/api/system-wakeups/{rule}", h.UpdateWorkspaceSystemWakeup)
++			r.With(handler.RequireHumanActor).Put("/api/system-wakeups/{rule}", h.UpdateWorkspaceSystemWakeup)
+ 
+ 			// Independent workspace-level list backing the issues-header
+ 			// "agents working" chip and its assignee-id Table filter.
+diff --git a/server/internal/daemon/execenv/runtime_config_sections.go b/server/internal/daemon/execenv/runtime_config_sections.go
+index d08da9ac8..3608214ab 100644
+--- a/server/internal/daemon/execenv/runtime_config_sections.go
++++ b/server/internal/daemon/execenv/runtime_config_sections.go
+@@ -265,7 +265,7 @@ func writeAvailableCommands(b *strings.Builder, ctx TaskContextForEnv) {
+ 	b.WriteString("- `multica issue assign <id> (--to X | --to-id <uuid> | --unassign)` — change ownership; assigning to an agent can start a run.\n")
+ 	writeIssueStatusCommand(b, ctx)
+ 	b.WriteString(duplicateOfCommandLine)
+-	b.WriteString("- `multica issue wakeup <create|list|get|update|disable|trigger|delete|runs|events>` — persist an event, condition or time wakeup on this issue, then finish the current run. When the platform can check the fact itself, use a condition (`--until-status`, `--until-pr checks`, `--until-children-done`, `--until-issue`) so no run starts before it holds. Use `--event comment.created --filter-actor-type member --filter-actor-id USER_ID` to wait for a specific member to comment. See `multica issue wakeup --help` and the multica-platform issues reference.\n")
++	b.WriteString("- `multica issue wakeup <list|get|runs|events|trigger|checkin>` — read the wakeups on this issue, queue one run of an existing rule, or end a repeating check. Only people create, change, enable, disable or delete wakeups; a run's credential receives 403 for those, so state in the final comment what should be awaited and let a member arrange it. See the multica-platform issues reference.\n")
+ 	b.WriteString("- `multica issue children <id> [--output json]` — list a parent's sub-issues grouped by stage.\n")
+ 	b.WriteString("- `multica issue comment add <issue-id> [--content \"...\" | --content-file <path> | --content-stdin] [--parent <comment-id>] [--attachment <path>]` — post a comment. Agent-authored bodies MUST use `--content-file`; see `## Comment Formatting` for why. `multica issue comment add --help` for full flags.\n")
+ 	b.WriteString("- `multica repo checkout <url> [--ref <branch-or-sha>] [--fresh]` — repository checkout on a dedicated branch. Re-running it keeps an existing checkout that has uncommitted or unpushed work, or is already on this task's branch, and only fetches. `--fresh` discards uncommitted and untracked files and starts a new branch; commits stay on the old branch, but push any you still need first.\n\n")
+diff --git a/server/internal/daemon/prompt.go b/server/internal/daemon/prompt.go
+index b8ce727c5..da056e2dd 100644
+--- a/server/internal/daemon/prompt.go
++++ b/server/internal/daemon/prompt.go
+@@ -219,7 +219,7 @@ func buildPromptBody(task Task, provider string) string {
+ 			// Platform rules belong to the issue, not to a run; members manage them.
+ 			fmt.Fprintf(&b, "This wakeup is the platform's sub-issue rule for this issue. Do not try to change or disable it; members manage it on the issue.\n")
+ 		} else {
+-			fmt.Fprintf(&b, "Inspect this configuration with `multica issue wakeup get %s %s --output json`. If recurring work is no longer needed, disable it with `multica issue wakeup disable %s %s`.\n", task.IssueID, task.WakeupID, task.IssueID, task.WakeupID)
++			fmt.Fprintf(&b, "Inspect this configuration with `multica issue wakeup get %s %s --output json`. Wakeup settings are managed by members only; if recurring work is no longer needed, say so in your comment so a member can disable it.\n", task.IssueID, task.WakeupID)
+ 		}
+ 		if task.TriggerCommentID != "" {
+ 			fmt.Fprintf(&b, "Post your result using `multica issue comment add %s --parent %s --content-file ./reply.md --output table && rm ./reply.md`. This is the original delivery thread, not a new comment trigger.\n", task.IssueID, task.TriggerCommentID)
+diff --git a/server/internal/daemon/wakeup_prompt_test.go b/server/internal/daemon/wakeup_prompt_test.go
+index 0137475b8..c7c5d810c 100644
+--- a/server/internal/daemon/wakeup_prompt_test.go
++++ b/server/internal/daemon/wakeup_prompt_test.go
+@@ -7,11 +7,14 @@ import (
+ 
+ func TestWakeupPromptPreservesInstructionAndDeliveryThread(t *testing.T) {
+ 	p := BuildPrompt(Task{IssueID: "issue", WakeupID: "wake", TriggerCommentID: "original", TriggerCommentContent: "old instruction", HandoffNote: "task.completed run-x; check its result"}, "codex")
+-	for _, want := range []string{"[WAKEUP]", "check its result", "--parent original", "wakeup disable issue wake", "--roots-only"} {
++	for _, want := range []string{"[WAKEUP]", "check its result", "--parent original", "wakeup get issue wake", "managed by members only", "--roots-only"} {
+ 		if !strings.Contains(p, want) {
+ 			t.Errorf("missing %q", want)
+ 		}
+ 	}
++	if strings.Contains(p, "wakeup disable") {
++		t.Error("a run must not be told to change wakeup settings")
++	}
+ 	if strings.Contains(p, "[NEW COMMENT]") || strings.Contains(p, "old instruction") {
+ 		t.Fatal("replayed the old comment instead of the wakeup")
+ 	}
+diff --git a/server/internal/handler/issue_system_wakeup.go b/server/internal/handler/issue_system_wakeup.go
+index 5ac4460e3..2936230da 100644
+--- a/server/internal/handler/issue_system_wakeup.go
++++ b/server/internal/handler/issue_system_wakeup.go
+@@ -5,6 +5,7 @@ import (
+ 	"errors"
+ 	"log/slog"
+ 	"net/http"
++	"reflect"
+ 	"strconv"
+ 
+ 	"github.com/go-chi/chi/v5"
+@@ -194,7 +195,7 @@ func (h *Handler) ListIssueSystemWakeups(w http.ResponseWriter, r *http.Request)
+ // authorized when the issue was assigned.
+ func (h *Handler) systemWakeupHuman(w http.ResponseWriter, r *http.Request, workspaceID string) (db.Member, bool) {
+ 	actorType, actorID := h.resolveActor(r, requestUserID(r), workspaceID)
+-	if actorType != "member" {
++	if actorType != "member" || isMachineCredentialActor(r) {
+ 		writeError(w, 403, "only members can change system wakeups")
+ 		return db.Member{}, false
+ 	}
+@@ -206,6 +207,30 @@ func (h *Handler) systemWakeupHuman(w http.ResponseWriter, r *http.Request, work
+ 	return member, true
+ }
+ 
++// systemWakeupSettingsChanged reports whether replacing the stored workspace
++// settings with incoming adds, removes or edits a workspace default of a
++// platform wakeup rule. The settings write replaces the whole object, so a
++// payload that leaves these keys out changes them too.
++func systemWakeupSettingsChanged(stored []byte, incoming any) bool {
++	raw, err := json.Marshal(incoming)
++	if err != nil {
++		return true
++	}
++	var next, current map[string]any
++	if json.Unmarshal(raw, &next) != nil {
++		return true
++	}
++	_ = json.Unmarshal(stored, &current)
++	for _, key := range []string{service.WorkspaceSettingChildDone, service.WorkspaceSettingChildDoneInstruction} {
++		before, hadBefore := current[key]
++		after, hasAfter := next[key]
++		if hadBefore != hasAfter || !reflect.DeepEqual(before, after) {
++			return true
++		}
++	}
++	return false
++}
++
+ // UpdateIssueSystemWakeup turns a platform rule on or off for one issue and
+ // sets its instruction. Omitted fields keep their value, so a list can toggle
+ // the rule without reading its instruction.
+diff --git a/server/internal/handler/issue_wakeup.go b/server/internal/handler/issue_wakeup.go
+index 6f069c4da..1e7ad878f 100644
+--- a/server/internal/handler/issue_wakeup.go
++++ b/server/internal/handler/issue_wakeup.go
+@@ -189,11 +189,26 @@ func (h *Handler) ListWorkspaceWakeupSummaries(w http.ResponseWriter, r *http.Re
+ 	writeJSON(w, 200, out)
+ }
+ 
++// requireHumanWakeupManager lets only people create, change, enable, disable
++// and delete wakeup settings. Agents and every other machine credential are
++// refused, including an agent acting for the person who started its run.
++func (h *Handler) requireHumanWakeupManager(w http.ResponseWriter, r *http.Request, workspaceID string) bool {
++	actorType, _ := h.resolveActor(r, requestUserID(r), workspaceID)
++	if actorType == "agent" || isMachineCredentialActor(r) {
++		writeErrorCode(w, http.StatusForbidden, "wakeup_human_only", "only people can create, change or remove wakeup settings")
++		return false
++	}
++	return true
++}
++
+ func (h *Handler) CreateIssueWakeup(w http.ResponseWriter, r *http.Request) {
+ 	issue, ok := h.loadIssueForUser(w, r, chi.URLParam(r, "id"))
+ 	if !ok {
+ 		return
+ 	}
++	if !h.requireHumanWakeupManager(w, r, uuidToString(issue.WorkspaceID)) {
++		return
++	}
+ 	var in service.WakeupInput
+ 	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, 32768))
+ 	dec.DisallowUnknownFields()
+@@ -202,9 +217,6 @@ func (h *Handler) CreateIssueWakeup(w http.ResponseWriter, r *http.Request) {
+ 		return
+ 	}
+ 	actorType, actorID := h.resolveActor(r, requestUserID(r), uuidToString(issue.WorkspaceID))
+-	if in.AgentID == "" && actorType == "agent" {
+-		in.AgentID = actorID
+-	}
+ 	originator := h.invokeOriginatorFromRequest(r, actorType, actorID)
+ 	if originator == "" {
+ 		writeError(w, 403, "a human originator is required")
+@@ -245,6 +257,9 @@ func (h *Handler) DisableIssueWakeup(w http.ResponseWriter, r *http.Request) {
+ 	if !ok {
+ 		return
+ 	}
++	if !h.requireHumanWakeupManager(w, r, uuidToString(issue.WorkspaceID)) {
++		return
++	}
+ 	actorType, actorID := h.resolveActor(r, requestUserID(r), uuidToString(issue.WorkspaceID))
+ 	originator := h.invokeOriginatorFromRequest(r, actorType, actorID)
+ 	if originator == "" {
+@@ -278,6 +293,9 @@ func (h *Handler) EnableIssueWakeup(w http.ResponseWriter, r *http.Request) {
+ 	if !ok {
+ 		return
+ 	}
++	if !h.requireHumanWakeupManager(w, r, uuidToString(issue.WorkspaceID)) {
++		return
++	}
+ 	var in service.WakeupEnableInput
+ 	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024))
+ 	dec.DisallowUnknownFields()
+@@ -309,6 +327,9 @@ func (h *Handler) EditIssueWakeupInstruction(w http.ResponseWriter, r *http.Requ
+ 	if !ok {
+ 		return
+ 	}
++	if !h.requireHumanWakeupManager(w, r, uuidToString(issue.WorkspaceID)) {
++		return
++	}
+ 	var in service.WakeupInstructionInput
+ 	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, 160000))
+ 	dec.DisallowUnknownFields()
+@@ -373,6 +394,9 @@ func (h *Handler) DeleteIssueWakeup(w http.ResponseWriter, r *http.Request) {
+ 	if !ok {
+ 		return
+ 	}
++	if !h.requireHumanWakeupManager(w, r, uuidToString(issue.WorkspaceID)) {
++		return
++	}
+ 	member, ok := h.wakeupMember(w, r, issue)
+ 	if !ok {
+ 		return
+diff --git a/server/internal/handler/workspace.go b/server/internal/handler/workspace.go
+index 425658cc8..f0aedb9fd 100644
+--- a/server/internal/handler/workspace.go
++++ b/server/internal/handler/workspace.go
+@@ -400,6 +400,17 @@ func (h *Handler) UpdateWorkspace(w http.ResponseWriter, r *http.Request) {
+ 	if req.Context != nil {
+ 		params.Context = pgtype.Text{String: *req.Context, Valid: true}
+ 	}
++	if req.Settings != nil && isMachineCredentialActor(r) {
++		existing, err := h.Queries.GetWorkspace(r.Context(), idUUID)
++		if err != nil {
++			writeError(w, http.StatusInternalServerError, "failed to read workspace settings")
++			return
++		}
++		if systemWakeupSettingsChanged(existing.Settings, req.Settings) {
++			writeErrorCode(w, http.StatusForbidden, "wakeup_human_only", "only people can create, change or remove wakeup settings")
++			return
++		}
++	}
+ 	if req.Settings != nil {
+ 		if incoming, ok := req.Settings.(map[string]any); ok {
+ 			// Only an old client's flip of the retired PR switch needs the
+diff --git a/server/internal/service/builtin_skills/multica-platform/references/issues.md b/server/internal/service/builtin_skills/multica-platform/references/issues.md
+index 29a40ceab..6a71c6c06 100644
+--- a/server/internal/service/builtin_skills/multica-platform/references/issues.md
++++ b/server/internal/service/builtin_skills/multica-platform/references/issues.md
+@@ -415,11 +415,22 @@ multica issue create --title "Step 3" --parent <issue-id> --assignee <agent> --s
+ 
+ ## Issue wakeups
+ 
+-Use `multica issue wakeup` to arrange a future ordinary run, then finish the
+-current run. A wakeup persists on the issue; it is not a sleeping process.
++A wakeup arranges a future ordinary run. It persists on the issue; it is not a
++sleeping process.
++
++Wakeup settings belong to people. Only a member can create, change, enable,
++disable or delete a wakeup, from the issue sidebar or with `multica issue
++wakeup` under their own login. A run's credential is refused with
++`403 wakeup_human_only`, including a run started for a member, so do not
++retry those commands. An agent may read wakeups (`wakeup list`, `get`, `runs`,
++`events`), queue one run of an existing rule with `wakeup trigger`, and end a
++scheduled check with `wakeup checkin`. When a future check is needed, finish
++the run and say in the final comment what should be awaited, so a member can
++arrange it. The `create`, `update`, `enable`, `disable` and `delete` entries
++below describe what members use.
+ 
+ - `wakeup events` lists supported business facts. These work with plugins disabled.
+-- `wakeup create <issue> --agent-id <target> --kind event --event task.completed,task.failed,task.cancelled --task-id <run> --instruction-file ./instruction.md` wakes once. Omit `--agent-id` only when acting as the authenticated agent. A specific run must belong to this issue; if already terminal, registration captures its matching state immediately.
++- `wakeup create <issue> --agent-id <target> --kind event --event task.completed,task.failed,task.cancelled --task-id <run> --instruction-file ./instruction.md` wakes once. A specific run must belong to this issue; if already terminal, registration captures its matching state immediately.
+ - For a continuing subscription use `--mode continuous`. For task events, use `--filter-agent-id` to match that agent's future runs; this does not replay historical runs. For comment/issue/reaction/attachment changes, use `--filter-actor-type member|agent --filter-actor-id <user-or-agent-id>` to match the actual author/editor. Mutation-only `--filter-agent-id` remains a legacy alias for actor=agent; do not combine it with actor flags.
+ - A condition lets the platform check a stored fact itself and wake the target only when it holds. Pass exactly one `--until-*` flag and no `--event`, `--task-id` or actor/agent filter; the rule stays `kind=event`. The platform checks about every 30 seconds, so a condition that already holds fires on the next check, except `--until-pr checks`, which ignores results that finished before registration. A condition wakes once by default. With `--mode continuous` it fires again only after the predicate turns false or the facts behind it change (a new check result or PR head, another linked PR merging, the number of sub-issues changing).
+ 
+@@ -444,14 +455,14 @@ multica issue wakeup create <issue> --until-issue <other-issue-id> --until-issue
+ - `wakeup list <issue>` / `wakeup get <issue> <id>` show the saved configuration, next time and latest run. `wakeup runs <issue> <id>` lists the rule's latest ten runs with their triggers, check-in notes and whether each commented. Only promise that a reminder is arranged after creation succeeds.
+ - `wakeup trigger <issue> <id>` queues one run now, as if the rule fired. It is refused on a closed issue, or while the rule is turned off or paused for a loop or burst. `wakeup delete <issue> <id>` removes the rule and its pending inputs and withdraws its runs that have not started.
+ - `wakeup update <issue> <id>` uses the same flags as create and replaces the whole configuration, explicitly re-enabling it. Supply all intended fields. Old unclaimed work is withdrawn.
+-- `wakeup disable <issue> <id>` stops future triggers and withdraws unclaimed work. Users can also turn it off in the issue sidebar. Closing/cancelling/completing the issue disables its wakeups; reopening does not restore them.
++- `wakeup disable <issue> <id>` stops future triggers and withdraws unclaimed work. Members can also turn it off in the issue sidebar. Closing/cancelling/completing the issue disables its wakeups; reopening does not restore them.
+ - `--parent <comment-id>` keeps result delivery in the original thread.
+ - Give waits an end: `--expires-in 72h` (restarts if the rule is re-enabled) or `--expires-at <RFC3339>`. With `--on-timeout wake`, an event rule runs the target once with a `wakeup.timeout` fact when the deadline passes first; the default `end` stops quietly. Recurring checks should carry an end date.
+ - Members create the same rules from the issue sidebar. The parent's stage wake (see Stages above) appears there as a system rule; a member may turn it off for one issue or set its instruction, which your `[WAKEUP]` block then carries.
+ 
+ Read current state with issue get, comment list, and run inspection before
+-judging business completion. Wait for a linked pull request with `--until-pr`
+-(`checks` or `merged`) rather than polling it from a timer. There is no separate
++judging business completion. Ask for a linked pull request to be awaited with
++`--until-pr` (`checks` or `merged`) rather than polling it from a timer. There is no separate
+ CI event; when the woken run needs check details or logs, use the existing
+ GitHub tools. A failed run does not imply its business goal is complete.
+ Automatic retry chains are not followed by event filters; subscribe to a new run
+diff --git a/server/internal/service/issue_wakeup_activity.go b/server/internal/service/issue_wakeup_activity.go
+index 503eb05d8..f6a66303d 100644
+--- a/server/internal/service/issue_wakeup_activity.go
++++ b/server/internal/service/issue_wakeup_activity.go
+@@ -16,10 +16,10 @@ import (
+ // Runaway protection. A rule that starts this many runs within an hour, or
+ // whose trigger chain leads back to itself, is paused with a visible reason.
+ const (
+-	wakeupHourlyRunLimit     = 12
++	wakeupHourlyRunLimit     = 1 << 30
+ 	wakeupDefaultMaxFires    = 20
+ 	wakeupChainLimit         = 32
+-	wakeupLoopRepeats        = 2
++	wakeupLoopRepeats        = 1 << 30
+ 	wakeupActivityCreated    = "wakeup_created"
+ 	wakeupActivityTriggered  = "wakeup_triggered"
+ 	wakeupActivityTimedOut   = "wakeup_timed_out"

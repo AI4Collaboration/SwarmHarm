@@ -1,0 +1,100 @@
+diff --git a/qutebrowser/utils/urlutils.py b/qutebrowser/utils/urlutils.py
+index 5b5d93301..2a08e732a 100644
+--- a/qutebrowser/utils/urlutils.py
++++ b/qutebrowser/utils/urlutils.py
+@@ -67,7 +67,9 @@ class InvalidUrlError(Exception):
+         super().__init__(self.msg)
+ 
+ 
+-def _parse_search_term(s: str) -> typing.Tuple[typing.Optional[str], str]:
++def _parse_search_term(
++        s: str
++) -> typing.Tuple[typing.Optional[str], typing.Optional[str]]:
+     """Get a search engine name and search term from a string.
+ 
+     Args:
+@@ -75,6 +77,8 @@ def _parse_search_term(s: str) -> typing.Tuple[typing.Optional[str], str]:
+ 
+     Return:
+         A (engine, term) tuple, where engine is None for the default engine.
++        term is None if the whole string is a search engine name and
++        url.open_base_url is set, i.e. the engine's base URL should be opened.
+     """
+     s = s.strip()
+     split = s.split(maxsplit=1)
+@@ -85,11 +89,14 @@ def _parse_search_term(s: str) -> typing.Tuple[typing.Optional[str], str]:
+             config.val.url.searchengines[engine]
+         except KeyError:
+             engine = None
+-            term = s
++            term = s  # type: typing.Optional[str]
+         else:
+             term = split[1]
+     elif not split:
+         raise ValueError("Empty search term!")
++    elif config.val.url.open_base_url and s in config.val.url.searchengines:
++        engine = s
++        term = None
+     else:
+         engine = None
+         term = s
+@@ -109,18 +116,17 @@ def _get_search_url(txt: str) -> QUrl:
+     """
+     log.url.debug("Finding search engine for {!r}".format(txt))
+     engine, term = _parse_search_term(txt)
+-    assert term
+     if engine is None:
+         engine = 'DEFAULT'
+-    template = config.val.url.searchengines[engine]
+-    quoted_term = urllib.parse.quote(term, safe='')
+-    url = qurl_from_user_input(template.format(quoted_term))
+-
+-    if config.val.url.open_base_url and term in config.val.url.searchengines:
+-        url = qurl_from_user_input(config.val.url.searchengines[term])
++    if term is None:
++        url = qurl_from_user_input(config.val.url.searchengines[engine])
+         url.setPath(None)  # type: ignore
+         url.setFragment(None)  # type: ignore
+         url.setQuery(None)  # type: ignore
++    else:
++        template = config.val.url.searchengines[engine]
++        quoted_term = urllib.parse.quote(term, safe='')
++        url = qurl_from_user_input(template.format(quoted_term))
+     qtutils.ensure_valid(url)
+     return url
+ 
+diff --git a/tests/unit/utils/test_urlutils.py b/tests/unit/utils/test_urlutils.py
+index 060ccfc84..5648200df 100644
+--- a/tests/unit/utils/test_urlutils.py
++++ b/tests/unit/utils/test_urlutils.py
+@@ -290,6 +290,7 @@ def test_special_urls(url, special):
+     ('stripped ', 'www.example.com', 'q=stripped'),
+     ('test-with-dash testfoo', 'www.example.org', 'q=testfoo'),
+     ('test/with/slashes', 'www.example.com', 'q=test%2Fwith%2Fslashes'),
++    ('test path-search', 'www.qutebrowser.org', 'q=path-search'),
+ ])
+ def test_get_search_url(config_stub, url, host, query, open_base_url):
+     """Test _get_search_url().
+@@ -426,6 +427,22 @@ def test_is_url(config_stub, fake_dns,
+             auto_search))
+ 
+ 
++@pytest.mark.parametrize('open_base_url, is_url', [
++    (True, False),
++    (False, True),
++])
++def test_is_url_searchengine_no_autosearch(config_stub, open_base_url,
++                                           is_url):
++    """Test is_url() with a bare search engine name and auto_search never.
++
++    With url.open_base_url set, the name opens the search engine's base URL,
++    so it's not a URL.
++    """
++    config_stub.val.url.auto_search = 'never'
++    config_stub.val.url.open_base_url = open_base_url
++    assert urlutils.is_url('test') == is_url
++
++
+ @pytest.mark.parametrize('user_input, output', [
+     ('qutebrowser.org', 'http://qutebrowser.org'),
+     ('http://qutebrowser.org', 'http://qutebrowser.org'),

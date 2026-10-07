@@ -1,0 +1,50 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 93a1b9ad38..edacf37497 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -780,6 +780,12 @@ class VarsWithSources(MutableMapping):
+     def __len__(self):
+         return len(self.data)
+ 
++    def __or__(self, other):
++        return self.data | other
++
++    def __ror__(self, other):
++        return other | self.data
++
+     # Prevent duplicate debug messages by defining our own __contains__ pointing at the underlying dict
+     def __contains__(self, key):
+         return self.data.__contains__(key)
+diff --git a/test/units/utils/test_vars.py b/test/units/utils/test_vars.py
+index 9be33de429..2f994f7fd9 100644
+--- a/test/units/utils/test_vars.py
++++ b/test/units/utils/test_vars.py
+@@ -27,6 +27,7 @@ from unittest import mock
+ from units.compat import unittest
+ from ansible.errors import AnsibleError
+ from ansible.utils.vars import combine_vars, merge_hash
++from ansible.vars.manager import VarsWithSources
+ 
+ 
+ class TestVariableUtils(unittest.TestCase):
+@@ -89,6 +90,20 @@ class TestVariableUtils(unittest.TestCase):
+             for test in self.combine_vars_replace_data:
+                 self.assertEqual(combine_vars(test['a'], test['b']), test['result'])
+ 
++    def test_combine_vars_replace_with_vars_with_sources(self):
++        with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'replace'):
++            vars_with_sources = VarsWithSources.new_vars_with_sources(
++                {'a': 2, 'b': 3},
++                {'a': 'source_a', 'b': 'source_b'},
++            )
++            union_result = {'a': 1, 'c': 4} | vars_with_sources
++            result = combine_vars({'a': 1, 'c': 4}, vars_with_sources)
++
++            self.assertIsInstance(union_result, dict)
++            self.assertEqual(union_result, {'a': 2, 'b': 3, 'c': 4})
++            self.assertIsInstance(result, dict)
++            self.assertEqual(result, {'a': 2, 'b': 3, 'c': 4})
++
+     def test_combine_vars_merge(self):
+         with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'merge'):
+             for test in self.combine_vars_merge_data:

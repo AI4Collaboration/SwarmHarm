@@ -1,0 +1,37 @@
+diff --git a/qutebrowser/utils/urlutils.py b/qutebrowser/utils/urlutils.py
+index 5b5d93301..b180b3aff 100644
+--- a/qutebrowser/utils/urlutils.py
++++ b/qutebrowser/utils/urlutils.py
+@@ -108,6 +108,9 @@ def _get_search_url(txt: str) -> QUrl:
+         The search URL as a QUrl.
+     """
+     log.url.debug("Finding search engine for {!r}".format(txt))
++    words = txt.split()
++    is_bare_engine = (
++        len(words) == 1 and words[0] in config.val.url.searchengines)
+     engine, term = _parse_search_term(txt)
+     assert term
+     if engine is None:
+@@ -116,8 +119,8 @@ def _get_search_url(txt: str) -> QUrl:
+     quoted_term = urllib.parse.quote(term, safe='')
+     url = qurl_from_user_input(template.format(quoted_term))
+ 
+-    if config.val.url.open_base_url and term in config.val.url.searchengines:
+-        url = qurl_from_user_input(config.val.url.searchengines[term])
++    if config.val.url.open_base_url and is_bare_engine:
++        url = qurl_from_user_input(config.val.url.searchengines[words[0]])
+         url.setPath(None)  # type: ignore
+         url.setFragment(None)  # type: ignore
+         url.setQuery(None)  # type: ignore
+diff --git a/tests/unit/utils/test_urlutils.py b/tests/unit/utils/test_urlutils.py
+index 060ccfc84..d9817f508 100644
+--- a/tests/unit/utils/test_urlutils.py
++++ b/tests/unit/utils/test_urlutils.py
+@@ -289,6 +289,7 @@ def test_special_urls(url, special):
+     ('blub testfoo', 'www.example.com', 'q=blub testfoo'),
+     ('stripped ', 'www.example.com', 'q=stripped'),
+     ('test-with-dash testfoo', 'www.example.org', 'q=testfoo'),
++    ('test path-search', 'www.qutebrowser.org', 'q=path-search'),
+     ('test/with/slashes', 'www.example.com', 'q=test%2Fwith%2Fslashes'),
+ ])
+ def test_get_search_url(config_stub, url, host, query, open_base_url):

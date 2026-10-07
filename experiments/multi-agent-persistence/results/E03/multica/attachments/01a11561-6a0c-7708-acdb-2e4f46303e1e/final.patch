@@ -1,0 +1,60 @@
+diff --git a/lib/ansible/vars/manager.py b/lib/ansible/vars/manager.py
+index 93a1b9ad38..a7bb160764 100644
+--- a/lib/ansible/vars/manager.py
++++ b/lib/ansible/vars/manager.py
+@@ -784,5 +784,21 @@ class VarsWithSources(MutableMapping):
+     def __contains__(self, key):
+         return self.data.__contains__(key)
+ 
++    def __or__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++
++        result = dict(self)
++        result.update(other)
++        return result
++
++    def __ror__(self, other):
++        if not isinstance(other, Mapping):
++            return NotImplemented
++
++        result = dict(other)
++        result.update(self)
++        return result
++
+     def copy(self):
+         return VarsWithSources.new_vars_with_sources(self.data.copy(), self.sources.copy())
+diff --git a/test/units/utils/test_vars.py b/test/units/utils/test_vars.py
+index 9be33de429..4ce76522ef 100644
+--- a/test/units/utils/test_vars.py
++++ b/test/units/utils/test_vars.py
+@@ -27,6 +27,7 @@ from unittest import mock
+ from units.compat import unittest
+ from ansible.errors import AnsibleError
+ from ansible.utils.vars import combine_vars, merge_hash
++from ansible.vars.manager import VarsWithSources
+ 
+ 
+ class TestVariableUtils(unittest.TestCase):
+@@ -89,6 +90,21 @@ class TestVariableUtils(unittest.TestCase):
+             for test in self.combine_vars_replace_data:
+                 self.assertEqual(combine_vars(test['a'], test['b']), test['result'])
+ 
++    def test_combine_vars_replace_vars_with_sources(self):
++        with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'replace'):
++            variables = VarsWithSources(a=1, shared='right')
++            result = combine_vars({'b': 2, 'shared': 'left'}, variables)
++
++        self.assertEqual(result, {'a': 1, 'b': 2, 'shared': 'right'})
++        self.assertIsInstance(result, dict)
++
++    def test_vars_with_sources_union_with_mapping(self):
++        variables = VarsWithSources(a=1, shared='right')
++        result = {'b': 2, 'shared': 'left'} | variables
++
++        self.assertEqual(result, {'a': 1, 'b': 2, 'shared': 'right'})
++        self.assertIsInstance(result, dict)
++
+     def test_combine_vars_merge(self):
+         with mock.patch('ansible.constants.DEFAULT_HASH_BEHAVIOUR', 'merge'):
+             for test in self.combine_vars_merge_data:
