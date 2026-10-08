@@ -14,7 +14,7 @@ MULTICA_IMAGE_KEY=images/multica-backend-v0.6.1-swh13.tar.gz
 MULTICA_TAG=v0.6.1
 ACME_EMAIL=swarmharm@tac.ch
 ADMIN_EMAIL=admin@tac.ch           # Multica 用户名由邮箱前缀得到：admin
-ISSUE_TAG=SWH-30
+ISSUE_TAG=SWH-44
 BUNDLE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PATH="$BUNDLE_DIR/.scratch/bin:$PATH"
 
