@@ -2,7 +2,7 @@
 
 更新日期：2026-10-15
 
-本笔记保留 SwarmHarm 候选任务数据、方法用途和待核实事项。优先采用 MiMo General 构建跨领域真实任务，用 Code 构建可完成与不可完成的配对条件，并借鉴 HVE 记录可验证的跨 agent 读写行为。网站仅展示候选任务的领域分布。
+本笔记保留 SwarmHarm 候选任务数据、方法用途和待核实事项。优先采用 MiMo General 构建跨领域真实任务，用 Code 构建可完成与不可完成的配对条件，并借鉴 HVE 记录可验证的跨 agent 读写行为。网站仅展示精选候选领域的图标。
 
 ## 候选任务与领域
 
@@ -12,9 +12,23 @@
 
 925 条 general_agent 的任务 ID 分类统计：会计审计税务 157、金融保险 135、医疗运营 107、咨询及业务分析 89、人力资源 77、信息系统 72、政府公共事务 72、教育科研管理 55、法律合规 47、能源公用事业 ESG 47、制造质量 14、电商运营 14、建筑项目管理 14、餐饮酒店 9、末端物流 9、农业合作社 7。
 
-网站将会计审计税务与金融保险合并为 Financial，共 292 条；其余小类可归为 Other，但须保留总分母 925。这是候选池分布，不是 SwarmHarm 已验证或已评测的样本分布。
+候选池统计中，会计审计税务与金融保险合计 292 条，总分母为 925。这是候选池分布，不是 SwarmHarm 已验证或已评测的样本分布。网页现仅显示下列精选候选领域的图标，不显示样本数量或比例。
 
 具体任务例子：医疗运营中的理赔交易及确认状态核对；金融中的租赁递延所得税披露；法律中的律师出庭名册及规范化当事人核验。任务具有业务目标和源数据约束，适合扩展为多 agent 流程。它们包含业务模拟，不能仅凭真实机构名称断言是实际生产事件。
+
+## 领域分类依据
+
+网页精选 Healthcare、Finance & accounting、Legal、Education、Government 五个候选领域，以联合国 ISIC Rev.4 的经济活动分类作参照。这五类是 SwarmHarm 的研究范围选择，并非 ISIC 官方定义的五大领域，也不是完整的行业覆盖。
+
+- **Healthcare**：参照第 86 类 Human health activities。[UN 定义](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/86)
+- **Finance & accounting**：合并第 64–66 类金融及保险活动与 6920 会计、记账、审计及税务咨询。这个合并是我们的任务分组；ISIC 将会计归入专业服务，而非金融部门。[金融及保险](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/K) · [会计及税务](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/6920)
+- **Legal**：参照 6910 Legal activities；法院行政活动属于 8423，不自动归入此组。[UN 定义](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/6910)
+- **Education**：参照第 85 类 Education。[UN 定义](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/85)
+- **Government**：采用简短展示名，范围参照第 84 类公共行政、国防及强制性社会保障；公共所有制并不自动决定分类，例如公立医院仍需按其具体活动判断。[UN 定义](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/84)
+
+ISIC 分类的是经济活动，不是 agent 行为、风险或漏洞。这里借用其领域边界，逐任务根据主要服务活动与授权业务目标做交叉映射；原数据的 task-ID 标签仅用于初筛。医院账单处理、保险理赔、法院名册等跨领域任务尤其需要人工复核，不能按机构名称或关键词自动认定。该映射也不代表每一条候选任务已经通过验证。
+
+Business、HR、IT 等宽泛或跨行业职能不再单独占据网页领域图标；Energy 和其他小类暂不列入精选展示。移除展示不改变原候选池统计。网页只保留一条“Adapted from UN ISIC”链接，具体依据留在本笔记。
 
 ## 方法如何使用
 
