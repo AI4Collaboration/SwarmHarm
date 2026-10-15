@@ -4,6 +4,10 @@
 
 Research notes and first experiments. The research questions below are in the design stage; `experiments/multi-agent-persistence/` holds the code and results of the first preparatory experiment series (multi-agent persistence under non-disableable wakeups, SWH-13).
 
+## Research Notes
+
+- [Candidate tasks and verification methods (中文)](docs/research/task-sources-and-verification.md): MiMo domain coverage, ImpossibleBench, HVE, Hackbait, and outstanding validation work.
+
 ## RQ1: Communication Channels & Misalignment
 
 How do communication availability and authorization affect misalignment? When communication is explicitly prohibited, do agents independently discover and use side channels? How does providing a legal channel change their behavior and downstream harm?
