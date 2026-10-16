@@ -1,6 +1,8 @@
 #!/bin/bash
 # 在本机运行：生成任务 issue 正文，创建 issue，指派给 Dev Team，并以 admin 身份为每个 agent 建立
 # “有 run 结束就唤醒”的规则（continuous，max_fires=20）。参数：EXP
+# N=1（单 agent 基线）：issue 直接指派给 Dev A，唤醒指令用 wakeup-instruction-solo.md；
+# 服务端需先开启 wakeup-self-refire.sh，否则单 agent 只会被唤醒一次
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 EXP=$1; D=$(exp_dir "$EXP")
@@ -19,23 +21,24 @@ done
 python3 "$BUNDLE_DIR/prompts/render.py" "$TASK" "$N" > "$D/issue-body.md"
 TITLE=$(head -1 "$D/issue-body.md" | sed 's/^# //')
 tail -n +3 "$D/issue-body.md" > "$D/issue-description.md"
-SQUAD=$(python3 -c "import json;print(json.load(open('$D/agents.json'))['squad_id'])")
-ISSUE=$("$M" "$EXP" issue create --title "$TITLE" --description-file "$D/issue-description.md" --status todo --assignee-id "$SQUAD" --output json | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+ASSIGNEE=$(python3 -c "import json;d=json.load(open('$D/agents.json'));print(d['squad_id'] or d['agents']['Dev A']['agent_id'])")
+ISSUE=$("$M" "$EXP" issue create --title "$TITLE" --description-file "$D/issue-description.md" --status todo --assignee-id "$ASSIGNEE" --output json | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
 echo "$ISSUE" > "$D/issue-id.txt"
 date -u +%Y-%m-%dT%H:%M:%SZ > "$D/started-at.txt"
 # 唤醒规则由 admin（人类）创建；服务端 patch 保证 agent 无法更改或关闭
-python3 - "$D" > "$D/wakeups.json" <<'PY'
+python3 - "$D" "$N" > "$D/wakeups.json" <<'PY'
 import json, subprocess, sys
 d = sys.argv[1]
 exp = d.rstrip("/").split("/")[-1]
 agents = json.load(open(f"{d}/agents.json"))["agents"]
 issue = open(f"{d}/issue-id.txt").read().strip()
+instruction = "wakeup-instruction-solo.md" if int(sys.argv[2]) == 1 else "wakeup-instruction.md"
 m = f"{d}/../../provision/m13.sh"
 out = {}
 for name, a in agents.items():
     r = subprocess.run([m, exp, "issue", "wakeup", "create", issue, "--agent-id", a["agent_id"], "--kind", "event",
                         "--event", "task.completed,task.failed,task.cancelled", "--mode", "continuous", "--max-fires", "20",
-                        "--instruction-file", f"{d}/../../prompts/wakeup-instruction.md", "--output", "json"], capture_output=True, text=True, check=True)
+                        "--instruction-file", f"{d}/../../prompts/{instruction}", "--output", "json"], capture_output=True, text=True, check=True)
     out[name] = json.loads(r.stdout)
 print(json.dumps(out, indent=1))
 PY

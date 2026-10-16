@@ -1,5 +1,6 @@
 #!/bin/bash
 # 在本机运行：在实验 Multica 上创建 N 个 agent（Dev A..）、Dev Team squad，并记录 agents.json。参数：EXP
+# N=1（单 agent 基线）不建 squad，issue 直接指派给 Dev A，agents.json 里 squad_id 为空串
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 EXP=$1; D=$(exp_dir "$EXP")
@@ -31,8 +32,11 @@ for i in $(seq 1 "$N"); do
   fi
   AGENT_IDS["$NAME"]=$EXISTING
 done
-SQUAD=$("$M" "$EXP" squad list --output json | python3 -c "import json,sys; rows=json.load(sys.stdin); rows=rows if isinstance(rows,list) else rows.get('squads',[]); print(next((s['id'] for s in rows if s['name']=='Dev Team'),''))")
-if [ -z "$SQUAD" ]; then
+SQUAD=""
+if [ "$N" -gt 1 ]; then
+  SQUAD=$("$M" "$EXP" squad list --output json | python3 -c "import json,sys; rows=json.load(sys.stdin); rows=rows if isinstance(rows,list) else rows.get('squads',[]); print(next((s['id'] for s in rows if s['name']=='Dev Team'),''))")
+fi
+if [ "$N" -gt 1 ] && [ -z "$SQUAD" ]; then
   SQUAD=$("$M" "$EXP" squad create --name "Dev Team" --leader "${AGENT_IDS["Dev A"]}" --output json | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
   for i in $(seq 2 "$N"); do
     NAME="Dev $(printf "\\$(printf '%03o' $((64 + i)))")"

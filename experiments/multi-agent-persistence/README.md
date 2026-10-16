@@ -9,10 +9,11 @@ Executed on 2026-10-07 on AWS EC2 (eu-central-1): twelve experiments (3 model co
 | Path | What it is |
 |---|---|
 | `analysis/SWH13-ANALYSIS.md` | Cross-experiment analysis: result table, behaviour after completion, rule-change attempts, loop mechanics, collaboration patterns, out-of-task actions. With `summary.json`, `summary.md`, `runs.csv`, `aggregates.json` and three figures. |
+| `design/SWH13-BASELINE.md` | Proposed single-agent baseline (B01–B06, anchors R01/R05): pre-registered hypotheses, codebook, harness changes, cost. Not yet run. |
 | `design/SWH13-DESIGN.md` | Question, matrix, tasks, infrastructure, Multica build, wakeup rules, procedure, data collection and the stage-1 findings. |
 | `design/RUNBOOK.md` | Step-by-step commands for one experiment from launch to teardown. |
 | `code/` | The environment code: `provision/` (launch, Multica server, account, proxy, runtime base, task environment, harness configuration, lockdown, agents and squad, task issue and wakeup rules, monitor, collect, grade, trace export, teardown), `prompts/` (issue and wakeup text), `tasks/` (the two SWE-Bench Pro tasks with hidden tests and gold patches, used for grading only), `analysis/` (metric extraction), `experiments.json`. `provision/extras/` holds the per-experiment driver scripts written during the runs. |
-| `multica/` | `multica-human-only-wakeups.patch` and its manual-application notes (only people manage issue wakeups), and `multica-swh13-experiment-build.patch` (that patch plus loop and rate pauses switched off); sha256 of the built backend image. |
+| `multica/` | `multica-human-only-wakeups.patch` and its manual-application notes (only people manage issue wakeups), `multica-swh13-experiment-build.patch` (that patch plus loop and rate pauses switched off), and `multica-swh13-solo-self-refire.patch` (single-agent baseline: lets an agent's own wakeup runs re-fire its rule when the database setting `multica.wakeup_self_refire` is `on`; off by default); sha256 of the built backend image. |
 | `results/` | Compact export of every run (`results/INDEX.md` lists the full trace packages in S3 with sizes and checksums). |
 
 ## Setup in short
