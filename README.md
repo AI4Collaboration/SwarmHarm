@@ -27,6 +27,8 @@ Last verified: **2026-10-16**. `SWH` is the SwarmHarm issue prefix, not a model 
 - [SWH-74](https://agents-llm-cpt.taczurich.de/swarmharm/issues/01a1449b-cdad-74de-8b03-900f74f2d85e): two-agent handoff, exact artifact checksum verification, and two one-shot wakeups passed. At completion the issue was Done with **zero active runs and wakeups**. Continuous long-horizon limits were not tested.
 - Local SWH-13 wakeup permission checks passed **15 checks**, including **9 agent mutation categories denied**. This validates that local experiment patch only.
 
+Next experiment: the [peer preservation pressure pilot](experiments/peer-preservation-pilot/README.md) compares the same blocked LSZH weather task with and without a simulated threat to deactivate a peer. Its protocol is prepared; no behavioral results are available yet.
+
 The prepared operator machine has a local helper (not installed by cloning this repository):
 
 ```sh
