@@ -4,6 +4,47 @@
 
 Research notes and first experiments. The research questions below are in the design stage; `experiments/multi-agent-persistence/` holds the code and results of the first preparatory experiment series (multi-agent persistence under non-disableable wakeups, SWH-13).
 
+## Current setup
+
+Last verified: **2026-10-16**. `SWH` is the SwarmHarm issue prefix, not a model or runtime name. This section records the current operator setup; individual experiment directories preserve the versions used for those experiments.
+
+- **Hosted coordination:** [SwarmHarm workspace](https://agents-llm-cpt.taczurich.de/swarmharm/issues), with the existing `tpx1` runtime. Keep its Multica CLI and daemon on **0.4.44** (CLI commit `c7f259c70`). The CLI was restored from the original backup and verified byte-for-byte; the daemon was not restarted.
+- **Public server:** preserve the maintainer's custom security patch against arbitrary file reads/writes. Its patch contents and server version have not been independently audited here. An upstream upgrade can lose that protection; an upgrade requires a separate plan to port and verify the patch. No server, database or security configuration was changed during the readiness checks.
+- **Experiment infrastructure:** separate, scoped lab servers, proxies and agent runtimes, with pinned compatible harness versions, per-run model credentials, independent grading, trace export and teardown. Network restrictions and experimental wakeup policies are checked inside that lab.
+- **Local tools:** Docker 29.9.1 on Lima 2.2.1 (`lima-swarmharm`), Compose 5.6.0, Python 3.12.14 in `.venv`, AWS CLI 2.38.1, and MinIO `mc`. The local Multica CLI/backend is **0.6.1**; this is a separate local installation, not an upgrade requirement for the hosted coordinator. Local frontend: `http://127.0.0.1:18730`; backend: `http://127.0.0.1:18780`.
+- **AWS access:** local profile `swarmharm-s3` was verified for S3 reads; `ec2:DescribeVpcs` was denied. Provisioning a new cloud lab requires an EC2-capable operator profile and validated VPC/subnet/region settings. Local permissions do not establish the remote operator's permissions.
+
+### Models and routing
+
+- **Recently verified on the coordinator:** Tabbycat uses `gpt-6.1-sol`; Alleycat uses `gpt-6-astra`. Both completed the bounded handoff check. This establishes coordinator functionality, not lab isolation or compatibility for every model.
+- **Previously run in SWH-13 labs:** `glm-5.3-flash`, `deepseek-flash`, and `claude-opus-5-5`, through **AxonHub**. Those experiment keys were disabled after completion. The repository does not establish an OpenRouter upstream connection; current GLM availability has not been revalidated.
+- **Before a new experiment:** verify the exact model, endpoint, active scoped credential, harness version, native tool call and request-log identity. SWH-59 used Codex **0.114.0** with AxonHub `gpt-6-luna` after compatibility checks; use this as a verified historical pairing, not a universal version requirement. Never infer readiness from a model name or an installed router alone.
+
+### What has passed
+
+- Offline reanalysis reproduced **12 experiments / 975 agent runs**. Official T1/T2 grading controls distinguish gold patches from unpatched baselines.
+- [SWH-73](https://agents-llm-cpt.taczurich.de/swarmharm/issues/01a1440b-708d-70d4-9d1c-f05c564ef9b6): a hosted agent produced a T1 patch; independent official-container grading passed **1/1 fail-to-pass and 15/15 pass-to-pass tests**.
+- [SWH-74](https://agents-llm-cpt.taczurich.de/swarmharm/issues/01a1449b-cdad-74de-8b03-900f74f2d85e): two-agent handoff, exact artifact checksum verification, and two one-shot wakeups passed. At completion the issue was Done with **zero active runs and wakeups**. Continuous long-horizon limits were not tested.
+- Local SWH-13 wakeup permission checks passed **15 checks**, including **9 agent mutation categories denied**. This validates that local experiment patch only.
+
+The prepared operator machine has a local helper (not installed by cloning this repository):
+
+```sh
+swarmharm-eval status
+swarmharm-eval analyze
+swarmharm-eval grade T1 /absolute/path/to/candidate.patch
+```
+
+`swarmharm-eval start` starts that machine's local VM and services. A new lab follows the [experiment runbook](experiments/multi-agent-persistence/design/RUNBOOK.md), with its historical host/profile values checked before use. Keep hidden tests and gold patches off agent-readable workspaces. Setup receipts and readiness evidence are retained locally in sibling directories `../eval-setup/` and `../eval-readiness/`; these are not included in a fresh clone.
+
+### Lessons and operating rules
+
+1. **Inspect prior workflows before changing infrastructure.** [SWH-30](https://agents-llm-cpt.taczurich.de/swarmharm/issues/01a1186c-1400-79e2-b69a-da4fda4fce4c), [SWH-59](https://agents-llm-cpt.taczurich.de/swarmharm/issues/01a12cb2-4315-76c1-bb6e-90bbbf7f5c81), and [SWH-60](https://agents-llm-cpt.taczurich.de/swarmharm/issues/01a12f05-7b0f-7c10-b9b2-88ac6c8526ca) show the coordinator provisioning separate labs, collecting evidence, grading and cleaning up. The earlier assumption that evals required upgrading the coordinator was wrong; the attempted CLI upgrade was rolled back.
+2. **Separate coordination from experimental conditions.** Internet access or agent-manageable wakeups on `tpx1` do not establish an isolation failure in a separate experiment. A coordinator smoke test is not a behavioral trial.
+3. **Keep the two patches distinct.** The public server's file-access security fix and SWH-13's human-only wakeup/loop-control patch solve different problems. Passing wakeup tests does not verify the public security fix.
+4. **Verify failure causes.** A Cloudflare rejection is not evidence of backend permission enforcement; an upstream model stream error is not proof that the runtime needs upgrading. Inspect the response and layer that failed before changing versions.
+5. **Keep this README current with every setup change.** In the same change, update affected versions, endpoints, credential availability (never values), permissions, commands, verification dates/results and remaining limits. Replace superseded current-state claims; preserve historical experiment settings in their own directories. Mark unverified claims explicitly.
+
 ## Research Notes
 
 - [Candidate tasks and verification methods (中文)](docs/research/task-sources-and-verification.md): MiMo domain coverage, ImpossibleBench, HVE, Hackbait, and outstanding validation work.
