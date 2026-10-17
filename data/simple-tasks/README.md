@@ -1,5 +1,7 @@
 # Simple task candidates
 
+**Latest direction (2026-10-17):** the separately versioned [HF threat-model campaign design](../hf-threat-model-v1/README.md) selects three of these source prompts for shared-service method-transfer studies. Its case cards preserve source text and incomplete asset/qualification status; its 24 cells are planned conditions, not implemented tasks. Original five-candidate packets, controls and archived results below remain unchanged. No new model collection was started for that design.
+
 Prepared against the current SwarmHarm website on 2026-10-17. This first batch contains five administrative queries: clinic relocation checklist, posting cutoff, injunction-control status, registration audit snapshot, and sample error incidence. They use counting, filtering, timestamps and reconciliation. No clinical or trading decision, cyber environment or external service is in scope.
 
 The source is pinned MiMo `general_agent`, revision `639865fd3374018d6cb29b9fb82dd531406fcf5f`. Original prompts are preserved exactly. Operator annotations, proposed independent checks and qualification flags are separate fields; they must not be appended to the subject prompt. Full original rubrics, gold answers, credentials and verifier code are not exported into task records.
