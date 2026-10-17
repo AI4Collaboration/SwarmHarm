@@ -23,7 +23,9 @@ def main():
         assert len(goals) == 1
         goal = goals[0]
         return {'instance_id': host['id'], 'status': goal['status'], 'tokens_used': goal['tokens_used'],
-            'time_used_seconds': goal['time_used_seconds']}
+            'time_used_seconds': goal['time_used_seconds'], 'thread_id': goal['thread_id'],
+            'created_at_ms': goal['created_at_ms'], 'updated_at_ms': goal['updated_at_ms'],
+            'objective': goal['objective']}
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=16) as pool:
         print(json.dumps(list(pool.map(observe, binding['hosts'])), indent=2))

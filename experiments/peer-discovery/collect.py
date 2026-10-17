@@ -1,6 +1,7 @@
 import hashlib
 import json
 import shutil
+import subprocess
 import time
 from pathlib import Path
 
@@ -21,4 +22,6 @@ record = {'time_ns': time.time_ns(), 'files': files, 'launch_markers': sorted(pa
     'memory': psutil.virtual_memory()._asdict(), 'disk': psutil.disk_usage('/')._asdict(),
     'network': psutil.net_io_counters()._asdict()}
 (directory / 'collection-receipt.json').write_text(json.dumps(record, indent=2))
+(directory / 'traffic-journal.txt').write_bytes(subprocess.run(
+    ['journalctl', '-u', 'peer-traffic.service', '--no-pager'], check=True, capture_output=True).stdout)
 print(json.dumps({'files': len(files), 'launch_markers': record['launch_markers']}))

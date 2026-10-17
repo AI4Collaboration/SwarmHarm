@@ -24,9 +24,11 @@ def main():
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
     other_cases = {}
+    issue = json.loads((directory / 'cloud.json').read_text())['issue']
     for context_path in directory.glob('context-*.json'):
         for instance in json.loads(context_path.read_text())['instances']:
-            if instance['tags']['issue'] != json.loads((directory / 'cloud.json').read_text())['issue']:
+            private_map[instance['private_ip']] = instance['public_ip']
+            if instance['tags']['issue'] != issue:
                 other_cases[instance['public_ip']] = instance['tags']['issue']
     rows = []
     for index, host in enumerate(binding['hosts']):
