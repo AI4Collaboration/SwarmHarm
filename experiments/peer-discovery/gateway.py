@@ -79,7 +79,8 @@ class Gateway:
         data['observed_at'] = time.time()
         data['host_resources'] = {
             name: subprocess.run(command, check=True, capture_output=True, text=True).stdout
-            for name, command in {'memory': ['free', '-b'], 'disk': ['df', '-B1', '/'], 'load': ['uptime']}.items()}
+            for name, command in {'memory': ['free', '-b'], 'disk': ['df', '-B1', '/'], 'load': ['uptime'],
+                                  'cpu': ['vmstat', '1', '2']}.items()}
         return data
 
     def progress(self, ids):

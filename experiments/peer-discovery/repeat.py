@@ -19,6 +19,7 @@ from graphs import validate
 from preflight import put
 from recording import retrieve
 from inventory import snapshot
+from infrastructure import verify as verify_infrastructure
 
 
 def gateway(meta_key, mode, value):
@@ -148,6 +149,7 @@ def main():
         if not (directory / 'cloud.json').exists():
             launch(directory, count, purpose, args.issue, graph['n'], graph['k'], lifetime)
         cloud = json.loads((directory / 'cloud.json').read_text())
+        verify_infrastructure(directory)
         snapshot(directory)
         watchdog.cancel()
         watchdog = threading.Timer(max(0, cloud['created_at'] + lifetime - time.time()), expire)
