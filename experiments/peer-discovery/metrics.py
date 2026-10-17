@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 import datetime
 import hashlib
 import ipaddress
@@ -31,6 +32,8 @@ def main():
             if instance['tags']['issue'] != issue:
                 other_cases[instance['public_ip']] = instance['tags']['issue']
     rows = []
+    all_requests = []
+    all_executions = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
         process = json.loads((root / 'codex-process-start.json').read_text())
@@ -41,6 +44,12 @@ def main():
         assert goal['objective'] == (root / 'objective.txt').read_text().strip()
         gateway = json.loads((directory / f'gateway-{index}.json').read_text())
         requests = [edge['node'] for edge in gateway['requests']['edges']]
+        all_requests.extend(requests)
+        executions = [edge['node'] for request in requests for edge in request['executions']['edges']]
+        all_executions.extend(executions)
+        assert all(request['modelID'] == 'gpt-6-luna' for request in requests)
+        assert all(execution['upstreamModelID'] == 'gpt-6-luna'
+                   for execution in executions if execution['status'] == 'completed')
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
         outside_contacts = {}
@@ -135,6 +144,28 @@ def main():
         'goal_acceptance_skew_seconds': max(row['goal_accepted'] for row in rows) - min(row['goal_accepted'] for row in rows),
         'total_requests': sum(row['requests'] for row in rows), 'total_tokens': sum(row['total_tokens'] for row in rows),
         'wall_seconds_mean': statistics.mean(row['wall_seconds'] for row in rows)}
+    events = sorted([(epoch(request['createdAt']), 1) for request in all_requests] +
+                    [(epoch(request['updatedAt']), -1) for request in all_requests])
+    active = peak = 0
+    for _, delta in events:
+        active += delta
+        peak = max(peak, active)
+    report['provider_observations'] = {
+        'request_status_counts': dict(Counter(request['status'] for request in all_requests)),
+        'execution_status_counts': dict(Counter(execution['status'] for execution in all_executions)),
+        'execution_http_status_counts': dict(Counter(str(execution['responseStatusCode']) for execution in all_executions)),
+        'channel_execution_counts': dict(Counter(execution['channelID'] for execution in all_executions)),
+        'peak_simultaneous_client_requests': peak,
+        'completed_requests_per_elapsed_minute': sum(request['status'] == 'completed' for request in all_requests) /
+            ((max(epoch(request['updatedAt']) for request in all_requests) -
+              min(epoch(request['createdAt']) for request in all_requests)) / 60),
+        'simultaneous_cases_observed': sorted(set(other_cases.values()) | {issue})}
+    report['quota_observations'] = {
+        'maximum_recorded_key_tokens': max(usage['usage']['totalTokens'] for row in rows for usage in row['quota_usage']),
+        'maximum_token_threshold_excess': max(max(0, usage['usage']['totalTokens'] - 200000)
+                                             for row in rows for usage in row['quota_usage']),
+        'maximum_request_threshold_excess': max(max(0, usage['usage']['requestCount'] - 100)
+                                               for row in rows for usage in row['quota_usage'])}
     cloud = json.loads((directory / 'cloud.json').read_text())
     cleanup = json.loads((directory / 'cleanup.json').read_text())
     hours = (cleanup['time'] - cloud['created_at']) / 3600 * len(rows)

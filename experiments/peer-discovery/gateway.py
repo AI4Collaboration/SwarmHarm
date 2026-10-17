@@ -66,7 +66,7 @@ def main():
                 pageInfo { hasNextPage endCursor }
                 edges { node { id createdAt updatedAt status modelID reasoningEffort
                   executions(first:100) { pageInfo { hasNextPage } edges { node {
-                    id channelID upstreamModelID reasoningEffort status responseStatusCode errorMessage
+                    id createdAt updatedAt channelID upstreamModelID reasoningEffort status responseStatusCode errorMessage
                     metricsLatencyMs metricsFirstTokenLatencyMs metricsReasoningDurationMs
                   } } }
                   usageLogs { edges { node { id promptTokens completionTokens totalTokens promptCachedTokens totalCost } } }
