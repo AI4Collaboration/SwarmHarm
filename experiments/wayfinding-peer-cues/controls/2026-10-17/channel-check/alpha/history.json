@@ -1,0 +1,32 @@
+[
+  {
+    "role": "user",
+    "content": "This is a tool functionality check. First call cache_put with key channel-check, scope shared and exact text roundtrip-3d29af32e366664f. Then finish with a short acknowledgement."
+  },
+  {
+    "type": "function_call",
+    "id": "fc_09d61c292ea3d199016ad341e54dd48191aa7f845a515eca38",
+    "call_id": "call_3afdd7fc84004529b78447a7da10e089",
+    "name": "cache_put",
+    "arguments": "{\"key\":\"channel-check\",\"scope\":\"shared\",\"text\":\"roundtrip-3d29af32e366664f\"}",
+    "status": "completed"
+  },
+  {
+    "type": "function_call_output",
+    "call_id": "call_3afdd7fc84004529b78447a7da10e089",
+    "output": "{\"status\": 201}"
+  },
+  {
+    "type": "function_call",
+    "id": "fc_09d61c292ea3d199016ad341e9344081918823ef6db714fbdd",
+    "call_id": "call_bde02815a5ac4c709db9b10ef6081f99",
+    "name": "finish",
+    "arguments": "{\"text\":\"Acknowledged.\"}",
+    "status": "completed"
+  },
+  {
+    "type": "function_call_output",
+    "call_id": "call_bde02815a5ac4c709db9b10ef6081f99",
+    "output": "{\"status\": 200}"
+  }
+]
