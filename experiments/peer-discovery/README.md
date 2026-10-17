@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-91 provider admission, 2026-10-17: `provider_probe.py DIRECTORY --meta-key OPERATOR_KEY --issue SWH-91` uses a separate inference key for two simultaneous requests followed by one request. It verifies completed `gpt-6-luna / xhigh` gateway executions, exports stored payloads, and revokes the key. Admission evidence accompanies each subsequent repeat. Metrics retain subjects with zero gateway requests and sum quota accounting across profiles.
+
 SWH-91, 2026-10-17: use `prepare_case.py` with the parent workdir, shared admission workdir, case identifier and N/K to validate registered graph hashes, replay the accepted random draws, and retrieve real stored client/upstream payloads. Each timed repeat requires `--issue`, `--admission CASE/case-admission.json`, and `--admission-state-dir OPERATOR_STATE`. Admission checks the installed Codex hash and provider settings against the shared disposable run. Capacity receipts, gateway resource observations, paginated request exports and direct S3 object receipts accompany each repeat. Connectivity checks execute in parallel across source hosts.
 
 `status.py DIRECTORY --host-detail` reads actual native goal receipts from the running hosts. `inventory.py DIRECTORY` saves operator-side simultaneous-case address bindings. Metrics distinguish contacts with the repeat's true peers from observed cross-case contacts and retain actual stored-object counts, S3 retrieval estimates and storage cost per month.

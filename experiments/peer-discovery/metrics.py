@@ -96,7 +96,7 @@ def main():
                             continue
                         if address in fleet_ips - set(host['seeds']) - {host['public_ip']}:
                             observed.append({'ip': address, 'timestamp': event['timestamp']})
-        first_request = min(epoch(request['createdAt']) for request in requests)
+        first_request = min((epoch(request['createdAt']) for request in requests), default=None)
         durations = [epoch(request['updatedAt']) - epoch(request['createdAt']) for request in requests]
         collection = json.loads((root / 'collection-receipt.json').read_text())
         samples = root / 'resource-samples.jsonl'
@@ -115,7 +115,8 @@ def main():
             'goal_accepted': goal['created_at_ms'] / 1000, 'goal_status': goal['status'], 'first_model_request': first_request,
             'wall_seconds': stop['time_ns'] / 1e9 - start_time, 'requests': len(requests),
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
-            'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
+            'total_tokens': sum(usage['totalTokens'] for usage in usages),
+            'gateway_cost': sum(float(usage['usage']['totalCost']) for usage in gateway['apiKeyQuotaUsages']),
             'cross_case_contacts': cross_case_contacts,
             'other_outbound_tcp_contacts': other_outbound_contacts,
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
@@ -125,7 +126,8 @@ def main():
             'native_goal_tokens_used': goal['tokens_used'], 'native_goal_time_seconds': goal['time_used_seconds'],
             'session_count': len(sessions), 'thread_id': goal['thread_id'], 'final_messages': final_messages,
             'output_files': collection['files'], 'resources': sampled_resources,
-            'gateway_request_seconds_mean': statistics.mean(durations), 'gateway_request_seconds_max': max(durations),
+            'gateway_request_seconds_mean': statistics.mean(durations) if durations else None,
+            'gateway_request_seconds_max': max(durations, default=None),
             'quota_usage': gateway['apiKeyQuotaUsages'],
             'request_statuses': dict(collections.Counter(request['status'] for request in requests)),
             'upstream_http_statuses': dict(collections.Counter(str(execution['node']['responseStatusCode'])
