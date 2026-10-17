@@ -121,6 +121,7 @@ def main():
     parser.add_argument('--meta-key', type=Path, required=True)
     parser.add_argument('--issue', default='SWH-78')
     parser.add_argument('--preflight', action='store_true')
+    parser.add_argument('--preflight-name', default='preflight')
     parser.add_argument('--existing-key', type=Path)
     parser.add_argument('--binary-sha256', required=True)
     args = parser.parse_args()
@@ -129,7 +130,7 @@ def main():
     graph = json.loads(args.graph.read_text())
     assert validate(graph['adjacency'], graph['n'], graph['k'])[0]
     count = 1 if args.preflight else graph['n']
-    purpose = 'preflight-2' if args.preflight else f'repeat-{graph["repeat"]}'
+    purpose = args.preflight_name if args.preflight else f'repeat-{graph["repeat"]}'
     lifetime = 3600 if args.preflight else 7200
     allowance = 300 if args.preflight else 1800
     keys = []
