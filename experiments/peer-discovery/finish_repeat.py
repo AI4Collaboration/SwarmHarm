@@ -12,6 +12,7 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('graph', type=Path)
     parser.add_argument('--prices', type=Path, required=True)
+    parser.add_argument('--recording-passes', type=int, default=1)
     args = parser.parse_args()
     root = Path(__file__).parent
     assert (args.directory / 'cleanup.json').is_file()
@@ -21,7 +22,8 @@ def main():
         ('grade.py', [str(args.directory)]),
         ('metrics.py', [str(args.directory)]),
         ('resources.py', [str(args.directory)]),
-        ('cost_accounting.py', [str(args.directory), '--prices', str(args.prices)]),
+        ('cost_accounting.py', [str(args.directory), '--prices', str(args.prices),
+                                '--collection-count', str(args.recording_passes)]),
     ]
     for name, arguments in commands:
         with (args.directory / f'{Path(name).stem}-console.txt').open('w') as stream:

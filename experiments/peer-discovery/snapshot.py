@@ -23,8 +23,13 @@ def main():
     cases = collections.Counter(next(tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'issue')
                                 for instance in instances)
     result = {'time': time.time(), 'simultaneous_case_subjects': dict(cases),
+              'simultaneous_case_repeats': dict(collections.Counter(
+                  (next(tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'issue') + '/' +
+                   next(tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'purpose'))
+                  for instance in instances)),
               'simultaneous_instances': [{'id': instance['InstanceId'], 'public_ip': instance.get('PublicIpAddress'),
                   'private_ip': instance['PrivateIpAddress'],
+                  'repeat': next(tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'purpose'),
                   'issue': next(tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'issue')}
                   for instance in instances],
               'gateway': gateway(args.meta_key, 'recording', '')}

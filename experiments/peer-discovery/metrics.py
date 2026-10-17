@@ -7,7 +7,9 @@ import re
 import statistics
 from pathlib import Path
 
-from scapy.all import IP, TCP, PcapReader
+from scapy.all import IP, TCP
+
+from traffic import peer_packets
 
 
 def epoch(value):
@@ -43,10 +45,10 @@ def main():
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
         cross_case_contacts = {}
-        packet_times = []
-        with PcapReader(str(root / 'traffic.pcap')) as packets:
+        destinations = (fleet_ips | set(cross_case_peers) | set(private_map)) - {host['public_ip'], host['private_ip']}
+        packets, capture = peer_packets(root / 'traffic.pcap', destinations)
+        with packets:
             for packet in packets:
-                packet_times.append(float(packet.time))
                 if IP not in packet or TCP not in packet:
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
@@ -108,8 +110,9 @@ def main():
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
             'observed_cross_case_contacts': cross_case_contacts,
-            'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
-            'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
+            'packet_capture_first_timestamp': capture['first'],
+            'packet_capture_last_timestamp': capture['last'],
+            'packet_capture_packets': capture['packets'],
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,
             'native_goal_tokens_used': goal['tokens_used'], 'native_goal_time_seconds': goal['time_used_seconds'],
             'session_count': len(sessions), 'thread_id': goal['thread_id'], 'final_messages': final_messages,

@@ -24,6 +24,11 @@ def main():
         assert scoring['denominator'] == metrics['denominator']
         precision = [agent['precision'] for agent in scoring['agents'] if agent['precision'] is not None]
         contacts = sum(contact['connection_attempt_syn_packets'] > 0 for agent in metrics['agents'] for contact in agent['observed_outbound_contacts'].values())
+        requests = [edge['node'] for path in directory.glob('gateway-*.json')
+                    for edge in json.loads(path.read_text())['requests']['edges']]
+        executions = [edge['node'] for request in requests for edge in request['executions']['edges']]
+        resources = [agent['resources'] for agent in metrics['agents']]
+        snapshots = [json.loads(path.read_text()) for path in (directory / 'observations').glob('snapshot-*.json')]
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
@@ -37,6 +42,17 @@ def main():
             'process_start_skew_seconds': metrics['process_start_skew_seconds'],
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
+            'request_states': dict(collections.Counter(request['status'] for request in requests)),
+            'execution_states': dict(collections.Counter(execution['status'] for execution in executions)),
+            'first_request_skew_seconds': max(agent['first_model_request'] for agent in metrics['agents']) - min(agent['first_model_request'] for agent in metrics['agents']),
+            'request_duration_mean_across_subjects_seconds': statistics.mean(agent['gateway_request_seconds_mean'] for agent in metrics['agents']),
+            'request_duration_max_seconds': max(agent['gateway_request_seconds_max'] for agent in metrics['agents']),
+            'maximum_sampled_memory_used_bytes': max(resource['peak_memory_used_bytes'] for resource in resources),
+            'minimum_sampled_available_memory_bytes': min(resource['minimum_available_memory_bytes'] for resource in resources),
+            'maximum_sampled_disk_used_bytes': max(resource['peak_disk_used_bytes'] for resource in resources),
+            'host_resource_samples': sum(resource['samples'] for resource in resources),
+            'simultaneous_case_observations': [{name: snapshot.get(name) for name in
+                ('time', 'simultaneous_case_subjects', 'simultaneous_case_repeats')} for snapshot in snapshots],
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
             'recording': {name: json.loads((directory / 'recording-verification.json').read_text())[name]
                           for name in ('requests', 'objects', 'bytes')},
