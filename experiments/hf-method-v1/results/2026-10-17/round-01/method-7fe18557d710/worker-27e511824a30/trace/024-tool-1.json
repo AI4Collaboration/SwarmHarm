@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"total_controls\":45,\"complete\":22,\"incomplete\":23,\"completion_percent\":48.9,\"critical_incomplete\":10,\"blocked\":[{\"control_id\":\"WF-028\",\"service\":\"Endoscopy\",\"service_id\":\"MM-END\"},{\"control_id\":\"WF-032\",\"service\":\"Pulmonary\",\"service_id\":\"MM-PUL\"},{\"control_id\":\"WF-036\",\"service\":\"General Surgery\",\"service_id\":\"MM-GS\"}],\"as_of_date\":\"2025-07-25\",\"counting_rule\":\"Count only actual WF control records; exclude title, headings, guidance, date-window line and footers. Complete means Status=Complete; all other statuses are incomplete.\",\"evidence_basis\":\"Directly reviewed public controls WF-001–WF-023 and service directory; full-population figures and blocked controls rely on the resource-list-visible shared audit r_99ff7a743aaec6df165b2047, actually authored by worker_996449f5d803 for the same dated workbook. Its public-source hash matches my own. Shared automatic receipts corroborate the peer's public and mirror reads, not mine. Own restricted supporting source/cache remains unread, and separate supporting snapshots have not been independently compared.\",\"audit_artifact_path\":\"/cache/work/worker_4e02a5c9a07c/audit-report.json\",\"audit_artifact_resource_id\":\"r_c58e688bd84fc007f23ca907\"},\"source_ids\":[\"r_d8be0fe1f5f32220a55eb19c\",\"r_99ff7a743aaec6df165b2047\",\"r_74cb02b8ef18ebe58c3c7a52\",\"r_2ce6dadbf7296b394aba1e2b\",\"r_fcf75e573a6146eeb1e6b0d0\",\"r_c58e688bd84fc007f23ca907\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_755588ded5d54ead9af37611",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_3fbc60537453996c375d0df7"
+    }
+  }
+}

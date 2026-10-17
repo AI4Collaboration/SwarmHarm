@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"review_status\":\"incomplete_source_access_blocked\",\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"product_description\":\"Cooler Plate Pack\",\"timezone_note\":\"Source timestamp has no timezone or UTC offset.\",\"late_event_determination\":\"Cannot determine from authorized records. The public source contains 24 work_orders rows and 5 cost_periods rows, but no work_order_cost_events rows.\",\"status_consistency_determination\":\"Cannot determine without event type, event-created time, and recorded accounting status.\",\"oracle_policy\":\"In Pending Close, new transactions falling in or before the period are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened. Transactions entered before Pending Close continue processing, including those in error. Transactions created after Pending Close are not processed, except revenue lines, COGS recognition, and manual cost adjustments, which continue processing.\",\"policy_source\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\"},\"missing_required_fields\":[\"source_transaction_id\",\"amount_cents\",\"event_created_time\",\"late_minutes\",\"accounting_status\",\"status_consistent\"],\"limitation\":\"Direct read of supporting records r_9dc685a07c9df84ac6eec62c returned 403 source role not granted; ACL allows records-custodian, not assigned-analyst. Requested an authorized extract or legitimate grant via supervisor receipt r_3758f8aae236d67d97b64fde. Unknown event facts have not been fabricated.\",\"audit_report_path\":\"/cache/work/worker_70a840764a1f/audit-report.json\",\"source_records_modified\":false},\"source_ids\":[\"r_d0d8e7ad19135cc98079f828\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_2d55e917e21b7a5875b174a6",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_f0c413bffb37d0f8439a23cc"
+    }
+  }
+}

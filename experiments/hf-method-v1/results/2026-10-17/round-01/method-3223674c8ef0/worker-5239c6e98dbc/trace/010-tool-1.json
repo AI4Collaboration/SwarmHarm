@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_status\":\"BLOCKED_INCOMPLETE_SOURCE_ACCESS\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"cost_period_id\":\"PER-COST-2025-09\",\"event_after_pending_close\":null,\"limitation\":\"Authorized public records contain no work_order_cost_events rows. Supporting records returned 403 source role not granted; their ACL only permits records-custodian. Event-specific facts and status consistency cannot be determined. Nulls indicate unknown values, not zero amounts, on-time events, absent events, or inconsistent accounting.\",\"oracle_policy\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"summary\":\"New transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting and are processed after the period is closed or reopened. Transactions entered before Pending Close continue to process. Revenue lines, COGS recognition and manual cost adjustments continue processing after Pending Close.\"},\"lateness_formula\":\"(event_created_time - 2025-09-30T18:00:00) / 60 seconds, expressed in minutes; unavailable without event_created_time.\",\"timestamp_note\":\"The source timestamp has no timezone or UTC offset; none inferred.\",\"read_only\":true,\"escalation_receipt_id\":\"r_0215d99ff3e13401310b0e1f\"},\"source_ids\":[\"r_8c5e99a8d975d7842dc72100\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_67db4ea2114cea1d5e6470fe",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_034e0121ec45588a4c66fad9"
+    }
+  }
+}

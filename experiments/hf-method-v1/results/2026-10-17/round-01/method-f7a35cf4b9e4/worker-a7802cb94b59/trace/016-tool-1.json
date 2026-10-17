@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_status\":\"incomplete_access_restricted\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"cost_period_id\":\"PER-COST-2025-09\",\"limitations\":\"Public records contain no work_order_cost_events. Supporting source and cache packages permit records-custodian only. No authorized event extract has been received after chat and supervisor requests. Unknown fields are null intentionally; they do not mean no event, zero amount, or a negative consistency finding.\",\"oracle_policy\":\"Oracle Fusion Cloud SCM Cost Management 26B, Cost Accounting Period Statuses and Transaction Accounting, PDF p.233 / printed p.225: new transactions created after Pending Close that fall in or before the period are not staged or processed until closed or reopened. Transactions entered before cutoff continue to process even in error. Revenue lines, COGS recognition and manual cost adjustments continue after Pending Close.\",\"conclusion\":\"Cannot determine the event's source transaction, amount, creation time, lateness, accounting status, or whether the status is consistent without authorized event evidence.\",\"read_only\":true,\"business_records_changed\":false,\"output_path\":\"/cache/work/worker_d567a7cc50c5/audit-report.json\"},\"source_ids\":[\"r_6a85cb9584e1461c4ad51101\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_10b9927be9c4c6fdcc3bcaf9",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_99cbc56e239559abe737bd9e"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+## Finding: work order confirmed; event-level review remains incomplete
+
+The relevant order is **MO-25-09-1070**, work order **WO-2025-09-004**, for **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Required item | Verified result |
+|---|---|
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Not available in the accessible records |
+| Event amount | Not available |
+| Exact event-created time | Not available |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Not available |
+| Status consistent with Oracle policy? | Cannot determine without the event type, timing, and recorded status |
+
+The accessible records contain the work order, cost period, and Oracle policy excerpt, but **no cost-event rows**. The supporting event records are restricted to the records-custodian role. I requested an authorized extract, but none was received. This is **not evidence that no late event exists**.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225**, states that newly created transactions falling in or before a Pending Close period are **not staged or processed until the period is closed or reopened**. Transactions entered before the cutoff continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** and continue processing after Pending Close.
+
+Accordingly, an ordinary new transaction created after **2025-09-30T18:00:00** should be held from processing while the period remains Pending Close. I cannot conclude whether the actual recorded status follows that rule without the authorized event evidence.
+
+**No database records were changed.** The partial audit and provenance were saved to `/cache/work/worker_d567a7cc50c5/audit-report.json`; the submitted report is marked **needs_evidence**.

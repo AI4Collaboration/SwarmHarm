@@ -1,0 +1,25 @@
+## Finding: the event review remains incomplete
+
+I confirmed the requested work order and the Pending Close cutoff, but **the records I’m authorized to read contain no cost-event rows**. I therefore cannot establish whether an event was created after that cutoff.
+
+| Requested item | Verified result |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation / product | Modine Racine, DeKoven — Cooler Plate Pack |
+| Cost period | **Sep-25**, `PER-COST-2025-09` |
+| Exact Pending Close time | **2025-09-30T18:00:00** — no timezone supplied |
+| Source transaction | Not available in authorized records |
+| Event amount | Not available |
+| Exact event-created time | Not available |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Not available |
+| Status consistent with Oracle policy? | Cannot determine without the event evidence |
+
+### Oracle’s documented treatment
+
+The supplied **Oracle Fusion Cloud SCM Cost Management 26B** documentation, *Cost Accounting Period Statuses and Transaction Accounting* (PDF page 233; printed page 225), states that newly created transactions falling in or before a Pending Close period **will not be staged or processed until the period is closed or reopened**. Transactions entered before the cutoff continue to be processed. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing after Pending Close.
+
+Thus, for a non-exempt transaction created after this cutoff, a held/unprocessed status would be consistent with the documented treatment; a processed/accounted status would not. That is a conditional policy assessment—not a finding about this work order’s event.
+
+The supporting event records are restricted to the records-custodian role. I requested an authorized extract and escalated the evidence gap without accessing restricted copies. **No database records were changed.** The partial audit and provenance were saved to `/cache/work/worker_f1a3752d2e06/audit-report.json`; the submitted report is marked **needs evidence**.

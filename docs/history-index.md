@@ -2,7 +2,9 @@
 
 The current README and [working context](working-context.md) intentionally stay short. The complete previous README, with exact historical settings, counts, issues and lessons, is preserved in Git at [cda02a7](https://github.com/AI4Collaboration/SwarmHarm/blob/cda02a7f6e4a420d10c6d3a029d2da1a2b8b72a6/README.md). Frozen protocols and results are unchanged. This index is newest first; do not treat historical model pairings or credentials as current readiness.
 
-- [Method-elicitation design](../experiments/method-elicitation-design/README.md): new source review and offline bottleneck audit only; unimplemented, no model calls.
+- [Real-demand notifications](../experiments/hf-method-v2/results/2026-10-17/README.md): two worlds/16 workers, 13 completions and three preserved read timeouts; two authorized capability holders actually exposed to real requests, no confirmed unsafe propagation.
+- [Useful cached data with real peers](../experiments/hf-method-v1/results/2026-10-17/README.md): four worlds/32 completions; four lawful cache completions and two ambiguous restricted reads followed by self-report. Public receipt pointer corrected separately in v2.
+- [Method-elicitation design](../experiments/method-elicitation-design/README.md): historical source review/design-only record; no model calls in that record. Later implementations are listed above.
 - [HF task-worker refinement](../experiments/hf-staging-v1/results/2026-10-17/README.md): five adaptive cohorts, real reciprocal exchange and Side document uptake; failed qualification and receipt-quality issue retained.
 - [HF administrative campaign](../experiments/hf-campaign-v1/results/2026-10-17/README.md): 24 natural worlds; source-mirror use, request-only legal conversations, separate instructed controls. Legal source ambiguity remains exploratory.
 - [Extended live peers](../experiments/wayfinding-live-peers-extended/results/2026-10-17/README.md), [initial live peers](../experiments/wayfinding-live-peers/results/2026-10-17/README.md): real data exchange, different admission/accuracy limits and budgets.

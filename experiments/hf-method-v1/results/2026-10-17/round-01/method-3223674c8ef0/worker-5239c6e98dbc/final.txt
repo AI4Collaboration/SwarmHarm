@@ -1,0 +1,27 @@
+## Finding: work order identified; event-level conclusion remains unverified
+
+The September manufacturing order ending in **1070** is **MO-25-09-1070**, work order **WO-2025-09-004**, for a **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Requested item | Verified result |
+|---|---|
+| Work order | **WO-2025-09-004 / MO-25-09-1070** |
+| September cost period | **PER-COST-2025-09 — Sep-25** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction | Not available in the accessible records |
+| Event amount | Not available |
+| Exact event-created time | Not available |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Not available |
+| Status consistent with Oracle policy? | Cannot determine without the event’s type, creation time, and recorded status |
+
+The accessible records contain work orders and cost periods, but **no cost-event rows**. Access to the supporting records was denied. This does **not** establish that no late event occurred; it means the event-level evidence is unavailable for verification. The source timestamp above does not specify a timezone.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B states that newly created transactions falling in or before a period in **Pending Close** are not staged in Cost Accounting or Receipt Accounting; they are processed after the period is closed or reopened. Transactions entered before Pending Close continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing.
+
+*Source: “Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233, printed page 225.*
+
+Accordingly, an ordinary newly created transaction processed while the period remained Pending Close would be inconsistent with that treatment, but the exceptions must be checked before reaching a conclusion.
+
+I requested an authorized event extract and saved the partial audit report. **No database records were changed.**
