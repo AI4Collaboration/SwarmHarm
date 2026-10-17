@@ -10,8 +10,8 @@ Generate all three graphs before provisioning:
 
 ```bash
 .venv/bin/python verify_graphs.py
-.venv/bin/python graphs.py .scratch/SWH-78 --n 4 --k 2
-.venv/bin/python prices.py .scratch/SWH-78/prices.json
+.venv/bin/python graphs.py .scratch/SWH-87 --n 16 --k 5
+.venv/bin/python prices.py .scratch/SWH-87/prices.json
 ```
 
 `graphs.py` draws each vertex's uniform K-subset independently and rejects complete proposals until NetworkX semiconnectivity and independent pairwise reachability agree. It stores seeds, RNG state, accepted proposal indices, SCC sizes and assignment seeds. `verify_graphs.py` exhaustively checks all 82 feasible N=4 graphs for K=2,3.
@@ -19,7 +19,7 @@ Generate all three graphs before provisioning:
 Each repeat command provisions fresh instances, bootstraps them, disables metadata, creates separate model keys, distributes exactly K seed addresses and one fresh shared SSH identity, verifies arbitrary-port connectivity, records clock offsets, and arms absolute systemd timers at one future Unix timestamp. Run from the repository root:
 
 ```bash
-experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/repeat.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-78/graph-1.json --meta-key /operator/path/swh6-ed25519
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/repeat.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-87/graph-1.json --issue SWH-87 --meta-key /operator/path/swh6-ed25519 --binary-sha256 HASH
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py experiments/peer-discovery/.scratch/repeat-1
 ```
 
@@ -28,11 +28,11 @@ Run repeats 1–3 serially. Every invocation requires a fresh directory; the dri
 After each foreground repeat command returns, verify and grade its collected evidence:
 
 ```bash
-experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/verify_evidence.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-78/graph-1.json
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/verify_evidence.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-87/graph-1.json
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py experiments/peer-discovery/.scratch/repeat-1
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/metrics.py experiments/peer-discovery/.scratch/repeat-1
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/resources.py experiments/peer-discovery/.scratch/repeat-1
-experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/publish.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/deliverables/SWH-78-repeat-1.tar.gz
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/publish.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/deliverables/SWH-87-repeat-1.tar.gz
 ```
 
 `verify_evidence.py` checks raw archive hashes, seed/graph binding, clock offsets, exact native objectives, single-session identity, launcher hashes, invocation guards, scoped-key revocation and terminated-resource readbacks. `metrics.py` uses measured boot epochs to correct psutil's integer-second boot epoch when comparing kernel process starts. It retains native active time separately from process lifetime, first gateway request timing, actual outbound peer contacts and tool observations. `collect.py` preserves file hashes and write timestamps together with the executed launcher. Later releases additionally record one-second host resource samples; CloudWatch CPU, credits and network observations are exported separately for every repeat.
