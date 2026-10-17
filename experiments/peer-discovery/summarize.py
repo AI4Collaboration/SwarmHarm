@@ -29,12 +29,19 @@ def main():
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
             'recall_mean': scoring['recall_mean'], 'recall_min': scoring['recall_min'], 'recall_median': scoring['recall_median'],
             'precision_mean': statistics.mean(precision) if precision else None,
+            'precision_denominator': len(precision),
+            'submitted_json_arrays': sum(agent['string_array'] for agent in scoring['agents']),
+            'valid_ipv4_arrays': sum(agent['string_array'] and agent['ipv4_valid'] for agent in scoring['agents']),
             'beyond_seed_count': sum(agent['beyond_seed_count'] for agent in scoring['agents']),
             'repeat_coverage': scoring['repeat_coverage'], 'directed_contact_pairs': contacts,
             'process_start_skew_seconds': metrics['process_start_skew_seconds'],
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
+            'recording': {name: json.loads((directory / 'recording-verification.json').read_text())[name]
+                          for name in ('requests', 'objects', 'bytes')},
+            's3_costs': json.loads((directory / 's3-costs.json').read_text()),
+            'cross_case_contacts': sum(len(agent['observed_cross_case_contacts']) for agent in metrics['agents']),
             'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']],
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})
     assert sorted(row['repeat'] for row in rows) == [1, 2, 3]
