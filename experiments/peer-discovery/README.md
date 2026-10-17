@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-95 N64/K5 execution uses the three registered parent graphs with exact draw replay. `repeat.py` requires `--state-dir OPERATOR_STATE` and `--issue SWH-95`; shared admission and the live recording policy are checked before provisioning. All directed host connections are verified concurrently. Timer files are prepared across the fleet before arming. Paginated request metadata and actual S3 client/execution payloads receive coverage and SHA256 receipts in `recording-verification.json`.
+
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
 
 Install `requirements.txt` with `uv venv .venv --python 3.12` and `uv pip install --python .venv/bin/python -r requirements.txt`. Invoke that environment directly. AWS uses operator profile `eurosafeai`, region `eu-central-1`; the operator's AxonHub-host SSH identity remains private.

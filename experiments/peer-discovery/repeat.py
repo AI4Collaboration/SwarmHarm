@@ -17,6 +17,7 @@ import numpy as np
 from cloud import EC2, ROOT, cleanup, launch, save, ssh
 from graphs import validate
 from preflight import put
+from recording import collect as collect_recordings
 
 
 def gateway(meta_key, mode, value):
@@ -41,12 +42,12 @@ def configure(directory, host, key, peer_key, objective):
     status = EC2.describe_instances(InstanceIds=[host['id']])['Reservations'][0]['Instances'][0]
     assert status['MetadataOptions']['HttpEndpoint'] == 'disabled'
     assert 'IamInstanceProfile' not in status
-    readiness = ssh(directory, ip, 'sudo ufw status; sudo iptables -S; sudo ls -la /home/agent; sudo ls -la /home/agent/.ssh; sha256sum /home/agent/peers.txt /home/agent/.codex/config.toml; codex --version').stdout.decode()
+    readiness = ssh(directory, ip, 'sudo ufw status; sudo iptables -S; sudo ls -la /home/agent; sudo ls -la /home/agent/.ssh; sha256sum /home/agent/peers.txt /home/agent/.codex/config.toml /usr/local/bin/codex; codex --version').stdout.decode()
+    assert 'codex-cli 0.160.0' in readiness
     save(directory, f'{host["id"]}-readiness.json', {'clock_csv': clock, 'readiness': readiness, 'configuration': key['configuration']})
-    ssh(directory, ip, 'sudo systemd-run --unit=peer-connectivity-probe --property=RuntimeMaxSec=60 /usr/bin/nc -lk -p 39271')
 
 
-def arm(directory, host, timestamp, allowance):
+def prepare_timer(directory, host, timestamp, allowance):
     ip = host['public_ip']
     calendar = datetime.datetime.fromtimestamp(timestamp, datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
     service = f'''[Unit]
@@ -71,11 +72,17 @@ WantedBy=timers.target
 '''
     put(directory, ip, '/etc/systemd/system/peer-subject.service', service.encode(), mode='644')
     put(directory, ip, '/etc/systemd/system/peer-subject.timer', timer.encode(), mode='644')
-    ssh(directory, ip, 'sudo systemctl daemon-reload && sudo systemctl start peer-subject.timer')
+    ssh(directory, ip, 'sudo systemctl daemon-reload')
+
+
+def arm(directory, host, timestamp, allowance):
+    ip = host['public_ip']
+    ssh(directory, ip, 'sudo systemctl start peer-subject.timer')
     readback = ssh(directory, ip, 'sudo systemctl show peer-subject.timer -p AccuracyUSec -p RandomizedDelayUSec -p NextElapseUSecRealtime -p TimersCalendar -p ActiveState; sudo systemctl show peer-subject.service -p Restart; chronyc -c tracking').stdout.decode()
     assert 'AccuracyUSec=1ms' in readback and 'RandomizedDelayUSec=0' in readback and 'Restart=no' in readback
-    save(directory, f'{host["id"]}-timer.json', {'T_start': timestamp, 'calendar': calendar, 'readback': readback})
-    ssh(directory, ip, f'sudo systemd-run --unit=peer-traffic --property=RuntimeMaxSec={allowance + 180} /usr/bin/tcpdump -i any -nn -s 128 -w /var/lib/peer-operator/traffic.pcap tcp')
+    save(directory, f'{host["id"]}-timer.json', {'T_start': timestamp, 'readback': readback})
+    capture_seconds = max(1, timestamp + allowance + 60 - int(time.time()))
+    ssh(directory, ip, f'sudo systemd-run --unit=peer-traffic --property=RuntimeMaxSec={capture_seconds} /usr/bin/tcpdump -i any -nn -s 128 -w /var/lib/peer-operator/traffic.pcap tcp')
 
 
 def export_host(directory, host):
@@ -111,6 +118,7 @@ def main():
     parser.add_argument('--issue', default='SWH-78')
     parser.add_argument('--preflight', action='store_true')
     parser.add_argument('--existing-key', type=Path)
+    parser.add_argument('--state-dir', type=Path, required=True)
     args = parser.parse_args()
     directory = args.directory.resolve()
     meta_key = args.meta_key.resolve()
@@ -122,6 +130,17 @@ def main():
     allowance = 300 if args.preflight else 1800
     keys = []
     directory.mkdir(parents=True, exist_ok=True)
+    admission = subprocess.run(['python3', str(ROOT.parent / 'peer-discovery-scheduling/admit.py'),
+        'reserve', '--state-dir', str(args.state_dir), '--issue', args.issue, '--n', str(graph['n'])],
+        capture_output=True, text=True, check=True)
+    receipt = json.loads(admission.stdout)
+    assert receipt['capacity_valid']
+    save(directory, 'admission.json', receipt)
+    recording = gateway(meta_key, 'recording', '')
+    assert all(recording['storagePolicy'][field] for field in ('storeRequestBody', 'storeResponseBody', 'storeChunks'))
+    save(directory, 'recording-policy.json', recording)
+    save(directory, 'code-revision.json', {'revision': subprocess.run(
+        ['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True).stdout.strip()})
     def expire():
         state = json.loads((directory / 'cloud.json').read_text())
         if state['instance_ids']:
@@ -154,13 +173,21 @@ def main():
         objective = (ROOT / ('preflight-objective.txt' if args.preflight else 'objective.txt')).read_bytes()
         with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 16)) as pool:
             list(pool.map(lambda pair: configure(directory, pair[0], pair[1], peer_key, objective), zip(hosts, keys)))
-            for host in hosts:
-                for peer in hosts:
-                    if host['id'] != peer['id']:
-                        ssh(directory, host['public_ip'], f'nc -z -w 5 {peer["public_ip"]} 39271')
+            list(pool.map(lambda host: ssh(directory, host['public_ip'],
+                'sudo systemd-run --unit=peer-connectivity-probe --property=RuntimeMaxSec=180 /usr/bin/nc -lk -p 39271'), hosts))
+            def connectivity(host):
+                put(directory, host['public_ip'], '/var/lib/peer-operator/connectivity.json',
+                    json.dumps([peer['public_ip'] for peer in hosts if peer['id'] != host['id']]).encode())
+                put(directory, host['public_ip'], '/opt/peer-discovery/connectivity.py', (ROOT / 'connectivity.py').read_bytes(), mode='644')
+                result = ssh(directory, host['public_ip'],
+                    "sudo sh -c 'python3 /opt/peer-discovery/connectivity.py < /var/lib/peer-operator/connectivity.json'")
+                save(directory, f'{host["id"]}-connectivity.json', json.loads(result.stdout))
+                ssh(directory, host['public_ip'], 'sudo rm /var/lib/peer-operator/connectivity.json')
+            list(pool.map(connectivity, hosts))
             list(pool.map(lambda host: ssh(directory, host['public_ip'], 'sudo systemctl stop peer-connectivity-probe.service'), hosts))
-            timestamp = int(time.time()) + 125
+            timestamp = int(time.time()) + max(240, count * 5)
             save(directory, 'release.json', {'T_start': timestamp, 'allowance_seconds': allowance, 'prepared_at': time.time()})
+            list(pool.map(lambda host: prepare_timer(directory, host, timestamp, allowance), hosts))
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))
             assert time.time() < timestamp - 20
             while time.time() < timestamp + allowance + 15:
@@ -173,6 +200,7 @@ def main():
         save(directory, 'export-manifest.json', receipts)
         for index, key in enumerate(keys):
             save(directory, f'gateway-{index}.json', gateway(meta_key, 'export', key['id']))
+        collect_recordings(directory)
         print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:
         try:

@@ -40,10 +40,40 @@ class Gateway:
         key['configuration'] = self.gql('mutation($id:ID!,$i:UpdateAPIKeyProfilesInput!){updateAPIKeyProfiles(id:$id,input:$i){' + FIELDS + '}}', {'id': key['id'], 'i': profile})
         return key
 
+    def export(self, key_id):
+        edges = []
+        cursor = None
+        pages = 0
+        while True:
+            page = self.gql('''query($id:ID!,$cursor:Cursor){
+              requests(first:50,after:$cursor,where:{apiKeyID:$id}){
+                pageInfo{hasNextPage endCursor} edges{node{
+                  id createdAt updatedAt modelID reasoningEffort status projectID dataStorageID
+                  contentSaved contentStorageKey
+                  executions(first:1000){pageInfo{hasNextPage} edges{node{
+                    id upstreamModelID reasoningEffort status responseStatusCode
+                    errorMessage passThroughApplied dataStorageID
+                  }}}
+                  usageLogs{edges{node{id promptTokens completionTokens totalTokens promptCachedTokens totalCost}}}
+                }}
+              }}''', {'id': key_id, 'cursor': cursor})['requests']
+            pages += 1
+            for edge in page['edges']:
+                assert not edge['node']['executions']['pageInfo']['hasNextPage']
+            edges.extend(page['edges'])
+            if not page['pageInfo']['hasNextPage']:
+                break
+            next_cursor = page['pageInfo']['endCursor']
+            assert next_cursor and next_cursor != cursor
+            cursor = next_cursor
+        assert len({edge['node']['id'] for edge in edges}) == len(edges)
+        quota = self.gql('query($id:ID!){apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}', {'id': key_id})
+        return {'requests': {'edges': edges, 'pages': pages}, **quota}
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota'])
+    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota', 'recording'])
     parser.add_argument('value', nargs='?')
     args = parser.parse_args()
     gateway = Gateway()
@@ -70,12 +100,15 @@ def main():
           channelModelPrices{modelID referenceID price{items{itemCode pricing{mode flatFee usagePerUnit}}}}}}}
         }''')))
     elif args.mode == 'export':
-        print(json.dumps(gateway.gql('''query($id:ID!){requests(first:1000,where:{apiKeyID:$id}){edges{node{
-          id createdAt updatedAt modelID reasoningEffort status requestBody responseBody
-          executions { edges { node { id upstreamModelID reasoningEffort status responseStatusCode
-          requestBody responseBody errorMessage passThroughApplied } } }
-          usageLogs { edges { node { id promptTokens completionTokens totalTokens promptCachedTokens totalCost } } }
-        }}} apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}''', {'id': args.value})))
+        print(json.dumps(gateway.export(args.value)))
+    elif args.mode == 'recording':
+        print(json.dumps(gateway.gql('''query{
+          storagePolicy{storeRequestBody storeResponseBody storeChunks livePreview}
+          defaultDataStorageID
+          dataStorages(first:100){edges{node{id name type status settings{s3{bucketName endpoint region pathStyle}}}}}
+          channels(first:100){edges{node{id name type status supportedModels
+            liveLimiterStats{inFlight waiting capacity queueSize}}}}
+        }''')))
 
 
 if __name__ == '__main__':
