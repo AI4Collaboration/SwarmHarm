@@ -58,9 +58,9 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
                 'request_status': request['status']}
             coverage.append({**association, 'expected_objects': sorted(expected),
                              'stored_objects': sorted(found), 'executions': request['executions']})
-            jobs.extend((association, obj) for obj in objects)
+            jobs.extend((association, obj, request['status'] == 'completed' and obj['Key'] in expected) for obj in objects)
     def retrieve(job):
-        association, obj = job
+        association, obj, required_nonempty = job
         path = output / 'stored-payloads' / obj['Key']
         path.parent.mkdir(parents=True, exist_ok=True)
         with client.get_object(Bucket=settings['bucketName'], Key=obj['Key'])['Body'] as body:
@@ -68,7 +68,7 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
         path.write_bytes(raw)
         value = json.loads(raw)
         assert len(raw) == obj['Size']
-        if association['request_status'] == 'completed':
+        if required_nonempty:
             assert value, obj['Key']
         components = obj['Key'].split('/')
         execution_id = components[components.index('executions') + 1] if 'executions' in components else None
