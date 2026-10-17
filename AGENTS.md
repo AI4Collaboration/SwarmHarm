@@ -1,5 +1,6 @@
 # SwarmHarm project rules
 
+- Put the newest update, setup change and experiment/result entry first in maintained README files, reports and indexes, including updates on the same date. Follow `.cursor/rules/latest-first.mdc`; never reorder or rewrite frozen protocols, source snapshots or archived results.
 - Read `README.md` → **Current setup** before setup, model-routing or evaluation work.
 - Every setup change must update that README section in the same change: affected versions, endpoints, permissions, credential availability (never values), commands, verification date/evidence, and remaining limits. Do not leave superseded settings presented as current.
 - Keep the hosted coordinator/runtime on the existing Multica 0.4.44 setup. Preserve the maintainer's public-server file-access security patch. Do not treat an upstream upgrade or daemon restart as routine eval preparation.
