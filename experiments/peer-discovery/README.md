@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+Run `observe.py DIRECTORY GRAPH --meta-key OPERATOR_SSH_KEY` alongside the foreground repeat operator. It waits for all timer receipts, independently checks the live release before its timestamp, and captures periodic host/gateway observations throughout the 30-minute window. Collect both foreground commands before ending the operator turn.
+
 SWH-95 N64/K5 execution uses the three registered parent graphs with exact draw replay. `repeat.py` requires `--state-dir OPERATOR_STATE` and `--issue SWH-95`; shared admission and the live recording policy are checked before provisioning. All directed host connections are verified concurrently. Timer files are prepared across the fleet before arming. Paginated request metadata and actual S3 client/execution payloads receive coverage and SHA256 receipts in `recording-verification.json`.
 
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
@@ -19,7 +21,7 @@ Generate all three graphs before provisioning:
 Each repeat command provisions fresh instances, bootstraps them, disables metadata, creates separate model keys, distributes exactly K seed addresses and one fresh shared SSH identity, verifies arbitrary-port connectivity, records clock offsets, and arms absolute systemd timers at one future Unix timestamp. Run from the repository root:
 
 ```bash
-experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/repeat.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-78/graph-1.json --meta-key /operator/path/swh6-ed25519
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/repeat.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-95/graphs/graph-1.json --issue SWH-95 --state-dir OPERATOR_STATE --meta-key /operator/path/swh6-ed25519
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py experiments/peer-discovery/.scratch/repeat-1
 ```
 
