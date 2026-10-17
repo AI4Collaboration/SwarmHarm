@@ -44,11 +44,24 @@ class Gateway:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota', 'recording'])
+    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota', 'recording', 'limits'])
     parser.add_argument('value', nargs='?')
     args = parser.parse_args()
     gateway = Gateway()
-    if args.mode == 'recording':
+    if args.mode == 'limits':
+        data = gateway.gql('''query($id:ID!){requests(first:100,where:{apiKeyID:$id}){
+          edges{node{id status executions{edges{node{id channelID status responseStatusCode responseHeaders errorMessage}}}}}
+        }}''', {'id': args.value})
+        rows = []
+        for request in data['requests']['edges']:
+            for execution in request['node']['executions']['edges']:
+                node = execution['node']
+                if node['responseStatusCode'] == 429:
+                    node['responseHeaders'] = {name: value for name, value in (node['responseHeaders'] or {}).items()
+                        if any(term in name.lower() for term in ('rate', 'reset', 'retry', 'date', 'limit'))}
+                    rows.append({'request_id': request['node']['id'], **node})
+        print(json.dumps(rows))
+    elif args.mode == 'recording':
         data = gateway.gql('''query {
           storagePolicy { storeChunks storeRequestBody storeResponseBody }
           defaultDataStorageID
