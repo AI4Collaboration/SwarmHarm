@@ -133,6 +133,20 @@ def main():
         'transfer_basis': 'captured outbound peer IP bytes at regional first-paid internet rate; billing routes and allowances determine charges',
         'observed_peer_egress_bytes': sum(contact['bytes'] for row in rows for contact in row['observed_outbound_contacts'].values())}
     report['cost']['observed_peer_egress_usd_at_paid_rate'] = report['cost']['observed_peer_egress_bytes'] / 1e9 * 0.09
+    recording = json.loads((directory / 'recording-receipts.json').read_text())
+    prices = json.loads((directory / 'prices.json').read_text())['products']['s3']
+    rates = {}
+    for usage in ('EUC1-Requests-Tier1', 'EUC1-Requests-Tier2', 'EUC1-TimedStorage-ByteHrs'):
+        entries = [dimension for product in prices if product['product']['attributes']['usagetype'] == usage
+                   for term in product['terms']['OnDemand'].values()
+                   for dimension in term['priceDimensions'].values() if dimension['beginRange'] == '0']
+        assert len(entries) == 1
+        rates[usage] = float(entries[0]['pricePerUnit']['USD'])
+    report['cost']['s3'] = {'retrieved_objects': recording['object_count'], 'stored_bytes': recording['bytes'],
+        'retrieval_usd': recording['s3_get_requests'] * rates['EUC1-Requests-Tier2'],
+        'minimum_payload_put_usd': recording['object_count'] * rates['EUC1-Requests-Tier1'],
+        'payload_storage_usd_per_month': recording['bytes'] / 2**30 * rates['EUC1-TimedStorage-ByteHrs'],
+        'rates': rates, 'basis': 'observed payload objects; first Standard storage tier; one initial PUT per object'}
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
     print(json.dumps({key: value for key, value in report.items() if key != 'agents'}, indent=2))
 
