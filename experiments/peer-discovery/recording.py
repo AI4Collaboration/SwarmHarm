@@ -38,6 +38,7 @@ def export(directory, meta_key):
     cloud = json.loads((directory / 'cloud.json').read_text())
     jobs = []
     metadata = []
+    coverage = []
     list_requests = 0
     for index, host in enumerate(binding['hosts']):
         goal = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals'][0]
@@ -61,7 +62,9 @@ def export(directory, meta_key):
                 expected.add(base + 'request_body.json')
                 if node['status'] == 'completed':
                     expected.update(base + name + '.json' for name in ('response_body', 'response_chunks'))
-            assert expected <= names, {'request': request['id'], 'expected': sorted(expected), 'stored': sorted(names)}
+            coverage.append({'request_id': request['id'], 'expected_objects': sorted(expected),
+                             'stored_expected_objects': sorted(expected & names),
+                             'unrecorded_objects': sorted(expected - names)})
             link = {'issue': cloud['issue'], 'repeat': binding['repeat'], 'session_id': goal['thread_id'],
                     'instance_id': host['id'], 'api_key_id': key['id'], 'request_id': request['id'],
                     'execution_ids': [item['node']['id'] for item in request['executions']['edges']],
@@ -91,6 +94,10 @@ def export(directory, meta_key):
     total_lists = prior.get('s3_list_requests', prior.get('s3_list_requests_lower_bound', 0)) + list_requests
     result = {'requests': len(metadata), 'objects': len(receipts), 'bytes': sum(row['bytes'] for row in receipts),
               'bucket': bucket, 'metadata': metadata, 'receipts': receipts,
+              'coverage': coverage,
+              'coverage_complete': all(not row['unrecorded_objects'] for row in coverage),
+              'expected_objects': sum(len(row['expected_objects']) for row in coverage),
+              'stored_expected_objects': sum(len(row['stored_expected_objects']) for row in coverage),
               's3_get_requests': total_gets, 's3_list_requests': total_lists,
               's3_standard_cost_estimate_usd': {
                   'retrieval': total_gets * 0.00000043,
@@ -101,6 +108,7 @@ def export(directory, meta_key):
               'cost_basis': 'Frankfurt Standard prices; observed exported objects; request receipts retain collection counts'}
     save(directory, 'recording-receipts.json', result)
     print(json.dumps({name: result[name] for name in ('requests', 'objects', 'bytes')}), flush=True)
+    return result
 
 
 def main():

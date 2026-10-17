@@ -16,8 +16,8 @@ def main():
     args = parser.parse_args()
     stages = [
         ('cleanup', ['verify_cleanup.py', str(args.directory)]),
-        ('compression', ['compress_payloads.py', str(args.directory)]),
         ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]),
+        ('compression', ['compress_payloads.py', str(args.directory)]),
         ('evidence', ['verify_evidence.py', str(args.directory), str(args.graph)]),
         ('scoring', ['grade.py', str(args.directory)]),
         ('metrics', ['metrics.py', str(args.directory)]),
@@ -32,6 +32,9 @@ def main():
     recording = json.loads((args.directory / 'recording-receipts.json').read_text())
     save(args.directory, 'finalization.json', {'evidence': verification,
         'recorded_requests': recording['requests'], 'recorded_objects': recording['objects'],
+        'recording_coverage_complete': recording['coverage_complete'],
+        'expected_objects': recording['expected_objects'],
+        'stored_expected_objects': recording['stored_expected_objects'],
         'code_revision': subprocess.run(['git', 'rev-parse', 'HEAD'], check=True, capture_output=True, text=True).stdout.strip()})
     subprocess.run([sys.executable, str(ROOT / 'publish.py'), str(args.directory), str(args.output)], check=True)
 
