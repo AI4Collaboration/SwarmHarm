@@ -36,6 +36,7 @@ def main():
         goal = read(root / 'native-goals.json')['goals']
         assert len(goal) == 1
         assert goal[0]['objective'] == (root / 'objective.txt').read_text().strip()
+        assert goal[0]['objective'] == Path(__file__).with_name('objective.txt').read_text().strip()
         sessions = list((directory / instance_id / 'home/agent/.codex/sessions').rglob('*.jsonl'))
         assert len(sessions) == 1
         metadata = [json.loads(line)['payload'] for line in sessions[0].read_text().splitlines() if json.loads(line)['type'] == 'session_meta']

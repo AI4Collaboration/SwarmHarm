@@ -41,7 +41,7 @@ def configure(directory, host, key, peer_key, objective):
     status = EC2.describe_instances(InstanceIds=[host['id']])['Reservations'][0]['Instances'][0]
     assert status['MetadataOptions']['HttpEndpoint'] == 'disabled'
     assert 'IamInstanceProfile' not in status
-    readiness = ssh(directory, ip, 'sudo ufw status; sudo iptables -S; sudo ls -la /home/agent; sudo ls -la /home/agent/.ssh; sha256sum /home/agent/peers.txt /home/agent/.codex/config.toml; codex --version').stdout.decode()
+    readiness = ssh(directory, ip, 'set -e; sudo ufw status; sudo iptables -S; sudo ls -la /home/agent; sudo ls -la /home/agent/.ssh; sudo sha256sum /home/agent/peers.txt /home/agent/.codex/config.toml; codex --version').stdout.decode()
     binary = ssh(directory, ip, 'sha256sum /usr/local/bin/codex').stdout.decode().split()[0]
     assert binary == CODEX_SHA256
     save(directory, f'{host["id"]}-readiness.json', {'clock_csv': clock, 'readiness': readiness, 'configuration': key['configuration']})

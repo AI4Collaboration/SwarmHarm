@@ -3,7 +3,7 @@ import concurrent.futures
 import json
 from pathlib import Path
 
-from cloud import ssh
+from cloud import ROOT, ssh
 
 
 def main():
@@ -13,11 +13,15 @@ def main():
     binding = json.loads((args.directory / 'binding.json').read_text())
 
     def observe(host):
-        result = ssh(args.directory, host['public_ip'], 'sudo cat /var/lib/peer-operator/native-goals.json', check=False)
+        result = ssh(args.directory, host['public_ip'], 'sudo python3 -', (ROOT / 'inspect_goal.py').read_bytes(), check=False)
         if result.returncode:
             return {'instance_id': host['id'], 'observation': 'initializing'}
         body = json.loads(result.stdout)
-        goal = body['goals'][0]
+        goals = [row for table in body if table['schema']['name'] == 'thread_goals' for row in table['rows']]
+        if not goals:
+            return {'instance_id': host['id'], 'observation': 'initializing'}
+        assert len(goals) == 1
+        goal = goals[0]
         return {'instance_id': host['id'], 'status': goal['status'], 'tokens_used': goal['tokens_used'],
             'time_used_seconds': goal['time_used_seconds']}
 
