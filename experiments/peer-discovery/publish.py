@@ -10,6 +10,8 @@ from pathlib import Path
 def clean(data, secrets):
     for secret in secrets:
         data = data.replace(secret.encode(), b'[redacted-credential]')
+    data = re.sub(rb'-----BEGIN OPENSSH PRIVATE KEY-----.*?-----END OPENSSH PRIVATE KEY-----',
+                  b'[redacted-ssh-private-key]', data, flags=re.DOTALL)
     return re.sub(rb'ah-[A-Za-z0-9_-]{20,}', b'[redacted-credential]', data)
 
 
