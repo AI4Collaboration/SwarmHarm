@@ -31,6 +31,7 @@ def collect_payloads(directory):
     binding = json.loads((directory / 'binding.json').read_text())
     jobs = []
     requests = []
+    coverage = []
     for index, host in enumerate(binding['hosts']):
         key = json.loads((directory / f'private-key-{index}.json').read_text())
         project_id = key['project_id'].rsplit('/', 1)[1]
@@ -49,10 +50,21 @@ def collect_payloads(directory):
             entities = [(prefix, request, None)]
             entities.extend((f'{prefix}/executions/{item["node"]["id"].rsplit("/", 1)[1]}',
                              item['node'], item['node']['id']) for item in request['executions']['edges'])
+            stored = set()
+            for page in client.get_paginator('list_objects_v2').paginate(Bucket=settings['bucketName'], Prefix=prefix + '/'):
+                stored.update(item['Key'] for item in page.get('Contents', []))
             for location, entity, execution_id in entities:
+                present = []
                 for name, field in (('request_body', 'requestBody'), ('response_body', 'responseBody'), ('response_chunks', 'responseChunks')):
-                    jobs.append((f'{location}/{name}.json', {**link, 'execution_id': execution_id,
-                                 'field': field, 'entity_status': entity['status']}))
+                    object_key = f'{location}/{name}.json'
+                    required = field == 'requestBody' or entity['status'] == 'completed'
+                    assert not required or object_key in stored, (entity['id'], object_key)
+                    if object_key in stored:
+                        present.append(field)
+                        jobs.append((object_key, {**link, 'execution_id': execution_id,
+                                     'field': field, 'entity_status': entity['status']}))
+                coverage.append({**link, 'execution_id': execution_id, 'entity_status': entity['status'],
+                                 'stored_fields': present})
     assert requests
 
     def retrieve(job):
@@ -71,6 +83,7 @@ def collect_payloads(directory):
         receipts = list(pool.map(retrieve, jobs))
     report = {'request_count': len(requests), 'object_count': len(receipts),
               'bytes': sum(row['bytes'] for row in receipts), 'requests': requests, 'objects': receipts,
+              'entity_coverage': coverage, 's3_list_requests': len(requests),
               's3_get_requests': calls['GetObject'], 's3_head_requests': calls['HeadObject'],
               'storage_bucket': settings['bucketName']}
     save(directory, 'recording-receipts.json', report)

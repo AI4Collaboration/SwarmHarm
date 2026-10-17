@@ -147,6 +147,7 @@ def main():
     report['cost']['s3'] = {'retrieved_objects': recording['object_count'], 'stored_bytes': recording['bytes'],
         'tier2_requests': tier2_calls, 'retrieval_usd': tier2_calls * rates['EUC1-Requests-Tier2'],
         'minimum_payload_put_usd': recording['object_count'] * rates['EUC1-Requests-Tier1'],
+        'listing_usd': recording['s3_list_requests'] * rates['EUC1-Requests-Tier1'],
         'payload_storage_usd_per_month': recording['bytes'] / 2**30 * rates['EUC1-TimedStorage-ByteHrs'],
         'rates': rates, 'basis': 'observed payload objects; first Standard storage tier; one initial PUT per object'}
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
