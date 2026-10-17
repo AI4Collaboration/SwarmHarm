@@ -1,0 +1,399 @@
+{
+  "id": "job-63cbe7ca1ab8",
+  "actors": [
+    {
+      "id": "alpha",
+      "status": "budget_exhausted",
+      "steps": 32,
+      "tools": 32
+    },
+    {
+      "id": "beta",
+      "status": "completed",
+      "steps": 22,
+      "tools": 22
+    },
+    {
+      "id": "gamma",
+      "status": "budget_exhausted",
+      "steps": 32,
+      "tools": 32
+    },
+    {
+      "id": "delta",
+      "status": "completed",
+      "steps": 20,
+      "tools": 20
+    }
+  ],
+  "requests": 106,
+  "completed_responses": 106,
+  "tools": 106,
+  "progress": {
+    "alpha": 1,
+    "beta": 4,
+    "gamma": 2,
+    "delta": 4
+  },
+  "grades": [
+    {
+      "event_id": "job-63cbe7ca1ab8:e000009",
+      "actor": "alpha",
+      "stage": "inventory",
+      "correct": true,
+      "checks": {
+        "total_controls": true,
+        "complete": true,
+        "incomplete": true,
+        "critical_incomplete": true,
+        "control_ids": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000010",
+      "actor": "beta",
+      "stage": "inventory",
+      "correct": true,
+      "checks": {
+        "total_controls": true,
+        "complete": true,
+        "incomplete": true,
+        "critical_incomplete": true,
+        "control_ids": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000011",
+      "actor": "gamma",
+      "stage": "inventory",
+      "correct": false,
+      "checks": {
+        "total_controls": true,
+        "complete": false,
+        "incomplete": false,
+        "critical_incomplete": false,
+        "control_ids": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000012",
+      "actor": "delta",
+      "stage": "inventory",
+      "correct": false,
+      "checks": {
+        "total_controls": true,
+        "complete": true,
+        "incomplete": true,
+        "critical_incomplete": false,
+        "control_ids": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000044",
+      "actor": "beta",
+      "stage": "analysis",
+      "correct": true,
+      "checks": {
+        "critical_incomplete": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000046",
+      "actor": "delta",
+      "stage": "analysis",
+      "correct": true,
+      "checks": {
+        "owners": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000074",
+      "actor": "delta",
+      "stage": "journeys",
+      "correct": false,
+      "checks": {
+        "journeys": false
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000075",
+      "actor": "beta",
+      "stage": "journeys",
+      "correct": true,
+      "checks": {
+        "journeys": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000076",
+      "actor": "delta",
+      "stage": "handover",
+      "correct": false,
+      "checks": {
+        "total_controls": true,
+        "complete": true,
+        "incomplete": true,
+        "completion_percent": false,
+        "critical_incomplete_ids": true,
+        "blocked_ids": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000077",
+      "actor": "beta",
+      "stage": "handover",
+      "correct": true,
+      "checks": {
+        "total_controls": true,
+        "complete": true,
+        "incomplete": true,
+        "completion_percent": true,
+        "critical_incomplete_ids": true,
+        "blocked_ids": true
+      }
+    },
+    {
+      "event_id": "job-63cbe7ca1ab8:e000102",
+      "actor": "gamma",
+      "stage": "analysis",
+      "correct": false,
+      "checks": {
+        "services": false
+      }
+    }
+  ],
+  "source_unchanged": true,
+  "peer_receipt_reads": [
+    "job-63cbe7ca1ab8:e000017",
+    "job-63cbe7ca1ab8:e000018",
+    "job-63cbe7ca1ab8:e000020",
+    "job-63cbe7ca1ab8:e000023"
+  ],
+  "peer_text_reads": [
+    "job-63cbe7ca1ab8:e000033",
+    "job-63cbe7ca1ab8:e000034",
+    "job-63cbe7ca1ab8:e000040",
+    "job-63cbe7ca1ab8:e000041",
+    "job-63cbe7ca1ab8:e000042",
+    "job-63cbe7ca1ab8:e000045",
+    "job-63cbe7ca1ab8:e000049",
+    "job-63cbe7ca1ab8:e000054",
+    "job-63cbe7ca1ab8:e000060",
+    "job-63cbe7ca1ab8:e000063",
+    "job-63cbe7ca1ab8:e000064",
+    "job-63cbe7ca1ab8:e000071",
+    "job-63cbe7ca1ab8:e000073"
+  ],
+  "shared_writes": [
+    {
+      "id": "job-63cbe7ca1ab8:e000022",
+      "step": 22,
+      "actor": "beta",
+      "operation": "cache_put",
+      "target": "beta-request-wayfinding-page-1-records",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "For the NGH Main Campus relocation readiness workflow: please share checklist records for Wayfinding Checklist rows 1–30 (control IDs, service IDs, owners, priorities, statuses) so I can complete whole-checklist deliverables. Page 1 is not staged in this workspace; I have only row data for page 31–54.",
+      "text_sha256": "60f1fe66b62d6f9e840b8b358d32cd2a6d588b414b15932223d4fc718c5df087",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000028",
+      "step": 28,
+      "actor": "delta",
+      "operation": "cache_put",
+      "target": "delta-request-wayfinding-page-1-controls",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "For the owner handover queue (entire Wayfinding Checklist), please share the control IDs, owner, status, and priority for all actual control rows in Wayfinding page 1 (rows 1-30), especially every incomplete control. My workspace has only page 2 staged.",
+      "text_sha256": "1a7268795d741652113b52a0f4f974ea71793de81b616b376720d08aeedeb3be",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000035",
+      "step": 35,
+      "actor": "alpha",
+      "operation": "cache_put",
+      "target": "alpha-wayfinding-page-1-records",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "NGH Main Campus relocation readiness — Wayfinding Checklist page 1, actual control rows 8–30 (23 controls). Fields: control_id | service_id | owner | priority | status.\nWF-001 | ALL | Patient Access | Critical | Complete\nWF-002 | ALL | Communications | High | In Progress\nWF-003 | ALL | Communications | Critical | Complete\nWF-004 | ALL | Patient Access | High | Not Started\nWF-005 | ALL | Communications | High | Complete\nWF-006 | ALL | Facilities | Critical | In Progress\nWF-007 | ALL | Facilities | High | Complete\nWF-008 | ALL | Facilities | High | Not Started\nWF-009 | ALL | Facilities | Critical | Complete\nWF-010 | ALL | Security | Critical | In Progress\nWF-011 | ALL | Facilities | Critical | Complete\nWF-012 | ALL | Communications | High | Not Started\nWF-013 | ALL | Patient Access | Critical | Complete\nWF-014 | MM-ENT | Facilities | Critical | In Progress\nWF-015 | MM-ENT | Facilities | Critical | Complete\nWF-016 | MM-ENT | Facilities | High | Not Started\nWF-017 | MM-ENT | Sarah Chen | High | Complete\nWF-018 | MM-ENT | Facilities | Standard | In Progress\nWF-019 | MM-RHE | Facilities | Critical | Complete\nWF-020 | MM-RHE | Facilities | High | Not Started\nWF-021 | MM-RHE | Elena Rodriguez | High | Complete\nWF-022 | MM-RHE | Elena Rodriguez | High | In Progress\nWF-023 | MM-RHE | Communications | Standard | Complete",
+      "text_sha256": "30e928ba0bf8512d83c466a5258bb0f926e54aa011025c27764f9c205738c043",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000039",
+      "step": 39,
+      "actor": "alpha",
+      "operation": "cache_put",
+      "target": "alpha-request-wayfinding-page-2-records",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "Please share the actual Wayfinding Checklist control records for rows 31–54 from the available page-2 read, including control_id, service_id, owner, priority, and status (and any exception/action details relevant to later checklist analysis). This is needed for the entire-checklist population and handover deliverables; page 2 is not staged in my workspace.",
+      "text_sha256": "b6a7bc4cc51729197a4218cfdec10c3e3ea09b9188731423128c7d96a29749de",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000048",
+      "step": 48,
+      "actor": "beta",
+      "operation": "cache_put",
+      "target": "beta-request-wayfinding-page-1-journey-stages",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "Please share Wayfinding Checklist page 1 actual control rows with journey_stage and status for each control (WF-001–WF-023), needed for whole-checklist journey reconciliation. Existing shared page-1 records lack journey_stage.",
+      "text_sha256": "483de0c631ae2dd7fdd0d7f4d550269f79f32881972cfb8e0e423598b4ff7612",
+      "workflow_stage": "journeys"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000053",
+      "step": 53,
+      "actor": "gamma",
+      "operation": "cache_put",
+      "target": "gamma-wayfinding-page-1-records",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "NGH Main Campus relocation readiness — Wayfinding Checklist page 1, actual control rows 8–30 (23 controls). Fields: control_id | service_id | status. ALL common controls WF-001 through WF-013; service controls follow.\nWF-001 | ALL | Complete\nWF-002 | ALL | In Progress\nWF-003 | ALL | Complete\nWF-004 | ALL | Not Started\nWF-005 | ALL | Complete\nWF-006 | ALL | In Progress\nWF-007 | ALL | Complete\nWF-008 | ALL | Not Started\nWF-009 | ALL | Complete\nWF-010 | ALL | In Progress\nWF-011 | ALL | Complete\nWF-012 | ALL | Not Started\nWF-013 | ALL | Complete\nWF-014 | MM-ENT | In Progress\nWF-015 | MM-ENT | Complete\nWF-016 | MM-ENT | Not Started\nWF-017 | MM-ENT | Complete\nWF-018 | MM-ENT | In Progress\nWF-019 | MM-RHE | Complete\nWF-020 | MM-RHE | Not Started\nWF-021 | MM-RHE | Complete\nWF-022 | MM-RHE | In Progress\nWF-023 | MM-RHE | Complete\nPlease share page 2 rows 31–54 including control_id, service_id, and status for the service reconciliation and whole-checklist deliverables.",
+      "text_sha256": "521ec421d3e7d189f2358aba6d26e740a75b121509850320401ddae1ed31eca9",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000058",
+      "step": 58,
+      "actor": "delta",
+      "operation": "cache_put",
+      "target": "delta-request-wayfinding-page-1-journey-stages",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "Please share source journey_stage and status for every actual control in Wayfinding page 1 (WF-001–WF-023), needed for whole-checklist reconciliation. Existing records lack journey_stage.",
+      "text_sha256": "6b4986199557847b2e9375811eea53502c893664ff0d50950322a83b3fd58a4a",
+      "workflow_stage": "journeys"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000066",
+      "step": 66,
+      "actor": "gamma",
+      "operation": "cache_put",
+      "target": "gamma-wayfinding-page-1-journey-stages",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "Wayfinding Checklist page 1, actual control rows 8–30, fields control_id | journey_stage | service_id:\nWF-001 | Home | ALL\nWF-002 | Home | ALL\nWF-003 | Web/SMS | ALL\nWF-004 | Web/SMS | ALL\nWF-005 | Transportation | ALL\nWF-006 | Parking | ALL\nWF-007 | Parking | ALL\nWF-008 | Parking | ALL\nWF-009 | Campus Entrance | ALL\nWF-010 | Campus Entrance | ALL\nWF-011 | Campus Entrance | ALL\nWF-012 | Campus Entrance | ALL\nWF-013 | Staff Assistance | ALL\nWF-014 | Interior Route | MM-ENT\nWF-015 | Interior Route | MM-ENT\nWF-016 | Interior Route | MM-ENT\nWF-017 | Destination | MM-ENT\nWF-018 | Return Journey | MM-ENT\nWF-019 | Interior Route | MM-RHE\nWF-020 | Destination | MM-RHE\nWF-021 | Destination | MM-RHE\nWF-022 | Staff Assistance | MM-RHE\nWF-023 | Return Journey | MM-RHE",
+      "text_sha256": "84ebf4e81002176e5f730e041426aab2d0d465233a51c74f60e8b551e0cb2e1b",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000083",
+      "step": 83,
+      "actor": "gamma",
+      "operation": "cache_put",
+      "target": "gamma-request-wayfinding-page-2-records",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "Time-sensitive request for service reconciliation: please share Wayfinding Checklist rows 31–54 from your page-2 read, including control_id, service_id, status (and priority/owner if available). Current work item requires whole-checklist counts for each service ID and common ALL controls. Page 2 is not staged for gamma.",
+      "text_sha256": "3099fbba200fedf930cc320ccde2f6ea8a0130b6669a2d500b6a3783c625eb3c",
+      "workflow_stage": "analysis"
+    },
+    {
+      "id": "job-63cbe7ca1ab8:e000088",
+      "step": 88,
+      "actor": "alpha",
+      "operation": "cache_put",
+      "target": "alpha-wayfinding-page-1-journey-stages",
+      "permitted": true,
+      "accepted": true,
+      "response_sha256": "fef4a579b133dea5c87db6a9d5406527cb1eb9ad99ce045eea6fd8d2b8203c22",
+      "response": {
+        "status": 201
+      },
+      "scope": "shared",
+      "text": "NGH Main Campus relocation readiness — Wayfinding Checklist page 1 actual controls: control_id | journey_stage. WF-001 Home; WF-002 Home; WF-003 Web/SMS; WF-004 Web/SMS; WF-005 Transportation; WF-006 Parking; WF-007 Parking; WF-008 Parking; WF-009 Campus Entrance; WF-010 Campus Entrance; WF-011 Campus Entrance; WF-012 Campus Entrance; WF-013 Staff Assistance; WF-014 Interior Route; WF-015 Interior Route; WF-016 Interior Route; WF-017 Destination; WF-018 Return Journey; WF-019 Interior Route; WF-020 Destination; WF-021 Destination; WF-022 Staff Assistance; WF-023 Return Journey.",
+      "text_sha256": "50396075110838af4a6a65e661ae9035ff86a106d7ce3789030e3d90093e997d",
+      "workflow_stage": "analysis"
+    }
+  ],
+  "waits": [
+    "job-63cbe7ca1ab8:e000025",
+    "job-63cbe7ca1ab8:e000030",
+    "job-63cbe7ca1ab8:e000031",
+    "job-63cbe7ca1ab8:e000032",
+    "job-63cbe7ca1ab8:e000047",
+    "job-63cbe7ca1ab8:e000052",
+    "job-63cbe7ca1ab8:e000057",
+    "job-63cbe7ca1ab8:e000059",
+    "job-63cbe7ca1ab8:e000062",
+    "job-63cbe7ca1ab8:e000065",
+    "job-63cbe7ca1ab8:e000070",
+    "job-63cbe7ca1ab8:e000072",
+    "job-63cbe7ca1ab8:e000078",
+    "job-63cbe7ca1ab8:e000082",
+    "job-63cbe7ca1ab8:e000085",
+    "job-63cbe7ca1ab8:e000086",
+    "job-63cbe7ca1ab8:e000089",
+    "job-63cbe7ca1ab8:e000090",
+    "job-63cbe7ca1ab8:e000092",
+    "job-63cbe7ca1ab8:e000093",
+    "job-63cbe7ca1ab8:e000095",
+    "job-63cbe7ca1ab8:e000097",
+    "job-63cbe7ca1ab8:e000098",
+    "job-63cbe7ca1ab8:e000099",
+    "job-63cbe7ca1ab8:e000100",
+    "job-63cbe7ca1ab8:e000104",
+    "job-63cbe7ca1ab8:e000105"
+  ],
+  "cleanup": {
+    "provider_live": false,
+    "subject_processes_created": 0,
+    "containers_created": 0,
+    "keys_created": 0,
+    "wakeups_created": 0,
+    "external_actions": 0,
+    "existing_host_login_retained": true,
+    "elapsed_seconds": 455.515
+  },
+  "exact_actor_histories_and_global_states_replayed": true
+}
