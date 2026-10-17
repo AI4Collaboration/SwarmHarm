@@ -18,6 +18,7 @@ from cloud import EC2, ROOT, cleanup, launch, save, ssh
 from graphs import validate
 from preflight import put
 from recording import retrieve
+from inventory import snapshot
 
 
 def gateway(meta_key, mode, value):
@@ -147,6 +148,7 @@ def main():
         if not (directory / 'cloud.json').exists():
             launch(directory, count, purpose, args.issue, graph['n'], graph['k'], lifetime)
         cloud = json.loads((directory / 'cloud.json').read_text())
+        snapshot(directory)
         watchdog.cancel()
         watchdog = threading.Timer(max(0, cloud['created_at'] + lifetime - time.time()), expire)
         watchdog.start()
@@ -187,6 +189,7 @@ def main():
                 if all(result.returncode == 0 for result in results):
                     break
                 if time.monotonic() - last_report >= 45:
+                    snapshot(directory)
                     save(directory, f'gateway-observation-{int(time.time())}.json', gateway(meta_key, 'recording', ''))
                     print(json.dumps({'phase': 'observing', 'issue': args.issue, 'time': time.time(),
                         'ended_subjects': sum(result.returncode == 0 for result in results), 'subjects': count}), flush=True)

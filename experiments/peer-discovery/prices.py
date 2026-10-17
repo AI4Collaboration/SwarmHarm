@@ -17,6 +17,8 @@ def main():
         'gp3': ('AmazonEC2', {'location': 'EU (Frankfurt)', 'volumeApiName': 'gp3'}),
         'public_ipv4': ('AmazonVPC', {'regionCode': 'eu-central-1', 'usagetype': 'EUC1-PublicIPv4:InUseAddress'}),
         'transfer': ('AWSDataTransfer', {'fromLocation': 'EU (Frankfurt)', 'transferType': 'AWS Outbound'}),
+        's3_get': ('AmazonS3', {'location': 'EU (Frankfurt)', 'group': 'S3-API-Tier2'}),
+        's3_storage': ('AmazonS3', {'location': 'EU (Frankfurt)', 'volumeType': 'Standard'}),
     }
     results = {'retrieved_at': time.time(), 'region': 'eu-central-1', 'products': {}}
     for category, (service, filters) in categories.items():

@@ -33,7 +33,7 @@ def retrieve(directory, settings, exports, bindings=None):
                 objects.append((f'{prefix}/executions/{node["id"].rsplit("/", 1)[-1]}', node, node['id']))
             for base, node, execution_id in objects:
                 for name, field in [('request_body', 'requestBody'), ('response_body', 'responseBody'), ('response_chunks', 'responseChunks')]:
-                    required = node['status'] == 'completed' and (name != 'response_chunks' or request['stream'])
+                    required = name == 'request_body' or (node['status'] == 'completed' and (name != 'response_chunks' or request['stream']))
                     if required or node[field]:
                         jobs.append((bucket, f'{base}/{name}.json', {**link, 'execution_id': execution_id, 'kind': name}))
 

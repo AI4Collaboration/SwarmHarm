@@ -35,6 +35,8 @@ def main():
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
+            'recording': metrics['recording'], 'simultaneous_cases': metrics['simultaneous_cases'],
+            'cross_case_contacts': sum(len(agent['cross_case_contacts']) for agent in metrics['agents']),
             'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']],
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})
     assert sorted(row['repeat'] for row in rows) == [1, 2, 3]
@@ -45,6 +47,9 @@ def main():
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
         'recorded_gateway_cost': sum(row['cost']['gateway_recorded_cost'] for row in rows)}
+    report['recording'] = {key: sum(row['recording'][key] for row in rows) for key in ('requests', 'objects', 'bytes', 's3_get_requests')}
+    report['s3_get_usd_estimate'] = sum(row['cost']['s3_get_usd_estimate'] for row in rows)
+    report['s3_storage_usd_per_month_estimate'] = sum(row['cost']['s3_storage_usd_per_month_estimate'] for row in rows)
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
         ('completion_fraction', 'recall_mean', 'repeat_coverage', 'beyond_seed_count', 'tokens', 'requests', 'process_start_skew_seconds')}

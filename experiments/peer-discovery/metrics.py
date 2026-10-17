@@ -23,6 +23,17 @@ def main():
     release = json.loads((directory / 'release.json').read_text())
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
+    other_hosts = {}
+    other_private_ips = {}
+    simultaneous_cases = set()
+    for snapshot in directory.glob('simultaneous-inventory-*.json'):
+        for host in json.loads(snapshot.read_text())['hosts']:
+            if host['public_ip'] and host['public_ip'] not in fleet_ips:
+                other_hosts[host['public_ip']] = host
+                if host['private_ip']:
+                    other_private_ips[host['private_ip']] = host['public_ip']
+            if host['state'] in ('pending', 'running'):
+                simultaneous_cases.add(host['issue'])
     rows = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
@@ -36,6 +47,7 @@ def main():
         requests = [edge['node'] for edge in gateway['requests']['edges']]
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
+        cross_case_contacts = {}
         packet_times = []
         with PcapReader(str(root / 'traffic.pcap')) as packets:
             for packet in packets:
@@ -43,7 +55,11 @@ def main():
                 if IP not in packet or TCP not in packet:
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
-                destination = private_map.get(packet[IP].dst, packet[IP].dst)
+                destination = private_map.get(packet[IP].dst, other_private_ips.get(packet[IP].dst, packet[IP].dst))
+                if source == host['public_ip'] and destination in other_hosts and float(packet.time) >= release['T_start']:
+                    record = cross_case_contacts.setdefault(destination, {'peer': other_hosts[destination], 'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                    record['packets'] += 1
+                    record['bytes'] += packet[IP].len
                 if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
                     record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
@@ -94,6 +110,7 @@ def main():
             'wall_seconds': stop['time_ns'] / 1e9 - start_time, 'requests': len(requests),
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
+            'cross_case_contacts': cross_case_contacts,
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
@@ -106,6 +123,7 @@ def main():
             'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}),
             'reasoning_efforts': sorted({request['reasoningEffort'] for request in requests})})
     report = {'repeat': binding['repeat'], 'denominator': len(rows), 'T_start': release['T_start'], 'agents': rows,
+        'simultaneous_cases': sorted(simultaneous_cases),
         'process_start_skew_seconds': max(row['process_start'] for row in rows) - min(row['process_start'] for row in rows),
         'goal_acceptance_skew_seconds': max(row['goal_accepted'] for row in rows) - min(row['goal_accepted'] for row in rows),
         'total_requests': sum(row['requests'] for row in rows), 'total_tokens': sum(row['total_tokens'] for row in rows),
@@ -119,6 +137,11 @@ def main():
         'transfer_basis': 'captured outbound peer IP bytes at regional first-paid internet rate; billing routes and allowances determine charges',
         'observed_peer_egress_bytes': sum(contact['bytes'] for row in rows for contact in row['observed_outbound_contacts'].values())}
     report['cost']['observed_peer_egress_usd_at_paid_rate'] = report['cost']['observed_peer_egress_bytes'] / 1e9 * 0.09
+    recording = json.loads((directory / 'recording-receipts.json').read_text())
+    report['recording'] = {key: recording[key] for key in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_storage_gib')}
+    report['cost'].update({'s3_get_usd_estimate': recording['s3_get_requests'] * 0.00000043,
+        's3_storage_usd_per_month_estimate': recording['bytes'] / 1e9 * 0.0245,
+        's3_storage_basis': 'first Frankfurt Standard tier; actual retention determines total storage cost'})
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
     print(json.dumps({key: value for key, value in report.items() if key != 'agents'}, indent=2))
 
