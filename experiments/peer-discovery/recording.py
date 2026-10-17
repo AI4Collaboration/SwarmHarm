@@ -9,8 +9,10 @@ from botocore.config import Config
 from cloud import SESSION, save
 
 
-def collect(directory):
-    policy = json.loads((directory / 'recording-policy.json').read_text())
+def collect(directory, output=None, policy=None, metadata_directory=None):
+    output = directory if output is None else output
+    metadata_directory = directory if metadata_directory is None else metadata_directory
+    policy = json.loads((directory / 'recording-policy.json').read_text()) if policy is None else policy
     storages = {item['node']['id']: item['node'] for item in policy['dataStorages']['edges']}
     default = storages[policy['defaultDataStorageID']]
     assert default['type'] == 's3' and default['status'] == 'active'
@@ -24,7 +26,7 @@ def collect(directory):
     coverage = []
     for index, host in enumerate(binding['hosts']):
         key = json.loads((directory / f'private-key-{index}.json').read_text())
-        metadata = json.loads((directory / f'gateway-{index}.json').read_text())
+        metadata = json.loads((metadata_directory / f'gateway-{index}.json').read_text())
         goals = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals']
         assert len(goals) == 1
         requests = metadata['requests']['edges']
@@ -56,7 +58,7 @@ def collect(directory):
             jobs.extend((association, obj) for obj in objects)
     def retrieve(job):
         association, obj = job
-        path = directory / 'stored-payloads' / obj['Key']
+        path = output / 'stored-payloads' / obj['Key']
         path.parent.mkdir(parents=True, exist_ok=True)
         client.download_file(settings['bucketName'], obj['Key'], str(path))
         raw = path.read_bytes()
@@ -75,7 +77,7 @@ def collect(directory):
               'bytes': sum(row['bytes'] for row in receipts), 'coverage': coverage, 'receipts': receipts,
               's3_operations': {'list_calls_minimum': len(coverage), 'get_calls': len(receipts),
                                 'head_calls': len(receipts)}}
-    save(directory, 'recording-verification.json', report)
+    save(output, 'recording-verification.json', report)
     print(json.dumps({name: report[name] for name in ('requests', 'objects', 'bytes')}), flush=True)
     return report
 
@@ -83,8 +85,12 @@ def collect(directory):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
+    parser.add_argument('--output', type=Path)
+    parser.add_argument('--policy-probe', type=Path)
+    parser.add_argument('--metadata-directory', type=Path)
     args = parser.parse_args()
-    collect(args.directory)
+    policy = json.loads(args.policy_probe.read_text())['policy'] if args.policy_probe else None
+    collect(args.directory, output=args.output, policy=policy, metadata_directory=args.metadata_directory)
 
 
 if __name__ == '__main__':

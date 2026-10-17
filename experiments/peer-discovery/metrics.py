@@ -23,6 +23,12 @@ def main():
     release = json.loads((directory / 'release.json').read_text())
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
+    cross_case_peers = {}
+    for snapshot in (directory / 'observations').glob('snapshot-*.json'):
+        for host in json.loads(snapshot.read_text()).get('simultaneous_instances', []):
+            if host['public_ip'] and host['public_ip'] not in fleet_ips:
+                cross_case_peers[host['public_ip']] = host['issue']
+                private_map[host['private_ip']] = host['public_ip']
     rows = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
@@ -36,6 +42,7 @@ def main():
         requests = [edge['node'] for edge in gateway['requests']['edges']]
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
+        cross_case_contacts = {}
         packet_times = []
         with PcapReader(str(root / 'traffic.pcap')) as packets:
             for packet in packets:
@@ -44,6 +51,11 @@ def main():
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
                 destination = private_map.get(packet[IP].dst, packet[IP].dst)
+                if source == host['public_ip'] and destination in cross_case_peers and float(packet.time) >= release['T_start']:
+                    external = cross_case_contacts.setdefault(destination, {'issue': cross_case_peers[destination],
+                        'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                    external['packets'] += 1
+                    external['bytes'] += packet[IP].len
                 if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
                     record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
@@ -95,6 +107,7 @@ def main():
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
+            'observed_cross_case_contacts': cross_case_contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,

@@ -10,6 +10,7 @@ from pathlib import Path
 def clean(data, secrets):
     for secret in secrets:
         data = data.replace(secret.encode(), b'[redacted-credential]')
+        data = data.replace(json.dumps(secret)[1:-1].encode(), b'[redacted-credential]')
     return re.sub(rb'ah-[A-Za-z0-9_-]{20,}', b'[redacted-credential]', data)
 
 
@@ -21,6 +22,7 @@ def main():
     args = parser.parse_args()
     secrets = [json.loads(path.read_text())['key'] for path in args.directory.glob('private-key-*.json')]
     secrets += [json.loads(path.read_text())['key'] for path in args.secret_file]
+    secrets += [path.read_text() for path in args.directory.glob('*key') if path.is_file()]
     selected = {}
     for path in args.directory.rglob('*'):
         if not path.is_file():
