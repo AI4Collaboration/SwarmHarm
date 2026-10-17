@@ -54,9 +54,12 @@ def main():
                 destination = private_map.get(packet[IP].dst, packet[IP].dst)
                 if source == host['public_ip'] and destination not in fleet_ips and float(packet.time) >= release['T_start']:
                     record = outside_contacts.setdefault(destination, {'packets': 0, 'bytes': 0,
-                        'first_packet': float(packet.time), 'case': other_cases.get(destination)})
+                        'first_packet': float(packet.time), 'case': other_cases.get(destination),
+                        'connection_attempt_syn_packets': 0})
                     record['packets'] += 1
                     record['bytes'] += packet[IP].len
+                    if packet[TCP].flags & 2 and not packet[TCP].flags & 16:
+                        record['connection_attempt_syn_packets'] += 1
                 if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
                     record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
@@ -115,7 +118,7 @@ def main():
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
-            'observed_outside_repeat_contacts': outside_contacts,
+            'observed_outside_repeat_ip_traffic': outside_contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,

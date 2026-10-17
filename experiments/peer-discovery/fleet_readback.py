@@ -10,6 +10,8 @@ def main():
     parser.add_argument('directory', type=Path)
     args = parser.parse_args()
     cloud = json.loads((args.directory / 'cloud.json').read_text())
+    specification = EC2.describe_instance_types(InstanceTypes=['t2.micro'])['InstanceTypes'][0]
+    assert specification['VCpuInfo']['DefaultVCpus'] == 1 and specification['MemoryInfo']['SizeInMiB'] == 1024
     instances = [instance for reservation in EC2.describe_instances(InstanceIds=cloud['instance_ids'])['Reservations']
                  for instance in reservation['Instances']]
     volumes = EC2.describe_volumes(VolumeIds=cloud['volume_ids'])['Volumes']
@@ -25,7 +27,8 @@ def main():
     for name in ('IpPermissions', 'IpPermissionsEgress'):
         assert any(rule['IpProtocol'] == '-1' and any(item['CidrIp'] == '0.0.0.0/0' for item in rule.get('IpRanges', []))
                    for rule in group[name])
-    save(args.directory, 'fleet-readback.json', {'instances': instances, 'volumes': volumes, 'security_group': group})
+    save(args.directory, 'fleet-readback.json', {'instances': instances, 'volumes': volumes,
+         'security_group': group, 'instance_type': specification})
     print(json.dumps({'verified_instances': len(instances), 'encrypted_gp3_gib': len(volumes) * 12,
                       'public_ipv4': len(instances), 'metadata': 'disabled'}))
 
