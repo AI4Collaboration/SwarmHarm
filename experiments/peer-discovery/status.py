@@ -30,6 +30,7 @@ def main():
         result['states'] = dict(collections.Counter(goal['status'] for row in observations for goal in row['goals']))
         result['ended'] = sum(row['ended'] for row in observations)
         result['accepted_goals'] = sum(len(row['goals']) for row in observations)
+        result['native_tokens_used'] = sum(goal['tokens_used'] for row in observations for goal in row['goals'])
     print(json.dumps(result))
 
 

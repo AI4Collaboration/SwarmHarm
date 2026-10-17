@@ -4,6 +4,8 @@ SWH-91, 2026-10-17: use `prepare_case.py` with the parent workdir, shared admiss
 
 `status.py DIRECTORY --host-detail` reads actual native goal receipts from the running hosts. `inventory.py DIRECTORY` saves operator-side simultaneous-case address bindings. Metrics distinguish contacts with the repeat's true peers from observed cross-case contacts and retain actual stored-object counts, S3 retrieval estimates and storage cost per month.
 
+`live.py DIRECTORY` saves corrected process-start receipts and verifies the exact accepted native objectives. `progress.py DIRECTORY --meta-key OPERATOR_KEY` reads per-key request counts and quota usage. `recording.py` retrieves S3 bodies with one `GetObject` per payload and records the S3 request ID, object size and SHA256 in its retrieval ledger.
+
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
 
 Install `requirements.txt` with `uv venv .venv --python 3.12` and `uv pip install --python .venv/bin/python -r requirements.txt`. Invoke that environment directly. AWS uses operator profile `eurosafeai`, region `eu-central-1`; the operator's AxonHub-host SSH identity remains private.

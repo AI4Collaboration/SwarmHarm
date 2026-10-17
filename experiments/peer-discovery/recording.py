@@ -3,6 +3,7 @@ import concurrent.futures
 import hashlib
 import json
 import time
+import threading
 from pathlib import Path
 
 from cloud import SESSION, save
@@ -13,6 +14,7 @@ def retrieve(directory, settings, exports, bindings=None):
     s3 = SESSION.client('s3')
     jobs = []
     coverage = []
+    ledger_lock = threading.Lock()
     for index, export in enumerate(exports):
         for edge in export['requests']['edges']:
             request = edge['node']
@@ -41,11 +43,17 @@ def retrieve(directory, settings, exports, bindings=None):
         bucket, key, link = job
         target = directory / 'stored-payloads' / key
         target.parent.mkdir(parents=True, exist_ok=True)
-        s3.download_file(bucket, key, str(target))
-        raw = target.read_bytes()
+        response = s3.get_object(Bucket=bucket, Key=key)
+        with response['Body'] as body:
+            raw = body.read()
+        target.write_bytes(raw)
         assert json.loads(raw), key
-        return {**link, 'bucket': bucket, 'object_key': key, 'bytes': len(raw),
-                'sha256': hashlib.sha256(raw).hexdigest()}
+        receipt = {**link, 'bucket': bucket, 'object_key': key, 'bytes': len(raw),
+                'sha256': hashlib.sha256(raw).hexdigest(), 's3_request_id': response['ResponseMetadata']['RequestId']}
+        with ledger_lock:
+            with (directory / 'retrieval-ledger.jsonl').open('a') as ledger:
+                ledger.write(json.dumps({'time': time.time(), **receipt}) + '\n')
+        return receipt
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         receipts = list(pool.map(download, jobs))

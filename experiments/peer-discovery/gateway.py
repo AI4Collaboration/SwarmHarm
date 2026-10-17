@@ -82,10 +82,20 @@ class Gateway:
             for name, command in {'memory': ['free', '-b'], 'disk': ['df', '-B1', '/'], 'load': ['uptime']}.items()}
         return data
 
+    def progress(self, ids):
+        declarations = ','.join(f'$id{index}:ID!' for index in range(len(ids)))
+        fields = ' '.join(
+            f'r{index}:requests(first:1,where:{{apiKeyID:$id{index}}}){{totalCount edges{{node{{id createdAt status modelID}}}}}} '
+            f'q{index}:apiKeyQuotaUsages(apiKeyId:$id{index}){{usage{{requestCount totalTokens}}}}'
+            for index in range(len(ids)))
+        data = self.gql(f'query({declarations}){{{fields}}}', {f'id{index}': value for index, value in enumerate(ids)})
+        return [{'api_key_id': value, 'requests': data[f'r{index}'], 'quota': data[f'q{index}']}
+                for index, value in enumerate(ids)]
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'recording', 'prices', 'quota', 'token-quota'])
+    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'recording', 'progress', 'prices', 'quota', 'token-quota'])
     parser.add_argument('value', nargs='?')
     args = parser.parse_args()
     gateway = Gateway()
@@ -115,6 +125,8 @@ def main():
         print(json.dumps(gateway.export(args.value)))
     elif args.mode == 'recording':
         print(json.dumps(gateway.recording()))
+    elif args.mode == 'progress':
+        print(json.dumps(gateway.progress(json.loads(args.value))))
 
 
 if __name__ == '__main__':
