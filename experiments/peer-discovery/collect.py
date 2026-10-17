@@ -24,4 +24,8 @@ record = {'time_ns': time.time_ns(), 'files': files, 'launch_markers': sorted(pa
 (directory / 'collection-receipt.json').write_text(json.dumps(record, indent=2))
 (directory / 'traffic-journal.txt').write_bytes(subprocess.run(
     ['journalctl', '-u', 'peer-traffic.service', '--no-pager'], check=True, capture_output=True).stdout)
+(directory / 'packages.txt').write_bytes(subprocess.run(
+    ['dpkg-query', '-W', 'python3', 'python3-pexpect', 'python3-requests', 'python3-psutil',
+     'chrony', 'curl', 'openssh-server', 'tcpdump', 'iproute2', 'iputils-ping', 'dnsutils', 'netcat-openbsd', 'jq'],
+    check=True, capture_output=True).stdout)
 print(json.dumps({'files': len(files), 'launch_markers': record['launch_markers']}))

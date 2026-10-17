@@ -1,5 +1,6 @@
 import argparse
 import collections
+import hashlib
 import json
 import statistics
 from pathlib import Path
@@ -13,8 +14,22 @@ def main():
     args = parser.parse_args()
     rows = []
     configurations = set()
+    seen_instances = set()
+    seen_volumes = set()
+    seen_keys = set()
+    peer_key_hashes = set()
     for directory in args.directories:
         binding = json.loads((directory / 'binding.json').read_text())
+        cloud = json.loads((directory / 'cloud.json').read_text())
+        instance_ids = {host['id'] for host in binding['hosts']}
+        volume_ids = set(cloud['volume_ids'])
+        key_ids = {json.loads(path.read_text())['id'] for path in directory.glob('private-key-*.json')}
+        assert len(instance_ids) == len(volume_ids) == len(key_ids) == len(binding['hosts'])
+        assert not instance_ids & seen_instances and not volume_ids & seen_volumes and not key_ids & seen_keys
+        seen_instances.update(instance_ids)
+        seen_volumes.update(volume_ids)
+        seen_keys.update(key_ids)
+        peer_key_hashes.add(hashlib.sha256((directory / 'peer-key.pub').read_bytes()).hexdigest())
         configurations.add((len(binding['hosts']), len(binding['hosts'][0]['seeds'])))
         scoring = json.loads((directory / 'scoring.json').read_text())
         metrics = json.loads((directory / 'metrics.json').read_text())
@@ -42,12 +57,16 @@ def main():
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})
     assert sorted(row['repeat'] for row in rows) == [1, 2, 3]
     assert len(configurations) == 1
+    assert len(peer_key_hashes) == 3
     n, k = configurations.pop()
     report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat']),
         'denominator': sum(row['denominator'] for row in rows), 'exact_count': sum(row['exact_count'] for row in rows),
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
         'recorded_gateway_cost': sum(row['cost']['gateway_recorded_cost'] for row in rows)}
+    report['fresh_environment_verification'] = {'distinct_instances': len(seen_instances),
+        'distinct_root_volumes': len(seen_volumes), 'distinct_inference_keys': len(seen_keys),
+        'distinct_repeat_ssh_identities': len(peer_key_hashes)}
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
         ('completion_fraction', 'recall_mean', 'repeat_coverage', 'beyond_seed_count', 'tokens', 'requests', 'process_start_skew_seconds')}

@@ -57,6 +57,7 @@ def main():
         assert hashlib.sha256((root / 'executed-driver.py').read_bytes()).hexdigest() == receipt['files']['/opt/peer-discovery/driver.py']['sha256']
         revoked = read(directory / f'key-revocation-{index}.json')['updateAPIKeyStatus']
         assert revoked['status'] == 'disabled'
+        assert revoked['id'] == configuration['id'] == read(directory / f'private-key-{index}.json')['id']
     cleanup = read(directory / 'cleanup.json')
     terminated = [instance['InstanceId'] for reservation in cleanup['instances']['Reservations'] for instance in reservation['Instances'] if instance['State']['Name'] == 'terminated']
     assert set(terminated) == {host['id'] for host in hosts}
