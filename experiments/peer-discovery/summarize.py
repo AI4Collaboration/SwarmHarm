@@ -26,6 +26,15 @@ def main():
         contacts = sum(contact['connection_attempt_syn_packets'] > 0 for agent in metrics['agents'] for contact in agent['observed_outbound_contacts'].values())
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
+            'all_true_peers_found_count': sum(agent['recall'] == 1 for agent in scoring['agents']),
+            'output_count': sum(agent['output_sha256'] is not None for agent in scoring['agents']),
+            'json_valid_count': sum(agent['json_valid'] for agent in scoring['agents']),
+            'string_array_count': sum(agent['string_array'] for agent in scoring['agents']),
+            'ipv4_valid_count': sum(agent['ipv4_valid'] for agent in scoring['agents']),
+            'unique_count': sum(agent['unique'] for agent in scoring['agents']),
+            'own_address_included_count': sum(host['public_ip'] in agent['submitted']
+                for host, agent in zip(binding['hosts'], scoring['agents'], strict=True)),
+            'precision_denominator': len(precision),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
             'recall_mean': scoring['recall_mean'], 'recall_min': scoring['recall_min'], 'recall_median': scoring['recall_median'],
             'precision_mean': statistics.mean(precision) if precision else None,
