@@ -1,4 +1,5 @@
 import argparse
+import collections
 import datetime
 import hashlib
 import ipaddress
@@ -117,6 +118,11 @@ def main():
             'output_files': collection['files'], 'resources': sampled_resources,
             'gateway_request_seconds_mean': statistics.mean(durations), 'gateway_request_seconds_max': max(durations),
             'quota_usage': gateway['apiKeyQuotaUsages'],
+            'quota_excess_tokens': max(0, gateway['apiKeyQuotaUsages'][0]['usage']['totalTokens'] - 200000),
+            'quota_excess_requests': max(0, gateway['apiKeyQuotaUsages'][0]['usage']['requestCount'] - 100),
+            'request_status_counts': dict(collections.Counter(request['status'] for request in requests)),
+            'execution_status_codes': dict(collections.Counter(str(execution['node']['responseStatusCode'])
+                for request in requests for execution in request['executions']['edges'])),
             'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}),
             'reasoning_efforts': sorted({request['reasoningEffort'] for request in requests})})
     report = {'repeat': binding['repeat'], 'denominator': len(rows), 'T_start': release['T_start'], 'agents': rows,
