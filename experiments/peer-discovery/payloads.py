@@ -19,7 +19,7 @@ def collect_payloads(directory):
         endpoint_url=settings['endpoint'] or None,
         config=Config(connect_timeout=10, read_timeout=60, max_pool_connections=16,
                       s3={'addressing_style': 'path' if settings['pathStyle'] else 'auto'}))
-    calls = {'GetObject': 0, 'HeadObject': 0}
+    calls = {'GetObject': 0, 'HeadObject': 0, 'ListObjectsV2': 0}
     call_lock = threading.Lock()
 
     def count_call(model, **kwargs):
@@ -83,7 +83,7 @@ def collect_payloads(directory):
         receipts = list(pool.map(retrieve, jobs))
     report = {'request_count': len(requests), 'object_count': len(receipts),
               'bytes': sum(row['bytes'] for row in receipts), 'requests': requests, 'objects': receipts,
-              'entity_coverage': coverage, 's3_list_requests': len(requests),
+              'entity_coverage': coverage, 's3_list_requests': calls['ListObjectsV2'],
               's3_get_requests': calls['GetObject'], 's3_head_requests': calls['HeadObject'],
               'storage_bucket': settings['bucketName']}
     save(directory, 'recording-receipts.json', report)
