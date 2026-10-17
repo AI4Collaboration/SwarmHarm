@@ -22,6 +22,7 @@ def main():
         ('scoring', ['grade.py', str(args.directory)]),
         ('metrics', ['metrics.py', str(args.directory)]),
         ('resources', ['resources.py', str(args.directory)]),
+        ('redaction', ['verify_redaction.py', str(args.directory)]),
     ]
     if not (args.directory / 'recording-receipts.json').exists():
         stages.insert(1, ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]))
