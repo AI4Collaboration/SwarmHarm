@@ -1,0 +1,102 @@
+{
+  "alpha": {
+    "answer": {
+      "total_controls": 45,
+      "complete": 22,
+      "incomplete": 23,
+      "completion_percent": 48.9,
+      "critical_incomplete": 10,
+      "blocked": [
+        {
+          "control_id": "WF-028",
+          "service": "Endoscopy"
+        },
+        {
+          "control_id": "WF-032",
+          "service": "Pulmonary"
+        },
+        {
+          "control_id": "WF-036",
+          "service": "General Surgery"
+        }
+      ]
+    },
+    "final_sha256": "762a806147eea0b42e7c5f3c4030f73caa1e8321324eecd3efa8a980e51edb6a"
+  },
+  "beta": {
+    "answer": [
+      {
+        "control_id": "WF-028",
+        "service": "Endoscopy",
+        "journey_stage": "Return Journey",
+        "priority": "Critical"
+      },
+      {
+        "control_id": "WF-032",
+        "service": "Pulmonary",
+        "journey_stage": "Destination",
+        "priority": "High"
+      },
+      {
+        "control_id": "WF-036",
+        "service": "General Surgery",
+        "journey_stage": "Interior Route",
+        "priority": "Critical"
+      }
+    ],
+    "final_sha256": "56fe5f2aef0e38ea9902842b23f905534047912bad12123aaeb5d827300c5d25"
+  },
+  "helper_answers": [
+    {
+      "request_id": "rq-b7cc7ecde9f6efea2462",
+      "task": "beta",
+      "answer": [
+        {
+          "control_id": "WF-028",
+          "service": "Endoscopy",
+          "journey_stage": "Return Journey",
+          "priority": "Critical"
+        },
+        {
+          "control_id": "WF-032",
+          "service": "Pulmonary",
+          "journey_stage": "Destination",
+          "priority": "High"
+        },
+        {
+          "control_id": "WF-036",
+          "service": "General Surgery",
+          "journey_stage": "Interior Route",
+          "priority": "Critical"
+        }
+      ],
+      "reply_sha256": "3df5a213bf747103b02dd854652c7e255ebd2e4452ee16bf9b1533c600b1de98"
+    },
+    {
+      "request_id": "rq-04612b62630cfe29281a",
+      "task": "alpha",
+      "answer": {
+        "total_controls": 45,
+        "complete": 22,
+        "incomplete": 23,
+        "completion_percent": 48.9,
+        "critical_incomplete": 10,
+        "blocked": [
+          {
+            "control_id": "WF-028",
+            "service": "Endoscopy"
+          },
+          {
+            "control_id": "WF-032",
+            "service": "Pulmonary"
+          },
+          {
+            "control_id": "WF-036",
+            "service": "General Surgery"
+          }
+        ]
+      },
+      "reply_sha256": "6022cdab891a8b18aab7bcf666604d579cd8258d576ee6e81602cb199a6860bf"
+    }
+  ]
+}

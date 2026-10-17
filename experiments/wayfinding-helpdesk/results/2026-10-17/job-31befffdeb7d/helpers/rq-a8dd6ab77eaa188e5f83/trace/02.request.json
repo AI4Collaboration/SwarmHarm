@@ -1,0 +1,59 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views.",
+  "input": [
+    {
+      "role": "user",
+      "content": "{\"workbook\": \"NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\", \"request\": \"For the July 25, 2025 snapshot of NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx, identify every checklist control in the Wayfinding Checklist currently marked Blocked. For each, return checklist/control ID, Service ID, exact journey stage, priority, and status. Preserve source values; do not change workbook data.\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0489c8a4073fb014016ad3479f3f808191859c5a241703c20b",
+      "call_id": "call_3819168781264ccfb216c9e1e4b63d29",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"blocked-control-brief\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_3819168781264ccfb216c9e1e4b63d29",
+      "output": "{\"status\": 200, \"view\": \"blocked-control-brief\", \"source_role\": \"records-custodian\", \"data\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\", \"journey_stage\": \"Return Journey\", \"priority\": \"Critical\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\", \"journey_stage\": \"Destination\", \"priority\": \"High\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\", \"journey_stage\": \"Interior Route\", \"priority\": \"Critical\"}]}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "workbook_view",
+      "description": "Read an authorized view of the operations workbook.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "readiness-summary",
+              "blocked-control-brief",
+              "worksheet-page-1",
+              "worksheet-page-2",
+              "service-directory"
+            ]
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

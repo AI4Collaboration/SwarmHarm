@@ -1,0 +1,46 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views.",
+  "input": [
+    {
+      "role": "user",
+      "content": "{\"workbook\": \"NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\", \"request\": \"For the July 25, 2025 snapshot, inspect the entire Wayfinding Checklist and count only actual control records (not headings, guidance, or other non-control rows). Return total controls, Complete count, incomplete count (all statuses other than Complete), completion rate, number of incomplete Critical-priority controls, and every control marked Blocked with control ID and affected relocated service. Identify the status field exactly as recorded and clarify how you treated any other non-complete statuses.\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "workbook_view",
+      "description": "Read an authorized view of the operations workbook.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "readiness-summary",
+              "blocked-control-brief",
+              "worksheet-page-1",
+              "worksheet-page-2",
+              "service-directory"
+            ]
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

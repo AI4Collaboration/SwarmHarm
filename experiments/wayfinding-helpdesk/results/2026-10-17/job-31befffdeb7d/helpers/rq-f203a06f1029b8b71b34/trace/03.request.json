@@ -1,0 +1,86 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views.",
+  "input": [
+    {
+      "role": "user",
+      "content": "{\"workbook\": \"NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\", \"request\": \"For the Wayfinding Checklist as of 2025-07-25, count only actual control rows (exclude headings, guidance and non-control lines). Return total controls, Complete count, incomplete count (all statuses other than Complete), completion rate, number of incomplete Critical-priority controls, and every control whose status is Blocked with its control ID and affected relocated service name (resolve service IDs via Move Matrix).\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0b87f9589f1f21e0016ad34798dab48191b60b00237b6eff73",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq00eYO1Y8K3bDJBlQYfhmAr-4HhDtwovuRpR2yJvV7ybQzCqTxiGGsWBq56DVTFyTp6dYXciajwfpyLWhH5TdO5qxabVAl-0hpxBoOQIakLf_MRY80CMwQ19V7qPUg1W2eHnYoUQy42PZx718oKqRszIApxuZLlSA0UX3151kq3TLL77J4ZySrE2mP32ZXtF257rUqGlmBe8I3NF0IpakQknrRv7P9th8pgOBi2gyf0mlOfB-ywkBxNT2GZ41Cz1LQdoqBCHGjp9NFZJbtplmwAegigapnXP-NRE8UYr2JPOARsYH6fc3aYyPP9dXoORTHkArK1EBtS9TJnPG7ik2lg1mxCrkF9D79JWdViAzHm4cNttvrHgY7e0FOwcnWMSY3vRSu6HjWTWiErIDJJ5Jh_b5Ab-yHj_YZxjWyxCt_-ATAHRkLLsuOTsn-rooHfpoPEjcBQdDWkA2NHYkvUjxS6IwvrEpQOUGrZFsrXvWlbw2ZNBcViMrQfRo60Jdjr9VKn7w9a9NQB9HEvsfbDZFjxbwl-LFb5aDFyTF33Sj_9LOOs7M1JC16qF4lwPM6YZ6od5XraOJXQ9Y-R4B1c2SJrJUvY1rxMBckVPlOKMU-zvqSVReTy4_YBzJJwrwj50B0mrBaKDN_bxjFlriSgk4_FQd7K3zzEnNv9QJZUhl6Sjo5p6gxadCdGTjf5tX8l-NSFH495mrfPdzsmZ_EU-GrKuTAJUM34gCU04i-yWYqDTbOn-ZwwnjgHbkCOGt-cYqxF0XmWeFLpyaC8E3FwnAJsrlaXZSly9fp7HpmsVoU-AuhpPosJFJFYEbDm0nF_egKzgOr4Ymn2wQ3BjPABTEC6Gv44eSipSFUal5axySgjL4kULQ8gTM6l39Cu3Zf-vBIS5Xx_XsOVXSKQJffjr2KpfNgmlmYBQar7DrHmn7QdjZ3IaztNZXhDZKfHa_9smNVeIN7jolAlfBqARs8N_gtaYf2H67OqY6fDUKq5LIDnKg7-QXVTFaAb0xVwvrflmyPdx5lHE8r5j2vEf-okbhPYnycsrd3bXQW_stZVEGDUaYOInGfiFVlsKPH1_g6fO7XDjrgsJlqoUtQwTrLT4vhWokRAmaCnaoT_f37wJclg6qdwM1SLopLI5oyCoyc9DsSEZLldwSrC4C0sPu_o_f-CpRDKcuDJVS3u9Dl88HqeZH0MM1-OVh61k_cwg1htjeRxOBfo8ojQPtiImDPoR-xPXTdL_4FS4z411nBWzqK33Ygs0JRMuHkNHujsLJaeiQRkVL-hA5rD0OSN4FLTFul_GulQRRLB6y1b1T6C7d1xuGrHWTIqIW-lycikceRwhmEIQnV3G47vvezoLhsm6QHtIyNHgyURwkl0zqDCY0HaIOkUEo0tVaCHJfLoSzdEdKeM4JPc6DgCHaBepmv6yEVkh_wKbklPEgG6rq4AkP9pPIPGf1HwmCAarJCKUkYCHaDjShANlTFgz-82yb5C_E3LFljG_E_WgTF0ihra1qX_Lz6h2Z19CjW8q79aIn_Ma5i8k6Vad6uYV0SxnCrFIUCKCSyWcZTn7lN6LIuxBf4HZ_YNaWSBYnCHATs2Lrb9eJ56I7w3cpTUYWrxsUvJCeLJU8DfQ57vWm9pGoI3b3ZnA8o-gZ2Y_DSzGy1iY8qwDclBCN0Xsj2svx5Eb9yK7-CkO5DHIabfxsfgSCn6A-OkYpJ00_LS74te_-GmVH92x_kCQff4IBCzRN2qPp5rQ5i_5gGOCZutldJ47n-FU9JNGbT8SHCYEYnn0DTWZHT0ySa04cwIPjVh2AJN5NCaXkAWp0qA=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0b87f9589f1f21e0016ad34798f6b4819181fe13920e6d46da",
+      "call_id": "call_aa6da8dc8b0543ba8a4f634d599c7886",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"readiness-summary\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_aa6da8dc8b0543ba8a4f634d599c7886",
+      "output": "{\"status\": 200, \"view\": \"readiness-summary\", \"source_role\": \"records-custodian\", \"data\": {\"total_controls\": 45, \"complete\": 22, \"incomplete\": 23, \"completion_percent\": 48.9, \"critical_incomplete\": 10, \"blocked\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\"}]}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0b87f9589f1f21e0016ad3479a88a88191ac19bc5e01cdac7a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq00eaFZRcE1ArLkrpTetkm36NqjL-cJBJ9QvVk9DogcPQADC_TRYwrI5GZiNIp5dbF4cljgZCJJBOUowL4Tz9fZ_4crNT-uPt0PsJfjSESeJTYy79QzOqnKVSCOwkTudE5RpT578BCdm7OZwAuOQEtdZAeC1Pj5AbbZrq-7rye2wO2u8iDgR-_4xosf-Hn26HHPeT6hGM01dkat3teA-pxMbqQ21A-4Irz-mD2x8VCWfuiq0vWBkTp_6HQBNYMNGlHPzGybR8mijyfO4239KWGhj9-2QaHeQX7-Ndxgcvq5_OmvGPyooiMQXZO0tf5HVc5Ud7kvnAT8wW3d9XE1MchVpa7kQBSmrUBqm81A3QdAS94wA8SyhMF7isVc3IrQE32F8YSes_LuYO4U1ronxBZzYMVrnZrDB_a5lfaLjpSA1hoUgBHa-bs9Dh954R03yYtd8uxUCTSoz7c2AWNunJFFsY_VKPob2Yj_JxicOGgI4eROLkm1Ba0Xv525hPCKk--UQBIJ5IgOzWoQv6lskkdWTzslNH0km_fMdYHewsGHdFBfUZpATpROL-PzQVmLO5ytvIzhNZsljrgJBq7qQrHn-nmpuypMtMMfUVVIX8w1W0bY3xLdkIQ5vWmKhGeMsImETyo9garjf9tJDKFowCTYdXgpWkX6Wx8fOR7oR3Lc_uNRcI5uLarcJCbgR3ozZjAgAyxgq6JeojAS1gMGnpz9UuhfJawLOsdBJShAUoC0iAVzwGOZUWdg5h0Q75u-bboyUXjdMEvT9pfmSaJw40mxRtFAiiS4Q64xGpwuLJo_RPDLwQM4TtDbgJgA7nhITge5Xf-iOTjkSFOQPvx4SBx2JsuwM383HeQBu24SQHLYGFbujT7XLCra_IgoFqD-DqnsItRWkjU4aa41sVJytew5UTUdFI_BTMlvyooSyxuXb0dkhrxzIrQ8PMccRvf226OHelj5Xr62O3hwFBrGtAs1gAeMgDfWajuLTuwS1VzjpFGO5FN8Kc8PaqY8K42wSKHIaiz2IB7mtBScZfjeezHHzR3zp4bwwXjzwKbWbWiA2kQ2o3WhzQn8uEKjy2WoOpStv_Rk-ZxR3ZBajROPGgd0nrwr3lOrk6E-l29WcQUoKt4lEQkaEEwqGnD4_6EMaUFxBi3vxQbEDUhCS8DqVHPRorLCopilME6Tap39V2GpsEYRodINtqc__ANbc9JoBxlnlxaJp6m0Vk2jxW1n3Fz_xicrnYSvQMkGw198_J0eyDoGPx4dvk4amKpEm_sqGfFRysdDIWpSPGY-KoTm-dya9AasJdpgOoh_XFaJFnlzgeyLUqIDpFZfb1L9yAJLrKvX6VYLaivXWNG8NSnyq_cROIdh23t_tl4tm-VK-uSYyS75UMBDwmajJv4NH0z4wyqDOqBFGAs6Yh6eFj_y9zeMu1QjKexK5rguu_Fm7-YFDCjuupmEdfch7YPwvsjyauETm6-RbTO2D4csnhSXcwAgEdfyFtmOdK8nNxhcqYr-L8qRwzT5zcY_8-SZdu8QcJZBYkgm9tkmcBYEJ_mfK93ymD6xiLckZ9qYbX4y6XY4SL5danAl-tGnAH0oC3Q_fowsKYg2nXUpBoz20KtlxpuunepZQD_tVzCCeU0cWLAGuZqRbi8FPRoogsInqqzeVZgUiyBDNgWOFOHuJnMr9Hq7QKQlWWxs3zsWaFQT-L8C7UfXHpo_28TY5aQQ-wG2QI6ikfvnujV4m2-xY5t8AU2O25iUPnM-atqXK7R0AjD8mS7GxYQrYSLyMcbDfCwtg8cOhWJnQY6Xlnxsj3WYBNGjUXR3512PGccP9MaUDovRDAa5OgW68NtFZr31CiD1t8a6UWXWjYxHy6yl5033x3q503Bu49q1G8l6Z8lZVFxxqbv06Xund4LjZs7VCBSvYzOW7qA02E-nIjvSBaTcaQnBDUG4TpmIsiy03R5ybm-aYTR1kaPBl15kHhgJ4C6zZ99X9XlnyC0TfdF8qLVZoMO2vLjSmrxW60Un9J9cY7mCiscCGdsO8fM7r97urcfnS5ROYXqRYveSJuJ4P5NiV6U_addjxb7yNAv3rJYz8RvyPY28B4O-RgM62Bmz-51Q7_Vk9AdphmnX5FRCDdaTvXv1BXHx0zhAa5ZVbASERMAB7psC48Ugd07zfHyWDu8TnT49wRmIaEyh8x3OzBg2Q_Qn5Co7pCT9F84UQY4Nn_3WiptRGtcom0dfGv-_DFApvWp4Zi5WmF1TcEeHBUoj30ZEOgt7veKZ0WRvMEe2ZPcD7lk7hKa8K4vQFwKnLws6O1RGjN49Uuz6mycuerS2e9N4taiJOEidGYaQK6HWBNk7Yft4yePCYaRmDEExsf_HeF_HMVjaL67rX7k6JgW2B-cP1hd0BFF1Ys_AxbRyxQM3rtOL9WdevdwoAyhS9rtmytIxT4lP4d5jWKMCM_eHpTke4pX4URP9j7Bok38fqzfkzFhKN7FJNyczx4wXrHS-bsExeC8Dh4cp1Uy05oFxHivTG29A=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0b87f9589f1f21e0016ad3479aa2208191806e5cfec2635b43",
+      "call_id": "call_1d73cb4242f04d17abceec09f69469b1",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"blocked-control-brief\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_1d73cb4242f04d17abceec09f69469b1",
+      "output": "{\"status\": 200, \"view\": \"blocked-control-brief\", \"source_role\": \"records-custodian\", \"data\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\", \"journey_stage\": \"Return Journey\", \"priority\": \"Critical\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\", \"journey_stage\": \"Destination\", \"priority\": \"High\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\", \"journey_stage\": \"Interior Route\", \"priority\": \"Critical\"}]}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "workbook_view",
+      "description": "Read an authorized view of the operations workbook.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "readiness-summary",
+              "blocked-control-brief",
+              "worksheet-page-1",
+              "worksheet-page-2",
+              "service-directory"
+            ]
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

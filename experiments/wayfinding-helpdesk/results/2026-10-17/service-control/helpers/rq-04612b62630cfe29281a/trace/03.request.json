@@ -1,0 +1,86 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views.",
+  "input": [
+    {
+      "role": "user",
+      "content": "{\"workbook\": \"NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\", \"request\": \"For the NGH Main Campus Clinic Relocation Operations Workbook, Wayfinding Checklist, as of the July 25, 2025 snapshot: identify the actual control population, excluding headings, guidance, and other non-control lines. Return total control count, completed count, incomplete count, completion rate, and count of incomplete controls marked critical priority. Also list every currently blocked control with its control ID and the relocated service it affects. Please base the counts on control records, not section headers.\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0babd9d9414eb1ae016ad34671a2208191a2ee66a344dd6455",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq00ZxjjouNUbnYx4YIemUcsAFK8K_L3MQ-PxcjBom5-mgzHR0TX2A51QfUJSHNLJxyS0n7UpiIAWMZK7LsApLjQYiOXfdMhmGwCz692JCCbUw_fSAkXWO6Tbs3nUt1IH_QkT8Io1euC-KCsOroLguzw2OGd4_TMMEuo_LO8zGVWTGWaF9BVCd5Qjbdj3jW-tRvVjYU8Q03_MIJ_cBi_ya8XE7o75jgWdNh4BbRCEWsLGjWpeBpZ8TJalizxs2gXdVuiJArvOFXCbgQevZYGhYe_p7VoHnU4cNtU5bqpHs-tcKRfYzV-uBkgVO91_cgSQSEvbJD94eRpisJEjmqnNyT8ilixlcP0xEvRhBZcrGU8MFUybJyRHKgjaw9Eryz1DCrM4C7mJ6pBqOJTrMpgPJqsNpwT1PaA5tkGns0_SzwwKrUhFkmA8EEl0qxMpLj5PKZIlfVUEa-roFGi2T3aO0b9xdNFAXoGqMJpO8v_rHrWnfuy73-gF_eW5fkaIGDdBrElcgdygeBCItQURxFspZhm-yX38-kGhtWAJvVl7lgOKzNVilJ_kna5x20uJqC4ygNe6WfSCJZVR6NViLrzdSFbsfTqxnzJlKe-Zw7BopMMgwqZvS40ux3djXq0XaFDXSZ-MOk75nHCXpggXgx6t9ZhhGp3tpFZOOKvWNP7fx0P-Aitd3dM5kcN-ASxUFQx_u0CITEMlxTZaVTqBqOBrOZfptJ4QZPMwcloBTf_UDMImZuoPTLCiEKvXP83mgykWaVzdaT4cXFuyOQCvQnlSX6WgXNndMBhrxp3RHNJWcnaZV8qoizG78sPESoQWMAbW1svbNJrz2sa_zbqnoi0vJKl8rlIBDORMnoTKb4taWvjfSmwVPyT8xBAYgyaB8HIYVpRMn-dw_HTH1KesmQEWarLCMgujAykZHG9dyQZM--p3oQIs424RNxgyDV8qGi0bpCh5HIVohkK_HCBJ5eERj-T3Xt5GW8Sgkthrex3WS0qbaE8jXJubdd5abJk2gwOg6CIlAu-ysaErDoWsqdVKhq49tll6Lz-sWt4xROApW4BignrwbrMpmNpN-UcYvNTx_75oxpa6LO6V388UZS8T8gRP491bzz9kpDYuJYm-rlc8KR4qiFuNGY7ld93lAMwNIqoCtWGRtAIhv16rHIhX9BY6PQXgXzzTvDuR4AsVg5BOmA7A3g9tEY73fX0OE4pf8rutE7_StyATOSFM66wZRhKeWcVKweHdRtU23Wb695lx9kho0vsMWyYBZLj6QCmP8gGOBYLsmltd9J1Ik-n37Lq54zOd4lbi06bL9ZXzg7vynpJEh9rrt_iE5VrI1PhNxGFNe63P_dGd1TDC5xIWFi63-rQCWADgR3n6kjyd0_9AzvywYG_nRTbeMTKabbHYCnqJdjqoQ8GykrhXrVAvEcTAqL2oKkTtqTKynP7Rfldro23CjPfwXM0ANC7N1Y2FXZ4JJpU_1y18AaeGneFmwylGAwN9qcuWolNfd5iMBazRCnSepGCmIyynzKZRfXrFKB4_pv2BQOut7rkvl59xIHrLbXKbcWUHECfZjN2iV1vMNGhgNcIxmSE0ft8ohRzphPILbwv4bNlpgCk5Bs5EoivJMLw29YPM3iidXhi1wqsSleUBi1HGuHu-Vx-KO1nXfVh5jOdiuOdypH1kedAopUFDOVyDwOqJ_W2WhyH1yoGHWm-XPfz7VfhpjCGtmoAPhQj_lecbo8APhzPAjcoM4JOrHatHQYYX2RUr8tm6kNHDiemBB7C081dUbwnBeQY-EUrP-"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0babd9d9414eb1ae016ad34671c4e48191bdeb9e8ad1b9167a",
+      "call_id": "call_e8783a5f2609486ba629f33f391a235a",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"readiness-summary\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_e8783a5f2609486ba629f33f391a235a",
+      "output": "{\"status\": 200, \"view\": \"readiness-summary\", \"source_role\": \"records-custodian\", \"data\": {\"total_controls\": 45, \"complete\": 22, \"incomplete\": 23, \"completion_percent\": 48.9, \"critical_incomplete\": 10, \"blocked\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\"}]}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0babd9d9414eb1ae016ad346744668819194fe252ffdd69e96",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq00Z0__MRzovqFf-0qiPeEZ-Unsjfyp220phTw4u3D5oihSv00XwgoeVVkNn3jf7lb5Qzat14F4FKjHikFsUiAjjHA1aqjWCocegakYKD0yR3xZu0FV0G6ISA7cDIPjaymmNcNSj7hg94YRSC1RNC-g-RGPso_IorJeOQ9gQU9f5fOUtPIUtrtaaP-hmziLadDgSayHLG7p1d1w9Ep-SDO-UBLD8_8nz8uVTV0uJSoMMJ22ny74-DTWakSenDFP1nEdHc7yeTjRNJahynBX2K-0QnhT9NemmakMG6P9FWblc6BZOktKGtEDgjcxzz9QilnhtnRBl_lwGG9YH2qSFM2ZbqVjfNcxqDjBYxSB30icbU8ZWzk_LilgMMZaPTl--qsjaZp40jgiDEfWGSKeqj5UM8MPwo-6L2WjfeKBny5DCcsvZYREvokIMZG6FtaBKg-s2-Kg7exJ_RpoYqDYrPH9SxKba__mfkICJHDXjRTcEXloDNqAFvquRbm0KfDkLUEbns12QwyQk4s4cSraTR5_w3zHQXQic-tt3LPaEcKbHlT_RBzyuSBU4BHh_PXeajVmuh8K6JTsEUUku-0kqEI3T3mlkcZVEa0u-8mh4cqnS_88jMityDLwy0RfiJfXBh2H-92slJmZBf_HvNLZXg_xb6-VLaVKBXRtzffyrcEbCoO5SOaEwb3qY42JYdpDtETSdF0uBSbrLnY4WW4zA6RyOLTff1KpTM2Gn4zOfd1g9vnYPERauTg6DcCAzttDYmtGkoAXGJzWjTSropZWk33Hs2931cjJJZT4pF8zL-UldRyUIOhJnMt7DSvnu__XfMY34Ghje1o7Ue5DpW5qKD0PwE6CBDcH0axP2YKplKWmNFyo2wXuzSX1WlsFFopyKhkMqOAJfw78_Jqx0y09kGbL9suDVlmRidBpyOgfl-POLGObjR2ilQLj1JC2A96DinzKZ1vGdvXoLfMIYiBE1mEUeseCAmmGanVlMCrgzoZzpq70eY-5RjF7ebhWJ1XxStvvXVc-uxK7Thy1ABLyyIf1mIFSCyxF-0NNeVMVzLZQW12MSs7GDKUe6a-RxcBzSQrCqwgA8V-1dYV9b8I5RMQDXC750CGr-lPL-U-0nt29-TmXWaDk51JNxFlX8_S97Ics24A7VgrE_JYPmyT4H4KSjKQ4Ml0IFxM9wZqbUsrc9ZI1yBFuSBwz0bVwQ9ZgErtsG4CCwWWhpLSYkSY9XdayUm5Vy0ZSBPPslmdYhB93jywiSblyy5roFfQG2zyPv7iRveOiyfS1Zo1KGQBDnqI88xTn5yQ14cuAacYxe2KXNvl2-3ND2BnSFlJG9OcFN8zihb02dpdSl4oThNLcC-hmFmXIIq53p83uXwlCjXSGdIeBEoknfKnOXG-iTfjLvU3zFcjp28pezWFeP060kDKPOyU_A3__FtpCvkhZPDetmpjikYIsTmqdFEo87Xn__gIOut1NcB-109G7Z6T3HrqvCiGwAs0CjZZ5uVBEdRZe0ITE_5_jB4BpYVu1TB4Cu5iHhFDzi-kgQTerCLulFXGNL4InGWu7nfijgtxruSYkcmi6u6Gt4UrGfWTHobDx3crUuL-5x5yjvzt4NK-9Ckyr2wwnr95ecSjndkbHgvI7hCkgVWjkaSOFbDFGNSNVrCk9ju9w7bVY7GRA_UBvqOPrTbli60Id6l-OYw34nYzd1GkJDmaK4zhXHnW7R3mEMNhVYpLWrUN6bPiLU58P1Pt_Splg=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0babd9d9414eb1ae016ad3467469948191b46efb269570e815",
+      "call_id": "call_fc093c2898ec44358065d8d7791e0f18",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"blocked-control-brief\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_fc093c2898ec44358065d8d7791e0f18",
+      "output": "{\"status\": 200, \"view\": \"blocked-control-brief\", \"source_role\": \"records-custodian\", \"data\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\", \"journey_stage\": \"Return Journey\", \"priority\": \"Critical\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\", \"journey_stage\": \"Destination\", \"priority\": \"High\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\", \"journey_stage\": \"Interior Route\", \"priority\": \"Critical\"}]}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "workbook_view",
+      "description": "Read an authorized view of the operations workbook.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "readiness-summary",
+              "blocked-control-brief",
+              "worksheet-page-1",
+              "worksheet-page-2",
+              "service-directory"
+            ]
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

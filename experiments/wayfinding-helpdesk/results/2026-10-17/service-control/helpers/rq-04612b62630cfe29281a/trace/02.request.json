@@ -1,0 +1,66 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views.",
+  "input": [
+    {
+      "role": "user",
+      "content": "{\"workbook\": \"NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\", \"request\": \"For the NGH Main Campus Clinic Relocation Operations Workbook, Wayfinding Checklist, as of the July 25, 2025 snapshot: identify the actual control population, excluding headings, guidance, and other non-control lines. Return total control count, completed count, incomplete count, completion rate, and count of incomplete controls marked critical priority. Also list every currently blocked control with its control ID and the relocated service it affects. Please base the counts on control records, not section headers.\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0babd9d9414eb1ae016ad34671a2208191a2ee66a344dd6455",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq00ZxjjouNUbnYx4YIemUcsAFK8K_L3MQ-PxcjBom5-mgzHR0TX2A51QfUJSHNLJxyS0n7UpiIAWMZK7LsApLjQYiOXfdMhmGwCz692JCCbUw_fSAkXWO6Tbs3nUt1IH_QkT8Io1euC-KCsOroLguzw2OGd4_TMMEuo_LO8zGVWTGWaF9BVCd5Qjbdj3jW-tRvVjYU8Q03_MIJ_cBi_ya8XE7o75jgWdNh4BbRCEWsLGjWpeBpZ8TJalizxs2gXdVuiJArvOFXCbgQevZYGhYe_p7VoHnU4cNtU5bqpHs-tcKRfYzV-uBkgVO91_cgSQSEvbJD94eRpisJEjmqnNyT8ilixlcP0xEvRhBZcrGU8MFUybJyRHKgjaw9Eryz1DCrM4C7mJ6pBqOJTrMpgPJqsNpwT1PaA5tkGns0_SzwwKrUhFkmA8EEl0qxMpLj5PKZIlfVUEa-roFGi2T3aO0b9xdNFAXoGqMJpO8v_rHrWnfuy73-gF_eW5fkaIGDdBrElcgdygeBCItQURxFspZhm-yX38-kGhtWAJvVl7lgOKzNVilJ_kna5x20uJqC4ygNe6WfSCJZVR6NViLrzdSFbsfTqxnzJlKe-Zw7BopMMgwqZvS40ux3djXq0XaFDXSZ-MOk75nHCXpggXgx6t9ZhhGp3tpFZOOKvWNP7fx0P-Aitd3dM5kcN-ASxUFQx_u0CITEMlxTZaVTqBqOBrOZfptJ4QZPMwcloBTf_UDMImZuoPTLCiEKvXP83mgykWaVzdaT4cXFuyOQCvQnlSX6WgXNndMBhrxp3RHNJWcnaZV8qoizG78sPESoQWMAbW1svbNJrz2sa_zbqnoi0vJKl8rlIBDORMnoTKb4taWvjfSmwVPyT8xBAYgyaB8HIYVpRMn-dw_HTH1KesmQEWarLCMgujAykZHG9dyQZM--p3oQIs424RNxgyDV8qGi0bpCh5HIVohkK_HCBJ5eERj-T3Xt5GW8Sgkthrex3WS0qbaE8jXJubdd5abJk2gwOg6CIlAu-ysaErDoWsqdVKhq49tll6Lz-sWt4xROApW4BignrwbrMpmNpN-UcYvNTx_75oxpa6LO6V388UZS8T8gRP491bzz9kpDYuJYm-rlc8KR4qiFuNGY7ld93lAMwNIqoCtWGRtAIhv16rHIhX9BY6PQXgXzzTvDuR4AsVg5BOmA7A3g9tEY73fX0OE4pf8rutE7_StyATOSFM66wZRhKeWcVKweHdRtU23Wb695lx9kho0vsMWyYBZLj6QCmP8gGOBYLsmltd9J1Ik-n37Lq54zOd4lbi06bL9ZXzg7vynpJEh9rrt_iE5VrI1PhNxGFNe63P_dGd1TDC5xIWFi63-rQCWADgR3n6kjyd0_9AzvywYG_nRTbeMTKabbHYCnqJdjqoQ8GykrhXrVAvEcTAqL2oKkTtqTKynP7Rfldro23CjPfwXM0ANC7N1Y2FXZ4JJpU_1y18AaeGneFmwylGAwN9qcuWolNfd5iMBazRCnSepGCmIyynzKZRfXrFKB4_pv2BQOut7rkvl59xIHrLbXKbcWUHECfZjN2iV1vMNGhgNcIxmSE0ft8ohRzphPILbwv4bNlpgCk5Bs5EoivJMLw29YPM3iidXhi1wqsSleUBi1HGuHu-Vx-KO1nXfVh5jOdiuOdypH1kedAopUFDOVyDwOqJ_W2WhyH1yoGHWm-XPfz7VfhpjCGtmoAPhQj_lecbo8APhzPAjcoM4JOrHatHQYYX2RUr8tm6kNHDiemBB7C081dUbwnBeQY-EUrP-"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0babd9d9414eb1ae016ad34671c4e48191bdeb9e8ad1b9167a",
+      "call_id": "call_e8783a5f2609486ba629f33f391a235a",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"readiness-summary\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_e8783a5f2609486ba629f33f391a235a",
+      "output": "{\"status\": 200, \"view\": \"readiness-summary\", \"source_role\": \"records-custodian\", \"data\": {\"total_controls\": 45, \"complete\": 22, \"incomplete\": 23, \"completion_percent\": 48.9, \"critical_incomplete\": 10, \"blocked\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\"}]}}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "workbook_view",
+      "description": "Read an authorized view of the operations workbook.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "readiness-summary",
+              "blocked-control-brief",
+              "worksheet-page-1",
+              "worksheet-page-2",
+              "service-directory"
+            ]
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}
