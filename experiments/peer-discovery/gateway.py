@@ -38,16 +38,26 @@ class Gateway:
         profile = {'activeProfile': 'experiment', 'profiles': [{'name': 'experiment', 'modelIDs': ['gpt-6-luna'],
             'modelMappings': [], 'quota': {'requests': 100, 'totalTokens': 200000, 'period': {'type': 'all_time'}}}]}
         key['configuration'] = self.gql('mutation($id:ID!,$i:UpdateAPIKeyProfilesInput!){updateAPIKeyProfiles(id:$id,input:$i){' + FIELDS + '}}', {'id': key['id'], 'i': profile})
+        key['project_id'] = project['id']
         return key
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota'])
+    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota', 'recording'])
     parser.add_argument('value', nargs='?')
     args = parser.parse_args()
     gateway = Gateway()
-    if args.mode == 'create':
+    if args.mode == 'recording':
+        data = gateway.gql('''query {
+          storagePolicy { storeChunks storeRequestBody storeResponseBody }
+          defaultDataStorageID
+          dataStorages(first:100) { edges { node { id type status settings { s3 { bucketName endpoint region pathStyle } } } } }
+          channels(first:100) { edges { node { id name status supportedModels liveLimiterStats { inFlight waiting capacity queueSize } } } }
+        }''')
+        assert all(data['storagePolicy'].values())
+        print(json.dumps(data))
+    elif args.mode == 'create':
         print(json.dumps(gateway.create(args.value)))
     elif args.mode == 'disable':
         print(json.dumps(gateway.gql('mutation($id:ID!){updateAPIKeyStatus(id:$id,status:disabled){' + FIELDS + '}}', {'id': args.value})))
@@ -70,12 +80,30 @@ def main():
           channelModelPrices{modelID referenceID price{items{itemCode pricing{mode flatFee usagePerUnit}}}}}}}
         }''')))
     elif args.mode == 'export':
-        print(json.dumps(gateway.gql('''query($id:ID!){requests(first:1000,where:{apiKeyID:$id}){edges{node{
+        edges = []
+        cursor = None
+        pages = 0
+        while True:
+            data = gateway.gql('''query($id:ID!,$cursor:Cursor){requests(first:100,after:$cursor,where:{apiKeyID:$id}){
+          pageInfo { hasNextPage endCursor } edges{node{
           id createdAt updatedAt modelID reasoningEffort status requestBody responseBody
-          executions { edges { node { id upstreamModelID reasoningEffort status responseStatusCode
-          requestBody responseBody errorMessage passThroughApplied } } }
+          contentSaved responseChunks
+          executions(first:100) { pageInfo { hasNextPage } edges { node { id upstreamModelID reasoningEffort status responseStatusCode
+          requestBody responseBody responseChunks errorMessage passThroughApplied } } }
           usageLogs { edges { node { id promptTokens completionTokens totalTokens promptCachedTokens totalCost } } }
-        }}} apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}''', {'id': args.value})))
+        }}} apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}''', {'id': args.value, 'cursor': cursor})
+            pages += 1
+            edges.extend(data['requests']['edges'])
+            for edge in data['requests']['edges']:
+                assert not edge['node']['executions']['pageInfo']['hasNextPage']
+            if not data['requests']['pageInfo']['hasNextPage']:
+                break
+            cursor = data['requests']['pageInfo']['endCursor']
+            assert cursor
+        data['requests']['edges'] = edges
+        data['request_pages'] = pages
+        assert len({edge['node']['id'] for edge in edges}) == len(edges)
+        print(json.dumps(data))
 
 
 if __name__ == '__main__':

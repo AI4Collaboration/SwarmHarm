@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-87 releases additionally require `--binary-sha256 HASH` from the shared disposable admission. The launcher refreshes shared admission before provisioning, verifies each model catalog, runs directed connectivity checks concurrently, and collects paginated gateway records plus actual S3 payloads before teardown. Stored payload receipts link issue, repeat, EC2 instance, scoped key, request, execution and native session. Recording policies and capacity receipts accompany each repeat.
+
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
 
 Install `requirements.txt` with `uv venv .venv --python 3.12` and `uv pip install --python .venv/bin/python -r requirements.txt`. Invoke that environment directly. AWS uses operator profile `eurosafeai`, region `eu-central-1`; the operator's AxonHub-host SSH identity remains private.
