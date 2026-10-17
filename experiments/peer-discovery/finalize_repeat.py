@@ -16,13 +16,15 @@ def main():
     args = parser.parse_args()
     stages = [
         ('cleanup', ['verify_cleanup.py', str(args.directory)]),
-        ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]),
         ('compression', ['compress_payloads.py', str(args.directory)]),
+        ('recording-verification', ['verify_recording.py', str(args.directory)]),
         ('evidence', ['verify_evidence.py', str(args.directory), str(args.graph)]),
         ('scoring', ['grade.py', str(args.directory)]),
         ('metrics', ['metrics.py', str(args.directory)]),
         ('resources', ['resources.py', str(args.directory)]),
     ]
+    if not (args.directory / 'recording-receipts.json').exists():
+        stages.insert(1, ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]))
     for name, arguments in stages:
         with (args.directory / f'finalize-{name}.log').open('wb') as output:
             subprocess.run([sys.executable, str(ROOT / arguments[0]), *arguments[1:]],
