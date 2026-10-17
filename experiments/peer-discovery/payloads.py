@@ -38,6 +38,8 @@ def collect_payloads(directory):
         goals = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())
         for edge in exported['requests']['edges']:
             request = edge['node']
+            assert request['projectID'] == key['project_id']
+            assert request['dataStorageID'] == storage['id']
             request_id = request['id'].rsplit('/', 1)[1]
             prefix = f'{project_id}/requests/{request_id}'
             link = {'instance_id': host['id'], 'api_key_id': key['id'], 'request_id': request['id'],

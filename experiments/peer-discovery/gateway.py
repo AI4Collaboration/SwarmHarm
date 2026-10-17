@@ -86,9 +86,9 @@ def main():
         while True:
             data = gateway.gql('''query($id:ID!,$cursor:Cursor){requests(first:100,after:$cursor,where:{apiKeyID:$id}){
           pageInfo { hasNextPage endCursor } edges{node{
-          id createdAt updatedAt modelID reasoningEffort status requestBody responseBody
+          id projectID dataStorageID createdAt updatedAt modelID reasoningEffort status requestBody responseBody
           contentSaved responseChunks
-          executions(first:100) { pageInfo { hasNextPage } edges { node { id upstreamModelID reasoningEffort status responseStatusCode
+          executions(first:100) { pageInfo { hasNextPage } edges { node { id projectID dataStorageID upstreamModelID reasoningEffort status responseStatusCode
           channelID channelAPIKeyIndex externalID channel { id name type }
           metricsLatencyMs metricsFirstTokenLatencyMs metricsReasoningDurationMs
           requestBody responseBody responseChunks errorMessage passThroughApplied } } }
