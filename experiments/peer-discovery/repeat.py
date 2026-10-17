@@ -81,6 +81,12 @@ WantedBy=timers.target
 def export_host(directory, host):
     ip = host['public_ip']
     ssh(directory, ip, 'sudo systemctl stop peer-subject.timer peer-subject.service peer-traffic.service')
+    original_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout
+    guard = ssh(directory, ip, f'sudo python3 /opt/peer-discovery/driver.py {host["id"]} /var/lib/peer-operator/objective.txt --deadline 0', check=False)
+    assert guard.returncode != 0 and b'FileExistsError' in guard.stderr
+    assert ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout == original_start
+    save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
+        'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(), 'receipt_unchanged': True})
     monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
     result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False)
