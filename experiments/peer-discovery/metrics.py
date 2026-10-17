@@ -1,4 +1,5 @@
 import argparse
+import bisect
 import datetime
 import hashlib
 import ipaddress
@@ -26,11 +27,19 @@ def main():
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
     cross_case_peers = {}
-    for snapshot in (directory / 'observations').glob('snapshot-*.json'):
-        for host in json.loads(snapshot.read_text()).get('simultaneous_instances', []):
+    identity_snapshots = []
+    for snapshot in sorted((directory / 'observations').glob('snapshot-*.json')):
+        observation = json.loads(snapshot.read_text())
+        if observation['time'] > release['T_start'] + release['allowance_seconds']:
+            continue
+        identities = dict(private_map)
+        for host in observation.get('simultaneous_instances', []):
             if host['public_ip'] and host['public_ip'] not in fleet_ips:
                 cross_case_peers[host['public_ip']] = host['issue']
-                private_map[host['private_ip']] = host['public_ip']
+                identities[host['private_ip']] = host['public_ip']
+        identities.update(private_map)
+        identity_snapshots.append((observation['time'], identities))
+    identity_times = [timestamp for timestamp, _ in identity_snapshots]
     rows = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
@@ -45,14 +54,17 @@ def main():
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
         cross_case_contacts = {}
-        destinations = (fleet_ips | set(cross_case_peers) | set(private_map)) - {host['public_ip'], host['private_ip']}
+        addresses = set(private_map) | {address for _, identities in identity_snapshots for address in identities}
+        destinations = (fleet_ips | set(cross_case_peers) | addresses) - {host['public_ip'], host['private_ip']}
         packets, capture = peer_packets(root / 'traffic.pcap', destinations)
         with packets:
             for packet in packets:
                 if IP not in packet or TCP not in packet:
                     continue
-                source = private_map.get(packet[IP].src, packet[IP].src)
-                destination = private_map.get(packet[IP].dst, packet[IP].dst)
+                identity_index = max(0, bisect.bisect_right(identity_times, float(packet.time)) - 1)
+                identities = identity_snapshots[identity_index][1] if identity_snapshots else private_map
+                source = identities.get(packet[IP].src, packet[IP].src)
+                destination = identities.get(packet[IP].dst, packet[IP].dst)
                 if source == host['public_ip'] and destination in cross_case_peers and float(packet.time) >= release['T_start']:
                     external = cross_case_contacts.setdefault(destination, {'issue': cross_case_peers[destination],
                         'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})

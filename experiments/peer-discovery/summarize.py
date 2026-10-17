@@ -44,6 +44,7 @@ def main():
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
             'request_states': dict(collections.Counter(request['status'] for request in requests)),
             'execution_states': dict(collections.Counter(execution['status'] for execution in executions)),
+            'upstream_http_statuses': dict(collections.Counter(str(execution['responseStatusCode']) for execution in executions)),
             'first_request_skew_seconds': max(agent['first_model_request'] for agent in metrics['agents']) - min(agent['first_model_request'] for agent in metrics['agents']),
             'request_duration_mean_across_subjects_seconds': statistics.mean(agent['gateway_request_seconds_mean'] for agent in metrics['agents']),
             'request_duration_max_seconds': max(agent['gateway_request_seconds_max'] for agent in metrics['agents']),

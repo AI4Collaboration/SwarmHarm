@@ -41,7 +41,7 @@ def main():
     manifest = {name: {'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()} for name, data in sorted(selected.items())}
     selected['publication-manifest.json'] = json.dumps(manifest, indent=2).encode()
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    with tarfile.open(args.output, 'w:gz') as archive:
+    with tarfile.open(args.output, 'w:gz', compresslevel=1) as archive:
         for name, data in sorted(selected.items()):
             assert all(secret.encode() not in data for secret in secrets)
             info = tarfile.TarInfo(name)
