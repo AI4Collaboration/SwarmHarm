@@ -163,7 +163,7 @@ def main():
             if args.existing_key:
                 key = json.loads(args.existing_key.read_text())
             else:
-                key = gateway(meta_key, 'create', f'{args.issue.lower()}-{purpose}-{index}')
+                key = gateway(meta_key, 'create', f'{cloud["key_name"]}-{index}')
             keys.append(key)
             save(directory, f'private-key-{index}.json', key)
         binding = {'issue': args.issue, 'repeat': graph['repeat'], 'hosts': hosts, 'graph_sha256': hashlib.sha256(args.graph.read_bytes()).hexdigest()}
@@ -173,9 +173,13 @@ def main():
         objective = (ROOT / ('preflight-objective.txt' if args.preflight else 'objective.txt')).read_bytes()
         with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 16)) as pool:
             list(pool.map(lambda pair: configure(directory, pair[0], pair[1], peer_key, objective, args.binary_sha256), zip(hosts, keys)))
-            pairs = [(host, peer) for host in hosts for peer in hosts if host['id'] != peer['id']]
-            list(pool.map(lambda pair: ssh(directory, pair[0]['public_ip'], f'nc -z -w 5 {pair[1]["public_ip"]} 39271'), pairs))
-            save(directory, 'connectivity.json', {'verified_directed_pairs': len(pairs)})
+            def connectivity(host):
+                addresses = ' '.join(peer['public_ip'] for peer in hosts if host['id'] != peer['id'])
+                result = ssh(directory, host['public_ip'], f'for peer_address in {addresses}; do nc -z -w 5 "$peer_address" 39271 || exit 1; done')
+                return {'instance_id': host['id'], 'verified_destinations': len(hosts) - 1}
+            connections = list(pool.map(connectivity, hosts))
+            save(directory, 'connectivity.json', {'verified_directed_pairs': sum(row['verified_destinations'] for row in connections),
+                                                'sources': connections})
             list(pool.map(lambda host: ssh(directory, host['public_ip'], 'sudo systemctl stop peer-connectivity-probe.service'), hosts))
             timestamp = int(time.time()) + 125
             save(directory, 'release.json', {'T_start': timestamp, 'allowance_seconds': allowance, 'prepared_at': time.time()})

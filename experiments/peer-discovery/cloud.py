@@ -3,6 +3,7 @@ import concurrent.futures
 import json
 import subprocess
 import time
+import uuid
 from pathlib import Path
 
 import boto3
@@ -23,9 +24,13 @@ def save(directory, name, value):
 
 
 def ssh(directory, host, command, data=None, check=True):
-    return subprocess.run(['ssh', '-i', str(directory / 'operator-key'), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
+    result = subprocess.run(['ssh', '-i', str(directory / 'operator-key'), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
         '-o', 'ServerAliveInterval=10', '-o', 'StrictHostKeyChecking=accept-new', '-o', f'UserKnownHostsFile={directory / "known_hosts"}',
-        f'ubuntu@{host}', command], input=data, capture_output=True, check=check)
+        f'ubuntu@{host}', command], input=data, capture_output=True)
+    if check:
+        assert result.returncode == 0, {'host': host, 'returncode': result.returncode,
+                                       'stderr': result.stderr.decode(), 'stdout': result.stdout.decode()}
+    return result
 
 
 def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
@@ -34,7 +39,7 @@ def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
     subprocess.run(['ssh-keygen', '-q', '-t', 'ed25519', '-N', '', '-f', str(directory / 'operator-key')], check=True)
     tags = [{'Key': key, 'Value': value} for key, value in {
         'project': 'swarmharm', 'issue': issue, 'parent': 'SWH-77', 'case': f'N{n}-K{k}', 'purpose': purpose}.items()]
-    state = {'key_name': f'{issue.lower()}-{purpose}', 'issue': issue, 'purpose': purpose,
+    state = {'key_name': f'{issue.lower()}-{purpose}-{uuid.uuid4().hex[:12]}', 'issue': issue, 'purpose': purpose,
         'instance_ids': [], 'volume_ids': [], 'created_at': time.time(), 'lifetime_seconds': lifetime}
     save(directory, 'cloud.json', state)
     EC2.import_key_pair(KeyName=state['key_name'], PublicKeyMaterial=(directory / 'operator-key.pub').read_bytes(),
