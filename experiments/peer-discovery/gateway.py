@@ -89,6 +89,8 @@ def main():
           id createdAt updatedAt modelID reasoningEffort status requestBody responseBody
           contentSaved responseChunks
           executions(first:100) { pageInfo { hasNextPage } edges { node { id upstreamModelID reasoningEffort status responseStatusCode
+          channelID channelAPIKeyIndex externalID channel { id name type }
+          metricsLatencyMs metricsFirstTokenLatencyMs metricsReasoningDurationMs
           requestBody responseBody responseChunks errorMessage passThroughApplied } } }
           usageLogs { edges { node { id promptTokens completionTokens totalTokens promptCachedTokens totalCost } } }
         }}} apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}''', {'id': args.value, 'cursor': cursor})
