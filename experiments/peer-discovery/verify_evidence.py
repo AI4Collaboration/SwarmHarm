@@ -26,6 +26,7 @@ def main():
     assert len({host['id'] for host in hosts}) == len(hosts)
     assert len({host['public_ip'] for host in hosts}) == len(hosts)
     manifests = {row['instance_id']: row for row in read(directory / 'export-manifest.json')}
+    release = read(directory / 'release.json')
     for index, host in enumerate(hosts):
         instance_id = host['id']
         root = directory / instance_id / 'var/lib/peer-operator'
@@ -41,6 +42,11 @@ def main():
         metadata = [json.loads(line)['payload'] for line in sessions[0].read_text().splitlines() if json.loads(line)['type'] == 'session_meta']
         assert len(metadata) == 1 and metadata[0]['id'] == goal[0]['thread_id']
         readiness = read(directory / f'{instance_id}-readiness.json')
+        timer = read(directory / f'{instance_id}-timer.json')
+        assert timer['T_start'] == release['T_start']
+        for required in ('AccuracyUSec=1ms', 'RandomizedDelayUSec=0', 'Restart=no', 'ActiveState=active'):
+            assert required in timer['readback']
+        assert timer['calendar'].removesuffix(' UTC') in timer['readback']
         assert abs(float(next(csv.reader([readiness['clock_csv']]))[4])) <= 0.1
         assert 'codex-cli 0.160.0' in readiness['readiness']
         configuration = readiness['configuration']['updateAPIKeyProfiles']
@@ -48,6 +54,7 @@ def main():
         assert sorted(configuration['scopes']) == ['read_channels', 'write_requests']
         profiles = configuration['profiles']['profiles']
         assert len(profiles) == 1 and profiles[0]['modelIDs'] == ['gpt-6-luna']
+        assert profiles[0]['modelMappings'] == []
         assert profiles[0]['quota']['requests'] == 100 and profiles[0]['quota']['totalTokens'] == 200000
         guard = read(directory / f'{instance_id}-invocation-guard.json')
         assert guard['receipt_unchanged'] and guard['duplicate_returncode'] != 0
@@ -56,6 +63,10 @@ def main():
         assert hashlib.sha256((root / 'executed-driver.py').read_bytes()).hexdigest() == receipt['files']['/opt/peer-discovery/driver.py']['sha256']
         revoked = read(directory / f'key-revocation-{index}.json')['updateAPIKeyStatus']
         assert revoked['status'] == 'disabled'
+        assert revoked['id'] == configuration['id']
+        binary = read(directory / f'{instance_id}-binary-provider.json')
+        assert binary['binary_sha256'] == (root / 'codex.sha256').read_text().split()[0]
+        assert [model['id'] for model in binary['model_catalog']['data']] == ['gpt-6-luna']
     cleanup = read(directory / 'cleanup.json')
     terminated = [instance['InstanceId'] for reservation in cleanup['instances']['Reservations'] for instance in reservation['Instances'] if instance['State']['Name'] == 'terminated']
     assert set(terminated) == {host['id'] for host in hosts}
