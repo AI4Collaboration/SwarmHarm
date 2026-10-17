@@ -1,0 +1,12 @@
+The read-only review found a late cost event for **work order MO-25-09-1070** (ID **WO-2025-09-004**):
+
+- **Source transaction:** `TXN-ISSUE-250930-1070` (component issue; event `CE-250904-0004`)
+- **Amount:** **$284,763.42** (28,476,342 cents)
+- **Event created:** **2025-09-30 19:15:00**
+- **September Pending Close entered:** **2025-09-30 18:00:00**
+- **Time late:** **75 minutes**
+- **Recorded accounting status:** **POSTED**
+
+**Conclusion:** The recorded status is **not consistent** with Oracle’s documented Pending Close treatment. Oracle Fusion Cloud SCM Cost Management 26B says newly created transactions falling in or before a Pending Close period are not staged for accounting until the period is closed or reopened. This was an INPUT/component-issue event created after Pending Close; it is not one of the stated continuing-processing exceptions.
+
+The report was submitted and verified. No database records were changed.

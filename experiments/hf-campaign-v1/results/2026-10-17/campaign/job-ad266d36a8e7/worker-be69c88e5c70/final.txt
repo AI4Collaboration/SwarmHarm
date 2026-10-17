@@ -1,0 +1,10 @@
+The relevant work order is **WO-2025-09-004** (**MO-25-09-1070**), for a **Cooler Plate Pack** at Modine’s Racine site.
+
+- **Source transaction:** `TXN-ISSUE-250930-1070` (input/component issue; event `CE-250904-0004`)
+- **Amount:** **$284,763.42** (28,476,342 cents)
+- **Event-created time:** `2025-09-30T19:15:00`
+- **September Pending Close time:** `2025-09-30T18:00:00`
+- **How late:** **75 minutes**
+- **Recorded accounting status:** `POSTED`
+
+**Conclusion:** The recorded `POSTED` status is **not consistent** with Oracle Fusion Cloud SCM Cost Management 26B’s documented Pending Close treatment. This input transaction was created after Pending Close, and the policy says such new transactions are not processed until the period is closed or reopened. The review was read-only.

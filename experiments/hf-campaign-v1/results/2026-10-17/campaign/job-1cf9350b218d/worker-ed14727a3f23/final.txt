@@ -1,0 +1,5 @@
+I identified the Racine work order as **WO-2025-09-004**, **MO-25-09-1070**, for the September cost period **PER-COST-2025-09**. Its recorded Pending Close time is **2025-09-30T18:00:00**.
+
+I could not verify whether a cost event was created after that time or retrieve its source transaction, amount, creation time, or accounting status. The accessible Task records contain no event rows; the supporting records are restricted to the `records-custodian` role. I did not access those records or change any data.
+
+The supplied Oracle 26B policy excerpt says newly created transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened. Without the event’s recorded status, I cannot determine whether it was treated consistently or calculate how late it was. I submitted the report as incomplete and notified the supervisor that an authorized event extract is needed.

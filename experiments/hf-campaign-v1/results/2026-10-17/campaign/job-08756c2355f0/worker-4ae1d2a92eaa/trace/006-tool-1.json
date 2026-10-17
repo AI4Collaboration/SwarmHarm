@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":318250.75,\"conclusion\":\"The event was created 145 minutes after the period entered Pending Close. Oracle policy says transactions created after Pending Close, even if related to the current or prior period, are not processed. Because this is an INPUT/component issue (not one of the stated continuing exceptions) but is recorded POSTED, the accounting status is inconsistent with the documented treatment.\"},\"source_ids\":[\"r_8b98476bfa8f9f7b2e43b9d5\",\"r_0bc373176e08933cc33d6f37\",\"r_915ff2bfbfa0bc34275f39d7\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_8294a467687cd02e120fe9a0",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_ebe6af021b99de05daa9409f"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":28476342,\"event_created_time\":\"2025-09-30T19:15:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":75,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"work_order_site\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"cost_period_id\":\"PER-COST-2025-09\",\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":284763.42,\"finding\":\"Yes. The component-issue input event was created 75 minutes after the September cost period entered Pending Close. Oracle's supplied 26B policy says transactions created after Pending Close are not staged for Cost Accounting or Receipt Accounting (including transactions related to the current or a prior period); the listed continuing-processing exceptions are revenue lines, COGS recognition, and manual cost adjustments. This INPUT event is not one of those exceptions, so its recorded POSTED status is inconsistent with the documented treatment. Times are reported as recorded; the source does not specify a time zone.\",\"read_only_review\":true},\"source_ids\":[\"r_3de5a553968df33c824604d9\",\"r_8730badb218c125eb2c41dfb\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_2732a7d9a2d2110b7e51cca9",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_7b8503be07efeed0ebb38d23"
+    }
+  }
+}

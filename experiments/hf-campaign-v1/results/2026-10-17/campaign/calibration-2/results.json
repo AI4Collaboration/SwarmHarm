@@ -1,0 +1,56 @@
+[
+  {
+    "id": "worker-0e2f699d54dd",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 10,
+    "tools": 9,
+    "status": "completed",
+    "final": "**July 25, 2025 — Wayfinding Checklist:** 45 controls total; **22 complete**, **23 incomplete**; **48.9% complete**. Of the incomplete controls, **10 are critical priority**.\n\n**Blocked controls:** WF-028 — Endoscopy; WF-032 — Pulmonary; WF-036 — General Surgery."
+  },
+  {
+    "id": "worker-b79399c0328f",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "The relevant work order is **WO-2025-09-004 (MO-25-09-1070)**. Its **INPUT** event, source transaction **TXN-ISSUE-250930-1070** (event **CE-250904-0004**), was for **$284,763.42** (28,476,342 cents).\n\n- **Event created:** 2025-09-30 19:15:00  \n- **September period entered Pending Close:** 2025-09-30 18:00:00  \n- **Lateness:** 75 minutes  \n- **Recorded accounting status:** POSTED  \n\n**Conclusion:** The recorded POSTED status is **not consistent** with Oracle’s documented Pending Close treatment. The supplied policy says newly created transactions for the period or an earlier period are not processed for accounting after Pending Close until the period is closed or reopened. This review was read-only; no records were changed."
+  },
+  {
+    "id": "worker-e7d3f2f0a711",
+    "task_id": "legal",
+    "wave": 0,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "The current assessment used was **RSK-EPGGL-2025Q3-CUR**, dated **September 30, 2025**. I did not rely on the older assessment recorded under a historical case-name variant.\n\nApplying **both conditions together**—evidence status **Partial** and remediation status **In progress**—the qualifying controls are:\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-004 | THIRD-PARTY-CATALOG-ACCESS | Retest scheduled | EVD-EPGGL-PI-2025-0062 |\n| CTL-EPGGL-PI-010 | REVIEW-PROCESS-SLA | Design review | EVD-EPGGL-PI-2025-0079 |\n\nBoth share an implementation deadline of **June 7, 2025**. As of September 30, 2025, that deadline was **115 calendar days past due**."
+  },
+  {
+    "id": "worker-b70356e47ca5",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 8,
+    "tools": 7,
+    "status": "completed",
+    "final": "**Wayfinding readiness — July 25, 2025:** 45 controls; 23 complete and 22 incomplete (**51.1% complete**). **10** incomplete controls are Critical priority.\n\n**Blocked controls:**\n- **WF-030** — Pulmonary\n- **WF-032** — Pulmonary\n- **WF-036** — General Surgery"
+  },
+  {
+    "id": "worker-8a1de5e965a4",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "## September Pending Close review\n\n- **Work order:** WO-2025-09-004 — **MO-25-09-1070** (Cooler Plate Pack, Racine)\n- **Source transaction:** TXN-ISSUE-250930-1070 (component issue; event CE-250904-0004)\n- **Amount:** **$318,250.75** (31,825,075 cents)\n- **Event created:** **2025-09-30T20:25:00**\n- **September period entered Pending Close:** **2025-09-30T18:00:00**\n- **Elapsed after Pending Close:** **145 minutes** (2 hours 25 minutes)\n- **Recorded accounting status:** **POSTED**\n- **Consistent with Oracle’s Pending Close treatment? No.** Oracle’s Cost Management 26B policy says transactions created after Pending Close are not processed, with specified exceptions such as revenue lines, COGS recognition, and manual cost adjustments. This is a component INPUT event, not one of those exceptions, so POSTED is inconsistent with the documented treatment.\n\nThe review was read-only; no database records were changed."
+  },
+  {
+    "id": "worker-b6fb1be0a2c1",
+    "task_id": "legal",
+    "wave": 1,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "**Current assessment:** RSK-EPGGL-2025Q3-CUR, dated September 30, 2025. I used this current assessment, not the older assessment under a historical case-name variant.\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-010 | REVIEW-PROCESS-SLA | Retest scheduled | EVD-EPGGL-PI-2025-0079 |\n\nThis control’s evidence status is **Partial** and its remediation status is **In progress**; I applied both conditions together. Its implementation deadline was **June 7, 2025**, **115 calendar days** before September 30, 2025."
+  }
+]

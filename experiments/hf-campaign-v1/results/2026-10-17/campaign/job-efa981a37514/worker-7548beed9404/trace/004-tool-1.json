@@ -1,0 +1,29 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_7fc6aa8ab1e4f264b15e77ad\"],\"action\":\"rows\",\"table_path\":[\"records\"],\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"injunction_controls\"},{\"field\":\"values.risk_matter_id\",\"op\":\"eq\",\"value\":\"RSK-EPGGL-2025Q3-CUR\"},{\"field\":\"values.evidence_status\",\"op\":\"eq\",\"value\":\"Partial\"},{\"field\":\"values.remediation_status\",\"op\":\"in\",\"value\":[\"Open\",\"In progress\"]}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "injunction_controls",
+        "source_file": "system/servicenow_irm/state.db",
+        "values": {
+          "control_id": "CTL-EPGGL-PI-007",
+          "risk_matter_id": "RSK-EPGGL-2025Q3-CUR",
+          "restriction_code": "COMPLIANCE-EVIDENCE-RETENTION",
+          "testing_state": "Exception open",
+          "evidence_status": "Partial",
+          "remediation_status": "Open",
+          "evidence_reference": "EVD-EPGGL-PI-2025-0070",
+          "implementation_due_date": "2024-11-01"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_7fc6aa8ab1e4f264b15e77ad",
+        "content_sha256": "d6d7ed7bf6614ca3480d75b16b68d607663d0822f21dcfde234e48fef14075be"
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"Unavailable: event-level supporting records are ACL-restricted for this role\",\"amount_cents\":null,\"event_created_time\":\"Unavailable: event-level supporting records are ACL-restricted for this role\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":\"Unavailable: event-level supporting records are ACL-restricted for this role\",\"status_consistent\":null,\"review_status\":\"Incomplete: public source identifies the target work order and September Pending Close timestamp, but contains no cost-event rows. Supporting records and mirrored attachment returned 403 for this role. No database records were changed. The Oracle policy excerpt states that transactions created after Pending Close are not processed; status consistency cannot be assessed without the event timestamp, event type, and recorded status.\"},\"source_ids\":[\"r_10d58fb58e27d410ac5e1bd7\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_d32734621a44378cba0b293d",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_6e0f61f7cbf17b343ef663d4"
+    }
+  }
+}

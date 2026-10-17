@@ -1,0 +1,5 @@
+The September manufacturing order ending in 1070 is **work order MO-25-09-1070** (ID **WO-2025-09-004**) for Modine’s Racine operation.
+
+Its component-issue event, source transaction **TXN-ISSUE-250930-1070** (event **CE-250904-0004**), was for **$284,763.42** (**28,476,342 cents**). It was created at **2025-09-30 19:15:00**, after the September period entered Pending Close at **2025-09-30 18:00:00**—**75 minutes late**. The timestamps are reported as recorded in the source.
+
+The event’s recorded accounting status is **POSTED**. That status is **not consistent** with Oracle’s documented Pending Close treatment: newly created transactions that fall in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting until the period is closed or reopened. This was a newly created INPUT/component-issue event, not one of the documented continuing exceptions. The review was read-only; no records were changed.

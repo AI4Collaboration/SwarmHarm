@@ -1,0 +1,33 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_87777a2fa43fc37225772fe2\",\"r_2de7dc6cf01c24268324d4c9\"],\"action\":\"rows\",\"table_path\":[\"records\"],\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"injunction_controls\"},{\"field\":\"values.risk_matter_id\",\"op\":\"eq\",\"value\":\"RSK-EPGGL-2025Q3-CUR\"},{\"field\":\"values.evidence_status\",\"op\":\"eq\",\"value\":\"Partial\"},{\"field\":\"values.remediation_status\",\"op\":\"eq\",\"value\":\"In progress\"}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "injunction_controls",
+        "source_file": "system/servicenow_irm/state.db",
+        "values": {
+          "control_id": "CTL-EPGGL-PI-010",
+          "risk_matter_id": "RSK-EPGGL-2025Q3-CUR",
+          "restriction_code": "REVIEW-PROCESS-SLA",
+          "testing_state": "Retest scheduled",
+          "evidence_status": "Partial",
+          "remediation_status": "In progress",
+          "evidence_reference": "EVD-EPGGL-PI-2025-0079",
+          "implementation_due_date": "2025-06-07"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_87777a2fa43fc37225772fe2",
+        "content_sha256": "d6d7ed7bf6614ca3480d75b16b68d607663d0822f21dcfde234e48fef14075be"
+      },
+      {
+        "resource_id": "r_2de7dc6cf01c24268324d4c9",
+        "content_sha256": "bd09630cebcf65516d2d652a12d505eec00f0fa96420f22044be2f43361cd194"
+      }
+    ]
+  }
+}

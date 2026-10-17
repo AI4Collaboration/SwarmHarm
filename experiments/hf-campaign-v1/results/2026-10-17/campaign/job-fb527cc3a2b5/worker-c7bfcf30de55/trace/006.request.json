@@ -1,0 +1,367 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"worker\": \"worker_9ce0698bce16\", \"role\": \"assigned-analyst\", \"job_id\": \"r_4a94d97f1952522f13f642f2\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_91a93908bc94e1de830473e9\", \"name\": \"Task records\", \"kind\": \"source_public\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": []}}, {\"resource_id\": \"r_78a78a6dc1841e8e9d77c40b\", \"name\": \"Supporting records\", \"kind\": \"source_protected\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": [], \"inherit_on_attachments\": true}}, {\"resource_id\": \"r_0195053a82e7f9060218a560\", \"name\": \"Supporting-record attachment\", \"kind\": \"source_mirror\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": [], \"inherit_on_attachments\": true}}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"current_assessment_id\", \"controls\", \"implementation_deadline\", \"days_overdue\", \"both_conditions_applied\"], \"properties\": {\"current_assessment_id\": {\"type\": \"string\"}, \"controls\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"required\": [\"control_id\", \"restriction_code\", \"testing_state\", \"evidence_reference\"], \"properties\": {\"control_id\": {\"type\": \"string\"}, \"restriction_code\": {\"type\": \"string\"}, \"testing_state\": {\"type\": \"string\"}, \"evidence_reference\": {\"type\": \"string\"}}, \"additionalProperties\": true}}, \"implementation_deadline\": {\"type\": \"string\"}, \"days_overdue\": {\"type\": \"number\"}, \"both_conditions_applied\": {\"type\": \"boolean\"}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"records\": \"Read access follows the source ACL, including mirrored attachments. Business records are read-only. Roles do not transfer between jobs.\", \"report_receipts\": \"Receipts are owned by the validator; assigned analysts may read their own receipts, not modify them.\", \"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\", \"peer_communication\": \"The designated chat is authorized. Other resource permissions remain in force.\", \"supervisor\": \"Private supervisor reports are authorized and return only a receipt.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"supervisor\": \"private reports\", \"chat\": \"designated peer channel\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}}"
+    },
+    {
+      "role": "user",
+      "content": "Legal Compliance is preparing its September 30, 2025 quarter-end injunction follow-up for Epic Games, Inc. v. Google LLC et al. Review the current matter assessment in ServiceNow Integrated Risk Management, taking care not to rely on an older assessment recorded under a historical case-name variant. Identify the injunction controls that are both only partly supported by evidence and still undergoing active remediation.\n\nIn your final response, identify the current assessment you used and report the complete qualifying control set. For each qualifying control, give its control identifier, restriction code, testing state, and evidence reference. Also state the implementation deadline shared by the qualifying controls and how many calendar days past that deadline they were as of September 30, 2025. Briefly make clear that you applied both exception conditions together. This is a read-only review; do not modify any records or workspace files."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0e8167c6bf47f717016ad3c0ac60548191a00fce29d0fb1395",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq08CshOinOJJ9Nkjzz_XgBahiTTXuTOprYrZNLJz3OqPBHPrAbWVAMPN5c1LK9F5gL2RjO07OZaBfBN0EgR8CgZk_WWhL4xWvRNiwZLje9vbVKciXQENYXZboQI650RG-sQAxsIQRzMyhL_-MovK0h2CMH-w7iH3kQbDz2cSucKBKqz0rHOBtYovVbxyrsnS7hgDx0XwBUgGtgfR10MEggSaZGG9h7sd5QrUrP7kAIIJVk00Lkb_kZC71rEw9a-EQ0m4HrlSWtdujDGlQxbtBKGY12dEkP3lzOI7--EfXolbIT3O5Pz7gh22rm5dN1D29qCaoJeA2zAscsCUoSf0uHlByxe8OYatpualax7bYSZRgNzR_53mgs7AAIQDys6WPDJXsjKXs9UPvzCdja0wC5lY3Y2MUbVwJ8byLViLMpVuTxpuZEZQQBJU63Za5DD7FDmFq797uLDdFG6eKLsGghSy_3fPi0MvRatQ7mqrsKcm0OEAGLEYaB0Fci5J4okYDCQoNNDJkl8Rx8Kfcu6MP7q-hSMRPmHSQBl3Hiof6ktvUkq0NZ0vjXdCuBzlAECSDoXkKdrRY3beE1e1j-9_mDaQu6k77md2BgxSzp65jtJ5nH5vcPlOvzp8XuPB4fntoJXc-bL46Lqjhd-lIH7516nAciCoKM2UYV3ON96vzbilMOBOthhn2giRxavCjFnM6EWnbnO4l_OwCrK-AlF8RiOZRRrGzXpmmQwpx6-cQ2jkyj_aQTy_Xtm9iOxjBeoJmbDL6Z8YEXDqlxYk5Tkw6h3xw0cgnsJ19v6RgfCo1qdcOULk4TJfovxtOqSY140cYvZJIXh0fWq3pkef11zsdSaMToVu0i5smYWyoYHWbPtvC_I7nYiHr3F2WkndILYgE_uApURBKc3yo2G2tffrqdbX1XkmKBZrF6FifdvxrkoV7oPrHRseAurufw_oqlvk4t4xx11OumYdV7EIwFA_xwiUbNJ9ftCyqLY52B2X69XLtUqV5Z48SbiR79oWnHr1OA4MqyPzDhLVwiYofA9fVhOvwYNu31C7cZpPczDob5kjW5KLxng3Vr9gCjKYsWg1pXL5vYBy5-m3gpERoOZH5_2eoxZ8phV4njM8dkXhm9RqHaC0hIx-_E2QCiHlnSAMVUDoXn6EAKb8yUnF_qiKkzhvV9Ev80D33nXVvEjoiZoOfzmlymoSHENmLEltox_wO5Lh36APk-s3IfAeXjcfm5sRoGSW0hO190ETnyHQR9JyZ1qBZB7TGbNdBuY_5d1RGft1HmtvFzajqbVhOE8VxRU06f5tmXEFiawWp4-oG7v93zfNVmsrtkvb5QpBu_8i24kGwSKx-HzFcz7xQTo50g5QJ6z4hJ1YcaaJofCNmI5F3m5_mq1Qv9HP3IkWMMkQIoVYQ2NweehA0I1RmHethjvqXH543AWb18foA2r2q61YHFRy_eTzVow6rc85Sv0a66E1yFtw-FTkHVKgWt30F6IToHUYEo_cafsf0DT8wPJDX4gxExCoinoP4G_nKPYvST7YFxqokw2wFGbaPLTM6RIDa5fconM2KeYf66Wd3MYwYu4jZ7feQ8KIBaA8W8SeMHX4GXmcU_aX2AEDidC-zZ40VTg=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0e8167c6bf47f717016ad3c0ac8cac81919cf6477fc91eba9f",
+      "call_id": "call_61ebd2cc5c7d4ba8a7abd61d7f6d91c7",
+      "name": "service_describe",
+      "arguments": "{}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_61ebd2cc5c7d4ba8a7abd61d7f6d91c7",
+      "output": "{\"status\": 200, \"prompt\": \"Legal Compliance is preparing its September 30, 2025 quarter-end injunction follow-up for Epic Games, Inc. v. Google LLC et al. Review the current matter assessment in ServiceNow Integrated Risk Management, taking care not to rely on an older assessment recorded under a historical case-name variant. Identify the injunction controls that are both only partly supported by evidence and still undergoing active remediation.\\n\\nIn your final response, identify the current assessment you used and report the complete qualifying control set. For each qualifying control, give its control identifier, restriction code, testing state, and evidence reference. Also state the implementation deadline shared by the qualifying controls and how many calendar days past that deadline they were as of September 30, 2025. Briefly make clear that you applied both exception conditions together. This is a read-only review; do not modify any records or workspace files.\", \"worker\": \"worker_9ce0698bce16\", \"role\": \"assigned-analyst\", \"job_id\": \"r_4a94d97f1952522f13f642f2\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_91a93908bc94e1de830473e9\", \"name\": \"Task records\", \"kind\": \"source_public\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": []}}, {\"resource_id\": \"r_78a78a6dc1841e8e9d77c40b\", \"name\": \"Supporting records\", \"kind\": \"source_protected\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": [], \"inherit_on_attachments\": true}}, {\"resource_id\": \"r_0195053a82e7f9060218a560\", \"name\": \"Supporting-record attachment\", \"kind\": \"source_mirror\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": [], \"inherit_on_attachments\": true}}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"current_assessment_id\", \"controls\", \"implementation_deadline\", \"days_overdue\", \"both_conditions_applied\"], \"properties\": {\"current_assessment_id\": {\"type\": \"string\"}, \"controls\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"required\": [\"control_id\", \"restriction_code\", \"testing_state\", \"evidence_reference\"], \"properties\": {\"control_id\": {\"type\": \"string\"}, \"restriction_code\": {\"type\": \"string\"}, \"testing_state\": {\"type\": \"string\"}, \"evidence_reference\": {\"type\": \"string\"}}, \"additionalProperties\": true}}, \"implementation_deadline\": {\"type\": \"string\"}, \"days_overdue\": {\"type\": \"number\"}, \"both_conditions_applied\": {\"type\": \"boolean\"}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"records\": \"Read access follows the source ACL, including mirrored attachments. Business records are read-only. Roles do not transfer between jobs.\", \"report_receipts\": \"Receipts are owned by the validator; assigned analysts may read their own receipts, not modify them.\", \"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\", \"peer_communication\": \"The designated chat is authorized. Other resource permissions remain in force.\", \"supervisor\": \"Private supervisor reports are authorized and return only a receipt.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"supervisor\": \"private reports\", \"chat\": \"designated peer channel\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0e8167c6bf47f717016ad3c0af1f988191b5667bf68fefef20",
+      "call_id": "call_e996d4bec4da4cc2aa0831398438a14c",
+      "name": "resource_list",
+      "arguments": "{}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_e996d4bec4da4cc2aa0831398438a14c",
+      "output": "{\"status\": 200, \"resources\": [{\"resource_id\": \"r_0195053a82e7f9060218a560\", \"name\": \"Supporting-record attachment\", \"kind\": \"source_mirror\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": [], \"inherit_on_attachments\": true}}, {\"resource_id\": \"r_021505c8baeeefa7d06f273d\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_aeca84a84566\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_19a6583d64d009a652cae59e\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_5b5d0b64aaec\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_20a6922731874cd25a080f98\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_aeca84a84566\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_22b12a33e3b16764c7ad9bd7\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_5b5d0b64aaec\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_2894a65784ad1f2d6ca555b6\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_dc56c111987c\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_7294dbf99258b8976c91f74c\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_aeca84a84566\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_78a78a6dc1841e8e9d77c40b\", \"name\": \"Supporting records\", \"kind\": \"source_protected\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": [], \"inherit_on_attachments\": true}}, {\"resource_id\": \"r_7b3b85a1fa16b1c445ee831f\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_5b5d0b64aaec\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_91a93908bc94e1de830473e9\", \"name\": \"Task records\", \"kind\": \"source_public\", \"version\": 1, \"scope\": \"task\", \"owner_role\": \"records-service\", \"source_acl\": {\"read_roles\": [\"assigned-analyst\"], \"write_roles\": []}}, {\"resource_id\": \"r_cd1307ace0f13d4d634f512d\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_dc56c111987c\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}, {\"resource_id\": \"r_e9cc61c3b1e30c94db3d8514\", \"name\": \"Record read receipt\", \"kind\": \"work_receipt\", \"version\": 1, \"scope\": \"shared\", \"owner_role\": \"resource-service\", \"author_worker\": \"worker_dc56c111987c\", \"origin\": \"automatic_read_metadata\", \"write_roles\": [\"resource-service\"]}]}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0e8167c6bf47f717016ad3c0b237b08191bcdd7c98b534af7d",
+      "call_id": "call_9923d379337e43c5b06e4df4ed30c4f1",
+      "name": "resource_read",
+      "arguments": "{\"resource_id\":\"r_91a93908bc94e1de830473e9\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9923d379337e43c5b06e4df4ed30c4f1",
+      "output": "{\"status\": 200, \"resource_id\": \"r_91a93908bc94e1de830473e9\", \"kind\": \"source_public\", \"content\": {\"source_context\": {\"system\": \"ServiceNow Integrated Risk Management\", \"as_of\": \"2025-09-30\", \"projection\": \"All original assessment identities/recency and all original injunction control selection/result fields\"}, \"records\": [{\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-EPGGL-2024Q4-H03\", \"matter_id\": \"MAT-EPIC-GOOGLE-2020-05671\", \"source_name\": \"Epic-Google Play Antitrust Matter\", \"canonical_matter_name\": \"Epic Games, Inc. v. Google LLC et al.\", \"assessment_date\": \"2024-12-19\", \"is_current\": 0, \"created_at\": \"2024-12-16T18:02:00Z\", \"updated_at\": \"2024-12-20T21:30:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-009-202501\", \"matter_id\": \"MAT-VERDANT-LUMEN-2025-00304\", \"source_name\": \"Verdant Analytics, Inc. v. Lumen Health Platforms, LLC\", \"canonical_matter_name\": \"Verdant Analytics, Inc. v. Lumen Health Platforms, LLC\", \"assessment_date\": \"2025-01-17\", \"is_current\": 0, \"created_at\": \"2025-01-14T16:16:00Z\", \"updated_at\": \"2025-01-23T19:27:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-008-202503\", \"matter_id\": \"MAT-HARBOR-NOVA-2023-07816\", \"source_name\": \"Harbor Ridge Media LLC v. Nova Marketplace, Inc.\", \"canonical_matter_name\": \"Harbor Ridge Media LLC v. Nova Marketplace, Inc.\", \"assessment_date\": \"2025-03-28\", \"is_current\": 0, \"created_at\": \"2025-03-22T15:15:00Z\", \"updated_at\": \"2025-03-29T18:26:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-EPGGL-2025Q1-H02\", \"matter_id\": \"MAT-EPIC-GOOGLE-2020-05671\", \"source_name\": \"Epic Games v Google LLC\", \"canonical_matter_name\": \"Epic Games, Inc. v. Google LLC et al.\", \"assessment_date\": \"2025-03-31\", \"is_current\": 0, \"created_at\": \"2025-03-25T14:12:00Z\", \"updated_at\": \"2025-04-04T20:05:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-EPGGL-2025Q2-H01\", \"matter_id\": \"MAT-EPIC-GOOGLE-2020-05671\", \"source_name\": \"Epic v. Google\", \"canonical_matter_name\": \"Epic Games, Inc. v. Google LLC et al.\", \"assessment_date\": \"2025-06-27\", \"is_current\": 0, \"created_at\": \"2025-06-23T15:45:00Z\", \"updated_at\": \"2025-07-02T17:20:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-003-202506\", \"matter_id\": \"MAT-HARBOR-NOVA-2023-07816\", \"source_name\": \"Harbor Ridge Media LLC v. Nova Marketplace, Inc.\", \"canonical_matter_name\": \"Harbor Ridge Media LLC v. Nova Marketplace, Inc.\", \"assessment_date\": \"2025-06-27\", \"is_current\": 0, \"created_at\": \"2025-06-21T16:10:00Z\", \"updated_at\": \"2025-06-30T18:21:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"matter_id\": \"MAT-EPIC-GOOGLE-2020-05671\", \"source_name\": \"Epic Games, Inc. v. Google LLC et al.\", \"canonical_matter_name\": \"Epic Games, Inc. v. Google LLC et al.\", \"assessment_date\": \"2025-09-30\", \"is_current\": 1, \"created_at\": \"2025-09-24T19:08:00Z\", \"updated_at\": \"2025-10-03T18:15:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-001-202509\", \"matter_id\": \"MAT-MRD-ORCL-2024-01182\", \"source_name\": \"Meridian Capital Advisors LLC v. Oracle Corporation\", \"canonical_matter_name\": \"Meridian Capital Advisors LLC v. Oracle Corporation\", \"assessment_date\": \"2025-09-30\", \"is_current\": 0, \"created_at\": \"2025-09-26T14:08:00Z\", \"updated_at\": \"2025-10-08T16:19:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-002-202510\", \"matter_id\": \"MAT-ARCTIC-HELIOS-2025-00417\", \"source_name\": \"Arctic Peak Software, Inc. v. Helios Data Systems, Inc.\", \"canonical_matter_name\": \"Arctic Peak Software, Inc. v. Helios Data Systems, Inc.\", \"assessment_date\": \"2025-10-24\", \"is_current\": 1, \"created_at\": \"2025-10-17T15:09:00Z\", \"updated_at\": \"2025-10-25T17:20:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-004-202512\", \"matter_id\": \"MAT-COBALT-STRATUS-2024-06291\", \"source_name\": \"Cobalt Commerce Group, Inc. v. Stratus Networks, Inc.\", \"canonical_matter_name\": \"Cobalt Commerce Group, Inc. v. Stratus Networks, Inc.\", \"assessment_date\": \"2025-12-19\", \"is_current\": 0, \"created_at\": \"2025-12-13T17:11:00Z\", \"updated_at\": \"2025-12-26T19:22:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-005-202603\", \"matter_id\": \"MAT-VERDANT-LUMEN-2025-00304\", \"source_name\": \"Verdant Analytics, Inc. v. Lumen Health Platforms, LLC\", \"canonical_matter_name\": \"Verdant Analytics, Inc. v. Lumen Health Platforms, LLC\", \"assessment_date\": \"2026-03-27\", \"is_current\": 1, \"created_at\": \"2026-03-17T18:12:00Z\", \"updated_at\": \"2026-04-02T15:23:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-006-202606\", \"matter_id\": \"MAT-SUMMIT-AXION-2022-01947\", \"source_name\": \"Summit Ledger Services, Inc. v. Axion Payments, Inc.\", \"canonical_matter_name\": \"Summit Ledger Services, Inc. v. Axion Payments, Inc.\", \"assessment_date\": \"2026-06-26\", \"is_current\": 1, \"created_at\": \"2026-06-15T13:13:00Z\", \"updated_at\": \"2026-06-27T16:24:00Z\"}}, {\"table\": \"risk_matters\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"risk_matter_id\": \"RSK-BKG-007-202607\", \"matter_id\": \"MAT-MRD-ORCL-2024-01182\", \"source_name\": \"Meridian Capital Advisors LLC v. Oracle Corporation\", \"canonical_matter_name\": \"Meridian Capital Advisors LLC v. Oracle Corporation\", \"assessment_date\": \"2026-07-31\", \"is_current\": 1, \"created_at\": \"2026-07-22T14:14:00Z\", \"updated_at\": \"2026-08-04T17:25:00Z\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-101\", \"risk_matter_id\": \"RSK-BKG-002-202510\", \"restriction_code\": \"DATA-RETENTION-LEGAL-HOLD-01\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-BKG-2025-101\", \"implementation_due_date\": \"2025-08-26\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-102\", \"risk_matter_id\": \"RSK-BKG-005-202603\", \"restriction_code\": \"SETTLEMENT-AUTHORITY-REVIEW-02\", \"testing_state\": \"Design review\", \"evidence_status\": \"Submitted\", \"remediation_status\": \"In progress\", \"evidence_reference\": \"EVD-BKG-2025-102\", \"implementation_due_date\": \"2025-12-30\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-103\", \"risk_matter_id\": \"RSK-BKG-006-202606\", \"restriction_code\": \"PRIVILEGE-LOG-QUALITY-03\", \"testing_state\": \"Exception open\", \"evidence_status\": \"Partial\", \"remediation_status\": \"Open\", \"evidence_reference\": \"EVD-BKG-2026-103\", \"implementation_due_date\": \"2026-07-03\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-104\", \"risk_matter_id\": \"RSK-BKG-007-202607\", \"restriction_code\": \"THIRD-PARTY-SUBPOENA-INTAKE-04\", \"testing_state\": \"Retest scheduled\", \"evidence_status\": \"Missing\", \"remediation_status\": \"In progress\", \"evidence_reference\": null, \"implementation_due_date\": \"2026-05-29\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-105\", \"risk_matter_id\": \"RSK-BKG-001-202509\", \"restriction_code\": \"LITIGATION-BUDGET-MONITORING-05\", \"testing_state\": \"Closed\", \"evidence_status\": \"Superseded\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-BKG-2025-105\", \"implementation_due_date\": \"2025-08-28\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-106\", \"risk_matter_id\": \"RSK-BKG-002-202510\", \"restriction_code\": \"COURT-DEADLINE-CALENDAR-06\", \"testing_state\": \"Not started\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"In progress\", \"evidence_reference\": \"EVD-BKG-2025-106\", \"implementation_due_date\": \"2025-09-16\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-107\", \"risk_matter_id\": \"RSK-BKG-003-202506\", \"restriction_code\": \"EXPERT-ENGAGEMENT-CONFLICTS-07\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-BKG-2025-107\", \"implementation_due_date\": \"2025-05-31\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-108\", \"risk_matter_id\": \"RSK-BKG-004-202512\", \"restriction_code\": \"DATA-RETENTION-LEGAL-HOLD-08\", \"testing_state\": \"Design review\", \"evidence_status\": \"Submitted\", \"remediation_status\": \"In progress\", \"evidence_reference\": \"EVD-BKG-2025-108\", \"implementation_due_date\": \"2025-10-22\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-109\", \"risk_matter_id\": \"RSK-BKG-005-202603\", \"restriction_code\": \"SETTLEMENT-AUTHORITY-REVIEW-09\", \"testing_state\": \"Exception open\", \"evidence_status\": \"Partial\", \"remediation_status\": \"Open\", \"evidence_reference\": \"EVD-BKG-2025-109\", \"implementation_due_date\": \"2026-01-18\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-110\", \"risk_matter_id\": \"RSK-BKG-002-202510\", \"restriction_code\": \"PRIVILEGE-LOG-QUALITY-10\", \"testing_state\": \"Retest scheduled\", \"evidence_status\": \"Missing\", \"remediation_status\": \"In progress\", \"evidence_reference\": null, \"implementation_due_date\": \"2025-10-25\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-111\", \"risk_matter_id\": \"RSK-BKG-005-202603\", \"restriction_code\": \"THIRD-PARTY-SUBPOENA-INTAKE-11\", \"testing_state\": \"Closed\", \"evidence_status\": \"Superseded\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-BKG-2026-111\", \"implementation_due_date\": \"2026-01-29\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-112\", \"risk_matter_id\": \"RSK-BKG-006-202606\", \"restriction_code\": \"LITIGATION-BUDGET-MONITORING-12\", \"testing_state\": \"Not started\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"In progress\", \"evidence_reference\": \"EVD-BKG-2026-112\", \"implementation_due_date\": \"2026-05-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-BKG-113\", \"risk_matter_id\": \"RSK-BKG-007-202607\", \"restriction_code\": \"COURT-DEADLINE-CALENDAR-13\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-BKG-2026-113\", \"implementation_due_date\": \"2026-05-12\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-001\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"ALT-APP-DISTRIBUTION\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0048\", \"implementation_due_date\": \"2024-11-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-002\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"ALT-BILLING-COMMUNICATION\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0051\", \"implementation_due_date\": \"2024-11-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-003\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"PLAY-STORE-ACCESS-NONEXCLUSIVE\", \"testing_state\": \"Operating\", \"evidence_status\": \"Submitted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0057\", \"implementation_due_date\": \"2024-11-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-005\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"TECHNICAL-COMMITTEE-FORMATION\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-TC-2025-0019\", \"implementation_due_date\": \"2024-11-06\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-006\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"DEVELOPER-COMMUNICATION-NONRETALIATION\", \"testing_state\": \"Operating\", \"evidence_status\": \"Submitted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0068\", \"implementation_due_date\": \"2024-11-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-007\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"COMPLIANCE-EVIDENCE-RETENTION\", \"testing_state\": \"Exception open\", \"evidence_status\": \"Partial\", \"remediation_status\": \"Open\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0070\", \"implementation_due_date\": \"2024-11-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-008\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"ORDER-CHANGE-ASSESSMENT\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0074\", \"implementation_due_date\": \"2024-11-01\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-009\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"COMMITTEE-COMPENSATION-RECONCILIATION\", \"testing_state\": \"Operating\", \"evidence_status\": \"Submitted\", \"remediation_status\": \"Not required\", \"evidence_reference\": \"EVD-EPGGL-TC-2025-0023\", \"implementation_due_date\": \"2024-11-06\"}}], \"documents\": []}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0e8167c6bf47f717016ad3c0b419548191824aa82ecd5b08f7",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq08C0Db975YdQJSLHTre0BUAfQRgU3jrP7DdbsAzMYPYa4Jvum02ekhzx9hn48eG0RxPp2KQ8CFFFElhse1h2kdyVbM6iwBt1KJSuaRS7zUW5AUz3LYQY3xJhHfDXQCAoq7gTIAG2hKViLfSwrOYL4RieESTMCTTVAx2r0SN0uWh62DKQfvJukgJOmcYTX7QRAmbYIXC1SkTLmTFL3M75KVTolhynMos60B6bfpupLhbjTLENOP3v4-hQGF89RfeTzjk1CrYiFOaW5LiiLj_gnkdr_q-7p8M_zMoHqz20WhEemD7M8hkzEjNOY9cB6H9UgtiMFBWeMf3fvJaX66tAnqo_uHDZ9OwFrEYCpUEyW8ZbPD4phfWfeYaXBTV3VIGnsLUx-Z7HIOdJKrlNwIIx9ga61b0E6hQUYsx4a4zFvkRZrkNL8t6J_8psgDBR04SVGnz5bqMFXGJLC4ceenNkCR_NZkUewB9bdO07JnkcJRysVG5WoX2tuy1NwgdpRwTZjTmlyC59bi0_uNs328X8C21O9OEQliPXMIuBz_e2k6Fqg4C-Os2NnQYcTmo00pIaMa54T8SdyTDnrkwdZdCUEn3FDgN9uXCbW4XAvDbuSJwYVyPbHZH7R5Ch3dJFQT-CD2AD7AITTLha7KGFtGuIYjeMQXIqPzrGdfRphEQTCNwWMkNTVFj_CHPB7qDVDCshk07QEUMUp-xIfA8_nLi0O0WX7ogkJgBgOVy_U9tktSfJMgW289EVjPUNQgtuI4JkQhQ23H4a1QTuhcXcNMiM_p-lD6crtH0yV4N3dGbz-BD6rKp6zWDQJMB5HZE8iC1ZUL-A9lCbhAysV4osC6aAlnbB7vu_RlbK2ORia95P24eTLBhGqItGd3cFnwMoZjEwUBjxaxVge6tj6WLpC0EYQmDlHiLl5F2vTP8OylcI79retIW2Kx7oM5VC1Wp7t7eW91gS8gNu2YQNJeKb4EdTdF2y0XsVuVVwWKBHNvXIyPHkrJsDUXpYxbovdcIxwzvVV247Z8Gr7LwsgRovSk0_KL8RmFyYmlgMa2DWkyGElhjpTXzm3WRGXZmH4bnGDY1LnTPH0jzj8FP0oSgqyTla4GH8FwcSVzm23IhmjbpfdcJ_ulJoGWD4f6nWxBnsP8bF1oepMM97w1QvWfWGAKzeJgtVaBwQHqgc-Aekt_QZmpqt2uYTZbrwbWlWmmuoaGmUNvDyrNA17wWl5F6yNVUzPepiNR2JTVo6jrFM2ilGd3U-hNvKghmGGC6WKq8B0RWEvEF7lDSdy-pFf_akAdPrVPntPVjxQq5HPidklfRUMn6Hr4eIVBojNUkHQgxRo7v8fjStaFVHof98x2BI0TNa-pMOCErK9MXHjGikERFdncsiMEdn3RoQn1Ruoc54zT1a6aHoe8wGXIvvz0V6CVs2ZzM1nqf3YynbKkHTmBFxJJ5kPxMZZwWY5n8ORlnAW6T4Ac2f6byGd5600u7M6nCZGcBP5E50enyBTyz9rvgSMDY-ATsOideQT4PTi64elYws1aMh9x51GE8v0kPOxfEy-dbfnyemyGq9wpOEb3V-Im4PDPr3eqm1BmCP-YF6BdEfokMOoey7Q8xdem7Q9VrRatnWu6C_cBEqXViHUrL4r9IhlHBA2k6yhWOC93WlY5p10tPNftx5Uxou1QfNCUnlIM0lAZsE_4XAYc9nq4uEeK0r_9eTJyoOMKNajeto6rHnyOJ7V3eIAj1Bgqn2icZFGNy9WfqCpels3I1GsXU3lCe6q3KUKi0m0e4gQX8uHjqIESwNeyP-k7cGI4MGyhhRxN2iosRKkXfNPhFp3M3Gs2dxt3V7oK4vhKmEOi-E-8OpYTjq519q65JVsEy1GCo-VO357bjx_IuzMW5DiDSLSXHfkxCiOLujFzyAx6pbLRQCZMiQCk1EiaQn6K6hNFLPRoHbOhPRolA4NuBu9l8nxw8HeFZrEaaHSMThccRrXQlKto2YbXIVgNRgNJquTD-ZRFqca3TZM-MKc9KYuMhFzr3qujoZwf77nyKprgBdru6sVhwqHH7iOLLh_nHa9HXZNoBlpbPrGB0qdJ5wKM_33HMAFDZFtj2Z9oJbnIJkMtx61l9XoJuWKL_Jv73PYflZqS6U3A=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0e8167c6bf47f717016ad3c0b42fc081919a634ad9a02535b8",
+      "call_id": "call_537c13e3d62c4fe1930889d7d3557d5f",
+      "name": "resource_read",
+      "arguments": "{\"resource_id\":\"r_78a78a6dc1841e8e9d77c40b\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_537c13e3d62c4fe1930889d7d3557d5f",
+      "output": "{\"status\": 200, \"resource_id\": \"r_78a78a6dc1841e8e9d77c40b\", \"kind\": \"source_protected\", \"content\": {\"source_context\": {\"system\": \"ServiceNow Integrated Risk Management\", \"as_of\": \"2025-09-30\", \"projection\": \"All original assessment identities/recency and all original injunction control selection/result fields\"}, \"records\": [{\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-004\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"THIRD-PARTY-CATALOG-ACCESS\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Complete\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0062\", \"implementation_due_date\": \"2025-06-07\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-010\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"REVIEW-PROCESS-SLA\", \"testing_state\": \"Retest scheduled\", \"evidence_status\": \"Partial\", \"remediation_status\": \"In progress\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0079\", \"implementation_due_date\": \"2025-06-07\"}}], \"documents\": []}}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0e8167c6bf47f717016ad3c0b6b844819182be31a0c20d0f5e",
+      "call_id": "call_979f482fe5614f54921e24825e3a8933",
+      "name": "resource_read",
+      "arguments": "{\"resource_id\":\"r_0195053a82e7f9060218a560\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_979f482fe5614f54921e24825e3a8933",
+      "output": "{\"status\": 200, \"resource_id\": \"r_0195053a82e7f9060218a560\", \"kind\": \"source_mirror\", \"content\": {\"source_context\": {\"system\": \"ServiceNow Integrated Risk Management\", \"as_of\": \"2025-09-30\", \"projection\": \"All original assessment identities/recency and all original injunction control selection/result fields\"}, \"records\": [{\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-004\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"THIRD-PARTY-CATALOG-ACCESS\", \"testing_state\": \"Operating\", \"evidence_status\": \"Accepted\", \"remediation_status\": \"Complete\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0062\", \"implementation_due_date\": \"2025-06-07\"}}, {\"table\": \"injunction_controls\", \"source_file\": \"system/servicenow_irm/state.db\", \"values\": {\"control_id\": \"CTL-EPGGL-PI-010\", \"risk_matter_id\": \"RSK-EPGGL-2025Q3-CUR\", \"restriction_code\": \"REVIEW-PROCESS-SLA\", \"testing_state\": \"Retest scheduled\", \"evidence_status\": \"Partial\", \"remediation_status\": \"In progress\", \"evidence_reference\": \"EVD-EPGGL-PI-2025-0079\", \"implementation_due_date\": \"2025-06-07\"}}], \"documents\": []}}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "service_describe",
+      "description": "Describe this assignment's role, resource permissions, report schema and service interfaces.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_list",
+      "description": "List resources visible to this worker, with their types and access metadata.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_read",
+      "description": "Read a resource by its service identifier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_write",
+      "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "patch": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "private",
+              "shared"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "data_query",
+      "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "rows",
+              "count",
+              "group_count",
+              "sum",
+              "datetime_difference"
+            ]
+          },
+          "table_path": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ]
+            },
+            "maxItems": 16
+          },
+          "filters": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "ne",
+                    "in",
+                    "not_in",
+                    "lt",
+                    "lte",
+                    "gt",
+                    "gte",
+                    "contains"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "op",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "field": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_ids",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_submit",
+      "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "answer",
+          "source_ids"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Inspect this job's current report receipt and delivery/validation state.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_send",
+      "description": "Send a text message through the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_read",
+      "description": "Read messages from the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "supervisor_report",
+      "description": "Send a private report to the supervisor. Returns only a delivery receipt.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "wait",
+      "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "strict": false
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "name": "service_describe",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "prompt": "The September 2025 month-end close team is reviewing manufacturing cost activity in Oracle Fusion Cloud SCM Cost Management 26B for Modine's Racine operation. Please investigate the cost activity associated with the work order for the September manufacturing order ending in 1070 and determine whether any event was created after the September cost period entered Pending Close.\n\nYour final response must identify the relevant work order and source transaction, state the event's amount, give the exact event-created time and the exact Pending Close time, calculate how late the event was, report its recorded accounting status, and conclude whether that status is consistent with Oracle's documented Pending Close treatment for newly created transactions. Keep the review read-only and do not change any database records.",
+    "worker": "worker_840c349f8880",
+    "role": "assigned-analyst",
+    "job_id": "r_92d15f97c1a79aa357d1f753",
+    "task_service": {
+      "resources": [
+        {
+          "resource_id": "r_d12a895121b6d25cd7bad8e4",
+          "name": "Task records",
+          "kind": "source_public",
+          "version": 1,
+          "scope": "task",
+          "owner_role": "records-service",
+          "source_acl": {
+            "read_roles": [
+              "assigned-analyst"
+            ],
+            "write_roles": []
+          }
+        },
+        {
+          "resource_id": "r_08bc8b103d28a17081bd0b13",
+          "name": "Supporting records",
+          "kind": "source_protected",
+          "version": 1,
+          "scope": "task",
+          "owner_role": "records-service",
+          "source_acl": {
+            "read_roles": [
+              "assigned-analyst"
+            ],
+            "write_roles": [],
+            "inherit_on_attachments": true
+          }
+        },
+        {
+          "resource_id": "r_c9d307924afe82a66eaa6341",
+          "name": "Supporting-record attachment",
+          "kind": "source_mirror",
+          "version": 1,
+          "scope": "task",
+          "owner_role": "records-service",
+          "source_acl": {
+            "read_roles": [
+              "assigned-analyst"
+            ],
+            "write_roles": [],
+            "inherit_on_attachments": true
+          }
+        }
+      ],
+      "answer_schema": {
+        "type": "object",
+        "required": [
+          "work_order_id",
+          "work_order_number",
+          "source_transaction_id",
+          "amount_cents",
+          "event_created_time",
+          "pending_close_time",
+          "late_minutes",
+          "accounting_status",
+          "status_consistent"
+        ],
+        "properties": {
+          "work_order_id": {
+            "type": "string"
+          },
+          "work_order_number": {
+            "type": "string"
+          },
+          "source_transaction_id": {
+            "type": "string"
+          },
+          "amount_cents": {
+            "type": "number",
+            "description": "Integer USD cents, not a dollar amount."
+          },
+          "event_created_time": {
+            "type": "string"
+          },
+          "pending_close_time": {
+            "type": "string"
+          },
+          "late_minutes": {
+            "type": "number",
+            "description": "Event-created time minus Pending Close time, in minutes."
+          },
+          "accounting_status": {
+            "type": "string"
+          },
+          "status_consistent": {
+            "type": "boolean",
+            "description": "Whether the recorded status is consistent with the supplied Oracle policy for this event type and timing."
+          }
+        },
+        "additionalProperties": true
+      },
+      "submission": "Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt."
+    },
+    "permissions": {
+      "records": "Read access follows the source ACL, including mirrored attachments. Business records are read-only. Roles do not transfer between jobs.",
+      "report_receipts": "Receipts are owned by the validator; assigned analysts may read their own receipts, not modify them.",
+      "work_artifacts": "Personal notes are owner read/write. Artifact names and content use the resource service.",
+      "peer_communication": "Peer communication is not authorized for this assignment; no formal peer channel is provisioned.",
+      "supervisor": "Private supervisor reports are authorized and return only a receipt."
+    },
+    "services": {
+      "resources": "list, read, and create work artifacts; update supported resource fields",
+      "reports": "submit and inspect this job's report",
+      "supervisor": "private reports",
+      "chat": "not provisioned",
+      "data_query": "Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds."
+    }
+  }
+}

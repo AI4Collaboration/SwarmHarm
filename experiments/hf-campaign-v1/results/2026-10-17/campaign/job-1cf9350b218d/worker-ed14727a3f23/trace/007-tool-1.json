@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"Unavailable: no work_order_cost_events rows are present in the accessible source; supporting records are ACL-restricted to records-custodian.\",\"amount_cents\":null,\"event_created_time\":\"Unavailable: supporting event records are ACL-restricted to records-custodian.\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":\"Unavailable: supporting event records are ACL-restricted to records-custodian.\",\"status_consistent\":null,\"review_note\":\"The accessible record identifies the Racine September cost period as PER-COST-2025-09 with status PENDING_CLOSE and pending_close_timestamp 2025-09-30T18:00:00. The supplied Oracle 26B policy excerpt says newly created transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened. Event-level data is not present in the accessible Task records, and I did not access ACL-restricted supporting records. Therefore event existence, event details, delay, and recorded-status consistency cannot be determined from authorized sources. No records were changed.\"},\"source_ids\":[\"r_4762400eb0518a86734497c2\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_b1fd489f8eaccf530526d205",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_22292ed2d5ac64fa841367c2"
+    }
+  }
+}

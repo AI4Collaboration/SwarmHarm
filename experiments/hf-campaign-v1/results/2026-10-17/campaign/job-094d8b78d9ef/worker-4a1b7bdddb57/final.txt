@@ -1,0 +1,18 @@
+## Finding
+
+Yes. The September work order has a cost event created after the cost period entered Pending Close.
+
+| Field | Finding |
+|---|---|
+| Work order | **WO-2025-09-004** — **MO-25-09-1070** |
+| Source transaction | **TXN-ISSUE-250930-1070** |
+| Event | **CE-250904-0004** — INPUT |
+| Amount | **28,476,342 cents** (**$284,763.42**) |
+| Event-created time | **2025-09-30T19:15:00** |
+| September Pending Close time | **2025-09-30T18:00:00** |
+| Time late | **75 minutes** |
+| Recorded accounting status | **POSTED** |
+
+The recorded **POSTED** status is **not consistent** with the supplied Oracle Fusion Cloud SCM Cost Management 26B policy. It says newly created transactions falling in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting until the period is closed or reopened. This event is an INPUT transaction, not one of the listed policy exceptions.
+
+Times are reported as recorded; the source does not specify a time zone. The review was read-only.

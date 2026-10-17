@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"source_document\":\"Component issue after pending close\",\"amount_usd\":318250.75,\"policy_assessment\":\"The source event is a newly created INPUT/component issue for the September period. Oracle's supplied 26B policy says new transactions created after Pending Close that fall in or before the period are not staged/processed, subject to specific exceptions for revenue lines, COGS recognition, and manual cost adjustments. This INPUT event is not one of those exceptions; therefore its recorded POSTED status is not consistent with that treatment.\",\"review_note\":\"Read-only review; timestamps are reported as recorded, without a timezone designation.\"},\"source_ids\":[\"r_eb429233faf4ac9c04cb28ab\",\"r_eb3ab7420afa136a575b0f57\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_ec3b9e35bd23dd0dc84eaf70",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_2a05dc0792e12d9ed3dfa4bd"
+    }
+  }
+}

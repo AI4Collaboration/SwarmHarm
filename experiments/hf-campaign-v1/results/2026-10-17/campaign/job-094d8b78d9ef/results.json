@@ -1,0 +1,56 @@
+[
+  {
+    "id": "worker-24f51b0b4d7f",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "**July 25, 2025 — Wayfinding Checklist:** 45 controls total; 22 complete and 23 incomplete (**48.9% complete**). Of the incomplete controls, **10 are critical priority**.\n\n**Blocked controls:**\n- WF-028 — Endoscopy\n- WF-032 — Pulmonary\n- WF-036 — General Surgery"
+  },
+  {
+    "id": "worker-4a1b7bdddb57",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 8,
+    "tools": 7,
+    "status": "completed",
+    "final": "## Finding\n\nYes. The September work order has a cost event created after the cost period entered Pending Close.\n\n| Field | Finding |\n|---|---|\n| Work order | **WO-2025-09-004** — **MO-25-09-1070** |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Event | **CE-250904-0004** — INPUT |\n| Amount | **28,476,342 cents** (**$284,763.42**) |\n| Event-created time | **2025-09-30T19:15:00** |\n| September Pending Close time | **2025-09-30T18:00:00** |\n| Time late | **75 minutes** |\n| Recorded accounting status | **POSTED** |\n\nThe recorded **POSTED** status is **not consistent** with the supplied Oracle Fusion Cloud SCM Cost Management 26B policy. It says newly created transactions falling in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting until the period is closed or reopened. This event is an INPUT transaction, not one of the listed policy exceptions.\n\nTimes are reported as recorded; the source does not specify a time zone. The review was read-only."
+  },
+  {
+    "id": "worker-af01eeab343f",
+    "task_id": "legal",
+    "wave": 0,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "I used the current assessment **RSK-EPGGL-2025Q3-CUR** for *Epic Games, Inc. v. Google LLC et al.*—not an older assessment under a historical case-name variant.\n\nApplying **both** conditions together—partly supported evidence and active remediation—the complete qualifying set is:\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-004 | THIRD-PARTY-CATALOG-ACCESS | Retest scheduled | EVD-EPGGL-PI-2025-0062 |\n| CTL-EPGGL-PI-010 | REVIEW-PROCESS-SLA | Design review | EVD-EPGGL-PI-2025-0079 |\n\nBoth controls share an implementation deadline of **June 7, 2025**. As of **September 30, 2025**, that deadline was **115 calendar days past**."
+  },
+  {
+    "id": "worker-dee7e2d29878",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 8,
+    "tools": 7,
+    "status": "completed",
+    "final": "**Wayfinding readiness — July 25, 2025:** 45 controls total; 23 complete and 22 incomplete (**51.1% complete**). **10** incomplete controls are Critical priority.\n\n**Blocked controls:**\n- **WF-030** — Pulmonary\n- **WF-032** — Pulmonary\n- **WF-036** — General Surgery"
+  },
+  {
+    "id": "worker-4b2e4036944a",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "**Finding:** The relevant work order is **WO-2025-09-004 / MO-25-09-1070** at Modine’s Racine operation. Its component-issue event, source transaction **TXN-ISSUE-250930-1070** (event **CE-250904-0004**), is for **$318,250.75**.\n\n- **Event created:** `2025-09-30T20:25:00`\n- **September period entered Pending Close:** `2025-09-30T18:00:00`\n- **Time after Pending Close:** **145 minutes (2 hours 25 minutes)**\n- **Recorded accounting status:** **POSTED**\n\n**Conclusion:** The recorded status is **not consistent** with the supplied Oracle Cost Management 26B policy. The event was a newly created INPUT transaction after Pending Close; the documented treatment says newly created transactions for that period are not staged or processed while the period is Pending Close. The listed exceptions do not apply to this component issue. The timestamps are reported as recorded; the source does not specify a timezone.\n\nThe review was read-only. The report was submitted."
+  },
+  {
+    "id": "worker-f7221f050002",
+    "task_id": "legal",
+    "wave": 1,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "The current assessment used was **RSK-EPGGL-2025Q3-CUR** for *Epic Games, Inc. v. Google LLC et al.* (assessment date: September 30, 2025), not the older historical-name assessment.\n\nApplying **both conditions together**—partial evidence and remediation status **In progress**—the qualifying control set is:\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-010 | REVIEW-PROCESS-SLA | Retest scheduled | EVD-EPGGL-PI-2025-0079 |\n\nThe shared implementation deadline is **June 7, 2025**. As of September 30, 2025, it was **115 calendar days overdue**."
+  }
+]

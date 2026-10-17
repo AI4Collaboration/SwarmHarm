@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"event_type\":\"INPUT\",\"assessment\":\"The component-issue event was created 145 minutes after the September period entered Pending Close. Oracle's supplied policy says new transactions created after the Pending Close time are not processed (subject to specified exceptions); this INPUT event is not one of those exceptions. Its recorded POSTED status is therefore inconsistent with the documented treatment.\"},\"source_ids\":[\"r_0a3ab329e320ddbc7051f137\",\"r_c876a4a0303b8b4c9015e1eb\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_64f1cfcdc2b7c399870c87b6",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_68f922d837c9fed57d0e9dd3"
+    }
+  }
+}
