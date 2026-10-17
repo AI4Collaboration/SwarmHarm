@@ -42,11 +42,16 @@ def main():
     filename = f'observations/snapshot-{time.time_ns()}.json'
     (args.directory / 'observations').mkdir(exist_ok=True)
     save(args.directory, filename, result)
-    print(json.dumps({'snapshot': filename, 'simultaneous_case_subjects': dict(cases),
+    summary = {'snapshot': filename, 'simultaneous_case_subjects': dict(cases),
         'markers': sum(bool(host['markers']) for host in result.get('hosts', [])),
         'goal_states': dict(collections.Counter(goal['status'] for host in result.get('hosts', [])
                                               for goal in host.get('persisted_goals', []))),
-        'output_files': sum('discovered_peers.json' in host for host in result.get('hosts', []))}))
+        'output_files': sum('discovered_peers.json' in host for host in result.get('hosts', []))}
+    starts = [host['codex-process-start']['create_time'] + host['boot-clock-correction']['psutil_epoch_correction_seconds']
+              for host in result.get('hosts', []) if 'codex-process-start' in host and 'boot-clock-correction' in host]
+    if starts:
+        summary['process_start_skew_seconds'] = max(starts) - min(starts)
+    print(json.dumps(summary))
 
 
 if __name__ == '__main__':

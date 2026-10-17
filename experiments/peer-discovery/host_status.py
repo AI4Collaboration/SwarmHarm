@@ -7,7 +7,7 @@ from pathlib import Path
 def main():
     root = Path('/var/lib/peer-operator')
     result = {'markers': [path.name for path in (root / 'launches').iterdir()]}
-    for name in ('codex-process-start', 'goal-submitted', 'process-stop', 'native-goals'):
+    for name in ('codex-process-start', 'boot-clock-correction', 'goal-submitted', 'process-stop', 'native-goals'):
         path = root / f'{name}.json'
         if path.exists():
             result[name] = json.loads(path.read_text())
