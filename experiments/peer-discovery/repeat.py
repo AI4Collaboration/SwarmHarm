@@ -17,6 +17,7 @@ import numpy as np
 from cloud import EC2, ROOT, cleanup, launch, save, ssh
 from graphs import validate
 from preflight import put
+from recording import retrieve
 
 
 def gateway(meta_key, mode, value):
@@ -26,7 +27,7 @@ def gateway(meta_key, mode, value):
     return json.loads(result.stdout)
 
 
-def configure(directory, host, key, peer_key, objective):
+def configure(directory, host, key, peer_key, objective, admission):
     ip = host['public_ip']
     put(directory, ip, '/var/lib/peer-operator/inference-key', key['key'].encode())
     put(directory, ip, '/home/agent/.codex/config.toml', (ROOT / 'provider.toml').read_bytes(), owner='agent:agent')
@@ -41,9 +42,12 @@ def configure(directory, host, key, peer_key, objective):
     status = EC2.describe_instances(InstanceIds=[host['id']])['Reservations'][0]['Instances'][0]
     assert status['MetadataOptions']['HttpEndpoint'] == 'disabled'
     assert 'IamInstanceProfile' not in status
+    binary_hash = ssh(directory, ip, 'sha256sum /usr/local/bin/codex').stdout.decode().split()[0]
+    assert binary_hash == admission['codex_binary_sha256']
+    assert hashlib.sha256((ROOT / 'provider.toml').read_bytes()).hexdigest() == admission['provider_configuration_sha256']
     readiness = ssh(directory, ip, 'sudo ufw status; sudo iptables -S; sudo ls -la /home/agent; sudo ls -la /home/agent/.ssh; sha256sum /home/agent/peers.txt /home/agent/.codex/config.toml; codex --version').stdout.decode()
     save(directory, f'{host["id"]}-readiness.json', {'clock_csv': clock, 'readiness': readiness, 'configuration': key['configuration']})
-    ssh(directory, ip, 'sudo systemd-run --unit=peer-connectivity-probe --property=RuntimeMaxSec=60 /usr/bin/nc -lk -p 39271')
+    ssh(directory, ip, 'sudo systemd-run --unit=peer-connectivity-probe --property=RuntimeMaxSec=600 /usr/bin/nc -lk -p 39271')
 
 
 def arm(directory, host, timestamp, allowance):
@@ -111,10 +115,14 @@ def main():
     parser.add_argument('--issue', default='SWH-78')
     parser.add_argument('--preflight', action='store_true')
     parser.add_argument('--existing-key', type=Path)
+    parser.add_argument('--admission', type=Path, required=True)
+    parser.add_argument('--admission-state-dir', type=Path, required=True)
     args = parser.parse_args()
     directory = args.directory.resolve()
     meta_key = args.meta_key.resolve()
     graph = json.loads(args.graph.read_text())
+    admission = json.loads(args.admission.read_text())
+    assert admission['issue'] == args.issue and admission['n'] == graph['n'] and admission['k'] == graph['k']
     assert validate(graph['adjacency'], graph['n'], graph['k'])[0]
     count = 1 if args.preflight else graph['n']
     purpose = 'preflight-2' if args.preflight else f'repeat-{graph["repeat"]}'
@@ -122,6 +130,13 @@ def main():
     allowance = 300 if args.preflight else 1800
     keys = []
     directory.mkdir(parents=True, exist_ok=True)
+    save(directory, 'recording-settings.json', gateway(meta_key, 'recording', ''))
+    receipt = subprocess.run(['python3', str(ROOT.parent / 'peer-discovery-scheduling/admit.py'), 'reserve',
+        '--state-dir', str(args.admission_state_dir), '--issue', args.issue, '--n', str(graph['n'])],
+        check=True, capture_output=True, text=True)
+    capacity = json.loads(receipt.stdout)
+    assert capacity['capacity_valid']
+    save(directory, 'capacity-admission.json', capacity)
     def expire():
         state = json.loads((directory / 'cloud.json').read_text())
         if state['instance_ids']:
@@ -153,26 +168,41 @@ def main():
         subprocess.run(['ssh-keygen', '-q', '-t', 'ed25519', '-N', '', '-C', '', '-f', str(peer_key)], check=True)
         objective = (ROOT / ('preflight-objective.txt' if args.preflight else 'objective.txt')).read_bytes()
         with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 16)) as pool:
-            list(pool.map(lambda pair: configure(directory, pair[0], pair[1], peer_key, objective), zip(hosts, keys)))
-            for host in hosts:
-                for peer in hosts:
-                    if host['id'] != peer['id']:
-                        ssh(directory, host['public_ip'], f'nc -z -w 5 {peer["public_ip"]} 39271')
+            list(pool.map(lambda pair: configure(directory, pair[0], pair[1], peer_key, objective, admission), zip(hosts, keys)))
+            def probe(host):
+                commands = [f'nc -z -w 5 {peer["public_ip"]} 39271' for peer in hosts if host['id'] != peer['id']]
+                if commands:
+                    ssh(directory, host['public_ip'], ' && '.join(commands))
+            list(pool.map(probe, hosts))
             list(pool.map(lambda host: ssh(directory, host['public_ip'], 'sudo systemctl stop peer-connectivity-probe.service'), hosts))
             timestamp = int(time.time()) + 125
             save(directory, 'release.json', {'T_start': timestamp, 'allowance_seconds': allowance, 'prepared_at': time.time()})
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))
             assert time.time() < timestamp - 20
+            print(json.dumps({'phase': 'armed', 'issue': args.issue, 'subjects': count, 'T_start': timestamp}), flush=True)
+            last_report = 0
             while time.time() < timestamp + allowance + 15:
                 results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
                     'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
                 if all(result.returncode == 0 for result in results):
                     break
+                if time.monotonic() - last_report >= 45:
+                    save(directory, f'gateway-observation-{int(time.time())}.json', gateway(meta_key, 'recording', ''))
+                    print(json.dumps({'phase': 'observing', 'issue': args.issue, 'time': time.time(),
+                        'ended_subjects': sum(result.returncode == 0 for result in results), 'subjects': count}), flush=True)
+                    last_report = time.monotonic()
                 time.sleep(5)
             receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
         save(directory, 'export-manifest.json', receipts)
         for index, key in enumerate(keys):
             save(directory, f'gateway-{index}.json', gateway(meta_key, 'export', key['id']))
+        exports = [json.loads((directory / f'gateway-{index}.json').read_text()) for index in range(len(keys))]
+        links = []
+        for index, host in enumerate(hosts):
+            goals = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals']
+            links.append({'issue': args.issue, 'repeat': graph['repeat'], 'instance_id': host['id'],
+                'api_key_id': keys[index]['id'], 'session_id': goals[0]['thread_id']})
+        retrieve(directory, json.loads((directory / 'recording-settings.json').read_text()), exports, links)
         print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:
         try:

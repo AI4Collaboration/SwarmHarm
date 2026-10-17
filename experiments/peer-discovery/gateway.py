@@ -1,5 +1,7 @@
 import argparse
 import json
+import subprocess
+import time
 from pathlib import Path
 
 import requests
@@ -40,10 +42,50 @@ class Gateway:
         key['configuration'] = self.gql('mutation($id:ID!,$i:UpdateAPIKeyProfilesInput!){updateAPIKeyProfiles(id:$id,input:$i){' + FIELDS + '}}', {'id': key['id'], 'i': profile})
         return key
 
+    def export(self, key_id):
+        edges = []
+        cursor = None
+        pages = 0
+        while True:
+            data = self.gql('''query($id:ID!,$after:Cursor){requests(first:100,after:$after,where:{apiKeyID:$id}){
+              pageInfo{hasNextPage endCursor} edges{node{
+              id createdAt updatedAt projectID dataStorageID channelID modelID reasoningEffort status stream
+              requestBody responseBody responseChunks
+              executions(first:100){pageInfo{hasNextPage} edges{node{
+              id upstreamModelID reasoningEffort status responseStatusCode requestBody responseBody responseChunks
+              errorMessage passThroughApplied }}}
+              usageLogs(first:100){pageInfo{hasNextPage} edges{node{
+              id promptTokens completionTokens totalTokens promptCachedTokens totalCost }}}
+            }}} apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}''',
+                {'id': key_id, 'after': cursor})
+            page = data['requests']
+            pages += 1
+            for edge in page['edges']:
+                assert not edge['node']['executions']['pageInfo']['hasNextPage']
+                assert not edge['node']['usageLogs']['pageInfo']['hasNextPage']
+            edges.extend(page['edges'])
+            if not page['pageInfo']['hasNextPage']:
+                return {'requests': {'edges': edges}, 'apiKeyQuotaUsages': data['apiKeyQuotaUsages'], 'pages': pages}
+            assert page['pageInfo']['endCursor'] != cursor
+            cursor = page['pageInfo']['endCursor']
+
+    def recording(self):
+        data = self.gql('''query {storagePolicy{storeChunks storeRequestBody storeResponseBody}
+          defaultDataStorageID dataStorages(first:100){edges{node{id name type status settings{
+          s3{bucketName endpoint region pathStyle}}}}}
+          channels(first:100){edges{node{id status supportedModels liveLimiterStats{inFlight waiting capacity queueSize}}}}
+        }''')
+        assert all(data['storagePolicy'].values())
+        data['observed_at'] = time.time()
+        data['host_resources'] = {
+            name: subprocess.run(command, check=True, capture_output=True, text=True).stdout
+            for name, command in {'memory': ['free', '-b'], 'disk': ['df', '-B1', '/'], 'load': ['uptime']}.items()}
+        return data
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'prices', 'quota', 'token-quota'])
+    parser.add_argument('mode', choices=['inventory', 'create', 'disable', 'export', 'recording', 'prices', 'quota', 'token-quota'])
     parser.add_argument('value', nargs='?')
     args = parser.parse_args()
     gateway = Gateway()
@@ -70,12 +112,9 @@ def main():
           channelModelPrices{modelID referenceID price{items{itemCode pricing{mode flatFee usagePerUnit}}}}}}}
         }''')))
     elif args.mode == 'export':
-        print(json.dumps(gateway.gql('''query($id:ID!){requests(first:1000,where:{apiKeyID:$id}){edges{node{
-          id createdAt updatedAt modelID reasoningEffort status requestBody responseBody
-          executions { edges { node { id upstreamModelID reasoningEffort status responseStatusCode
-          requestBody responseBody errorMessage passThroughApplied } } }
-          usageLogs { edges { node { id promptTokens completionTokens totalTokens promptCachedTokens totalCost } } }
-        }}} apiKeyQuotaUsages(apiKeyId:$id){profileName usage{requestCount totalTokens totalCost}}}''', {'id': args.value})))
+        print(json.dumps(gateway.export(args.value)))
+    elif args.mode == 'recording':
+        print(json.dumps(gateway.recording()))
 
 
 if __name__ == '__main__':
