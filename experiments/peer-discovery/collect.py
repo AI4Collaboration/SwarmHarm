@@ -18,6 +18,7 @@ for path in paths:
         files[str(path)] = {'size': stat.st_size, 'mtime_ns': stat.st_mtime_ns, 'ctime_ns': stat.st_ctime_ns,
             'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
 shutil.copyfile('/opt/peer-discovery/driver.py', directory / 'executed-driver.py')
+shutil.copyfile('/opt/peer-discovery/dist/registry.json', directory / 'codex-distribution.json')
 record = {'time_ns': time.time_ns(), 'files': files, 'launch_markers': sorted(path.name for path in (directory / 'launches').iterdir()),
     'memory': psutil.virtual_memory()._asdict(), 'disk': psutil.disk_usage('/')._asdict(),
     'network': psutil.net_io_counters()._asdict()}
