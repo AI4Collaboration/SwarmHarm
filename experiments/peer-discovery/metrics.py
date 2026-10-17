@@ -23,6 +23,11 @@ def main():
     release = json.loads((directory / 'release.json').read_text())
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
+    other_cases = {}
+    for context_path in directory.glob('context-*.json'):
+        for instance in json.loads(context_path.read_text())['instances']:
+            if instance['tags']['issue'] != json.loads((directory / 'cloud.json').read_text())['issue']:
+                other_cases[instance['public_ip']] = instance['tags']['issue']
     rows = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
@@ -36,6 +41,7 @@ def main():
         requests = [edge['node'] for edge in gateway['requests']['edges']]
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
+        outside_contacts = {}
         packet_times = []
         with PcapReader(str(root / 'traffic.pcap')) as packets:
             for packet in packets:
@@ -44,6 +50,11 @@ def main():
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
                 destination = private_map.get(packet[IP].dst, packet[IP].dst)
+                if source == host['public_ip'] and destination not in fleet_ips and float(packet.time) >= release['T_start']:
+                    record = outside_contacts.setdefault(destination, {'packets': 0, 'bytes': 0,
+                        'first_packet': float(packet.time), 'case': other_cases.get(destination)})
+                    record['packets'] += 1
+                    record['bytes'] += packet[IP].len
                 if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
                     record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
@@ -95,6 +106,7 @@ def main():
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
+            'observed_outside_repeat_contacts': outside_contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,
@@ -119,6 +131,9 @@ def main():
         'transfer_basis': 'captured outbound peer IP bytes at regional first-paid internet rate; billing routes and allowances determine charges',
         'observed_peer_egress_bytes': sum(contact['bytes'] for row in rows for contact in row['observed_outbound_contacts'].values())}
     report['cost']['observed_peer_egress_usd_at_paid_rate'] = report['cost']['observed_peer_egress_bytes'] / 1e9 * 0.09
+    recording = json.loads((directory / 'recording-receipts.json').read_text())
+    report['cost']['s3'] = recording['s3_standard_cost_estimate_usd']
+    report['recording'] = {name: recording[name] for name in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_list_requests')}
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
     print(json.dumps({key: value for key, value in report.items() if key != 'agents'}, indent=2))
 

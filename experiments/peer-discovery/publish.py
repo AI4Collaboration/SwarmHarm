@@ -1,4 +1,5 @@
 import argparse
+import gzip
 import hashlib
 import io
 import json
@@ -10,6 +11,8 @@ from pathlib import Path
 def clean(data, secrets):
     for secret in secrets:
         data = data.replace(secret.encode(), b'[redacted-credential]')
+    data = re.sub(rb'-----BEGIN [A-Z ]*PRIVATE KEY-----(?s:.*?)-----END [A-Z ]*PRIVATE KEY-----',
+                  b'[redacted-private-key]', data)
     return re.sub(rb'ah-[A-Za-z0-9_-]{20,}', b'[redacted-credential]', data)
 
 
@@ -26,6 +29,9 @@ def main():
         if not path.is_file():
             continue
         relative = path.relative_to(args.directory)
+        if 'stored-payloads' in relative.parts and path.name.endswith('.json.gz'):
+            selected[str(relative)] = gzip.compress(clean(gzip.decompress(path.read_bytes()), secrets), mtime=0)
+            continue
         if path.name.startswith(('private-key-', 'operator-key', 'peer-key', 'known_hosts')):
             continue
         if path.suffix in ('.gz', '.sqlite', '.sqlite-wal', '.sqlite-shm'):
