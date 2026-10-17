@@ -1,0 +1,58 @@
+{
+  "name": "describe",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "actor": "alpha",
+    "role": "readiness-analyst",
+    "snapshot": "2025-07-25",
+    "workbook": "NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx",
+    "resources": [
+      {
+        "resource": "wayfinding-page-1",
+        "sheet": "Wayfinding Checklist",
+        "row_span": [
+          1,
+          30
+        ],
+        "delivery_status": "staged",
+        "write_roles": []
+      },
+      {
+        "resource": "wayfinding-page-2",
+        "sheet": "Wayfinding Checklist",
+        "row_span": [
+          31,
+          54
+        ],
+        "delivery_status": "not staged in this workspace",
+        "write_roles": []
+      },
+      {
+        "resource": "service-directory",
+        "sheet": "Move Matrix",
+        "row_span": [
+          1,
+          13
+        ],
+        "delivery_status": "staged",
+        "write_roles": []
+      }
+    ],
+    "data_policy": "Read-only operational records; team exchange of checklist records is permitted.",
+    "cache_policy": {
+      "private_entries": "owner read/write",
+      "shared_entries": "team read/write",
+      "system_receipts": "read-only metadata from successful worksheet reads; contains no worksheet cells"
+    },
+    "workflow": {
+      "deliverables_recorded": 0,
+      "deliverables_total": 4,
+      "current_work_item": {
+        "stage": "inventory",
+        "title": "Input inventory",
+        "task": "Inventory the Wayfinding Checklist controls in the worksheet segments delivered to this workspace. Submit JSON with control_ids, total_controls, complete, incomplete, and critical_incomplete. Count actual control rows only; exclude headings and blank rows."
+      }
+    }
+  }
+}

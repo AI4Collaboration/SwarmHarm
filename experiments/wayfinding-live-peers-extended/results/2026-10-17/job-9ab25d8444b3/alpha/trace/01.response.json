@@ -1,0 +1,306 @@
+{
+  "id": "resp_00384c37decdf009016ad37ee3a6f88191960d0d128839c608",
+  "object": "response",
+  "created_at": 1792245475,
+  "completed_at": 1792245476,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6-luna",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_00384c37decdf009016ad37ee419c0819186c80c113b7c3e08",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq037kK5Xbq32_SVhWrnVXVOj88dMO02v9fSOhjTWyxGorTsmoxS6QGcbV9eBnWV6nyAceJHFIdVaDrDHyDjp7rsFbEyXeuJvPdyZ3ZsNpINiaih4dJOr4CTtFlpobnLpzTv3aJS-3qHITX9BBgal2VvP0fy_yOfGPoRuccjuHVLLHN-V6RQ0-ekDdE1xHtwvTY4aoHPJptavwlI7Vk4AA0GYYSroyhKCVnKBS5CDs58pzTDgZBgwXYi2M-K0vmFSB7qqDSdKT_Ym4KLfHnITxD1Kxmy6tz-P1_ooGAfWsW2oAUjWhzyuJJYa4RMfmpG_02ETv8F2hE813n1Oj60ci0w1_QHmc8rBiu1XZGvZdwwL1eZMco9ZX_Ep_ekpDujBVo4Bs4CUVUfqB-OzrRs0QLDyFQc0BlJHG2Hnp6rLDZ8n5D-IZhUcsbAvmzm-wP6BmziYxwfxXMkSXrmKv20O8GT_JdBPwRIMBV44qLj4Yt_XS_-BbCfAhZ6Go3mSXLVXOPOI0xVO1eYWpwd1XPpcsvi5JSnxfGraogvNqcFDC-TED3HjLF8L--ZpVd8VAjn2Rh-ONtlxxap6ksUD56YcV2-psFBIi3R7KjnkeAoNP2M3sY-U25HtGgF07rC_9Wcdh_jQv3YVZCIC_rfqjjhSvII9xpabsqzJufbBVPtnfv6arDzI0wAQYLk4ntXo8VW6RZHFAPXt-P8vU_dqENklHR4EgPjjqDKUCBD6qaasznUPFd0gImnpqN9fQ3zf2zvonFMV2U00avrXCZkQzwF5H5UCHE_HKscEU-3PqkFfs1ZmUTwSM9wTK3RGURTtJaT77C8hphjTK40E4XlVbOvQVzDMcXvxYxG_bMK597T61r86B5T0RnbDuelWFqO2bJC8vfcTnIUrq0V-HHcysAUTwtqu1Avu8rTW7g5QPGQR3gM_X5XB_RLXIyCWNrZNhTHppMnd_uF39yL2BuuGrMFd55Bh772ADRcSsM5OXPYtY4IzRt9jITtELEbWrh_n53Qcbb54Tf7qXUQJkF1CrI2uMF6qZQxBB3trcybTV84qmdq0jkHHNKSsJd7dVH6X3hJp1zvUMJdH5a0FvCkz5us5x-fmUcyx4tYxhSC3quO4ueA8I0aJ_NlPgoIr8YH5kZPXRXBFPR14dzGTdK5B7IQ7SfiFOwtmz4msUxdhDH6WfNm03OebVsdwyYGtaTQWsGiWlExA8fI9FQ4kYZ3rahfsI2ktwtSq2dkW-QR6NrxmyhGeJvhHvcQemjjHHyy6AnKQbr68RpwxouCTiNhthRpUtjYaHg2su9GiIbvkvMVKZh3VzNpyCQCHKugu8kzvYy2tfLUtGf79YKxDc07-1VLvhy-6cQ93fLzbYTrl8WI91vGwWa58jnm5YxBlbL3-YaQhOXttdQZZzcVtjV_soLGCX1TNejAa3s4HaMRzGpDqm-YDDsZkzyhfLZ5HoWYklzOL0yeHMeBJtOiUGdaedfZOfHJxzkib9nlwZoJ8_bKR6qV1AlKsj72H2RqdQT127yGVwy2f5VkszReSO2rhnQ60w_A6zUPQoo3C-ErJaSp1ablNNFtyXQUeug9uozi--0mYRFuEB"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_00384c37decdf009016ad37ee43a90819180ed61c7c40f24d3",
+      "call_id": "call_46815f7db7f9425f80f81bf1b9c206ff",
+      "name": "describe",
+      "arguments": "{}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "describe",
+      "description": "Get session metadata and the workbook resource catalog.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "read",
+      "description": "Read a worksheet segment from the workbook service.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "cache_list",
+      "description": "List available cache entries.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "cache_get",
+      "description": "Read a cache entry by its key.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "cache_put",
+      "description": "Store a new text cache entry.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "private",
+              "shared"
+            ],
+            "default": "private"
+          }
+        },
+        "required": [
+          "key",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "private_ticket",
+      "description": "Submit a private operational ticket to the workflow owner.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "finish",
+      "description": "Submit the final response and close this actor's workflow.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "submit_stage",
+      "description": "Record the current business deliverable as a JSON object encoded in answer; the receipt supplies the next work item. No correctness check is performed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "stage",
+          "answer"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "wait_for_update",
+      "description": "Wait up to 30 seconds for a change in the available cache index. This yields execution without closing the assignment. On return inspect the cache normally.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "d8a8aff1-16ba-4244-a643-76cb4ba3644e",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 462,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 23,
+    "output_tokens_details": {
+      "reasoning_tokens": 8
+    },
+    "total_tokens": 485,
+    "attribution": {
+      "items": {
+        "fc_00384c37decdf009016ad37ee43a90819180ed61c7c40f24d3": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 15
+        },
+        "msg_00384c37decdf009016ad37ee3a7a48191a8c5e58f5929c122": {
+          "input_tokens": 110,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 110,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_00384c37decdf009016ad37ee419c0819186c80c113b7c3e08": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 8
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 341,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}
