@@ -75,7 +75,7 @@ WantedBy=timers.target
     readback = ssh(directory, ip, 'sudo systemctl show peer-subject.timer -p AccuracyUSec -p RandomizedDelayUSec -p NextElapseUSecRealtime -p TimersCalendar -p ActiveState; sudo systemctl show peer-subject.service -p Restart; chronyc -c tracking').stdout.decode()
     assert 'AccuracyUSec=1ms' in readback and 'RandomizedDelayUSec=0' in readback and 'Restart=no' in readback
     save(directory, f'{host["id"]}-timer.json', {'T_start': timestamp, 'calendar': calendar, 'readback': readback})
-    ssh(directory, ip, 'sudo systemd-run --unit=peer-traffic --property=RuntimeMaxSec=1900 /usr/bin/tcpdump -i any -nn -s 128 -w /var/lib/peer-operator/traffic.pcap tcp')
+    ssh(directory, ip, f'sudo systemd-run --unit=peer-traffic --property=RuntimeMaxSec={allowance + 180} /usr/bin/tcpdump -i any -nn -s 128 -w /var/lib/peer-operator/traffic.pcap tcp')
 
 
 def export_host(directory, host):
@@ -87,6 +87,7 @@ def export_host(directory, host):
     assert ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout == original_start
     save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
         'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(), 'receipt_unchanged': True})
+    ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
     monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
     result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False)
@@ -98,6 +99,7 @@ def export_host(directory, host):
     extracted = directory / host['id'] / 'var/lib/peer-operator'
     assert (extracted / 'process-stop.json').is_file()
     assert (extracted / 'native-goals.json').is_file()
+    assert (extracted / 'collection-receipt.json').is_file()
     return {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
 
 

@@ -23,6 +23,20 @@ experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py 
 
 Run repeats 1–3 serially. Every invocation requires a fresh directory; the driver atomically claims a root-owned marker keyed by instance ID. `driver.py` uses a PTY to enter native `/goal`; native `goals_1.sqlite` determines completion and output freezing. The root-owned systemd service has `Restart=no`, `KillMode=control-group`, and a deadline. Timers use `AccuracySec=1ms` and `RandomizedDelaySec=0`. Process receipts include kernel creation times. Full Codex filesystem/network permissions apply to the subject account.
 
+After each foreground repeat command returns, verify and grade its collected evidence:
+
+```bash
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/verify_evidence.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-78/graph-1.json
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py experiments/peer-discovery/.scratch/repeat-1
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/metrics.py experiments/peer-discovery/.scratch/repeat-1
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/resources.py experiments/peer-discovery/.scratch/repeat-1
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/publish.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/deliverables/SWH-78-repeat-1.tar.gz
+```
+
+`verify_evidence.py` checks raw archive hashes, seed/graph binding, clock offsets, exact native objectives, single-session identity, launcher hashes, invocation guards, scoped-key revocation and terminated-resource readbacks. `metrics.py` uses measured boot epochs to correct psutil's integer-second boot epoch when comparing kernel process starts. It retains native active time separately from process lifetime, first gateway request timing, actual outbound peer contacts and tool observations. `collect.py` preserves file hashes and write timestamps together with the executed launcher. Later releases additionally record one-second host resource samples; CloudWatch CPU, credits and network observations are exported separately for every repeat.
+
+`publish.py` sanitizes credentials and verifies a SHA256 manifest after writing each archive. `admission_artifact.py` stages the separate disposable-admission evidence; provide its inference-key JSON files through `publish.py --secret-file` for exact redaction. `summarize.py` reads three scored repeat directories and writes the case report plus observed spread.
+
 The operator's foreground process enforces a two-hour cloud lifetime and each subject's 30-minute deadline. A host shutdown timer also terminates the instance through EC2's shutdown behavior. Every command stays in the foreground until export, scoped key revocation and EC2 cleanup complete. `cleanup.json` reads back instance termination, root-volume deletion, address allocations, security groups and key pairs. Preserve the full instance denominator from `binding.json` for every released repeat.
 
 Evidence includes raw frozen outputs, sessions, native goal state, PTY bytes, gateway requests/upstream identity/usage, graph and assignment hashes, readiness/timer/process receipts, packet captures and resource observations. Credential-bearing working material stays in ignored `.scratch/`; publish sanitized copies and manifests. Each repeat exports and verifies evidence before cleanup. Repeats use fresh EC2 IDs, homes, disks, SSH identity, Codex state and model keys.

@@ -26,6 +26,13 @@ def main():
         marker.write(str(time.time_ns()))
         marker.flush()
         os.fsync(marker.fileno())
+    sample_before = time.time_ns()
+    boot_clock_ns = time.clock_gettime_ns(time.CLOCK_BOOTTIME)
+    sample_after = time.time_ns()
+    epoch_boot_ns = (sample_before + sample_after) // 2 - boot_clock_ns
+    receipt(directory, 'boot-clock-correction', {'sample_before_ns': sample_before, 'sample_after_ns': sample_after,
+        'boot_clock_ns': boot_clock_ns, 'measured_boot_epoch_ns': epoch_boot_ns, 'psutil_boot_epoch': psutil.boot_time(),
+        'psutil_epoch_correction_seconds': epoch_boot_ns / 1e9 - psutil.boot_time()})
     objective = args.objective.read_text().strip()
     assert 0 < len(objective) <= 4000
     environment = {'HOME': '/home/agent', 'USER': 'agent', 'LOGNAME': 'agent', 'PATH': '/usr/local/bin:/usr/bin:/bin',
@@ -39,10 +46,17 @@ def main():
     sent = False
     completed = False
     process_recorded = False
+    last_resource_sample = 0.0
     with (directory / 'pty.txt').open('w') as transcript:
         child.logfile_read = transcript
         try:
             while time.time() < args.deadline:
+                if time.monotonic() - last_resource_sample >= 1:
+                    with (directory / 'resource-samples.jsonl').open('a') as samples:
+                        samples.write(json.dumps({'time_ns': time.time_ns(), 'cpu_percent': psutil.cpu_percent(),
+                            'memory': psutil.virtual_memory()._asdict(), 'disk': psutil.disk_usage('/')._asdict(),
+                            'network': psutil.net_io_counters()._asdict()}) + '\n')
+                    last_resource_sample = time.monotonic()
                 if not process_recorded:
                     processes = [process for process in psutil.Process(child.pid).children() if process.name() == 'codex']
                     if processes:

@@ -17,8 +17,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('output', type=Path)
+    parser.add_argument('--secret-file', action='append', type=Path, default=[])
     args = parser.parse_args()
     secrets = [json.loads(path.read_text())['key'] for path in args.directory.glob('private-key-*.json')]
+    secrets += [json.loads(path.read_text())['key'] for path in args.secret_file]
     selected = {}
     for path in args.directory.rglob('*'):
         if not path.is_file():
@@ -28,12 +30,12 @@ def main():
             continue
         if path.suffix in ('.gz', '.sqlite', '.sqlite-wal', '.sqlite-shm'):
             continue
-        if path.suffix not in ('.json', '.jsonl', '.txt', '.toml', '.pcap'):
+        if path.suffix not in ('.json', '.jsonl', '.txt', '.toml', '.pcap', '.py', '.md', '.sha256') and 'launches' not in path.parts:
             continue
         if 'shell_snapshots' in path.parts:
             continue
         selected[str(relative)] = clean(path.read_bytes(), secrets)
-    assert 'cleanup.json' in selected
+    assert any(Path(name).name == 'cleanup.json' for name in selected)
     manifest = {name: {'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()} for name, data in sorted(selected.items())}
     selected['publication-manifest.json'] = json.dumps(manifest, indent=2).encode()
     args.output.parent.mkdir(parents=True, exist_ok=True)
