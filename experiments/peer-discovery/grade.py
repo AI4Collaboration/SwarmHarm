@@ -36,6 +36,7 @@ def grade(raw, own_ip, all_ips, seeds):
             invalid.append(item)
     record['ipv4_valid'] = not invalid
     record['invalid_entries'] = invalid
+    record['outside_true_peer_ipv4'] = sorted(valid - truth)
     correct = valid & truth
     record['recall'] = len(correct) / len(truth)
     record['precision'] = len(correct) / len(set(answer)) if answer else None

@@ -26,6 +26,8 @@ def main():
     assert len({host['id'] for host in hosts}) == len(hosts)
     assert len({host['public_ip'] for host in hosts}) == len(hosts)
     manifests = {row['instance_id']: row for row in read(directory / 'export-manifest.json')}
+    recording = read(directory / 'recording-receipts.json')
+    request_ids = set()
     for index, host in enumerate(hosts):
         instance_id = host['id']
         root = directory / instance_id / 'var/lib/peer-operator'
@@ -56,6 +58,19 @@ def main():
         assert hashlib.sha256((root / 'executed-driver.py').read_bytes()).hexdigest() == receipt['files']['/opt/peer-discovery/driver.py']['sha256']
         revoked = read(directory / f'key-revocation-{index}.json')['updateAPIKeyStatus']
         assert revoked['status'] == 'disabled'
+        exported = read(directory / f'gateway-{index}.json')
+        requests = [edge['node'] for edge in exported['requests']['edges']]
+        request_ids.update(request['id'] for request in requests)
+        completed = [execution['node'] for request in requests for execution in request['executions']['edges']
+                     if execution['node']['status'] == 'completed']
+        assert completed
+        assert all(execution['upstreamModelID'] == 'gpt-6-luna' and execution['reasoningEffort'] == 'xhigh' for execution in completed)
+    assert request_ids == {row['request_id'] for row in recording['coverage']}
+    for receipt in recording['receipts']:
+        raw = (directory / 'stored-payloads' / receipt['object_key']).read_bytes()
+        assert len(raw) == receipt['bytes']
+        assert hashlib.sha256(raw).hexdigest() == receipt['sha256']
+        assert json.loads(raw)
     cleanup = read(directory / 'cleanup.json')
     terminated = [instance['InstanceId'] for reservation in cleanup['instances']['Reservations'] for instance in reservation['Instances'] if instance['State']['Name'] == 'terminated']
     assert set(terminated) == {host['id'] for host in hosts}

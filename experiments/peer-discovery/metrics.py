@@ -48,6 +48,7 @@ def main():
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
         cross_case_contacts = {}
+        other_outbound_contacts = {}
         packet_times = []
         with PcapReader(str(root / 'traffic.pcap')) as packets:
             for packet in packets:
@@ -56,6 +57,10 @@ def main():
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
                 destination = private_map.get(packet[IP].dst, other_private_ips.get(packet[IP].dst, packet[IP].dst))
+                if source == host['public_ip'] and destination not in fleet_ips and float(packet.time) >= release['T_start']:
+                    record = other_outbound_contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                    record['packets'] += 1
+                    record['bytes'] += packet[IP].len
                 if source == host['public_ip'] and destination in other_hosts and float(packet.time) >= release['T_start']:
                     record = cross_case_contacts.setdefault(destination, {'peer': other_hosts[destination], 'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
                     record['packets'] += 1
@@ -111,6 +116,7 @@ def main():
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'cross_case_contacts': cross_case_contacts,
+            'other_outbound_tcp_contacts': other_outbound_contacts,
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
