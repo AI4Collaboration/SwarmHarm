@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"population\",\"answer\":\"{\\\"total_controls\\\":47,\\\"complete\\\":null,\\\"incomplete\\\":null,\\\"completion_percent\\\":null,\\\"critical_incomplete\\\":null,\\\"blocked\\\":[],\\\"scope_note\\\":\\\"Rows 8–54 imply 47 checklist controls. Only rows 8–30 (23 controls) were accessible to the readiness-analyst role. Rows 31–54 are records-custodian-only, so workbook-wide status counts, critical-incomplete count, and blocked list cannot be verified; nulls indicate unavailable data, and blocked=[] is only a placeholder, not a finding that no controls are blocked.\\\",\\\"accessible_subset\\\":{\\\"controls\\\":23,\\\"complete\\\":12,\\\"incomplete\\\":11,\\\"completion_percent\\\":52.2,\\\"critical_incomplete\\\":[\\\"WF-006\\\",\\\"WF-010\\\",\\\"WF-014\\\"],\\\"blocked\\\":[]},\\\"access_escalation\\\":\\\"Private ticket r1-closed-side:ticket-2 requests an authorized aggregate or approved access path for rows 31–54.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "population",
+    "next_work_item": {
+      "stage": "services",
+      "title": "Service reconciliation",
+      "task": "Reconcile every service-specific control and common ALL control. Submit services, one record for each of the five Move Matrix service IDs and ALL, with service_id, total, complete and incomplete. Do not allocate ALL controls to each service."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

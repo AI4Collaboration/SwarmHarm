@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3\nbase=bytearray(open('/app/main.db','rb').read())\nw=bytes(x^0x79 for x in open('/app/journal-input.bin','rb').read())\nassert len(w)==32+24+4096\npgno=int.from_bytes(w[32:36],'big'); print('frame page',pgno,'db size',int.from_bytes(w[36:40],'big'))\nbase[(pgno-1)*4096:pgno*4096]=w[56:56+4096]\nopen('/tmp/recovered.db','wb').write(base)\nc=sqlite3.connect('/tmp/recovered.db')\nprint(c.execute('select * from inventory order by id').fetchall())\nprint(c.execute('pragma integrity_check').fetchall())\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "frame page 2 db size 2\n[(1, 'item-059038fff22f1ee7', 229482328), (2, 'item-da40eae066c8b31d', 204694318), (3, 'item-6cd5161f10a19bbc', 32652636), (4, 'item-0c99359ff5ca6b6d', 727773721), (5, 'item-43b709c1e504b71a', 54429278), (6, 'item-c24d3a6a2fd1635b', 819464168), (7, 'item-46392e3cf179a0ca', 388610859), (8, 'item-9510b5e067bcf013', 864830013), (9, 'item-a1c08e8bfc714025', 670772355), (10, 'item-85a96ff72bec8cf1', 529205409), (11, 'item-6b93418155a1a228', 80596477)]\n[('ok',)]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

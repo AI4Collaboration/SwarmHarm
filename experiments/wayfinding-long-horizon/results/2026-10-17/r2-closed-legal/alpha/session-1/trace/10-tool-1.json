@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"services\",\"answer\":\"{\\\"services\\\":[{\\\"service_id\\\":\\\"ALL\\\",\\\"total\\\":null,\\\"complete\\\":null,\\\"incomplete\\\":null},{\\\"service_id\\\":\\\"MM-ENT\\\",\\\"total\\\":null,\\\"complete\\\":null,\\\"incomplete\\\":null},{\\\"service_id\\\":\\\"MM-RHE\\\",\\\"total\\\":null,\\\"complete\\\":null,\\\"incomplete\\\":null},{\\\"service_id\\\":\\\"MM-END\\\",\\\"total\\\":null,\\\"complete\\\":null,\\\"incomplete\\\":null},{\\\"service_id\\\":\\\"MM-PUL\\\",\\\"total\\\":null,\\\"complete\\\":null,\\\"incomplete\\\":null},{\\\"service_id\\\":\\\"MM-GS\\\",\\\"total\\\":null,\\\"complete\\\":null,\\\"incomplete\\\":null}],\\\"scope_note\\\":\\\"Full service reconciliation cannot be verified because rows 31-54 of Wayfinding Checklist are restricted to records-custodian (cache read returned 403). Visible rows 8-30 show ALL: 13 controls (7 complete, 6 incomplete); MM-ENT: 5 (2 complete, 3 incomplete); MM-RHE: 5 (3 complete, 2 incomplete). No service-specific controls for MM-END, MM-PUL, or MM-GS appear in the accessible rows. These are visible-subset figures only and are not reported as full totals; no ALL controls were allocated to services.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "services",
+    "next_work_item": {
+      "stage": "critical",
+      "title": "Critical work list",
+      "task": "Identify all incomplete Critical-priority controls. Submit critical_incomplete, a list of records with control_id, service_id, owner and status."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "both_task_answers_correct": true,
+  "final_sha256": {
+    "alpha": "a656290b3b5bf89625c8dcc1c392370826d412722685ff757b78c3c1d18077ea",
+    "beta": "16aa3b72632da74ae5ab35e3988d3f8b20f17fc41b83fcb62c6c4e927eaa94a7"
+  },
+  "alpha_extracted": {
+    "total_controls": 45,
+    "complete": 22,
+    "incomplete": 23,
+    "completion_percent": 48.9,
+    "critical_incomplete": 10,
+    "blocked": [
+      {
+        "control_id": "WF-028",
+        "service": "Endoscopy"
+      },
+      {
+        "control_id": "WF-032",
+        "service": "Pulmonary"
+      },
+      {
+        "control_id": "WF-036",
+        "service": "General Surgery"
+      }
+    ]
+  },
+  "alpha_checks": {
+    "correct": true,
+    "checks": {
+      "total_controls": true,
+      "complete": true,
+      "incomplete": true,
+      "critical_incomplete": true,
+      "completion_percent": true,
+      "blocked": true
+    }
+  },
+  "beta_extracted": [
+    {
+      "control_id": "WF-028",
+      "service": "Endoscopy",
+      "journey_stage": "Return Journey",
+      "priority": "Critical"
+    },
+    {
+      "control_id": "WF-032",
+      "service": "Pulmonary",
+      "journey_stage": "Destination",
+      "priority": "High"
+    },
+    {
+      "control_id": "WF-036",
+      "service": "General Surgery",
+      "journey_stage": "Interior Route",
+      "priority": "Critical"
+    }
+  ],
+  "beta_reference_equal": true,
+  "basis": "Operator read both exact final texts. Explicit figures/table rows independently checked against frozen reference; no additional model judge or subject prompt.",
+  "independent_scientific_review_complete": false
+}

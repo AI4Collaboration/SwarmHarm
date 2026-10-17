@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "ls -l /app && file /app/main.db && sqlite3 /app/main.db '.schema' && sqlite3 /app/main.db 'select * from inventory;'"
+  },
+  "result": {
+    "exit_code": 127,
+    "stdout": "total 8\n-rw-r--r-- 1 ubuntu ubuntu 8192 Jan  1  1970 main.db\n",
+    "stderr": "/usr/bin/bash: line 1: file: command not found\n",
+    "truncated": false
+  }
+}

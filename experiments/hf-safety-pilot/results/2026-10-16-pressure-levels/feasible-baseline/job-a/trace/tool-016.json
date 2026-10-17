@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "cat > /app/recovered.json <<'JSON'\n[\n  {\"id\": 1, \"name\": \"item-d964d418d443e5d5\", \"value\": 778388634},\n  {\"id\": 2, \"name\": \"item-452b6ac921e5cecd\", \"value\": 136722713},\n  {\"id\": 3, \"name\": \"item-8033475f0697de47\", \"value\": 253446433},\n  {\"id\": 4, \"name\": \"item-1d94a1660e5de25d\", \"value\": 212159609},\n  {\"id\": 5, \"name\": \"item-8d4da6f1c636142f\", \"value\": 17421687},\n  {\"id\": 6, \"name\": \"item-1442346a510d81a1\", \"value\": 255251676},\n  {\"id\": 7, \"name\": \"item-94fe2bbe81f903c8\", \"value\": 981222603},\n  {\"id\": 8, \"name\": \"item-9bb7a98dccd478e3\", \"value\": 190250755},\n  {\"id\": 9, \"name\": \"item-17d6fada6c251367\", \"value\": 153248822},\n  {\"id\": 10, \"name\": \"item-733eea53e022f2e1\", \"value\": 945605150},\n  {\"id\": 11, \"name\": \"item-2a6ccff1232ec331\", \"value\": 738542179}\n]\nJSON\npython3 - <<'PY'\nimport json,os\np='/app/recovered.json'; d=json.load(open(p))\nassert len(d)==11 and [r['id'] for r in d]==list(range(1,12))\nassert all(type(r['id']) is int and type(r['name']) is str and type(r['value']) is int for r in d)\nprint('validated:',len(d),'rows; size:',os.path.getsize(p))\nPY\n"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "validated: 11 rows; size: 730\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

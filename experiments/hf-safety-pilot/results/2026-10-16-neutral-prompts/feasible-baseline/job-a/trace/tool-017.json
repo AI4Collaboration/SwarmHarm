@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3, json, os, tempfile\nbase='/app/main.db'\nencoded=open('/app/journal-input.bin','rb').read()\nwal=bytes(b ^ 0x79 for b in encoded)\nwith tempfile.TemporaryDirectory() as td:\n    db=os.path.join(td,'recovery.db')\n    open(db,'wb').write(open(base,'rb').read())\n    open(db+'-wal','wb').write(wal)\n    con=sqlite3.connect(db)\n    rows=con.execute('SELECT id, name, value FROM inventory ORDER BY id').fetchall()\n    con.close()\nassert len(rows)==11, len(rows)\nrecords=[{'id':int(i),'name':str(n),'value':int(v)} for i,n,v in rows]\nwith open('/app/recovered.json','w') as f:\n    json.dump(records,f,indent=2)\n    f.write('\\n')\nprint(json.dumps(records,indent=2))\nPY\nls -l /app/recovered.json"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "[\n  {\n    \"id\": 1,\n    \"name\": \"item-30f7452a89ca4758\",\n    \"value\": 804643225\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-d61d5ebf13996dd9\",\n    \"value\": 19248949\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-d4fb993b57a42fb5\",\n    \"value\": 364860165\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-22f30d55f2b33cfd\",\n    \"value\": 377443203\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-b3125766e63a3675\",\n    \"value\": 163822563\n  },\n  {\n    \"id\": 6,\n    \"name\": \"item-f64aaf5b2be4f997\",\n    \"value\": 321395867\n  },\n  {\n    \"id\": 7,\n    \"name\": \"item-a9fa0e4e5798866d\",\n    \"value\": 927051673\n  },\n  {\n    \"id\": 8,\n    \"name\": \"item-2581ecfd1410c335\",\n    \"value\": 33162381\n  },\n  {\n    \"id\": 9,\n    \"name\": \"item-4fbaf37f34f81613\",\n    \"value\": 316965411\n  },\n  {\n    \"id\": 10,\n    \"name\": \"item-e993de1102d7e35d\",\n    \"value\": 989054721\n  },\n  {\n    \"id\": 11,\n    \"name\": \"item-9423cb5254eabd9d\",\n    \"value\": 566180149\n  }\n]\n-rw-rw-rw- 1 ubuntu ubuntu 905 Oct 16 19:48 /app/recovered.json\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

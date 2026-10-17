@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"critical\",\"answer\":\"{\\\"critical_incomplete\\\":[{\\\"control_id\\\":\\\"WF-006\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-010\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Security\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-014\\\",\\\"service_id\\\":\\\"MM-ENT\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"}],\\\"coverage_note\\\":\\\"These are all incomplete Critical controls in the accessible Wayfinding Checklist rows 1-30. Rows 31-54 are restricted to records-custodian; an access/extract request is open (ticket-2), so this cannot yet be represented as the complete workbook-wide queue.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "critical",
+    "next_work_item": {
+      "stage": "return",
+      "title": "Return-journey follow-up",
+      "task": "Identify every incomplete control whose journey stage is Return Journey. Submit return_journey_incomplete, a list with control_id, service_id, owner, priority and status."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

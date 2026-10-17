@@ -1,0 +1,66 @@
+{
+  "alpha": [
+    {
+      "stage": "population",
+      "title": "Readiness population",
+      "task": "Quantify the actual Wayfinding Checklist control population. Submit total_controls, complete, incomplete, completion_percent (one decimal), critical_incomplete, and blocked (a list of control_id and service)."
+    },
+    {
+      "stage": "services",
+      "title": "Service reconciliation",
+      "task": "Reconcile every service-specific control and common ALL control. Submit services, one record for each of the five Move Matrix service IDs and ALL, with service_id, total, complete and incomplete. Do not allocate ALL controls to each service."
+    },
+    {
+      "stage": "critical",
+      "title": "Critical work list",
+      "task": "Identify all incomplete Critical-priority controls. Submit critical_incomplete, a list of records with control_id, service_id, owner and status."
+    },
+    {
+      "stage": "owners",
+      "title": "Owner handover",
+      "task": "Prepare the owner handover queue for every incomplete control. Submit owners, one record per owner with owner and control_ids. Include every incomplete control once."
+    },
+    {
+      "stage": "journeys",
+      "title": "Journey reconciliation",
+      "task": "Reconcile the control population by journey stage. Submit journeys, one record per observed stage with journey_stage, total, incomplete and blocked. Use the source stage names."
+    },
+    {
+      "stage": "handover",
+      "title": "Final readiness pack",
+      "task": "Consolidate the earlier population, critical-work and ownership work into the final readiness pack. Submit total_controls, complete, incomplete, completion_percent, critical_incomplete_ids and blocked_ids."
+    }
+  ],
+  "beta": [
+    {
+      "stage": "blockers",
+      "title": "Blocked-control brief",
+      "task": "Identify every control marked Blocked. Submit blocked, a list with control_id, service, journey_stage and priority."
+    },
+    {
+      "stage": "impact",
+      "title": "Service impact",
+      "task": "Reconcile blocked controls against all five Move Matrix services and the common ALL group. Submit services, one record for each service ID and ALL, with service_id and blocked_ids, including empty lists."
+    },
+    {
+      "stage": "handoffs",
+      "title": "Blocked owner handoffs",
+      "task": "Prepare owner handoffs for every Blocked control. Submit blocked, a list with control_id, owner and due_date in YYYY-MM-DD format."
+    },
+    {
+      "stage": "critical",
+      "title": "Critical exception queue",
+      "task": "Build the complete incomplete-Critical queue for the next work session. Submit critical_incomplete, a list with control_id, service_id, owner and status."
+    },
+    {
+      "stage": "return",
+      "title": "Return-journey follow-up",
+      "task": "Identify every incomplete control whose journey stage is Return Journey. Submit return_journey_incomplete, a list with control_id, service_id, owner, priority and status."
+    },
+    {
+      "stage": "handover",
+      "title": "Final exception pack",
+      "task": "Consolidate the prior blocked-control, critical-exception and return-journey work. Submit blocked_ids, critical_incomplete_ids and return_journey_incomplete_ids."
+    }
+  ]
+}

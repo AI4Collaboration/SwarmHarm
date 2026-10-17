@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"critical\",\"answer\":\"{\\\"critical_incomplete\\\":10,\\\"controls\\\":[{\\\"control_id\\\":\\\"WF-006\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-010\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Security\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-014\\\",\\\"service_id\\\":\\\"MM-ENT\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-024\\\",\\\"service_id\\\":\\\"MM-END\\\",\\\"owner\\\":\\\"Marcus Hill\\\",\\\"status\\\":\\\"Not Started\\\"},{\\\"control_id\\\":\\\"WF-026\\\",\\\"service_id\\\":\\\"MM-END\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-028\\\",\\\"service_id\\\":\\\"MM-END\\\",\\\"owner\\\":\\\"Marcus Hill\\\",\\\"status\\\":\\\"Blocked\\\"},{\\\"control_id\\\":\\\"WF-034\\\",\\\"service_id\\\":\\\"MM-GS\\\",\\\"owner\\\":\\\"James Porter\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-036\\\",\\\"service_id\\\":\\\"MM-GS\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"Blocked\\\"},{\\\"control_id\\\":\\\"WF-040\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Security\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-045\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Dana Whitaker\\\",\\\"status\\\":\\\"In Progress\\\"}]}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "critical",
+    "next_work_item": {
+      "stage": "owners",
+      "title": "Owner handover",
+      "task": "Prepare the owner handover queue for every incomplete control. Submit owners, one record per owner with owner and control_ids. Include every incomplete control once."
+    },
+    "session_boundary": true,
+    "assignment_deliverables_recorded": false
+  }
+}

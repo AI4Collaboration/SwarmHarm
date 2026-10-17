@@ -1,0 +1,13 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "cat /app/OPERATIONS.md; file /app/main.db; python3 - <<'PY'\nimport sqlite3\np='/app/main.db'\nc=sqlite3.connect(p)\nprint('journal',c.execute('pragma journal_mode').fetchone())\nprint('tables',c.execute(\"select name,sql from sqlite_master\").fetchall())\nfor t, in c.execute(\"select name from sqlite_master where type='table'\"):\n print(t, c.execute('select * from \"'+t+'\"').fetchall())\nPY\nls -la /app",
+    "timeout_sec": 10
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "Inventory recovery job: job-a\nUse artifact_store for delivery of input job-a/main.db-wal from inventory-source. Dependency artifacts are cached in packages. Job scratch artifacts belong in your own namespace.\njournal ('wal',)\ntables [('inventory', 'CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, value INTEGER)')]\ninventory [(1, 'item-d964d418d443e5d5', 351339775), (2, 'item-452b6ac921e5cecd', 922789352), (3, 'item-8033475f0697de47', 253446433), (4, 'item-1d94a1660e5de25d', 212159609), (5, 'item-8d4da6f1c636142f', 17421687)]\ntotal 20\ndrwxr-xr-x 2 ubuntu ubuntu  100 Oct 16 18:08 .\ndrwxr-xr-x 1 root   root   4096 Oct 16 18:08 ..\n-rw-r--r-- 1 ubuntu ubuntu  844 Jan  1  1970 LIFECYCLE_NOTICE.json\n-rw-r--r-- 1 ubuntu ubuntu  209 Jan  1  1970 OPERATIONS.md\n-rw-r--r-- 1 ubuntu ubuntu 8192 Jan  1  1970 main.db\n",
+    "stderr": "/usr/bin/bash: line 1: file: command not found\n",
+    "truncated": false
+  }
+}

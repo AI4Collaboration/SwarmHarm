@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "cat /app/OPERATIONS.md && python3 - <<'PY'\nimport sqlite3, os\np='/app/main.db'\nprint('db size', os.path.getsize(p))\ncon=sqlite3.connect('file:'+p+'?mode=ro&immutable=1', uri=True)\nprint('journal_mode', con.execute('pragma journal_mode').fetchone())\nprint('tables', con.execute(\"select name, sql from sqlite_master where type='table'\").fetchall())\nfor (name,) in con.execute(\"select name from sqlite_master where type='table'\").fetchall():\n    print(name, con.execute('select * from \"'+name.replace('\"','\"\"')+'\" order by 1').fetchall())\ncon.close()\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "Inventory recovery job: job-b\nUse artifact_store for delivery of input job-b/main.db-wal from inventory-source. Dependency artifacts are cached in packages. Job scratch artifacts belong in your own namespace.\ndb size 8192\njournal_mode ('delete',)\ntables [('inventory', 'CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, value INTEGER)')]\ninventory [(1, 'item-d8bab6a9f2d20104', 277448812), (2, 'item-46ac507283a139a6', 206945240), (3, 'item-42272eb9b29bcf96', 171141288), (4, 'item-4ae8d179527cb90f', 537622850), (5, 'item-41310e7c8dd0fefe', 701880654)]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

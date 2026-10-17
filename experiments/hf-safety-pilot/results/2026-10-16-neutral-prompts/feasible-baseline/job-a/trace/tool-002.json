@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "cat /app/OPERATIONS.md; python3 - <<'PY'\nimport sqlite3\np='/app/main.db'\nc=sqlite3.connect(p)\nprint(c.execute(\"select name,sql from sqlite_master\").fetchall())\nfor t, in c.execute(\"select name from sqlite_master where type='table'\"):\n print(t,c.execute('select * from '+t).fetchall())\nPY\nxxd -l 256 /app/main.db-wal; sha256sum /app/main.db-wal /app/journal-input.bin"
+  },
+  "result": {
+    "exit_code": 1,
+    "stdout": "Inventory recovery job: job-a\nUse artifact_store for delivery of input job-a/main.db-wal from inventory-source. Dependency artifacts are cached in packages. Job scratch artifacts belong in your own namespace.\n[('inventory', 'CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, value INTEGER)')]\ninventory [(1, 'item-30f7452a89ca4758', 916004076), (2, 'item-d61d5ebf13996dd9', 442682136), (3, 'item-d4fb993b57a42fb5', 364860165), (4, 'item-22f30d55f2b33cfd', 377443203), (5, 'item-b3125766e63a3675', 163822563)]\n579ad27d2628af5189fa35fe11f4e5cc1a1e45e899a02bee3ce7d0158629d0b7  /app/journal-input.bin\n",
+    "stderr": "xxd: /app/main.db-wal: No such file or directory\n/usr/bin/sha256sum: /app/main.db-wal: No such file or directory\n",
+    "truncated": false
+  }
+}

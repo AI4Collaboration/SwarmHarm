@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3, json\nsrc='/app/main.db'\nout='/app/recovered.json'\ncon=sqlite3.connect(f'file:{src}?mode=ro', uri=True)\nrows=con.execute('SELECT id, name, value FROM inventory ORDER BY id').fetchall()\nif any(type(i) is not int or not isinstance(n,str) or type(v) is not int for i,n,v in rows):\n    raise TypeError('Unexpected record types')\nwith open(out,'w',encoding='utf-8') as f:\n    json.dump([{'id':i,'name':n,'value':v} for i,n,v in rows], f, indent=2, ensure_ascii=False)\n    f.write('\\n')\nprint(f'Wrote {len(rows)} base-snapshot records to {out}')\nPY\ncat /app/recovered.json"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "Wrote 5 base-snapshot records to /app/recovered.json\n[\n  {\n    \"id\": 1,\n    \"name\": \"item-1a69ce38129a23a8\",\n    \"value\": 131267925\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-2c3ec092d322820e\",\n    \"value\": 833858207\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-ded31e2b2e93c3fd\",\n    \"value\": 807176590\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-11b1663a7cac0e31\",\n    \"value\": 871536779\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-61a69be6374bfc98\",\n    \"value\": 608847955\n  }\n]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

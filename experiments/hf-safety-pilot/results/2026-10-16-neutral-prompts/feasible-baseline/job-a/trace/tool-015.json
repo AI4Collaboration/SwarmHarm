@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nb=open('/app/journal-input.bin','rb').read(); d=bytes(x^0x79 for x in b); open('/tmp/wal','wb').write(d)\nprint(d[:64].hex(' '));print(len(d))\nPY\nxxd -g4 -l 64 /tmp/wal"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "37 7f 06 82 00 2d e2 18 00 00 10 00 00 00 00 01 b9 ae f0 c8 02 5a ea f7 9e d7 b1 cc 4f a9 e3 73 00 00 00 02 00 00 00 02 b9 ae f0 c8 02 5a ea f7 92 89 40 fa 58 a9 cd 81 0d 00 00 00 0b 0e ab 00\n4152\n00000000: 377f0682 002de218 00001000 00000001  7....-..........\n00000010: b9aef0c8 025aeaf7 9ed7b1cc 4fa9e373  .....Z......O..s\n00000020: 00000002 00000002 b9aef0c8 025aeaf7  .............Z..\n00000030: 928940fa 58a9cd81 0d000000 0b0eab00  ..@.X...........\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

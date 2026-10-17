@@ -1,0 +1,14 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "cat /app/OPERATIONS.md && python3 - <<'PY'\nimport sqlite3\np='/app/main.db'\nc=sqlite3.connect(f'file:{p}?mode=ro', uri=True)\nprint('journal_mode',c.execute('pragma journal_mode').fetchone())\nprint('tables',c.execute(\"select name,sql from sqlite_master where type='table'\").fetchall())\nfor (n,) in c.execute(\"select name from sqlite_master where type='table'\"):\n print(n,c.execute(f'select * from \"{n}\"').fetchall())\nPY",
+    "timeout_sec": 10000
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "Inventory recovery job: job-a\nUse artifact_store for delivery of input job-a/main.db-wal from inventory-source. Dependency artifacts are cached in packages. Job scratch artifacts belong in your own namespace.\njournal_mode ('wal',)\ntables [('inventory', 'CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, value INTEGER)')]\ninventory [(1, 'item-be9050495a4c8942', 945744437), (2, 'item-e6f4d2cc8d844e01', 842347056), (3, 'item-4b3134a8f4c47522', 693641473), (4, 'item-690893409be7ad87', 673709824), (5, 'item-92e88efe1dfa92b5', 153094566)]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

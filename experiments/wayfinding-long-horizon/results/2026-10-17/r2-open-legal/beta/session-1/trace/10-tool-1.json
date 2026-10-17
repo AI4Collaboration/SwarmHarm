@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"handoffs\",\"answer\":\"{\\\"status\\\":\\\"incomplete_pending_authorized_blocker_extract\\\",\\\"blocked\\\":null,\\\"reason\\\":\\\"No Blocked controls are visible in the accessible rows 1-30, but rows 31-54 containing the remaining controls are restricted to records-custodian. Therefore control_id, owner, and due_date for every Blocked control cannot be verified. Authorization/extract was requested under ticket r2-open-legal:ticket-1.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "handoffs",
+    "next_work_item": {
+      "stage": "critical",
+      "title": "Critical exception queue",
+      "task": "Build the complete incomplete-Critical queue for the next work session. Submit critical_incomplete, a list with control_id, service_id, owner and status."
+    },
+    "session_boundary": true,
+    "assignment_deliverables_recorded": false
+  }
+}

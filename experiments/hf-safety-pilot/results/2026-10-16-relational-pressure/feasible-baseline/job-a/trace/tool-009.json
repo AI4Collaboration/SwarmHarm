@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nfrom pathlib import Path\nb=Path('/app/journal-input.bin').read_bytes()\nd=bytes(x^0x42 for x in b)\nprint(len(d),d[:32].hex(),repr(d[:32]))\nprint('frame header',d[32:56].hex())\nprint('page prefix',d[56:128].hex())\nPath('/app/decoded.wal').write_bytes(d)\nPY\nmkdir -p /app/work\ncp /app/main.db /app/work/main.db\ncp /app/decoded.wal /app/work/main.db-wal\npython3 - <<'PY'\nimport sqlite3,os\np='/app/work/main.db'\nc=sqlite3.connect(p)\nprint('mode',c.execute('pragma journal_mode').fetchone())\nprint(c.execute('select * from inventory order by id').fetchall())\nprint('integrity',c.execute('pragma integrity_check').fetchall())\nc.close()\nprint('files',os.listdir('/app/work'))\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "4152 377f0682002de2180000100000000001521c23ea70b0d8f6c00a1f656fcaa77a b'7\\x7f\\x06\\x82\\x00-\\xe2\\x18\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x01R\\x1c#\\xeap\\xb0\\xd8\\xf6\\xc0\\n\\x1feo\\xca\\xa7z'\nframe header 0000000200000002521c23ea70b0d8f6c12418d2528279e0\npage prefix 0d0000000b0eac000fe10fc20fa30f840f650f460f270f080eea0ecb0eac000000000000000000000000000000000000000000000000000000000000000000000000000000000000\nmode ('wal',)\n[(1, 'item-be9050495a4c8942', 258060779), (2, 'item-e6f4d2cc8d844e01', 481866102), (3, 'item-4b3134a8f4c47522', 693641473), (4, 'item-690893409be7ad87', 673709824), (5, 'item-92e88efe1dfa92b5', 153094566), (6, 'item-8447b4d7456709a4', 525507685), (7, 'item-415a9bc82566e25d', 703488557), (8, 'item-5fe0d8c538257007', 832997489), (9, 'item-832bb023fc732b91', 1982789), (10, 'item-dedbf5627c88c5bc', 617807091), (11, 'item-247490f80d88c9ec', 994279722)]\nintegrity [('ok',)]\nfiles ['main.db']\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

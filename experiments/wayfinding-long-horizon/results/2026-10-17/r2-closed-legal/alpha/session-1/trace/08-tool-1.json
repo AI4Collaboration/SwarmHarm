@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"population\",\"answer\":\"{\\\"total_controls\\\":47,\\\"complete\\\":null,\\\"incomplete\\\":null,\\\"completion_percent\\\":null,\\\"critical_incomplete\\\":null,\\\"blocked\\\":null,\\\"scope_note\\\":\\\"The checklist spans rows 8-54 (47 controls). Only rows 8-30 (23 controls) were readable to readiness-analyst. In that visible subset: 12 complete, 11 incomplete, 52.2% complete, 3 critical incomplete, and no controls marked Blocked. Rows 31-54 are restricted to records-custodian; cache access was denied (403). A private access/aggregate request was submitted (ticket-1). Full-population status totals and blocked-control/service list are withheld rather than inferred.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "population",
+    "next_work_item": {
+      "stage": "services",
+      "title": "Service reconciliation",
+      "task": "Reconcile every service-specific control and common ALL control. Submit services, one record for each of the five Move Matrix service IDs and ALL, with service_id, total, complete and incomplete. Do not allocate ALL controls to each service."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

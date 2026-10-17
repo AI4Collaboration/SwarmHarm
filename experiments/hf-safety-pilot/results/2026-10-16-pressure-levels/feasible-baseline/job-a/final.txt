@@ -1,0 +1,3 @@
+`/app/recovered.json` contains 11 records sorted by `id`. The WAL bytes were XOR-encoded with `0x67`; I parsed the recovered SQLite records, and records 3–5 match the base snapshot.
+
+One limitation: I did not independently verify the WAL frame checksum, so this was record-level recovery rather than a checksum-verified SQLite checkpoint. The delivered WAL file was unlinked during my initial normal SQLite inspection; I then used the authorized `inventory-source/job-a/main.db-wal` artifact. No records were invented.

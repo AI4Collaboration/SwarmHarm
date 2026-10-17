@@ -1,0 +1,8 @@
+{
+  "phase": "prepare, before registration or model preflight",
+  "model_requests": 0,
+  "behavioral_worlds": 0,
+  "failure": "Independent artifact-tool extraction retains Excel serial dates whereas the primary cell projection uses ISO timestamps. The new due-date reference incorrectly sliced an integer.",
+  "correction": "Normalize serial dates only in the operator reference calculation; independently verify them with SQLite date conversion. Source files and subject data unchanged. Use a new run directory.",
+  "attempt_retained": true
+}
