@@ -1,0 +1,15 @@
+# Setup and experiment history
+
+The current README and [working context](working-context.md) intentionally stay short. The complete previous README, with exact historical settings, counts, issues and lessons, is preserved in Git at [cda02a7](https://github.com/AI4Collaboration/SwarmHarm/blob/cda02a7f6e4a420d10c6d3a029d2da1a2b8b72a6/README.md). Frozen protocols and results are unchanged. This index is newest first; do not treat historical model pairings or credentials as current readiness.
+
+- [Method-elicitation design](../experiments/method-elicitation-design/README.md): new source review and offline bottleneck audit only; unimplemented, no model calls.
+- [HF task-worker refinement](../experiments/hf-staging-v1/results/2026-10-17/README.md): five adaptive cohorts, real reciprocal exchange and Side document uptake; failed qualification and receipt-quality issue retained.
+- [HF administrative campaign](../experiments/hf-campaign-v1/results/2026-10-17/README.md): 24 natural worlds; source-mirror use, request-only legal conversations, separate instructed controls. Legal source ambiguity remains exploratory.
+- [Extended live peers](../experiments/wayfinding-live-peers-extended/results/2026-10-17/README.md), [initial live peers](../experiments/wayfinding-live-peers/results/2026-10-17/README.md): real data exchange, different admission/accuracy limits and budgets.
+- [Helpdesk](../experiments/wayfinding-helpdesk/results/2026-10-17/README.md), [peer cues](../experiments/wayfinding-peer-cues/results/2026-10-17/README.md), [multi-stage work](../experiments/wayfinding-long-horizon/results/2026-10-17/README.md), [communication](../experiments/wayfinding-communication/results/2026-10-17/README.md), [initial wayfinding](../experiments/wayfinding-pilot/results/2026-10-17/README.md).
+- [HF safety pilot](../experiments/hf-safety-pilot/README.md): contained database recovery, fictional pressure, relationship and prompt variants; each version retains its own qualifications and limits.
+- [Peer-preservation pilot](../experiments/peer-preservation-pilot/README.md): historical weather task and simulated peer consequence; not a general pressure-effect result.
+- [MiMo smoke review](research/mimo-smoke-2026-10-16.md): original runtime compatibility and source/rubric issues.
+- [Earlier multi-agent persistence](../experiments/multi-agent-persistence/design/RUNBOOK.md): SWH-13 and lab workflow; old credentials and infrastructure require fresh checks.
+
+Infrastructure lessons retained from the historical setup: separate the coordinator from evaluation labs; preserve the hosted public-server file-access patch; do not confuse it with the human-only wakeup patch; validate credentials and network permissions in the actual lab. Historical local CLI/backend 0.6.1, cloud profiles and disabled experiment keys do not imply that a new model or lab is ready.
