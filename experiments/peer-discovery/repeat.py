@@ -206,7 +206,7 @@ def main():
         for index, host in enumerate(hosts):
             goals = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals']
             links.append({'issue': args.issue, 'repeat': graph['repeat'], 'instance_id': host['id'],
-                'api_key_id': keys[index]['id'], 'session_id': goals[0]['thread_id']})
+                'api_key_id': keys[index]['id'], 'session_id': goals[0]['thread_id'], 'case': f'N{graph["n"]}-K{graph["k"]}'})
         retrieve(directory, json.loads((directory / 'recording-settings.json').read_text()), exports, links)
         print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:

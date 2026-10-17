@@ -8,6 +8,8 @@ SWH-91, 2026-10-17: use `prepare_case.py` with the parent workdir, shared admiss
 
 `infrastructure.py DIRECTORY` verifies actual instance CPU, metadata configuration, public addresses, root-volume encryption, size/type and deletion policy. After termination, `infrastructure.py DIRECTORY --cleanup` verifies deletion by the original root-volume and network-interface IDs. Gateway snapshots include `vmstat`, memory, disk and load readbacks.
 
+S3 request-prefix listings establish the complete set of stored client/execution payloads. Cached bytes are independently checked against saved sizes and hashes; additional objects receive direct retrieval receipts. Completed records require nonempty JSON. Gateway and upstream status distributions, HTTP status codes and measured quota excess accompany each repeat's metrics. Frankfurt LIST pricing is $0.0054/1,000 requests.
+
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
 
 Install `requirements.txt` with `uv venv .venv --python 3.12` and `uv pip install --python .venv/bin/python -r requirements.txt`. Invoke that environment directly. AWS uses operator profile `eurosafeai`, region `eu-central-1`; the operator's AxonHub-host SSH identity remains private.

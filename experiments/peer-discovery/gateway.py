@@ -52,7 +52,7 @@ class Gateway:
               id createdAt updatedAt projectID dataStorageID channelID modelID reasoningEffort status stream
               requestBody responseBody responseChunks
               executions(first:100){pageInfo{hasNextPage} edges{node{
-              id upstreamModelID reasoningEffort status responseStatusCode requestBody responseBody responseChunks
+              id projectID dataStorageID stream upstreamModelID reasoningEffort status responseStatusCode requestBody responseBody responseChunks
               errorMessage passThroughApplied }}}
               usageLogs(first:100){pageInfo{hasNextPage} edges{node{
               id promptTokens completionTokens totalTokens promptCachedTokens totalCost }}}

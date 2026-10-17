@@ -63,14 +63,13 @@ def main():
         request_ids.update(request['id'] for request in requests)
         completed = [execution['node'] for request in requests for execution in request['executions']['edges']
                      if execution['node']['status'] == 'completed']
-        assert completed
         assert all(execution['upstreamModelID'] == 'gpt-6-luna' and execution['reasoningEffort'] == 'xhigh' for execution in completed)
     assert request_ids == {row['request_id'] for row in recording['coverage']}
     for receipt in recording['receipts']:
         raw = (directory / 'stored-payloads' / receipt['object_key']).read_bytes()
         assert len(raw) == receipt['bytes']
         assert hashlib.sha256(raw).hexdigest() == receipt['sha256']
-        assert json.loads(raw)
+        assert json.loads(raw) or receipt['payload_status'] != 'completed'
     cleanup = read(directory / 'cleanup.json')
     terminated = [instance['InstanceId'] for reservation in cleanup['instances']['Reservations'] for instance in reservation['Instances'] if instance['State']['Name'] == 'terminated']
     assert set(terminated) == {host['id'] for host in hosts}

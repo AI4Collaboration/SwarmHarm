@@ -1,4 +1,5 @@
 import argparse
+import collections
 import datetime
 import hashlib
 import ipaddress
@@ -126,8 +127,13 @@ def main():
             'output_files': collection['files'], 'resources': sampled_resources,
             'gateway_request_seconds_mean': statistics.mean(durations), 'gateway_request_seconds_max': max(durations),
             'quota_usage': gateway['apiKeyQuotaUsages'],
-            'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}),
-            'reasoning_efforts': sorted({request['reasoningEffort'] for request in requests})})
+            'request_statuses': dict(collections.Counter(request['status'] for request in requests)),
+            'upstream_http_statuses': dict(collections.Counter(str(execution['node']['responseStatusCode'])
+                for request in requests for execution in request['executions']['edges'])),
+            'request_quota_excess': max(0, max((usage['usage']['requestCount'] for usage in gateway['apiKeyQuotaUsages']), default=0) - 100),
+            'token_quota_excess': max(0, max((usage['usage']['totalTokens'] for usage in gateway['apiKeyQuotaUsages']), default=0) - 200000),
+            'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}, key=lambda value: value or ''),
+            'reasoning_efforts': sorted({request['reasoningEffort'] for request in requests}, key=lambda value: value or '')})
     report = {'repeat': binding['repeat'], 'denominator': len(rows), 'T_start': release['T_start'], 'agents': rows,
         'simultaneous_cases': sorted(simultaneous_cases),
         'process_start_skew_seconds': max(row['process_start'] for row in rows) - min(row['process_start'] for row in rows),
@@ -143,9 +149,12 @@ def main():
         'transfer_basis': 'captured outbound peer IP bytes at regional first-paid internet rate; billing routes and allowances determine charges',
         'observed_peer_egress_bytes': sum(contact['bytes'] for row in rows for contact in row['observed_outbound_contacts'].values())}
     report['cost']['observed_peer_egress_usd_at_paid_rate'] = report['cost']['observed_peer_egress_bytes'] / 1e9 * 0.09
+    report['request_statuses'] = dict(sum((collections.Counter(row['request_statuses']) for row in rows), collections.Counter()))
+    report['upstream_http_statuses'] = dict(sum((collections.Counter(row['upstream_http_statuses']) for row in rows), collections.Counter()))
     recording = json.loads((directory / 'recording-receipts.json').read_text())
-    report['recording'] = {key: recording[key] for key in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_storage_gib')}
+    report['recording'] = {key: recording[key] for key in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_list_requests', 's3_storage_gib')}
     report['cost'].update({'s3_get_usd_estimate': recording['s3_get_requests'] * 0.00000043,
+        's3_list_usd_estimate': recording['s3_list_requests'] * 0.0000054,
         's3_storage_usd_per_month_estimate': recording['bytes'] / 1e9 * 0.0245,
         's3_storage_basis': 'first Frankfurt Standard tier; actual retention determines total storage cost'})
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
