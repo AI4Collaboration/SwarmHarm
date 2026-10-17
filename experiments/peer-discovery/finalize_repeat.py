@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     stages = [
+        ('cleanup', ['verify_cleanup.py', str(args.directory)]),
         ('compression', ['compress_payloads.py', str(args.directory)]),
         ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]),
         ('evidence', ['verify_evidence.py', str(args.directory), str(args.graph)]),
