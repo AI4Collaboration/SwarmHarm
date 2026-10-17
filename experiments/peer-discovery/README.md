@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-99 publication verification, 2026-10-17: `publish.py` compiles the exact inference-credential matcher once per export. `verify_redaction.py` compares its output with sequential replacement using actual scoped-key files, the repeat SSH identity, a session, a stored payload and a packet capture. Publication manifests hash the sanitized bytes.
+
 SWH-99 packet analysis, 2026-10-17: `packets.py` uses dpkt for standard packet-capture decoding; `verify_packets.py` checks every decoded timestamp, IPv4 endpoint, IP length and TCP flag against Scapy on an actual capture. `verify_recording.py` independently checks all retrieved payloads and metadata bindings, including completed-entity coverage and total expected-object coverage.
 
 SWH-99 collection verification, 2026-10-17: `recording.py` preserves the complete listed-object inventory and per-request expected/stored sets in `recording-receipts.json`. The repeat command checks complete coverage after saving its receipt. `verify_provider_recording.py` independently retrieves and validates the actual payloads from the eight-request operator admission check. The repeat command also collects fleet specification, seed/timer, native-goal launch and simultaneous-case receipts directly.

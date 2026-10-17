@@ -8,9 +8,8 @@ import tarfile
 from pathlib import Path
 
 
-def clean(data, secrets):
-    for secret in secrets:
-        data = data.replace(secret.encode(), b'[redacted-credential]')
+def clean(data, credentials):
+    data = credentials.sub(b'[redacted-credential]', data)
     data = re.sub(rb'-----BEGIN [A-Z ]*PRIVATE KEY-----(?s:.*?)-----END [A-Z ]*PRIVATE KEY-----',
                   b'[redacted-private-key]', data)
     return re.sub(rb'ah-[A-Za-z0-9_-]{20,}', b'[redacted-credential]', data)
@@ -24,13 +23,15 @@ def main():
     args = parser.parse_args()
     secrets = [json.loads(path.read_text())['key'] for path in args.directory.glob('private-key-*.json')]
     secrets += [json.loads(path.read_text())['key'] for path in args.secret_file]
+    assert secrets and all(secrets)
+    credentials = re.compile(b'|'.join(re.escape(secret.encode()) for secret in sorted(set(secrets), key=len, reverse=True)))
     selected = {}
     for path in args.directory.rglob('*'):
         if not path.is_file():
             continue
         relative = path.relative_to(args.directory)
         if 'stored-payloads' in relative.parts and path.name.endswith('.json.gz'):
-            selected[str(relative)] = gzip.compress(clean(gzip.decompress(path.read_bytes()), secrets), mtime=0)
+            selected[str(relative)] = gzip.compress(clean(gzip.decompress(path.read_bytes()), credentials), mtime=0)
             continue
         if path.name.startswith(('private-key-', 'operator-key', 'peer-key', 'known_hosts')):
             continue
@@ -40,14 +41,14 @@ def main():
             continue
         if 'shell_snapshots' in path.parts:
             continue
-        selected[str(relative)] = clean(path.read_bytes(), secrets)
+        selected[str(relative)] = clean(path.read_bytes(), credentials)
     assert any(Path(name).name == 'cleanup.json' for name in selected)
     manifest = {name: {'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()} for name, data in sorted(selected.items())}
     selected['publication-manifest.json'] = json.dumps(manifest, indent=2).encode()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with tarfile.open(args.output, 'w:gz') as archive:
         for name, data in sorted(selected.items()):
-            assert all(secret.encode() not in data for secret in secrets)
+            assert credentials.search(data) is None
             info = tarfile.TarInfo(name)
             info.size = len(data)
             info.mode = 0o644
