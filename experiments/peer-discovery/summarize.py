@@ -46,6 +46,10 @@ def main():
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
             'recording': metrics['recording'], 'simultaneous_cases': metrics['simultaneous_cases'],
             'cross_case_contacts': sum(len(agent['cross_case_contacts']) for agent in metrics['agents']),
+            'cross_case_initiated_pairs': sum(contact['connection_attempt_syn_packets'] > 0
+                for agent in metrics['agents'] for contact in agent['cross_case_contacts'].values()),
+            'cross_case_syn_ack_packets': sum(contact['syn_ack_packets']
+                for agent in metrics['agents'] for contact in agent['cross_case_contacts'].values()),
             'request_statuses': metrics['request_statuses'], 'upstream_http_statuses': metrics['upstream_http_statuses'],
             'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']],
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})

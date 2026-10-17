@@ -5,10 +5,11 @@ import hashlib
 import ipaddress
 import json
 import re
+import socket
 import statistics
 from pathlib import Path
 
-from scapy.all import IP, TCP, PcapReader
+import dpkt
 
 
 def epoch(value):
@@ -51,30 +52,44 @@ def main():
         cross_case_contacts = {}
         other_outbound_contacts = {}
         packet_times = []
-        with PcapReader(str(root / 'traffic.pcap')) as packets:
-            for packet in packets:
-                packet_times.append(float(packet.time))
-                if IP not in packet or TCP not in packet:
+        with (root / 'traffic.pcap').open('rb') as capture:
+            packets = dpkt.pcap.Reader(capture)
+            decoder = {dpkt.pcap.DLT_LINUX_SLL: dpkt.sll.SLL,
+                dpkt.pcap.DLT_LINUX_SLL2: dpkt.sll2.SLL2,
+                dpkt.pcap.DLT_EN10MB: dpkt.ethernet.Ethernet}[packets.datalink()]
+            for timestamp, raw in packets:
+                packet_times.append(float(timestamp))
+                packet = decoder(raw).data
+                if not isinstance(packet, dpkt.ip.IP) or not isinstance(packet.data, dpkt.tcp.TCP):
                     continue
-                source = private_map.get(packet[IP].src, packet[IP].src)
-                destination = private_map.get(packet[IP].dst, other_private_ips.get(packet[IP].dst, packet[IP].dst))
-                if source == host['public_ip'] and destination not in fleet_ips and float(packet.time) >= release['T_start']:
-                    record = other_outbound_contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                source_ip = socket.inet_ntoa(packet.src)
+                destination_ip = socket.inet_ntoa(packet.dst)
+                source = private_map.get(source_ip, source_ip)
+                destination = private_map.get(destination_ip, other_private_ips.get(destination_ip, destination_ip))
+                if source == host['public_ip'] and destination not in fleet_ips and float(timestamp) >= release['T_start']:
+                    record = other_outbound_contacts.setdefault(destination, {'first_packet': float(timestamp), 'packets': 0, 'bytes': 0})
                     record['packets'] += 1
-                    record['bytes'] += packet[IP].len
-                if source == host['public_ip'] and destination in other_hosts and float(packet.time) >= release['T_start']:
-                    record = cross_case_contacts.setdefault(destination, {'peer': other_hosts[destination], 'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                    record['bytes'] += packet.len
+                if source == host['public_ip'] and destination in other_hosts and float(timestamp) >= release['T_start']:
+                    record = cross_case_contacts.setdefault(destination, {'peer': other_hosts[destination],
+                        'first_packet': float(timestamp), 'packets': 0, 'bytes': 0,
+                        'connection_attempt_syn_packets': 0, 'syn_ack_packets': 0})
                     record['packets'] += 1
-                    record['bytes'] += packet[IP].len
-                if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
-                    record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
+                    record['bytes'] += packet.len
+                    if packet.data.flags & dpkt.tcp.TH_SYN:
+                        if packet.data.flags & dpkt.tcp.TH_ACK:
+                            record['syn_ack_packets'] += 1
+                        else:
+                            record['connection_attempt_syn_packets'] += 1
+                if source == host['public_ip'] and destination in fleet_ips - {source} and float(timestamp) >= release['T_start']:
+                    record = contacts.setdefault(destination, {'first_packet': float(timestamp), 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
                     record['packets'] += 1
-                    record['bytes'] += packet[IP].len
-                    if packet[TCP].flags & 2 and not packet[TCP].flags & 16:
+                    record['bytes'] += packet.len
+                    if packet.data.flags & dpkt.tcp.TH_SYN and not packet.data.flags & dpkt.tcp.TH_ACK:
                         record['connection_attempt_syn_packets'] += 1
                         if record['first_connection_attempt'] is None:
-                            record['first_connection_attempt'] = float(packet.time)
+                            record['first_connection_attempt'] = float(timestamp)
         observed = []
         final_messages = []
         sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))

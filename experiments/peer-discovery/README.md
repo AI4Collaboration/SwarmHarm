@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-91 packet analysis, 2026-10-17: `metrics.py` uses dpkt 1.9.8 to decode captured PCAP, Linux cooked frames, IPv4 and TCP. The complete repeat-1 metrics match the original reader across all 32 captures. Cross-case traffic records include connection-attempt SYN and SYN-ACK counts.
+
 SWH-91 provider admission, 2026-10-17: `provider_probe.py DIRECTORY --meta-key OPERATOR_KEY --issue SWH-91` uses a separate inference key for two simultaneous requests followed by one request. It verifies completed `gpt-6-luna / xhigh` gateway executions, exports stored payloads, and revokes the key. Admission evidence accompanies each subsequent repeat. Metrics retain subjects with zero gateway requests and sum quota accounting across profiles.
 
 SWH-91, 2026-10-17: use `prepare_case.py` with the parent workdir, shared admission workdir, case identifier and N/K to validate registered graph hashes, replay the accepted random draws, and retrieve real stored client/upstream payloads. Each timed repeat requires `--issue`, `--admission CASE/case-admission.json`, and `--admission-state-dir OPERATOR_STATE`. Admission checks the installed Codex hash and provider settings against the shared disposable run. Capacity receipts, gateway resource observations, paginated request exports and direct S3 object receipts accompany each repeat. Connectivity checks execute in parallel across source hosts.
