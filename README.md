@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**Peer discovery parallel admission, 2026-10-17:** SWH-77 schedules fresh Codex **0.160.0** / AxonHub **gpt-6-luna xhigh** repeats through [shared capacity reservations](experiments/peer-discovery-scheduling/README.md). Live Frankfurt checks show 256 Standard On-Demand vCPUs, ten vCPUs of other infrastructure, and room for a 244-subject envelope with subnet/ENI/gp3 admission. Run `python3 experiments/peer-discovery-scheduling/admit.py status --state-dir OPERATOR_STATE` using the operator directory recorded on SWH-77. AxonHub `https://lmportal.iefbr14.xyz/v1` records request/response bodies and stream chunks in its configured S3 backend; 264 actual JSON objects for 44 current requests and their executions were retrieved, validated, and hashed. AWS profile `eurosafeai` and gateway administration remain operator-side. Every case verifies capacity and recording at release; upstream concurrency is measured through live requests. Hosted Multica **0.4.44** and its public-server file-access patch retain their configuration.
+
 Verified **2026-10-17** for the new local harness/model pairings. `SWH` is the SwarmHarm issue prefix. No hosted runtime, credential or cloud permission changed.
 
 - **Runnable harnesses:** [notification-supported exposure and commands](experiments/hf-method-v2/README.md), [unassisted cache/discovery composition](experiments/hf-method-v1/README.md). Twelve local JSON functions, independent full stateless histories, encrypted reasoning items and `store:false`. Registry paths are virtual objects. Subjects have no shell, general network, host/grader files or operator credentials.
