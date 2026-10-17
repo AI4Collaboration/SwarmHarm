@@ -56,6 +56,7 @@ def main():
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
+            'recording': json.loads((directory / 'independent-recording-verification.json').read_text()),
             'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']],
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})
     assert sorted(row['repeat'] for row in rows) == [1, 2, 3]
@@ -85,6 +86,14 @@ def main():
     lines += ['', f"Subjects: **{report['denominator']}**. Exact submissions: **{report['exact_count']}**. Gateway requests: **{report['requests']}**. Gateway tokens: **{report['tokens']:,}**.", '',
         f"Counted infrastructure estimate: **${report['infrastructure_usd_estimate']:.4f}**, covering EC2, public IPv4 and 12-GiB gp3 from provisioning through verified termination. Gateway recorded cost: **{report['recorded_gateway_cost']}**; subscription channel accounting and per-request price fields remain in the repeat evidence.", '',
         'Per-agent scores, native goal states, contacts, request timing, resources, launch receipts and cleanup readbacks accompany each repeat artifact.']
+    lines += ['', '| Repeat | Requests | Completed-entity payload coverage | Total expected-object coverage |',
+              '| --- | ---: | ---: | ---: |']
+    for row in report['repeats']:
+        recording = row['recording']
+        lines.append(f"| {row['repeat']} | {recording['requests']} | {recording['completed_entity_stored_objects']}/{recording['completed_entity_expected_objects']} | {recording['stored_expected_objects']}/{recording['expected_objects']} |")
+    for row in report['repeats']:
+        for object_key in row['recording']['unrecorded_objects']:
+            lines += ['', f"Repeat {row['repeat']} coverage audit entry: `{object_key}`. Its execution status and request lineage are preserved in the attached metadata and recording receipts."]
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
 

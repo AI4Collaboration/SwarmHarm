@@ -13,7 +13,7 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
-**SWH-99 packet analysis, 2026-10-17:** operator contact analysis uses `dpkt 1.9.8` for stored packet captures. Independent Scapy decoding agrees on all 44,443 packet timestamps, IPv4 endpoints, IP lengths and TCP flags in the checked repeat-1 capture. Subject software, permissions, model route and deadlines retain their pinned settings. Per-object recording verification independently checks every exported payload's JSON, bytes, SHA256 and metadata binding.
+**SWH-99 packet analysis, 2026-10-17:** operator contact analysis uses `dpkt 1.9.8` for stored packet captures. Independent Scapy decoding agrees on all 44,445 packets in the checked repeat-1 capture, including 44,443 TCP/IPv4 records with matching timestamps, endpoints, IP lengths and TCP flags. Subject software, permissions, model route and deadlines retain their pinned settings. Per-object recording verification independently checks every exported payload's JSON, bytes, SHA256 and metadata binding.
 
 **SWH-99 recording audit, 2026-10-17:** collection exports every listed S3 object before evaluating full expected-object coverage, preserving per-request expected/stored object sets and exact coverage counts. Timed repeat execution enforces its coverage assertion after the receipt is saved. Independent fleet, seed/timer and native-goal checks run within the operator command. The repeat-2 provider check completed eight simultaneous `gpt-6-luna / xhigh` requests in 1.85 seconds; all 48 expected client/execution JSON objects were retrieved and hashed. Versions, endpoints and operator credential availability follow the verified settings below.
 
