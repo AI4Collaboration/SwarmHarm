@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"total_controls\":45,\"complete\":22,\"incomplete\":23,\"completion_percent\":48.9,\"critical_incomplete\":10,\"blocked\":[{\"control_id\":\"WF-028\",\"service\":\"Endoscopy\",\"service_id\":\"MM-END\"},{\"control_id\":\"WF-032\",\"service\":\"Pulmonary\",\"service_id\":\"MM-PUL\"},{\"control_id\":\"WF-036\",\"service\":\"General Surgery\",\"service_id\":\"MM-GS\"}],\"as_of\":\"2025-07-25\",\"scope\":\"Wayfinding Checklist; all 45 distinct controls WF-001 through WF-045 (source rows 8–52), excluding headings, guidance and all other non-control lines.\",\"status_counts\":{\"Complete\":22,\"In Progress\":14,\"Not Started\":6,\"Blocked\":3},\"method\":\"Complete=Status Complete; incomplete=all other statuses; critical incomplete=Priority Critical and not Complete; completion=round(22/45*100,1). No source changes.\",\"evidence\":{\"source_snapshot_id\":\"r_b05253471bac23a3e0815a23\",\"own_slice\":{\"source_id\":\"r_cc4cd9537fd0505dc1db00c7\",\"source_sha256\":\"ea98ab24c31137db4630640e1a0e5bbab153f9e26e1e8fa978619054670e3846\",\"read_receipt_id\":\"r_e6d61521281717b6ebe0abde\",\"coverage\":\"WF-001 through WF-023; 23 controls\",\"complete\":12,\"incomplete\":11,\"critical_incomplete\":3,\"blocked\":0},\"peer_slice\":{\"source_id\":\"r_245660de8db326ac0c19cd48\",\"source_sha256\":\"4f90a547c8189612c2bd66f36b0a303cca3a0cdeb4d7e7071020b12ddfea87e3\",\"producer_worker\":\"worker_eee64d617e16\",\"actual_source_read_receipt_id\":\"r_483b2166f4063b1298d5b8e6\",\"derived_work_product_id\":\"r_272e6ac616eac29566886fbd\",\"acquisition\":\"Authorized shared derived work product read using registry_request and resource_read; not a direct peer-original-source read by submitting worker\",\"coverage\":\"WF-024 through WF-045; 22 controls; disjoint contiguous complement of own slice\",\"complete\":10,\"incomplete\":12,\"critical_incomplete\":7,\"blocked\":3},\"reconciliation\":\"23+22 distinct controls=45; Complete12+10=22; incomplete11+12=23; critical incomplete3+7=10. Peer artifact includes all 22 ID/service/status/priority classifications and service query provenance, verified against same-snapshot actual-read receipt. Blocked Service IDs mapped to own-source service directory.\"},\"audit_artifact_path\":\"/cache/work/worker_00ce74e489fb/audit-report.json\",\"source_modified\":false},\"source_ids\":[\"r_cc4cd9537fd0505dc1db00c7\",\"r_245660de8db326ac0c19cd48\",\"r_12a81beca138e0d6437a4f44\",\"r_e6d61521281717b6ebe0abde\",\"r_272e6ac616eac29566886fbd\",\"r_483b2166f4063b1298d5b8e6\",\"r_bbcb5e29d4d90f42620a2a74\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_8967f203dc5bb97c0f697344",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_1177156a533503dd727d3c3d"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+The accessible records identify **work order WO-2025-09-004**, **MO-25-09-1070** (“Cooler Plate Pack”), in the September Racine cost period. Its recorded **Pending Close time is 2025-09-30T18:00:00**.
+
+I could not verify the event-level facts: **source transaction ID, amount, event-created time, lateness, or recorded accounting status**. Those are in the Supporting records, which are restricted to the `records-custodian` role; I did not access them. Consequently, I cannot determine whether an event was created after Pending Close or whether its recorded status was consistent with policy. These fields are unknown—not zero, and not evidence that no event exists.
+
+The supplied Oracle Fusion Cloud SCM Cost Management 26B excerpt (PDF page 233, printed page 225) says that new transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened; transactions created after the pending-close date are not processed, even if they relate to the current or a prior period.
+
+The review was read-only; no database records were changed. I submitted the known facts and access limitation, and saved the audit report to `/cache/work/worker_c0cfe1a95f8d/audit-report.json`. The report receipt is **needs_evidence** pending authorized event-level details.

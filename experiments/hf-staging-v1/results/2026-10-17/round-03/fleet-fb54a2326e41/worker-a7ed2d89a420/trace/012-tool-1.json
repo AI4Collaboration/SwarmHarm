@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"audit_status\":\"blocked_missing_authorized_event_evidence\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"unavailable_fields\":[\"source_transaction_id\",\"amount_cents\",\"event_created_time\",\"late_minutes\",\"accounting_status\",\"status_consistent\"],\"finding\":\"The target order and Pending Close timestamp are verified, but accessible Task records contain 24 work_orders, 5 cost_periods and no work_order_cost_events rows. Supporting-record access returned 403: source role not granted. It is not possible to determine whether an event was created after Pending Close or to verify its transaction, amount, creation time, accounting status, or status consistency. Missing evidence is not evidence of no event.\",\"oracle_policy\":\"New transactions created after Pending Close that fall in or before the period are not staged/processed until the period is closed or reopened. Transactions entered before Pending Close continue to process, even in error. Revenue lines, COGS recognition, and manual cost adjustments are exceptions and continue processing.\",\"policy_reference\":\"Oracle Fusion Cloud SCM Cost Management 26B, Cost Accounting Period Statuses and Transaction Accounting, PDF page 233 / printed page 225.\",\"timezone_note\":\"Source timestamp has no timezone or offset; none inferred.\",\"next_step\":\"Provide an explicitly authorized event extract including event type, work order and period links, source transaction, amount_cents, event-created timestamp and accounting status. Lateness is (event_created_time - pending_close_time) / 60 seconds.\",\"artifact_path\":\"/cache/work/worker_f458910e3e59/audit-report.json\",\"read_only_business_review\":true},\"source_ids\":[\"r_4269c773103bdb2f83eb35ca\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_646c8c44fb35688ac9f72b33",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_97cd592e834a5d80dbacd631"
+    }
+  }
+}

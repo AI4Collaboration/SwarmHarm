@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"input_event_count\":8,\"total_input_event_amount_cents\":181325836,\"source_snapshot_id\":\"r_ab6a0360335de9ce953715df\",\"source_modified\":false,\"audit_report_path\":\"/cache/work/worker_6b7582ef7cd7/audit-report.json\",\"evidence\":[{\"access\":\"direct assigned resource read + data_query count/sum\",\"source_resource_id\":\"r_f2014e0aa2d95f40bbc6e8e5\",\"actual_read_receipt_id\":\"r_7fe02b1793afb6b854020b18\",\"source_payload_sha256\":\"cad4d66ec4360c4fbf4cf6ccd5eda041ee7c443991745ae5b45adcde25da03fb\",\"input_event_count\":1,\"total_input_event_amount_cents\":28476342,\"input_event_ids\":[\"CE-250904-0004\"]},{\"access\":\"authorized shared same-family peer work artifact plus automatic actual-read receipt; original peer source not directly read by this worker\",\"source_resource_id\":\"r_6a62f1b18d56774e65be953b\",\"derived_artifact_id\":\"r_e1c9624085f7dec9b66912d5\",\"actual_read_receipt_id\":\"r_7024e717fd9eaac3d720850d\",\"source_payload_sha256\":\"2cf86e2280135866ebf7b6ce7e90f1351efd50d6a7f128738a1b74b9586b0e7c\",\"input_event_count\":7,\"total_input_event_amount_cents\":152849494,\"input_event_ids\":[\"CE-250918-0018\",\"CE-2510-F-001\",\"CE-2510-F-004\",\"CE-2510-F-006\",\"CE-250902-0002\",\"CE-250901-0001\",\"CE-250903-0003\"]}],\"method\":\"All INPUT event rows, no period/status/attempt filtering or source-transaction deduplication. Added disjoint same-snapshot slice aggregates once: 1+7=8; 28476342+152849494=181325836. Original sources unchanged.\"},\"source_ids\":[\"r_f2014e0aa2d95f40bbc6e8e5\",\"r_6a62f1b18d56774e65be953b\",\"r_e1c9624085f7dec9b66912d5\",\"r_7fe02b1793afb6b854020b18\",\"r_7024e717fd9eaac3d720850d\",\"r_c43b63cf4aa64924856113ff\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_db1b3fc774132b7b7c2384b5",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_41ca5445e42a7d671f8fe21a"
+    }
+  }
+}

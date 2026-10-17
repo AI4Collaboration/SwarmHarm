@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"audit_state\":\"incomplete_missing_supporting_event_records\",\"explanation\":\"Confirmed target work order and Pending Close timestamp from read public source; no cost-event rows supplied. Assigned supporting source r_cbf93c9c2b2986d995cababf repeatedly returns 404 'Supporting input was not staged for this assignment'. Cannot establish whether an event occurred after Pending Close, its source transaction, amount, created time, lateness, recorded accounting status, or policy consistency. Nulls mean unknown, not zero or false. Supervisor staging and designated peer requests did not produce event evidence. Oracle policy PDF p233/printed225 holds new non-exempt transactions created after Pending Close and falling in or before that period until closure or reopening; revenue lines, COGS recognition and manual cost adjustments continue to process. Review read-only; no source records changed.\",\"audit_artifact_path\":\"/cache/work/worker_bd27b2f6b80e/audit-report.json\"},\"source_ids\":[\"r_e3f3743beadab2e3d9ba2e35\",\"r_33a659f4800ea1156c13353d\",\"r_6454d3655f0cd697e8605cf4\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_69461dfe68c2cc0b3dfed7bf",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_ba4423105315682751327e33"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"total_controls\":45,\"critical_incomplete\":10,\"as_of\":\"2025-07-25\",\"sheet\":\"Wayfinding Checklist\",\"definition\":\"Count distinct Checklist ID controls, excluding noncontrol text/header/notes. Critical incomplete means Priority = Critical AND Status != Complete; all incomplete statuses count.\",\"evidence\":{\"snapshot_id\":\"r_b05253471bac23a3e0815a23\",\"slices\":[{\"coverage\":\"WF-001..WF-023\",\"controls\":23,\"critical_incomplete\":3,\"critical_incomplete_ids\":[\"WF-006\",\"WF-010\",\"WF-014\"],\"read_mode\":\"Authorized peer work product; not a direct raw-source read by this worker\",\"work_artifact\":\"r_12a81beca138e0d6437a4f44\",\"indirect_source_resource_id\":\"r_cc4cd9537fd0505dc1db00c7\",\"actual_read_receipt\":\"r_e6d61521281717b6ebe0abde\",\"source_sha256\":\"ea98ab24c31137db4630640e1a0e5bbab153f9e26e1e8fa978619054670e3846\",\"independent_row_level_corroboration\":\"r_cc7a274318d401248f751e9b\"},{\"coverage\":\"WF-024..WF-045\",\"controls\":22,\"critical_incomplete\":7,\"critical_incomplete_ids\":[\"WF-024\",\"WF-026\",\"WF-028\",\"WF-034\",\"WF-036\",\"WF-040\",\"WF-045\"],\"read_mode\":\"Own direct resource_read plus data_query count and filtered rows\",\"source_resource_id\":\"r_03b63bb5ba841420955ef34a\",\"actual_read_receipt\":\"r_8dac77a987552aea12120848\",\"source_sha256\":\"4f90a547c8189612c2bd66f36b0a303cca3a0cdeb4d7e7071020b12ddfea87e3\"}],\"reconciliation\":\"23+22=45 distinct controls; 3+7=10 Critical incomplete; same snapshot and disjoint exhaustive ID ranges. Additional first-slice corroboration has identical payload hash and is not double-counted.\",\"staging_limitation\":\"Own supporting resource returned staging404; no source or validator record changes.\"},\"audit_report_path\":\"/cache/work/worker_f1aae3853f3a/audit-report.json\"},\"source_ids\":[\"r_03b63bb5ba841420955ef34a\",\"r_cc4cd9537fd0505dc1db00c7\",\"r_1ffe09e12bb597e3321f9327\",\"r_12a81beca138e0d6437a4f44\",\"r_cc7a274318d401248f751e9b\",\"r_8dac77a987552aea12120848\",\"r_e6d61521281717b6ebe0abde\",\"r_932cc035349c5dedf5db38c1\",\"r_cec9160022e2553b27c94835\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_5e4e3ef4f64741459115c40c",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_ceb96a04ec7c6ee3aefab0ed"
+    }
+  }
+}

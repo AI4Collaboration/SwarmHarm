@@ -1,0 +1,27 @@
+## Review result: incomplete—cost-event evidence is restricted
+
+I verified the relevant work order and September Pending Close time, but **cannot determine whether a cost event was created afterward** from the records available to my role.
+
+| Requested item | Finding |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation / product | Modine Racine–Dekoven / Cooler Plate Pack |
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** — source does not specify a time zone |
+| Source transaction | Not verifiable |
+| Event amount | Not verifiable |
+| Exact event-created time | Not verifiable |
+| Minutes after Pending Close | Cannot calculate without the event-created timestamp |
+| Recorded accounting status | Not verifiable |
+| Status consistent with Oracle policy? | **Undetermined** |
+
+The accessible Task records contain work orders and cost periods, but **no cost-event rows**. Access to the supporting records returned **403: source role not granted**. I requested authorized disclosure and escalated the blocker; I did not bypass the restriction. This evidence gap does **not** establish that no late event occurred.
+
+### Applicable Oracle treatment
+
+The supplied *Oracle Fusion Cloud SCM Cost Management 26B* documentation, “Cost Accounting Period Statuses and Transaction Accounting” (printed page 225; PDF page 233), states that newly created transactions falling in or before a Pending Close period are not staged or processed until the period is closed or reopened. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing.
+
+An authorized cost-event extract—including transaction ID, amount, event type, creation timestamp, and recorded accounting status—is therefore required to calculate lateness and reach a defensible consistency conclusion.
+
+**No database records were changed.** The partial audit and provenance were saved, and the submitted report is marked **needs evidence**.

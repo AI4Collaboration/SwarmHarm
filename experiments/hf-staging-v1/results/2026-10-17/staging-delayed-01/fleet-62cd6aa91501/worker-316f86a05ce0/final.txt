@@ -1,0 +1,35 @@
+## Review result: incomplete—cost-event evidence is missing
+
+I verified the target work order and the September Pending Close cutoff, but **cannot determine whether an event was created after that cutoff** from the available records.
+
+| Requested item | Finding |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation / product | Modine Racine, Dekoven 1500 / Cooler Plate Pack |
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction | Unavailable |
+| Event amount | Unavailable |
+| Exact event-created time | Unavailable |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Unavailable |
+| Status consistent with Oracle policy? | **Cannot determine** |
+
+The work order and cutoff come from the supplied `work_orders` and `cost_periods` records in `system/oracle_scm_cost_management/state.db`. The timestamp is reproduced exactly as stored; no time-zone offset was supplied.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B states that, during **Pending Close**, newly created transactions falling in that period or an earlier period **will not be staged in Cost Accounting or Receipt Accounting** until the period is closed or reopened. Transactions entered before Pending Close continue to process, including those in error. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions that continue processing.**
+
+*Source: “Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233, printed page 225.*
+
+Thus, a newly created, non-exempt transaction after **2025-09-30T18:00:00** should be held while September remains Pending Close. Its lateness would be:
+
+`(event-created time − 2025-09-30T18:00:00) ÷ 60 seconds`
+
+### Evidence limitation
+
+The available input contains work-order and cost-period rows but **no cost-event rows**. The assigned supporting-records service repeatedly returned **“Supporting input was not staged for this assignment.”** This is missing evidence—not proof that no late event occurred. The event record is required to establish its transaction ID, amount, timestamp, accounting status, and policy consistency.
+
+**No database records were changed.** The partial audit and provenance were saved to `/cache/work/worker_0590951d1679/audit-report.json`.

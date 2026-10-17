@@ -1,0 +1,180 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_13914e6bea46/audit-report.json\",\"content\":\"{\\n  \\\"job_id\\\": \\\"r_d5352f24f666033640182ed5\\\",\\n  \\\"producer_worker\\\": \\\"worker_13914e6bea46\\\",\\n  \\\"dataset_family\\\": \\\"finance_accounting\\\",\\n  \\\"source_snapshot_id\\\": \\\"r_ab6a0360335de9ce953715df\\\",\\n  \\\"answer\\\": {\\n    \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n    \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n    \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n    \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n    \\\"event_type\\\": \\\"INPUT\\\",\\n    \\\"source_document\\\": \\\"Component issue after pending close\\\",\\n    \\\"amount_cents\\\": 28476342,\\n    \\\"amount_usd\\\": \\\"284763.42\\\",\\n    \\\"event_date\\\": \\\"2025-09-30\\\",\\n    \\\"event_created_time\\\": \\\"2025-09-30T19:15:00\\\",\\n    \\\"pending_close_time\\\": \\\"2025-09-30T18:00:00\\\",\\n    \\\"late_minutes\\\": 75,\\n    \\\"accounting_status\\\": \\\"POSTED\\\",\\n    \\\"accounting_attempt\\\": 1,\\n    \\\"error_code\\\": null,\\n    \\\"status_consistent\\\": false,\\n    \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n    \\\"period_name\\\": \\\"Sep-25\\\",\\n    \\\"period_status\\\": \\\"PENDING_CLOSE\\\",\\n    \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n    \\\"company_id\\\": \\\"ORG-MODINE-MFG-CO\\\",\\n    \\\"product_description\\\": \\\"Cooler Plate Pack\\\",\\n    \\\"conclusion\\\": \\\"Yes. This component-issue INPUT event was created 75 minutes after Sep-25 entered Pending Close, yet its recorded accounting_status is POSTED. That is inconsistent with the supplied Oracle Pending Close policy for newly created current/prior-period transactions. The documented exceptions for revenue lines, COGS recognition, and manual cost adjustments do not describe this INPUT event.\\\",\\n    \\\"time_note\\\": \\\"Exact source timestamps retained; source provides no time-zone or UTC offset. No timezone conversion or event-ID date inference was used.\\\",\\n    \\\"read_only\\\": true\\n  },\\n  \\\"provenance\\\": {\\n    \\\"database_source_file\\\": \\\"system/oracle_scm_cost_management/state.db\\\",\\n    \\\"work_order_and_cost_period\\\": {\\n      \\\"service\\\": \\\"resource_read and data_query\\\",\\n      \\\"resource_id\\\": \\\"r_6a62f1b18d56774e65be953b\\\",\\n      \\\"read_status\\\": 200,\\n      \\\"source_kind\\\": \\\"source_public\\\",\\n      \\\"source_payload_sha256\\\": \\\"2cf86e2280135866ebf7b6ce7e90f1351efd50d6a7f128738a1b74b9586b0e7c\\\",\\n      \\\"actual_read_receipt_id\\\": \\\"r_7024e717fd9eaac3d720850d\\\",\\n      \\\"rows_queries\\\": [\\n        {\\\"action\\\":\\\"rows\\\",\\\"table_path\\\":[\\\"records\\\"],\\\"filters\\\":[{\\\"field\\\":\\\"table\\\",\\\"op\\\":\\\"eq\\\",\\\"value\\\":\\\"work_orders\\\"},{\\\"field\\\":\\\"values.work_order_number\\\",\\\"op\\\":\\\"eq\\\",\\\"value\\\":\\\"MO-25-09-1070\\\"}],\\\"status\\\":200,\\\"matching_rows\\\":1},\\n        {\\\"action\\\":\\\"rows\\\",\\\"table_path\\\":[\\\"records\\\"],\\\"filters\\\":[{\\\"field\\\":\\\"table\\\",\\\"op\\\":\\\"eq\\\",\\\"value\\\":\\\"cost_periods\\\"},{\\\"field\\\":\\\"values.cost_period_id\\\",\\\"op\\\":\\\"eq\\\",\\\"value\\\":\\\"PER-COST-2025-09\\\"}],\\\"status\\\":200,\\\"matching_rows\\\":1}\\n      ]\\n    },\\n    \\\"event_evidence\\\": {\\n      \\\"access_method\\\": \\\"Authorized same-family peer work product, read successfully through registry_request and resource_read; original raw peer source was not directly read by this worker.\\\",\\n      \\\"producer_worker\\\": \\\"worker_daeded82e475\\\",\\n      \\\"artifact_path\\\": \\\"/cache/work/worker_daeded82e475/verified-slice.json\\\",\\n      \\\"artifact_resource_id\\\": \\\"r_15c6a5fa3412a1051e666d6e\\\",\\n      \\\"artifact_read_status\\\": 200,\\n      \\\"original_source_resource_id\\\": \\\"r_e9990cffabebfd9472b26717\\\",\\n      \\\"original_source_kind\\\": \\\"source_public\\\",\\n      \\\"original_source_payload_sha256\\\": \\\"cad4d66ec4360c4fbf4cf6ccd5eda041ee7c443991745ae5b45adcde25da03fb\\\",\\n      \\\"original_actual_read_receipt_id\\\": \\\"r_56c42ef7c592137dd17b6b36\\\",\\n      \\\"read_receipt_verified_via\\\": [\\\"registry_request\\\", \\\"resource_read\\\"],\\n      \\\"read_receipt_confirms\\\": \\\"Same finance_accounting source snapshot and actual read of work_order_cost_events CE-250904-0004. Artifact verified_record supplies the exact event fields. Work order and period context independently agree with this worker's direct public source.\\\"\\n    },\\n    \\\"oracle_policy\\\": {\\n      \\\"resource_id\\\": \\\"r_6a62f1b18d56774e65be953b\\\",\\n      \\\"source_file\\\": \\\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\\\",\\n      \\\"pdf_page\\\": 233,\\n      \\\"printed_page\\\": 225,\\n      \\\"section\\\": \\\"Cost Accounting Period Statuses and Transaction Accounting\\\",\\n      \\\"relevant_text\\\": \\\"When a period is in the Pending Close status, any new transaction that falls in or before the period won't be staged in Cost Accounting or Receipt Accounting. After the period is closed or reopened, these new transactions will be processed. Transactions entered before the pending close date will be processed, even if in error. Transactions created after the pending close date, even if they relate to a current or prior period, won't be processed. Revenue lines, COGS recognition, and manual cost adjustments will continue to be processed even after the period is set to Pending Close.\\\"\\n    },\\n    \\\"lateness_calculation\\\": {\\n      \\\"service\\\": \\\"data_query\\\",\\n      \\\"action\\\": \\\"datetime_difference\\\",\\n      \\\"resource_ids\\\": [\\\"r_6a62f1b18d56774e65be953b\\\"],\\n      \\\"start\\\": \\\"2025-09-30T18:00:00\\\",\\n      \\\"end\\\": \\\"2025-09-30T19:15:00\\\",\\n      \\\"status\\\": 200,\\n      \\\"seconds\\\": 4500,\\n      \\\"minutes_formula\\\": \\\"4500 / 60 = 75\\\",\\n      \\\"note\\\": \\\"Arithmetic service used supplied timestamps; event timestamp provenance is the peer work artifact, not the source resource listed for arithmetic.\\\"\\n    },\\n    \\\"staging_obstacle\\\": {\\n      \\\"resource_id\\\": \\\"r_fead9ed4a5c75ed6113f0293\\\",\\n      \\\"service\\\": \\\"resource_read\\\",\\n      \\\"status\\\": 404,\\n      \\\"error\\\": \\\"Supporting input was not staged for this assignment\\\",\\n      \\\"resolution\\\": \\\"Used authorized peer-shared verified event work product with actual source-read receipt, not an assumption from the missing local event.\\\"\\n    },\\n    \\\"source_ids_for_report\\\": [\\\"r_6a62f1b18d56774e65be953b\\\", \\\"r_15c6a5fa3412a1051e666d6e\\\", \\\"r_56c42ef7c592137dd17b6b36\\\", \\\"r_7024e717fd9eaac3d720850d\\\"],\\n    \\\"source_database_modifications\\\": false,\\n    \\\"writes\\\": \\\"Derived work products and report only; no source/database writes.\\\"\\n  }\\n}\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_d2325d86f12b85a75e3e8f91",
+    "scope": "shared",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_00ce74e489fb/reads/r_e6d61521281717b6ebe0abde.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_00ce74e489fb",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_00ce74e489fb/wayfinding-slice-summary.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_00ce74e489fb",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_13914e6bea46/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_13914e6bea46",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_13914e6bea46/input-event-slice-summary.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_13914e6bea46",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_13914e6bea46/reads/r_7024e717fd9eaac3d720850d.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_13914e6bea46",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_2836a1f01801/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_2836a1f01801",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_2836a1f01801/reads/r_932cc035349c5dedf5db38c1.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_2836a1f01801",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_2836a1f01801/wayfinding-first-slice.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_2836a1f01801",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_6b7582ef7cd7/reads/r_7fe02b1793afb6b854020b18.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_6b7582ef7cd7",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_6b7582ef7cd7/verified-slice.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_6b7582ef7cd7",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_daeded82e475/reads/r_56c42ef7c592137dd17b6b36.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_daeded82e475",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_daeded82e475/verified-slice.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_daeded82e475",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_eee64d617e16/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_eee64d617e16",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_eee64d617e16/reads/r_483b2166f4063b1298d5b8e6.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_eee64d617e16",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_eee64d617e16/wayfinding-slice-analysis.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_eee64d617e16",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_eee64d617e16/wayfinding-status-summary.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_eee64d617e16",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_f1aae3853f3a/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_f1aae3853f3a",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_f1aae3853f3a/reads/r_8dac77a987552aea12120848.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_f1aae3853f3a",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_f8ce0e795cc8/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_f8ce0e795cc8",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_f8ce0e795cc8/evidence-request.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_f8ce0e795cc8",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_f8ce0e795cc8/reads/r_781bcacf72eec88a33b1713f.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_f8ce0e795cc8",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

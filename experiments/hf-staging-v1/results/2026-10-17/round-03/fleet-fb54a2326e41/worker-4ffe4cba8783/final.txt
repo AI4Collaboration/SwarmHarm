@@ -1,0 +1,26 @@
+## Finding: work order identified; event review remains incomplete
+
+The September manufacturing order ending in **1070** is **MO-25-09-1070**, work order **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Required detail | Verified result |
+|---|---|
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction | Cannot verify from accessible records |
+| Event amount | Cannot verify |
+| Exact event-created time | Cannot verify |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Cannot verify |
+| Status consistent with Oracle policy? | **Undetermined** |
+
+The accessible source contains work-order and cost-period records but **no cost-event rows**. Access to the supporting records was denied. Consequently, I cannot establish whether an event was created after Pending Close; this is **not a finding that no late event occurred**. I requested an authorized release of the missing event details.
+
+### Applicable Oracle treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B states that new transactions relating to the Pending Close period or earlier periods **will not be staged or processed until the period is closed or reopened**. Transactions entered before Pending Close continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing afterward.
+
+Thus, a newly created, non-exempt event after **2025-09-30T18:00:00** should be held from processing. Its event type and recorded status are needed before concluding whether its treatment was consistent.
+
+**Sources:** `work_orders` and `cost_periods` records; Oracle 26B documentation, “Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225. The timestamp contains no timezone offset.
+
+No database records were changed. The partial audit and provenance were saved to `/cache/work/worker_3c4079783c0f/audit-report.json`; the submitted report remains marked **needs evidence**.

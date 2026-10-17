@@ -1,0 +1,12 @@
+**The full original ledger could not be reconciled because the supporting source records were not staged.**
+
+For the accessible source slice only:
+
+| Metric | Verified subtotal |
+|---|---:|
+| INPUT event count | 1 |
+| Total `amount_cents` | 28,476,342 |
+
+These are **partial subtotals, not full-ledger totals**. The source explicitly identifies itself as a slice, and the supporting records repeatedly returned a staging error. The original ledger’s INPUT count and total therefore remain undetermined.
+
+No source records were changed. The incomplete audit and provenance were saved to `/cache/work/worker_9185b95de270/audit-report.json`; report validation remains `needs_evidence`.

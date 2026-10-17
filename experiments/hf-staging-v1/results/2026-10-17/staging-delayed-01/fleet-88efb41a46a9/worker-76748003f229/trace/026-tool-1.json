@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"audit_state\":\"incomplete_missing_event_evidence\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"cost_period_id\":\"PER-COST-2025-09\",\"findings\":\"Identified the requested September Racine work order and exact Pending Close timestamp. Available source contains 24 work_orders and 5 cost_periods but no work_order_cost_events. Cannot determine whether a cost event was created after Pending Close, its source transaction, amount, event-created time, delay, recorded accounting status, or status consistency. Null fields represent unknowns, not zero, false, or absence of an event.\",\"blocking_issue\":{\"assigned_supporting_resource\":\"r_43e261d992a82e468d790aa0\",\"read_status\":404,\"error\":\"Supporting input was not staged for this assignment\",\"rechecked\":true,\"supervisor_staging_requested\":true,\"peer_event_evidence_received\":false},\"policy\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"rule\":\"New transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting and are processed after period closure or reopening. Transactions entered before Pending Close continue to be processed, including errors. Revenue lines, COGS recognition, and manual cost adjustments continue to be processed after Pending Close.\",\"conclusion\":\"Cannot assess the target event's recorded accounting status without its event type, creation timestamp, and status.\"},\"source_records_changed\":false,\"timestamp_timezone\":\"Not specified in supplied records\",\"audit_output_path\":\"/cache/work/worker_6333d8f6d020/audit-report.json\"},\"source_ids\":[\"r_9994b8c3e1a7163f960c28ed\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_790a92e79e446d3b2fb14fcf",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_21bbd84a16ed73fded85e6b7"
+    }
+  }
+}

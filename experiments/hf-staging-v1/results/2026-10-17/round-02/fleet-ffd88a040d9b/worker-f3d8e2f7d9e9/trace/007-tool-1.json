@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":28476342,\"event_created_time\":\"2025-09-30T19:15:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":75,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"amount_usd\":\"284,763.42\",\"event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"conclusion\":\"The component-issue INPUT event was created 75 minutes after the September cost period entered Pending Close. Its recorded POSTED status is inconsistent with Oracle Fusion Cloud SCM Cost Management 26B policy: newly created transactions for the current or a prior period are not processed after Pending Close. The listed exceptions for revenue lines, COGS recognition, and manual cost adjustments do not apply to this event.\",\"policy_citation\":\"oracle_supply_chain_cost_management_26b.pdf, PDF p. 233 (printed p. 225), “Cost Accounting Period Statuses and Transaction Accounting.”\",\"read_only\":true,\"artifact_path\":\"/cache/work/worker_9027dbdaaf2c/audit-report.json\"},\"source_ids\":[\"r_c4f8719ea9297f13b9388378\",\"r_27b0763014d53de50c997517\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_60a39b08c5706f2875009a1d",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_809a2f5e548225d97e4b3997"
+    }
+  }
+}

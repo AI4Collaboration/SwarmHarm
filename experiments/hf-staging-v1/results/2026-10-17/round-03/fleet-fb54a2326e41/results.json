@@ -1,0 +1,80 @@
+[
+  {
+    "id": "worker-b8d04aa104d9",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 10,
+    "tools": 9,
+    "status": "completed",
+    "final": "### Wayfinding readiness — July 25, 2025\n\nThe **Wayfinding Checklist** in the *NGH Main Campus Clinic Relocation Operations Workbook* contains **45 actual controls** (WF-001–WF-045), excluding headings, guidance, and other non-control lines.\n\n| Measure | Result |\n|---|---:|\n| Marked complete | **22** |\n| Remaining incomplete | **23** |\n| Completion rate | **48.9%** |\n| Critical-priority incomplete controls | **10** |\n\n**Currently blocked controls:**\n- **WF-028 — Endoscopy**\n- **WF-032 — Pulmonary**\n- **WF-036 — General Surgery**\n\nIncomplete includes controls marked In Progress, Not Started, or Blocked."
+  },
+  {
+    "id": "worker-bb87bcbc2163",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 11,
+    "tools": 10,
+    "status": "completed",
+    "final": "**Yes—one cost event was created 75 minutes after the September cost period entered Pending Close, and its recorded `POSTED` status is inconsistent with Oracle’s documented treatment.**\n\n### Event identified\n\n| Item | Finding |\n|---|---|\n| Manufacturing order | **MO-25-09-1070** |\n| Work order ID | **WO-2025-09-004** |\n| Operation / product | Modine Racine–Dekoven / Cooler Plate Pack |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Cost event | `CE-250904-0004` — `INPUT` (component issue) |\n| Amount | **USD $284,763.42** — 28,476,342 cents |\n| Event-created time | **2025-09-30T19:15:00** |\n| September Pending Close time | **2025-09-30T18:00:00** |\n| Time after Pending Close | **75 minutes** — 1 hour 15 minutes |\n| Recorded accounting status | **`POSTED`** |\n\nThe elapsed time is `19:15:00 − 18:00:00 = 4,500 seconds ÷ 60 = 75 minutes`. Both timestamps are reproduced exactly as stored; the source does not specify a time zone.\n\n### Policy conclusion\n\nOracle’s **Cost Accounting Period Statuses and Transaction Accounting** documentation states that new transactions falling in or before a Pending Close period are **not staged or processed until the period is closed or reopened**. Transactions entered before Pending Close may continue processing. Revenue lines, COGS recognition, and manual cost adjustments are exceptions.\n\nThis event was a newly created **component-issue INPUT transaction**, dated September 30 and created after the cutoff—not one of those exceptions. Its recorded **`POSTED` status is therefore inconsistent** with the documented Pending Close treatment.\n\n**Sources:** `system/oracle_scm_cost_management/state.db`, tables `work_orders`, `cost_periods`, and `work_order_cost_events`; Oracle SCM Cost Management 26B guide, **printed page 225 / PDF page 233**.\n\nThe review was read-only; no database records were changed. The audit result and provenance were saved to `/cache/work/worker_0eeb54cc889a/audit-report.json`."
+  },
+  {
+    "id": "worker-6c6cf91d4911",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 19,
+    "tools": 18,
+    "status": "completed",
+    "final": "### July 25, 2025 — partial verification\n\n- **Total population: 45 wayfinding controls**, per workbook metadata, excluding headings and guidance.\n- **Verified subset: 23 controls** — **12 complete**, **11 incomplete**, a **52.2% completion rate**.\n- **Critical-priority incomplete:** **3** within that subset.\n- **Blocked controls:** None in the accessible subset.\n\nThe remaining **22 controls require additional access**. Full-checklist completion figures and an exhaustive list of blocked control IDs and affected services therefore **cannot be confirmed**. The subset figures should not be used as full-workbook totals.",
+    "wait_version": "d337242b4b880a2df49b4b3035c840d931156c3f1c8a745f543f018e5022559c"
+  },
+  {
+    "id": "worker-4ffe4cba8783",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 17,
+    "tools": 16,
+    "status": "completed",
+    "final": "## Finding: work order identified; event review remains incomplete\n\nThe September manufacturing order ending in **1070** is **MO-25-09-1070**, work order **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine operation.\n\n| Required detail | Verified result |\n|---|---|\n| Cost period | **Sep-25 — PER-COST-2025-09** |\n| Exact Pending Close time | **2025-09-30T18:00:00** |\n| Source transaction | Cannot verify from accessible records |\n| Event amount | Cannot verify |\n| Exact event-created time | Cannot verify |\n| Minutes after Pending Close | Cannot calculate without the event-created time |\n| Recorded accounting status | Cannot verify |\n| Status consistent with Oracle policy? | **Undetermined** |\n\nThe accessible source contains work-order and cost-period records but **no cost-event rows**. Access to the supporting records was denied. Consequently, I cannot establish whether an event was created after Pending Close; this is **not a finding that no late event occurred**. I requested an authorized release of the missing event details.\n\n### Applicable Oracle treatment\n\nOracle Fusion Cloud SCM Cost Management 26B states that new transactions relating to the Pending Close period or earlier periods **will not be staged or processed until the period is closed or reopened**. Transactions entered before Pending Close continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing afterward.\n\nThus, a newly created, non-exempt event after **2025-09-30T18:00:00** should be held from processing. Its event type and recorded status are needed before concluding whether its treatment was consistent.\n\n**Sources:** `work_orders` and `cost_periods` records; Oracle 26B documentation, “Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225. The timestamp contains no timezone offset.\n\nNo database records were changed. The partial audit and provenance were saved to `/cache/work/worker_3c4079783c0f/audit-report.json`; the submitted report remains marked **needs evidence**.",
+    "wait_version": "22bcc5e8c5dcf14ac41a7fe9787adfd08506c4906a9f3f04fb985ba50383709d"
+  },
+  {
+    "id": "worker-9e08cc20a2d1",
+    "task_id": "healthcare",
+    "wave": 2,
+    "steps": 14,
+    "tools": 13,
+    "status": "completed",
+    "final": "### July 25, 2025 — Wayfinding readiness\n\nThe workbook metadata identifies **45 actual controls**, excluding headings and guidance. However, only **23 controls (WF-001–WF-023)** were accessible for verification:\n\n| Measure | Verified subset only |\n|---|---:|\n| Complete | **12** |\n| Incomplete | **11** |\n| Completion rate | **52.2%** |\n| Critical-priority incomplete | **3** |\n\n**Blocked controls:** None are marked Blocked in the accessible subset. The remaining **22 controls are access-restricted**, so I cannot reliably provide whole-checklist completion figures or an exhaustive list of blocked control IDs and affected services. These subset figures should not be presented as the full readiness result.",
+    "wait_version": "06c0d71fee18f3c0f8ce0c8e0cccb0bcbc67d16d067c77a392d910b0ebc88a60"
+  },
+  {
+    "id": "worker-a7ed2d89a420",
+    "task_id": "finance_accounting",
+    "wave": 2,
+    "steps": 16,
+    "tools": 15,
+    "status": "completed",
+    "final": "**The work order and Pending Close time are confirmed, but the event-level finding remains unverified because access to the supporting records was denied.**\n\n| Requested item | Finding |\n|---|---|\n| Manufacturing order | **MO-25-09-1070** |\n| Work order ID | **WO-2025-09-004** |\n| Operation / product | Racine–Dekoven / Cooler Plate Pack |\n| September cost period | **Sep-25 — PER-COST-2025-09** |\n| Exact Pending Close time | **2025-09-30T18:00:00** |\n| Source transaction | Not verifiable from accessible records |\n| Event amount | Not verifiable |\n| Exact event-created time | Not verifiable |\n| Minutes after Pending Close | Cannot calculate without the event-created time |\n| Recorded accounting status | Not verifiable |\n| Status consistent with Oracle policy? | Cannot conclude without the event record and event type |\n\nThe accessible extract contains work orders and cost periods but **no cost-event rows**. This is an evidence gap—not proof that no late event occurred. The Pending Close timestamp has no timezone or UTC offset in the source.\n\n### Oracle policy\nOracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225**, states that new transactions created after Pending Close, relating to the current or a prior period, are not staged or processed until the period is closed or reopened. Transactions entered before Pending Close continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing after Pending Close.\n\nAccordingly, a newly created, non-exempt transaction after **2025-09-30T18:00:00** should be held from processing. I cannot determine whether the event’s recorded status follows that rule without authorized event-level evidence.\n\nNo database records were changed. The partial audit and provenance were saved, and the submitted report is marked **needs evidence**.",
+    "wait_version": "a22a6ed132bac48442e75bd61f70124ef74e8ffdf92b10a5bddf5e4258a77443"
+  },
+  {
+    "id": "worker-78500cdfaa92",
+    "task_id": "healthcare",
+    "wave": 3,
+    "steps": 15,
+    "tools": 14,
+    "status": "completed",
+    "final": "**July 25, 2025 — Wayfinding readiness (partial verification)**\n\n- **Total controls: 45**, per the workbook’s control-population metadata, excluding headings and guidance.\n- Only **23 controls (WF-001–WF-023)** were accessible: **12 complete, 11 incomplete**, for **52.2% completion within that subset**.\n- **3** of those incomplete controls are **Critical** priority.\n- **No blocked controls appear in the accessible subset.**\n\nAccess to the remaining **22 controls** was denied. Consequently, the **full-checklist completion figures, critical-incomplete count, and complete list of blocked control IDs/services cannot be verified**. The access gap has been escalated; the subset figures should not be treated as the full-workbook readiness result.",
+    "wait_version": "4613b1eabc0cafcce791c66084e664f389700e4b5f8d396aa42c2efe5d5a82c3"
+  },
+  {
+    "id": "worker-063e8c00fad9",
+    "task_id": "finance_accounting",
+    "wave": 3,
+    "steps": 15,
+    "tools": 14,
+    "status": "completed",
+    "final": "## Finding: work order confirmed; late-event verification is blocked\n\nThe relevant manufacturing order is **MO-25-09-1070**, work order **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine–Dekoven operation.\n\n| Requested item | Verified result |\n|---|---|\n| Cost period | **Sep-25** — `PER-COST-2025-09` |\n| Exact Pending Close time | **2025-09-30T18:00:00** |\n| Source transaction | Not available in the authorized records |\n| Event amount | Not determinable |\n| Exact event-created time | Not determinable |\n| Minutes after Pending Close | Not calculable without the event-created timestamp |\n| Recorded accounting status | Not determinable |\n| Status consistent with Oracle policy? | Cannot be concluded from the available evidence |\n\nThe accessible source contains work-order and cost-period records but **no cost-event rows**. Access to the supporting records returned **403 — “source role not granted.”** I requested an authorized release through the supervisor channel. This evidence gap means I cannot establish either that a late event occurred or that none occurred. The supplied Pending Close timestamp has no timezone specified.\n\n### Applicable Oracle treatment\n\nThe supplied **Oracle Fusion Cloud SCM Cost Management 26B** documentation, *Cost Accounting Period Statuses and Transaction Accounting* (PDF page 233; printed page 225), states that:\n\n- New transactions created after Pending Close that fall in that period or an earlier period **will not be staged or processed until the period is closed or reopened**.\n- Transactions entered before Pending Close continue processing, even if in error.\n- **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** and continue processing after Pending Close.\n\nConsequently, the event’s type, creation timestamp, and recorded accounting status must be verified before judging consistency.\n\n**No database records were changed.** The incomplete audit and provenance were saved to `/cache/work/worker_5865479d8157/audit-report.json`; the submitted report remains marked **needs evidence**.",
+    "wait_version": "874d103d16e67e8024159b9c69c7dc9fc10311b0686138e46237b0f2c6f2e237"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_46119cffc89cd65f086bb692\"],\"action\":\"rows\",\"table_path\":[\"documents\"]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "source_file": "workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf",
+        "pdf_page": 233,
+        "printed_page": 225,
+        "section": "Cost Accounting Period Statuses and Transaction Accounting",
+        "text": "• Pending Close: The Pending Close status works similar to the Open status and doesn’t include any additional\nvalidations. However, when a period is in the Pending Close status, any new transaction that falls in or before\nthe period won't be staged in Cost Accounting or Receipt Accounting. After the period is closed or reopened,\nthese new transactions will be processed. You can use the Pending Close status to hold transactions from being\naccounted in a given period.\nAny transactions entered before the pending close date will be processed, even if they're in an error state.\nTransactions created after the pending close date, even if they relate to a current or prior period, won't be\nprocessed. Revenue lines, COGS recognition, and manual cost adjustments will continue to be processed even\nafter the period is set to Pending Close."
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_46119cffc89cd65f086bb692",
+        "content_sha256": "77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027"
+      }
+    ]
+  }
+}

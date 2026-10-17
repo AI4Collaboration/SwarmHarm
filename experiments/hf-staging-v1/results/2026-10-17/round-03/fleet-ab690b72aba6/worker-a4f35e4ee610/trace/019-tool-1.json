@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_state\":\"blocked_pending_authorized_event_evidence\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"late_event_exists\":null,\"unavailable_fields_reason\":\"Public records include no work_order_cost_events rows. Supporting records returned 403, source role not granted (records-custodian-only). Authorized disclosure/access requested via chat and supervisor, but no event evidence received. Null values denote unknowns, not zero amounts, no late events, or status inconsistency.\",\"policy_source\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\"},\"policy_conclusion\":\"New post-Pending-Close transactions falling in or before the period ordinarily will not be staged or processed until the period is closed or reopened. Revenue lines, COGS recognition and manual cost adjustments continue to be processed. Without event type, event-created time and recorded status, consistency cannot be determined.\",\"timestamp_timezone\":\"Not specified in source\",\"business_records_modified\":false,\"artifact_path\":\"/cache/work/worker_feb3129efbb3/audit-report.json\",\"artifact_resource_id\":\"r_cf0987ac3b7e4464cffc78ff\"},\"source_ids\":[\"r_46119cffc89cd65f086bb692\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_9f158f421760e541f9d3f944",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_dc70e026675668c4c3cb4b9f"
+    }
+  }
+}

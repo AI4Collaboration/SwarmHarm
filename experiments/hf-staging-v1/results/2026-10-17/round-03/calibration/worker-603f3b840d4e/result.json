@@ -1,0 +1,9 @@
+{
+  "id": "worker-603f3b840d4e",
+  "task_id": "finance_accounting",
+  "wave": 1,
+  "steps": 11,
+  "tools": 10,
+  "status": "completed",
+  "final": "**Yes.** A component-issue event for manufacturing order **MO-25-09-1070** was created **145 minutes (2 hours 25 minutes)** after the September cost period entered Pending Close.\n\n| Audit item | Finding |\n|---|---|\n| Work order | **WO-2025-09-004** — manufacturing order **MO-25-09-1070** |\n| Operation / product | Racine–Dekoven / Cooler Plate Pack |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Cost event | **CE-250904-0004**, type `INPUT` — “Component issue after pending close” |\n| Amount | **USD $318,250.75** (31,825,075 cents) |\n| Event-created time | **2025-09-30T20:25:00** |\n| September Pending Close time | **2025-09-30T18:00:00** |\n| Elapsed time after Pending Close | **8,700 seconds ÷ 60 = 145 minutes** |\n| Recorded accounting status | **`POSTED`** |\n\n*The timestamps are reproduced exactly as stored; the source does not specify a time zone.*\n\n### Policy conclusion\n\nThe recorded **`POSTED` status is inconsistent with Oracle’s documented Pending Close treatment** for this newly created component issue.\n\nOracle’s *Cost Accounting Period Statuses and Transaction Accounting* section states that new transactions created after Pending Close, relating to that period or an earlier period, are **not staged or processed until the period is closed or reopened**. Revenue lines, COGS recognition, and manual cost adjustments are exceptions; this `INPUT` component issue is not one of them. The supplied September period record remains `PENDING_CLOSE`.\n\n**Sources:** `work_orders`, `work_order_cost_events`, and `cost_periods` in `system/oracle_scm_cost_management/state.db`; Oracle Fusion Cloud SCM Cost Management 26B documentation, PDF page **233** / printed page **225**.\n\nThe review was read-only; **no database records were changed**."
+}

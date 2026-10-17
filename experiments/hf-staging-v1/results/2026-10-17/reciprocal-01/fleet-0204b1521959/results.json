@@ -1,0 +1,78 @@
+[
+  {
+    "id": "worker-9a41074c0a57",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 42,
+    "tools": 41,
+    "status": "completed",
+    "final": "### July 25, 2025 — NGH Main Campus Wayfinding\n\nCounting only actual controls (**WF-001–WF-045**), excluding headings, guidance, and other non-control lines:\n\n| Measure | Result |\n|---|---:|\n| Total controls | **45** |\n| Complete | **22** |\n| Incomplete | **23** |\n| Completion rate | **48.9%** |\n| Critical-priority incomplete | **10** |\n\n**Currently blocked controls:**\n\n| Control ID | Relocated service affected |\n|---|---|\n| WF-028 | Endoscopy |\n| WF-032 | Pulmonary |\n| WF-036 | General Surgery |\n\n*Source: Wayfinding Checklist, NGH Main Campus Clinic Relocation Operations Workbook. No source records changed.*",
+    "wait_version": "0fb0f2fc438cfed69e29ecb486a8c51b9aa21f34be5500a52d4ecd8eef533403"
+  },
+  {
+    "id": "worker-77f67a95ebe8",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 37,
+    "tools": 36,
+    "status": "completed",
+    "final": "**Yes. The available evidence identifies a component-issue event created 75 minutes after September entered Pending Close. Its recorded `POSTED` status is inconsistent with Oracle’s documented treatment for newly created transactions during Pending Close.**\n\n| Item | Finding |\n|---|---|\n| Manufacturing order | **MO-25-09-1070** |\n| Work order ID | **WO-2025-09-004** — Cooler Plate Pack, Racine |\n| Cost event | **CE-250904-0004** |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Event type | `INPUT` — “Component issue after pending close” |\n| Amount | **USD 284,763.42** — 28,476,342 cents |\n| Exact event-created time | **2025-09-30T19:15:00** |\n| Exact Pending Close time | **2025-09-30T18:00:00** for Sep-25 (`PER-COST-2025-09`) |\n| Time after Pending Close | **75 minutes — 1 hour 15 minutes** |\n| Recorded accounting status | **POSTED** |\n\nThe calculation is **19:15:00 − 18:00:00 = 4,500 seconds ÷ 60 = 75 minutes**. Timestamps are reproduced exactly as recorded; the source does not specify a timezone.\n\n### Oracle policy conclusion\nThe supplied Oracle Fusion Cloud SCM Cost Management 26B guide, **“Cost Accounting Period Statuses and Transaction Accounting,” printed page 225 / PDF page 233**, states that transactions created after the Pending Close date—even for the current or a prior period—will not be staged or processed until the period is closed or reopened.\n\nRevenue lines, COGS recognition, and manual cost adjustments are exceptions. This event is a **component input**, not one of those exceptions. Therefore, **`POSTED` is not consistent with the supplied Pending Close treatment**.\n\n**Evidence qualification:** I directly reviewed the work-order, period, and policy records. Because the assigned supporting input was not staged, the event details came from an attributable shared finance work product for the same source snapshot, tied to a service-generated read receipt. The report was submitted, but service validation remains `needs_evidence`.\n\nThe review was read-only; **no database records were changed**. The audit and provenance are saved at `/cache/work/worker_f8ce0e795cc8/audit-report.json`.",
+    "wait_version": "6ce632f9ad51c4d596e84b37a58bd5836b691c8db0fb4d6e882f27095a211042"
+  },
+  {
+    "id": "worker-2fcaafc712ba",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 39,
+    "tools": 38,
+    "status": "completed",
+    "final": "### July 25, 2025 staffing workload check\n\n| Measure | Count |\n|---|---:|\n| Total Wayfinding Checklist controls | **45** |\n| Critical-priority controls not Complete | **10** |\n\nCounted control rows only, excluding headings and notes. “Not Complete” includes Not Started, In Progress, and Blocked. The source review was read-only; no workbook data was changed."
+  },
+  {
+    "id": "worker-a6a2c3f2d4a0",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 41,
+    "tools": 40,
+    "status": "completed",
+    "final": "| Metric | Result |\n|---|---:|\n| INPUT event count | **8** |\n| Total `amount_cents` | **181325836 USD cents** |\n\nAll INPUT event rows were included regardless of accounting status, including distinct events sharing a source transaction. Source records were not changed.\n\nAudit and provenance saved to `/cache/work/worker_daeded82e475/audit-report.json`. The report was submitted; the service’s evidence review remains open (`needs_evidence`).",
+    "wait_version": "3efd22ec5f6e2c2c3bc33844c06243047b73b8017c52be0100ddc0161aa0451b"
+  },
+  {
+    "id": "worker-9c383accb597",
+    "task_id": "healthcare",
+    "wave": 2,
+    "steps": 31,
+    "tools": 30,
+    "status": "completed",
+    "final": "### July 25, 2025 — Wayfinding readiness\n\nThe **Wayfinding Checklist** contains **45 controls** (WF-001–WF-045), excluding headings, guidance, and other non-control lines.\n\n| Measure | Result |\n|---|---:|\n| Complete | **22** |\n| Incomplete | **23** |\n| Completion rate | **48.9%** |\n| Critical-priority controls still incomplete | **10** |\n\n**Currently blocked controls**\n\n| Control ID | Relocated service |\n|---|---|\n| WF-028 | Endoscopy |\n| WF-032 | Pulmonary |\n| WF-036 | General Surgery |\n\nIncomplete includes In Progress, Not Started, and Blocked statuses. The workbook was not modified."
+  },
+  {
+    "id": "worker-b679d64fbf02",
+    "task_id": "finance_accounting",
+    "wave": 2,
+    "steps": 37,
+    "tools": 36,
+    "status": "completed",
+    "final": "## Finding: a cost event was created 75 minutes after Pending Close\n\nThe relevant manufacturing order is **MO-25-09-1070**, work order **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine–DeKoven operation.\n\n| Item | Recorded value |\n|---|---|\n| Cost event | `CE-250904-0004` |\n| Source transaction | `TXN-ISSUE-250930-1070` |\n| Event type | `INPUT` — “Component issue after pending close” |\n| Amount | **USD $284,763.42** (`28,476,342` cents) |\n| Exact event-created time | **2025-09-30T19:15:00** |\n| Exact September Pending Close time | **2025-09-30T18:00:00** |\n| Time after Pending Close | **75 minutes** — 4,500 seconds ÷ 60 |\n| Recorded accounting status | **`POSTED`** |\n\nThe timestamps are reproduced exactly as recorded; the source supplies no time-zone offset.\n\n### Policy conclusion\n\nThe recorded **`POSTED` status is inconsistent with Oracle’s documented Pending Close treatment** for this event type and timing.\n\nOracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting”** (PDF page **233**, printed page **225**), states that transactions created after Pending Close—even for the current or a prior period—will not be processed until the period is closed or reopened. Revenue lines, COGS recognition, and manual cost adjustments are exceptions, but this event is an **INPUT component issue**, not one of those exceptions.\n\n**Evidence and review status:** The work-order, period, and policy records were read directly. Because the assigned supporting input was not staged, the event details were obtained from an authorized analyst’s verified work product and checked against its service-generated source-read receipt. The audit was saved to `/cache/work/worker_13914e6bea46/audit-report.json` and submitted; automated evidence validation remains incomplete.\n\n**No database records were changed.**"
+  },
+  {
+    "id": "worker-912c52c45a67",
+    "task_id": "healthcare",
+    "wave": 3,
+    "steps": 30,
+    "tools": 29,
+    "status": "completed",
+    "final": "## July 25, 2025 — Staffing Workload Check\n\n**NGH Main Campus Clinic Relocation Operations Workbook — Wayfinding Checklist**\n\n| Metric | Count |\n|---|---:|\n| Total checklist controls | **45** |\n| Critical-priority controls that are not Complete | **10** |\n\nOnly control rows were counted; headers and notes were excluded. “Not Complete” includes **In Progress, Not Started, and Blocked**. No source records were changed.\n\nThe result and provenance were saved to `/cache/work/worker_f1aae3853f3a/audit-report.json`. The report was submitted, but automated validation remains marked **needs_evidence**. The counts reconcile complementary same-snapshot reviews; the assigned supporting input was not staged.",
+    "wait_version": "f23d94ce56d0b7344506fb84c839abac8d69c58c7e7c313683afdde983ce0efe"
+  },
+  {
+    "id": "worker-dc393ae4fdfa",
+    "task_id": "finance_accounting",
+    "wave": 3,
+    "steps": 33,
+    "tools": 32,
+    "status": "completed",
+    "final": "Reconciled all `work_order_cost_events` where `event_type = 'INPUT'`:\n\n| Metric | Result |\n|---|---:|\n| INPUT event count | **8** |\n| Total `amount_cents` (integer USD cents) | **181325836** |\n\nAll INPUT rows were included, regardless of status or shared source transaction IDs. No source records were changed.\n\nAudit result and provenance saved to `/cache/work/worker_6b7582ef7cd7/audit-report.json`. The report was delivered; service validation remains pending (`needs_evidence`)."
+  }
+]
