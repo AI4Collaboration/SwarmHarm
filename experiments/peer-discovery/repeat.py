@@ -89,7 +89,7 @@ WantedBy=timers.target
     ssh(directory, ip, f'sudo systemd-run --unit=peer-traffic --property=RuntimeMaxSec={capture_seconds} /usr/bin/tcpdump -i any -nn -s 128 -w /var/lib/peer-operator/traffic.pcap tcp')
 
 
-def export_host(directory, host):
+def export_host(directory, host, preflight=False):
     ip = host['public_ip']
     ssh(directory, ip, 'sudo systemctl stop peer-subject.timer peer-subject.service peer-traffic.service')
     original_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout
@@ -101,7 +101,8 @@ def export_host(directory, host):
     ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
     monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
-    result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False)
+    shell_output = ' home/agent/shell-admission.txt' if preflight else ''
+    result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json' + shell_output, check=False)
     archive = directory / f'{host["id"]}-raw.tar.gz'
     archive.write_bytes(result.stdout)
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
@@ -192,7 +193,7 @@ def main():
                 if all(result.returncode == 0 for result in results):
                     break
                 time.sleep(5)
-            receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
+            receipts = list(pool.map(lambda host: export_host(directory, host, args.preflight), hosts))
         save(directory, 'export-manifest.json', receipts)
         for index, key in enumerate(keys):
             save(directory, f'gateway-{index}.json', gateway(meta_key, 'export', key['id']))
