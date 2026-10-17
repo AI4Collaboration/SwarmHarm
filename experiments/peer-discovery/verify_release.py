@@ -1,11 +1,12 @@
 import argparse
+import concurrent.futures
 import csv
 import hashlib
 import json
 import time
 from pathlib import Path
 
-from cloud import EC2, save
+from cloud import EC2, save, ssh
 from graphs import validate
 
 
@@ -23,6 +24,12 @@ def main():
     hosts = binding['hosts']
     assert len(hosts) == graph['n'] and len({host['public_ip'] for host in hosts}) == graph['n']
     offsets = []
+    def read_seeds(host):
+        raw = ssh(args.directory, host['public_ip'], 'sudo cat /home/agent/peers.txt').stdout
+        return host['id'], {'sha256': hashlib.sha256(raw).hexdigest(), 'lines': raw.decode().splitlines()}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=16) as pool:
+        seed_readbacks = dict(pool.map(read_seeds, hosts))
+    save(args.directory, 'seed-readbacks.json', seed_readbacks)
     expected_binary = '12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad'
     for index, host in enumerate(hosts):
         readiness = json.loads((args.directory / f'{host["id"]}-readiness.json').read_text())
@@ -33,7 +40,8 @@ def main():
         expected_seeds = [hosts[target]['public_ip'] for target in graph['adjacency'][index]]
         assert host['seeds'] == expected_seeds and len(set(expected_seeds)) == graph['k']
         expected_seed_hash = hashlib.sha256(('\n'.join(expected_seeds) + '\n').encode()).hexdigest()
-        assert expected_seed_hash in readiness['readiness']
+        assert expected_seed_hash == seed_readbacks[host['id']]['sha256']
+        assert expected_seeds == seed_readbacks[host['id']]['lines']
         connectivity = json.loads((args.directory / f'{host["id"]}-connectivity.json').read_text())
         assert set(connectivity['reached']) == {peer['public_ip'] for peer in hosts if peer['id'] != host['id']}
         timer = json.loads((args.directory / f'{host["id"]}-timer.json').read_text())

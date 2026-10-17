@@ -24,6 +24,7 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
     binding = json.loads((directory / 'binding.json').read_text())
     jobs = []
     coverage = []
+    list_calls = 0
     for index, host in enumerate(binding['hosts']):
         key = json.loads((directory / f'private-key-{index}.json').read_text())
         metadata = json.loads((metadata_directory / f'gateway-{index}.json').read_text())
@@ -37,8 +38,10 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
             request_id = request['id'].rsplit('/', 1)[1]
             project_id = request['projectID'].rsplit('/', 1)[1]
             prefix = f'{project_id}/requests/{request_id}/'
-            objects = [obj for page in client.get_paginator('list_objects_v2').paginate(
-                Bucket=settings['bucketName'], Prefix=prefix) for obj in page.get('Contents', [])]
+            objects = []
+            for page in client.get_paginator('list_objects_v2').paginate(Bucket=settings['bucketName'], Prefix=prefix):
+                list_calls += 1
+                objects.extend(page.get('Contents', []))
             expected = {prefix + name + '.json' for name in ('request_body', 'response_body', 'response_chunks')}
             for execution in request['executions']['edges']:
                 node = execution['node']
@@ -60,8 +63,9 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
         association, obj = job
         path = output / 'stored-payloads' / obj['Key']
         path.parent.mkdir(parents=True, exist_ok=True)
-        client.download_file(settings['bucketName'], obj['Key'], str(path))
-        raw = path.read_bytes()
+        with client.get_object(Bucket=settings['bucketName'], Key=obj['Key'])['Body'] as body:
+            raw = body.read()
+        path.write_bytes(raw)
         value = json.loads(raw)
         assert len(raw) == obj['Size']
         if association['request_status'] == 'completed':
@@ -75,8 +79,7 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
         receipts = list(pool.map(retrieve, jobs))
     report = {'requests': len(coverage), 'objects': len(receipts),
               'bytes': sum(row['bytes'] for row in receipts), 'coverage': coverage, 'receipts': receipts,
-              's3_operations': {'list_calls_minimum': len(coverage), 'get_calls': len(receipts),
-                                'head_calls': len(receipts)}}
+              's3_operations': {'list_calls': list_calls, 'get_calls': len(receipts)}}
     save(output, 'recording-verification.json', report)
     print(json.dumps({name: report[name] for name in ('requests', 'objects', 'bytes')}), flush=True)
     return report

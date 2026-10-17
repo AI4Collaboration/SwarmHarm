@@ -49,10 +49,11 @@ class Gateway:
               requests(first:50,after:$cursor,where:{apiKeyID:$id}){
                 pageInfo{hasNextPage endCursor} edges{node{
                   id createdAt updatedAt modelID reasoningEffort status projectID dataStorageID
-                  contentSaved contentStorageKey
+                  contentSaved contentStorageKey channelID traceID externalID
                   executions(first:1000){pageInfo{hasNextPage} edges{node{
                     id upstreamModelID reasoningEffort status responseStatusCode
                     errorMessage passThroughApplied dataStorageID
+                    channelID externalID
                   }}}
                   usageLogs{edges{node{id promptTokens completionTokens totalTokens promptCachedTokens totalCost}}}
                 }}
