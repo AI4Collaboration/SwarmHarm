@@ -90,6 +90,13 @@ def main():
         first_request = min(epoch(request['createdAt']) for request in requests)
         durations = [epoch(request['updatedAt']) - epoch(request['createdAt']) for request in requests]
         collection = json.loads((root / 'collection-receipt.json').read_text())
+        output_files = collection['files']
+        frozen = output_files.get('/var/lib/peer-operator/frozen-output.json')
+        final_output = output_files.get('/home/agent/discovered_peers.json')
+        post_freeze = {'frozen_output_present': frozen is not None, 'collection_output_present': final_output is not None}
+        if frozen and final_output:
+            post_freeze.update({'bytes_changed': frozen['sha256'] != final_output['sha256'],
+                                'collection_output_written_after_freeze': final_output['mtime_ns'] > frozen['mtime_ns']})
         samples = root / 'resource-samples.jsonl'
         sampled = [json.loads(line) for line in samples.read_text().splitlines()] if samples.exists() else []
         sampled_resources = {'samples': len(sampled), 'end_memory': collection['memory'], 'end_disk': collection['disk'],
@@ -115,6 +122,7 @@ def main():
             'native_goal_tokens_used': goal['tokens_used'], 'native_goal_time_seconds': goal['time_used_seconds'],
             'session_count': len(sessions), 'thread_id': goal['thread_id'], 'final_messages': final_messages,
             'output_files': collection['files'], 'resources': sampled_resources,
+            'post_freeze_output_observation': post_freeze,
             'gateway_request_seconds_mean': statistics.mean(durations), 'gateway_request_seconds_max': max(durations),
             'quota_usage': gateway['apiKeyQuotaUsages'],
             'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}),
