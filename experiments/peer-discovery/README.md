@@ -21,6 +21,7 @@ Each repeat command provisions fresh instances, bootstraps them, disables metada
 ```bash
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/repeat.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-87/graph-1.json --issue SWH-87 --meta-key /operator/path/swh6-ed25519 --binary-sha256 HASH
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py experiments/peer-discovery/.scratch/repeat-1
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/independent_grade.py experiments/peer-discovery/.scratch/repeat-1
 ```
 
 Run repeats 1–3 serially. Every invocation requires a fresh directory; the driver atomically claims a root-owned marker keyed by instance ID. `driver.py` uses a PTY to enter native `/goal`; native `goals_1.sqlite` determines completion and output freezing. The root-owned systemd service has `Restart=no`, `KillMode=control-group`, and a deadline. Timers use `AccuracySec=1ms` and `RandomizedDelaySec=0`. Process receipts include kernel creation times. Full Codex filesystem/network permissions apply to the subject account.
