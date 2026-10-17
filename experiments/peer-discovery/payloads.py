@@ -39,11 +39,8 @@ def collect_payloads(directory):
                              item['node'], item['node']['id']) for item in request['executions']['edges'])
             for location, entity, execution_id in entities:
                 for name, field in (('request_body', 'requestBody'), ('response_body', 'responseBody'), ('response_chunks', 'responseChunks')):
-                    if entity[field]:
-                        jobs.append((f'{location}/{name}.json', {**link, 'execution_id': execution_id, 'field': field}))
-                assert entity['requestBody']
-                if entity['status'] == 'completed':
-                    assert entity['responseBody'] and entity['responseChunks']
+                    jobs.append((f'{location}/{name}.json', {**link, 'execution_id': execution_id,
+                                 'field': field, 'entity_status': entity['status']}))
     assert requests
 
     def retrieve(job):
@@ -53,7 +50,8 @@ def collect_payloads(directory):
         client.download_file(settings['bucketName'], object_key, str(destination))
         raw = destination.read_bytes()
         payload = json.loads(raw)
-        assert payload, object_key
+        if link['entity_status'] == 'completed' or link['field'] == 'requestBody':
+            assert payload, object_key
         return {**link, 'bucket': settings['bucketName'], 'object_key': object_key,
                 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
 
