@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-99 parallel fleet preparation, 2026-10-17: the operator refreshes shared admission and AxonHub storage policy before provisioning. Host readiness checks the pinned executable SHA256 against shared admission. All ordered host pairs receive real TCP probes through root-owned operator processes; addresses pass through stdin before subject release. Packet capture duration includes the future-start interval and the complete deadline. `recording.py` paginates per-key request metadata, retrieves every stored client/execution object, validates JSON, and saves sizes, hashes and identifier bindings. CloudWatch export batches at most 500 queries per call. The registered SWH-99 graphs and shared native-goal evidence are checked with `operator_admission.py` before counted execution.
+
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
 
 Install `requirements.txt` with `uv venv .venv --python 3.12` and `uv pip install --python .venv/bin/python -r requirements.txt`. Invoke that environment directly. AWS uses operator profile `eurosafeai`, region `eu-central-1`; the operator's AxonHub-host SSH identity remains private.
