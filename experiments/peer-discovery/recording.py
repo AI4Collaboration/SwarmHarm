@@ -75,7 +75,8 @@ def retrieve(directory, settings, exports, bindings=None):
             receipt = existing[(bucket, key)]
             raw = target.read_bytes()
             assert len(raw) == receipt['bytes'] and hashlib.sha256(raw).hexdigest() == receipt['sha256']
-            return {**receipt, **link}
+            if receipt.get('s3_request_id'):
+                return {**receipt, **link}
         response = s3.get_object(Bucket=bucket, Key=key)
         with response['Body'] as body:
             raw = body.read()

@@ -66,6 +66,7 @@ def main():
         assert all(execution['upstreamModelID'] == 'gpt-6-luna' and execution['reasoningEffort'] == 'xhigh' for execution in completed)
     assert request_ids == {row['request_id'] for row in recording['coverage']}
     for receipt in recording['receipts']:
+        assert receipt['s3_request_id']
         raw = (directory / 'stored-payloads' / receipt['object_key']).read_bytes()
         assert len(raw) == receipt['bytes']
         assert hashlib.sha256(raw).hexdigest() == receipt['sha256']

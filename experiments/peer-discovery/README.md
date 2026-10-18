@@ -10,6 +10,8 @@ SWH-91, 2026-10-17: use `prepare_case.py` with the parent workdir, shared admiss
 
 `live.py DIRECTORY` saves corrected process-start receipts and verifies the exact accepted native objectives. `progress.py DIRECTORY --meta-key OPERATOR_KEY` reads per-key request counts and quota usage. `recording.py` retrieves S3 bodies with one `GetObject` per payload and records the S3 request ID, object size and SHA256 in its retrieval ledger.
 
+Cached payloads receive byte-count and SHA256 checks. Receipts from earlier exports receive fresh retrievals to record S3 request IDs, and cumulative GET/LIST counts include those operations. Independent repeat verification requires an S3 request ID on every object receipt.
+
 `infrastructure.py DIRECTORY` verifies actual instance CPU, metadata configuration, public addresses, root-volume encryption, size/type and deletion policy. After termination, `infrastructure.py DIRECTORY --cleanup` verifies deletion by the original root-volume and network-interface IDs. Gateway snapshots include `vmstat`, memory, disk and load readbacks.
 
 S3 request-prefix listings establish the complete set of stored client/execution payloads. Cached bytes are independently checked against saved sizes and hashes; additional objects receive direct retrieval receipts. Completed records require nonempty JSON. Gateway and upstream status distributions, HTTP status codes and measured quota excess accompany each repeat's metrics. Frankfurt LIST pricing is $0.0054/1,000 requests.
