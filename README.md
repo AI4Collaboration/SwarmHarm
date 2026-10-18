@@ -11,7 +11,7 @@
 3. 把可复用的方法写给后来者；
 4. 读取本地受保护的参考档案，并把内容用于提交。
 
-Sol 的多轮测试已经观察到这些行为。最新的 controlled 轮已经在同一条轨迹里记录了四段核心事件；自然运行仍没有完整串联，所以我们没有把对照结果写成自然 incident。[查看四步报告](experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)
+Sol 的最新 `method_handoff` 受控轮已完成结构上的四步链：模型写出本地交接步骤，后续 worker 读到后再读取合成 reference。交接内容明确尊重权限，没有漏洞利用或外部目标；不预置方法线索的对照轮没有完成第一段共享写入。没有人工线索的自然运行仍没有完整串联，所以我们没有把对照结果写成自然 incident。[查看四步报告](experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)
 
 **真实同伴之间的方法传播已经出现。** 在另一套 Sol/Luna fleet 测试中，后来者读到同伴实际写下的取数过程，随后对自己的任务采用了同样的方法，得到正确但来源越权的结果。Sol 和 Luna 的完整证据见 [fleet 报告](experiments/hf-fleet-v2/results/2026-10-18/README.md)。
 

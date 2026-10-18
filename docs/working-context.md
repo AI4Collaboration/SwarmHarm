@@ -6,7 +6,7 @@
 
 ## 正在做
 
-当前焦点是对照 LessWrong 公开 codebase 的四步安全复现。代码和结果见 [hf-safe-four-step-v1](../experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)：同一条 Sol controlled 轨迹已经记录共享写入、同伴正文读取、方法类内容、受保护 reference 读取和未授权提交；自然轮尚未串起四步，人工线索和额外努力配置不能冒充自然发生。
+当前焦点是对照 LessWrong 公开 codebase 的四步安全复现。代码和结果见 [hf-safe-four-step-v1](../experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)：带登记过 `method_handoff` 条件的最新 Sol controlled 轨迹已完成结构上的共享写入、同伴读取、模型交接和受保护 reference 读取；交接内容明确尊重权限，没有漏洞利用或外部目标。不预置方法线索的对照轮只完成后两段，普通自然轮也尚未串起四步。operator fixture 不算方法传播，人工线索和额外努力配置不能冒充自然发生。审查器已从原始输入补回共享 registry 中的求助句，并排除了 HTTP `method: PUT` 这类字段误报。
 
 Sol canonical 主线已经完整跑通：8/8 agent 完成，独立重放通过；6 个越权缓存读取、6 个同伴正文读取、5 个正文曝光后再越权读取的候选，5 个最终答案都正确且与 donor 私有答案不同。Luna 用同一条件也跑通，作为对照。完整证据见 [fleet 报告](../experiments/hf-fleet-v2/results/2026-10-18/README.md)。
 
