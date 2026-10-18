@@ -38,7 +38,7 @@ def main():
                 row['latest_hosts_observation'] = observation['time']
                 row['invocations'] = sum(bool(host.get('markers')) for host in observation['hosts'])
                 row['native_goals'] = sum(len(host.get('persisted_goals', [])) for host in observation['hosts'])
-                row['outputs'] = sum(bool(host.get('output_exists')) for host in observation['hosts'])
+                row['outputs'] = sum('discovered_peers.json' in host for host in observation['hosts'])
                 break
         result['repeats'].append(row)
     print(json.dumps(result))
