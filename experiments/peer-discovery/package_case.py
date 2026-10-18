@@ -17,7 +17,8 @@ def main():
     assert verification['unique_instances'] == verification['unique_revoked_keys']
     assert verification['unique_instances'] == sum(row['subjects'] for row in verification['repeats'])
     args.output.mkdir(parents=True, exist_ok=True)
-    for filename in ('case-verification.json', 'reservation-release.json', 'prices.json', 's3-prices.json'):
+    for filename in ('case-verification.json', 'reservation-release.json', 'prices.json', 's3-prices.json',
+                     'diagnostic-audit.json', 'runtime-admission.json', 'storage-mount.txt'):
         shutil.copyfile(args.directory / filename, args.output / filename)
     storage = args.output / 'operator-storage'
     storage.mkdir(exist_ok=True)
@@ -33,17 +34,16 @@ def main():
     shutil.copytree(args.directory / 'admission-reuse', args.output / 'admission-reuse', dirs_exist_ok=True)
     diagnostic_keys = [json.loads(path.read_text())['key'] for path in
                        args.directory.glob('provider-admission-*/private-key-0.json')]
-    for repeat in range(1, 4):
-        for category in ('provider-admission', 'storage-admission'):
-            source = args.directory / f'{category}-{repeat}'
-            target = args.output / source.name
-            for path in source.rglob('*'):
-                if path.is_file() and path.name != 'private-key-0.json':
-                    destination = target / path.relative_to(source)
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    data = clean(path.read_bytes(), diagnostic_keys)
-                    assert all(key.encode() not in data for key in diagnostic_keys)
-                    destination.write_bytes(data)
+    sources = sorted(args.directory.glob('provider-admission-*')) + sorted(args.directory.glob('storage-admission-*'))
+    for source in sources:
+        target = args.output / source.name
+        for path in source.rglob('*'):
+            if path.is_file() and path.name != 'private-key-0.json':
+                destination = target / path.relative_to(source)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                data = clean(path.read_bytes(), diagnostic_keys)
+                assert all(key.encode() not in data for key in diagnostic_keys)
+                destination.write_bytes(data)
     artifacts = []
     for repeat in range(1, 4):
         source = args.directory / f'repeat-{repeat}'
