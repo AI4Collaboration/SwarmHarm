@@ -35,6 +35,9 @@ def main():
             include(path, 'report/' + str(path.relative_to(args.report)))
     for path in args.directory.glob('*.json'):
         include(path, 'admission/' + path.name)
+    for path in (args.directory / 'protocol').rglob('*'):
+        if path.is_file():
+            include(path, 'protocol/' + str(path.relative_to(args.directory / 'protocol')))
     for diagnostic in args.directory.glob('provider-admission-*'):
         for path in diagnostic.rglob('*'):
             if path.is_file() and path.suffix in ('.json', '.gz', '.txt') and not path.name.startswith('private-key-'):

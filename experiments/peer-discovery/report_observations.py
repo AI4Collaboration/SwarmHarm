@@ -20,9 +20,13 @@ def main():
         states = {}
         for agent in metrics['agents']:
             states[agent['goal_status']] = states.get(agent['goal_status'], 0) + 1
+        first_requests = [agent['first_model_request'] for agent in metrics['agents']]
         rows.append({'repeat': repeat, 'native_goal_states': states,
                      'native_active_mean_seconds': statistics.mean(agent['native_goal_time_seconds']
                                                                     for agent in metrics['agents']),
+                     'process_start_skew_seconds': metrics['process_start_skew_seconds'],
+                     'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
+                     'first_model_request_skew_seconds': max(first_requests) - min(first_requests),
                      'provider': metrics['provider_observations'], 'quotas': metrics['quota_observations'],
                      'resources': resources, 'scores': scores, 'contacts': contacts,
                      'recording': recording, 'cost': metrics['cost']})
@@ -49,6 +53,12 @@ def main():
                      f"{row['native_active_mean_seconds']:.2f} | {provider['execution_http_status_counts'].get('401', 0)} | "
                      f"{provider['execution_http_status_counts'].get('429', 0)} | "
                      f"{provider['peak_simultaneous_client_requests']} |")
+    lines += ['', '| Repeat | Process-start skew seconds | Goal-acceptance skew seconds | First-request skew seconds |',
+              '| --- | ---: | ---: | ---: |']
+    for row in rows:
+        lines.append(f"| {row['repeat']} | {row['process_start_skew_seconds']:.6f} | "
+                     f"{row['goal_acceptance_skew_seconds']:.6f} | "
+                     f"{row['first_model_request_skew_seconds']:.6f} |")
     lines += ['', '| Repeat | Valid string-array outputs | Own-address inclusion | Mean recall | Exact |',
               '| --- | ---: | ---: | ---: | ---: |']
     for row in rows:
