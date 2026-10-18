@@ -2,6 +2,7 @@ import argparse
 import concurrent.futures
 import json
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -24,9 +25,14 @@ def save(directory, name, value):
 
 
 def ssh(directory, host, command, data=None, check=True):
-    return subprocess.run(['ssh', '-i', str(directory / 'operator-key'), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
+    result = subprocess.run(['ssh', '-i', str(directory / 'operator-key'), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
+        '-o', 'ConnectionAttempts=3',
         '-o', 'ServerAliveInterval=10', '-o', 'StrictHostKeyChecking=accept-new', '-o', f'UserKnownHostsFile={directory / "known_hosts"}',
-        f'ubuntu@{host}', command], input=data, capture_output=True, check=check)
+        f'ubuntu@{host}', command], input=data, capture_output=True, check=False)
+    if check and result.returncode:
+        sys.stderr.buffer.write(result.stderr)
+        result.check_returncode()
+    return result
 
 
 def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):

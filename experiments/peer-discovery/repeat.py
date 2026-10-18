@@ -131,6 +131,7 @@ def main():
     parser.add_argument('--issue', default='SWH-78')
     parser.add_argument('--preflight', action='store_true')
     parser.add_argument('--existing-key', type=Path)
+    parser.add_argument('--preparation-attempt', type=int, default=1)
     args = parser.parse_args()
     directory = args.directory.resolve()
     meta_key = args.meta_key.resolve()
@@ -138,6 +139,9 @@ def main():
     assert validate(graph['adjacency'], graph['n'], graph['k'])[0]
     count = 1 if args.preflight else graph['n']
     purpose = 'preflight-2' if args.preflight else f'repeat-{graph["repeat"]}'
+    assert args.preparation_attempt >= 1
+    if args.preparation_attempt > 1:
+        purpose += f'-preparation-{args.preparation_attempt}'
     lifetime = 3600 if args.preflight else 7200
     allowance = 300 if args.preflight else 1800
     keys = []
