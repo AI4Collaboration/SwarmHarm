@@ -1,23 +1,46 @@
 import argparse
 import collections
 import datetime
+import decimal
 import hashlib
 import ipaddress
 import json
 import re
 import statistics
+import subprocess
 from pathlib import Path
 
-from scapy.all import IP, TCP, PcapReader
+from scapy.all import IP, TCP, PcapReader, RawPcapReader
 
 
 def epoch(value):
     return datetime.datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp()
 
 
+def capture_window(path):
+    earliest = None
+    latest = None
+    with RawPcapReader(str(path)) as packets:
+        scale = decimal.Decimal('0.000000001' if packets.nano else '0.000001')
+        for raw, metadata in packets:
+            timestamp = float(decimal.Decimal(metadata.sec) + decimal.Decimal(metadata.usec) * scale)
+            earliest = timestamp if earliest is None else min(earliest, timestamp)
+            latest = timestamp if latest is None else max(latest, timestamp)
+    return earliest, latest
+
+
+def filter_capture(path, destination, addresses):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    expression = 'tcp and (' + ' or '.join(f'dst host {ipaddress.IPv4Address(address)}' for address in sorted(addresses)) + ')'
+    subprocess.run(['tcpdump', '-nn', '-r', str(path), '-w', str(destination), expression],
+                   check=True, capture_output=True)
+    return destination
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
+    parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     directory = args.directory
     binding = json.loads((directory / 'binding.json').read_text())
@@ -45,10 +68,11 @@ def main():
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
         cross_case_contacts = {}
-        packet_times = []
-        with PcapReader(str(root / 'traffic.pcap')) as packets:
+        first_packet, last_packet = capture_window(root / 'traffic.pcap')
+        filtered = filter_capture(root / 'traffic.pcap', directory / 'analysis-packets' / f"{host['id']}.pcap",
+                                  fleet_ips | set(other_case_ips))
+        with PcapReader(str(filtered)) as packets:
             for packet in packets:
-                packet_times.append(float(packet.time))
                 if IP not in packet or TCP not in packet:
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
@@ -110,8 +134,8 @@ def main():
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'observed_cross_case_contacts': cross_case_contacts,
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
-            'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
-            'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
+            'packet_capture_first_timestamp': first_packet,
+            'packet_capture_last_timestamp': last_packet,
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,
             'native_goal_tokens_used': goal['tokens_used'], 'native_goal_time_seconds': goal['time_used_seconds'],
             'session_count': len(sessions), 'thread_id': goal['thread_id'], 'final_messages': final_messages,
@@ -159,7 +183,7 @@ def main():
         'listing_usd': (recording['s3_list_requests'] + extra['list_requests']) * rates['EUC1-Requests-Tier1'],
         'payload_storage_usd_per_month': recording['bytes'] / 2**30 * rates['EUC1-TimedStorage-ByteHrs'],
         'rates': rates, 'basis': 'observed payload objects; first Standard storage tier; one initial PUT per object'}
-    (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
+    (args.output or directory / 'metrics.json').write_text(json.dumps(report, indent=2))
     print(json.dumps({key: value for key, value in report.items() if key != 'agents'}, indent=2))
 
 
