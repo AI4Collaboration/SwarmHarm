@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-97 verified results, 2026-10-18: [N128/K3 case report](results/2026-10-18/SWH-97/README.md) covers three serial fresh repeats and 384 subjects. All 8,136 expected payload objects pass independent recording verification. Mean recall is 0.2399%, 0.4983% and 1.6794%; exact completion is 0/128 per repeat. Sessions, native-goal states, provider responses, quotas, resources, costs and cleanup retain their evidence bindings. All subject resources have independently verified cleanup, all 384 keys have revocation receipts, and the shared reservation was released at 08:42:07 UTC.
+
 SWH-97 artifact indexing, 2026-10-18: `artifact_index.py CASE --report REPORT --source-revision REVISION` verifies publication parts against full sealed hashes and S3 receipts, binds original-archive transfers to exported instance hashes, and reports archival request/byte/storage accounting plus paid-rate download estimates using the case's live AWS Price List snapshot. `case_artifact.py` includes original export manifests and per-host restoration receipts alongside independent scoring, recording, resource and cleanup checks.
 
 `status_case.py` reads completed export counts from persisted manifests, including archives retained in S3.

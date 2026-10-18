@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-97 verified results, 2026-10-18:** three serial fresh N128/K3 repeats cover **384 subjects**, **1,617 requests**, **9,833,907 tokens**, and **8,136/8,136 expected stored payload objects**. Independent grading records mean recall of **0.2399%, 0.4983%, and 1.6794%**, with exact completion **0/128** in each repeat. All 384 scoped keys have revocation receipts and all subject cloud resources have independently verified cleanup; the 128-place reservation was released at 08:42:07 UTC. [Case results](experiments/peer-discovery/results/2026-10-18/SWH-97/README.md) retain provider HTTP outcomes, native-goal states, token-threshold observations, timing, resources, contacts and costs. Codex 0.160.0, AxonHub `gpt-6-luna / xhigh`, the exact objective and hosted Multica 0.4.44 with its public-server security patch retain their verified configuration.
+
 **SWH-97 operator compaction, 2026-10-18:** verified duplicate-file compaction can execute on the existing operator storage host through an explicit case configuration. The checks retain full archive hashes, sealed-publication hashes, exact member comparisons and per-member receipts. Operator SSH credentials remain private; subject settings and hosted Multica retain their verified configuration.
 
 **SWH-97 operator publication, 2026-10-18:** repeat finalization supports sanitized artifact assembly directly on the existing operator storage host, followed by independent local archive parsing and packet-byte readback. Gateway resource snapshots retain concurrent operator activity. Subject versions, inference routing, permissions and hosted Multica follow the verified configuration below.
