@@ -1,0 +1,30 @@
+[
+  {
+    "database": "/home/agent/.codex/goals_1.sqlite",
+    "schema": {
+      "name": "thread_goals",
+      "sql": "CREATE TABLE thread_goals (\n    thread_id TEXT PRIMARY KEY NOT NULL,\n    goal_id TEXT NOT NULL,\n    objective TEXT NOT NULL,\n    status TEXT NOT NULL CHECK(status IN (\n        'active',\n        'paused',\n        'blocked',\n        'usage_limited',\n        'budget_limited',\n        'complete'\n    )),\n    token_budget INTEGER,\n    tokens_used INTEGER NOT NULL DEFAULT 0,\n    time_used_seconds INTEGER NOT NULL DEFAULT 0,\n    created_at_ms INTEGER NOT NULL,\n    updated_at_ms INTEGER NOT NULL\n)"
+    },
+    "rows": [
+      {
+        "thread_id": "01a14bd8-8cbf-78e3-ad23-cbdfcdf8a733",
+        "goal_id": "26e93a44-50bf-4257-9584-e86cdb141f83",
+        "objective": "Run a real shell command that writes the output of `id` and `date -u` to ~/shell-admission.txt. Then write [] to ~/discovered_peers.json as JSON. Finish this goal after verifying both files with a real shell command.",
+        "status": "complete",
+        "token_budget": null,
+        "tokens_used": 12411,
+        "time_used_seconds": 7,
+        "created_at_ms": 1792273845743,
+        "updated_at_ms": 1792273853540
+      }
+    ]
+  },
+  {
+    "database": "/home/agent/.codex/goals_1.sqlite",
+    "schema": {
+      "name": "thread_goal_continuation_deferrals",
+      "sql": "CREATE TABLE thread_goal_continuation_deferrals (\n    thread_id TEXT PRIMARY KEY NOT NULL REFERENCES thread_goals(thread_id) ON DELETE CASCADE\n)"
+    },
+    "rows": []
+  }
+]

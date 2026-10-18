@@ -1,0 +1,133 @@
+{
+  "provider_probes": [
+    {
+      "directory": "provider-admission-1",
+      "api_key_id": "gid://axonhub/APIKey/2433",
+      "requests": 8,
+      "tokens": 218,
+      "elapsed_seconds": 2.019625389,
+      "revocation": "verified"
+    },
+    {
+      "directory": "provider-admission-2",
+      "api_key_id": "gid://axonhub/APIKey/2662",
+      "requests": 8,
+      "tokens": 195,
+      "elapsed_seconds": 6.147239963,
+      "revocation": "verified"
+    },
+    {
+      "directory": "provider-admission-3",
+      "api_key_id": "gid://axonhub/APIKey/2728",
+      "requests": 8,
+      "tokens": 194,
+      "elapsed_seconds": 2.288395164,
+      "revocation": "verified"
+    },
+    {
+      "directory": "repeat-1/release-provider-admission",
+      "api_key_id": "gid://axonhub/APIKey/2627",
+      "requests": 8,
+      "tokens": 198,
+      "elapsed_seconds": 1.549289199,
+      "revocation": "verified"
+    },
+    {
+      "directory": "repeat-2/release-provider-admission",
+      "api_key_id": "gid://axonhub/APIKey/2727",
+      "requests": 8,
+      "tokens": 195,
+      "elapsed_seconds": 3.610471792,
+      "revocation": "verified"
+    },
+    {
+      "directory": "repeat-3/release-provider-admission",
+      "api_key_id": "gid://axonhub/APIKey/2795",
+      "requests": 8,
+      "tokens": 195,
+      "elapsed_seconds": 1.824539137,
+      "revocation": "verified"
+    }
+  ],
+  "storage_probes": [
+    {
+      "directory": "storage-admission-1",
+      "requests": 1,
+      "objects": 6,
+      "sha256_readback": "verified"
+    },
+    {
+      "directory": "storage-admission-1-complete",
+      "requests": 8,
+      "objects": 48,
+      "sha256_readback": "verified"
+    },
+    {
+      "directory": "storage-admission-2",
+      "requests": 8,
+      "objects": 56,
+      "sha256_readback": "verified"
+    },
+    {
+      "directory": "storage-admission-3",
+      "requests": 8,
+      "objects": 48,
+      "sha256_readback": "verified"
+    },
+    {
+      "directory": "repeat-1/release-storage-admission",
+      "requests": 8,
+      "objects": 48,
+      "sha256_readback": "verified"
+    },
+    {
+      "directory": "repeat-2/release-storage-admission",
+      "requests": 8,
+      "objects": 48,
+      "sha256_readback": "verified"
+    },
+    {
+      "directory": "repeat-3/release-storage-admission",
+      "requests": 8,
+      "objects": 48,
+      "sha256_readback": "verified"
+    }
+  ],
+  "requests": 48,
+  "tokens": 1195,
+  "unique_objects": 296,
+  "unique_object_bytes": 724656,
+  "s3_operations": {
+    "list_calls": 49,
+    "get_calls": 302,
+    "head_calls": 6
+  },
+  "s3_collector_usd": 0.00039704,
+  "s3_one_put_per_unique_object_usd": 0.0015984,
+  "s3_storage_usd_per_month": 1.6534768044948578e-05,
+  "shared_admission": {
+    "source_issue": "SWH-78",
+    "harness": "100470a2",
+    "native_goal": "complete",
+    "codex_version": "0.160.0",
+    "codex_sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+    "model": "gpt-6-luna",
+    "reasoning": "xhigh",
+    "files": {
+      "token-quota-probe.json": "3c5b77f4fb58d6477ac1928a7bad590aea1cd191565a849c364d34061a52283e",
+      "preflight-token-quota-readback.json": "bce955656c07dd9b20c92f0b4a2d063b3025560e9106c37f42d82567db07edc8",
+      "preflight-1-key-revocation.json": "6d909092ac29e8387d24b6ec43d410dd49ef7e403c3af9b6e28ff4607b10ec8c",
+      "preflight-quota-readback.json": "495d20918ae20a027feca2e6c14ddcb8f6359a38469900c85d2476d86f73cbf7",
+      "permission-probes.json": "a72ae18cd42162e4d14fbd67493080dfb9453b98416019242693b8c034471eca",
+      "shell-admission.txt": "1cc093f9e59007936935e5b30428623730a8c6a594bbb4051588621aeb65e9c2",
+      "preflight-2-cleanup.json": "eb8be88f912058155f3171a0dbb5f460361bf88c0e69444e45c66b690691ab1c",
+      "codex.sha256": "49857902bb6c9a0772e5b515c13293534a4c6317a9011090a78937c0a0985971",
+      "preflight-1-gateway.json": "b591a82df0ef1670df61b7322d8bd5d31c754a23eb4c7b8b8b07022d9eefb717",
+      "preflight-1-native-goals.json": "7a9090082826927ec735ad230b626e18b62692ebc9b17386416680da18216634",
+      "preflight-1-cleanup.json": "b4abee4dba573bccdaad5a21bc1543d2fe92983b920a9a6d83de337e13b62c35",
+      "quota-probe.json": "a8125d027df0381d08c4f36768d26c610097da6e4731d7990b37fc4737e24a84"
+    }
+  },
+  "new_preflight_instances": 0,
+  "elapsed_seconds_mean": 2.9065934406666667
+}
