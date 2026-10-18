@@ -1,7 +1,9 @@
 import argparse
+import concurrent.futures
 import hashlib
 import io
 import json
+import os
 import re
 import tarfile
 from pathlib import Path
@@ -23,22 +25,27 @@ def main():
     secrets = [json.loads(path.read_text())['key'] for path in args.directory.rglob('private-key-*.json')]
     secrets += [json.loads(path.read_text())['key'] for path in args.secret_file]
     secrets += [path.read_text() for path in args.directory.glob('*key') if path.is_file()]
-    selected = {}
-    for path in args.directory.rglob('*'):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(args.directory)
+    def include(path):
         if path.name in ('analysis-peer-traffic.pcap', 'metrics-filtered.json'):
-            continue
+            return False
         if path.name.startswith(('private-key-', 'operator-key', 'peer-key', 'known_hosts')):
-            continue
+            return False
         if path.suffix in ('.gz', '.sqlite', '.sqlite-wal', '.sqlite-shm'):
-            continue
+            return False
         if path.suffix not in ('.json', '.jsonl', '.txt', '.toml', '.pcap', '.py', '.md', '.sha256') and 'launches' not in path.parts:
-            continue
+            return False
         if 'shell_snapshots' in path.parts:
-            continue
-        selected[str(relative)] = clean(path.read_bytes(), secrets)
+            return False
+        return True
+
+    paths = [Path(parent) / name for parent, _, names in os.walk(args.directory)
+             for name in names if include(Path(parent) / name)]
+
+    def read(path):
+        return str(path.relative_to(args.directory)), clean(path.read_bytes(), secrets)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+        selected = dict(pool.map(read, paths))
     assert any(Path(name).name == 'cleanup.json' for name in selected)
     manifest = {name: {'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()} for name, data in sorted(selected.items())}
     selected['publication-manifest.json'] = json.dumps(manifest, indent=2).encode()
