@@ -6,7 +6,7 @@ import time
 def main():
     directory = Path('/var/lib/peer-operator')
     receipts = {}
-    for name in ('process-start', 'codex-process-start', 'goal-submitted', 'process-stop', 'native-goals'):
+    for name in ('process-start', 'codex-process-start', 'boot-clock-correction', 'goal-submitted', 'process-stop', 'native-goals'):
         path = directory / f'{name}.json'
         if path.exists():
             receipts[name] = json.loads(path.read_text())
