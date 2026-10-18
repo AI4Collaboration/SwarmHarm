@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-97 operator compaction, 2026-10-18:** verified duplicate-file compaction can execute on the existing operator storage host through an explicit case configuration. The checks retain full archive hashes, sealed-publication hashes, exact member comparisons and per-member receipts. Operator SSH credentials remain private; subject settings and hosted Multica retain their verified configuration.
+
 **SWH-97 operator publication, 2026-10-18:** repeat finalization supports sanitized artifact assembly directly on the existing operator storage host, followed by independent local archive parsing and packet-byte readback. Gateway resource snapshots retain concurrent operator activity. Subject versions, inference routing, permissions and hosted Multica follow the verified configuration below.
 
 **SWH-97 publication storage, 2026-10-18:** sealed evidence publications use the existing encrypted, public-access-blocked S3 bucket after full-object checksum, length and complete byte readback. Verified attachment parts remain available for issue delivery. Original host archives use independently hashed S3 transfers. These operator storage operations retain the subject configuration and hosted Multica setup below.

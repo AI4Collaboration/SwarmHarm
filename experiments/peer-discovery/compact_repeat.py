@@ -1,10 +1,16 @@
 import argparse
 import hashlib
 import json
+import shlex
+import subprocess
 import tarfile
 from pathlib import Path
 
-from cloud import save
+def save(directory, name, value):
+    target = directory / name
+    temporary = target.with_suffix(target.suffix + '.writing')
+    temporary.write_text(json.dumps(value, indent=2))
+    temporary.replace(target)
 
 
 def main():
@@ -13,7 +19,22 @@ def main():
     parser.add_argument('publication', type=Path)
     parser.add_argument('--publication-sha256', required=True)
     parser.add_argument('--text-only', action='store_true')
+    parser.add_argument('--on-storage-host', action='store_true')
     args = parser.parse_args()
+    location = args.directory.parent / 'publication-location.json'
+    if not args.on_storage_host and location.is_file():
+        config = json.loads(location.read_text())
+        remote_root = Path(config['remote_root'])
+        arguments = [str(remote_root / args.directory.name),
+                     str(remote_root / 'deliverables' / args.publication.name),
+                     '--publication-sha256', args.publication_sha256, '--on-storage-host']
+        if args.text_only:
+            arguments.append('--text-only')
+        subprocess.run(['ssh', '-i', config['operator_ssh_key'], '-o', 'BatchMode=yes',
+                        '-o', 'ConnectTimeout=15', 'ubuntu@63.186.173.73',
+                        'python3 - ' + shlex.join(arguments)],
+                       input=Path(__file__).read_bytes(), check=True)
+        return
     directory = args.directory
     assert (directory / 'finalization.json').is_file()
     assert (directory / 'metrics.json').is_file()
