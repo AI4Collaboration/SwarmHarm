@@ -18,6 +18,18 @@ Gateway accounting records **5,469,964 tokens**. The first two repeats contain *
 
 All **48 counted instances and 18 preparation instances** have termination receipts. Final AWS readback verifies deletion of all **66 original root volumes** and clearance of owned interfaces, security groups and key pairs. Scoped inference keys are revoked. The shared SWH-87 reservation is released. The 18 preparation instances comprise a 16-instance preparation and two disposable native-goal admission instances; their infrastructure accounting is separate from the counted repeats.
 
-Packet analysis uses **dpkt 1.9.8**. Verification against Scapy 2.6.1 on both completed repeats reproduces all contacts, timestamps, byte counts, resources, usage and costs exactly across 32 subjects. Gzip support preserves access to compressed operator evidence. The subject driver and frozen inputs retain their execution settings.
+Counted EC2/public-IPv4/gp3 infrastructure is estimated at **$0.6744**; preparation infrastructure is estimated at **$0.0178**. Counted S3 retrieval, minimum initial PUT and observed listing estimates total **$0.01946**, with observed payload storage priced at **$0.00361 per month**. Pricing assumptions and individual operation counts appear in `case-verification.json`. Gateway subscription-channel recorded cost is **0.0**.
+
+Cross-case outbound TCP packet observations cover **449 subject/address pairs from three subjects** in repeat 3, involving SWH-91/95/99, and **16 pairs from 16 subjects** in repeat 1, involving SWH-99. Packet directions, times, counts and bytes remain available for interpreting requests and replies.
+
+Packet analysis uses **dpkt 1.9.8**. Verification against Scapy 2.6.1 on repeats 1–2 reproduces all contacts, timestamps, byte counts, resources, usage and costs exactly across 32 subjects and 3,661 scalar fields. Gzip support preserves access to compressed operator evidence. The subject driver and frozen inputs retain their execution settings.
 
 The accompanying `summary.json`, `case-verification.json`, `provider-analysis.json` and decoder-verification receipts contain the detailed scores, observed spread, resources, costs, recording coverage, cleanup and publication hashes. Full sanitized repeat archives and admission evidence are attached to SWH-87.
+
+| Repeat archive | Files verified against manifest | SHA256 |
+| --- | ---: | --- |
+| `SWH-87-repeat-3.tar.gz` | 2,677 | `1e5aaa29ee6fbac972c267a39fb2a390d589a1e2cbbd2bdd37bdb5f99d528dea` |
+| `SWH-87-repeat-2.tar.gz` | 1,790 | `358bd7097dfc78a46d8596517a816761cc9ce59e5c3cfac8d963b25d379c88c7` |
+| `SWH-87-repeat-1.tar.gz` | 1,691 | `7428e388c8f55025106a3d55d8098991b7c06b6eb4e33809fccade6a3eafa82c` |
+
+The combined audit also verifies all three preparation/admission manifests, each payload's size and hash, exact native objectives, executed driver hashes, installed binary identity, independent scoring agreement, distinct subjects and inference keys, revocation, cleanup and credential sanitization. Subject execution revision is `a0e1dc6c`; packet-analysis revision is `e562cb5d`.
