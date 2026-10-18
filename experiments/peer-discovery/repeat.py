@@ -6,6 +6,7 @@ import hashlib
 import io
 import json
 import shlex
+import shutil
 import subprocess
 import tarfile
 import threading
@@ -132,6 +133,14 @@ def main():
     allowance = 300 if args.preflight else 1800
     keys = []
     directory.mkdir(parents=True, exist_ok=True)
+    source_directory = directory / 'operator-source'
+    source_directory.mkdir()
+    source_hashes = {}
+    for source in ROOT.iterdir():
+        if source.is_file() and source.suffix in ('.py', '.sh', '.txt', '.toml'):
+            shutil.copyfile(source, source_directory / source.name)
+            source_hashes[source.name] = hashlib.sha256(source.read_bytes()).hexdigest()
+    save(directory, 'operator-source-manifest.json', source_hashes)
     save(directory, 'recording-settings.json', gateway(meta_key, 'recording', ''))
     receipt = subprocess.run(['python3', str(ROOT.parent / 'peer-discovery-scheduling/admit.py'), 'reserve',
         '--state-dir', str(args.admission_state_dir), '--issue', args.issue, '--n', str(graph['n'])],
