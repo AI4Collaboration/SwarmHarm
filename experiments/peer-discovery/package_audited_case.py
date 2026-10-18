@@ -202,6 +202,7 @@ def main():
             lines.append(f"| {row['repeat']} | {row['valid_json_arrays']} | {row['coverage']:.6f} | "
                          f"{row['mean_precision_submitted']:.6f} | {row['beyond_seed']} | "
                          f"{row['goal_acceptance_skew_seconds']:.6f} | {row['maximum_tokens_per_key']:,} |")
+    lines += ['', 'Configured per-key thresholds are 100 requests and 200,000 tokens. Repeat 3 records one key at 214,324 tokens, including concurrent/in-flight allowance observed by the admission probes. Usage and cost accounting use actual gateway records. All 64 persisted native goals in each repeat have status `blocked`; output grading uses the collected output bytes.']
     (output / 'README.md').write_text('\n'.join(lines) + '\n')
     manifest = {}
     for path in output.rglob('*'):
