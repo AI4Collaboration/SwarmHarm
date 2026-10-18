@@ -20,8 +20,12 @@ def main():
         ('recording-verification', ['verify_recording.py', str(args.directory)]),
         ('evidence', ['verify_evidence.py', str(args.directory), str(args.graph)]),
         ('scoring', ['grade.py', str(args.directory)]),
+        ('score-verification', ['verify_scores.py', str(args.directory), '--output',
+                                str(args.directory / 'independent-scores-verification.json')]),
         ('metrics', ['metrics.py', str(args.directory)]),
         ('resources', ['resources.py', str(args.directory)]),
+        ('resource-verification', ['verify_resources.py', str(args.directory), '--output',
+                                   str(args.directory / 'independent-resources-verification.json')]),
         ('redaction', ['verify_redaction.py', str(args.directory)]),
     ]
     if not (args.directory / 'recording-receipts.json').exists():

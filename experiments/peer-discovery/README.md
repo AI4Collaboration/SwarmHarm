@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-99 resource readback, 2026-10-18: `verify_resources.py DIRECTORY --output REPORT` independently recomputes host CPU, memory and disk summaries from per-second samples, checks all five CloudWatch series for every host, and reports subject-window CPU credits, CPU/network observations and actual native-goal active times. Subsequent repeat finalization includes independent score and resource readbacks before publication.
+
 SWH-99 fleet identity evidence, 2026-10-18: `reconcile_contacts.py AUDIT --fleet-directory REPEAT --output REPORT` binds private-address packet records to creation/cleanup receipts. Supply each relevant fleet directory with repeated options; overlapping candidate lifetimes stop the audit. `observe_gateway.py` samples explicitly selected key indices and retains paginated request/execution metadata, usage and HTTP outcomes alongside live native-goal snapshots.
 
 SWH-99 score and observation readback, 2026-10-18: `verify_scores.py DIRECTORY --output REPORT` independently reads every frozen output and checks per-subject validity, own-address inclusion, precision, recall, beyond-seed counts, exact completion and coverage. Repeats 1–2 pass for all 256 subjects. `observe.py DIRECTORY --stage STAGE` collects read-only native-goal/output snapshots through `observe_host.py` during a live repeat.
