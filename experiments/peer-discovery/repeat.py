@@ -101,12 +101,13 @@ WantedBy=timers.target
 def export_host(directory, host):
     ip = host['public_ip']
     ssh(directory, ip, 'sudo systemctl stop peer-subject.timer peer-subject.service peer-traffic.service')
-    original_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout
+    original_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json', check=False).stdout
     guard = ssh(directory, ip, f'sudo python3 /opt/peer-discovery/driver.py {host["id"]} /var/lib/peer-operator/objective.txt --deadline 0', check=False)
-    assert guard.returncode != 0 and b'FileExistsError' in guard.stderr
-    assert ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout == original_start
+    preserved_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json', check=False).stdout
     save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
-        'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(), 'receipt_unchanged': True})
+        'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(),
+        'receipt_unchanged': preserved_start == original_start,
+        'duplicate_marker_verified': guard.returncode != 0 and b'FileExistsError' in guard.stderr})
     ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
     monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
@@ -116,10 +117,6 @@ def export_host(directory, host):
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
     with tarfile.open(archive) as bundle:
         bundle.extractall(directory / host['id'], members=(member for member in bundle if member.isfile() or member.isdir()), filter='data')
-    extracted = directory / host['id'] / 'var/lib/peer-operator'
-    assert (extracted / 'process-stop.json').is_file()
-    assert (extracted / 'native-goals.json').is_file()
-    assert (extracted / 'collection-receipt.json').is_file()
     return {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
 
 
@@ -191,7 +188,12 @@ def main():
             launch_verified = False
             while time.time() < timestamp + allowance + 15:
                 if not launch_verified and time.time() >= timestamp + 20:
-                    subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
+                    observed_launch = subprocess.run(
+                        [sys.executable, str(ROOT / 'verify_launch.py'), str(directory)],
+                        capture_output=True, check=False)
+                    (directory / 'launch-readback-stdout.txt').write_bytes(observed_launch.stdout)
+                    (directory / 'launch-readback-stderr.txt').write_bytes(observed_launch.stderr)
+                    save(directory, 'launch-readback-outcome.json', {'returncode': observed_launch.returncode})
                     subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                                     '--meta-key', str(meta_key), '--stage', 'release'], check=True)
                     launch_verified = True
@@ -202,10 +204,17 @@ def main():
                 time.sleep(5)
             receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
         save(directory, 'export-manifest.json', receipts)
+        for host in hosts:
+            extracted = directory / host['id'] / 'var/lib/peer-operator'
+            for name in ('process-stop.json', 'native-goals.json', 'collection-receipt.json'):
+                assert (extracted / name).is_file()
+            guard = json.loads((directory / f'{host["id"]}-invocation-guard.json').read_text())
+            assert guard['receipt_unchanged'] and guard['duplicate_marker_verified']
         subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                         '--meta-key', str(meta_key), '--stage', 'collection'], check=True)
         recording = export(directory, meta_key)
         assert recording['coverage_complete'], 'Inspect recording-receipts.json coverage'
+        assert json.loads((directory / 'launch-readback-outcome.json').read_text())['returncode'] == 0
         print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:
         try:
