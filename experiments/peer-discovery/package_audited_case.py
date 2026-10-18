@@ -1,4 +1,5 @@
 import argparse
+import collections
 import hashlib
 import json
 import shutil
@@ -94,6 +95,11 @@ def main():
             filenames.extend(['evidence-verification.json', 'scoring.json', 'metrics.json', 's3-costs.json'])
         hours = (cleanup['time'] - cloud['created_at']) / 3600 * 64
         row['infrastructure_usd_estimate'] = hours * (0.0134 + 0.005 + 12 * 0.0952 / 730)
+        requests = [edge['node'] for index in range(64)
+                    for edge in read(source / f'gateway-{index}.json')['requests']['edges']]
+        row['upstream_http_statuses'] = dict(collections.Counter(
+            str(edge['node']['responseStatusCode']) for request in requests
+            for edge in request['executions']['edges']))
         rows.append(row)
         for filename in filenames:
             copy(source / filename, output / f'repeat-{repeat}' / filename)
@@ -168,6 +174,9 @@ def main():
               'Sanitized repeat archives are split into attachment parts. Concatenate each repeat’s numbered parts in order and verify the resulting SHA256 against its transport manifest. `artifacts.json` records archive sizes and hashes.', '',
               f"Code revision: `{report['code_revision']}`."]
     lines += ['', f"Separate preparation evidence verifies cleanup of **64 instances and 64 scoped keys** before subject timer arming. Preparation infrastructure estimate: **${preparation_report['infrastructure_usd_estimate']:.4f}**. Counted subjects remain **192**, and total case instance cleanup accounts for **256** instances."]
+    lines += ['', 'Observed upstream HTTP 401/429 execution counts: ' + '; '.join(
+        f"repeat {row['repeat']}: {row['upstream_http_statuses'].get('401', 0)}/{row['upstream_http_statuses'].get('429', 0)}"
+        for row in reversed(rows)) + '.']
     (output / 'README.md').write_text('\n'.join(lines) + '\n')
     manifest = {}
     for path in output.rglob('*'):
