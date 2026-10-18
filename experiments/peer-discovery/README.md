@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+**SWH-86 results, 2026-10-18:** [N=16/K=4, three fresh repeats](results/SWH-86/2026-10-18/README.md) records 48 subjects, 1 exact submission, and mean recall of 0.4333/0.4042/0.5417. Independent scoring agrees throughout. All 48 instances, original volumes, and scoped keys have cleanup receipts; the shared reservation is released. The report retains all subjects in aggregate denominators and records token-threshold excess, native goal states, provider payloads, costs, and concurrent-case observations.
+
 **Packet analysis, 2026-10-18:** `metrics.py` reads full-capture timestamps with Scapy's raw capture reader and uses `tcpdump` to derive destination-filtered captures for peer and simultaneous-case contact decoding. Original captures retain their bytes and hashes. The operator requires `tcpdump` alongside the pinned Python dependencies.
 
 **SWH-86 operator controls, 2026-10-18:** each repeat verifies the AxonHub recording flags again immediately before timer release. `monitor.py REPEAT_DIRECTORY` collects per-instance invocation, native-goal and output receipts through the operator SSH identity. Case evidence may use a private operator directory mounted inside the checkout's ignored evidence directory; collection and publication remain foreground operations.
