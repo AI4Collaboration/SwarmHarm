@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-97 artifact indexing, 2026-10-18: `artifact_index.py CASE --report REPORT --source-revision REVISION` verifies publication parts against full sealed hashes and S3 receipts, binds original-archive transfers to exported instance hashes, and reports archival request/byte/storage accounting using the case's live AWS Price List snapshot. `case_artifact.py` includes original export manifests and per-host restoration receipts alongside independent scoring, recording, resource and cleanup checks.
+
 SWH-97 operator compaction, 2026-10-18: an explicit case `publication-location.json` supplies `remote_root` and the operator-only `operator_ssh_key` path for `compact_repeat.py`. Archive hashes, sealed-publication hashes and exact member bytes receive the same checks directly on operator storage. Per-member compaction receipts remain in each repeat directory.
 
 SWH-97 operator publication, 2026-10-18: `finalize_repeat.py --remote-root /home/ubuntu/swh77-operator/ISSUE` executes the same credential sanitizer and manifest checks on the operator storage host. A case-side `publication-location.json` supplies the explicit `remote_root` for automated finalization. Independent publication parsing and packet-byte comparison run through the case workspace afterward. Subject configuration and evidence remain identical.

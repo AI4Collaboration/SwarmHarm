@@ -47,7 +47,8 @@ def main():
              'independent-recording-verification.json', 'publication-verification.json',
              'scoring.json', 'metrics.json', 'cloud.json', 'binding.json', 'recording-receipts.json',
              'independent-scores-verification.json', 'independent-resources-verification.json',
-             'recording-policy-release.json', 'shared-admission.json', 'finalization.json')
+             'recording-policy-release.json', 'shared-admission.json', 'finalization.json',
+             'export-manifest.json')
     for repeat in (3, 2, 1):
         directory = args.directory / f'repeat-{repeat}'
         for name in names:
@@ -56,6 +57,8 @@ def main():
             include(path, f'repeat-{repeat}/' + path.name)
         for path in directory.glob('*-compaction.json'):
             include(path, f'repeat-{repeat}/' + path.name)
+        for path in (directory / 'archive-offload').glob('*.json'):
+            include(path, f'repeat-{repeat}/archive-offload/' + path.name)
     manifest = {name: {'size': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
                 for name, raw in sorted(selected.items())}
     selected['case-manifest.json'] = json.dumps(manifest, indent=2).encode()
