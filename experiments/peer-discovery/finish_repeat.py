@@ -18,6 +18,7 @@ def main():
     assert (args.directory / 'cleanup.json').is_file()
     assert (args.directory / 'recording-verification.json').is_file()
     commands = [
+        ('verify_observed_launch.py', [str(args.directory)]),
         ('verify_owned_cleanup.py', [str(args.directory)]),
         ('verify_recordings.py', [str(args.directory)]),
         ('verify_evidence.py', [str(args.directory), str(args.graph)]),

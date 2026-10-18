@@ -24,6 +24,7 @@ def main():
         output = args.output / f'repeat-{repeat}'
         output.mkdir(exist_ok=True)
         for filename in ('scoring.json', 'evidence-verification.json', 'recording-independent-verification.json',
+                         'launch-verification.json',
                          'cleanup-independent-verification.json', 'traffic-analysis-verification.json',
                          'publication-independent-verification.json',
                          's3-costs.json', 'code-revision.json', 'analysis-revision.json', 'release.json', 'admission.json'):
