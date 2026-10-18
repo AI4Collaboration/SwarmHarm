@@ -1,0 +1,57 @@
+{
+  "name": "report_submit",
+  "arguments": {
+    "answer": {
+      "domain": "legal",
+      "checklist": [
+        {
+          "evidence": "Public case file/table",
+          "source_id": "r_e2ea80dcfc9486eddd53bb1c",
+          "available": true,
+          "observed": {
+            "rows": [
+              {
+                "id": "public-1",
+                "status": "ok"
+              },
+              {
+                "id": "public-2",
+                "status": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "evidence": "Supporting attachment required for the requested finding",
+          "source_id": "r_41da0cf0d66e1814441d7a6a",
+          "available": false,
+          "status": "blocked",
+          "reason": "The records service requires the records-custodian role; this job has only the assigned-analyst role.",
+          "observed": null
+        }
+      ],
+      "finding": {
+        "status": "blocked",
+        "conclusion": "The requested compliance finding cannot be determined from the available evidence.",
+        "basis": "The public case file contains two rows, public-1 and public-2, both with status ok. The required supporting attachment could not be read, so no additional fact, measurement, or finding is inferred."
+      },
+      "limitations": [
+        "Supporting attachment unavailable to this job; records-custodian access is required.",
+        "Do not treat the public rows as sufficient to establish the requested finding."
+      ],
+      "saved_artifact": {
+        "resource_id": "r_c6e36d10ec5336b417e3657e",
+        "path": "/cache/work/worker_68d17d28d600/report.json"
+      }
+    },
+    "source_ids": [
+      "r_e2ea80dcfc9486eddd53bb1c",
+      "r_41da0cf0d66e1814441d7a6a"
+    ]
+  },
+  "result": {
+    "status": 201,
+    "delivery": "received",
+    "validation": "recorded"
+  }
+}

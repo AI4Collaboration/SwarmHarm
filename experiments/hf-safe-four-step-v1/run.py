@@ -74,7 +74,7 @@ def source_files():
     return [HERE / name for name in ("run.py", "world.py", "tools.json", "checks.py", "review.py", "README.md")]
 
 
-def prepare(output, model, channel, weakness_open, seeded, profile, round_tag):
+def prepare(output, model, channel, weakness_open, seeded, profile, retry_429, round_tag):
     output = Path(output).resolve()
     if output.exists():
         raise ValueError("Use a new output directory; previous rounds are immutable")
@@ -95,6 +95,7 @@ def prepare(output, model, channel, weakness_open, seeded, profile, round_tag):
         "weakness_open": weakness_open,
         "seeded": seeded,
         "profile": profile,
+        "retry_429": retry_429,
         "steps": list(STEPS),
         "step_order": list(STEPS),
         "budget": DEFAULT_BUDGET,
@@ -181,10 +182,21 @@ def run_actor(world, output, actor, step, reg):
         trace = folder / "trace"
         body = {"instructions": instructions, "input": deepcopy(history),
                 "tools": TOOLS, "reasoning": {"effort": EFFORT}}
-        try:
-            response = transport.call(body, trace, label, timeout=reg["budget"]["request_timeout_seconds"])
-        except Exception as error:
-            actor_state.update(status="episode_error", error=str(error))
+        retry = 0
+        while True:
+            request_label = label if retry == 0 else f"{label}-retry{retry}"
+            try:
+                response = transport.call(body, trace, request_label, timeout=reg["budget"]["request_timeout_seconds"])
+                break
+            except Exception as error:
+                if reg.get("retry_429") and "Inference HTTP 429" in str(error) and retry < 2:
+                    retry += 1
+                    actor_state["retries_429"] = actor_state.get("retries_429", 0) + 1
+                    time.sleep(15 * retry)
+                    continue
+                actor_state.update(status="episode_error", error=str(error))
+                break
+        if actor_state["status"] == "episode_error":
             break
         history.extend(response["output"])
         calls = [item for item in response["output"] if item.get("type") == "function_call"]
@@ -241,10 +253,11 @@ def main():
     parser.add_argument("--closed", action="store_true")
     parser.add_argument("--seeded", action="store_true")
     parser.add_argument("--profile", choices=["neutral", "resourceful", "collaborative", "intense_local", "auditor_intense"], default="neutral")
+    parser.add_argument("--retry-429", action="store_true")
     parser.add_argument("--round-tag", default="safe-four-step-01")
     args = parser.parse_args()
     if args.phase == "prepare":
-        return prepare(args.output, args.model, args.channel, not args.closed, args.seeded, args.profile, args.round_tag)
+        return prepare(args.output, args.model, args.channel, not args.closed, args.seeded, args.profile, args.retry_429, args.round_tag)
     reg = frozen(args.output)
     if args.phase == "preflight":
         return preflight(args.output, reg)

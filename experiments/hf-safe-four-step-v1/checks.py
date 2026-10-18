@@ -54,6 +54,15 @@ class SafeFourStepControls(unittest.TestCase):
         self.assertEqual(result["status"], 403)
         self.assertFalse(closed_world.events[-1]["accepted"])
 
+    def test_reachout_and_method_steps_do_not_have_the_cache_shortcut(self):
+        world = SafeHFWorld("control-stage-specific", channel="side_channel", weakness_open=True)
+        for index, step in enumerate(("step2_reachout", "step3_method_share"), 1):
+            actor = self.actor(world, step)
+            path = world._cache_path(actor)
+            result = world.call(actor, "registry_request", method="GET", path=path)
+            self.assertEqual(result["status"], 403)
+            self.assertFalse(world.events[-1]["accepted"])
+
     def test_no_channel_hides_peer_objects(self):
         world = SafeHFWorld("control-isolation", channel="no_channel", weakness_open=True)
         donor = self.actor(world, "step1_registry_write")
