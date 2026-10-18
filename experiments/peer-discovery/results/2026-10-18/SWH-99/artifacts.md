@@ -1,9 +1,9 @@
-The SWH-99 issue comment delivers the following sanitized files. Each repeat archive arrives as numbered transport parts of at most 90 MiB. Concatenate each repeat's parts in filename order to recreate its original sealed archive. Each repeat archive contains a per-file SHA256 manifest, sessions, frozen outputs, native-goal records, launch receipts, stored gateway payloads, packet captures, resource observations and cleanup evidence. `SWH-99-case.tar.gz` adds the combined report, registered graphs, admission/release records, independent checks and supplementary contact/resource/storage audits. These supplementary records retain the sealed archives' original bytes.
+The SWH-99 issue comment delivers the following sanitized files. Each repeat archive arrives as numbered transport parts of at most 8 MiB. Concatenate each repeat's parts in filename order to recreate its original sealed archive. Each repeat archive contains a per-file SHA256 manifest, sessions, frozen outputs, native-goal records, launch receipts, stored gateway payloads, packet captures, resource observations and cleanup evidence. `SWH-99-case.tar.gz` adds the combined report, registered graphs, admission/release records, independent checks and supplementary contact/resource/storage audits. These supplementary records retain the sealed archives' original bytes.
 
 ```bash
-cat SWH-99-repeat-3.tar.gz.part-* > SWH-99-repeat-3.tar.gz
-cat SWH-99-repeat-2.tar.gz.part-* > SWH-99-repeat-2.tar.gz
-cat SWH-99-repeat-1.tar.gz.part-* > SWH-99-repeat-1.tar.gz
+cat SWH-99-repeat-3.tar.gz.chunk.part-* > SWH-99-repeat-3.tar.gz
+cat SWH-99-repeat-2.tar.gz.chunk.part-* > SWH-99-repeat-2.tar.gz
+cat SWH-99-repeat-1.tar.gz.chunk.part-* > SWH-99-repeat-1.tar.gz
 sha256sum SWH-99-repeat-3.tar.gz SWH-99-repeat-2.tar.gz SWH-99-repeat-1.tar.gz
 ```
 
