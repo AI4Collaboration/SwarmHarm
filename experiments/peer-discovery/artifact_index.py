@@ -23,6 +23,14 @@ def main():
     put_rate = rates['EUC1-Requests-Tier1']
     get_rate = rates['EUC1-Requests-Tier2']
     storage_rate = rates['EUC1-TimedStorage-ByteHrs']
+    transfer_rates = [float(dimension['pricePerUnit']['USD'])
+                      for product in prices['products']['transfer']
+                      if product['product']['attributes'].get('toLocation') == 'External'
+                      for term in product['terms']['OnDemand'].values()
+                      for dimension in term['priceDimensions'].values()
+                      if dimension.get('beginRange') == '0']
+    assert len(transfer_rates) == 1
+    transfer_rate = transfer_rates[0]
     rows = []
     now = time.time()
     assert len(args.repeats) == len(set(args.repeats))
@@ -57,6 +65,7 @@ def main():
         cost = {'object_put_lower_bound': (len(archives) + 1) * put_rate,
                 'verified_get_lower_bound': (len(archives) + 1) * get_rate,
                 'publication_head': get_rate,
+                'verified_download_at_paid_decimal_gb_rate': total_bytes / 10**9 * transfer_rate,
                 'monthly_storage_at_retained_bytes': total_bytes / 2**30 * storage_rate,
                 'storage_until_index': storage_until_index}
         rows.append({'repeat': number, 'publication': manifest, 'publication_offload': publication,
@@ -69,7 +78,8 @@ def main():
               'pricing_retrieved_at': prices['retrieved_at'],
               'pricing_page': 'https://aws.amazon.com/s3/pricing/',
               'rates_usd': {'put_request': put_rate, 'get_request': get_rate,
-                            'standard_gib_month_first_tier': storage_rate},
+                            'standard_gib_month_first_tier': storage_rate,
+                            'regional_first_paid_outbound_gb': transfer_rate},
               'transfer_accounting': 'Complete verified object bytes; managed multipart request costs use object-write lower bounds. '
               'Download bytes retain the operator network route and billing allowances as billing determinants.'}
     result['totals'] = {name: sum(row[name] for row in rows) for name in
@@ -90,6 +100,7 @@ def main():
         cost['object_put_lower_bound'] += put_rate
         cost['verified_get_lower_bound'] += get_rate
         cost['publication_head'] += get_rate
+        cost['verified_download_at_paid_decimal_gb_rate'] += admission['s3_get_bytes'] / 10**9 * transfer_rate
         cost['monthly_storage_at_retained_bytes'] += admission['bytes'] / 2**30 * storage_rate
         cost['storage_until_index'] += admission['bytes'] / 2**30 * max(0, now - admission['time']) / 3600 / 730 * storage_rate
     args.report.mkdir(parents=True, exist_ok=True)
@@ -111,21 +122,23 @@ def main():
               'For authorized restoration, use the operator AWS profile with each receipt’s bucket and object key, '
               'then verify its exact byte length and SHA256 before extracting. Each receipt binds the instance, '
               'export hash and complete remote byte readback. Sanitized publications also have S3 checksum receipts.', '',
-              '| Repeat | Original archives | S3 upload bytes | Verified S3 download bytes | PUT USD lower bound | GET USD lower bound | Retained storage USD/month |',
-              '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+              '| Repeat | Original archives | S3 upload bytes | Verified S3 download bytes | PUT USD lower bound | GET USD lower bound | Downloads USD at paid rate | Retained storage USD/month |',
+              '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     for row in rows:
         cost = row['s3_estimate_usd']
         lines.append(f"| {row['repeat']} | {row['original_archive_count']} | {row['s3_put_bytes']} | "
                      f"{row['s3_verified_get_bytes']} | {cost['object_put_lower_bound']:.8f} | "
-                     f"{cost['verified_get_lower_bound']:.8f} | {cost['monthly_storage_at_retained_bytes']:.8f} |")
+                     f"{cost['verified_get_lower_bound']:.8f} | {cost['verified_download_at_paid_decimal_gb_rate']:.8f} | "
+                     f"{cost['monthly_storage_at_retained_bytes']:.8f} |")
     if admission_path.is_file():
         lines += ['', f"Graph-admission archival upload and verified download each contain {admission['bytes']} bytes; "
                   'their PUT, GET, HEAD and retained-storage accounting joins the JSON totals.']
     lines += ['', 'These operator archival estimates supplement the recording retrieval, listing, object-write '
               'and storage estimates in each repeat report. Managed multipart operations contribute additional '
               'request charges. Retained storage uses the first Standard pricing tier and 730 hours/month; '
-              'the JSON index records storage through index creation. Download bytes retain their actual '
-              'network/billing-route treatment. Prices come from the attached live Frankfurt AWS Price List '
+              'the JSON index records storage through index creation. The paid-rate download estimate uses '
+              'decimal GB and the regional first outbound tier; actual network routes, allowances and billing '
+              'tiers determine invoiced transfer charges. Prices come from the attached live Frankfurt AWS Price List '
               'snapshot; [S3 pricing](https://aws.amazon.com/s3/pricing/) describes the billing dimensions.', '']
     (args.report / 'artifacts.md').write_text('\n'.join(lines))
     print(json.dumps(result['totals']))

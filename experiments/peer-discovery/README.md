@@ -1,6 +1,6 @@
 # EC2 peer discovery
 
-SWH-97 artifact indexing, 2026-10-18: `artifact_index.py CASE --report REPORT --source-revision REVISION` verifies publication parts against full sealed hashes and S3 receipts, binds original-archive transfers to exported instance hashes, and reports archival request/byte/storage accounting using the case's live AWS Price List snapshot. `case_artifact.py` includes original export manifests and per-host restoration receipts alongside independent scoring, recording, resource and cleanup checks.
+SWH-97 artifact indexing, 2026-10-18: `artifact_index.py CASE --report REPORT --source-revision REVISION` verifies publication parts against full sealed hashes and S3 receipts, binds original-archive transfers to exported instance hashes, and reports archival request/byte/storage accounting plus paid-rate download estimates using the case's live AWS Price List snapshot. `case_artifact.py` includes original export manifests and per-host restoration receipts alongside independent scoring, recording, resource and cleanup checks.
 
 `status_case.py` reads completed export counts from persisted manifests, including archives retained in S3.
 
