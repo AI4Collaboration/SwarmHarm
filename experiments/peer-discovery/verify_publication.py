@@ -9,7 +9,7 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('archive', type=Path)
     args = parser.parse_args()
-    secrets = [json.loads(path.read_text())['key'] for path in args.directory.glob('private-key-*.json')]
+    secrets = [json.loads(path.read_text())['key'] for path in args.directory.rglob('private-key-*.json')]
     for name in ('operator-key', 'peer-key'):
         for line in (args.directory / name).read_text().splitlines():
             if not line.startswith('-----') and len(line) >= 32:

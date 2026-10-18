@@ -20,7 +20,7 @@ def main():
     parser.add_argument('output', type=Path)
     parser.add_argument('--secret-file', action='append', type=Path, default=[])
     args = parser.parse_args()
-    secrets = [json.loads(path.read_text())['key'] for path in args.directory.glob('private-key-*.json')]
+    secrets = [json.loads(path.read_text())['key'] for path in args.directory.rglob('private-key-*.json')]
     secrets += [json.loads(path.read_text())['key'] for path in args.secret_file]
     secrets += [path.read_text() for path in args.directory.glob('*key') if path.is_file()]
     selected = {}

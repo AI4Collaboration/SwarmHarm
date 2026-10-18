@@ -7,6 +7,7 @@ import io
 import json
 import shlex
 import subprocess
+import sys
 import tarfile
 import threading
 import time
@@ -185,6 +186,16 @@ def main():
                 ssh(directory, host['public_ip'], 'sudo rm /var/lib/peer-operator/connectivity.json')
             list(pool.map(connectivity, hosts))
             list(pool.map(lambda host: ssh(directory, host['public_ip'], 'sudo systemctl stop peer-connectivity-probe.service'), hosts))
+            provider_directory = directory / 'release-provider-admission'
+            with (directory / 'release-provider-console.txt').open('w') as stream:
+                subprocess.run([sys.executable, str(ROOT / 'provider_admission.py'), str(provider_directory),
+                                '--meta-key', str(meta_key), '--issue', args.issue],
+                               stdout=stream, stderr=subprocess.STDOUT, check=True)
+            probe_key = json.loads((provider_directory / 'private-key-0.json').read_text())
+            with (directory / 'release-storage-console.txt').open('w') as stream:
+                subprocess.run([sys.executable, str(ROOT / 'storage_probe.py'), str(directory / 'release-storage-admission'),
+                                '--meta-key', str(meta_key), '--key-id', probe_key['id']],
+                               stdout=stream, stderr=subprocess.STDOUT, check=True)
             timestamp = int(time.time()) + max(240, count * 5)
             save(directory, 'release.json', {'T_start': timestamp, 'allowance_seconds': allowance, 'prepared_at': time.time()})
             list(pool.map(lambda host: prepare_timer(directory, host, timestamp, allowance), hosts))
