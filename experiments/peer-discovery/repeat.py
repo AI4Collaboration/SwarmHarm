@@ -195,10 +195,6 @@ def main():
                     subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                                     '--meta-key', str(meta_key), '--stage', 'release'], check=True)
                     launch_verified = True
-                results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
-                    'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
-                if all(result.returncode == 0 for result in results):
-                    break
                 time.sleep(5)
             receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
         save(directory, 'export-manifest.json', receipts)
