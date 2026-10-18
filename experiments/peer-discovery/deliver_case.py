@@ -40,10 +40,11 @@ def main():
                '--content-file', str(args.comment_file), '--output', 'table']
     for path in files:
         command.extend(['--attachment', str(path)])
-    result = subprocess.run(command, capture_output=True, text=True, check=True)
+    result = subprocess.run(command, capture_output=True, text=True)
     receipt = {'issue_id': args.issue_id, 'attachments': [path.name for path in files],
                'stdout': result.stdout, 'stderr': result.stderr, 'exit_code': result.returncode}
     (args.directory / 'delivery-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    result.check_returncode()
     print(result.stdout, end='')
     print(json.dumps({'comment_posted': True, 'attachments': len(files)}))
 
