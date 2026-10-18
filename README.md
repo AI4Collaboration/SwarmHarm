@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-97 operator publication, 2026-10-18:** repeat finalization supports sanitized artifact assembly directly on the existing operator storage host, followed by independent local archive parsing and packet-byte readback. Gateway resource snapshots retain concurrent operator activity. Subject versions, inference routing, permissions and hosted Multica follow the verified configuration below.
+
 **SWH-97 publication storage, 2026-10-18:** sealed evidence publications use the existing encrypted, public-access-blocked S3 bucket after full-object checksum, length and complete byte readback. Verified attachment parts remain available for issue delivery. Original host archives use independently hashed S3 transfers. These operator storage operations retain the subject configuration and hosted Multica setup below.
 
 **SWH-97 execution, 2026-10-18:** N128/K3 uses the shared Codex 0.160.0 native `/goal` harness, registered graphs verified by seeded replay, and case-specific operator storage through SSHFS. Admission verifies AxonHub `gpt-6-luna / xhigh`, actual stored client/execution payloads, and the shared 244-subject capacity envelope. AWS profile `eurosafeai` and gateway administration remain operator-side. Hosted Multica 0.4.44 retains its public-server file-access patch.

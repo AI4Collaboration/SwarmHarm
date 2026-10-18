@@ -1,5 +1,6 @@
 import argparse
 import json
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -13,6 +14,7 @@ def main():
     parser.add_argument('graph', type=Path)
     parser.add_argument('--meta-key', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--remote-root', type=Path)
     args = parser.parse_args()
     stages = [
         ('cleanup', ['verify_cleanup.py', str(args.directory)]),
@@ -43,7 +45,15 @@ def main():
         'expected_objects': recording['expected_objects'],
         'stored_expected_objects': recording['stored_expected_objects'],
         'code_revision': subprocess.run(['git', 'rev-parse', 'HEAD'], check=True, capture_output=True, text=True).stdout.strip()})
-    subprocess.run([sys.executable, str(ROOT / 'publish.py'), str(args.directory), str(args.output)], check=True)
+    if args.remote_root:
+        assert args.directory.parent.resolve() == args.output.parent.parent.resolve()
+        remote_directory = args.remote_root / args.directory.name
+        remote_output = args.remote_root / 'deliverables' / args.output.name
+        command = 'python3 - ' + shlex.join([str(remote_directory), str(remote_output)])
+        subprocess.run(['ssh', '-i', str(args.meta_key), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15',
+                        'ubuntu@63.186.173.73', command], input=(ROOT / 'publish.py').read_bytes(), check=True)
+    else:
+        subprocess.run([sys.executable, str(ROOT / 'publish.py'), str(args.directory), str(args.output)], check=True)
     subprocess.run([sys.executable, str(ROOT / 'verify_publication.py'), str(args.directory), str(args.output)], check=True)
 
 
