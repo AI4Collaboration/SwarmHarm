@@ -42,6 +42,7 @@ def main():
         independent = read(directory / 'independent-scoring.json')
         assert independent['subjects'] == 32 and independent['score_agreement']
         metrics = read(directory / 'metrics.json')
+        scoring = read(directory / 'scoring.json')
         recording = read(directory / 'recording-independent-verification.json')
         clients = [edge['node'] for index in range(32)
                    for edge in read(directory / f'gateway-{index}.json')['requests']['edges']]
@@ -50,6 +51,8 @@ def main():
             'repeat': number, 'recording': recording, 'release': read(directory / 'release.json'),
             'graph_sha256': read(directory / 'binding.json')['graph_sha256'],
             'code_revision': read(directory / 'code-revision.json'),
+            'output_validity': {field: sum(row[field] for row in scoring['agents'])
+                                for field in ('json_valid', 'string_array', 'ipv4_valid', 'unique')},
             'request_states': dict(collections.Counter(row['status'] for row in clients)),
             'execution_status_codes': dict(collections.Counter(str(row['responseStatusCode']) for row in executions)),
             'upstream_identity': sorted({row['upstreamModelID'] for row in executions}),
