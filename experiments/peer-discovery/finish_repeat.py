@@ -23,6 +23,7 @@ def main():
         ('verify_recordings.py', [str(args.directory)]),
         ('verify_evidence.py', [str(args.directory), str(args.graph)]),
         ('grade.py', [str(args.directory)]),
+        ('audit_scores.py', [str(args.directory)]),
         ('metrics.py', [str(args.directory)]),
         ('resources.py', [str(args.directory)]),
         ('cost_accounting.py', [str(args.directory), '--prices', str(args.prices),
