@@ -28,6 +28,7 @@ def main():
 
     for name in ('README.md', 'summary.json', 'source-revision.txt'):
         copy(args.report / name, name)
+    copy(case / 'deliverables/repeat-artifacts.sha256', 'repeat-artifacts.sha256')
     for path in case.glob('*.json'):
         copy(path, Path('admission') / path.name)
     source_manifest = {}
