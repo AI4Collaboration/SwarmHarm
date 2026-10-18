@@ -40,6 +40,10 @@ def main():
         source = args.directory / f'repeat-{repeat}'
         output = args.output / f'repeat-{repeat}'
         output.mkdir(exist_ok=True)
+        offload = source / 'archive-offload-verification.json'
+        if offload.is_file():
+            shutil.copyfile(offload, output / offload.name)
+            shutil.copytree(source / 'archive-offload', output / 'archive-offload', dirs_exist_ok=True)
         for filename in ('scoring.json', 'evidence-verification.json', 'recording-independent-verification.json',
                          'launch-verification.json',
                          'cleanup-independent-verification.json', 'traffic-analysis-verification.json',
