@@ -102,12 +102,16 @@ def export_host(directory, host):
     ip = host['public_ip']
     ssh(directory, ip, 'sudo systemctl stop peer-subject.timer peer-subject.service peer-traffic.service')
     original_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json', check=False).stdout
-    guard = ssh(directory, ip, f'sudo python3 /opt/peer-discovery/driver.py {host["id"]} /var/lib/peer-operator/objective.txt --deadline 0', check=False)
+    marker = ssh(directory, ip, f'sudo test -e /var/lib/peer-operator/launches/{host["id"]}', check=False)
+    guard = None
+    if marker.returncode == 0:
+        guard = ssh(directory, ip, f'sudo python3 /opt/peer-discovery/driver.py {host["id"]} /var/lib/peer-operator/objective.txt --deadline 0', check=False)
     preserved_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json', check=False).stdout
-    save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
+    save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'],
+        'duplicate_returncode': guard.returncode if guard else None,
         'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(),
         'receipt_unchanged': preserved_start == original_start,
-        'duplicate_marker_verified': guard.returncode != 0 and b'FileExistsError' in guard.stderr})
+        'duplicate_marker_verified': guard is not None and guard.returncode != 0 and b'FileExistsError' in guard.stderr})
     ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
     monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
