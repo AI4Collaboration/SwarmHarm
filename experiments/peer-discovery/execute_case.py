@@ -16,6 +16,7 @@ def main():
     parser.add_argument('--state-dir', type=Path, required=True)
     parser.add_argument('--meta-key', type=Path, required=True)
     parser.add_argument('--probe-key-id', required=True)
+    parser.add_argument('--start-repeat', type=int, choices=(1, 2, 3), default=1)
     args = parser.parse_args()
     root = Path(__file__).parent.resolve()
     directory = args.directory.resolve()
@@ -28,7 +29,12 @@ def main():
                            stdout=stream, stderr=subprocess.STDOUT, check=True)
 
     run('storage_costs.py', [directory], 's3-prices-console.txt')
-    for repeat in range(1, 4):
+    for repeat in range(1, args.start_repeat):
+        previous = directory / f'repeat-{repeat}'
+        assert (previous / 'evidence-verification.json').is_file()
+        assert (previous / 'publication-independent-verification.json').is_file()
+        assert (previous / 'cleanup.json').is_file()
+    for repeat in range(args.start_repeat, 4):
         target = directory / f'repeat-{repeat}'
         assert not target.exists()
         assert shutil.disk_usage(directory).free >= 3 * 1024**3
