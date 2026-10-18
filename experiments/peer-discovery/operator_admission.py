@@ -1,4 +1,5 @@
 import argparse
+import concurrent.futures
 import hashlib
 import json
 import tarfile
@@ -12,6 +13,25 @@ from recording import policy
 from repeat import gateway
 
 
+def verify_graph(path, n, k):
+    graph = json.loads(path.read_text())
+    assert (graph['n'], graph['k']) == (n, k)
+    assert path.name == f'graph-{graph["repeat"]}.json'
+    if 'algorithm' in graph:
+        from rare_graphs import engine, verify
+        return verify(path, engine(path.parent / 'build'))
+    rng = np.random.Generator(np.random.PCG64(graph['seed']))
+    for proposal in range(1, graph['proposal'] + 1):
+        rows = [[int(j + (j >= i)) for j in rng.choice(n - 1, size=k, replace=False)]
+                for i in range(n)]
+        accepted, components = validate(rows, n, k)
+        assert accepted == (proposal == graph['proposal'])
+    assert rows == graph['adjacency'] and components == graph['scc_sizes']
+    assert rng.bit_generator.state == graph['rng_state']
+    return {'repeat': graph['repeat'], 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+            'proposal': graph['proposal'], 'scc_sizes': components}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
@@ -20,25 +40,12 @@ def main():
     parser.add_argument('--n', type=int, default=128)
     parser.add_argument('--k', type=int, default=5)
     args = parser.parse_args()
-    graphs = []
-    for repeat in (1, 2, 3):
-        path = args.directory / f'graph-{repeat}.json'
-        graph = json.loads(path.read_text())
-        assert (graph['n'], graph['k'], graph['repeat']) == (args.n, args.k, repeat)
-        if 'algorithm' in graph:
-            from rare_graphs import engine, verify
-            graphs.append(verify(path, engine(args.directory / 'build')))
-            continue
-        rng = np.random.Generator(np.random.PCG64(graph['seed']))
-        for proposal in range(1, graph['proposal'] + 1):
-            rows = [[int(j + (j >= i)) for j in rng.choice(graph['n'] - 1, size=graph['k'], replace=False)]
-                    for i in range(graph['n'])]
-            accepted, components = validate(rows, graph['n'], graph['k'])
-            assert accepted == (proposal == graph['proposal'])
-        assert rows == graph['adjacency'] and components == graph['scc_sizes']
-        assert rng.bit_generator.state == graph['rng_state']
-        graphs.append({'repeat': repeat, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
-                       'proposal': graph['proposal'], 'scc_sizes': components})
+    if 'algorithm' in json.loads((args.directory / 'graph-1.json').read_text()):
+        from rare_graphs import engine
+        engine(args.directory / 'build')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+        graphs = list(pool.map(lambda repeat: verify_graph(args.directory / f'graph-{repeat}.json', args.n, args.k),
+                               (1, 2, 3)))
     source = args.shared_workspace / '.research/native-preflight'
     admission = json.loads((source / 'native-admission.json').read_text())
     assert admission['model'] == 'gpt-6.1-sol' and admission['reasoning'] == 'xhigh'
