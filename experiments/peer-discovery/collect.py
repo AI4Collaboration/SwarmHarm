@@ -1,0 +1,24 @@
+import hashlib
+import json
+import shutil
+import time
+from pathlib import Path
+
+import psutil
+
+
+directory = Path('/var/lib/peer-operator')
+paths = [Path('/home/agent/discovered_peers.json'), Path('/home/agent/peers.txt'),
+    Path('/home/agent/.codex/config.toml'), Path('/opt/peer-discovery/driver.py'), directory / 'objective.txt', directory / 'frozen-output.json']
+files = {}
+for path in paths:
+    if path.exists():
+        stat = path.stat()
+        files[str(path)] = {'size': stat.st_size, 'mtime_ns': stat.st_mtime_ns, 'ctime_ns': stat.st_ctime_ns,
+            'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+shutil.copyfile('/opt/peer-discovery/driver.py', directory / 'executed-driver.py')
+record = {'time_ns': time.time_ns(), 'files': files, 'launch_markers': sorted(path.name for path in (directory / 'launches').iterdir()),
+    'memory': psutil.virtual_memory()._asdict(), 'disk': psutil.disk_usage('/')._asdict(),
+    'network': psutil.net_io_counters()._asdict()}
+(directory / 'collection-receipt.json').write_text(json.dumps(record, indent=2))
+print(json.dumps({'files': len(files), 'launch_markers': record['launch_markers']}))
