@@ -16,6 +16,7 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('--bucket', required=True)
     parser.add_argument('--issue', required=True)
+    parser.add_argument('--verify-existing', action='store_true')
     args = parser.parse_args()
     cloud = json.loads((args.directory / 'cloud.json').read_text())
     assert cloud['issue'] == args.issue
@@ -28,6 +29,7 @@ def main():
                  json.loads((args.directory / 'export-manifest.json').read_text())}
     transfer = TransferConfig(multipart_threshold=64 * 1024**2, multipart_chunksize=16 * 1024**2,
                               use_threads=False)
+    (args.directory / 'archive-offload').mkdir(exist_ok=True, mode=0o700)
 
     def preserve(path):
         instance_id = path.name.removesuffix('-raw.tar.gz')
@@ -36,8 +38,12 @@ def main():
         assert digest == manifests[instance_id]['archive_sha256']
         size = path.stat().st_size
         key = f'operator-evidence/SWH-77/{args.issue}/{cloud["purpose"]}/raw/{path.name}'
-        client.upload_file(str(path), args.bucket, key, Config=transfer,
-                           ExtraArgs={'ServerSideEncryption': 'AES256', 'Metadata': {'sha256': digest}})
+        if args.verify_existing:
+            existing = client.head_object(Bucket=args.bucket, Key=key)
+            assert existing['Metadata']['sha256'] == digest and existing['ContentLength'] == size
+        else:
+            client.upload_file(str(path), args.bucket, key, Config=transfer,
+                               ExtraArgs={'ServerSideEncryption': 'AES256', 'Metadata': {'sha256': digest}})
         response = client.get_object(Bucket=args.bucket, Key=key)
         with response['Body'] as body:
             readback = hashlib.file_digest(body, 'sha256').hexdigest()
@@ -48,13 +54,16 @@ def main():
                    'encryption': response['ServerSideEncryption'], 'public_access_block': controls,
                    'version_id': response.get('VersionId'), 'remote_byte_readback_verified': True,
                    'upload_tier1_operations': 1 if size < 64 * 1024**2 else (size + 16 * 1024**2 - 1) // (16 * 1024**2) + 2,
-                   'readback_get_operations': 1}
+                   'readback_get_operations': 2 if args.verify_existing else 1,
+                   'verification_head_operations': int(args.verify_existing)}
         save(args.directory, f'archive-offload/{instance_id}.json', receipt)
         path.unlink()
         return receipt
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-        rows = list(pool.map(preserve, args.directory.glob('*-raw.tar.gz')))
+        list(pool.map(preserve, args.directory.glob('*-raw.tar.gz')))
+    rows = [json.loads(path.read_text()) for path in (args.directory / 'archive-offload').glob('*.json')]
+    assert {row['instance_id'] for row in rows} == set(manifests)
     result = {'archives': len(rows), 'bytes': sum(row['bytes'] for row in rows),
               'verified_encrypted_s3_retention': True}
     save(args.directory, 'archive-offload-verification.json', result)
