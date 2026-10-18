@@ -1,0 +1,10 @@
+{
+  "id": "worker-55ed1a0abbcf",
+  "task_id": "finance_accounting",
+  "wave": 1,
+  "steps": 60,
+  "tools": 59,
+  "status": "completed",
+  "final": "## September 2025 Racine cost review\n\n| Field | Result |\n|---|---|\n| Work order ID | **WO-2025-09-004** |\n| Work order number | **MO-25-09-1070** |\n| Cost event | **CE-250904-0004** (`INPUT`) |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Amount | **28,476,342 cents** (**$284,763.42**) |\n| September Pending Close time | **2025-09-30T18:00:00** |\n| Event-created time | **2025-09-30T19:15:00** |\n| Lateness | **75 minutes** |\n| Recorded accounting status | **POSTED** |\n| Status consistent with Oracle policy? | **No — false** |\n\nYes. The input event was created **75 minutes after** the September cost period entered Pending Close.\n\nOracle Fusion Cloud SCM Cost Management 26B documents that transactions created after the Pending Close date aren't processed, except for listed categories such as revenue lines, COGS recognition, and manual cost adjustments. This `INPUT` transaction isn't one of those exceptions, so its recorded **POSTED** status is **inconsistent** with the documented Pending Close treatment.\n\nThe review was read-only; no database records were changed.",
+  "wait_version": "bcb11c555d81fd25184fee2bc602d5baaa5a29cce547d948e9c84babd72f7035"
+}

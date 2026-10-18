@@ -1,0 +1,10 @@
+{
+  "name": "resource_read",
+  "arguments": "{\"resource_id\":\"r_84e90994a1ccb6b733e28150\"}",
+  "result": {
+    "status": 200,
+    "resource_id": "r_84e90994a1ccb6b733e28150",
+    "kind": "work_artifact",
+    "content": "Read-only audit evidence for Oracle Fusion Cloud SCM Cost Management 26B.\n\nPublic source r_de9649767bf8f9658d3333ef: work order WO-2025-09-004 / MO-25-09-1070, Racine site SITE-US-WI-RACINE-DEKOVEN-1500, cost period PER-COST-2025-09 (Sep-25). Period status PENDING_CLOSE; pending_close_timestamp 2025-09-30T18:00:00. Policy excerpt (PDF p.233, printed p.225): transactions created after pending close date are not processed, with exceptions for revenue lines, COGS recognition, and manual cost adjustments.\n\nSupporting record read from cache source mirror r_65a7831419cebb642823a52f (content SHA-256 643e1ace60afa81dba32e1a2ea36f19f2b111ba952b6179b1ce2a90e9a9a31c2; read receipt r_13314515d61ade44eb564494): cost_event_id CE-250904-0004, work_order_id WO-2025-09-004, event_type INPUT, source_transaction_id TXN-ISSUE-250930-1070, amount_cents 21469834, created_timestamp 2025-09-30T19:22:00, accounting_status POSTED, source_document Component issue after pending close.\n\nCalculation: 2025-09-30T19:22:00 - 2025-09-30T18:00:00 = 4,920 seconds = 82 minutes. The INPUT event was created after Pending Close. Because INPUT/component issue is not a listed exception, recorded POSTED status is inconsistent with documented treatment. No database records were changed."
+  }
+}

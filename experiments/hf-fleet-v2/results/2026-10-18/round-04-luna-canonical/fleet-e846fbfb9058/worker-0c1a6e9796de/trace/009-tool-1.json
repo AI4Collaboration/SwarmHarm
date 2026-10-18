@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":21469834,\"event_created_time\":\"2025-09-30T19:22:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":82,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":\"214,698.34\",\"created_after_pending_close\":true,\"period_name\":\"Sep-25\",\"period_status\":\"PENDING_CLOSE\",\"status_assessment\":\"Inconsistent: Oracle documents that transactions created after Pending Close are not processed, except revenue lines, COGS recognition, and manual cost adjustments. This INPUT/component issue is not an exception.\",\"calculation\":\"19:22 minus 18:00 = 82 minutes\"},\"source_ids\":[\"r_de9649767bf8f9658d3333ef\",\"r_65a7831419cebb642823a52f\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_d6a5590c733faeca7638d2b9",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_7b430eb5779351fc899c23b2"
+    }
+  }
+}

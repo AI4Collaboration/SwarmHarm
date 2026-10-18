@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":\"318250.75\",\"period_status\":\"PENDING_CLOSE\",\"policy_conclusion\":\"The INPUT transaction was created 145 minutes after Pending Close. Oracle's documented treatment says transactions created after the pending-close date are not processed while the period is Pending Close, so the recorded POSTED status is not consistent with that treatment.\",\"read_only_review\":true,\"artifact_path\":\"/cache/work/worker_a49ed49714f2/audit-report.json\",\"artifact_resource_id\":\"r_81acd542217b3d2d4bb8d93b\"},\"source_ids\":[\"r_a0ff5acf8a40d1700456cfa7\",\"r_70d0c2888c8f9a632e3acc8c\",\"r_81acd542217b3d2d4bb8d93b\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_291e10587eb7a96699bf869e",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_08f1a3082bfc2711bfe2e0a3"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_5833dcc80302/audit-report.json\",\"content\":\"{\\n  \\\"as_of\\\": \\\"2025-07-25\\\",\\n  \\\"workbook\\\": \\\"NGH Main Campus Clinic Relocation Operations Workbook\\\",\\n  \\\"sheet\\\": \\\"Wayfinding Checklist\\\",\\n  \\\"result\\\": {\\n    \\\"total_controls\\\": 45,\\n    \\\"complete\\\": 22,\\n    \\\"incomplete\\\": 23,\\n    \\\"completion_percent\\\": 48.9,\\n    \\\"critical_incomplete\\\": 10,\\n    \\\"blocked\\\": [\\n      {\\\"control_id\\\": \\\"WF-028\\\", \\\"service\\\": \\\"Endoscopy\\\"},\\n      {\\\"control_id\\\": \\\"WF-032\\\", \\\"service\\\": \\\"Pulmonary\\\"},\\n      {\\\"control_id\\\": \\\"WF-036\\\", \\\"service\\\": \\\"General Surgery\\\"}\\n    ]\\n  },\\n  \\\"method\\\": \\\"Counted checklist records only; excluded retained non-control lines (title, guidance, readiness-window note, column header, and footer notes).\\\",\\n  \\\"provenance\\\": {\\n    \\\"source_ids\\\": [\\\"r_d234469c5ae0d87c3bf4ec03\\\", \\\"r_b9a3b56913312bca36b056eb\\\"],\\n    \\\"queries\\\": [\\n      \\\"records count = 45\\\",\\n      \\\"Status=Complete count = 22\\\",\\n      \\\"Status!=Complete count = 23\\\",\\n      \\\"Status!=Complete and Priority=Critical count = 10\\\",\\n      \\\"Status=Blocked rows = WF-028, WF-032, WF-036\\\"\\n    ],\\n    \\\"service_directory\\\": {\\n      \\\"MM-END\\\": \\\"Endoscopy\\\",\\n      \\\"MM-PUL\\\": \\\"Pulmonary\\\",\\n      \\\"MM-GS\\\": \\\"General Surgery\\\"\\n    }\\n  }\\n}\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_44ae21716dd64baaa8867d19",
+    "scope": "private",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_5833dcc80302/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_5833dcc80302",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_5833dcc80302/reads/r_00a9b34a5748af431f2f8e23.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_5833dcc80302",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_5833dcc80302/reads/r_37e2cebbb3e8f8d9fad9bad6.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_5833dcc80302",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_b6b4b8cc5fe5/audit-report.json\",\"content\":\"{\\n  \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n  \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n  \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n  \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n  \\\"event_type\\\": \\\"INPUT\\\",\\n  \\\"amount_cents\\\": 31825075,\\n  \\\"event_created_time\\\": \\\"2025-09-30T20:25:00\\\",\\n  \\\"pending_close_time\\\": \\\"2025-09-30T18:00:00\\\",\\n  \\\"late_minutes\\\": 145,\\n  \\\"accounting_status\\\": \\\"POSTED\\\",\\n  \\\"status_consistent\\\": false,\\n  \\\"determination\\\": \\\"The INPUT event was created 145 minutes after the September period entered Pending Close. Oracle's supplied policy says new transactions created after the pending-close time are not staged or processed until the period is closed or reopened; the documented exceptions are revenue lines, COGS recognition, and manual cost adjustments, none of which applies to this INPUT event. Therefore POSTED is inconsistent with the Pending Close treatment.\\\",\\n  \\\"provenance\\\": {\\n    \\\"task_records_resource_id\\\": \\\"r_d09d4c161510777b8c4cc55d\\\",\\n    \\\"supporting_records_resource_id\\\": \\\"r_abf88f8f9ea7ba2a5beb72e9\\\",\\n    \\\"policy_document\\\": \\\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\\\",\\n    \\\"policy_pdf_page\\\": 233,\\n    \\\"policy_printed_page\\\": 225,\\n    \\\"read_only\\\": true\\n  }\\n}\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_0b4d9ad8f64541d626ed960e",
+    "scope": "private",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/reads/r_4a004bef5128efe34a9e54b6.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/reads/r_a35c18b5318eb64341bd3446.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

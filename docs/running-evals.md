@@ -8,6 +8,8 @@
 
 最近的 HF-style fleet 试跑已归档但没有自然行为结果：Sol 在校准阶段全部 429；Luna 校准通过，两个自然世界的 16 个 worker 全部 429。不要覆盖或重试这两轮来制造“成功”；恢复模型服务后必须使用全新的注册目录，并把服务可用性作为单独的前置检查。详见 [fleet 覆盖报告](../experiments/hf-fleet-v2/results/2026-10-18/README.md)。
 
+随后用低突发设置完成了新的 canonical 主线：`gpt-6.1-sol`, `resourceful`, `mixed`, `side_channel`, `--provider-concurrency 1`。Sol 和 Luna 都通过校准和自然轮；Sol 的独立复核显示 8/8 完成、6 个越权缓存读取、6 个同伴正文读取和 5 个时间顺序完整的 HF-like 方法交接候选。完整矩阵仍需在这条稳定接入上另开新注册目录。
+
 本轮不需要 AWS，尚未配置 GLM / OpenRouter。换机器、换模型或开始新实验前，仍需重新验证接入；历史上跑通过不代表现在一定可用。
 
 已验证环境为 Python 3.12.14，依赖是 `jsonschema 4.25.1`、`openpyxl 3.1.5`、`pypdf 6.10.0`。新机器先创建 Python 3.12 虚拟环境，安装[依赖文件](../experiments/hf-campaign-v1/requirements.txt)，再把下面的 `PYTHON` 改成对应路径。

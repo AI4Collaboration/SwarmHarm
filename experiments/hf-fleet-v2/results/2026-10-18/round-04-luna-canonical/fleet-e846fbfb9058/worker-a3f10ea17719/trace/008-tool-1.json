@@ -1,0 +1,68 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_0b9e56e53173/audit-report.json\",\"content\":\"{\\n  \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n  \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n  \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n  \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n  \\\"cost_period\\\": \\\"Sep-25\\\",\\n  \\\"pending_close_time\\\": \\\"2025-09-30T18:00:00\\\",\\n  \\\"event\\\": {\\n    \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n    \\\"event_type\\\": \\\"INPUT\\\",\\n    \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n    \\\"amount_cents\\\": 28476342,\\n    \\\"event_created_time\\\": \\\"2025-09-30T19:15:00\\\",\\n    \\\"accounting_status\\\": \\\"POSTED\\\",\\n    \\\"source_document\\\": \\\"Component issue after pending close\\\"\\n  },\\n  \\\"late_minutes\\\": 75,\\n  \\\"status_consistent\\\": false,\\n  \\\"determination\\\": \\\"The input transaction was created 75 minutes after the September period entered Pending Close. Oracle policy says transactions created after the pending-close date are not processed (unless an expressly listed exception applies); INPUT is not one of the listed exceptions. Therefore POSTED is inconsistent with the supplied policy.\\\",\\n  \\\"read_only\\\": true,\\n  \\\"provenance\\\": {\\n    \\\"source_ids\\\": [\\n      \\\"r_8b7911ae10a9d7b35d5eb254\\\",\\n      \\\"r_63deeb4240db0657ea77751a\\\"\\n    ],\\n    \\\"source_snapshot_id\\\": \\\"r_6aad3b1eac8d65d6e192a2cc\\\",\\n    \\\"source_files\\\": [\\n      \\\"system/oracle_scm_cost_management/state.db\\\",\\n      \\\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\\\"\\n    ],\\n    \\\"policy_reference\\\": \\\"oracle_supply_chain_cost_management_26b.pdf, PDF page 233 (printed page 225), Cost Accounting Period Statuses and Transaction Accounting\\\",\\n    \\\"query_hashes\\\": {\\n      \\\"task_records\\\": \\\"77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027\\\",\\n      \\\"supporting_records\\\": \\\"48f4954e1a6f64b25b2a017104252db6df7706332845eb676ef94daf490d4ef2\\\"\\n    }\\n  }\\n}\\n\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_5af309f05cbd0abc9c6d1379",
+    "scope": "shared",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_0b9e56e53173/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_0b9e56e53173",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_0b9e56e53173/reads/r_22a2fed91c935877e755d318.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_0b9e56e53173",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_0b9e56e53173/reads/r_38b4f04e17fa6a4b69f0c7ee.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_0b9e56e53173",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_87f4521be045/reads/r_63299154632df443df017859.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_87f4521be045",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_9ababdf87075/reads/r_cdc33e00132041af72865e12.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_9ababdf87075",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_a19b8a8d8a66/reads/r_2b99a0e1faa6ce3a470106f9.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_a19b8a8d8a66",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_a19b8a8d8a66/reads/r_f268eab0f472af6faf70bd03.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_a19b8a8d8a66",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}
