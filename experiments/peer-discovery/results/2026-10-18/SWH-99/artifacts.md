@@ -1,4 +1,13 @@
-The SWH-99 issue comment delivers the following sanitized files. Each repeat archive contains a per-file SHA256 manifest, sessions, frozen outputs, native-goal records, launch receipts, stored gateway payloads, packet captures, resource observations and cleanup evidence. `SWH-99-case.tar.gz` adds the combined report, registered graphs, admission/release records, independent checks and supplementary contact/resource/storage audits. These supplementary records retain the sealed archives' original bytes.
+The SWH-99 issue comment delivers the following sanitized files. Each repeat archive arrives as numbered transport parts of at most 90 MiB. Concatenate each repeat's parts in filename order to recreate its original sealed archive. Each repeat archive contains a per-file SHA256 manifest, sessions, frozen outputs, native-goal records, launch receipts, stored gateway payloads, packet captures, resource observations and cleanup evidence. `SWH-99-case.tar.gz` adds the combined report, registered graphs, admission/release records, independent checks and supplementary contact/resource/storage audits. These supplementary records retain the sealed archives' original bytes.
+
+```bash
+cat SWH-99-repeat-3.tar.gz.part-* > SWH-99-repeat-3.tar.gz
+cat SWH-99-repeat-2.tar.gz.part-* > SWH-99-repeat-2.tar.gz
+cat SWH-99-repeat-1.tar.gz.part-* > SWH-99-repeat-1.tar.gz
+sha256sum SWH-99-repeat-3.tar.gz SWH-99-repeat-2.tar.gz SWH-99-repeat-1.tar.gz
+```
+
+Compare the resulting hashes with the table below. Part manifests in the case archive retain each part's exact bytes and SHA256. Extract the reconstructed archives with `tar -xzf ARCHIVE`.
 
 | File | Bytes | SHA256 |
 | --- | ---: | --- |
@@ -20,4 +29,4 @@ Private originals use the existing encrypted, public-access-blocked S3 bucket un
 
 Frankfurt S3 Standard prices were read through AWS Pricing: $0.0245/GiB-month, $0.0000054 per PUT/LIST request and $0.00000043 per GET request. Retained-byte totals and operation receipts support storage/request accounting; multipart transfers carry their respective request counts. Repeat-level recording retrieval/listing/write/storage estimates remain in `summary.json`. Transfers to the operator accompany original-archive readbacks, SQLite-member verification and publication restoration. AWS transfer routes and allowances determine billed charges.
 
-Receipt-based additional storage is 2,111,458,788 bytes: 1,122,176,789 bytes for 384 original host archives and 989,281,999 bytes for two sealed-publication backups. At the observed S3 Standard rate, this adds $0.04818 per retained month. Complete integrity readbacks comprise 384 original-archive GETs, 384 SQLite archive-verification GETs, 12,213 recording-compaction GETs and two publication-restoration GETs, totaling 4,089,339,277 bytes. Minimum GET-request accounting is $0.00558269; 386 object uploads have minimum PUT accounting of $0.0020844. Multipart operations and the partial repeat-2 restoration accompany these complete-transfer lower bounds. The storage-accounting receipt retains the arithmetic and pricing basis.
+Receipt-based additional storage includes 384 original host archives and three sealed-publication backups. `storage-accounting.json` retains exact byte totals, monthly S3 Standard estimates, upload/readback counts, retrieval bytes and the pricing basis. Multipart operations and partial transfers accompany its complete-transfer lower bounds.
