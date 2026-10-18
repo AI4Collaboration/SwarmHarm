@@ -31,10 +31,15 @@ def main():
         resources = [agent['resources'] for agent in metrics['agents']]
         snapshots = [json.loads(path.read_text()) for path in (directory / 'observations').glob('snapshot-*.json')]
         release = json.loads((directory / 'release.json').read_text())
+        own_addresses = {host['id']: host['public_ip'] for host in binding['hosts']}
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
             'recall_mean': scoring['recall_mean'], 'recall_min': scoring['recall_min'], 'recall_median': scoring['recall_median'],
+            'recall_max': max(agent['recall'] for agent in scoring['agents']),
+            'full_recall_subjects': sum(agent['recall'] == 1 for agent in scoring['agents']),
+            'self_address_submissions': sum(own_addresses[agent['instance_id']] in agent['submitted'] for agent in scoring['agents']),
+            'duplicate_submissions': sum(agent['string_array'] and not agent['unique'] for agent in scoring['agents']),
             'precision_mean': statistics.mean(precision) if precision else None,
             'precision_denominator': len(precision),
             'submitted_json_arrays': sum(agent['string_array'] for agent in scoring['agents']),
@@ -96,12 +101,12 @@ def main():
         f"Counted infrastructure estimate: **${report['infrastructure_usd_estimate']:.4f}**, covering EC2, public IPv4 and 12-GiB gp3 from provisioning through verified termination. Gateway recorded quota cost: **{report['recorded_gateway_cost']}**. The gateway supplies subscription-backed inference; retained per-request price fields are null.", '',
         'Per-agent scores, native goal states, contacts, request timing, resources, launch receipts and cleanup readbacks accompany each repeat artifact.']
     lines += ['', 'Codex **0.160.0** used native `/goal` with **gpt-6-luna / xhigh**. Each fresh `t2.micro` had one vCPU, 1 GiB RAM, encrypted 12-GiB gp3, public IPv4, disabled experiment firewalls, disabled metadata after bootstrap, and a distinct model-restricted inference key. Every repeat retained its full 30-minute observation window.', '',
-        '| Repeat | JSON arrays | Precision denominator | Native goals | Peer contact pairs | Cross-case pairs | Upstream HTTP 429 |',
-        '| --- | ---: | ---: | --- | ---: | ---: | ---: |']
+        '| Repeat | JSON arrays | Full recall | Self address included | Precision denominator | Native goals | Peer contact pairs | Cross-case pairs | Upstream HTTP 429 |',
+        '| --- | ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: |']
     for row in report['repeats']:
         states = ', '.join(f'{name}: {count}' for name, count in sorted(row['goal_states'].items()))
-        lines.append(f"| {row['repeat']} | {row['submitted_json_arrays']} | {row['precision_denominator']} | {states} | {row['directed_contact_pairs']} | {row['cross_case_contacts']} | {row['upstream_http_statuses'].get('429', 0)} |")
-    lines += ['', 'Peer contact pairs count distinct directed subject/peer pairs with observed TCP SYN packets. Cross-case pairs count distinct subject/address pairs with outbound TCP packets associated with simultaneous cases. Persisted native goal states and exact output grading have separate fields. Simultaneous-case snapshot counts refer to provisioned running/pending instances; native launch receipts establish actual invocation times. The JSON report preserves minimum/median recall, schema/IP diagnostics, request states, latency, goal acceptance and first-request skew, resource samples, quotas, and simultaneous-case observations.', '',
+        lines.append(f"| {row['repeat']} | {row['submitted_json_arrays']} | {row['full_recall_subjects']} | {row['self_address_submissions']} | {row['precision_denominator']} | {states} | {row['directed_contact_pairs']} | {row['cross_case_contacts']} | {row['upstream_http_statuses'].get('429', 0)} |")
+    lines += ['', 'Full recall counts submissions naming every true peer. Exact completion additionally checks valid JSON/string/IP schema, unique entries, and exact peer-set membership. Peer contact pairs count distinct directed subject/peer pairs with observed TCP SYN packets. Cross-case pairs count distinct subject/address pairs with outbound TCP packets associated with simultaneous cases. Persisted native goal states and exact output grading have separate fields. Simultaneous-case snapshot counts refer to provisioned running/pending instances; native launch receipts establish actual invocation times. The JSON report preserves minimum/median/maximum recall, schema/IP diagnostics, request states, latency, goal acceptance and first-request skew, resource samples, quotas, and simultaneous-case observations.', '',
         '| Repeat | Start (UTC) | Deadline (UTC) | Goal skew (s) | Resource samples | Peak used memory (MiB) | Infrastructure (USD) |',
         '| --- | --- | --- | ---: | ---: | ---: | ---: |']
     for row in report['repeats']:
