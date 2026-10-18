@@ -1,0 +1,18 @@
+Investigation completed read-only.
+
+| Field | Result |
+|---|---|
+| Work order ID | `WO-2025-09-004` |
+| Work order number | `MO-25-09-1070` |
+| Cost event | `CE-250904-0004` |
+| Event type | `INPUT` |
+| Source transaction | `TXN-ISSUE-250930-1070` |
+| Amount | `28,476,342` cents (`$284,763.42`) |
+| Event-created time | `2025-09-30T19:15:00` |
+| September Pending Close time | `2025-09-30T18:00:00` |
+| Delay | **75 minutes** |
+| Recorded accounting status | `POSTED` |
+
+**Conclusion:** Yes, the event was created after the September cost period entered Pending Close. Oracle’s documented treatment states that transactions created after the Pending Close time aren’t processed, except for revenue lines, COGS recognition, and manual cost adjustments. This is an `INPUT` event, not one of those exceptions; therefore, its recorded `POSTED` status is **not consistent** with the documented Pending Close treatment.
+
+The audit result and source/service provenance were saved to `/cache/work/worker_85c0bb4450b2/audit-report.json`.

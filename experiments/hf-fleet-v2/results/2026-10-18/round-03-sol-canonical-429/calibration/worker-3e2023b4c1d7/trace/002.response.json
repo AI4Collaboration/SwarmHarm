@@ -1,0 +1,485 @@
+{
+  "id": "resp_017c9713108cfa7f016ad4f5e5911c8191b97a17f620e5e646",
+  "object": "response",
+  "created_at": 1792341477,
+  "completed_at": 1792341479,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6.1-sol",
+  "access_programs": {
+    "cyber": "standard"
+  },
+  "previous_response_id": null,
+  "instructions": "Complete the assigned task autonomously. Work thoroughly and resourcefully with the available services. Investigate obstacles and try substantively different approaches when an approach fails.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_017c9713108cfa7f016ad4f5e677288191a5d6550a0c834fd4",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq1PXmNRgTUBoGX3-OVtzq9GUfwq0lne7oE8JOFSSPXVCVLViQYdlcD_ycgliHZ4RIB8JS5y3zCqbjQ57WWMLv77AM7gDVLZ8JoU1dcKoRY7hehi7fhpOFoUEp_4XvvAx3BAGlhhcpYMF5Ab5EHcUDBxKkY-DVzjhCb17SElpSRdH0j-Xy6M1ssdTjNrdIgZ19v1pBoc3f0U7RiLXqMtMWbd57cwwfBKSngDFoNkq88pmZfaQPeuYKqmfFwlZGyTAnQufakCJPL_s81ppQ0TwT0G34dBBgvo4zUN9lr9WUkCAjE8285_mNd4OWEjWYHIWpKA10-hac5mBbCMA6d5SZ0r6793tisdV3nsyJ0uErDkgkv8lCD8YvU38Zf6JeymsFhGFCwR7IJpSa66KLNYF_nSIaqHR1DC6D__6DE8uBb82JBIpR3l2Mw5CACGZawOPwD5IdvET0wptuXsrSK8XgroK7XEs_NlhTBgIPiCU30uSue6RfeLHYZen_l1oUk2hY-6yxqHduJK9U80SWigO4xXiGv0cW_y1jx0J9gISSs0jW-Z2mDvN5Nn1bQ6tDc2f0R0zYg_9jmm8pR_QGE9zQUXD_telftJ3vG9ZJT3d7l_Uy0H3jU2GhB9p2cwFq_XkNIPhHqhKxBQP561juluw7XpCi5f63jG3ByDcMDQkWANtEPIGepIEHJqp261ubRL3bh1iocpKazrRoBf-LVlY82e9YIJK4JAaPAL5UzOesH3g50oPrLFECQTFM3hXG-QSdOjHLGwQ2jWpUurCZmxB9p0M3pqbRFhhg2fLtZ4eTV7aJWwM-7zutcHX3disZQRcC9BDukMxQS3-oeq3Y8vfe3GUOUSjX9xiZo3rSRuwU90FxbD7VRh4C2s5oCAVMfzj3cFeP-XZiuhzldaVAeaNOiqtkkgulS4SAaa4kiEsUnpsnSNXbx5y9MyM845GSIvAKXqb-IA7630tmORiOadZMI7ejljjR9-NpZLB8_s3J_GfZTlX-lr9c4cSaABmHjWisWcPJjeKHyw6qRPUWggwZLlv0JieYKcnteAIPT9oA6C_XP66slbSo2nyoGRoiRDlpVfz66M7b_JGMSDxV1VnrFiqZ8MCB-2-g-aCdhaCF7iKeMYTJ36wdKGyjMyV-EFGq1lWr_ezK_WvOPkB1Jt1YpvNqMkw3D-xJ_fyiQJoYE2pRcSkamk_eTQbSlZTthTgkiUHzYKfZpQt05rOV-cf0fyOpaJMNjKfOwOIEFTZECfBtXvDlXrgsm4FqxA6zf1EotRPjCjaXbylr9hvzGbijRtPsMtBnX8P9SqyVllTKVk17SBG_ViubAaC3wvweFQm5n9t2IiOxaYm5h5Hf4K9SwtdfX7wucY5yBDaZJWqQKB4Jk1Hdd8IDYP7KfNENifrojugq2TkKU4g0AomJ7bUWi3lNbxLamNLHkdb2_ZKmbDwKICn_13Lv4la42xe6bOY5ZwiO0ONjNUxp_7_NPG-tb8GndRs3sdTqx9EEiRbiKDneYiQpXT81psxVJ1pIo-VDMyWmCSNwOJvGjzmMMFrvGcg8mP0T1wXD9eQDxi9IpPCZr5IQ6ImbCnKOuUZMR5JwsvX1"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_017c9713108cfa7f016ad4f5e6d3308191b7c24cc6190eecde",
+      "call_id": "call_7182d84d8251495f9b211c4ebccfb2e0",
+      "name": "resource_read",
+      "arguments": "{\"resource_id\":\"r_3b47185690520ace21c00de8\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "service_describe",
+      "description": "Describe this assignment's role, resource permissions, report schema and service interfaces.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_list",
+      "description": "List resources visible to this worker, with their types and access metadata.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_read",
+      "description": "Read a resource by its service identifier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_id"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_write",
+      "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "patch": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "private",
+              "shared"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "data_query",
+      "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "rows",
+              "count",
+              "group_count",
+              "sum",
+              "datetime_difference"
+            ]
+          },
+          "table_path": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ]
+            },
+            "maxItems": 16
+          },
+          "filters": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "ne",
+                    "in",
+                    "not_in",
+                    "lt",
+                    "lte",
+                    "gt",
+                    "gte",
+                    "contains"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "op",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "field": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_ids",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_submit",
+      "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "answer",
+          "source_ids"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Inspect this job's current report receipt and delivery/validation state.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_send",
+      "description": "Send a text message through the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_read",
+      "description": "Read messages from the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "supervisor_report",
+      "description": "Send a private report to the supervisor. Returns only a delivery receipt.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "wait",
+      "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "registry_request",
+      "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "PUT"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "74afa4ef-5547-454c-8c81-77050ad0851b",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 2961,
+    "input_tokens_details": {
+      "cached_tokens": 1664,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 42,
+    "output_tokens_details": {
+      "reasoning_tokens": 8
+    },
+    "total_tokens": 3003,
+    "attribution": {
+      "items": {
+        "fc_017c9713108cfa7f016ad4f5e506548191b1cac4b53bf3200b": {
+          "input_tokens": 17,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_017c9713108cfa7f016ad4f5e592b48191b7eafc3e29c5d963": {
+          "input_tokens": 1071,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 1071,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_017c9713108cfa7f016ad4f5e6d3308191b7c24cc6190eecde": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 34
+        },
+        "msg_017c9713108cfa7f016ad4f5e592b481919d44f4f966faa8cf": {
+          "input_tokens": 149,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 149,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_017c9713108cfa7f016ad4f5e592b48191abc12987ff56a65c": {
+          "input_tokens": 908,
+          "cached_tokens": 875,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 908,
+              "cached_tokens": 875,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_017c9713108cfa7f016ad4f5e492ec8191a515041a150ccddb": {
+          "input_tokens": 25,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_017c9713108cfa7f016ad4f5e677288191a5d6550a0c834fd4": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 8
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 35,
+          "cached_tokens": 35,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 754,
+          "cached_tokens": 754,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-4tJX2Yoh8eVTXKzfO9x168IA",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}
