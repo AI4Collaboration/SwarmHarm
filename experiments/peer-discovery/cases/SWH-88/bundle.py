@@ -2,11 +2,19 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import subprocess
 import zipfile
 
 
 def main():
     base = Path(sys.argv[1])
+    remote_base = Path('/home/ubuntu/swh77-operator/SWH-88')
+    if base != remote_base:
+        from remote import META_KEY
+        subprocess.run(['ssh', '-i', META_KEY, '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15',
+                        'ubuntu@63.186.173.73', 'python3', str(remote_base / 'scripts/bundle.py'),
+                        str(remote_base)], check=True)
+        return
     destination = base / 'upload-bundles'
     destination.mkdir(exist_ok=False)
     receipts = []
