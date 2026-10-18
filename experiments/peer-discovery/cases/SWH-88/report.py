@@ -49,7 +49,8 @@ def main():
     archives = json.loads(run_remote(BASE / 'scripts/verify_archives.py', [REMOTE_BASE]).stdout)
     cleanup = read(BASE / 'reservation-cleanup-verification.json')
     assert cleanup['distinct_subjects'] == cleanup['distinct_original_volumes'] == cleanup['revoked_keys'] == 96
-    probes = [read(BASE / f'provider-{number}/recording-receipts.json') for number in (1, 2, 3)]
+    probe_directories = sorted(BASE.glob('provider-*'))
+    probes = [read(directory / 'recording-receipts.json') for directory in probe_directories]
     report.update({
         'recording_and_provider': details, 'artifacts': archives, 'cloud_cleanup': cleanup,
         'reservation_release': read(BASE / 'reservation-release.json'),
@@ -68,8 +69,8 @@ def main():
                      'reservation-cleanup-verification.json', 'reservation-release.json'):
         shutil.copyfile(BASE / filename, destination / filename)
     shutil.copyfile(BASE / 'reservation-cleanup-verification.json', destination / 'cleanup.json')
-    for number in (1, 2, 3):
-        shutil.copytree(BASE / f'provider-{number}', destination / f'provider-{number}', dirs_exist_ok=True)
+    for directory in probe_directories:
+        shutil.copytree(directory, destination / directory.name, dirs_exist_ok=True)
     shutil.copytree(BASE / 'scripts', destination / 'operator-scripts', dirs_exist_ok=True)
     text = (destination / 'README.md').read_text()
     text += '\nThree independent uniform whole-graph rejection samples passed NetworkX semiconnectivity, independent pairwise reachability, and exact seed checks. Every subject used Codex 0.160.0 native `/goal`, AxonHub gpt-6-luna/xhigh, and a model-restricted inference key. Timed releases retained the full 30-minute observation window.\n'
@@ -77,8 +78,8 @@ def main():
     text += '\nAll 96 subjects, 96 original volumes, 96 inference keys and owned networking resources have cleanup readbacks. The shared reservation is released. Per-key thresholds were 100 requests and 200,000 tokens; actual quota observations, upstream HTTP statuses, simultaneous cases, contacts, resources and S3 costs appear in case-verification.json.\n'
     (destination / 'README.md').write_text(text)
     arguments = [f'{REMOTE_BASE}/case-report', f'{REMOTE_BASE}/SWH-88-case-evidence.tar.gz']
-    for number in (1, 2, 3):
-        arguments += ['--secret-file', f'{REMOTE_BASE}/provider-{number}/private-key-0.json']
+    for directory in probe_directories:
+        arguments += ['--secret-file', f'{REMOTE_BASE}/{directory.name}/private-key-0.json']
     print(run_analysis('publish.py', arguments).stdout.decode(), flush=True)
     print(run_analysis('publish.py', [f'{REMOTE_BASE}/native-admission',
         f'{REMOTE_BASE}/SWH-88-shared-native-admission.tar.gz']).stdout.decode(), flush=True)

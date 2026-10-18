@@ -10,8 +10,8 @@ def main():
     credentials = [json.loads(path.read_text())['key'].encode()
                    for number in (1, 2, 3) for path in (base / f'repeat-{number}').glob('private-key-*.json')]
     assert len(credentials) == 96
-    credentials.extend(json.loads((base / f'provider-{number}/private-key-0.json').read_text())['key'].encode()
-                       for number in (1, 2, 3))
+    credentials.extend(json.loads(path.read_text())['key'].encode()
+                       for path in base.glob('provider-*/private-key-0.json'))
     reports = []
     for path in sorted((base / 'deliverables').glob('*.tar.gz')):
         with tarfile.open(path) as archive:
