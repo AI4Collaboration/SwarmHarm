@@ -27,6 +27,9 @@ def main():
         assert len(cloud['instance_ids']) == 64 and instances.isdisjoint(cloud['instance_ids'])
         instances.update(cloud['instance_ids'])
         cleanup = read(directory / 'cleanup.json')
+        release = read(directory / 'release.json')
+        assert release['allowance_seconds'] == 1800
+        assert cleanup['time'] >= release['T_start'] + release['allowance_seconds']
         previous_cleanup = cleanup['time']
         assert previous_cleanup - cloud['created_at'] <= 7200
         verification = read(directory / 'evidence-verification.json')
