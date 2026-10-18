@@ -51,6 +51,10 @@ def main():
     assert cleanup['distinct_subjects'] == cleanup['distinct_original_volumes'] == cleanup['revoked_keys'] == 96
     probe_directories = sorted(BASE.glob('provider-*'))
     probes = [read(directory / 'recording-receipts.json') for directory in probe_directories]
+    for directory in probe_directories:
+        key = read(directory / 'private-key-0.json')
+        revoked = read(directory / 'key-revocation-0.json')['updateAPIKeyStatus']
+        assert revoked['id'] == key['id'] and revoked['status'] == 'disabled'
     report.update({
         'recording_and_provider': details, 'artifacts': archives, 'cloud_cleanup': cleanup,
         'reservation_release': read(BASE / 'reservation-release.json'),
@@ -62,6 +66,15 @@ def main():
         'operator_probe_s3_calls': {operation: sum(row['s3_calls'][operation] for row in probes)
                                   for operation in ('GetObject', 'HeadObject', 'ListObjectsV2')},
     })
+    rates = details[0]['s3_cost']['rates']
+    calls = report['operator_probe_s3_calls']
+    report['operator_probe_s3_cost'] = {
+        'retrieval_usd': (calls['GetObject'] + calls['HeadObject']) * rates['EUC1-Requests-Tier2'],
+        'listing_usd': calls['ListObjectsV2'] * rates['EUC1-Requests-Tier1'],
+        'minimum_payload_put_usd': sum(row['object_count'] for row in probes) * rates['EUC1-Requests-Tier1'],
+        'payload_storage_usd_per_month': sum(row['bytes'] for row in probes) / 2**30 * rates['EUC1-TimedStorage-ByteHrs'],
+        'revoked_probe_keys': len(probe_directories),
+    }
     (destination / 'case-verification.json').write_text(json.dumps(report, indent=2))
     for path in (BASE / 'graphs').glob('*.json'):
         shutil.copyfile(path, destination / path.name)
