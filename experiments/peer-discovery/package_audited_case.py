@@ -106,6 +106,23 @@ def main():
     released = read(root / 'reservation-release.json')
     assert released['action'] == 'release'
     assert all(lease['issue'] != args.issue for lease in released['leases'])
+    preparation = root / 'preparation-repeat-3-1'
+    prep_cloud = read(preparation / 'cloud.json')
+    prep_cleanup = read(preparation / 'cleanup.json')
+    prep_owned = read(preparation / 'cleanup-independent-verification.json')
+    assert prep_owned['original_resource_cleanup'] == 'verified'
+    assert all_instances.isdisjoint(prep_cloud['instance_ids'])
+    assert len(prep_cloud['instance_ids']) == len(list(preparation.glob('key-revocation-*.json'))) == 64
+    for path in preparation.glob('key-revocation-*.json'):
+        assert read(path)['updateAPIKeyStatus']['status'] == 'disabled'
+    prep_hours = (prep_cleanup['time'] - prep_cloud['created_at']) / 3600 * 64
+    preparation_report = {'prepared_instances': 64, 'revoked_keys': 64, 'armed_subject_timers': 0,
+                          'native_subject_launches': 0, 'original_resource_cleanup': 'verified',
+                          'infrastructure_usd_estimate': prep_hours * (0.0134 + 0.005 + 12 * 0.0952 / 730)}
+    assert not (preparation / 'release.json').exists()
+    for name in ('cloud.json', 'cleanup.json', 'cleanup-independent-verification.json',
+                 'maintenance-verification.json'):
+        copy(preparation / name, output / preparation.name / name)
     for name in ('graphs', 'protocol', 'admission-reuse'):
         for path in (root / name).rglob('*'):
             if path.is_file():
@@ -126,6 +143,8 @@ def main():
               'complete_case_score': None, 'reservation': 'released',
               'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
               'infrastructure_usd_estimate': sum(row['infrastructure_usd_estimate'] for row in rows),
+              'preparation': preparation_report,
+              'all_terminated_case_instances': 256,
               'code_revision': subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True,
                                               text=True, check=True).stdout.strip()}
     (output / 'case-audit.json').write_text(json.dumps(report, indent=2) + '\n')
@@ -143,6 +162,7 @@ def main():
               f"Recorded usage: **{report['requests']} requests / {report['tokens']:,} tokens**. Counted EC2/IPv4/gp3 infrastructure estimate: **${report['infrastructure_usd_estimate']:.4f}**. Regional S3 and shared operator-storage rates and operation receipts accompany the evidence. [AWS EBS pricing](https://aws.amazon.com/ebs/pricing/).", '',
               'Sanitized repeat archives are split into attachment parts. Concatenate each repeat’s numbered parts in order and verify the resulting SHA256 against its transport manifest. `artifacts.json` records archive sizes and hashes.', '',
               f"Code revision: `{report['code_revision']}`."]
+    lines += ['', f"Separate preparation evidence verifies cleanup of **64 instances and 64 scoped keys** before subject timer arming. Preparation infrastructure estimate: **${preparation_report['infrastructure_usd_estimate']:.4f}**. Counted subjects remain **192**, and total case instance cleanup accounts for **256** instances."]
     (output / 'README.md').write_text('\n'.join(lines) + '\n')
     shutil.copyfile(output / 'case-audit.json', root / 'case-audit.json')
     print(json.dumps(report, indent=2))
