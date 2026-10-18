@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 
@@ -35,7 +36,8 @@ def main():
                '--content-file', str(Path('reply.md').resolve()), '--output', 'table']
     for path in attachments:
         command.extend(['--attachment', str(path.absolute())])
-    result = subprocess.run(command, check=True, capture_output=True, text=True)
+    environment = dict(os.environ, TMPDIR=str(BASE / 'temp'))
+    result = subprocess.run(command, check=True, capture_output=True, text=True, env=environment)
     receipt.write_text(result.stdout)
     print(result.stdout, end='', flush=True)
 
