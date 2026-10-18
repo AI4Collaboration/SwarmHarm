@@ -67,6 +67,8 @@ def main():
         assert launch['subjects'] == 64
         row = {'repeat': repeat, 'launched_subjects': 64,
                'process_start_skew_seconds': launch['process_start_skew_seconds'],
+               'start_unix_seconds': release['T_start'],
+               'deadline_unix_seconds': release['T_start'] + release['allowance_seconds'],
                'recording': recording, 'cleanup': 'verified'}
         filenames = ['binding.json', 'release.json', 'admission.json', 'launch-verification.json',
                      'cleanup.json', 'cleanup-independent-verification.json', 'code-revision.json',
@@ -90,9 +92,22 @@ def main():
             row.update({'evidence_status': 'full_checks_verified', 'retained_host_archives': 64,
                         'exact_submissions': sum(agent['exact_completion'] for agent in scoring['agents']),
                         'mean_recall': scoring['recall_mean'], 'coverage': scoring['repeat_coverage'],
+                        'recall_minimum': scoring['recall_min'], 'recall_median': scoring['recall_median'],
+                        'recall_maximum': max(agent['recall'] for agent in scoring['agents']),
+                        'valid_json_arrays': sum(agent['json_valid'] and agent['string_array']
+                                                 for agent in scoring['agents']),
                         'beyond_seed': sum(agent['beyond_seed_count'] for agent in scoring['agents']),
                         'requests': metrics['total_requests'], 'tokens': metrics['total_tokens']})
+            precisions = [agent['precision'] for agent in scoring['agents'] if agent['precision'] is not None]
+            row['mean_precision_submitted'] = statistics.mean(precisions) if precisions else None
+            row['goal_acceptance_skew_seconds'] = metrics['goal_acceptance_skew_seconds']
+            row['native_goal_states'] = dict(collections.Counter(agent['goal_status'] for agent in metrics['agents']))
+            row['maximum_requests_per_key'] = max(agent['requests'] for agent in metrics['agents'])
+            row['maximum_tokens_per_key'] = max(agent['total_tokens'] for agent in metrics['agents'])
+            row['keys_above_token_threshold'] = sum(agent['total_tokens'] > 200000 for agent in metrics['agents'])
             filenames.extend(['evidence-verification.json', 'scoring.json', 'metrics.json', 's3-costs.json'])
+            if (source / 'collection-completeness.json').is_file():
+                filenames.append('collection-completeness.json')
         hours = (cleanup['time'] - cloud['created_at']) / 3600 * 64
         row['infrastructure_usd_estimate'] = hours * (0.0134 + 0.005 + 12 * 0.0952 / 730)
         requests = [edge['node'] for index in range(64)
@@ -149,6 +164,8 @@ def main():
               'full_repeat_scores_verified': [1, 3], 'repeat_2_original_exports_required': 41,
               'complete_case_score': None, 'reservation': 'released',
               'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
+              'recorded_objects': sum(row['recording']['objects'] for row in rows),
+              'recorded_bytes': sum(row['recording']['bytes'] for row in rows),
               'infrastructure_usd_estimate': sum(row['infrastructure_usd_estimate'] for row in rows),
               'preparation': preparation_report,
               'all_terminated_case_instances': 256,
@@ -168,15 +185,23 @@ def main():
         exact = f"{row['exact_submissions']}/64" if 'exact_submissions' in row else 'pending complete exports'
         recall = f"{row['mean_recall']:.6f}" if 'mean_recall' in row else 'pending complete exports'
         lines.append(f"| {row['repeat']} | 64 | {row['retained_host_archives']}/64 | {exact} | {recall} | {row['requests']} | {row['tokens']:,} |")
-    lines += ['', 'Repeat 2 retains 64 verified launch/session bindings, 23 original host archives, 15 process-stop receipts, all gateway metadata and verified stored payloads. Its retained service journals record stop/restart events during the observation window. Full repeat scoring requires original exports for 41 additional subjects. Its partial audit preserves every launched subject and the scores derived from collected output bytes.', '',
+    lines += ['', 'Repeat 2 retains 64 verified launch/session bindings, 23 original host archives, 15 process-stop receipts, all gateway metadata and verified stored payloads. Its retained service journals record stop/restart events during the observation window. The original 64 instances and volumes have completed verified deletion. Complete grading depends on a protocol decision covering the 41 outstanding original exports and the retained lifecycle-receipt coverage. Its partial audit preserves every launched subject and the scores derived from collected output bytes.', '',
               'Repeats 1 and 3 have complete independent export, session, objective, scoring, recording, resource and cleanup checks. Their scores remain available individually. The complete case score is pending repeat 2 evidence.', '',
               f"Recorded usage: **{report['requests']} requests / {report['tokens']:,} tokens**. Counted EC2/IPv4/gp3 infrastructure estimate: **${report['infrastructure_usd_estimate']:.4f}**. Regional S3 and shared operator-storage rates and operation receipts accompany the evidence. [AWS EBS pricing](https://aws.amazon.com/ebs/pricing/).", '',
+              f"Independent recording audits verify **{report['recorded_objects']:,} objects / {report['recorded_bytes']:,} bytes** across all three repeats, including required client/execution request bodies and completed response/chunk coverage.", '',
               'Sanitized repeat archives are split into attachment parts. Concatenate each repeat’s numbered parts in order and verify the resulting SHA256 against its transport manifest. `artifacts.json` records archive sizes and hashes.', '',
               f"Code revision: `{report['code_revision']}`."]
     lines += ['', f"Separate preparation evidence verifies cleanup of **64 instances and 64 scoped keys** before subject timer arming. Preparation infrastructure estimate: **${preparation_report['infrastructure_usd_estimate']:.4f}**. Counted subjects remain **192**, and total case instance cleanup accounts for **256** instances."]
     lines += ['', 'Observed upstream HTTP 401/429 execution counts: ' + '; '.join(
         f"repeat {row['repeat']}: {row['upstream_http_statuses'].get('401', 0)}/{row['upstream_http_statuses'].get('429', 0)}"
         for row in reversed(rows)) + '.']
+    lines += ['', '| Fully audited repeat | JSON arrays | Coverage | Mean precision of submitted arrays | Beyond-seed discoveries | Goal skew (s) | Maximum tokens/key |',
+              '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+    for row in reversed(rows):
+        if row['evidence_status'] == 'full_checks_verified':
+            lines.append(f"| {row['repeat']} | {row['valid_json_arrays']} | {row['coverage']:.6f} | "
+                         f"{row['mean_precision_submitted']:.6f} | {row['beyond_seed']} | "
+                         f"{row['goal_acceptance_skew_seconds']:.6f} | {row['maximum_tokens_per_key']:,} |")
     (output / 'README.md').write_text('\n'.join(lines) + '\n')
     manifest = {}
     for path in output.rglob('*'):
