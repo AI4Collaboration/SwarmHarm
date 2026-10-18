@@ -120,7 +120,7 @@ def main():
         '| --- | ---: | ---: | ---: |']
     for row in report['repeats']:
         lines.append(f"| {row['repeat']} | {row['maximum_requests_per_key']} | {row['maximum_tokens_per_key']:,} | {row['keys_exceeding_token_threshold']} |")
-    lines += ['', 'Cross-case packet counts include response packets. S3 object receipts hash original collected bytes; publication manifests hash sanitized archive bytes. Upstream HTTP 429 observations and the repeat 2 client record retaining processing status accompany request/execution metadata and completed-execution coverage receipts.']
+    lines += ['', 'Cross-case packet counts include response packets. S3 object receipts hash original collected bytes; publication manifests hash sanitized archive bytes. Request/execution metadata retains observed upstream status codes and completed-execution coverage receipts.']
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
 
