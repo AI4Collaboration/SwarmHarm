@@ -188,8 +188,6 @@ def main():
             while time.time() < timestamp + allowance + 15:
                 results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
                     'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
-                if all(result.returncode == 0 for result in results):
-                    break
                 if time.monotonic() - last_report >= 45:
                     snapshot(directory)
                     save(directory, f'gateway-observation-{int(time.time())}.json', gateway(meta_key, 'recording', ''))
