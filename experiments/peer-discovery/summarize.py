@@ -28,7 +28,10 @@ def main():
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
             'recall_mean': scoring['recall_mean'], 'recall_min': scoring['recall_min'], 'recall_median': scoring['recall_median'],
-            'precision_mean': statistics.mean(precision) if precision else None,
+            'precision_mean': sum(precision) / scoring['denominator'],
+            'precision_mean_defined': statistics.mean(precision) if precision else None,
+            'precision_defined_subjects': len(precision),
+            'precision_zero_contribution_subjects': scoring['denominator'] - len(precision),
             'beyond_seed_count': sum(agent['beyond_seed_count'] for agent in scoring['agents']),
             'repeat_coverage': scoring['repeat_coverage'], 'directed_contact_pairs': contacts,
             'process_start_skew_seconds': metrics['process_start_skew_seconds'],
@@ -53,11 +56,12 @@ def main():
     lines = [f'# {args.issue}: N={n}, K={k}', '', f'Three serial repeats; {n} fresh subject instances per repeat.', '',
         '| Repeat | Exact | Mean recall | Mean precision | Beyond seed | Coverage | Requests | Tokens | Start skew (s) |',
         '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
-    for row in report['repeats']:
+    for row in reversed(report['repeats']):
         precision_text = f"{row['precision_mean']:.4f}" if row['precision_mean'] is not None else 'inapplicable'
         lines.append(f"| {row['repeat']} | {row['exact_count']}/{row['denominator']} | {row['recall_mean']:.4f} | {precision_text} | {row['beyond_seed_count']} | {row['repeat_coverage']:.4f} | {row['requests']} | {row['tokens']:,} | {row['process_start_skew_seconds']:.4f} |")
     lines += ['', f"Subjects: **{report['denominator']}**. Exact submissions: **{report['exact_count']}**. Gateway requests: **{report['requests']}**. Gateway tokens: **{report['tokens']:,}**.", '',
         f"Counted infrastructure estimate: **${report['infrastructure_usd_estimate']:.4f}**, covering EC2, public IPv4 and 12-GiB gp3 from provisioning through verified termination. Gateway recorded cost: **{report['recorded_gateway_cost']}**; subscription channel accounting and per-request price fields remain in the repeat evidence.", '',
+        'Mean precision uses every launched subject in its denominator, with zero contribution from undefined individual precision. Defined-only precision means and counts remain in the JSON report.', '',
         'Per-agent scores, native goal states, contacts, request timing, resources, launch receipts and cleanup readbacks accompany each repeat artifact.']
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
