@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-107 collected bytes, 2026-10-18: `verify_evidence.py` compares collection-receipt files byte for byte with original host archives and extracted copies, then verifies their recorded sizes and SHA256 values. Frozen submissions retain this binding through scoring and publication.
+
 SWH-107 cleanup readback, 2026-10-18: `verify_cleanup.py` queries the original network-interface IDs from `launch-readback.json`, and verifies original volumes, instances, addresses, security groups and key pairs. Subject configuration and hosted Multica retain their approved settings.
 
 SWH-107 collection, 2026-10-18: original host archives receive per-host SHA256, byte-count and command-exit receipts before launch validation. Launch readback saves stdout, stderr and exit status. Case publication checks key counts against each repeat binding. This integrates SWH-104 collection revision `76337117` with the SWH-100 model configuration. The approved subject configuration and hosted Multica remain fixed.

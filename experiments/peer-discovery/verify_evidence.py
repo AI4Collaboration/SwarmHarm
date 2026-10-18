@@ -2,6 +2,7 @@ import argparse
 import csv
 import hashlib
 import json
+import tarfile
 from pathlib import Path
 
 from graphs import validate
@@ -54,6 +55,15 @@ def main():
         assert guard['receipt_unchanged'] and guard['duplicate_returncode'] != 0
         receipt = read(root / 'collection-receipt.json')
         assert receipt['launch_markers'] == [instance_id]
+        with tarfile.open(directory / f'{instance_id}-raw.tar.gz') as archive:
+            for name, expected_file in receipt['files'].items():
+                member = ('var/lib/peer-operator/executed-driver.py'
+                          if name == '/opt/peer-discovery/driver.py' else name.lstrip('/'))
+                archived = archive.extractfile(member).read()
+                extracted = (directory / instance_id / member).read_bytes()
+                assert archived == extracted
+                assert len(archived) == expected_file['size']
+                assert hashlib.sha256(archived).hexdigest() == expected_file['sha256']
         assert hashlib.sha256((root / 'executed-driver.py').read_bytes()).hexdigest() == receipt['files']['/opt/peer-discovery/driver.py']['sha256']
         revoked = read(directory / f'key-revocation-{index}.json')['updateAPIKeyStatus']
         assert revoked['status'] == 'disabled'
@@ -63,7 +73,8 @@ def main():
     assert set(terminated) == {host['id'] for host in hosts}
     assert all(cleanup[name] == [] for name in ('volumes', 'addresses', 'security_groups', 'key_pairs'))
     result = {'repeat': binding['repeat'], 'verified_subjects': len(hosts), 'graph_sha256': binding['graph_sha256'],
-        'exports': 'verified', 'sessions_per_subject': 1, 'native_goal_objectives': 'verified', 'cleanup': 'verified', 'scoped_keys': 'disabled'}
+        'exports': 'verified', 'collection_file_bytes': 'verified', 'sessions_per_subject': 1,
+        'native_goal_objectives': 'verified', 'cleanup': 'verified', 'scoped_keys': 'disabled'}
     (directory / 'evidence-verification.json').write_text(json.dumps(result, indent=2))
     print(json.dumps(result))
 

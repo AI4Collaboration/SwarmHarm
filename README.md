@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-107 collected bytes, 2026-10-18:** independent evidence verification compares each collection-receipt file with its original host archive and extracted bytes, including frozen output, live output, seed file, configuration, objective and executed driver. Size and SHA256 bind these files to collection. Subject software, AxonHub model route, permissions, deadlines and hosted Multica retain their approved configuration.
+
 **SWH-107 cleanup readback, 2026-10-18:** independent EC2 cleanup queries each original network-interface ID from the launch inventory, alongside original volume IDs, terminated instances, addresses, key pairs and security groups. The N32/K4 case retains its approved subject configuration, model route, permissions and deadlines. AWS operator credentials remain private; hosted Multica 0.4.44 retains its public-server file-access patch.
 
 **SWH-107 collection, 2026-10-18:** N32/K4 collection saves each original host archive and its SHA256, byte count and command exit before launch validation. Per-host launch readback retains stdout, stderr and exit status. Case publication validates scoped-key counts against all three repeat bindings. Codex 0.160.0, native `/goal`, AxonHub `gpt-6.1-sol / xhigh`, the approved timing and permissions, and hosted Multica 0.4.44 retain their configuration. Operator storage uses the existing private volume through a case-specific directory; credentials stay operator-side. Actual-data verification precedes provisioning.
