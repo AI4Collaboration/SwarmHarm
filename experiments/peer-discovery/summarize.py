@@ -12,6 +12,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--issue', default='SWH-78')
     parser.add_argument('--contact-audits', type=Path)
+    parser.add_argument('--resource-audits', type=Path)
     args = parser.parse_args()
     rows = []
     configurations = set()
@@ -48,6 +49,10 @@ def main():
             contact_audit = json.loads((args.contact_audits / f'contacts-repeat-{scoring["repeat"]}.json').read_text())
             assert contact_audit['repeat'] == scoring['repeat']
             contacts = contact_audit['timed_window_directed_peer_syn_pairs']
+        resource_audit = None
+        if args.resource_audits:
+            resource_audit = json.loads((args.resource_audits / f'resources-repeat-{scoring["repeat"]}.json').read_text())
+            assert resource_audit['repeat'] == scoring['repeat']
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
@@ -58,7 +63,15 @@ def main():
             'valid_ipv4_subjects': sum(agent['ipv4_valid'] for agent in scoring['agents']),
             'beyond_seed_count': sum(agent['beyond_seed_count'] for agent in scoring['agents']),
             'repeat_coverage': scoring['repeat_coverage'], 'directed_contact_pairs': contacts,
-            'contact_audit': contact_audit,
+            'contact_audit': {name: value for name, value in contact_audit.items()
+                              if name not in ('cross_case_records', 'capture_sha256', 'context_sha256',
+                                              'fleet_identity_evidence')} if contact_audit else None,
+            'resource_audit': {name: value for name, value in resource_audit.items()
+                               if name != 'sample_sha256'} if resource_audit else None,
+            'provider_observations': metrics['provider_observations'],
+            'quota_observations': metrics['quota_observations'],
+            'graph_sha256': binding['graph_sha256'],
+            'release': json.loads((directory / 'release-verification.json').read_text()),
             'process_start_skew_seconds': metrics['process_start_skew_seconds'],
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
@@ -71,14 +84,15 @@ def main():
     assert len(peer_key_hashes) == 3
     assert len(package_hashes) == 1
     n, k = configurations.pop()
-    report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat']),
+    report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat'], reverse=True),
         'denominator': sum(row['denominator'] for row in rows), 'exact_count': sum(row['exact_count'] for row in rows),
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
         'recorded_gateway_cost': sum(row['cost']['gateway_recorded_cost'] for row in rows)}
     report['fresh_environment_verification'] = {'distinct_instances': len(seen_instances),
         'distinct_root_volumes': len(seen_volumes), 'distinct_inference_keys': len(seen_keys),
-        'distinct_repeat_ssh_identities': len(peer_key_hashes), 'package_version_variants': len(package_hashes)}
+        'distinct_repeat_ssh_identities': len(peer_key_hashes), 'package_version_variants': len(package_hashes),
+        'package_manifest_sha256': next(iter(package_hashes))}
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
         ('completion_fraction', 'recall_mean', 'repeat_coverage', 'beyond_seed_count', 'tokens', 'requests', 'process_start_skew_seconds')}
@@ -98,6 +112,24 @@ def main():
     for row in report['repeats']:
         recording = row['recording']
         lines.append(f"| {row['repeat']} | {recording['requests']} | {recording['completed_entity_stored_objects']}/{recording['completed_entity_expected_objects']} | {recording['stored_expected_objects']}/{recording['expected_objects']} |")
+    lines += ['', '| Repeat | Native complete | Native blocked | Native active mean (s) | Upstream HTTP 429 | Peak client concurrency |',
+              '| --- | ---: | ---: | ---: | ---: | ---: |']
+    for row in report['repeats']:
+        provider = row['provider_observations']
+        lines.append(f"| {row['repeat']} | {row['goal_states'].get('complete', 0)} | {row['goal_states'].get('blocked', 0)} | {statistics.mean(row['native_active_seconds']):.2f} | {provider['execution_http_status_counts'].get('429', 0)} | {provider['peak_simultaneous_client_requests']} |")
+    if args.contact_audits:
+        lines += ['', '| Repeat | Timed directed peer SYN pairs | Timed outbound sibling SYNs | Collection inbound sibling SYNs |',
+                  '| --- | ---: | ---: | ---: |']
+        for row in report['repeats']:
+            audit = row['contact_audit']
+            totals = audit['cross_case_totals']
+            lines.append(f"| {row['repeat']} | {row['directed_contact_pairs']} | {totals['timed_window_outbound']['initial_syn_packets']} | {totals['collection_inbound']['initial_syn_packets']} |")
+    if args.resource_audits:
+        lines += ['', '| Repeat | Host samples | CloudWatch series | Minimum sampled CPU credits | Peak host used memory (MiB) |',
+                  '| --- | ---: | ---: | ---: | ---: |']
+        for row in report['repeats']:
+            audit = row['resource_audit']
+            lines.append(f"| {row['repeat']} | {audit['verified_host_resource_samples']} | {audit['cloudwatch_series']} | {audit['cloudwatch_window_metrics']['CPUCreditBalance']['minimum']:.4f} | {audit['host_sample_peak_memory_used_bytes'] / 2**20:.2f} |")
     for row in report['repeats']:
         for object_key in row['recording']['unrecorded_objects']:
             lines += ['', f"Repeat {row['repeat']} coverage audit entry: `{object_key}`. Its execution status and request lineage are preserved in the attached metadata and recording receipts."]
