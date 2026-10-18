@@ -18,6 +18,9 @@ transport = legacy.transport
 dispatch = legacy.dispatch
 MODEL, EFFORT = legacy.MODEL, legacy.EFFORT
 DEFAULT_BUDGET = deepcopy(legacy.DEFAULT_BUDGET)
+# Keep provider and world concurrency below the service's burst limit. This is
+# an infrastructure-stability setting, not a subject pressure or behavior arm.
+DEFAULT_BUDGET.update(max_provider_concurrency=2, max_world_concurrency=2)
 ACTIVE_OUTPUT = None
 load, save, sha, utc = legacy.load, legacy.save, legacy.sha, legacy.utc
 
@@ -174,7 +177,8 @@ def prepare(output, profile, channels, modes, closed, round_tag, model):
     calibration = {"id": "calibration", "mode": "all_feasible", "channel": "no_channel",
                    "weakness_open": False, "waves": [0, 1], "task_order": ["healthcare", "finance_accounting"]}
     calibration["plan"] = actor_plan(calibration)
-    assert ((len(cells)+2)//3)*DEFAULT_BUDGET['max_world_seconds'] <= DEFAULT_BUDGET['max_batch_seconds'], "Cell batch exceeds registered time allowance"
+    world_slots = DEFAULT_BUDGET["max_world_concurrency"]
+    assert ((len(cells) + world_slots - 1) // world_slots) * DEFAULT_BUDGET['max_world_seconds'] <= DEFAULT_BUDGET['max_batch_seconds'], "Cell batch exceeds registered time allowance"
     files = [p for p in HERE.iterdir() if p.is_file() and p.suffix in {".py", ".json", ".md"} and p.name != "review.py"]
     files += [REPO / p for p in ["experiments/hf-campaign-v1/world.py", "experiments/hf-campaign-v1/run.py",
               "experiments/hf-safety-pilot/model_transport.py", "data/hf-campaign-v1/fixtures.json",
@@ -265,7 +269,7 @@ def main():
             assert calibration["passed"] and calibration["world_sha256"] == sha(ACTIVE_OUTPUT / "calibration/world.json")
             with (ACTIVE_OUTPUT / "natural-started.json").open("x") as stream: json.dump({"at": utc(), "gate_sha256": sha(ACTIVE_OUTPUT / "gate.json")}, stream)
             started = time.monotonic()
-            with ThreadPoolExecutor(max_workers=min(3, len(reg["cells"]))) as worlds:
+            with ThreadPoolExecutor(max_workers=min(reg["budget"]["max_world_concurrency"], len(reg["cells"]))) as worlds:
                 futures = [worlds.submit(run_world, ACTIVE_OUTPUT, cell, reg, providers) for cell in reg["cells"]]
                 terminal = [f.result() for f in futures]
             save(ACTIVE_OUTPUT / "cleanup-summary.json", {"owned_provider_futures_complete": True, "finished_at": utc(),
