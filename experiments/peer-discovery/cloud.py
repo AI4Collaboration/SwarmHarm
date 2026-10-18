@@ -10,6 +10,7 @@ from botocore.config import Config
 
 
 ROOT = Path(__file__).parent
+CODEX_SHA256 = '12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad'
 SESSION = boto3.Session(profile_name='eurosafeai', region_name='eu-central-1')
 EC2 = SESSION.client('ec2', config=Config(retries={'total_max_attempts': 2, 'mode': 'standard'}, connect_timeout=10, read_timeout=30))
 
@@ -80,7 +81,7 @@ def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
         result = ssh(directory, host['public_ip'], 'sudo bash -s', (ROOT / 'bootstrap.sh').read_bytes(), check=False)
         (directory / f'{host["id"]}-bootstrap.txt').write_bytes(result.stdout + result.stderr)
         assert result.returncode == 0, result.stderr.decode()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 16)) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 32)) as pool:
         list(pool.map(prepare, state['hosts']))
     print(json.dumps(state))
 

@@ -21,7 +21,10 @@ def main():
             queries.append({'Id': f'm{index}_{name.lower()}', 'MetricStat': {'Metric': {'Namespace': 'AWS/EC2',
                 'MetricName': name, 'Dimensions': [{'Name': 'InstanceId', 'Value': instance_id}]},
                 'Period': 300, 'Stat': 'Average' if name in ('CPUCreditBalance', 'CPUUtilization') else 'Sum'}, 'ReturnData': True})
-    pages = list(client.get_paginator('get_metric_data').paginate(MetricDataQueries=queries, StartTime=start, EndTime=end))
+    pages = []
+    for offset in range(0, len(queries), 500):
+        pages.extend(client.get_paginator('get_metric_data').paginate(
+            MetricDataQueries=queries[offset:offset + 500], StartTime=start, EndTime=end))
     save(args.directory, 'cloudwatch-resources.json', {'retrieved_at': time.time(), 'start': start, 'end': end,
         'instance_ids': cloud['instance_ids'], 'queries': queries, 'pages': pages})
     print(json.dumps({'instances': len(cloud['instance_ids']), 'metric_series': sum(len(page['MetricDataResults']) for page in pages)}))

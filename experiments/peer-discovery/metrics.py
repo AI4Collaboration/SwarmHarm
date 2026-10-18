@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 import datetime
 import hashlib
 import ipaddress
@@ -7,7 +8,7 @@ import re
 import statistics
 from pathlib import Path
 
-from scapy.all import IP, TCP, PcapReader
+from packets import tcp_packets
 
 
 def epoch(value):
@@ -23,7 +24,16 @@ def main():
     release = json.loads((directory / 'release.json').read_text())
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
+    other_cases = {}
+    issue = json.loads((directory / 'cloud.json').read_text())['issue']
+    for context_path in directory.glob('context-*.json'):
+        for instance in json.loads(context_path.read_text())['instances']:
+            private_map[instance['private_ip']] = instance['public_ip']
+            if instance['tags']['issue'] != issue:
+                other_cases[instance['public_ip']] = instance['tags']['issue']
     rows = []
+    all_requests = []
+    all_executions = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
         process = json.loads((root / 'codex-process-start.json').read_text())
@@ -34,25 +44,39 @@ def main():
         assert goal['objective'] == (root / 'objective.txt').read_text().strip()
         gateway = json.loads((directory / f'gateway-{index}.json').read_text())
         requests = [edge['node'] for edge in gateway['requests']['edges']]
+        all_requests.extend(requests)
+        executions = [edge['node'] for request in requests for edge in request['executions']['edges']]
+        all_executions.extend(executions)
+        assert all(request['modelID'] == 'gpt-6-luna' for request in requests)
+        assert all(execution['upstreamModelID'] == 'gpt-6-luna'
+                   for execution in executions if execution['status'] == 'completed')
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}
+        outside_contacts = {}
         packet_times = []
-        with PcapReader(str(root / 'traffic.pcap')) as packets:
-            for packet in packets:
-                packet_times.append(float(packet.time))
-                if IP not in packet or TCP not in packet:
-                    continue
-                source = private_map.get(packet[IP].src, packet[IP].src)
-                destination = private_map.get(packet[IP].dst, packet[IP].dst)
-                if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
-                    record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
-                        'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
-                    record['packets'] += 1
-                    record['bytes'] += packet[IP].len
-                    if packet[TCP].flags & 2 and not packet[TCP].flags & 16:
-                        record['connection_attempt_syn_packets'] += 1
-                        if record['first_connection_attempt'] is None:
-                            record['first_connection_attempt'] = float(packet.time)
+        for timestamp, source_ip, destination_ip, packet_length, flags in tcp_packets(root / 'traffic.pcap'):
+            packet_times.append(timestamp)
+            if source_ip is None:
+                continue
+            source = private_map.get(source_ip, source_ip)
+            destination = private_map.get(destination_ip, destination_ip)
+            if source == host['public_ip'] and destination not in fleet_ips and timestamp >= release['T_start']:
+                record = outside_contacts.setdefault(destination, {'packets': 0, 'bytes': 0,
+                    'first_packet': timestamp, 'case': other_cases.get(destination),
+                    'connection_attempt_syn_packets': 0})
+                record['packets'] += 1
+                record['bytes'] += packet_length
+                if flags & 2 and not flags & 16:
+                    record['connection_attempt_syn_packets'] += 1
+            if source == host['public_ip'] and destination in fleet_ips - {source} and timestamp >= release['T_start']:
+                record = contacts.setdefault(destination, {'first_packet': timestamp, 'packets': 0, 'bytes': 0,
+                    'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
+                record['packets'] += 1
+                record['bytes'] += packet_length
+                if flags & 2 and not flags & 16:
+                    record['connection_attempt_syn_packets'] += 1
+                    if record['first_connection_attempt'] is None:
+                        record['first_connection_attempt'] = timestamp
         observed = []
         final_messages = []
         sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))
@@ -77,6 +101,13 @@ def main():
         first_request = min(epoch(request['createdAt']) for request in requests)
         durations = [epoch(request['updatedAt']) - epoch(request['createdAt']) for request in requests]
         collection = json.loads((root / 'collection-receipt.json').read_text())
+        output_files = collection['files']
+        frozen = output_files.get('/var/lib/peer-operator/frozen-output.json')
+        final_output = output_files.get('/home/agent/discovered_peers.json')
+        post_freeze = {'frozen_output_present': frozen is not None, 'collection_output_present': final_output is not None}
+        if frozen and final_output:
+            post_freeze.update({'bytes_changed': frozen['sha256'] != final_output['sha256'],
+                                'collection_output_written_after_freeze': final_output['mtime_ns'] > frozen['mtime_ns']})
         samples = root / 'resource-samples.jsonl'
         sampled = [json.loads(line) for line in samples.read_text().splitlines()] if samples.exists() else []
         sampled_resources = {'samples': len(sampled), 'end_memory': collection['memory'], 'end_disk': collection['disk'],
@@ -95,12 +126,14 @@ def main():
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
+            'observed_outside_repeat_ip_traffic': outside_contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,
             'native_goal_tokens_used': goal['tokens_used'], 'native_goal_time_seconds': goal['time_used_seconds'],
             'session_count': len(sessions), 'thread_id': goal['thread_id'], 'final_messages': final_messages,
             'output_files': collection['files'], 'resources': sampled_resources,
+            'post_freeze_output_observation': post_freeze,
             'gateway_request_seconds_mean': statistics.mean(durations), 'gateway_request_seconds_max': max(durations),
             'quota_usage': gateway['apiKeyQuotaUsages'],
             'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}),
@@ -110,6 +143,28 @@ def main():
         'goal_acceptance_skew_seconds': max(row['goal_accepted'] for row in rows) - min(row['goal_accepted'] for row in rows),
         'total_requests': sum(row['requests'] for row in rows), 'total_tokens': sum(row['total_tokens'] for row in rows),
         'wall_seconds_mean': statistics.mean(row['wall_seconds'] for row in rows)}
+    events = sorted([(epoch(request['createdAt']), 1) for request in all_requests] +
+                    [(epoch(request['updatedAt']), -1) for request in all_requests])
+    active = peak = 0
+    for _, delta in events:
+        active += delta
+        peak = max(peak, active)
+    report['provider_observations'] = {
+        'request_status_counts': dict(Counter(request['status'] for request in all_requests)),
+        'execution_status_counts': dict(Counter(execution['status'] for execution in all_executions)),
+        'execution_http_status_counts': dict(Counter(str(execution['responseStatusCode']) for execution in all_executions)),
+        'channel_execution_counts': dict(Counter(execution['channelID'] for execution in all_executions)),
+        'peak_simultaneous_client_requests': peak,
+        'completed_requests_per_elapsed_minute': sum(request['status'] == 'completed' for request in all_requests) /
+            ((max(epoch(request['updatedAt']) for request in all_requests) -
+              min(epoch(request['createdAt']) for request in all_requests)) / 60),
+        'simultaneous_cases_observed': sorted(set(other_cases.values()) | {issue})}
+    report['quota_observations'] = {
+        'maximum_recorded_key_tokens': max(usage['usage']['totalTokens'] for row in rows for usage in row['quota_usage']),
+        'maximum_token_threshold_excess': max(max(0, usage['usage']['totalTokens'] - 200000)
+                                             for row in rows for usage in row['quota_usage']),
+        'maximum_request_threshold_excess': max(max(0, usage['usage']['requestCount'] - 100)
+                                               for row in rows for usage in row['quota_usage'])}
     cloud = json.loads((directory / 'cloud.json').read_text())
     cleanup = json.loads((directory / 'cleanup.json').read_text())
     hours = (cleanup['time'] - cloud['created_at']) / 3600 * len(rows)
@@ -119,6 +174,9 @@ def main():
         'transfer_basis': 'captured outbound peer IP bytes at regional first-paid internet rate; billing routes and allowances determine charges',
         'observed_peer_egress_bytes': sum(contact['bytes'] for row in rows for contact in row['observed_outbound_contacts'].values())}
     report['cost']['observed_peer_egress_usd_at_paid_rate'] = report['cost']['observed_peer_egress_bytes'] / 1e9 * 0.09
+    recording = json.loads((directory / 'recording-receipts.json').read_text())
+    report['cost']['s3'] = recording['s3_standard_cost_estimate_usd']
+    report['recording'] = {name: recording[name] for name in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_list_requests')}
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))
     print(json.dumps({key: value for key, value in report.items() if key != 'agents'}, indent=2))
 
