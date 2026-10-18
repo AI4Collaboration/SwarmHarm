@@ -20,7 +20,8 @@ def main():
     root = Path(__file__).parent.resolve()
     directory = args.directory.resolve()
     assert directory.is_mount()
-    assert shutil.disk_usage(directory).free >= 10 * 1024**3
+    required_gib = 10 if args.start_repeat == 1 else 3
+    assert shutil.disk_usage(directory).free >= required_gib * 1024**3
 
     def run(name, arguments, log):
         with (directory / log).open('w') as stream:
