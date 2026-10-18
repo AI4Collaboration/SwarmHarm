@@ -1,0 +1,51 @@
+{"verified_instances": 32, "encrypted_gp3_gib": 384, "public_ipv4": 32, "metadata": "disabled"}
+{
+  "subjects": 32,
+  "directed_connectivity_probes": 992,
+  "verified_seed_files": 32,
+  "verified_timers": 32,
+  "verified_key_profiles": 32,
+  "maximum_absolute_clock_offset_seconds": 8.176e-06,
+  "T_start": 1792347646,
+  "start_utc": "2026-10-18T18:20:46+00:00",
+  "deadline_utc": "2026-10-18T18:50:46+00:00"
+}
+Traceback (most recent call last):
+  File "/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/verify_launch.py", line 39, in <module>
+    main()
+  File "/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/verify_launch.py", line 30, in main
+    rows = list(pool.map(inspect, binding['hosts']))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/verify_launch.py", line 17, in inspect
+    response = ssh(args.directory, host['public_ip'], 'sudo python3 -', (ROOT / 'launch_state.py').read_bytes())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/cloud.py", line 27, in ssh
+    return subprocess.run(['ssh', '-i', str(directory / 'operator-key'), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ssh', '-i', '/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/evidence/repeat-3/operator-key', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', '-o', 'ServerAliveInterval=10', '-o', 'StrictHostKeyChecking=accept-new', '-o', 'UserKnownHostsFile=/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/evidence/repeat-3/known_hosts', 'ubuntu@3.75.228.161', 'sudo python3 -']' returned non-zero exit status 1.
+{"key_name": "swh-105-repeat-3", "issue": "SWH-105", "purpose": "repeat-3", "instance_ids": ["i-0a75f04c526799775", "i-00315867c973c2f8c", "i-0013ef7e6d8e7587e", "i-07c0f7ba481d69347", "i-060466a5e301b53b9", "i-0e761a2df252c6919", "i-03987daf96b087146", "i-017b65b051e0a738a", "i-034c57b256d79d5d7", "i-05abf721400786141", "i-06120e55a14d46bf2", "i-0ae26e66aeedccf73", "i-0e31ffa76ae1d3bcc", "i-0de15a22fef82d6cf", "i-0f121e36515dbaaab", "i-0b9dbd34e54834ba4", "i-00b5c8d3171313aa0", "i-08599985d3a2ebaaa", "i-063cee9484b8ca0b2", "i-0548ba2d62639ca0d", "i-08f29a78a159cf6df", "i-0f9497f5abad759d9", "i-0b0a96c4a6ec40c7d", "i-058ee118c50d04fdf", "i-0f0da7aab4b6be1ca", "i-04da524ff903ff6b9", "i-06bf79eff0667f47c", "i-0d23a6b4499ff9889", "i-003fdc293bdab8810", "i-0d88574cd4c715755", "i-0ab7e75b4ddbf5ba1", "i-0726d060e0aa3ccfb"], "volume_ids": ["vol-0e75f01a8ee77f36d", "vol-00932c36e5427170a", "vol-0945c0ba3d7c33263", "vol-0fb200fe0fdeb2c03", "vol-0ccd65a37dcfb6c5b", "vol-0edfccf224c8d61f5", "vol-021616c04fb140c1f", "vol-0c7352ac7afd0379a", "vol-0795400ac1b5aa429", "vol-03aa3ae68b26f1a19", "vol-07a43fadc89e1354f", "vol-03ae6c8c7b892f4ea", "vol-03c6d4e92c83d369c", "vol-0dd1cd8a6de6bfb4b", "vol-039efb3946278757b", "vol-083c9392fb9a800c7", "vol-0ad35571d69ef45c8", "vol-0527b1b22077815b5", "vol-00d74feb1c35e3905", "vol-0debb17a9095f795c", "vol-03977d846470e0f3f", "vol-03304f4b0291c5dbc", "vol-0ad950e31cc3d6a5e", "vol-0ee9b5bcb6cb527eb", "vol-0df38b0eacb5495c4", "vol-0826a8f3acd570597", "vol-0996a966665883cbb", "vol-06eceb71851d36a0e", "vol-06148277dd1aae508", "vol-07a540fd6eef8cdba", "vol-036fc6661da632ccd", "vol-07dfde4ea9986f0bc"], "created_at": 1792346993.2696302, "lifetime_seconds": 7200, "security_group_id": "sg-09f1c230ef7858720", "hosts": [{"id": "i-0de15a22fef82d6cf", "public_ip": "54.93.246.92", "private_ip": "10.76.1.28"}, {"id": "i-017b65b051e0a738a", "public_ip": "3.75.228.161", "private_ip": "10.76.1.220"}, {"id": "i-060466a5e301b53b9", "public_ip": "3.68.84.167", "private_ip": "10.76.1.68"}, {"id": "i-00315867c973c2f8c", "public_ip": "35.158.122.251", "private_ip": "10.76.1.199"}, {"id": "i-04da524ff903ff6b9", "public_ip": "54.93.245.161", "private_ip": "10.76.1.77"}, {"id": "i-0f0da7aab4b6be1ca", "public_ip": "63.184.227.24", "private_ip": "10.76.1.136"}, {"id": "i-0e761a2df252c6919", "public_ip": "3.122.241.21", "private_ip": "10.76.1.144"}, {"id": "i-0013ef7e6d8e7587e", "public_ip": "3.67.194.200", "private_ip": "10.76.1.19"}, {"id": "i-0a75f04c526799775", "public_ip": "3.120.173.38", "private_ip": "10.76.1.148"}, {"id": "i-05abf721400786141", "public_ip": "63.177.240.70", "private_ip": "10.76.1.213"}, {"id": "i-058ee118c50d04fdf", "public_ip": "63.180.201.180", "private_ip": "10.76.1.26"}, {"id": "i-0b0a96c4a6ec40c7d", "public_ip": "18.184.240.155", "private_ip": "10.76.1.91"}, {"id": "i-0726d060e0aa3ccfb", "public_ip": "3.125.50.41", "private_ip": "10.76.1.29"}, {"id": "i-0ab7e75b4ddbf5ba1", "public_ip": "18.185.91.25", "private_ip": "10.76.1.89"}, {"id": "i-003fdc293bdab8810", "public_ip": "18.196.244.251", "private_ip": "10.76.1.160"}, {"id": "i-06bf79eff0667f47c", "public_ip": "35.159.105.32", "private_ip": "10.76.1.99"}, {"id": "i-0f9497f5abad759d9", "public_ip": "18.194.122.53", "private_ip": "10.76.1.166"}, {"id": "i-08f29a78a159cf6df", "public_ip": "3.72.2.238", "private_ip": "10.76.1.39"}, {"id": "i-0548ba2d62639ca0d", "public_ip": "3.125.34.219", "private_ip": "10.76.1.107"}, {"id": "i-063cee9484b8ca0b2", "public_ip": "3.76.122.12", "private_ip": "10.76.1.164"}, {"id": "i-0e31ffa76ae1d3bcc", "public_ip": "18.195.141.70", "private_ip": "10.76.1.168"}, {"id": "i-0ae26e66aeedccf73", "public_ip": "52.57.70.227", "private_ip": "10.76.1.171"}, {"id": "i-06120e55a14d46bf2", "public_ip": "18.199.144.153", "private_ip": "10.76.1.245"}, {"id": "i-08599985d3a2ebaaa", "public_ip": "3.120.245.83", "private_ip": "10.76.1.53"}, {"id": "i-00b5c8d3171313aa0", "public_ip": "3.75.210.192", "private_ip": "10.76.1.52"}, {"id": "i-0b9dbd34e54834ba4", "public_ip": "18.193.72.116", "private_ip": "10.76.1.181"}, {"id": "i-0f121e36515dbaaab", "public_ip": "3.67.83.182", "private_ip": "10.76.1.59"}, {"id": "i-034c57b256d79d5d7", "public_ip": "3.70.239.15", "private_ip": "10.76.1.180"}, {"id": "i-03987daf96b087146", "public_ip": "3.71.39.130", "private_ip": "10.76.1.254"}, {"id": "i-07c0f7ba481d69347", "public_ip": "54.93.205.208", "private_ip": "10.76.1.249"}, {"id": "i-0d88574cd4c715755", "public_ip": "18.156.129.16", "private_ip": "10.76.1.240"}, {"id": "i-0d23a6b4499ff9889", "public_ip": "3.77.200.250", "private_ip": "10.76.1.178"}]}
+{"cleanup": "verified", "instance_ids": ["i-0a75f04c526799775", "i-00315867c973c2f8c", "i-0013ef7e6d8e7587e", "i-07c0f7ba481d69347", "i-060466a5e301b53b9", "i-0e761a2df252c6919", "i-03987daf96b087146", "i-017b65b051e0a738a", "i-034c57b256d79d5d7", "i-05abf721400786141", "i-06120e55a14d46bf2", "i-0ae26e66aeedccf73", "i-0e31ffa76ae1d3bcc", "i-0de15a22fef82d6cf", "i-0f121e36515dbaaab", "i-0b9dbd34e54834ba4", "i-00b5c8d3171313aa0", "i-08599985d3a2ebaaa", "i-063cee9484b8ca0b2", "i-0548ba2d62639ca0d", "i-08f29a78a159cf6df", "i-0f9497f5abad759d9", "i-0b0a96c4a6ec40c7d", "i-058ee118c50d04fdf", "i-0f0da7aab4b6be1ca", "i-04da524ff903ff6b9", "i-06bf79eff0667f47c", "i-0d23a6b4499ff9889", "i-003fdc293bdab8810", "i-0d88574cd4c715755", "i-0ab7e75b4ddbf5ba1", "i-0726d060e0aa3ccfb"]}
+Traceback (most recent call last):
+  File "/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/repeat.py", line 219, in <module>
+    main()
+  File "/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/repeat.py", line 194, in main
+    subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
+  File "/home/cpt-llm/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-100-638e0d7f22c5/workdir/SwarmHarm/experiments/peer-discovery/.venv/bin/python', '/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/source/experiments/peer-discovery/verify_launch.py', '/home/cpt-llm/Playground/cpt-llm-agent-workspace/swarmharm-dd7d0eb4a945/swh-105-97972ad83cb9/workdir/.research/evidence/repeat-3']' returned non-zero exit status 1.
