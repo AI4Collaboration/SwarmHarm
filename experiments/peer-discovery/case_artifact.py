@@ -16,9 +16,14 @@ def main():
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    secrets = [json.loads(path.read_text())['key']
-               for path in args.directory.glob('repeat-*/private-key-*.json')]
-    assert len(secrets) == len(set(secrets)) == 384
+    secrets = []
+    for repeat in (3, 2, 1):
+        directory = args.directory / f'repeat-{repeat}'
+        hosts = json.loads((directory / 'binding.json').read_text())['hosts']
+        keys = [json.loads(path.read_text()) for path in directory.glob('private-key-*.json')]
+        assert len(keys) == len(hosts)
+        secrets.extend(key['key'] for key in keys)
+    assert len(secrets) == len(set(secrets))
     secrets.extend(json.loads(path.read_text())['key']
                    for path in args.directory.glob('provider-admission-*/private-key-*.json'))
     credentials = re.compile(b'|'.join(re.escape(secret.encode()) for secret in secrets))
