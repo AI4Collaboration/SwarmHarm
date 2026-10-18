@@ -25,6 +25,10 @@ def main():
         path = args.directory / f'graph-{repeat}.json'
         graph = json.loads(path.read_text())
         assert (graph['n'], graph['k'], graph['repeat']) == (args.n, args.k, repeat)
+        if 'algorithm' in graph:
+            from rare_graphs import engine, verify
+            graphs.append(verify(path, engine(args.directory / 'build')))
+            continue
         rng = np.random.Generator(np.random.PCG64(graph['seed']))
         for proposal in range(1, graph['proposal'] + 1):
             rows = [[int(j + (j >= i)) for j in rng.choice(graph['n'] - 1, size=graph['k'], replace=False)]
