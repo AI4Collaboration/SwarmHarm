@@ -154,6 +154,7 @@ def main():
             save(directory, 'external-lifetime-termination.json', EC2.terminate_instances(InstanceIds=state['instance_ids']))
     watchdog = threading.Timer(lifetime, expire)
     watchdog.start()
+    timestamp = None
     try:
         if not (directory / 'cloud.json').exists():
             launch(directory, count, purpose, args.issue, graph['n'], graph['k'], lifetime)
@@ -196,23 +197,32 @@ def main():
                                     '--meta-key', str(meta_key), '--stage', 'release'], check=True)
                     launch_verified = True
                 time.sleep(5)
-            receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
-        save(directory, 'export-manifest.json', receipts)
-        subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
-                        '--meta-key', str(meta_key), '--stage', 'collection'], check=True)
-        recording = export(directory, meta_key)
-        assert recording['coverage_complete'], 'Inspect recording-receipts.json coverage'
-        print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:
         try:
-            for index, key in enumerate(keys):
-                save(directory, f'key-revocation-{index}.json', gateway(meta_key, 'disable', key['id']))
+            if timestamp is not None:
+                save(directory, 'window-collection-plan.json',
+                     {'T_start': timestamp, 'collection_due': timestamp + allowance + 15,
+                      'entered_finalization_at': time.time()})
+                while time.time() < timestamp + allowance + 15:
+                    time.sleep(5)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 16)) as pool:
+                    receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
+                save(directory, 'export-manifest.json', receipts)
+                subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
+                                '--meta-key', str(meta_key), '--stage', 'collection'], check=True)
+                recording = export(directory, meta_key)
+                assert recording['coverage_complete'], 'Inspect recording-receipts.json coverage'
+                print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
         finally:
             try:
-                cleanup(directory)
+                for index, key in enumerate(keys):
+                    save(directory, f'key-revocation-{index}.json', gateway(meta_key, 'disable', key['id']))
             finally:
-                watchdog.cancel()
-                watchdog.join()
+                try:
+                    cleanup(directory)
+                finally:
+                    watchdog.cancel()
+                    watchdog.join()
 
 
 if __name__ == '__main__':

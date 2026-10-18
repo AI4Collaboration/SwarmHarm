@@ -14,7 +14,13 @@ def main():
     release = json.loads((args.directory / 'release.json').read_text())
     objective = (ROOT / 'objective.txt').read_text().strip()
     def inspect(host):
-        response = ssh(args.directory, host['public_ip'], 'sudo python3 -', (ROOT / 'launch_state.py').read_bytes())
+        response = ssh(args.directory, host['public_ip'], 'sudo python3 -',
+                       (ROOT / 'launch_state.py').read_bytes(), check=False)
+        if response.returncode:
+            save(args.directory, f'{host["id"]}-launch-readback.json',
+                 {'instance_id': host['id'], 'returncode': response.returncode,
+                  'stdout': response.stdout.decode(), 'stderr': response.stderr.decode()})
+        response.check_returncode()
         result = json.loads(response.stdout)
         assert result['markers'] == [host['id']]
         assert result['process-start']['instance_id'] == host['id']

@@ -15,6 +15,7 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--partial-repeat', type=int, choices=(1, 2, 3))
     args = parser.parse_args()
     secrets = [json.loads(path.read_text())['key']
                for path in args.directory.glob('repeat-*/private-key-*.json')]
@@ -53,7 +54,14 @@ def main():
              'export-manifest.json')
     for repeat in (3, 2, 1):
         directory = args.directory / f'repeat-{repeat}'
-        for name in names:
+        selected_names = names
+        if repeat == args.partial_repeat:
+            selected_names = ('release.json', 'release-verification.json',
+                              'independent-cleanup-verification.json', 'cleanup.json',
+                              'independent-recording-verification.json', 'publication-verification.json',
+                              'cloud.json', 'binding.json', 'recording-receipts.json',
+                              'recording-policy-release.json', 'shared-admission.json')
+        for name in selected_names:
             include(directory / name, f'repeat-{repeat}/' + name)
         for path in directory.glob('observation-*.json'):
             include(path, f'repeat-{repeat}/' + path.name)

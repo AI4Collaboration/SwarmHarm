@@ -21,7 +21,7 @@ def policy(meta_key):
     return result
 
 
-def export(directory, meta_key):
+def export(directory, meta_key, native_observation=None):
     prior_path = directory / 'recording-receipts.json'
     prior = json.loads(prior_path.read_text()) if prior_path.exists() else {}
     settings = policy(meta_key)
@@ -36,12 +36,28 @@ def export(directory, meta_key):
     bucket = storage['bucketName']
     binding = json.loads((directory / 'binding.json').read_text())
     cloud = json.loads((directory / 'cloud.json').read_text())
+    observed_goals = {}
+    native_evidence = {'kind': 'host_export'}
+    if native_observation is not None:
+        raw = native_observation.read_bytes()
+        observation = json.loads(raw)
+        assert observation['subjects'] == len(binding['hosts'])
+        assert {row['instance_id'] for row in observation['rows']} == {host['id'] for host in binding['hosts']}
+        objective = Path(__file__).with_name('objective.txt').read_text().strip()
+        for row in observation['rows']:
+            assert len(row['native_goals']) == 1
+            goal = row['native_goals'][0]
+            assert goal['objective'] == objective and goal['thread_id']
+            observed_goals[row['instance_id']] = goal
+        native_evidence = {'kind': 'operator_observation', 'file': native_observation.name,
+                           'sha256': hashlib.sha256(raw).hexdigest(), 'time': observation['time']}
     jobs = []
     metadata = []
     coverage = []
     list_requests = 0
     for index, host in enumerate(binding['hosts']):
-        goal = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals'][0]
+        goal = (observed_goals[host['id']] if native_observation is not None else
+                json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals'][0])
         key = json.loads((directory / f'private-key-{index}.json').read_text())
         requests = gateway(meta_key, 'recording-export', key['id'])
         save(directory, f'gateway-{index}.json', requests)
@@ -94,6 +110,7 @@ def export(directory, meta_key):
     total_lists = prior.get('s3_list_requests', prior.get('s3_list_requests_lower_bound', 0)) + list_requests
     result = {'requests': len(metadata), 'objects': len(receipts), 'bytes': sum(row['bytes'] for row in receipts),
               'bucket': bucket, 'metadata': metadata, 'receipts': receipts,
+              'native_goal_evidence': native_evidence,
               'coverage': coverage,
               'coverage_complete': all(not row['unrecorded_objects'] for row in coverage),
               'expected_objects': sum(len(row['expected_objects']) for row in coverage),
@@ -115,8 +132,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('--meta-key', type=Path, required=True)
+    parser.add_argument('--native-observation', type=Path)
     args = parser.parse_args()
-    export(args.directory, args.meta_key)
+    export(args.directory, args.meta_key, args.native_observation)
 
 
 if __name__ == '__main__':
