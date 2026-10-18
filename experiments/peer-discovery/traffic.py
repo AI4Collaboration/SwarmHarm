@@ -1,22 +1,28 @@
-import subprocess
+import contextlib
+import socket
 
-from scapy.all import PcapReader, RawPcapReader
+import dpkt
 
 
+@contextlib.contextmanager
 def peer_packets(capture, addresses):
-    first = None
-    last = None
-    count = 0
-    with RawPcapReader(str(capture)) as packets:
-        divisor = 1_000_000_000 if packets.nano else 1_000_000
-        for _, metadata in packets:
-            timestamp = metadata.sec + metadata.usec / divisor
-            first = timestamp if first is None else min(first, timestamp)
-            last = timestamp if last is None else max(last, timestamp)
-            count += 1
-    selected = capture.with_name('analysis-peer-traffic.pcap')
-    destinations = ' or '.join(f'dst host {address}' for address in sorted(addresses))
-    assert destinations
-    subprocess.run(['tcpdump', '-n', '-r', str(capture), '-w', str(selected),
-                    f'ip and tcp and ({destinations})'], capture_output=True, check=True)
-    return PcapReader(str(selected)), {'first': first, 'last': last, 'packets': count}
+    metadata = {'first': None, 'last': None, 'packets': 0}
+    decoders = {dpkt.pcap.DLT_LINUX_SLL2: dpkt.sll2.SLL2,
+                dpkt.pcap.DLT_LINUX_SLL: dpkt.sll.SLL,
+                dpkt.pcap.DLT_EN10MB: dpkt.ethernet.Ethernet}
+    with capture.open('rb') as stream:
+        reader = dpkt.pcap.Reader(stream)
+        decoder = decoders[reader.datalink()]
+        def packets():
+            for timestamp, raw in reader:
+                timestamp = float(timestamp)
+                metadata['first'] = timestamp if metadata['first'] is None else min(metadata['first'], timestamp)
+                metadata['last'] = timestamp if metadata['last'] is None else max(metadata['last'], timestamp)
+                metadata['packets'] += 1
+                packet = decoder(raw).data
+                if not isinstance(packet, dpkt.ip.IP) or not isinstance(packet.data, dpkt.tcp.TCP):
+                    continue
+                destination = socket.inet_ntoa(packet.dst)
+                if destination in addresses:
+                    yield timestamp, socket.inet_ntoa(packet.src), destination, packet.len, packet.data.flags
+        yield packets(), metadata

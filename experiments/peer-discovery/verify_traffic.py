@@ -29,10 +29,8 @@ def main():
             total += 1
             if IP in packet and TCP in packet and packet[IP].dst in addresses:
                 expected.append((timestamp, packet[IP].src, packet[IP].dst, packet[IP].len, int(packet[TCP].flags)))
-    packets, metadata = peer_packets(capture, addresses)
-    with packets:
-        actual = [(float(packet.time), packet[IP].src, packet[IP].dst, packet[IP].len, int(packet[TCP].flags))
-                  for packet in packets]
+    with peer_packets(capture, addresses) as (packets, metadata):
+        actual = list(packets)
     assert expected == actual
     assert metadata == {'first': first, 'last': last, 'packets': total}
     result = {'instance_id': args.instance_id, 'original_packets': total, 'selected_packets': len(actual),

@@ -2,7 +2,7 @@
 
 Run `observe.py DIRECTORY GRAPH --meta-key OPERATOR_SSH_KEY` alongside the foreground repeat operator. It waits for all timer receipts, independently checks the live release before its timestamp, and captures periodic host/gateway observations throughout the 30-minute window. Collect both foreground commands before ending the operator turn.
 
-Operator packet analysis requires `tcpdump`. `traffic.py` reads original capture metadata through Scapy and uses libpcap filtering for peer destinations before detailed TCP analysis. `verify_traffic.py DIRECTORY INSTANCE_ID` compares the original and filtered packet sequence, fields, timestamps, and capture bounds on an actual capture. For repeated identical S3 collection passes, pass their observed count through `finish_repeat.py --recording-passes COUNT`; retain a pass receipt with the evidence.
+`traffic.py` uses `dpkt` to read original capture records and TCP/IP fields. `verify_traffic.py DIRECTORY INSTANCE_ID` independently compares Scapy's packet sequence, fields, timestamps, and capture bounds on an actual capture. For repeated identical S3 collection passes, pass their observed count through `finish_repeat.py --recording-passes COUNT`; retain a pass receipt with the evidence.
 
 SWH-95 N64/K5 execution uses the three registered parent graphs with exact draw replay. `repeat.py` requires `--state-dir OPERATOR_STATE` and `--issue SWH-95`; shared admission and the live recording policy are checked before provisioning. All directed host connections are verified concurrently. Timer files are prepared across the fleet before arming. Paginated request metadata and actual S3 client/execution payloads receive coverage and SHA256 receipts in `recording-verification.json`.
 

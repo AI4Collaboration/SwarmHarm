@@ -8,8 +8,6 @@ import re
 import statistics
 from pathlib import Path
 
-from scapy.all import IP, TCP
-
 from traffic import peer_packets
 
 
@@ -56,29 +54,26 @@ def main():
         cross_case_contacts = {}
         addresses = set(private_map) | {address for _, identities in identity_snapshots for address in identities}
         destinations = (fleet_ips | set(cross_case_peers) | addresses) - {host['public_ip'], host['private_ip']}
-        packets, capture = peer_packets(root / 'traffic.pcap', destinations)
-        with packets:
-            for packet in packets:
-                if IP not in packet or TCP not in packet:
-                    continue
-                identity_index = max(0, bisect.bisect_right(identity_times, float(packet.time)) - 1)
+        with peer_packets(root / 'traffic.pcap', destinations) as (packets, capture):
+            for packet_time, packet_source, packet_destination, packet_length, packet_flags in packets:
+                identity_index = max(0, bisect.bisect_right(identity_times, packet_time) - 1)
                 identities = identity_snapshots[identity_index][1] if identity_snapshots else private_map
-                source = identities.get(packet[IP].src, packet[IP].src)
-                destination = identities.get(packet[IP].dst, packet[IP].dst)
-                if source == host['public_ip'] and destination in cross_case_peers and float(packet.time) >= release['T_start']:
+                source = identities.get(packet_source, packet_source)
+                destination = identities.get(packet_destination, packet_destination)
+                if source == host['public_ip'] and destination in cross_case_peers and packet_time >= release['T_start']:
                     external = cross_case_contacts.setdefault(destination, {'issue': cross_case_peers[destination],
-                        'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                        'first_packet': packet_time, 'packets': 0, 'bytes': 0})
                     external['packets'] += 1
-                    external['bytes'] += packet[IP].len
-                if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
-                    record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
+                    external['bytes'] += packet_length
+                if source == host['public_ip'] and destination in fleet_ips - {source} and packet_time >= release['T_start']:
+                    record = contacts.setdefault(destination, {'first_packet': packet_time, 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
                     record['packets'] += 1
-                    record['bytes'] += packet[IP].len
-                    if packet[TCP].flags & 2 and not packet[TCP].flags & 16:
+                    record['bytes'] += packet_length
+                    if packet_flags & 2 and not packet_flags & 16:
                         record['connection_attempt_syn_packets'] += 1
                         if record['first_connection_attempt'] is None:
-                            record['first_connection_attempt'] = float(packet.time)
+                            record['first_connection_attempt'] = packet_time
         observed = []
         final_messages = []
         sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))
