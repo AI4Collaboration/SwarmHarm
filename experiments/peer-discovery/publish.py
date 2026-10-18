@@ -30,7 +30,7 @@ def main():
             continue
         if path.suffix in ('.gz', '.sqlite', '.sqlite-wal', '.sqlite-shm'):
             continue
-        if path.suffix not in ('.json', '.jsonl', '.txt', '.toml', '.pcap', '.py', '.md', '.sha256') and 'launches' not in path.parts:
+        if path.suffix not in ('.json', '.jsonl', '.txt', '.toml', '.pcap', '.py', '.sh', '.md', '.sha256') and 'launches' not in path.parts:
             continue
         if 'shell_snapshots' in path.parts:
             continue
