@@ -1,5 +1,17 @@
 ## SWH-88 execution
 
+Completed **2026-10-18**: three serial N=32/K=2 repeats, 96 fresh subjects, full 30-minute windows, and 0/96 exact submissions. Independent grading agrees with all individual scores, precision, validity, output hashes and coverage.
+
+| Repeat | Valid JSON | Mean recall | Coverage | Beyond seeds | Requests | Tokens |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 3 | 25/32 | 0.1633 | 0.9688 | 112 | 280 | 3,786,928 |
+| 2 | 19/32 | 0.1230 | 0.9688 | 84 | 256 | 2,985,953 |
+| 1 | 20/32 | 0.0706 | 0.9375 | 30 | 265 | 3,277,828 |
+
+The issue delivery includes reports, sanitized repeat archives, graph bindings, sessions/native goals, timers, frozen outputs, packet captures, resource samples, lifecycle attribution and cleanup receipts. Independent recording verification covers 4,524 objects / 351,328,004 bytes and all 801 requests. Per-request traces retain HTTP 401/429 observations and subscription-channel accounting. Counted EC2/IPv4/gp3 cost is approximately $1.4387, with S3 and observed transfer accounting recorded separately. All 96 subjects, original volumes, inference keys and owned networking resources have cleanup readbacks; the reservation is released.
+
+Download the attached ZIP parts, `publication-parts.json` and `restore_artifacts.py`. Run `python3 restore_artifacts.py publication-parts.json DOWNLOADS OUTPUT` to reconstruct and verify all three repeat archives. Each archive also carries a file-size/SHA256 publication manifest. The source snapshot accompanies the delivery; executed harness and analysis revisions remain in the evidence.
+
 This case runs N=32, K=2 across three serial repeats. Each repeat uses 32 fresh EC2 instances and a 30-minute observation window from its shared future Unix timestamp. The shared harness is based on revision `100470a2`; scheduling uses the SWH-77 locked admission ledger.
 
 Deploy these case scripts into `OPERATOR_STATE/scripts`, the shared harness into `OPERATOR_STATE/operator-code/experiments/peer-discovery`, and the scheduling code into the adjacent `peer-discovery-scheduling` directory. Place the registered graph files in `OPERATOR_STATE/graphs` and preserve their SHA256 values. Operator state remains private.
