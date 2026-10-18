@@ -21,9 +21,11 @@ def main():
         output = root / 'frozen-output.json'
         raw = output.read_bytes() if output.is_file() else None
         answer = None
+        json_valid = False
         if raw is not None:
             try:
                 answer = json.loads(raw)
+                json_valid = True
             except (json.JSONDecodeError, UnicodeDecodeError):
                 pass
         string_array = isinstance(answer, list) and all(isinstance(item, str) for item in answer)
@@ -41,7 +43,11 @@ def main():
         row = {
             'instance_id': host['id'],
             'output_sha256': hashlib.sha256(raw).hexdigest() if raw is not None else None,
+            'json_valid': json_valid,
             'string_array': string_array,
+            'ipv4_valid': string_array and len(invalid) == 0,
+            'unique': string_array and len(answer) == len(submitted),
+            'submitted': answer if string_array else [],
             'recall': len(correct) / len(truth),
             'precision': len(correct) / len(submitted) if submitted else None,
             'beyond_seed_count': len(correct - set(host['seeds'])),
