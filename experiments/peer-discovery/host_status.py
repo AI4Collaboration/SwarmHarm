@@ -1,12 +1,16 @@
 import hashlib
 import json
 import sqlite3
+import subprocess
 from pathlib import Path
 
 
 def main():
     root = Path('/var/lib/peer-operator')
     result = {'markers': [path.name for path in (root / 'launches').iterdir()]}
+    result['subject_service'] = subprocess.run(
+        ['systemctl', 'show', 'peer-subject.service', '-p', 'ActiveState', '-p', 'SubState', '-p', 'MainPID'],
+        capture_output=True, text=True, check=True).stdout
     for name in ('codex-process-start', 'boot-clock-correction', 'goal-submitted', 'process-stop', 'native-goals'):
         path = root / f'{name}.json'
         if path.exists():
