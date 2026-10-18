@@ -183,6 +183,7 @@ def main():
             save(directory, 'connectivity.json', {'verified_directed_pairs': sum(row['verified_destinations'] for row in connections),
                                                 'sources': connections})
             list(pool.map(lambda host: ssh(directory, host['public_ip'], 'sudo systemctl stop peer-connectivity-probe.service'), hosts))
+            save(directory, 'recording-policy-release.json', gateway(meta_key, 'recording', 'current'))
             timestamp = int(time.time()) + 125
             save(directory, 'release.json', {'T_start': timestamp, 'allowance_seconds': allowance, 'prepared_at': time.time()})
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))

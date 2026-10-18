@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+**SWH-86 operator controls, 2026-10-18:** each repeat verifies the AxonHub recording flags again immediately before timer release. `monitor.py REPEAT_DIRECTORY` collects per-instance invocation, native-goal and output receipts through the operator SSH identity. Case evidence may use a private operator directory mounted inside the checkout's ignored evidence directory; collection and publication remain foreground operations.
+
 SWH-87 releases additionally require `--binary-sha256 HASH` from the shared disposable admission. The launcher refreshes shared admission before provisioning, verifies each model catalog, runs directed connectivity checks concurrently, and collects paginated gateway records plus actual S3 payloads before teardown. Stored payload receipts link issue, repeat, EC2 instance, scoped key, request, execution and native session. Recording policies and capacity receipts accompany each repeat.
 
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
