@@ -24,7 +24,10 @@ from recording import collect as collect_recordings
 def gateway(meta_key, mode, value):
     result = subprocess.run(['ssh', '-i', str(meta_key), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15',
         'ubuntu@63.186.173.73', f'sudo python3 - {shlex.quote(mode)} {shlex.quote(value)}'],
-        input=(ROOT / 'gateway.py').read_bytes(), capture_output=True, check=True)
+        input=(ROOT / 'gateway.py').read_bytes(), capture_output=True)
+    if result.returncode:
+        sys.stderr.buffer.write(result.stderr)
+    result.check_returncode()
     return json.loads(result.stdout)
 
 
@@ -160,7 +163,7 @@ def main():
             if args.existing_key:
                 key = json.loads(args.existing_key.read_text())
             else:
-                key = gateway(meta_key, 'create', f'{args.issue.lower()}-{purpose}-{index}')
+                key = gateway(meta_key, 'create', f'{args.issue.lower()}-{purpose}-{host["id"]}-{index}')
             keys.append(key)
             save(directory, f'private-key-{index}.json', key)
         binding = {'repeat': graph['repeat'], 'hosts': hosts, 'graph_sha256': hashlib.sha256(args.graph.read_bytes()).hexdigest()}

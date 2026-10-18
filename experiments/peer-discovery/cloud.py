@@ -36,6 +36,7 @@ def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
         'project': 'swarmharm', 'issue': issue, 'parent': 'SWH-77', 'case': f'N{n}-K{k}', 'purpose': purpose}.items()]
     state = {'key_name': f'{issue.lower()}-{purpose}', 'issue': issue, 'purpose': purpose,
         'instance_ids': [], 'volume_ids': [], 'created_at': time.time(), 'lifetime_seconds': lifetime}
+    state['client_token'] = f'{state["key_name"]}-{time.time_ns()}'
     save(directory, 'cloud.json', state)
     EC2.import_key_pair(KeyName=state['key_name'], PublicKeyMaterial=(directory / 'operator-key.pub').read_bytes(),
         TagSpecifications=[{'ResourceType': 'key-pair', 'Tags': tags}])
@@ -50,7 +51,7 @@ def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
         rules = [entry for acl in nacls['NetworkAcls'] for entry in acl['Entries'] if entry['Egress'] == egress]
         assert any(rule.get('CidrBlock') == '0.0.0.0/0' and rule['RuleAction'] == 'allow' and rule['Protocol'] == '-1' for rule in rules)
     instances = EC2.run_instances(ImageId='ami-0b8a830d6339a9758', InstanceType='t2.micro', MinCount=count, MaxCount=count,
-        KeyName=state['key_name'], ClientToken=state['key_name'],
+        KeyName=state['key_name'], ClientToken=state['client_token'],
         NetworkInterfaces=[{'DeviceIndex': 0, 'SubnetId': 'subnet-0f9b3bc5da2c0c635', 'Groups': [group['GroupId']], 'AssociatePublicIpAddress': True}],
         MetadataOptions={'HttpEndpoint': 'enabled', 'HttpTokens': 'required'}, CreditSpecification={'CpuCredits': 'standard'},
         InstanceInitiatedShutdownBehavior='terminate',

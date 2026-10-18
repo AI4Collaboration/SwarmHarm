@@ -17,7 +17,8 @@ def main():
     parser.add_argument('--meta-key', type=Path, required=True)
     parser.add_argument('--issue', required=True)
     args = parser.parse_args()
-    key = gateway(args.meta_key, 'create', f'{args.issue.lower()}-provider-{args.directory.name}')
+    key = gateway(args.meta_key, 'create',
+                  f'{args.issue.lower()}-provider-{args.directory.parent.name}-{args.directory.name}')
     save(args.directory, 'private-key-0.json', key)
     barrier = threading.Barrier(8)
 
