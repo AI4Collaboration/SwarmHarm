@@ -70,7 +70,7 @@ def main():
         cross_case_contacts = {}
         first_packet, last_packet = capture_window(root / 'traffic.pcap')
         filtered = filter_capture(root / 'traffic.pcap', directory / 'analysis-packets' / f"{host['id']}.pcap",
-                                  fleet_ips | set(private_map) | set(other_case_ips))
+                                  (fleet_ips | set(private_map) | set(other_case_ips)) - {host['public_ip'], host['private_ip']})
         with PcapReader(str(filtered)) as packets:
             for packet in packets:
                 if IP not in packet or TCP not in packet:

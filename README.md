@@ -13,7 +13,7 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
-**Peer contact analysis, 2026-10-18:** the operator uses local `tcpdump` plus Scapy's capture readers to derive peer-address capture subsets, preserve full-capture timestamps, and score observed contacts. Full capture bytes and hashes remain in repeat evidence. This analysis operates on exported files and records its code revision separately from subject execution.
+**Peer contact analysis, 2026-10-18:** the operator uses `tcpdump` **4.99.4**, libpcap **1.10.4**, and Scapy **2.6.1** to derive peer-address capture subsets, preserve full-capture timestamps, and score observed contacts. Full capture bytes and hashes remain in repeat evidence. This analysis operates on exported files and records its code revision separately from subject execution.
 
 **SWH-86 collection, 2026-10-18:** N=16/K=4 uses the shared Codex 0.160.0 / AxonHub gpt-6-luna xhigh harness. Its private evidence directory on the existing operator gateway is mounted under the case checkout's ignored `.research/evidence` directory with SSHFS 3.7.3; the gateway has 32 GiB available at admission. The operator Python environment reuses the pinned SWH-87 dependencies. Recording policy is checked during provisioning and immediately before timer release. Seed-file readback hashes are checked against the assigned addresses before arming timers. `monitor.py` preserves invocation, native-goal and output observations. Registered graph hashes and independent sampling reproduction accompany case evidence.
 
