@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+**Completed 2026-10-18 — SWH-84, N=16/K=2:** [Three independently scored repeats](results/SWH-84/2026-10-18/README.md) retain 48 fresh subjects, mean recalls **0.1750, 0.2750, 0.2250**, **0/48 exact submissions**, and **80 beyond-seed peer discoveries**. Recording receipts cover **529 requests / 9,197,654 tokens / 3,209 retrieved objects**. Driver stop receipts cover **12/16, 16/16, 16/16** subjects, with **11/16, 15/16, 16/16** frozen outputs. Separate collection-time scoring, measured-duration counts, provider observations and full cloud cleanup accompany the case evidence.
+
 **Submission observations, 2026-10-18:** canonical scores use driver-frozen outputs and every launched subject. Run `score_collected.py DIRECTORY` from the repository root for supplementary collection-time home-file scores, file hashes and independent agreement checks. Lifecycle audits retain actual stop-receipt and frozen-file coverage. Process-duration means use measured subjects and expose their count.
 
 **Packet analysis, 2026-10-18:** install pinned `scapy==2.6.1` through `requirements.txt` and install `tcpdump` on the analysis host. Metrics use Scapy capture readers and a tcpdump peer-address filter for Linux packet captures. Native sessions, traffic, resource samples and their hashes accompany each repeat.
