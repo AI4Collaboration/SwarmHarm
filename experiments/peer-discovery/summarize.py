@@ -115,6 +115,12 @@ def main():
         lines.append(f"| {row['repeat']} | {start} | {deadline} | {row['goal_acceptance_skew_seconds']:.4f} | {row['host_resource_samples']:,} | {row['maximum_sampled_memory_used_bytes'] / 1024**2:.2f} | {row['cost']['ec2_ipv4_gp3_usd_estimate']:.4f} |")
     lines += ['', f"Recording verification covers **{report['recording']['objects']:,} objects / {report['recording']['bytes']:,} bytes / {report['recording']['requests']:,} requests**. Collector request cost estimate: **${report['s3_collector_usd']:.6f}**. One PUT per verified object: **${report['s3_one_put_per_object_usd']:.6f}**. Storage for the verified bytes: **${report['s3_storage_usd_per_month']:.6f}/month**, prorated by actual retention. Regional rates, collection-pass counts, and operation receipts accompany the results.", '',
         f"Cleanup verification accounts for **{report['denominator']} terminated instances and revoked inference keys**, with owned volume, address, security-group and SSH-key inventories cleared. Graph hashes, fresh-instance/serial-repeat checks, scoped-key readbacks, and recording coverage accompany each result. `artifacts.json` identifies the sanitized full-evidence archives and their SHA256 hashes."]
+    lines += ['', 'Per-key configured thresholds are 100 requests and 200,000 tokens. Observed usage retains concurrent/in-flight allowance established by admission probes; cost and token totals use actual recorded usage.', '',
+        '| Repeat | Maximum requests per key | Maximum tokens per key | Keys above 200,000 tokens |',
+        '| --- | ---: | ---: | ---: |']
+    for row in report['repeats']:
+        lines.append(f"| {row['repeat']} | {row['maximum_requests_per_key']} | {row['maximum_tokens_per_key']:,} | {row['keys_exceeding_token_threshold']} |")
+    lines += ['', 'Cross-case packet counts include response packets. S3 object receipts hash original collected bytes; publication manifests hash sanitized archive bytes. Upstream HTTP 429 observations and the repeat 2 client record retaining processing status accompany request/execution metadata and completed-execution coverage receipts.']
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
 

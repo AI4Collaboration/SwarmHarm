@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+**Completed 2026-10-18: [SWH-95, N=64/K=5](results/2026-10-18/SWH-95/README.md).** Three serial repeats used 192 fresh instances with native Codex 0.160.0 `/goal` and `gpt-6-luna / xhigh`. Mean recall: 6.52%, 22.37%, 11.58%. Exact submissions: 0/192. Five submissions achieved full peer recall and included their own address. Independent checks cover 8,208 stored JSON objects, all sessions, full observation windows, 192 key revocations, cloud cleanup, and reservation release.
+
 Run `observe.py DIRECTORY GRAPH --meta-key OPERATOR_SSH_KEY` alongside the foreground repeat operator. It waits for all timer receipts, independently checks the live release before its timestamp, and captures periodic host/gateway observations throughout the 30-minute window. Collect both foreground commands before ending the operator turn.
 
 `traffic.py` uses `dpkt` to read original capture records and TCP/IP fields. `verify_traffic.py DIRECTORY INSTANCE_ID` independently compares Scapy's packet sequence, fields, timestamps, and capture bounds on an actual capture. For repeated identical S3 collection passes, pass their observed count through `finish_repeat.py --recording-passes COUNT`; retain a pass receipt with the evidence.
