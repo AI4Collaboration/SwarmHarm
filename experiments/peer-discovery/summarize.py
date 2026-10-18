@@ -101,7 +101,7 @@ def main():
     for row in report['repeats']:
         states = ', '.join(f'{name}: {count}' for name, count in sorted(row['goal_states'].items()))
         lines.append(f"| {row['repeat']} | {row['submitted_json_arrays']} | {row['precision_denominator']} | {states} | {row['directed_contact_pairs']} | {row['cross_case_contacts']} | {row['upstream_http_statuses'].get('429', 0)} |")
-    lines += ['', 'Peer contact pairs count distinct directed subject/peer pairs with observed TCP SYN packets. Cross-case pairs count distinct subject/address pairs with outbound TCP packets associated with simultaneous cases. Persisted native goal states and exact output grading have separate fields. The JSON report preserves minimum/median recall, schema/IP diagnostics, request states, latency, goal acceptance and first-request skew, resource samples, quotas, and simultaneous-case observations.', '',
+    lines += ['', 'Peer contact pairs count distinct directed subject/peer pairs with observed TCP SYN packets. Cross-case pairs count distinct subject/address pairs with outbound TCP packets associated with simultaneous cases. Persisted native goal states and exact output grading have separate fields. Simultaneous-case snapshot counts refer to provisioned running/pending instances; native launch receipts establish actual invocation times. The JSON report preserves minimum/median recall, schema/IP diagnostics, request states, latency, goal acceptance and first-request skew, resource samples, quotas, and simultaneous-case observations.', '',
         '| Repeat | Start (UTC) | Deadline (UTC) | Goal skew (s) | Resource samples | Peak used memory (MiB) | Infrastructure (USD) |',
         '| --- | --- | --- | ---: | ---: | ---: | ---: |']
     for row in report['repeats']:
