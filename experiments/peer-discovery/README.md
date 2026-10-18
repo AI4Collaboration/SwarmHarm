@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-98 artifact delivery, 2026-10-18: `case_artifact.py` verifies a sanitized manifest containing case reports, graphs, admission, provider checks, independent scores, recording and cleanup receipts. `publication_chunks.py REPEAT PUBLICATION --output MANIFEST` divides each verified publication into 8-MiB attachment parts and independently verifies every part and the reconstructed SHA256. Reports list repeat 3 first.
+
 SWH-98 observation, 2026-10-18: `status_case.py DIRECTORY` reports independent fleet-stage counts. Gateway snapshots include container resource statistics. Subsequent fleets use 32 bootstrap workers and collect a fresh recording-policy receipt after readiness, before timer release. Subject configuration and the approved three-repeat protocol remain fixed.
 
 SWH-98 preparation, 2026-10-18: `operator_admission.py --n 128 --k 4` validates registered graphs and shared native-goal evidence. `provider_admission.py --issue SWH-98` creates case-labelled diagnostic keys. Case collection uses the existing operator volume through SSHFS; raw credentials and evidence stay private. Each repeat refreshes shared capacity, live provider throughput and stored-payload retrieval checks.
