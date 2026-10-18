@@ -2,6 +2,7 @@ import argparse
 import collections
 import hashlib
 import json
+import re
 import shutil
 import statistics
 import subprocess
@@ -19,7 +20,11 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('output', type=Path)
     parser.add_argument('--issue', required=True)
+    parser.add_argument('--code-revision')
     args = parser.parse_args()
+    revision = args.code_revision if args.code_revision is not None else subprocess.run(
+        ['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True).stdout.strip()
+    assert re.fullmatch(r'[0-9a-f]{40}', revision)
     root = args.directory
     output = args.output
     output.mkdir(parents=True, exist_ok=True)
@@ -169,8 +174,7 @@ def main():
               'infrastructure_usd_estimate': sum(row['infrastructure_usd_estimate'] for row in rows),
               'preparation': preparation_report,
               'all_terminated_case_instances': 256,
-              'code_revision': subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True,
-                                              text=True, check=True).stdout.strip()}
+              'code_revision': revision}
     report['spread'] = {name: {'minimum': min(row[name] for row in rows),
                               'maximum': max(row[name] for row in rows),
                               'mean': statistics.mean(row[name] for row in rows)}
