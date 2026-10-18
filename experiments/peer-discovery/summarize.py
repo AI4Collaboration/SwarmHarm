@@ -98,6 +98,9 @@ def main():
     operator_storage = args.directories[0].parent / 'operator-storage-costs.json'
     if operator_storage.is_file():
         report['operator_storage'] = json.loads(operator_storage.read_text())
+    diagnostic_path = args.directories[0].parent / 'diagnostic-audit.json'
+    if diagnostic_path.is_file():
+        report['diagnostics'] = json.loads(diagnostic_path.read_text())
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
         ('completion_fraction', 'recall_mean', 'repeat_coverage', 'beyond_seed_count', 'tokens', 'requests', 'process_start_skew_seconds')}
@@ -133,6 +136,9 @@ def main():
     for row in report['repeats']:
         lines.append(f"| {row['repeat']} | {row['maximum_requests_per_key']} | {row['maximum_tokens_per_key']:,} | {row['keys_exceeding_token_threshold']} |")
     lines += ['', 'Cross-case packet counts include response packets. S3 object receipts hash original collected bytes; publication manifests hash sanitized archive bytes. Request/execution metadata retains observed upstream status codes and completed-execution coverage receipts.']
+    if diagnostic_path.is_file():
+        diagnostic = report['diagnostics']
+        lines += ['', f"Separate operator diagnostics: **{diagnostic['requests']} requests / {diagnostic['tokens']:,} tokens**, across **{len(diagnostic['provider_probes'])} provider probes**, with every diagnostic key revoked. Storage readback verifies **{diagnostic['unique_objects']} unique objects / {diagnostic['unique_object_bytes']:,} bytes**. Diagnostic S3 collection estimate: **${diagnostic['s3_collector_usd']:.6f}**; one PUT per unique object: **${diagnostic['s3_one_put_per_unique_object_usd']:.6f}**; storage: **${diagnostic['s3_storage_usd_per_month']:.6f}/month**, prorated by retention. Shared native-goal admission receipts accompany the case; this case used **{diagnostic['new_preflight_instances']} new preflight instances**."]
     if retention:
         retained = report['archive_retention']
         lines += ['', f"Private encrypted S3 retention preserves **{retained['archives']} original host archives / {retained['bytes']:,} bytes** with full remote SHA256 readback. Retention request estimate: **${retained['request_usd']:.6f}**; storage: **${retained['storage_usd_per_month']:.6f}/month**, prorated by retention."]
