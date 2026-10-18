@@ -49,6 +49,8 @@ def main():
         if path.is_file():
             include(path, 'report/' + str(path.relative_to(args.report)))
     for path in args.directory.glob('*.json'):
+        if path.name == 'publication-location.json':
+            continue
         include(path, 'admission/' + path.name)
     for path in (args.directory / 'protocol').rglob('*'):
         if path.is_file():
