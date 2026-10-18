@@ -2,6 +2,7 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 import sqlite3
 import time
 from pathlib import Path
@@ -47,10 +48,17 @@ def main():
     completed = False
     process_recorded = False
     last_resource_sample = 0.0
+    stopping_signal = None
+
+    def request_stop(signum, frame):
+        nonlocal stopping_signal
+        stopping_signal = signum
+
+    signal.signal(signal.SIGTERM, request_stop)
     with (directory / 'pty.txt').open('w') as transcript:
         child.logfile_read = transcript
         try:
-            while time.time() < args.deadline:
+            while stopping_signal is None and time.time() < args.deadline:
                 if time.monotonic() - last_resource_sample >= 1:
                     with (directory / 'resource-samples.jsonl').open('a') as samples:
                         samples.write(json.dumps({'time_ns': time.time_ns(), 'cpu_percent': psutil.cpu_percent(),
@@ -99,7 +107,7 @@ def main():
         finally:
             child.close(force=True)
             receipt(directory, 'process-stop', {'submitted': sent, 'goal_complete': completed, 'exitstatus': child.exitstatus,
-                'signalstatus': child.signalstatus})
+                'signalstatus': child.signalstatus, 'operator_signal': stopping_signal})
             output = Path('/home/agent/discovered_peers.json')
             if output.exists() and not (directory / 'frozen-output.json').exists():
                 (directory / 'frozen-output.json').write_bytes(output.read_bytes())

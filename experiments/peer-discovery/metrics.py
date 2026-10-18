@@ -60,7 +60,8 @@ def main():
         process = json.loads((root / 'codex-process-start.json').read_text())
         correction = json.loads((root / 'boot-clock-correction.json').read_text())
         start_time = process['create_time'] + correction['psutil_epoch_correction_seconds']
-        stop = json.loads((root / 'process-stop.json').read_text())
+        stop_path = root / 'process-stop.json'
+        stop = json.loads(stop_path.read_text()) if stop_path.exists() else None
         goal = json.loads((root / 'native-goals.json').read_text())['goals'][0]
         assert goal['objective'] == (root / 'objective.txt').read_text().strip()
         gateway = json.loads((directory / f'gateway-{index}.json').read_text())
@@ -129,7 +130,8 @@ def main():
                 'network_received_delta_bytes': sampled[-1]['network']['bytes_recv'] - sampled[0]['network']['bytes_recv']})
         rows.append({'instance_id': host['id'], 'process_start': start_time, 'process_start_delta_seconds': start_time - release['T_start'],
             'goal_accepted': goal['created_at_ms'] / 1000, 'goal_status': goal['status'], 'first_model_request': first_request,
-            'wall_seconds': stop['time_ns'] / 1e9 - start_time, 'requests': len(requests),
+            'wall_seconds': stop['time_ns'] / 1e9 - start_time if stop is not None else None,
+            'driver_stop_receipt': stop is not None, 'requests': len(requests),
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
             'observed_cross_case_contacts': cross_case_contacts,
@@ -153,7 +155,8 @@ def main():
         'process_start_skew_seconds': max(row['process_start'] for row in rows) - min(row['process_start'] for row in rows),
         'goal_acceptance_skew_seconds': max(row['goal_accepted'] for row in rows) - min(row['goal_accepted'] for row in rows),
         'total_requests': sum(row['requests'] for row in rows), 'total_tokens': sum(row['total_tokens'] for row in rows),
-        'wall_seconds_mean': statistics.mean(row['wall_seconds'] for row in rows)}
+        'wall_seconds_mean': statistics.mean(row['wall_seconds'] for row in rows if row['wall_seconds'] is not None),
+        'wall_seconds_observed_subjects': sum(row['wall_seconds'] is not None for row in rows)}
     cloud = json.loads((directory / 'cloud.json').read_text())
     cleanup = json.loads((directory / 'cleanup.json').read_text())
     hours = (cleanup['time'] - cloud['created_at']) / 3600 * len(rows)
