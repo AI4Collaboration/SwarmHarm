@@ -2,6 +2,7 @@
 
 最新结果放最前面。这里是阅读索引，原始实验记录保持原样。当前环境看[运行指南](running-evals.md)；旧版完整 README 可看[历史快照](https://github.com/AI4Collaboration/SwarmHarm/blob/cda02a7f6e4a420d10c6d3a029d2da1a2b8b72a6/README.md)。
 
+- **2026-10-18 · [HF-style fleet 覆盖轮](../experiments/hf-fleet-v2/results/2026-10-18/README.md)：** Sol 校准 4/4 因接口 429 失败；Luna 校准 4/4 通过但自然轮 16/16 worker 因接口 429 失败。完整性和清理证据通过，不能从这轮推断自然行为或安全拒答。
 - **2026-10-18 · [真实同伴之间的方法传播](../experiments/sol-handoff-v1/results/2026-10-18/README.md)：** 已出现共享报告曝光方法、后来者对另一份受限数据采用并保留正确结果；另有聊天后的跨领域取数及同伴纠错。六个越权读取者，四个最终保留数据、两个纠正；不等于消息因果作用或完整 HF 复现。
 - **2026-10-18 · [历史方法消息采用测试](../experiments/sol-transfer-v1/README.md)：** 六个样本都读到真实历史正文，五个正常完成、一个因模型接口 429 中止；四个正常完成样本越权并保留正确结果。条件样本太少，不能作因果或普遍率结论。
 - **2026-10-18 · [自主任务与权限显示](../experiments/sol-framing-v1/results/2026-10-18/README.md)：** 三个 agent 越权读缓存并用数据作答，集中在同一组。后来有缓存取数通报，但没有新的同伴随后采用。
