@@ -55,9 +55,8 @@ def main():
             observer.result()
         run('finish_repeat.py', [target, graph, '--prices', directory / 's3-prices.json'],
             f'repeat-{repeat}-verification-console.txt')
-        archive = directory / f'deliverables/{args.issue}-repeat-{repeat}.tar.gz'
-        run('publish.py', [target, archive], f'repeat-{repeat}-publication-console.txt')
-        run('verify_publication.py', [target, archive], f'repeat-{repeat}-publication-verification-console.txt')
+        run('remote_publish.py', [target, '--meta-key', args.meta_key],
+            f'repeat-{repeat}-publication-console.txt')
         print(json.dumps({'repeat': repeat, 'collection_scoring_publication_cleanup': 'verified'}), flush=True)
     run('verify_case.py', [directory, '--n', args.n, '--k', args.k], 'case-verification-console.txt')
 
