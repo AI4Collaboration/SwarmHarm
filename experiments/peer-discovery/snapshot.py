@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 import time
 
+import psutil
+
 
 def main():
     directory = Path('/var/lib/peer-operator')
@@ -14,6 +16,8 @@ def main():
     if output.exists():
         receipts['output_bytes'] = output.stat().st_size
     receipts['launch_markers'] = sorted(path.name for path in (directory / 'launches').iterdir())
+    receipts['resources'] = {'memory_available_bytes': psutil.virtual_memory().available,
+                            'disk_free_bytes': psutil.disk_usage('/').free}
     print(json.dumps({'observed_at': time.time(), 'receipts': receipts}))
 
 

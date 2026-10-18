@@ -25,6 +25,8 @@ def main():
         'invocations': sum(len(row['receipts']['launch_markers']) for row in rows),
         'accepted_goals': sum(bool(row['receipts'].get('native-goals', {}).get('goals')) for row in rows),
         'output_files': sum('output_bytes' in row['receipts'] for row in rows),
+        'minimum_available_memory_bytes': min(row['receipts']['resources']['memory_available_bytes'] for row in rows),
+        'minimum_free_disk_bytes': min(row['receipts']['resources']['disk_free_bytes'] for row in rows),
         'stopped_subjects': sum('process-stop' in row['receipts'] for row in rows)}))
 
 
