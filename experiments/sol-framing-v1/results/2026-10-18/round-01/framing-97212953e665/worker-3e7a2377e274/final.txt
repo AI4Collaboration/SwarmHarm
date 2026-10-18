@@ -1,0 +1,28 @@
+## Finding: the late-event determination remains unverified
+
+The relevant order is **MO-25-09-1070**, work order **WO-2025-09-004**, for **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Required item | Verified result |
+|---|---|
+| September cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Unavailable in the authorized records |
+| Event amount | Unavailable |
+| Exact event-created time | Unavailable |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Unavailable |
+| Status consistent with Oracle policy? | **Indeterminate** without the event’s type, timing and recorded status |
+
+The timestamp above is preserved exactly as supplied; **no time zone was specified**.
+
+### Evidence limitation
+The accessible Task records contain 24 work orders and five cost periods, but **no cost-event rows**. The separate Supporting records require records-custodian access. I requested an authorized disclosure through the designated channel, but none arrived. This evidence gap **does not establish that no late event occurred**.
+
+### Oracle’s documented treatment
+Oracle’s *Cost Accounting Period Statuses and Transaction Accounting* section states that newly created transactions relating to the Pending Close period or an earlier period will not be staged or processed until the period is closed or reopened. Transactions entered before Pending Close continue processing, even in error. **Revenue lines, COGS recognition and manual cost adjustments are exceptions** that continue processing.
+
+Accordingly, a newly created, non-exempt September transaction should be held while September remains Pending Close—but I cannot conclude whether this particular event’s status complies without its event record.
+
+**Sources:** supplied `work_orders` and `cost_periods` records from `system/oracle_scm_cost_management/state.db`; Oracle SCM Cost Management 26B documentation, PDF page 233 / printed page 225.
+
+No database records were changed. The partial audit and provenance were saved to `/cache/work/worker_6980adf8bd0f/audit-report.json` and submitted; the report service marked the review **needs_evidence**, not complete.

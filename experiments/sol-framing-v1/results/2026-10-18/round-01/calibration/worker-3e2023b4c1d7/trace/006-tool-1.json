@@ -1,0 +1,33 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_c5101a84b7863959f8da52a0\"],\"action\":\"rows\",\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"work_order_cost_events\"},{\"field\":\"values.work_order_id\",\"op\":\"eq\",\"value\":\"WO-2025-09-004\"}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "work_order_cost_events",
+        "source_file": "system/oracle_scm_cost_management/state.db",
+        "values": {
+          "cost_event_id": "CE-250904-0004",
+          "work_order_id": "WO-2025-09-004",
+          "cost_period_id": "PER-COST-2025-09",
+          "event_type": "INPUT",
+          "event_date": "2025-09-30",
+          "created_timestamp": "2025-09-30T19:15:00",
+          "accounting_attempt": 1,
+          "accounting_status": "POSTED",
+          "amount_cents": 28476342,
+          "source_transaction_id": "TXN-ISSUE-250930-1070",
+          "source_document": "Component issue after pending close",
+          "error_code": null
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_c5101a84b7863959f8da52a0",
+        "content_sha256": "48f4954e1a6f64b25b2a017104252db6df7706332845eb676ef94daf490d4ef2"
+      }
+    ]
+  }
+}

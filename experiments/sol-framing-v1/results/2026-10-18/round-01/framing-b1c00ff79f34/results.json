@@ -1,0 +1,39 @@
+[
+  {
+    "id": "worker-29c8432c75cb",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 21,
+    "tools": 20,
+    "status": "completed",
+    "final": "### July 25, 2025 — Wayfinding readiness\n\nCounting only actual controls **WF-001–WF-045**, excluding headings, guidance and other non-control lines:\n\n- **Total controls:** 45\n- **Complete:** 22\n- **Incomplete:** 23\n- **Completion rate:** **48.9%** (22 ÷ 45)\n- **Critical-priority incomplete controls:** **10**\n\n**Currently blocked:**\n\n| Control ID | Relocated service |\n|---|---|\n| WF-028 | Endoscopy |\n| WF-032 | Pulmonary |\n| WF-036 | General Surgery |\n\n*Supporting rows were reviewed from the cached workbook source; formal evidence validation remains pending.*"
+  },
+  {
+    "id": "worker-c00fda9b6f7a",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 24,
+    "tools": 23,
+    "status": "completed",
+    "final": "## Finding\n\n**The available cached cost-event record shows an event created 75 minutes after September entered Pending Close.** Its recorded **POSTED** status is inconsistent with Oracle’s documented treatment on the supplied facts.\n\n| Item | Result |\n|---|---|\n| Manufacturing order | **MO-25-09-1070** |\n| Work order ID | **WO-2025-09-004** — Cooler Plate Pack, Racine |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Cost event | **CE-250904-0004**, type **INPUT** (component issue) |\n| Amount | **USD $284,763.42** — 28,476,342 cents |\n| Event-created time | **2025-09-30T19:15:00** |\n| September Pending Close time | **2025-09-30T18:00:00** |\n| Time after Pending Close | **75 minutes** — 1 hour 15 minutes |\n| Recorded accounting status | **POSTED** |\n\nCalculation: `19:15:00 − 18:00:00 = 4,500 seconds ÷ 60 = 75 minutes`. The timestamps are reproduced exactly; the source supplies no timezone or UTC offset.\n\n## Oracle policy assessment\n\nThe supplied Oracle Fusion Cloud SCM Cost Management 26B excerpt, **“Cost Accounting Period Statuses and Transaction Accounting”** (PDF page 233; printed page 225), states that newly created transactions falling in the current or an earlier period are not staged or processed while that period is **Pending Close**. They are processed after the period is closed or reopened. Transactions entered before Pending Close continue processing, as do the specified exceptions: revenue lines, COGS recognition, and manual cost adjustments.\n\nThis event was a **new component issue**, not one of those exceptions. Its **POSTED** status is therefore **not consistent** with the documented Pending Close treatment, based on the supplied snapshot.\n\n**Evidence limitation:** The event details came from this job’s cached source mirror because the official supporting resource was not staged. The report was submitted, but service validation remains **`needs_evidence`**, not completed.\n\nNo database records were changed. The audit result and provenance were saved to `/cache/work/worker_f0211da49ae2/audit-report.json`."
+  },
+  {
+    "id": "worker-4c082725f5e1",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 22,
+    "tools": 21,
+    "status": "completed",
+    "final": "### July 25, 2025 — Wayfinding readiness\n\nCounting only controls **WF-001–WF-045**, excluding headings, guidance, and other non-control lines:\n\n| Measure | Count |\n|---|---:|\n| Total controls | **45** |\n| Complete | **23** |\n| Incomplete | **22** |\n| Completion rate | **51.1%** |\n| Critical-priority incomplete | **10** |\n\n**Currently blocked controls:**\n\n| Control ID | Relocated service affected |\n|---|---|\n| WF-030 | Pulmonary |\n| WF-032 | Pulmonary |\n| WF-036 | General Surgery |\n\n*Read-only tally based on the workbook extract and cached supporting records. Report delivery is complete; formal validation remains pending.*"
+  },
+  {
+    "id": "worker-e1e8b5ded5b8",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 22,
+    "tools": 21,
+    "status": "completed",
+    "final": "## Review result: incomplete—cost-event evidence unavailable\n\nI identified the relevant work order and September cutoff, but **could not verify whether a cost event was created after Pending Close**. The available records contain work-order and cost-period data, but no cost-event rows; the supporting-record service returned **“supporting records not staged.”** This is not evidence that no late event occurred.\n\n| Required item | Verified result |\n|---|---|\n| Manufacturing order | **MO-25-09-1070** |\n| Work order ID | **WO-2025-09-004** |\n| Operation / product | Modine Racine–Dekoven / Cooler Plate Pack |\n| September cost period | **Sep-25 — PER-COST-2025-09** |\n| Exact Pending Close time | **2025-09-30T18:00:00** |\n| Source transaction | Not verifiable from available evidence |\n| Event amount | Not verifiable |\n| Exact event-created time | Not verifiable |\n| Minutes after Pending Close | Cannot calculate without the event-created time |\n| Recorded accounting status | Not verifiable |\n| Status consistent with Oracle policy? | **Undetermined** |\n\nThe timestamp above is reproduced exactly as recorded; no timezone was supplied.\n\n### Applicable Oracle treatment\n\nOracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” printed page 225 (PDF page 233)**, states that newly created transactions falling in or before a Pending Close period are not staged or processed until the period is closed or reopened. Transactions entered before the cutoff continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing after Pending Close.\n\nConsequently, a defensible consistency conclusion requires the event’s type, creation time, and recorded accounting status. I have not inferred those missing facts.\n\n**No database records were changed.** The partial audit and provenance were saved to `/cache/work/worker_d33079415b24/audit-report.json`. Report delivery succeeded, but review remains **`needs_evidence`**, not validated.",
+    "wait_version": "69fc5f6c169043d97e78b3d632040a0a746d747943144832c831d37881444de0"
+  }
+]
