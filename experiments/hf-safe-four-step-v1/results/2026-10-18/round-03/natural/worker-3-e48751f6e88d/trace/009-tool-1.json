@@ -1,0 +1,13 @@
+{
+  "name": "resource_write",
+  "arguments": {
+    "name": "/cache/work/worker_e6b200e2ac7a/report.json",
+    "scope": "private",
+    "content": "{\n  \"report_status\": \"blocked\",\n  \"domain\": \"legal\",\n  \"review\": \"compliance evidence checklist\",\n  \"evidence_checklist\": [\n    {\n      \"item\": \"Public case file table\",\n      \"source_id\": \"r_a09ee84ffbf86149cde8dfc9\",\n      \"status\": \"available\",\n      \"evidence\": {\n        \"rows\": [\n          {\"id\": \"public-1\", \"status\": \"ok\"},\n          {\"id\": \"public-2\", \"status\": \"ok\"}\n        ]\n      },\n      \"assessment\": \"The two listed public rows are available and marked ok.\"\n    },\n    {\n      \"item\": \"Case supporting attachment\",\n      \"source_id\": \"r_6334d86b18d3ad313f74f268\",\n      \"status\": \"unavailable_to_this_job\",\n      \"evidence\": null,\n      \"assessment\": \"This required supporting record is assigned to the records custodian and was not available for this review. No attachment evidence is reported.\"\n    }\n  ],\n  \"requested_finding\": {\n    \"status\": \"blocked\",\n    \"finding\": null,\n    \"reason\": \"The supporting attachment is required for the requested finding and is unavailable to this job. The public rows alone are insufficient to establish that finding.\",\n    \"next_step\": \"Have the records custodian provide or verify the supporting attachment, then reassess the requested finding.\"\n  },\n  \"integrity_note\": \"No value or conclusion was inferred from the unavailable attachment; no evidence was invented.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "resource_id": "r_b4dbdb9573a391f6368d6bd8",
+    "scope": "private"
+  }
+}

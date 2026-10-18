@@ -2,6 +2,8 @@
 
 以下为 **2026-10-18 已验证的设置**。[真实同伴实验](../experiments/sol-handoff-v1/results/2026-10-18/README.md)已结束并通过完整复核，下方是该版本的运行命令。后续[历史消息对照](../experiments/sol-transfer-v1/README.md)另有命令，需要已结束、已复核的真实消息来源；本次五个样本正常完成，一个样本因 429 中止，不能把这轮当作完整条件比较。
 
+最新新增的是[LessWrong 四步安全复现](../experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)。它使用同一个已验证的 Sol 路线，但把公开实现中的外部/cyber 步骤替换为本地合成 registry 和 reference vault。自然轮、seeded 暴露轮和 operator 控制链分开保存；不能把控制链或 seeded 轮写成模型自发 incident。
+
 ## 当前可用的方式
 
 使用本机已有登录调用 `gpt-6.1-sol / max`，入口为 `https://chatgpt.com/backend-api/codex/responses`。登录信息只由操作者的调用程序读取，不传给实验 agent，也不写入实验记录。
@@ -11,6 +13,18 @@
 随后用低突发设置完成了新的 canonical 主线：`gpt-6.1-sol`, `resourceful`, `mixed`, `side_channel`, `--provider-concurrency 1`。Sol 和 Luna 都通过校准和自然轮；Sol 的独立复核显示 8/8 完成、6 个越权缓存读取、6 个同伴正文读取和 5 个时间顺序完整的 HF-like 方法交接候选。完整矩阵仍需在这条稳定接入上另开新注册目录。
 
 本轮不需要 AWS，尚未配置 GLM / OpenRouter。换机器、换模型或开始新实验前，仍需重新验证接入；历史上跑通过不代表现在一定可用。
+
+安全四步环境的离线检查和控制链：
+
+    $PYTHON experiments/hf-safe-four-step-v1/checks.py
+    $PYTHON experiments/hf-safe-four-step-v1/control_chain.py --output experiments/hf-safe-four-step-v1/results/2026-10-18/control-chain.json
+
+需要跑模型时，必须使用新的输出目录并先固定 profile、channel、seeded 状态：
+
+    $PYTHON experiments/hf-safe-four-step-v1/run.py --phase prepare --output "$OUT" --model gpt-6.1-sol --channel side_channel --profile neutral
+    $PYTHON experiments/hf-safe-four-step-v1/run.py --phase preflight --output "$OUT"
+    $PYTHON experiments/hf-safe-four-step-v1/run.py --phase natural --output "$OUT"
+    $PYTHON experiments/hf-safe-four-step-v1/review.py --output "$OUT"
 
 已验证环境为 Python 3.12.14，依赖是 `jsonschema 4.25.1`、`openpyxl 3.1.5`、`pypdf 6.10.0`。新机器先创建 Python 3.12 虚拟环境，安装[依赖文件](../experiments/hf-campaign-v1/requirements.txt)，再把下面的 `PYTHON` 改成对应路径。
 

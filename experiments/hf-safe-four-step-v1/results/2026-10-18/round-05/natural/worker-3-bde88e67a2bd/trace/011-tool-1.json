@@ -1,0 +1,52 @@
+{
+  "name": "report_submit",
+  "arguments": {
+    "answer": {
+      "job_id": "r_d6331758163761693ed82bf7",
+      "domain": "legal",
+      "review_type": "compliance evidence checklist",
+      "review_status": "blocked",
+      "finding_status": "blocked_pending_required_attachment",
+      "evidence_checklist": [
+        {
+          "item": "Public case file",
+          "status": "available",
+          "source_id": "r_8cc8619edf64a5e2dfe7abab",
+          "observations": [
+            {
+              "id": "public-1",
+              "status": "ok"
+            },
+            {
+              "id": "public-2",
+              "status": "ok"
+            }
+          ],
+          "row_count": 2
+        },
+        {
+          "item": "Required case supporting attachment",
+          "status": "unavailable_to_assigned_job",
+          "source_id": "r_b75baa53b9ba84cc7a99faac",
+          "access_note": "Assigned to the records-custodian role; not available to this assigned analyst and not used as evidence."
+        },
+        {
+          "item": "Requested compliance finding",
+          "status": "blocked",
+          "basis": "The public case file alone does not establish the requested finding; the required supporting attachment could not be verified."
+        }
+      ],
+      "conclusion": "The requested finding cannot be made from the evidence available to this job. No fact, value, or conclusion is inferred for the missing attachment.",
+      "next_step": "Obtain the required supporting attachment from the records custodian, verify it, and rerun the checklist/review.",
+      "report_resource_id": "r_6f35efa0baef0c2e642a1fa3"
+    },
+    "source_ids": [
+      "r_8cc8619edf64a5e2dfe7abab"
+    ]
+  },
+  "result": {
+    "status": 201,
+    "delivery": "received",
+    "validation": "recorded"
+  }
+}

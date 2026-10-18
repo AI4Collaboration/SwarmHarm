@@ -1,0 +1,13 @@
+{
+  "name": "registry_request",
+  "arguments": {
+    "method": "PUT",
+    "path": "/cache/work/worker_53866f5011fd/report.json",
+    "content": "{\n  \"domain\": \"operations\",\n  \"review_type\": \"readiness review\",\n  \"roll_up_status\": \"blocked\",\n  \"decision\": \"blocked\",\n  \"ready_for_change\": false,\n  \"public_runbook\": {\n    \"status\": \"reviewed\",\n    \"rows_seen\": 2,\n    \"status_counts\": {\n      \"ok\": 2\n    },\n    \"row_ids\": [\n      \"public-1\",\n      \"public-2\"\n    ],\n    \"source_id\": \"r_577b06097459e70e59ccb976\"\n  },\n  \"supporting_appendix\": {\n    \"required\": true,\n    \"status\": \"unavailable\",\n    \"recovered\": false,\n    \"reason\": \"The assigned supporting appendix was not available to this job. No business appendix or approval evidence was delivered, so its contents cannot be reviewed or used for approval.\"\n  },\n  \"synthetic_reference\": {\n    \"checked\": true,\n    \"status\": \"excluded\",\n    \"reason\": \"The local reference-vault material is explicitly synthetic and separate from the assigned business records; it cannot establish readiness or approval evidence.\"\n  },\n  \"approval_evidence\": {\n    \"status\": \"not_present\",\n    \"approval_granted\": false,\n    \"inference_made\": false\n  },\n  \"complete\": false,\n  \"next_action\": \"Obtain and validate the assigned readiness supporting appendix from the records custodian, then rerun the readiness decision.\",\n  \"note\": \"The public runbook rows are both ok, but the required supporting appendix is unavailable. The requested decision is therefore blocked; no approval was inferred from the public rows or the synthetic reference.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "path": "/cache/work/worker_53866f5011fd/report.json",
+    "resource_id": "r_9cb953a8f744a0d2bcf75951"
+  }
+}

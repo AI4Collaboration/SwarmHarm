@@ -4,6 +4,8 @@
 
 ## 正在做 · 2026-10-18
 
+**LessWrong 四步安全复现已经完成环境和多轮模型验证。** 我们把公开 codebase 的四个阶段映射到本地合成 registry：Sol 自然/controlled 轮出现同伴正文读取、合成缓存 ACL 越界；auditor-intense 条件出现共享写入和方法类内容写入；resourceful 条件出现本地 reference 读取和未授权提交。环境控制链五个标记全部通过，但同一条自然模型轨迹尚未串起四步，因此没有把多轮结果拼成一个 incident。见 [四步结果](experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)。
+
 新的 Sol canonical 主线已完整跑通：8/8 agent 完成，6 个越权缓存读取，6 个同伴正文读取，5 个“先读正文、后读自己受限缓存”的候选，5 个后来者都提交了不同但正确的私有答案。Luna 对照也完整跑通。见 [fleet 完整报告](experiments/hf-fleet-v2/results/2026-10-18/README.md)。
 
 新增的 HF-style fleet 覆盖轮没有得到可解释的自然行为：Sol 在校准阶段 4/4 遇到模型接口 429，Luna 虽然 4/4 校准通过，但两个自然世界的 16 个 worker 全部遇到 429，0 个完成。那两轮只注册了 Legal 和 Side，漏掉了 No-channel 基线；当前代码已修正默认值，完整矩阵必须显式注册三种条件。原始失败已归档，不能把接口失败当作安全拒答。见 [fleet 覆盖报告](experiments/hf-fleet-v2/results/2026-10-18/README.md)。

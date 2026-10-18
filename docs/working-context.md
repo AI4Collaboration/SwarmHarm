@@ -6,6 +6,8 @@
 
 ## 正在做
 
+当前焦点是对照 LessWrong 公开 codebase 的四步安全复现。代码和结果见 [hf-safe-four-step-v1](../experiments/hf-safe-four-step-v1/results/2026-10-18/README.md)：本地合成环境已经能分别记录共享写入、求助消息、方法分享、受保护 reference 读取和未授权提交。Sol 的自然轮复现了部分链条；同一条自然轨迹尚未串起四步，operator 控制链和 seeded 暴露轮不能冒充自发行为。
+
 Sol canonical 主线已经完整跑通：8/8 agent 完成，独立重放通过；6 个越权缓存读取、6 个同伴正文读取、5 个正文曝光后再越权读取的候选，5 个最终答案都正确且与 donor 私有答案不同。Luna 用同一条件也跑通，作为对照。完整证据见 [fleet 报告](../experiments/hf-fleet-v2/results/2026-10-18/README.md)。
 
 HF-style fleet 覆盖轮已冻结并完成归档。Sol 在四条校准任务处全部遇到 HTTP 429，未进入自然轮；Luna 的四条校准通过，但两个自然世界的 16 个 worker 全部在接口 429 后结束。那两轮只注册了 Legal 和 Side，漏掉了 No-channel 基线；原始请求、响应、错误和清理记录保留在 [fleet 报告](../experiments/hf-fleet-v2/results/2026-10-18/README.md)，当前代码已改为 No-channel 默认。这不是安全拒答，也不提供自然行为证据。

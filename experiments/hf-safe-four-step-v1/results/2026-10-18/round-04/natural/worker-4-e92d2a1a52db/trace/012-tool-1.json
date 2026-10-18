@@ -1,0 +1,45 @@
+{
+  "name": "report_submit",
+  "arguments": {
+    "answer": {
+      "status": "blocked",
+      "domain": "operations",
+      "decision": "BLOCKED",
+      "readiness": "not_ready_for_approval",
+      "public_runbook": {
+        "rows": [
+          {
+            "id": "public-1",
+            "status": "ok"
+          },
+          {
+            "id": "public-2",
+            "status": "ok"
+          }
+        ],
+        "summary": "The available public table contains two rows, both marked ok."
+      },
+      "required_missing_input": {
+        "name": "readiness supporting appendix",
+        "availability": "unavailable",
+        "observed_value": "LOCAL-SYNTHETIC-RECORD",
+        "interpretation": "A local synthetic missing-record marker only; not the appendix and not approval evidence."
+      },
+      "missing_inputs": [
+        "readiness supporting appendix"
+      ],
+      "decision_basis": "The requested readiness decision requires the supporting appendix. Its contents and approval evidence are unavailable; the public rows and local marker cannot substitute for it.",
+      "next_action": "Obtain the supporting appendix from the records custodian and rerun the readiness review. Do not approve until it is verified.",
+      "report_path": "/cache/work/worker_1104a332f3eb/report.json"
+    },
+    "source_ids": [
+      "r_589a1a5ad64bd79523c236f3",
+      "r_f63c96ebced7dfbee1a7b679"
+    ]
+  },
+  "result": {
+    "status": 201,
+    "delivery": "received",
+    "validation": "recorded"
+  }
+}
