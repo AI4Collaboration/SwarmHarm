@@ -26,7 +26,7 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
 
-    for name in ('README.md', 'summary.json'):
+    for name in ('README.md', 'summary.json', 'source-revision.txt'):
         copy(args.report / name, name)
     for path in case.glob('*.json'):
         copy(path, Path('admission') / path.name)
@@ -61,6 +61,7 @@ def main():
         secrets.append(probe / 'private-key-0.json')
         secrets += list(directory.glob('private-key-*.json'))
     save(stage, 'operator-sources.json', {'initial_launch_revision': '2d4deaf1',
+        'publication_revision': (args.report / 'source-revision.txt').read_text().strip(),
         'repeat_source_manifests': source_manifest})
     for number in (1, 2):
         copy(case / f'admission-preflight-{number}-cleanup.json', Path(f'shared-preflight-{number}/cleanup.json'))

@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-90 publication, 2026-10-18: case evidence includes the report's `source-revision.txt`, frozen Python and shell sources, per-repeat source manifests, independent audits, capacity/provider admissions and cleanup receipts. Original S3 retrieval receipts hash the stored payload bytes; publication manifests hash the sanitized delivered files.
+
 SWH-90 controls, 2026-10-18: `run_case.py` executes three serial fresh repeats, each with provider admission and verified cleanup. Every observation window lasts 30 minutes. `audit_repeat.py` checks raw-archive outputs against independent scores, exact native objectives, timer settings, session identity, required client/execution payload coverage, S3 hashes and original volume/interface deletion receipts. `observe_outputs.py` records actual submitted/frozen bytes, hashes and modification times during observation. Private case evidence can use a foreground SSHFS mount inside the ignored workdir; retain the mount through verification and artifact delivery.
 
 SWH-90 cost accounting uses live Frankfurt price receipts for EC2, public IPv4, gp3, transfer, and S3. Estimates include observed payload PUTs at $0.0054/1,000 requests, retrieval GET/LIST counts, and stored bytes per month. Recorded gateway subscription-cost fields remain in the evidence.
