@@ -2,6 +2,7 @@ import argparse
 import hashlib
 import json
 import shutil
+import statistics
 import subprocess
 from pathlib import Path
 
@@ -147,6 +148,10 @@ def main():
               'all_terminated_case_instances': 256,
               'code_revision': subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True,
                                               text=True, check=True).stdout.strip()}
+    report['spread'] = {name: {'minimum': min(row[name] for row in rows),
+                              'maximum': max(row[name] for row in rows),
+                              'mean': statistics.mean(row[name] for row in rows)}
+                        for name in ('process_start_skew_seconds', 'requests', 'tokens')}
     (output / 'case-audit.json').write_text(json.dumps(report, indent=2) + '\n')
     (output / 'artifacts.json').write_text(json.dumps(archives, indent=2) + '\n')
     lines = [f'# {args.issue}: N=64, K=3', '',
