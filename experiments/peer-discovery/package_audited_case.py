@@ -96,6 +96,8 @@ def main():
         rows.append(row)
         for filename in filenames:
             copy(source / filename, output / f'repeat-{repeat}' / filename)
+        for path in (source / 'archive-offload').glob('*.json'):
+            copy(path, output / f'repeat-{repeat}' / 'archive-offload' / path.name)
         archive = root / 'deliverables' / f'{args.issue}-repeat-{repeat}.tar.gz'
         with archive.open('rb') as stream:
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
@@ -108,6 +110,11 @@ def main():
         for path in (root / name).rglob('*'):
             if path.is_file():
                 copy(path, output / path.relative_to(root))
+    for repeat in range(1, 4):
+        for category in ('provider-admission', 'storage-admission'):
+            for path in (root / f'{category}-{repeat}').rglob('*'):
+                if path.is_file() and not path.name.startswith('private-key-'):
+                    copy(path, output / path.relative_to(root))
     for name in ('prices.json', 's3-prices.json', 'reservation-release.json', 'operator-storage-costs.json',
                  'operator-volume-before.json', 'operator-volume-after.json', 'operator-volume-modification.json',
                  'operator-filesystem-expansion.txt', 'operator-storage-snapshot-current.json',
