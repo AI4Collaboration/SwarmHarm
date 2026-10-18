@@ -4,6 +4,8 @@ import json
 import shutil
 from pathlib import Path
 
+from publish import clean
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -18,6 +20,21 @@ def main():
     for filename in ('case-verification.json', 'reservation-release.json', 'prices.json', 's3-prices.json'):
         shutil.copyfile(args.directory / filename, args.output / filename)
     shutil.copytree(args.directory / 'graphs', args.output / 'graphs', dirs_exist_ok=True)
+    shutil.copytree(args.directory / 'protocol', args.output / 'protocol', dirs_exist_ok=True)
+    shutil.copytree(args.directory / 'admission-reuse', args.output / 'admission-reuse', dirs_exist_ok=True)
+    diagnostic_keys = [json.loads(path.read_text())['key'] for path in
+                       args.directory.glob('provider-admission-*/private-key-0.json')]
+    for repeat in range(1, 4):
+        for category in ('provider-admission', 'storage-admission'):
+            source = args.directory / f'{category}-{repeat}'
+            target = args.output / source.name
+            for path in source.rglob('*'):
+                if path.is_file() and path.name != 'private-key-0.json':
+                    destination = target / path.relative_to(source)
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    data = clean(path.read_bytes(), diagnostic_keys)
+                    assert all(key.encode() not in data for key in diagnostic_keys)
+                    destination.write_bytes(data)
     artifacts = []
     for repeat in range(1, 4):
         source = args.directory / f'repeat-{repeat}'
