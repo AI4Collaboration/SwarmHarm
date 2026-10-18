@@ -1,0 +1,57 @@
+[
+  {
+    "probe": "model_catalog",
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "id": "gpt-6-luna",
+          "object": "model",
+          "created": 1791749635,
+          "owned_by": "codex"
+        }
+      ],
+      "object": "list"
+    }
+  },
+  {
+    "probe": "other_model",
+    "status": 422,
+    "body": {
+      "error": {
+        "message": "model not found: gpt-6.1-sol",
+        "type": "invalid_model_error"
+      }
+    }
+  },
+  {
+    "probe": "admin_projects",
+    "status": 403,
+    "body": {
+      "error": {
+        "type": "Forbidden",
+        "message": "Only service account API keys may access the admin GraphQL API"
+      }
+    }
+  },
+  {
+    "probe": "admin_requests",
+    "status": 403,
+    "body": {
+      "error": {
+        "type": "Forbidden",
+        "message": "Only service account API keys may access the admin GraphQL API"
+      }
+    }
+  },
+  {
+    "probe": "admin_profile",
+    "status": 403,
+    "body": {
+      "error": {
+        "type": "Forbidden",
+        "message": "Only service account API keys may access the admin GraphQL API"
+      }
+    }
+  }
+]

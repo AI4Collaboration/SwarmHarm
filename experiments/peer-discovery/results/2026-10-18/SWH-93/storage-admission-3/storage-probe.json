@@ -1,0 +1,270 @@
+{
+  "policy": {
+    "storagePolicy": {
+      "storeRequestBody": true,
+      "storeResponseBody": true,
+      "storeChunks": true,
+      "livePreview": false
+    },
+    "defaultDataStorageID": "gid://axonhub/DataStorage/2",
+    "dataStorages": {
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/DataStorage/1",
+            "name": "Primary",
+            "type": "database",
+            "status": "active",
+            "settings": {
+              "s3": null
+            }
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/DataStorage/2",
+            "name": "S3 swarmharm-axonhub-logs",
+            "type": "s3",
+            "status": "active",
+            "settings": {
+              "s3": {
+                "bucketName": "swarmharm-axonhub-logs-906513713427",
+                "endpoint": "",
+                "region": "eu-central-1",
+                "pathStyle": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "channels": {
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/1",
+            "name": "TerryGiftcard",
+            "type": "claudecode",
+            "status": "enabled",
+            "supportedModels": [
+              "claude-sonnet-5-5",
+              "claude-fable-5-1",
+              "claude-opus-5-5"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/2",
+            "name": "JwyCodex",
+            "type": "codex",
+            "status": "archived",
+            "supportedModels": [
+              "gpt-6-luna",
+              "gpt-5.6-luna",
+              "gpt-6.1-sol",
+              "gpt-6-astra"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/3",
+            "name": "DeepseekJwyA",
+            "type": "deepseek_anthropic",
+            "status": "enabled",
+            "supportedModels": [
+              "deepseek-flash",
+              "deepseek-v4-pro"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/4",
+            "name": "DeepseekJwyO",
+            "type": "openai_responses",
+            "status": "enabled",
+            "supportedModels": [
+              "deepseek-flash",
+              "deepseek-v4-pro"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/5",
+            "name": "GlmTerry",
+            "type": "openai_responses",
+            "status": "enabled",
+            "supportedModels": [
+              "abliterated-model-large-v2"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/6",
+            "name": "BedrockTerryK3",
+            "type": "openai_responses",
+            "status": "disabled",
+            "supportedModels": [
+              "global.moonshotai.kimi-k3",
+              "global.openai.gpt-6.1-sol"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/7",
+            "name": "BedrockTerryOpus46",
+            "type": "anthropic_aws",
+            "status": "enabled",
+            "supportedModels": [
+              "eu.anthropic.claude-opus-4-6-v1"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/8",
+            "name": "TerryGmailCO",
+            "type": "codex",
+            "status": "enabled",
+            "supportedModels": [
+              "gpt-6.1-sol",
+              "gpt-6-luna",
+              "gpt-6-astra"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/9",
+            "name": "TerryJwyethCO",
+            "type": "codex",
+            "status": "enabled",
+            "supportedModels": [
+              "gpt-6.1-sol",
+              "gpt-6-luna",
+              "gpt-6-astra",
+              "gpt-5.6-sol"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/10",
+            "name": "TerryJwyappleCO",
+            "type": "codex",
+            "status": "enabled",
+            "supportedModels": [
+              "gpt-6.1-sol",
+              "gpt-6-luna",
+              "gpt-6-astra"
+            ],
+            "liveLimiterStats": null
+          }
+        }
+      ]
+    }
+  },
+  "api_key_id": "gid://axonhub/APIKey/2299",
+  "request": {
+    "id": "gid://axonhub/Request/49485",
+    "createdAt": "2026-10-18T06:44:07.973233Z",
+    "updatedAt": "2026-10-18T06:44:09.029932Z",
+    "modelID": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "status": "completed",
+    "projectID": "gid://axonhub/Project/2",
+    "dataStorageID": "gid://axonhub/DataStorage/2",
+    "contentSaved": false,
+    "contentStorageKey": null,
+    "channelID": "gid://axonhub/Channel/10",
+    "traceID": "gid://axonhub/Trace/0",
+    "externalID": "resp_0be402d2db4f5b52016ad46ab8658c8191a761fb8307098dd5",
+    "executions": {
+      "pageInfo": {
+        "hasNextPage": false
+      },
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/RequestExecution/55013",
+            "upstreamModelID": "gpt-6-luna",
+            "reasoningEffort": "xhigh",
+            "status": "completed",
+            "responseStatusCode": null,
+            "errorMessage": "",
+            "passThroughApplied": true,
+            "dataStorageID": "gid://axonhub/DataStorage/2",
+            "channelID": "gid://axonhub/Channel/10",
+            "externalID": "resp_0be402d2db4f5b52016ad46ab8658c8191a761fb8307098dd5"
+          }
+        }
+      ]
+    },
+    "usageLogs": {
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/UsageLog/41837",
+            "promptTokens": 18,
+            "completionTokens": 5,
+            "totalTokens": 23,
+            "promptCachedTokens": 0,
+            "totalCost": null
+          }
+        }
+      ]
+    }
+  },
+  "receipts": [
+    {
+      "object_key": "2/requests/49485/executions/55013/request_body.json",
+      "bytes": 215,
+      "sha256": "ab4d2a316f2992fad50197decfc8ec595d00bbf37c2972009ad14a3bc30e855b",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/49485/executions/55013/response_body.json",
+      "bytes": 506,
+      "sha256": "4f4b75bde396cce3b34d8be1c7fb28d46c4a5192d199b5ce88d363ee4d46a654",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/49485/executions/55013/response_chunks.json",
+      "bytes": 7903,
+      "sha256": "f2f373b5d0f29ecfb4277b834cdf2605ef9a1d4290939ebf1493ef47b5a1082f",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/49485/request_body.json",
+      "bytes": 215,
+      "sha256": "ab4d2a316f2992fad50197decfc8ec595d00bbf37c2972009ad14a3bc30e855b",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/49485/response_body.json",
+      "bytes": 473,
+      "sha256": "0db1844339630e3c32e528d268ef3f374bef7c9f2965814d417d6cce343fd1b3",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/49485/response_chunks.json",
+      "bytes": 3395,
+      "sha256": "db83bf4652cc1497ac6ddcc1c8758b526657759ee0855986fd70f346dbc27b9d",
+      "nonempty_json": true
+    }
+  ]
+}

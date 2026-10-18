@@ -1,0 +1,310 @@
+{
+  "policy": {
+    "storagePolicy": {
+      "storeRequestBody": true,
+      "storeResponseBody": true,
+      "storeChunks": true,
+      "livePreview": false
+    },
+    "defaultDataStorageID": "gid://axonhub/DataStorage/2",
+    "dataStorages": {
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/DataStorage/1",
+            "name": "Primary",
+            "type": "database",
+            "status": "active",
+            "settings": {
+              "s3": null
+            }
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/DataStorage/2",
+            "name": "S3 swarmharm-axonhub-logs",
+            "type": "s3",
+            "status": "active",
+            "settings": {
+              "s3": {
+                "bucketName": "swarmharm-axonhub-logs-906513713427",
+                "endpoint": "",
+                "region": "eu-central-1",
+                "pathStyle": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "channels": {
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/1",
+            "name": "TerryGiftcard",
+            "type": "claudecode",
+            "status": "enabled",
+            "supportedModels": [
+              "claude-sonnet-5-5",
+              "claude-fable-5-1",
+              "claude-opus-5-5"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/2",
+            "name": "JwyCodex",
+            "type": "codex",
+            "status": "archived",
+            "supportedModels": [
+              "gpt-6-luna",
+              "gpt-5.6-luna",
+              "gpt-6.1-sol",
+              "gpt-6-astra"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/3",
+            "name": "DeepseekJwyA",
+            "type": "deepseek_anthropic",
+            "status": "enabled",
+            "supportedModels": [
+              "deepseek-flash",
+              "deepseek-v4-pro"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/4",
+            "name": "DeepseekJwyO",
+            "type": "openai_responses",
+            "status": "enabled",
+            "supportedModels": [
+              "deepseek-flash",
+              "deepseek-v4-pro"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/5",
+            "name": "GlmTerry",
+            "type": "openai_responses",
+            "status": "enabled",
+            "supportedModels": [
+              "abliterated-model-large-v2"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/6",
+            "name": "BedrockTerryK3",
+            "type": "openai_responses",
+            "status": "disabled",
+            "supportedModels": [
+              "global.moonshotai.kimi-k3",
+              "global.openai.gpt-6.1-sol"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/7",
+            "name": "BedrockTerryOpus46",
+            "type": "anthropic_aws",
+            "status": "enabled",
+            "supportedModels": [
+              "eu.anthropic.claude-opus-4-6-v1"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/8",
+            "name": "TerryGmailCO",
+            "type": "codex",
+            "status": "enabled",
+            "supportedModels": [
+              "gpt-6.1-sol",
+              "gpt-6-luna",
+              "gpt-6-astra"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/9",
+            "name": "TerryJwyethCO",
+            "type": "codex",
+            "status": "enabled",
+            "supportedModels": [
+              "gpt-6.1-sol",
+              "gpt-6-luna",
+              "gpt-6-astra",
+              "gpt-5.6-sol"
+            ],
+            "liveLimiterStats": null
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/Channel/10",
+            "name": "TerryJwyappleCO",
+            "type": "codex",
+            "status": "enabled",
+            "supportedModels": [
+              "gpt-6.1-sol",
+              "gpt-6-luna",
+              "gpt-6-astra"
+            ],
+            "liveLimiterStats": null
+          }
+        }
+      ]
+    }
+  },
+  "api_key_id": "gid://axonhub/APIKey/1985",
+  "request": {
+    "id": "gid://axonhub/Request/48205",
+    "createdAt": "2026-10-18T05:36:37.566263Z",
+    "updatedAt": "2026-10-18T05:36:41.091671Z",
+    "modelID": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "status": "completed",
+    "projectID": "gid://axonhub/Project/2",
+    "dataStorageID": "gid://axonhub/DataStorage/2",
+    "contentSaved": false,
+    "contentStorageKey": null,
+    "channelID": "gid://axonhub/Channel/10",
+    "traceID": "gid://axonhub/Trace/0",
+    "externalID": "resp_027cf4ebbce04e9f016ad45ae82f7c8191b755adf972ed574a",
+    "executions": {
+      "pageInfo": {
+        "hasNextPage": false
+      },
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/RequestExecution/52820",
+            "upstreamModelID": "",
+            "reasoningEffort": "xhigh",
+            "status": "failed",
+            "responseStatusCode": 401,
+            "errorMessage": "Encountered invalidated oauth token for user, failing request",
+            "passThroughApplied": true,
+            "dataStorageID": "gid://axonhub/DataStorage/2",
+            "channelID": "gid://axonhub/Channel/9",
+            "externalID": ""
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/RequestExecution/52827",
+            "upstreamModelID": "",
+            "reasoningEffort": "xhigh",
+            "status": "failed",
+            "responseStatusCode": 401,
+            "errorMessage": "Encountered invalidated oauth token for user, failing request",
+            "passThroughApplied": true,
+            "dataStorageID": "gid://axonhub/DataStorage/2",
+            "channelID": "gid://axonhub/Channel/8",
+            "externalID": ""
+          }
+        },
+        {
+          "node": {
+            "id": "gid://axonhub/RequestExecution/52835",
+            "upstreamModelID": "gpt-6-luna",
+            "reasoningEffort": "xhigh",
+            "status": "completed",
+            "responseStatusCode": null,
+            "errorMessage": "",
+            "passThroughApplied": true,
+            "dataStorageID": "gid://axonhub/DataStorage/2",
+            "channelID": "gid://axonhub/Channel/10",
+            "externalID": "resp_027cf4ebbce04e9f016ad45ae82f7c8191b755adf972ed574a"
+          }
+        }
+      ]
+    },
+    "usageLogs": {
+      "edges": [
+        {
+          "node": {
+            "id": "gid://axonhub/UsageLog/40983",
+            "promptTokens": 18,
+            "completionTokens": 5,
+            "totalTokens": 23,
+            "promptCachedTokens": 0,
+            "totalCost": null
+          }
+        }
+      ]
+    }
+  },
+  "receipts": [
+    {
+      "object_key": "2/requests/48205/executions/52820/request_body.json",
+      "bytes": 215,
+      "sha256": "ab4d2a316f2992fad50197decfc8ec595d00bbf37c2972009ad14a3bc30e855b",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/executions/52827/request_body.json",
+      "bytes": 215,
+      "sha256": "ab4d2a316f2992fad50197decfc8ec595d00bbf37c2972009ad14a3bc30e855b",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/executions/52835/request_body.json",
+      "bytes": 215,
+      "sha256": "ab4d2a316f2992fad50197decfc8ec595d00bbf37c2972009ad14a3bc30e855b",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/executions/52835/response_body.json",
+      "bytes": 506,
+      "sha256": "9532af4937b401ef9e6724016b728fabe69b9b288caac4b2e106b8c014935b5f",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/executions/52835/response_chunks.json",
+      "bytes": 7901,
+      "sha256": "89bb321996aafe708e0949b3071999f88c0d2c4a4a7c223bc1f567b53e74a388",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/request_body.json",
+      "bytes": 215,
+      "sha256": "ab4d2a316f2992fad50197decfc8ec595d00bbf37c2972009ad14a3bc30e855b",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/response_body.json",
+      "bytes": 473,
+      "sha256": "3867e6aa88d038caf6822f352bc1957d8573c616b326a34d13793febe7c75a04",
+      "nonempty_json": true
+    },
+    {
+      "object_key": "2/requests/48205/response_chunks.json",
+      "bytes": 3395,
+      "sha256": "cafd1f14c047e777b2ce44460ea251bee8cd4e3825f88d1b9cb1f021ea69e222",
+      "nonempty_json": true
+    }
+  ]
+}

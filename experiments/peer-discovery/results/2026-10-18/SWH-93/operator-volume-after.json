@@ -1,0 +1,46 @@
+{
+    "Volumes": [
+        {
+            "AvailabilityZoneId": "euc1-az2",
+            "Iops": 3000,
+            "Tags": [
+                {
+                    "Key": "Issue",
+                    "Value": "SWH-6"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "swh6-data"
+                }
+            ],
+            "VolumeType": "gp3",
+            "MultiAttachEnabled": false,
+            "Throughput": 125,
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "VolumeArn": "arn:aws:ec2:eu-central-1:906513713427:volume/vol-08482e039b807d7ff",
+            "OwnerId": "906513713427",
+            "VolumeId": "vol-08482e039b807d7ff",
+            "Size": 80,
+            "SnapshotId": "snap-092018bfedac13319",
+            "AvailabilityZone": "eu-central-1a",
+            "State": "in-use",
+            "CreateTime": "2026-10-05T19:49:21.106000+00:00",
+            "Attachments": [
+                {
+                    "DeleteOnTermination": true,
+                    "EbsCardIndex": 0,
+                    "VolumeId": "vol-08482e039b807d7ff",
+                    "InstanceId": "i-043792bdabdf73009",
+                    "Device": "/dev/sda1",
+                    "State": "attached",
+                    "AttachTime": "2026-10-05T19:49:21+00:00"
+                }
+            ],
+            "Encrypted": true,
+            "KmsKeyId": "arn:aws:kms:eu-central-1:906513713427:key/9b611464-c179-48c5-9762-3195d92185ca"
+        }
+    ]
+}
