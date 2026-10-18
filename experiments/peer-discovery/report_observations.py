@@ -64,7 +64,7 @@ def main():
     for row in rows:
         scores = row['scores']
         lines.append(f"| {row['repeat']} | {scores['output_states'].get('string_arrays', 0)} | "
-                     f"{scores['self_inclusion_subjects']} | {scores['recall_mean']:.6f} | {scores['exact_count']}/128 |")
+                     f"{scores['self_inclusion_subjects']} | {scores['recall_mean']:.6f} | {scores['exact_count']}/{row['resources']['verified_subjects']} |")
     lines += ['', '| Repeat | Host resource samples | CloudWatch series | Minimum CPU credits | Peak used memory MiB |',
               '| --- | ---: | ---: | ---: | ---: |']
     for row in rows:
