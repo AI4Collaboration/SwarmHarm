@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-97 publication storage, 2026-10-18: `archive_publication.py` stores a sealed publication in the existing encrypted S3 bucket, verifies public-access controls, server-validated full-object SHA256, length, encryption and complete streamed byte readback, then releases its local copy. Attachment parts preserve the independently verified publication bytes for delivery. Transfer receipts record S3 operations and bytes.
+
 SWH-98 artifact delivery, 2026-10-18: `case_artifact.py` verifies a sanitized manifest containing case reports, approved protocol, graphs, admission, provider checks, independent scores, recording and cleanup receipts. `publication_chunks.py REPEAT PUBLICATION --output MANIFEST` divides each verified publication into 8-MiB attachment parts and independently verifies every part and the reconstructed SHA256. Reports list repeat 3 first, retain separate HTTP 401/429 execution counts, and distinguish process-start, goal-acceptance and first-request skew.
 
 SWH-98 observation, 2026-10-18: `status_case.py DIRECTORY` reports independent fleet-stage counts. Gateway snapshots include container resource statistics. Subsequent fleets use 32 bootstrap workers and collect a fresh recording-policy receipt after readiness, before timer release. Subject configuration and the approved three-repeat protocol remain fixed.

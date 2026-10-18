@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-97 publication storage, 2026-10-18:** sealed evidence publications use the existing encrypted, public-access-blocked S3 bucket after full-object checksum, length and complete byte readback. Verified attachment parts remain available for issue delivery. Original host archives use independently hashed S3 transfers. These operator storage operations retain the subject configuration and hosted Multica setup below.
+
 **SWH-97 execution, 2026-10-18:** N128/K3 uses the shared Codex 0.160.0 native `/goal` harness, registered graphs verified by seeded replay, and case-specific operator storage through SSHFS. Admission verifies AxonHub `gpt-6-luna / xhigh`, actual stored client/execution payloads, and the shared 244-subject capacity envelope. AWS profile `eurosafeai` and gateway administration remain operator-side. Hosted Multica 0.4.44 retains its public-server file-access patch.
 
 **SWH-98 preparation and observation, 2026-10-18:** subsequent fleets use 32 concurrent bootstrap workers. Read-only case status counts provisioning, readiness, timers and exports independently. Gateway snapshots include container CPU/memory observations, repeat reports retain separate HTTP 401/429 execution counts, and recording policy receives another readback after fleet readiness. The initial fleet retains its 16-worker preparation. Subject versions, permissions, route, quotas, synchronized start and deadlines follow the verified settings below.
