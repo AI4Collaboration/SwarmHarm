@@ -1,8 +1,10 @@
 import argparse
+import hashlib
 import json
 import shutil
 import subprocess
 import sys
+import tarfile
 from pathlib import Path
 
 from cloud import ROOT, save
@@ -33,6 +35,10 @@ def main():
         if path.is_file() and path.suffix in ('.py', '.txt', '.sh', '.toml'):
             copy(path, Path('source') / path.name)
     shutil.copytree(case / 'stored-payloads', stage / 'admission/stored-payloads')
+    with tarfile.open(case / 'initial-operator-source.tar.gz') as archive:
+        members = [member for member in archive.getmembers() if member.isfile()
+            and Path(member.name).suffix in ('.py', '.sh', '.txt', '.toml')]
+        archive.extractall(stage / 'initial-source', members=members, filter='data')
     secrets = []
     for repeat in range(1, 4):
         directory = case / f'repeat-{repeat}'
@@ -46,6 +52,10 @@ def main():
         if manifest.exists():
             copy(manifest, Path(f'repeat-{repeat}') / manifest.name)
             source_manifest[str(repeat)] = json.loads(manifest.read_bytes())
+            for name, expected in source_manifest[str(repeat)].items():
+                source = directory / 'operator-source' / name
+                assert hashlib.sha256(source.read_bytes()).hexdigest() == expected
+                copy(source, Path(f'repeat-{repeat}/operator-source') / name)
         probe = case / f'provider-admission-{repeat}'
         shutil.copytree(probe, stage / f'provider-admission-{repeat}')
         secrets.append(probe / 'private-key-0.json')
