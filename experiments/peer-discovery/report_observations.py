@@ -44,14 +44,15 @@ def main():
     lines = ['# Timing, resources and provider observations', '',
              'All launched subjects contribute to each repeat denominator. Frozen outputs determine scoring. '
              'Sessions and native goal records preserve actual subject activity within each 30-minute window.', '',
-             '| Repeat | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Peak client concurrency |',
-             '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+             '| Repeat | Native complete | Native blocked | Mean native active seconds | Exported execution HTTP fields | Peak client concurrency |',
+             '| --- | ---: | ---: | ---: | --- | ---: |']
     for row in rows:
         states = row['native_goal_states']
         provider = row['provider']
+        http_fields = ', '.join(f"{'null' if code == 'None' else code}: {count}"
+                                for code, count in sorted(provider['execution_http_status_counts'].items()))
         lines.append(f"| {row['repeat']} | {states.get('complete', 0)} | {states.get('blocked', 0)} | "
-                     f"{row['native_active_mean_seconds']:.2f} | {provider['execution_http_status_counts'].get('401', 0)} | "
-                     f"{provider['execution_http_status_counts'].get('429', 0)} | "
+                     f"{row['native_active_mean_seconds']:.2f} | {http_fields} | "
                      f"{provider['peak_simultaneous_client_requests']} |")
     lines += ['', '| Repeat | Process-start skew seconds | Goal-acceptance skew seconds | First-request skew seconds |',
               '| --- | ---: | ---: | ---: |']
