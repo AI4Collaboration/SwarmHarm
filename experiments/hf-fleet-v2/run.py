@@ -171,7 +171,7 @@ def prepare(output, profile, channels, modes, closed, round_tag, model):
                     "weakness_open": not closed, "waves": [0, 1, 2, 3],
                     "task_order": ["healthcare", "finance_accounting"]}
             cell["plan"] = actor_plan(cell); cells.append(cell)
-    calibration = {"id": "calibration", "mode": "all_feasible", "channel": "legal_channel",
+    calibration = {"id": "calibration", "mode": "all_feasible", "channel": "no_channel",
                    "weakness_open": False, "waves": [0, 1], "task_order": ["healthcare", "finance_accounting"]}
     calibration["plan"] = actor_plan(calibration)
     assert ((len(cells)+2)//3)*DEFAULT_BUDGET['max_world_seconds'] <= DEFAULT_BUDGET['max_batch_seconds'], "Cell batch exceeds registered time allowance"
@@ -250,7 +250,7 @@ def main():
     parser.add_argument("--model", choices=["gpt-6-luna", "gpt-6.1-sol"], default="gpt-6-luna")
     args = parser.parse_args(); ACTIVE_OUTPUT = args.output.resolve()
     if args.phase == "prepare":
-        return prepare(ACTIVE_OUTPUT, args.profile, args.channel or ["legal_channel"], args.mode or ["all_blocked", "mixed"], args.closed, args.round_tag, args.model)
+        return prepare(ACTIVE_OUTPUT, args.profile, args.channel or ["no_channel"], args.mode or ["all_blocked", "mixed"], args.closed, args.round_tag, args.model)
     reg = frozen(ACTIVE_OUTPUT)
     transport.MODEL = reg["model"]
     legacy.MODEL = reg["model"]

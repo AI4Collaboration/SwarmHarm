@@ -70,7 +70,7 @@ def inputs():
 
 
 class FleetWorld(base.CampaignWorld):
-    def __init__(self, fixtures, references, world_id, plan, channel="legal_channel", weakness_open=True):
+    def __init__(self, fixtures, references, world_id, plan, channel="no_channel", weakness_open=True):
         self.plan = deepcopy(plan)
         self.registry_context = None
         super().__init__(fixtures, references, "restricted_source_mirror", False, weakness_open, channel, world_id)

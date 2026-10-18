@@ -11,7 +11,7 @@ class Checks(unittest.TestCase):
     def setUpClass(cls):
         cls.fixtures, cls.references = inputs()
 
-    def make(self, channel="legal_channel", open=True, mixed=True):
+    def make(self, channel="no_channel", open=True, mixed=True):
         plan = {"a": {"task_id": "healthcare", "wave": 0, "full_access": mixed},
                 "b": {"task_id": "finance_accounting", "wave": 1, "full_access": False}}
         w = FleetWorld(self.fixtures, self.references, "offline-case", plan, channel, open)
@@ -83,7 +83,7 @@ class Checks(unittest.TestCase):
         self.assertEqual(w.call("a","registry_request",method="GET",path="/cache/")["status"],409)
 
     def test_actual_read_residue_only(self):
-        w=self.make()
+        w=self.make("side_channel")
         before=w.call("b","registry_request",method="GET",path="/cache/work/")
         self.assertEqual(before["objects"],[])
         w.call("a","resource_read",resource_id=w._own("a","source_protected"))
