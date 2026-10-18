@@ -86,6 +86,18 @@ def main():
     report['s3_collector_usd'] = sum(row['s3_costs']['collector_requests_usd'] for row in rows)
     report['s3_one_put_per_object_usd'] = sum(row['s3_costs']['gateway_put_usd_at_one_put_per_verified_object'] for row in rows)
     report['s3_storage_usd_per_month'] = sum(row['s3_costs']['storage_usd_per_month_for_verified_bytes'] for row in rows)
+    retention = [json.loads((directory / 'archive-retention-costs.json').read_text())
+                 for directory in args.directories if (directory / 'archive-retention-costs.json').is_file()]
+    if retention:
+        assert len(retention) == 3
+        report['archive_retention'] = {
+            'archives': sum(row['archives'] for row in retention),
+            'bytes': sum(row['bytes'] for row in retention),
+            'request_usd': sum(row['retention_request_usd'] for row in retention),
+            'storage_usd_per_month': sum(row['retention_storage_usd_per_month'] for row in retention)}
+    operator_storage = args.directories[0].parent / 'operator-storage-costs.json'
+    if operator_storage.is_file():
+        report['operator_storage'] = json.loads(operator_storage.read_text())
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
         ('completion_fraction', 'recall_mean', 'repeat_coverage', 'beyond_seed_count', 'tokens', 'requests', 'process_start_skew_seconds')}
@@ -121,6 +133,12 @@ def main():
     for row in report['repeats']:
         lines.append(f"| {row['repeat']} | {row['maximum_requests_per_key']} | {row['maximum_tokens_per_key']:,} | {row['keys_exceeding_token_threshold']} |")
     lines += ['', 'Cross-case packet counts include response packets. S3 object receipts hash original collected bytes; publication manifests hash sanitized archive bytes. Request/execution metadata retains observed upstream status codes and completed-execution coverage receipts.']
+    if retention:
+        retained = report['archive_retention']
+        lines += ['', f"Private encrypted S3 retention preserves **{retained['archives']} original host archives / {retained['bytes']:,} bytes** with full remote SHA256 readback. Retention request estimate: **${retained['request_usd']:.6f}**; storage: **${retained['storage_usd_per_month']:.6f}/month**, prorated by retention."]
+    if operator_storage.is_file():
+        storage = report['operator_storage']
+        lines += ['', f"Shared operator evidence storage provides **{storage['provisioned_gib']} GiB encrypted gp3**. The added **{storage['additional_gib']} GiB** costs **${storage['additional_provisioned_usd_per_month']:.3f}/month** while provisioned. The protective snapshot incurs regional storage charges for retained used blocks. [AWS EBS pricing]({storage['pricing_url']})."]
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
 
