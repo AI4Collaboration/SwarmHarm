@@ -23,6 +23,9 @@ def main():
                               ('ready', '*-readiness.json'), ('timers', '*-timer.json'),
                               ('exports', '*-raw.tar.gz')]:
             row[name] = len(list(directory.glob(pattern)))
+        export_manifest = directory / 'export-manifest.json'
+        if export_manifest.exists():
+            row['exports'] = len(json.loads(export_manifest.read_text()))
         for name in ('release', 'launch-verification', 'cleanup', 'finalization'):
             path = directory / f'{name}.json'
             if path.exists():
