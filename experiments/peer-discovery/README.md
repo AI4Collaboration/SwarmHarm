@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-91 completed, 2026-10-18: [N=32/K=5, three serial repeats](results/2026-10-18/SWH-91/README.md) verified 96 fresh instances, sessions and inference keys. Mean recall across repeats is 32.02%; exact peer-set submissions total 0/96. Recording covers 977 requests and 5,874 JSON objects with hashes and S3 request IDs. All owned cloud resources and scoped keys have verified cleanup, and the shared reservation is released.
+
 SWH-91 packet analysis, 2026-10-17: `metrics.py` uses dpkt 1.9.8 to decode captured PCAP, Linux cooked frames, IPv4 and TCP. The complete repeat-1 metrics match the original reader across all 32 captures. Cross-case traffic records include connection-attempt SYN and SYN-ACK counts.
 
 SWH-91 provider admission, 2026-10-17: `provider_probe.py DIRECTORY --meta-key OPERATOR_KEY --issue SWH-91` uses a separate inference key for two simultaneous requests followed by one request. It verifies completed `gpt-6-luna / xhigh` gateway executions, exports stored payloads, and revokes the key. Admission evidence accompanies each subsequent repeat. Metrics retain subjects with zero gateway requests and sum quota accounting across profiles.
