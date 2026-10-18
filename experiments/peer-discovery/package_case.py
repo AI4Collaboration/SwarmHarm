@@ -19,6 +19,11 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     for filename in ('case-verification.json', 'reservation-release.json', 'prices.json', 's3-prices.json'):
         shutil.copyfile(args.directory / filename, args.output / filename)
+    storage = args.output / 'operator-storage'
+    storage.mkdir(exist_ok=True)
+    for path in args.directory.glob('operator-*'):
+        if path.is_file():
+            shutil.copyfile(path, storage / path.name)
     shutil.copytree(args.directory / 'graphs', args.output / 'graphs', dirs_exist_ok=True)
     shutil.copytree(args.directory / 'protocol', args.output / 'protocol', dirs_exist_ok=True)
     shutil.copytree(args.directory / 'admission-reuse', args.output / 'admission-reuse', dirs_exist_ok=True)
