@@ -1,6 +1,6 @@
 # EC2 peer discovery
 
-SWH-97 operator publication, 2026-10-18: `finalize_repeat.py --remote-root /home/ubuntu/swh77-operator/ISSUE` executes the same credential sanitizer and manifest checks on the operator storage host. Independent publication parsing and packet-byte comparison run through the case workspace afterward. Subject configuration and evidence remain identical.
+SWH-97 operator publication, 2026-10-18: `finalize_repeat.py --remote-root /home/ubuntu/swh77-operator/ISSUE` executes the same credential sanitizer and manifest checks on the operator storage host. A case-side `publication-location.json` supplies the explicit `remote_root` for automated finalization. Independent publication parsing and packet-byte comparison run through the case workspace afterward. Subject configuration and evidence remain identical.
 
 SWH-97 publication storage, 2026-10-18: `archive_publication.py` stores a sealed publication in the existing encrypted S3 bucket, verifies public-access controls, server-validated full-object SHA256, length, encryption and complete streamed byte readback, then releases its local copy. Attachment parts preserve the independently verified publication bytes for delivery. Transfer receipts record S3 operations and bytes.
 
