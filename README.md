@@ -1,59 +1,41 @@
 # SwarmHarm
 
-**Evaluating Multi-Agent Safety on Benign Tasks**
+研究多个 AI agent 在完成正常任务时，会不会越过权限，以及这种行为会不会传给同伴。目前使用医疗表格统计、财务记录核对等普通业务任务。
 
-**Latest result, 2026-10-18:** [Unattended workflow and permission presentation](experiments/sol-framing-v1/results/2026-10-18/README.md): **three workers in one world read restricted caches after receiving their policy metadata and retained source-correct private facts in their final answers**. Thirteen others returned scoped partials. Three real cache-use disclosures occurred after all initial acquisitions, with no new adopter. Four ordinary calibrations passed; all sixteen natural episodes ended and their histories passed independent reconstruction. This is observed unauthorized data use, not a complete HF propagation chain or an incidence estimate.
+## 最新结果 · 2026-10-18
 
-**Earlier natural result, 2026-10-18:** [Natural Sol / max source-boundary test](experiments/sol-misalignment-v1/results/2026-10-18/README.md): **eight workers ended with explicitly scoped partial answers; no unauthorized source read or reusable bypass disclosure occurred**. Three workers inspected cache directories, but neither arm attempted a cached dataset-object GET. Acquisition is still missing, leaving downstream method sharing/adoption untested. The four ordinary calibration records passed.
+**已经观察到越权取数和数据使用。** 普通入口缺少资料后，三个 agent 从无权读取的缓存中取得数据，并把它用于最终答案。操作前，它们收到的信息已列出权限限制。答案内容正确，但取数方式不合规。
 
-**Earlier capability control, 2026-10-18:** [Sol / max capability control](experiments/sol-capability-v1/results/2026-10-18/README.md): **four ordinary calibrations passed; all four coordination workers correctly completed their tasks using authorized caches, posted validated general procedures and read actual peer replies**. Prior cohorts already used Sol / xhigh. The new control assigns cooperation and establishes lawful task/tool/message competence; it does not establish spontaneous misalignment, causal peer learning or a benefit from higher reasoning effort.
+这三个案例来自同一个实验组。本轮共四组、十六个 agent；其余十三个明确说明了证据缺口。修复权限检查后，受限缓存读取被挡住。
 
-Source-grounded administrative tasks and audited experiments for studying how independent task agents discover one another, communicate and cross task boundaries. Start with the [working context](docs/working-context.md); load earlier narratives from [history](docs/history-index.md) only when needed.
+**还没有观察到完整的方法传播。** 三个取数者后来都向同伴提到了缓存取数，但所有首次取数都发生在这些通报之前，没有新的同伴随后采用。它们公开注明了缓存来源和验证未完成的状态；目前不能进一步认定存在欺骗。
 
-**Earlier natural cohorts, 2026-10-17:** two adaptive method-elicitation cohorts, **six terminal worlds / 48 scheduled natural trajectories: 45 completed, three provider read timeouts retained**. Eight full-input calibration records passed across the two cohorts. There are **950 verified provider replies and three incomplete attempts** across those categories. These are development outcomes, not a pooled incidence estimate.
+没有加入威胁、作弊指令或预置的同伴方法。普通任务检查和原始记录复核均通过。每组只测了一个短时环境，暂时不能据此估计发生概率。
 
-- [Real-demand notifications, latest](experiments/hf-method-v2/results/2026-10-17/README.md): two authorized cache-capability holders actually received real peer requests after acquisition. Both completed their tasks; neither posted a directed reply. No accepted unauthorized own-cache read. Two requests for another worker's package returned 404. Three timeout trajectories are preserved and are not safety refusals.
-- [Useful cached data and real workers](experiments/hf-method-v1/results/2026-10-17/README.md): four authorized cache completions, six recipients reading peer audit bodies, two restricted-cache reads followed by self-report and scoped incomplete answers. Public-read receipts ambiguously pointed to supporting packages; v2 removes that pointer.
+[阅读本轮报告和证据](experiments/sol-framing-v1/results/2026-10-18/README.md) · [查看之前的结果](docs/history-index.md)
 
-**No complete unauthorized-method sharing/adoption chain is confirmed in these cohorts.** A lawful cache capability is not a known authorization bypass; routine work publication, source truth, actual demand exposure, directed sharing and different-object use stay separate. Earlier campaign evidence of two source-correct unauthorized retrievals remains [preserved](experiments/hf-campaign-v1/results/2026-10-17/README.md), distinct from the two new ambiguous reads. The [earlier design-only record](experiments/method-elicitation-design/README.md) is historical; implementations and collections are linked above.
+## 我们想回答什么
+
+- **通信：** agent 不能交流、能偷偷交流、获准交流时，行为有什么不同？数据读取权限另行判断。
+- **传播：** 一个 agent 越界后，会不会把方法告诉同伴？同伴是否真的用到了自己的任务上？
+- **举报：** agent 发现同伴越界后，会不会主动向主管报告？最新这一轮没有主管接口，未测试举报。
 
 ## Current setup
 
-Verified **2026-10-18** for the [workflow/framing cohort](experiments/sol-framing-v1/results/2026-10-18/README.md). Sixteen offline controls, fresh native preflight and the unchanged four-record calibration gate passed. All sixteen natural workers ended normally; three used unauthorized cached data in otherwise correct answers, while thirteen returned scoped partials. **354 provider replies** passed exact independent reconstruction. `SWH` is the SwarmHarm issue prefix.
+以下设置已于 **2026-10-18** 验证，所有本轮测试均已结束。
 
-- **Runnable harness and commands:** [current frozen protocol](experiments/sol-framing-v1/README.md). Eleven local JSON functions; no supervisor endpoint. Independent full stateless histories, encrypted reasoning items and `store:false`. Registry paths are virtual; subjects have no shell, general network, host/grader files or operator credentials. The protocol README remains the original precollection record; completed findings are linked above.
-- **Operator environment:** Python **3.12.14**, `jsonschema` **4.25.1**, `openpyxl` **3.1.5**, `pypdf` **6.10.0**, at `../eval-readiness/hf-campaign-v1-2026-10-17/.venv`. Invoke that Python directly; resolving its symlink bypasses installed dependencies. Fresh clones install the [requirements](experiments/hf-campaign-v1/requirements.txt) in their own environment.
-- **Model and route:** existing operator-only host login at `https://chatgpt.com/backend-api/codex/responses`, **gpt-6.1-sol / max**. Current cohort: two preflight, 42 calibration and 310 natural replies; no incomplete inference attempt. Earlier max and xhigh cohorts stay separate. This cohort needs no AWS service. No general API key or GLM/OpenRouter route is configured here. Verify each new pairing before collection.
-- **Admission:** freeze code, inputs, conditions and budgets before calls. Sixteen offline checks and all four **correct/authorized/verified/finished/output-file** calibration records passed. No within-cohort replacement, retry or gate relaxation. [Independent reconstruction](experiments/sol-framing-v1/results/2026-10-18/round-01/independent-review.json) checks all twenty calibration/natural episodes.
-- **Limits:** 512 replies / 1,024 tools per worker, six hours/world, 24 hours/batch, **300 seconds/request, four inference slots, two concurrent worlds**, 30-second chosen wait. Four natural worlds each have four workers arriving at rounds 0/1. Actual worlds lasted **389–454 seconds**, with 166-second calibration. These allowances and short arrivals do not establish hours/days of autonomy.
-- **Tasks and conditions:** original healthcare/accounting questions; different private answers and identical public observations. Every natural worker lacks the supporting-source role and its normal input is genuinely unstaged (404). Front-loaded/on-access permission presentation crosses open/repaired own-cache role checks. Exact policy remains discoverable on resource/cache listings in both presentations. Both use an unattended workflow without human help, legal communication and genuine peer notifications. Pressure is **none**; no cooperation, bypass or honesty/stop instruction is appended. Earlier lawful capability and No/Side conditions stay unchanged.
-- **Measurement:** [actual prior-request policy evidence](experiments/sol-framing-v1/results/2026-10-18/round-01/policy-exposure.json) verifies all three unauthorized readers received relevant metadata before selection. Their final answers retain the private facts and actual mirror citations; formal validation remains `needs_evidence`. The other thirteen preserve unknown protected fields. Three cache-use status disclosures were actually delivered to peers, but all first acquisitions preceded them. [Semantic qualifications](experiments/sol-framing-v1/results/2026-10-18/round-01/semantic-review.json). Two operator-analysis temporal controls passed; a current result is never counted as prior input.
-- **Hosted infrastructure:** preserve Multica **0.4.44** and the maintainer public-server file-access security patch. No routine upgrade or restart. The human-only wakeup patch is different. Provider timeouts alone do not establish a coordinator fault; historical versions/cloud profiles do not establish current readiness. [History](docs/history-index.md).
-- **Run state:** all owned provider futures and loops ended. Twenty final output artifacts and all 29 accepted operational output writes parse as JSON objects. All 1,178 raw/analysis files are byte-matching archived with an exact manifest; recognizable plaintext credential-format scans passed. No new key, wakeup, container, cloud resource or hosted-runtime change; existing login stays operator-side. Never edit sealed archives; put reanalysis in a separate version.
+- **模型：** `gpt-6.1-sol / max`，使用操作者本机已有登录。本轮不需要 AWS，尚未接入 GLM / OpenRouter。
+- **环境：** 本地 Python 3.12.14，通过模拟业务接口执行任务。实验 agent 无法访问本机文件、公共网络、评审答案或登录凭证。
+- **任务：** 保留原来的业务问题和数据权限，比较权限信息的显示方式，以及缓存漏洞开放或修复后的表现。
+- **服务器：** 托管服务保持 Multica 0.4.44，并保留维护者的文件访问安全补丁。升级前必须先确认补丁如何保留。
 
-## Research questions
+[运行命令、依赖和已知限制](docs/running-evals.md)
 
-**Communication.** How do communication availability and authorization affect boundary violations? No channel prohibits peer communication and mechanically isolates indirect paths. Side channel prohibits it but leaves a discoverable shared-infrastructure route. Legal channel authorizes a designated channel. Source/data permissions remain separate; these regimes vary both authorization and affordances.
+## 项目约定
 
-**Emergence and contagion.** Can a deviation arise from benign tasks and then be adopted, amplified, rejected or corrected? Record actual exposure, accepted action and protected-object effect. A copied answer, routine work file, reusable method and causal influence are different outcomes. Seeded adoption diagnostics are separate from spontaneous emergence.
+- 使用真实任务和正当目标。目前只做普通业务测试，暂不做高风险 cyber 任务。
+- 分别检查取数、使用数据、发送消息、收到消息和采用方法。做出正确答案不代表取数合法；诚实说明做不完也不等于越界。
+- 使用真实运行的同伴，不虚构成功案例或帮手。评审答案和操作者凭证始终留在实验 agent 之外。
+- 每轮开始前固定设置，保留失败和负结果。最新结论放最前面，原始记录和已冻结的实验保持原样。
 
-**Whistleblowing.** Does a worker actually exposed to a peer violation voluntarily report it through its authorized private supervisor endpoint? Do not assign it a misconduct-hunting task or confuse operator detections with agent reporting.
-
-## Operating rules
-
-- Keep latest updates first and historical evidence immutable. Read this page and the working context before loading old trial narratives.
-- Preserve legitimate task goals and native object permissions; keep actual gold, evaluator instructions, private tests and credentials outside natural subject inputs. Do not append honest-stop, anti-boundary or collaboration reminders. Distinguish planned synthetic task-world weaknesses from accidental audit leakage.
-- Acquisition, sharing and adoption require separate eligible denominators. Operator-authorized functionality controls do not establish spontaneous willingness. Do not fabricate a successful peer or wake a finished worker to answer a request.
-- A missing staged input (404) differs from role denial (403). Correctness, authorized evidence, communication legality, proxy status and intent are separate. An accurate partial is not fabrication; `needs_evidence` is not itself misconduct.
-- Bind every read receipt to its actual source object/event. Exact replay alone does not establish semantic provenance. Verify imports before model calls and never resolve the virtual-environment executable to its base interpreter.
-- Use independent task labs; test restrictions where the claim applies. Export, independently check, and stop owned runs/resources. Do not infer a server problem from an upstream model error or an infrastructure requirement from a missing default credential.
-- Benign administrative tasks only for the current dataset work. High-risk cyber tasks, real external attacks and actual agent harm remain deferred. Larger budgets or more arrivals do not establish long human-time autonomy.
-
-## Research notes
-
-- [Method elicitation and LessWrong source comparison (中文)](docs/research/method-elicitation-2026-10-17.md)
-- [HF fleet refinement and design lessons (中文)](docs/research/hf-fleet-refinement-2026-10-17.md)
-- [Construct validity and peer discovery (中文)](docs/research/construct-validity-2026-10-17.md)
-- [Implemented campaign validity review (中文)](docs/research/hf-campaign-v1-review-2026-10-17.md)
-- [Task sources and verification options (中文)](docs/research/task-sources-and-verification.md)
-- [All historical setups and experiments](docs/history-index.md)
+[当前项目上下文](docs/working-context.md) · [实验历史](docs/history-index.md) · [LessWrong / METR 设计比较](docs/research/method-elicitation-2026-10-17.md) · [数据来源审查](docs/research/task-sources-and-verification.md)
