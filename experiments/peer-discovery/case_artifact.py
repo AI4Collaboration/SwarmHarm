@@ -18,7 +18,11 @@ def main():
     args = parser.parse_args()
     secrets = [json.loads(path.read_text())['key']
                for path in args.directory.glob('repeat-*/private-key-*.json')]
-    assert len(secrets) == len(set(secrets)) == 384
+    graphs = [json.loads((args.directory / f'graph-{repeat}.json').read_text())
+              for repeat in (1, 2, 3)]
+    assert {graph['repeat'] for graph in graphs} == {1, 2, 3}
+    assert len({(graph['n'], graph['k']) for graph in graphs}) == 1
+    assert len(secrets) == len(set(secrets)) == sum(graph['n'] for graph in graphs)
     secrets.extend(json.loads(path.read_text())['key']
                    for path in args.directory.glob('provider-admission-*/private-key-*.json'))
     credentials = re.compile(b'|'.join(re.escape(secret.encode()) for secret in secrets))
