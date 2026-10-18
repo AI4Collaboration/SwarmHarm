@@ -34,6 +34,7 @@ def main():
         run('grade.py', directory)
         run('metrics.py', directory)
         run('resources.py', directory)
+        run('audit_repeat.py', directory)
         print(json.dumps({'issue': args.issue, 'repeat': repeat, 'phase': 'verified'}), flush=True)
 
 

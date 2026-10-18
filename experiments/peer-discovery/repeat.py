@@ -135,10 +135,11 @@ def main():
     save(directory, 'recording-settings.json', gateway(meta_key, 'recording', ''))
     receipt = subprocess.run(['python3', str(ROOT.parent / 'peer-discovery-scheduling/admit.py'), 'reserve',
         '--state-dir', str(args.admission_state_dir), '--issue', args.issue, '--n', str(graph['n'])],
-        check=True, capture_output=True, text=True)
+        check=False, capture_output=True, text=True)
     capacity = json.loads(receipt.stdout)
-    assert capacity['capacity_valid']
     save(directory, 'capacity-admission.json', capacity)
+    receipt.check_returncode()
+    assert capacity['capacity_valid']
     def expire():
         state = json.loads((directory / 'cloud.json').read_text())
         if state['instance_ids']:
