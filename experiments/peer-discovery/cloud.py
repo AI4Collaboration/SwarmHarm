@@ -17,6 +17,7 @@ EC2 = SESSION.client('ec2', config=Config(retries={'total_max_attempts': 2, 'mod
 def save(directory, name, value):
     directory.mkdir(parents=True, exist_ok=True)
     target = directory / name
+    target.parent.mkdir(parents=True, exist_ok=True)
     temporary = target.with_suffix(target.suffix + '.writing')
     temporary.write_text(json.dumps(value, default=str, indent=2))
     temporary.replace(target)
