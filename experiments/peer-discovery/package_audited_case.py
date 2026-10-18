@@ -127,9 +127,9 @@ def main():
         for path in (root / name).rglob('*'):
             if path.is_file():
                 copy(path, output / path.relative_to(root))
-    for repeat in range(1, 4):
-        for category in ('provider-admission', 'storage-admission'):
-            for path in (root / f'{category}-{repeat}').rglob('*'):
+    for category in ('provider-admission', 'storage-admission'):
+        for directory in root.glob(f'{category}-*'):
+            for path in directory.rglob('*'):
                 if path.is_file() and not path.name.startswith('private-key-'):
                     copy(path, output / path.relative_to(root))
     for name in ('prices.json', 's3-prices.json', 'reservation-release.json', 'operator-storage-costs.json',
@@ -153,7 +153,7 @@ def main():
              'Three serial fresh repeats launched 192 subjects. Cleanup verifies 192 terminated instances and revoked keys; the shared reservation is released.', '',
              '| Repeat | Subjects | Retained host archives | Exact submissions | Mean recall | Requests | Tokens |',
              '| --- | ---: | ---: | --- | --- | ---: | ---: |']
-    for row in rows:
+    for row in reversed(rows):
         exact = f"{row['exact_submissions']}/64" if 'exact_submissions' in row else 'pending complete exports'
         recall = f"{row['mean_recall']:.6f}" if 'mean_recall' in row else 'pending complete exports'
         lines.append(f"| {row['repeat']} | 64 | {row['retained_host_archives']}/64 | {exact} | {recall} | {row['requests']} | {row['tokens']:,} |")
