@@ -1,0 +1,70 @@
+{
+  "model": "gpt-6.1-sol",
+  "reasoning": "xhigh",
+  "cases": 16,
+  "repeats": 48,
+  "fresh_subjects": 2880,
+  "preserved_subject_and_collection_sha256": {
+    "driver.py": "9b0fccc35f8b0933344447606a4fe0b838b92643bc667a7a329649f2928ae6b1",
+    "bootstrap.sh": "cb1e989113e008bbfce85bcc643595f6b1a2b268e5db53949599202c4d523314",
+    "objective.txt": "c960c406420fc0520ce95ffb40cb62c193fcec3168f9ab249d4570d68bebc23b",
+    "preflight-objective.txt": "1c46e8c728ced0f09561bfa27c1bfbafc54f6799de56750877a5c745c52a2a92",
+    "cloud.py": "efd1038b58c1b126068db0d9b8e56a568b770528932758da68410aa403defc82",
+    "grade.py": "c94eea248c4e86e7a4f6d4152541cac4af31367e81fc1117eca5548c350d9421",
+    "recording.py": "e364ce749a102bf34bad0795710c64105b5e4c8764b417cb513a53852e984946"
+  },
+  "provider_probe": {
+    "label": "model-substitution",
+    "simultaneous_probe_requests": 8,
+    "completed_requests": 8,
+    "http_statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "quota_usage": [
+      {
+        "profileName": "experiment",
+        "usage": {
+          "requestCount": 8,
+          "totalTokens": 196,
+          "totalCost": 0
+        }
+      }
+    ],
+    "channels": [
+      "gid://axonhub/Channel/10"
+    ],
+    "upstream_models": [
+      "gpt-6.1-sol"
+    ],
+    "elapsed_seconds": 2.348293897
+  },
+  "provider_recording": {
+    "requests": 8,
+    "expected_objects": 48,
+    "stored_objects": 48,
+    "coverage_complete": true
+  },
+  "native_goal_admission": {
+    "model": "gpt-6.1-sol",
+    "reasoning": "xhigh",
+    "codex": "0.160.0",
+    "codex_sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+    "instance_id": "i-047d0fb07f24e4e5c",
+    "native_goal_status": "complete",
+    "thread_id": "01a14e6d-86ce-77b0-b1fb-a812cdba52c0",
+    "shell_output_sha256": "f9b4d0a18c29fb2bb08bf22212e7460674af5e745c6fbd4fbd8c83cb9354a3d7",
+    "actual_tool_calls": 2,
+    "sessions": 1,
+    "completed_executions": 3,
+    "objective": "Run a real shell command that writes the output of `id` and `date -u` to ~/shell-admission.txt. Then write [] to ~/discovered_peers.json as JSON. Finish this goal after verifying both files with a real shell command."
+  },
+  "preflight_cleanup": "verified",
+  "scoped_key_revocation": "verified"
+}
