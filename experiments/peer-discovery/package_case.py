@@ -1,0 +1,47 @@
+import argparse
+import hashlib
+import json
+import shutil
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('directory', type=Path)
+    parser.add_argument('output', type=Path)
+    args = parser.parse_args()
+    verification = json.loads((args.directory / 'case-verification.json').read_text())
+    assert verification['unique_instances'] == verification['unique_revoked_keys'] == 192
+    args.output.mkdir(parents=True, exist_ok=True)
+    for filename in ('case-verification.json', 'reservation-release.json', 'prices.json', 's3-prices.json'):
+        shutil.copyfile(args.directory / filename, args.output / filename)
+    shutil.copytree(args.directory / 'graphs', args.output / 'graphs', dirs_exist_ok=True)
+    artifacts = []
+    for repeat in range(1, 4):
+        source = args.directory / f'repeat-{repeat}'
+        output = args.output / f'repeat-{repeat}'
+        output.mkdir(exist_ok=True)
+        for filename in ('scoring.json', 'evidence-verification.json', 'recording-independent-verification.json',
+                         's3-costs.json', 'code-revision.json', 'analysis-revision.json', 'release.json', 'admission.json'):
+            shutil.copyfile(source / filename, output / filename)
+        cleanup = json.loads((source / 'cleanup.json').read_text())
+        instances = [instance for reservation in cleanup['instances']['Reservations'] for instance in reservation['Instances']]
+        assert all(instance['State']['Name'] == 'terminated' for instance in instances)
+        summary = {'time': cleanup['time'], 'terminated_instances': [instance['InstanceId'] for instance in instances],
+                   'revoked_inference_keys': len(list(source.glob('key-revocation-*.json'))),
+                   **{name: cleanup[name] for name in ('volumes', 'addresses', 'security_groups', 'key_pairs')}}
+        (output / 'cleanup-summary.json').write_text(json.dumps(summary, indent=2))
+        release = json.loads((source / 'release-verification.json').read_text())
+        (output / 'release-verification.json').write_text(json.dumps(
+            {name: value for name, value in release.items() if name not in ('instances', 'volumes')}, indent=2))
+        archive = args.directory / 'deliverables' / f'SWH-95-repeat-{repeat}.tar.gz'
+        with archive.open('rb') as stream:
+            digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+        artifacts.append({'filename': archive.name, 'bytes': archive.stat().st_size,
+                          'sha256': digest})
+    (args.output / 'artifacts.json').write_text(json.dumps(artifacts, indent=2))
+    print(json.dumps({'subjects': verification['unique_instances'], 'repeat_artifacts': artifacts}, indent=2))
+
+
+if __name__ == '__main__':
+    main()
