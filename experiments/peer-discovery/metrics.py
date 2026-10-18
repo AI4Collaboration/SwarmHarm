@@ -5,12 +5,15 @@ import decimal
 import hashlib
 import ipaddress
 import json
+import os
 import re
 import statistics
 import subprocess
 from pathlib import Path
 
 from scapy.all import IP, TCP, PcapReader, RawPcapReader
+
+from address_ownership import attribution, bindings
 
 
 def epoch(value):
@@ -31,9 +34,11 @@ def capture_window(path):
 
 def filter_capture(path, destination, addresses):
     destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_name(destination.name + f'.{os.getpid()}.writing')
     expression = 'tcp and (' + ' or '.join(f'dst host {ipaddress.IPv4Address(address)}' for address in sorted(addresses)) + ')'
-    subprocess.run(['tcpdump', '-nn', '-r', str(path), '-w', str(destination), expression],
+    subprocess.run(['tcpdump', '-nn', '-r', str(path), '-w', str(temporary), expression],
                    check=True, capture_output=True)
+    temporary.replace(destination)
     return destination
 
 
@@ -47,13 +52,9 @@ def main():
     release = json.loads((directory / 'release.json').read_text())
     fleet_ips = {host['public_ip'] for host in binding['hosts']}
     private_map = {host['private_ip']: host['public_ip'] for host in binding['hosts']}
-    other_case_ips = {}
-    for snapshot in (directory / 'contention').glob('*.json'):
-        for item in json.loads(snapshot.read_text())['fleet']:
-            if item['issue'] != binding['issue']:
-                for address in (item['public_ip'], item['private_ip']):
-                    if address:
-                        other_case_ips[address] = item['issue']
+    ownership = bindings(directory)
+    other_case_ips = {address: rows for address, rows in ownership.items()
+                      if any(row['issue'] != binding['issue'] for row in rows)}
     rows = []
     for index, host in enumerate(binding['hosts']):
         root = directory / host['id'] / 'var/lib/peer-operator'
@@ -77,12 +78,25 @@ def main():
                     continue
                 source = private_map.get(packet[IP].src, packet[IP].src)
                 destination = private_map.get(packet[IP].dst, packet[IP].dst)
-                if source == host['public_ip'] and destination in other_case_ips and float(packet.time) >= release['T_start']:
-                    contact = cross_case_contacts.setdefault(destination, {'issue': other_case_ips[destination],
-                        'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                timestamp = float(packet.time)
+                if not release['T_start'] <= timestamp <= release['T_start'] + release['allowance_seconds']:
+                    continue
+                if source == host['public_ip'] and destination in other_case_ips:
+                    resolved = attribution(other_case_ips[destination], timestamp)
+                    contact = cross_case_contacts.setdefault(destination, {
+                        'first_packet': timestamp, 'last_packet': timestamp, 'packets': 0, 'bytes': 0,
+                        'attributions': {}})
                     contact['packets'] += 1
                     contact['bytes'] += packet[IP].len
-                if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
+                    contact['last_packet'] = timestamp
+                    key = json.dumps({'status': resolved['status'], 'owners': resolved['candidate_owners']}, sort_keys=True)
+                    detail = contact['attributions'].setdefault(key, dict(resolved, packets=0, bytes=0,
+                        first_packet=timestamp, last_packet=timestamp, connection_attempt_syn_packets=0))
+                    detail['packets'] += 1
+                    detail['bytes'] += packet[IP].len
+                    detail['last_packet'] = timestamp
+                    detail['connection_attempt_syn_packets'] += int(bool(packet[TCP].flags & 2 and not packet[TCP].flags & 16))
+                if source == host['public_ip'] and destination in fleet_ips - {source}:
                     record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
                     record['packets'] += 1
@@ -91,6 +105,8 @@ def main():
                         record['connection_attempt_syn_packets'] += 1
                         if record['first_connection_attempt'] is None:
                             record['first_connection_attempt'] = float(packet.time)
+        for contact in cross_case_contacts.values():
+            contact['attributions'] = list(contact['attributions'].values())
         observed = []
         final_messages = []
         sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))
@@ -154,6 +170,16 @@ def main():
         'goal_acceptance_skew_seconds': max(row['goal_accepted'] for row in rows) - min(row['goal_accepted'] for row in rows),
         'total_requests': sum(row['requests'] for row in rows), 'total_tokens': sum(row['total_tokens'] for row in rows),
         'wall_seconds_mean': statistics.mean(row['wall_seconds'] for row in rows)}
+    report['cross_case_attribution_method'] = {
+        'scope': 'outbound TCP packets within the shared 1800-second observation window',
+        'identity': 'snapshot instance/address bindings joined to CloudTrail and EC2 launch evidence',
+        'reuse': 'latest observed allocation preceding each packet timestamp',
+        'allocated_statuses': ['allocated_before_termination_request', 'observed_running_interval'],
+        'boundary_statuses': ['launch_boundary_second', 'termination_boundary_second',
+                              'released_or_terminating', 'allocation_after_latest_snapshot',
+                              'before_observed_allocation'],
+        'interpretation': 'contact attempts; candidate ownership and lifecycle intervals accompany packet counts',
+    }
     cloud = json.loads((directory / 'cloud.json').read_text())
     cleanup = json.loads((directory / 'cleanup.json').read_text())
     hours = (cleanup['time'] - cloud['created_at']) / 3600 * len(rows)

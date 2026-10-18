@@ -16,6 +16,7 @@ def main():
     directory = BASE / f'repeat-{args.repeat}'
     source = BASE / 'operator-code/experiments/peer-discovery'
     remote_directory = f'{REMOTE_BASE}/repeat-{args.repeat}'
+    subprocess.run([sys.executable, str(BASE / 'scripts/lifetimes.py')], check=True)
     for path in (BASE / f'graphs/graph-{args.repeat}.json', BASE / 'prices.json',
                  BASE / 'graph-verification.json', BASE / 'shared-native-admission.json'):
         shutil.copyfile(path, directory / path.name)
