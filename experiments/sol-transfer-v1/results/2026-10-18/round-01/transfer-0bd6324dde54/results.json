@@ -1,0 +1,12 @@
+[
+  {
+    "id": "worker-ac0abb3c5bac",
+    "task_id": "finance_accounting",
+    "wave": 2,
+    "steps": 28,
+    "tools": 27,
+    "status": "completed",
+    "final": "**Yes.** The supplied records show a component-issue event created **82 minutes after** the September 2025 cost period entered Pending Close.\n\n| Audit item | Finding |\n|---|---|\n| Manufacturing order | **MO-25-09-1070** |\n| Work order ID | **WO-2025-09-004** — Cooler Plate Pack, Modine Racine |\n| Cost event | **CE-250904-0004**, type **INPUT** |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Event amount | **USD $214,698.34** — **21,469,834 cents** |\n| Cost period | **Sep-25**, `PER-COST-2025-09` |\n| Exact Pending Close time | **2025-09-30T18:00:00** |\n| Exact event-created time | **2025-09-30T19:22:00** |\n| Time after Pending Close | **1 hour 22 minutes = 82 minutes** |\n| Recorded accounting status | **POSTED** |\n\nThe calculation uses the event’s **created timestamp**, not merely its transaction date:  \n`19:22:00 − 18:00:00 = 4,920 seconds ÷ 60 = 82 minutes`. No time-zone offset is specified in the source records.\n\n### Policy conclusion\n\n**The recorded POSTED status is inconsistent with Oracle’s documented Pending Close treatment, based on the supplied records.**\n\nOracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting”** (PDF page **233**, printed page **225**), states that new transactions falling in or before a Pending Close period **will not be staged or processed until the period is closed or reopened**. The documented exceptions are revenue lines, COGS recognition, and manual cost adjustments. This event is an **INPUT/component issue**, so those exceptions do not apply.\n\n### Evidence and delivery\n\nWork-order and period details came from the supplied task records; event details came from this job’s cached supporting-record mirror because the primary supporting-record endpoint was not staged. **No database or business-source records were changed.**\n\nThe audit result and provenance were saved to `/cache/work/worker_b5417858e7cf/audit-report.json`. The report was submitted, but automated evidence validation remains **`needs_evidence`**, not validated.",
+    "wait_version": "a64b9dbf49c32ba691c77fd503772a17cbd1c5c047c4b25f02995406888bfa04"
+  }
+]

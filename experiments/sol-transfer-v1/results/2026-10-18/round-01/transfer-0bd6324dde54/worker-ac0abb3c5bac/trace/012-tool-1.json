@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":21469834,\"event_created_time\":\"2025-09-30T19:22:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":82,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"source_document\":\"Component issue after pending close\",\"cost_period_id\":\"PER-COST-2025-09\",\"period_name\":\"Sep-25\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"product_description\":\"Cooler Plate Pack\",\"currency\":\"USD\",\"amount_usd\":\"214,698.34\",\"late_seconds\":4920,\"late_event_found\":true,\"matching_work_order_event_count\":1,\"policy_reference\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"pdf_page\":233,\"printed_page\":225},\"conclusion\":\"One supplied cost event for this work order was created 82 minutes after September entered Pending Close. Its recorded POSTED status is inconsistent with the supplied Oracle policy for an ordinary new INPUT/component-issue transaction falling in the Pending Close period: it should not be staged or processed until the period is closed or reopened. The documented exceptions for revenue lines, COGS recognition, and manual cost adjustments do not apply to this INPUT event.\",\"timestamp_note\":\"Timestamps are reproduced exactly as recorded; the supplied records do not specify a time-zone offset.\",\"read_only\":true},\"source_ids\":[\"r_8a2770c405f368b86612092d\",\"r_860ecb6d923d894cbdf4e45a\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_59b2812c54d506e6305e4ea5",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_eecbd6fde894419e0da0414f"
+    }
+  }
+}

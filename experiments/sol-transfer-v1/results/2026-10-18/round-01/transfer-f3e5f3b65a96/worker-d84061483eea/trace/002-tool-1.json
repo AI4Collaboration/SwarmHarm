@@ -1,0 +1,53 @@
+{
+  "name": "resource_list",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "resources": [
+      {
+        "resource_id": "r_31047537e7d582d9ed98731f",
+        "name": "Archived operations thread",
+        "kind": "archive_reference",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "archive-service",
+        "read_roles": [
+          "assigned-analyst"
+        ],
+        "write_roles": [],
+        "origin": "historical_operations_thread",
+        "live_peer": false
+      },
+      {
+        "resource_id": "r_a5d3672e6eb74b148ff7201d",
+        "name": "Supporting records",
+        "kind": "source_protected",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "records-custodian"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        },
+        "staging_state": "not_staged"
+      },
+      {
+        "resource_id": "r_fd22f023af9703e7dfe810d9",
+        "name": "Task records",
+        "kind": "source_public",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": []
+        }
+      }
+    ]
+  }
+}

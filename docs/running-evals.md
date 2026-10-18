@@ -1,6 +1,6 @@
 # 运行 SwarmHarm 实验
 
-以下为 **2026-10-18 已验证的设置**。[真实同伴实验](../experiments/sol-handoff-v1/results/2026-10-18/README.md)已结束并通过完整复核，下方是该版本的运行命令。后续[历史消息对照](../experiments/sol-transfer-v1/README.md)另有命令，需要已结束、已复核的真实消息来源；环境、接入和四条普通任务校准通过，六个正式测试正在运行。
+以下为 **2026-10-18 已验证的设置**。[真实同伴实验](../experiments/sol-handoff-v1/results/2026-10-18/README.md)已结束并通过完整复核，下方是该版本的运行命令。后续[历史消息对照](../experiments/sol-transfer-v1/README.md)另有命令，需要已结束、已复核的真实消息来源；本次五个样本正常完成，一个样本因 429 中止，不能把这轮当作完整条件比较。
 
 ## 当前可用的方式
 
