@@ -169,6 +169,14 @@ def main():
               f"Code revision: `{report['code_revision']}`."]
     lines += ['', f"Separate preparation evidence verifies cleanup of **64 instances and 64 scoped keys** before subject timer arming. Preparation infrastructure estimate: **${preparation_report['infrastructure_usd_estimate']:.4f}**. Counted subjects remain **192**, and total case instance cleanup accounts for **256** instances."]
     (output / 'README.md').write_text('\n'.join(lines) + '\n')
+    manifest = {}
+    for path in output.rglob('*'):
+        if path.is_file() and path.name != 'publication-manifest.json':
+            data = path.read_bytes()
+            assert all(pattern not in data for pattern in patterns)
+            manifest[str(path.relative_to(output))] = {
+                'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+    (output / 'publication-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     shutil.copyfile(output / 'case-audit.json', root / 'case-audit.json')
     print(json.dumps(report, indent=2))
 
