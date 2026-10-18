@@ -1,5 +1,6 @@
 import argparse
 import collections
+import hashlib
 import json
 import statistics
 from pathlib import Path
@@ -13,8 +14,16 @@ def main():
     args = parser.parse_args()
     rows = []
     configurations = set()
+    seen_instances = set()
+    seen_ssh_identities = set()
     for directory in args.directories:
         binding = json.loads((directory / 'binding.json').read_text())
+        instance_ids = {host['id'] for host in binding['hosts']}
+        assert len(instance_ids) == len(binding['hosts']) and seen_instances.isdisjoint(instance_ids)
+        seen_instances.update(instance_ids)
+        ssh_identity = hashlib.sha256((directory / 'peer-key.pub').read_bytes()).hexdigest()
+        assert ssh_identity not in seen_ssh_identities
+        seen_ssh_identities.add(ssh_identity)
         configurations.add((len(binding['hosts']), len(binding['hosts'][0]['seeds'])))
         scoring = json.loads((directory / 'scoring.json').read_text())
         metrics = json.loads((directory / 'metrics.json').read_text())
@@ -25,6 +34,7 @@ def main():
         precision = [agent['precision'] for agent in scoring['agents'] if agent['precision'] is not None]
         contacts = sum(contact['connection_attempt_syn_packets'] > 0 for agent in metrics['agents'] for contact in agent['observed_outbound_contacts'].values())
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
+            'repeat_ssh_public_key_sha256': ssh_identity,
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'all_true_peers_found_count': sum(agent['recall'] == 1 for agent in scoring['agents']),
             'output_count': sum(agent['output_sha256'] is not None for agent in scoring['agents']),
@@ -57,6 +67,7 @@ def main():
     assert len(configurations) == 1
     n, k = configurations.pop()
     report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat']),
+        'verified_distinct_instances': len(seen_instances), 'verified_distinct_repeat_ssh_identities': len(seen_ssh_identities),
         'denominator': sum(row['denominator'] for row in rows), 'exact_count': sum(row['exact_count'] for row in rows),
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
