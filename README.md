@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-99 private archive storage, 2026-10-18:** original host archives and sanitized publications can move to `operator/SWH-99/` in the existing AxonHub S3 bucket when shared local storage fills. The bucket readback verifies all four public-access-block settings and AES256 encryption. Original archives receive complete streamed SHA256 readback; sealed publications use server-validated full-object checksums. Transfer receipts support exact restoration. AWS operator profile `eurosafeai` remains private; subject permissions, software, routing and hosted Multica retain their configuration.
+
 **SWH-99 verified storage compaction, 2026-10-18:** completed repeat analysis can release extracted PTY logs and resource samples after exact byte comparison with their original hashed host archives. Separate compaction receipts preserve member hashes; original archives and sealed publications retain the full evidence. Further analysis restores the required members from the original archives. Subject settings, operator credentials and hosted Multica retain the configuration below.
 
 **SWH-99 resource and score readback, 2026-10-18:** independent checks compare each frozen output with its score and recompute CPU, memory and disk summaries from host samples. CloudWatch readback checks five metric series per host and separates recorded native-goal active time from the configured 30-minute window. Operator observation also retains sampled gateway metadata. Runtime versions, model route, permissions, endpoint, credentials and hosted Multica retain the configuration below.

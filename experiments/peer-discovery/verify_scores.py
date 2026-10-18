@@ -74,6 +74,7 @@ def main():
     assert statistics.median(recalls) == scores['recall_median']
     assert len(covered) / len(truth) == scores['repeat_coverage']
     assert scores['completion_fraction'] == sum(row['exact_completion'] for row in graded.values()) / len(hosts)
+    assert scores['all_agent_completion'] == all(row['exact_completion'] for row in graded.values())
     result = {'repeat': binding['repeat'], 'verified_subjects': len(hosts), 'output_states': states,
               'self_inclusion_subjects': self_inclusion, 'duplicate_entry_subjects': duplicate_subjects,
               'outside_fleet_entry_subject_counts': outside_entries,
