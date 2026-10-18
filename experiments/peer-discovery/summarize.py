@@ -138,7 +138,7 @@ def main():
         lines += ['', f"Private encrypted S3 retention preserves **{retained['archives']} original host archives / {retained['bytes']:,} bytes** with full remote SHA256 readback. Retention request estimate: **${retained['request_usd']:.6f}**; storage: **${retained['storage_usd_per_month']:.6f}/month**, prorated by retention."]
     if operator_storage.is_file():
         storage = report['operator_storage']
-        lines += ['', f"Shared operator evidence storage provides **{storage['provisioned_gib']} GiB encrypted gp3**. The added **{storage['additional_gib']} GiB** costs **${storage['additional_provisioned_usd_per_month']:.3f}/month** while provisioned. The protective snapshot incurs regional storage charges for retained used blocks. [AWS EBS pricing]({storage['pricing_url']})."]
+        lines += ['', f"Shared operator evidence storage provides **{storage['provisioned_gib']} GiB encrypted gp3**. The added **{storage['additional_gib']} GiB** costs **${storage['additional_provisioned_usd_per_month']:.3f}/month** while provisioned. The protective snapshot costs **${storage['regional_snapshot_usd_per_gb_month']:.3f}/GB-month** of retained used blocks. [AWS EBS pricing]({storage['pricing_url']})."]
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
 

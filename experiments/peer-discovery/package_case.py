@@ -23,7 +23,8 @@ def main():
     storage.mkdir(exist_ok=True)
     for filename in ('operator-volume-before.json', 'operator-volume-modification.json',
                      'operator-volume-after.json', 'operator-filesystem-expansion.txt',
-                     'operator-storage-snapshot.json', 'operator-storage-costs.json'):
+                     'operator-storage-snapshot.json', 'operator-storage-costs.json',
+                     'operator-snapshot-pricing.json'):
         path = args.directory / filename
         if path.is_file():
             shutil.copyfile(path, storage / path.name)
