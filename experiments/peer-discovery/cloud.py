@@ -81,7 +81,7 @@ def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
         result = ssh(directory, host['public_ip'], 'sudo bash -s', (ROOT / 'bootstrap.sh').read_bytes(), check=False)
         (directory / f'{host["id"]}-bootstrap.txt').write_bytes(result.stdout + result.stderr)
         assert result.returncode == 0, result.stderr.decode()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 16)) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(count, 32)) as pool:
         list(pool.map(prepare, state['hosts']))
     print(json.dumps(state))
 

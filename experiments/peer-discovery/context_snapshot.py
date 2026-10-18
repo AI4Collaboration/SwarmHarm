@@ -23,7 +23,8 @@ def main():
                   'tags': {tag['Key']: tag['Value'] for tag in instance['Tags']}} for instance in instances]
     resources = subprocess.run(['ssh', '-i', str(args.meta_key), '-o', 'BatchMode=yes',
         '-o', 'ConnectTimeout=15', 'ubuntu@63.186.173.73',
-        'date -u; uptime; free -b; df -B1 /; ip -s link'], check=True, capture_output=True, text=True)
+        'date -u; uptime; free -b; df -B1 /; ip -s link; sudo docker stats --no-stream --format "{{json .}}"'],
+        check=True, capture_output=True, text=True)
     result = {'time': time.time(), 'stage': args.stage, 'instances': inventory,
               'gateway_resources': resources.stdout, 'gateway_policy_and_channels': policy(args.meta_key)}
     save(args.directory, f'context-{args.stage}.json', result)

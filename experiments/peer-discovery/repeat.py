@@ -182,6 +182,7 @@ def main():
             list(pool.map(lambda pair: configure(directory, pair[0], pair[1], peer_key, objective), zip(hosts, keys)))
             connectivity(directory, hosts)
             subprocess.run([sys.executable, str(ROOT / 'fleet_readback.py'), str(directory)], check=True)
+            save(directory, 'recording-policy-ready.json', policy(meta_key))
             timestamp = int(time.time()) + max(125, count * 2)
             save(directory, 'release.json', {'T_start': timestamp, 'allowance_seconds': allowance, 'prepared_at': time.time()})
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))

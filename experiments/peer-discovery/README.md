@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-98 observation, 2026-10-18: `status_case.py DIRECTORY` reports independent fleet-stage counts. Gateway snapshots include container resource statistics. Subsequent fleets use 32 bootstrap workers and collect a fresh recording-policy receipt after readiness, before timer release. Subject configuration and the approved three-repeat protocol remain fixed.
+
 SWH-98 preparation, 2026-10-18: `operator_admission.py --n 128 --k 4` validates registered graphs and shared native-goal evidence. `provider_admission.py --issue SWH-98` creates case-labelled diagnostic keys. Case collection uses the existing operator volume through SSHFS; raw credentials and evidence stay private. Each repeat refreshes shared capacity, live provider throughput and stored-payload retrieval checks.
 
 SWH-99 private archive storage, 2026-10-18: `offload_archives.py` transfers verified original host archives to a case-specific prefix in the existing encrypted, public-access-blocked S3 bucket. Each complete object receives independent streamed SHA256 readback before its local copy is released. Per-host receipts preserve the object key, encryption, bytes and hash. `release_publication.py` checks the server-validated full-object SHA256 and length of an uploaded sealed publication before releasing its local copy. Restore an offloaded archive with the AWS operator profile before commands that require its local bytes. S3 PUT, GET, storage and download traffic accompany these transfers.
