@@ -43,6 +43,7 @@ def main():
         offload = source / 'archive-offload-verification.json'
         if offload.is_file():
             shutil.copyfile(offload, output / offload.name)
+            shutil.copyfile(source / 'archive-retention-costs.json', output / 'archive-retention-costs.json')
             shutil.copytree(source / 'archive-offload', output / 'archive-offload', dirs_exist_ok=True)
         for filename in ('scoring.json', 'evidence-verification.json', 'recording-independent-verification.json',
                          'launch-verification.json',
