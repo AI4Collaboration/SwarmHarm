@@ -15,7 +15,6 @@ def main():
     parser.add_argument('--k', type=int, required=True)
     parser.add_argument('--state-dir', type=Path, required=True)
     parser.add_argument('--meta-key', type=Path, required=True)
-    parser.add_argument('--probe-key-id', required=True)
     parser.add_argument('--start-repeat', type=int, choices=(1, 2, 3), default=1)
     args = parser.parse_args()
     root = Path(__file__).parent.resolve()
@@ -41,8 +40,11 @@ def main():
         graph = directory / f'graphs/graph-{repeat}.json'
         definition = json.loads(graph.read_text())
         assert definition['n'] == args.n and definition['k'] == args.k
+        run('provider_admission.py', [directory / f'provider-admission-{repeat}', '--meta-key', args.meta_key,
+                                     '--issue', args.issue], f'repeat-{repeat}-provider-console.txt')
+        probe_key = json.loads((directory / f'provider-admission-{repeat}/private-key-0.json').read_text())
         run('storage_probe.py', [directory / f'storage-admission-{repeat}', '--meta-key', args.meta_key,
-                                '--key-id', args.probe_key_id], f'repeat-{repeat}-storage-console.txt')
+                                '--key-id', probe_key['id']], f'repeat-{repeat}-storage-console.txt')
         shared = [target, graph, '--meta-key', args.meta_key]
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
             operator = pool.submit(run, 'repeat.py', shared + ['--issue', args.issue, '--state-dir', args.state_dir],
