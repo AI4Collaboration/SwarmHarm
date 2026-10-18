@@ -172,6 +172,8 @@ def main():
     report['recording'] = {key: recording[key] for key in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_list_requests', 's3_storage_gib')}
     report['cost'].update({'s3_get_usd_estimate': recording['s3_get_requests'] * 0.00000043,
         's3_list_usd_estimate': recording['s3_list_requests'] * 0.0000054,
+        's3_payload_put_usd_estimate': recording['objects'] * 0.0000054,
+        's3_payload_put_basis': 'one initial PUT per observed payload object at the Frankfurt Tier1 rate',
         's3_storage_usd_per_month_estimate': recording['bytes'] / 1e9 * 0.0245,
         's3_storage_basis': 'first Frankfurt Standard tier; actual retention determines total storage cost'})
     (directory / 'metrics.json').write_text(json.dumps(report, indent=2))

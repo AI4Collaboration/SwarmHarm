@@ -94,6 +94,7 @@ def main():
     report['recording'] = {key: sum(row['recording'][key] for row in rows) for key in ('requests', 'objects', 'bytes', 's3_get_requests', 's3_list_requests')}
     report['s3_get_usd_estimate'] = sum(row['cost']['s3_get_usd_estimate'] for row in rows)
     report['s3_list_usd_estimate'] = sum(row['cost']['s3_list_usd_estimate'] for row in rows)
+    report['s3_payload_put_usd_estimate'] = sum(row['cost']['s3_payload_put_usd_estimate'] for row in rows)
     report['s3_storage_usd_per_month_estimate'] = sum(row['cost']['s3_storage_usd_per_month_estimate'] for row in rows)
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
