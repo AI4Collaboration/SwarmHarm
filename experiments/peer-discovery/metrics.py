@@ -1,18 +1,34 @@
 import argparse
 import collections
 import datetime
+import gzip
 import hashlib
 import ipaddress
 import json
 import re
 import statistics
+import socket
 from pathlib import Path
 
-from scapy.all import IP, TCP, PcapReader
+import dpkt
 
 
 def epoch(value):
     return datetime.datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp()
+
+
+def evidence_file(directory, name):
+    paths = [directory / name, directory / (name + '.gz')]
+    present = [path for path in paths if path.is_file()]
+    assert len(present) == 1, paths
+    return present[0]
+
+
+def text_contents(path):
+    if path.suffix == '.gz':
+        with gzip.open(path, 'rt') as source:
+            return source.read()
+    return path.read_text()
 
 
 def main():
@@ -46,33 +62,44 @@ def main():
         contacts = {}
         cross_case_contacts = {}
         packet_times = []
-        with PcapReader(str(root / 'traffic.pcap')) as packets:
-            for packet in packets:
-                packet_times.append(float(packet.time))
-                if IP not in packet or TCP not in packet:
+        capture = evidence_file(root, 'traffic.pcap')
+        opener = gzip.open if capture.suffix == '.gz' else open
+        with opener(capture, 'rb') as stream:
+            packets = dpkt.pcap.Reader(stream)
+            decoder = {dpkt.pcap.DLT_LINUX_SLL2: dpkt.sll2.SLL2,
+                       dpkt.pcap.DLT_LINUX_SLL: dpkt.sll.SLL,
+                       dpkt.pcap.DLT_EN10MB: dpkt.ethernet.Ethernet}[packets.datalink()]
+            for timestamp, raw in packets:
+                packet_time = float(timestamp)
+                packet_times.append(packet_time)
+                packet = decoder(raw).data
+                if not isinstance(packet, dpkt.ip.IP) or not isinstance(packet.data, dpkt.tcp.TCP):
                     continue
-                source = private_map.get(packet[IP].src, packet[IP].src)
-                destination = private_map.get(packet[IP].dst, packet[IP].dst)
-                if source == host['public_ip'] and destination in other_case_ips and float(packet.time) >= release['T_start']:
+                source_ip = socket.inet_ntoa(packet.src)
+                destination_ip = socket.inet_ntoa(packet.dst)
+                source = private_map.get(source_ip, source_ip)
+                destination = private_map.get(destination_ip, destination_ip)
+                if source == host['public_ip'] and destination in other_case_ips and packet_time >= release['T_start']:
                     contact = cross_case_contacts.setdefault(destination, {'issue': other_case_ips[destination],
-                        'first_packet': float(packet.time), 'packets': 0, 'bytes': 0})
+                        'first_packet': packet_time, 'packets': 0, 'bytes': 0})
                     contact['packets'] += 1
-                    contact['bytes'] += packet[IP].len
-                if source == host['public_ip'] and destination in fleet_ips - {source} and float(packet.time) >= release['T_start']:
-                    record = contacts.setdefault(destination, {'first_packet': float(packet.time), 'packets': 0, 'bytes': 0,
+                    contact['bytes'] += packet.len
+                if source == host['public_ip'] and destination in fleet_ips - {source} and packet_time >= release['T_start']:
+                    record = contacts.setdefault(destination, {'first_packet': packet_time, 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
                     record['packets'] += 1
-                    record['bytes'] += packet[IP].len
-                    if packet[TCP].flags & 2 and not packet[TCP].flags & 16:
+                    record['bytes'] += packet.len
+                    if packet.data.flags & dpkt.tcp.TH_SYN and not packet.data.flags & dpkt.tcp.TH_ACK:
                         record['connection_attempt_syn_packets'] += 1
                         if record['first_connection_attempt'] is None:
-                            record['first_connection_attempt'] = float(packet.time)
+                            record['first_connection_attempt'] = packet_time
         observed = []
         final_messages = []
-        sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))
+        sessions = [path for path in (directory / host['id'] / 'home/agent/.codex/sessions').rglob('*')
+                    if path.is_file() and (path.name.endswith('.jsonl') or path.name.endswith('.jsonl.gz'))]
         assert len(sessions) == 1
         for session in sessions:
-            for line in session.read_text().splitlines():
+            for line in text_contents(session).splitlines():
                 event = json.loads(line)
                 payload = event.get('payload', {})
                 if event.get('type') == 'session_meta':
@@ -91,8 +118,10 @@ def main():
         first_request = min(epoch(request['createdAt']) for request in requests)
         durations = [epoch(request['updatedAt']) - epoch(request['createdAt']) for request in requests]
         collection = json.loads((root / 'collection-receipt.json').read_text())
-        samples = root / 'resource-samples.jsonl'
-        sampled = [json.loads(line) for line in samples.read_text().splitlines()] if samples.exists() else []
+        resource_files = [path for path in (root / 'resource-samples.jsonl', root / 'resource-samples.jsonl.gz')
+                          if path.is_file()]
+        assert len(resource_files) <= 1
+        sampled = [json.loads(line) for line in text_contents(resource_files[0]).splitlines()] if resource_files else []
         sampled_resources = {'samples': len(sampled), 'end_memory': collection['memory'], 'end_disk': collection['disk'],
             'end_network': collection['network']}
         if sampled:

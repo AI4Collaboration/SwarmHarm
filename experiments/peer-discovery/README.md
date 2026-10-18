@@ -1,5 +1,9 @@
 # EC2 peer discovery
 
+**Packet analysis, 2026-10-18:** install pinned `dpkt==1.9.8` through `requirements.txt`. Metrics accept Linux SLL/SLL2 and Ethernet pcap files, gzip captures, gzip native sessions and gzip resource samples. Two actual 16-subject repeats reproduce their Scapy 2.6.1 metrics exactly; comparison receipts accompany the SWH-87 results.
+
+**Completed 2026-10-18 — SWH-87, N=16/K=5:** [Three independently scored repeats](results/SWH-87/2026-10-18/README.md) retain 48 fresh subjects. Mean recalls are **0.1458, 0.2500, 0.5417**, with **0/48 exact submissions**, **70 beyond-seed peer discoveries**, and coverage **0.875, 1.0, 1.0**. Execution used revision `a0e1dc6c`, Codex 0.160.0 and AxonHub gpt-6-luna/xhigh. Direct S3 receipts cover all 370 requests and 2,167 retrieved objects. Case artifacts include provider contention, resource use, quotas, costs and verified cleanup.
+
 SWH-87 releases additionally require `--binary-sha256 HASH` from the shared disposable admission. The launcher refreshes shared admission before provisioning, verifies each model catalog, runs directed connectivity checks concurrently, and collects paginated gateway records plus actual S3 payloads before teardown. Stored payload receipts link issue, repeat, EC2 instance, scoped key, request, execution and native session. Recording policies and capacity receipts accompany each repeat.
 
 Prepared 2026-10-17 for SWH-77/SWH-78. Disposable admission verifies stock Codex 0.160.0 native `/goal`, persisted completion, real shell execution, AxonHub Responses, upstream `gpt-6-luna`, and `xhigh` reasoning. The operator retains inventory, graphs, keys, scoring and launch control. Counted subjects receive `objective.txt` and their own `~/peers.txt`.
