@@ -16,8 +16,8 @@ Generate all three graphs before provisioning:
 
 ```bash
 .venv/bin/python verify_graphs.py
-.venv/bin/python graphs.py .scratch/SWH-78 --n 4 --k 2
-.venv/bin/python prices.py .scratch/SWH-78/prices.json
+.venv/bin/python graphs.py .scratch/SWH-95/graphs --n 64 --k 5
+.venv/bin/python prices.py .scratch/SWH-95/prices.json
 ```
 
 `graphs.py` draws each vertex's uniform K-subset independently and rejects complete proposals until NetworkX semiconnectivity and independent pairwise reachability agree. It stores seeds, RNG state, accepted proposal indices, SCC sizes and assignment seeds. `verify_graphs.py` exhaustively checks all 82 feasible N=4 graphs for K=2,3.
@@ -34,11 +34,11 @@ Run repeats 1–3 serially. Every invocation requires a fresh directory; the dri
 After each foreground repeat command returns, verify and grade its collected evidence:
 
 ```bash
-experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/verify_evidence.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-78/graph-1.json
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/verify_evidence.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/SWH-95/graphs/graph-1.json
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/grade.py experiments/peer-discovery/.scratch/repeat-1
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/metrics.py experiments/peer-discovery/.scratch/repeat-1
 experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/resources.py experiments/peer-discovery/.scratch/repeat-1
-experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/publish.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/deliverables/SWH-78-repeat-1.tar.gz
+experiments/peer-discovery/.venv/bin/python experiments/peer-discovery/publish.py experiments/peer-discovery/.scratch/repeat-1 experiments/peer-discovery/.scratch/deliverables/SWH-95-repeat-1.tar.gz
 ```
 
 `verify_evidence.py` checks raw archive hashes, seed/graph binding, clock offsets, exact native objectives, single-session identity, launcher hashes, invocation guards, scoped-key revocation and terminated-resource readbacks. `metrics.py` uses measured boot epochs to correct psutil's integer-second boot epoch when comparing kernel process starts. It retains native active time separately from process lifetime, first gateway request timing, actual outbound peer contacts and tool observations. `collect.py` preserves file hashes and write timestamps together with the executed launcher. Later releases additionally record one-second host resource samples; CloudWatch CPU, credits and network observations are exported separately for every repeat.
@@ -51,4 +51,4 @@ Evidence includes raw frozen outputs, sessions, native goal state, PTY bytes, ga
 
 Current Frankfurt prices read from AWS: t2.micro **$0.0134/hour**, public IPv4 **$0.005/hour**, gp3 **$0.0952/GiB-month**, internet transfer **$0.09/GB** in the first paid band. AxonHub currently supplies subscription-backed Codex channels, empty model/channel price records, null per-request cost and quota cost zero; retain those fields when reporting accounting. Concurrent preflight probes recorded two admitted calls across a quota boundary followed by HTTP 403; include observed request/token excess in accounting.
 
-Preflight instances are disposable and one-run only. `cloud.py launch` and `preflight.py` support live binary/provider admission; `repeat.py --preflight --existing-key` exercises the timed path on a separately provisioned disposable instance. Limit the case to two preflight instances and one cloud hour per instance. The approved experiment protocol is attached to SWH-78. Preserve hosted Multica 0.4.44 and the public-server file-access patch.
+Preflight instances are disposable and one-run only. `cloud.py launch` and `preflight.py` support live binary/provider admission; `repeat.py --preflight --existing-key` exercises the timed path on a separately provisioned disposable instance. Limit the case to two preflight instances and one cloud hour per instance. The approved experiment protocol and parallel execution addendum are attached to SWH-77. Preserve hosted Multica 0.4.44 and the public-server file-access patch.
