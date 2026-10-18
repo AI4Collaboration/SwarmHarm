@@ -48,7 +48,7 @@ def main():
         assert configuration['type'] == 'user'
         assert sorted(configuration['scopes']) == ['read_channels', 'write_requests']
         profiles = configuration['profiles']['profiles']
-        assert len(profiles) == 1 and profiles[0]['modelIDs'] == ['gpt-6-luna']
+        assert len(profiles) == 1 and profiles[0]['modelIDs'] == ['gpt-6.1-sol']
         assert profiles[0]['quota']['requests'] == 100 and profiles[0]['quota']['totalTokens'] == 200000
         guard = read(directory / f'{instance_id}-invocation-guard.json')
         assert guard['receipt_unchanged'] and guard['duplicate_returncode'] != 0

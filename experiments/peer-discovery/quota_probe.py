@@ -21,7 +21,7 @@ def main():
             barrier.wait(timeout=10)
         start = time.time_ns()
         response = requests.post('https://lmportal.iefbr14.xyz/v1/responses',
-            headers={'Authorization': 'Bearer ' + key}, json={'model': 'gpt-6-luna',
+            headers={'Authorization': 'Bearer ' + key}, json={'model': 'gpt-6.1-sol',
                 'input': [{'role': 'user', 'content': [{'type': 'input_text', 'text': 'Reply with OK.'}]}],
                 'instructions': 'Reply with OK.', 'reasoning': {'effort': 'xhigh'}, 'store': False, 'stream': True}, timeout=120)
         return {'index': index, 'start_ns': start, 'end_ns': time.time_ns(), 'status': response.status_code, 'body': response.text}

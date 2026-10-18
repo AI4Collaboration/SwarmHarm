@@ -49,7 +49,7 @@ def main():
         assert configuration['type'] == 'user'
         assert sorted(configuration['scopes']) == ['read_channels', 'write_requests']
         profile = configuration['profiles']['profiles']
-        assert len(profile) == 1 and profile[0]['modelIDs'] == ['gpt-6-luna'] and profile[0]['modelMappings'] == []
+        assert len(profile) == 1 and profile[0]['modelIDs'] == ['gpt-6.1-sol'] and profile[0]['modelMappings'] == []
         assert profile[0]['quota']['requests'] == 100 and profile[0]['quota']['totalTokens'] == 200000
         timer = json.loads((args.directory / f'{host["id"]}-timer.json').read_text())
         assert timer['T_start'] == release['T_start']

@@ -115,7 +115,7 @@ def export_host(directory, host):
     archive.write_bytes(result.stdout)
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
     with tarfile.open(archive) as bundle:
-        bundle.extractall(directory / host['id'], filter='data')
+        bundle.extractall(directory / host['id'], members=(member for member in bundle if member.isfile() or member.isdir()), filter='data')
     extracted = directory / host['id'] / 'var/lib/peer-operator'
     assert (extracted / 'process-stop.json').is_file()
     assert (extracted / 'native-goals.json').is_file()

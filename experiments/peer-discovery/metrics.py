@@ -47,8 +47,8 @@ def main():
         all_requests.extend(requests)
         executions = [edge['node'] for request in requests for edge in request['executions']['edges']]
         all_executions.extend(executions)
-        assert all(request['modelID'] == 'gpt-6-luna' for request in requests)
-        assert all(execution['upstreamModelID'] == 'gpt-6-luna'
+        assert all(request['modelID'] == 'gpt-6.1-sol' for request in requests)
+        assert all(execution['upstreamModelID'] == 'gpt-6.1-sol'
                    for execution in executions if execution['status'] == 'completed')
         usages = [edge['node'] for request in requests for edge in request['usageLogs']['edges']]
         contacts = {}

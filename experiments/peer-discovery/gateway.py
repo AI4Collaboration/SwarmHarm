@@ -35,7 +35,7 @@ class Gateway:
             project = self.gql('mutation($i:CreateProjectInput!){ createProject(input:$i){id name}}', {'i': {'name': 'SWH-77-peer-discovery'}})['createProject']
         key = self.gql('mutation($i:CreateAPIKeyInput!){createAPIKey(input:$i){id key name}}', {'i': {
             'name': name, 'type': 'user', 'scopes': ['read_channels', 'write_requests'], 'projectID': project['id']}})['createAPIKey']
-        profile = {'activeProfile': 'experiment', 'profiles': [{'name': 'experiment', 'modelIDs': ['gpt-6-luna'],
+        profile = {'activeProfile': 'experiment', 'profiles': [{'name': 'experiment', 'modelIDs': ['gpt-6.1-sol'],
             'modelMappings': [], 'quota': {'requests': 100, 'totalTokens': 200000, 'period': {'type': 'all_time'}}}]}
         key['configuration'] = self.gql('mutation($id:ID!,$i:UpdateAPIKeyProfilesInput!){updateAPIKeyProfiles(id:$id,input:$i){' + FIELDS + '}}', {'id': key['id'], 'i': profile})
         return key
@@ -90,7 +90,7 @@ def main():
         if args.mode == 'token-quota':
             usage = gateway.gql('query($id:ID!){apiKeyQuotaUsages(apiKeyId:$id){usage{totalTokens}}}', {'id': args.value})
             quota = {'requests': 100, 'totalTokens': usage['apiKeyQuotaUsages'][0]['usage']['totalTokens'] + 1, 'period': {'type': 'all_time'}}
-        profile = {'activeProfile': 'experiment', 'profiles': [{'name': 'experiment', 'modelIDs': ['gpt-6-luna'],
+        profile = {'activeProfile': 'experiment', 'profiles': [{'name': 'experiment', 'modelIDs': ['gpt-6.1-sol'],
             'modelMappings': [], 'quota': quota}]}
         print(json.dumps(gateway.gql('mutation($id:ID!,$i:UpdateAPIKeyProfilesInput!){updateAPIKeyProfiles(id:$id,input:$i){' + FIELDS + '}}', {'id': args.value, 'i': profile})))
     elif args.mode == 'inventory':
@@ -99,7 +99,7 @@ def main():
         } } } }''')))
     elif args.mode == 'prices':
         print(json.dumps(gateway.gql('''query {
-          models(first:100,where:{modelID:"gpt-6-luna"}) {edges{node{modelID modelCard{cost{input output cacheRead cacheWrite}}}}}
+          models(first:100,where:{modelID:"gpt-6.1-sol"}) {edges{node{modelID modelCard{cost{input output cacheRead cacheWrite}}}}}
           channels(first:100){edges{node{id name status supportedModels liveLimiterStats{inFlight waiting capacity queueSize}
           channelModelPrices{modelID referenceID price{items{itemCode pricing{mode flatFee usagePerUnit}}}}}}}
         }''')))

@@ -26,7 +26,7 @@ def main():
         start = time.time_ns()
         response = requests.post('https://lmportal.iefbr14.xyz/v1/responses',
             headers={'Authorization': 'Bearer ' + key['key']},
-            json={'model': 'gpt-6-luna', 'instructions': 'Reply with OK.',
+            json={'model': 'gpt-6.1-sol', 'instructions': 'Reply with OK.',
                   'input': [{'role': 'user', 'content': [{'type': 'input_text', 'text': 'Reply with OK.'}]}],
                   'reasoning': {'effort': 'xhigh'}, 'store': False, 'stream': True}, timeout=120)
         (args.directory / f'response-{index}.txt').write_bytes(response.content)
@@ -48,7 +48,7 @@ def main():
         save(args.directory, 'provider-admission.json', result)
         print(json.dumps(result), flush=True)
         assert len(completed) == 8 and all(call['http_status'] == 200 for call in calls)
-        assert result['upstream_models'] == ['gpt-6-luna']
+        assert result['upstream_models'] == ['gpt-6.1-sol']
         assert all(record['reasoningEffort'] == 'xhigh' for record in records)
     finally:
         revoked = gateway(args.meta_key, 'disable', key['id'])
