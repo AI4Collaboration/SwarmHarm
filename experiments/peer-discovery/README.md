@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-104 launch evidence, 2026-10-18: host collection and archive hashes precede native-goal launch validation. Each live launch readback retains its command status, stdout and stderr. Subject settings and the approved time window stay fixed.
+
 SWH-104 evidence reporting, 2026-10-18: case bundles bind each repeat's inference-key count to its actual subject inventory and require three equal-size fresh repeats. Observation tables use independently verified subject counts. These checks cover all approved N values.
 
 SWH-100 model pairing, 2026-10-18: this branch runs the approved 16-case matrix with `gpt-6.1-sol / xhigh`, Codex 0.160.0 and the SWH-77 shared capacity ledger. `provider.toml`, scoped inference-key profiles, live provider probes, permission probes and independent evidence checks use that exact model. Eight live concurrent requests completed with HTTP 200 and exact upstream identity; all 48 expected stored payloads passed independent retrieval and hashing. `operator_admission.py --shared-workspace WORKSPACE` reads the fresh SWH-100 disposable native-goal evidence under `WORKSPACE/.research/native-preflight`. Per-repeat provider probes, recording verification, three serial fresh repeats, independent scoring and cleanup follow the approved protocol. Historical results below retain their original model identities.

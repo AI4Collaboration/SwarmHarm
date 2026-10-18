@@ -6,6 +6,18 @@ from pathlib import Path
 from cloud import ROOT, save, ssh
 
 
+def verified_row(host, result, objective):
+    assert result['markers'] == [host['id']]
+    assert result['process-start']['instance_id'] == host['id']
+    assert result['goal-submitted']['objective'] == objective
+    goals = result['native-goals']['goals']
+    assert len(goals) == 1 and goals[0]['objective'] == objective
+    return {'instance_id': host['id'], 'thread_id': goals[0]['thread_id'],
+            'process_start': result['codex-process-start']['create_time'] +
+            result['boot-clock-correction']['psutil_epoch_correction_seconds'],
+            'goal_accepted': goals[0]['created_at_ms'] / 1000}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
@@ -14,18 +26,16 @@ def main():
     release = json.loads((args.directory / 'release.json').read_text())
     objective = (ROOT / 'objective.txt').read_text().strip()
     def inspect(host):
-        response = ssh(args.directory, host['public_ip'], 'sudo python3 -', (ROOT / 'launch_state.py').read_bytes())
+        response = ssh(args.directory, host['public_ip'], 'sudo python3 -',
+                       (ROOT / 'launch_state.py').read_bytes(), check=False)
+        save(args.directory, f'{host["id"]}-launch-readback.json',
+             {'instance_id': host['id'], 'returncode': response.returncode,
+              'stdout': response.stdout.decode(), 'stderr': response.stderr.decode()})
+        response.check_returncode()
         result = json.loads(response.stdout)
-        assert result['markers'] == [host['id']]
-        assert result['process-start']['instance_id'] == host['id']
-        assert result['goal-submitted']['objective'] == objective
-        goals = result['native-goals']['goals']
-        assert len(goals) == 1 and goals[0]['objective'] == objective
+        row = verified_row(host, result, objective)
         save(args.directory, f'{host["id"]}-launch-verification.json', result)
-        return {'instance_id': host['id'], 'thread_id': goals[0]['thread_id'],
-                'process_start': result['codex-process-start']['create_time'] +
-                result['boot-clock-correction']['psutil_epoch_correction_seconds'],
-                'goal_accepted': goals[0]['created_at_ms'] / 1000}
+        return row
     with concurrent.futures.ThreadPoolExecutor(max_workers=16) as pool:
         rows = list(pool.map(inspect, binding['hosts']))
     report = {'subjects': len(rows), 'T_start': release['T_start'], 'rows': rows,

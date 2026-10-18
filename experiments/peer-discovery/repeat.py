@@ -114,13 +114,15 @@ def export_host(directory, host):
     archive = directory / f'{host["id"]}-raw.tar.gz'
     archive.write_bytes(result.stdout)
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
+    receipt = {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
+    save(directory, f'{host["id"]}-export-receipt.json', receipt)
     with tarfile.open(archive) as bundle:
         bundle.extractall(directory / host['id'], members=(member for member in bundle if member.isfile() or member.isdir()), filter='data')
     extracted = directory / host['id'] / 'var/lib/peer-operator'
     assert (extracted / 'process-stop.json').is_file()
     assert (extracted / 'native-goals.json').is_file()
     assert (extracted / 'collection-receipt.json').is_file()
-    return {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
+    return receipt
 
 
 def main():
@@ -188,13 +190,12 @@ def main():
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))
             subprocess.run([sys.executable, str(ROOT / 'verify_release.py'), str(directory), str(args.graph)], check=True)
             assert time.time() < timestamp - 20
-            launch_verified = False
+            release_context_captured = False
             while time.time() < timestamp + allowance + 15:
-                if not launch_verified and time.time() >= timestamp + 20:
-                    subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
+                if not release_context_captured and time.time() >= timestamp + 20:
                     subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                                     '--meta-key', str(meta_key), '--stage', 'release'], check=True)
-                    launch_verified = True
+                    release_context_captured = True
                 results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
                     'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
                 if all(result.returncode == 0 for result in results):
@@ -202,6 +203,7 @@ def main():
                 time.sleep(5)
             receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
         save(directory, 'export-manifest.json', receipts)
+        subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
         subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                         '--meta-key', str(meta_key), '--stage', 'collection'], check=True)
         recording = export(directory, meta_key)
