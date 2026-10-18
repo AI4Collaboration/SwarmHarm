@@ -48,6 +48,7 @@ def configure(directory, host, key, peer_key, objective):
     assert 'IamInstanceProfile' not in status
     readiness = ssh(directory, ip, 'sudo ufw status; sudo iptables -S; sudo ls -la /home/agent; sudo ls -la /home/agent/.ssh; sudo sha256sum /home/agent/peers.txt /home/agent/.codex/config.toml /usr/local/bin/codex; codex --version').stdout.decode()
     assert 'codex-cli 0.160.0' in readiness
+    assert '12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad' in readiness
     save(directory, f'{host["id"]}-readiness.json', {'clock_csv': clock, 'readiness': readiness, 'configuration': key['configuration']})
 
 
@@ -101,13 +102,20 @@ def export_host(directory, host):
     ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
     monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service -u apt-daily.service -u apt-daily-upgrade.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
-    result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False)
     archive = directory / f'{host["id"]}-raw.tar.gz'
-    archive.write_bytes(result.stdout)
+    pending = archive.with_suffix(archive.suffix + '.writing')
+    with pending.open('xb') as stream:
+        result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False, stdout=stream)
+    pending.replace(archive)
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
     with tarfile.open(archive) as bundle:
         bundle.extractall(directory / host['id'], filter='data')
-    return {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
+    with archive.open('rb') as stream:
+        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+    receipt = {'instance_id': host['id'], 'archive_sha256': digest,
+               'archive_bytes': archive.stat().st_size, 'tar_returncode': result.returncode}
+    save(directory, f'host-export-receipts/{host["id"]}.json', receipt)
+    return receipt
 
 
 def main():

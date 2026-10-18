@@ -22,10 +22,11 @@ def save(directory, name, value):
     temporary.replace(target)
 
 
-def ssh(directory, host, command, data=None, check=True):
+def ssh(directory, host, command, data=None, check=True, stdout=None):
     return subprocess.run(['ssh', '-i', str(directory / 'operator-key'), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
         '-o', 'ServerAliveInterval=10', '-o', 'StrictHostKeyChecking=accept-new', '-o', f'UserKnownHostsFile={directory / "known_hosts"}',
-        f'ubuntu@{host}', command], input=data, capture_output=True, check=check)
+        f'ubuntu@{host}', command], input=data, stdout=subprocess.PIPE if stdout is None else stdout,
+        stderr=subprocess.PIPE, check=check)
 
 
 def launch(directory, count, purpose, issue='SWH-78', n=4, k=2, lifetime=3600):
