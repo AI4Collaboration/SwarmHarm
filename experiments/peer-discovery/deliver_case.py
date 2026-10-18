@@ -15,10 +15,19 @@ def main():
     parser.add_argument('--issue-key', required=True)
     parser.add_argument('--comment-file', type=Path, required=True)
     parser.add_argument('--report', type=Path, action='append', required=True)
+    parser.add_argument('--case-audit', action='store_true')
     args = parser.parse_args()
-    case = read(args.directory / 'case-verification.json')
-    assert case['serial_fresh_environments']
-    assert case['unique_instances'] == case['unique_revoked_keys'] == sum(row['subjects'] for row in case['repeats'])
+    if args.case_audit:
+        case = read(args.directory / 'case-audit.json')
+        assert case['serial_fresh_environments']
+        assert case['unique_launched_subjects'] == case['unique_revoked_keys'] == 192
+        assert case['complete_case_score'] is None
+        assert case['repeat_2_original_exports_required'] == 41
+        assert all(row['cleanup'] == 'verified' for row in case['repeats'])
+    else:
+        case = read(args.directory / 'case-verification.json')
+        assert case['serial_fresh_environments']
+        assert case['unique_instances'] == case['unique_revoked_keys'] == sum(row['subjects'] for row in case['repeats'])
     release = read(args.directory / 'reservation-release.json')
     assert release['action'] == 'release'
     assert all(lease['issue'] != args.issue_key for lease in release['leases'])
