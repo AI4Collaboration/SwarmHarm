@@ -11,6 +11,7 @@ def main():
     parser.add_argument('directories', nargs=3, type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--issue', default='SWH-78')
+    parser.add_argument('--contact-audits', type=Path)
     args = parser.parse_args()
     rows = []
     configurations = set()
@@ -42,6 +43,11 @@ def main():
         assert scoring['denominator'] == metrics['denominator']
         precision = [agent['precision'] for agent in scoring['agents'] if agent['precision'] is not None]
         contacts = sum(contact['connection_attempt_syn_packets'] > 0 for agent in metrics['agents'] for contact in agent['observed_outbound_contacts'].values())
+        contact_audit = None
+        if args.contact_audits:
+            contact_audit = json.loads((args.contact_audits / f'contacts-repeat-{scoring["repeat"]}.json').read_text())
+            assert contact_audit['repeat'] == scoring['repeat']
+            contacts = contact_audit['timed_window_directed_peer_syn_pairs']
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
@@ -52,6 +58,7 @@ def main():
             'valid_ipv4_subjects': sum(agent['ipv4_valid'] for agent in scoring['agents']),
             'beyond_seed_count': sum(agent['beyond_seed_count'] for agent in scoring['agents']),
             'repeat_coverage': scoring['repeat_coverage'], 'directed_contact_pairs': contacts,
+            'contact_audit': contact_audit,
             'process_start_skew_seconds': metrics['process_start_skew_seconds'],
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),

@@ -1,34 +1,31 @@
 import argparse
+from collections import Counter
 import concurrent.futures
 import json
+import time
 from pathlib import Path
 
-from cloud import ROOT, ssh
+from cloud import ROOT, save, ssh
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
+    parser.add_argument('--stage', required=True)
     args = parser.parse_args()
     binding = json.loads((args.directory / 'binding.json').read_text())
-
-    def observe(host):
-        result = ssh(args.directory, host['public_ip'], 'sudo python3 -', (ROOT / 'inspect_goal.py').read_bytes(), check=False)
-        if result.returncode:
-            return {'instance_id': host['id'], 'observation': 'initializing'}
-        body = json.loads(result.stdout)
-        goals = [row for table in body if table['schema']['name'] == 'thread_goals' for row in table['rows']]
-        if not goals:
-            return {'instance_id': host['id'], 'observation': 'initializing'}
-        assert len(goals) == 1
-        goal = goals[0]
-        return {'instance_id': host['id'], 'status': goal['status'], 'tokens_used': goal['tokens_used'],
-            'time_used_seconds': goal['time_used_seconds'], 'thread_id': goal['thread_id'],
-            'created_at_ms': goal['created_at_ms'], 'updated_at_ms': goal['updated_at_ms'],
-            'objective': goal['objective']}
-
+    def inspect(host):
+        response = ssh(args.directory, host['public_ip'], 'sudo python3 -',
+                       (ROOT / 'observe_host.py').read_bytes())
+        return {'instance_id': host['id'], **json.loads(response.stdout)}
     with concurrent.futures.ThreadPoolExecutor(max_workers=16) as pool:
-        print(json.dumps(list(pool.map(observe, binding['hosts'])), indent=2))
+        rows = list(pool.map(inspect, binding['hosts']))
+    result = {'time': time.time(), 'stage': args.stage, 'subjects': len(rows),
+        'goal_states': dict(Counter(goal['status'] for row in rows for goal in row.get('native_goals', []))),
+        'live_output_subjects': sum('live_output' in row for row in rows),
+        'frozen_output_subjects': sum('frozen_output' in row for row in rows), 'rows': rows}
+    save(args.directory, f'observation-{args.stage}.json', result)
+    print(json.dumps({key: value for key, value in result.items() if key != 'rows'}))
 
 
 if __name__ == '__main__':
