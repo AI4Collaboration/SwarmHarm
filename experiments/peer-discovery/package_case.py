@@ -58,6 +58,7 @@ def main():
                          'launch-verification.json',
                          'cleanup-independent-verification.json', 'traffic-analysis-verification.json',
                          'publication-independent-verification.json',
+                         'publication-storage-readback.json',
                          's3-costs.json', 'code-revision.json', 'analysis-revision.json', 'release.json', 'admission.json'):
             shutil.copyfile(source / filename, output / filename)
         cleanup = json.loads((source / 'cleanup.json').read_text())
