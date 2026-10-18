@@ -16,8 +16,9 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('--meta-key', type=Path, required=True)
     parser.add_argument('--label', required=True)
+    parser.add_argument('--issue', default='SWH-99')
     args = parser.parse_args()
-    key = gateway(args.meta_key, 'create', f'swh-99-operator-{args.label}')
+    key = gateway(args.meta_key, 'create', f'{args.issue.lower()}-operator-{args.label}')
     save(args.directory, 'private-key-0.json', key)
     barrier = threading.Barrier(8)
     def call(index):

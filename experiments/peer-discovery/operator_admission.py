@@ -17,12 +17,14 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('--shared-workspace', type=Path, required=True)
     parser.add_argument('--meta-key', type=Path, required=True)
+    parser.add_argument('--n', type=int, default=128)
+    parser.add_argument('--k', type=int, default=5)
     args = parser.parse_args()
     graphs = []
     for repeat in (1, 2, 3):
         path = args.directory / f'graph-{repeat}.json'
         graph = json.loads(path.read_text())
-        assert (graph['n'], graph['k'], graph['repeat']) == (128, 5, repeat)
+        assert (graph['n'], graph['k'], graph['repeat']) == (args.n, args.k, repeat)
         rng = np.random.Generator(np.random.PCG64(graph['seed']))
         for proposal in range(1, graph['proposal'] + 1):
             rows = [[int(j + (j >= i)) for j in rng.choice(graph['n'] - 1, size=graph['k'], replace=False)]
