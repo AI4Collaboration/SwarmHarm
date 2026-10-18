@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+Case publication uses the verified `case-admission.json` identifier and subject count, plus the case's recorded initial source revision. `publish_case.py` packages the three audited repeats with their frozen source manifests and sanitized admission evidence.
+
 SWH-90 completed, 2026-10-18: [N=32/K=4, three serial repeats](results/2026-10-18/SWH-90/README.md) verified 96 fresh instances, native sessions and inference keys. Mean recall across repeats is 32.43%, spanning 17.04%–40.52%; exact peer-set submissions total 1/96, with 637 beyond-seed discoveries. Evidence covers 972 requests, 15,319,970 tokens and 5,778 stored JSON objects. The report retains upstream HTTP 401/429 records, per-key quota usage and simultaneous-case contacts. Owned resources and scoped keys have verified cleanup; reservation release is recorded at 03:26:58 UTC.
 
 SWH-90 publication, 2026-10-18: case evidence includes the report's `source-revision.txt`, frozen Python and shell sources, per-repeat source manifests, independent audits, capacity/provider admissions and cleanup receipts. Original S3 retrieval receipts hash the stored payload bytes; publication manifests hash the sanitized delivered files.

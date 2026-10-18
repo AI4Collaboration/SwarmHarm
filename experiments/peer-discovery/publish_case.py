@@ -17,6 +17,8 @@ def main():
     parser.add_argument('--admission-workdir', type=Path, required=True)
     args = parser.parse_args()
     case = args.directory
+    admission = json.loads((case / 'case-admission.json').read_bytes())
+    issue = admission['issue']
     stage = case / 'case-publication'
     assert not stage.exists()
     stage.mkdir()
@@ -44,7 +46,7 @@ def main():
     for repeat in range(1, 4):
         directory = case / f'repeat-{repeat}'
         audit = json.loads((directory / 'independent-audit.json').read_bytes())
-        assert audit['repeat'] == repeat and audit['subjects'] == 32
+        assert audit['repeat'] == repeat and audit['subjects'] == admission['n']
         for name in ('binding.json', 'cloud.json', 'release.json', 'capacity-admission.json', 'cleanup.json',
                 'evidence-verification.json', 'resource-deletion-verification.json', 'independent-audit.json',
                 'scoring.json', 'metrics.json', 'recording-receipts.json', 'cloudwatch-resources.json'):
@@ -61,14 +63,14 @@ def main():
         shutil.copytree(probe, stage / f'provider-admission-{repeat}')
         secrets.append(probe / 'private-key-0.json')
         secrets += list(directory.glob('private-key-*.json'))
-    save(stage, 'operator-sources.json', {'initial_launch_revision': '2d4deaf1',
+    save(stage, 'operator-sources.json', {'initial_launch_revision': (case / 'source-revision.txt').read_text().strip(),
         'publication_revision': (args.report / 'source-revision.txt').read_text().strip(),
         'repeat_source_manifests': source_manifest})
     for number in (1, 2):
         copy(case / f'admission-preflight-{number}-cleanup.json', Path(f'shared-preflight-{number}/cleanup.json'))
     secrets += [args.admission_workdir / 'private/preflight-1-key.json',
         args.admission_workdir / 'SwarmHarm/experiments/peer-discovery/.scratch/repeat-1/private-key-0.json']
-    output = case / 'deliverables/SWH-90-case-evidence.tar.gz'
+    output = case / f'deliverables/{issue}-case-evidence.tar.gz'
     command = [sys.executable, str(ROOT / 'publish.py'), str(stage), str(output)]
     for secret in secrets:
         command += ['--secret-file', str(secret)]
