@@ -44,7 +44,7 @@ def main():
             observer = pool.submit(run, 'observe.py', shared, f'repeat-{repeat}-observations-console.txt')
             operator.result()
             observer.result()
-        run('finish_repeat.py', [target, graph, '--prices', directory / 'prices.json'],
+        run('finish_repeat.py', [target, graph, '--prices', directory / 's3-prices.json'],
             f'repeat-{repeat}-verification-console.txt')
         archive = directory / f'deliverables/{args.issue}-repeat-{repeat}.tar.gz'
         run('publish.py', [target, archive], f'repeat-{repeat}-publication-console.txt')
