@@ -40,6 +40,7 @@ def main():
         'stored_expected_objects': recording['stored_expected_objects'],
         'code_revision': subprocess.run(['git', 'rev-parse', 'HEAD'], check=True, capture_output=True, text=True).stdout.strip()})
     subprocess.run([sys.executable, str(ROOT / 'publish.py'), str(args.directory), str(args.output)], check=True)
+    subprocess.run([sys.executable, str(ROOT / 'verify_publication.py'), str(args.directory), str(args.output)], check=True)
 
 
 if __name__ == '__main__':

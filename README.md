@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-99 publication readback, 2026-10-18:** independent archive inspection parsed 2,481 JSON files, 220,456 JSONL records and 5,944 compressed stored payloads in repeat 1. All 128 published packet captures match their original archive bytes. `verify_publication.py` records these checks and the publication SHA256; subsequent finalization includes this readback after archive creation. Subject software, model routing, permissions and hosted Multica retain the verified settings below.
+
 **SWH-99 archive storage, 2026-10-18:** after a repeat has a verified sanitized publication and complete analysis, `compact_repeat.py` verifies each original host archive and byte-compares its packet capture with the extracted copy before releasing duplicate local capture bytes. Original host archives and the sealed publication preserve every capture. Restore the capture from its original archive before further packet analysis or publication. Operator credentials, pinned subject software, provider settings and hosted Multica configuration retain their verified setup.
 
 **SWH-99 publication verification, 2026-10-17:** credential sanitization uses a compiled exact-credential matcher for fleet exports. Independent comparison against sequential replacement passed on 132 actual repeat-1 files and 5,662,438 bytes, covering 128 scoped keys, the repeat SSH key, a session, stored payload and packet capture. Published archives retain per-file SHA256 manifests; raw credential-bearing evidence remains private in the operator workspace. Runtime versions, permissions and provider configuration follow the pinned setup below.

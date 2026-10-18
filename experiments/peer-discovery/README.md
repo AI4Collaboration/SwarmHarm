@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-99 publication readback, 2026-10-18: `verify_publication.py DIRECTORY PUBLICATION` independently parses published JSON/session records and compressed stored payloads, then compares all packet captures with their original bytes. After capture compaction, provide `--capture-manifest DIRECTORY/capture-compaction.json`. Finalization invokes readback after publication. Frozen subject output bytes retain the independent grader's validity diagnostics.
+
 SWH-99 archive storage, 2026-10-18: `compact_repeat.py DIRECTORY PUBLICATION --publication-sha256 SHA256` requires completed analysis and verifies the sealed publication plus each original host archive. It byte-compares packet captures before releasing the extracted duplicate, preserving the original compressed host archive and publication. For subsequent analysis or publication, restore each capture with `tar -xzf INSTANCE-raw.tar.gz -C INSTANCE var/lib/peer-operator/traffic.pcap` from the repeat directory. `capture-compaction.json` records archive/member hashes and released duplicate bytes.
 
 SWH-99 publication verification, 2026-10-17: `publish.py` compiles the exact inference-credential matcher once per export. `verify_redaction.py` compares its output with sequential replacement using actual scoped-key files, the repeat SSH identity, a session, a stored payload and a packet capture. Publication manifests hash the sanitized bytes.
