@@ -1,5 +1,7 @@
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
+systemctl mask --now apt-daily.timer apt-daily-upgrade.timer
+systemctl stop apt-daily.service apt-daily-upgrade.service
 apt-get update -qq
 apt-get install -y -qq python3-pexpect python3-requests python3-psutil chrony curl openssh-server tcpdump iproute2 iputils-ping dnsutils netcat-openbsd jq
 systemctl enable --now chrony

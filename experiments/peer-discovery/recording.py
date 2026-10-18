@@ -9,7 +9,7 @@ from botocore.config import Config
 from cloud import SESSION, save
 
 
-def collect(directory, output=None, policy=None, metadata_directory=None):
+def collect(directory, output=None, policy=None, metadata_directory=None, goal_snapshot=None):
     output = directory if output is None else output
     metadata_directory = directory if metadata_directory is None else metadata_directory
     policy = json.loads((directory / 'recording-policy.json').read_text()) if policy is None else policy
@@ -25,10 +25,17 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
     jobs = []
     coverage = []
     list_calls = 0
+    observed_goals = None
+    if goal_snapshot is not None:
+        observed_goals = {host['instance_id']: host['persisted_goals']
+                          for host in json.loads(goal_snapshot.read_text())['hosts']}
     for index, host in enumerate(binding['hosts']):
         key = json.loads((directory / f'private-key-{index}.json').read_text())
         metadata = json.loads((metadata_directory / f'gateway-{index}.json').read_text())
-        goals = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals']
+        if observed_goals is None:
+            goals = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals']
+        else:
+            goals = observed_goals[host['id']]
         assert len(goals) == 1
         requests = metadata['requests']['edges']
         for item in requests:
@@ -80,6 +87,10 @@ def collect(directory, output=None, policy=None, metadata_directory=None):
     report = {'requests': len(coverage), 'objects': len(receipts),
               'bytes': sum(row['bytes'] for row in receipts), 'coverage': coverage, 'receipts': receipts,
               's3_operations': {'list_calls': list_calls, 'get_calls': len(receipts)}}
+    if goal_snapshot is not None:
+        report['session_binding_source'] = {
+            'type': 'timed_native_goal_snapshot', 'filename': goal_snapshot.name,
+            'sha256': hashlib.sha256(goal_snapshot.read_bytes()).hexdigest()}
     save(output, 'recording-verification.json', report)
     print(json.dumps({name: report[name] for name in ('requests', 'objects', 'bytes')}), flush=True)
     return report
@@ -91,9 +102,11 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--policy-probe', type=Path)
     parser.add_argument('--metadata-directory', type=Path)
+    parser.add_argument('--goal-snapshot', type=Path)
     args = parser.parse_args()
     policy = json.loads(args.policy_probe.read_text())['policy'] if args.policy_probe else None
-    collect(args.directory, output=args.output, policy=policy, metadata_directory=args.metadata_directory)
+    collect(args.directory, output=args.output, policy=policy, metadata_directory=args.metadata_directory,
+            goal_snapshot=args.goal_snapshot)
 
 
 if __name__ == '__main__':

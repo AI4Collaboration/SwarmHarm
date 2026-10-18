@@ -96,7 +96,7 @@ def export_host(directory, host):
     save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
         'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(), 'receipt_unchanged': True})
     ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
-    monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
+    monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service -u apt-daily.service -u apt-daily-upgrade.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
     result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False)
     archive = directory / f'{host["id"]}-raw.tar.gz'
@@ -104,10 +104,6 @@ def export_host(directory, host):
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
     with tarfile.open(archive) as bundle:
         bundle.extractall(directory / host['id'], filter='data')
-    extracted = directory / host['id'] / 'var/lib/peer-operator'
-    assert (extracted / 'process-stop.json').is_file()
-    assert (extracted / 'native-goals.json').is_file()
-    assert (extracted / 'collection-receipt.json').is_file()
     return {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
 
 
@@ -208,6 +204,11 @@ def main():
         for index, key in enumerate(keys):
             save(directory, f'gateway-{index}.json', gateway(meta_key, 'export', key['id']))
         collect_recordings(directory)
+        completeness = {host['id']: {name: (directory / host['id'] / 'var/lib/peer-operator' / name).is_file()
+                                    for name in ('process-stop.json', 'native-goals.json', 'collection-receipt.json')}
+                        for host in hosts}
+        save(directory, 'collection-completeness.json', completeness)
+        assert all(all(receipts.values()) for receipts in completeness.values()), completeness
         print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:
         try:
