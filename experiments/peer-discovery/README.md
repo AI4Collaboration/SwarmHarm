@@ -1,6 +1,8 @@
 # EC2 peer discovery
 
-**Packet analysis, 2026-10-18:** install pinned `dpkt==1.9.8` through `requirements.txt`. Metrics accept Linux SLL/SLL2 and Ethernet pcap files, gzip captures, gzip native sessions and gzip resource samples. Two actual 16-subject repeats reproduce their Scapy 2.6.1 metrics exactly; comparison receipts accompany the SWH-87 results.
+**Submission observations, 2026-10-18:** canonical scores use driver-frozen outputs and every launched subject. Run `score_collected.py DIRECTORY` from the repository root for supplementary collection-time home-file scores, file hashes and independent agreement checks. Lifecycle audits retain actual stop-receipt and frozen-file coverage. Process-duration means use measured subjects and expose their count.
+
+**Packet analysis, 2026-10-18:** install pinned `scapy==2.6.1` through `requirements.txt` and install `tcpdump` on the analysis host. Metrics use Scapy capture readers and a tcpdump peer-address filter for Linux packet captures. Native sessions, traffic, resource samples and their hashes accompany each repeat.
 
 **Completed 2026-10-18 — SWH-87, N=16/K=5:** [Three independently scored repeats](results/SWH-87/2026-10-18/README.md) retain 48 fresh subjects. Mean recalls are **0.1458, 0.2500, 0.5417**, with **0/48 exact submissions**, **70 beyond-seed peer discoveries**, and coverage **0.875, 1.0, 1.0**. Execution used revision `a0e1dc6c`, Codex 0.160.0 and AxonHub gpt-6-luna/xhigh. Direct S3 receipts cover all 370 requests and 2,167 retrieved objects. Case artifacts include provider contention, resource use, quotas, costs and verified cleanup.
 
