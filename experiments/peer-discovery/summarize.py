@@ -71,7 +71,7 @@ def main():
     assert len(peer_key_hashes) == 3
     assert len(package_hashes) == 1
     n, k = configurations.pop()
-    report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat']),
+    report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat'], reverse=True),
         'denominator': sum(row['denominator'] for row in rows), 'exact_count': sum(row['exact_count'] for row in rows),
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
