@@ -16,6 +16,11 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--remote-root', type=Path)
     args = parser.parse_args()
+    location = args.directory.parent / 'publication-location.json'
+    if location.is_file():
+        configured_root = Path(json.loads(location.read_text())['remote_root'])
+        assert args.remote_root is None or args.remote_root == configured_root
+        args.remote_root = configured_root
     stages = [
         ('cleanup', ['verify_cleanup.py', str(args.directory)]),
         ('compression', ['compress_payloads.py', str(args.directory)]),
