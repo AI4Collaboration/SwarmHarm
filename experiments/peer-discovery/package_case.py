@@ -22,6 +22,7 @@ def main():
         output = args.output / f'repeat-{repeat}'
         output.mkdir(exist_ok=True)
         for filename in ('scoring.json', 'evidence-verification.json', 'recording-independent-verification.json',
+                         'publication-independent-verification.json',
                          's3-costs.json', 'code-revision.json', 'analysis-revision.json', 'release.json', 'admission.json'):
             shutil.copyfile(source / filename, output / filename)
         cleanup = json.loads((source / 'cleanup.json').read_text())
