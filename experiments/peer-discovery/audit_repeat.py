@@ -1,4 +1,5 @@
 import argparse
+import collections
 import hashlib
 import ipaddress
 import json
@@ -35,6 +36,8 @@ def main():
     audited = []
     request_ids = set()
     sessions = set()
+    required_objects = set()
+    statuses = collections.Counter()
     for host, score, metric in zip(binding['hosts'], scores['agents'], metrics['agents'], strict=True):
         instance_id = host['id']
         assert score['instance_id'] == metric['instance_id'] == instance_id
@@ -70,17 +73,41 @@ def main():
             assert exact == score['exact_completion']
         index = len(audited)
         exported = read(directory / f'gateway-{index}.json')
-        request_ids.update(edge['node']['id'] for edge in exported['requests']['edges'])
+        for edge in exported['requests']['edges']:
+            request = edge['node']
+            assert request['id'] not in request_ids
+            request_ids.add(request['id'])
+            assert request['modelID'] == 'gpt-6-luna'
+            prefix = f"{request['projectID'].rsplit('/', 1)[-1]}/requests/{request['id'].rsplit('/', 1)[-1]}"
+            entities = [(prefix, request)]
+            entities += [(prefix + '/executions/' + edge['node']['id'].rsplit('/', 1)[-1], edge['node'])
+                for edge in request['executions']['edges']]
+            for base, entity in entities:
+                statuses[entity['status']] += 1
+                for kind, field in [('request_body', 'requestBody'), ('response_body', 'responseBody'), ('response_chunks', 'responseChunks')]:
+                    required = kind == 'request_body' or (entity['status'] == 'completed'
+                        and (kind != 'response_chunks' or entity.get('stream', request['stream'])))
+                    if required or entity[field]:
+                        required_objects.add(base + '/' + kind + '.json')
         audited.append({'instance_id': instance_id, 'recall': recall, 'exact': exact, 'beyond_seed': beyond})
     recording = read(directory / 'recording-receipts.json')
     assert len(recording['coverage']) == len(request_ids) == recording['requests']
     assert {row['request_id'] for row in recording['coverage']} == request_ids
     assert all(row['session_id'] in sessions for row in recording['coverage'])
+    retrieved_objects = {row['object_key'] for row in recording['receipts']}
+    assert len(retrieved_objects) == recording['objects']
+    assert required_objects <= retrieved_objects
+    assert all(row['s3_request_id'] for row in recording['receipts'])
+    for row in recording['receipts']:
+        raw = (directory / 'stored-payloads' / row['object_key']).read_bytes()
+        assert len(raw) == row['bytes'] and hashlib.sha256(raw).hexdigest() == row['sha256']
+        assert json.loads(raw) or row['payload_status'] != 'completed'
     assert statistics.mean(row['recall'] for row in audited) == scores['recall_mean']
     report = {'repeat': binding['repeat'], 'subjects': len(audited), 'sessions': len(sessions),
         'native_objectives': 'verified', 'raw_archive_scores': 'verified',
         'observation_seconds': 1800, 'serial_cleanup': 'verified',
         'recorded_requests': len(request_ids), 'stored_objects': recording['objects'],
+        'required_stored_objects': len(required_objects), 'payload_entity_statuses': dict(statuses),
         'exact_submissions': sum(row['exact'] for row in audited),
         'recall_mean': statistics.mean(row['recall'] for row in audited)}
     save(args.output or directory, 'independent-audit.json', report)
