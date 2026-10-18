@@ -4,7 +4,7 @@ Run `observe.py DIRECTORY GRAPH --meta-key OPERATOR_SSH_KEY` alongside the foreg
 
 `traffic.py` uses `dpkt` to read original capture records and TCP/IP fields. `verify_traffic.py DIRECTORY INSTANCE_ID` independently compares Scapy's packet sequence, fields, timestamps, and capture bounds on an actual capture. For repeated identical S3 collection passes, pass their observed count through `finish_repeat.py --recording-passes COUNT`; retain a pass receipt with the evidence.
 
-`finish_repeat.py DIRECTORY GRAPH --prices PRICES_JSON` independently revalidates stored JSON bytes and hashes, checks payload coverage for every completed upstream execution, verifies exported subjects and cleanup, grades submissions, and produces runtime/resource/cost reports. `verify_metric_equivalence.py BASELINE CANDIDATE --output RECEIPT` compares full Scapy and dpkt metric reports on the same observed repeat.
+`finish_repeat.py DIRECTORY GRAPH --prices PRICES_JSON` independently revalidates stored JSON bytes and hashes, checks payload coverage for every completed upstream execution, verifies exported subjects and cleanup, grades submissions, and produces runtime/resource/cost reports.
 
 SWH-95 N64/K5 execution uses the three registered parent graphs with exact draw replay. `repeat.py` requires `--state-dir OPERATOR_STATE` and `--issue SWH-95`; shared admission and the live recording policy are checked before provisioning. All directed host connections are verified concurrently. Timer files are prepared across the fleet before arming. Paginated request metadata and actual S3 client/execution payloads receive coverage and SHA256 receipts in `recording-verification.json`.
 
