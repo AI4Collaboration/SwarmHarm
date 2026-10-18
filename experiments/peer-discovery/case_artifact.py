@@ -10,15 +10,30 @@ from pathlib import Path
 from publish import clean
 
 
+def subject_credentials(directory):
+    secrets = []
+    subject_counts = []
+    for repeat in (1, 2, 3):
+        target = directory / f'repeat-{repeat}'
+        binding = json.loads((target / 'binding.json').read_text())
+        keys = [json.loads(path.read_text())['key']
+                for path in target.glob('private-key-*.json')]
+        assert binding['repeat'] == repeat
+        assert len(keys) == len(binding['hosts']) > 0
+        subject_counts.append(len(keys))
+        secrets.extend(keys)
+    assert len(set(subject_counts)) == 1
+    assert len(secrets) == len(set(secrets)) == sum(subject_counts)
+    return secrets
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    secrets = [json.loads(path.read_text())['key']
-               for path in args.directory.glob('repeat-*/private-key-*.json')]
-    assert len(secrets) == len(set(secrets)) == 384
+    secrets = subject_credentials(args.directory)
     secrets.extend(json.loads(path.read_text())['key']
                    for path in args.directory.glob('provider-admission-*/private-key-*.json'))
     credentials = re.compile(b'|'.join(re.escape(secret.encode()) for secret in secrets))

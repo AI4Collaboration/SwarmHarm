@@ -100,27 +100,44 @@ WantedBy=timers.target
 
 def export_host(directory, host):
     ip = host['public_ip']
-    ssh(directory, ip, 'sudo systemctl stop peer-subject.timer peer-subject.service peer-traffic.service')
-    original_start = ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout
-    guard = ssh(directory, ip, f'sudo python3 /opt/peer-discovery/driver.py {host["id"]} /var/lib/peer-operator/objective.txt --deadline 0', check=False)
-    assert guard.returncode != 0 and b'FileExistsError' in guard.stderr
-    assert ssh(directory, ip, 'sudo cat /var/lib/peer-operator/process-start.json').stdout == original_start
-    save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
-        'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(), 'receipt_unchanged': True})
-    ssh(directory, ip, 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
-    monitor = ssh(directory, ip, 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
+    commands = []
+    def command(label, text, data=None):
+        result = ssh(directory, ip, text, data, check=False)
+        commands.append({'label': label, 'returncode': result.returncode,
+                         'stdout': result.stdout.decode(errors='replace'),
+                         'stderr': result.stderr.decode(errors='replace')})
+        save(directory, f'{host["id"]}-collection-commands.json', commands)
+        return result
+    stopped = command('stop', 'sudo systemctl stop peer-subject.timer peer-subject.service peer-traffic.service')
+    original = command('original-start', 'sudo cat /var/lib/peer-operator/process-start.json')
+    original_start = original.stdout
+    guard = command('invocation-guard', f'sudo python3 /opt/peer-discovery/driver.py {host["id"]} /var/lib/peer-operator/objective.txt --deadline 0')
+    readback = command('start-readback', 'sudo cat /var/lib/peer-operator/process-start.json')
+    collection = command('collect', 'sudo python3 -', (ROOT / 'collect.py').read_bytes())
+    monitor = command('resources', 'sudo journalctl -u peer-subject.service --no-pager; free -b; df -B1 /; ip -s link; chronyc tracking').stdout
     (directory / f'{host["id"]}-resource-end.txt').write_bytes(monitor)
     result = ssh(directory, ip, 'sudo tar -czf - --exclude=inference-key --exclude=packages --exclude=tmp --exclude=.tmp --exclude=skills --exclude=app-server-daemon -C / var/lib/peer-operator home/agent/.codex home/agent/peers.txt home/agent/discovered_peers.json', check=False)
     archive = directory / f'{host["id"]}-raw.tar.gz'
     archive.write_bytes(result.stdout)
     (directory / f'{host["id"]}-export-stderr.txt').write_bytes(result.stderr)
+    receipt = {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest(),
+               'archive_bytes': len(result.stdout), 'archive_returncode': result.returncode}
+    save(directory, f'{host["id"]}-export-receipt.json', receipt)
     with tarfile.open(archive) as bundle:
         bundle.extractall(directory / host['id'], members=(member for member in bundle if member.isfile() or member.isdir()), filter='data')
     extracted = directory / host['id'] / 'var/lib/peer-operator'
     assert (extracted / 'process-stop.json').is_file()
     assert (extracted / 'native-goals.json').is_file()
     assert (extracted / 'collection-receipt.json').is_file()
-    return {'instance_id': host['id'], 'archive_sha256': hashlib.sha256(result.stdout).hexdigest()}
+    stopped.check_returncode()
+    original.check_returncode()
+    readback.check_returncode()
+    collection.check_returncode()
+    assert guard.returncode != 0 and b'FileExistsError' in guard.stderr
+    assert readback.stdout == original_start
+    save(directory, f'{host["id"]}-invocation-guard.json', {'instance_id': host['id'], 'duplicate_returncode': guard.returncode,
+        'original_process_receipt_sha256': hashlib.sha256(original_start).hexdigest(), 'receipt_unchanged': True})
+    return receipt
 
 
 def main():
@@ -188,13 +205,12 @@ def main():
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))
             subprocess.run([sys.executable, str(ROOT / 'verify_release.py'), str(directory), str(args.graph)], check=True)
             assert time.time() < timestamp - 20
-            launch_verified = False
+            release_context_captured = False
             while time.time() < timestamp + allowance + 15:
-                if not launch_verified and time.time() >= timestamp + 20:
-                    subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
+                if not release_context_captured and time.time() >= timestamp + 20:
                     subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                                     '--meta-key', str(meta_key), '--stage', 'release'], check=True)
-                    launch_verified = True
+                    release_context_captured = True
                 results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
                     'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
                 if all(result.returncode == 0 for result in results):
@@ -202,6 +218,7 @@ def main():
                 time.sleep(5)
             receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
         save(directory, 'export-manifest.json', receipts)
+        subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
         subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                         '--meta-key', str(meta_key), '--stage', 'collection'], check=True)
         recording = export(directory, meta_key)
