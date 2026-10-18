@@ -38,6 +38,7 @@ def main():
         assert previous_cleanup - cloud['created_at'] <= 7200
         verification = read(directory / 'evidence-verification.json')
         assert verification['verified_subjects'] == args.n
+        assert read(directory / 'cleanup-independent-verification.json')['original_resource_cleanup'] == 'verified'
         recording = read(directory / 'recording-verification.json')
         assert len({row['request_id'] for row in recording['coverage']}) == recording['requests']
         expected_objects = {obj for row in recording['coverage'] if row['request_status'] == 'completed'
