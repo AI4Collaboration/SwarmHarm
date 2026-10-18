@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-107 verified results, 2026-10-18: the [N32/K4 case report](results/2026-10-18/SWH-107/README.md) covers three fresh repeats, 96 subjects, 950 requests and 20,069,067 tokens using Codex 0.160.0 native `/goal` and AxonHub `gpt-6.1-sol / xhigh`. Exact counts are 2/32, 32/32 and 32/32; mean recall is 0.969758, 1.0 and 1.0. All 5,696 expected payload objects, 96 original host archives, 96 captures, key revocations and cloud cleanup pass independent checks. The shared reservation was released at 13:08:07 UTC. The report retains topology, communication, cross-case contacts, native-goal states, provider outcomes, quotas, timing, resources and costs.
+
 SWH-107 recording bindings, 2026-10-18: `verify_recording.py` independently checks issue, repeat, session, instance, key, request, execution and object-receipt identifiers against exported evidence, and requires complete expected-object coverage.
 
 SWH-107 collected bytes, 2026-10-18: `verify_evidence.py` compares collection-receipt files byte for byte with original host archives and extracted copies, then verifies their recorded sizes and SHA256 values. Frozen submissions retain this binding through scoring and publication.
