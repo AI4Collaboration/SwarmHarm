@@ -21,7 +21,10 @@ def main():
         shutil.copyfile(args.directory / filename, args.output / filename)
     storage = args.output / 'operator-storage'
     storage.mkdir(exist_ok=True)
-    for path in args.directory.glob('operator-*'):
+    for filename in ('operator-volume-before.json', 'operator-volume-modification.json',
+                     'operator-volume-after.json', 'operator-filesystem-expansion.txt',
+                     'operator-storage-snapshot.json', 'operator-storage-costs.json'):
+        path = args.directory / filename
         if path.is_file():
             shutil.copyfile(path, storage / path.name)
     shutil.copytree(args.directory / 'graphs', args.output / 'graphs', dirs_exist_ok=True)
