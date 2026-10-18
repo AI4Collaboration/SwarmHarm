@@ -16,6 +16,8 @@ def main():
     configurations = set()
     seen_instances = set()
     seen_ssh_identities = set()
+    seen_keys = set()
+    seen_sessions = set()
     for directory in args.directories:
         binding = json.loads((directory / 'binding.json').read_text())
         instance_ids = {host['id'] for host in binding['hosts']}
@@ -27,13 +29,26 @@ def main():
         configurations.add((len(binding['hosts']), len(binding['hosts'][0]['seeds'])))
         scoring = json.loads((directory / 'scoring.json').read_text())
         metrics = json.loads((directory / 'metrics.json').read_text())
+        session_ids = {agent['thread_id'] for agent in metrics['agents']}
+        assert len(session_ids) == len(instance_ids) and seen_sessions.isdisjoint(session_ids)
+        seen_sessions.update(session_ids)
+        key_ids = {json.loads((directory / f'key-revocation-{index}.json').read_text())['updateAPIKeyStatus']['id']
+            for index in range(len(instance_ids))}
+        assert len(key_ids) == len(instance_ids) and seen_keys.isdisjoint(key_ids)
+        seen_keys.update(key_ids)
         cleanup = json.loads((directory / 'cleanup.json').read_text())
+        cloud = json.loads((directory / 'cloud.json').read_text())
+        release = json.loads((directory / 'release.json').read_text())
+        assert cloud['lifetime_seconds'] == 7200 and release['allowance_seconds'] == 1800
+        assert cleanup['time'] <= cloud['created_at'] + cloud['lifetime_seconds']
         assert all(instance['State']['Name'] == 'terminated' for reservation in cleanup['instances']['Reservations'] for instance in reservation['Instances'])
         assert all(cleanup[name] == [] for name in ('volumes', 'addresses', 'security_groups', 'key_pairs'))
         assert scoring['denominator'] == metrics['denominator']
         precision = [agent['precision'] for agent in scoring['agents'] if agent['precision'] is not None]
         contacts = sum(contact['connection_attempt_syn_packets'] > 0 for agent in metrics['agents'] for contact in agent['observed_outbound_contacts'].values())
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
+            'provisioning_started': cloud['created_at'], 'verified_cleanup_at': cleanup['time'],
+            'T_start': release['T_start'], 'deadline': release['T_start'] + release['allowance_seconds'],
             'repeat_ssh_public_key_sha256': ssh_identity,
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'all_true_peers_found_count': sum(agent['recall'] == 1 for agent in scoring['agents']),
@@ -64,10 +79,14 @@ def main():
             'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']],
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})
     assert sorted(row['repeat'] for row in rows) == [1, 2, 3]
+    execution_order = sorted(rows, key=lambda row: row['repeat'])
+    assert all(previous['verified_cleanup_at'] <= following['provisioning_started']
+        for previous, following in zip(execution_order, execution_order[1:]))
     assert len(configurations) == 1
     n, k = configurations.pop()
-    report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat']),
+    report = {'case': f'N={n},K={k}', 'repeats': sorted(rows, key=lambda row: row['repeat'], reverse=True),
         'verified_distinct_instances': len(seen_instances), 'verified_distinct_repeat_ssh_identities': len(seen_ssh_identities),
+        'verified_distinct_inference_keys': len(seen_keys), 'verified_distinct_native_sessions': len(seen_sessions),
         'denominator': sum(row['denominator'] for row in rows), 'exact_count': sum(row['exact_count'] for row in rows),
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
