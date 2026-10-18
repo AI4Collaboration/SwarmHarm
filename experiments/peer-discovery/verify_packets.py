@@ -1,5 +1,6 @@
 import argparse
 import hashlib
+import io
 import json
 from pathlib import Path
 
@@ -15,11 +16,12 @@ def main():
     first = hashlib.sha256()
     second = hashlib.sha256()
     counts = [0, 0]
-    with args.path.open('rb') as stream:
+    raw = args.path.read_bytes()
+    with io.BytesIO(raw) as stream:
         for row in tcp_records(stream):
             first.update(json.dumps(row).encode())
             counts[0] += 1
-    with PcapReader(str(args.path)) as stream:
+    with PcapReader(io.BytesIO(raw)) as stream:
         for packet in stream:
             if IP in packet and TCP in packet:
                 row = (float(packet.time), packet[IP].src, packet[IP].dst, packet[IP].len,
