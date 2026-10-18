@@ -28,6 +28,8 @@ def main():
         if not path.is_file():
             continue
         relative = path.relative_to(args.directory)
+        if path.name == 'publication-receipt.json':
+            continue
         if path.name.startswith(('private-key-', 'operator-key', 'peer-key', 'known_hosts')):
             continue
         if path.suffix in ('.gz', '.sqlite', '.sqlite-wal', '.sqlite-shm'):
