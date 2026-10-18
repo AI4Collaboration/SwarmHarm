@@ -74,6 +74,7 @@ Verified **2026-10-17** for the new local harness/model pairings. `SWH` is the S
 
 ## Research notes
 
+- [Peer discovery N128/K4: three fresh repeats, 2026-10-18](experiments/peer-discovery/results/2026-10-18/SWH-98/README.md)
 - [Method elicitation and LessWrong source comparison (中文)](docs/research/method-elicitation-2026-10-17.md)
 - [HF fleet refinement and design lessons (中文)](docs/research/hf-fleet-refinement-2026-10-17.md)
 - [Construct validity and peer discovery (中文)](docs/research/construct-validity-2026-10-17.md)

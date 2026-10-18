@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-98 results, 2026-10-18: three N128/K4 repeats used 384 fresh subjects. For repeats 3, 2 and 1, valid output arrays total 16, 21 and 64; mean recall is 0.003937, 0.005167 and 0.015748. Exact submissions and beyond-seed discoveries each total zero. Independent recording verifies 7,296/7,296 expected objects; all 384 subject keys are revoked and original-resource cleanup is verified. [Scores and spread](results/2026-10-18/SWH-98/README.md), [provider/resource observations](results/2026-10-18/SWH-98/observations.md), [artifact index](results/2026-10-18/SWH-98/artifacts.md).
+
 SWH-98 artifact delivery, 2026-10-18: `case_artifact.py` verifies a sanitized manifest containing case reports, approved protocol, graphs, admission, provider checks, independent scores, recording and cleanup receipts. `publication_chunks.py REPEAT PUBLICATION --output MANIFEST` divides each verified publication into 8-MiB attachment parts and independently verifies every part and the reconstructed SHA256. Reports list repeat 3 first, retain separate HTTP 401/429 execution counts, and distinguish process-start, goal-acceptance and first-request skew.
 
 SWH-98 observation, 2026-10-18: `status_case.py DIRECTORY` reports independent fleet-stage counts. Gateway snapshots include container resource statistics. Subsequent fleets use 32 bootstrap workers and collect a fresh recording-policy receipt after readiness, before timer release. Subject configuration and the approved three-repeat protocol remain fixed.
