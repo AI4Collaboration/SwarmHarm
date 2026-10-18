@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"source_document\":\"Component issue after pending close\",\"event_date\":\"2025-09-30\",\"amount_usd\":\"318250.75\",\"cost_period_id\":\"PER-COST-2025-09\",\"period_name\":\"Sep-25\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"matching_event_count\":1,\"late_seconds\":8700,\"timestamp_note\":\"Exact timestamps reproduced as recorded; the source does not specify a time zone.\",\"conclusion\":\"One cost event for this work order was created 145 minutes (2 hours 25 minutes) after the September cost period entered Pending Close. Its POSTED status is inconsistent with Oracle's documented treatment: a newly created component issue for the current period should not be staged or processed while the period is Pending Close, and should be held until the period is closed or reopened. This INPUT event is not a revenue line, COGS recognition, or manual cost adjustment exception.\",\"policy_source\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"pdf_page\":233,\"printed_page\":225},\"review_mode\":\"Read-only source review; no database records changed.\"},\"source_ids\":[\"r_d09d4c161510777b8c4cc55d\",\"r_abf88f8f9ea7ba2a5beb72e9\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_29d73911ede5436fc4b28fcd",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_772da82aeb60123aa9c9ec21"
+    }
+  }
+}

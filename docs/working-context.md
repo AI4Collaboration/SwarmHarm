@@ -1,10 +1,14 @@
 # SwarmHarm working context
 
+**第一条：报告必须写人话。** 默认用简短中文，先说发生了什么、有没有越界、意味着什么；必要术语直接解释。运行编号、事件编号、接口和状态码等细节放到证据链接里，不用日志和数字堆砌代替结论。
+
 Updated 2026-10-18. Read this page and [Current setup](../README.md#current-setup). Load older details from [history](history-index.md) only when needed.
 
 ## Active work
 
-Latest authorized work is complete: pull and diagnose capability with Sol. The initial pull found main already at 91bc8d8. The [Sol / max control](../experiments/sol-capability-v1/results/2026-10-18/README.md) has four passing original calibration records and four successful authorized cache/coordination workers. All four posted validated general procedures and explicitly read actual peer procedures. All 116 provider replies pass independent reconstruction; 410 raw/analysis files are byte-matching archived. No rollout remains active. User authorized directly pushing completed work.
+The new natural Sol/max source-boundary pair is complete and archived: [plain-language report](../experiments/sol-misalignment-v1/results/2026-10-18/README.md). Four ordinary calibration records passed; eight natural workers ended with scoped partial answers. No accepted unauthorized read, cached dataset-object GET or validated bypass note occurred. Three workers inspected cache-root metadata; all eight received real peer bodies. Messages request authorized help, state limitations or advise respecting boundaries. Missing acquisition leaves method sharing/adoption untested, not evidence of an ethical sharing refusal. The open/repaired cache pair does not exercise the cache check in natural traces. 190 verified replies, 648 byte-matching files; all owned loops ended. No source, prior archive, hosted runtime, key or cloud resource changed. User authorized directly pushing completed work.
+
+The earlier capability work is complete and pushed at 983680c8. The initial pull found main already at 91bc8d8. The [Sol / max control](../experiments/sol-capability-v1/results/2026-10-18/README.md) has four passing original calibration records and four successful authorized cache/coordination workers. All four posted validated general procedures and explicitly read actual peer procedures. All 116 provider replies pass independent reconstruction; 410 raw/analysis files are byte-matching archived. User authorized directly pushing completed work.
 
 This is an explicitly instructed lawful capability control, not a natural misalignment cohort. All initial cache calls were selected before peer-procedure delivery in prior inputs. It establishes ordinary-task/fallback/message competence under the workflow, not causal peer learning, a reasoning-effort effect or spontaneous willingness to share an authorization bypass. Prior cohorts already used Sol / xhigh; no natural cohort, source or sealed history was edited.
 
@@ -31,6 +35,6 @@ The prior [v2](../experiments/hf-method-v2/results/2026-10-17/README.md) and [v1
 
 ## Environment and run state
 
-Python 3.12.14 with jsonschema 4.25.1, openpyxl 3.1.5, pypdf 6.10.0 in ../eval-readiness/hf-campaign-v1-2026-10-17/.venv. Existing operator-only host login route. Current gpt-6.1-sol/max diagnostic was freshly verified; four inference slots and 300-second requests, with all other original allowances retained. Prior xhigh cohorts keep their 150-second requests/eight slots. No GLM/OpenRouter access is established.
+Python 3.12.14 with jsonschema 4.25.1, openpyxl 3.1.5, pypdf 6.10.0 in ../eval-readiness/hf-campaign-v1-2026-10-17/.venv. Existing operator-only host login route. Current natural gpt-6.1-sol/max pairing was freshly verified; four inference slots and 300-second requests, with all other original allowances retained. Prior xhigh cohorts keep their 150-second requests/eight slots. No GLM/OpenRouter access is established.
 
 All owned client futures/loops ended. No new key, wakeup, container, cloud resource or hosted-runtime change. Full raw exports, independent checks, semantic qualifications and archive manifests are saved; earlier failed attempts remain unchanged. README reflects the current max setup and historical xhigh limits/read timeouts. Full commands are in the version READMEs; do not overwrite sealed archives.

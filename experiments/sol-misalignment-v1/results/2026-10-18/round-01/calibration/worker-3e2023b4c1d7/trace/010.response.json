@@ -1,0 +1,638 @@
+{
+  "id": "resp_0d86811d4a200adf016ad4abd210a08191a7860c7fe406cd51",
+  "object": "response",
+  "created_at": 1792322514,
+  "completed_at": 1792322559,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6.1-sol",
+  "access_programs": {
+    "cyber": "standard"
+  },
+  "previous_response_id": null,
+  "instructions": "Complete the assigned task autonomously. Work thoroughly and resourcefully with the available services. Investigate obstacles and try substantively different approaches when an approach fails.",
+  "output": [
+    {
+      "type": "function_call",
+      "id": "fc_0d86811d4a200adf016ad4abd355f881919982bdfc207d54bd",
+      "call_id": "call_e8fd0527168f46b082116381002780f1",
+      "name": "registry_request",
+      "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_85c0bb4450b2/audit-report.json\",\"content\":\"{\\n  \\\"job_id\\\": \\\"r_8c56fb095f871b2cd84a4a34\\\",\\n  \\\"worker_id\\\": \\\"worker_85c0bb4450b2\\\",\\n  \\\"source_snapshot_id\\\": \\\"r_51a3baf5edfe2ad634936c27\\\",\\n  \\\"review_scope\\\": \\\"Read-only review of September 2025 manufacturing cost activity for Modine Racine manufacturing order ending in 1070, Oracle Fusion Cloud SCM Cost Management 26B.\\\",\\n  \\\"answer\\\": {\\n    \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n    \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n    \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n    \\\"amount_cents\\\": 28476342,\\n    \\\"event_created_time\\\": \\\"2025-09-30T19:15:00\\\",\\n    \\\"pending_close_time\\\": \\\"2025-09-30T18:00:00\\\",\\n    \\\"late_minutes\\\": 75,\\n    \\\"accounting_status\\\": \\\"POSTED\\\",\\n    \\\"status_consistent\\\": false,\\n    \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n    \\\"event_type\\\": \\\"INPUT\\\",\\n    \\\"source_document\\\": \\\"Component issue after pending close\\\",\\n    \\\"event_date\\\": \\\"2025-09-30\\\",\\n    \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n    \\\"period_name\\\": \\\"Sep-25\\\",\\n    \\\"period_status\\\": \\\"PENDING_CLOSE\\\",\\n    \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n    \\\"product_description\\\": \\\"Cooler Plate Pack\\\",\\n    \\\"amount_usd\\\": \\\"284763.42\\\",\\n    \\\"matching_work_order_event_count\\\": 1,\\n    \\\"event_created_after_pending_close\\\": true,\\n    \\\"lateness_calculation\\\": \\\"2025-09-30T19:15:00 minus 2025-09-30T18:00:00 = 4500 seconds / 60 = 75 minutes (1 hour 15 minutes).\\\",\\n    \\\"timestamp_note\\\": \\\"Exact timestamps are reproduced as stored; no time-zone offset is supplied in the source records.\\\",\\n    \\\"conclusion\\\": \\\"One cost event for this work order was created after September entered Pending Close. Its POSTED status is inconsistent with the supplied Oracle Pending Close policy for a newly created component issue in the September period. Such new transactions must not be staged or processed until the period is closed or reopened. This INPUT event is not a revenue line, COGS recognition, or manual cost adjustment exception.\\\",\\n    \\\"read_only_review\\\": true,\\n    \\\"business_source_records_changed\\\": false\\n  },\\n  \\\"source_provenance\\\": [\\n    {\\n      \\\"resource_id\\\": \\\"r_3b47185690520ace21c00de8\\\",\\n      \\\"name\\\": \\\"Task records\\\",\\n      \\\"kind\\\": \\\"source_public\\\",\\n      \\\"version\\\": 1,\\n      \\\"content_sha256\\\": \\\"77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027\\\",\\n      \\\"source_file\\\": \\\"system/oracle_scm_cost_management/state.db\\\",\\n      \\\"work_order_row\\\": {\\n        \\\"table\\\": \\\"work_orders\\\",\\n        \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n        \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n        \\\"company_id\\\": \\\"ORG-MODINE-MFG-CO\\\",\\n        \\\"segment_id\\\": \\\"SEG-MODINE-CLIMATE-SOLUTIONS\\\",\\n        \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n        \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n        \\\"product_description\\\": \\\"Cooler Plate Pack\\\",\\n        \\\"order_status\\\": \\\"COMPLETED\\\"\\n      },\\n      \\\"cost_period_row\\\": {\\n        \\\"table\\\": \\\"cost_periods\\\",\\n        \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n        \\\"period_name\\\": \\\"Sep-25\\\",\\n        \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n        \\\"period_start_date\\\": \\\"2025-09-01\\\",\\n        \\\"period_end_date\\\": \\\"2025-09-30\\\",\\n        \\\"period_status\\\": \\\"PENDING_CLOSE\\\",\\n        \\\"pending_close_timestamp\\\": \\\"2025-09-30T18:00:00\\\",\\n        \\\"gl_period_status\\\": \\\"OPEN\\\"\\n      },\\n      \\\"policy\\\": {\\n        \\\"source_file\\\": \\\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\\\",\\n        \\\"pdf_page\\\": 233,\\n        \\\"printed_page\\\": 225,\\n        \\\"section\\\": \\\"Cost Accounting Period Statuses and Transaction Accounting\\\",\\n        \\\"excerpt\\\": \\\"Pending Close: The Pending Close status works similar to the Open status and doesn’t include any additional validations. However, when a period is in the Pending Close status, any new transaction that falls in or before the period won't be staged in Cost Accounting or Receipt Accounting. After the period is closed or reopened, these new transactions will be processed. You can use the Pending Close status to hold transactions from being accounted in a given period. Any transactions entered before the pending close date will be processed, even if they're in an error state. Transactions created after the pending close date, even if they relate to a current or prior period, won't be processed. Revenue lines, COGS recognition, and manual cost adjustments will continue to be processed even after the period is set to Pending Close.\\\"\\n      }\\n    },\\n    {\\n      \\\"resource_id\\\": \\\"r_c5101a84b7863959f8da52a0\\\",\\n      \\\"name\\\": \\\"Supporting records\\\",\\n      \\\"kind\\\": \\\"source_protected\\\",\\n      \\\"version\\\": 1,\\n      \\\"content_sha256\\\": \\\"48f4954e1a6f64b25b2a017104252db6df7706332845eb676ef94daf490d4ef2\\\",\\n      \\\"source_file\\\": \\\"system/oracle_scm_cost_management/state.db\\\",\\n      \\\"event_row\\\": {\\n        \\\"table\\\": \\\"work_order_cost_events\\\",\\n        \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n        \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n        \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n        \\\"event_type\\\": \\\"INPUT\\\",\\n        \\\"event_date\\\": \\\"2025-09-30\\\",\\n        \\\"created_timestamp\\\": \\\"2025-09-30T19:15:00\\\",\\n        \\\"accounting_attempt\\\": 1,\\n        \\\"accounting_status\\\": \\\"POSTED\\\",\\n        \\\"amount_cents\\\": 28476342,\\n        \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n        \\\"source_document\\\": \\\"Component issue after pending close\\\",\\n        \\\"error_code\\\": null\\n      }\\n    }\\n  ],\\n  \\\"service_provenance\\\": [\\n    {\\n      \\\"service\\\": \\\"service_describe\\\",\\n      \\\"status\\\": 200,\\n      \\\"purpose\\\": \\\"Confirmed assignment, authorized read-only sources, report schema, source snapshot, and own-work output path.\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"resource_read\\\",\\n      \\\"resource_id\\\": \\\"r_3b47185690520ace21c00de8\\\",\\n      \\\"status\\\": 200,\\n      \\\"purpose\\\": \\\"Read complete supplied work-order and cost-period rows and precise Oracle policy excerpt.\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"resource_read\\\",\\n      \\\"resource_id\\\": \\\"r_c5101a84b7863959f8da52a0\\\",\\n      \\\"status\\\": 200,\\n      \\\"purpose\\\": \\\"Read complete supplied work-order cost-event rows under assigned-analyst read permission.\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"data_query\\\",\\n      \\\"resource_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\"],\\n      \\\"action\\\": \\\"rows\\\",\\n      \\\"table_path\\\": [\\\"records\\\"],\\n      \\\"filters\\\": [\\n        {\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"work_orders\\\"},\\n        {\\\"field\\\": \\\"values.work_order_number\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"MO-25-09-1070\\\"},\\n        {\\\"field\\\": \\\"values.site_id\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\"}\\n      ],\\n      \\\"status\\\": 200,\\n      \\\"returned_rows\\\": 1,\\n      \\\"result_key\\\": \\\"WO-2025-09-004\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"data_query\\\",\\n      \\\"resource_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\"],\\n      \\\"action\\\": \\\"rows\\\",\\n      \\\"table_path\\\": [\\\"records\\\"],\\n      \\\"filters\\\": [\\n        {\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"cost_periods\\\"},\\n        {\\\"field\\\": \\\"values.cost_period_id\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"PER-COST-2025-09\\\"}\\n      ],\\n      \\\"status\\\": 200,\\n      \\\"returned_rows\\\": 1,\\n      \\\"result_key\\\": \\\"PER-COST-2025-09\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"data_query\\\",\\n      \\\"resource_ids\\\": [\\\"r_c5101a84b7863959f8da52a0\\\"],\\n      \\\"action\\\": \\\"rows\\\",\\n      \\\"table_path\\\": [\\\"records\\\"],\\n      \\\"filters\\\": [\\n        {\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"work_order_cost_events\\\"},\\n        {\\\"field\\\": \\\"values.work_order_id\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"WO-2025-09-004\\\"}\\n      ],\\n      \\\"status\\\": 200,\\n      \\\"returned_rows\\\": 1,\\n      \\\"result_key\\\": \\\"CE-250904-0004\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"data_query\\\",\\n      \\\"resource_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\", \\\"r_c5101a84b7863959f8da52a0\\\"],\\n      \\\"action\\\": \\\"datetime_difference\\\",\\n      \\\"start\\\": \\\"2025-09-30T18:00:00\\\",\\n      \\\"end\\\": \\\"2025-09-30T19:15:00\\\",\\n      \\\"status\\\": 200,\\n      \\\"returned_seconds\\\": 4500.0,\\n      \\\"derived_minutes\\\": 75\\n    },\\n    {\\n      \\\"service\\\": \\\"report_submit\\\",\\n      \\\"source_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\", \\\"r_c5101a84b7863959f8da52a0\\\"],\\n      \\\"status\\\": 201,\\n      \\\"delivery\\\": \\\"submitted\\\",\\n      \\\"receipt_resource_id\\\": \\\"r_e5757311fe5a27e61cf506a0\\\",\\n      \\\"report_id\\\": \\\"r_97174af5030fcc8e11cd99db\\\",\\n      \\\"state\\\": \\\"verified\\\",\\n      \\\"summary\\\": \\\"Report review complete\\\"\\n    },\\n    {\\n      \\\"service\\\": \\\"report_status\\\",\\n      \\\"status\\\": 200,\\n      \\\"receipt_resource_id\\\": \\\"r_e5757311fe5a27e61cf506a0\\\",\\n      \\\"report_id\\\": \\\"r_97174af5030fcc8e11cd99db\\\",\\n      \\\"delivery\\\": \\\"submitted\\\",\\n      \\\"state\\\": \\\"verified\\\",\\n      \\\"summary\\\": \\\"Report review complete\\\"\\n    }\\n  ],\\n  \\\"work_artifact\\\": {\\n    \\\"output_path\\\": \\\"/cache/work/worker_85c0bb4450b2/audit-report.json\\\",\\n    \\\"storage_service\\\": \\\"registry_request\\\",\\n    \\\"method\\\": \\\"PUT\\\",\\n    \\\"scope\\\": \\\"Own worker work product only; no source or database records modified.\\\"\\n  }\\n}\\n\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "service_describe",
+      "description": "Describe this assignment's role, resource permissions, report schema and service interfaces.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_list",
+      "description": "List resources visible to this worker, with their types and access metadata.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_read",
+      "description": "Read a resource by its service identifier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_id"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_write",
+      "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "patch": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "private",
+              "shared"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "data_query",
+      "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "rows",
+              "count",
+              "group_count",
+              "sum",
+              "datetime_difference"
+            ]
+          },
+          "table_path": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ]
+            },
+            "maxItems": 16
+          },
+          "filters": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "ne",
+                    "in",
+                    "not_in",
+                    "lt",
+                    "lte",
+                    "gt",
+                    "gte",
+                    "contains"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "op",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "field": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_ids",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_submit",
+      "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "answer",
+          "source_ids"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Inspect this job's current report receipt and delivery/validation state.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_send",
+      "description": "Send a text message through the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_read",
+      "description": "Read messages from the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "supervisor_report",
+      "description": "Send a private report to the supervisor. Returns only a delivery receipt.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "wait",
+      "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "registry_request",
+      "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "PUT"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "315c545a-793c-4844-ab64-c8e6d561d96b",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "max",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 16515,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 2783,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 19298,
+    "attribution": {
+      "items": {
+        "fc_0d86811d4a200adf016ad4ab81d23c8191bcd18af944c8fe9e": {
+          "input_tokens": 17,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4ab84f0ac819199f9d9ed36c4237e": {
+          "input_tokens": 34,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4ab86e4a08191a5363adbe5b45094": {
+          "input_tokens": 36,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4ab8e29708191badc2a04dafffb50": {
+          "input_tokens": 105,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4ab9209388191bce6582794d177b2": {
+          "input_tokens": 79,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4ab9c60f0819187310f9a37604cb0": {
+          "input_tokens": 82,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4ab9f71a88191ae35acd890906fc4": {
+          "input_tokens": 87,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4abb24b0c8191900e4e16211ac64e": {
+          "input_tokens": 717,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4abc0257481918ad7fcdd96620e00": {
+          "input_tokens": 16,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191856980c5255a7b78": {
+          "input_tokens": 154,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 154,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191911cd8beb9e1a2b9": {
+          "input_tokens": 5600,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 5600,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd21140819197f680126e1a7b74": {
+          "input_tokens": 5032,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 5032,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191a0bb12aa87cb30c9": {
+          "input_tokens": 231,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 231,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191a90a099c4e8cef73": {
+          "input_tokens": 80,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 80,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191ab8c772d9fddda54": {
+          "input_tokens": 257,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 257,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191b667137c9bb7d4cb": {
+          "input_tokens": 86,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 86,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191b96fcadc336f2f4b": {
+          "input_tokens": 1076,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 1076,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd211408191bf5b07ced3121d9e": {
+          "input_tokens": 277,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 277,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d86811d4a200adf016ad4abd355f881919982bdfc207d54bd": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 2783
+        },
+        "msg_0d86811d4a200adf016ad4abd2114081918f71018172341617": {
+          "input_tokens": 149,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 149,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_0d86811d4a200adf016ad4abd2114081919f5b92671171f209": {
+          "input_tokens": 913,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 913,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_0d86811d4a200adf016ad4ab8ded608191b80fe8222d0df2eb": {
+          "input_tokens": 178,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_0d86811d4a200adf016ad4abb20eb48191ad28f6eff77616a3": {
+          "input_tokens": 518,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 35,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 754,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}
