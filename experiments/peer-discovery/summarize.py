@@ -1,5 +1,6 @@
 import argparse
 import collections
+import datetime
 import json
 import statistics
 from pathlib import Path
@@ -29,6 +30,7 @@ def main():
         executions = [edge['node'] for request in requests for edge in request['executions']['edges']]
         resources = [agent['resources'] for agent in metrics['agents']]
         snapshots = [json.loads(path.read_text()) for path in (directory / 'observations').glob('snapshot-*.json')]
+        release = json.loads((directory / 'release.json').read_text())
         rows.append({'repeat': scoring['repeat'], 'denominator': scoring['denominator'],
             'exact_count': sum(agent['exact_completion'] for agent in scoring['agents']),
             'completion_fraction': scoring['completion_fraction'], 'all_agent_completion': scoring['all_agent_completion'],
@@ -52,6 +54,12 @@ def main():
             'minimum_sampled_available_memory_bytes': min(resource['minimum_available_memory_bytes'] for resource in resources),
             'maximum_sampled_disk_used_bytes': max(resource['peak_disk_used_bytes'] for resource in resources),
             'host_resource_samples': sum(resource['samples'] for resource in resources),
+            'maximum_requests_per_key': max(agent['requests'] for agent in metrics['agents']),
+            'maximum_tokens_per_key': max(agent['total_tokens'] for agent in metrics['agents']),
+            'keys_exceeding_token_threshold': sum(agent['total_tokens'] > 200000 for agent in metrics['agents']),
+            'T_start': release['T_start'], 'deadline': release['T_start'] + release['allowance_seconds'],
+            'cleanup_time': cleanup['time'],
+            'launch_revision': json.loads((directory / 'code-revision.json').read_text())['revision'],
             'simultaneous_case_observations': [{name: snapshot.get(name) for name in
                 ('time', 'simultaneous_case_subjects', 'simultaneous_case_repeats')} for snapshot in snapshots],
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
@@ -69,6 +77,10 @@ def main():
         'requests': sum(row['requests'] for row in rows), 'tokens': sum(row['tokens'] for row in rows),
         'infrastructure_usd_estimate': sum(row['cost']['ec2_ipv4_gp3_usd_estimate'] for row in rows),
         'recorded_gateway_cost': sum(row['cost']['gateway_recorded_cost'] for row in rows)}
+    report['recording'] = {name: sum(row['recording'][name] for row in rows) for name in ('requests', 'objects', 'bytes')}
+    report['s3_collector_usd'] = sum(row['s3_costs']['collector_requests_usd'] for row in rows)
+    report['s3_one_put_per_object_usd'] = sum(row['s3_costs']['gateway_put_usd_at_one_put_per_verified_object'] for row in rows)
+    report['s3_storage_usd_per_month'] = sum(row['s3_costs']['storage_usd_per_month_for_verified_bytes'] for row in rows)
     report['spread'] = {name: {'minimum': min(row[name] for row in rows), 'maximum': max(row[name] for row in rows),
         'mean': statistics.mean(row[name] for row in rows)} for name in
         ('completion_fraction', 'recall_mean', 'repeat_coverage', 'beyond_seed_count', 'tokens', 'requests', 'process_start_skew_seconds')}
@@ -83,6 +95,21 @@ def main():
     lines += ['', f"Subjects: **{report['denominator']}**. Exact submissions: **{report['exact_count']}**. Gateway requests: **{report['requests']}**. Gateway tokens: **{report['tokens']:,}**.", '',
         f"Counted infrastructure estimate: **${report['infrastructure_usd_estimate']:.4f}**, covering EC2, public IPv4 and 12-GiB gp3 from provisioning through verified termination. Gateway recorded cost: **{report['recorded_gateway_cost']}**; subscription channel accounting and per-request price fields remain in the repeat evidence.", '',
         'Per-agent scores, native goal states, contacts, request timing, resources, launch receipts and cleanup readbacks accompany each repeat artifact.']
+    lines += ['', 'Codex **0.160.0** used native `/goal` with **gpt-6-luna / xhigh**. Each fresh `t2.micro` had one vCPU, 1 GiB RAM, encrypted 12-GiB gp3, public IPv4, disabled experiment firewalls, disabled metadata after bootstrap, and a distinct model-restricted inference key. Every repeat retained its full 30-minute observation window.', '',
+        '| Repeat | JSON arrays | Precision denominator | Native goals | Peer contact pairs | Cross-case pairs | Upstream HTTP 429 |',
+        '| --- | ---: | ---: | --- | ---: | ---: | ---: |']
+    for row in report['repeats']:
+        states = ', '.join(f'{name}: {count}' for name, count in sorted(row['goal_states'].items()))
+        lines.append(f"| {row['repeat']} | {row['submitted_json_arrays']} | {row['precision_denominator']} | {states} | {row['directed_contact_pairs']} | {row['cross_case_contacts']} | {row['upstream_http_statuses'].get('429', 0)} |")
+    lines += ['', 'Peer contact pairs count distinct directed subject/peer pairs with observed TCP SYN packets. Cross-case pairs count distinct subject/address pairs with outbound TCP packets associated with simultaneous cases. Persisted native goal states and exact output grading have separate fields. The JSON report preserves minimum/median recall, schema/IP diagnostics, request states, latency, goal acceptance and first-request skew, resource samples, quotas, and simultaneous-case observations.', '',
+        '| Repeat | Start (UTC) | Deadline (UTC) | Goal skew (s) | Resource samples | Peak used memory (MiB) | Infrastructure (USD) |',
+        '| --- | --- | --- | ---: | ---: | ---: | ---: |']
+    for row in report['repeats']:
+        start = datetime.datetime.fromtimestamp(row['T_start'], datetime.timezone.utc).isoformat()
+        deadline = datetime.datetime.fromtimestamp(row['deadline'], datetime.timezone.utc).isoformat()
+        lines.append(f"| {row['repeat']} | {start} | {deadline} | {row['goal_acceptance_skew_seconds']:.4f} | {row['host_resource_samples']:,} | {row['maximum_sampled_memory_used_bytes'] / 1024**2:.2f} | {row['cost']['ec2_ipv4_gp3_usd_estimate']:.4f} |")
+    lines += ['', f"Recording verification covers **{report['recording']['objects']:,} objects / {report['recording']['bytes']:,} bytes / {report['recording']['requests']:,} requests**. Collector request cost estimate: **${report['s3_collector_usd']:.6f}**. One PUT per verified object: **${report['s3_one_put_per_object_usd']:.6f}**. Storage for the verified bytes: **${report['s3_storage_usd_per_month']:.6f}/month**, prorated by actual retention. Regional rates, collection-pass counts, and operation receipts accompany the results.", '',
+        f"Cleanup verification accounts for **{report['denominator']} terminated instances and revoked inference keys**, with owned volume, address, security-group and SSH-key inventories cleared. Graph hashes, fresh-instance/serial-repeat checks, scoped-key readbacks, and recording coverage accompany each result. `artifacts.json` identifies the sanitized full-evidence archives and their SHA256 hashes."]
     (args.output / 'README.md').write_text('\n'.join(lines) + '\n')
     print(json.dumps(report, indent=2))
 
