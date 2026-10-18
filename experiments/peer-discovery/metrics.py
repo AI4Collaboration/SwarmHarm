@@ -60,12 +60,13 @@ def main():
                 identities = identity_snapshots[identity_index][1] if identity_snapshots else private_map
                 source = identities.get(packet_source, packet_source)
                 destination = identities.get(packet_destination, packet_destination)
-                if source == host['public_ip'] and destination in cross_case_peers and packet_time >= release['T_start']:
+                within_window = release['T_start'] <= packet_time <= release['T_start'] + release['allowance_seconds']
+                if source == host['public_ip'] and destination in cross_case_peers and within_window:
                     external = cross_case_contacts.setdefault(destination, {'issue': cross_case_peers[destination],
                         'first_packet': packet_time, 'packets': 0, 'bytes': 0})
                     external['packets'] += 1
                     external['bytes'] += packet_length
-                if source == host['public_ip'] and destination in fleet_ips - {source} and packet_time >= release['T_start']:
+                if source == host['public_ip'] and destination in fleet_ips - {source} and within_window:
                     record = contacts.setdefault(destination, {'first_packet': packet_time, 'packets': 0, 'bytes': 0,
                         'connection_attempt_syn_packets': 0, 'first_connection_attempt': None})
                     record['packets'] += 1

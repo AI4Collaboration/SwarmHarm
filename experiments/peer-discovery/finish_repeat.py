@@ -29,6 +29,10 @@ def main():
     for name, arguments in commands:
         with (args.directory / f'{Path(name).stem}-console.txt').open('w') as stream:
             subprocess.run([sys.executable, str(root / name), *arguments], stdout=stream, stderr=subprocess.STDOUT, check=True)
+    host = json.loads((args.directory / 'binding.json').read_text())['hosts'][0]
+    with (args.directory / 'verify_traffic-console.txt').open('w') as stream:
+        subprocess.run([sys.executable, str(root / 'verify_traffic.py'), str(args.directory), host['id']],
+                       stdout=stream, stderr=subprocess.STDOUT, check=True)
     save(args.directory, 'analysis-revision.json', {'revision': subprocess.run(
         ['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True).stdout.strip()})
     scoring = json.loads((args.directory / 'scoring.json').read_text())
