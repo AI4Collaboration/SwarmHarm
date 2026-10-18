@@ -1,3 +1,4 @@
+import argparse
 import collections
 import hashlib
 import json
@@ -14,12 +15,20 @@ def read(path):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--reuse-verified-repeat-archives', action='store_true')
+    args = parser.parse_args()
     destination = BASE / 'case-report'
     subprocess.run([sys.executable, str(BASE / 'scripts/source_manifest.py')], check=True)
     subprocess.run([sys.executable, str(BASE / 'scripts/audit_bindings.py')], check=True)
     source_manifest = read(BASE / 'source-manifest.json')
     for number in (3, 2, 1):
         directory = BASE / f'repeat-{number}'
+        if args.reuse_verified_repeat_archives:
+            provenance = read(directory / 'analysis-provenance.json')
+            assert provenance['metrics_sha256'] == hashlib.sha256((directory / 'metrics.json').read_bytes()).hexdigest()
+            assert provenance['lifecycle_sha256'] == hashlib.sha256((directory / 'instance-lifetimes.json').read_bytes()).hexdigest()
+            continue
         shutil.copyfile(BASE / 'source-manifest.json', directory / 'analysis-source-manifest.json')
         provenance = {'analysis_revision': source_manifest['source_revision'],
             'metrics_sha256': hashlib.sha256((directory / 'metrics.json').read_bytes()).hexdigest(),
@@ -77,7 +86,7 @@ def main():
     archives = json.loads(run_remote(BASE / 'scripts/verify_archives.py', [REMOTE_BASE]).stdout)
     cleanup = read(BASE / 'reservation-cleanup-verification.json')
     assert cleanup['distinct_subjects'] == cleanup['distinct_original_volumes'] == cleanup['revoked_keys'] == 96
-    probe_directories = sorted(BASE.glob('provider-*'))
+    probe_directories = sorted(path for path in BASE.glob('provider-*') if path.is_dir())
     probes = [read(directory / 'recording-receipts.json') for directory in probe_directories]
     for directory in probe_directories:
         key = read(directory / 'private-key-0.json')
