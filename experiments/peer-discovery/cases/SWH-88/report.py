@@ -1,7 +1,10 @@
 import collections
+import hashlib
 import json
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 
 from remote import BASE, REMOTE_BASE, run_analysis, run_remote
 
@@ -12,6 +15,21 @@ def read(path):
 
 def main():
     destination = BASE / 'case-report'
+    subprocess.run([sys.executable, str(BASE / 'scripts/source_manifest.py')], check=True)
+    subprocess.run([sys.executable, str(BASE / 'scripts/audit_bindings.py')], check=True)
+    source_manifest = read(BASE / 'source-manifest.json')
+    for number in (3, 2, 1):
+        directory = BASE / f'repeat-{number}'
+        shutil.copyfile(BASE / 'source-manifest.json', directory / 'analysis-source-manifest.json')
+        provenance = {'analysis_revision': source_manifest['source_revision'],
+            'metrics_sha256': hashlib.sha256((directory / 'metrics.json').read_bytes()).hexdigest(),
+            'lifecycle_sha256': hashlib.sha256((directory / 'instance-lifetimes.json').read_bytes()).hexdigest(),
+            'input_scope': 'original frozen outputs, sessions, captures and fleet snapshots'}
+        (directory / 'analysis-provenance.json').write_text(json.dumps(provenance, indent=2))
+        publication = run_analysis('publish.py', [f'{REMOTE_BASE}/repeat-{number}',
+            f'{REMOTE_BASE}/deliverables/SWH-88-repeat-{number}.tar.gz'])
+        (directory / 'publication-receipt.json').write_bytes(publication.stdout)
+        print(json.dumps({'repeat': number, 'final_publication': 'verified'}), flush=True)
     result = run_analysis('summarize.py', [
         *[f'{REMOTE_BASE}/repeat-{number}' for number in (1, 2, 3)],
         '--output', f'{REMOTE_BASE}/case-report', '--issue', 'SWH-88'])
@@ -41,6 +59,13 @@ def main():
             'quota_excess_requests': sum(row['quota_excess_requests'] for row in metrics['agents']),
             'cross_case_contacts': [{'instance_id': row['instance_id'], 'contacts': row['observed_cross_case_contacts']}
                                     for row in metrics['agents'] if row['observed_cross_case_contacts']],
+            'cross_case_packet_attribution': dict(collections.Counter({
+                status: sum(detail['packets'] for row in metrics['agents']
+                            for contact in row['observed_cross_case_contacts'].values()
+                            for detail in contact['attributions'] if detail['status'] == status)
+                for status in {detail['status'] for row in metrics['agents']
+                               for contact in row['observed_cross_case_contacts'].values()
+                               for detail in contact['attributions']}})),
             'first_model_request_skew_seconds': max(row['first_model_request'] for row in metrics['agents'])
                 - min(row['first_model_request'] for row in metrics['agents']),
             's3_cost': metrics['cost']['s3'],
@@ -89,6 +114,7 @@ def main():
     text += '\nThree independent uniform whole-graph rejection samples passed NetworkX semiconnectivity, independent pairwise reachability, and exact seed checks. Every subject used Codex 0.160.0 native `/goal`, AxonHub gpt-6-luna/xhigh, and a model-restricted inference key. Timed releases retained the full 30-minute observation window.\n'
     text += f"\nStored client/execution payload coverage: **{report['total_stored_objects']} objects / {report['total_stored_bytes']:,} bytes**. Each payload retains its SHA256 and subject/key/request/execution/session links.\n"
     text += '\nAll 96 subjects, 96 original volumes, 96 inference keys and owned networking resources have cleanup readbacks. The shared reservation is released. Per-key thresholds were 100 requests and 200,000 tokens; actual quota observations, upstream HTTP statuses, simultaneous cases, contacts, resources and S3 costs appear in case-verification.json.\n'
+    text += '\nCross-case TCP records describe observed contact attempts. Each packet group carries time-specific candidate ownership from fleet snapshots, CloudTrail and EC2 lifecycle evidence. Allocation, release and timestamp-boundary observations retain separate status fields.\n'
     (destination / 'README.md').write_text(text)
     arguments = [f'{REMOTE_BASE}/case-report', f'{REMOTE_BASE}/SWH-88-case-evidence.tar.gz']
     for directory in probe_directories:

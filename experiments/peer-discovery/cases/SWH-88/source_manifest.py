@@ -17,6 +17,8 @@ def main():
     assert configuration == accepted
     hashes = {str(path.relative_to(BASE)): hashlib.sha256(path.read_bytes()).hexdigest()
               for path in source.iterdir() if path.is_file()}
+    hashes.update({str(path.relative_to(BASE)): hashlib.sha256(path.read_bytes()).hexdigest()
+                   for path in (BASE / 'scripts').glob('*.py')})
     revision = subprocess.run(['git', '-C', str(BASE / 'repository'), 'rev-parse', 'HEAD'],
                               check=True, capture_output=True, text=True).stdout.strip()
     receipt = {'source_revision': revision, 'shared_harness': '100470a2',
