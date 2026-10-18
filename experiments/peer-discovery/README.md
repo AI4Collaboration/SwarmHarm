@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-94 prepares N64/K4 with the registered graphs. Pass `--n 64 --k 4` to `verify_registered_graphs.py` and `verify_case.py`, and `--issue SWH-94` to `package_case.py`. Its ignored case directory uses SSHFS 3.7.3 with private operator storage on the existing gateway. Verify mount capacity and remote file hashes before provisioning; retain collection in foreground commands, then unmount after all evidence is delivered. Every repeat preserves its full 30-minute observation window.
+
 **Completed 2026-10-18: [SWH-95, N=64/K=5](results/2026-10-18/SWH-95/README.md).** Three serial repeats used 192 fresh instances with native Codex 0.160.0 `/goal` and `gpt-6-luna / xhigh`. Mean recall: 6.52%, 22.37%, 11.58%. Exact submissions: 0/192. Five submissions achieved full peer recall and included their own address. Independent checks cover 8,208 stored JSON objects, all sessions, full observation windows, 192 key revocations, cloud cleanup, and reservation release.
 
 Run `observe.py DIRECTORY GRAPH --meta-key OPERATOR_SSH_KEY` alongside the foreground repeat operator. It waits for all timer receipts, independently checks the live release before its timestamp, and captures periodic host/gateway observations throughout the 30-minute window. Collect both foreground commands before ending the operator turn.

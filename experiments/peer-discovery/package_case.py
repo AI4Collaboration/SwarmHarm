@@ -9,9 +9,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('output', type=Path)
+    parser.add_argument('--issue', required=True)
     args = parser.parse_args()
     verification = json.loads((args.directory / 'case-verification.json').read_text())
-    assert verification['unique_instances'] == verification['unique_revoked_keys'] == 192
+    assert verification['unique_instances'] == verification['unique_revoked_keys']
+    assert verification['unique_instances'] == sum(row['subjects'] for row in verification['repeats'])
     args.output.mkdir(parents=True, exist_ok=True)
     for filename in ('case-verification.json', 'reservation-release.json', 'prices.json', 's3-prices.json'):
         shutil.copyfile(args.directory / filename, args.output / filename)
@@ -35,7 +37,7 @@ def main():
         release = json.loads((source / 'release-verification.json').read_text())
         (output / 'release-verification.json').write_text(json.dumps(
             {name: value for name, value in release.items() if name not in ('instances', 'volumes')}, indent=2))
-        archive = args.directory / 'deliverables' / f'SWH-95-repeat-{repeat}.tar.gz'
+        archive = args.directory / 'deliverables' / f'{args.issue}-repeat-{repeat}.tar.gz'
         with archive.open('rb') as stream:
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         artifacts.append({'filename': archive.name, 'bytes': archive.stat().st_size,

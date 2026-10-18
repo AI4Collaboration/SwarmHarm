@@ -13,6 +13,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('--source', type=Path, required=True)
+    parser.add_argument('--n', type=int, required=True)
+    parser.add_argument('--k', type=int, required=True)
     args = parser.parse_args()
     receipts = []
     seeds = set()
@@ -21,7 +23,7 @@ def main():
         raw = path.read_bytes()
         assert raw == (args.source / path.name).read_bytes()
         graph = json.loads(raw)
-        assert graph['repeat'] == repeat and graph['n'] == 64 and graph['k'] == 5
+        assert graph['repeat'] == repeat and graph['n'] == args.n and graph['k'] == args.k
         assert graph['numpy'] == np.__version__ and graph['networkx'] == nx.__version__
         assert graph['seed'] not in seeds
         seeds.add(graph['seed'])

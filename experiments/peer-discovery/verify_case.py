@@ -11,6 +11,8 @@ def read(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
+    parser.add_argument('--n', type=int, required=True)
+    parser.add_argument('--k', type=int, required=True)
     args = parser.parse_args()
     instances = set()
     keys = set()
@@ -21,10 +23,12 @@ def main():
         cloud = read(directory / 'cloud.json')
         binding = read(directory / 'binding.json')
         graph = args.directory / f'graphs/graph-{repeat}.json'
-        assert binding['repeat'] == repeat and len(binding['hosts']) == 64
+        definition = read(graph)
+        assert definition['n'] == args.n and definition['k'] == args.k
+        assert binding['repeat'] == repeat and len(binding['hosts']) == args.n
         assert binding['graph_sha256'] == hashlib.sha256(graph.read_bytes()).hexdigest()
         assert cloud['created_at'] > previous_cleanup
-        assert len(cloud['instance_ids']) == 64 and instances.isdisjoint(cloud['instance_ids'])
+        assert len(cloud['instance_ids']) == args.n and instances.isdisjoint(cloud['instance_ids'])
         instances.update(cloud['instance_ids'])
         cleanup = read(directory / 'cleanup.json')
         release = read(directory / 'release.json')
@@ -33,7 +37,7 @@ def main():
         previous_cleanup = cleanup['time']
         assert previous_cleanup - cloud['created_at'] <= 7200
         verification = read(directory / 'evidence-verification.json')
-        assert verification['verified_subjects'] == 64
+        assert verification['verified_subjects'] == args.n
         recording = read(directory / 'recording-verification.json')
         assert len({row['request_id'] for row in recording['coverage']}) == recording['requests']
         expected_objects = {obj for row in recording['coverage'] if row['request_status'] == 'completed'
@@ -56,14 +60,14 @@ def main():
                         assert node['upstreamModelID'] == 'gpt-6-luna'
         assert request_count == recording['requests']
         scoring = read(directory / 'scoring.json')
-        assert scoring['denominator'] == len(scoring['agents']) == 64
-        receipts.append({'repeat': repeat, 'subjects': 64, 'requests': request_count,
+        assert scoring['denominator'] == len(scoring['agents']) == args.n
+        receipts.append({'repeat': repeat, 'subjects': args.n, 'requests': request_count,
                          'stored_objects': recording['objects'], 'stored_bytes': recording['bytes'],
                          'exact_submissions': sum(agent['exact_completion'] for agent in scoring['agents']),
                          'cleanup_time': cleanup['time']})
-    result = {'case': 'N64-K5', 'repeats': receipts, 'unique_instances': len(instances),
+    result = {'case': f'N{args.n}-K{args.k}', 'repeats': receipts, 'unique_instances': len(instances),
               'unique_revoked_keys': len(keys), 'serial_fresh_environments': True}
-    assert len(instances) == len(keys) == 192
+    assert len(instances) == len(keys) == args.n * 3
     (args.directory / 'case-verification.json').write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))
 

@@ -191,10 +191,6 @@ def main():
             list(pool.map(lambda host: arm(directory, host, timestamp, allowance), hosts))
             assert time.time() < timestamp - 20
             while time.time() < timestamp + allowance + 15:
-                results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
-                    'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
-                if all(result.returncode == 0 for result in results):
-                    break
                 time.sleep(5)
             receipts = list(pool.map(lambda host: export_host(directory, host), hosts))
         save(directory, 'export-manifest.json', receipts)
