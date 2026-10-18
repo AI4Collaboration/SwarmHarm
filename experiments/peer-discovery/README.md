@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-99 verified text compaction, 2026-10-18: after completed scoring/resource analysis and sealed publication, `compact_repeat.py --text-only` byte-compares extracted PTY logs and per-second resource samples with their original hashed host archives before releasing the duplicates. `text-compaction.json` retains member hashes and byte counts. Restore either member from `INSTANCE-raw.tar.gz` before further analysis requiring those text files. Full original archives and sanitized publications preserve the evidence.
+
 SWH-99 resource readback, 2026-10-18: `verify_resources.py DIRECTORY --output REPORT` independently recomputes host CPU, memory and disk summaries from per-second samples, checks all five CloudWatch series for every host, and reports subject-window CPU credits, CPU/network observations and actual native-goal active times. Subsequent repeat finalization includes independent score and resource readbacks before publication.
 
 SWH-99 fleet identity evidence, 2026-10-18: `reconcile_contacts.py AUDIT --fleet-directory REPEAT --output REPORT` binds private-address packet records to creation/cleanup receipts. Supply each relevant fleet directory with repeated options; overlapping candidate lifetimes stop the audit. `observe_gateway.py` samples explicitly selected key indices and retains paginated request/execution metadata, usage and HTTP outcomes alongside live native-goal snapshots.

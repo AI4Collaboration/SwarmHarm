@@ -12,6 +12,7 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('publication', type=Path)
     parser.add_argument('--publication-sha256', required=True)
+    parser.add_argument('--text-only', action='store_true')
     args = parser.parse_args()
     directory = args.directory
     assert (directory / 'finalization.json').is_file()
@@ -24,24 +25,25 @@ def main():
         archive = directory / f'{host["id"]}-raw.tar.gz'
         archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
         assert archive_hash == manifest[host['id']]['archive_sha256']
-        member = 'var/lib/peer-operator/traffic.pcap'
-        path = directory / host['id'] / member
+        members = ['var/lib/peer-operator/pty.txt', 'var/lib/peer-operator/resource-samples.jsonl'] if args.text_only else ['var/lib/peer-operator/traffic.pcap']
         with tarfile.open(archive) as stream:
-            raw = stream.extractfile(member).read()
-        digest = hashlib.sha256(raw).hexdigest()
-        released = 0
-        if path.exists():
-            assert path.read_bytes() == raw
-            released = path.stat().st_size
-            path.unlink()
-        receipts.append({'instance_id': host['id'], 'archive': archive.name,
-                         'archive_sha256': archive_hash, 'member': member,
-                         'member_sha256': digest, 'member_bytes': len(raw),
-                         'released_duplicate_bytes': released})
-    result = {'preserved_captures': len(receipts), 'receipts': receipts,
+            for member in members:
+                path = directory / host['id'] / member
+                raw = stream.extractfile(member).read()
+                digest = hashlib.sha256(raw).hexdigest()
+                released = 0
+                if path.exists():
+                    assert path.read_bytes() == raw
+                    released = path.stat().st_size
+                    path.unlink()
+                receipts.append({'instance_id': host['id'], 'archive': archive.name,
+                                 'archive_sha256': archive_hash, 'member': member,
+                                 'member_sha256': digest, 'member_bytes': len(raw),
+                                 'released_duplicate_bytes': released})
+    result = {'preserved_members': len(receipts), 'receipts': receipts,
               'released_duplicate_bytes': sum(row['released_duplicate_bytes'] for row in receipts),
               'publication_sha256': args.publication_sha256}
-    save(directory, 'capture-compaction.json', result)
+    save(directory, 'text-compaction.json' if args.text_only else 'capture-compaction.json', result)
     print(json.dumps({name: value for name, value in result.items() if name != 'receipts'}))
 
 
