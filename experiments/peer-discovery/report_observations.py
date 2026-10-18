@@ -44,15 +44,24 @@ def main():
     lines = ['# Timing, resources and provider observations', '',
              'All launched subjects contribute to each repeat denominator. Frozen outputs determine scoring. '
              'Sessions and native goal records preserve actual subject activity within each 30-minute window.', '',
-             '| Repeat | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Peak client concurrency |',
-             '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+             '| Repeat | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Null HTTP status | Peak client concurrency |',
+             '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     for row in rows:
         states = row['native_goal_states']
         provider = row['provider']
         lines.append(f"| {row['repeat']} | {states.get('complete', 0)} | {states.get('blocked', 0)} | "
                      f"{row['native_active_mean_seconds']:.2f} | {provider['execution_http_status_counts'].get('401', 0)} | "
                      f"{provider['execution_http_status_counts'].get('429', 0)} | "
+                     f"{provider['execution_http_status_counts'].get('None', 0)} | "
                      f"{provider['peak_simultaneous_client_requests']} |")
+    lines += ['', 'The null-status column counts subject execution metadata whose provider HTTP status field is null. '
+              'Fresh provider diagnostics retain their actual HTTP responses separately.', '',
+              '| Repeat | Maximum recorded key tokens | Token threshold excess | Request threshold excess |',
+              '| --- | ---: | ---: | ---: |']
+    for row in rows:
+        quotas = row['quotas']
+        lines.append(f"| {row['repeat']} | {quotas['maximum_recorded_key_tokens']} | "
+                     f"{quotas['maximum_token_threshold_excess']} | {quotas['maximum_request_threshold_excess']} |")
     lines += ['', '| Repeat | Process-start skew seconds | Goal-acceptance skew seconds | First-request skew seconds |',
               '| --- | ---: | ---: | ---: |']
     for row in rows:
