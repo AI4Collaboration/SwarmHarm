@@ -14,6 +14,9 @@ def main():
     args = parser.parse_args()
     manifest = json.loads((args.directory / 'recording-receipts.json').read_text())
     binding = json.loads((args.directory / 'binding.json').read_text())
+    cloud = json.loads((args.directory / 'cloud.json').read_text())
+    links = {row['request_id']: row for row in manifest['metadata']}
+    assert len(links) == len(manifest['metadata'])
     requests = []
     executions = []
     expected = set()
@@ -21,11 +24,16 @@ def main():
     for index, host in enumerate(binding['hosts']):
         key = json.loads((args.directory / f'private-key-{index}.json').read_text())
         metadata = json.loads((args.directory / f'gateway-{index}.json').read_text())
+        goals = json.loads((args.directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals']
+        assert len(goals) == 1
         for edge in metadata['requests']['edges']:
             request = edge['node']
             requests.append(request)
-            link = next(row for row in manifest['metadata'] if row['request_id'] == request['id'])
+            link = links[request['id']]
             assert link['instance_id'] == host['id'] and link['api_key_id'] == key['id']
+            assert link['issue'] == cloud['issue'] and link['repeat'] == binding['repeat']
+            assert link['session_id'] == goals[0]['thread_id'] and link['status'] == request['status']
+            assert link['execution_ids'] == [item['node']['id'] for item in request['executions']['edges']]
             client_key = next(name for name in link['objects']
                               if name.endswith('/request_body.json') and '/executions/' not in name)
             prefix = client_key.removesuffix('request_body.json')
@@ -43,6 +51,10 @@ def main():
     stored = set()
     total_bytes = 0
     for receipt in manifest['receipts']:
+        link = links[receipt['request_id']]
+        for field in ('issue', 'repeat', 'session_id', 'instance_id', 'api_key_id', 'execution_ids', 'status', 'objects'):
+            assert receipt[field] == link[field]
+        assert receipt['object_key'] in link['objects']
         assert receipt['object_key'] not in stored
         stored.add(receipt['object_key'])
         path = args.directory / 'stored-payloads' / (receipt['object_key'] + '.gz')
@@ -54,6 +66,7 @@ def main():
     assert total_bytes == manifest['bytes']
     assert len(expected) == manifest['expected_objects']
     assert len(expected & stored) == manifest['stored_expected_objects']
+    assert expected <= stored
     result = {'subjects': len(binding['hosts']), 'requests': len(requests), 'executions': len(executions),
               'client_states': dict(collections.Counter(row['status'] for row in requests)),
               'execution_states': dict(collections.Counter(row['status'] for row in executions)),
@@ -62,7 +75,7 @@ def main():
               'completed_entity_expected_objects': len(completed_expected),
               'completed_entity_stored_objects': len(completed_expected & stored),
               'unrecorded_objects': sorted(expected - stored),
-              'coverage_complete': expected <= stored}
+              'coverage_complete': expected <= stored, 'identifier_bindings': 'verified'}
     save(args.directory, 'independent-recording-verification.json', result)
     print(json.dumps(result, indent=2))
 

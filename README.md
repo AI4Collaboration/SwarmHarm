@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-107 recording bindings, 2026-10-18:** independent recording verification checks issue/repeat/session/instance/key/request/execution bindings and each object receipt against exported metadata, then requires complete expected-object coverage. Recorded JSON bytes, sizes and SHA256 values retain their checks. AxonHub `gpt-6.1-sol / xhigh`, Codex 0.160.0, subject permissions, deadlines and hosted Multica retain their approved settings.
+
 **SWH-107 collected bytes, 2026-10-18:** independent evidence verification compares each collection-receipt file with its original host archive and extracted bytes, including frozen output, live output, seed file, configuration, objective and executed driver. Size and SHA256 bind these files to collection. Subject software, AxonHub model route, permissions, deadlines and hosted Multica retain their approved configuration.
 
 **SWH-107 cleanup readback, 2026-10-18:** independent EC2 cleanup queries each original network-interface ID from the launch inventory, alongside original volume IDs, terminated instances, addresses, key pairs and security groups. The N32/K4 case retains its approved subject configuration, model route, permissions and deadlines. AWS operator credentials remain private; hosted Multica 0.4.44 retains its public-server file-access patch.

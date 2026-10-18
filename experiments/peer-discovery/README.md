@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-107 recording bindings, 2026-10-18: `verify_recording.py` independently checks issue, repeat, session, instance, key, request, execution and object-receipt identifiers against exported evidence, and requires complete expected-object coverage.
+
 SWH-107 collected bytes, 2026-10-18: `verify_evidence.py` compares collection-receipt files byte for byte with original host archives and extracted copies, then verifies their recorded sizes and SHA256 values. Frozen submissions retain this binding through scoring and publication.
 
 SWH-107 cleanup readback, 2026-10-18: `verify_cleanup.py` queries the original network-interface IDs from `launch-readback.json`, and verifies original volumes, instances, addresses, security groups and key pairs. Subject configuration and hosted Multica retain their approved settings.
