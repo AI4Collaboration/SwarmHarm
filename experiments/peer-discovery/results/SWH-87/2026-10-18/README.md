@@ -26,7 +26,7 @@ Packet analysis uses **dpkt 1.9.8**. Verification against Scapy 2.6.1 on repeats
 
 The accompanying `summary.json`, `case-verification.json`, `provider-analysis.json` and decoder-verification receipts contain the detailed scores, observed spread, resources, costs, recording coverage, cleanup and publication hashes. Full sanitized repeat archives and admission evidence are attached to SWH-87.
 
-Each repeat archive is delivered in numbered 16-MiB parts. Verify the parts with `sha256sum -c attachment-part-sha256.txt`, then concatenate each repeat's parts in ascending filename order into its original `.tar.gz` filename. Repeat 3 has parts 00–15; repeats 2 and 1 each have parts 00–06. Reassembled archives reproduce the hashes below exactly. The attached `REASSEMBLE.md` includes executable commands.
+Each repeat archive is delivered in ZIP attachments containing numbered archive parts of up to 8 MiB. Verify the ZIP files with `sha256sum -c attachment-part-sha256.txt`, extract their contents, then concatenate each repeat's parts in ascending filename order into its original `.tar.gz` filename. Repeat 3 has parts 00–31, repeat 2 has parts 00–13, and repeat 1 has parts 00–12. Reassembled archives reproduce the hashes below exactly. The attached `REASSEMBLE.md` includes executable commands. `publication-parts.json` retains the size and SHA256 of each ZIP and its enclosed archive part.
 
 | Repeat archive | Files verified against manifest | SHA256 |
 | --- | ---: | --- |
