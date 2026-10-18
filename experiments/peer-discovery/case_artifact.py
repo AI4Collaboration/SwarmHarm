@@ -70,6 +70,9 @@ def main():
         directory = args.directory / f'repeat-{repeat}'
         for name in names:
             include(directory / name, f'repeat-{repeat}/' + name)
+        packet_sample = directory / 'independent-packet-sample.json'
+        if packet_sample.is_file():
+            include(packet_sample, f'repeat-{repeat}/' + packet_sample.name)
         for path in directory.glob('observation-*.json'):
             include(path, f'repeat-{repeat}/' + path.name)
         for path in directory.glob('*-compaction.json'):
