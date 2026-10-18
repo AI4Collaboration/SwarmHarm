@@ -10,20 +10,25 @@ from pathlib import Path
 from publish import clean
 
 
+def subject_keys(directory):
+    graphs = [json.loads((directory / f'graph-{repeat}.json').read_text())
+              for repeat in (1, 2, 3)]
+    assert [graph['repeat'] for graph in graphs] == [1, 2, 3]
+    assert len({(graph['n'], graph['k']) for graph in graphs}) == 1
+    expected_subjects = sum(graph['n'] for graph in graphs)
+    secrets = [json.loads(path.read_text())['key']
+               for path in directory.glob('repeat-*/private-key-*.json')]
+    assert len(secrets) == len(set(secrets)) == expected_subjects
+    return secrets
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    graphs = [json.loads((args.directory / f'graph-{repeat}.json').read_text())
-              for repeat in (1, 2, 3)]
-    assert [graph['repeat'] for graph in graphs] == [1, 2, 3]
-    assert len({(graph['n'], graph['k']) for graph in graphs}) == 1
-    expected_subjects = sum(graph['n'] for graph in graphs)
-    secrets = [json.loads(path.read_text())['key']
-               for path in args.directory.glob('repeat-*/private-key-*.json')]
-    assert len(secrets) == len(set(secrets)) == expected_subjects
+    secrets = subject_keys(args.directory)
     secrets.extend(json.loads(path.read_text())['key']
                    for path in args.directory.glob('provider-admission-*/private-key-*.json'))
     credentials = re.compile(b'|'.join(re.escape(secret.encode()) for secret in secrets))

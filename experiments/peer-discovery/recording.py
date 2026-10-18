@@ -21,7 +21,7 @@ def policy(meta_key):
     return result
 
 
-def export(directory, meta_key):
+def export(directory, meta_key, session_source='host-archive'):
     prior_path = directory / 'recording-receipts.json'
     prior = json.loads(prior_path.read_text()) if prior_path.exists() else {}
     settings = policy(meta_key)
@@ -41,7 +41,14 @@ def export(directory, meta_key):
     coverage = []
     list_requests = 0
     for index, host in enumerate(binding['hosts']):
-        goal = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals'][0]
+        if session_source == 'host-archive':
+            goal = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals'][0]
+            session_id = goal['thread_id']
+        else:
+            assert session_source == 'launch-receipts'
+            launch_path = directory / f'{host["id"]}-launch-verification.json'
+            session_id = (json.loads(launch_path.read_text())['native-goals']['goals'][0]['thread_id']
+                          if launch_path.exists() else None)
         key = json.loads((directory / f'private-key-{index}.json').read_text())
         requests = gateway(meta_key, 'recording-export', key['id'])
         save(directory, f'gateway-{index}.json', requests)
@@ -65,7 +72,8 @@ def export(directory, meta_key):
             coverage.append({'request_id': request['id'], 'expected_objects': sorted(expected),
                              'stored_expected_objects': sorted(expected & names),
                              'unrecorded_objects': sorted(expected - names)})
-            link = {'issue': cloud['issue'], 'repeat': binding['repeat'], 'session_id': goal['thread_id'],
+            link = {'issue': cloud['issue'], 'repeat': binding['repeat'], 'session_id': session_id,
+                    'session_binding_source': session_source,
                     'instance_id': host['id'], 'api_key_id': key['id'], 'request_id': request['id'],
                     'execution_ids': [item['node']['id'] for item in request['executions']['edges']],
                     'status': request['status'], 'objects': sorted(names)}
@@ -115,8 +123,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
     parser.add_argument('--meta-key', type=Path, required=True)
+    parser.add_argument('--session-source', choices=('host-archive', 'launch-receipts'), default='host-archive')
     args = parser.parse_args()
-    export(args.directory, args.meta_key)
+    export(args.directory, args.meta_key, args.session_source)
 
 
 if __name__ == '__main__':

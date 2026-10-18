@@ -9,8 +9,11 @@ def main():
     parser.add_argument('directory', type=Path)
     parser.add_argument('publication', type=Path)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--verification', type=Path)
     args = parser.parse_args()
-    verification = json.loads((args.directory / 'publication-verification.json').read_text())
+    verification_path = (args.verification if args.verification is not None
+                         else args.directory / 'publication-verification.json')
+    verification = json.loads(verification_path.read_text())
     with args.publication.open('rb') as stream:
         original_hash = hashlib.file_digest(stream, 'sha256').hexdigest()
     assert original_hash == verification['publication_sha256']

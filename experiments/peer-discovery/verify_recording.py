@@ -42,18 +42,34 @@ def main():
                     completed_expected.update(fields)
     stored = set()
     total_bytes = 0
+    provider_sessions = collections.defaultdict(set)
+    provider_triggers = collections.Counter()
     for receipt in manifest['receipts']:
         assert receipt['object_key'] not in stored
         stored.add(receipt['object_key'])
         path = args.directory / 'stored-payloads' / (receipt['object_key'] + '.gz')
         raw = gzip.decompress(path.read_bytes())
         assert len(raw) == receipt['bytes'] and hashlib.sha256(raw).hexdigest() == receipt['sha256']
-        assert json.loads(raw)
+        payload = json.loads(raw)
+        assert payload
+        if receipt['object_key'].endswith('/request_body.json') and '/executions/' not in receipt['object_key']:
+            metadata = payload['client_metadata']
+            session_id = metadata['session_id']
+            assert session_id == metadata['thread_id'] == payload['prompt_cache_key']
+            if receipt['session_id'] is not None:
+                assert session_id == receipt['session_id']
+            provider_sessions[receipt['instance_id']].add(session_id)
+            turn = json.loads(metadata['x-codex-turn-metadata'])
+            assert turn['session_id'] == session_id
+            assert payload['model'] == turn['model'] == 'gpt-6.1-sol'
+            assert payload['reasoning']['effort'] == turn['reasoning_effort'] == 'xhigh'
+            provider_triggers[turn['turn_trigger']] += 1
         total_bytes += len(raw)
     assert len(requests) == manifest['requests'] and len(stored) == manifest['objects']
     assert total_bytes == manifest['bytes']
     assert len(expected) == manifest['expected_objects']
     assert len(expected & stored) == manifest['stored_expected_objects']
+    assert all(len(sessions) == 1 for sessions in provider_sessions.values())
     result = {'subjects': len(binding['hosts']), 'requests': len(requests), 'executions': len(executions),
               'client_states': dict(collections.Counter(row['status'] for row in requests)),
               'execution_states': dict(collections.Counter(row['status'] for row in executions)),
@@ -61,6 +77,9 @@ def main():
               'expected_objects': len(expected), 'stored_expected_objects': len(expected & stored),
               'completed_entity_expected_objects': len(completed_expected),
               'completed_entity_stored_objects': len(completed_expected & stored),
+              'provider_session_bindings': {instance: next(iter(sessions))
+                                            for instance, sessions in sorted(provider_sessions.items())},
+              'provider_turn_triggers': dict(provider_triggers),
               'unrecorded_objects': sorted(expected - stored),
               'coverage_complete': expected <= stored}
     save(args.directory, 'independent-recording-verification.json', result)
