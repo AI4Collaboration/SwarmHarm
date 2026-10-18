@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-90 controls, 2026-10-18: `run_case.py` executes three serial fresh repeats, each with provider admission and verified cleanup. Every observation window lasts 30 minutes. `audit_repeat.py` checks raw-archive outputs against independent scores, exact native objectives, timer settings, session identity, required client/execution payload coverage, S3 hashes and original volume/interface deletion receipts. `observe_outputs.py` records actual submitted/frozen bytes, hashes and modification times during observation. Private case evidence can use a foreground SSHFS mount inside the ignored workdir; retain the mount through verification and artifact delivery.
+
 SWH-91 completed, 2026-10-18: [N=32/K=5, three serial repeats](results/2026-10-18/SWH-91/README.md) verified 96 fresh instances, sessions and inference keys. Mean recall across repeats is 32.02%; exact peer-set submissions total 0/96. Recording covers 977 requests and 5,874 JSON objects with hashes and S3 request IDs. All owned cloud resources and scoped keys have verified cleanup, and the shared reservation is released.
 
 SWH-91 packet analysis, 2026-10-17: `metrics.py` uses dpkt 1.9.8 to decode captured PCAP, Linux cooked frames, IPv4 and TCP. The complete repeat-1 metrics match the original reader across all 32 captures. Cross-case traffic records include connection-attempt SYN and SYN-ACK counts.
