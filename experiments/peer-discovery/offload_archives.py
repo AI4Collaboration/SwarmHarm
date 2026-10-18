@@ -17,16 +17,24 @@ def main():
     parser.add_argument('--bucket', required=True)
     parser.add_argument('--issue', required=True)
     parser.add_argument('--verify-existing', action='store_true')
+    parser.add_argument('--partial-audit', type=Path)
     args = parser.parse_args()
     cloud = json.loads((args.directory / 'cloud.json').read_text())
     assert cloud['issue'] == args.issue
     assert (args.directory / 'publication-independent-verification.json').is_file()
-    assert (args.directory / 'evidence-verification.json').is_file()
+    if args.partial_audit is None:
+        assert (args.directory / 'evidence-verification.json').is_file()
+        manifests = {row['instance_id']: row for row in
+                     json.loads((args.directory / 'export-manifest.json').read_text())}
+    else:
+        audit = json.loads(args.partial_audit.read_text())
+        assert audit['launched_subjects'] == len(cloud['instance_ids'])
+        assert audit['complete_repeat_score'] is None
+        manifests = {row['instance_id']: row for row in audit['subjects'] if row['archive_retained']}
+        assert len(manifests) == audit['retained_host_archives']
     client = SESSION.client('s3', config=Config(max_pool_connections=4))
     controls = client.get_public_access_block(Bucket=args.bucket)['PublicAccessBlockConfiguration']
     assert all(controls.values())
-    manifests = {row['instance_id']: row for row in
-                 json.loads((args.directory / 'export-manifest.json').read_text())}
     transfer = TransferConfig(multipart_threshold=64 * 1024**2, multipart_chunksize=16 * 1024**2,
                               use_threads=False)
     (args.directory / 'archive-offload').mkdir(exist_ok=True, mode=0o700)
@@ -66,6 +74,9 @@ def main():
     assert {row['instance_id'] for row in rows} == set(manifests)
     result = {'archives': len(rows), 'bytes': sum(row['bytes'] for row in rows),
               'verified_encrypted_s3_retention': True}
+    if args.partial_audit is not None:
+        result['launched_subjects'] = audit['launched_subjects']
+        result['evidence_scope'] = 'Retained host archives identified by partial-repeat-audit.json.'
     save(args.directory, 'archive-offload-verification.json', result)
     print(json.dumps(result))
 
