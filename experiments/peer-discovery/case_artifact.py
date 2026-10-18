@@ -54,6 +54,8 @@ def main():
             include(directory / name, f'repeat-{repeat}/' + name)
         for path in directory.glob('observation-*.json'):
             include(path, f'repeat-{repeat}/' + path.name)
+        for path in directory.glob('*-compaction.json'):
+            include(path, f'repeat-{repeat}/' + path.name)
     manifest = {name: {'size': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
                 for name, raw in sorted(selected.items())}
     selected['case-manifest.json'] = json.dumps(manifest, indent=2).encode()
