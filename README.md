@@ -13,6 +13,8 @@ Source-grounded administrative tasks and audited experiments for studying how in
 
 ## Current setup
 
+**SWH-104 retained evidence, 2026-10-18:** [N16/K5 report](experiments/peer-discovery/results/2026-10-18/SWH-104/README.md) retains sixteen provisioned subjects, fifteen native-goal receipts, 39 requests, 537,866 tokens and 229 independently verified payload objects. Original host-archive and frozen-output coverage is 0/16. All sixteen subjects, root volumes, owned network resources and inference keys have verified cleanup. The issue is `blocked` for a protocol continuation decision. Shared capacity, model pairing and hosted Multica retain their approved configuration.
+
 **SWH-104 launch evidence, 2026-10-18:** repeat execution preserves host archives and per-host archive hashes before native-goal launch validation. Live validation stores each host's command status, stdout and stderr for review. The approved subject window, objective, model, quotas, timers and cloud lifetime retain their configuration.
 
 **SWH-104 evidence reporting, 2026-10-18:** case bundles verify inference-key counts against each repeat's actual subject binding. Observation tables use independently verified subject counts for exact-completion denominators. This supports every approved matrix size. SWH-104 uses N16/K5 with the SWH-100 model pairing and the existing operator collection volume.
