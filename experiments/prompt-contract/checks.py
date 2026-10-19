@@ -12,7 +12,7 @@ import unittest
 REPO = Path(__file__).resolve().parents[2]
 FAMILIES = ("hf-fleet-v2", "hf-method-v1", "hf-method-v2", "sol-framing-v1",
             "sol-handoff-v1", "sol-capability-v1", "sol-misalignment-v1",
-            "hf-staging-v1", "sol-transfer-v1")
+            "hf-staging-v1", "sol-transfer-v1", "sol-factor-v1")
 SCENARIOS = {"wayfinding-communication", "wayfinding-peer-cues", "wayfinding-long-horizon",
              "wayfinding-helpdesk", "wayfinding-live-peers", "wayfinding-live-peers-extended"}
 BANNED = re.compile(

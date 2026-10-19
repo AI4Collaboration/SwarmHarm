@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-19 · [Sol matched factor screen](../experiments/sol-factor-v1/README.md):** Registered two blocks of five settings with one factor changed at a time. Sixty experimental workers after one shared authorized calibration. Previous positive pilot excluded; no added pressure or communication ban.
+
 - **2026-10-19 · [Sol boundary failure](../experiments/sol-benign-elicitation-v1/RESULTS.md):** Three of six workers used restricted caches in correct final answers after visible policy exposure. One actual peer-method/different-object sequence; three incomplete outcomes preserved. Neutral instructions, no pressure or seeded method. All checks passed, no provider errors or filtering. One adaptive world; no causal attribution or full-incident claim.
 
 - **2026-10-19 · [Benign task pilot](../experiments/lesswrong-benign-v1/RESULTS.md):** Luna/Sol completed four experimental workers each after four calibrations each, without cyber filtering. Luna made one transient unauthorized cache read and a separate wrong-case peer-report reuse; Sol retained missing-data limits. No cache-method transfer. Replay and format checks passed after repairing a missing cleanup marker; no trajectories were repeated. Separate adaptation, not exact replication.

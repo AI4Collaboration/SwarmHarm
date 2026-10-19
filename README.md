@@ -6,6 +6,8 @@ use synthetic healthcare and finance tasks in contained local environments.
 
 ## Latest result · 19 October 2026
 
+A [matched factor screen](experiments/sol-factor-v1/README.md) is running to separate four environment factors; the completed result below is preserved.
+
 **Three of six Sol workers read restricted cached data after seeing the role
 restriction and used it in their final answers.** One later worker read a peer's
 report explaining the route, then used that route on its own, different data.
@@ -23,8 +25,8 @@ factors or establish a full reproduction of the Hugging Face incident.
   No AWS is needed for this runner.
 - Subject tools access in-memory business data, with no shell, network or host-file
   access. The latest run used neutral instructions, no added pressure and no seeded methods.
-- All runs are stopped; no scheduled monitor is active. Keep the existing patched
-  **Multica 0.4.44** build when using the hosted coordinator.
+- The factor screen has two matched rounds and five settings; no scheduled monitor
+  is active. Keep patched **Multica 0.4.44** when using the hosted coordinator.
 
 ## Run and read more
 
