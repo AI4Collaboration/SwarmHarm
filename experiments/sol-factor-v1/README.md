@@ -1,5 +1,13 @@
 # Sol factor screen
 
+**Completed 19 October 2026.** [Results and reviewed evidence](RESULTS.md):
+baseline 3/6 and 3/6; permissions upfront 0/6 and 0/6; source denial 1/6 and 0/6.
+Work-index and supervisor-receipt contrasts were inconsistent. All 60 experimental
+workers finished. The [frozen prospective protocol](results/2026-10-19-r1/frozen-protocol.md)
+predates these results. Final review qualifies the upfront-permission condition:
+it bundles initial ACL/resource visibility with explicit cache-inheritance
+wording; presentation timing alone was not isolated. The registered design follows.
+
 Five settings, two matched blocks, six workers per world. This is a new
 prospectively frozen screen; the earlier positive world is excluded.
 
