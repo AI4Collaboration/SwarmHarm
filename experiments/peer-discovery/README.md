@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-111 subject accounting, 2026-10-19: `verify_collected_launch.py` verifies all launched processes against exported receipts and actual native goals, sessions or PTY startup-timeout diagnostics. Reports include accepted-goal/session counts and retain every launched subject in scoring. The Codex command, model pairing, objective and subject window retain their registered settings.
+
 SWH-111 reporting, 2026-10-19: `case_artifact.py` checks scoped-key counts against the three repeat bindings. `report_observations.py` uses each repeat's measured denominator. N64/K4 retains the approved Codex 0.160.0, native `/goal`, AxonHub `gpt-6.1-sol / xhigh`, admission, recording, grading and cleanup controls.
 
 SWH-114 collection, 2026-10-19: original host archives and frozen submissions are retained before launch-readback acceptance checks. The repeat exports command stdout/stderr, invocation-guard observations and all released-subject records, then verifies provider coverage and launch acceptance. N128/K3 uses Codex 0.160.0, native `/goal` and AxonHub `gpt-6.1-sol / xhigh` under shared capacity admission.

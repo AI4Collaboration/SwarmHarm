@@ -9,6 +9,7 @@ import statistics
 from pathlib import Path
 
 from packets import tcp_packets
+from subject_state import subject_state
 
 
 def epoch(value):
@@ -40,8 +41,8 @@ def main():
         correction = json.loads((root / 'boot-clock-correction.json').read_text())
         start_time = process['create_time'] + correction['psutil_epoch_correction_seconds']
         stop = json.loads((root / 'process-stop.json').read_text())
-        goal = json.loads((root / 'native-goals.json').read_text())['goals'][0]
-        assert goal['objective'] == (root / 'objective.txt').read_text().strip()
+        state = subject_state(directory, host['id'])
+        goal = state['goal']
         gateway = json.loads((directory / f'gateway-{index}.json').read_text())
         requests = [edge['node'] for edge in gateway['requests']['edges']]
         all_requests.extend(requests)
@@ -79,8 +80,7 @@ def main():
                         record['first_connection_attempt'] = timestamp
         observed = []
         final_messages = []
-        sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))
-        assert len(sessions) == 1
+        sessions = state['sessions']
         for session in sessions:
             for line in session.read_text().splitlines():
                 event = json.loads(line)
@@ -98,7 +98,8 @@ def main():
                             continue
                         if address in fleet_ips - set(host['seeds']) - {host['public_ip']}:
                             observed.append({'ip': address, 'timestamp': event['timestamp']})
-        first_request = min(epoch(request['createdAt']) for request in requests)
+        assert goal is not None or requests == []
+        first_request = min((epoch(request['createdAt']) for request in requests), default=None)
         durations = [epoch(request['updatedAt']) - epoch(request['createdAt']) for request in requests]
         collection = json.loads((root / 'collection-receipt.json').read_text())
         output_files = collection['files']
@@ -121,26 +122,32 @@ def main():
                 'network_sent_delta_bytes': sampled[-1]['network']['bytes_sent'] - sampled[0]['network']['bytes_sent'],
                 'network_received_delta_bytes': sampled[-1]['network']['bytes_recv'] - sampled[0]['network']['bytes_recv']})
         rows.append({'instance_id': host['id'], 'process_start': start_time, 'process_start_delta_seconds': start_time - release['T_start'],
-            'goal_accepted': goal['created_at_ms'] / 1000, 'goal_status': goal['status'], 'first_model_request': first_request,
+            'goal_accepted': goal['created_at_ms'] / 1000 if goal else None,
+            'goal_status': goal['status'] if goal else state['state'], 'first_model_request': first_request,
             'wall_seconds': stop['time_ns'] / 1e9 - start_time, 'requests': len(requests),
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
-            'total_tokens': sum(usage['totalTokens'] for usage in usages), 'gateway_cost': gateway['apiKeyQuotaUsages'][0]['usage']['totalCost'],
+            'total_tokens': sum(usage['totalTokens'] for usage in usages),
+            'gateway_cost': sum(float(item['usage']['totalCost']) for item in gateway['apiKeyQuotaUsages']),
             'request_cost_values': [usage['totalCost'] for usage in usages], 'observed_outbound_contacts': contacts,
             'observed_outside_repeat_ip_traffic': outside_contacts,
             'packet_capture_first_timestamp': min(packet_times) if packet_times else None,
             'packet_capture_last_timestamp': max(packet_times) if packet_times else None,
             'first_beyond_seed_tool_observation': min(observed, key=lambda event: event['timestamp']) if observed else None,
-            'native_goal_tokens_used': goal['tokens_used'], 'native_goal_time_seconds': goal['time_used_seconds'],
-            'session_count': len(sessions), 'thread_id': goal['thread_id'], 'final_messages': final_messages,
+            'native_goal_tokens_used': goal['tokens_used'] if goal else None,
+            'native_goal_time_seconds': goal['time_used_seconds'] if goal else None,
+            'session_count': len(sessions), 'thread_id': goal['thread_id'] if goal else None, 'final_messages': final_messages,
             'output_files': collection['files'], 'resources': sampled_resources,
             'post_freeze_output_observation': post_freeze,
-            'gateway_request_seconds_mean': statistics.mean(durations), 'gateway_request_seconds_max': max(durations),
+            'gateway_request_seconds_mean': statistics.mean(durations) if durations else None,
+            'gateway_request_seconds_max': max(durations) if durations else None,
             'quota_usage': gateway['apiKeyQuotaUsages'],
             'model_route': sorted({execution['node']['upstreamModelID'] for request in requests for execution in request['executions']['edges']}),
             'reasoning_efforts': sorted({request['reasoningEffort'] for request in requests})})
+    accepted = [row['goal_accepted'] for row in rows if row['goal_accepted'] is not None]
     report = {'repeat': binding['repeat'], 'denominator': len(rows), 'T_start': release['T_start'], 'agents': rows,
+        'accepted_goals': len(accepted), 'sessions': sum(row['session_count'] for row in rows),
         'process_start_skew_seconds': max(row['process_start'] for row in rows) - min(row['process_start'] for row in rows),
-        'goal_acceptance_skew_seconds': max(row['goal_accepted'] for row in rows) - min(row['goal_accepted'] for row in rows),
+        'goal_acceptance_skew_seconds': max(accepted) - min(accepted) if accepted else None,
         'total_requests': sum(row['requests'] for row in rows), 'total_tokens': sum(row['total_tokens'] for row in rows),
         'wall_seconds_mean': statistics.mean(row['wall_seconds'] for row in rows)}
     events = sorted([(epoch(request['createdAt']), 1) for request in all_requests] +

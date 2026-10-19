@@ -23,6 +23,7 @@ def main():
         args.remote_root = configured_root
     stages = [
         ('cleanup', ['verify_cleanup.py', str(args.directory)]),
+        ('collected-launch', ['verify_collected_launch.py', str(args.directory)]),
         ('compression', ['compress_payloads.py', str(args.directory)]),
         ('recording-verification', ['verify_recording.py', str(args.directory)]),
         ('evidence', ['verify_evidence.py', str(args.directory), str(args.graph)]),
@@ -36,7 +37,7 @@ def main():
         ('redaction', ['verify_redaction.py', str(args.directory)]),
     ]
     if not (args.directory / 'recording-receipts.json').exists():
-        stages.insert(1, ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]))
+        stages.insert(2, ('recording', ['recording.py', str(args.directory), '--meta-key', str(args.meta_key)]))
     for name, arguments in stages:
         with (args.directory / f'finalize-{name}.log').open('wb') as output:
             subprocess.run([sys.executable, str(ROOT / arguments[0]), *arguments[1:]],

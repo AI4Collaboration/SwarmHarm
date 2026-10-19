@@ -210,15 +210,15 @@ def main():
         save(directory, 'export-manifest.json', receipts)
         for host in hosts:
             extracted = directory / host['id'] / 'var/lib/peer-operator'
-            for name in ('process-stop.json', 'native-goals.json', 'collection-receipt.json'):
+            for name in ('process-stop.json', 'collection-receipt.json'):
                 assert (extracted / name).is_file()
             guard = json.loads((directory / f'{host["id"]}-invocation-guard.json').read_text())
             assert guard['receipt_unchanged'] and guard['duplicate_marker_verified']
         subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
                         '--meta-key', str(meta_key), '--stage', 'collection'], check=True)
+        subprocess.run([sys.executable, str(ROOT / 'verify_collected_launch.py'), str(directory)], check=True)
         recording = export(directory, meta_key)
         assert recording['coverage_complete'], 'Inspect recording-receipts.json coverage'
-        assert json.loads((directory / 'launch-readback-outcome.json').read_text())['returncode'] == 0
         print(json.dumps({'purpose': purpose, 'exports': len(receipts), 'T_start': timestamp}), flush=True)
     finally:
         try:

@@ -71,7 +71,8 @@ def main():
         'host_sample_minimum_available_memory_bytes': min(row['minimum_available_memory_bytes'] for row in resource_rows),
         'host_sample_peak_disk_used_bytes': max(row['peak_disk_used_bytes'] for row in resource_rows),
         'host_cpu_percent_subject_mean': statistics.mean(row['cpu_percent_mean'] for row in resource_rows),
-        'native_goal_time_seconds': {name: function(row['native_goal_time_seconds'] for row in metrics['agents'])
+        'native_goal_time_seconds': {name: function(row['native_goal_time_seconds'] for row in metrics['agents']
+                                                  if row['native_goal_time_seconds'] is not None)
                                      for name, function in [('minimum', min), ('maximum', max), ('mean', statistics.mean)]},
         'sample_sha256': sample_hashes,
         'cloudwatch_sha256': hashlib.sha256(cloudwatch_path.read_bytes()).hexdigest()}

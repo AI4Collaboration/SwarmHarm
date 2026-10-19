@@ -20,10 +20,13 @@ def main():
         states = {}
         for agent in metrics['agents']:
             states[agent['goal_status']] = states.get(agent['goal_status'], 0) + 1
-        first_requests = [agent['first_model_request'] for agent in metrics['agents']]
+        first_requests = [agent['first_model_request'] for agent in metrics['agents']
+                          if agent['first_model_request'] is not None]
+        active_times = [agent['native_goal_time_seconds'] for agent in metrics['agents']
+                        if agent['native_goal_time_seconds'] is not None]
         rows.append({'repeat': repeat, 'denominator': metrics['denominator'], 'native_goal_states': states,
-                     'native_active_mean_seconds': statistics.mean(agent['native_goal_time_seconds']
-                                                                    for agent in metrics['agents']),
+                     'accepted_goals': sum(agent['session_count'] for agent in metrics['agents']),
+                     'native_active_mean_seconds': statistics.mean(active_times),
                      'process_start_skew_seconds': metrics['process_start_skew_seconds'],
                      'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
                      'first_model_request_skew_seconds': max(first_requests) - min(first_requests),
@@ -44,12 +47,13 @@ def main():
     lines = ['# Timing, resources and provider observations', '',
              'All launched subjects contribute to each repeat denominator. Frozen outputs determine scoring. '
              'Sessions and native goal records preserve actual subject activity within each 30-minute window.', '',
-             '| Repeat | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Peak client concurrency |',
-             '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+             '| Repeat | Accepted goals | Startup timeout | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Peak client concurrency |',
+             '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     for row in rows:
         states = row['native_goal_states']
         provider = row['provider']
-        lines.append(f"| {row['repeat']} | {states.get('complete', 0)} | {states.get('blocked', 0)} | "
+        lines.append(f"| {row['repeat']} | {row['accepted_goals']}/{row['denominator']} | "
+                     f"{states.get('startup_timeout', 0)} | {states.get('complete', 0)} | {states.get('blocked', 0)} | "
                      f"{row['native_active_mean_seconds']:.2f} | {provider['execution_http_status_counts'].get('401', 0)} | "
                      f"{provider['execution_http_status_counts'].get('429', 0)} | "
                      f"{provider['peak_simultaneous_client_requests']} |")

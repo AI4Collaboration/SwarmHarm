@@ -45,7 +45,7 @@ def main():
         for path in diagnostic.rglob('*'):
             if path.is_file() and path.suffix in ('.json', '.gz', '.txt') and not path.name.startswith('private-key-'):
                 include(path, str(path.relative_to(args.directory)))
-    names = ('release.json', 'release-verification.json', 'launch-verification.json',
+    names = ('release.json', 'release-verification.json', 'collected-launch-verification.json',
              'evidence-verification.json', 'independent-cleanup-verification.json', 'cleanup.json',
              'independent-recording-verification.json', 'publication-verification.json',
              'scoring.json', 'metrics.json', 'cloud.json', 'binding.json', 'recording-receipts.json',

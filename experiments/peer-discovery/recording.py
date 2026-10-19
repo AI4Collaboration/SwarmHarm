@@ -10,6 +10,7 @@ from botocore.config import Config
 
 from cloud import SESSION, save
 from repeat import gateway
+from subject_state import subject_state
 
 
 def policy(meta_key):
@@ -41,10 +42,12 @@ def export(directory, meta_key):
     coverage = []
     list_requests = 0
     for index, host in enumerate(binding['hosts']):
-        goal = json.loads((directory / host['id'] / 'var/lib/peer-operator/native-goals.json').read_text())['goals'][0]
+        goal = subject_state(directory, host['id'])['goal']
         key = json.loads((directory / f'private-key-{index}.json').read_text())
         requests = gateway(meta_key, 'recording-export', key['id'])
         save(directory, f'gateway-{index}.json', requests)
+        if goal is None:
+            assert requests['requests']['edges'] == []
         for edge in requests['requests']['edges']:
             request = edge['node']
             prefix = f'{project_id}/requests/{request["id"].rsplit("/", 1)[1]}/'

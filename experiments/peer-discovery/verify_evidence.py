@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from graphs import validate
+from subject_state import subject_state
 
 
 def read(path):
@@ -26,6 +27,7 @@ def main():
     assert len({host['id'] for host in hosts}) == len(hosts)
     assert len({host['public_ip'] for host in hosts}) == len(hosts)
     manifests = {row['instance_id']: row for row in read(directory / 'export-manifest.json')}
+    accepted = 0
     for index, host in enumerate(hosts):
         instance_id = host['id']
         root = directory / instance_id / 'var/lib/peer-operator'
@@ -33,14 +35,9 @@ def main():
         expected = [hosts[target]['public_ip'] for target in graph['adjacency'][index]]
         actual = (directory / instance_id / 'home/agent/peers.txt').read_text().splitlines()
         assert expected == actual == host['seeds']
-        goal = read(root / 'native-goals.json')['goals']
-        assert len(goal) == 1
-        assert goal[0]['objective'] == (root / 'objective.txt').read_text().strip()
-        assert goal[0]['objective'] == Path(__file__).with_name('objective.txt').read_text().strip()
-        sessions = list((directory / instance_id / 'home/agent/.codex/sessions').rglob('*.jsonl'))
-        assert len(sessions) == 1
-        metadata = [json.loads(line)['payload'] for line in sessions[0].read_text().splitlines() if json.loads(line)['type'] == 'session_meta']
-        assert len(metadata) == 1 and metadata[0]['id'] == goal[0]['thread_id']
+        state = subject_state(directory, instance_id)
+        assert (root / 'objective.txt').read_text().strip() == Path(__file__).with_name('objective.txt').read_text().strip()
+        accepted += state['goal'] is not None
         readiness = read(directory / f'{instance_id}-readiness.json')
         assert abs(float(next(csv.reader([readiness['clock_csv']]))[4])) <= 0.1
         assert 'codex-cli 0.160.0' in readiness['readiness']
@@ -63,7 +60,9 @@ def main():
     assert set(terminated) == {host['id'] for host in hosts}
     assert all(cleanup[name] == [] for name in ('volumes', 'addresses', 'security_groups', 'key_pairs'))
     result = {'repeat': binding['repeat'], 'verified_subjects': len(hosts), 'graph_sha256': binding['graph_sha256'],
-        'exports': 'verified', 'sessions_per_subject': 1, 'native_goal_objectives': 'verified', 'cleanup': 'verified', 'scoped_keys': 'disabled'}
+        'exports': 'verified', 'accepted_goals': accepted, 'sessions': accepted,
+        'startup_timeout_subjects': len(hosts) - accepted,
+        'native_goal_objectives': 'verified', 'cleanup': 'verified', 'scoped_keys': 'disabled'}
     (directory / 'evidence-verification.json').write_text(json.dumps(result, indent=2))
     print(json.dumps(result))
 

@@ -62,9 +62,11 @@ def main():
             'process_start_skew_seconds': metrics['process_start_skew_seconds'],
             'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
             'goal_states': dict(collections.Counter(agent['goal_status'] for agent in metrics['agents'])),
+            'accepted_goals': sum(agent['session_count'] for agent in metrics['agents']),
             'requests': metrics['total_requests'], 'tokens': metrics['total_tokens'], 'cost': metrics['cost'],
             'recording': json.loads((directory / 'independent-recording-verification.json').read_text()),
-            'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']],
+            'native_active_seconds': [agent['native_goal_time_seconds'] for agent in metrics['agents']
+                                      if agent['native_goal_time_seconds'] is not None],
             'process_wall_seconds': [agent['wall_seconds'] for agent in metrics['agents']]})
     assert sorted(row['repeat'] for row in rows) == [1, 2, 3]
     assert len(configurations) == 1
@@ -98,6 +100,12 @@ def main():
     for row in report['repeats']:
         recording = row['recording']
         lines.append(f"| {row['repeat']} | {recording['requests']} | {recording['completed_entity_stored_objects']}/{recording['completed_entity_expected_objects']} | {recording['stored_expected_objects']}/{recording['expected_objects']} |")
+    lines += ['', '| Repeat | Accepted native goals | Startup timeout |', '| --- | ---: | ---: |']
+    for row in report['repeats']:
+        lines.append(f"| {row['repeat']} | {row['accepted_goals']}/{row['denominator']} | "
+                     f"{row['goal_states'].get('startup_timeout', 0)} |")
+    lines += ['', 'Recall includes every launched subject. Native-active timing uses accepted goals. '
+              'Startup-timeout records retain process receipts, the submitted objective and the PTY diagnostic.']
     for row in report['repeats']:
         for object_key in row['recording']['unrecorded_objects']:
             lines += ['', f"Repeat {row['repeat']} coverage audit entry: `{object_key}`. Its execution status and request lineage are preserved in the attached metadata and recording receipts."]

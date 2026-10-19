@@ -20,7 +20,7 @@ def main():
     host = args.directory / binding['hosts'][0]['id']
     paths = key_paths + [args.directory / 'peer-key',
                         host / 'var/lib/peer-operator/traffic.pcap',
-                        next((host / 'home/agent/.codex/sessions').rglob('*.jsonl')),
+                        next(args.directory.glob('i-*/home/agent/.codex/sessions/**/*.jsonl')),
                         next((args.directory / 'stored-payloads').rglob('request_body.json.gz'))]
     receipts = []
     for path in paths:
