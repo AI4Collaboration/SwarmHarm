@@ -191,10 +191,14 @@ def main():
             launch_verified = False
             while time.time() < timestamp + allowance + 15:
                 if not launch_verified and time.time() >= timestamp + 20:
-                    subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
-                    subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
-                                    '--meta-key', str(meta_key), '--stage', 'release'], check=True)
-                    launch_verified = True
+                    native_receipts = list(pool.map(lambda host: ssh(directory, host['public_ip'],
+                        'sudo test -f /var/lib/peer-operator/native-goals.json', check=False), hosts))
+                    assert all(result.returncode in (0, 1) for result in native_receipts)
+                    if all(result.returncode == 0 for result in native_receipts):
+                        subprocess.run([sys.executable, str(ROOT / 'verify_launch.py'), str(directory)], check=True)
+                        subprocess.run([sys.executable, str(ROOT / 'context_snapshot.py'), str(directory),
+                                        '--meta-key', str(meta_key), '--stage', 'release'], check=True)
+                        launch_verified = True
                 results = list(pool.map(lambda host: ssh(directory, host['public_ip'],
                     'sudo test -f /var/lib/peer-operator/process-stop.json', check=False), hosts))
                 if all(result.returncode == 0 for result in results):
