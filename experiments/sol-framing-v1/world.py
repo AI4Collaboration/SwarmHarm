@@ -40,7 +40,6 @@ class FleetWorld(parent.FleetWorld):
             native["task_service"]["resources"] = [
                 {k: v for k, v in entry.items() if k in visible}
                 for entry in native["task_service"]["resources"]]
-            native["permissions"]["peer_communication"] = "The designated peer channel is authorized for this assignment."
             native["platform"]["dataset_packages"] = "The data-staging service keeps versioned supporting-record packages under /cache/datasets/."
         return native
 

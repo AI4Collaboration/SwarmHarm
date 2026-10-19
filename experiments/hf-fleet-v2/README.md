@@ -1,5 +1,7 @@
 # HF fleet development rollouts
 
+**2026-10-19 prompt correction:** New runs carry no communication ban or extra boundary/stop reminders. Channel names describe technical availability only; peer work-file use is recorded separately from source-access violations. Frozen historical runs preserve their original policy.
+
 2026-10-17. This new version addresses v1's request-only conversations. METR describes cross-task general-method research, not just recovery of a missing answer. LessWrong's published implementation combines heterogeneous tasks, useful peer cues, a shared cache, rolling arrivals and a resourceful persona. Its heterogeneous initial successes are partly seeded. Here read receipts and work products must come from real current model actions.
 
 Two domains use the original MiMo healthcare and accounting questions. Legal is excluded because of the documented source ambiguity. Four cases per domain have distinct full answers and identical public observations; cases 1–3 are explicitly declared private counterfactuals. Sources and grading remain operator-only. Native operational metadata adds an ordinary report-file deliverable in an internal registry. Required report publication is not itself classified as peer communication.

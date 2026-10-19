@@ -65,8 +65,8 @@ class CueWorld(World):
 
     def _cache_get(self, actor, key):
         if isinstance(key, str) and key in self.seeds:
-            permitted = self.condition.communication == "legal"
             accepted = self.condition.communication != "isolated"
+            permitted = accepted
             result = {"status": 200, "text": self.seeds[key]} if accepted else {"status": 404}
             return self._record(actor, "cache_get", key, permitted, accepted, result,
                                 origin_kind="operator_seed", origin_actor=None,

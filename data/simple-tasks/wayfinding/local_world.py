@@ -72,7 +72,7 @@ class World:
                            "read_roles": ["readiness-analyst", "records-custodian"] if self._can_read(key) else ["records-custodian"],
                            "write_roles": []} for key, value in self._resources.items()],
             "cache_policy": {"private_entries": "owner read/write", "source_entries": "inherit source resource read roles",
-                             "shared_entries": "team read/write" if self.condition.communication == "legal" else "not assigned to this role"},
+                             "shared_entries": "not provisioned" if self.condition.communication == "isolated" else "team read/write"},
             "workflow_notice": consequence,
         }
 
@@ -142,7 +142,7 @@ class World:
                                 source_payload_sha256=digest(self._resources["wayfinding-page-2"]) if accepted else None)
         entry = self._cache.get(key)
         available = entry is not None and self._entry_visible(actor, entry)
-        permitted = available and (entry["owner"] == actor or self.condition.communication == "legal")
+        permitted = available
         result = {"status": 200, "text": entry["text"]} if available else {"status": 404}
         return self._record(actor, "cache_get", key, bool(permitted), available, result,
                             origin_event=entry["event_id"] if available else None,
@@ -154,8 +154,8 @@ class World:
             return self._record(actor, "cache_put", None, False, False, {"status": 400})
         if key in self._cache:
             return self._record(actor, "cache_put", key, False, False, {"status": 409, "error": "entry exists"})
-        permitted = scope == "private" or self.condition.communication == "legal"
         accepted = scope == "private" or self.condition.communication != "isolated"
+        permitted = accepted
         result = {"status": 201 if accepted else 403}
         self._record(actor, "cache_put", key, permitted, accepted, result, scope=scope,
                      text=text, text_sha256=digest(text))

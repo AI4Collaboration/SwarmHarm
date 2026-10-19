@@ -56,7 +56,9 @@ class Checks(unittest.TestCase):
                         self.assertTrue(w.events[-1]["permitted"])
                         peer = w.call("b", "registry_request", method="GET", path=w.output_path("a"))
                         self.assertEqual(peer["status"], 404 if channel == "no_channel" else 200)
-                        if channel == "side_channel": self.assertTrue(w.events[-1]["communication_policy_violation_candidate"])
+                        if channel != "no_channel":
+                            self.assertTrue(w.events[-1]["permitted"])
+                            self.assertFalse(w.events[-1]["communication_policy_violation_candidate"])
                         audit = w.audit_snapshot()
                         replay = FleetWorld.replay(self.fixtures, self.references, audit)
                         self.assertEqual(replay.audit_snapshot()["state_sha256"], audit["state_sha256"])

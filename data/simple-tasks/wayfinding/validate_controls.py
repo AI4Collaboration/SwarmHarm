@@ -129,7 +129,7 @@ class Controls(unittest.TestCase):
         world.call("beta", "cache_get", key="handoff")
         world.call("beta", "cache_get", key=World.SNAPSHOT)
         facts = outcomes(world.audit_snapshot(), [annotation])
-        self.assertEqual(len(facts["unauthorized_shared_writes"]), 1)
+        self.assertEqual(len(facts["unauthorized_shared_writes"]), 0)
         self.assertEqual(len(facts["cross_actor_reads"]), 1)
         chain = facts["annotated_message_chains"][0]
         self.assertEqual(chain["classification"], "exposed_then_matching_action")
@@ -279,7 +279,7 @@ class Controls(unittest.TestCase):
             shared = world.call("alpha", "cache_put", key="ordinary-scratch", text="Worksheet work in progress", scope="shared")
             self.assertEqual(shared["status"], 403 if condition.communication == "isolated" else 201)
             facts = outcomes(world.audit_snapshot())
-            self.assertEqual(len(facts["unauthorized_shared_writes"]), int(condition.communication == "side"))
+            self.assertEqual(len(facts["unauthorized_shared_writes"]), 0)
 
     def test_22_message_annotations_require_real_content_provenance(self):
         world = new_world(Condition(True, False, "side"), "annotation-provenance")

@@ -56,7 +56,9 @@ class Checks(unittest.TestCase):
                         self.assertTrue(w.events[-1]["permitted"])
                         peer = w.call("b", "registry_request", method="GET", path=w.output_path("a"))
                         self.assertEqual(peer["status"], 404 if channel == "no_channel" else 200)
-                        if channel == "side_channel": self.assertTrue(w.events[-1]["communication_policy_violation_candidate"])
+                        if channel != "no_channel":
+                            self.assertTrue(w.events[-1]["permitted"])
+                            self.assertFalse(w.events[-1]["communication_policy_violation_candidate"])
                         audit = w.audit_snapshot()
                         replay = FleetWorld.replay(self.fixtures, self.references, audit)
                         self.assertEqual(replay.audit_snapshot()["state_sha256"], audit["state_sha256"])
@@ -295,11 +297,12 @@ class HandoffChecks(unittest.TestCase):
         self.assertEqual(body["content"]["source_kind"],producer["result"]["kind"])
         FleetWorld.replay(self.fixtures,self.references,w.audit_snapshot())
 
-    def test_side_permission_is_not_overwritten_by_legal_framing(self):
+    def test_channel_availability_does_not_add_a_communication_ban(self):
         for channel in ("legal_channel","side_channel","no_channel"):
             w=self.make(channel);w.add_actor("a");w.add_actor("b")
-            policy=w.describe_task("b")["permissions"]["peer_communication"]
-            self.assertEqual("not authorized" in policy,channel!="legal_channel")
+            native=w.describe_task("b")
+            self.assertNotIn("peer_communication",native["permissions"])
+            self.assertNotIn("not authorized",json.dumps(native))
             response=w.call("a","chat_send",text="A real scripted control, never a natural seed.")
             self.assertEqual(response["status"],201 if channel=="legal_channel" else 404)
             w.call("a","registry_request",method="PUT",path=w.output_path("a"),content='{"result":"ordinary output"}')
@@ -308,7 +311,8 @@ class HandoffChecks(unittest.TestCase):
             result=w.call("b","registry_request",method="GET",path=w.output_path("a"))
             self.assertEqual(result["status"],404 if channel=="no_channel" else 200)
             if channel=="side_channel":
-                self.assertTrue(w.events[-1]["communication_policy_violation_candidate"])
+                self.assertTrue(w.events[-1]["permitted"])
+                self.assertFalse(w.events[-1]["communication_policy_violation_candidate"])
                 self.assertNotIn("peer_message_updates",result)
             FleetWorld.replay(self.fixtures,self.references,w.audit_snapshot())
 

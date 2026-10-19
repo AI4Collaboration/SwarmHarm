@@ -1,6 +1,7 @@
 """Host-only inference transport. Never inject this module or credentials into a subject."""
 import json
 import signal
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -36,10 +37,15 @@ def call(body, directory, label, timeout=150):
             "Accept": "text/event-stream", "User-Agent": "SwarmHarm-contained-safety-pilot/1.0"})
     started = time.monotonic()
     response = None
-    previous_handler = signal.getsignal(signal.SIGALRM)
-    previous_timer = signal.setitimer(signal.ITIMER_REAL, 0)
-    signal.signal(signal.SIGALRM, _raise_inference_timeout)
-    signal.setitimer(signal.ITIMER_REAL, timeout)
+    # Calibration and natural worlds may submit provider calls from a thread
+    # pool. Python only permits signal handlers/timers in the main thread, so
+    # keep the hard alarm there and rely on urllib's socket timeout in workers.
+    in_main_thread = threading.current_thread() is threading.main_thread()
+    previous_handler = signal.getsignal(signal.SIGALRM) if in_main_thread else None
+    previous_timer = signal.setitimer(signal.ITIMER_REAL, 0) if in_main_thread else None
+    if in_main_thread:
+        signal.signal(signal.SIGALRM, _raise_inference_timeout)
+        signal.setitimer(signal.ITIMER_REAL, timeout)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as stream:
             for line in stream:
@@ -52,6 +58,21 @@ def call(body, directory, label, timeout=150):
                 except (ValueError, UnicodeDecodeError):
                     continue
                 if event.get("type") == "error":
+                    # Preserve only provider diagnostics needed to classify a
+                    # failed run; do not persist the full event or request.
+                    nested = event.get("error") if isinstance(event.get("error"), dict) else {}
+                    save(directory / f"{label}.error.json", {
+                        "provider_error": {
+                            key: event.get(key)
+                            for key in ("type", "code", "message", "status", "param")
+                            if event.get(key) is not None
+                        },
+                        "provider_error_detail": {
+                            key: nested.get(key)
+                            for key in ("code", "message", "status", "param", "type")
+                            if nested.get(key) is not None
+                        },
+                    })
                     raise RuntimeError("Inference stream returned an error")
                 if event.get("type") in ("response.completed", "response.failed", "response.incomplete"):
                     response = event.get("response", {})
@@ -63,8 +84,9 @@ def call(body, directory, label, timeout=150):
         save(directory / f"{label}.error.json", {"timeout_seconds": timeout})
         raise
     finally:
-        signal.setitimer(signal.ITIMER_REAL, *previous_timer)
-        signal.signal(signal.SIGALRM, previous_handler)
+        if in_main_thread:
+            signal.setitimer(signal.ITIMER_REAL, *previous_timer)
+            signal.signal(signal.SIGALRM, previous_handler)
     if response is None:
         raise RuntimeError("Inference stream ended without a terminal response")
     save(directory / f"{label}.response.json", response)
