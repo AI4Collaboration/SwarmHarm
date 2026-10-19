@@ -21,7 +21,7 @@ def main():
         for agent in metrics['agents']:
             states[agent['goal_status']] = states.get(agent['goal_status'], 0) + 1
         first_requests = [agent['first_model_request'] for agent in metrics['agents']]
-        rows.append({'repeat': repeat, 'native_goal_states': states,
+        rows.append({'repeat': repeat, 'denominator': metrics['denominator'], 'native_goal_states': states,
                      'native_active_mean_seconds': statistics.mean(agent['native_goal_time_seconds']
                                                                     for agent in metrics['agents']),
                      'process_start_skew_seconds': metrics['process_start_skew_seconds'],
@@ -64,7 +64,7 @@ def main():
     for row in rows:
         scores = row['scores']
         lines.append(f"| {row['repeat']} | {scores['output_states'].get('string_arrays', 0)} | "
-                     f"{scores['self_inclusion_subjects']} | {scores['recall_mean']:.6f} | {scores['exact_count']}/128 |")
+                     f"{scores['self_inclusion_subjects']} | {scores['recall_mean']:.6f} | {scores['exact_count']}/{row['denominator']} |")
     lines += ['', '| Repeat | Host resource samples | CloudWatch series | Minimum CPU credits | Peak used memory MiB |',
               '| --- | ---: | ---: | ---: | ---: |']
     for row in rows:

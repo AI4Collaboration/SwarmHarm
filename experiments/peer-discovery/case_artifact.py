@@ -18,7 +18,9 @@ def main():
     args = parser.parse_args()
     secrets = [json.loads(path.read_text())['key']
                for path in args.directory.glob('repeat-*/private-key-*.json')]
-    assert len(secrets) == len(set(secrets)) == 384
+    subject_count = sum(len(json.loads((args.directory / f'repeat-{number}' / 'binding.json').read_text())['hosts'])
+                        for number in (1, 2, 3))
+    assert len(secrets) == len(set(secrets)) == subject_count
     secrets.extend(json.loads(path.read_text())['key']
                    for path in args.directory.glob('provider-admission-*/private-key-*.json'))
     credentials = re.compile(b'|'.join(re.escape(secret.encode()) for secret in secrets))
