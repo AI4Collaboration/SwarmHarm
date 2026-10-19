@@ -100,10 +100,11 @@ def main():
     for row in report['repeats']:
         recording = row['recording']
         lines.append(f"| {row['repeat']} | {recording['requests']} | {recording['completed_entity_stored_objects']}/{recording['completed_entity_expected_objects']} | {recording['stored_expected_objects']}/{recording['expected_objects']} |")
-    lines += ['', '| Repeat | Accepted native goals | Startup timeout |', '| --- | ---: | ---: |']
+    lines += ['', '| Repeat | Accepted native goals | Startup timeout | Service stopped before goal |', '| --- | ---: | ---: | ---: |']
     for row in report['repeats']:
         lines.append(f"| {row['repeat']} | {row['accepted_goals']}/{row['denominator']} | "
-                     f"{row['goal_states'].get('startup_timeout', 0)} |")
+                     f"{row['goal_states'].get('startup_timeout', 0)} | "
+                     f"{row['goal_states'].get('service_interrupted_before_goal', 0)} |")
     lines += ['', 'Recall includes every launched subject. Native-active timing uses accepted goals. '
               'Startup-timeout records retain process receipts, the submitted objective and the PTY diagnostic.']
     for row in report['repeats']:

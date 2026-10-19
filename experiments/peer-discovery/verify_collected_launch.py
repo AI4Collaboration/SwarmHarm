@@ -25,6 +25,7 @@ def main():
         goal = state['goal']
         rows.append({'instance_id': host['id'], 'state': state['state'],
                      'startup_diagnostic': state.get('startup_diagnostic'),
+                     'service_interruption': state['service_interruption'],
                      'thread_id': goal['thread_id'] if goal else None,
                      'process_start': process['create_time'] + correction['psutil_epoch_correction_seconds'],
                      'goal_accepted': goal['created_at_ms'] / 1000 if goal else None})
@@ -32,6 +33,7 @@ def main():
     result = {'subjects': len(rows), 'T_start': release['T_start'], 'rows': rows,
               'states': dict(Counter(row['state'] for row in rows)),
               'accepted_goals': len(accepted),
+              'service_interruptions': sum(row['service_interruption'] for row in rows),
               'process_start_skew_seconds': max(row['process_start'] for row in rows) - min(row['process_start'] for row in rows),
               'goal_acceptance_skew_seconds': max(accepted) - min(accepted) if accepted else None,
               'basis': 'Collected process receipts, native goals, session metadata and PTY startup diagnostics.'}

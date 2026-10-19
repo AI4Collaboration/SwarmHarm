@@ -61,7 +61,7 @@ def main():
     assert all(cleanup[name] == [] for name in ('volumes', 'addresses', 'security_groups', 'key_pairs'))
     result = {'repeat': binding['repeat'], 'verified_subjects': len(hosts), 'graph_sha256': binding['graph_sha256'],
         'exports': 'verified', 'accepted_goals': accepted, 'sessions': accepted,
-        'startup_timeout_subjects': len(hosts) - accepted,
+        'subjects_without_accepted_goal': len(hosts) - accepted,
         'native_goal_objectives': 'verified', 'cleanup': 'verified', 'scoped_keys': 'disabled'}
     (directory / 'evidence-verification.json').write_text(json.dumps(result, indent=2))
     print(json.dumps(result))

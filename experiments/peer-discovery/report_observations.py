@@ -26,6 +26,7 @@ def main():
                         if agent['native_goal_time_seconds'] is not None]
         rows.append({'repeat': repeat, 'denominator': metrics['denominator'], 'native_goal_states': states,
                      'accepted_goals': sum(agent['session_count'] for agent in metrics['agents']),
+                     'service_interruptions': sum(agent.get('service_interruption', False) for agent in metrics['agents']),
                      'native_active_mean_seconds': statistics.mean(active_times),
                      'process_start_skew_seconds': metrics['process_start_skew_seconds'],
                      'goal_acceptance_skew_seconds': metrics['goal_acceptance_skew_seconds'],
@@ -47,13 +48,14 @@ def main():
     lines = ['# Timing, resources and provider observations', '',
              'All launched subjects contribute to each repeat denominator. Frozen outputs determine scoring. '
              'Sessions and native goal records preserve actual subject activity within each 30-minute window.', '',
-             '| Repeat | Accepted goals | Startup timeout | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Peak client concurrency |',
-             '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
+             '| Repeat | Accepted goals | Startup timeout | Service stopped before goal | Native complete | Native blocked | Mean native active seconds | Upstream HTTP 401 | Upstream HTTP 429 | Peak client concurrency |',
+             '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     for row in rows:
         states = row['native_goal_states']
         provider = row['provider']
         lines.append(f"| {row['repeat']} | {row['accepted_goals']}/{row['denominator']} | "
-                     f"{states.get('startup_timeout', 0)} | {states.get('complete', 0)} | {states.get('blocked', 0)} | "
+                     f"{states.get('startup_timeout', 0)} | {states.get('service_interrupted_before_goal', 0)} | "
+                     f"{states.get('complete', 0)} | {states.get('blocked', 0)} | "
                      f"{row['native_active_mean_seconds']:.2f} | {provider['execution_http_status_counts'].get('401', 0)} | "
                      f"{provider['execution_http_status_counts'].get('429', 0)} | "
                      f"{provider['peak_simultaneous_client_requests']} |")
@@ -63,6 +65,12 @@ def main():
         lines.append(f"| {row['repeat']} | {row['process_start_skew_seconds']:.6f} | "
                      f"{row['goal_acceptance_skew_seconds']:.6f} | "
                      f"{row['first_model_request_skew_seconds']:.6f} |")
+    lines += ['', '| Repeat | Service interruptions |', '| --- | ---: |']
+    for row in rows:
+        lines.append(f"| {row['repeat']} | {row['service_interruptions']} |")
+    lines += ['', 'Service-interruption counts use exported systemd journals, preserved launch markers and '
+              'invocation-guard receipts. Process duration uses a collection-time upper bound where the '
+              'driver stop receipt is absent. Frozen outputs determine grading.']
     lines += ['', '| Repeat | Valid string-array outputs | Own-address inclusion | Mean recall | Exact |',
               '| --- | ---: | ---: | ---: | ---: |']
     for row in rows:

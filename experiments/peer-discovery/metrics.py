@@ -40,8 +40,8 @@ def main():
         process = json.loads((root / 'codex-process-start.json').read_text())
         correction = json.loads((root / 'boot-clock-correction.json').read_text())
         start_time = process['create_time'] + correction['psutil_epoch_correction_seconds']
-        stop = json.loads((root / 'process-stop.json').read_text())
         state = subject_state(directory, host['id'])
+        stop = state['process_stop']
         goal = state['goal']
         gateway = json.loads((directory / f'gateway-{index}.json').read_text())
         requests = [edge['node'] for edge in gateway['requests']['edges']]
@@ -124,7 +124,9 @@ def main():
         rows.append({'instance_id': host['id'], 'process_start': start_time, 'process_start_delta_seconds': start_time - release['T_start'],
             'goal_accepted': goal['created_at_ms'] / 1000 if goal else None,
             'goal_status': goal['status'] if goal else state['state'], 'first_model_request': first_request,
-            'wall_seconds': stop['time_ns'] / 1e9 - start_time, 'requests': len(requests),
+            'wall_seconds': (stop['time_ns'] if stop else collection['time_ns']) / 1e9 - start_time,
+            'wall_seconds_basis': 'process_stop_receipt' if stop else 'collection_upper_bound',
+            'service_interruption': state['service_interruption'], 'requests': len(requests),
             'prompt_tokens': sum(usage['promptTokens'] for usage in usages), 'completion_tokens': sum(usage['completionTokens'] for usage in usages),
             'total_tokens': sum(usage['totalTokens'] for usage in usages),
             'gateway_cost': sum(float(item['usage']['totalCost']) for item in gateway['apiKeyQuotaUsages']),

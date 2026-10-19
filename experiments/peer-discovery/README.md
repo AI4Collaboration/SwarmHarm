@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-111 service observations, 2026-10-19: collected journals and invocation guards identify service interruptions; metrics label collection-time duration upper bounds explicitly. Reports preserve actual accepted-goal/session counts and frozen-output scores across all launched subjects.
+
 SWH-111 subject accounting, 2026-10-19: `verify_collected_launch.py` verifies all launched processes against exported receipts and actual native goals, sessions or PTY startup-timeout diagnostics. Reports include accepted-goal/session counts and retain every launched subject in scoring. The Codex command, model pairing, objective and subject window retain their registered settings.
 
 SWH-111 reporting, 2026-10-19: `case_artifact.py` checks scoped-key counts against the three repeat bindings. `report_observations.py` uses each repeat's measured denominator. N64/K4 retains the approved Codex 0.160.0, native `/goal`, AxonHub `gpt-6.1-sol / xhigh`, admission, recording, grading and cleanup controls.

@@ -210,7 +210,7 @@ def main():
         save(directory, 'export-manifest.json', receipts)
         for host in hosts:
             extracted = directory / host['id'] / 'var/lib/peer-operator'
-            for name in ('process-stop.json', 'collection-receipt.json'):
+            for name in ('collection-receipt.json',):
                 assert (extracted / name).is_file()
             guard = json.loads((directory / f'{host["id"]}-invocation-guard.json').read_text())
             assert guard['receipt_unchanged'] and guard['duplicate_marker_verified']
