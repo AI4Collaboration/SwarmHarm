@@ -4,6 +4,8 @@ import hashlib
 import json
 from pathlib import Path
 
+import jsonlines
+
 from graphs import validate
 
 
@@ -39,7 +41,8 @@ def main():
         assert goal[0]['objective'] == Path(__file__).with_name('objective.txt').read_text().strip()
         sessions = list((directory / instance_id / 'home/agent/.codex/sessions').rglob('*.jsonl'))
         assert len(sessions) == 1
-        metadata = [json.loads(line)['payload'] for line in sessions[0].read_text().splitlines() if json.loads(line)['type'] == 'session_meta']
+        with jsonlines.open(sessions[0]) as events:
+            metadata = [event['payload'] for event in events if event['type'] == 'session_meta']
         assert len(metadata) == 1 and metadata[0]['id'] == goal[0]['thread_id']
         readiness = read(directory / f'{instance_id}-readiness.json')
         assert abs(float(next(csv.reader([readiness['clock_csv']]))[4])) <= 0.1

@@ -8,6 +8,8 @@ import re
 import statistics
 from pathlib import Path
 
+import jsonlines
+
 from packets import tcp_packets
 
 
@@ -82,22 +84,22 @@ def main():
         sessions = list((directory / host['id'] / 'home/agent/.codex/sessions').rglob('*.jsonl'))
         assert len(sessions) == 1
         for session in sessions:
-            for line in session.read_text().splitlines():
-                event = json.loads(line)
-                payload = event.get('payload', {})
-                if event.get('type') == 'session_meta':
-                    assert payload['id'] == goal['thread_id']
-                if payload.get('type') == 'message' and payload.get('role') == 'assistant' and payload.get('phase') == 'final_answer':
-                    final_messages.append({'timestamp': event['timestamp'], 'content': payload['content']})
-                if payload.get('type') in ('function_call_output', 'custom_tool_call_output'):
-                    content = json.dumps(payload.get('output', ''), ensure_ascii=False)
-                    for match in re.findall(r'(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])', content):
-                        try:
-                            address = str(ipaddress.IPv4Address(match))
-                        except ipaddress.AddressValueError:
-                            continue
-                        if address in fleet_ips - set(host['seeds']) - {host['public_ip']}:
-                            observed.append({'ip': address, 'timestamp': event['timestamp']})
+            with jsonlines.open(session) as events:
+                for event in events:
+                    payload = event.get('payload', {})
+                    if event.get('type') == 'session_meta':
+                        assert payload['id'] == goal['thread_id']
+                    if payload.get('type') == 'message' and payload.get('role') == 'assistant' and payload.get('phase') == 'final_answer':
+                        final_messages.append({'timestamp': event['timestamp'], 'content': payload['content']})
+                    if payload.get('type') in ('function_call_output', 'custom_tool_call_output'):
+                        content = json.dumps(payload.get('output', ''), ensure_ascii=False)
+                        for match in re.findall(r'(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])', content):
+                            try:
+                                address = str(ipaddress.IPv4Address(match))
+                            except ipaddress.AddressValueError:
+                                continue
+                            if address in fleet_ips - set(host['seeds']) - {host['public_ip']}:
+                                observed.append({'ip': address, 'timestamp': event['timestamp']})
         first_request = min(epoch(request['createdAt']) for request in requests)
         durations = [epoch(request['updatedAt']) - epoch(request['createdAt']) for request in requests]
         collection = json.loads((root / 'collection-receipt.json').read_text())
