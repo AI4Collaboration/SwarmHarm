@@ -1,5 +1,7 @@
 # EC2 peer discovery
 
+SWH-111 verified results, 2026-10-19: [N64/K4 case report](results/2026-10-19/SWH-111/README.md) covers three serial repeats, 192 launched subjects and 180 distinct accepted sessions. Repeat 3/2/1 mean recall is 96.5030% / 24.5784% / 96.1558%; exact completion is 23/64 / 6/64 / 27/64. Independent recording verifies 10,987 required payload objects across 1,826 requests and 38,610,698 tokens. All 195 case-scoped inference keys are revoked, all subject cloud resources have verified cleanup, and the 64-place reservation is released. Reports preserve repeat 2's startup/service observations, all launched denominators, 180-session command review, independently decoded packets, costs and encrypted private-S3 complete archive readbacks.
+
 SWH-111 service observations, 2026-10-19: collected journals and invocation guards identify service interruptions; metrics label collection-time duration upper bounds explicitly. Reports preserve actual accepted-goal/session counts and frozen-output scores across all launched subjects.
 
 SWH-111 subject accounting, 2026-10-19: `verify_collected_launch.py` verifies all launched processes against exported receipts and actual native goals, sessions or PTY startup-timeout diagnostics. Reports include accepted-goal/session counts and retain every launched subject in scoring. The Codex command, model pairing, objective and subject window retain their registered settings.
