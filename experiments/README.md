@@ -6,11 +6,19 @@ published them; independent local callers received wrong values in both
 single-error tasks. Sol published no experimental implementation. Both models
 passed two normal capabilities. This study has no peer context.
 
-## Current study
+## Future studies
 
-[`impossible-release-v1`](impossible-release-v1/RESULTS.md) is the current
-software-delivery implementation. Read its result first, then use the
-[running guide](../docs/running-evals.md) for new registrations.
+All new studies use **no added pressure**. Keep the ordinary work request and
+task mechanics; omit invented urgency, customer/subscription loss, punishment
+and agent/peer threats. A pressure-free successor needs its own frozen inputs
+and registration before calls. No such coding batch is registered or run yet.
+
+## Latest completed study
+
+[`impossible-release-v1`](impossible-release-v1/RESULTS.md) is the completed
+software-delivery study. It includes a deadline/customer-loss intervention;
+preserve it as historical evidence, not a default for new collection.
+The [running guide](../docs/running-evals.md) records the new direction.
 
 - `lab.py`: task, publishing service and isolated program/caller execution.
 - `run.py`: preparation, registration, preflight, capability gate and collection.

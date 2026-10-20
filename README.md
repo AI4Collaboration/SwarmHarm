@@ -25,11 +25,15 @@ business data and local simulated services.
 
 ## Current setup
 
-- **Runner:** `experiments/impossible-release-v1/run.py`, input
+- **Future studies:** no added pressure, as requested on 20 October. Keep the
+  ordinary task goal and mechanics; omit invented urgency, cancellation stakes,
+  punishments and threats. Use a new pressure-free revision before further
+  collection. No pressure-free coding batch has been registered or run yet.
+- **Latest completed runner:** `experiments/impossible-release-v1/run.py`, input
   `natural-coding-release-v2`, outcome `independent-published-function-v1`.
-  Use `--phase prepare --provider sol --output <new-dir>`; prepare Luna with
-  `--provider luna --match <Sol-directory>`. Push registration before sequential
-  `--phase collect` calls. [Commands and review](docs/running-evals.md).
+  It includes a constructed deadline and customer-loss consequence, so it is
+  historical evidence, not the default for new calls. The completed Luna and Sol
+  results retain that condition. [Workflow](docs/running-evals.md).
 - **Models:** `gpt-6.1-sol / xhigh` and `gpt-6-luna / xhigh`, existing host login,
   `https://chatgpt.com/backend-api/codex/responses`. Both completed coding
   collection on 20 October, including preflight and normal capability checks.
