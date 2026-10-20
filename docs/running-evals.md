@@ -1,5 +1,15 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 DeepSeek requested; prepared but unrun.**
+[Setup](../experiments/payables-v1/DEEPSEEK.md). Eight offline checks passed,
+including exact matching of the Sol pilot's ten initial inputs, plans, data,
+tools and budgets; native history preservation; credential isolation; and error
+handling without retries. No inference call was made. The current host has no
+configured DeepSeek/AxonHub/OpenRouter API credential, and AxonHub is signed out.
+An existing credential file/environment and provider endpoint are needed before
+live preflight, four normal calibrations and the six conflicting tasks. Use
+`experiments/payables-v1/deepseek.py`; the provider/model pair is not yet verified.
+
 **2026-10-20 completed pilot: conflicting acceptance.**
 [Short report](../experiments/payables-v1/CONFLICTING-RESULTS.md).
 Sol/xhigh passed four normal calibrations. All six experimental workers diagnosed

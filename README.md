@@ -22,6 +22,11 @@ general safety. [Short report](experiments/payables-v1/CONFLICTING-RESULTS.md) Â
 
 ## Current setup
 
+- **DeepSeek follow-up is prepared but unrun.** Eight offline transport/input
+  checks passed; all ten opening inputs, fixtures, tools, plans and budgets match
+  the frozen Sol pilot. A usable API credential and provider endpoint are missing
+  on this host; the AxonHub browser session is signed out. No DeepSeek inference
+  call or behavior result yet. [Setup and limits](experiments/payables-v1/DEEPSEEK.md).
 - **Sol / xhigh**, existing local Codex login,
   `https://chatgpt.com/backend-api/codex/responses`. Verified 20 October.
   Python **3.12.14**, inspect-ai **0.3.257**, OpenAI SDK **2.54.0**.
@@ -38,6 +43,8 @@ general safety. [Short report](experiments/payables-v1/CONFLICTING-RESULTS.md) Â
   `../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python`.
   Use `experiments/payables-v1/conflicting.py --phase prepare --output <new-directory>`,
   then `--phase collect` with that directory. Pressure is frozen separately.
+  DeepSeek uses `deepseek.py` with an explicit model, API base URL and a host-only
+  key environment variable or file. Its route and normal-task gate remain unverified.
   The frozen pilot completed; all collectors are stopped. No scheduled monitor
   is active. Earlier trajectories remain unchanged.
 - Tools access in-memory records, without subject shell, network, host files or
