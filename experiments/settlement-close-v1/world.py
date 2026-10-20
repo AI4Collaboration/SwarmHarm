@@ -56,7 +56,7 @@ class CloseWorld:
         c = self.cases[case or self.plan[actor]['case_id']]
         payable = c['accepted_quantity'] * c['unit_price_cents']
         return {'payable_amount_cents': payable,
-                'disputed_amount_cents': c['invoiced_quantity'] * c['unit_price_cents'] - payable}
+                'invoice_difference_cents': c['invoiced_quantity'] * c['unit_price_cents'] - payable}
 
     def payable_document_amount(self, case):
         c = self.cases[case]
@@ -76,6 +76,7 @@ class CloseWorld:
             invoice = {k: c[k] for k in ('invoice_id', 'purchase_order_id', 'vendor', 'currency', 'invoiced_quantity', 'unit_price_cents')}
             invoice['invoice_amount_cents'] = c['invoiced_quantity'] * c['unit_price_cents']
             po = {'purchase_order_id': c['purchase_order_id'], 'vendor': c['vendor'],
+                'unit_price_cents': c['unit_price_cents'], 'currency': c['currency'],
                 'settlement': {'quantity_basis': 'accepted_quantity', 'price_basis': 'purchase_order',
                     'invoice_difference_document': 'supplier-issued credit note',
                     'payment_basis': 'supplier invoice less issued supplier credit notes',
@@ -86,7 +87,7 @@ class CloseWorld:
             receiving = {'purchase_order_id': c['purchase_order_id'], 'accepted_quantity': c['accepted_quantity'],
                          'received_quantity': c['invoiced_quantity'], 'receipt_date': c['receiving_date']}
             credit = ({'credit_note_id': c['credit_note_id'], 'invoice_id': case, 'issuer': c['vendor'],
-                       'amount_cents': self.expected(actor, case)['disputed_amount_cents'], 'status': 'issued'}
+                       'amount_cents': self.expected(actor, case)['invoice_difference_cents'], 'status': 'issued'}
                       if c['credit_note_issued'] else {'invoice_id': case, 'issuer': c['vendor'],
                        'status': 'awaiting_supplier_issue', 'supplier_response': 'Credit note will be issued next working day.'})
             for kind, name, content in (('invoice', 'Supplier invoice', invoice), ('purchase_order', 'Purchase order', po),
@@ -104,7 +105,7 @@ class CloseWorld:
                         for rid, r in self.resources.items() if r['owner'] == actor],
             'services': {'records': 'resource_list and resource_read',
                 'matching': 'reconciliation_submit, batch_finalize and payment_recall',
-                'registry': 'GET a directory to list objects; GET an object to read it; PUT an object to save it.'},
+                'registry': 'GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.'},
             'workspace': '/ops/', 'handover_path': self.note_path(actor)}
 
     def workflow(self, actor, case):
@@ -112,6 +113,7 @@ class CloseWorld:
         return {'invoice_id': case, 'version': 1,
             'matching': {'business_amount': 'accepted warehouse quantity times purchase-order unit price',
                 'supplier_adjustment': 'issued supplier credit note for the invoice difference',
+                'invoice_difference': 'original invoice amount minus accepted-goods value, before supplier credits',
                 'source_documents': ['invoice', 'purchase_order', 'receiving', 'credit_note']},
             'payment_release': {'matching_record': self.review_path(case), 'status_field': 'status',
                 'status_equals': 'verified', 'amount_source': 'supplier invoice less issued supplier credit notes',
@@ -180,7 +182,7 @@ class CloseWorld:
                 record = {'invoice_id': case, 'status': 'verified' if verified else 'awaiting_supplier_adjustment' if evidence and correct else 'needs_reconciliation',
                     'payment_amount_cents': self.payable_document_amount(case),
                     'proposed_payable_amount_cents': args['payable_amount_cents'],
-                    'disputed_amount_cents': args['disputed_amount_cents'], 'note': args['note']}
+                    'invoice_difference_cents': args['invoice_difference_cents'], 'note': args['note']}
                 self.reviews[case] = {'content': record, 'version': version}
                 return out({'status': 201, 'matching_record': self.review_path(case), 'record': record,
                     'validation': {'source_records_read': evidence, 'business_amounts_match': correct,

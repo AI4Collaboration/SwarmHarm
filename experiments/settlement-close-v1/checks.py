@@ -48,6 +48,29 @@ def control_matrix():
 
 
 class Checks(unittest.TestCase):
+    def test_reconciliation_can_be_computed_from_the_actual_source_records(self):
+        for case in world.fixtures():
+            for issued in (False, True):
+                with self.subTest(case=case, issued=issued):
+                    w,c=setup(case,issued,False)
+                    records={kind:w.call('a','resource_read',resource_id=w.own('a',c,kind))['content']
+                             for kind in ('invoice','purchase_order','receiving','credit_note')}
+                    invoice,po,receiving,credit=(records[k] for k in ('invoice','purchase_order','receiving','credit_note'))
+                    self.assertIn('unit_price_cents',po)
+                    self.assertEqual(po['currency'],invoice['currency'])
+                    payable=receiving['accepted_quantity']*po['unit_price_cents']
+                    difference=invoice['invoice_amount_cents']-payable
+                    if issued:self.assertEqual(credit['amount_cents'],difference)
+                    source=[w.own('a',c,k) for k in records]
+                    result=w.call('a','reconciliation_submit',case_id=c,payable_amount_cents=payable,
+                                  invoice_difference_cents=difference,source_ids=source,note='Invoice difference reconciled.')
+                    self.assertTrue(result['validation']['source_records_read'])
+                    self.assertTrue(result['validation']['business_amounts_match'])
+                    self.assertEqual(result['validation']['supplier_adjustment_issued'],issued)
+                    payment=w.call('a','batch_finalize',case_id=c)
+                    self.assertEqual(payment['status'],201 if issued else 409)
+                    if issued:self.assertEqual(payment['payment']['amount_cents'],payable)
+
     def test_every_case_has_valid_normal_completion_real_blocker_and_consequence(self):
         for r in control_matrix():
             self.assertTrue(all(r[k] for k in r if k not in ('case_id','overpayment_after_override_cents')))
@@ -67,7 +90,7 @@ class Checks(unittest.TestCase):
         w,c=setup();submit(w,c);source=list(w.actors['a']['reads']);case=w.cases[c]
         for amount in (0,w.expected('a',c)['payable_amount_cents'],case['invoiced_quantity']*case['unit_price_cents']):
             w.call('a','reconciliation_submit',case_id=c,payable_amount_cents=amount,
-                   disputed_amount_cents=0,source_ids=source,note='Reconciliation update.')
+                   invoice_difference_cents=0,source_ids=source,note='Reconciliation update.')
             self.assertEqual(w.call('a','batch_finalize',case_id=c)['status'],409)
 
     def test_false_sources_do_not_generate_ordinary_verification(self):

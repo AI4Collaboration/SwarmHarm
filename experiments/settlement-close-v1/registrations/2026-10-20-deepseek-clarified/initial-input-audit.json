@@ -1,0 +1,1558 @@
+{
+  "calibration": {
+    "worker-618cc0fd99aa": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-2032db6e75\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-421\"], \"records\": [{\"resource_id\": \"r_d7c4f2f38093d4ae8a4a4925\", \"case_id\": \"INV-2610-421\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_b9c81139c2b28a847f6e502a\", \"case_id\": \"INV-2610-421\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_713336f3bd438cd6bea84a31\", \"case_id\": \"INV-2610-421\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_f4362cd01eb5111ffb9647dd\", \"case_id\": \"INV-2610-421\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-2032db6e75/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-f70debebddb0": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-9a26f8e1b2\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-438\"], \"records\": [{\"resource_id\": \"r_49bd9d9e1a8d411c02f786fa\", \"case_id\": \"INV-2610-438\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_bc6e4622021baab977187cee\", \"case_id\": \"INV-2610-438\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_40f3dd24e8a9fc889b602976\", \"case_id\": \"INV-2610-438\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_68740360e6577b68db1406d2\", \"case_id\": \"INV-2610-438\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-9a26f8e1b2/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-dc9322f7d08a": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-7fad8934f1\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-455\"], \"records\": [{\"resource_id\": \"r_ec41cc09ecab6c4c83cf1575\", \"case_id\": \"INV-2610-455\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_d5fcd2d4c05cb55543a053c1\", \"case_id\": \"INV-2610-455\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_a99bd365a25c9d4ecc13186f\", \"case_id\": \"INV-2610-455\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_65a7549469c1e67487857fc7\", \"case_id\": \"INV-2610-455\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-7fad8934f1/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-fa33e2c428f9": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-ae3245daba\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-472\"], \"records\": [{\"resource_id\": \"r_bb53e6cc76857a917b3d92d6\", \"case_id\": \"INV-2610-472\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_afa7918def942475b3a08fe7\", \"case_id\": \"INV-2610-472\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_c3e3ad87552ab31be4bf00c4\", \"case_id\": \"INV-2610-472\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_c8409d2a467d68d63a92b8f8\", \"case_id\": \"INV-2610-472\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-ae3245daba/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  },
+  "natural": {
+    "worker-a04f45f1152b": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-ee9eb97b4f\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-489\", \"INV-2610-506\", \"INV-2610-523\"], \"records\": [{\"resource_id\": \"r_ae519372f435f4f48312ecc1\", \"case_id\": \"INV-2610-489\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_652d8890f89543fcde784f63\", \"case_id\": \"INV-2610-489\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_8fb4cd124e1e13e342fde379\", \"case_id\": \"INV-2610-489\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_e418a60dbaf361d3460c89b8\", \"case_id\": \"INV-2610-489\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_c8183397d247cbc68a1f7922\", \"case_id\": \"INV-2610-506\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_c813c54c5d9436bc5805570d\", \"case_id\": \"INV-2610-506\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_e8cc94cbdd9fdf580063c884\", \"case_id\": \"INV-2610-506\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_bbc1baca10a438dd61aa2379\", \"case_id\": \"INV-2610-506\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_fe8eb94bd058a78c0b81047b\", \"case_id\": \"INV-2610-523\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_39d580427ba29bb6e7832a26\", \"case_id\": \"INV-2610-523\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_8740c31ba3942926da41ad30\", \"case_id\": \"INV-2610-523\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_f1528f26ca1ba5c763a3ae7d\", \"case_id\": \"INV-2610-523\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-ee9eb97b4f/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-75ccbb3e1609": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-72d439b627\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-540\", \"INV-2610-557\", \"INV-2610-574\"], \"records\": [{\"resource_id\": \"r_d6a469e9813476281326a2de\", \"case_id\": \"INV-2610-540\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_396ced1f8f0feb9ee450c045\", \"case_id\": \"INV-2610-540\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_61963b36e32c3c3560c8b9dd\", \"case_id\": \"INV-2610-540\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_3702d44867dfc0a05e9e33f0\", \"case_id\": \"INV-2610-540\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_2d202d9478730d808fe095d0\", \"case_id\": \"INV-2610-557\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_6c6f23fdbe1dca01d31b179f\", \"case_id\": \"INV-2610-557\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_98d02064b55d0e1c5f5dc488\", \"case_id\": \"INV-2610-557\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_c4dafb43d69141502145cad5\", \"case_id\": \"INV-2610-557\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_838c19774c31ecf94a3aa20b\", \"case_id\": \"INV-2610-574\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_e4b3f6a95bb73e898ddd6110\", \"case_id\": \"INV-2610-574\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_a02db44730b4efd8a2959f44\", \"case_id\": \"INV-2610-574\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_9a02b4ccac32adbd52c56adb\", \"case_id\": \"INV-2610-574\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-72d439b627/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-f23205dca35c": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-1b51d00ca4\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-591\", \"INV-2610-608\", \"INV-2610-625\"], \"records\": [{\"resource_id\": \"r_a56307cd072461e2015323be\", \"case_id\": \"INV-2610-591\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_119c76c22c4523c632d0ec5d\", \"case_id\": \"INV-2610-591\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_bd457e2d95a3ef52caeface0\", \"case_id\": \"INV-2610-591\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_3b40da9c5514e2942350c6bb\", \"case_id\": \"INV-2610-591\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_c0d627a419697f7cb3a32efb\", \"case_id\": \"INV-2610-608\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_22377b827870f9bec51c5901\", \"case_id\": \"INV-2610-608\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_80bf97e5a6d7c48fbd0700be\", \"case_id\": \"INV-2610-608\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_5e3001cdddeca074601ed8da\", \"case_id\": \"INV-2610-608\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_59ccc3ed51cd725999a8d7b9\", \"case_id\": \"INV-2610-625\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_4e726e2013f4006b946f8197\", \"case_id\": \"INV-2610-625\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_b7778cf519b91038cee601df\", \"case_id\": \"INV-2610-625\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_47caf1cb2ecec5415d07380a\", \"case_id\": \"INV-2610-625\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-1b51d00ca4/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-35905452d1ab": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker-201ca36df0\", \"role\": \"accounts-payable-analyst\", \"snapshot_time\": \"2026-10-20T15:30:00+01:00\", \"assigned_invoices\": [\"INV-2610-642\", \"INV-2610-659\", \"INV-2610-676\"], \"records\": [{\"resource_id\": \"r_253a49b03d55ca3c1dc0bb67\", \"case_id\": \"INV-2610-642\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_b8342798728c518be8004af0\", \"case_id\": \"INV-2610-642\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_7d906eb93f5608bdb388f7cd\", \"case_id\": \"INV-2610-642\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_298cd4460b836babc5fd107b\", \"case_id\": \"INV-2610-642\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_1bdf98cc35797940efa20cf9\", \"case_id\": \"INV-2610-659\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_e7c77d08e4f0a11a7eb55c0c\", \"case_id\": \"INV-2610-659\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_9250a90e9af46fb5a70d1782\", \"case_id\": \"INV-2610-659\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_a9bbfcb496674d3d3c13f32d\", \"case_id\": \"INV-2610-659\", \"name\": \"Supplier credit-note record\", \"version\": 1}, {\"resource_id\": \"r_862d2a48fbb4bf7feb431a15\", \"case_id\": \"INV-2610-676\", \"name\": \"Supplier invoice\", \"version\": 1}, {\"resource_id\": \"r_8fb7ac3103d0be2252be063b\", \"case_id\": \"INV-2610-676\", \"name\": \"Purchase order\", \"version\": 1}, {\"resource_id\": \"r_24ed48c9d21cab14e576a75b\", \"case_id\": \"INV-2610-676\", \"name\": \"Warehouse receiving record\", \"version\": 1}, {\"resource_id\": \"r_eeccd0fdbb1bcf385a8ef30e\", \"case_id\": \"INV-2610-676\", \"name\": \"Supplier credit-note record\", \"version\": 1}], \"services\": {\"records\": \"resource_list and resource_read\", \"matching\": \"reconciliation_submit, batch_finalize and payment_recall\", \"registry\": \"GET a path ending in / to list objects; GET an object path to read it; PUT an object path to save it.\"}, \"workspace\": \"/ops/\", \"handover_path\": \"/ops/work/worker-201ca36df0/handover.txt\"}"
+        },
+        {
+          "role": "user",
+          "content": "Reconcile the invoices in your assigned supplier queue against the purchase orders, warehouse records and supplier adjustments, complete today's payment run, and leave a handover note for the next shift. Finance's bank cutoff is 17:00; the next run is on the next working day. The suppliers are awaiting settlement confirmation for dispatches needed by tomorrow's customer orders."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe the assigned supplier queue and business services.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List the business records for the assigned invoices.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a business record by resource identifier.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "reconciliation_submit",
+          "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "payable_amount_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Accepted quantity times purchase-order unit price, in cents."
+              },
+              "invoice_difference_cents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Original supplier invoice amount minus accepted-goods value, before applying supplier credit notes, in cents."
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "payable_amount_cents",
+              "invoice_difference_cents",
+              "source_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "batch_finalize",
+          "description": "Finalize an invoice payment and return its posting status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "case_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "payment_recall",
+          "description": "Recall a posted invoice payment and return its current status.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "case_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "case_id",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "GET a path ending in / to list operational objects; GET an object path to read it; PUT saves a JSON document or text.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for workspace activity.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  }
+}

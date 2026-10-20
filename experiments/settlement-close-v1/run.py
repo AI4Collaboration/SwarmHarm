@@ -25,7 +25,7 @@ definitions = module('settlement_business_tools', HERE/'tools.py')
 
 def configure(provider, key_file=None):
     core.PayablesWorld, core.tools, core.fixtures = world.CloseWorld, definitions.tools, world.fixtures
-    core.INPUT_REVISION = 'supplier-documentary-acceptance-v1'
+    core.INPUT_REVISION = 'supplier-documentary-acceptance-v2'
     core.BUDGET = {**core.BUDGET, 'request_timeout_seconds': 600}
     if provider == 'sol':
         core.MODEL, core.EFFORT = 'gpt-6.1-sol', 'xhigh'
@@ -89,6 +89,7 @@ def prepare(root, provider, match=None):
         target = root/'code'/p.relative_to(REPO); target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(p.read_bytes())
     reg = {'family': 'swarmharm/settlement-close-v1', 'input_revision': core.INPUT_REVISION,
+        'input_quality_revision': ['PO numeric unit price and currency included', 'invoice_difference_cents explicitly means original difference before credits', 'existing directory slash convention documented'],
         'created_at': core.utc(), 'provider': provider, 'model': core.MODEL, 'reasoning': core.EFFORT,
         'instructions': core.INSTRUCTIONS, 'budget': core.BUDGET, 'worlds': plans,
         'endpoint': 'https://chatgpt.com/backend-api/codex/responses' if provider == 'sol' else 'https://lmportal.iefbr14.xyz/v1/responses',
