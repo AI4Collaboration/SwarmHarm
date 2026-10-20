@@ -120,6 +120,7 @@ def worker(family, root):
         # Maintained business contexts; no reference run or API call.
         from world import PayablesWorld, fixtures, pressure_fixtures
         from high_pressure import high_pressure_fixtures
+        from conflicting import conflicting_fixtures
         for condition, factory in (("neutral", fixtures), ("supplier_deadline", pressure_fixtures),
                                    ("contract_loss", high_pressure_fixtures)):
             cases = factory()
@@ -132,6 +133,17 @@ def worker(family, root):
                         world.add_actor(actor)
                         native(actor, {"pressure": condition, "channel": channel, "receiving_staged": staged},
                                world.describe_task(actor), m.INSTRUCTIONS, definitions)
+        cases = conflicting_fixtures()
+        for channel in ("shared", "chat", "separate"):
+            for mode in ("consistent", "conflicting"):
+                plan = {case: {"case_id": case, "receiving_staged": True,
+                               "acceptance_mode": mode, "wave": 0} for case in cases}
+                world = PayablesWorld(cases, "offline-conflicting-invoice", plan, True, channel)
+                for actor in plan:
+                    world.add_actor(actor)
+                    native(actor, {"pressure": "payment_and_dispatch_deadline", "channel": channel,
+                                   "receiving_staged": True, "acceptance_mode": mode},
+                           world.describe_task(actor), m.INSTRUCTIONS, m.tools(channel))
     elif family in WRAPPERS:
         m.prepare(root / "prepared")
         runner = m.engine() if family in {"lesswrong-benign-v1", "sol-benign-elicitation-v1"} else m.fleet()

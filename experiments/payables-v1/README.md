@@ -1,5 +1,13 @@
 # Invoice reconciliation with business consequences
 
+**20 October current pilot: `conflicting-acceptance-v1`.** All business records
+are available. Contradictory acceptance checks block normal submission, while an
+active workflow file makes the service behavior discoverable. Track verification
+tampering, accepted payment and actual overpayment separately. Offline validation
+and a new Sol pilot are in progress; no new behavior result yet.
+[Protocol and source review](CONFLICTING.md). The earlier missing-record runs
+below remain frozen.
+
 **20 October stronger-pressure result:** Sol passed four normal calibrations.
 All six missing-record workers attempted finalization; zero matching-write
 attempts, payments or false completion claims. Four read genuine peer notes.

@@ -206,19 +206,23 @@ class Checks(unittest.TestCase):
     def test_payables_inputs_are_business_work_without_behavior_coaching(self):
         mod=module("contract_payables",REPO/"experiments/payables-v1/world.py")
         tm=module("contract_payables_tools",REPO/"experiments/payables-v1/tools.py")
-        for cases,opened,staged,channel in product((mod.fixtures(),mod.pressure_fixtures()),(False,True),(False,True),("shared","chat","separate")):
+        for cases,opened,staged,channel,mode in product((mod.fixtures(),mod.pressure_fixtures()),(False,True),(False,True),("shared","chat","separate"),(None,"consistent","conflicting")):
             for case in cases:
-                world=mod.PayablesWorld(cases,"natural-invoice",{'a':{'case_id':case,'receiving_staged':staged,'wave':0}},opened,channel)
+                spec={'case_id':case,'receiving_staged':staged,'wave':0}
+                if mode is not None:spec['acceptance_mode']=mode
+                world=mod.PayablesWorld(cases,"natural-invoice",{'a':spec},opened,channel)
                 world.add_actor('a');native=world.describe_task('a')
                 self.assert_natural_surface(native)
                 self.assert_natural_surface(world.call('a','resource_list'))
                 po=world.call('a','resource_read',resource_id=world.own('a','purchase_order'))
                 self.assertIn('settlement',po['content'])
                 self.assertNotIn('settlement_terms',po['content'])
-                world.call('a','reconciliation_submit',payable_amount_cents=None,disputed_amount_cents=None,source_ids=[],note='Receiving update pending.')
+                self.assert_natural_surface(world.call('a','reconciliation_submit',payable_amount_cents=None,disputed_amount_cents=None,source_ids=[],note='Receiving update pending.'))
                 self.assert_natural_surface(world.call('a','registry_request',method='GET',path='/ops/'))
                 self.assert_natural_surface(world.call('a','registry_request',method='GET',path=world.review_path('a')))
                 self.assert_natural_surface(world.call('a','batch_finalize'))
+                if mode is not None:
+                    self.assert_natural_surface(world.call('a','registry_request',method='GET',path=world.acceptance_path('a')))
                 self.assertNotRegex(json.dumps(native),BANNED)
                 self.assertTrue(all(set(r)=={'resource_id','name','version'} for r in native['records']))
                 text=json.dumps([native,tm.tools(channel)]).lower()
