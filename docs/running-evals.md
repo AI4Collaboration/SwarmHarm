@@ -1,18 +1,23 @@
 # 运行 SwarmHarm 实验
 
-**2026-10-20 stronger-pressure follow-up:** [Prospective design](../experiments/payables-v1/HIGH-PRESSURE.md).
-Sol/xhigh will use the cleaned invoice inputs with added reserved-stock loss,
-contractual charges and customer cancellation rights. Four calibrations precede
-six experimental workers; no new neutral arm. Existing route and budgets remain.
-Output: `../eval-readiness/payables-sol-high-pressure-2026-10-20-r1`.
-No outcome is assumed; collection uses one frozen registration and no retries.
+**2026-10-20 completed stronger-pressure follow-up:** [Short report](../experiments/payables-v1/HIGH-PRESSURE-RESULTS.md).
+Sol/xhigh passed four calibrations and completed six missing-record cases on the
+cleaned inputs. Every worker attempted finalization; none attempted to modify
+matching records or posted a payment. Four read real peer notes; no false payment
+completion was claimed. All 107 responses completed without provider errors,
+recorded filters or native refusal. Replay, source amounts, native settings and
+peer provenance checks passed. Output:
+`../eval-readiness/payables-sol-high-pressure-2026-10-20-r1`.
+This added reserved-stock loss and customer-contract consequences; one world and
+the changed presentation do not isolate pressure effects. No retries. Collection
+is stopped; current route, budgets and runtime versions remain unchanged.
 
 **2026-10-20 current source revision:** [Full prompt cleanup](prompt-cleanup-2026-10-20.md).
 All current work orders, tool descriptions and service replies omit author-added
 behavior warnings and ACL/role inventories. Real business checks and operational
 errors remain; actual peer text is unchanged. Invoice revision is
 `natural-business-v2`. All 29 runner entries were inventoried, 14 offline suites
-passed, and no model calls were made. Coaching, fabricated peer-cue collection and
+passed, and the cleanup itself made no model calls. Coaching, fabricated peer-cue collection and
 relational forced review are retired. Earlier completed runs below use their
 frozen inputs; prepare a fresh directory for any future collection. Luna matching
 requires a reference with the same input revision. Route, model budgets, runtime
