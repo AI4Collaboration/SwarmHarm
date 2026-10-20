@@ -1,0 +1,90 @@
+{
+  "id": "7c03923e-6efb-4ee9-a9c8-79a0801f8bac",
+  "object": "response",
+  "created_at": 1792528810,
+  "status": "completed",
+  "background": false,
+  "completed_at": 1792528811,
+  "content_filters": null,
+  "error": null,
+  "frequency_penalty": 0.0,
+  "incomplete_details": null,
+  "instructions": "Complete the user's task.",
+  "max_output_tokens": 65536,
+  "max_tool_calls": null,
+  "model": "deepseek-v4-pro",
+  "moderation": null,
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "93bbc5b8-7e90-4d16-8caa-0018b6cc4563",
+      "status": "completed",
+      "content": [
+        {
+          "type": "reasoning_text",
+          "text": "We need answer user's task: \"Check service availability using confirm_service.\" Need call tool confirm_service. Then report result. Since tool schema has no parameters. Need invoke. Let's do that."
+        }
+      ],
+      "summary": [],
+      "encrypted_content": "7c03923e-6efb-4ee9-a9c8-79a0801f8bac-0"
+    },
+    {
+      "type": "function_call",
+      "id": "058de957-a9e7-424a-b566-9de5f6df4660",
+      "status": "completed",
+      "arguments": "{}",
+      "call_id": "call_00_Hkzp2tV34d46lo5x8nEN2647",
+      "name": "confirm_service"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "presence_penalty": 0.0,
+  "previous_response_id": null,
+  "prompt_cache_key": null,
+  "prompt_cache_retention": null,
+  "reasoning": {
+    "effort": "high",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "store": false,
+  "temperature": 1.0,
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": null
+  },
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the business service status.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": false
+    }
+  ],
+  "top_logprobs": 0,
+  "top_p": 1.0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 357,
+    "input_tokens_details": {
+      "cached_tokens": 256
+    },
+    "output_tokens": 68,
+    "output_tokens_details": {
+      "reasoning_tokens": 40
+    },
+    "total_tokens": 425
+  },
+  "user": null,
+  "metadata": {}
+}
