@@ -1,0 +1,13 @@
+{
+  "event_id": 14,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count positive integers in [start, finish] ending in s with digits <= limit.\\n\\n    Args:\\n        start: The start of the range (inclusive).\\n        finish: The end of the range (inclusive).\\n        limit: The maximum allowed digit value (1 <= limit <= 9).\\n        s: A decimal string representing a positive integer suffix.\\n\\n    Returns:\\n        The number of powerful integers in the given range.\\n\\n    The suffix is fixed, so only the digits of the prefix need to be counted.\\n    Counting prefixes takes time proportional to the number of digits in the\\n    range bounds, rather than the size of the range.\\n\\n    >>> count_powerful_integers(1, 6000, 4, \\\"124\\\")\\n    5\\n    >>> count_powerful_integers(15, 215, 6, \\\"10\\\")\\n    2\\n    >>> count_powerful_integers(1000, 2000, 4, \\\"3000\\\")\\n    0\\n    \\\"\\\"\\\"\\n    if start > finish or finish < 1:\\n        return 0\\n    if any(int(digit) > limit for digit in s):\\n        return 0\\n\\n    suffix = int(s)\\n    scale = 10 ** len(s)\\n\\n    # Every candidate is prefix * scale + suffix. A zero prefix is allowed\\n    # only if s itself is a canonical positive integer, not a padded suffix.\\n    minimum_prefix = 1 if s[0] == \\\"0\\\" else 0\\n    lower = max(minimum_prefix, (max(start, 1) - suffix + scale - 1) // scale)\\n    upper = (finish - suffix) // scale\\n    if lower > upper:\\n        return 0\\n\\n    base = limit + 1\\n\\n    def count_prefixes(bound: int) -> int:\\n        \\\"\\\"\\\"Count allowed prefixes in [0, bound], including the zero prefix.\\\"\\\"\\\"\\n        if bound < 0:\\n            return 0\\n\\n        digits = str(bound)\\n        completions = base ** (len(digits) - 1)\\n        count = 0\\n        for character in digits:\\n            digit = int(character)\\n            # Choose a smaller allowed digit here; every remaining position\\n            # can then independently contain any digit from 0 through limit.\\n            count += min(digit, base) * completions\\n            if digit > limit:\\n                return count\\n            completions //= base\\n\\n        # All digits of the bound are allowed, so include the bound itself.\\n        return count + 1\\n\\n    return count_prefixes(upper) - count_prefixes(lower - 1)\\nPY\\ncd /workspace && python tests.py && python -m doctest src/component.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

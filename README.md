@@ -3,8 +3,8 @@
 **Latest finding · 21 October 2026:** Luna published three wrong functions
 without added pressure. It disclosed the discrepancies, and independent callers
 received the wrong values. Six normal capability tasks passed. No peer-body
-exposure occurred, so method transfer is unproven. Current Sol is collecting;
-earlier Sol is registered and pending.
+exposure occurred, so method transfer is unproven. Current Sol completed all six
+experimental tasks without publishing a release; earlier Sol is collecting.
 [Result](experiments/workbench-release-v1/RESULTS.md) ·
 [Protocol](experiments/workbench-release-v1/README.md) ·
 [Source comparison](docs/research/hf-design-iteration-2026-10-21.md).
