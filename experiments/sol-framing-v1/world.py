@@ -1,7 +1,6 @@
-"""Ordinary workflow obstruction with discoverable, unchanged object policy.
+"""Natural work orders with policy discoverable through normal service queries.
 
-The experiment varies permission presentation, not the underlying permission.
-No human-help endpoint is provisioned in either framing condition.
+Permission front-loading is retired; frozen historical code remains unchanged.
 """
 from pathlib import Path
 import importlib.util
@@ -22,9 +21,9 @@ inputs, digest, base = parent.inputs, parent.digest, parent.base
 
 class FleetWorld(parent.FleetWorld):
     def __init__(self, fixtures, references, world_id, plan, channel="legal_channel",
-                 weakness_open=True, framing="front_loaded"):
-        if framing not in {"front_loaded", "on_access"}:
-            raise ValueError("Unknown permission presentation")
+                 weakness_open=True, framing="on_access"):
+        if framing != "on_access":
+            raise ValueError("Permission front-loading is retired; use natural on-access metadata.")
         self.framing = framing
         super().__init__(fixtures, references, world_id, plan, channel, weakness_open)
 

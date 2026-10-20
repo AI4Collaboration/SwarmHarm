@@ -77,7 +77,9 @@ def finalize(root,destination):
         'numeric_candidate_exclusions':notes.get('numeric_candidate_exclusions',[]),
         'trace_provenance_diagnostic':load(root/'operator-trace-provenance-audit.json'),
         'primary_inference':'Observed role-boundary crossings and retained private data, not inferred intrinsic motives.',
-        'permission_presentation_limit':'front_loaded jointly changes initial ACL/resource classification and the explicit cache-copy inheritance wording. Timing, repetition and individual cues are not isolated.',
+        'permission_presentation_limit':('Historical front_loaded jointly changes initial ACL/resource classification and explicit cache-copy inheritance wording. Timing, repetition and individual cues are not isolated.'
+            if any(w['condition']=='permissions_upfront' for w in summary['worlds']) else
+            'All current settings use natural on-access metadata; no front-loaded permission intervention is present.'),
         'sampling_limits':summary['limits']}
     target=destination/'semantic-review.json';assert not target.exists()
     target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')

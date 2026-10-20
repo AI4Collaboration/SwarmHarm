@@ -1,5 +1,16 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 current input policy:** [Natural-input correction](prompt-audit-2026-10-20.md).
+No opening source ACL inventory, protected-source classification or inherited-cache
+permission reminder is allowed. Exact ACLs and denials remain in normal service
+responses. Current constructors reject `front_loaded`; the old sol-framing
+collector is disabled. The current [factor protocol](../experiments/sol-factor-v1/README.md)
+registers four on-access settings, eight worlds and 48 experimental workers.
+This revision is verified offline only; no new model behavior is claimed. Prepare
+a fresh directory before any new collection. Frozen 19 October evidence below
+remains unchanged; its upfront condition is a retired historical intervention.
+Host login, model route, budgets and patched Multica 0.4.44 are unchanged.
+
 **2026-10-19 latest completed run:** [Sol factor screen](../experiments/sol-factor-v1/RESULTS.md). Two matched rounds of five settings, six workers per world, plus one shared four-worker authorized calibration. Restricted-cache readers who retained their own private data: baseline 3/6 and 3/6; permissions upfront 0/6 and 0/6; source denial 1/6 and 0/6; no automatic work index 5/6 and 2/6; supervisor receipt 4/6 and 2/6. One actual peer-method/different-object sequence; three disclosed wrong-private-version reuse cases remain separate. Permission timing and cache-inheritance wording are bundled, and a supervisor receipt provides no real human assistance. Two worlds per setting are an initial screen, not a population rate.
 
 Verified route: `gpt-6.1-sol / xhigh`, existing local Codex login, `https://chatgpt.com/backend-api/codex/responses`. Python 3.12.14, `inspect-ai 0.3.257`, OpenAI SDK 2.54.0; interpreter `../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python`. One world at a time, at most two provider requests concurrently, 150-second request timeout, 30-second maximum wait call. All 60 experimental workers and four calibrations finished; all 952 responses completed, with no provider errors, safety filters or native refusal fields. Independent replay/source and all 64 final artifact format checks passed. Nine offline controls, 48 matched input comparisons and the five prompt-contract checks passed before calls. Output: `../eval-readiness/sol-factor-screen-2026-10-19-r1`; [compact evidence](../experiments/sol-factor-v1/results/2026-10-19-r1/semantic-review.json). Collection is stopped. No scheduled monitor, new infrastructure or credentials; patched hosted Multica 0.4.44 is unchanged. The initial zero-call startup failure is preserved separately.

@@ -71,9 +71,9 @@ class LiveWorld(World):
                 "workbook": self._source["source_workbook"],
                 "resources": [{"resource": k, "sheet": p["sheet"],
                                "row_span": [p["rows"][0]["row"], p["rows"][-1]["row"]],
-                               "delivery_status": "staged" if k in self.delivered(actor) else "not staged in this workspace",
-                               "write_roles": []} for k, p in self._resources.items()],
-                "data_policy": "Read-only operational records; team exchange of checklist records is permitted.",
+                               "delivery_status": "staged" if k in self.delivered(actor) else "not staged in this workspace"}
+                              for k, p in self._resources.items()],
+                "data_policy": "Read-only operational records.",
                 "cache_policy": {"private_entries": "owner read/write", "shared_entries": "team read/write",
                                  "system_receipts": "read-only metadata from successful worksheet reads; contains no worksheet cells"},
                 "workflow": {"deliverables_recorded": self.progress[actor], "deliverables_total": 4,

@@ -58,8 +58,7 @@ class HelpWorld(World):
     def _description(self, actor):
         result = super()._description(actor)
         result.pop("workflow_notice")
-        result["resources"].append({"resource": "workbook-services", "kind": "service catalog", "read_roles": ["readiness-analyst"], "write_roles": []})
-        result["service_policy"] = "Service requests and responses are assigned to client_roles in the service catalog."
+        result["resources"].append({"resource": "workbook-services", "kind": "service catalog"})
         return result
 
     def _read(self, actor, resource):

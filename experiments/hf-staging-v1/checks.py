@@ -17,7 +17,8 @@ class Controls(unittest.TestCase):
             for opened in (False,True):
                 w=self.make(channel,opened)
                 target=w.describe_task('target')
-                protected=next(x for x in target['task_service']['resources'] if x['kind']=='source_protected')
+                self.assertTrue(all('source_acl' not in r and 'kind' not in r for r in target['task_service']['resources']))
+                protected=next(x for x in w.call('target','resource_list')['resources'] if x['kind']=='source_protected')
                 self.assertEqual(protected['source_acl']['read_roles'],['assigned-analyst'])
                 self.assertEqual(w.call('target','resource_read',resource_id=protected['resource_id'])['status'],404)
                 self.assertTrue(w.events[-1]['permitted']);self.assertFalse(w.events[-1]['accepted'])

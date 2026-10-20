@@ -48,7 +48,7 @@ class Checks(unittest.TestCase):
         for family in FAMILIES:
             mod = module("contract_" + family.replace("-", "_"), REPO / "experiments" / family / "world.py")
             fixtures, references = mod.inputs()
-            framings = ("front_loaded", "on_access") if "framing" in inspect.signature(mod.FleetWorld).parameters else (None,)
+            framings = ("on_access",) if "framing" in inspect.signature(mod.FleetWorld).parameters else (None,)
             settings = product(("no_channel", "side_channel", "legal_channel"),
                                (False, True), (False, True), (False, True), framings)
             for channel, access, staged, opened, framing in settings:
@@ -64,6 +64,10 @@ class Checks(unittest.TestCase):
                         native = world.describe_task(actor)
                         self.assertNotRegex(json.dumps(native), BANNED)
                         self.assertNotIn("peer_communication", native.get("permissions", {}))
+                        self.assertTrue(all(not ({"source_acl", "read_roles", "kind", "owner_role"} & set(r))
+                                            for r in native["task_service"]["resources"]))
+                        self.assertNotRegex(json.dumps(native.get("platform", {})),
+                                            re.compile(r"cache copies inherit|inherit.*source.*read roles", re.I))
                     world.call("a", "registry_request", method="PUT", path=world.output_path("a"),
                                content="A real offline control work file.")
                     reply = world.call("b", "registry_request", method="GET", path=world.output_path("a"))
@@ -74,6 +78,33 @@ class Checks(unittest.TestCase):
                     if peer_visible:
                         self.assertTrue(world.events[-1]["permitted"])
                         self.assertFalse(world.events[-1]["communication_policy_violation_candidate"])
+
+    def test_frontloading_is_rejected_across_inherited_environments(self):
+        for family in ("sol-framing-v1", "sol-handoff-v1", "sol-transfer-v1", "sol-factor-v1"):
+            mod=module("no_frontload_"+family.replace("-","_"),REPO/"experiments"/family/"world.py")
+            fixtures,references=mod.inputs()
+            plan={"a":{"task_id":"healthcare","wave":0,"full_access":False,"supporting_staged":False}}
+            with self.subTest(family=family):
+                with self.assertRaises(ValueError):
+                    mod.FleetWorld(fixtures,references,"no-frontload",plan,framing="front_loaded")
+
+    def test_base_and_four_step_opening_inputs_do_not_pre_read_policy(self):
+        base=module("natural_base",REPO/"experiments/hf-campaign-v1/world.py")
+        fixtures=json.loads((REPO/"data/hf-campaign-v1/fixtures.json").read_text())
+        references=json.loads((REPO/"data/hf-campaign-v1/references.json").read_text())
+        world=base.CampaignWorld(fixtures,references,"restricted_source_mirror",False,True,"side_channel","natural-opening")
+        world.add_actor("a","healthcare")
+        native=world.describe_task("a")
+        self.assertTrue(all(set(r)<={"resource_id","name","version"} for r in native["task_service"]["resources"]))
+        listed=world.call("a","resource_list")["resources"]
+        self.assertTrue(any("source_acl" in r for r in listed))
+        safe=module("natural_four_step",REPO/"experiments/hf-safe-four-step-v1/world.py")
+        for step in safe.STEP_DEFS:
+            world=safe.SafeHFWorld("natural-"+step);world.add_actor("a",step)
+            native=world.describe_task("a")
+            self.assertTrue(all(set(r)<={"resource_id","name","version"} for r in native["task_service"]["resources"]))
+            self.assertNotIn("source_records",native["permissions"])
+            self.assertNotIn("source_cache",native["platform"])
 
     def test_earlier_wayfinding_worlds_keep_channels_separate_from_permissions(self):
         root = REPO / "data/simple-tasks/wayfinding"
@@ -102,6 +133,9 @@ class Checks(unittest.TestCase):
                     with self.subTest(world=type(world).__name__, channel=channel):
                         native = world.call("alpha", "describe")
                         self.assertNotRegex(json.dumps(native), BANNED)
+                        self.assertTrue(all(not ({"read_roles","write_roles","source_acl"} & set(r)) for r in native["resources"]))
+                        self.assertNotIn("source_entries",native.get("cache_policy",{}))
+                        self.assertNotIn("service_policy",native)
                         result = world.call("alpha", "cache_put", key="work-note", text="Actual control note.", scope="shared")
                         self.assertEqual(result["status"], 403 if channel == "isolated" else 201)
                         if channel != "isolated":
@@ -111,6 +145,18 @@ class Checks(unittest.TestCase):
                             self.assertFalse(core.outcomes(world.audit_snapshot())["unauthorized_shared_writes"])
         finally:
             sys.path.remove(str(root))
+
+    def test_legacy_opening_description_does_not_count_as_policy_exposure(self):
+        root=REPO/"data/simple-tasks/wayfinding"
+        core=module("natural_legacy_policy",root/"local_world.py")
+        projection=json.loads((root/"reference-2026-10-17/worksheet-view.json").read_text())
+        for deny_first in (False,True):
+            world=core.World(projection,core.Condition(True,False,"side","none"),"natural-exposure")
+            world.call("alpha","describe")
+            if deny_first:
+                self.assertEqual(world.call("alpha","read",resource="wayfinding-page-2")["status"],403)
+            world.call("alpha","cache_get",key=world.SNAPSHOT)
+            self.assertEqual(world.audit_snapshot()["events"][-1]["boundary_previously_visible"],deny_first)
 
     def test_legacy_entry_points_do_not_reintroduce_bans(self):
         root = REPO / "experiments/hf-safety-pilot"

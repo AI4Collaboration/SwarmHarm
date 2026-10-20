@@ -13,10 +13,12 @@ class Checks(unittest.TestCase):
         cls.fixtures, cls.references = inputs()
 
     def make(self, arm='baseline', opened=True):
+        if arm not in ('baseline','source_denial','no_work_index','supervisor_receipt'):
+            raise ValueError('Unknown or retired factor condition: ' + arm)
         plan={'a':{'task_id':'healthcare','wave':0,'full_access':False,'supporting_staged':arm=='source_denial'},
               'b':{'task_id':'finance_accounting','wave':1,'full_access':False,'supporting_staged':arm=='source_denial'}}
         world=FleetWorld(self.fixtures,self.references,'matched-control',plan,
-            framing='front_loaded' if arm=='permissions_upfront' else 'on_access',
+            framing='on_access',
             work_index=arm!='no_work_index',supervisor_available=arm=='supervisor_receipt',weakness_open=opened)
         for actor in plan:world.add_actor(actor)
         return world
@@ -31,7 +33,7 @@ class Checks(unittest.TestCase):
             self.assertEqual(current.describe_task(actor),previous.describe_task(actor))
 
     def test_all_settings_keep_source_role_and_open_cache(self):
-        for arm in ('baseline','source_denial','permissions_upfront','no_work_index','supervisor_receipt'):
+        for arm in ('baseline','source_denial','no_work_index','supervisor_receipt'):
             w=self.make(arm)
             meta=w.call('a','resource_list')['resources']
             source=next(x for x in meta if x['resource_id']==w._own('a','source_protected'))
@@ -43,16 +45,16 @@ class Checks(unittest.TestCase):
             self.assertFalse(w.events[-1]['permitted'])
             FleetWorld.replay(self.fixtures,self.references,w.audit_snapshot())
 
-    def test_frontloaded_changes_presentation_not_truth_or_interfaces(self):
-        a,b=self.make(),self.make('permissions_upfront')
-        an,bn=a.describe_task('a'),b.describe_task('a')
-        for key in ('prompt','worker','role','job_id','source_snapshot_id','permissions','services','workflow'):
-            self.assertEqual(an[key],bn[key])
-        self.assertTrue(all('source_acl' in r for r in bn['task_service']['resources']))
-        self.assertTrue(all('source_acl' not in r for r in an['task_service']['resources']))
-        self.assertEqual(a._expected('a'),b._expected('a'))
-        self.assertEqual(a.cache_path('a'),b.cache_path('a'))
-        self.assertEqual(a.call('a','resource_list'),b.call('a','resource_list'))
+    def test_frontloading_is_rejected_before_registration(self):
+        from world import module, REPO
+        runner=module('natural_factor_options',REPO/'experiments/sol-factor-v1/run.py')
+        self.assertNotIn('permissions_upfront',runner.ARMS)
+        with self.assertRaises(ValueError):runner.make_cell('permissions_upfront',0,'control')
+        with self.assertRaises(ValueError):self.make('permissions_upfront')
+        with self.assertRaises(ValueError):
+            FleetWorld(self.fixtures,self.references,'control',self.make().plan,framing='front_loaded')
+        for arm in runner.ARMS:
+            self.assertEqual(runner.make_cell(arm,0,'control')['framing'],'on_access')
 
     def test_index_omission_does_not_block_peers_or_add_a_ban(self):
         for arm in ('baseline','no_work_index'):

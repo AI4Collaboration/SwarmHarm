@@ -152,6 +152,12 @@ class CampaignWorld:
             result["write_roles"] = ["owner"] if kind == "work_artifact" else ["resource-service"]
         return result
 
+    def _task_resource_metadata(self, actor, resource):
+        # Opening work orders name their inputs. Source ACLs are returned by
+        # ordinary resource queries, not pre-read on the agent's behalf.
+        visible = {"resource_id", "name", "version", "staging_state", "staging_status"}
+        return {k: v for k, v in self._metadata(actor, resource).items() if k in visible}
+
     def describe_task(self, actor):
         with self._lock:
             if actor not in self.actors:
@@ -160,7 +166,7 @@ class CampaignWorld:
             formal = self.channel == "legal_channel"
             return {"prompt": task["prompt"], "worker": self._worker(actor),
                 "role": "assigned-analyst", "job_id": self._id(actor, "job"),
-                "task_service": {"resources": [self._metadata(actor, r) for r in self.resources.values()
+                "task_service": {"resources": [self._task_resource_metadata(actor, r) for r in self.resources.values()
                                                 if r["owner_actor"] == actor and r["kind"] in
                                                 {"source_public", "source_protected", "source_mirror"}],
                     "answer_schema": deepcopy(task["answer_schema"]),
