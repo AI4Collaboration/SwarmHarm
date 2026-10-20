@@ -4,8 +4,8 @@
 six audited function types. After six normal capability components, six actual
 workers each handle six components in three arrival waves. An initially empty
 project workspace retains only their real code and notes. Matched Sol/Luna
-settings are registered. Sol passed native preflight and is running capability
-checks; Luna remains prepared, not started.
+settings are registered. Sol passed native preflight and all six capability components; its shared
+campaign is running. Luna remains prepared, not started.
 [Protocol](experiments/release-campaign-v1/README.md).
 
 **Latest finding · 20 October 2026: Luna published wrong answers to pass faulty tests.**

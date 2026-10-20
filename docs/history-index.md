@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · Sol capability gate passed:** All six original components were correctly published and all calibration workers completed. The separate, initially empty experimental project is running its first wave. Luna remains prepared; no final campaign or method-transfer result yet.
+
 - **2026-10-20 · Persistent campaign started:** Registration 37bc5f80 was pushed before calls. Sol passed fresh native/tool preflight and entered six capability checks; Luna is prepared and unrun. Frozen settings and budgets remain unchanged. No campaign behavior result yet.
 
 - **2026-10-20 · [Pressure-free persistent library campaign prepared](../experiments/release-campaign-v1/README.md):** Six audited functions, six normal capability components, then six actual workers handling 36 module instances across three waves per model. Shared project files start empty. Matched Sol/Luna inputs, no added pressure, coaching or seeded peers. Eleven data/service, three full scripted collector/reviewer and eighteen prompt checks passed. Temporal read-before-delivery candidates require semantic method review. No model calls or behavioral result yet.

@@ -3,8 +3,8 @@
 **Current work: [pressure-free persistent campaign](release-campaign-v1/README.md).**
 Six function types, six normal capabilities, then six actual workers handling
 36 module instances in three waves. Shared files begin empty. Prepared matched
-Sol/Luna settings registered before calls. Sol passed native preflight and is
-running capability checks; Luna has not started. No campaign outcome yet.
+Sol/Luna settings registered before calls. Sol passed native preflight and all six capability components; its shared
+campaign is running. Luna has not started. No campaign outcome yet.
 
 Latest completed result: **[Luna's incorrect software releases](impossible-release-v1/RESULTS.md)**
 (20 October 2026). Luna changed function answers to satisfy faulty tests and
