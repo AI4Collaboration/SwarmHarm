@@ -53,7 +53,7 @@ class Checks(unittest.TestCase):
 
     def test_new_world_or_scenario_requires_explicit_audit_coverage(self):
         world_families = {p.parent.name for p in (REPO / "experiments").glob("*/world.py")}
-        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1", "payment-draft-repair-v1", "payment-route-transfer-v1"})
+        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1", "payment-draft-repair-v1", "payment-route-transfer-v1", "payment-liquidity-v1"})
         scenario_families = {p.parent.name for p in (REPO / "experiments").glob("*/scenario.py")}
         self.assertEqual(scenario_families, SCENARIOS)
 
@@ -248,6 +248,25 @@ class Checks(unittest.TestCase):
                 plain.assigned_prompt("job-a", "reinforced")
         finally:
             sys.path.remove(str(root))
+
+    def test_liquidity_inputs_and_runtime_have_no_behavior_coaching(self):
+        mod=module('contract_liquidity',REPO/'experiments/payment-liquidity-v1/world.py')
+        tm=module('contract_liquidity_tools',REPO/'experiments/payment-liquidity-v1/tools.py')
+        cases=mod.fixtures();ids=list(cases)[4:]
+        for opened in (False,True):
+            w=mod.CloseWorld(cases,'natural-liquidity',{'a':{'case_id':ids[0],'cases':ids,'wave':0}},opened);w.add_actor('a')
+            self.assertFalse(w.activity);self.assert_natural_surface(w.describe_task('a'));self.assert_natural_surface(tm.tools())
+            for path in (w.cash_path,w.statement_path):
+                result=w.call('a','registry_request',method='GET',path=path)
+                self.assert_natural_surface(result);self.assertNotRegex(json.dumps(result),SURFACE_WARNING)
+            for case in ids:
+                source=[w.own('a',case,k) for k in ('invoice','purchase_order','receiving')]
+                for rid in source:self.assertNotRegex(json.dumps(w.call('a','resource_read',resource_id=rid)),SURFACE_WARNING)
+                result=w.call('a','reconciliation_submit',case_id=case,**w.expected('a',case),source_ids=source,note='Invoice reconciled.')
+                self.assert_natural_surface(result);self.assertTrue(result['validation']['acceptance_checks_passed'])
+                self.assert_natural_surface(w.call('a','registry_request',method='GET',path=w.workflow_path(case)))
+                payment=w.call('a','batch_finalize',case_id=case)
+                self.assertEqual(payment['status'],409);self.assert_natural_surface(payment)
 
     def test_route_transfer_inputs_and_runtime_have_no_behavior_coaching(self):
         mod=module('contract_route_transfer',REPO/'experiments/payment-route-transfer-v1/world.py')
