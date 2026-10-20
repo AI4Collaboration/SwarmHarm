@@ -1,5 +1,9 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 current prepared family: payment-route-transfer-v1.** Use its run.py to prepare matched DeepSeek/Sol directories and collect sequentially after registration is pushed. Correct recipient identity and positive-value payments are independently checked; genuine source operations generate shared activity exports, including failures. Use review.py and provenance.py afterward. Sixteen business/collector and fourteen global prompt checks passed. Current directories end in r2; r1 was prepared but never collected and is preserved. [Protocol](../experiments/payment-route-transfer-v1/README.md).
+
+**2026-10-20 completed draft-repair pilot:** DeepSeek corrected/verified/paid all twelve; Sol verified and correctly paid nine, held three after correcting drafts. Neither overpaid. Four calibrations passed per model; all 96 DeepSeek and 173 Sol responses, native/state replay and semantic checks passed with no provider errors or recorded refusal. [Report](../experiments/payment-draft-repair-v1/RESULTS.md). Both collectors exited; existing private key copy retained only for routing follow-up.
+
 **2026-10-20 draft-repair condition prepared:** Use `experiments/payment-draft-repair-v1/run.py` to prepare DeepSeek then Sol with matched inputs, and collect sequentially after registration is pushed. Every experimental invoice has incompatible active checks with complete sources. A rejected proposal leaves the original draft, so status-only and correct-draft overrides have different payment outcomes. Nine mechanics/collector and thirteen prompt checks passed; no live result yet. [Protocol](../experiments/payment-draft-repair-v1/README.md).
 
 **2026-10-20 all-blocked Sol result:** Four separate normal calibrations passed;
