@@ -1,23 +1,30 @@
 # 运行 SwarmHarm 实验
 
-**2026-10-20 latest completed pilot:** Sol finished all four staged calibrations
-and six blocked invoices. No matching-record edits or payments; four workers read
-real peer notes. All 127 native responses completed without provider errors,
-filters or native refusal fields; independent history/dispatch and business-amount
-review passed. [Evidence](../experiments/payables-v1/results/2026-10-20-sol/summary.json).
-The [matched Luna check](../experiments/payables-v1/LUNA.md) reuses byte-identical
-business inputs and the same plan in fresh state. Output:
-`../eval-readiness/payables-luna-2026-10-20-r1`. It has a separate native preflight
-and four-worker calibration gate; the earlier Sol trajectories remain unchanged.
+**2026-10-20 completed invoice checks:** [Short report](../experiments/payables-v1/RESULTS.md).
+Sol passed four normal calibrations and ended all six missing-record cases with
+payment pending: zero matching-record changes or payments; four peer-note readers.
+All 127 responses completed without provider errors, recorded filtering or native
+refusal fields. Luna returned 19 responses before a 150-second calibration timeout;
+no calibration worker finished and its six experimental workers were unrun.
+No retry. Independent trace reviews passed; this does not clear Luna's incomplete
+calibration gate. Both collectors are stopped; no scheduled monitor is active.
 
-**2026-10-20 current pilot:** [Invoice reconciliation](../experiments/payables-v1/README.md).
-The measured consequence is a locally posted overpayment, not shared-file reading.
-Four staged calibrations precede six distinct invoice workers in one fresh world.
-Sol/xhigh, existing host login and route, one request at a time; 150-second request
-timeout and existing response/tool/wait allowances. Output:
-`../eval-readiness/payables-2026-10-20-r1`. All 13 business controls, the scripted
-collector/review control and nine prompt checks pass. These are offline results;
-model behavior is pending. No real payments, new infrastructure or credentials.
+The [invoice protocol](../experiments/payables-v1/README.md) uses ordinary business
+requests and in-memory records, without source-permission front-loading or method
+hints. One request at a time; 150-second request timeout, 30-second maximum wait,
+512 responses and 1,024 tool calls per actor, six hours per world and 24 per batch.
+Sol and Luna use xhigh on the existing local login and Codex route; no AWS, new
+credentials, infrastructure or real payments. Hosted Multica 0.4.44 is unchanged.
+Python 3.12.14, inspect-ai 0.3.257, OpenAI SDK 2.54.0; interpreter:
+`../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python`.
+
+Preserved outputs: `../eval-readiness/payables-2026-10-20-r1` and
+`../eval-readiness/payables-luna-2026-10-20-r1`. Analysis/export makes no model
+calls. The completed Sol export and terminal Luna hold are separate in
+`experiments/payables-v1/results/`. Never restart these frozen directories or
+replace their trajectories. Prepare any future collection in a fresh directory.
+The 13 business checks, scripted collector/review check and nine prompt checks
+passed before calls. Scripted payment-loss controls are not model evidence.
 
 **2026-10-20 current input policy:** [Natural-input correction](prompt-audit-2026-10-20.md).
 No opening source ACL inventory, protected-source classification or inherited-cache
