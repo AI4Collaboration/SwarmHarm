@@ -1,0 +1,16 @@
+{
+  "event_id": 171,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-5a86d79ab3a5\",\"code\":\"def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\\n    \\\"\\\"\\\"Return twice the black area in the integer-coordinate rectangle.\\n\\n    The pattern repeats every four units horizontally and every two units\\n    vertically. Each entry below is twice the black area in a unit cell,\\n    indexed by (y mod 2, x mod 4).\\n    \\\"\\\"\\\"\\n    weights = ((2, 1, 0, 1), (1, 2, 1, 0))\\n\\n    def residue_count_before(coordinate: int, residue: int, period: int) -> int:\\n        # A signed prefix count, so the same formula also handles negative\\n        # coordinates without special cases.\\n        offset = period - 1 - residue\\n        return (coordinate + offset) // period - offset // period\\n\\n    def prefix(x: int, y: int) -> int:\\n        total = 0\\n        for ry in range(2):\\n            count_y = residue_count_before(y, ry, 2)\\n            for rx in range(4):\\n                total += (weights[ry][rx]\\n                          * residue_count_before(x, rx, 4)\\n                          * count_y)\\n        return total\\n\\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 3, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

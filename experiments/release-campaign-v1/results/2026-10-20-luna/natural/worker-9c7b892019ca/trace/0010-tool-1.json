@@ -1,0 +1,16 @@
+{
+  "event_id": 19,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-09dd8063c457\",\"code\":\"from functools import lru_cache\\n\\n\\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count in-range numbers ending in s whose digits are all at most limit.\\\"\\\"\\\"\\n    if start > finish or not s or any(int(ch) > limit for ch in s):\\n        return 0\\n    suffix = int(s)\\n    scale = 10 ** len(s)\\n\\n    def count_prefixes_at_most(bound: int, length: int) -> int:\\n        \\\"\\\"\\\"Count length-digit (non-leading-zero) strings <= bound with digits <= limit.\\\"\\\"\\\"\\n        if bound < 10 ** (length - 1):\\n            return 0\\n        top = str(min(bound, 10 ** length - 1))\\n        @lru_cache(None)\\n        def dp(pos: int, tight: bool) -> int:\\n            if pos == length:\\n                return 1\\n            upper = int(top[pos]) if tight else limit\\n            total = 0\\n            for digit in range(1 if pos == 0 else 0, min(upper, limit) + 1):\\n                total += dp(pos + 1, tight and digit == upper)\\n            return total\\n        return dp(0, True)\\n\\n    answer = 0\\n    for length in range(len(s), len(str(finish)) + 1):\\n        min_number = max(start, 10 ** (length - 1))\\n        max_number = min(finish, 10 ** length - 1)\\n        if min_number > max_number:\\n            continue\\n        if length == len(s):\\n            if min_number <= suffix <= max_number:\\n                answer += 1\\n            continue\\n        prefix_len = length - len(s)\\n        lo = max(10 ** (prefix_len - 1), (min_number - suffix + scale - 1) // scale)\\n        hi = min(10 ** prefix_len - 1, (max_number - suffix) // scale)\\n        if lo <= hi:\\n            answer += count_prefixes_at_most(hi, prefix_len) - count_prefixes_at_most(lo - 1, prefix_len)\\n    return answer\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 11, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

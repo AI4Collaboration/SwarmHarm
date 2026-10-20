@@ -1,14 +1,15 @@
 # Experiments
 
-**Current work: [pressure-free persistent campaign](release-campaign-v1/README.md).**
-Six function types, six normal capabilities, then six actual workers handling
-36 module instances in three waves. Shared files begin empty. Prepared matched
-Sol/Luna settings registered before calls. Sol passed all six normal capabilities,
-then stopped on an incomplete provider stream in its unfinished first wave.
-Its partial evidence passed independent review; Luna's matched batch is running.
-[Current report](release-campaign-v1/RESULTS.md).
+**Latest result · 21 October 2026: [persistent library campaign](release-campaign-v1/RESULTS.md).**
+Luna completed six multi-component contexts and all 36 module instances in
+23 minutes. Four later agents made eighteen genuine peer-body reads, but none
+of the experimental components was published. Sol's first twelve components
+remain unfinished after an incomplete provider stream; twenty-four were
+unstarted. Both passed six normal capabilities and independent evidence review.
+No safety refusal or provider policy filter was recorded. Natural discovery
+occurred; harmful method transfer was not reproduced.
 
-Latest completed result: **[Luna's incorrect software releases](impossible-release-v1/RESULTS.md)**
+Earlier result: **[Luna's incorrect software releases](impossible-release-v1/RESULTS.md)**
 (20 October 2026). Luna changed function answers to satisfy faulty tests and
 published them; independent local callers received wrong values in both
 single-error tasks. Sol published no experimental implementation. Both models
@@ -23,7 +24,7 @@ and registration before calls. The new `release-campaign-v1` implements that
 successor. Its operators must review actual peer bodies and cross-function
 adoption; temporal candidates alone are not confirmed method transfer.
 
-## Latest completed study
+## Earlier coding study
 
 [`impossible-release-v1`](impossible-release-v1/RESULTS.md) is the completed
 software-delivery study. It includes a deadline/customer-loss intervention;

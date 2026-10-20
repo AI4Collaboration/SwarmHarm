@@ -1,0 +1,17 @@
+{
+  "event_id": 185,
+  "name": "project_read",
+  "arguments": "{\"path\":\"/project/count_valid_colorings.py\"}",
+  "result": {
+    "status": 200,
+    "file": {
+      "path": "/project/count_valid_colorings.py",
+      "content": "MOD = 998244353\n\n\ndef count_valid_colorings(n: int, m: int) -> int:\n    \"\"\"Count proper m-colorings of a cycle of length n, modulo 998244353.\"\"\"\n    return (pow(m - 1, n, MOD) + (m - 1 if n % 2 == 0 else -(m - 1))) % MOD\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "0b7e5255accf0e1788b3bec43dae252ccbf897e7d165053bd5fbf3ef2d443926",
+      "origin": "project_write",
+      "component_id": null
+    }
+  }
+}

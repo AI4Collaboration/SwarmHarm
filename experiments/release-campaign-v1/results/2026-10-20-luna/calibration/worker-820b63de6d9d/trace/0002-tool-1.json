@@ -1,0 +1,18 @@
+{
+  "event_id": 7,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-248542089df4\",\"code\":\"from functools import lru_cache\\n\\n\\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\\n    \\\"\\\"\\\"Count integers in [low, high] with equal even/odd digit counts divisible by k.\\\"\\\"\\\"\\n    def count_up_to(limit: int) -> int:\\n        if limit <= 0:\\n            return 0\\n\\n        digits = tuple(map(int, str(limit)))\\n\\n        @lru_cache(maxsize=None)\\n        def dp(pos: int, remainder: int, balance: int, started: bool, tight: bool) -> int:\\n            if pos == len(digits):\\n                return int(started and balance == 0 and remainder == 0)\\n\\n            upper = digits[pos] if tight else 9\\n            total = 0\\n            for digit in range(upper + 1):\\n                next_tight = tight and digit == upper\\n                if not started and digit == 0:\\n                    total += dp(pos + 1, 0, 0, False, next_tight)\\n                else:\\n                    # Even digits contribute +1, odd digits -1.\\n                    next_balance = balance + (1 if digit % 2 == 0 else -1)\\n                    next_remainder = (remainder * 10 + digit) % k\\n                    total += dp(pos + 1, next_remainder, next_balance, True, next_tight)\\n            return total\\n\\n        return dp(0, 0, 0, False, True)\\n\\n    return count_up_to(high) - count_up_to(low - 1)\\n\"}",
+  "result": {
+    "status": 201,
+    "published": true,
+    "version": 7,
+    "source_path": "/project/components/component-248542089df4/release-7.py",
+    "unit_test_result": {
+      "exit_code": 0,
+      "stdout": "[completed]\n",
+      "stderr": "",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

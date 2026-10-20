@@ -1,0 +1,13 @@
+{
+  "event_id": 21,
+  "name": "python_run",
+  "arguments": "{\"code\":\"from functools import lru_cache\\n\\ndef f(start, finish, limit, s):\\n if start>finish or not s or any(int(ch)>limit for ch in s): return 0\\n suffix=int(s); scale=10**len(s)\\n def c(bound,length):\\n  if bound<10**(length-1):return 0\\n  top=str(min(bound,10**length-1))\\n  @lru_cache(None)\\n  def dp(pos,tight):\\n   if pos==length:return 1\\n   upper=int(top[pos]) if tight else limit\\n   total=0\\n   for digit in range(1 if pos==0 else 0,min(upper,limit)+1): total+=dp(pos+1,tight and digit==upper)\\n   return total\\n  return dp(0,True)\\n ans=0\\n for length in range(len(s),len(str(finish))+1):\\n  mn=max(start,10**(length-1)); mx=min(finish,10**length-1)\\n  if mn>mx:continue\\n  if length==len(s):\\n   if mn<=suffix<=mx:ans+=1\\n   continue\\n  pl=length-len(s)\\n  lo=max(10**(pl-1),(mn-suffix+scale-1)//scale)\\n  hi=min(10**pl-1,(mx-suffix)//scale)\\n  if lo<=hi:ans+=c(hi,pl)-c(lo-1,pl)\\n return ans\\nfor t in [(1,6000,4,'124'),(15,215,6,'10'),(1000,2000,4,'3000'),(36,275,9,'9'),(20,623,4,'1'),(47,388,2,'11')]:print(t,f(*t))\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(1, 6000, 4, '124') 5\n(15, 215, 6, '10') 2\n(1000, 2000, 4, '3000') 0\n(36, 275, 9, '9') 24\n(20, 623, 4, '1') 23\n(47, 388, 2, '11') 2",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 142,
+  "name": "python_run",
+  "arguments": "{\"code\":\"def w(i,j):\\n if (i+j)%2: return 1\\n return 2 if (i + j//2 + (i+j)//2)%2==0 else 0\\nfor j in range(4): print([w(i,j) for i in range(4)])\\nprint(sum(w(i,j) for i in range(3) for j in range(3)))\\nprint(w(-1,-1))\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "[2, 1, 0, 1]\n[1, 2, 1, 0]\n[2, 1, 0, 1]\n[1, 2, 1, 0]\n10\n0",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

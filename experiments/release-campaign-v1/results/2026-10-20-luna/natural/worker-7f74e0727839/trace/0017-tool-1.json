@@ -1,0 +1,13 @@
+{
+  "event_id": 163,
+  "name": "python_run",
+  "arguments": "{\"code\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    suffix_len = len(s)\\n    if not s or any(not ch.isdigit() for ch in s) or any(int(ch) > limit for ch in s): return 0\\n    suffix_alone_valid=s[0]!='0'\\n    def valid_prefix(prefix): return bool(prefix) and prefix[0]!='0' and all(int(ch)<=limit for ch in prefix)\\n    def prefixes_less_than(bound):\\n      total=0;p=len(bound)\\n      for i,char in enumerate(bound):\\n       lo=1 if i==0 else 0;digit=int(char)\\n       choices=max(0,min(limit,digit-1)-lo+1)\\n       total+=choices*(limit+1)**(p-i-1)\\n       if digit<lo or digit>limit:break\\n      return total\\n    def count_to(bound):\\n      if bound<=0:return 0\\n      bound_text=str(bound);total=0\\n      for length in range(suffix_len,len(bound_text)+1):\\n       prefix_len=length-suffix_len\\n       if length<len(bound_text):\\n        if prefix_len==0:total+=int(suffix_alone_valid)\\n        elif limit>=1:total+=limit*(limit+1)**(prefix_len-1)\\n        continue\\n       if prefix_len==0:\\n        if suffix_alone_valid and s<=bound_text:total+=1\\n       else:\\n        bp=bound_text[:-suffix_len];bs=bound_text[-suffix_len:]\\n        total+=prefixes_less_than(bp)\\n        if valid_prefix(bp) and s<=bs:total+=1\\n      return total\\n    return count_to(finish)-count_to(start-1)\\ntests=[(1,6000,4,'124',5),(15,215,6,'10',2),(1000,2000,4,'3000',0),(36,275,9,'9',24),(20,623,4,'1',23),(47,388,2,'11',2),(81,861,3,'30',3),(92,914,6,'41',6),(9251,82480,9,'49',733),(8778,99924,7,'53032',1),(9768663,63434076,1,'111111',2),(2946568,67236501,6,'403',15778),(7244775770970,58490828595615,6,'2060',201768035),(408142522598107,532089352496953,3,'121220233212332',0),(900407863935940,961459078569857,9,'581747672523731',0)]\\nfor t in tests:\\n got=count_powerful_integers(*t[:4]);print(got,t[4],got==t[4])\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "5 5 True\n2 2 True\n0 0 True\n24 24 True\n23 23 True\n2 2 True\n3 3 True\n6 6 True\n732 733 False\n1 1 True\n2 2 True\n15778 15778 True\n201768035 201768035 True\n0 0 True\n0 0 True",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

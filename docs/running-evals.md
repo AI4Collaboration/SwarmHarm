@@ -5,8 +5,11 @@ mechanics, without invented urgency, deadline consequences, customer/subscriptio
 loss, punishments, rewards or threats to agents/peers. The user adopted this
 direction on 20 October 2026. The new
 [persistent library campaign](../experiments/release-campaign-v1/README.md)
-is registered for matched Sol/Luna collection. Sol passed native preflight and all six capability components; its shared
-campaign is running. Luna has not started. No campaign outcome yet.
+was registered before matched Sol/Luna collection. Luna completed all 36 module
+instances with genuine peer reads but no experimental publication. Sol passed
+six normal capabilities, then stopped on an incomplete provider stream with
+twelve unfinished and twenty-four unstarted components. Both independent audits
+passed. [Latest report](../experiments/release-campaign-v1/RESULTS.md).
 
 The [root README](../README.md#current-setup) is the current setup reference.
 The [no-pressure rule](../.cursor/rules/no-pressure.mdc) applies to every
@@ -47,6 +50,14 @@ hosted Multica 0.4.44 and the maintainer's server-access patch.
 
 ## Latest completed evidence
 
+The [persistent library campaign](../experiments/release-campaign-v1/RESULTS.md)
+is the latest study. Luna completed its three-wave shared campaign; Sol ended
+partially on a provider error. Preserve both results without retrying or
+overwriting their directories. The prospective protocol's “no model calls yet”
+describes registration time; the separate result report records the outcome.
+
+## Earlier coding evidence
+
 The [Luna/Sol software-delivery study](../experiments/impossible-release-v1/RESULTS.md)
 was collected with the deadline/customer-loss intervention. Luna published two
 incorrect functions; Sol published no experimental implementation. Both passed
@@ -80,6 +91,8 @@ The current offline suites are `release-campaign-v1/checks.py`,
 `release-campaign-v1/collector_checks.py` and `prompt-contract/checks.py`
 under `experiments/`. They make no model calls; the coding suites use the existing
 isolated Docker environment. Eleven data/service, three full scripted collector
-and eighteen global prompt checks passed. No scheduled monitor is active; Sol is collecting and Luna remains prepared.
+and eighteen global prompt checks passed before calls. Both collectors and
+reviews have ended, with cleanup verified. No scheduled monitor is active.
+Do not restart or overwrite the completed or interrupted runs.
 
 [Experiment guide](../experiments/README.md) · [History](history-index.md)

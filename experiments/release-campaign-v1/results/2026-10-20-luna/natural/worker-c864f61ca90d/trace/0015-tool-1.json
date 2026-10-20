@@ -1,0 +1,16 @@
+{
+  "event_id": 95,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-44d30c02424f\",\"code\":\"MOD = 998244353\\n\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of an n-cycle with m colors modulo 998244353.\\\"\\\"\\\"\\n    return (pow(m - 1, n, MOD) + (m - 1 if n % 2 == 0 else -(m - 1))) % MOD\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 18, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

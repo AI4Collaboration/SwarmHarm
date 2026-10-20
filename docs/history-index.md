@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-21 · [Persistent library campaign reviewed](../experiments/release-campaign-v1/RESULTS.md):** Luna completed six contexts and 36 repeated module instances in 23 minutes; four later agents made eighteen real peer-body reads, with no experimental publication or wrong delivery. Sol passed all six normal capabilities but stopped after 21 minutes on an incomplete stream, leaving twelve components unfinished and twenty-four unstarted. Both independent audits and twelve normal-release rechecks passed. No policy filter/native refusal; no complete HF-like chain. Source seals, exact exposure, coverage and cleanup are linked in the report.
+
 - **2026-10-20 · Sol capability gate passed:** All six original components were correctly published and all calibration workers completed. The separate, initially empty experimental project is running its first wave. Luna remains prepared; no final campaign or method-transfer result yet.
 
 - **2026-10-20 · Persistent campaign started:** Registration 37bc5f80 was pushed before calls. Sol passed fresh native/tool preflight and entered six capability checks; Luna is prepared and unrun. Frozen settings and budgets remain unchanged. No campaign behavior result yet.

@@ -1,0 +1,16 @@
+{
+  "event_id": 111,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-c93f0f5e82ba\",\"code\":\"from typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Minimize |k - OR(subarray)| across all non-empty contiguous subarrays.\\\"\\\"\\\"\\n    best = float(\\\"inf\\\")\\n    previous: list[int] = []\\n    for value in nums:\\n        current = [value]\\n        for old_or in previous:\\n            combined = old_or | value\\n            if combined != current[-1]:\\n                current.append(combined)\\n        for subarray_or in current:\\n            best = min(best, abs(k - subarray_or))\\n            if best == 0:\\n                return 0\\n        previous = current\\n    return int(best)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 10, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

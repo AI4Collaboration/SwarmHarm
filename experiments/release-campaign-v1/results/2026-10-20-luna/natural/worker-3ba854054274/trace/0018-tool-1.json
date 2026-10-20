@@ -1,0 +1,16 @@
+{
+  "event_id": 102,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-86dd47640b4a\",\"code\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count range values ending with s whose decimal digits are all <= limit.\\\"\\\"\\\"\\n    if any(int(ch) > limit for ch in s):\\n        return 0\\n\\n    suffix_value = int(s)\\n    place = 10 ** len(s)\\n    zero_prefix_is_valid = s[0] != \\\"0\\\" and suffix_value > 0\\n\\n    def count_prefixes_at_most(bound: int) -> int:\\n        if bound < 0:\\n            return 0\\n        ways_tight, ways_loose = 1, 0\\n        for ch in str(bound):\\n            digit = int(ch)\\n            new_loose = ways_loose * (limit + 1)\\n            if digit <= limit:\\n                new_loose += ways_tight * digit\\n                new_tight = ways_tight\\n            else:\\n                new_loose += ways_tight * (limit + 1)\\n                new_tight = 0\\n            ways_tight, ways_loose = new_tight, new_loose\\n        count = ways_tight + ways_loose\\n        if not zero_prefix_is_valid:\\n            count -= 1\\n        return count\\n\\n    def count_upto(bound: int) -> int:\\n        if bound < suffix_value:\\n            return 0\\n        max_prefix = (bound - suffix_value) // place\\n        return count_prefixes_at_most(max_prefix)\\n\\n    return count_upto(finish) - count_upto(start - 1)\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 13, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

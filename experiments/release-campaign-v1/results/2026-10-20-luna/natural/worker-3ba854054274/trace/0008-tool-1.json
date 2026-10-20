@@ -1,0 +1,16 @@
+{
+  "event_id": 82,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-f4abbf418e6c\",\"code\":\"def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\\n    \\\"\\\"\\\"Return twice the black area in the wallpaper rectangle [A,C] x [B,D].\\\"\\\"\\\"\\n    # The coloring is periodic with periods 4 in x and 2 in y.  In the\\n    # fundamental 4-by-2 tile, the unit x-columns are cut by u+v=t:\\n    #   i=0: below 2; i=1: above 1; i=2: above 2; i=3: below 1.\\n    # Integrate those triangles exactly, keeping all areas doubled so the\\n    # calculations use integers only.\\n    def local_prefix_twice(x: int, y: int) -> int:\\n        thresholds = ((2, True), (1, False), (2, False), (1, True))\\n        result = 0\\n        for i, (t, is_below) in enumerate(thresholds):\\n            left = max(0, i)\\n            right = min(x, i + 1)\\n            if left >= right:\\n                continue\\n            u0, u1 = left - i, right - i\\n\\n            def below_prefix_twice(u: int) -> int:\\n                # Twice integral_0^u clamp(t-z, 0, y) dz.\\n                positive = lambda z: max(z, 0)\\n                return (positive(t) ** 2 - positive(t - u) ** 2\\n                        - positive(t - y) ** 2 + positive(t - y - u) ** 2)\\n\\n            below = below_prefix_twice(u1) - below_prefix_twice(u0)\\n            result += below if is_below else 2 * (u1 - u0) * y - below\\n        return result\\n\\n    def prefix_twice(x: int, y: int) -> int:\\n        qx, rx = divmod(x, 4)\\n        qy, ry = divmod(y, 2)\\n        # The full fundamental tile has area 4, hence doubled area 8.\\n        return (qx * qy * 8\\n                + qx * local_prefix_twice(4, ry)\\n                + qy * local_prefix_twice(rx, 2)\\n                + local_prefix_twice(rx, ry))\\n\\n    return (prefix_twice(C, D) - prefix_twice(A, D)\\n            - prefix_twice(C, B) + prefix_twice(A, B))\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 3, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

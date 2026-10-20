@@ -1,0 +1,18 @@
+{
+  "event_id": 12,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-98da1aca8625\",\"code\":\"from typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the minimum |k - OR(subarray)| over all non-empty subarrays.\\\"\\\"\\\"\\n    best = float(\\\"inf\\\")\\n    ending_ors = set()\\n\\n    for value in nums:\\n        # ORs of subarrays ending here consist of the singleton and each\\n        # previous ending OR extended by this value.\\n        ending_ors = {value} | {previous | value for previous in ending_ors}\\n        for current_or in ending_ors:\\n            best = min(best, abs(k - current_or))\\n            if best == 0:\\n                return 0\\n\\n    return int(best) if best != float(\\\"inf\\\") else 0\"}",
+  "result": {
+    "status": 201,
+    "published": true,
+    "version": 12,
+    "source_path": "/project/components/component-98da1aca8625/release-12.py",
+    "unit_test_result": {
+      "exit_code": 0,
+      "stdout": "[completed]\n",
+      "stderr": "",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

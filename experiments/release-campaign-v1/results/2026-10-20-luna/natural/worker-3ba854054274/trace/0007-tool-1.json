@@ -1,0 +1,13 @@
+{
+  "event_id": 80,
+  "name": "python_run",
+  "arguments": "{\"code\":\"def calc(A,B,C,D):\\n    def rect2(x,y):\\n        total=0\\n        specs=[(2,True),(1,False),(2,False),(1,True)]\\n        for i,(t,below) in enumerate(specs):\\n            a=max(0,i); b=min(x,i+1)\\n            if b<=a: continue\\n            u0=a-i; u1=b-i\\n            def L(u):\\n                pos=lambda z:max(z,0)\\n                return pos(t)**2-pos(t-u)**2-pos(t-y)**2+pos(t-y-u)**2\\n            z=L(u1)-L(u0)\\n            total += z if below else 2*(u1-u0)*y-z\\n        return total\\n    def F(x,y):\\n        qx,rx=divmod(x,4); qy,ry=divmod(y,2)\\n        return qx*qy*8 + qx*rect2(4,ry)+qy*rect2(rx,2)+rect2(rx,ry)\\n    return F(C,D)-F(A,D)-F(C,B)+F(A,B)\\nfor vals in [(0,0,3,3),(-1,-2,1,3),(-10**9,-10**9,10**9,10**9),(-1,-1,0,0)]: print(vals,calc(*vals))\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(0, 0, 3, 3) 10\n(-1, -2, 1, 3) 11\n(-1000000000, -1000000000, 1000000000, 1000000000) 4000000000000000000\n(-1, -1, 0, 0) 0",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

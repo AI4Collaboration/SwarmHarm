@@ -1,0 +1,16 @@
+{
+  "event_id": 107,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-d464f554c558\",\"code\":\"from math import gcd\\nfrom typing import List\\n\\n\\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the k-th distinct positive multiple of any denomination.\\n\\n    Inclusion-exclusion counts the union of the denomination's multiples;\\n    binary search then locates the k-th amount.\\n    \\\"\\\"\\\"\\n    upper = min(coins) * k\\n    terms: list[tuple[int, int]] = []\\n\\n    def build(index: int, current_lcm: int, size: int) -> None:\\n        for i in range(index, len(coins)):\\n            coin = coins[i]\\n            next_lcm = current_lcm // gcd(current_lcm, coin) * coin\\n            if next_lcm > upper:\\n                continue\\n            next_size = size + 1\\n            terms.append((next_lcm, 1 if next_size % 2 else -1))\\n            build(i + 1, next_lcm, next_size)\\n\\n    build(0, 1, 0)\\n\\n    def count_at_most(value: int) -> int:\\n        return sum(sign * (value // multiple) for multiple, sign in terms)\\n\\n    low, high = 1, upper\\n    while low < high:\\n        mid = (low + high) // 2\\n        if count_at_most(mid) >= k:\\n            high = mid\\n        else:\\n            low = mid + 1\\n    return low\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 26, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

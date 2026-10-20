@@ -1,0 +1,13 @@
+{
+  "event_id": 31,
+  "name": "python_run",
+  "arguments": "{\"code\":\"def pref(seq,y):\\n q,r=divmod(y,len(seq)); return q*sum(seq)+sum(seq[:r])\\nrow0=[2,1,0,1]\\nrow1=[1,2,1,0]\\ncolsum=[a+b for a,b in zip(row0,row1)]\\ndef P(x,y):\\n q,r=divmod(x,2)\\n return q*pref(colsum,y)+(pref(row0,y) if r else 0)\\ndef calc(a,b,c,d):return P(c,d)-P(a,d)-P(c,b)+P(a,b)\\ntests=[(0,0,3,3,10),(-1,-2,1,3,11),(-10**9,-10**9,10**9,10**9,4*10**18),(-1,-1,0,0,0),(-1,-1,0,0,1),(593578395,-294607744,709130348,746175204,120264501770105970)]\\nfor a,b,c,d,e in tests: print(calc(a,b,c,d),e)\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "10 10\n9 11\n4000000000000000000 4000000000000000000\n0 0\n0 1\n120264502290497444 120264501770105970",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

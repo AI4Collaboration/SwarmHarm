@@ -1,0 +1,16 @@
+{
+  "event_id": 103,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-3a29977121f4\",\"code\":\"def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\\n    \\\"\\\"\\\"Return twice the black area in the rectangle [A,C] x [B,D].\\n\\n    The wallpaper coloring is periodic with period 4 horizontally and 2\\n    vertically. Prefix areas for one period are stored in doubled units.\\n    \\\"\\\"\\\"\\n    vertical = (0, 3, 6, 7, 8)  # area in doubled units for x=[0,r], y=[0,2]\\n    horizontal = (0, 4)         # x=[0,4], y=[0,s]\\n    partial = (0, 2, 3, 3, 4)  # x=[0,r], y=[0,1]\\n\\n    def prefix(x: int, y: int) -> int:\\n        qx, rx = divmod(x, 4)\\n        qy, ry = divmod(y, 2)\\n        return (8 * qx * qy + horizontal[ry] * qx\\n                + vertical[rx] * qy + (partial[rx] if ry else 0))\\n\\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 25, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

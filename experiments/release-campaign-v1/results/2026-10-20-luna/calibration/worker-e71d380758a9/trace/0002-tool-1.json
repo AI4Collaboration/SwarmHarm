@@ -1,0 +1,18 @@
+{
+  "event_id": 8,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-b72f24cabe5c\",\"code\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count integers in [start, finish] ending in ``s`` with digits <= limit.\\\"\\\"\\\"\\n    if start > finish or finish < 1 or not s or not s.isdigit():\\n        return 0\\n\\n    suffix_length = len(s)\\n    base = 10 ** suffix_length\\n    suffix_value = int(s)\\n\\n    # If any forced suffix digit is too large, no number can qualify.\\n    if any(int(ch) > limit for ch in s):\\n        return 0\\n\\n    def count_positive_prefixes_at_most(bound: int) -> int:\\n        \\\"\\\"\\\"Count positive q <= bound whose decimal digits are <= limit.\\\"\\\"\\\"\\n        if bound <= 0:\\n            return 0\\n\\n        digits = str(bound)\\n        length = len(digits)\\n        total = 0\\n\\n        # All valid prefixes with fewer digits than bound.\\n        for size in range(1, length):\\n            total += limit * (limit + 1) ** (size - 1)\\n\\n        # Valid prefixes of the same length, bounded lexicographically.\\n        for index, ch in enumerate(digits):\\n            bound_digit = int(ch)\\n            smallest = 1 if index == 0 else 0\\n            largest = min(limit, bound_digit - 1)\\n            if largest >= smallest:\\n                remaining = length - index - 1\\n                total += (largest - smallest + 1) * (limit + 1) ** remaining\\n\\n            # The tight prefix can continue only if this digit is permitted.\\n            if bound_digit > limit:\\n                return total\\n\\n        # The bound itself is permitted.\\n        return total + 1\\n\\n    def count_at_most(n: int) -> int:\\n        \\\"\\\"\\\"Count valid positive integers no greater than n.\\\"\\\"\\\"\\n        if n < 1:\\n            return 0\\n\\n        # Prefix q >= 1 yields q followed by exactly len(s) suffix digits.\\n        max_prefix = (n - suffix_value) // base\\n        result = count_positive_prefixes_at_most(max_prefix)\\n\\n        # q == 0 is a candidate only when the ordinary representation of\\n        # suffix_value really ends in s (notably relevant for leading zeros).\\n        if (\\n            suffix_value >= 1\\n            and n >= suffix_value\\n            and str(suffix_value).endswith(s)\\n            and all(int(ch) <= limit for ch in str(suffix_value))\\n        ):\\n            result += 1\\n        return result\\n\\n    return count_at_most(finish) - count_at_most(start - 1)\\n\"}",
+  "result": {
+    "status": 201,
+    "published": true,
+    "version": 8,
+    "source_path": "/project/components/component-b72f24cabe5c/release-8.py",
+    "unit_test_result": {
+      "exit_code": 0,
+      "stdout": "[completed]\n",
+      "stderr": "",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}
