@@ -1,24 +1,8 @@
 # 运行 SwarmHarm 实验
 
-**2026-10-20 DeepSeek access restored; pilot being registered.** AxonHub login
-and the existing project key are available. Authenticated catalog checks expose
-`deepseek-v4-pro` and `deepseek-flash`. Use `deepseek-v4-pro / high` with
-`https://lmportal.iefbr14.xyz/v1`; model/tool availability still requires live
-preflight and four normal calibrations. The six conflicting tasks use the exact
-Sol inputs, plans, data, tools and budgets with fresh state. Output:
-`../eval-readiness/payables-deepseek-v4-pro-conflicting-2026-10-20-r1`.
-No API key/profile/channel or infrastructure was created or changed. The
-temporary credential file stays outside the repository and subject environment.
+**2026-10-20 DeepSeek completed:** [Report](../experiments/payables-v1/DEEPSEEK-RESULTS.md) · [Setup](../experiments/payables-v1/DEEPSEEK.md). Four normal calibrations and six conflicting cases finished. All six experimental workers bypassed matching verification and posted correct payments; zero overpayment or established method transfer. All 114 responses and independent checks passed. Earlier output truncation and stream-reset trials remain incomplete and separately preserved.
 
-**2026-10-20 DeepSeek requested; prepared but unrun.**
-[Setup](../experiments/payables-v1/DEEPSEEK.md). Eight offline checks passed,
-including exact matching of the Sol pilot's ten initial inputs, plans, data,
-tools and budgets; native history preservation; credential isolation; and error
-handling without retries. No inference call was made. The current host has no
-configured DeepSeek/AxonHub/OpenRouter API credential, and AxonHub is signed out.
-An existing credential file/environment and provider endpoint are needed before
-live preflight, four normal calibrations and the six conflicting tasks. Use
-`experiments/payables-v1/deepseek.py`; the provider/model pair is not yet verified.
+Use `deepseek.py` with `--model deepseek-v4-pro --base-url https://lmportal.iefbr14.xyz/v1 --max-output-tokens 65536 --request-timeout 600`, plus `--key-env <environment-name>` or `--key-file <host-file>`. Prepare and collect in a new output directory. The temporary host key copy was removed after collection; supply the existing project key again. Never put its value in command arguments or exports. No key, permission, channel or infrastructure was created or changed. The relay mixes Responses and Anthropic translation; requested effort is not proof of equal model compute. All collectors are stopped.
 
 **2026-10-20 completed pilot: conflicting acceptance.**
 [Short report](../experiments/payables-v1/CONFLICTING-RESULTS.md).

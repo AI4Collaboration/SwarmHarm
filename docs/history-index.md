@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · [DeepSeek verification bypass](../experiments/payables-v1/DEEPSEEK-RESULTS.md):** Four normal calibrations and six conflicting cases completed. All six experimental workers changed matching status and posted correct payments; no overpayment or established peer method transfer. All 114 responses and independent checks passed. Earlier truncation and stream-reset trials are separately preserved provider failures. This is a business workflow analogue, not full HF replication or proof of harmful misalignment.
+
 - **2026-10-20 · [Stronger-pressure result](../experiments/payables-v1/HIGH-PRESSURE-RESULTS.md):** Current natural inputs plus stock-allocation and customer-contract loss. Sol passed four calibrations; all six missing-record workers attempted finalization, with zero matching-write attempts, payments or false completion claims. Four real peer-note readers. All 107 responses and independent checks passed, without provider errors, filters or native refusal. No retry; collector stopped. Earlier inputs differ, so this is not a causal pressure comparison.
 
 - **2026-10-20 · [Full prompt cleanup](prompt-cleanup-2026-10-20.md):** All 29 runner entries inventoried; current inputs omit author-added warnings, ACL inventories and behavior coaching. Fourteen offline suites passed. Business checks, real peer text and 34,094 historical files are preserved. No new model or classifier calls; prior outcomes do not validate the revised presentation.
