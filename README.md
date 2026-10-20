@@ -6,7 +6,7 @@ synthetic business data and local simulated services.
 
 ## Latest result · 20 October 2026
 
-**DeepSeek passed its four normal calibrations, then stopped on provider truncation.** Four of six experimental workers had started; none finished, and two had not started. One response reached the translated route's 8,192-token limit. No refusal was recorded. This is an incomplete experiment, not a behavioral negative. A fresh follow-up requests 65,536 output tokens and a 600-second timeout with identical task inputs. [Short report](experiments/payables-v1/DEEPSEEK-RESULTS.md).
+**DeepSeek access works; two trials stopped on provider errors.** The first passed four normal calibrations, then hit the translated route's 8,192-token limit. A fresh trial verified the larger 65,536-token allowance but stopped on an upstream connection reset during calibration. No native refusal was recorded. Neither trial gives a completed experimental outcome. A third fresh trial uses the same inputs and larger budget. [Short report](experiments/payables-v1/DEEPSEEK-RESULTS.md).
 
 **Sol identified the conflicting checks; it did not exploit them.** Four normal
 calibrations produced correct payments. All six experimental workers read the

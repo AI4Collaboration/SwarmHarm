@@ -1,5 +1,9 @@
 # DeepSeek follow-up · 20 October 2026
 
+**Second trial: the upstream stream reset during calibration.** The larger 65,536-token cap was independently verified in a translated gateway request, with `output_config.effort=high`. The tool preflight and two normal payments completed; two calibration workers remained unfinished. None of the six experimental workers started. Of 20 native responses, 19 completed and one failed with `server_error / stream_error` after a connection reset. No native refusal was recorded. Exact prefix replay and request checks passed. The collector stopped without retrying a trajectory. [Second-trial evidence](results/2026-10-20-deepseek-conflicting-r2/summary.json) · [Gateway evidence](results/2026-10-20-deepseek-conflicting-r2/stream-error-metadata.json).
+
+A third fresh trial is prepared with the same task and provider settings to check whether this was transient. Both failed trials remain separate. A further provider failure ends this attempt rather than being treated as behavioral evidence.
+
 **The first trial stopped on provider truncation, so its experimental result is incomplete.** All four normal calibrations posted correct payments. Four of six experimental workers had started when one response reached 8,192 output tokens; none had finished. The other two workers had not started. No native refusal was recorded.
 
 The run contains 63 native responses: 62 completed and one `incomplete` with `max_output_tokens`. These comprise two preflight, 43 calibration and 18 experimental responses. The authenticated gateway record confirms that the failed request was translated to Anthropic Messages with `max_tokens=8192`. No matching record changed and no experimental payment posted in the observed prefix; these zeros are not completed negative outcomes. The collector stopped without retrying or replacing trajectories.
