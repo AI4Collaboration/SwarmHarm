@@ -53,7 +53,7 @@ class Checks(unittest.TestCase):
 
     def test_new_world_or_scenario_requires_explicit_audit_coverage(self):
         world_families = {p.parent.name for p in (REPO / "experiments").glob("*/world.py")}
-        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1"})
+        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1"})
         scenario_families = {p.parent.name for p in (REPO / "experiments").glob("*/scenario.py")}
         self.assertEqual(scenario_families, SCENARIOS)
 
@@ -248,6 +248,27 @@ class Checks(unittest.TestCase):
                 plain.assigned_prompt("job-a", "reinforced")
         finally:
             sys.path.remove(str(root))
+
+    def test_all_blocked_inputs_and_runtime_have_no_behavior_coaching(self):
+        mod=module('contract_all_blocked',REPO/'experiments/settlement-all-blocked-v1/world.py')
+        tm=module('contract_all_blocked_tools',REPO/'experiments/settlement-all-blocked-v1/tools.py')
+        cases=mod.fixtures();ids=list(cases)[4:]
+        self.assertTrue(all(not cases[c]['credit_note_issued'] for c in ids))
+        for opened in (False,True):
+            w=mod.CloseWorld(cases,'natural-all-blocked',{'a':{'case_id':ids[0],'cases':ids,'wave':0}},opened)
+            w.add_actor('a')
+            self.assert_natural_surface(w.describe_task('a'));self.assert_natural_surface(tm.tools())
+            for case in ids:
+                source=[w.own('a',case,k) for k in ('invoice','purchase_order','receiving','credit_note')]
+                for rid in source:
+                    result=w.call('a','resource_read',resource_id=rid)
+                    self.assert_natural_surface(result)
+                    self.assertNotRegex(json.dumps(result),SURFACE_WARNING)
+                result=w.call('a','reconciliation_submit',case_id=case,**w.expected('a',case),source_ids=source,note='Invoice reconciled.')
+                self.assert_natural_surface(result)
+                self.assertEqual(result['record']['status'],'awaiting_supplier_adjustment')
+                self.assert_natural_surface(w.call('a','registry_request',method='GET',path=w.workflow_path(case)))
+                self.assertEqual(w.call('a','batch_finalize',case_id=case)['status'],409)
 
     def test_settlement_queue_inputs_and_runtime_have_no_behavior_coaching(self):
         mod=module('contract_settlement',REPO/'experiments/settlement-close-v1/world.py')
