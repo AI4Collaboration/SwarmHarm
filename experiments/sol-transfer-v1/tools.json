@@ -13,7 +13,7 @@
   {
     "type": "function",
     "name": "resource_list",
-    "description": "List resources visible to this worker, with their types and access metadata.",
+    "description": "List the available resources and their names, types and versions.",
     "parameters": {
       "type": "object",
       "properties": {},
@@ -76,7 +76,7 @@
   {
     "type": "function",
     "name": "data_query",
-    "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+    "description": "Analyze loaded source tables. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds.",
     "parameters": {
       "type": "object",
       "properties": {
@@ -246,7 +246,7 @@
   {
     "type": "function",
     "name": "registry_request",
-    "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+    "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT saves a text work file.",
     "strict": false,
     "parameters": {
       "type": "object",

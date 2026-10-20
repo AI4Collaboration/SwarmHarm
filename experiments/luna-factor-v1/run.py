@@ -21,57 +21,7 @@ def fleet():
 
 
 def prepare(root):
-    runner = fleet()
-    root.mkdir(parents=True, exist_ok=False)
-    cell_id = "fleet-" + secrets.token_hex(6)
-    arms = []
-    native_inputs = []
-    for profile in ("neutral", "resourceful"):
-        output = root / profile
-        runner.prepare(output, profile, ["side_channel"], ["mixed"], False,
-                       "luna-factor-pilot-2026-10-19", "gpt-6-luna", 1)
-        reg = runner.load(output / "registration.json")
-        cell = reg["cells"][0]
-        cell.update(id=cell_id, waves=[0, 1])
-        cell["plan"] = runner.actor_plan(cell)
-        reg["study"] = "Paired exploratory effort-instruction diagnostic; one world per arm, no incidence or causal-effect estimate."
-        reg["diagnostic_intervention"] = profile
-        reg["independent_unit"] = "world; four workers per world, one world per instruction arm"
-        reg["arrival"] = "Two arrivals at rounds 0/4, or earlier after all current actors finish. No reactivation."
-        reg["budget"]["max_world_concurrency"] = 1
-        for source in (Path(__file__).resolve(), HERE / "README.md"):
-            relative = str(source.relative_to(REPO))
-            dest = output / "code" / relative
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes(source.read_bytes())
-            reg["code_hashes"][relative] = runner.sha(source)
-        runner.save(output / "registration.json", reg)
-        runner.save(output / "registration-seal.json", {"sha256": runner.sha(output / "registration.json"), "model_requests_at_sealing": 0})
-        fixtures, references = runner.load(output / "fixtures.json"), runner.load(output / "references.json")
-        world = runner.FleetWorld(fixtures, references, world_id=cell_id, plan=cell["plan"],
-                                  channel=cell["channel"], weakness_open=cell["weakness_open"])
-        inputs = {}
-        for actor, spec in cell["plan"].items():
-            world.add_actor(actor, spec["task_id"], spec["wave"])
-            inputs[actor] = world.describe_task(actor)
-        native_inputs.append(inputs)
-        arms.append({"profile": profile, "registration_sha256": runner.sha(output / "registration.json")})
-    assert native_inputs[0] == native_inputs[1], "Subject task inputs differ between arms"
-    first, second = (runner.load(root / profile / "registration.json") for profile in ("neutral", "resourceful"))
-    for key in ("cells", "budget", "reasoning", "model", "calibration"):
-        assert first[key] == second[key], key
-    # The operator-only unittest log includes measured execution time.
-    for filename in ("fixtures.json", "references.json", "tools.json"):
-        assert first["input_hashes"][filename] == second["input_hashes"][filename], filename
-    runner.save(root / "study.json", {"created_at": runner.utc(), "model": "gpt-6-luna", "arms": arms,
-        "natural_workers_per_arm": 4, "single_assigned_difference": "instructions",
-        "identical_native_inputs_verified": True, "order": ["neutral", "resourceful"],
-        "adaptive_extension": False, "runner_sha256": runner.sha(__file__),
-        "hypothesis": "The historical general-effort instruction may change investigation of the cache route.",
-        "limitations": ["one world per arm", "stochastic requests and sequential arm order", "shorter than historical positive run",
-                        "blocker, channel, vulnerability and peer-method effects are not independently manipulated"]})
-    runner.save(root / "study-seal.json", {"sha256": runner.sha(root / "study.json")})
-    print(json.dumps({"prepared": True, "arms": 2, "natural_workers": 8, "identical_native_inputs": True}), flush=True)
+    raise ValueError("The historical effort-coaching comparison is retired. Use a neutral current runner; archived trials retain their frozen source.")
 
 
 def collect(root):

@@ -39,7 +39,7 @@ def prepare(root):
     cell_id, initial_hashes = "workflow-" + secrets.token_hex(6), []
     for model in MODELS:
         folder = root / model
-        runner.prepare(folder, "resourceful", ["side_channel"], ["critical_path"], False,
+        runner.prepare(folder, "neutral", ["side_channel"], ["critical_path"], False,
                        "benign-counterpart-2026-10-19", model)
         reg = runner.load(folder / "registration.json")
         cell = reg["cells"][0]

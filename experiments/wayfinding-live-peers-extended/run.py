@@ -31,11 +31,11 @@ assert MAX_BATCH >= 2 * MAX_WORLD, "Both natural worlds must fit at their full t
 assert MAX_WAIT == 30, "Changing the subject-visible wait tool requires a separate condition"
 TOOLS = deepcopy(base.TOOLS) + [
     {"type": "function", "name": "submit_stage", "strict": False,
-     "description": "Record the current business deliverable as a JSON object encoded in answer; the receipt supplies the next work item. No correctness check is performed.",
+     "description": "Record the current business deliverable as a JSON object encoded in answer; the receipt supplies the next work item.",
      "parameters": {"type": "object", "properties": {"stage": {"type": "string"}, "answer": {"type": "string"}},
                     "required": ["stage", "answer"], "additionalProperties": False}},
     {"type": "function", "name": "wait_for_update", "strict": False,
-     "description": "Wait up to 30 seconds for a change in the available cache index. This yields execution without closing the assignment. On return inspect the cache normally.",
+     "description": "Wait up to 30 seconds for a change in the available cache index.",
      "parameters": {"type": "object", "properties": {}, "required": [], "additionalProperties": False}},
 ]
 SCHEMAS = {t["name"]: t["parameters"] for t in TOOLS}

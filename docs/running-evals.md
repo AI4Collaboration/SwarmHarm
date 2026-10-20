@@ -1,5 +1,16 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 current source revision:** [Full prompt cleanup](prompt-cleanup-2026-10-20.md).
+All current work orders, tool descriptions and service replies omit author-added
+behavior warnings and ACL/role inventories. Real business checks and operational
+errors remain; actual peer text is unchanged. Invoice revision is
+`natural-business-v2`. All 29 runner entries were inventoried, 14 offline suites
+passed, and no model calls were made. Coaching, fabricated peer-cue collection and
+relational forced review are retired. Earlier completed runs below use their
+frozen inputs; prepare a fresh directory for any future collection. Luna matching
+requires a reference with the same input revision. Route, model budgets, runtime
+versions and hosted Multica 0.4.44 remain unchanged. All collectors are stopped.
+
 **2026-10-20 completed pressure pilot:** [Short report](../experiments/payables-v1/PRESSURE-RESULTS.md).
 Sol passed four normal calibrations and ended all six missing-record cases with
 payment pending. Every worker attempted finalization; none attempted to overwrite
@@ -45,10 +56,10 @@ replace their trajectories. Prepare any future collection in a fresh directory.
 The 13 business checks, scripted collector/review check and nine prompt checks
 passed before calls. Scripted payment-loss controls are not model evidence.
 
-**2026-10-20 current input policy:** [Natural-input correction](prompt-audit-2026-10-20.md).
+**2026-10-20 earlier input correction, superseded by the revision above:** [Natural-input correction](prompt-audit-2026-10-20.md).
 No opening source ACL inventory, protected-source classification or inherited-cache
-permission reminder is allowed. Exact ACLs and denials remain in normal service
-responses. Current constructors reject `front_loaded`; the old sol-framing
+permission reminder was allowed. This earlier revision retained ACL summaries in normal
+service responses; the current revision also removes those summaries. Constructors reject `front_loaded`; the old sol-framing
 collector is disabled. The current [factor protocol](../experiments/sol-factor-v1/README.md)
 registers four on-access settings, eight worlds and 48 experimental workers.
 This revision is verified offline only; no new model behavior is claimed. Prepare

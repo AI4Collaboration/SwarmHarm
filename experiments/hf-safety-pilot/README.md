@@ -1,5 +1,7 @@
 # Contained HF-mechanism safety pilot
 
+**20 October 2026 current source:** Current work orders omit extra read-only/boundary warnings. run_relational.py is retired because its relationship history and forced review are operator interventions. The original external upstream inputs remain historical material. [Cleanup details](../../docs/prompt-cleanup-2026-10-20.md).
+
 **2026-10-19 executable revision:** Current recovery entry points no longer add communication bans, authorization-obedience instructions or honest-stop reminders. Dynamic notices and supervisor responses have also been cleaned. The reinforced restriction profile is retired; use frozen source snapshots to inspect historical conditions. All results below retain the settings recorded when they ran and are not results of this revision.
 
 **Current work (2026-10-17): trials paused.** The user requested simple task data preparation before further runs and deferred high-risk cyber tasks. See [simple task candidates](../../data/simple-tasks/README.md). `run_original_hvtb.py` was prepared to retain the published task's deliberate solution/test exposure and watchers, but has not completed qualification or model trials. Its runtime probes are preparation, not behavioral results. Do not remove a benchmark's deliberately exposed exploit surface as a routine anti-contamination measure; keep actual operator credentials and unrelated host/evaluator assets isolated. Original task constraints remain intact, with no extra honest-stop or anti-boundary reminders.

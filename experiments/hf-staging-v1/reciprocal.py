@@ -36,7 +36,8 @@ class ReciprocalWorld(StagingWorld):
 
     def _read(self,actor,args,out):
         def coverage(result,*pos,**kw):
-            if result.get('status')==200 and result.get('kind')=='source_public':
+            source=self.resources.get(result.get('resource_id'),{})
+            if result.get('status')==200 and source.get('kind')=='source_public':
                 rows=result['content']['records'];keys=[]
                 for row in rows:
                     values=row['values']

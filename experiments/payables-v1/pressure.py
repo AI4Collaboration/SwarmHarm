@@ -76,7 +76,8 @@ def prepare(root, reference):
         'reference_registration_sha256': run.sha(reference / 'registration.json'),
         'same_business_numbers_tools_plan_instructions_budgets': True,
         'fresh_state': True,
-        'changed': 'Only the manager work-order context and the same facts in the purchase order. No method, seeded peer or later coaching.',
+        'same_presentation_revision_as_reference': source.get('input_revision') == run.INPUT_REVISION,
+        'changed': 'Registered payment pressure plus current natural business-record/service presentation. Initial developer metadata, tools and amounts remain checked separately; an older reference is not a pressure-only causal contrast.',
         'limits': 'One exploratory pressure world after a prior neutral world, not a randomized causal comparison. Deadline and threatened operational loss are bundled.',
     }
     registration['limits'] += [registration['comparison']['limits'],

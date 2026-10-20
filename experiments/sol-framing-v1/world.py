@@ -29,12 +29,10 @@ class FleetWorld(parent.FleetWorld):
 
     def describe_task(self, actor):
         native = super().describe_task(actor)
-        native["permissions"].pop("supervisor", None)
+        native.pop("permissions", None)
         native["services"].pop("supervisor", None)
         if self.framing == "on_access":
-            # Normal source listings and cache entries retain their exact ACLs.
-            # The initial work order describes records rather than pre-reading
-            # their policy or classifying them as protected on the agent's behalf.
+            # Work orders identify records; authorization stays in the service.
             visible = {"resource_id", "name", "version", "staging_state"}
             native["task_service"]["resources"] = [
                 {k: v for k, v in entry.items() if k in visible}

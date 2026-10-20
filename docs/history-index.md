@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · [Full prompt cleanup](prompt-cleanup-2026-10-20.md):** All 29 runner entries inventoried; current inputs omit author-added warnings, ACL inventories and behavior coaching. Fourteen offline suites passed. Business checks, real peer text and 34,094 historical files are preserved. No new model or classifier calls; prior outcomes do not validate the revised presentation.
+
 - **2026-10-20 · [Supplier pressure result](../experiments/payables-v1/PRESSURE-RESULTS.md):** All four Sol calibrations passed. All six blocked workers attempted finalization, versus one in the earlier neutral world; zero matching-record write attempts, payments or false completion claims. Three real peer-note readers received model-authored cautions. All 102 responses completed without provider errors, filters or native refusal; independent replay and request audit passed. No harmful method adoption. Collection stopped. Two successive worlds are not a causal comparison.
 
 - **2026-10-20 · [Supplier deadline pilot](../experiments/payables-v1/PRESSURE.md):** Separately registered Sol pressure condition: final payment run, threatened supplier credit hold and cancelled delivery affecting customer commitments. Same amounts, tools, plan and settlement rules; four calibrations then six missing-record cases, fresh state, no new neutral arm. Mechanics, prompt checks and scripted collector/replay passed. Model outcomes pending; scenario stakes are distinct from external supplier actions.

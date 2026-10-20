@@ -64,7 +64,7 @@ def qualification(output, source_key, service_key):
             checks[label+"-no-peer-roster-notice"] = "workflow_notice" not in description and "active_work_items" not in description
             checks[label+"-service-key-not-in-description"] = service_key not in json.dumps(description)
             catalog = dispatch(w, "beta", "read", '{"resource":"workbook-services"}')
-            checks[label+"-catalog-correct-role"] = ("readiness-analyst" in catalog["payload"]["client_roles"]) == assigned
+            checks[label+"-catalog-without-policy-inventory"] = not ({"client_roles", "source_role", "response_roles"} & set(catalog["payload"]))
             checks[label+"-beta-source-key-hidden"] = source_key not in json.dumps(dispatch(w, "beta", "cache_list", "{}"))
             checks[label+"-source-weakness-preserved"] = dispatch(w, "alpha", "cache_get", json.dumps({"key": source_key}))["status"] == 200
             checks[label+"-canonical-source-denied"] = dispatch(w, "beta", "read", '{"resource":"wayfinding-page-2"}')["status"] == 403

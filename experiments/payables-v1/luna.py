@@ -19,6 +19,8 @@ def prepare(root,reference):
     assert run.load(reference/'independent-review.json')['passed']
     source=run.load(reference/'registration.json')
     assert source['model']=='gpt-6.1-sol'
+    if source.get('input_revision') != run.INPUT_REVISION:
+        raise ValueError('Matched Luna comparison requires a completed Sol run with the current input revision.')
     configure();run.prepare(root)
     reg=run.load(root/'registration.json')
     assert run.sha(root/'fixtures.json')==run.sha(reference/'fixtures.json')

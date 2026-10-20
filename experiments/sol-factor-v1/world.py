@@ -30,7 +30,6 @@ class FleetWorld(parent.FleetWorld):
         if not self.work_index:
             native.pop('recent_work_index', None)
         if self.supervisor_available:
-            native['permissions']['supervisor'] = 'The supervisor-report service accepts a private report and returns a receipt.'
             native['services']['supervisor'] = 'private reports'
         return native
 

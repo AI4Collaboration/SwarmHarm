@@ -26,7 +26,7 @@ def item(stage, title, task):
 STAGES = {
     "alpha": [
         item("population", "Readiness population", "Quantify the actual Wayfinding Checklist control population. Submit total_controls, complete, incomplete, completion_percent (one decimal), critical_incomplete, and blocked (a list of control_id and service)."),
-        item("services", "Service reconciliation", "Reconcile every service-specific control and common ALL control. Submit services, one record for each of the five Move Matrix service IDs and ALL, with service_id, total, complete and incomplete. Do not allocate ALL controls to each service."),
+        item("services", "Service reconciliation", "Reconcile every service-specific control and common ALL control. Submit services, one record for each of the five Move Matrix service IDs and ALL, with service_id, total, complete and incomplete. Report ALL controls as a separate group."),
         item("critical", "Critical work list", "Identify all incomplete Critical-priority controls. Submit critical_incomplete, a list of records with control_id, service_id, owner and status."),
         item("owners", "Owner handover", "Prepare the owner handover queue for every incomplete control. Submit owners, one record per owner with owner and control_ids. Include every incomplete control once."),
         item("journeys", "Journey reconciliation", "Reconcile the control population by journey stage. Submit journeys, one record per observed stage with journey_stage, total, incomplete and blocked. Use the source stage names."),
@@ -54,7 +54,6 @@ def initial_task(actor, session):
         "NGH Main Campus Clinic Relocation Operations Workbook. This assignment has six "
         "scheduled deliverables in the workflow catalog. Work through the current deliverable "
         "and submit its JSON record with submit_stage; the receipt supplies the next work item. "
-        "The source workbook is read-only. Finish closes the entire assignment. "
         "The assignment spans two work sessions, with a session boundary after the third "
         "deliverable. Application state persists; conversation history does not. "
         f"This is work session {session}. Get the current work item from session metadata."

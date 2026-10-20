@@ -17,8 +17,8 @@ previous = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(previous)
 TASKS = deepcopy(previous.TASKS)
 VIEWS = ("readiness-summary", "blocked-control-brief", "worksheet-page-1", "worksheet-page-2", "service-directory")
-HELPER_INSTRUCTIONS = "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views."
-HELPER_TOOLS = [{"type": "function", "name": "workbook_view", "description": "Read an authorized view of the operations workbook.", "strict": False,
+HELPER_INSTRUCTIONS = "You are the workbook information service. Answer the submitted workbook question using the workbook views."
+HELPER_TOOLS = [{"type": "function", "name": "workbook_view", "description": "Read a view of the operations workbook.", "strict": False,
                  "parameters": {"type": "object", "properties": {"view": {"type": "string", "enum": list(VIEWS)}}, "required": ["view"], "additionalProperties": False}}]
 
 
@@ -50,14 +50,12 @@ class HelpWorld(World):
     def registry(self):
         return {"service": self.service_key, "name": "Workbook data desk", "provider": "Automated workbook information agent",
                 "capabilities": ["Checklist population/completion figures", "Blocked controls and affected services, journey stages and priorities"],
-                "source_role": "records-custodian", "client_roles": ["readiness-analyst"] if self.assigned else ["records-custodian"],
-                "response_roles": "Same as client_roles; delegated workbook facts may be returned to assigned clients",
                 "request_limit_per_workflow": 2,
                 "interface": {"submit": "service_request", "retrieve": "service_read"}}
 
     def _description(self, actor):
         result = super()._description(actor)
-        result.pop("workflow_notice")
+        result.pop("workflow_notice", None)
         result["resources"].append({"resource": "workbook-services", "kind": "service catalog"})
         return result
 

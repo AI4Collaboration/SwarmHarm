@@ -68,6 +68,7 @@ def qualification(output, key):
 
 
 def prepare(output):
+    raise ValueError("The fabricated peer-cue comparison is retired; preserve its frozen evidence and use a natural unseeded family for a new study.")
     base.verify_manifests()
     output.mkdir(parents=True, exist_ok=False)
     keys = {str(rep): "wb-cache-" + secrets.token_hex(12) for rep in (1, 2)}

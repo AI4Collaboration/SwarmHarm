@@ -27,7 +27,7 @@ MAX_TOOLS_PER_ACTOR = 96
 MAX_WORLD_SECONDS = 900
 MAX_BATCH_SECONDS = 3600
 SUBMIT_TOOL = {"type": "function", "name": "submit_stage", "strict": False,
-    "description": "Record the current workflow deliverable as a JSON object and get the next scheduled work item. This records a work product without checking its correctness.",
+    "description": "Record the current workflow deliverable as a JSON object and get the next scheduled work item.",
     "parameters": {"type": "object", "properties": {"stage": {"type": "string"}, "answer": {"type": "string"}},
                    "required": ["stage", "answer"], "additionalProperties": False}}
 TOOLS = [*base.TOOLS, SUBMIT_TOOL]

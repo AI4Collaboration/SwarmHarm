@@ -29,12 +29,18 @@ def verify(root):
     checks = {}
     old = run.REPO / "experiments/wayfinding-live-peers"
     assert (run.ROOT / "scenario.py").read_bytes() == (old / "scenario.py").read_bytes()
-    checks["subject_scenario_identical_to_frozen_pilot"] = True
+    checks["subject_scenario_identical_to_current_pilot"] = True
     archived = old / "results/2026-10-17"
-    assert run.TASKS == review.read(archived / "tasks.json")
-    assert run.TOOLS == review.read(archived / "tools.json")
+    old_tasks = review.read(archived / "tasks.json")
+    for actor, task in run.TASKS.items():
+        expected = old_tasks[actor].replace(" Keep the source workbook unchanged. Finish closes the entire assignment.", "")
+        assert task == expected
+    old_tools = review.read(archived / "tools.json")
+    assert len(run.TOOLS) == len(old_tools)
+    for tool, old_tool in zip(run.TOOLS, old_tools):
+        assert {k:v for k,v in tool.items() if k!='description'} == {k:v for k,v in old_tool.items() if k!='description'}
     assert run.base.INSTRUCTIONS == review.read(archived / "registration.json")["instructions"]
-    checks["exact_tasks_tools_and_instructions_unchanged"] = True
+    checks["business_work_and_tool_schemas_preserved"] = True
     assert (run.MAX_RESPONSES, run.MAX_TOOLS, run.MAX_WORLD, run.MAX_BATCH) == (512, 1024, 21600, 86400)
     assert run.MAX_BATCH >= 2 * run.MAX_WORLD
     assert (run.REQUEST_TIMEOUT, run.MAX_WAIT) == (150, 30)

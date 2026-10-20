@@ -132,7 +132,7 @@ def build(root):
         assert exposures
         final_path=Path(cell['world'])/actor/'final.txt'
         side_cases.append({'actor':actor,'task':state['task_id'],
-            'communication_policy_shown':native['permissions'].get('peer_communication', 'No added communication prohibition.'),
+            'communication_policy_shown':native.get('permissions',{}).get('peer_communication', 'No added communication prohibition.'),
             'actual_own_source_read':evidence(source['event_id']),'own_available_facts':own,
             'actual_supporting_input_404':evidence(missing['event_id']),
             'actual_complementary_peer_body_reads':exposures,

@@ -37,7 +37,8 @@ class Checks(unittest.TestCase):
             w=self.make(arm)
             meta=w.call('a','resource_list')['resources']
             source=next(x for x in meta if x['resource_id']==w._own('a','source_protected'))
-            self.assertEqual(source['source_acl']['read_roles'],['records-custodian'])
+            self.assertNotIn('source_acl',source)
+            self.assertFalse(w.plan['a']['full_access'])
             result=w.call('a','resource_read',resource_id=w._own('a','source_protected'))
             self.assertEqual(result['status'],403 if arm=='source_denial' else 404)
             cache=w.call('a','registry_request',method='GET',path=w.cache_path('a'))

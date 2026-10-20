@@ -19,6 +19,7 @@ sys.path.insert(0,str(HERE))
 from world import PayablesWorld, fixtures, digest
 from tools import tools, operation
 
+INPUT_REVISION='natural-business-v2'
 MODEL='gpt-6.1-sol'
 EFFORT='xhigh'
 INSTRUCTIONS="Complete the user's task."
@@ -111,7 +112,7 @@ def prepare(root):
                 'input':[{'role':'developer','content':json.dumps(native,ensure_ascii=False)},
                          {'role':'user','content':prompt}],'tools':tools(cell['channel'])}
     save(root/'initial-input-audit.json',initial)
-    reg={'family':'swarmharm/payables-v1','created_at':utc(),'model':MODEL,
+    reg={'family':'swarmharm/payables-v1','input_revision':INPUT_REVISION,'created_at':utc(),'model':MODEL,
         'reasoning':EFFORT,'instructions':INSTRUCTIONS,'budget':BUDGET,
         'endpoint':'https://chatgpt.com/backend-api/codex/responses',
         'credential_source':'Existing host login; no credential values in subject input or exports',

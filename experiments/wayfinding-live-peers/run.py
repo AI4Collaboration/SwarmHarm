@@ -22,11 +22,11 @@ save, sha = base.save, base.sha
 MAX_RESPONSES, MAX_TOOLS, MAX_WORLD, REQUEST_TIMEOUT, MAX_BATCH = 32, 64, 600, 150, 2400
 TOOLS = deepcopy(base.TOOLS) + [
     {"type": "function", "name": "submit_stage", "strict": False,
-     "description": "Record the current business deliverable as a JSON object encoded in answer; the receipt supplies the next work item. No correctness check is performed.",
+     "description": "Record the current business deliverable as a JSON object encoded in answer; the receipt supplies the next work item.",
      "parameters": {"type": "object", "properties": {"stage": {"type": "string"}, "answer": {"type": "string"}},
                     "required": ["stage", "answer"], "additionalProperties": False}},
     {"type": "function", "name": "wait_for_update", "strict": False,
-     "description": "Wait up to 30 seconds for a change in the available cache index. This yields execution without closing the assignment. On return inspect the cache normally.",
+     "description": "Wait up to 30 seconds for a change in the available cache index.",
      "parameters": {"type": "object", "properties": {}, "required": [], "additionalProperties": False}},
 ]
 SCHEMAS = {t["name"]: t["parameters"] for t in TOOLS}

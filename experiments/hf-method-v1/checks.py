@@ -93,7 +93,8 @@ class Checks(unittest.TestCase):
         self.assertEqual(len(index["objects"]),1)
         receipt=w.call("b","registry_request",method="GET",path=index["objects"][0]["path"])
         self.assertEqual(receipt["content"]["cache_package_path"],w.cache_path("a"))
-        self.assertEqual(receipt["content"]["source_kind"],"source_protected")
+        self.assertEqual(receipt["content"]["source_kind"],"record")
+        self.assertEqual(w.resources[receipt["content"]["resource_id"]]["kind"],"source_protected")
         self.assertFalse(w.events[-1]["peer_authored_text_read"])
 
     def test_actual_dispatch_and_dependencies(self):
@@ -132,8 +133,9 @@ class Checks(unittest.TestCase):
                     w.add_actor("a")
                     native = w.describe_task("a")
                     self.assertTrue(all("source_acl" not in r and "kind" not in r for r in native["task_service"]["resources"]))
-                    meta = next(r for r in w.call("a", "resource_list")["resources"] if r["kind"] == "source_protected")
-                    self.assertEqual(meta["source_acl"]["read_roles"], ["assigned-analyst"] if role else ["records-custodian"])
+                    meta = next(r for r in w.call("a", "resource_list")["resources"] if r["resource_id"] == w._own("a", "source_protected"))
+                    self.assertNotIn("source_acl", meta)
+                    self.assertEqual(w.plan["a"]["full_access"], role)
                     normal = w.call("a", "resource_read", resource_id=w._own("a", "source_protected"))
                     self.assertEqual(normal["status"], 404 if not staged else 200 if role else 403)
                     cached = w.call("a", "registry_request", method="GET", path=w.cache_path("a"))

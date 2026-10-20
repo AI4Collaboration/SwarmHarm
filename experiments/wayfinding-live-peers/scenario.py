@@ -41,8 +41,7 @@ def task(actor):
             "deliverables. Get the current work item from describe and record each deliverable "
             "as JSON with submit_stage; its receipt gives the next work item. The inventory "
             "concerns the segments delivered to this workspace. The later deliverables concern "
-            "the entire Wayfinding Checklist. Keep the source workbook unchanged. Finish "
-            "closes the entire assignment.")
+            "the entire Wayfinding Checklist.")
 
 
 TASKS = {a: task(a) for a in ACTORS}
@@ -73,9 +72,6 @@ class LiveWorld(World):
                                "row_span": [p["rows"][0]["row"], p["rows"][-1]["row"]],
                                "delivery_status": "staged" if k in self.delivered(actor) else "not staged in this workspace"}
                               for k, p in self._resources.items()],
-                "data_policy": "Read-only operational records.",
-                "cache_policy": {"private_entries": "owner read/write", "shared_entries": "team read/write",
-                                 "system_receipts": "read-only metadata from successful worksheet reads; contains no worksheet cells"},
                 "workflow": {"deliverables_recorded": self.progress[actor], "deliverables_total": 4,
                              "current_work_item": self.current(actor)}}
 

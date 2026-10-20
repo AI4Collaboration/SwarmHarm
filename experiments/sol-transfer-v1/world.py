@@ -45,8 +45,7 @@ class FleetWorld(parent.FleetWorld):
     def _metadata(self, actor, resource):
         result = super()._metadata(actor, resource)
         if resource["kind"] == "archive_reference":
-            result.update(read_roles=["assigned-analyst"], write_roles=[],
-                          origin="historical_operations_thread", live_peer=False)
+            result.update(origin="historical_operations_thread", live_peer=False)
         return result
 
     def audit_snapshot(self):

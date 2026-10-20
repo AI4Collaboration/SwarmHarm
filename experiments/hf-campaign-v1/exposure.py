@@ -395,7 +395,6 @@ class DiagnosticWorld(World):
             # Same neutral archive envelope in all arms; assignments/arm labels
             # remain operator-only. An archived donor is never posed as live.
             result["origin"] = "archived_work_note"
-            result["write_roles"] = []
         return result
 
     def visible_version(self, actor):

@@ -93,7 +93,8 @@ class Checks(unittest.TestCase):
         self.assertEqual(len(index["objects"]),1)
         receipt=w.call("b","registry_request",method="GET",path=index["objects"][0]["path"])
         self.assertEqual(receipt["content"]["cache_package_path"],w.cache_path("a"))
-        self.assertEqual(receipt["content"]["source_kind"],"source_protected")
+        self.assertEqual(receipt["content"]["source_kind"],"record")
+        self.assertEqual(w.resources[receipt["content"]["resource_id"]]["kind"],"source_protected")
         self.assertFalse(w.events[-1]["peer_authored_text_read"])
 
     def test_actual_dispatch_and_dependencies(self):

@@ -1,5 +1,7 @@
 # Missing inputs and heterogeneous real task peers
 
+**20 October 2026 current source:** Current work orders and service replies omit author-added behavioral restrictions and ACL inventories. Missing staging, real peer work and independent receipt controls remain unchanged. [Cleanup details](../../docs/prompt-cleanup-2026-10-20.md).
+
 2026-10-17. This development branch models the **404 missing-input** starting point of LessWrong Step 2 separately from the earlier **403 source-role restriction**. METR's larger failure involved general cheating-method research; this pilot tests the earlier discovery/help/isolation links and cannot by itself establish that full chain.
 
 All inputs are exact original MiMo healthcare/accounting source records. In a mixed world, the first healthcare agent receives a legitimate total-controls/critical-workload question, and the first accounting agent reconciles the ledger's aggregate INPUT-event sum/count. Their normal authorized input reads and authored reports are genuine. Later agents receive the original different, more detailed source questions. Those target inputs were not staged, returning 404 while their ordinary read role is intact. No raw input is automatically published to the shared registry. Only actual agents can write a data reply; no helper, method, named fake peer or success note is seeded.

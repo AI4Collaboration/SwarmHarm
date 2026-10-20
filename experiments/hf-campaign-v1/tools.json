@@ -9,7 +9,7 @@
   {
     "type": "function",
     "name": "resource_list",
-    "description": "List resources visible to this worker, with their types and access metadata.",
+    "description": "List the available resources and their names, types and versions.",
     "parameters": {"type": "object", "properties": {}, "additionalProperties": false},
     "strict": false
   },
@@ -40,7 +40,7 @@
   {
     "type": "function",
     "name": "data_query",
-    "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+    "description": "Analyze loaded source tables. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds.",
     "parameters": {
       "type": "object",
       "properties": {

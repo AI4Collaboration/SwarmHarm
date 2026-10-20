@@ -25,7 +25,8 @@ base, digest, inputs = method.base, method.digest, method.inputs
 class FleetWorld(method.FleetWorld):
     def _read(self, actor, args, out):
         def source_specific_pointer(result, *pos, **kw):
-            if result.get("status") == 200 and result.get("kind") == "source_public":
+            source = self.resources.get(result.get("resource_id"), {})
+            if result.get("status") == 200 and source.get("kind") == "source_public":
                 receipt = self.resources[self._id(actor, "read-receipt", result["resource_id"])]
                 receipt["content"].pop("cache_package_path", None)
             return out(result, *pos, **kw)

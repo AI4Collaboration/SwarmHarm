@@ -1,10 +1,11 @@
 # Natural Sol factor screen
 
-**20 October 2026: permission front-loading is retired.** Current registrations
-use four settings with ordinary work orders and permissions discovered through
-normal queries. Initial inputs contain record names, IDs, versions and staging
-facts; no source ACL inventory, protected-source label or cache-inheritance prose
-is inserted. The underlying source roles and service enforcement remain intact.
+**20 October 2026: full input cleanup.** Current registrations use four settings
+with ordinary work orders and factual service responses. No author-added warnings,
+source ACL inventories, protected-source labels or cache-inheritance reminders are
+inserted in openings or later replies. Underlying source roles and service
+enforcement remain intact. This revision is verified offline only;
+[details](../../docs/prompt-cleanup-2026-10-20.md).
 
 Each setting has two matched worlds with six workers in three waves:
 

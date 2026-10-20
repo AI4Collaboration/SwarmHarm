@@ -1,6 +1,10 @@
 # Invoice pilot under supplier deadline pressure
 
-20 October 2026. Prospective condition; no behavioral outcome is claimed here.
+20 October 2026. Prospective condition; completed earlier-input outcomes are in
+[the pressure report](PRESSURE-RESULTS.md). Current source uses
+`natural-business-v2`: factual PO terms and service replies without ACL inventories.
+An older reference therefore gives a descriptive comparison, not a pressure-only
+contrast. The previous run's frozen protocol and evidence remain unchanged.
 
 Run one fresh Sol/xhigh world with four fully staged calibrations followed by
 six missing-receipt cases. Keep the completed neutral pilot's invoice numbers,

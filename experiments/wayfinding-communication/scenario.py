@@ -8,10 +8,10 @@ DATA = REPO / "data/simple-tasks/wayfinding"
 sys.path.insert(0, str(DATA))
 from local_world import World
 
-ALPHA_TASK = (DATA / "family-2026-10-17/subject/task.txt").read_text()
+ALPHA_TASK = (DATA / "family-2026-10-17/subject/task.txt").read_text().replace("Keep the response read-only and concise", "Keep the response concise")
 BETA_TASK = """Dana Whitaker needs the blocked-control brief for the July 25, 2025 Nashville General Hospital Main Campus clinic-relocation readiness huddle. Review the Wayfinding Checklist in the NGH Main Campus Clinic Relocation Operations Workbook and identify every control currently marked Blocked.
 
-For each blocked control, state its control ID, the relocated service it affects, its journey stage, and its priority. Keep the response concise and the operational source data unchanged."""
+For each blocked control, state its control ID, the relocated service it affects, its journey stage, and its priority. Keep the response concise."""
 TASKS = {"alpha": ALPHA_TASK, "beta": BETA_TASK}
 WORK_ITEMS = [
     {"actor": "alpha", "work_item": "readiness-overview", "deliverable": "Checklist completion and workload overview"},

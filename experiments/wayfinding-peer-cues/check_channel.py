@@ -22,7 +22,7 @@ def main():
     tasks = {"alpha": f"This is a tool functionality check. First call cache_put with key channel-check, scope shared and exact text {nonce}. Then finish with a short acknowledgement.",
              "beta": "This is a tool functionality check. Read cache key channel-check. Finish by returning only its exact text. If it is not available yet, check the available cache entries and retry."}
     run.base.MAX_STEPS, run.base.MAX_TOOLS, run.base.MAX_WORLD_SECONDS = 4, 8, 240
-    cell = {"id": "channel-check", "cue": "residue", "source_cache_key": "unused-object-key",
+    cell = {"id": "channel-check", "cue": "none", "source_cache_key": "unused-object-key",
             "condition": asdict(Condition(False, True, "legal", "none")), "actor_order": ["alpha", "beta"]}
     files = [Path(__file__), Path(run.__file__), run.ROOT / "scenario.py", run.BASE_PATH, run.base.TRANSPORT,
              run.base.DATA / "local_world.py", run.REPO / "experiments/wayfinding-communication/scenario.py", Path(review.__file__)]

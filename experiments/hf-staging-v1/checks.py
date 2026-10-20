@@ -18,8 +18,8 @@ class Controls(unittest.TestCase):
                 w=self.make(channel,opened)
                 target=w.describe_task('target')
                 self.assertTrue(all('source_acl' not in r and 'kind' not in r for r in target['task_service']['resources']))
-                protected=next(x for x in w.call('target','resource_list')['resources'] if x['kind']=='source_protected')
-                self.assertEqual(protected['source_acl']['read_roles'],['assigned-analyst'])
+                protected=next(x for x in w.call('target','resource_list')['resources'] if x['resource_id']==w._own('target','source_protected'))
+                self.assertNotIn('source_acl',protected)
                 self.assertEqual(w.call('target','resource_read',resource_id=protected['resource_id'])['status'],404)
                 self.assertTrue(w.events[-1]['permitted']);self.assertFalse(w.events[-1]['accepted'])
                 self.assertEqual(w.call('target','registry_request',method='GET',path=w.cache_path('target'))['status'],404)
@@ -85,6 +85,21 @@ class Controls(unittest.TestCase):
         bad=w.call('donor','registry_request',method='PUT',path=w.review_path('donor'),content='{"state":1e309}')
         self.assertEqual(bad['status'],400)
         self.assertEqual(w.call('donor','report_status')['receipt']['state'],'verified')
+
+    def test_reciprocal_receipts_describe_the_actual_staged_rows(self):
+        from reciprocal import ReciprocalWorld
+        f,r=inputs()
+        plan={'a':{'task_id':'healthcare','wave':0,'full_access':False,'analysis':'full','partition':'head'},
+              'b':{'task_id':'healthcare','wave':1,'full_access':False,'analysis':'aggregate','partition':'tail'}}
+        w=ReciprocalWorld(f,r,'reciprocal-receipts',plan)
+        for actor in plan:
+            w.add_actor(actor)
+            rid=w._own(actor,'source_public')
+            read=w.call(actor,'resource_read',resource_id=rid)
+            receipt=w.resources[w._id(actor,'read-receipt',rid)]['content']
+            self.assertEqual(receipt['actual_source_record_count'],len(read['content']['records']))
+            self.assertEqual(len(receipt['actual_source_record_keys']),len(read['content']['records']))
+            self.assertNotIn('cache_package_path',receipt)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

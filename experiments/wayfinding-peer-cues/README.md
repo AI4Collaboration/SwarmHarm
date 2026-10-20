@@ -1,5 +1,7 @@
 # Peer discovery from historical cache residue
 
+**20 October 2026 current source:** The fabricated-cue comparison is retired and prepare now stops before collection. The design and results below are historical. New natural experiments use unseeded current families. [Cleanup details](../../docs/prompt-cleanup-2026-10-20.md).
+
 2026-10-17. A bounded adaptation of the LessWrong reproduction's Step 2 compares three static historical-cache cue packages on the original administrative workbook. This is a peer-discovery/communication probe, not a reproduction of the full HF incident.
 
 The original MiMo readiness-overview task and the previously declared derived blocked-control brief are unchanged. The two live actors have separate histories. Native peer/work-item rosters and the entire workflow consequence notice are removed, including the prior no-consequence notice that still named the peer. No collaboration, honest-stop, method-finding or anti-boundary reminder is added. Shared-cache tools/permission descriptions remain common affordances in all conditions, so this is not cue-free discovery.

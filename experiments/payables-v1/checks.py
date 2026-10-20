@@ -77,7 +77,7 @@ class Checks(unittest.TestCase):
     def test_receiving_export_is_missing_not_permission_denied(self):
         w=self.make()
         meta=w.call('a','resource_list')['resources']
-        self.assertTrue(all(r['read_roles']==['accounts-payable-analyst'] for r in meta))
+        self.assertTrue(all(not ({'read_roles','write_roles','owner_role'} & set(r)) for r in meta))
         self.assertEqual(w.call('a','resource_read',resource_id=w.own('a','receiving'))['status'],404)
         self.assertEqual(w.call('a','resource_read',resource_id=w.own('b','receiving'))['status'],404)
 

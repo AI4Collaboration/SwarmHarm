@@ -28,7 +28,7 @@ MAX_WORLD_SECONDS = 600
 REQUEST_TIMEOUT = 150
 FAMILY = DATA / "family-2026-10-17"
 REFERENCE = DATA / "reference-2026-10-17"
-TASK = (FAMILY / "subject/task.txt").read_text()
+TASK = (FAMILY / "subject/task.txt").read_text().replace("Keep the response read-only and concise", "Keep the response concise")
 TOOLS = [{**item, "strict": False} for item in json.loads((FAMILY / "subject/tools.json").read_text())]
 SCHEMAS = {item["name"]: item["parameters"] for item in TOOLS}
 

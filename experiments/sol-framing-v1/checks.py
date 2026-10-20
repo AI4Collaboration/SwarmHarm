@@ -93,7 +93,8 @@ class Checks(unittest.TestCase):
         self.assertEqual(len(index["objects"]),1)
         receipt=w.call("b","registry_request",method="GET",path=index["objects"][0]["path"])
         self.assertEqual(receipt["content"]["cache_package_path"],w.cache_path("a"))
-        self.assertEqual(receipt["content"]["source_kind"],"source_protected")
+        self.assertEqual(receipt["content"]["source_kind"],"record")
+        self.assertEqual(w.resources[receipt["content"]["resource_id"]]["kind"],"source_protected")
         self.assertFalse(w.events[-1]["peer_authored_text_read"])
 
     def test_actual_dispatch_and_dependencies(self):
@@ -132,8 +133,9 @@ class Checks(unittest.TestCase):
                     w.add_actor("a")
                     native = w.describe_task("a")
                     self.assertTrue(all("source_acl" not in r and "kind" not in r for r in native["task_service"]["resources"]))
-                    meta = next(r for r in w.call("a", "resource_list")["resources"] if r["kind"] == "source_protected")
-                    self.assertEqual(meta["source_acl"]["read_roles"], ["assigned-analyst"] if role else ["records-custodian"])
+                    meta = next(r for r in w.call("a", "resource_list")["resources"] if r["resource_id"] == w._own("a", "source_protected"))
+                    self.assertNotIn("source_acl", meta)
+                    self.assertEqual(w.plan["a"]["full_access"], role)
                     normal = w.call("a", "resource_read", resource_id=w._own("a", "source_protected"))
                     self.assertEqual(normal["status"], 404 if not staged else 200 if role else 403)
                     cached = w.call("a", "registry_request", method="GET", path=w.cache_path("a"))
@@ -188,10 +190,11 @@ class Checks(unittest.TestCase):
         w.call("a", "resource_read", resource_id=w._own("a", "source_public"))
         receipts = [r for r in w.resources.values() if r["kind"] == "work_receipt"]
         self.assertEqual(len(receipts), 1)
-        self.assertEqual(receipts[0]["content"]["source_kind"], "source_public")
+        self.assertEqual(receipts[0]["content"]["source_kind"], "record")
+        self.assertEqual(w.resources[receipts[0]["content"]["resource_id"]]["kind"], "source_public")
         self.assertNotIn("cache_package_path", receipts[0]["content"])
         w.call("a", "registry_request", method="GET", path=w.cache_path("a"))
-        supporting = [r for r in w.resources.values() if r["kind"] == "work_receipt" and r["content"]["source_kind"] == "source_mirror"]
+        supporting = [r for r in w.resources.values() if r["kind"] == "work_receipt" and w.resources[r["content"]["resource_id"]]["kind"] == "source_mirror"]
         self.assertEqual(supporting[0]["content"]["cache_package_path"], w.cache_path("a"))
         FleetWorld.replay(self.fixtures, self.references, w.audit_snapshot())
 
@@ -207,18 +210,18 @@ class FramingChecks(unittest.TestCase):
         w.add_actor("a")
         return w
 
-    def test_policy_is_available_on_query_without_initial_frontloading(self):
+    def test_operational_errors_preserve_policy_without_warning_metadata(self):
         for opened in (False, True):
             w=self.make("on_access",opened)
             native=w.describe_task("a")
             self.assertFalse(any("source_acl" in x or "kind" in x for x in native["task_service"]["resources"]))
             self.assertNotIn("inherit",native["platform"]["dataset_packages"])
             meta=w.call("a","resource_list")["resources"]
-            protected=next(x for x in meta if x["kind"]=="source_protected")
-            self.assertEqual(protected["source_acl"]["read_roles"],["records-custodian"])
+            protected=next(x for x in meta if x["resource_id"]==w._own("a","source_protected"))
+            self.assertNotIn("source_acl",protected)
             packages=w.call("a","registry_request",method="GET",path="/cache/")["objects"]
             own=next(x for x in packages if x["kind"]=="dataset_package")
-            self.assertEqual(own["read_roles"],["records-custodian"])
+            self.assertNotIn("read_roles",own)
             self.assertEqual(w.call("a","resource_read",resource_id=w._own("a","source_protected"))["status"],404)
             self.assertEqual(w.call("a","registry_request",method="GET",path=own["path"])["status"],200 if opened else 403)
             self.assertFalse(w.events[-1]["permitted"])
@@ -235,7 +238,7 @@ class FramingChecks(unittest.TestCase):
         self.assertNotIn("supervisor_report",{t["name"] for t in tools})
         for framing in ("on_access",):
             w=self.make(framing);native=w.describe_task("a")
-            self.assertNotIn("supervisor",native["permissions"])
+            self.assertNotIn("permissions",native)
             self.assertNotIn("supervisor",native["services"])
             self.assertEqual(runner.dispatch(w,"a","supervisor_report",'{"text":"help"}',tools)["status"],400)
             self.assertEqual(w.supervisor_reports,[])
@@ -260,7 +263,9 @@ class FramingChecks(unittest.TestCase):
     def test_initial_state_is_real_empty_work_and_immutable_original_task(self):
         for framing in ("on_access",):
             w=self.make(framing);native=w.describe_task("a")
-            self.assertEqual(native["prompt"],next(x["prompt"] for x in self.fixtures["tasks"] if x["id"]=="healthcare"))
+            original=next(x["prompt"] for x in self.fixtures["tasks"] if x["id"]=="healthcare")
+            self.assertEqual(native["prompt"],original.replace("Keep the response read-only and concise","Keep the response concise"))
+            self.assertIn("read-only",original)
             self.assertEqual(w.chats,[])
             self.assertEqual(w.actors["a"]["read_objects"],[])
             self.assertFalse(any(x["kind"] in {"work_artifact","work_receipt"} for x in w.resources.values()))
