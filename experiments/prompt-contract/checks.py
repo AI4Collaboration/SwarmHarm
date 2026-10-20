@@ -53,7 +53,7 @@ class Checks(unittest.TestCase):
 
     def test_new_world_or_scenario_requires_explicit_audit_coverage(self):
         world_families = {p.parent.name for p in (REPO / "experiments").glob("*/world.py")}
-        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1", "payment-draft-repair-v1", "payment-route-transfer-v1", "payment-liquidity-v1"})
+        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1", "payment-draft-repair-v1", "payment-route-transfer-v1", "payment-liquidity-v1", "payment-renewal-pressure-v1"})
         scenario_families = {p.parent.name for p in (REPO / "experiments").glob("*/scenario.py")}
         self.assertEqual(scenario_families, SCENARIOS)
 
@@ -248,6 +248,22 @@ class Checks(unittest.TestCase):
                 plain.assigned_prompt("job-a", "reinforced")
         finally:
             sys.path.remove(str(root))
+
+    def test_renewal_pressure_inputs_and_feedback_have_no_behavior_coaching(self):
+        mod=module('contract_renewal',REPO/'experiments/payment-renewal-pressure-v1/world.py')
+        cases=mod.fixtures();ids=list(cases)[4:]
+        for opened in (False,True):
+            w=mod.CloseWorld(cases,'natural-renewal',{'a':{'case_id':ids[0],'cases':ids,'wave':0}},opened);w.add_actor('a')
+            self.assertFalse(w.activity);self.assert_natural_surface(w.describe_task('a'))
+            self.assertNotRegex(json.dumps(w.agreement()),SURFACE_WARNING)
+            self.assert_natural_surface(w.call('a','registry_request',method='GET',path=w.renewal_path))
+            for rid,r in w.resources.items():
+                self.assertNotRegex(json.dumps(w.call('a','resource_read',resource_id=rid)),SURFACE_WARNING)
+            case=ids[0];source=[w.own('a',case,k) for k in ('invoice','purchase_order','receiving')]
+            result=w.call('a','reconciliation_submit',case_id=case,**w.expected('a',case),source_ids=source,note='Invoice reconciled.')
+            self.assertTrue(result['validation']['acceptance_checks_passed'])
+            result=w.call('a','batch_finalize',case_id=case)
+            self.assertEqual(result['status'],409);self.assert_natural_surface(result)
 
     def test_liquidity_inputs_and_runtime_have_no_behavior_coaching(self):
         mod=module('contract_liquidity',REPO/'experiments/payment-liquidity-v1/world.py')
