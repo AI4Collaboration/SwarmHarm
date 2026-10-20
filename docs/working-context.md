@@ -2,7 +2,7 @@
 
 **第一条：正式报告用简洁英文；和用户交流用简洁中文。先讲结果，不堆日志。**
 
-- **当前工作（2026-10-21）：** 用户要求持续对照METR/LessWrong、改环境再测，直到出现真实完整链条，再总结核心要素。新`workbench-release-v1`用真实Bash/普通项目文件，构建失败也缓存真实提交代码；每个agent一个oneoff函数，六worker三批，初始缓存为空、能力世界另隔离。先Luna、再当前Sol、再较早Sol5.6，统一xhigh、无压力。三模型匹配登记完成，9环境/3完整流程/19prompt检查均通过，未调用模型；此前结果冻结不动。接口/上下文宽度/产物机制同时改变，探索性修改不能直接当因果结论。对比笔记`docs/research/hf-design-iteration-2026-10-21.md`，后续缺失输入机制需另登记。
+- **当前工作（2026-10-21）：** 用户要求持续对照METR/LessWrong、改环境再测，直到出现真实完整链条，再总结核心要素。新`workbench-release-v1`用真实Bash/普通项目文件，构建失败也缓存真实提交代码；每个agent一个oneoff函数，六worker三批，初始缓存为空、能力世界另隔离。先Luna、再当前Sol、再较早Sol5.6，统一xhigh、无压力。三模型匹配登记完成，9环境/3完整流程/19prompt检查均通过；22ca0df8已在调用前push，Luna已完整结束（103次返回、6正常能力通过、3/6错发布且结束未撤回、零同伴正文曝光），独立复核通过；当前Sol已启动，Sol56未启动；此前结果冻结不动。接口/上下文宽度/产物机制同时改变，探索性修改不能直接当因果结论。对比笔记`docs/research/hf-design-iteration-2026-10-21.md`，后续缺失输入机制需另登记。
 - **上轮结果（2026-10-21）：** [无压力持续项目报告](../experiments/release-campaign-v1/RESULTS.md)。Luna 完整采集 23分10秒，六个上下文分三批处理36个组件实例，197次实验返回、191次工具操作。四个后来者18次读取真实同伴正文，覆盖七份代码；40次提交全部未通过，零实验发布、零实际错误交付。观察到自然发现和相同函数复用，没有利用方法传播，不能称为完整HF复现。单个上下文实际6–8分钟、28–37次返回，不能用12小时预算冒充长时自主活动。
 - **Sol 不完整：** 六项正常能力均通过，两个实验上下文各运行24步后，接口流在没有完整终止响应的情况下结束。总采集21分16秒，77次完整返回、一次provider错误；12个组件未完成，24个未启动。无实验发布/同伴正文读取，不静默重试，不把缺失覆盖当阴性。
 - **上轮证据与状态：** 两模型的原生历史、工具、文件版本、发布状态及12个正常发布版本重执行均通过独立复核。18次正文均核对到下一次真实请求和实际作者。没有记录到provider policy filter或native refusal。两个collector/reviewer及临时容器均已退出，锁可用；无定时任务、无新凭证、无基础设施改动。原始结果与导出均保留。
@@ -16,4 +16,4 @@
 - **运行纪律：** 后续新条件先审查、冻结并push，再做fresh preflight/正常能力，依次采集，一次一个推理。provider错误/native拒答及时说明，保留失败，不静默重试/替换轨迹。已结束目录不可重跑；独立reviewer也是write-once。保留Multica 0.4.44及维护者公网安全patch；不升级、不重启daemon。
 - **仓库与网页：** `main` / `AI4Collaboration/SwarmHarm`，用户已授权直接push结果。网页只放核心principles，不放实验结果。`sources/`只读，不改同步资料。最新内容放最前面，README/setup/运行指南/索引一致；历史协议与证据不改。
 
-[最新英文报告](../experiments/release-campaign-v1/RESULTS.md) · [实验入口](../experiments/README.md) · [运行指南](running-evals.md)
+[最新英文报告](../experiments/workbench-release-v1/RESULTS.md) · [实验入口](../experiments/README.md) · [运行指南](running-evals.md)

@@ -1,14 +1,16 @@
 # SwarmHarm
 
-**New iteration · 21 October 2026:** a Linux-workstation diagnostic with ordinary
-project files and a persistent build cache. Each worker handles one of six
-single-error functions; failed and accepted builds leave only actual submitted
-code. Luna, current Sol and earlier Sol settings will run sequentially after
-matching inputs, freezing registration and fresh capability checks. No added
-pressure or seeded peers. All three matched settings are sealed; 9 workstation, 3 full-collector and 19
-prompt checks passed. No model calls in this revision yet.
+**Latest finding · 21 October 2026:** Luna published three wrong functions
+without added pressure. It disclosed the discrepancies, and independent callers
+received the wrong values. Six normal capability tasks passed. No peer-body
+exposure occurred, so method transfer is unproven. Current Sol is collecting;
+earlier Sol is registered and pending.
+[Result](experiments/workbench-release-v1/RESULTS.md) ·
 [Protocol](experiments/workbench-release-v1/README.md) ·
-[Design comparison](docs/research/hf-design-iteration-2026-10-21.md).
+[Source comparison](docs/research/hf-design-iteration-2026-10-21.md).
+
+The diagnostic uses ordinary project files and a persistent cache of actual
+builds. Inputs and controls were frozen and pushed before model calls.
 
 **Previous completed study · 21 October 2026:** agents found peer code, but the full failure
 chain did not occur. Luna completed six multi-component contexts in three waves,
@@ -100,7 +102,8 @@ business data and local simulated services.
   credential file. No shared key was revoked or new access created. GLM returned
   a different model ID at preflight; Haiku remains untested.
 - **Current status:** all matched registrations and 9 workstation, 3 whole-collector
-  and 19 prompt checks passed; no model calls yet. No new credentials or infrastructure changes.
+  and 19 prompt checks passed. Luna ended with three independently verified wrong releases and no peer-body
+  exposure. Sol is collecting; Sol56 remains prepared. No new credentials or infrastructure changes.
 - **Previous status:** both collectors and independent reviews have ended. Luna covered
   all 36 components; Sol's twelve reached components are unfinished after a
   provider error. Both audits and twelve normal-release rechecks passed. Eleven

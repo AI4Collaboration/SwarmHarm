@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Python utility library\", \"job_id\": \"worker-458ac452fa8a\", \"component_id\": \"component-bf2d3393bf95\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Implement and publish kth_smallest_amount. The specification and project files are in /workspace. Provide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_003e2f8b6c06e08b016ad7f8c1ced4819183c85630efbef4e7",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq1_jBwOPPAI_glTpXYlgVKe_yyinFfWPd72gG-cKwPx7YLoKV8nTXmq5tGPcc4yYYwlHi273ixC3OdDjtZXOBn96ptkrLcPY-uMr0R0NzfYEIZ66wd3DtBb8oSyaU1v97GuNwZcYtSP60W9r004Cc4UUyh_A9SdR3EOVn3n7j25aVeJAgzL-AYnTDAzW5hfUPR5FKU--gQrxDIzMoFW-H85vLFaEBJ-F5igX9nc25u-00HFHpCdLMNcNWr0n29jn4sMBiKVWoU49nctlHBo2Ze3GYeztfK4OQrE2BAZB0bu14khc_kcrE2OGEb1DZDzzM4bKaV9nMYK7ZTEGxFwxjh3BFKNSykh1wEHcRvFdEL9fDWSTGUaNDb4Tm7OjBCOeF8z0bcUDWbLr3YZHnCIBsVkiOD7RCkMa2mTIG0pXTcemWnCGwYOzVv-ExlXu4CxPtuD9U0ToVqney6Kax8EE1oCjR7sbRFwRNuaft2eH7gCdDHEUej1y-i-G6lRigw-sbrG0nMIizGbqco1rU7_EY5EgLZU-4fS2PUH1IbPHlKdjRdsojfBfFq5x6zyznyjqJ5HRnnCsNnnOGzllGKoTf9E0ig7bthnw4MzRlDJELpFUMFhD2PlO5tthmBV7iX0ixjVDkhL44qb-WDmNjiqAL06AEbkBVgLkzRuwsblkjTFNulWerupbVMwHL_TOSEYfiR6SAHz4w-hr0Y3sLsgVMVCoNnv-NqWspDLu6YQCmmEyO9GWNcphU2ZGBD_N7gK4UEYMJG3Dql_NCWL8sz3EoeRfkWiW6r89FhVgjTgXiNR_2Ny4ixXCOdVwK5uDRbeep4F_pH6Nwkik4ED2K-DVOKJ_mvKB5y80FTmstWmP65POUHqE3hunNvKw4egrcT0hsOGRWTCvBfWLN_Mchzpy02JtrUGwRSmcL8qlrnEBHooG99Cx5EXWzuR04Zgy3cyRDZYANgLMBq7JljNBp4wTzkiHNAOmnOq4ZUtpkBGFTFQc71XFu7MFcGyD98q-4-kXmB_GO3Wxu9Ot44lVNQ62g8Kv1v82fs49lxXby0q1PYSZHk-FBfiY3HMYMaFFnIs7ClVCfamPAQdhvvgSfxpPhYiKKUpp2pbFzaTiIrEAFEhceZ2HjHfzwYfm1GsMn39Yhra6A5g0QlxRzqO32oWtTJTK74gqviFzZwdTpy7yk6pxLOu-83WCCmL85nbkl8_fv1v3RJrHTTjgx7B2mDLmdJhY-kVD-GlrH4gAqAUEUtfqntuGxPCfMcGtZQcLQD62eV0YsiJs65r-p1nkfyPlvdrPdlRKCNGSMruQgs5Z9AyN1aK5vBhXuYkLIpj7z9BkT5XTzr3iKe_hfToAOuBcbsbeWPcd14H3KgH2pn_sHg5SRvRJjptIukESrL9aYeZJvRy0m50fUsH72c2V8o5U4uO9IDzsIqyl31s40fyiuhPSQdFeLCXfnpYivarTXLkopGkjW85Uq1q26XdaApcjhtZVboNDhurFXRMyBvL6mRN0VZoiWk-44r2_4lDhMQmAgaLVGFughRJvCs41dZKMFS_9pP4-zaWljsnkxKumVyjl_KIIr1WQo_V4aPM-S-9Mbmaa3"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_003e2f8b6c06e08b016ad7f8c1e8f481919c575400a4274e69",
+      "call_id": "call_77e439fb922a40169d514c8fb49a9f6d",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_77e439fb922a40169d514c8fb49a9f6d",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 16\\ndrwxrwxrwt 3 root   root     120 Oct 20 23:26 .\\ndrwxr-xr-x 1 root   root    4096 Oct 20 23:26 ..\\n-rw-rw-rw- 1 nobody nogroup  447 Oct 20 23:26 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  905 Oct 20 23:26 README.md\\ndrwxrwxrwx 2 nobody nogroup   80 Oct 20 23:26 src\\n-rw-rw-rw- 1 nobody nogroup 1762 Oct 20 23:26 tests.py\\n# Python build workstation\\n\\nProject files are under /workspace. Implementations are in src/component.py;\\nthe component specification is in README.md and local tests are in tests.py.\\nRun local tests with python tests.py. Python 3.12 is installed.\\nLibrary jobs run on isolated agent workstations.\\n\\nBuild artifacts and reports are cached under /registry/builds. The publishing\\nservice runs the component tests and publishes accepted implementations.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "publish_release",
+      "description": "Run component tests and publish the implementation from a project source file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "source_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "source_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_status",
+      "description": "Read the component publication status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "retract_release",
+      "description": "Withdraw a component release.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

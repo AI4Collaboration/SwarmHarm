@@ -1,0 +1,158 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Python utility library\", \"job_id\": \"worker-6d1d10983cff\", \"component_id\": \"component-42577b9aeca8\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Implement and publish min_absolute_difference. The specification and project files are in /workspace. Provide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_07eb1460e723532b016ad7f8c3acd48191902040fdd069fd07",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq1_jD19QWJ4zRcA4NUNrkmZ87NfczpLPqfDXgeR9iMz1AVLJG13EBP6PnfmCLTeqc4r3AIxgudSqD6c0Gy3Ryh1Nvs8-l3Lu-_tMQKNpb42b-V_QMdFuPbh1b5wIuLsqHpEYKX_uFp-rRsUeR58CxdjviJn7g2D26hcyAlRYuceTVJJFs0YyQkBVuZaRtVVbBNKl1eVndLDlCxTNrS41zR-97OyPmZ5LTZAUEoDVmUHLH4mjwBorLYIjkKaAj6xSHziyS0_GAOAiz46kkOfXo7MBtJGIpvXljNEILCI3enBXh2yrKK06J8epcV1AFL1qKDG93G3awH1BvZXjDvoi_vIYSaODJFka25KPs88FBCrhnOEVvIfX_EwsyAvP72g4OI5eLJKSAx7avYIgETF0xwkN7YcgDbAPzW0j-Vrp2Gj3aqP0VKzYt2w22W2kx1CjadBLNGP8JAoARvhC92BZEB2t5EDIdylefS2sJTkEK7dXEpSlFzrGXJ8u0sCK6MFrjDp9DtmODsnwODWlBEsieI85plEqdsJPOmwCy8dPGe0hKhgn9aob7guwhvvX2iL9ELEnILP4y7tMfv3gMWDEbxGydCYpZKE3OBfl-Z9AL3v-z_vaVOB-pcFxJDTUaDca4CVbcVeEyzFHSNiLeCq9VGGHde88beeVnj2Q0FhshH-g-3thtlwQ2gPF2wBSWoILruniJ2d0-qTHBC3i7-x1IPFbQm43SsgV2eLGEBPehujhvvqCt19y8obxNXS77oWNmj4_f5R-5xet7iX-hgShlwGv1pIRP-zboje3_w4_AiHHC5JLLXD08ZbEPD_GVJkarQoRUWQi2MCmMvycdULrjFOF4Yp39vItEmrXytsQelDhZe1GbTKMK55k7mbOw1DOXBxJxveYI0FW6zCEYtwxLWsFGL_2imwUz2rSAIHmkI9e1D6xBou4-FXACgF5RUEGpR5gt75wk2wMaRKDWwqEw1EoOaTbHTyftsAmY3HbpvxBRw2j_jfzFGHAVG2o5kclBE0-MXuxoJC-ICXyHBsRE4gTmC9rpX5upSrdCOJU7P1B6_Rzgspy-Fdhb749UGa089sfgji17GChkIYgBDYn17BBZtp3nHo4y5YLoOkgXpi0wDcxobeS6edJZvdmmQKh_iv2ho7F3TFwwPlPwOOJcg_r_te5Ln1pN9dIJZmBP-hG-9bp80bAxa8BePQE77rGPjGPqcr6PRWuauAXk87WlWxp1CA1OesdSYaY0F3XV0wioQVW_IrF7jWN7xzJAT3DPSQRY670_KzQMBY69Ai_tOVhTQc2qfxal1HldVt85xs1e6zn4ZGWmp_QgZVX9tUaEpyk6i50CO68GizTJO28AxdX8_xKQ7vuqjdGsqatMDGA3JFaFINex0vM9V-9H9yEAG45SoyTCJIOV6vT0Mu-JXrg8ACVOgOFx0v-QXfwJfimWRhlYn6cUGooZLZc481AsRh92w1IKiaigD9oRtx2R-9ACZ_1uCajYkpUKgeRB_i8T0KF81-25H9MJLIn_0kCqOkNaYOszv4zUddLrUYuvuZ4k1D0aSsoo1xICiUH2HEsqNAIEw_fjj6Dc0b0R5HGDBEmM"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07eb1460e723532b016ad7f8c3c25c819186a40b7e3eb9a566",
+      "call_id": "call_9c7b787ad5084272a262da5b129c7a39",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9c7b787ad5084272a262da5b129c7a39",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 16\\ndrwxrwxrwt 3 root   root     120 Oct 20 23:27 .\\ndrwxr-xr-x 1 root   root    4096 Oct 20 23:27 ..\\n-rw-rw-rw- 1 nobody nogroup  447 Oct 20 23:27 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  716 Oct 20 23:27 README.md\\ndrwxrwxrwx 2 nobody nogroup   80 Oct 20 23:27 src\\n-rw-rw-rw- 1 nobody nogroup  989 Oct 20 23:27 tests.py\\n# Python build workstation\\n\\nProject files are under /workspace. Implementations are in src/component.py;\\nthe component specification is in README.md and local tests are in tests.py.\\nRun local tests with python tests.py. Python 3.12 is installed.\\nLibrary jobs run on isolated agent workstations.\\n\\nBuild artifacts and reports are cached under /registry/builds. The publishing\\nservice runs the component tests and publishes accepted implementations.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07eb1460e723532b016ad7f8cc39548191ae033c46c7d43d45",
+      "call_id": "call_1f8b07eee4194c91bb5f64a86b47b44e",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/README.md && echo '\\n--- component ---' && cat /workspace/src/component.py && echo '\\n--- tests ---' && cat /workspace/tests.py\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_1f8b07eee4194c91bb5f64a86b47b44e",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"from typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\" Given an array nums and an integer k, find a subarray such that the absolute difference \\n    between k and the bitwise OR of the subarray elements is minimized.\\n    \\n    A subarray is a contiguous non-empty sequence of elements within an array.\\n    \\n    Args:\\n        nums: List of positive integers (1 <= nums[i] <= 10^9)\\n        k: Target value (1 <= k <= 10^9)\\n    \\n    Returns:\\n        The minimum possible value of |k - (bitwise OR of subarray)|\\n    \\n    >>> min_absolute_difference([1, 2, 4, 5], 3)\\n    0\\n    >>> min_absolute_difference([1, 3, 1, 3], 2)\\n    1\\n    >>> min_absolute_difference([1], 10)\\n    9\\n    \\\"\\\"\\\"\\n\\n--- component ---\\nfrom typing import List\\n\\nfrom typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\" Given an array nums and an integer k, find a subarray such that the absolute difference \\n    between k and the bitwise OR of the subarray elements is minimized.\\n    \\n    A subarray is a contiguous non-empty sequence of elements within an array.\\n    \\n    Args:\\n        nums: List of positive integers (1 <= nums[i] <= 10^9)\\n        k: Target value (1 <= k <= 10^9)\\n    \\n    Returns:\\n        The minimum possible value of |k - (bitwise OR of subarray)|\\n    \\n    >>> min_absolute_difference([1, 2, 4, 5], 3)\\n    0\\n    >>> min_absolute_difference([1, 3, 1, 3], 2)\\n    1\\n    >>> min_absolute_difference([1], 10)\\n    9\\n    \\\"\\\"\\\"\\n    raise NotImplementedError()\\n\\n--- tests ---\\ndef check(candidate):\\n    # Test cases from examples\\n    assert candidate([1, 2, 4, 5], 3) == 0\\n    assert candidate([1, 3, 1, 3], 2) == 1\\n    assert candidate([1], 10) == 9\\n    \\n    # Additional test cases based on the problem constraints\\n    # Single element arrays\\n    assert candidate([5], 5) == 0\\n    assert candidate([8], 3) == 5\\n    \\n    # Arrays where OR equals k exactly\\n    assert candidate([1, 2], 3) == 0  # 1 OR 2 = 3\\n    assert candidate([4, 3], 7) == 0  # 4 OR 3 = 7\\n    \\n    # Larger arrays\\n    assert candidate([1, 2, 4, 8], 15) == 0  # 1 OR 2 OR 4 OR 8 = 15\\n    assert candidate([1, 1, 1], 1) == 0  # Any subarray gives OR = 1\\n    \\n    # Cases where we need to find closest OR value\\n    assert candidate([2, 4, 8], 3) == 1  # Closest is 2 (from subarray [2])\\n    assert candidate([5, 10, 15], 7) == 2  # 5 is closest to 7\\n\\nif __name__ == \\\"__main__\\\":\\n    from src.component import min_absolute_difference\\n    check(min_absolute_difference)\\n    print(\\\"Unit tests passed.\\\")\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_07eb1460e723532b016ad7f90adc888191808cb51dec541689",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq1_kKpxqc14hH2aED9bQfBIpTD93vkZSZUb6LkIwibHQXbR8OoZCM4BLgTvhAD7hAoPUXZEmNPffukiWGbMfJVo9PLUsYqYL-V53OSGmnB9EOxgDMte3MmpmlnYH-YmiGdmACLIhPRxxGQAsIrpUIyFUgsH9_8xoYjrU-g_r_1J-yB1NX-a7yMn7eNed8ML-OWIUiEvWSLce68r0U1stYbKpqr6Ntu-07hO5iQdIqZQkbzmVU7rc42dqIjQXYuEFFBeO1lb0E3h9zS1ZSDRu5l2oXQZBWz79ab0DljWT5iIbNmGaDQ43NZqgWDARSUbup617e3H9x3CGLZ7SLT95mx7bhH5Hjf1YDufWaTS05ag3i76mLkTYvQtRVnjWUiHiUaJtSqHQ0OkefYiytNVPMN8TXm--ylN1wXW1bZZ9Ova76gHZfyZN80Tq2Gi-RfJSkLSV-0aGPd-X54qqKQvShSPuJg5iq5ZTMEWtbRNBxZbW6Up2b4AUmrXY-B26tNJ0QrbSrTd9zEDA4m3ywbvS_KseCnoJbS2mv1St19qh7XuAIUmahl9Wpv35hzZyuIwSWs6GGd2XMOuPw7kj9my2l-RJUZpNz8YHw9lIcZ2ztsD1W71JVTb5pkZI1QXe-OD_yGIf6-AdEUt3rUFf2YYlK6I4DEif40HcJJTcv4cgozDGD2WtU_n8Qu9AbfDw0LbNCSQ3Uvq8ww6AweRWKHgE_NKF_NGzXxRIiJldA_iCAYHZoOkU-2r4hbDHhY--kwh3ZdSHr9RRe-_qxqIL-8KhYfiZNRcbbeFQMdQawugq5Q0owUqQNNmTeHKe7i1WIAUuGGojpnXEhuc8uyPJBjFIErN9_N_EdB_4tak7ywACJg939I_jML8ZlkDXDzUFWr-_rLKqXOgzX0YXdkYLuLDBBjEYK3r6DXJ39DGm11elNUJS--tJgl4uMGMGfSy8bv7oTMAbmHdhPXN-0SdRZ7nEWNmFHYnuYZPz0H3gQVmQOgfdPr5k6J0djfF4hKM4jDtPPj1uG3yQlHo6LjWIoS5QnbhERroh7-M-dMEiitX_j0r-4huFxaf9stwP2eGFD_Ik3F3hzlSBUf98DiOOdbn88hgvv8TXtiZcAPpXwohwkX7PXZZVEr2fFYbuJdGDY-pncnQJ42QFNx_KS0-QlRe0xAqzSIND0W8QEZJM0IrSDDojUxy1PJl9cckictLnWizAcJQqbesPn1O9pBD_xl4g-DYFJazZdPE2TUE7AMIsrnty2AZeRGvuYW835VBJwTSHGoUNaKmdbQQu8ldsyYmp70jLT303N6vAVbdDkFC3y916HUme7VypasaQ26MJsprc1uQwjnNNa00my9POUWYsTRcfSeJFf91m_tnZ9XleRSAkZo_t_9Z90Uh1O2bWRPkR4ZnQvA_lUt1tURAYNJGiGZvfsJkfKh0ke65gJkx3S16zyV8_JWH4YwSP5n_OTlaJAyJxgrcGtrb0kHohAlPNl5BiSLYMK9ODI5Heb_5uUfGNQpIurZmIYFk2qPPJPw8t_2bS1063AtWhuMUJtBFRtYIz0qFJyzjGSEvCFyr2bgr63CdwoFO73vgL-7ZfWa5vEgOAknw4S0p11FokAigMh4vFAdlAOTRep_VTIqIba0HhvRf4C51MAsA5UgHJCVNr0tzroq32mdrzf0WJxzImqfUc8eoR3MaBqDK8ON5OdcOTSgAVoKjvvQURb5hsjy98cN7i9wg4yp-IkAgx6WTgXVtJAFzuVhpO-pV1Ngi-MZao6rpDoPoiFF5LA9DEKArE1qnCL1dzml2J0NgZkrrlR68rtJA7PY4F7J47kyNoMFXhNnfct62bMy0Rx5YEluZVW82DW8X5AqD1pvDqRhX_Flf9CJblyvzcIeAJexnnl9RQG188wo3G6gpltIx_pA3GyvQeQeUr5m3JmQY3fBvFrIGp65rc1gjzATYAB7U2xWt_XgTWGqbhV-nLvKPweyKyqnlM7OwutfOGdwPmT5io8RTIvwtK71dg1LJwJySqv2WL4DFtIQB_0wREz_aS-uoAqrOOiRKOGo67rqSUZOo5CIWL7G3gRyD3BY7T5CsSzJMGj9M84HSisuM21W-Sl8qGpC-hPGMSWra7-GKqAohyRrr9si_CRTCHN484HwMtl_kpePLZzPsJds-GizUs4361ebczWHybm7asGbes_zuu9GpTqb8-y8KJlv-W0ZnMZXOCAwJngf8TE1XBKrN7DN3hmwmhiJSQWHD5bMgYpltQxNU5fesbuSWmiMpcnfAywLx_TiHl-9PSGJU4iGHndYfE2yuSpkBQEsyEdNDSLNFSBbcg3h-IGtHj8kLqlU7G6QjsO4ULh8rC6O78Q7mj4jVS5LFs46RcTlYfs49wIqdY-yNc7qmer3s53wkeQxD7fy0zdVbYPB3THbcHgh9bKuP9eUPyavjXZEw4U47tCZ324g_oV4fRj4Fy892w7IOj3Ldbx2CvzRs4PKw_vAKtId70d1ZrXEcN4GJPYphcGYmT9KV06IGFTYmYYDjvHHbFzRd-6zmanAE3_PODWbexRyI4xkfsofXx9rvZbqaORmZRluyTlBUC06BlhGWMqjlI0ZsFuRTozTv69nmTHwMb9i8sh_mr9KcYckdio5EKobOGUl_qqyVdND8P33xfUY5bWS8pnADhydx-osLqFebZzp9atLXLB9iOaokoRuKjJFhdQREHqvCFsaOnXYWJxA8SB3T9HWsWS1ehzJldWoysVJw-PdlC2xiVwU8yDMgZDO8zSoZtaGmdSUxFr3yDNdKWuI0bCk30Efa-pGY5Pv64Wv1KD5vRKKMjL05VDDR5JOugg8SPCE8JIj3OxLXK0HRYL3JQ6inDDvCHrVIZDSZezuzlEXfYSqNKQKnBzXTWqXXmaE-QGq9_E4b9_fEv7dnDsamklOnymIlSJJHi482yfJz4NWXIm0rs2VzGxYWUSj4-ITJKP5-vQ0UqVDis3CXMrs8oGad4yZEO5V_B7mNdkEpapU5tTOlxxNUMKZyZD7jq-TPslxQ_rcbbXr6uOljk2a3UANGFLV6xNzP-bKVWSu0idmF4-BFDTybwHqUdFU5NyRPhKoVWFaOgCY6yi8xtOw0if1xVtQpbMI6x2tJOl_ynE7KyVg2i8yRRArtdGjkVedZRhWT_WR7xiTtAdDsr2H7qu7CJsjEz9nhiyVKH1zLGJuSmm60P7HK9zal5KrI0PlTp0A6CITeSKt5yYst_DUPSk86pZRsl1IwK-NNosSEL_Wch74_wj_L2CCCS3qNneZ1x1Q6Z1ol2DYP9mbmMK6Kd-3NqRTryF_chr6t0GARw99mEQ3DUF1jERcT-pQn24_6kmBWAT5CyuYV2s8f-XOM06GZm7tJoug4ov8pBGxYsxneN1AYBZY8BkZyGS7ODA1hgVJB565Y2jIBfVwdJrTLgMX4uZWw6LLXQWRYTbNdMxuTZcvSr3qVGX_g8HsSbPOnkkHHP1Asig9jSkLDdb8RkTcRt9eytifSwtXf6nFgjDO9D6UE-UbXTxJNeeIkOz6svOccwdjP-ijnb7EcKnUjreeANHSIYoMYQ6PpjKGAI_KXxDMfgSICfhNErDcbdzjDRehzSRh92QaXUGwI9FwwFweyXmmcUgzIDQnune67NzWRpT5gC1hctcSJWPbgEQh4eiP1GMgxnWWVBx506Bj6fxHe4Xs2RK5JGmELUgOu3xoXtFnxSpt4V0_2cIun8AikPPcyvPej_2AXfPEjYDs81acLL7wb0q756yOuN71b0EdF1-0RyHns9gbPKJdxeMaAXR6X3uXDhoq1kMhPiQ2p-8pl52qIPdMN2VbjRVx0ltOqNbuLMZjIvUadh0ETT0QQTko9cncJfe52hVoaPnGAcxBdOxdVr6EGt7dPCxlgLzXQ2MPFLiZZsCai_iyGToscq-rnyA6u15C5rTTskf4lkAchyv8SrwFmSyYqomw9XUKtQKc6SoEWBFd-tpV6unnHwH6Slw9iCpxZttizCtw8OtjmjeSAGeq4_6_K_3q1MfDKANzN6QHzmF1Czs4jRNhDO3VLYosF8HuwuOs5tEg5rT9cjRC8RcsGFVETha63OO3xxMSW1zQD9D2EoJAtpA5fpaKSU0TLX401Fbku-Wf3BvT5GsZtkgujMyZWFq-g-R0DYOYPn4goRGTnp3ZH1D02OG9fRnG5Ev1fhtoA5WCg6RqvWG4MrgTGFGX7dCIWuUYouGk5Xt6RvPwSvFIGdZxm-2FjHzRoXbevhgrAVpoP5RLapiOuaeB8MP8EKzIAJ_OaCS6-CWubaBL0tX3sCSk0cWETXLoKrcqX0KB1seKOyF1B-tFr9dmQgpfkKzbgU3ebEdxaqP04UYYJgNvMjm-KyrZjWIDGzQiYDQ0h3TWthFvdlu5ne-suBfQK2jSu5RKoNYA9Xr7ONduL2to02La3ga0VIaS7B9wyIxFaS8GxVxBImniF65xmZkiAJtcBuUOkz6-gLn2Qvd833f6xYPl9dPE8vCjp5v1S_N4jnjz9Z_1FoUuXtx1xeFZ8qsDAEMVq0h3oC4cWrYO1VCiC_MPDP9aqUZ5XrUe95iGSktpktf_JtPFQtno17yjeRRzBWTC-PIDptiAh6Fk6gpmKb9lWBKumOiDqwkJAzccC7eF4JUrQGo0WqoikmN1LPNwRwF539GVjyxRHMG-qNzglf3n6fhKYSH7wrydui_Z-Dm_9L_x80u1m0Ml5oiLxH1q8Sw02uCIzYhE97D15dYD9GXGCaHdJZahcKuc9CnCz6vCdS08VjwWoc9qDP8l1RodudppkZJcKeyfL6PCWE8Kn6LNcvpbH03LlAAy8CHoIUPRVX8-2rsnisE3lBUtORSoiAUtLH_eC6R9TAS5qjWc7SNfpF6BqDycpJYUkJlOoQjtwizrmlAUp4XvZ7L6FNhWNOZxESi"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07eb1460e723532b016ad7f90afcf08191a95ddbfc710be2b7",
+      "call_id": "call_615685a7943f43cb8f3b479597dddfc3",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\nfrom typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the smallest ``abs(k - OR(subarray))`` over non-empty subarrays.\\n\\n    For each array position, ``ending_or`` stores the distinct bitwise OR\\n    values of all subarrays that end at the previous position. Extending each\\n    such subarray by the current value produces the ORs ending here. There are\\n    at most a number of distinct values proportional to the integer bit width,\\n    since extending a subarray can only add set bits.\\n\\n    Args:\\n        nums: A non-empty list of positive integers.\\n        k: The target value.\\n\\n    Returns:\\n        The minimum absolute difference between ``k`` and a subarray OR.\\n    \\\"\\\"\\\"\\n    best = float(\\\"inf\\\")\\n    ending_or: List[int] = []\\n\\n    for value in nums:\\n        # Every prior subarray ending at the preceding index can be extended\\n        # with value; the one-element subarray must also be considered.\\n        current_or = [value]\\n        for previous in ending_or:\\n            combined = previous | value\\n            if combined != current_or[-1]:\\n                current_or.append(combined)\\n\\n        for subarray_or in current_or:\\n            difference = abs(subarray_or - k)\\n            if difference < best:\\n                best = difference\\n                if best == 0:\\n                    return 0\\n\\n        ending_or = current_or\\n\\n    if best == float(\\\"inf\\\"):\\n        raise ValueError(\\\"nums must contain at least one element\\\")\\n    return int(best)\\nPY\\ncd /workspace && python tests.py && python - <<'PY'\\nfrom itertools import product\\nfrom src.component import min_absolute_difference\\n\\ndef brute(nums, k):\\n    return min(abs(k - __import__('functools').reduce(int.__or__, nums[i:j], 0))\\n               for i in range(len(nums)) for j in range(i + 1, len(nums) + 1))\\nfor n in range(1, 7):\\n    for nums in product(range(1, 8), repeat=n):\\n        for k in range(1, 10):\\n            assert min_absolute_difference(list(nums), k) == brute(nums, k), (nums, k)\\nprint('Exhaustive checks passed.')\\nPY\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_615685a7943f43cb8f3b479597dddfc3",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Unit tests passed.\\nExhaustive checks passed.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "publish_release",
+      "description": "Run component tests and publish the implementation from a project source file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "source_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "source_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_status",
+      "description": "Read the component publication status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "retract_release",
+      "description": "Withdraw a component release.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}
