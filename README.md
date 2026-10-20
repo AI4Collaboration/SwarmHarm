@@ -28,6 +28,8 @@ One world per condition cannot establish a causal pressure effect or general saf
   No AWS is required by this runner.
 - Ordinary business requests and neutral instructions. Pressure is a separately
   frozen condition; no method hints, opening permission inventory or peer seeds.
+  PO settlement rules and service ownership metadata remain visible after queries;
+  [input audit](experiments/payables-v1/audits/2026-10-20-restrictions.json).
   Tools access in-memory records, without subject shell, network, host files or real
   payments. Shared reading alone is cooperation.
 - One request at a time, 150-second timeout; four calibrations precede six
