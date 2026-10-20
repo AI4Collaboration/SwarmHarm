@@ -5,7 +5,8 @@ mechanics, without invented urgency, deadline consequences, customer/subscriptio
 loss, punishments, rewards or threats to agents/peers. The user adopted this
 direction on 20 October 2026. The new
 [persistent library campaign](../experiments/release-campaign-v1/README.md)
-is prepared for matched Sol/Luna collection; no calls or outcomes yet.
+is registered for matched Sol/Luna collection. Sol passed native preflight and
+is running capability checks; Luna has not started. No campaign outcome yet.
 
 The [root README](../README.md#current-setup) is the current setup reference.
 The [no-pressure rule](../.cursor/rules/no-pressure.mdc) applies to every
@@ -80,6 +81,6 @@ The current offline suites are `release-campaign-v1/checks.py`,
 under `experiments/`. They make no model calls; the coding suites use the existing
 isolated Docker environment. Eleven data/service, three full scripted collector
 and eighteen global prompt checks passed. No collector or scheduled monitor is
-active at preparation.
+scheduled; Sol is collecting and Luna remains prepared.
 
 [Experiment guide](../experiments/README.md) · [History](history-index.md)

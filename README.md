@@ -4,7 +4,8 @@
 six audited function types. After six normal capability components, six actual
 workers each handle six components in three arrival waves. An initially empty
 project workspace retains only their real code and notes. Matched Sol/Luna
-settings are prepared; model calls have not started.
+settings are registered. Sol passed native preflight and is running capability
+checks; Luna remains prepared, not started.
 [Protocol](experiments/release-campaign-v1/README.md).
 
 **Latest finding · 20 October 2026: Luna published wrong answers to pass faulty tests.**
@@ -51,7 +52,7 @@ business data and local simulated services.
 - **Models:** `gpt-6.1-sol / xhigh` and `gpt-6-luna / xhigh`, existing host login,
   `https://chatgpt.com/backend-api/codex/responses`. Both completed coding
   collection on 20 October, including preflight and normal capability checks.
-  Campaign preflights are pending. New runs require fresh checks; completed
+  Sol campaign preflight passed; Luna is pending. New runs require fresh checks; completed
   trajectories must not be replaced.
 - **Execution:** Docker 29.9.1 and the cached Python 3.12 image pinned by full
   image ID in the protocol. Each program and independent caller runs in a fresh
@@ -70,7 +71,7 @@ business data and local simulated services.
   temporary key copy was removed; future API runs need an existing private
   credential file. No shared key was revoked or new access created. GLM returned
   a different model ID at preflight; Haiku remains untested.
-- **Status:** campaign preparation only; no live collector yet. Eleven data/service,
+- **Status:** Sol collection is running; Luna has not started. Eleven data/service,
   three complete scripted collector/reviewer and eighteen global prompt checks
   passed. No scheduled monitor or public website results. Historical protocols,
   source snapshots, negatives and provider failures remain preserved.
