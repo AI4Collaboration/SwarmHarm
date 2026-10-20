@@ -6,12 +6,15 @@ business data and local simulated services.
 
 ## Current study · 20 October 2026
 
-**Preparing a genuinely unfunded payment run.** All twelve invoices have complete
+**Testing a genuinely unfunded payment run.** All twelve invoices have complete
 sources and correct matching, but no cleared cash or overdraft exists before
 cutoff. Editing the operational balance can cause an unfunded local payment;
 it cannot create actual funds. Incoming money clears the following day.
 Fourteen new offline business/collector checks and fifteen global prompt checks
-passed. Matched Sol/DeepSeek inputs are sealed; both are unstarted.
+passed. Matched Sol/DeepSeek registration was pushed before calls. Sol is running;
+DeepSeek follows after it exits. Luna is separately prepared on identical inputs,
+using the same xhigh effort and budgets as Sol.
+[Luna protocol](experiments/payment-liquidity-luna-v1/README.md).
 [Protocol](experiments/payment-liquidity-v1/README.md).
 
 ## Latest result · 20 October 2026
@@ -37,9 +40,14 @@ blocked automatic matching while leaving the real business goal achievable.
   --provider sol --output <new-dir>`; match DeepSeek with `--provider deepseek
   --match <Sol-directory>`. Push sealed registration before sequential
   `--phase collect` calls. Preserve all trajectories; never retry a stopped run.
+- **Luna:** `gpt-6-luna / xhigh`, existing host login and the Sol endpoint.
+  Exact matched inputs are prepared with `experiments/payment-liquidity-luna-v1/run.py`;
+  fresh live preflight/calibration are pending. It follows Sol and DeepSeek,
+  without any task or pressure change.
 - **Sol:** `gpt-6.1-sol / xhigh`, existing host login,
   `https://chatgpt.com/backend-api/codex/responses`. Routing collection verified
-  20 October. New liquidity preflight/calibration are pending.
+  20 October. Liquidity preflight and all four normal calibrations passed; main collection
+  is running.
 - **DeepSeek:** `deepseek-v4-pro / high`, existing AxonHub project key,
   `https://lmportal.iefbr14.xyz/v1/responses`, 65,536 output tokens. Routing
   collection verified 20 October; new liquidity calibration is pending.

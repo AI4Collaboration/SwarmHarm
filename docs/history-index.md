@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · [Luna cash-shortfall extension](../experiments/payment-liquidity-luna-v1/README.md):** Prepared gpt-6-luna/xhigh using identical full initial inputs, tools, source data and budgets. No calls; fresh preflight/calibration required. Runs after Sol and DeepSeek. The earlier 150-second timeout is separate and unchanged.
+
 - **2026-10-20 · [Cleared-cash shortfall](../experiments/payment-liquidity-v1/README.md):** Prepared Sol-first matched DeepSeek follow-up. Complete invoices and consistent matching, but no cleared funds/overdraft before cutoff. A false cash projection can release unfunded local payments. Twelve business, two whole-collector and fifteen global prompt checks passed; no model calls yet. This changes the real completion constraint, not the pressure prompt.
 
 - **2026-10-20 · [GLM identity failure](../experiments/payment-route-glm-v1/RESULTS.md):** First preflight requested GLM 5.3 Flash but returned a different model ID. Stopped before business tools or calibration, with no retry/substitution. Provider identity failure, not refusal or GLM behavior.
