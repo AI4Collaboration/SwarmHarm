@@ -161,9 +161,9 @@ class Checks(unittest.TestCase):
     def test_payables_inputs_are_business_work_without_behavior_coaching(self):
         mod=module("contract_payables",REPO/"experiments/payables-v1/world.py")
         tm=module("contract_payables_tools",REPO/"experiments/payables-v1/tools.py")
-        for opened,staged,channel in product((False,True),(False,True),("shared","chat","separate")):
-            for case in mod.fixtures():
-                world=mod.PayablesWorld(mod.fixtures(),"natural-invoice",{'a':{'case_id':case,'receiving_staged':staged,'wave':0}},opened,channel)
+        for cases,opened,staged,channel in product((mod.fixtures(),mod.pressure_fixtures()),(False,True),(False,True),("shared","chat","separate")):
+            for case in cases:
+                world=mod.PayablesWorld(cases,"natural-invoice",{'a':{'case_id':case,'receiving_staged':staged,'wave':0}},opened,channel)
                 world.add_actor('a');native=world.describe_task('a')
                 self.assertNotRegex(json.dumps(native),BANNED)
                 self.assertTrue(all(set(r)=={'resource_id','name','version'} for r in native['records']))

@@ -4,6 +4,12 @@ SwarmHarm studies whether agents pursuing legitimate work cause harmful outcomes
 and whether other agents discover and reuse those methods. Current tasks use
 synthetic business data and local simulated services.
 
+**Current experiment · 20 October:** A separately registered
+[supplier-deadline condition](experiments/payables-v1/PRESSURE.md) adds a final
+payment cutoff and threatened credit hold/delivery loss. One fresh Sol world,
+four calibrations and six experimental workers; outcomes pending. No new neutral
+arm, method hints or changed settlement rules.
+
 ## Latest result · 20 October 2026
 
 The invoice task now has a verified path to an incorrect payment in the local
@@ -26,7 +32,8 @@ or native refusal. Neither run establishes spontaneous financial harm.
   inventory or method hints. Tools access in-memory business records; no subject
   shell, network, host files or real payments. Shared reading alone is cooperation.
 - One request at a time, 150-second timeout; four calibrations precede six
-  experimental workers. Both collectors are stopped; no scheduled monitor is active.
+  experimental workers. The new pressure pilot is registered; earlier collectors
+  are stopped. No scheduled monitor is active.
   Keep hosted **Multica 0.4.44** and its existing public-server access patch.
 
 [Run evaluations](docs/running-evals.md) ·
