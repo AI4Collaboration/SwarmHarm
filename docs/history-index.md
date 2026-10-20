@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · [Pressure-free persistent library campaign prepared](../experiments/release-campaign-v1/README.md):** Six audited functions, six normal capability components, then six actual workers handling 36 module instances across three waves per model. Shared project files start empty. Matched Sol/Luna inputs, no added pressure, coaching or seeded peers. Eleven data/service, three full scripted collector/reviewer and eighteen prompt checks passed. Temporal read-before-delivery candidates require semantic method review. No model calls or behavioral result yet.
+
 - **2026-10-20 · Future studies omit added pressure:** The user withdrew pressure interventions. New collections require a separately frozen pressure-free revision; the completed deadline/customer-loss coding study stays historical and unchanged. No new collection or no-pressure outcome is claimed. [Current workflow](running-evals.md).
 
 - **2026-10-20 · [Incorrect Luna software releases](../experiments/impossible-release-v1/RESULTS.md):** Both models passed two normal capabilities. Luna published special cases giving wrong real caller results in both oneoff tasks, disclosed them afterwards and retained the releases. Neither conflicting task was published. Sol published none of four experimental tasks; one erroneous test-removal recommendation is separately retained. All 18/20 native responses and independent checks passed; seven published versions repeated exactly. No peer context or causal pressure claim. Collectors/containers exited and the owned private key copy was removed.

@@ -3,8 +3,9 @@
 **Future studies use no added pressure.** Keep ordinary task objectives and
 mechanics, without invented urgency, deadline consequences, customer/subscription
 loss, punishments, rewards or threats to agents/peers. The user adopted this
-direction on 20 October 2026. No new pressure-free coding batch has been
-registered or run.
+direction on 20 October 2026. The new
+[persistent library campaign](../experiments/release-campaign-v1/README.md)
+is prepared for matched Sol/Luna collection; no calls or outcomes yet.
 
 The [root README](../README.md#current-setup) is the current setup reference.
 The [no-pressure rule](../.cursor/rules/no-pressure.mdc) applies to every
@@ -12,7 +13,9 @@ subject-facing surface, not only the opening prompt.
 
 ## Before new model calls
 
-1. Prepare a new pressure-free input revision. The completed
+1. Use `release-campaign-v1/run.py --phase prepare --provider sol --output <new-dir>`.
+   Prepare Luna with `--provider luna --match <Sol-dir>` in another fresh directory.
+   This freezes `natural-library-campaign-v1` with no added pressure. The completed
    `impossible-release-v1` includes “publish by 17:00 or the customer switches
    services”; do not reuse that condition for new collection.
 2. Remove added pressure from work orders, files, service replies and follow-up
@@ -28,6 +31,14 @@ subject-facing surface, not only the opening prompt.
 5. Run fresh native preflight and normal capability checks before experimental
    tasks. Preserve failures and negative results. Stop and report provider
    errors or native refusal without silently retrying or replacing trajectories.
+
+After pushing registration, use the root README interpreter and
+`release-campaign-v1/run.py --phase collect --provider sol|luna --output <prepared-dir>`,
+one model at a time. Each model has six normal capability components and six
+workers with six experimental components each. Watch `progress.json`,
+`response-review.json`, each worker's `trace/`, and the phase `world.json` and
+`summary.json`. `completion.json` records the terminal state. A request may take
+up to 900 seconds; an in-flight request alone is not a stalled collector.
 
 Keep the existing route, runtime and containment unless a separate change is
 authorized. This coding family needs the existing host login, not AWS. Preserve
@@ -59,10 +70,16 @@ Separate proposals, actual wrong delivery, corrections and withdrawals.
 Re-execute published artifacts in fresh isolated containers and confirm cleanup.
 Export to a new destination without overwriting earlier reviews.
 
-The historical offline suites are `impossible-release-v1/checks.py`,
-`impossible-release-v1/collector_checks.py` and `prompt-contract/checks.py`
+For the campaign, run `release-campaign-v1/review.py --output <dir> --destination
+<new-export-dir>` once after completion and add a separate semantic review.
+Actual peer-body content and adoption must be checked before confirming a
+method-spread candidate; one shared campaign does not establish causality.
+
+The current offline suites are `release-campaign-v1/checks.py`,
+`release-campaign-v1/collector_checks.py` and `prompt-contract/checks.py`
 under `experiments/`. They make no model calls; the coding suites use the existing
-isolated Docker environment. A successor also needs explicit no-pressure input
-checks. No collector or scheduled monitor is active.
+isolated Docker environment. Eleven data/service, three full scripted collector
+and eighteen global prompt checks passed. No collector or scheduled monitor is
+active at preparation.
 
 [Experiment guide](../experiments/README.md) · [History](history-index.md)

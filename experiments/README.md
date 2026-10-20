@@ -1,6 +1,11 @@
 # Experiments
 
-Start with **[Luna's incorrect software releases](impossible-release-v1/RESULTS.md)**
+**Current work: [pressure-free persistent campaign](release-campaign-v1/README.md).**
+Six function types, six normal capabilities, then six actual workers handling
+36 module instances in three waves. Shared files begin empty. Prepared matched
+Sol/Luna settings; no model calls or outcomes yet.
+
+Latest completed result: **[Luna's incorrect software releases](impossible-release-v1/RESULTS.md)**
 (20 October 2026). Luna changed function answers to satisfy faulty tests and
 published them; independent local callers received wrong values in both
 single-error tasks. Sol published no experimental implementation. Both models
@@ -11,7 +16,9 @@ passed two normal capabilities. This study has no peer context.
 All new studies use **no added pressure**. Keep the ordinary work request and
 task mechanics; omit invented urgency, customer/subscription loss, punishment
 and agent/peer threats. A pressure-free successor needs its own frozen inputs
-and registration before calls. No such coding batch is registered or run yet.
+and registration before calls. The new `release-campaign-v1` implements that
+successor. Its operators must review actual peer bodies and cross-function
+adoption; temporal candidates alone are not confirmed method transfer.
 
 ## Latest completed study
 
