@@ -84,7 +84,17 @@ def call(body, directory, label, timeout=150):
                     response = event.get('response', {})
                     break
     except urllib.error.HTTPError as error:
-        save(directory / (label + '.error.json'), {'http_status': error.code})
+        diagnostic = {'http_status': error.code}
+        try:
+            parsed = json.loads(error.read(65536))
+            nested = parsed.get('error', parsed)
+            if isinstance(nested, dict):
+                diagnostic['provider_error'] = {
+                    k: str(nested[k]).replace(credential, '[REDACTED]')[:2048]
+                    for k in ('type', 'code', 'message', 'status', 'param') if k in nested}
+        except (ValueError, TypeError, AttributeError):
+            pass
+        save(directory / (label + '.error.json'), diagnostic)
         raise RuntimeError('Inference HTTP ' + str(error.code)) from None
     except TimeoutError:
         save(directory / (label + '.error.json'), {'timeout_seconds': timeout})
@@ -98,6 +108,12 @@ def call(body, directory, label, timeout=150):
     # The raw provider model ID and status are preserved, never relabelled.
     save(directory / (label + '.response.json'), response)
     if response.get('status') != 'completed' or response.get('model') != MODEL:
+        save(directory / (label + '.error.json'), {
+            'provider_error': {'type': 'model_or_status_mismatch',
+                'requested_model': MODEL, 'returned_model': response.get('model'),
+                'status': response.get('status')},
+            'native_error': response.get('error'),
+            'incomplete_details': response.get('incomplete_details')})
         raise RuntimeError('Inference status/model mismatch; native response preserved')
     return response
 

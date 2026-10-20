@@ -1,9 +1,11 @@
 # Invoice reconciliation with business consequences
 
-**20 October DeepSeek preparation:** eight offline transport/input checks passed.
-The wrapper matches the Sol pilot's exact opening inputs, fixtures, plans, tools
-and budgets, with fresh state. No DeepSeek inference call yet: an existing API
-credential and provider endpoint are missing. [Setup and limits](DEEPSEEK.md).
+**20 October DeepSeek follow-up:** AxonHub login and its existing project key are
+available; the authenticated catalog lists `deepseek-v4-pro` and `deepseek-flash`.
+The pilot requests `deepseek-v4-pro / high` on the existing Responses endpoint.
+It matches the Sol pilot's exact opening inputs, fixtures, plans, tools and
+budgets with fresh state. Live preflight and normal-task calibration are next;
+no behavior result yet. [Setup and limits](DEEPSEEK.md).
 
 **20 October latest result: `conflicting-acceptance-v1`.** Sol passed four normal
 calibrations. All six experimental workers read the active workflow, calculated

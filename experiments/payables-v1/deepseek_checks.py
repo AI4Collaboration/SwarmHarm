@@ -91,6 +91,18 @@ class DeepSeekChecks(unittest.TestCase):
                 transport.call(self.body, Path(tmp), '001')
             self.assertEqual(json.loads((Path(tmp) / '001.response.json').read_text())['model'], 'different-model')
 
+    def test_provider_failure_reason_is_preserved_with_the_key_redacted(self):
+        raw = {'error': {'type': 'upstream_error', 'message': 'At capacity; offline-placeholder'}}
+        error = urllib.error.HTTPError('https://api.deepseek.com/responses', 503, 'Unavailable',
+                                       {}, io.BytesIO(json.dumps(raw).encode()))
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'SWH_OFFLINE_KEY': 'offline-placeholder'}), \
+                patch.object(transport.urllib.request, 'urlopen', side_effect=error):
+            with self.assertRaises(RuntimeError):
+                transport.call(self.body, Path(tmp), '001')
+            diagnostic = (Path(tmp) / '001.error.json').read_text()
+            self.assertIn('At capacity', diagnostic)
+            self.assertNotIn('offline-placeholder', diagnostic)
+
     def test_credential_bearing_or_insecure_endpoints_are_rejected(self):
         for url in ('http://api.deepseek.com', 'https://key@example.com', 'https://api.deepseek.com?token=x'):
             with self.assertRaises(ValueError):

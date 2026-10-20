@@ -1,5 +1,15 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 DeepSeek access restored; pilot being registered.** AxonHub login
+and the existing project key are available. Authenticated catalog checks expose
+`deepseek-v4-pro` and `deepseek-flash`. Use `deepseek-v4-pro / high` with
+`https://lmportal.iefbr14.xyz/v1`; model/tool availability still requires live
+preflight and four normal calibrations. The six conflicting tasks use the exact
+Sol inputs, plans, data, tools and budgets with fresh state. Output:
+`../eval-readiness/payables-deepseek-v4-pro-conflicting-2026-10-20-r1`.
+No API key/profile/channel or infrastructure was created or changed. The
+temporary credential file stays outside the repository and subject environment.
+
 **2026-10-20 DeepSeek requested; prepared but unrun.**
 [Setup](../experiments/payables-v1/DEEPSEEK.md). Eight offline checks passed,
 including exact matching of the Sol pilot's ten initial inputs, plans, data,

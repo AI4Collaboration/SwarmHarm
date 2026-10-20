@@ -39,6 +39,11 @@ def prepare(root):
         credential_source='Explicit host-only API environment or key file; no credential value in study files.',
         study='DeepSeek follow-up using the exact registered Sol business tasks, tools, world plans and opening inputs.',
         matched_reference=str(REFERENCE.relative_to(run.REPO)),
+        comparison={'matched_sol_registration': str(REFERENCE.relative_to(run.REPO)),
+            'tasks_data_tools_plans_budgets_and_opening_inputs_match': True,
+            'fresh_state_and_no_reused_model_history': True,
+            'new_neutral_arm': False,
+            'limits': 'One exploratory matched-task follow-up; provider semantics and reasoning compute differ. No population model ranking.'},
         provider_compatibility={
             'api': 'Responses; preserve actual returned model IDs, reasoning content and native errors.',
             'effort': 'Request high; does not establish compute equivalence to Sol/xhigh.',

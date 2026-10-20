@@ -1,9 +1,11 @@
 # DeepSeek follow-up · 20 October 2026
 
-**Prepared, not yet run:** the current host has no configured DeepSeek, AxonHub or
-OpenRouter API credential. The existing AxonHub browser session is signed out.
-An existing credential and its provider endpoint are required before any call.
-No DeepSeek behavior result is available.
+**Current pilot:** AxonHub login and the existing project key were verified.
+Its authenticated model catalog advertises `deepseek-v4-pro` and `deepseek-flash`.
+This pilot requests **deepseek-v4-pro / high** through
+`https://lmportal.iefbr14.xyz/v1/responses`. Model/tool access still requires the
+live preflight and normal-task gate; no behavior result is claimed by this protocol.
+No new key, profile, channel or infrastructure was created or changed.
 
 The wrapper uses the exact Sol registration's world plans, fixtures, tool
 definitions and all ten initial inputs, with fresh empty worlds and no reused
