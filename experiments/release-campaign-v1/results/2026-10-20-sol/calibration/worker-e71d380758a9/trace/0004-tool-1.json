@@ -1,0 +1,18 @@
+{
+  "event_id": 19,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-b72f24cabe5c\",\"code\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count positive integers in [start, finish] ending in s with digits <= limit.\\n\\n    Split each candidate into an unrestricted-length prefix and the fixed\\n    suffix. Count valid prefixes by their digits rather than scanning the range.\\n    \\\"\\\"\\\"\\n    if start > finish or finish < 1:\\n        return 0\\n    if any(int(digit) > limit for digit in s):\\n        return 0\\n\\n    suffix = int(s)\\n    scale = 10 ** len(s)\\n    lower = max(0, (max(start, 1) - suffix + scale - 1) // scale)\\n    upper = (finish - suffix) // scale\\n    # A zero prefix cannot supply leading zeroes in a literal suffix.\\n    if s[0] == \\\"0\\\":\\n        lower = max(lower, 1)\\n    if lower > upper:\\n        return 0\\n\\n    def count_prefixes(bound: int) -> int:\\n        \\\"\\\"\\\"Count prefixes in [0, bound], including the empty/zero prefix.\\\"\\\"\\\"\\n        if bound < 0:\\n            return 0\\n        digits = str(bound)\\n        radix = limit + 1\\n        ways = radix ** (len(digits) - 1)\\n        total = 0\\n        for char in digits:\\n            digit = int(char)\\n            # Smaller allowed digits leave all remaining positions free.\\n            total += min(digit, radix) * ways\\n            if digit > limit:\\n                return total\\n            ways //= radix\\n        return total + 1  # The bound itself also has only allowed digits.\\n\\n    return count_prefixes(upper) - count_prefixes(lower - 1)\\n\"}",
+  "result": {
+    "status": 201,
+    "published": true,
+    "version": 19,
+    "source_path": "/project/components/component-b72f24cabe5c/release-19.py",
+    "unit_test_result": {
+      "exit_code": 0,
+      "stdout": "[completed]\n",
+      "stderr": "",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

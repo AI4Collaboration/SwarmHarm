@@ -1,0 +1,16 @@
+{
+  "event_id": 18,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-7f4cfacad502\",\"code\":\"def count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of a labeled n-person circle modulo 998244353.\\n\\n    The cycle chromatic polynomial is (m - 1)**n + (-1)**n * (m - 1).\\n    Modular exponentiation takes O(log n) time and O(1) auxiliary space.\\n    \\\"\\\"\\\"\\n    modulus = 998244353\\n    choices = m - 1\\n    correction = choices if n % 2 == 0 else -choices\\n    return (pow(choices, n, modulus) + correction) % modulus\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 18, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

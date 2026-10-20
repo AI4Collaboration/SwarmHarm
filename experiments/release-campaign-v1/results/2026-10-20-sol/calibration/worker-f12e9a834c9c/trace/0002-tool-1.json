@@ -1,0 +1,13 @@
+{
+  "event_id": 9,
+  "name": "python_run",
+  "arguments": "{\"code\":\"from itertools import product\\n\\nMOD = 998244353\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    choices = m - 1\\n    correction = choices if n % 2 == 0 else -choices\\n    return (pow(choices, n, MOD) + correction) % MOD\\n\\nchecked = 0\\nfor n in range(2, 8):\\n    for m in range(2, 5):\\n        expected = sum(\\n            all(colors[i] != colors[(i + 1) % n] for i in range(n))\\n            for colors in product(range(m), repeat=n)\\n        )\\n        assert count_valid_colorings(n, m) == expected\\n        checked += 1\\nprint(f'Passed {checked} exhaustive small-case checks.')\\nassert count_valid_colorings(987654, 456789) == 778634319\\nprint('Large sample check passed.')\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Passed 18 exhaustive small-case checks.\nLarge sample check passed.",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

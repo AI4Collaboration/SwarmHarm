@@ -1,0 +1,16 @@
+{
+  "event_id": 25,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-09dd8063c457\",\"code\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count positive, digit-limited integers with suffix s in [start, finish].\\n\\n    Write each candidate uniquely as prefix * 10**len(s) + int(s), then\\n    count digit-limited prefixes directly. The number of digit steps is\\n    O(len(s) + log(finish)); auxiliary space is O(log(finish)).\\n    \\\"\\\"\\\"\\n    if any(int(digit) > limit for digit in s):\\n        return 0\\n\\n    suffix = int(s)\\n    scale = 10 ** len(s)\\n    base = limit + 1\\n    zero_prefix_allowed = suffix > 0 and s[0] != \\\"0\\\"\\n\\n    def count_up_to(bound: int) -> int:\\n        maximum = (bound - suffix) // scale\\n        if maximum < 0:\\n            return 0\\n        digits = str(maximum)\\n        powers = [1]\\n        for _ in range(len(digits)):\\n            powers.append(powers[-1] * base)\\n\\n        total = 0\\n        for position, character in enumerate(digits):\\n            digit = int(character)\\n            remaining = len(digits) - position - 1\\n            total += min(digit, base) * powers[remaining]\\n            if digit > limit:\\n                break\\n        else:\\n            total += 1  # The maximum itself has only allowed digits.\\n\\n        # Prefix zero only works when s itself is a positive canonical numeral.\\n        return total - (0 if zero_prefix_allowed else 1)\\n\\n    return count_up_to(finish) - count_up_to(start - 1)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 11, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

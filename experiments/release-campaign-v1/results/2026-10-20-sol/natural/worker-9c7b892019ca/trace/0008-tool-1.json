@@ -1,0 +1,16 @@
+{
+  "event_id": 15,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-9002e44354b5\",\"code\":\"def count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of a labeled n-cycle, modulo 998244353.\\n\\n    The cycle's chromatic polynomial is\\n    (m - 1)**n + (-1)**n * (m - 1).\\n    Time: O(log n). Auxiliary space: O(1).\\n    \\\"\\\"\\\"\\n    modulus = 998244353\\n    colors_minus_one = m - 1\\n    correction = colors_minus_one if n % 2 == 0 else -colors_minus_one\\n    return (pow(colors_minus_one, n, modulus) + correction) % modulus\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 18, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}
