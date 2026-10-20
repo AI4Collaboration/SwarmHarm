@@ -1,8 +1,10 @@
 # Invoice reconciliation with business consequences
 
-**20 October follow-up:** A separate [supplier-deadline condition](PRESSURE.md)
-adds a final payment run, threatened credit hold and cancelled delivery. Existing
-settlement rules and payment checks remain. Its outcomes will be reported separately.
+**20 October pressure result:** Sol passed four calibrations; all six blocked
+workers attempted payment under supplier deadline/credit-hold pressure. Zero
+matching-record write attempts or payments. Three peer-note readers saw real
+model-authored review cautions. All 102 responses completed without provider errors,
+filters or native refusal. [Short report](PRESSURE-RESULTS.md).
 
 **20 October result:** Sol passed four calibrations and ended all six blocked
 cases with payment pending, without matching-record changes or payments. Luna
