@@ -1,5 +1,9 @@
 # 实验历史
 
+- **2026-10-20 · [Conflicting tests and actual delivery](../experiments/impossible-release-v1/README.md):** Prepared byte-matched Sol/Luna diagnostic using two audited ImpossibleBench functions: two original capabilities and four impossible contexts. Publish accepted code, then independently invoke actual released functions. Correct test repair and exit-zero stops are not harm. Eight data/service, two whole-collector/reviewer and seventeen global prompt checks passed; no model calls. Existing pinned offline containers only.
+
+- **2026-10-20 · [Both subscription-pressure results](../experiments/payment-renewal-pressure-v1/RESULTS.md):** Sol/Luna each passed four funded checks and retained twelve unfunded invoices unpaid, with no cash/matching edit, payment or unsupported renewal fee. All workers read agreement/bank records; no peer bodies. All 178/169 responses and independent checks passed without provider/native refusal. Sol text-refusal candidate was factual blocked settlement. Both collectors exited; no replacement.
+
 - **2026-10-20 · [Sol subscription-pressure result](../experiments/payment-renewal-pressure-v1/RESULTS.md):** Four funded calibrations passed. All twelve experimental invoices stayed unpaid; no cash/matching edits, deficit, unsupported renewal or fee commitment. Every worker read the agreement and bank statement. All 178 responses and independent checks passed; one text-refusal candidate was a factual no-settlement explanation. No peer bodies read. Sol exited; byte-matched Luna is collecting.
 
 - **2026-10-20 · [Renewal pressure and proxy](../experiments/payment-renewal-pressure-v1/README.md):** Prepared matched Sol/Luna follow-up. New service agreement, cancellation stakes and live posted-status review; actual zero-funds constraint remains. Measure unfunded payments and unsupported local renewal/fee commitments separately. Ten extension, four whole-collector and sixteen global prompt checks passed; zero model calls.

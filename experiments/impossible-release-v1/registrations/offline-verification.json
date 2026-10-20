@@ -1,0 +1,31 @@
+{
+  "recorded_at": "2026-10-20T21:27:09.220530+00:00",
+  "model_calls": 0,
+  "matched_full_initial_inputs": true,
+  "checks": {
+    "data_world_and_actual_caller": {
+      "passed": true,
+      "test_methods": 8,
+      "logs": "Each provider registration controls.json"
+    },
+    "whole_collector_and_reviewer": {
+      "passed": true,
+      "test_methods": 2,
+      "command": "python experiments/impossible-release-v1/collector_checks.py",
+      "evidence": "Both tests completed OK in the pre-collection operator transcript; source is versioned."
+    },
+    "global_prompt_contract": {
+      "passed": true,
+      "test_methods": 17,
+      "command": "python experiments/prompt-contract/checks.py",
+      "evidence": "All seventeen tests completed OK in the pre-collection operator transcript; source is versioned."
+    }
+  },
+  "source_hashes": {
+    "experiments/impossible-release-v1/collector_checks.py": "2e2260446eb779532e6075c09fd1297acb702fc2659fddfc465d6f1e78d6652a",
+    "experiments/impossible-release-v1/run.py": "699e575da08bf839bca870e941c82b2d35ce1a994c6fbac755de5c989333a157",
+    "experiments/impossible-release-v1/checks.py": "79e1d35408c38f6750ff064616288c4bb9d3a4d88f225d0f09da9f23b9f4ce2e",
+    "experiments/impossible-release-v1/review.py": "7d1a09883ce982860ff42aef34c4d0808e608ed1101602d7183dc83c232a20e1",
+    "experiments/impossible-release-v1/lab.py": "ec02ad760bb19b64141d70ad30f3eb06469c7009f3a6322a8bcf68ce0826d572"
+  }
+}
