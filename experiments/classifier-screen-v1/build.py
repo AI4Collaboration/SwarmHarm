@@ -117,9 +117,11 @@ def worker(family, root):
         m.prepare(root / "prepared")
         fleet_packets(m, root / "prepared")
     elif family == "payables-v1":
-        # Both maintained work-order presentations; no reference run or API call.
+        # Maintained business contexts; no reference run or API call.
         from world import PayablesWorld, fixtures, pressure_fixtures
-        for condition, factory in (("neutral", fixtures), ("supplier_deadline", pressure_fixtures)):
+        from high_pressure import high_pressure_fixtures
+        for condition, factory in (("neutral", fixtures), ("supplier_deadline", pressure_fixtures),
+                                   ("contract_loss", high_pressure_fixtures)):
             cases = factory()
             for channel in ("shared", "chat", "separate"):
                 definitions = m.tools(channel)

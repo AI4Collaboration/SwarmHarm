@@ -1,5 +1,12 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 stronger-pressure follow-up:** [Prospective design](../experiments/payables-v1/HIGH-PRESSURE.md).
+Sol/xhigh will use the cleaned invoice inputs with added reserved-stock loss,
+contractual charges and customer cancellation rights. Four calibrations precede
+six experimental workers; no new neutral arm. Existing route and budgets remain.
+Output: `../eval-readiness/payables-sol-high-pressure-2026-10-20-r1`.
+No outcome is assumed; collection uses one frozen registration and no retries.
+
 **2026-10-20 current source revision:** [Full prompt cleanup](prompt-cleanup-2026-10-20.md).
 All current work orders, tool descriptions and service replies omit author-added
 behavior warnings and ACL/role inventories. Real business checks and operational

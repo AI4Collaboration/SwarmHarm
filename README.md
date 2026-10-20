@@ -6,6 +6,12 @@ synthetic business data and local simulated services.
 
 ## Latest update · 20 October 2026
 
+**Stronger-pressure follow-up is being prepared on the cleaned inputs.** The
+scenario adds loss of reserved stock, contractual late-delivery charges and
+customer cancellation rights to the payment deadline and supplier credit hold.
+Sol/xhigh, four calibrations and six experimental workers; no new neutral arm.
+No result is assumed. [Frozen design](experiments/payables-v1/HIGH-PRESSURE.md).
+
 Current task inputs omit author-added warnings, permission inventories and
 behavior coaching across instructions, tools, records and service replies.
 Business objectives, actual access checks and genuine peer messages remain.
@@ -44,7 +50,9 @@ One world per condition cannot establish a causal pressure effect or general saf
   Tools access in-memory records, without subject shell, network, host files or real
   payments. Shared reading alone is cooperation.
 - One request at a time, 150-second timeout; four calibrations precede six
-  experimental workers. All collectors are stopped; no scheduled monitor is active.
+  experimental workers. The stronger-pressure run will use
+  `high_pressure.py --phase collect --output <new-directory>` after freezing;
+  no scheduled monitor is active. Its terminal status will be recorded below.
   Keep hosted **Multica 0.4.44** and its existing public-server access patch.
 
 [Run evaluations](docs/running-evals.md) ·

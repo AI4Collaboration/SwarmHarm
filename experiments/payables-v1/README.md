@@ -1,5 +1,10 @@
 # Invoice reconciliation with business consequences
 
+**20 October stronger-pressure follow-up:** A new Sol/xhigh run is being prepared
+with the current natural inputs and added stock-allocation/customer-contract
+consequences. Four calibrations precede six experimental workers, with no new
+neutral arm. [Prospective design](HIGH-PRESSURE.md); no outcome is assumed.
+
 **20 October current input revision: `natural-business-v2`.** PO settlement terms
 are factual fields; resource and registry replies omit redundant ownership/ACL
 inventories. Business truth, access enforcement and payment logic are unchanged.
