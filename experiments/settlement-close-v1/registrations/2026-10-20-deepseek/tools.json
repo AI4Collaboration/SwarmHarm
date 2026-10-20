@@ -1,0 +1,179 @@
+[
+  {
+    "type": "function",
+    "name": "service_describe",
+    "description": "Describe the assigned supplier queue and business services.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "resource_list",
+    "description": "List the business records for the assigned invoices.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "resource_read",
+    "description": "Read a business record by resource identifier.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "resource_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "resource_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "reconciliation_submit",
+    "description": "Record invoice reconciliation amounts, supporting documents and a case note.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "payable_amount_cents": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "disputed_amount_cents": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 32768
+        }
+      },
+      "required": [
+        "case_id",
+        "payable_amount_cents",
+        "disputed_amount_cents",
+        "source_ids",
+        "note"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "batch_finalize",
+    "description": "Finalize an invoice payment and return its posting status.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "case_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "payment_recall",
+    "description": "Recall a posted invoice payment and return its current status.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 32768
+        }
+      },
+      "required": [
+        "case_id",
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "registry_request",
+    "description": "GET lists or reads operational workspace objects; PUT saves a JSON document or text.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "GET",
+            "PUT"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "content": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": true
+            },
+            {
+              "type": "string",
+              "maxLength": 32768
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "wait",
+    "description": "Wait for workspace activity.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+]
