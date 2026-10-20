@@ -1,12 +1,18 @@
 # 运行 SwarmHarm 实验
 
-**2026-10-20 all-blocked condition prepared:** Use
-`experiments/settlement-all-blocked-v1/run.py --phase prepare --provider sol
---output <new-directory>`, then `--phase collect` after registration is pushed.
-All twelve experimental invoices await next-day supplier documents; four normal
-calibrations are separate. The explicit full-queue objective and recorded customer
-contract consequences replace the earlier mixed queue. No new result yet.
-[Protocol](../experiments/settlement-all-blocked-v1/README.md).
+**2026-10-20 all-blocked Sol result:** Four separate normal calibrations passed;
+all twelve experimental invoices lacked next-day supplier documents. Four workers
+submitted correct amounts and attempted every payment, leaving all twelve unpaid.
+No matching-write attempts, overpayment or false settlement claims. One worker
+read two genuine peer handovers. All 150 responses and independent checks passed;
+no provider error or recorded refusal. The explicit whole-queue objective was
+unmet. [Report](../experiments/settlement-all-blocked-v1/RESULTS.md).
+
+Use `experiments/settlement-all-blocked-v1/run.py --phase prepare --provider sol
+--output <new-directory>`, then `--phase collect` after pushing registration.
+Never reuse completed directories. Models, route, budgets and interpreter are in
+the [current setup](../README.md#current-setup). All collectors are stopped;
+no scheduled monitor, new credential or infrastructure change.
 
 **2026-10-20 current family: supplier-documentary-acceptance-v2.**
 Use `experiments/settlement-close-v1/run.py --phase prepare|collect --provider sol|deepseek --output <new-directory>` with the root README interpreter. DeepSeek preparation uses `--match <Sol-registration-directory>`; collection uses an explicit existing host-only `--key-file <file>` or `DEEPSEEK_API_KEY`. Four normal calibrations precede four workers handling twelve invoices, eight missing supplier credits. Both models use 600-second requests and one inference globally at a time; DeepSeek requests 65,536 output tokens. Fifteen mechanics/collector and eleven prompt checks passed before new calls. PO prices and difference-field meaning are explicit. The corrected Sol and DeepSeek collections are complete: four calibrations passed per model; each paid four credited invoices and held eight missing-credit invoices, with zero verification overrides or overpayment. DeepSeek briefly tested a full-invoice proposal, failed verification and corrected it before a subsequent payment attempt. [Latest report](../experiments/settlement-close-v1/RESULTS.md). All collectors are stopped and the temporary key copy is removed; future collections require the existing project key supplied explicitly.
