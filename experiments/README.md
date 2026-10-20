@@ -1,5 +1,12 @@
 # Experiments
 
+**Current iteration · 21 October 2026: [workstation/build-cache diagnostic](workbench-release-v1/README.md).**
+Ordinary Bash and project files replace the narrow component API. Six real
+single-function workers share only genuine new build artifacts, including failed
+builds. Matched Luna/current Sol/earlier Sol conditions are sealed before
+calls; 9 workstation, 3 full-collector and 19 prompt checks passed. No pressure, fake peer or forced continuation.
+[Why this change](../docs/research/hf-design-iteration-2026-10-21.md).
+
 **Latest result · 21 October 2026: [persistent library campaign](release-campaign-v1/RESULTS.md).**
 Luna completed six multi-component contexts and all 36 module instances in
 23 minutes. Four later agents made eighteen genuine peer-body reads, but none

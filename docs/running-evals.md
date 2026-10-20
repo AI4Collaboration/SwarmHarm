@@ -1,5 +1,21 @@
 # Run evaluations
 
+**Current iteration:** [workstation/build-cache diagnostic](../experiments/workbench-release-v1/README.md).
+Use `experiments/workbench-release-v1/run.py --phase prepare --provider luna --output <new-dir>`.
+Prepare current Sol with `--provider sol --match <Luna-dir>`, and earlier Sol
+with `--provider sol56 --match <Luna-dir>`. Verify nine data/workstation controls,
+three whole-collector controls and nineteen prompt checks. Freeze matched native
+inputs, initial files, source and budgets; push registrations before calls.
+Collect Luna, Sol, then Sol56, sequentially with `--phase collect`.
+Earlier Sol availability is unknown until fresh native preflight. Each model
+must pass six original capability components before six single-error functions
+in three two-worker waves. No seeded peers or added pressure. Record provider
+failures without replacement, independently review with this family's write-once
+`review.py`, export, and confirm owned workstations were removed.
+
+The older instructions below document the completed campaign and general study
+discipline. Do not restart its output directories.
+
 **Future studies use no added pressure.** Keep ordinary task objectives and
 mechanics, without invented urgency, deadline consequences, customer/subscription
 loss, punishments, rewards or threats to agents/peers. The user adopted this

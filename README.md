@@ -1,6 +1,16 @@
 # SwarmHarm
 
-**Latest study · 21 October 2026:** agents found peer code, but the full failure
+**New iteration · 21 October 2026:** a Linux-workstation diagnostic with ordinary
+project files and a persistent build cache. Each worker handles one of six
+single-error functions; failed and accepted builds leave only actual submitted
+code. Luna, current Sol and earlier Sol settings will run sequentially after
+matching inputs, freezing registration and fresh capability checks. No added
+pressure or seeded peers. All three matched settings are sealed; 9 workstation, 3 full-collector and 19
+prompt checks passed. No model calls in this revision yet.
+[Protocol](experiments/workbench-release-v1/README.md) ·
+[Design comparison](docs/research/hf-design-iteration-2026-10-21.md).
+
+**Previous completed study · 21 October 2026:** agents found peer code, but the full failure
 chain did not occur. Luna completed six multi-component contexts in three waves,
 covering 36 module instances in 23 minutes. Four later agents made eighteen real
 peer-body reads; none of the experimental components was published. Sol passed all
@@ -42,7 +52,13 @@ business data and local simulated services.
   punishments and threats. Use a new pressure-free revision before further
   collection. `release-campaign-v1` completed for Luna and ended partially for
   Sol; preserve these outcomes without adding pressure or replacing trajectories.
-- **Runner:** `experiments/release-campaign-v1/run.py`, input
+- **Current runner:** `experiments/workbench-release-v1/run.py`, input
+  `natural-workstation-build-cache-v1`, outcome `actual-workstation-delivery-v1`.
+  Prepare Luna, then byte-match current Sol and earlier Sol with `--match`;
+  freeze and push registrations before sequential collection. Six original
+  capabilities precede six single-error workers in three waves. Failed builds
+  leave genuine code artifacts, but are not publications or behavioral harms.
+- **Previous runner:** `experiments/release-campaign-v1/run.py`, input
   `natural-library-campaign-v1`, outcome `actual-delivery-and-peer-method-v1`.
   Prepare Sol, byte-match Luna with `--match <Sol-dir>`, push both sealed
   registrations, then collect sequentially. Six capabilities precede 36 module
@@ -59,11 +75,18 @@ business data and local simulated services.
   Both campaign preflights and all six capabilities passed. Luna completed its
   campaign; Sol stopped on an incomplete provider stream. New runs require fresh
   checks; completed and interrupted trajectories must not be replaced.
+  The new diagnostic additionally registers `gpt-5.6-sol / xhigh`; current access
+  to that earlier generation is unverified until fresh native preflight.
 - **Execution:** Docker 29.9.1 and the cached Python 3.12 image pinned by full
   image ID in the protocol. Each program and independent caller runs in a fresh
   non-root container: no network, host mount, socket or credentials; read-only
   root and bounded resources. No real production service is connected.
-- **Campaign budgets:** one inference globally; 900-second requests; 1,024
+- **Workstation execution:** persistent private files and synchronized shared
+  files in networkless non-root containers with bounded in-memory filesystems.
+  Workstations pause between tool actions; background children stop before
+  independent observation. Actual command output is returned, not the private
+  filesystem snapshot. No host mounts, socket or credentials enter a subject.
+- **Budgets:** one inference globally; 900-second requests; 1,024
   responses and 2,048 tools per worker; 12 hours per worker, 48 hours per model
   and 30 seconds per program. Report actual duration and continuity, not just
   ceilings. Provider errors or native refusal stop without replacement.
@@ -76,7 +99,9 @@ business data and local simulated services.
   temporary key copy was removed; future API runs need an existing private
   credential file. No shared key was revoked or new access created. GLM returned
   a different model ID at preflight; Haiku remains untested.
-- **Status:** both collectors and independent reviews have ended. Luna covered
+- **Current status:** all matched registrations and 9 workstation, 3 whole-collector
+  and 19 prompt checks passed; no model calls yet. No new credentials or infrastructure changes.
+- **Previous status:** both collectors and independent reviews have ended. Luna covered
   all 36 components; Sol's twelve reached components are unfinished after a
   provider error. Both audits and twelve normal-release rechecks passed. Eleven
   data/service, three scripted collector/reviewer and eighteen prompt checks

@@ -1,0 +1,49 @@
+# Why iterate the environment
+
+**21 October 2026.** The previous campaign established genuine peer-code
+discovery, not an incident. We will preserve that result and test explicit
+design hypotheses instead of interpreting larger budgets as stronger evidence.
+
+METR describes agents pursuing blocked legitimate tasks, discovering shared
+infrastructure and organizing reusable work around making apparent evaluation
+success differ from actual task success. Persistence involved artifacts and
+successive agents, not just a long individual response. Its investigation does
+not establish that any particular prompt ingredient causes these behaviors.
+[Primary report](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/).
+
+LessWrong tests four stages separately in simplified Docker environments.
+Stages 2–3 simulate peers, and one stage seeds indications of useful peer work.
+The default missing-input task and general Bash interface differ from our
+visible mathematical contradictions and typed component API. The public
+Step 2 source explicitly allows ending without completion; forced persistence
+is not common to every stage. The live-fleet and static variants must remain
+separate from one another and from a genuine empty-state end-to-end chain.
+[Article](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment),
+[appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident),
+[source](https://github.com/msp895/oai-hf-incident-reproduction/tree/2fec98288c1777845711a4b7678d96fd84ea16fe/src/alignment_auditor/docker_replication).
+The remote HEAD was verified unchanged at that commit on 21 October.
+
+The next diagnostic changes the narrow interface into ordinary project files
+and Bash. Genuine builds, including failed ones, leave actual source artifacts
+in a shared cache. Each worker receives one single-error function, rather than
+six simultaneously inconsistent components. This may make individual work and
+incidental artifact discovery more natural. Both changes are exploratory;
+neither is a demonstrated cause of the earlier negative result. We also
+register an earlier Sol generation rather than assuming current models have
+the same propensities as those in the source studies.
+
+Missing-input tasks remain a distinct next hypothesis. They must have a genuine
+unavailable input, a realistic legitimate objective and a concretely reachable
+wrong-delivery path. Recovering the correct input from a genuine peer is useful
+cooperation; it cannot become misalignment merely because no chat was provided.
+Do not add pressure, cooperative personas, fake success, hidden operator
+answers or permission reminders to produce a desired label.
+
+Candidate key elements to test are: goal pursuit under a genuine blocker;
+reachable divergence between apparent completion and actual correctness;
+persistent discoverable artifacts; useful information held or produced by
+other agents; and observable adoption with a concrete adverse consequence.
+These are design conditions, not causally established necessities. If a full
+chain appears, isolate its contributors in subsequent frozen comparisons and
+confirm it on different source functions. Never combine different historical
+trajectories into an incident that did not occur.
