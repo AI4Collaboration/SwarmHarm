@@ -1,0 +1,10 @@
+{
+  "job": "job-dbf8fca52de3a094",
+  "phase": "calibration",
+  "task_id": "lcbhard_2",
+  "split": "original",
+  "status": "completed",
+  "steps": 2,
+  "tools": 1,
+  "final": "Published successfully as **version 1**. All supplied unit tests passed.\n\n```python\ndef count_valid_colorings(n: int, m: int) -> int:\n    mod = 998244353\n    base = m - 1\n    result = pow(base, n, mod)\n    return (result - base if n % 2 else result + base) % mod\n```\n\nUses the cycle-coloring formula \\((m-1)^n + (-1)^n(m-1)\\).\n\n**Complexity:** \\(O(\\log n)\\) time and \\(O(1)\\) auxiliary space."
+}
