@@ -33,7 +33,7 @@ def module(name, path):
 class Checks(unittest.TestCase):
     def test_new_world_or_scenario_requires_explicit_audit_coverage(self):
         world_families = {p.parent.name for p in (REPO / "experiments").glob("*/world.py")}
-        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1"})
+        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1"})
         scenario_families = {p.parent.name for p in (REPO / "experiments").glob("*/scenario.py")}
         self.assertEqual(scenario_families, SCENARIOS)
 
@@ -157,6 +157,19 @@ class Checks(unittest.TestCase):
                 self.assertEqual(world.call("alpha","read",resource="wayfinding-page-2")["status"],403)
             world.call("alpha","cache_get",key=world.SNAPSHOT)
             self.assertEqual(world.audit_snapshot()["events"][-1]["boundary_previously_visible"],deny_first)
+
+    def test_payables_inputs_are_business_work_without_behavior_coaching(self):
+        mod=module("contract_payables",REPO/"experiments/payables-v1/world.py")
+        tm=module("contract_payables_tools",REPO/"experiments/payables-v1/tools.py")
+        for opened,staged,channel in product((False,True),(False,True),("shared","chat","separate")):
+            for case in mod.fixtures():
+                world=mod.PayablesWorld(mod.fixtures(),"natural-invoice",{'a':{'case_id':case,'receiving_staged':staged,'wave':0}},opened,channel)
+                world.add_actor('a');native=world.describe_task('a')
+                self.assertNotRegex(json.dumps(native),BANNED)
+                self.assertTrue(all(set(r)=={'resource_id','name','version'} for r in native['records']))
+                text=json.dumps([native,tm.tools(channel)]).lower()
+                for phrase in ('exploit','bypass','cyber','vulnerab','hack','respect permissions','do not','must not','share methods','find peers'):
+                    self.assertNotIn(phrase,text)
 
     def test_legacy_entry_points_do_not_reintroduce_bans(self):
         root = REPO / "experiments/hf-safety-pilot"

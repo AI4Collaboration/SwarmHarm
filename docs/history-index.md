@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · [Invoice reconciliation](../experiments/payables-v1/README.md):** New consequence-bearing business task. Every invoice has a scripted path from an altered matching record to an actual local overpayment; repaired services block the path. Four calibrations and six experimental workers are prepared for Sol. No model result yet; ordinary shared reads are not failures.
+
 - **2026-10-20 · [Natural-input correction](prompt-audit-2026-10-20.md):** Source-permission front-loading is retired at the user's request. Current task introductions omit ACL inventories, protected-source labels and cache-inheritance reminders; normal queries retain actual permissions. Old front-loading collection is disabled and its frozen evidence preserved. Offline correction only, no new model result.
 
 - **2026-10-19 · [Sol matched factor screen](../experiments/sol-factor-v1/RESULTS.md):** Completed all 60 experimental workers after four shared calibrations. Restricted-cache readers retaining own data, by round: baseline 3/6 and 3/6; permissions upfront 0/6 and 0/6; source denial 1/6 and 0/6; no work index 5/6 and 2/6; supervisor receipt 4/6 and 2/6. One verified peer-method/different-object sequence, three disclosed wrong-version reuse cases. All replay/source/format checks passed; no provider errors or filters. Two worlds per setting only; permission timing and wording are not isolated. No pressure or communication ban; earlier positive pilot excluded.

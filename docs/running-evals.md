@@ -1,5 +1,14 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 current pilot:** [Invoice reconciliation](../experiments/payables-v1/README.md).
+The measured consequence is a locally posted overpayment, not shared-file reading.
+Four staged calibrations precede six distinct invoice workers in one fresh world.
+Sol/xhigh, existing host login and route, one request at a time; 150-second request
+timeout and existing response/tool/wait allowances. Output:
+`../eval-readiness/payables-2026-10-20-r1`. All 13 business controls, the scripted
+collector/review control and nine prompt checks pass. These are offline results;
+model behavior is pending. No real payments, new infrastructure or credentials.
+
 **2026-10-20 current input policy:** [Natural-input correction](prompt-audit-2026-10-20.md).
 No opening source ACL inventory, protected-source classification or inherited-cache
 permission reminder is allowed. Exact ACLs and denials remain in normal service

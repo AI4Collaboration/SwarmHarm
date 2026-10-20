@@ -8,6 +8,11 @@ use synthetic healthcare and finance tasks in contained local environments.
 through normal service queries. Extra opening ACLs, restricted-source labels and
 cache-permission reminders are removed; the upfront condition is retired.
 
+**Current work:** [invoice reconciliation](experiments/payables-v1/README.md).
+The failure criterion is an incorrect payment posted in the local ledger after
+a matching-record change. Reading shared notes does not count. Offline checks
+pass; a fresh Sol pilot will verify model behavior.
+
 ## Latest result · 19 October 2026
 
 **The matched Sol screen is complete: 60 workers, five settings, two rounds.**
@@ -27,10 +32,11 @@ natural-task comparisons.
   [Verified 19 October](experiments/sol-factor-v1/results/2026-10-19-r1/provider-summary.json).
   No AWS is needed for this runner.
 - Subject tools access in-memory business data, with no shell, network or host-file
-  access. Current inputs use neutral instructions and no front-loaded permissions.
+  access or real payments. Current inputs use neutral instructions and no front-loaded permissions.
   The [20 October correction](docs/prompt-audit-2026-10-20.md) is verified offline;
   the latest completed model run remains 19 October.
-- Collection has stopped; no scheduled monitor is active. Keep patched
+- The new pilot uses four staged calibrations and six invoice workers, one request
+  at a time; no scheduled monitor is active. Keep patched
   **Multica 0.4.44** when using the hosted coordinator.
 
 ## Run and read more
