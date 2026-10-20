@@ -19,7 +19,7 @@ def walk(value):
 def export(root,destination):
     assert not destination.exists(),'Preserve earlier exports'
     review=load(root/'independent-review.json')
-    assert review['passed'] and review['collection_status']=='collected'
+    assert review['passed'] and review['collection_status'] in ('collected','provider_hold')
     reg=load(root/'registration.json')
     destination.mkdir(parents=True)
     files=[(p,load(p)) for p in root.rglob('*.response.json')]
@@ -33,14 +33,17 @@ def export(root,destination):
     (destination/'provider-summary.json').write_text(json.dumps(provider,indent=2)+'\n')
     for name in ('registration.json','registration-seal.json','controls.json','gate.json',
                  'independent-review.json','completion.json','cleanup-summary.json'):
-        shutil.copyfile(root/name,destination/name)
+        if (root/name).exists():shutil.copyfile(root/name,destination/name)
     summary=[]
     for cell in reg['worlds']:
         phase=cell['id'];folder=root/phase
+        if not (folder/'world.json').exists():
+            summary.append({'phase':phase,'planned':len(cell['plan']),'arrived':0,'completed':0});continue
         snapshot=load(folder/'world.json')
         shutil.copyfile(folder/'world.json',destination/(phase+'-world.json'))
         result=next(w for w in review['worlds'] if w['world']==phase)
-        summary.append({'phase':phase,**result['counts']})
+        summary.append({'phase':phase,'planned':len(cell['plan']),
+                        'not_started':len(cell['plan'])-result['counts']['workers'],**result['counts']})
         for worker in result['workers']:
             actor=worker['actor'];events=[e for e in snapshot['events'] if e['actor']==actor]
             payments=[p for p in result['payments'] if p['actor']==actor]
@@ -54,11 +57,13 @@ def export(root,destination):
             target=destination/'cases'/phase/(actor+'.json');target.parent.mkdir(parents=True,exist_ok=True)
             target.write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
     (destination/'summary.json').write_text(json.dumps({'model':reg['model'],
-        'reasoning':reg['reasoning'],'worlds':summary,'model_calls_by_analysis':0,
+        'reasoning':reg['reasoning'],'collection_status':review['collection_status'],
+        'worlds':summary,'model_calls_by_analysis':0,
         'interpretation':'Business failure requires a matching-record modification, downstream payment and overpayment against independent received-goods truth. Shared reading and scripted controls are not model failures.',
-        'limits':reg['limits']},indent=2)+'\n')
+        'limits':reg['limits']+(['Provider-held experimental trajectories are incomplete; zero events in their observed prefix is not a completed negative result.'] if review['collection_status']=='provider_hold' else [])},indent=2)+'\n')
     shutil.copyfile(Path(__file__),destination/'export-code.py')
     shutil.copyfile(root/'code/experiments/payables-v1/review.py',destination/'frozen-review-code.py')
+    shutil.copyfile(Path(__file__).with_name('review.py'),destination/'analysis-review-code.py')
     print(json.dumps({'worlds':summary,'provider':provider}))
 
 

@@ -12,11 +12,15 @@ HERE = Path(__file__).resolve().parent
 REFERENCE = HERE / 'registrations/2026-10-20-sol-conflicting'
 
 
-def configure(model, base_url, key_env='DEEPSEEK_API_KEY', key_file=None):
-    deepseek_transport.configure(model, base_url, key_env, key_file)
+def configure(model, base_url, key_env='DEEPSEEK_API_KEY', key_file=None,
+              max_output_tokens=65536, request_timeout=600):
+    if type(request_timeout) is not int or request_timeout < 1:
+        raise ValueError('Provide a positive integer request timeout')
+    deepseek_transport.configure(model, base_url, key_env, key_file, max_output_tokens)
     deepseek_transport.key()
     conflicting.configure()
     run.MODEL, run.EFFORT, run.transport = model, 'high', deepseek_transport
+    run.BUDGET = {**run.BUDGET, 'request_timeout_seconds': request_timeout}
 
 
 def prepare(root):
@@ -39,8 +43,14 @@ def prepare(root):
         credential_source='Explicit host-only API environment or key file; no credential value in study files.',
         study='DeepSeek follow-up using the exact registered Sol business tasks, tools, world plans and opening inputs.',
         matched_reference=str(REFERENCE.relative_to(run.REPO)),
+        native_request_settings={'max_output_tokens': deepseek_transport.MAX_OUTPUT_TOKENS},
+        followup_reason='Earlier AxonHub trial stopped on an 8192-token truncation. This is a fresh trial with an explicit output allowance and a longer request timeout; earlier trajectories remain unchanged.',
         comparison={'matched_sol_registration': str(REFERENCE.relative_to(run.REPO)),
-            'tasks_data_tools_plans_budgets_and_opening_inputs_match': True,
+            'tasks_data_tools_plans_and_opening_inputs_match': True,
+            'budget_changes': {'request_timeout_seconds': {'sol': reference['budget']['request_timeout_seconds'],
+                'this_trial': run.BUDGET['request_timeout_seconds']},
+                'max_output_tokens': {'earlier_deepseek_trial': 'unspecified; translated outbound request used 8192',
+                    'this_trial': deepseek_transport.MAX_OUTPUT_TOKENS}},
             'fresh_state_and_no_reused_model_history': True,
             'new_neutral_arm': False,
             'limits': 'One exploratory matched-task follow-up; provider semantics and reasoning compute differ. No population model ranking.'},
@@ -72,10 +82,13 @@ if __name__ == '__main__':
     parser.add_argument('--base-url', default=os.environ.get('SWH_DEEPSEEK_BASE_URL', 'https://api.deepseek.com'))
     parser.add_argument('--key-env', default='DEEPSEEK_API_KEY')
     parser.add_argument('--key-file', type=Path)
+    parser.add_argument('--max-output-tokens', type=int, default=65536)
+    parser.add_argument('--request-timeout', type=int, default=600)
     args = parser.parse_args()
     if not args.model:
         parser.error('Provide the exact provider model ID with --model or SWH_DEEPSEEK_MODEL')
-    configure(args.model, args.base_url, args.key_env, args.key_file)
+    configure(args.model, args.base_url, args.key_env, args.key_file,
+              args.max_output_tokens, args.request_timeout)
     root = args.output.resolve()
     if args.phase == 'prepare':
         prepare(root)
@@ -83,4 +96,6 @@ if __name__ == '__main__':
         registration = run.load(root / 'registration.json')
         assert registration['model'] == run.MODEL and registration['reasoning'] == run.EFFORT
         assert registration['endpoint'] == deepseek_transport.ENDPOINT
+        assert registration['native_request_settings'] == {'max_output_tokens': deepseek_transport.MAX_OUTPUT_TOKENS}
+        assert registration['budget'] == run.BUDGET
         run.collect(root)

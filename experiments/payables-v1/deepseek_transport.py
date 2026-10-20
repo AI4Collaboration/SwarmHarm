@@ -12,18 +12,22 @@ MODEL = None
 ENDPOINT = None
 API_KEY_ENV = 'DEEPSEEK_API_KEY'
 API_KEY_FILE = None
+MAX_OUTPUT_TOKENS = 65536
 
 
-def configure(model, base_url, key_env='DEEPSEEK_API_KEY', key_file=None):
-    global MODEL, ENDPOINT, API_KEY_ENV, API_KEY_FILE
+def configure(model, base_url, key_env='DEEPSEEK_API_KEY', key_file=None, max_output_tokens=65536):
+    global MODEL, ENDPOINT, API_KEY_ENV, API_KEY_FILE, MAX_OUTPUT_TOKENS
     url = urlsplit(base_url)
     if (url.scheme != 'https' or not url.netloc or url.username or url.password
             or url.query or url.fragment):
         raise ValueError('Use an HTTPS API base URL without credentials or query parameters')
     if 'deepseek' not in model.lower():
         raise ValueError('Select an explicit DeepSeek model ID from the configured provider')
+    if type(max_output_tokens) is not int or max_output_tokens < 1:
+        raise ValueError('Provide a positive integer output-token allowance')
     MODEL, ENDPOINT = model, base_url.rstrip('/') + '/responses'
     API_KEY_ENV, API_KEY_FILE = key_env, Path(key_file).expanduser() if key_file else None
+    MAX_OUTPUT_TOKENS = max_output_tokens
 
 
 def key():
@@ -43,8 +47,11 @@ def save(path, value):
 def payload(body):
     if MODEL is None or ENDPOINT is None:
         raise ValueError('DeepSeek route is not configured')
+    if 'max_output_tokens' in body:
+        raise ValueError('Output allowance must come from the registered transport setup')
     return {'model': MODEL, 'store': False, 'stream': True,
-            'parallel_tool_calls': False, 'include': ['reasoning.encrypted_content'], **body}
+            'parallel_tool_calls': False, 'include': ['reasoning.encrypted_content'],
+            'max_output_tokens': MAX_OUTPUT_TOKENS, **body}
 
 
 def call(body, directory, label, timeout=150):

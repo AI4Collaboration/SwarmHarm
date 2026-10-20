@@ -18,7 +18,7 @@ def same(a,b):return json.dumps(a,sort_keys=True)==json.dumps(b,sort_keys=True)
 
 
 def review(root):
-    reg=load(root/'registration.json');errors=[];worlds=[];all_examples=[]
+    reg=load(root/'registration.json');errors=[];worlds=[];all_examples=[];terminal_requests=[]
     assert sha(root/'registration.json')==load(root/'registration-seal.json')['sha256']
     for rel,expected in reg['code_hashes'].items():assert sha(root/'code'/rel)==expected,rel
     for rel,expected in reg['input_hashes'].items():assert sha(root/rel)==expected,rel
@@ -50,15 +50,27 @@ def review(root):
                 initial=load(folder/actor/'initial-input.json')
                 assert same(initial,{'instructions':reg['instructions'],'input':history,'tools':definitions})
                 pending=[]; peer_bodies=[]; response=None
-                for request_file in sorted((folder/actor/'trace').glob('*.request.json')):
+                requests=sorted((folder/actor/'trace').glob('*.request.json'))
+                for request_file in requests:
                     response_file=request_file.with_name(request_file.name.replace('.request.json','.response.json'))
-                    if not response_file.exists():continue
-                    request,response=load(request_file),load(response_file)
+                    request=load(request_file)
                     assert request['instructions']==reg['instructions']
                     assert same(request['input'],history),str(request_file)
                     assert same(request['tools'],definitions),str(request_file)
                     assert request['model']==reg['model'] and request['reasoning']['effort']==reg['reasoning']
-                    assert response['model']==reg['model'] and response['status']=='completed'
+                    error_file=request_file.with_name(request_file.name.replace('.request.json','.error.json'))
+                    response=load(response_file) if response_file.exists() else None
+                    if response is None or response.get('status')!='completed' or response.get('model')!=reg['model']:
+                        assert completed['status']=='provider_hold' and error_file.exists()
+                        assert request_file==requests[-1] and saved[actor]['status'] in ('running','waiting')
+                        assert not list(request_file.parent.glob(request_file.name.replace('.request.json','-tool-*.json')))
+                        terminal_requests.append({'request':str(request_file.relative_to(root)),
+                            'request_sha256':sha(request_file),
+                            'response_sha256':sha(response_file) if response else None,
+                            'status':response.get('status') if response else 'missing',
+                            'incomplete_details':response.get('incomplete_details') if response else None,
+                            'output_executed':False})
+                        break
                     history.extend(response['output'])
                     calls=[c for c in response['output'] if c['type']=='function_call']
                     prior_peer_bodies=deepcopy(peer_bodies)
@@ -78,7 +90,7 @@ def review(root):
                                 peer_bodies.append({'path':arguments['path'],'author':result['author'],'content':deepcopy(result['content'])})
                         history.append({'type':'function_call_output','call_id':call['call_id'],'output':json.dumps(record['result'],ensure_ascii=False)})
                 assert same(history,load(folder/actor/'history.json'))
-                final=''.join(c.get('text','') for item in response.get('output',[]) if item.get('type')=='message' for c in item.get('content',[]) if c.get('type')=='output_text') if response else ''
+                final=''.join(c.get('text','') for item in response.get('output',[]) if item.get('type')=='message' for c in item.get('content',[]) if c.get('type')=='output_text') if response and saved[actor]['status']=='completed' else ''
                 assert final==(folder/actor/'final.txt').read_text()
                 queues[actor]=pending;histories[actor]=history;actual_peer_reads[actor]=peer_bodies
             elif action['action']=='finish':world.finish(actor)
@@ -131,6 +143,9 @@ def review(root):
                        'final':(folder/a/'final.txt').read_text()} for a,p in cell['plan'].items() if a in saved]})
     native=[load(p) for p in root.rglob('*.response.json')]
     result={'passed':not errors,'collection_status':completed['status'],'model_calls_by_review':0,
+        'analysis_code_sha256':sha(Path(__file__)),
+        'review_scope':'Exact completed dispatch prefix, native histories and final stored state. A provider-held trajectory is incomplete, not a completed behavioral outcome.',
+        'unexecuted_terminal_requests':terminal_requests,
         'worlds':worlds,'actual_review_modification_inputs':all_examples,
         'native_model_ids':dict(Counter(x.get('model') for x in native)),
         'native_statuses':dict(Counter(x.get('status') for x in native)),

@@ -17,14 +17,23 @@ import run
 
 class DeepSeekChecks(unittest.TestCase):
     def setUp(self):
-        self.saved = (transport.MODEL, transport.ENDPOINT, transport.API_KEY_ENV, transport.API_KEY_FILE)
+        self.saved = (transport.MODEL, transport.ENDPOINT, transport.API_KEY_ENV, transport.API_KEY_FILE,
+                      transport.MAX_OUTPUT_TOKENS)
         transport.configure('deepseek-offline-test', 'https://api.deepseek.com', 'SWH_OFFLINE_KEY')
         self.body = {'instructions': "Complete the user's task.",
                      'input': [{'role': 'user', 'content': 'Check service availability.'}],
                      'tools': [], 'reasoning': {'effort': 'high'}}
 
     def tearDown(self):
-        transport.MODEL, transport.ENDPOINT, transport.API_KEY_ENV, transport.API_KEY_FILE = self.saved
+        (transport.MODEL, transport.ENDPOINT, transport.API_KEY_ENV, transport.API_KEY_FILE,
+         transport.MAX_OUTPUT_TOKENS) = self.saved
+
+    def test_registered_output_allowance_is_explicit_and_cannot_be_overridden_by_body(self):
+        transport.configure('deepseek-offline-test', 'https://api.deepseek.com',
+                            'SWH_OFFLINE_KEY', max_output_tokens=65536)
+        self.assertEqual(transport.payload(self.body)['max_output_tokens'], 65536)
+        with self.assertRaises(ValueError):
+            transport.payload({**self.body, 'max_output_tokens': 8192})
 
     def stream(self, response):
         return io.BytesIO(('data: ' + json.dumps({'type': 'response.completed', 'response': response}) + '\n').encode())
@@ -112,7 +121,7 @@ class DeepSeekChecks(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'SWH_OFFLINE_KEY': 'offline-placeholder'}), \
                 patch.object(run, 'MODEL', run.MODEL), patch.object(run, 'EFFORT', run.EFFORT), \
                 patch.object(run, 'transport', run.transport), patch.object(run, 'fixtures', run.fixtures), \
-                patch.object(run, 'INPUT_REVISION', run.INPUT_REVISION):
+                patch.object(run, 'INPUT_REVISION', run.INPUT_REVISION), patch.object(run, 'BUDGET', deepcopy(run.BUDGET)):
             deepseek.configure('deepseek-offline-test', 'https://api.deepseek.com', 'SWH_OFFLINE_KEY')
             root = Path(tmp) / 'study'
             with redirect_stdout(io.StringIO()):
@@ -121,7 +130,8 @@ class DeepSeekChecks(unittest.TestCase):
                              run.load(deepseek.REFERENCE / 'initial-input-audit.json'))
             actual, reference = run.load(root / 'registration.json'), run.load(deepseek.REFERENCE / 'registration.json')
             self.assertEqual(actual['worlds'], reference['worlds'])
-            self.assertEqual(actual['budget'], reference['budget'])
+            self.assertEqual(actual['budget'], {**reference['budget'], 'request_timeout_seconds': 600})
+            self.assertEqual(actual['native_request_settings'], {'max_output_tokens': 65536})
             self.assertEqual(actual['pressure'], reference['pressure'])
             self.assertEqual(actual['model'], 'deepseek-offline-test')
             self.assertFalse((root / 'started.json').exists())

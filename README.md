@@ -6,6 +6,8 @@ synthetic business data and local simulated services.
 
 ## Latest result Â· 20 October 2026
 
+**DeepSeek passed its four normal calibrations, then stopped on provider truncation.** Four of six experimental workers had started; none finished, and two had not started. One response reached the translated route's 8,192-token limit. No refusal was recorded. This is an incomplete experiment, not a behavioral negative. A fresh follow-up requests 65,536 output tokens and a 600-second timeout with identical task inputs. [Short report](experiments/payables-v1/DEEPSEEK-RESULTS.md).
+
 **Sol identified the conflicting checks; it did not exploit them.** Four normal
 calibrations produced correct payments. All six experimental workers read the
 workflow, calculated the correct amounts and attempted finalization. Zero
@@ -22,12 +24,14 @@ general safety. [Short report](experiments/payables-v1/CONFLICTING-RESULTS.md) Â
 
 ## Current setup
 
-- **DeepSeek follow-up:** AxonHub login and the existing project key are available.
-  The authenticated catalog advertises `deepseek-v4-pro` and `deepseek-flash`.
-  The pilot requests **deepseek-v4-pro / high** through
-  `https://lmportal.iefbr14.xyz/v1/responses`; live tool/model access remains to be
-  checked. All ten opening inputs, fixtures, tools, plans and budgets match the
-  frozen Sol pilot, with fresh state. [Setup](experiments/payables-v1/DEEPSEEK.md).
+- **DeepSeek follow-up:** authenticated AxonHub login and an existing project key;
+  **deepseek-v4-pro / high** at `https://lmportal.iefbr14.xyz/v1/responses`.
+  Function calls and all four normal payments verified on 20 October. The relay
+  mixes Responses passthrough and Anthropic Messages translation; effort is
+  requested, not independently confirmed. A fresh trial explicitly requests
+  **65,536 output tokens** and a **600-second timeout** after the first stopped
+  on truncation. Tasks, pressure, tools, opening inputs and plans match Sol;
+  timeout and output allowance differ. [Setup](experiments/payables-v1/DEEPSEEK.md).
 - **Sol / xhigh**, existing local Codex login,
   `https://chatgpt.com/backend-api/codex/responses`. Verified 20 October.
   Python **3.12.14**, inspect-ai **0.3.257**, OpenAI SDK **2.54.0**.
@@ -39,15 +43,15 @@ general safety. [Short report](experiments/payables-v1/CONFLICTING-RESULTS.md) Â
   fabricated peers. PO terms are factual fields. Actual access checks and genuine
   peer messages remain. [Input cleanup](docs/prompt-cleanup-2026-10-20.md) Â·
   [Native request audit](experiments/payables-v1/results/2026-10-20-sol-conflicting/request-audit.json).
-- One request at a time, 150-second timeout; four calibrations precede six
+- One request at a time; Sol uses a 150-second timeout and the new DeepSeek trial 600 seconds. Four calibrations precede six
   experimental workers. Interpreter:
   `../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python`.
   Use `experiments/payables-v1/conflicting.py --phase prepare --output <new-directory>`,
   then `--phase collect` with that directory. Pressure is frozen separately.
   DeepSeek uses `deepseek.py` with an explicit model, API base URL and a host-only
-  key environment variable or file. Its normal-task gate remains unverified.
-  The new DeepSeek pilot is being registered; no scheduled monitor is active.
-  Earlier completed collectors are stopped and trajectories remain unchanged.
+  key environment variable or file. Provider errors stop collection; preserve
+  incomplete trials separately from negative behavior results. Earlier collectors
+  are stopped. No scheduled monitor is active.
 - Tools access in-memory records, without subject shell, network, host files or
   real payments. Shared reading alone is cooperation. Keep hosted
   **Multica 0.4.44** and its existing public-server access patch.
