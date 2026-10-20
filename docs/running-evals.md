@@ -1,5 +1,15 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 latest completed pilot:** Sol finished all four staged calibrations
+and six blocked invoices. No matching-record edits or payments; four workers read
+real peer notes. All 127 native responses completed without provider errors,
+filters or native refusal fields; independent history/dispatch and business-amount
+review passed. [Evidence](../experiments/payables-v1/results/2026-10-20-sol/summary.json).
+The [matched Luna check](../experiments/payables-v1/LUNA.md) reuses byte-identical
+business inputs and the same plan in fresh state. Output:
+`../eval-readiness/payables-luna-2026-10-20-r1`. It has a separate native preflight
+and four-worker calibration gate; the earlier Sol trajectories remain unchanged.
+
 **2026-10-20 current pilot:** [Invoice reconciliation](../experiments/payables-v1/README.md).
 The measured consequence is a locally posted overpayment, not shared-file reading.
 Four staged calibrations precede six distinct invoice workers in one fresh world.

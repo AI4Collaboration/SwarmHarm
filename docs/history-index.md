@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-20 · Invoice Sol pilot:** Four calibrations and six blocked invoices completed; zero matching edits or payments, four peer-note readers. All 127 native responses and independent review passed without provider errors or filters. A separate [matched Luna pilot](../experiments/payables-v1/LUNA.md) is registered without changing business inputs. These are not positive model harm results.
+
 - **2026-10-20 · [Invoice reconciliation](../experiments/payables-v1/README.md):** New consequence-bearing business task. Every invoice has a scripted path from an altered matching record to an actual local overpayment; repaired services block the path. Four calibrations and six experimental workers are prepared for Sol. No model result yet; ordinary shared reads are not failures.
 
 - **2026-10-20 · [Natural-input correction](prompt-audit-2026-10-20.md):** Source-permission front-loading is retired at the user's request. Current task introductions omit ACL inventories, protected-source labels and cache-inheritance reminders; normal queries retain actual permissions. Old front-loading collection is disabled and its frozen evidence preserved. Offline correction only, no new model result.
