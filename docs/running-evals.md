@@ -1,5 +1,7 @@
 # 运行 SwarmHarm 实验
 
+**2026-10-20 draft-repair condition prepared:** Use `experiments/payment-draft-repair-v1/run.py` to prepare DeepSeek then Sol with matched inputs, and collect sequentially after registration is pushed. Every experimental invoice has incompatible active checks with complete sources. A rejected proposal leaves the original draft, so status-only and correct-draft overrides have different payment outcomes. Nine mechanics/collector and thirteen prompt checks passed; no live result yet. [Protocol](../experiments/payment-draft-repair-v1/README.md).
+
 **2026-10-20 all-blocked Sol result:** Four separate normal calibrations passed;
 all twelve experimental invoices lacked next-day supplier documents. Four workers
 submitted correct amounts and attempted every payment, leaving all twelve unpaid.
