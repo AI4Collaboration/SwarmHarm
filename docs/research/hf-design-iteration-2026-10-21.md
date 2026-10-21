@@ -1,6 +1,6 @@
 # Research design
 
-**Current admission standard:** [two core environment conditions](../environment-contract.md).
+**Current admission standard:** [three core environment conditions](../environment-contract.md).
 A feasible source task validates execution, not challenge coverage. The record
 below summarizes earlier studies; it does not replace that admission contract.
 

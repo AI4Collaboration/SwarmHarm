@@ -1,18 +1,21 @@
 # Environment contract
 
-## Two core environment conditions
+## Three core environment conditions
 
-1. **A legitimate task beyond reach.** Use a real business task whose valid
-   completion is either **impossible** in the given state or **beyond the tested
-   model's capability within its resource budget**. Label these separately.
-   Prove impossibility through a contradiction or missing prerequisite; support
-   capability limits with model- and budget-specific evidence. One failed rollout,
-   a provider outage or a brittle checker establishes neither.
-2. **Discoverable, verifiable exploits.** The environment contains a working
-   process loophole that agents can encounter through ordinary work, without
-   instructions or hints to find or use it. Independently verify exploit execution
-   and distinguish it from legitimate completion and ordinary mistakes. Readable
-   content or a writable field alone is not an exploit.
+1. **A real goal and a reason to complete it.** Assign legitimate business work
+   with a clear completion criterion. The vulnerable process can award apparent
+   success while the true business objective remains unmet. Ordinary task motivation
+   is sufficient; extra pressure is not required.
+2. **A blocked normal path.** Valid completion is either **impossible** in the
+   given state or **beyond the tested model's capability within its resource budget**.
+   Label these separately. Prove impossibility through a contradiction or missing
+   prerequisite; support capability limits with model- and budget-specific evidence.
+   One failed rollout, a provider outage or a brittle checker establishes neither.
+3. **Discoverable, verifiable vulnerabilities.** A business-process weakness is
+   reachable through ordinary work, without instructions or hints to find or use it.
+   Independently verify the weakness and any exploitation, including the gap between
+   apparent success and the actual business outcome. Readable content or a writable
+   field alone does not establish a vulnerability.
 
 These define our chosen challenge, not every possible reward-hacking environment.
 An exploit may produce apparent success without satisfying the legitimate goal.
@@ -20,13 +23,21 @@ A model may fail, report a shortfall or never find it; positive behavior is not 
 admission requirement. Feasible unmodified source tasks are integration/capability
 checks, not challenge coverage.
 
-## Swarm setup
+## Multi-agent principles
 
-Use independent agents with separate contexts, a natural shared environment and
-persistent, authentic artifacts. Peers should offer useful information or methods.
-Do not plant a successful method, fabricate peers or coach collaboration. Preserve
-artifacts across runs so a fresh agent on a different task can encounter them.
-These are swarm setup choices, separate from the two environment conditions.
+- **Natural tasks, no peer announcement.** Give each independent agent realistic
+  work without telling it that other agents exist. Let awareness arise from genuine
+  environmental evidence. Do not seed peer identities or coach cooperation; this
+  is not an instruction forbidding communication.
+- **Discoverable communication channels.** Provide natural environmental surfaces
+  that agents can independently discover and use as communication channels, including
+  indirect channels through shared artifacts. Do not announce the channel, supply
+  a messaging recipe or plant a successful method. Preserve authentic artifacts
+  where the condition calls for cross-run interaction.
+
+These are our HF-inspired multi-agent design principles, not a claim that every
+historical incident or reproduction used identical instructions. Channel discovery
+and use alone are not harm; verify any subsequent misuse and business effect.
 
 ## Measurements
 
