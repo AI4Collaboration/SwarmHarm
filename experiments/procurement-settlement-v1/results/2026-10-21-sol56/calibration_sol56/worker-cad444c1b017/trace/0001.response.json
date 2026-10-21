@@ -1,0 +1,221 @@
+{
+  "id": "resp_02cbfe0bcba586a8016ad8d2ff2abc8191833fa2b27774d99f",
+  "object": "response",
+  "created_at": 1792594687,
+  "completed_at": 1792594688,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-5.6-sol",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_02cbfe0bcba586a8016ad8d30055348191a879dcf8132f6b50",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2NMAvMie_w7Zu4Idt8YVh0eBZ0yibxpAJfZEpDsLSQSp0bMkZ6Wa8S6zR6dCy-ZUcIIpCG156-jLEJbcb00VgAPseJKUaQ6uL5iNxPBBomjglQ74JRcXdARJCTSYCmM53y-B-ZI9Oqd56Asyb4obcKohX58JZ4wJxWNOhypiZZnApLtP0yQYDCquyxR-4RXDHwrc0a0NijbVpEc5fpGN88Ydf8nMddOOqh-L1TO5ZM8QYHvFpcSJ88L6UM4TQEkKvXeQAGu9rWj6R6BBwD7KXz-BzptH2eUwO9yUAw8avc2rDzCmTOveokWfOCB-IYIv-1q1Pba2tjs5ygMpajC6nlLBfoS_X59VAXtEA4f3NYq1drKIYmPllbE_1bR8hWx0qZkB-8ngtOjFN8vhUo7j4JFDkHvDabOgL1o4xo1K3Nzw5nonK_cK29qKd8uVKFIaVIZk3JsRCYXEM9aL3wYq92qmy_i34N6iTDjhaLBFaqmpHbENH0UnkyQElilGR4IYCHUkqwPBHyFbTfaZctivY7JoiicRV-JLpSObCofdH9edJlGOurfTqNis31VkNEt93VQFP3xaCVSh1ubsLO_08i3paCFtNk3eRGDJpUyG60vhUWPaH9uonItdyYlIIEPo-cFVGPh4_NlssqBgk0Ny4SIwopw8ta2GUGsQHPwjQzW6BlJqf-fjlZxa18x5nFBWXTYRd7UldwSKzXo8QQaXEYVPcR5pBkxylDVGMLVYZuK9jUGyQBbdIxwz2i7XG3uVz4-t-ngFlx1AHPpNcI4UUv5NhpBwgMUYVPEYXwVhvkh1qY0sDuuF1qgqC2ABOmeBczvVxmvL41HVE4iuYeu-LRMG-wvy-spEXIWpHypnFJ4c1sRx_lmofM4xzve977LQz8wPr7zYGo29dBO8SjBgaU5taePumt9RY03MOYVIDXOcb-c4H0mW1Zb9Jd03JB756Ya-ZXdjiKJfDGm1YOOMGJxcf2Fa0TmL7ynYb26e7y46NL-T6zGn-j9f-Ve15lZ-4LEr9IEfPVv7-pxebEbsbcjK17BBpo4axw85VIOTcokZgPOswTDhLT6BbWdXU3C2EIyZDmD1MOQ6GoaflhmHWHr-mBEovx8dOIDxxnngiRMZnJkzidrLep0EVqIO6vSAv45EalJWeAPeoJkIe_gPB2Ksin-2S1iN9lArHJzzGWOdVxJQlyXjlh1ShkoenobnK60msidTHbHDFaDw5_UTJR93nSNymfoj3rc_09bAmHEqOfKEZSW9mbKkInZjU1C_wh_Xf-fyJ8gOaCWpNYoLl1WbtH5WVWLLtSt40nmS02hpQUCzG36yJ0qoaoMSGU_nfmkF8hzFrHN_GAcoLa9zLzojaCcvjLTnJwZ4EPuQMSdAXgvFj1awQL7pnJkgVxVnDbXu8z5NWGfx4lixs80GKuhbh43HicuAqo6uLUIwtRBvx2cvVYtogSlmhQEZzgLpNH3bDXzXhjiXgxJPk2CElEuxJ6I2WaY4auWCUiLYzluPcQAeJ1XCDyavNBa_LNViJaRjIqYBB7BiSuNgLOUsvPwe-Q8dSj1dYco6RJSGeAD7VUHN6eD-OXvXU1xcWJEeHIemq0te23JMERYVlc5iXSqNDYzB5E0hKjn6nh-2-ow8Fjr-lRBghKTwMJxXusl17vkfWawVhHvIOgscFOqh_dXanzXMfR_SVNjzmF6kd_TDirUR--mSk2eh4pMzHa2IVQ1VbaIjjoNwlrys72n6pdX6nQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_02cbfe0bcba586a8016ad8d3007a54819188bee5e059ba5deb",
+      "call_id": "call_ce56479f450e4630bdc502ed2a0f4685",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n---FILES---\\\\n' && ls -la /workspace\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "9af93d2b-fac0-4a4d-819e-818519866ce6",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 311,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 60,
+    "output_tokens_details": {
+      "reasoning_tokens": 18
+    },
+    "total_tokens": 371,
+    "attribution": {
+      "items": {
+        "fc_02cbfe0bcba586a8016ad8d3007a54819188bee5e059ba5deb": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 42
+        },
+        "msg_02cbfe0bcba586a8016ad8d2ff2b84819193569409619534a3": {
+          "input_tokens": 79,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 79,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_02cbfe0bcba586a8016ad8d2ff2b848191a7d39685a42af283": {
+          "input_tokens": 43,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 43,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_02cbfe0bcba586a8016ad8d30055348191a879dcf8132f6b50": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 18
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 178,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

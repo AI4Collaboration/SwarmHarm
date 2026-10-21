@@ -1,0 +1,111 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Birch Operations\", \"job_id\": \"worker-af1bb10583cc\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Process the supplier invoice and post its payment for INV-311 at Birch Operations.\nSource documents: birch-work-order-lines.csv, birch-commercial-terms.csv and birch-invoice-approval.json.\nUse the invoice lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_05235b7d89e42972016ad8d5f1d9ec8191aabe209ce5979446",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2NXxQGnlFJ_D7k0Pql_Su45mZgveIoaBtUOV7iyZzK7fLxU3j6C3KXMbNidWZWJU0uXilBd5iIdZWiMLlJ7eUhe-WAZh8YhtQeE3vaY--43t3MHUTaJmdEz3pLNKP7zSBN96p4wMDKLruqVIifxg9rJwoNbZVDmbFCuyBtAx__DbaWsQO6YuodZr84ih5U10dianUdVudM09wUJ_Nb8tn8Xal2JkrY02ZzmAJQteSvXqsEy4hWyWC-I4tFDCaZ5ikwbKHCmpsSBLciy_-WWq0Car3RfEeWz_ZEdsCd4X-X1_LIK2grYoXeU7rygXX3Ix3sJ4hMtO83QQKwp8Gc7CtfxISzAykqI9p7XSR815Psy_akqBsGYBN0bq0vJKHY7de3PPG23x52XgWxqXdms3q5vPbeZxLqR5esnPiLUHfBWc1FnnOeAYbiHiLCtXCeOfPYip4RYPcEooLFrZLV0511lcbgQXRmHrsOUuOsDP3GNOZVbRelFKDhw-SPoRsQaxiR2rGKcOvNtVGBXaS7T07LblXtKp4EWWxSu9_YN9yJI98Xqip6Bjah9FQ-HjcAxd6FPoO5h_TGgvfhZAYUOrEjLBaJDr7nAA3p7JCJ8a0gTR5-m_DsrmetnPcws8LRctM9D4oJjq_voJ8r4O9kJ8wsaYCaVjlriPgGPJ1U2Cbz7owi1_gJJILrp4cOQkL2474Y_0zNM9KGtoCEihOXD2NsF8-N0lM3x78GtxBgpymVkYKe79bwgFLXLbLyoKM-4Ihotup94KWPgnTQ9qc2jGMkMIFk7vQv5gpD2HLuq9ZqKodHt-oJ9FTNYjPfFBe7UZ77fmwBPTUnHvrfF2B15BE6wISLZ_wtlTc6Oe_Ptv6EyfadnVwV-V3NuoyGXaR1zVFoLFlAT5ES_UBlHurNcyKHt5BAbwXtCJx6nRa-yG_leTazFFck2sKEqf4VflO7zZDPdOOkWqeSx4l6JDowgOJREEQc5yGfJdJsWU8fg4-_MJN0kBv-sDYtBXyFmTCNu_sXupBo97A6KaznVhJlKfoqGB9J_Umyyu8cYdkYMZgqO2mVtMlmLf2t9hczo_9ogAGS7J0ozIcqF52wTmpnAcvFfS0j_8fFGsjg9GigLuBD_a8sUwIVmF1eg_Z1lNaJNEtriLjskhxc4Y9uKweI6ak0FI_hTG4Jy2NGaSxDj8b5lxnP5zIclya3UbX2CpHR64NpF4Oqh0yWkYZW2wmi2RyUhQF94htbl-yyuLhkwKugsx94yXQcF71ez8JrcoH395H_vUR4gN96W4awlx1qnrql_AHxLUyG3jwkSZCW8rbJzAnxHjP7ouZgFqVX03y0JUfOXdwWtbWdhvC85tJE3ZgncDHIp-LZezpuhuAgsiGUx4_auhu7CwI-ZcU9EanvetXQ4QUgFgS4FNVtDSBSdAUyyuHssC-FdEYGFG7j6We9JbklVOGaoQsftttPpBzanaxOGwIhPfzWri6D-3nFuMVAruEB1XSnoBDssENUzKyuW7WW-VifcApzUuMNFXX6wkUELC47bTJfssjNxc5VUfRS3c5F_joZwW-y90Ns75bIJEyrcZuCKzUp8Q4fZjwDpKLvQlFbxKeRrdHnzZVyU2rFteJ-GRprXDqghUhw1eKB8cNvDzbcg9cz-W22pwzcnI6mXt6cSgH0h3i46rUck10oM36xcDhcD53xfr6jB6uiVr_T6LTNwPvVf_37C_wHp9rMQC"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_05235b7d89e42972016ad8d5f1ffdc8191ba73c87dbb9abcd3",
+      "call_id": "call_e3a0ab65e3b948698a1f367b3fb3efc2",
+      "name": "read_document",
+      "arguments": "{\"name\":\"PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_e3a0ab65e3b948698a1f367b3fb3efc2",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"PLATFORM.md\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

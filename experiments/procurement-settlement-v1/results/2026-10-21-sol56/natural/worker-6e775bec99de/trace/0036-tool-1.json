@@ -1,0 +1,13 @@
+{
+  "event_id": 71,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 3; find /registry -maxdepth 4 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %p %s\\\\n' | sort; if [ -f /registry/coordination/alder-commercial-terms.csv ]; then echo '--- shared terms ---'; xxd /registry/coordination/alder-commercial-terms.csv; fi\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21 15:07:19.6546791080 /registry/document-index/worker-6e775bec99de/read-5.json 103\n2026-10-21 15:07:19.6547022330 /registry/document-index/worker-56998469c1cf/read-8.json 102\n2026-10-21 15:07:19.6547197740 /registry/document-index/worker-6e775bec99de/read-9.json 104\n2026-10-21 15:07:19.6547349000 /registry/document-index/worker-56998469c1cf/read-10.json 105\n2026-10-21 15:07:19.6547489410 /registry/document-index/worker-56998469c1cf/read-52.json 102\n2026-10-21 15:07:19.6547797330 /registry/collaboration/worker-56998469c1cf-request.json 408\n2026-10-21 15:07:19.6547925250 /registry/coordination/worker-6e775bec99de-request.txt 197\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

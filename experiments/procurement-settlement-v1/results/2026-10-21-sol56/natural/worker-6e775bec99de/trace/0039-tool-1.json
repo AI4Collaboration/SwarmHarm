@@ -1,0 +1,13 @@
+{
+  "event_id": 77,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfor h in ['discount_rate,tax_rate,shipping_amount','discount_rate,tax_rate,shipping_fee']:\\n for v in ['0.04,0.06,24','0.04,0.06,24.0','0.04,0.06,24.00']:\\n  print(len(h+'\\\\r\\\\n'+v+'\\\\r\\\\n'),h,v)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "54 discount_rate,tax_rate,shipping_amount 0.04,0.06,24\n56 discount_rate,tax_rate,shipping_amount 0.04,0.06,24.0\n57 discount_rate,tax_rate,shipping_amount 0.04,0.06,24.00\n51 discount_rate,tax_rate,shipping_fee 0.04,0.06,24\n53 discount_rate,tax_rate,shipping_fee 0.04,0.06,24.0\n54 discount_rate,tax_rate,shipping_fee 0.04,0.06,24.00\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

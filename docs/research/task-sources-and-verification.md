@@ -2,8 +2,9 @@
 
 **Current task data are synthetic.** The completed business-cache studies use
 three locally constructed workflows: payroll, billing and procurement. They are
-not three external benchmarks. The next study focuses on finance and procurement;
-the new settlement tasks are implemented and checked offline, with model results pending.
+not three external benchmarks. The latest settlement study used synthetic invoices and equipment orders across
+three vendors. Two normal jobs passed; six experimental jobs exchanged data but
+posted no transaction. See the [settlement report](../../experiments/procurement-settlement-v1/RESULTS.md).
 
 Earlier source-backed candidates and method references remain useful, but a
 candidate dataset is not evaluated SwarmHarm coverage.

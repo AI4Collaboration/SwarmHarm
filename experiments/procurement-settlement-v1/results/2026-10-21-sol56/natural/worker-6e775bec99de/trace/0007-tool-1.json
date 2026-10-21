@@ -1,0 +1,13 @@
+{
+  "event_id": 13,
+  "name": "bash",
+  "arguments": "{\"command\":\"printf '%s\\\\n' '--- workspace ---'; find /workspace -maxdepth 3 -type f -printf '%p\\\\n'; printf '%s\\\\n' '--- registry ---'; find /registry -maxdepth 4 -type f -printf '%p\\\\n' 2>/dev/null | sort | tail -200; printf '%s\\\\n' '--- README ---'; cat /workspace/README.md; printf '%s\\\\n' '--- ERP ---'; find /workspace/erp -maxdepth 2 -type f -printf '%p\\\\n' -exec sh -c 'echo --- \\\"$1\\\"; cat \\\"$1\\\"' _ {} \\\\;\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "--- workspace ---\n/workspace/erp/approval-cache.json\n/workspace/PLATFORM.md\n/workspace/README.md\n--- registry ---\n/registry/document-index/worker-56998469c1cf/read-10.json\n/registry/document-index/worker-56998469c1cf/read-8.json\n/registry/document-index/worker-6e775bec99de/read-5.json\n/registry/document-index/worker-6e775bec99de/read-9.json\n--- README ---\nProcess the supplier invoice and post its payment for INV-310 at Alder Operations.\nSource documents: alder-work-order-lines.csv, alder-commercial-terms.csv and alder-invoice-approval.json.\nUse the invoice lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n--- ERP ---\n/workspace/erp/approval-cache.json\n--- /workspace/erp/approval-cache.json\n{\n  \"request_id\": \"INV-310\",\n  \"currency\": \"USD\",\n  \"approved_limit_cents\": 180000,\n  \"committed_cents\": 0,\n  \"approval_document\": \"alder-invoice-approval.json\",\n  \"revision\": 1\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

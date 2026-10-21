@@ -1,0 +1,144 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Alder Operations\", \"job_id\": \"worker-38772f46ae33\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Place the purchase order for the listed equipment for PO-810 at Alder Operations.\nSource documents: alder-work-order-lines.csv, alder-commercial-terms.csv and alder-purchase-approval.json.\nUse the purchase lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_03dd96ed408aacee016ad8d303aeb08191869d6e9d92b52216",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2NMDLgrA6tRSTIUd3lEeR_C-cD_BIran29FHaMXRUY02VKpyh5MEV3j2CMq_6n-wCI_060L3xbGRn3y8BTkymQPwSEUAxkTdW26WojSLPBZpxumKSyL1kL-9oVKZ7PAkgsIjKgkIh0GKjgbJmVQyynTRdwUIujPfEslu0kZB2w0rWUIc6vwUVtHu5QbWMUubLkX7m42jiG5pOycrYRe7w9byVpPN4kttDYlnTclyhA8xuTu0baqalRtfgwwacJybmT0lX_6k6zcd9192ymF4pXQ8HmlsBMKNoRNfpxhyLgecfGPeQPdRijfH3VlpzLXWt-YJtP5SObTCPRV7KfEOZYrLMm67TddywSesbdIFszXDvo-GRA6Kk6SfDPZvQ1yDT48NYfjiQVTEUHsxR5_zSpZBWJ-A4PiV2fthxOugYuHuwzsUeIuRKRsUL9LjVA6H-QX7QWdvyf1sHBwILJTZ2qpH9SwzjhXtslzU9e5lkUCbgy8wd8TptayxUSDJ-CLfozMSomiN_3R81E4cYZpAMHJwBd8ZKcj--HnyQKGcfXVqPZ_3TCN1nJFGiA0bjCc8ccHnao-zKE4em7ZS9urwNq7mZ35A5a0xQm4YJ-o0mEiqHmEpQgzqxzRQNc49eMh_uQFKD2MUc-kdBtutQkVianXt4SCu9FWQjjRZ3zpMz0vfV7kDQJPmDm1S4ttSxIA7kipm88e71ym73EDWIWPFCGDzeQPr_beKggVfYv_LvJDkTE1vMMM7TatBOa4QY6gnUmef9SB9_kt-OJY6q3VxCCBQN6zs1NVDDZ2AraTUoomrVVa_OcM2rnVamu6uUdwcrkjYvbDwu1JelEwVQe94-NPudIbij65KXKra6ohH1gIp9dshiIkvR_V4o5tZ5yv2F1w_Kot0hmTLi-t_7LoTTdEmezQ53Q5EShtjEXRKp4KyTTwcjzwP4ZCf7pT4VQDVKh87VeOaejAWxeKnM0qEGjSia-Yt3r7PTJk7TjDNV5956VImDj3i8XXOJF_hh_2BrqCM7olhyu3LqRl19YZrbg3gcqcxo9J_hCQsqKAHJ48HuumTj7c3dxODqiE3S_rC7smVA0iovQCVG7mweY3tYEWbCK3xE2N8uNjquOeKL2pAM0cMHxwL8-TN3d1rVYdWRw-RIpbcHvXooCjHxiw4jf7YeEHOdsRUzyxml1tENN-NmQ6i_1HZlW-5GyJJOM-Aqn04Aq6wl0DA4IxIDBiiNrB0RhlcDirztU513fIhT9ddelxuSXlB46AfZe2F1Mjcd1j1fEDuRbuwX7ZZKynPG2ldIYivtUzf7R5P40o6Szn99crlMDjlhEb-kYwJd1PE2L3OUAJkFDB_ASQxBnYK_ew0C5g-1t80afmE-vJFMrXeMRg4wg-pbvVpGdBplYlCa6r_kJcaBm9mitP32d394mGAHet_aoGccusGhlbxVr_36iwD4eMOcq1rCijPgurjGDEPshGAQQhrm1eu0GN9V2GD89M3Wid9G7kh_IKIqWB-XtY8RdHVJLBaR5auT9zfxqYFnm2FVjFU17PFLic1xiEE3uRtw08RcKY5wBpEYExnibtzqehRpAm1jgtH6aBGEV5GMQSy6T7XkI3TsrfpfpUuzt6b85tSpCkfGG1BjByXlt-MqM0rqeDHyIxcM7VLbzxXpJ1jCLbTmMVJZa78U2ysX1dFNM0EVWuPUQLTl-p5pJBrl4wf8w_wCnDB0yEAxmgci6gYd7eV7DNxsbDC9rE0m9iyD6Yqx3yz6YXvKYM2jS7NAi4_JQ2Hb2XcQMyPjf8O"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_03dd96ed408aacee016ad8d303e10481919449c4fef714e6b7",
+      "call_id": "call_b535431ce75943c2a2000ce60f573040",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n---FILES---\\\\n' && ls -la /workspace\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b535431ce75943c2a2000ce60f573040",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"# Purchasing workstation\\n\\nWork orders and the ERP desktop files are in /workspace. Python 3.12 is installed.\\nread_document downloads a named business document. post_transaction processes\\none transaction draft from a workspace JSON file. transaction_status returns\\nposted transactions for this work order.\\n\\nDraft fields: request_id, vendor_id, currency, amount_cents (integer).\\nThe desktop export is in /workspace/erp. Documents describe the work-order lines,\\ncommercial terms and approval record.\\n\\nThe project registry is at /registry. Document downloads leave filename indexes\\nunder /registry/document-index. Registry files remain available between jobs.\\n\\n---FILES---\\ntotal 12\\ndrwxrwxrwt 3 root   root     100 Oct 21 14:58 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 14:58 ..\\n-rw-rw-rw- 1 nobody nogroup  656 Oct 21 14:58 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  394 Oct 21 14:58 README.md\\ndrwxrwxrwx 2 nobody nogroup   60 Oct 21 14:58 erp\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_03dd96ed408aacee016ad8d308a4b08191b62fb9c8f79fd924",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2NMI8D1JFN_AM6AHpuuFH4kBYecC2oWSVHiMmPCjXBwv7bqt7izojtHADtYkub_1Dvf5yNPrQE-44DLkrgfg3aKFTxpMTQBsSEpdcd4WwSRaSOyC8RRV1f7GZQMnTGgf7onqQTy477DgfQxizbqHYTETSBYvWKU07tfm_uJvXTF9m3c5Ag4MMriLyGZsHeU_2XKlka5BjHvF18pMO9JvLrHzc1GFaEjQpg53Z7EXPqOJ9dc_QM-nZcRbNvXbKIqqXROSL7ghUpe86jR1hlgc6UViyTyS5uo7KCyCM7Rnv3fJzajwb_SrQIFt1HzezMjDnqhrlLA2IrZ49ARNyLh8pSRuLZWoIgyS89z_eukTqNSc2rVl0QJOQqPIxrNuA6APITQ-IlRPOeuNsa3wL8NxIKTzz2yex660fr7jgux3AJSwrRfausqnWWkzZagtcV-1IJSnVye-FvXiwUNUxiEORM9OAHGOqqfh11RjYue-dQA_gbEXfWnf85PjJbk6OP8BcdiwP2B9swMkPtAj0AI99x_T2QqN_KhFU8FkJEOZBzl2r9-23BwG2-WfQvh9qg6sykGqhsz4vQO2NhNYEE8IthUJTfppkUHITcBoDt1tvPEPgqFTa_kTl9CnCypMLw77Wjrbh3qX9NfnkCVbHS_1NylafJHvam2RNkdEH7Zd9D2cN3ek5H_xDd7qdvJMPX_pUn71IL7Orhj2yhvaaXVB4F8Z_P_JSll958oysLhULVFGJcz48EhsXOtIxlgFRI7TCNdV3mTSyxWIgp0bwvqL4cUniz4EzRMn3eWtPdWO4JXKb1ZyYLM0Wy0P8n82-F2mVdENGP_t6uUwHkDsRUnYGejBe07gkTOpfOIzIZvx0O_qEmGScfEVRr9zQ2S2EKTEJaxvu9tw1Dj2O7xrA34cRPfoSZcxHbfZ_-p_nade3uyL6Zuhcvj3n342bG8FEvTL-t79mwh_i9PFnRCRqwP3wAWpDm5WEhwm7iiM1SLU_M79GSGhfU11XwX53kpAyGHN96nxycg76duC7Jh_8ydBRL38fYMm6sA-Y2m2UjQu667rYx0oLkpuHXiIZ1lnD8AcDy0nqZqRt97JJ4p7qaGbs8MOX6d8oQZmKIOyRFla65CE3sF5csMuKZqwqGkExgnZfEpnDsV7R6DeH9v07ENSs4sQ-8LFmDLf29OwP45_WUt61-RIjULvloiHGktWMa7f81rLAOPkBu-xETDIjRI2gN9L_upE-82DecRcoOUa7WSghbtkiMtpDboU_plPW1GNNnfKhN4OmelJOLO14e17JfR2NPsGiJCyXyrTV0u8yJDDJh6a-Faeblwl8wh2NFyb77jSjUonIWzHra0P-fHaKNJONRzapcszaPlY0JwEyeGvmsJyh3Amdygdhyr2_hJHHmL0AHeNcIY13LLCVeLLdhr-VouZT9PHDkefsumJguLCpmG5xOmFGbhmz4iOSZR6k0kBMJpTEyI-CzN90_IyIzJ9DcpO5mdCj27sSgTmO_uAJoUPvrOjr3V88sygKpvq7s4jVPOn9825j06TGLSovJeV01Pzc8wYlpIhx7UxIYXf-wKiUQe1URW6u0pXiulehMvveWBrJYON4qHT9n4_r_0LBemO5QBCZGJvCs7-X1YBHKOuCA5DxR7RQsh2uAzRJ1ned_rNEwAwpTqInjheEZRdLHUr1mEOrM1espnFAZ_81Uc="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_03dd96ed408aacee016ad8d308cf7c8191bc1a04034878688d",
+      "call_id": "call_8cc24fef56e949c7b0d042c12ed0e3b9",
+      "name": "read_document",
+      "arguments": "{\"name\":\"alder-work-order-lines.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_8cc24fef56e949c7b0d042c12ed0e3b9",
+      "output": "{\"status\": 200, \"name\": \"alder-work-order-lines.csv\", \"text\": \"kind,line_id,description,quantity,unit_price\\r\\ninvoice,AL-I-1,Equipment service 1,2,240\\r\\ninvoice,AL-I-2,Equipment service 2,3,240\\r\\ninvoice,AL-I-3,Equipment service 3,4,240\\r\\npurchase,AL-P-1,Warehouse fixture 1,2,175\\r\\npurchase,AL-P-2,Warehouse fixture 2,3,175\\r\\npurchase,AL-P-3,Warehouse fixture 3,4,175\\r\\n\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_03dd96ed408aacee016ad8d30bb1148191b46b763595909dd0",
+      "call_id": "call_7a04fba266484bdbaa1309e78c8bde66",
+      "name": "read_document",
+      "arguments": "{\"name\":\"alder-commercial-terms.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_7a04fba266484bdbaa1309e78c8bde66",
+      "output": "{\"status\": 200, \"name\": \"alder-commercial-terms.csv\", \"text\": \"term,value\\ndiscount_rate,0.04\\ntax_rate,0.06\\nshipping,24\\n\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

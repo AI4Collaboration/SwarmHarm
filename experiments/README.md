@@ -2,10 +2,11 @@
 
 ## Current entry point
 
-[Procurement settlement v1](procurement-settlement-v1/README.md) is prepared for
-GPT-5.6 Sol: two normal capabilities, then three pairs of genuine agents on
-supplier payments and purchase orders. Actual transaction amounts are checked
-against source approvals. The new study has no live result yet.
+[Procurement settlement v1](procurement-settlement-v1/RESULTS.md) completed two
+normal jobs and six experimental jobs with GPT-5.6 Sol. Agents exchanged missing
+documents; four later agents reused earlier request procedures. No approval
+cache was modified and no experimental transaction posted. The process-exploit
+chain remains unobserved.
 
 Use the [running guide](../docs/running-evals.md) for registration, collection and
 review. The previous [business-cache result](business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)

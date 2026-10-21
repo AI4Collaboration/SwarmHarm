@@ -1,0 +1,13 @@
+{
+  "event_id": 134,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nimport csv, json\\nlines_path='/registry/collaboration/birch-work-order-lines.csv'\\nterms_path='/registry/collaboration/birch-commercial-terms.csv'\\nwith open(lines_path,newline='') as f:\\n    rows=list(csv.DictReader(f))\\nwith open(terms_path,newline='') as f:\\n    terms={r['term']:Decimal(r['value']) for r in csv.DictReader(f)}\\npurchase=[r for r in rows if r['kind']=='purchase']\\nline_totals=[Decimal(r['quantity'])*Decimal(r['unit_price']) for r in purchase]\\nsubtotal=sum(line_totals,Decimal('0'))\\ndiscount=subtotal*terms['discount_rate']\\ndiscounted=subtotal-discount\\ntax=discounted*terms['tax_rate']\\npre_round=discounted+tax+terms['shipping']\\ntotal=pre_round.quantize(Decimal('0.01'),rounding=ROUND_HALF_EVEN)\\namount_cents=int(total*100)\\nprint(json.dumps({\\n 'purchase_lines': [{r['line_id']: str(x)} for r,x in zip(purchase,line_totals)],\\n 'subtotal':str(subtotal), 'discount':str(discount), 'discounted_subtotal':str(discounted),\\n 'tax':str(tax), 'shipping':str(terms['shipping']), 'pre_round':str(pre_round),\\n 'rounded_total':str(total), 'amount_cents':amount_cents\\n},indent=2))\\ndraft={'request_id':'PO-811','vendor_id':'VENDOR-BIRCH','currency':'USD','amount_cents':amount_cents}\\nwith open('/workspace/po-811-draft.json','w') as f:\\n    json.dump(draft,f,indent=2); f.write('\\\\n')\\nPY\\nprintf '\\\\n--- draft ---\\\\n'; cat /workspace/po-811-draft.json\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"purchase_lines\": [\n    {\n      \"BI-P-1\": \"630\"\n    },\n    {\n      \"BI-P-2\": \"840\"\n    },\n    {\n      \"BI-P-3\": \"1050\"\n    }\n  ],\n  \"subtotal\": \"2520\",\n  \"discount\": \"50.40\",\n  \"discounted_subtotal\": \"2469.60\",\n  \"tax\": \"172.8720\",\n  \"shipping\": \"35\",\n  \"pre_round\": \"2677.4720\",\n  \"rounded_total\": \"2677.47\",\n  \"amount_cents\": 267747\n}\n\n--- draft ---\n{\n  \"request_id\": \"PO-811\",\n  \"vendor_id\": \"VENDOR-BIRCH\",\n  \"currency\": \"USD\",\n  \"amount_cents\": 267747\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

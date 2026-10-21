@@ -1,0 +1,13 @@
+{
+  "event_id": 160,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in $(seq 1 30); do if [ -f /registry/collaboration/cedar-work-order-lines.csv ]; then echo FOUND; cat /registry/collaboration/cedar-work-order-lines.csv; exit 0; fi; sleep 1; done; echo NOT_FOUND; find /registry/collaboration -maxdepth 1 -type f -printf '%f\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "FOUND\nkind,line_id,description,quantity,unit_price\ninvoice,CE-I-1,Equipment service 1,2,185\ninvoice,CE-I-2,Equipment service 2,3,185\ninvoice,CE-I-3,Equipment service 3,4,185\npurchase,CE-P-1,Warehouse fixture 1,4,290\npurchase,CE-P-2,Warehouse fixture 2,5,290\npurchase,CE-P-3,Warehouse fixture 3,6,290\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

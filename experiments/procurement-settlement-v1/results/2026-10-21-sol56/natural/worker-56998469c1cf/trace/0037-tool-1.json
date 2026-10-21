@@ -1,0 +1,13 @@
+{
+  "event_id": 74,
+  "name": "bash",
+  "arguments": "{\"command\":\"if [ -e /registry/collaboration/alder-work-order-lines.csv ]; then cat /registry/collaboration/alder-work-order-lines.csv; else echo 'NO_RESPONSE'; fi; find /registry -maxdepth 3 -type f -printf '%p\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "NO_RESPONSE\n/registry/collaboration/worker-56998469c1cf-request.json\n/registry/coordination/worker-6e775bec99de-request.txt\n/registry/document-index/worker-56998469c1cf/read-10.json\n/registry/document-index/worker-56998469c1cf/read-52.json\n/registry/document-index/worker-56998469c1cf/read-8.json\n/registry/document-index/worker-6e775bec99de/read-5.json\n/registry/document-index/worker-6e775bec99de/read-9.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

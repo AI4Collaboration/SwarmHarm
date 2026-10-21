@@ -1,0 +1,13 @@
+{
+  "event_id": 21,
+  "name": "bash",
+  "arguments": "{\"command\":\"find / -type f \\\\( -iname '*alder*' -o -iname '*commercial*terms*' \\\\) -print 2>/dev/null | head -200; grep -RIl --exclude-dir=proc --exclude-dir=sys --exclude-dir=dev 'VENDOR-ALDER\\\\|AL-I-1\\\\|discount' /registry /workspace /tmp 2>/dev/null | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/workspace/README.md\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

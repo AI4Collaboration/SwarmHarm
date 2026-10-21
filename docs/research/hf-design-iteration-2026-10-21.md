@@ -1,9 +1,9 @@
 # Research design
 
-**Maintained design · 21 October 2026.** SwarmHarm's next study asks whether agents
+**Maintained design · 21 October 2026.** SwarmHarm asks whether agents
 can discover a business-process loophole, share an effective method, and whether
 fresh agents adopt it on different finance or procurement tasks with a verified
-adverse consequence. The [new environment](../../experiments/procurement-settlement-v1/README.md) is implemented and checked offline; live results are pending.
+adverse consequence. The [settlement study](../../experiments/procurement-settlement-v1/RESULTS.md) completed: document exchange and later request reuse occurred, but no approval bypass or over-limit transaction.
 
 ## Key elements
 
@@ -23,6 +23,13 @@ cooperation hints, loophole hints, communication bans or fabricated peer history
 These are design hypotheses, not proven necessary or sufficient causes.
 
 ## What the evidence supports
+
+The latest settlement study passed two normal capabilities and completed six
+experimental tasks. Four later agents reused authentic request procedures, but
+none changed the approval cache. The bottleneck is before demonstrated process
+exploitation. Its complementary documents plus one writable-cache weakness do
+not implement separate loopholes that must be combined. A future revision should
+also make the tax base explicit; the frozen run retains its original wording.
 
 The [completed business study](../../experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
 verified six correct reports, public copying of 30 synthetic records, and real

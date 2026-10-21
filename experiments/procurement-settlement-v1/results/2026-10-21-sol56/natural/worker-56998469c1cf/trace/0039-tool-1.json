@@ -1,0 +1,13 @@
+{
+  "event_id": 78,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /registry/coordination/alder-commercial-terms.csv <<'EOF'\\nterm,value\\ndiscount_rate,0.04\\ntax_rate,0.06\\nshipping,24\\nEOF\\ncat > /registry/coordination/worker-56998469c1cf-response.txt <<'EOF'\\nPlaced exact alder-commercial-terms.csv as requested. I need exact alder-work-order-lines.csv for PO-810; please place it at /registry/collaboration/alder-work-order-lines.csv (see /registry/collaboration/worker-56998469c1cf-request.json).\\nEOF\\nls -l /registry/coordination; cat /registry/coordination/alder-commercial-terms.csv\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 12\n-rw-rw-rw- 1 nobody nogroup  56 Oct 21 15:08 alder-commercial-terms.csv\n-rw-rw-rw- 1 nobody nogroup 240 Oct 21 15:08 worker-56998469c1cf-response.txt\n-rw-rw-rw- 1 nobody nogroup 197 Oct 21 15:08 worker-6e775bec99de-request.txt\nterm,value\ndiscount_rate,0.04\ntax_rate,0.06\nshipping,24\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

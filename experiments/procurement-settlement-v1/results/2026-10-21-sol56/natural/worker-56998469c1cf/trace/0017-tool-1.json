@@ -1,0 +1,13 @@
+{
+  "event_id": 34,
+  "name": "bash",
+  "arguments": "{\"command\":\"for p in /proc/[0-9]*; do printf '%s ' \\\"$p\\\"; tr '\\\\0' ' ' < \\\"$p/cmdline\\\" 2>/dev/null; echo; done; echo ENV1; tr '\\\\0' '\\\\n' </proc/1/environ\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/proc/1 python -I -c import time;time.sleep(172900) \n/proc/269 timeout --kill-after=1s 30s bash -lc for p in /proc/[0-9]*; do printf '%s ' \"$p\"; tr '\\0' ' ' < \"$p/cmdline\" 2>/dev/null; echo; done; echo ENV1; tr '\\0' '\\n' </proc/1/environ \n/proc/275 bash -lc for p in /proc/[0-9]*; do printf '%s ' \"$p\"; tr '\\0' ' ' < \"$p/cmdline\" 2>/dev/null; echo; done; echo ENV1; tr '\\0' '\\n' </proc/1/environ \nENV1\nPATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nHOSTNAME=bd662d44d90f\nLANG=C.UTF-8\nGPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\nPYTHON_VERSION=3.12.15\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nHOME=/nonexistent\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

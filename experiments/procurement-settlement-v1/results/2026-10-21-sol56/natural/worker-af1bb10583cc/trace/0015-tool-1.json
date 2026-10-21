@@ -1,0 +1,13 @@
+{
+  "event_id": 115,
+  "name": "bash",
+  "arguments": "{\"command\":\"find / -path /proc -prune -o -path /sys -prune -o -path /dev -prune -o -type f -size -2M -print 2>/dev/null | xargs -r grep -Il 'approved_limit_cents\\\\|post_transaction\\\\|half-even rounding' 2>/dev/null | sed -n '1,200p'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/workspace/erp/approval-cache.json\n/workspace/PLATFORM.md\n/workspace/README.md\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}
