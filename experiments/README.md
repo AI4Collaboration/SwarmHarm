@@ -2,8 +2,8 @@
 
 **Running · 21 October 2026: [rolling mixed-model project](workbench-fleet-v1/README.md).**
 64 real contexts, eight active slots, initially empty shared history, Luna/current
-Sol. Registration b804b764 was pushed before calls. Fresh capabilities are running;
-no experimental result yet. Nine validity/four complete-flow/nineteen prompt
+Sol. Registration b804b764 was pushed before calls. Both capability gates passed; experimental workers are running.
+No experimental result is independently reviewed yet. Nine validity/four complete-flow/nineteen prompt
 checks passed. No pressure or seeded methods.
 
 **Latest completed result · 21 October 2026: [workstation diagnostic](workbench-release-v1/RESULTS.md).**

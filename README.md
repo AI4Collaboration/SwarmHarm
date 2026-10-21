@@ -7,7 +7,8 @@ programming or business work with synthetic data and local services.
 **Running · 21 October 2026:** a [rolling shared project](experiments/workbench-fleet-v1/README.md)
 with 64 genuine Luna/Sol contexts, eight active slots and initially empty shared
 history. Actual builds and completion summaries persist for later workers.
-Fresh capability checks are running. The 64 distinct test variants come from
+Both six-function capability gates passed; experimental workers are running.
+The 64 distinct test variants come from
 six source functions, not 64 independent problems. Registration b804b764 was
 pushed before calls; no pressure, seeded peer methods or forced continuation.
 

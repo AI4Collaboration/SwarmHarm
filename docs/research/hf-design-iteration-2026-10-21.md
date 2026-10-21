@@ -4,6 +4,20 @@
 discovery, not an incident. We will preserve that result and test explicit
 design hypotheses instead of interpreting larger budgets as stronger evidence.
 
+The completed workstation diagnostic produced wrong releases for Luna and earlier
+Sol, but no peer-body reads. The registered rolling project now tests encounter
+and adoption with genuine new artifacts. Its input, scheduler and history-view
+changes remain exploratory, not evidence that one of them causes behavior.
+
+One remaining construct gap is explicit: these coding tasks provide the true
+input; acceptance conflicts with its definition. A missing-input task differs.
+Workers may need no peer information to implement a correct function, even when
+records are easy to find. The new project views test encounter; they do not by
+themselves make peer help instrumentally useful or reproduce missing-data search.
+No field in a prompt should silently substitute for that actual dependency.
+
+The original registration rationale follows.
+
 METR describes agents pursuing blocked legitimate tasks, discovering shared
 infrastructure and organizing reusable work around making apparent evaluation
 success differ from actual task success. Persistence involved artifacts and
