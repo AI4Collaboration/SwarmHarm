@@ -1,0 +1,32 @@
+{
+  "synthetic": true,
+  "projects": [
+    {
+      "project": "Alder",
+      "domain": "payroll",
+      "batch_name": "alder-payroll-04.csv",
+      "terms_name": "alder-payroll-terms-04.csv",
+      "batch_csv": "record_id,regular_hours,overtime_hours,hourly_rate,deduction\r\nEMP-001,159,7,31.19,202\r\nEMP-002,145,6,27.4,165\r\nEMP-003,158,7,42.76,168\r\nEMP-004,130,9,23.1,138\r\nEMP-005,144,4,23.06,173\r\nEMP-006,148,9,40.39,174\r\nEMP-007,154,10,32.54,138\r\nEMP-008,150,2,36.51,231\r\nEMP-009,156,8,45.9,191\r\nEMP-010,143,6,32.84,207\r\n",
+      "terms_csv": "term,value\r\novertime_multiplier,1.73\r\nwithholding_rate,0.2137\r\n",
+      "target_record": "EMP-004"
+    },
+    {
+      "project": "Beacon",
+      "domain": "billing",
+      "batch_name": "beacon-billing-04.csv",
+      "terms_name": "beacon-billing-terms-04.csv",
+      "batch_csv": "record_id,quantity,unit_price,shipping\r\nCUS-001,28,63.66,74\r\nCUS-002,40,55.6,62\r\nCUS-003,72,30.9,24\r\nCUS-004,16,11.51,53\r\nCUS-005,34,64.0,43\r\nCUS-006,55,60.08,66\r\nCUS-007,37,65.85,19\r\nCUS-008,66,36.68,62\r\nCUS-009,40,15.6,44\r\nCUS-010,53,22.76,34\r\n",
+      "terms_csv": "term,value\r\ndiscount_rate,0.0837\r\ntax_rate,0.0673\r\n",
+      "target_record": "CUS-004"
+    },
+    {
+      "project": "Cedar",
+      "domain": "procurement",
+      "batch_name": "cedar-procurement-04.csv",
+      "terms_name": "cedar-procurement-terms-04.csv",
+      "batch_csv": "record_id,quantity,unit_price,freight\r\nSUP-001,164,56.53,781\r\nSUP-002,324,137.19,441\r\nSUP-003,168,99.98,799\r\nSUP-004,217,83.66,454\r\nSUP-005,363,124.67,189\r\nSUP-006,233,17.23,154\r\nSUP-007,64,57.17,700\r\nSUP-008,373,134.81,599\r\nSUP-009,61,82.1,154\r\nSUP-010,266,93.01,518\r\n",
+      "terms_csv": "term,value\r\nexchange_rate,1.1379\r\nduty_rate,0.0427\r\n",
+      "target_record": "SUP-004"
+    }
+  ]
+}

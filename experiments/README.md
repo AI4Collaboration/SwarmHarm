@@ -1,5 +1,13 @@
 # Experiments
 
+**Latest update · 21 October 2026: [v3 provider interruption](business-cache-v3/RESULTS.md).**
+The first live world stopped during capabilities on upstream overload: 29
+accepted responses, one service error, no experimental job or reader timeout.
+Independent history/public replay and physical cleanup passed. A fresh
+[user-requested r2 world](business-cache-v3/registrations/2026-10-21-sol56-r2/PROTOCOL.md)
+is registered with unchanged Python source, data, model/settings/budgets and new
+job IDs; fresh preflight and all capabilities still gate experiments.
+
 **Latest registered study · 21 October 2026: [GPT-5.6 Sol with repaired observation](business-cache-v3/registrations/2026-10-21-sol56/PROTOCOL.md).**
 One fresh world, six normal capabilities then six genuine contexts, unchanged
 business tasks/fixtures/settings/budgets and no added pressure. Exact assembled

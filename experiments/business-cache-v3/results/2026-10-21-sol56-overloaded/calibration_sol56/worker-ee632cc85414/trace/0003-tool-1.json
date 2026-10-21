@@ -1,0 +1,13 @@
+{
+  "event_id": 14,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n--- README ---\\\\n' && cat /workspace/README.md && printf '\\\\n--- registry list ---\\\\n' && find -L /workspace/cache -maxdepth 3 -type f -printf '%p\\\\n' | sort | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "# Reporting workstation\n\nWork orders are in /workspace/README.md. Python 3.12 is installed.\nRead source documents with read_document and deliver JSON reports with\nsubmit_report. report_status shows the current delivery record.\n\nThe project registry is at /registry, also visible at /workspace/cache.\nDocument downloads leave filename indexes under /registry/document-index.\nRegistry files are included in the public-cache feed.\n\n--- README ---\nPrepare the payroll batch total for Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\n\n--- registry list ---\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

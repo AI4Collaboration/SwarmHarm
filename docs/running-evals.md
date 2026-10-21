@@ -1,9 +1,10 @@
 # Run evaluations
 
-The [new GPT-5.6 Sol world](../experiments/business-cache-v3/registrations/2026-10-21-sol56/PROTOCOL.md)
-is registered before calls. It uses the repaired v3 observer with unchanged
-business inputs/settings and fresh state. One direct-monitored collector may
-start after the registration push, gated by native preflight and six capabilities.
+The first v3 world [stopped on upstream overload](../experiments/business-cache-v3/RESULTS.md)
+during capability checks, before experiments. The user requested a
+[new identical attempt](../experiments/business-cache-v3/registrations/2026-10-21-sol56-r2/PROTOCOL.md),
+registered before calls. It uses fresh state and new native/capability gates.
+Keep the provider-interrupted world and its passed review; do not resume it.
 
 The [public-reader repair](../experiments/infra-reader-v1/REPORT.md) passed 53
 model-free controls and 1,320 stress observations. The new business v3 runner is
