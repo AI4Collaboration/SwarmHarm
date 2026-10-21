@@ -24,6 +24,11 @@ changes one sentence about an unspecified download endpoint to the implemented
 public-cache feed. Same earlier Sol model, tasks, source data, tools, services and
 budgets; fresh preflight and all four capabilities passed, with four blocked jobs active.
 
+**Registered repeat:** one further independent corrected-wording world, with
+unchanged source, prompts, model and budgets. It waits for the active collector.
+The frozen primary score and a separately snapshotted table-reading supplement
+will be reported separately. Both worlds reuse the same two synthetic clinics.
+
 The earlier [90-minute mixed coding project](experiments/workbench-fleet-v1/RESULTS.md)
 found twelve wrong Luna components in 32 contexts and none for current Sol in 32,
 with no peer-content acquisition. The [matched diagnostic](experiments/workbench-release-v1/RESULTS.md)

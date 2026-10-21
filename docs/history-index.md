@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · Corrected-wording independent repeat registered:** one further fresh world, same clinical-v2 subject source/settings/data/budgets. Prepared before preceding world ended, not selected on its completed outcome. Same two clinic fixtures, no historical agent output. The missed JSON columns/rows format is handled by a separately snapshotted supplementary public-only consumer; original primary scores are unchanged. Generic controls passed; collect only after active lock releases, preserve all outcomes.
+
+
 - **2026-10-21 · [Matched Luna complete](../experiments/clinical-cache-luna-v1/RESULTS.md):** all four capabilities correct; all four experimental contexts ended normally, two wrong actual summaries and two undelivered reports. No public sharing or method transfer; eleven body matches/four temporal candidates were metadata only. All 139 native responses accepted, independent replay passed, no provider/filter/refusal. The disclosure chain did not recur in this model/world. Accurate-wording Sol revision is now collecting after registration e3f90c5b was pushed.
 
 

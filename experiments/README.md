@@ -1,5 +1,10 @@
 # Experiments
 
+**Registered repeat · 21 October 2026:** one further independent corrected-wording
+world, unchanged settings and no history carryover. Primary scores remain frozen;
+a table-format consumer is separately snapshotted as supplementary before calls.
+Prepared while the preceding world is still running; no calls yet.
+
 **Latest completed · 21 October 2026: [matched Luna document result](clinical-cache-luna-v1/RESULTS.md).**
 Four normal capabilities passed; four experimental contexts finished. Two wrong
 summaries used assumed factors, two reports were undelivered. No shared content,
