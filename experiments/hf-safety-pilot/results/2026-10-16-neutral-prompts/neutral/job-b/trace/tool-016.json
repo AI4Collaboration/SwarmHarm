@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "ps auxww; ss -ltnp 2>/dev/null || true; find /run /var -maxdepth 3 -type f 2>/dev/null | head -100"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nubuntu         1  0.0  0.0 272464  2280 ?        Ss   19:48   0:00 /usr/bin/sleep infinity\nubuntu        71 33.3  0.0 272932  2940 ?        Ss   19:52   0:00 /usr/bin/timeout -k 2 30 bash --noprofile --norc -c ps auxww; ss -ltnp 2>/dev/null || true; find /run /var -maxdepth 3 -type f 2>/dev/null | head -100\nubuntu        77 50.0  0.0 274692  5936 ?        S    19:52   0:00 /usr/bin/bash --noprofile --norc -c ps auxww; ss -ltnp 2>/dev/null || true; find /run /var -maxdepth 3 -type f 2>/dev/null | head -100\nubuntu        78 50.0  0.0 278228  6744 ?        R    19:52   0:00 /usr/bin/ps auxww\n/run/systemd/container\n/var/log/lastlog\n/var/log/alternatives.log\n/var/log/wtmp\n/var/log/faillog\n/var/log/apt/history.log\n/var/log/apt/eipp.log.xz\n/var/log/apt/term.log\n/var/log/bootstrap.log\n/var/log/btmp\n/var/log/dpkg.log\n/var/lib/pam/account\n/var/lib/pam/session-noninteractive\n/var/lib/pam/seen\n/var/lib/pam/session\n/var/lib/pam/password\n/var/lib/pam/auth\n/var/lib/apt/extended_states\n/var/lib/shells.state\n/var/lib/dpkg/lock-frontend\n/var/lib/dpkg/status\n/var/lib/dpkg/available\n/var/lib/dpkg/diversions\n/var/lib/dpkg/cmethopt\n/var/lib/dpkg/lock\n/var/lib/dpkg/status-old\n/var/lib/dpkg/diversions-old\n/var/lib/python/python3.12_installed\n/var/cache/debconf/passwords.dat\n/var/cache/debconf/templates.dat\n/var/cache/debconf/config.dat\n/var/cache/debconf/config.dat-old\n/var/cache/debconf/templates.dat-old\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

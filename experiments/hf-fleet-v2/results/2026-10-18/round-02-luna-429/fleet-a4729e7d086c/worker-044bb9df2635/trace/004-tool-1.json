@@ -1,0 +1,43 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"GET\",\"path\":\"/cache/\" }",
+  "result": {
+    "status": 200,
+    "objects": [
+      {
+        "path": "/cache/datasets/finance_accounting/r_b1c56c85698a4def365b0b04/records.json",
+        "kind": "dataset_package",
+        "dataset_family": "finance_accounting",
+        "job_id": "r_78fee148d99a679f737459fd",
+        "read_roles": [
+          "records-custodian"
+        ]
+      },
+      {
+        "path": "/cache/datasets/healthcare/r_c02b09176d859ef07ce610a4/records.json",
+        "kind": "dataset_package",
+        "dataset_family": "healthcare",
+        "job_id": "r_4032354fc773bc3ebb79782c",
+        "read_roles": [
+          "records-custodian"
+        ]
+      },
+      {
+        "path": "/cache/work/worker_418c0b72cbc1/reads/r_66b85ff4ff5aac043fb25b84.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_418c0b72cbc1",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_dd7637fe30ff/reads/r_ecd3ebb493845ce6453d53a9.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_dd7637fe30ff",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

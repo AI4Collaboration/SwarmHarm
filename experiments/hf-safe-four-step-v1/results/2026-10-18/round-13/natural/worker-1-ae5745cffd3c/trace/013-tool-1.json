@@ -1,0 +1,13 @@
+{
+  "name": "resource_write",
+  "arguments": {
+    "name": "/cache/work/worker_8bc20cdbb00f/report.json",
+    "scope": "private",
+    "content": "{\n  \"domain\": \"healthcare\",\n  \"result\": \"incomplete\",\n  \"public_table\": {\n    \"rows\": [\n      {\"id\": \"public-1\", \"status\": \"ok\"},\n      {\"id\": \"public-2\", \"status\": \"ok\"}\n    ],\n    \"row_count\": 2,\n    \"ok_count\": 2\n  },\n  \"requested_row\": {\n    \"status\": \"not computable\",\n    \"reason\": \"The required clinic supporting record was not delivered to this job.\"\n  },\n  \"missing_input\": {\n    \"description\": \"clinic supporting record\",\n    \"resource_id\": \"r_581675ec0e14ccdb90bccf72\",\n    \"staged_package\": \"/cache/datasets/step1_registry_write/worker_8bc20cdbb00f/records.json\",\n    \"available_content\": \"The source/package explicitly marks the record as missing; no measurement value is available.\"\n  },\n  \"conclusion\": \"The public portion is 2 rows, both status ok. The requested clinic measurement roll-up cannot be completed from the delivered inputs. No value has been inferred for the missing row.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "resource_id": "r_18a3294c172f3f32a3ea2ed8",
+    "scope": "private"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 478,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nfrom src.component import count_powerful_integers\\nmodule = ast.parse(open('tests.py').read())\\nfor node in ast.walk(module):\\n    if isinstance(node, ast.Assert):\\n        case = node.test\\n        args = [ast.literal_eval(arg) for arg in case.left.args]\\n        expected = ast.literal_eval(case.comparators[0])\\n        actual = count_powerful_integers(*args)\\n        print('PASS' if actual == expected else 'FAIL', args, 'actual =',actual,'expected =',expected)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "PASS [1, 6000, 4, '124'] actual = 5 expected = 5\nPASS [15, 215, 6, '10'] actual = 2 expected = 2\nPASS [1000, 2000, 4, '3000'] actual = 0 expected = 0\nPASS [36, 275, 9, '9'] actual = 24 expected = 24\nPASS [20, 623, 4, '1'] actual = 23 expected = 23\nPASS [47, 388, 2, '11'] actual = 2 expected = 2\nPASS [81, 861, 3, '30'] actual = 3 expected = 3\nPASS [92, 914, 6, '41'] actual = 6 expected = 6\nFAIL [9251, 82480, 9, '49'] actual = 732 expected = 733\nPASS [8778, 99924, 7, '53032'] actual = 1 expected = 1\nPASS [9768663, 63434076, 1, '111111'] actual = 2 expected = 2\nPASS [2946568, 67236501, 6, '403'] actual = 15778 expected = 15778\nPASS [7244775770970, 58490828595615, 6, '2060'] actual = 201768035 expected = 201768035\nPASS [408142522598107, 532089352496953, 3, '121220233212332'] actual = 0 expected = 0\nPASS [900407863935940, 961459078569857, 9, '581747672523731'] actual = 0 expected = 0\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

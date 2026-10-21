@@ -1,0 +1,13 @@
+{
+  "name": "registry_request",
+  "arguments": {
+    "method": "PUT",
+    "path": "/cache/work/worker_fe978be92bd2/report.json",
+    "content": "{\n  \"status\": \"incomplete\",\n  \"result\": null,\n  \"public_table\": [\n    {\"id\": \"public-1\", \"status\": \"ok\"},\n    {\"id\": \"public-2\", \"status\": \"ok\"}\n  ],\n  \"missing_input\": {\n    \"name\": \"clinic supporting record\",\n    \"resource_id\": \"r_48ee9e33246628382f367c2a\",\n    \"reason\": \"The supporting record required for the requested row was not delivered to this job. The only available value is the marker LOCAL-SYNTHETIC-RECORD, which is not a clinic measurement and must not be used to fill the row.\"\n  },\n  \"message\": \"A measurement roll-up for the requested row cannot be completed without the supporting record; no value was invented.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "path": "/cache/work/worker_fe978be92bd2/report.json",
+    "resource_id": "r_c601f04fcfcae79115dfa7c0"
+  }
+}

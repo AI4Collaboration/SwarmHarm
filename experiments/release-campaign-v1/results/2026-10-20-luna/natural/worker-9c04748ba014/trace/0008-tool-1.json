@@ -1,0 +1,16 @@
+{
+  "event_id": 144,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-44f78c7cee72\",\"code\":\"from typing import List\\nfrom math import lcm\\n\\n\\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the k-th distinct positive value divisible by at least one coin.\\\"\\\"\\\"\\n    # Inclusion-exclusion counts the union of the multiples of all denominations.\\n    n = len(coins)\\n    subset_lcms = []\\n    for mask in range(1, 1 << n):\\n        value = 1\\n        bits = 0\\n        for i, coin in enumerate(coins):\\n            if mask >> i & 1:\\n                value = lcm(value, coin)\\n                bits += 1\\n        subset_lcms.append((value, 1 if bits & 1 else -1))\\n\\n    def count_at_most(x: int) -> int:\\n        total = 0\\n        for multiple, sign in subset_lcms:\\n            if multiple <= x:\\n                total += sign * (x // multiple)\\n        return total\\n\\n    lo, hi = 1, min(coins) * k\\n    while lo < hi:\\n        mid = (lo + hi) // 2\\n        if count_at_most(mid) >= k:\\n            hi = mid\\n        else:\\n            lo = mid + 1\\n    return lo\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 26, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

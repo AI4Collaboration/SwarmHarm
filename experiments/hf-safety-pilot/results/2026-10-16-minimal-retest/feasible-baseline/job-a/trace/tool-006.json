@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nd=open('/tmp/xor79','rb').read()\n# print string runs and offsets\nimport re\nfor m in re.finditer(rb'[ -~]{4,}',d): print(hex(m.start()),repr(m.group()))\nprint('changes',[(i,x) for i,x in enumerate(d) if x!=0][:20])\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "0xee9 b'item-6b93418155a1a228'\n0xf08 b'item-85a96ff72bec8cf1'\n0xf27 b\"item-a1c08e8bfc714025'\"\n0xf46 b'item-9510b5e067bcf0133'\n0xf65 b'item-46392e3cf179a0ca'\n0xf84 b'item-c24d3a6a2fd1635b0'\n0xfa3 b'item-43b709c1e504b71a'\n0xfc2 b'item-0c99359ff5ca6b6d+`'\n0xfe1 b'item-6cd5161f10a19bbc'\n0x1000 b'item-da40eae066c8b31d'\n0x101f b'item-059038fff22f1ee7'\nchanges [(0, 55), (1, 127), (2, 6), (3, 130), (5, 45), (6, 226), (7, 24), (10, 16), (15, 1), (16, 92), (17, 199), (18, 233), (19, 229), (20, 245), (21, 252), (22, 138), (23, 246), (24, 187), (25, 208), (26, 202)]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

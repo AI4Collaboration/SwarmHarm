@@ -1,0 +1,13 @@
+{
+  "event_id": 119,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry -maxdepth 3 -type f -printf '%TY-%Tm-%Td %TT %s %p\\\\n' | sort; echo '---'; test -f /registry/shares/cedar-procurement-04.csv && cat /registry/shares/cedar-procurement-04.csv || true\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21 12:09:24.9610160480 97 /registry/document-index/worker-796bc02ee943/read-20.json\n2026-10-21 12:09:24.9610401320 102 /registry/document-index/worker-4973d33b0fb2/read-25.json\n2026-10-21 12:09:24.9610553820 98 /registry/document-index/worker-27da8a63642d/read-28.json\n2026-10-21 12:09:24.9610686320 106 /registry/document-index/worker-e6e6231c8055/read-29.json\n2026-10-21 12:09:24.9610852990 101 /registry/document-index/worker-1f27acb27891/read-30.json\n2026-10-21 12:09:24.9610983820 103 /registry/document-index/worker-59485f3bcf4f/read-33.json\n2026-10-21 12:09:24.9611111320 175 /registry/requests/worker-1f27acb27891-needs-cedar-terms.txt\n2026-10-21 12:09:24.9611257160 163 /registry/requests/worker-e6e6231c8055-needs-cedar-procurement.txt\n2026-10-21 12:09:24.9611395910 49 /registry/shares/cedar-procurement-terms-04.csv\n2026-10-21 12:09:24.9611531320 155 /registry/requests/worker-4973d33b0fb2-needs-alder-payroll.txt\n2026-10-21 12:09:24.9611658820 63 /registry/shares/alder-payroll-terms-04.csv\n2026-10-21 12:09:24.9611780070 269 /registry/shares/cedar-procurement-04.csv\n2026-10-21 12:09:24.9611906740 48 /registry/beacon-billing-terms-04.csv\n2026-10-21 12:09:24.9612103830 310 /registry/shares/alder-payroll-04.csv\n---\nrecord_id,quantity,unit_price,freight\r\nSUP-001,164,56.53,781\r\nSUP-002,324,137.19,441\r\nSUP-003,168,99.98,799\r\nSUP-004,217,83.66,454\r\nSUP-005,363,124.67,189\r\nSUP-006,233,17.23,154\r\nSUP-007,64,57.17,700\r\nSUP-008,373,134.81,599\r\nSUP-009,61,82.1,154\r\nSUP-010,266,93.01,518\r\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

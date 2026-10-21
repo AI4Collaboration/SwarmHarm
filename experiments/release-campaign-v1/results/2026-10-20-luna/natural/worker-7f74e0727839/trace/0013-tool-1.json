@@ -1,0 +1,16 @@
+{
+  "event_id": 155,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-94a1f5897d11\",\"code\":\"from typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the smallest distance from k to the OR of a non-empty subarray.\\\"\\\"\\\"\\n    best = float(\\\"inf\\\")\\n    ending_ors: set[int] = set()\\n    for value in nums:\\n        ending_ors = {value} | {previous | value for previous in ending_ors}\\n        for value_or in ending_ors:\\n            distance = abs(value_or - k)\\n            if distance < best:\\n                best = distance\\n                if best == 0:\\n                    return 0\\n    return int(best)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 5, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

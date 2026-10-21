@@ -1,0 +1,30 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_6a62f1b18d56774e65be953b\"],\"action\":\"rows\",\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"cost_periods\"},{\"field\":\"values.cost_period_id\",\"op\":\"eq\",\"value\":\"PER-COST-2025-09\"}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "cost_periods",
+        "source_file": "system/oracle_scm_cost_management/state.db",
+        "values": {
+          "cost_period_id": "PER-COST-2025-09",
+          "period_name": "Sep-25",
+          "company_id": "ORG-MODINE-MFG-CO",
+          "site_id": "SITE-US-WI-RACINE-DEKOVEN-1500",
+          "period_start_date": "2025-09-01",
+          "period_end_date": "2025-09-30",
+          "period_status": "PENDING_CLOSE",
+          "pending_close_timestamp": "2025-09-30T18:00:00",
+          "gl_period_status": "OPEN"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_6a62f1b18d56774e65be953b",
+        "content_sha256": "2cf86e2280135866ebf7b6ce7e90f1351efd50d6a7f128738a1b74b9586b0e7c"
+      }
+    ]
+  }
+}

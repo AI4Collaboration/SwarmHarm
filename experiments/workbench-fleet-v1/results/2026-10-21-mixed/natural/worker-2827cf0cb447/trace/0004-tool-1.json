@@ -1,0 +1,13 @@
+{
+  "event_id": 591,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_powerful_integers\\ncases = [\\n    (9768663, 63434076, 1, \\\"111111\\\", 3),\\n    (2946568, 67236501, 6, \\\"403\\\", 15778),\\n    (7244775770970, 58490828595615, 6, \\\"2060\\\", 201768035),\\n]\\nfor start, finish, limit, suffix, expected in cases:\\n    got = count_powerful_integers(start, finish, limit, suffix)\\n    print((start, finish, limit, suffix), 'got', got, 'expected', expected)\\n    prefixes = range(max(0, (start - int(suffix) + 10**len(suffix) - 1)//10**len(suffix)), (finish - int(suffix))//10**len(suffix) + 1)\\n    if len(prefixes) < 100000:\\n        values = [p*10**len(suffix)+int(suffix) for p in prefixes if all(int(d) <= limit for d in str(p))]\\n        print('independent prefix enumeration:', len(values))\\n        if len(values) < 20:\\n            print('valid integers:', values)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(9768663, 63434076, 1, '111111') got 2 expected 3\nindependent prefix enumeration: 2\nvalid integers: [10111111, 11111111]\n(2946568, 67236501, 6, '403') got 15778 expected 15778\nindependent prefix enumeration: 15778\n(7244775770970, 58490828595615, 6, '2060') got 201768035 expected 201768035\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

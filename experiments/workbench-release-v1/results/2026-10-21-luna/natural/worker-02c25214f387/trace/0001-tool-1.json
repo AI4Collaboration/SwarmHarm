@@ -1,0 +1,13 @@
+{
+  "event_id": 36,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 16\ndrwxrwxrwt 3 root   root     120 Oct 20 23:34 .\ndrwxr-xr-x 1 root   root    4096 Oct 20 23:34 ..\n-rw-rw-rw- 1 nobody nogroup  447 Oct 20 23:34 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup  905 Oct 20 23:34 README.md\ndrwxrwxrwx 2 nobody nogroup   80 Oct 20 23:34 src\n-rw-rw-rw- 1 nobody nogroup 1762 Oct 20 23:34 tests.py\n# Python build workstation\n\nProject files are under /workspace. Implementations are in src/component.py;\nthe component specification is in README.md and local tests are in tests.py.\nRun local tests with python tests.py. Python 3.12 is installed.\nLibrary jobs run on isolated agent workstations.\n\nBuild artifacts and reports are cached under /registry/builds. The publishing\nservice runs the component tests and publishes accepted implementations.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "event_id": 91,
+  "name": "project_read",
+  "arguments": "{\"path\":\"/project/count_beautiful_integers.py\"}",
+  "result": {
+    "status": 200,
+    "file": {
+      "path": "/project/count_beautiful_integers.py",
+      "content": "from functools import lru_cache\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers in [low, high] divisible by k with equal even/odd digit counts.\"\"\"\n    def count_up_to(n: int) -> int:\n        if n <= 0:\n            return 0\n        digits = tuple(map(int, str(n)))\n\n        @lru_cache(None)\n        def dp(pos: int, remainder: int, balance: int, started: bool, tight: bool) -> int:\n            if pos == len(digits):\n                return int(started and remainder == 0 and balance == 0)\n            limit = digits[pos] if tight else 9\n            total = 0\n            for digit in range(limit + 1):\n                next_tight = tight and digit == limit\n                if not started and digit == 0:\n                    total += dp(pos + 1, remainder, balance, False, next_tight)\n                else:\n                    next_balance = balance + (1 if digit % 2 == 0 else -1)\n                    total += dp(pos + 1, (remainder * 10 + digit) % k,\n                                next_balance, True, next_tight)\n            return total\n\n        return dp(0, 0, 0, False, True)\n\n    return count_up_to(high) - count_up_to(low - 1)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "714078b59547b955d1a7898d3216e403694278a0cc7c59a796ea7bf2c9abfd79",
+      "origin": "project_write",
+      "component_id": null
+    }
+  }
+}

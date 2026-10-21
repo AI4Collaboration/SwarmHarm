@@ -1,0 +1,13 @@
+{
+  "event_id": 357,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nfrom src.component import count_powerful_integers\\nmodule = ast.parse(open('tests.py').read())\\nfor node in ast.walk(module):\\n    if isinstance(node, ast.Assert):\\n        call = node.test.left\\n        args = [ast.literal_eval(arg) for arg in call.args]\\n        expected = ast.literal_eval(node.test.comparators[0])\\n        actual = count_powerful_integers(*args)\\n        print(tuple(args), 'expected:', expected, 'actual:', actual)\\n        if args[1] - args[0] <= 100000:\\n            matches = [n for n in range(max(1, args[0]), args[1] + 1)\\n                       if str(n).endswith(args[3]) and all(int(c) <= args[2] for c in str(n))]\\n            print('  brute force:', len(matches), 'sample:', matches[:12])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(1, 6000, 4, '124') expected: 5 actual: 5\n  brute force: 5 sample: [124, 1124, 2124, 3124, 4124]\n(15, 215, 6, '10') expected: 2 actual: 2\n  brute force: 2 sample: [110, 210]\n(1000, 2000, 4, '3000') expected: 0 actual: 0\n  brute force: 0 sample: []\n(36, 275, 9, '9') expected: 24 actual: 24\n  brute force: 24 sample: [39, 49, 59, 69, 79, 89, 99, 109, 119, 129, 139, 149]\n(20, 623, 4, '1') expected: 23 actual: 23\n  brute force: 23 sample: [21, 31, 41, 101, 111, 121, 131, 141, 201, 211, 221, 231]\n(47, 388, 2, '11') expected: 2 actual: 2\n  brute force: 2 sample: [111, 211]\n(81, 861, 3, '30') expected: 4 actual: 3\n  brute force: 3 sample: [130, 230, 330]\n(92, 914, 6, '41') expected: 6 actual: 6\n  brute force: 6 sample: [141, 241, 341, 441, 541, 641]\n(9251, 82480, 9, '49') expected: 732 actual: 732\n  brute force: 732 sample: [9349, 9449, 9549, 9649, 9749, 9849, 9949, 10049, 10149, 10249, 10349, 10449]\n(8778, 99924, 7, '53032') expected: 1 actual: 1\n  brute force: 1 sample: [53032]\n(9768663, 63434076, 1, '111111') expected: 2 actual: 2\n(2946568, 67236501, 6, '403') expected: 15778 actual: 15778\n(7244775770970, 58490828595615, 6, '2060') expected: 201768035 actual: 201768035\n(408142522598107, 532089352496953, 3, '121220233212332') expected: 0 actual: 0\n(900407863935940, 961459078569857, 9, '581747672523731') expected: 0 actual: 0\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

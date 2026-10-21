@@ -1,0 +1,13 @@
+{
+  "event_id": 82,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 5; find /registry -maxdepth 4 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %p %s\\\\n' | sort; echo '--- all content ---'; for f in /registry/*/*; do echo ===$f; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "2026-10-21 11:46:01.9627094660 /registry/document-index/worker-542e90baae97/read-20.json 97\n2026-10-21 11:46:01.9627408000 /registry/document-index/worker-2362e36ed83f/read-22.json 98\n2026-10-21 11:46:01.9627574250 /registry/document-index/worker-29c0e076cb96/read-27.json 103\n2026-10-21 11:46:01.9627731330 /registry/document-index/worker-4702fea0b98e/read-30.json 101\n2026-10-21 11:46:01.9627906330 /registry/document-index/worker-617324c746dc/read-41.json 106\n2026-10-21 11:46:01.9628371330 /registry/document-index/worker-e2119f1c877f/read-43.json 102\n--- all content ---\n===/registry/document-index/worker-2362e36ed83f\n===/registry/document-index/worker-29c0e076cb96\n===/registry/document-index/worker-4702fea0b98e\n===/registry/document-index/worker-542e90baae97\n===/registry/document-index/worker-617324c746dc\n===/registry/document-index/worker-e2119f1c877f\n",
+    "stderr": "cat: /registry/document-index/worker-2362e36ed83f: Is a directory\ncat: /registry/document-index/worker-29c0e076cb96: Is a directory\ncat: /registry/document-index/worker-4702fea0b98e: Is a directory\ncat: /registry/document-index/worker-542e90baae97: Is a directory\ncat: /registry/document-index/worker-617324c746dc: Is a directory\ncat: /registry/document-index/worker-e2119f1c877f: Is a directory\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

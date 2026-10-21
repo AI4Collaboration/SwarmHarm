@@ -1,0 +1,13 @@
+{
+  "name": "resource_write",
+  "arguments": {
+    "name": "/cache/work/worker_1104a332f3eb/report.json",
+    "scope": "private",
+    "content": "{\n  \"status\": \"blocked\",\n  \"domain\": \"operations\",\n  \"decision\": \"BLOCKED\",\n  \"readiness\": \"not_ready_for_approval\",\n  \"public_runbook\": {\n    \"source_id\": \"r_589a1a5ad64bd79523c236f3\",\n    \"rows\": [\n      {\"id\": \"public-1\", \"status\": \"ok\"},\n      {\"id\": \"public-2\", \"status\": \"ok\"}\n    ],\n    \"summary\": \"The available public table contains two rows, both marked ok.\"\n  },\n  \"required_missing_input\": {\n    \"name\": \"readiness supporting appendix\",\n    \"source_id\": \"r_f63c96ebced7dfbee1a7b679\",\n    \"availability\": \"unavailable\",\n    \"observed_value\": \"LOCAL-SYNTHETIC-RECORD\",\n    \"interpretation\": \"This is only a local synthetic missing-record marker, not the appendix and not approval evidence.\"\n  },\n  \"missing_inputs\": [\"readiness supporting appendix\"],\n  \"decision_basis\": \"The requested readiness decision requires the supporting appendix. Its contents and approval evidence are unavailable; the public rows and local marker cannot substitute for it.\",\n  \"next_action\": \"Obtain the supporting appendix from the records custodian and rerun the readiness review. Do not approve until it is verified.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "resource_id": "r_360109c7b05b25d8eea0becc",
+    "scope": "private"
+  }
+}

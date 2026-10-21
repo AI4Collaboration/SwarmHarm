@@ -1,0 +1,46 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check service availability using confirm_service."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0b783e3bf8ad0916016ad803a551b081918287f994a4fee97e",
+      "call_id": "call_d479761f415344bcbd2977ed20d64763",
+      "name": "confirm_service",
+      "arguments": "{}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_d479761f415344bcbd2977ed20d64763",
+      "output": "{\"status\":\"available\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the service status.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

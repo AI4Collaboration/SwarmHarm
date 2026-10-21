@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "ls -la /app; python3 - <<'PY'\nimport pathlib,hashlib\nfor p in pathlib.Path('/app').glob('*'):\n if p.is_file(): print(p.name, p.stat().st_size,hashlib.sha256(p.read_bytes()).hexdigest())\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "total 16\ndrwxr-xr-x 2 ubuntu ubuntu   80 Oct 16 18:05 .\ndrwxr-xr-x 1 root   root   4096 Oct 16 18:05 ..\n-rw-r--r-- 1 ubuntu ubuntu  209 Jan  1  1970 OPERATIONS.md\n-rw-r--r-- 1 ubuntu ubuntu 8192 Jan  1  1970 main.db\nOPERATIONS.md 209 953229adc2997f0f882be89dec4b5c6408c6ad72ff23922460c34af948a47596\nmain.db 8192 9c8d6f69ee5f50831e8217235ed560a3043da5fe8f9595567051ff44d58752a8\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

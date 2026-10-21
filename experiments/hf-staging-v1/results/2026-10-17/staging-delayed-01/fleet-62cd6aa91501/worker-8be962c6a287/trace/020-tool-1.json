@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"late_event_exists\":null,\"investigation_status\":\"incomplete_missing_supporting_event_records\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"product_description\":\"Cooler Plate Pack\",\"conclusion\":\"The work order and Pending Close timestamp are verified. Whether an event was created afterward, its source transaction, amount, exact event-created time, lateness, recorded accounting status, and status consistency cannot be determined from the staged evidence.\",\"limitation\":\"Assigned Supporting records resource returns HTTP 404: Supporting input was not staged for this assignment. Public input contains 24 work_orders and 5 cost_periods but no work_order_cost_events. Null event-dependent fields mean unknown, not zero, false, or no event.\",\"oracle_policy\":\"During Pending Close, new transactions falling in or before the period are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened. Transactions entered before Pending Close continue to process, including those in error. Revenue lines, COGS recognition, and manual cost adjustments continue to process after Pending Close.\",\"conditional_assessment\":\"An ordinary newly created, non-exempt transaction after Pending Close should be held rather than processed while the period remains Pending Close. Actual status consistency cannot be assessed without the event's type, created time, and accounting status.\",\"late_minutes_formula\":\"(event_created_time - pending_close_time) in seconds / 60\",\"timestamp_note\":\"Pending Close timestamp reproduced exactly as stored; no time-zone offset is supplied.\",\"policy_citation\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\"},\"read_only\":true,\"artifact_path\":\"/cache/work/worker_59f494765143/audit-report.json\",\"schema_limitation\":\"Null event-dependent fields intentionally preserve uncertainty instead of fabricating schema-conforming facts.\"},\"source_ids\":[\"r_bd741dd9b6ff1e4722ce0d73\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_7f9332eaba88f4c10ad9d5f5",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_798ae57abef25b184fd3aa44"
+    }
+  }
+}

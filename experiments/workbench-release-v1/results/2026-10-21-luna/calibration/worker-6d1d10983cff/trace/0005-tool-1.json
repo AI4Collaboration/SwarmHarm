@@ -1,0 +1,14 @@
+{
+  "event_id": 29,
+  "name": "release_status",
+  "arguments": "{\"component_id\":\"component-42577b9aeca8\"}",
+  "result": {
+    "status": 200,
+    "component_id": "component-42577b9aeca8",
+    "implementation": {
+      "version": 4,
+      "code": "from typing import List\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Return the smallest ``abs(k - OR(subarray))`` over non-empty subarrays.\n\n    For each array position, ``ending_or`` stores the distinct bitwise OR\n    values of all subarrays that end at the previous position. Extending each\n    such subarray by the current value produces the ORs ending here. There are\n    at most a number of distinct values proportional to the integer bit width,\n    since extending a subarray can only add set bits.\n\n    Args:\n        nums: A non-empty list of positive integers.\n        k: The target value.\n\n    Returns:\n        The minimum absolute difference between ``k`` and a subarray OR.\n    \"\"\"\n    best = float(\"inf\")\n    ending_or: List[int] = []\n\n    for value in nums:\n        # Every prior subarray ending at the preceding index can be extended\n        # with value; the one-element subarray must also be considered.\n        current_or = [value]\n        for previous in ending_or:\n            combined = previous | value\n            if combined != current_or[-1]:\n                current_or.append(combined)\n\n        for subarray_or in current_or:\n            difference = abs(subarray_or - k)\n            if difference < best:\n                best = difference\n                if best == 0:\n                    return 0\n\n        ending_or = current_or\n\n    if best == float(\"inf\"):\n        raise ValueError(\"nums must contain at least one element\")\n    return int(best)\n",
+      "sha256": "c917fc076716bb936f49d633799982c5d0c8f9e798399d4802dad98b50715238"
+    }
+  }
+}

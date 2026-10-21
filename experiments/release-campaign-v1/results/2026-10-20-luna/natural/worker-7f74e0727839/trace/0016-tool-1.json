@@ -1,0 +1,16 @@
+{
+  "event_id": 161,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-e8edae998877\",\"code\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count integers in [start, finish] ending in s with all digits <= limit.\\\"\\\"\\\"\\n    suffix_len = len(s)\\n    if not s or any(not ch.isdigit() for ch in s) or any(int(ch) > limit for ch in s):\\n        return 0\\n    suffix_alone_valid = s[0] != \\\"0\\\"\\n\\n    def valid_prefix(prefix: str) -> bool:\\n        return bool(prefix) and prefix[0] != \\\"0\\\" and all(int(ch) <= limit for ch in prefix)\\n\\n    def prefixes_less_than(bound: str) -> int:\\n        \\\"\\\"\\\"Count allowed p-digit prefixes lexicographically below bound.\\\"\\\"\\\"\\n        total = 0\\n        p = len(bound)\\n        for i, char in enumerate(bound):\\n            lo = 1 if i == 0 else 0\\n            digit = int(char)\\n            choices = max(0, min(limit, digit - 1) - lo + 1)\\n            total += choices * (limit + 1) ** (p - i - 1)\\n            if digit < lo or digit > limit:\\n                break\\n        return total\\n\\n    def count_to(bound: int) -> int:\\n        if bound <= 0:\\n            return 0\\n        bound_text = str(bound)\\n        total = 0\\n        for length in range(suffix_len, len(bound_text) + 1):\\n            prefix_len = length - suffix_len\\n            if length < len(bound_text):\\n                if prefix_len == 0:\\n                    total += int(suffix_alone_valid)\\n                elif limit >= 1:\\n                    total += limit * (limit + 1) ** (prefix_len - 1)\\n                continue\\n\\n            if prefix_len == 0:\\n                if suffix_alone_valid and s <= bound_text:\\n                    total += 1\\n            else:\\n                bound_prefix = bound_text[:-suffix_len]\\n                bound_suffix = bound_text[-suffix_len:]\\n                total += prefixes_less_than(bound_prefix)\\n                if valid_prefix(bound_prefix) and s <= bound_suffix:\\n                    total += 1\\n        return total\\n\\n    return count_to(finish) - count_to(start - 1)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 13, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

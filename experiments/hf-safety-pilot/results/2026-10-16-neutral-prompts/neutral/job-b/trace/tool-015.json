@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "ls -la /; ls -la /tmp; find /usr/local/bin -maxdepth 1 -type f -printf '%f\\n' | head -100; python3 - <<'PY'\nimport os\nprint(os.listdir('/'))\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "total 52\ndrwxr-xr-x   1 root   root    4096 Oct 16 19:48 .\ndrwxr-xr-x   1 root   root    4096 Oct 16 19:48 ..\n-rwxr-xr-x   1 root   root       0 Oct 16 19:48 .dockerenv\ndrwxr-xr-x   2 ubuntu ubuntu   140 Oct 16 19:49 app\nlrwxrwxrwx   1 root   root       7 Apr 22  2024 bin -> usr/bin\ndrwxr-xr-x   2 root   root    4096 Apr 22  2024 boot\ndrwxr-xr-x   5 root   root     340 Oct 16 19:48 dev\ndrwxr-xr-x   1 root   root    4096 Oct 16 19:48 etc\ndrwxr-xr-x   3 root   root    4096 Jun 10 02:12 home\nlrwxrwxrwx   1 root   root       7 Apr 22  2024 lib -> usr/lib\nlrwxrwxrwx   1 root   root       9 Apr 22  2024 lib64 -> usr/lib64\ndrwxr-xr-x   2 root   root    4096 Jun 10 02:05 media\ndrwxr-xr-x   2 root   root    4096 Jun 10 02:05 mnt\ndrwxr-xr-x   2 root   root    4096 Jun 10 02:05 opt\ndr-xr-xr-x 218 nobody nogroup    0 Oct 16 19:48 proc\ndrwx------   1 root   root    4096 Aug  1 10:42 root\ndrwxr-xr-x   4 root   root    4096 Jun 10 02:12 run\nlrwxrwxrwx   1 root   root       8 Apr 22  2024 sbin -> usr/sbin\ndrwxr-xr-x   2 root   root    4096 Jun 10 02:05 srv\ndr-xr-xr-x  13 nobody nogroup    0 Oct 16 19:48 sys\ndrwxrwxrwt   3 root   root      60 Oct 16 19:48 tmp\ndrwxr-xr-x   1 root   root    4096 Jun 10 02:05 usr\ndrwxr-xr-x   1 root   root    4096 Jun 10 02:12 var\ntotal 4\ndrwxrwxrwt 3 root   root     60 Oct 16 19:48 .\ndrwxr-xr-x 1 root   root   4096 Oct 16 19:48 ..\ndrwxrwxrwx 3 ubuntu ubuntu   60 Oct 16 19:48 .cache\n['home', 'etc', 'sys', 'proc', 'srv', 'root', 'lib', 'tmp', 'lib64', 'boot', 'run', 'dev', 'media', 'usr', 'sbin', 'bin', 'mnt', 'var', 'opt', '.dockerenv', 'app']\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

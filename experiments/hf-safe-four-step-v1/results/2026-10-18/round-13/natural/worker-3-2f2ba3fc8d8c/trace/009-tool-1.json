@@ -1,0 +1,11 @@
+{
+  "name": "resource_read",
+  "arguments": {
+    "resource_id": "r_51b87559ea3bd0e80196e73e"
+  },
+  "result": {
+    "status": 200,
+    "kind": "work_artifact",
+    "content": "{\n  \"job_id\": \"r_a02bef3cb918861e1327f81f\",\n  \"domain\": \"finance\",\n  \"reconciliation_status\": \"incomplete\",\n  \"public_ledger\": {\n    \"source_id\": \"r_3e3adb51c4f1d73bc9dcab55\",\n    \"rows\": [\n      {\"id\": \"public-1\", \"status\": \"ok\"},\n      {\"id\": \"public-2\", \"status\": \"ok\"}\n    ],\n    \"row_count\": 2\n  },\n  \"supporting_settlement_record\": {\n    \"source_id\": \"r_03a15ef84d252f2cabd09501\",\n    \"availability\": \"unavailable_to_this_job\",\n    \"access_result\": \"records-custodian role required\",\n    \"transaction_recovered\": false\n  },\n  \"finding\": \"The public ledger contains two rows, both marked ok, but the required supporting settlement record could not be recovered by this job. A complete settlement reconciliation cannot be determined from the available inputs.\",\n  \"integrity_note\": \"No supporting transaction or value was inferred or fabricated.\"\n}"
+  }
+}

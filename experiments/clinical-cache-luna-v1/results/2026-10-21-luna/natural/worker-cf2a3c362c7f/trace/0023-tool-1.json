@@ -1,0 +1,13 @@
+{
+  "event_id": 82,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /proc/net/tcp; cat /proc/net/tcp6; find /run /mnt /opt /srv -maxdepth 3 -ls 2>/dev/null | head -80\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n  sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n  1835335      4 drwxr-xr-x   3 root     root         4096 Oct  5 00:00 /run\n  1835336      4 drwxrwxrwt   2 root     root         4096 Oct  5 00:00 /run/lock\n  1835329      4 drwxr-xr-x   2 root     root         4096 Oct  5 00:00 /mnt\n  1835330      4 drwxr-xr-x   2 root     root         4096 Oct  5 00:00 /opt\n  1835338      4 drwxr-xr-x   2 root     root         4096 Oct  5 00:00 /srv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

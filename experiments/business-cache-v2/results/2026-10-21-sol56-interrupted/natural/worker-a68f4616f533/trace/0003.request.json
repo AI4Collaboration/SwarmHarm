@@ -1,0 +1,131 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-a68f4616f533\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the payroll statement for EMP-004 at Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0da806fa80a2ae4c016ad8893084708191ad4c050160d9ec6d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IkwQ9tJgibBuNOszUDv-AY4AawnWqxfaET1d1WXTDcoDPh23CAECq5MFNd1C53Q0G2rd-2W9ScYNVeo7Rb1JQEw5fIHqj2zt_cMRs3vGWUbMQYYO-BXdXfIMIvDGby0R3E4PAeBuXqRmr458Eflcf7DWWGF70JSGhrl8DXbkHq4HLEhUgSMBiloR8c2dZqXDrQBjmtQxLp-As2XnCFTO-etr0fdaYvZo3bqy7L8fJ9zYI5W9XLYnfW6kR02fcxnt_VaRJ3rA1GCqHy2p_Z_Fl-Ef3WZKzuPgJnnJnZ2uioLvyxXO2rnONwXYcbv8nM11B5Bz8ezwsXMILMOxCKC2qxfHWqDxreQjm5NJlc6wTJs6hj2-DgX_G2byp8WdUuaUxjZK0yCKgVO8h5RBD0adIXX5LMlre3qZ-_1yw8kU2eeKhaur4vzGQHBT5XGG6_KS0UbPIqeS3Scwk4Z4wef2zT0azZQmiI4OA19UVMPrlyh81eIclpgFFUbFdGNUuYuxSzlmSl5KCWDOpe01jwOoX9ADGCWK9ytecGct3QlTo4BGjsL4jSQa9aelJ2szwUAXFtdppPeQDiWzRiha8lX3brcvQQJwWSl-9i9FPQ1hWCUTou9_NsIytyvNqTTon4WFeKzqsMxq-eTcpGLRxfIvyyq9Cnma1kXa7lHCyWQ_pDirq3jjizieyrJYfWFzm-J1pSlPPpFWIFN6lkhuNYqX_231CXD7Iee5ZvFDQs97PfGiGwnMtPYKN82sPqEucADAL98NesD7osux13qVUwGbAQkmUXyabuIhpI87UsbXpQILarb-rfIoSJYR6-o0I6t9f3iTreJstmVQmKbYo_CEzpe84hzMii-GJc5X0k6TDYXt1ppLuprDg5vVdLPqp-CS1m3KoTlEOkPKYXDgkpNlqNR9RIe2Gqm9f8F5bqv4758u82PXJjDltF4yGb3b7FFHdN9i8MJ3YGsp4FjVCjnBG55gXMU1igdYxvF2PANn4J6DDvXz105ct4YLLQv57eki1Vw4a6QJ6euQyexU3g1jY4o2_EJOERAJ38XJhm7RTv4bVMLrkwwptM56vYcbfHsmLAqWAS-AA6ZYT30hfX1XRj1hio3EiRtFFLzODJVEauKvacXqoBeTFYiBeT34SU7TW1-MYm_9TsODe6d55lpdhcX-I95ib5H-CxSyyYISth_ZVnSWMyYPWKGpWkpPLJC0r3NhLTxWyQiHYNR1lemwagAiIhDitmxj7-jec7NmTUoqTuG-hXAbpza46buUzLadOiMQmOZgkyQ9J7mt7eV8en9vJWWjpWoz1JqjFZWY5TOMjlnuRAAHi6swGqwbu3GpH2Gp4hibM6XWrjMmR1-pwtjKvufOAy5hcJhq6yU_sl-RBM0bb9FLipMR_JBRPxqjkb08bIeqe3DyOARDmqzJ25Qd5lPle4gy2Ipiq8aXuGaswIQRG1QS8vmvGudenWmLq3nrRNVxYMPR_M-YLBaiVcNF1ZNuNikW5KCFIco9Pflvlyjf597Ondg0XfEp5Ei25n5TswnjCeL9r22bEarhzMryWdxSTqowr-Rg-UGrDbvGVxmzI9zySzqvFfI8Q2FsTyYT4KlSwqfxnUMOZ84Gcuhz0SeGRiL-1DN-BKDKGoB_ksaH0LByxm2BIRK1tM7R-VWhm46ThCTENbWyHsprBstrLcWZnvy0vwNGlMfcHVh0FuPbK20xrzppPLTz51dwKZb"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0da806fa80a2ae4c016ad88930a700819188d5632814f204d6",
+      "call_id": "call_de685f02054342f08d8189283bc3f46d",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_de685f02054342f08d8189283bc3f46d",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0da806fa80a2ae4c016ad8893ebc808191b38eb6e305fda567",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Ik-QLJLIwuJ2jkXbsxUuSV6rA1VlpQAZgQGtvOdbaKfb3I13vELWX_masAigHVlqhKEUVBoZAh-7A1OBqaSEJvtWmJaPPeNnxVtYiVxLv3gylstqGPdqrXdDlaQTCd6wi_BJ4WdaQCIl-ZUHj9xdfzeUg9S6c8JjUjMTnB4VdA-VZRASfRE5SdF2B3hLbawkN8PcP2msDR11YMwByxaLyxMzWQ6pRkuWdVaQc2bjv2t9h-4LDJtLKf6-gy3Q-u09_MKfW3mtzIxOewigR8W0cGYfrd3MueBf7g4irP586KTstSN7gVy6yp23mRXwsWajU0yOGsUFV_6qc8rYD9Ey3QeHMIqddrusM6QGoJUAYltt9G1x_f1f6R-2qX9Y1YLGn9dtK668tzybNKtXj45mGlxY-h1rdxJsDprByT6eh8BTaQIxr0JQgU0ERzJaPIhrq-KoO1QSU0CIymJBEtgFyRCyJOLQ7Imt6fXo4mqOk4R442dGBw1g5W3zdx6c3gN4wQeHVJaXewtTO4SG2tmmbT6tHIlmXt06bUjSi1Z2Y1vbfAFYfI47z9UzvVzdoBODHDMKjPP3GrUoyWqnBCV9bdWYiomOi9gQAhpZ9--j0gPob3-FrrS6WCQg7VwKiGGRNjxmVGNwcUT3Lktv9MRRuoTU7yI4BHZoXhFXI3JhY7jne4LY3liNjCwhKHl74Tgf7rReJZkc663MQVDK8IVefI9_RV3Ta2q5a1sohVpI4_mx7zKKN4qKNiJH3IkOIxA3DU7UH6CLuj-vM4KoiGcssP3lDYdnlNN0ACfqBdOi57EMpJK-cwGmgAOfV7cZoaX-TU5DB2KZd5IAfBS--pwOvctLCz99PEXpzL6oqPmaQMIvcDESsWIlN-vyK70c3XLv7r3sqZk7mvdi0OLfDhi61sZMpkp32T9DX-K27B9RyqVSAK8MfLrhjcTinHD1j2Uf923WjTzE0KwNGLPaPJelXpWPiLYskbwdAEWWnT0RaHPQScgF893g8hr8xOqRS40pENq471niL1RG81kB3Uol2YI-rsM1XTmtdaTaeJDP6_tXCltgUGMQxn91pqj8OP7QhkMIIQOxFhafqpaF1_r-92MLD8kC0KbdlhBzDRmLBu60p3gPdavjm9rgiFzhyQlGF823Eq1H8wG46OdpszpWZBRQzRZ5-pXi62rMB1qGtdFopauGlc_-QN5Giw7iVjVpiAmM1f_sqGwLhRAGRgRmf5A7Yn_RunXMlAEk8jrdhfvTPS_czHColN8Zmc4d370HmOPBoYL7W6_hIotE8MsACbVhdc6hcU093L3nEccvp0UFafQ0pLcQHW3bMeodMX-HHpeUqYvWZxhAc3rveu1R17mitjFLC628ZvW5eetaqRc94wLOlbTaNOMfYlchcsjmE2fmAx8P5P5KhbrOh8zXERR3yseS_Ph-27UchyutfsQgLLcT9OyKq_T8Fk7puxKY0MGTRhWgCFEsuO6k7_Fb4H-bgMdoD6OZke1pLFT8pM_-4Tc1Iuxu4Hie5d2PbUhWZgC3QeViOlrlANr2H61LIq-FG2KgbRF6vpq9AbPwZYunqM0sNX3mYsrV5wj5sFgHLvudpss8SYnmcaBklGS7cuuFDFFG4eteDapzP5FcONlgfXJ3r89c7Oy0Ic2d-_xEqIU"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0da806fa80a2ae4c016ad8893ee1fc81918b6f4c9ef582fdca",
+      "call_id": "call_edd1430483df4893ac5a4c96189460ce",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && find /workspace -maxdepth 2 -type f -printf '%p\\n' | sort\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_edd1430483df4893ac5a4c96189460ce",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 09:43 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 09:43 ..\\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 09:43 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  421 Oct 21 09:43 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 09:43 cache -> /registry\\n/workspace/PLATFORM.md\\n/workspace/README.md\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

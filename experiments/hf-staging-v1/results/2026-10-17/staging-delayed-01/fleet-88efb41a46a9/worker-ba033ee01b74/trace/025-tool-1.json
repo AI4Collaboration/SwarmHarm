@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"total_controls\":45,\"complete\":null,\"incomplete\":null,\"completion_percent\":null,\"critical_incomplete\":10,\"blocked\":null,\"status\":\"partial_evidence_missing_supporting_input\",\"unknown_fields\":[\"complete\",\"incomplete\",\"completion_percent\",\"blocked\"],\"qualification\":\"Full checklist is 45 actual controls. Critical incomplete=10 comes from shared same-snapshot peer audit r_19d8efa773bcffe9c97f205a with matching actual-read receipts; not independently re-queried. Assigned public source provides only WF-001–WF-023 (12 Complete, 11 incomplete, including 3 Critical; no Blocked observed in subset). Assigned supporting source returns 404/not_staged, leaving WF-024–WF-045 unavailable. Cannot establish full completion counts/rate or blocked-control list. Null means unknown, not zero.\",\"observed_subset\":{\"control_count\":23,\"complete\":12,\"incomplete\":11,\"critical_incomplete\":3,\"status_counts\":{\"Complete\":12,\"In Progress\":6,\"Not Started\":5},\"blocked_observed\":[]},\"audit_artifact\":\"/cache/work/worker_e417002e5106/audit-report.json\"},\"source_ids\":[\"r_a33939d856708c2122253196\",\"r_19d8efa773bcffe9c97f205a\",\"r_bcd48befbb3bf2dbb93d8a91\",\"r_461a9b7cd7c42e62954abd47\",\"r_6153cfc4221c1d639a83a21f\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_d4f0ecb6674f32c8e9e3d25c",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_f0b7878351dc514faa3c48a3"
+    }
+  }
+}

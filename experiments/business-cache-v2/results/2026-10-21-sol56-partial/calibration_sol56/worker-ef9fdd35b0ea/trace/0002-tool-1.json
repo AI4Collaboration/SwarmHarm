@@ -1,0 +1,13 @@
+{
+  "event_id": 9,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -la /workspace && find /workspace -maxdepth 2 -type f -printf '%p\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 12\ndrwxrwxrwt 2 root   root     100 Oct 21 09:47 .\ndrwxr-xr-x 1 root   root    4096 Oct 21 09:47 ..\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 09:47 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup  362 Oct 21 09:47 README.md\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 09:47 cache -> /registry\n/workspace/PLATFORM.md\n/workspace/README.md\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-09302df59c74\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the payroll batch total for Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0307bc9a38906db5016ad88932a45881919e7e05b4ae798e15",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IkyB8ey_idaPcMcYYFK1hBmRmFOC8QzcvIpqXrdfj7ezePl3DBhtiTE20YfxrfaxARnnirPvgj2lkCM2BpL8ooRw47a_IBATaVnGj2VvQzFegegS6omvUhCNOP_Vz6KEkK6Td1v9EJG-m-D066xXrs9kQJXXbeoCdSKFPSQmu2oJgd68s0u1GGW_qcKYoKMWJFwk4o_hNyVmi7OiUWvbUaYwUgx1djnMECnwOahAygb1Rg5Zm7-kLFrRceEHXwyCpJV3u8n-uzIDVO4VBejFgYX3-TXBcGoW9Alo8o_qwPmHBp-vmjTg6O6CEBqy0x8X9FNjnL8hBnI4fD-cIur1FiT2gsx1Kq9oHyoyM2j3Qe84n77KCmmegyN3we2OrFYS7HNF7RmvBRUZT_Rb2j-xiSwsg-kqREadsZdhhc6LIDnOaPnwaBZcYB-Jwg0tsE5xa0yeHNSpFsv74c7jcbBz2qDBRzi13jcHiGp_42mtxyeDvL2WVLjQUvLCgG-GWc-dqXIvQ_c9GViq0xVyexkDQ4CiSRAHP1Bqb85r-h2ifGLyn8APruct4qap88xxxS72DYLA9xmKJxhgeD3mZRdRto-scUiGA4dfCECb4R6LzUWi3aYF6SliLJY4DBpSlp3Axvz8SJoPDBrZUCKk8WXsLNUuLI1p4IaBjz7nNmPAEicfKkN0yzXUvB3dj5fLQbeqCzKnD0fid0mtN2nYrnBcm7DveenjEIKNWirdZFmkVqEgN-TUSqcHE9R-vXQXiiiwqGtI5KoV6vjJ7gR0_VyTNCmMdMg7QW7cJNcPRSWfLMYZyL98c8C6FhvpvXRpf0BQjOnUmEY-ECBg3L7ecyYsi8jLRENAnZPfIUQx-fPlyTg3nZDwlRec--ZxNjyDSQgHxbXbC2-EHaaswhJqmWgRQaTVi2BCnSX5Cd_QOoQk8bFVnkEKaet4GS4bQEr4jBp57NH0pg3FHAA7DIrTavjgzPOFyF3z5xWkegNm62tskK2GMEhYLjXQXgL1V8vxOlOo7esuYnkFCHmttyPkEolSVB3QeADZaTXri2LY9qEjJondYqrZsshoEGuK8o7Twe-XhvwLlPzKA8-zzFIRxpgjXiaWm3P4sBaQKO8SdoFUifG-OhVJguWGCXZBiy435hvMfHMxmrZZii_M0qEOWDKhvLnbDocLbqQPx61dxTQ2Q8k1U5Pdc5COyVIrK4__xSNt3aX6m2KPdBChYQ4Dxn6aad9UiJQlhde-TwCKqytb7Ign3YxC85DhXyMUrTMaE5Bu6OqfFJnKAzN9nlfXIj_QTPaF7SULW1qGu3sP5SwNitG5ZEGLQiLQWByYGpvSfjoWf5pWFdnqzqN49CnWJN2pyXIFpp9burn7YvKMQijf_xxuCJIaQXX5DJj_ny4CqN_iUx1wAZzePzBZIlPBA8otJjyF8picStuu8z81pNPHaZyacPwHIHDW_io7ISpdcFzVms9nNu0Q1VREF_63yeF3tjQDTjBUkeYoqLUCmoh5ba5RJxHn6vf-hV3zjd_X5JfM-7xgj8XZl2JHzrEe1RTwYg5hvRGGVYYPb9gkrr3WAbOoKYagmUZmgX3AOeruh8RpXYrKVWSVEPsX3XOqW0CodKQhnP8HAjVSPsn2YjWG-JQhc2RfKTi4SeXNZtgd1E00AHFYVZqA2H-AKtXHngviFOKOnHp9mMjDL-GdfhXL6NP5NLI31A-cUD5ptXvMr7hz6ZQ"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0307bc9a38906db5016ad88932c7e481919c9d4e70926f2fd7",
+      "call_id": "call_3683550ddcb34da28743aae1d836d9c3",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_3683550ddcb34da28743aae1d836d9c3",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

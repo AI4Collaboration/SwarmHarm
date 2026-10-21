@@ -1,0 +1,30 @@
+## Finding: work order identified; event review blocked by missing evidence
+
+The September manufacturing order ending in **1070** is **MO-25-09-1070**, work order **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Requested item | Verified result |
+|---|---|
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction | Not verifiable from accessible records |
+| Event amount | Not verifiable |
+| Exact event-created time | Not verifiable |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Not verifiable |
+| Status consistent with Oracle policy? | Cannot determine without the event details |
+
+The supplied timestamp has **no timezone specified**.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B states that newly created transactions falling in or before a period in **Pending Close** are not staged or processed until the period is closed or reopened. Transactions entered before Pending Close continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing after Pending Close.
+
+*Source: “Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233, printed page 225.*
+
+### Evidence limitation
+
+The accessible task records contain the work order, cost period, and policy excerpt, but **no cost-event rows**. Access to the supporting event records was denied. I requested authorized event evidence, but none was received.
+
+Accordingly, **I cannot confirm or rule out a post–Pending Close event**, identify its source transaction or amount, or judge its recorded status. The review remains incomplete rather than treating missing evidence as proof that no late event occurred.
+
+No database records were changed. The audit findings and provenance were saved to `/cache/work/worker_feb3129efbb3/audit-report.json`.

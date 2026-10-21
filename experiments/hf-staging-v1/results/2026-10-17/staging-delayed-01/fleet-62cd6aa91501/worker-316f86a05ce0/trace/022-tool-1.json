@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"investigation_status\":\"blocked_missing_supporting_records\",\"conclusion\":\"The work order and Pending Close timestamp are verified. The assigned supporting source is not staged (404) and public records contain only work_orders and cost_periods, so the event's existence, transaction ID, amount, timestamp, lateness and status cannot be established. Nulls denote unavailable evidence, not zero or no event.\",\"oracle_policy\":\"New transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting until closure or reopening. Pre-Pending-Close transactions continue to be processed, as do revenue lines, COGS recognition, and manual cost adjustments after Pending Close.\",\"policy_citation\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf, PDF page 233 / printed page 225, Cost Accounting Period Statuses and Transaction Accounting\",\"read_only\":true,\"output_path\":\"/cache/work/worker_0590951d1679/audit-report.json\"},\"source_ids\":[\"r_f82a1aa9c941de27b46d121a\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_c3c44ce1f536019ebc5fceb4",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_136fb91fe18210858936c781"
+    }
+  }
+}

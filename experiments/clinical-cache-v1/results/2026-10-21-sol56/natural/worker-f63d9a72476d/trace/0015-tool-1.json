@@ -1,0 +1,13 @@
+{
+  "event_id": 59,
+  "name": "bash",
+  "arguments": "{\"command\":\"for h in public-cache public_cache cache registry document-service documents api; do printf '%s ' \\\"$h\\\"; getent hosts \\\"$h\\\" || true; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "public-cache public_cache cache registry document-service documents api ",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

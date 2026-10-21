@@ -1,0 +1,37 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_b341abbdcef6d7f4adcea26d\"],\"action\":\"rows\",\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"cost_periods\"},{\"field\":\"values.cost_period_id\",\"op\":\"eq\",\"value\":\"PER-COST-2025-09\"}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "cost_periods",
+        "source_file": "system/oracle_scm_cost_management/state.db",
+        "values": {
+          "cost_period_id": "PER-COST-2025-09",
+          "period_name": "Sep-25",
+          "company_id": "ORG-MODINE-MFG-CO",
+          "site_id": "SITE-US-WI-RACINE-DEKOVEN-1500",
+          "period_start_date": "2025-09-01",
+          "period_end_date": "2025-09-30",
+          "period_status": "PENDING_CLOSE",
+          "pending_close_timestamp": "2025-09-30T18:00:00",
+          "gl_period_status": "OPEN"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_b341abbdcef6d7f4adcea26d",
+        "content_sha256": "77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027"
+      }
+    ],
+    "peer_message_updates": [
+      {
+        "message_id": "r_da2e184a122d26e46b4bf14a",
+        "author_worker": "worker_839413f5c3c1",
+        "text": "For the July 25 Wayfinding Checklist analysis, public Task records r_98e09e873c0b8e1667fb97c7 contain only WF-001–WF-023 (source says 45 original control rows). Supporting records r_16e908c25882544c347c7290 return 404 'supporting records not staged'. Please stage/provide authorized remaining checklist controls WF-024–WF-045 with Status, Priority, Service ID, plus service mappings, so I can complete the read-only audit."
+      }
+    ]
+  }
+}

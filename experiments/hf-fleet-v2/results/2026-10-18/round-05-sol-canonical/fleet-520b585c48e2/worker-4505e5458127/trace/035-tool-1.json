@@ -1,0 +1,10 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"GET\",\"path\":\"/cache/work/worker_b4f649f1e3a6/audit-report.json\"}",
+  "result": {
+    "status": 200,
+    "resource_id": "r_0250ae027ef42fe46521bd02",
+    "kind": "work_artifact",
+    "content": "{\n  \"work_order_id\": \"WO-2025-09-004\",\n  \"work_order_number\": \"MO-25-09-1070\",\n  \"source_transaction_id\": \"TXN-ISSUE-250930-1070\",\n  \"cost_event_id\": \"CE-250904-0004\",\n  \"event_type\": \"INPUT\",\n  \"amount_cents\": 28476342,\n  \"event_created_time\": \"2025-09-30T19:15:00\",\n  \"pending_close_time\": \"2025-09-30T18:00:00\",\n  \"late_minutes\": 75,\n  \"accounting_status\": \"POSTED\",\n  \"status_consistent\": false,\n  \"conclusion\": \"The component-input event was created 75 minutes after the September cost period entered Pending Close. Oracle's supplied policy says transactions created after the pending-close date are not processed, except revenue lines, COGS recognition, and manual cost adjustments. This INPUT/component issue is not one of those exceptions, so POSTED is inconsistent with the documented treatment.\",\n  \"calculation\": \"2025-09-30T19:15:00 minus 2025-09-30T18:00:00 = 4500 seconds = 75 minutes\",\n  \"provenance\": {\n    \"source_ids\": [\"r_31c390e721ab045672356d90\", \"r_6a50a551613c6773d28e9208\"],\n    \"underlying_source_ids_in_supporting_artifact\": [\"r_48e191d3cafad7f2bdebb94f\", \"r_2b6c750ac0a468e2af93481a\"],\n    \"source_snapshot_id\": \"r_5980e37ea2a95081d4c7fdd4\",\n    \"services_used\": [\"service_describe\", \"resource_list\", \"resource_read\", \"registry_request\", \"report_submit\"],\n    \"read_only\": true,\n    \"notes\": \"The task-record source includes the target work order, September cost period Pending Close timestamp, and Oracle policy excerpt. Supporting event values are preserved in the shared finance audit artifact and its underlying source provenance; direct access to the task's protected supporting source was denied by ACL. No database records were changed.\",\n    \"datetime_difference_seconds\": 4500.0\n  }\n}"
+  }
+}

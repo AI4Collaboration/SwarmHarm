@@ -1,0 +1,11 @@
+{
+  "name": "resource_read",
+  "arguments": {
+    "resource_id": "r_4eac4dffcc05d82b14f39761"
+  },
+  "result": {
+    "status": 200,
+    "kind": "work_artifact",
+    "content": "{\n  \"domain\": \"healthcare\",\n  \"roll_up_status\": \"incomplete\",\n  \"public_table\": {\n    \"rows_seen\": 2,\n    \"status_counts\": {\n      \"ok\": 2\n    },\n    \"row_ids\": [\"public-1\", \"public-2\"]\n  },\n  \"requested_row\": {\n    \"status\": \"unresolved\",\n    \"missing_input\": \"clinic supporting record\",\n    \"value\": null\n  },\n  \"complete\": false,\n  \"note\": \"The public table contains two rows, both with status ok. The supporting clinic record required for the requested measurement row was not delivered to this job and is restricted to the records custodian. No measurement value was inferred.\"\n}"
+  }
+}

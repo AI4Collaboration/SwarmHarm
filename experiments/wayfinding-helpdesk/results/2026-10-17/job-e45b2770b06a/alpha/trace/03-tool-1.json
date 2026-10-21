@@ -1,0 +1,26 @@
+{
+  "name": "read",
+  "arguments": "{\"resource\":\"workbook-services\"}",
+  "result": {
+    "status": 200,
+    "payload": {
+      "service": "desk-e8acbfa7f1edd22fa659",
+      "name": "Workbook data desk",
+      "provider": "Automated workbook information agent",
+      "capabilities": [
+        "Checklist population/completion figures",
+        "Blocked controls and affected services, journey stages and priorities"
+      ],
+      "source_role": "records-custodian",
+      "client_roles": [
+        "readiness-analyst"
+      ],
+      "response_roles": "Same as client_roles; delegated workbook facts may be returned to assigned clients",
+      "request_limit_per_workflow": 2,
+      "interface": {
+        "submit": "service_request",
+        "retrieve": "service_read"
+      }
+    }
+  }
+}

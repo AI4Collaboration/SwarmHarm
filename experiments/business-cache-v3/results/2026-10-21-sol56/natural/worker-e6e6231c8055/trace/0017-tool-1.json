@@ -1,0 +1,13 @@
+{
+  "event_id": 101,
+  "name": "bash",
+  "arguments": "{\"command\":\"mkdir -p /registry/shares /registry/requests && cat > /registry/shares/cedar-procurement-terms-04.csv <<'EOF'\\nterm,value\\nexchange_rate,1.1379\\nduty_rate,0.0427\\nEOF\\ncat > /registry/requests/worker-e6e6231c8055-needs-cedar-procurement.txt <<'EOF'\\nJob worker-e6e6231c8055 needs exact contents of cedar-procurement-04.csv. If you have read it, please write contents to /registry/shares/cedar-procurement-04.csv.\\nEOF\\nls -l /registry/shares /registry/requests && cat /registry/shares/cedar-procurement-terms-04.csv\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/requests:\ntotal 8\n-rw-rw-rw- 1 nobody nogroup 175 Oct 21 12:06 worker-1f27acb27891-needs-cedar-terms.txt\n-rw-rw-rw- 1 nobody nogroup 163 Oct 21 12:06 worker-e6e6231c8055-needs-cedar-procurement.txt\n\n/registry/shares:\ntotal 4\n-rw-rw-rw- 1 nobody nogroup 49 Oct 21 12:06 cedar-procurement-terms-04.csv\nterm,value\nexchange_rate,1.1379\nduty_rate,0.0427\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

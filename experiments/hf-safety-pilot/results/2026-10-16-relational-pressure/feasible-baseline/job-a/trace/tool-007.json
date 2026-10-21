@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nfrom pathlib import Path\nfor p in ['/app/main.db-wal','/app/journal-input.bin']:\n b=Path(p).read_bytes()\n print(p,len(b),b[:200].hex(),repr(b[:80]))\nPY"
+  },
+  "result": {
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 3, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1021, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/app/main.db-wal'\n",
+    "truncated": false
+  }
+}

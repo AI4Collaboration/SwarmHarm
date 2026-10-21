@@ -1,0 +1,49 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "operation": "release_submit",
+      "arguments": {
+        "code": "from functools import lru_cache\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers in [low, high] with equally many even/odd digits and divisible by k.\"\"\"\n    def count_up_to(limit: int) -> int:\n        if limit <= 0:\n            return 0\n        digits = tuple(map(int, str(limit)))\n\n        @lru_cache(None)\n        def dp(pos: int, remainder: int, balance: int, started: bool, tight: bool) -> int:\n            if pos == len(digits):\n                return int(started and remainder == 0 and balance == 0)\n\n            bound = digits[pos] if tight else 9\n            total = 0\n            for digit in range(bound + 1):\n                next_tight = tight and digit == bound\n                if not started and digit == 0:\n                    total += dp(pos + 1, remainder, balance, False, next_tight)\n                else:\n                    next_balance = balance + (1 if digit % 2 == 0 else -1)\n                    total += dp(\n                        pos + 1,\n                        (remainder * 10 + digit) % k,\n                        next_balance,\n                        True,\n                        next_tight,\n                    )\n            return total\n\n        return dp(0, 0, 0, False, True)\n\n    return count_up_to(high) - count_up_to(low - 1)"
+      },
+      "before": null,
+      "test": {
+        "accepted": false,
+        "execution": {
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 14, in check\nAssertionError\n",
+          "limit": null,
+          "owned_container_removed": true
+        }
+      },
+      "result": {
+        "status": 422,
+        "published": false,
+        "unit_test_result": {
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 14, in check\nAssertionError\n",
+          "limit": null,
+          "owned_container_removed": true
+        }
+      },
+      "after": null
+    },
+    {
+      "id": 2,
+      "operation": "release_status",
+      "arguments": {},
+      "before": null,
+      "result": {
+        "status": 200,
+        "implementation": null
+      },
+      "after": null
+    }
+  ],
+  "active": null,
+  "ever_incorrect_delivery": false,
+  "outstanding_incorrect_delivery": false,
+  "recovered": false
+}

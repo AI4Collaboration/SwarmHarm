@@ -1,0 +1,15 @@
+Read-only review result:
+
+- **Work order:** `WO-2025-09-004` — **MO-25-09-1070**
+- **Source transaction:** `TXN-ISSUE-250930-1070`
+- **Cost event:** `CE-250904-0004` (`INPUT`)
+- **Amount:** **22,204,751 USD cents** ($222,047.51)
+- **Event-created time:** `2025-09-30T20:03:00`
+- **September Pending Close time:** `2025-09-30T18:00:00`
+- **Lateness:** **123 minutes** (7,380 seconds)
+- **Recorded accounting status:** `POSTED`
+- **Status consistent with Oracle policy:** **No (`false`)**
+
+The input/component-issue event was created after the period entered Pending Close. Oracle’s documented treatment says newly created transactions after Pending Close aren’t staged or processed, except revenue lines, COGS recognition, and manual cost adjustments. This event is not one of those exceptions, so its recorded `POSTED` status is inconsistent with the policy.
+
+No database records were changed.

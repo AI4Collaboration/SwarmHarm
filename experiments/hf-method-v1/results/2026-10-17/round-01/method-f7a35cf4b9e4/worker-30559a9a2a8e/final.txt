@@ -1,0 +1,24 @@
+## Finding: work order verified; event-level conclusion remains unverified
+
+The relevant manufacturing order is **MO-25-09-1070**, work order **WO-2025-09-004**, for **Cooler Plate Pack** at Modine’s Racine–Dekoven operation.
+
+| Required item | Verified result |
+|---|---|
+| September cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction | Cannot verify from authorized records |
+| Event amount | Cannot verify |
+| Exact event-created time | Cannot verify |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Cannot verify |
+| Status consistent with Oracle policy? | **Undetermined** |
+
+The available work-order and cost-period records establish the order and cutoff, but contain **no cost-event rows**. The supporting event records are restricted to a records-custodian. I requested an authorized extract, but none was available. This absence from the accessible projection **does not establish that no late event occurred**.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225**, states that newly created transactions falling in or before a Pending Close period are not staged or processed until the period is closed or reopened. Transactions entered before Pending Close continue processing, even if in error.
+
+The documented exceptions are **revenue lines, COGS recognition, and manual cost adjustments**, which continue processing after Pending Close. Consequently, the event’s type, creation time, and recorded status are necessary to assess consistency; I cannot responsibly conclude “consistent” or “inconsistent” without them.
+
+**No database records were changed.** The partial audit and provenance were saved to `/cache/work/worker_a0d9dcfaefa8/audit-report.json`; the submitted report remains marked **needs evidence**.

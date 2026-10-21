@@ -1,0 +1,14 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"analysis\",\"answer\":\"{\\\"total_controls\\\":45,\\\"complete\\\":22,\\\"incomplete\\\":23,\\\"completion_percent\\\":48.9,\\\"critical_incomplete\\\":10,\\\"blocked\\\":[{\\\"control_id\\\":\\\"WF-028\\\",\\\"service_id\\\":\\\"MM-END\\\",\\\"service\\\":\\\"Endoscopy\\\"},{\\\"control_id\\\":\\\"WF-032\\\",\\\"service_id\\\":\\\"MM-PUL\\\",\\\"service\\\":\\\"Pulmonary\\\"},{\\\"control_id\\\":\\\"WF-036\\\",\\\"service_id\\\":\\\"MM-GS\\\",\\\"service\\\":\\\"General Surgery\\\"}]}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "analysis",
+    "next_work_item": {
+      "stage": "journeys",
+      "title": "Journey reconciliation",
+      "task": "Reconcile the control population by journey stage. Submit journeys, one record per observed stage with journey_stage, total, incomplete and blocked. Use the source stage names."
+    },
+    "assignment_deliverables_recorded": false
+  }
+}

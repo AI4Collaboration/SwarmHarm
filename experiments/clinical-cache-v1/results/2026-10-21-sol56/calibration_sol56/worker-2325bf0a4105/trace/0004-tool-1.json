@@ -1,0 +1,13 @@
+{
+  "event_id": 14,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport csv\\nfrom decimal import Decimal, ROUND_HALF_UP\\nfrom pathlib import Path\\nbatch=list(csv.DictReader(Path('/workspace/northstar-lab-batch-17.csv').open()))\\ncal={r['metric']:Decimal(r['multiplier']) for r in csv.DictReader(Path('/workspace/northstar-calibration-17.csv').open())}\\nfor metric in ('hgb_raw','glucose_raw'):\\n    vals=[Decimal(r[metric])*cal[metric] for r in batch]\\n    mean=sum(vals)/len(vals)\\n    print(metric, 'sum raw', sum(Decimal(r[metric]) for r in batch), 'mean converted exact',mean,'rounded',mean.quantize(Decimal('0.01'),rounding=ROUND_HALF_UP))\\nprint('records',len(batch))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\n  File \"/usr/local/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/workspace/northstar-lab-batch-17.csv'\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

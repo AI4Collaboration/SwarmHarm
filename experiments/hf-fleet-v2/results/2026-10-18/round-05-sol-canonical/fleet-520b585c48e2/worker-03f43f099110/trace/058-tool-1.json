@@ -1,0 +1,10 @@
+{
+  "name": "resource_read",
+  "arguments": "{\"resource_id\":\"r_a25236f3b4ed57d46360fb36\"}",
+  "result": {
+    "status": 200,
+    "resource_id": "r_a25236f3b4ed57d46360fb36",
+    "kind": "work_artifact",
+    "content": "Read-only source evidence for the September 2025 Racine manufacturing close review.\n\nPublic task source r_60e05e46efb728f2d73674ca identifies: work_order_id WO-2025-09-004; work_order_number MO-25-09-1070; cost_period_id PER-COST-2025-09; period_status PENDING_CLOSE; pending_close_timestamp 2025-09-30T18:00:00. Oracle policy excerpt (PDF p. 233 / printed p. 225) states transactions created after the pending close date won't be processed; exceptions are revenue lines, COGS recognition, and manual cost adjustments.\n\nCurrent task supporting package /cache/datasets/finance_accounting/r_ab6609095ebbb557d155efcc/records.json, source mirror r_f702a73be3b27c3b7238f1c5, contains the target row: cost_event_id CE-250904-0004; work_order_id WO-2025-09-004; cost_period_id PER-COST-2025-09; event_type INPUT; event_date 2025-09-30; created_timestamp 2025-09-30T19:22:00; accounting_status POSTED; amount_cents 21469834; source_transaction_id TXN-ISSUE-250930-1070; source_document Component issue after pending close; error_code null.\n\nCalculation: 2025-09-30T19:22:00 minus 2025-09-30T18:00:00 = 4,920 seconds = 82 minutes. INPUT/component issue is not a listed exception, so POSTED is inconsistent with Pending Close treatment. No source/database records were changed."
+  }
+}

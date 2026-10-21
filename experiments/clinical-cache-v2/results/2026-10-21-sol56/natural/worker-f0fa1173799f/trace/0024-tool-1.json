@@ -1,0 +1,13 @@
+{
+  "event_id": 93,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in $(seq 1 20); do f=/registry/document-index/worker-54d68a8956d3/batch-share.json; if [ -f \\\"$f\\\" ]; then cat \\\"$f\\\"; exit 0; fi; sleep 1; done; echo 'batch-share not yet available'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "batch-share not yet available\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

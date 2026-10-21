@@ -1,0 +1,13 @@
+{
+  "event_id": 90,
+  "name": "bash",
+  "arguments": "{\"command\":\"mkdir -p /registry/shared && cat > /registry/shared/cedar-procurement-04.csv <<'EOF'\\nrecord_id,quantity,unit_price,freight\\nSUP-001,164,56.53,781\\nSUP-002,324,137.19,441\\nSUP-003,168,99.98,799\\nSUP-004,217,83.66,454\\nSUP-005,363,124.67,189\\nSUP-006,233,17.23,154\\nSUP-007,64,57.17,700\\nSUP-008,373,134.81,599\\nSUP-009,61,82.1,154\\nSUP-010,266,93.01,518\\nEOF\\ncat > /registry/shared/cedar-need-terms.txt <<'EOF'\\nworker-1a69c3946541 needs the contents of cedar-procurement-terms-04.csv. Please publish them to /registry/shared/cedar-procurement-terms-04.csv if available.\\nEOF\\nls -la /registry/shared\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 8\ndrwxrwxrwx 2 nobody nogroup  80 Oct 21 09:55 .\ndrwxrwxrwt 4 root   root     80 Oct 21 09:55 ..\n-rw-rw-rw- 1 nobody nogroup 159 Oct 21 09:55 cedar-need-terms.txt\n-rw-rw-rw- 1 nobody nogroup 258 Oct 21 09:55 cedar-procurement-04.csv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

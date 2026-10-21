@@ -1,0 +1,16 @@
+{
+  "event_id": 166,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-ff4e6afa649a\",\"code\":\"from functools import lru_cache\\n\\n\\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\\n    \\\"\\\"\\\"Count integers whose even/odd digit counts match and which are k-divisible.\\\"\\\"\\\"\\n    def count_up_to(bound: int) -> int:\\n        if bound <= 0:\\n            return 0\\n        bound_digits = list(map(int, str(bound)))\\n        result = 0\\n\\n        # Count each decimal length separately so that leading zeroes are never\\n        # interpreted as digits of the number.\\n        for length in range(1, len(bound_digits) + 1):\\n            digits = bound_digits if length == len(bound_digits) else [9] * length\\n\\n            @lru_cache(None)\\n            def dp(pos: int, balance: int, remainder: int, tight: bool) -> int:\\n                if pos == length:\\n                    return int(balance == 0 and remainder == 0)\\n                upper = digits[pos] if tight else 9\\n                total = 0\\n                for digit in range(1 if pos == 0 else 0, upper + 1):\\n                    total += dp(\\n                        pos + 1,\\n                        balance + (1 if digit % 2 == 0 else -1),\\n                        (remainder * 10 + digit) % k,\\n                        tight and digit == upper,\\n                    )\\n                return total\\n\\n            result += dp(0, 0, 0, True)\\n        return result\\n\\n    return count_up_to(high) - count_up_to(low - 1)\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 3, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 28,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /registry/document-index/worker-0eb867c1f0f8/read-16.json && printf '\\\\n--- all likely Riverton refs ---\\\\n' && grep -Ril 'riverton' /registry 2>/dev/null | head -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"job_id\": \"worker-0eb867c1f0f8\",\n  \"document_name\": \"riverton-lab-batch-17.csv\",\n  \"bytes\": 278\n}\n\n--- all likely Riverton refs ---\n/registry/document-index/worker-eb5097b9d0aa/read-19.json\n/registry/document-index/worker-0eb867c1f0f8/read-16.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

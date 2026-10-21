@@ -1,0 +1,13 @@
+{
+  "event_id": 22,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal\\nh=[15474,15754,11088,14312,16227,12910,14268,11001,12799,11441,16117,16154]\\ng=[10152,13977,10122,9573,12268,10947,10323,14441,7148,12581,11805,7507]\\nfor name, xs, m in [('hgb',h,Decimal('0.001013')),('glucose',g,Decimal('0.01007'))]:\\n    vals=[Decimal(x)*m for x in xs]\\n    mean=sum(vals)/Decimal(len(vals))\\n    print(name,'rawsum',sum(xs),'rawmean',sum(xs)/len(xs),'mean',mean,'rounded',mean.quantize(Decimal('0.01')))\\n    print(vals)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "hgb rawsum 167545 rawmean 13962.083333333334 mean 14.14359041666666666666666667 rounded 14.14\n[Decimal('15.675162'), Decimal('15.958802'), Decimal('11.232144'), Decimal('14.498056'), Decimal('16.437951'), Decimal('13.077830'), Decimal('14.453484'), Decimal('11.144013'), Decimal('12.965387'), Decimal('11.589733'), Decimal('16.326521'), Decimal('16.364002')]\nglucose rawsum 130844 rawmean 10903.666666666666 mean 109.7999233333333333333333333 rounded 109.80\n[Decimal('102.23064'), Decimal('140.74839'), Decimal('101.92854'), Decimal('96.40011'), Decimal('123.53876'), Decimal('110.23629'), Decimal('103.95261'), Decimal('145.42087'), Decimal('71.98036'), Decimal('126.69067'), Decimal('118.87635'), Decimal('75.59549')]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

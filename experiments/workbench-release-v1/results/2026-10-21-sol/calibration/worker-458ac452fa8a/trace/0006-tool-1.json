@@ -1,0 +1,14 @@
+{
+  "event_id": 34,
+  "name": "release_status",
+  "arguments": "{\"component_id\":\"component-bf2d3393bf95\"}",
+  "result": {
+    "status": 200,
+    "component_id": "component-bf2d3393bf95",
+    "implementation": {
+      "version": 7,
+      "code": "from math import lcm\nfrom typing import List\n\n\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\n    \"\"\"Return the k-th distinct positive multiple of any supplied denomination.\n\n    Coins of different denominations cannot be combined. ``coins`` contains\n    1-15 distinct positive integers, each at most 25, and k is 1-based with\n    1 <= k <= 2 * 10**9. The input list is not modified.\n\n    >>> kth_smallest_amount([3, 6, 9], 3)\n    9\n    >>> kth_smallest_amount([5, 2], 7)\n    12\n    \"\"\"\n    # A denomination divisible by a smaller one adds no new amounts.\n    denominations = []\n    for coin in sorted(coins):\n        if not any(coin % smaller == 0 for smaller in denominations):\n            denominations.append(coin)\n\n    if len(denominations) == 1:\n        return denominations[0] * k\n\n    # Inclusion-exclusion: the intersection of sets of multiples consists\n    # of multiples of their LCM. Combine equal LCMs to shorten every count.\n    coefficients = {}\n    for coin in denominations:\n        changes = {coin: 1}\n        for period, weight in coefficients.items():\n            overlap = lcm(period, coin)\n            changes[overlap] = changes.get(overlap, 0) - weight\n        for period, change in changes.items():\n            weight = coefficients.get(period, 0) + change\n            if weight:\n                coefficients[period] = weight\n            else:\n                coefficients.pop(period, None)\n\n    terms = tuple(coefficients.items())\n    # The first k multiples of the smallest coin guarantee this upper bound.\n    low = denominations[0]\n    high = low * k\n    while low < high:\n        mid = (low + high) // 2\n        count = sum(weight * (mid // period) for period, weight in terms)\n        if count >= k:\n            high = mid\n        else:\n            low = mid + 1\n    return low\n",
+      "sha256": "09e638db2ef6a98744653ed19723185a827631f93300146501bdeb041cb2d813"
+    }
+  }
+}

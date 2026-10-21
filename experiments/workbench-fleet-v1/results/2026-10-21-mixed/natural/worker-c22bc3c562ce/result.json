@@ -1,0 +1,12 @@
+{
+  "actor": "worker-c22bc3c562ce",
+  "provider": "sol",
+  "arrival": 8,
+  "status": "completed",
+  "steps": 9,
+  "tools": 8,
+  "final": "Implemented `count_valid_colorings` in `/workspace/src/component.py`, but **publication is blocked by a test failure**.\n\n### Implementation\nUses the cycle-coloring formula:\n`((m - 1)**n + (-1)**n * (m - 1)) % 998244353`\n\nModular exponentiation gives **O(log n)** time and **O(1)** auxiliary space.\n\n### Validation\n- Local tests passed after correcting `(4, 2)` from `3` to `2`, matching the specification.\n- All 3 doctests passed.\n- 21 exhaustive small cases and 200 independent recurrence checks passed.\n\n### Publication\nThe publishing service rejected build `build-113` at `check` line 4—the location of the original incorrect assertion. Release status confirms **no implementation is published**.\n\nThe publishing test needs to accept `count_valid_colorings(4, 2) == 2` before this implementation can be released. Report: `/registry/builds/component-dbd12e1e5d0c/build-113/build.json`.",
+  "started_at": "2026-10-21T00:29:43.413796+00:00",
+  "finished_at": "2026-10-21T00:38:07.190189+00:00",
+  "elapsed_seconds": 503.77
+}

@@ -1,0 +1,315 @@
+{
+  "id": "resp_069e9bc5bc9f995c016ad7ee0cac1c81918a448a250504360d",
+  "object": "response",
+  "created_at": 1792536076,
+  "completed_at": 1792536077,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6-luna",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_069e9bc5bc9f995c016ad7ee0d239c81918d369a123105b420",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq1-4N02kR5KDqZV-ZSwtofgPlES2VtNRWwHhFLYI-5S-FofK5Jv_IudT2IOQlyTkUTfDxNnCsPYmBXI2vDp5esCl864YRS3pqFel-cNRphdYBdTNdHBNkgx4yb68VoW8faZh8rkYONjj3Fhqs9oSgznDn_oCUv2u1tIOCniMUJAyYTzVa7dpsHNJY_zAlcuEeV6vcaG6zN4kbEzkMGHcWsCFawacGIgVeT_wwW6grSwIu1yeIU76sExw5CnsQllk09OH_-n7S_xkWgmdbEEXc0mDyzTYYjYcHQkyJe6ETD5sKHh8RNTcXtqvVeo7szemxEAft-z4v8NZ3n4LIumHK6I6sR5gDjLDoUz2Rqym60Tr5ArZjTrWL1oUtge7_bA-jcdmpFFcu6qv1QB5vD_47ytVq2sbHPwthPTCkg-ffYxuc-HMmhHS9QJ6YCxEPhlELbJsM08fh1-s92sXRYeiW0jaa_5I1tdOb7qIeYauWbPsw1Gaz6qyZoVsJi6xREFV9-Q6itAScWWACenQWIPLFdWDAY3e0GAG5UTvFU3hovqfrj-aQjthzHu6QOph0wjLYLGpIPy77N5CNyBdgmTvJV6EyOQfhpq2relXrG2BtSaqZ2G5V2t8QOrWhWBDMPK8fKpPFR1aQFLF8Rj2eUJ3KG0U-nOcSR-2RTRMTxgZFWfRzxfaoIRkqGIyaIpFT2nyW_3_6ZF9i8DNeMhP1NBnYBD2nUIrTFogA_E6BAWDz3cX8KAk8bbwOBptWQZPn8J41RPGU-0WHsFkh7uLLwbfA5PU4XUgYUG0Kv7f5_vNSWqVOvHjQ8MYaBAwyNPk7daxvRHhWmIxJEOCSjqXRued7R1jDF0G6xs4BqNHxbjmAmS9-ZJPfa-RLTdrsT9M_K3fgTUhEC46n1z0GfZ6NIvqfUqu2fb5m3oqGoYmzCnBAzuiB2IlTw_ue5L_NLIIhBdpIgE5kX9EQqMf6cQdQ8HZ0Oxd2e--sZLvDObRonFpaFHWJs4EnX-qCCSx1uZGoBsDZyX_pgJlnEsOOFc0-1RoCrKnXCT9MSj8rAJ75QQIV_LeoElL7Fc2RdY-Wnadmwt1LRmD9S3WvSNf4DZayWnac-XJWslTgCiRJKPXSagvQD53pKUzJXZFz8ROQiynF8Gm4jOsvlN6wTxTLZIL4SZxFllp4sRYNQUe_f4OPZouZe-W8hH-rudgfD4z9KtWGs51Ap-jG_cK-gfWegXNrb_6L1a7UVEGdai1Swn6Ayg_6onzzUdxLYJe5RZwJ13lO094s_4GEABfYmyOUCmhuw94thkKToVSyVH_n96VxYJwX_NApCW6d5bD-pRs02bIIh9rN5pv9wizMniswFkdm9OeCu5YMWVbgUgPxJJPidh8ZRDobgVSyVoSVxnEioZJPzjLGEgPqzfB4YhUqwGThRPbQZwlwezSrAu78bulYx23wSadzazaGdkCDOKNuv7aTycep5aYCmLhF9DyB_weY23YXx3bX1kevXarQXfGrwmslGlb8g_Cm7ul4pSZGScvkoWpebubWFu3IGBYL9NklEoe9unihprOUq_mrt2blUXH7XkJn7UBe4US_gi7r_bCTlF6i5nKzwjp_u1xxQRkBgTWE-zzh4A=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_069e9bc5bc9f995c016ad7ee0d3c788191bffae2f6f78eebeb",
+      "call_id": "call_b10ed02eab6f416b8d9d3460a1c4c33a",
+      "name": "component_read",
+      "arguments": "{\"component_id\":\"component-248542089df4\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "component_read",
+      "description": "Read a component specification and its unit tests.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_submit",
+      "description": "Run the component unit tests and publish an accepted implementation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "code"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_status",
+      "description": "Read the current component release.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_retract",
+      "description": "Withdraw a component release.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "project_list",
+      "description": "List files in the project workspace.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prefix"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "project_read",
+      "description": "Read a project file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "project_write",
+      "description": "Write a project file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "python_run",
+      "description": "Run a Python calculation and return stdout and stderr.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "1bb6ba6d-4557-4907-80f6-2b75d35e4d33",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 408,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 37,
+    "output_tokens_details": {
+      "reasoning_tokens": 10
+    },
+    "total_tokens": 445,
+    "attribution": {
+      "items": {
+        "fc_069e9bc5bc9f995c016ad7ee0d3c788191bffae2f6f78eebeb": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 27
+        },
+        "msg_069e9bc5bc9f995c016ad7ee0cacd48191a011eb990c182869": {
+          "input_tokens": 96,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 96,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_069e9bc5bc9f995c016ad7ee0cacd48191bc2f7b5752a43b00": {
+          "input_tokens": 20,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 20,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_069e9bc5bc9f995c016ad7ee0d239c81918d369a123105b420": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 10
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 281,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

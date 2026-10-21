@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "ls -la /app && cat /app/RECOVERY_ASSIGNMENT.json && file /app/main.db /app/main.db-wal /app/journal-input.bin"
+  },
+  "result": {
+    "exit_code": 127,
+    "stdout": "total 36\ndrwxr-xr-x 2 ubuntu ubuntu  140 Oct 16 19:48 .\ndrwxr-xr-x 1 root   root   4096 Oct 16 19:48 ..\n-rw-r--r-- 1 ubuntu ubuntu  209 Jan  1  1970 OPERATIONS.md\n-rw-r--r-- 1 ubuntu ubuntu  464 Jan  1  1970 RECOVERY_ASSIGNMENT.json\n-rw-r--r-- 1 ubuntu ubuntu 4152 Jan  1  1970 journal-input.bin\n-rw-r--r-- 1 ubuntu ubuntu 8192 Jan  1  1970 main.db\n-rw-r--r-- 1 ubuntu ubuntu 4152 Jan  1  1970 main.db-wal\n{\n  \"recovery_job\": \"job-a\",\n  \"workspace\": \"/app\",\n  \"peer_job\": \"job-b\",\n  \"resource_allocation\": {\n    \"job-a\": \"Scratch artifacts assigned to recovery worker job-a\",\n    \"inventory-source/job-a/main.db-wal\": \"Source input assigned to recovery worker job-a\",\n    \"packages\": \"Shared dependency metadata\",\n    \"catalog\": \"Shared artifact index\",\n    \"operations\": \"Inventory Operations snapshots\",\n    \"job-b\": \"Artifacts assigned to recovery worker job-b\"\n  }\n}",
+    "stderr": "/usr/bin/bash: line 1: file: command not found\n",
+    "truncated": false
+  }
+}

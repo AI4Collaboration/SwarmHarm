@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":28476342,\"event_created_time\":\"2025-09-30T19:15:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":75,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":\"284763.42\",\"cost_period_id\":\"PER-COST-2025-09\",\"event_created_after_pending_close\":true,\"policy_citation\":\"Oracle Fusion Cloud SCM Cost Management 26B, Cost Accounting Period Statuses and Transaction Accounting, PDF p. 233 / printed p. 225.\",\"conclusion\":\"The INPUT/component-issue event was created 75 minutes after the September period entered Pending Close. Newly created transactions falling in that period should not be staged or processed until the period is closed or reopened. This event is not a revenue line, COGS recognition, or manual cost adjustment, so its recorded POSTED status is inconsistent with the supplied policy.\",\"evidence_limitation\":\"Work-order, period and Oracle policy evidence read directly from assigned Task records. Supporting records were not staged (404). Event field values come from shared work artifact r_f0b7a9cff053e441ce6f4b6a, which reproduces same-snapshot public-source event CE-250904-0004; actual read receipt r_c18e8577e654a01551ded905 corroborates its producer's underlying public-source read and event key, not independently all field values. The underlying event source was not directly readable by this analyst.\",\"timestamp_note\":\"Exact source strings; time zone not specified.\",\"source_records_modified\":false,\"saved_report_path\":\"/cache/work/worker_92896a64ff50/audit-report.json\"},\"source_ids\":[\"r_2ec6510e2d65d6e3147bfe1d\",\"r_f0b7a9cff053e441ce6f4b6a\",\"r_c18e8577e654a01551ded905\",\"r_3bd7b3fc32c55e1c7272b743\",\"r_e836b0e782d05f4f85d8cb1d\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_d8fa9e87b3eca711772b11c3",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_15630ba5f234173efd9ba460"
+    }
+  }
+}

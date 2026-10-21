@@ -1,0 +1,13 @@
+{
+  "event_id": 197,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nimport doctest\\nimport itertools\\nimport random\\nfrom src import component\\n\\ncandidate = component.count_valid_colorings\\nmodulus = 998244353\\nresult = doctest.testmod(component)\\nassert result.failed == 0\\nprint(f'Doctests: {result.attempted} passed')\\n\\nexhaustive_cases = 0\\nfor n in range(2, 9):\\n    for m in range(2, 5):\\n        expected = sum(\\n            all(colors[i] != colors[(i + 1) % n] for i in range(n))\\n            for colors in itertools.product(range(m), repeat=n)\\n        )\\n        assert candidate(n, m) == expected, (n, m, expected)\\n        exhaustive_cases += 1\\nprint(f'Exhaustive enumeration: {exhaustive_cases} cases passed')\\n\\nrng = random.Random(0)\\ncases = [(rng.randint(2, 2000), rng.randint(2, 10**6)) for _ in range(200)]\\ncases += [(10**6, 2), (999999, 2), (10**6, 10**6)]\\nfor n, m in cases:\\n    # Fix the first color; track whether the current endpoint equals it.\\n    same, different = 1, 0\\n    for _ in range(1, n):\\n        same, different = different, (same * (m - 1) + different * (m - 2)) % modulus\\n    expected = (m * different) % modulus\\n    assert candidate(n, m) == expected, (n, m, expected)\\nprint(f'Independent linear recurrence: {len(cases)} cases passed')\\n\\npassed = 0\\nmismatches = []\\nfor node in ast.walk(ast.parse(open('tests.py').read())):\\n    if isinstance(node, ast.Assert):\\n        args = [arg.value for arg in node.test.left.args]\\n        expected = node.test.comparators[0].value\\n        actual = candidate(*args)\\n        if actual == expected:\\n            passed += 1\\n        else:\\n            mismatches.append((args, expected, actual))\\nprint(f'Supplied assertions: {passed} passed; {len(mismatches)} inconsistent with specification')\\nfor args, expected, actual in mismatches:\\n    print(f'  count_valid_colorings{tuple(args)}: fixture expects {expected}, correct result is {actual}')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Doctests: 3 passed\nExhaustive enumeration: 21 cases passed\nIndependent linear recurrence: 203 cases passed\nSupplied assertions: 14 passed; 1 inconsistent with specification\n  count_valid_colorings(2, 2): fixture expects 3, correct result is 2\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

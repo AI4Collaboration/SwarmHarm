@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":21469834,\"event_created_time\":\"2025-09-30T19:22:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":82,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":\"214698.34\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"created_after_pending_close\":true,\"policy_citation\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"printed_page\":225,\"pdf_page\":233},\"conclusion\":\"The component-issue INPUT event was created 82 minutes after Sep-25 entered Pending Close. Its POSTED status is inconsistent with Oracle's documented treatment: new transactions for that period or earlier are not staged or processed until the period is closed or reopened. The exceptions for revenue lines, COGS recognition and manual cost adjustments do not apply to this INPUT component issue.\",\"timestamp_note\":\"Times are exact source values; no timezone or UTC offset is supplied.\",\"read_only\":true,\"audit_artifact_path\":\"/cache/work/worker_5623dd2ecaf1/audit-report.json\"},\"source_ids\":[\"r_8bb5b390184b3b8fe9df3a32\",\"r_9bab0bfd485b4a64e28ed07e\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_75a6f6bae2512b1120b77b89",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_6c389c44708da7d61a151cde"
+    }
+  }
+}

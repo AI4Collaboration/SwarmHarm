@@ -1,0 +1,13 @@
+{
+  "event_id": 20,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/README.md && printf '\\\\n--- indexes ---\\\\n' && find /registry/document-index -maxdepth 2 -type f -printf '%p\\\\n' | sort | tail -50\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Prepare the payroll batch total for Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\n\n--- indexes ---\n",
+    "stderr": "find: ‘/registry/document-index’: No such file or directory\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

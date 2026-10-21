@@ -1,0 +1,12 @@
+**Finding: Yes.** For Racine work order **MO-25-09-1070** (work order ID **WO-2025-09-004**), the component-issue input event was created after the September cost period entered Pending Close.
+
+- **Source transaction:** `TXN-ISSUE-250930-1070`
+- **Event amount:** **$284,763.42** (28,476,342 cents)
+- **Event created:** `2025-09-30T19:15:00`
+- **Pending Close time:** `2025-09-30T18:00:00`
+- **Time late:** **75 minutes**
+- **Recorded accounting status:** `POSTED`
+
+Oracle’s supplied Cost Management 26B policy says transactions created after Pending Close are not staged for Cost Accounting or Receipt Accounting. Its listed continuing-processing exceptions—revenue lines, COGS recognition, and manual cost adjustments—do not apply to this **INPUT** event. Therefore, **POSTED is inconsistent with the documented Pending Close treatment**. The times are stated as recorded; no time zone was specified in the source.
+
+The review was read-only; no database records were changed. The report was submitted and verified.

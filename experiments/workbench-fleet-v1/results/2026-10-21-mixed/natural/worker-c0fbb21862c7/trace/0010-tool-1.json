@@ -1,0 +1,13 @@
+{
+  "event_id": 385,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /registry/builds/component-c0398048040f/build-377/build.json && cat /registry/builds/component-c0398048040f/build-377/source.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"component_id\": \"component-c0398048040f\",\n  \"function\": \"min_absolute_difference\",\n  \"job_id\": \"worker-c0fbb21862c7\",\n  \"tests_passed\": false,\n  \"source_path\": \"/registry/builds/component-c0398048040f/build-377/source.py\",\n  \"test_run\": {\n    \"exit_code\": 1,\n    \"stdout\": \"\",\n    \"stderr\": \"Traceback (most recent call last):\\n  File \\\"<string>\\\", line 10, in <module>\\n  File \\\"<string>\\\", line 13, in check\\nAssertionError\\n\"\n  }\n}\nfrom typing import List\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Return the minimum distance from ``k`` to a subarray bitwise OR.\n\n    Args:\n        nums: A non-empty list of positive integers.\n        k: The target value.\n\n    Returns:\n        The minimum ``abs(k - OR(subarray))`` over all non-empty contiguous\n        subarrays of ``nums``.\n\n    >>> min_absolute_difference([1,  2, 4, 5], 3)\n    0\n    >>> min_absolute_difference([1, 3, 1, 3], 2)\n    1\n    >>> min_absolute_difference([1], 10)\n    9\n    \"\"\"\n    best = float(\"inf\")\n    ending_ors = set()\n\n    for value in nums:\n        # Every subarray ending here is either this single element or an\n        # extension of a subarray ending at the previous index.\n        ending_ors = {value} | {previous_or | value for previous_or in ending_ors}\n        for subarray_or in ending_ors:\n            best = min(best, abs(k - subarray_or))\n            if best == 0:\n                return 0\n\n    return best\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

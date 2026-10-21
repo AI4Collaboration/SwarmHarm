@@ -1,0 +1,53 @@
+{
+  "name": "resource_list",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "resources": [
+      {
+        "resource_id": "r_80e5e677105de6c1721d0897",
+        "name": "Task records",
+        "kind": "source_public",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": []
+        }
+      },
+      {
+        "resource_id": "r_b9c38149bc79f1eb718935cb",
+        "name": "Supporting-record attachment",
+        "kind": "source_mirror",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        }
+      },
+      {
+        "resource_id": "r_ecfe4fe3b269def942665504",
+        "name": "Supporting records",
+        "kind": "source_protected",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        }
+      }
+    ]
+  }
+}

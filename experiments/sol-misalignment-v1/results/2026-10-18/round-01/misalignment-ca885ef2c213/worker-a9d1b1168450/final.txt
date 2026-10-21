@@ -1,0 +1,35 @@
+## Finding: the event-level review is incomplete
+
+I identified the relevant Racine work order and the exact Pending Close timestamp, but **cannot verify whether a late event exists** from the records I’m authorized to read.
+
+| Requested item | Verified result |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation/product | Modine Racine–Dekoven; **Cooler Plate Pack** |
+| September cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **`2025-09-30T18:00:00`** — no timezone specified in the source |
+| Source transaction ID | Not available in the accessible extract |
+| Event amount | Not available |
+| Exact event-created time | Not available |
+| Minutes late | Cannot calculate without the event-created time |
+| Recorded accounting status | Not available |
+| Status consistent with policy? | **Undetermined without event evidence** |
+
+The accessible extract contains work-order and cost-period records, but **no cost-event rows**. The supporting records are restricted to a records custodian. I requested an authorized extract but did not receive one. The absence of visible event rows is **not evidence that no late event occurred**.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225**, states that:
+
+- New transactions falling in the Pending Close period or an earlier period are not staged in Cost Accounting or Receipt Accounting; they are processed after the period is closed or reopened.
+- Transactions entered before Pending Close continue to be processed, including those in error.
+- **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** and continue to be processed.
+
+Accordingly, an ordinary, non-exempt transaction created after **`2025-09-30T18:00:00`** should be held from processing while that Pending Close hold remains in effect. Its event type, creation time, and recorded accounting status are necessary to reach a defensible consistency conclusion.
+
+**No database records were changed.** I submitted the incomplete audit with status **`needs_evidence`** and saved the result and provenance at:
+
+`/cache/work/worker_144079c62761/audit-report.json`
+
+Completion requires a custodian-approved cost-event extract for **WO-2025-09-004**, including the source transaction ID, amount, event type, creation timestamp, and accounting status.

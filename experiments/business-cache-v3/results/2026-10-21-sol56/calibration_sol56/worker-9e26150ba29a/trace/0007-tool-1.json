@@ -1,0 +1,13 @@
+{
+  "event_id": 37,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nr=Decimal('130'); ot=Decimal('9'); rate=Decimal('23.1'); mult=Decimal('1.73'); wh=Decimal('0.2137'); d=Decimal('138')\\ng=r*rate+ot*rate*mult\\nn=g*(1-wh)-d\\nq=Decimal('0.01')\\nprint(g, g.quantize(q, rounding=ROUND_HALF_EVEN))\\nprint(n, n.quantize(q, rounding=ROUND_HALF_EVEN))\\nprint('if gross rounded first',g.quantize(q,rounding=ROUND_HALF_EVEN)*(1-wh)-d, (g.quantize(q,rounding=ROUND_HALF_EVEN)*(1-wh)-d).quantize(q,rounding=ROUND_HALF_EVEN))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "3362.667 3362.67\n2506.0650621 2506.07\nif gross rounded first 2506.067421 2506.07\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

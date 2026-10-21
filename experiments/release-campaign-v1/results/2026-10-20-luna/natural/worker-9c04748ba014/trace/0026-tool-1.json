@@ -1,0 +1,13 @@
+{
+  "event_id": 180,
+  "name": "python_run",
+  "arguments": "{\"code\":\"from itertools import product\\n# candidate copy imported via string? define copied compact\\n\\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    if not s or s[0] == '0' or any(not ch.isdigit() or int(ch)>limit for ch in s): return 0\\n    suffix_len=len(s)\\n    def count_pref(bound):\\n      length=len(bound)\\n      if not length:return 0\\n      total=0\\n      for i,ch in enumerate(bound):\\n       digit=int(ch);minimum=1 if i==0 else 0;remaining=length-i-1\\n       choices=max(0,min(limit,digit-1)-minimum+1)\\n       total+=choices*(limit+1)**remaining\\n       if digit<minimum or digit>limit:return total\\n      return total+1\\n    def upto(bound):\\n      if bound<=0:return 0\\n      bt=str(bound)\\n      if suffix_len>len(bt):return 0\\n      total=0\\n      for length in range(suffix_len,len(bt)):\\n       p=length-suffix_len\\n       total+=1 if p==0 else limit*(limit+1)**(p-1)\\n      p=len(bt)-suffix_len\\n      if p==0:total+=int(s<=bt)\\n      else:\\n       pref=bt[:p]; n=count_pref(pref)\\n       if s>bt[p:] and all((1<=int(c)<=limit if i==0 else 0<=int(c)<=limit) for i,c in enumerate(pref)):n-=1\\n       total+=n\\n      return total\\n    return upto(finish)-upto(start-1)\\n\\ndef brute(st,fin,lim,s):return sum(str(x).endswith(s) and all(int(c)<=lim for c in str(x)) for x in range(st,fin+1))\\nfor lim in range(1,5):\\n for s in ['1','2','10','11','3']:\\n  if any(int(c)>lim for c in s) or s[0]=='0':continue\\n  for a in range(1,120,11):\\n   b=a+25\\n   x=count_powerful_integers(a,b,lim,s);y=brute(a,b,lim,s)\\n   if x!=y:print('bad',a,b,lim,s,x,y)\\n\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

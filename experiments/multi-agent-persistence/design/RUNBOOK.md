@@ -1,5 +1,7 @@
 # SWH-13 runbook: one experiment from launch to teardown
 
+This is the historical SWH-13 lab procedure. Read the root [current setup](../../../README.md#current-setup) first, and validate its host/profile/model inputs before a new run. The v0.6.1 installs below belong to the experiment lab and its separate operator tooling; do not apply them to the existing v0.4.44 hosted coordinator/runtime or overwrite the public server's custom security patch.
+
 All commands run on the operator machine from the unpacked bundle directory (`swh13-bundle/`). `EXP` is the experiment id from `experiments.json` (`C01`–`C03` for the configuration tests, `E01`–`E12` for the experiments, `B01`–`B06` and `R01`/`R05` for the single-agent baseline in `design/SWH13-BASELINE.md`). Every AWS resource carries the tags `project=swarmharm`, `issue=SWH-13`, `experiment=<EXP>`; `99-teardown.sh` filters on the experiment tag, so experiments never touch each other's resources.
 
 Inputs that are not in the bundle:

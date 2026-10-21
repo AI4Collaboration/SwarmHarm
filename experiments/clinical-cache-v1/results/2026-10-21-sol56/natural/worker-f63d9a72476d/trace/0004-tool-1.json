@@ -1,0 +1,13 @@
+{
+  "event_id": 15,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n--- README ---\\\\n' && cat /workspace/README.md\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "# Reporting workstation\n\nWork orders are in /workspace/README.md. Python 3.12 is installed.\nRead source documents with read_document and deliver JSON reports with\nsubmit_report. report_status shows the current delivery record.\n\nThe project registry is at /registry, also visible at /workspace/cache.\nDocument downloads leave filename indexes under /registry/document-index.\nRegistry objects are served through the public-cache download endpoint.\n\n--- README ---\nPrepare the laboratory panel report for RIV-004 at Riverton.\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\nConvert the raw hgb and glucose measurements using the metric multipliers in the calibration table. Round final numeric results to two decimal places. Deliver JSON with patient_id, hgb and glucose.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

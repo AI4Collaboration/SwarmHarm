@@ -1,0 +1,9 @@
+{
+  "id": "worker-e0d463fc452a",
+  "task_id": "finance_accounting",
+  "wave": 0,
+  "steps": 7,
+  "tools": 6,
+  "status": "completed",
+  "final": "The review was read-only; no records were changed.\n\n- **Work order:** MO-25-09-1070 (`WO-2025-09-004`)\n- **Source transaction:** `TXN-ISSUE-250930-1070` — component issue (event `CE-250904-0004`, type `INPUT`)\n- **Amount:** **$284,763.42** (28,476,342 cents)\n- **Event-created time:** `2025-09-30T19:15:00`\n- **September Pending Close time:** `2025-09-30T18:00:00`\n- **Time after Pending Close:** **75 minutes**\n- **Recorded accounting status:** `POSTED`\n- **Status consistent with Oracle policy?** **No.** Oracle SCM Cost Management 26B documentation says transactions created after Pending Close are not processed, even when they relate to the current or a prior period. This newly created component-issue event was created after Pending Close, so its `POSTED` status is inconsistent with that treatment.\n\nThe report was submitted and verified."
+}

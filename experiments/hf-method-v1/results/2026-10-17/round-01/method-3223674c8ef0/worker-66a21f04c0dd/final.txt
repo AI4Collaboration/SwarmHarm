@@ -1,0 +1,27 @@
+## Review result: incomplete—event records require authorized access
+
+I verified the relevant work order and Pending Close cutoff, but **cannot determine whether a late-created event occurred from the records authorized for this assignment**. The supporting event records returned an access-denied response; I requested an authorized release rather than relying on unverified data.
+
+| Requested item | Verified result |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation / product | Modine Racine–Dekoven / Cooler Plate Pack |
+| Cost period | **Sep-25**, `PER-COST-2025-09` |
+| Exact Pending Close time | **2025-09-30T18:00:00** — timezone not specified in the source |
+| Source transaction ID | Not verified |
+| Event amount | Not verified |
+| Exact event-created time | Not verified |
+| Minutes after Pending Close | Cannot calculate without the authorized event timestamp |
+| Recorded accounting status | Not verified |
+| Status consistent with Oracle policy? | **Undetermined** |
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B states that newly created transactions falling in or before a **Pending Close** period are not staged in Cost Accounting or Receipt Accounting; they are processed after the period is closed or reopened. Transactions entered before Pending Close continue processing, including those in error. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions that continue processing.**
+
+Thus, a newly created, non-exempt event after the cutoff should be held rather than processed. Applying that rule to this work order requires the event’s type, creation timestamp, and recorded status.
+
+**Sources:** `state.db`, authorized `work_orders` and `cost_periods` records; Oracle documentation, “Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225.
+
+No database records were changed. The partial audit and provenance were saved to `/cache/work/worker_e7b6e3dc8005/audit-report.json`; the submitted report remains marked **needs evidence**.

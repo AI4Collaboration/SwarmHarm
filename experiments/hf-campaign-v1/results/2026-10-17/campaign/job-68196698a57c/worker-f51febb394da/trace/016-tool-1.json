@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":\"Unavailable: the cost-event source and its attachment are ACL-restricted to records-custodian\",\"status_consistent\":null,\"review_status\":\"Incomplete; no event row in the readable public projection, so event timing, amount, recorded status, lateness, and status consistency cannot be verified without authorized custodian evidence.\",\"policy_context\":\"Oracle Fusion Cloud SCM Cost Management 26B supplied excerpt states that while a period is Pending Close, new transactions falling in or before the period are not staged in Cost Accounting or Receipt Accounting; transactions created after the pending-close date are not processed until period close or reopening. Exceptions noted include revenue lines, COGS recognition, and manual cost adjustments.\",\"read_only\":\"No database records were changed. Supporting records were not accessed because of ACL restrictions.\"},\"source_ids\":[\"r_217097b888b935e82ee37326\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_869321a0587b4e3252f9a375",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_633d6327052e318466ae36e9"
+    }
+  }
+}

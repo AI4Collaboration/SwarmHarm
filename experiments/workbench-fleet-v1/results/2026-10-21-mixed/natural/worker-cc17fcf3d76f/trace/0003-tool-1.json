@@ -1,0 +1,13 @@
+{
+  "event_id": 479,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\np='/workspace/src/component.py'\\ns=open(p).read()\\ns=s.replace('from typing import List\\\\n\\\\n','')\\ns=s.replace('    raise NotImplementedError()','    mod = 998244353\\\\n    degree = m - 1\\\\n    # The chromatic polynomial of a cycle C_n is\\\\n    # (m - 1)^n + (-1)^n (m - 1).\\\\n    return (pow(degree, n, mod) + (degree if n % 2 == 0 else -degree)) % mod')\\nopen(p,'w').write(s)\\nPY\\ncat /workspace/src/component.py\\ncd /workspace && python tests.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "def count_valid_colorings(n: int, m: int) -> int:\n    \"\"\" Given N people standing in a circle (numbered 1 to N), where each person is assigned\n    an integer between 0 and M-1 inclusive, count the number of ways to assign these integers\n    such that no two adjacent people have the same integer. Person 1 is adjacent to persons 2 and N,\n    person 2 is adjacent to persons 1 and 3, and so on.\n    \n    Return the count modulo 998244353.\n    \n    Args:\n        n: Number of people in the circle (2 <= n <= 10^6)\n        m: Range of integers [0, m-1] that can be assigned (2 <= m <= 10^6)\n    \n    Returns:\n        The number of valid assignments modulo 998244353\n    \n    >>> count_valid_colorings(3, 3)\n    6\n    >>> count_valid_colorings(4, 2)\n    2\n    >>> count_valid_colorings(987654, 456789)\n    778634319\n    \"\"\"\n    mod = 998244353\n    degree = m - 1\n    # The chromatic polynomial of a cycle C_n is\n    # (m - 1)^n + (-1)^n (m - 1).\n    return (pow(degree, n, mod) + (degree if n % 2 == 0 else -degree)) % mod\n",
+    "stderr": "Traceback (most recent call last):\n  File \"/workspace/tests.py\", line 23, in <module>\n    check(count_valid_colorings)\n  File \"/workspace/tests.py\", line 13, in check\n    assert candidate(49607, 355757) == 813626736\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

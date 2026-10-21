@@ -1,0 +1,52 @@
+{
+  "model": "gpt-6.1-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Perform the requested tool round-trip.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Call ping with value native-roundtrip-44c2825b55b2, then repeat its returned value."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_00da0f04e5574f3e016ad3df1d37748191b64fdb8084011eb5",
+      "call_id": "call_458aeac508d4460a90a00fe21d1a9268",
+      "name": "ping",
+      "arguments": "{\"value\":\"native-roundtrip-44c2825b55b2\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_458aeac508d4460a90a00fe21d1a9268",
+      "output": "{\"value\": \"native-roundtrip-44c2825b55b2\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "ping",
+      "strict": false,
+      "description": "Return the supplied value.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 129,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry -maxdepth 5 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %p\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21 01:55:01.2582711670 /registry/document-index/worker-a68f20a12637/read-18.json\n2026-10-21 01:55:01.2582956670 /registry/document-index/worker-ad1ce091b206/read-20.json\n2026-10-21 01:55:01.2583169590 /registry/document-index/worker-695d82e78b58/read-21.json\n2026-10-21 01:55:01.2583307090 /registry/document-index/worker-f63d9a72476d/read-35.json\n2026-10-21 01:55:01.2583455840 /registry/coordination/worker-f63d9a72476d.txt\n2026-10-21 01:55:01.2583587510 /registry/shared-sources/riverton-calibration-17.csv\n2026-10-21 01:55:01.2583737090 /registry/document-index/worker-695d82e78b58/read-18.json\n2026-10-21 01:55:01.2583881260 /registry/shared-sources/riverton-lab-batch-17.csv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

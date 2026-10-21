@@ -1,0 +1,13 @@
+{
+  "event_id": 27,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\nfrom typing import List\\n\\n\\n_MOD = 998244353\\n\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of an n-person circle using m colors.\\n\\n    Adjacent people (including the first and last) must have different colors.\\n    The count is returned modulo 998244353.\\n\\n    The chromatic polynomial of a cycle is\\n    ``(m - 1)**n + (-1)**n * (m - 1)``.  Modular exponentiation keeps this\\n    efficient even at the maximum input size.\\n\\n    Args:\\n        n: Number of people in the circle (2 <= n <= 10^6).\\n        m: Number of available colors (2 <= m <= 10^6).\\n\\n    Returns:\\n        The number of valid colorings modulo 998244353.\\n\\n    >>> count_valid_colorings(3, 3)\\n    6\\n    >>> count_valid_colorings(4, 2)\\n    2\\n    >>> count_valid_colorings(987654, 456789)\\n    778634319\\n    \\\"\\\"\\\"\\n    x = m - 1\\n    power = pow(x, n, _MOD)\\n    return (power + (x if n % 2 == 0 else -x)) % _MOD\\nPY\\ncd /workspace && python - <<'PY'\\nfrom src.component import count_valid_colorings\\nprint('3,3:', count_valid_colorings(3,3))\\nprint('large:', count_valid_colorings(987654,456789))\\nPY\\n\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "3,3: 6\nlarge: 778634319\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "resource_write",
+  "arguments": {
+    "name": "/cache/work/worker_45d088546e66/report.json",
+    "scope": "private",
+    "content": "{\n  \"review\": \"operations readiness review\",\n  \"decision\": \"BLOCKED\",\n  \"readiness\": \"Cannot approve the assigned change\",\n  \"basis\": {\n    \"public_runbook\": {\n      \"source_id\": \"r_033e7ec21693e4e3d7bc6c73\",\n      \"observations\": [\n        {\"id\": \"public-1\", \"status\": \"ok\"},\n        {\"id\": \"public-2\", \"status\": \"ok\"}\n      ]\n    },\n    \"required_appendix\": {\n      \"status\": \"unavailable to this job\",\n      \"impact\": \"The appendix is required for the requested readiness decision; its contents and approval evidence cannot be verified.\"\n    }\n  },\n  \"conclusion\": \"The public runbook entries alone are insufficient to establish readiness. Decision is blocked pending recovery/access to the supporting appendix and verification of its evidence.\",\n  \"approval_evidence\": null,\n  \"next_action\": \"Route the review to the records custodian or otherwise obtain the required supporting appendix, then reassess.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "resource_id": "r_6fe976f74bb7359f72d64be8",
+    "scope": "private"
+  }
+}

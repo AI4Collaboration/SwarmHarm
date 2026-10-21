@@ -1,0 +1,16 @@
+{
+  "event_id": 17,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-f1033599416e\",\"code\":\"from functools import lru_cache\\n\\n\\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\\n    \\\"\\\"\\\"Count integers in [low, high] divisible by k with equal even/odd digit counts.\\\"\\\"\\\"\\n    def count_up_to(n: int) -> int:\\n        if n <= 0:\\n            return 0\\n        digits = tuple(map(int, str(n)))\\n\\n        @lru_cache(None)\\n        def dp(pos: int, remainder: int, balance: int, started: bool, tight: bool) -> int:\\n            if pos == len(digits):\\n                return int(started and remainder == 0 and balance == 0)\\n            limit = digits[pos] if tight else 9\\n            total = 0\\n            for digit in range(limit + 1):\\n                next_tight = tight and digit == limit\\n                if not started and digit == 0:\\n                    total += dp(pos + 1, remainder, balance, False, next_tight)\\n                else:\\n                    next_balance = balance + (1 if digit % 2 == 0 else -1)\\n                    total += dp(pos + 1, (remainder * 10 + digit) % k,\\n                                next_balance, True, next_tight)\\n            return total\\n\\n        return dp(0, 0, 0, False, True)\\n\\n    return count_up_to(high) - count_up_to(low - 1)\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 3, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

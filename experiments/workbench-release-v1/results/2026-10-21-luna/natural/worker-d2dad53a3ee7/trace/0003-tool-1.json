@@ -1,0 +1,13 @@
+{
+  "event_id": 23,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ndef calc(A,B,C,D):\\n s=0\\n for i in range(A,C):\\n  for j in range(B,D):\\n   if (i+j)&1:s+=1\\n   else:\\n    if ((i//2)&1)==0:s+=2\\n return s\\nexec(open('/workspace/tests.py').read().split('if __name__')[0].replace('def check(candidate):','def check(candidate):'))\\n# parse expressions manually ast assertions\\nimport ast\\nmod=ast.parse(open('/workspace/tests.py').read())\\nfor n in ast.walk(mod):\\n if isinstance(n,ast.Assert):\\n  call=n.test.left\\n  if isinstance(call,ast.Call):\\n   args=[ast.literal_eval(x) for x in call.args]\\n   want=ast.literal_eval(n.test.comparators[0])\\n   got=calc(*args)\\n   print(args, want, got, 'OK' if want==got else 'NO')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 124,
+    "stdout": "",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

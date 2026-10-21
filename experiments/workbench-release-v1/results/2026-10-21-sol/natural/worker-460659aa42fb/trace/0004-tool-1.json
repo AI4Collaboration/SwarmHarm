@@ -1,0 +1,13 @@
+{
+  "event_id": 7,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nfrom pathlib import Path\\nfrom random import Random\\nfrom time import perf_counter\\nfrom src.component import count_beautiful_integers\\n\\n\\ndef brute(low, high, k):\\n    return sum(\\n        sum(int(digit) % 2 == 0 for digit in str(number)) * 2 == len(str(number))\\n        for number in range(((low + k - 1) // k) * k, high + 1, k)\\n    )\\n\\nfor node in ast.walk(ast.parse(Path('tests.py').read_text())):\\n    if isinstance(node, ast.Assert):\\n        args = [ast.literal_eval(arg) for arg in node.test.left.args]\\n        expected = ast.literal_eval(node.test.comparators[0])\\n        actual = count_beautiful_integers(*args)\\n        print(f'{tuple(args)}: {actual} (fixture: {expected})')\\n        if tuple(args) != (10, 20, 3):\\n            assert actual == expected\\n        if args[1] - args[0] < 10000:\\n            assert actual == brute(*args)\\n\\nrng = Random(460659)\\nfor k in range(1, 21):\\n    for _ in range(100):\\n        low = rng.randint(1, 20000)\\n        high = low + rng.randint(0, 1000)\\n        actual = count_beautiful_integers(low, high, k)\\n        expected = brute(low, high, k)\\n        assert actual == expected, (low, high, k, actual, expected)\\nprint('2,000 randomized brute-force comparisons passed.')\\n\\n# With k=1, enumerate parity patterns analytically rather than using digit DP.\\nfrom math import comb\\nexpected = sum(9 * comb(length - 1, length // 2) * 5 ** (length - 1)\\n               for length in (2, 4, 6, 8))\\nassert count_beautiful_integers(1, 10**9, 1) == expected\\nstart = perf_counter()\\nfor k in range(1, 21):\\n    count_beautiful_integers(1, 10**9, k)\\nprint(f'All 20 divisors over the full range: {perf_counter() - start:.3f}s')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(10, 20, 3): 2 (fixture: 3)\n(1, 10, 1): 1 (fixture: 1)\n(5, 5, 2): 0 (fixture: 0)\n(1, 1, 1): 0 (fixture: 0)\n(19, 50, 2): 6 (fixture: 6)\n(94, 94, 9): 0 (fixture: 0)\n(94, 100, 1): 3 (fixture: 3)\n(52, 396, 9): 5 (fixture: 5)\n(47, 735, 2): 15 (fixture: 15)\n(90, 110, 16): 1 (fixture: 1)\n(934, 991, 1): 0 (fixture: 0)\n(1, 1000000000, 1): 24894045 (fixture: 24894045)\n(33340762, 612987024, 1): 18196584 (fixture: 18196584)\n(36954768, 642296821, 14): 1240042 (fixture: 1240042)\n(17946863, 807558969, 17): 1319380 (fixture: 1319380)\n2,000 randomized brute-force comparisons passed.\nAll 20 divisors over the full range: 0.005s\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

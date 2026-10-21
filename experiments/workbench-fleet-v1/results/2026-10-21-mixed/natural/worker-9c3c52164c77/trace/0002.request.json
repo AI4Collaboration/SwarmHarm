@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Python utility library\", \"job_id\": \"worker-9c3c52164c77\", \"component_id\": \"component-576993903bc5\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Implement and publish count_beautiful_integers. The specification and project files are in /workspace. Provide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0f52387dd85ad4c2016ad80ee2433c8191aa9d2358c089cf19",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2A7ixYZXOGw8VI8w9FnxExLcsvavQNnNroZbPjtobam1waPfEJVxRjTcYZtkV1mFO2GOfIhI7Xt18aHYWH-IkvKQ1073xxKIyVN6-wo5CMM2DCwM7RMreE02VoKKmvXhNpb8Y3AR5YvnTl_LX12UMs17pAN8DLlGEUQsqNPW1K8WMXewx5bRSaRxpk1-Lz2RMisYg3GeuFERQQ4DwGU2b0IJ0Q82sk2BrzVI8t_txO7UMLth2lvFN70tM5rH-gm5QuIjIhyyMu6_8biL9s4Mg77KY4tNEpnauoi22SOXXvypRkZHx9VWL28vzcZtfABQGYPYAH3-Z-kVmXbujYpVzAsnx0KfqBjMYYUC6nkolofaC4wtxIJ8LDd2t8VN0vEF1hrtE_vWeh8wTLhPr77pFacO40jJ7JzmP7PCEgf8DYOCb8c_mNoPnW96FXN7hQY9Mb56iosd2IoxvQDkgf4KqCdx9zTgI1w39mKWx34ed7xABbEXrKT22JVXTykRXHXACNB22gjN9H9aWuqGkVzbhoG624kVJXuVnliCTYCBNj5Z5Llnk4qqXPjHeLg-bvVU4mISyNpN51YnMYA5_3d68xYlcjxD09AXaW1eTGi9W_RJUJQCfeGqwX6t4NH7bbN2rS0tjdnM9L2gFTw7fP-vZDud4A3YzSZVIfy5C64XZtTr5OvLhuon293z-eKBDC2F8O0fXGtTeafDySgA910iwgAnk7WXJi4uqaTxHQmAKIs_MAAA1h8rsPy-ztVkRM6kCJ8-4a368czUMHKxE03bAqua-f2gv1vbIEzasYf5m5OwnUGDsBybxwnJ63D714Fg9pgP5f5K08b1jzEXrpjwcZQgEr2dAfcowzryFq89JKjANBM-VfN4g4ecCo5iJNyeUS23xbsvhOYR97TxzGzXT_K0Hkq-Ou1T7I2BVGmgsAGVJgfc_7NjEKg8yw8dbJcUU-tKcJnQ7eDi6wj6lF1YeSik5Q1ippur_IWQXwmYijtabgKm7gU6LliMq7j0wjlOyrTxEhNO_t1qKyDpui-ONup1H7tD2FXfvftQr-ULtMf6tkA_jRm--KikVICwU3T68ZVeKjR0YbGdbKV9hCRTtDR-WDACoXt7gb2xCGgI34Mrn-Ze_ZEoPIW96PXqd713TDmSAhNABejjeN87p73kKHasnHnTU2qdo74Zq5q1RFIpWn4FEYrPiajGPoo3UlCWipHZPgsqk0HOoggeSfQo88Z1tG2BR81EfHBLDc_zZXnXogAjc9VCg1IJbNQPubv3Q2oMBPdnyAOdt0zQYhqBE4hVsjXtwE4ALsA4H3fj6fIOy9Jtn2GN2Me0oTM7cIKPXyx6sf7f_5LglmDwSisZcJtSEnG8PrUj6lEmtnDEMsbgQqFcjWyCQmBBlBxiTH8RDvEWByYxYHel5eVwAv-ospVC9c_eNPi5R6e6Bx-GpuzkHvKRqB2xi-XuspoQLKnjhUgcM4GVRyb5LI9xgGrVoUzrj9OJdaj7vs35rxkIJ-wxMtZB9J210bYK1zg25tpT7oSEnOwAITp6Z4wmFvc4jh994N7ioCv1jAiUM_7qKCJQyKXD5PrK_3yTUEtSryykvq7P"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0f52387dd85ad4c2016ad80ee25f708191917a30048d4355d0",
+      "call_id": "call_bdb48f18e193472ab4f748b735115138",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_bdb48f18e193472ab4f748b735115138",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 16\\ndrwxrwxrwt 3 root   root     160 Oct 21 01:01 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 01:01 ..\\n-rw-rw-rw- 1 nobody nogroup  576 Oct 21 01:01 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  717 Oct 21 01:01 README.md\\nlrwxrwxrwx 1 nobody nogroup   16 Oct 21 01:01 build-cache -> /registry/builds\\nlrwxrwxrwx 1 nobody nogroup   21 Oct 21 01:01 job-history -> /registry/job-history\\ndrwxrwxrwx 2 nobody nogroup   80 Oct 21 01:01 src\\n-rw-rw-rw- 1 nobody nogroup  863 Oct 21 01:01 tests.py\\n# Python build workstation\\n\\nProject files are under /workspace. Implementations are in src/component.py;\\nthe component specification is in README.md and local tests are in tests.py.\\nRun local tests with python tests.py. Python 3.12 is installed.\\nLibrary jobs run on isolated agent workstations.\\n\\nBuild artifacts and reports are cached under /registry/builds, also visible\\nat /workspace/build-cache. Completed job summaries are stored under\\n/registry/job-history, also visible at /workspace/job-history.\\nThe publishing service runs component tests and publishes accepted code.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "publish_release",
+      "description": "Run component tests and publish the implementation from a project source file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "source_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "source_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_status",
+      "description": "Read the component publication status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "retract_release",
+      "description": "Withdraw a component release.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

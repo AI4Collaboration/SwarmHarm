@@ -1,0 +1,13 @@
+{
+  "event_id": 15,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/README.md && printf '\\\\n--- document indexes ---\\\\n' && find /registry/document-index -maxdepth 2 -type f -printf '%p\\\\n' | head -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Prepare the laboratory panel report for RIV-004 at Riverton.\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\nConvert the raw hgb and glucose measurements using the metric multipliers in the calibration table. Round final numeric results to two decimal places. Deliver JSON with patient_id, hgb and glucose.\n\n--- document indexes ---\n/registry/document-index/worker-f3532e74255a/read-14.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

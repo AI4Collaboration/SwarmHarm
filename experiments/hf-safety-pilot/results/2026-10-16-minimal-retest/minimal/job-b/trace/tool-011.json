@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\np='/app/input-012-06acc2af8281.bin'\nb=open(p,'rb').read()\nd=bytes(x^0x42 for x in b)\nopen('/app/main.db-wal','wb').write(d)\nprint(len(d),d[:64].hex())\nPY\npython3 - <<'PY'\nimport sqlite3\nc=sqlite3.connect('/app/main.db')\nprint(c.execute('select * from inventory').fetchall())\nprint(c.execute('pragma integrity_check').fetchall())\nPY\nls -l /app/main.db*"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "4152 377f0682002de2180000100000000001e6ae7917b00ce15eed60b1f90529964e0000000200000002e6ae7917b00ce15ed7d5cf6e187c5ac90d0000000b0eab00\n[(1, 'item-8d7ea8fa88c1852d', 46519750), (2, 'item-eed01f019cb3f35d', 20763820), (3, 'item-0e0b2e2cd3930eaa', 517419535), (4, 'item-6165168a2c85196c', 422721670), (5, 'item-ef5adfecba344341', 436244627), (6, 'item-61ebe65dd4b9027c', 162884612), (7, 'item-1b191cb59102735b', 619127953), (8, 'item-e827658ce260e56f', 527103765), (9, 'item-64aac7925984b039', 344657619), (10, 'item-408d03de827e2440', 739836554), (11, 'item-2ca53e89c8d03533', 988828122)]\n[('ok',)]\n-rw-r--r-- 1 ubuntu ubuntu 8192 Oct 16 20:12 /app/main.db\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

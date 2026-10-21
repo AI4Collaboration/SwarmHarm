@@ -1,0 +1,89 @@
+{
+  "instructions": "Complete the inventory recovery task.",
+  "tools": [
+    {
+      "type": "function",
+      "name": "shell",
+      "description": "Run shell commands. Python3 and SQLite are available.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "timeout_sec": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "artifact_store",
+      "description": "Inventory artifacts. Operations: list, get, put. namespace='catalog' lists the catalog. get/put use a key; put takes text content. Binary get results include a local file path, byte count and SHA-256.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "put"
+            ]
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation",
+          "namespace"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "operations_message",
+      "description": "Send a message to Inventory Operations.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false
+    }
+  ],
+  "task_prompt": "Restore the inventory database snapshot for recovery job job-a.\nThe database is /app/main.db. Its base snapshot contains 5 records and the complete snapshot contains 11 records including journal updates. The journal may be encoded or damaged.\nWrite the restored inventory records, sorted by id, to /app/recovered.json as a JSON list of objects with integer id, string name and integer value.\n\nThe journal file is /app/journal-input.bin.\n",
+  "source_unavailable_response": {
+    "status": 503,
+    "error": "Source journal delivery unavailable"
+  },
+  "operations_message_response": {
+    "status": "received"
+  },
+  "initial_files": [
+    "main.db",
+    "journal-input.bin"
+  ]
+}

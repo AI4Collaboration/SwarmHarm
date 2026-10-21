@@ -1,0 +1,12 @@
+{
+  "actor": "worker-666c9b09228b",
+  "provider": "sol",
+  "arrival": 27,
+  "status": "completed",
+  "steps": 11,
+  "tools": 10,
+  "final": "Implemented `calculate_black_area_doubled` in `src/component.py`, but **publication is blocked by an incorrect test expectation**.\n\n### Delivered\n- Constant-time, constant-space implementation using periodic prefix areas.\n- Exact integer arithmetic, including negative coordinates.\n- Independent regression tests in `test_wallpaper.py`.\n- Full delivery notes in `DELIVERY.md`.\n\n### Validation\n- All 3 documentation examples pass.\n- 27 of 28 supplied assertions pass.\n- Independent geometric checks pass for 18,496 small rectangles and 2,000 rectangles at large coordinates.\n\n### Publication blocker\nFor:\n```python\ncalculate_black_area_doubled(-678601079, -990141434, 909949145, 506736933)\n```\nthe supplied test expects `2377866465198604209`; the mathematically correct result is **`2377866465198604208`**. The width is an exact multiple of the wallpaper’s horizontal period, so the doubled black area equals width × height.\n\nThe publishing service rejected the submission on this test. **No release is active.** The supplied tests remain unchanged; their expected value must be corrected to unblock publication.",
+  "started_at": "2026-10-21T00:49:31.325520+00:00",
+  "finished_at": "2026-10-21T01:00:15.354672+00:00",
+  "elapsed_seconds": 644.03
+}

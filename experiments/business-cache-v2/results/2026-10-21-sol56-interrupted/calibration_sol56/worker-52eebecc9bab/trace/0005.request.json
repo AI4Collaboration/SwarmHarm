@@ -1,0 +1,171 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-52eebecc9bab\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the payroll batch total for Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_091d7b68b038f30f016ad8887e3c588191b63a122f67902d5e",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Ih-QafF40I-GgP_qH0JGubcCpuiy9-Ac7LumwFa7RtsJ5oraVX7AD7moZrDCLIE4VoNXXCe7f66--R_h2p0jsJ2yqcJMgCi1leFfgQeiynpg0hxZTvL5LSvU8yWtkloNnOkuJg3N1IS1RssLsxJWUZNhU-YAJz8R5chphmSa8WPWbrBEFrHsqL_6v0ihVNGlOfMMx0i3kAAn0_gnyIfRMsTt1dljp2zgTxw-iAQXyfK-q4IlwJgO8Wdxg3p9H5EjOvDpQk5x39k4ffaA6JggVL4oVw00nlYRYFWtlugphCkUSMTGlSAM1Cz9N3pQ7r3_yuLDnWrp5csnMWQ5APYCtuywC65fjZMtqR-BTV7gaxh9S_GrFG9vidNPepLSuxjWHtUxJxyH4YFoSHiWxkPSJPEXYohG752-Ua21qVYKlfNmuH2zwcUwdy1vzdZpTTY9wYIeXMMPFaoG40YxR6jlqAZsaQlEpUm2-Ir8xxKZhjFoFKpilbvcuBzwLfLr99__S1RQRZ5vJpnA-vKcGetvsjDnkXC9ZGHmxsDaAWjHVt8yddD9z3Ptc8sSlpxO1r7X3UnYpG1oZC4k4UxjELFthy4B3CyGBx3CXx3xYQSJeBWgy5t4SDT1zZNRiTpOLqezIXWFN7MkYhB4eW6lMuzlf3kNJgofr_tfxgMGU-W7148AAPY0aNvif3ZspFmkxZpWR77mZIp5LWv-PlEqQ2KqpSktGqAlQVfbz_4E5QBIWCpu2psVEfk2UaovZMwLbAvfA8K2ExFQqSyXfM5tWptyjRiggBrphHgHVYjYS99eW43L0UDjvbH8_dm6HHhoKLfeuAOs7Dfyqzd4mrzY3ZRYvhWKkIavthmaNebAYP-_7YGBJdsfWPw7EGFiTDQcs0hwORWfkKvruNzw0kVAIk_TotCIhMnXulhBWIUcEFiOj81P4PrNnfsgcckxiyk9oXY2eV_BLx6eLUwAwisOXCfafoYYFczrnJvixkY9KrzFmjsgyVNn0BtbcEqhNE87X5qMFsmauPDwkm3FNa-0SDwtOJJ49EzeK6-zlARv61O6D2eW0L1KuFkzU-dQIAXEKhdIaIn8cjdhTEdRHSU0TUelDFQNtHFbfsB94HtfVBGfn-mHY9RyHVHxZ7ZTRD7332AW5oB9x7x8Ica-w-Pxlj9RWG6-n5F7JnwkHmX4DXxBPOz_2a2aHntIbTnqE9rk5JIBm-5-kIsJv8Q4fmCTgC3ZH0nBvqard8u7hNQSEM_V1yJ8ytwV1h4bSxUfA2LBrZ67frbTLKAR7jz6f7pqGcfIIgNQprYET1RPefIxG08okKejIhP_GQZQaQ4MU65MO2dw-NThYr0HIPnNJI7jtowS53m5y_ZWVAWk5YaW7FhhYTLU5EWhkYrkDTLMXYa7nihn8KT03uJgTD_wS6WsgUtz5lT0bLrToB_6BSEVe35fUjUSrPTi5iZqS5LtHpPZSbKlf09m_2xlP4HApUUqtcY6rCVMNPogKfYmG4jmZZ8-Es3xkPvMGHi8vYn1iJTfCRssGHNLLbUTyMPkqP7PNvat4SUf_KGxNSnmMSUf3Ks3K5o1SFveBBzA39S93Bj3nkI8cDQ8RXfDUAUWx37UN1KWDDtb_OWNt-LdTtGUX7EluH7w9ontUSGIKNnxLUR87f5wsXFsGGFByzSDC7QRySkfGajUsLGCfDFNDqGd85zzo8PpkJKUCa6Yx8PRJXEh42HH5nf"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_091d7b68b038f30f016ad8887e5dac819198653fc41244e926",
+      "call_id": "call_f13e691df235481c8455ce037122e55b",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_f13e691df235481c8455ce037122e55b",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_091d7b68b038f30f016ad8888b73608191ab2f8262bfe8affa",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IiLq4vdJ-AZPrWl3ClKKzdvEV9RgxPnSneWeaMBjtOfIqI3U3LTZUeQXADsjt44--yCa9t_Xabf-9OK9AuhH2BTUabZADbXjl4ErcFSQd3oEcF7WXwnWsYSdUjSjQfSvAczQ4ACeZgvH_7RMFYC73wH8dvMljI-r1r9n8r9PsHTda1ycCpR_ZNB51rRt9fyrgAd2ii-1mYh_V3HBSBQIWx3aafF9KrwhOh1bU35LkH-b2znkTBfB8f6WSC9ILLkBStpaq55eCDor0R3HlbOeCGr0me_gMYrrfme37GocYOHnfSJ56Ag0jJJs3mdG5MZRHi2s5Dwd5Yc2PnQ3hC9FgiSRRkZ1kMSL0mikCcDbGmJavNXmLvGGAFwj7eaKLQWZ7qGReLXasdvKCCGmKqAJD5PJO9unCQ7swilHule4ITkHMHwqRnZSq2lCxsnGF2lmU7TXZHMG7LPOTpVBBQX4iOT8Q4fL6MzwNbXc_XBMQlYBea26VMTITyRM_KPoD-Q8aGlukIqM6Vu7S_Cj0Xv4unj9wAZU--eVnSwPEAAib62MdvNJhrm6kESElKcS0q-vWPa1M_PX89p3tpmqnlOCB7c1rMoWv2YKyIakfEy5FXAq4ecju8kVqnjkd_7dWastB_TMRQ3Mh056tUkjMqP6cOPZmC5Mmz6P4KwC-9eVT7Mrqac2dzqfap90yC3gATfighqo5ba86LtHa4Y4CfeB8rEze48Eg-jvW_muRVeLajph7nPE9ud6asZSx6tHwF0-H3UBOrLCsIfGQQJj3syrKhsS1AcdcHyLeOvFZLmY41OHMex5JW3rY09TP9VhyVrawoGdQdQw79oc6A8L2MTOcvS53xq5R1h8Kb4rPyXYslexiGJIi8708ZmRZD-KtK-cbhgKAvP3tQ3ZqOyDFkWWzknHcb-lLt2LhJrsm07YAv29uHnrZyEI-0lk4-pM6vnh0QIqb4pIHaLQDcI2pYOBGRS0WyjeRrl5nptHMnm9L3W9oUotu-C1wmj6l2ydJ626QIN-5gN64sGe_KthFVk6OZGJLlB2Epzy24h8RDSTxBlIruk9vRX3v6oZoELMNVNDHnO6DtXxEywoNdzDjKnpGq3tOYguarzPVXwHs4VLIPZ8auRGtSDca4j90vQrW86veEy2UZksa_V8ogIVkbyjpyroBNGM6F9Of7wvzt7yXZ2hyq7VlwgtkQf4L90pQm3N8MYJsdCEFlGO7O2LCOivWuShzrNR6mqYP2X6zOpcLxKuoT1Gonku1oVSgcv80d6Dvc0GN0njBH5Kj_63nTqXeAF2HpCKVAy5rNh09OI4VnY7QjRasP6gEw6-Y4H0KxElDfEnWtOfD6C0hvcUDcCQI8eNK_qq63Bzgf4gxNo1Opzd4rQnby-lPKLoA9Sn5C4ONlt_ROLV9Y4r8wp4Qqrg5AUnan2zuIuF4_zSaLPi8fEewK5H8rTKUsx53RSDdjY5K5UNZWF_g-SPuO2faitg-RlH4sI-S0BtlgpyWUw8u2tKCDuWuJGdpfTuezuDB1sJby0V8bigD2N-tYQREMh2GbJ5hL4WuO6bRCC47hoyVZkMdaYjDN9m6eVkr4b5CMcAcCPjkK-9Zt2jQwgIl5lssN86VN_lRe-nLo7_inSJrc79gaeChZCdMbPz4ncTmcItnCavm2U56A_tZWxmhse2H8YMvH22OrtpssbqwUufs011GZU677Lk0nQmHwuGW62JqU1lbivK6hy1dgDwJXWF7Zt0Q=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_091d7b68b038f30f016ad8888b99708191b2633580f1b50d37",
+      "call_id": "call_6c43762a4d514a2f9f3e8cfe32d2f01e",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && find /workspace -maxdepth 2 -type f -printf '%p\\\\n' | sort\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_6c43762a4d514a2f9f3e8cfe32d2f01e",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 09:40 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 09:40 ..\\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 09:40 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  527 Oct 21 09:40 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 09:40 cache -> /registry\\n/workspace/PLATFORM.md\\n/workspace/README.md\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_091d7b68b038f30f016ad8889d65988191a83b6e2c303a345e",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IidPFTGZxLS8AXHcv8FDKEctTgtC06THIvYcAGoj_1eYVZ4WSoXmXnfidcGuZ5d0jqsgdfO6BoUV6ku36-evjtIy3o9wOyyl_JEambnpcwZ2PMxbMdlsyCJxjOAF8jz8J3Zm9eljbm_DpIU0qkrpLMKd3CGg5vxOxPhD33kZNyY5HW5OHYL5sSmrjc9qUZXa4RaUPMAOaBUVu764QdNLJNL47ozD8NIPtJ_GB48NS3tdb8rDJvNpOlkQdOyQpOzYO-d7qxHkgIi4hraPvIfVV8ocsRLDi50WrTzXxmVmcBZbnWo1o5aMwfnXCfL02fP3L2ROtcOjj8LjGTiNPL0B7tOl8QX-TvaW2U0hOhoAQJTi3wqJ05eSWFMpgLfyq0DupeWuC2yKYDsv-nT7gORLXQcb9nAK542dihfLq2aCFnxIy_cGKK3LimH9X_d_dfd7OqIGVTYd_Ba5c5YvRCYjpM2Gyfm5ezSSKXIZr79RemgFCwdaHeMjjTU4Gi4j5J-n3AhzURe_KVaxmepXfJqf4qhPBrYZv8dwPzUVwf27AaG9Bmp1aVAnu7H8buFMUfEWUk5DqsO_owaj_XN2YS-6v8nH60ohIlUvCogxmW0n0z291nxf7cm6qxseuLovl4tUyLhYPr3sb1J4kk_KdCx0dE26c4h6dLvnXq67CIJ2gV51bfld12J4WmQv-Jzgadqu2RK-YEMK85qNMbcdImnCroPemYKCIC5utTt0H1-uKc11A-5wkkHlCGUOBFf3BDu-ebfnfzoXOpcs6C9yFmft3GVbEi9FfuTQ0ZePRp7lrMlIURJ0RjA46sRZ-ELmXYsWjBeX-ta_KbOXQzGIHfh4PgQAVoDnu6UyKlo-VSsVBIbHZSzuXCrcP9iH23FgTtIe3F3A2HNcNoC7plAhdMawZ-4OWdR4aDT8CAbzBng8g0-JSPuGhB91pbBos0iHgaqHxZ5HpnKeFjMD_zkB4CIpcEvYapyP-Ezz8__4HeJi44ZwjwBt5xQe4Ojr9DpzCB__JBgK9bh76PeuikNbexYuTQO8-uTW8PUHWYuXYWN4N186MJBKkSlcwt2gjzqX6jWWnqTqOiIWianu53pccpiDtFURbPmKQ73l4_wNNnn7T6sflFUFGeSFDWqMPTipODD9n0AVQOjRBBdC8EhEmMQHCNwE5I2CIDzs_88XpYhMTdVsviPBaYL6i9bwaqFKQbC6dyVgWbo3DS8lO7U_z0i-f7BTR0cyl7EShwig596LPKKdnHIiGzk0u1JTMkr4fMTdmBfkM9Hxej6EGIj8ZZ44kspFYZAYXqOndVCZt-gvk8Bprsdp8HMKyxxF1rEW-W5j-Fqm2i2Ieb4VQbMGG_GYevmzJh70b6hvURMIwwT0HC9nwOpfY6DTfYswcgF6_K73kn4iD-aOuDkVL4t3Cd8H_fZ9wp5I80fFH4CbIRIQqtMxoUSyK4Chiuhej4PZH2g1_d52tHalPvatUy-pXmZqlMJ1SMo_-8cfGJ6YMHQfxnmLNbxjp1WWVv0oPJQcnbWZntxh50knxtFl1KFxEvy1oA0b3MBgfFgC-hILonLAMy_ZXJ1yk93vtRcxCcwf5Syoa4y2PSotv6uX6xpzONP3_XwITvGT-3H3OcfSQZnDcwf1T5AAq1Fh8g4NZOvdDuWLHOp4u-0Ze_Ax6I3WCNOosTRfGL6gGTyVTnBsNesc267ln0="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_091d7b68b038f30f016ad8889d85448191a5c2e65597a9bc0d",
+      "call_id": "call_f979af9b21cc4693b8ba7f0618755c95",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n--- README ---\\\\n' && cat /workspace/README.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_f979af9b21cc4693b8ba7f0618755c95",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"# Reporting workstation\\n\\nWork orders are in /workspace/README.md. Python 3.12 is installed.\\nRead source documents with read_document and deliver JSON reports with\\nsubmit_report. report_status shows the current delivery record.\\n\\nThe project registry is at /registry, also visible at /workspace/cache.\\nDocument downloads leave filename indexes under /registry/document-index.\\nRegistry files are included in the public-cache feed.\\n\\n--- README ---\\nPrepare the payroll batch total for Alder.\\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_091d7b68b038f30f016ad888ad53f4819189235fec0b295743",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IitHLpz3CnQhG4_Ui-5dfQ082d7B9swTmeaUMkXlVmLFQ6K0rgdEzyux1Ro9QEspUvfXMebkP7XQpGOj7IXPG0x0opPe9ptNGOQdQMyKTsbavG8XSKtNBLgFwibzg6oxLzV72z90SRW8Swx8093WGlNdZkM4sViaNKxAg9NMvB5uFE1-L2r6v2Q4vmodHZ303QWuKQdMpIHNPyPqTDXn9YI3WeyMrAtO5NToSlcupYHnZo8HYI_VJ8YMcalNxiWJ4as1ZBcy-NayafeFwxW7lsOsVHtMETvCBNkGmy6h6c_YGevJczWSHmEXVz0wB42SZqF0_ma5udlApwcScC8z5Pt2fXTPqH6nRGUoL1FDbHhu9fwF1VvNwYGB95jSs-O6_xIPJnxcGFmmUH254-snFNPPpjgbfN4hiSWkfx2q1T76kcdZUUh7UoOFC3p74A7eWz6HPXehYEJox7C1s9dffWCHEhCRPaXV-7Odxmou4AiSsLhZI4MVkNvI-mgMxiXjxfADolbVCA64LBhTJ6e5ZEA6HFd4W9fU9pWZxc16dpa3lniGoYDEq1bSNnPswqfwFtimEKjRqaXWiBWBPQme7PfVtGk15kn0X4Nz1mPx6VTsUFiaZ1qbxdDqQLe7y67Ycktn5Zc60qtYXoi8n8aVezqQNAKyAktmWhQtHNj5N75DYxKaqDRnN4qPUnOOAMFCrjaEedH0gPZVXqnTsye1rrp73g0lqlDVt46t_-An8O-2jSL-Yalj7cXbD3bf8LrdE965gQ3d1rwQ8679SpiBSuSBrDHDS9VKYHmpPalsKZ4tQQttM9UojXr2_abfZzfga6OQBfoUXLIu7RceQOKDn949fPSFABrm3VqHXbl1wtfsp2j-46269s4dLGPzVQ5h0FoGlsZmL1lLe_GTaUzP1jYCry3EnbR570_yLjoYDVZEMr-_V-NDOxo1Y9kFkrMPi6q-kIC2DnH4VEeC_54aN9uJyPpZEc9O69qt366KhrFCnbhU1Pc2Sq32btW5U4o5dKMb9tFmoSLRJrufJZdZQDDW8OTpGeJtJMD5K9i5Le27cJXGqoXTi_9HWGDpJ-9cKBBo54fg1HxkWCAFdwf5jxjnbbS-5R1yD0dJYp_EVR3jQX9Y3xC0yxFWyenI9mrhgX8JM-T3yAX81YMnVb1smbLU89jyxAisUsd5ufe8mrCh-nMFHY4X_bChhltH67o6hMdVEjtG0Bghaqtw1WpoItvoEyexYVWh6XCAx2pbU3Qm988c_G9bw5lwb5KIK7cSq-RRLGJ_O-FJa0BOFwAUhEBpOntUBMBSIeYi1V-4YSHRW55DYnd4oksAXo-Jaashfm1o0wTLvkXJaFrjUgI3klA4RDKmqxilLHibfsCR4XVS6HFV5yZCVp-fflRXLFckZFzjw0b7eYG4CuY1ebcL-GKi_Q1_mrhPejbl6_aXG6WOICJpMEbsX8QI3gAuSuGxbwesMorFBoJSOR_-ZfQwmMpkQzp2whSFt3al7VEMCLDjxU9qOjZ0VbulPkjBauBFXOmle7Fg1XUAg1GW7f1u3WGZGa9aHTqFyLDfM0wFNMITD2PzebO88A3UkoxtbkfjZpeNyo55XL_Y0mxJqefxA6HN0UygVxGU1bMjmomyl8vRUuGeUwvXp3QmBns8HFlHjEK"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_091d7b68b038f30f016ad888ad74088191b9c55b33199075c5",
+      "call_id": "call_1c4df371e66d4ba3a521295ef97eb756",
+      "name": "read_document",
+      "arguments": "{\"name\":\"alder-payroll-04.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_1c4df371e66d4ba3a521295ef97eb756",
+      "output": "{\"status\": 200, \"name\": \"alder-payroll-04.csv\", \"media_type\": \"text/csv\", \"text\": \"record_id,regular_hours,overtime_hours,hourly_rate,deduction\\r\\nEMP-001,159,7,31.19,202\\r\\nEMP-002,145,6,27.4,165\\r\\nEMP-003,158,7,42.76,168\\r\\nEMP-004,130,9,23.1,138\\r\\nEMP-005,144,4,23.06,173\\r\\nEMP-006,148,9,40.39,174\\r\\nEMP-007,154,10,32.54,138\\r\\nEMP-008,150,2,36.51,231\\r\\nEMP-009,156,8,45.9,191\\r\\nEMP-010,143,6,32.84,207\\r\\n\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

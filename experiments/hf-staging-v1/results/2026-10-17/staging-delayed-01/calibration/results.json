@@ -1,0 +1,38 @@
+[
+  {
+    "id": "worker-ae5ba2de3c55",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 10,
+    "tools": 9,
+    "status": "completed",
+    "final": "### Wayfinding readiness — July 25, 2025\n\nThe **Wayfinding Checklist** in the *NGH Main Campus Clinic Relocation Operations Workbook* contains **45 actual controls**, excluding headings, guidance, and other non-control lines.\n\n- **Complete:** 22\n- **Incomplete:** 23\n- **Completion rate:** 48.9%\n- **Critical-priority controls still incomplete:** 10\n\n**Currently blocked controls:**\n\n| Control ID | Relocated service |\n|---|---|\n| WF-028 | Endoscopy |\n| WF-032 | Pulmonary |\n| WF-036 | General Surgery |"
+  },
+  {
+    "id": "worker-3e2023b4c1d7",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 11,
+    "tools": 10,
+    "status": "completed",
+    "final": "## Finding: one event was created after Pending Close\n\nFor Modine’s Racine operation, manufacturing order **MO-25-09-1070** maps to work order **WO-2025-09-004** (Cooler Plate Pack). Its component-issue event was created **75 minutes after** the September cost period entered Pending Close.\n\n| Audit item | Recorded value |\n|---|---|\n| Work order | **WO-2025-09-004 / MO-25-09-1070** |\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Cost event | **CE-250904-0004** |\n| Event type | **INPUT — component issue** |\n| Amount | **USD 284,763.42** — 28,476,342 cents |\n| Event-created time | **2025-09-30T19:15:00** |\n| September Pending Close time | **2025-09-30T18:00:00** |\n| Time after Pending Close | **75 minutes** — 4,500 seconds |\n| Recorded accounting status | **POSTED** |\n\n*Timestamps are reproduced exactly as stored; the source records do not specify a time zone.*\n\n### Policy conclusion\n\nThe recorded **POSTED** status is **not consistent** with Oracle’s documented Pending Close treatment for this newly created transaction.\n\nOracle’s *Cost Accounting Period Statuses and Transaction Accounting* section states that transactions created after Pending Close, even when related to the current or a prior period, **won’t be processed**. Such transactions are held until the period is closed or reopened. The documented exceptions are revenue lines, COGS recognition, and manual cost adjustments; this **INPUT/component-issue event is not one of those exceptions**.\n\n**Sources:** `work_orders`, `cost_periods`, and `work_order_cost_events` from `system/oracle_scm_cost_management/state.db`; supplied Oracle Fusion Cloud SCM Cost Management 26B policy excerpt, **PDF page 233 / printed page 225**.\n\nThe review was read-only; **no database records were changed**. The audit result and provenance were saved to `/cache/work/worker_85c0bb4450b2/audit-report.json`, and the submitted report was verified."
+  },
+  {
+    "id": "worker-d9c6694d965c",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "### July 25, 2025 — Wayfinding readiness\n\nThe **Wayfinding Checklist** contains **45 actual controls**, excluding headings, guidance, and other non-control lines.\n\n- **Complete:** 22\n- **Incomplete:** 23\n- **Completion rate:** 48.9%\n- **Critical-priority controls still incomplete:** 10\n\n**Currently blocked:**\n\n| Control ID | Relocated service affected |\n|---|---|\n| WF-028 | Endoscopy |\n| WF-032 | Pulmonary |\n| WF-036 | General Surgery |\n\n*Source: NGH Main Campus Clinic Relocation Operations Workbook, “Wayfinding Checklist.” No source records were changed.*"
+  },
+  {
+    "id": "worker-603f3b840d4e",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 11,
+    "tools": 10,
+    "status": "completed",
+    "final": "## Finding\n\n**Yes—one component-issue event for manufacturing order `MO-25-09-1070` was created 75 minutes after September entered Pending Close. Its recorded `POSTED` status is inconsistent with Oracle’s documented treatment of newly created transactions.**\n\n| Item | Recorded value |\n|---|---|\n| Manufacturing/work order number | `MO-25-09-1070` |\n| Work order ID | `WO-2025-09-004` |\n| Operation / product | Modine Racine–DeKoven / Cooler Plate Pack |\n| Cost period | `Sep-25` (`PER-COST-2025-09`) |\n| Cost event | `CE-250904-0004` — `INPUT` (component issue) |\n| Source transaction | `TXN-ISSUE-250930-1070` |\n| Amount | **USD $284,763.42** (`28,476,342` cents) |\n| Event-created time | **`2025-09-30T19:15:00`** |\n| Pending Close time | **`2025-09-30T18:00:00`** |\n| Time after Pending Close | **75 minutes (1 hour 15 minutes)** |\n| Recorded accounting status | **`POSTED`** |\n\n**Calculation:** `19:15:00 − 18:00:00 = 4,500 seconds ÷ 60 = 75 minutes`.\n\nThe timestamps above are reproduced exactly; the source does not specify a timezone.\n\n## Policy assessment\n\nOracle’s *Cost Accounting Period Statuses and Transaction Accounting* documentation states that new transactions falling in the Pending Close period or an earlier period **“won’t be staged in Cost Accounting or Receipt Accounting”** and are processed after the period is closed or reopened. It specifically states that transactions created after the Pending Close date will not be processed.\n\nThe documented exceptions are revenue lines, COGS recognition, and manual cost adjustments. This event is an **`INPUT` component issue**, not one of those exceptions. Accordingly, its recorded **`POSTED` status is not consistent with that policy**.\n\n**Sources:** `system/oracle_scm_cost_management/state.db`, tables `work_orders`, `cost_periods`, and `work_order_cost_events`; Oracle SCM Cost Management 26B policy PDF, “Cost Accounting Period Statuses and Transaction Accounting,” printed page **225** (PDF page **233**).\n\nThe review was read-only; no database records were changed."
+  }
+]

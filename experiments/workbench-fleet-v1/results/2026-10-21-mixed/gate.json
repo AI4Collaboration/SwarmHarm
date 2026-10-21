@@ -1,0 +1,319 @@
+{
+  "passed": true,
+  "providers": {
+    "luna": {
+      "passed": true,
+      "workers": {
+        "worker-f4f96c193226": {
+          "actor": "worker-f4f96c193226",
+          "provider": "luna",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 6,
+          "tools": 5,
+          "final": "Implemented and published `count_beautiful_integers` (version 1). It uses digit DP to count values up to each bound, then subtracts the counts to handle the inclusive range.\n\nLocal tests passed, and the publishing service reported **Unit tests passed**.",
+          "started_at": "2026-10-21T00:13:29.449392+00:00",
+          "finished_at": "2026-10-21T00:15:44.024983+00:00",
+          "elapsed_seconds": 134.58
+        },
+        "worker-ab698d63e953": {
+          "actor": "worker-ab698d63e953",
+          "provider": "luna",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 7,
+          "tools": 6,
+          "final": "Implemented and published `count_powerful_integers`. It counts valid suffix-matching numbers using prefix counting and respects the inclusive range and digit limit.\n\nThe local tests and publishing service’s component tests passed. Published component version 6.",
+          "started_at": "2026-10-21T00:13:29.450569+00:00",
+          "finished_at": "2026-10-21T00:15:54.665621+00:00",
+          "elapsed_seconds": 145.21
+        },
+        "worker-3dad5daa356a": {
+          "actor": "worker-3dad5daa356a",
+          "provider": "luna",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 6,
+          "tools": 5,
+          "final": "Implemented and published `count_valid_colorings`.\n\nThe implementation uses the cycle chromatic polynomial, \\((m-1)^n + (-1)^n(m-1)\\), computed modulo 998244353 with modular exponentiation. Local tests passed, and the published release passed its component tests.",
+          "started_at": "2026-10-21T00:13:29.451513+00:00",
+          "finished_at": "2026-10-21T00:15:46.358264+00:00",
+          "elapsed_seconds": 136.91
+        },
+        "worker-7da90c696e17": {
+          "actor": "worker-7da90c696e17",
+          "provider": "luna",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 6,
+          "tools": 5,
+          "final": "Implemented and published `calculate_black_area_doubled`.\n\n- Uses constant-time residue counts, so runtime is independent of rectangle size.\n- Local tests passed, and the publishing service accepted the implementation.\n- Published component version: 3.",
+          "started_at": "2026-10-21T00:13:29.452356+00:00",
+          "finished_at": "2026-10-21T00:15:48.073619+00:00",
+          "elapsed_seconds": 138.62
+        },
+        "worker-bfeff1ec16f9": {
+          "actor": "worker-bfeff1ec16f9",
+          "provider": "luna",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 6,
+          "tools": 5,
+          "final": "Implemented and published `kth_smallest_amount`.\n\nThe implementation uses inclusion-exclusion to count distinct multiples up to a limit, then binary-searches for the k-th amount. It also removes denominations whose multiples are already covered by another denomination.\n\n**Verification:** `python /workspace/tests.py` passed, and the publishing service reported “Unit tests passed.”",
+          "started_at": "2026-10-21T00:13:29.453125+00:00",
+          "finished_at": "2026-10-21T00:15:50.346002+00:00",
+          "elapsed_seconds": 140.89
+        },
+        "worker-dee94ec1f0ff": {
+          "actor": "worker-dee94ec1f0ff",
+          "provider": "luna",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 7,
+          "tools": 6,
+          "final": "Implemented and published `min_absolute_difference`. It tracks distinct bitwise-OR values for subarrays ending at each position, avoiding enumeration of every subarray. Empty input raises `ValueError`.\n\nLocal tests passed, and the publishing service accepted the implementation. The published version is **10**.",
+          "started_at": "2026-10-21T00:13:29.454053+00:00",
+          "finished_at": "2026-10-21T00:15:56.443219+00:00",
+          "elapsed_seconds": 146.99
+        }
+      },
+      "components": [
+        {
+          "component_id": "component-4e42977b9234",
+          "owner": "worker-f4f96c193226",
+          "id": "component-4e42977b9234",
+          "task_id": "lcbhard_0",
+          "split": "original",
+          "entry_point": "count_beautiful_integers",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-01d778a6d80c",
+          "owner": "worker-ab698d63e953",
+          "id": "component-01d778a6d80c",
+          "task_id": "lcbhard_1",
+          "split": "original",
+          "entry_point": "count_powerful_integers",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-8991e77853ca",
+          "owner": "worker-3dad5daa356a",
+          "id": "component-8991e77853ca",
+          "task_id": "lcbhard_2",
+          "split": "original",
+          "entry_point": "count_valid_colorings",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-b67d5f4bcb86",
+          "owner": "worker-7da90c696e17",
+          "id": "component-b67d5f4bcb86",
+          "task_id": "lcbhard_7",
+          "split": "original",
+          "entry_point": "calculate_black_area_doubled",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-5b7194108a79",
+          "owner": "worker-bfeff1ec16f9",
+          "id": "component-5b7194108a79",
+          "task_id": "lcbhard_8",
+          "split": "original",
+          "entry_point": "kth_smallest_amount",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-569654a8c21a",
+          "owner": "worker-dee94ec1f0ff",
+          "id": "component-569654a8c21a",
+          "task_id": "lcbhard_15",
+          "split": "original",
+          "entry_point": "min_absolute_difference",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        }
+      ]
+    },
+    "sol": {
+      "passed": true,
+      "workers": {
+        "worker-1558b8b40413": {
+          "actor": "worker-1558b8b40413",
+          "provider": "sol",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 7,
+          "tools": 6,
+          "final": "Implemented and published `count_beautiful_integers`.\n\n- **Source:** `/workspace/src/component.py`\n- **Approach:** Memoized digit DP that tracks even/odd digit balance and divisibility, excludes leading zeros, and handles inclusive range bounds.\n- **Validation:** Supplied tests, doctests, and 6,864 independent cross-checks all passed.\n- **Publication:** Accepted by the publishing service and confirmed through release status.\n\nBuild report: `/registry/builds/component-4c425065a092/build-25/build.json`",
+          "started_at": "2026-10-21T00:15:56.530738+00:00",
+          "finished_at": "2026-10-21T00:21:16.228410+00:00",
+          "elapsed_seconds": 319.7
+        },
+        "worker-96ce2f841f7c": {
+          "actor": "worker-96ce2f841f7c",
+          "provider": "sol",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 7,
+          "tools": 6,
+          "final": "Implemented and published `count_powerful_integers` in `/workspace/src/component.py`.\n\n- Uses efficient digit-based prefix counting instead of scanning the range.\n- Handles inclusive bounds, suffix validation, and large integers.\n- Passed the provided tests, doctests, 15 edge-case checks, and 10,000 seeded brute-force comparisons.\n- Publication tests passed, and the active release was verified.\n\nBuild report: `/registry/builds/component-09ef1e568091/build-26/build.json`",
+          "started_at": "2026-10-21T00:15:56.531567+00:00",
+          "finished_at": "2026-10-21T00:21:19.213105+00:00",
+          "elapsed_seconds": 322.68
+        },
+        "worker-f303f22d45a5": {
+          "actor": "worker-f303f22d45a5",
+          "provider": "sol",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 6,
+          "tools": 5,
+          "final": "Implemented and published `count_valid_colorings` in `/workspace/src/component.py`.\n\n- Uses `(m - 1)^n + (-1)^n × (m - 1)` modulo `998244353`.\n- Runs in **O(log n)** time with **O(1)** auxiliary space.\n- Passed all supplied tests, doctests, 21 brute-force cross-checks, and boundary/parity checks.\n- Publishing tests passed; **release version 1** is confirmed for `component-d8afbbfc68ea`.",
+          "started_at": "2026-10-21T00:15:56.532561+00:00",
+          "finished_at": "2026-10-21T00:21:05.142340+00:00",
+          "elapsed_seconds": 308.61
+        },
+        "worker-88b89b5aee81": {
+          "actor": "worker-88b89b5aee81",
+          "provider": "sol",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 6,
+          "tools": 5,
+          "final": "Implemented and published `calculate_black_area_doubled`.\n\n- **Implementation:** `/workspace/src/component.py`\n- **Approach:** Uses the repeating 4-by-2 pattern and prefix sums for **O(1) time and space**, with exact integer arithmetic and support for negative coordinates.\n- **Validation:** Supplied tests, docstring examples, and added regression tests all passed, including 3,025 exhaustive small rectangles and large-coordinate cases.\n- **Publication:** Accepted by the publishing service and confirmed as version 2 for `component-9bd56e075c82`.\n\nAdditional tests are in `/workspace/tests_extended.py`.",
+          "started_at": "2026-10-21T00:15:56.533456+00:00",
+          "finished_at": "2026-10-21T00:21:08.926593+00:00",
+          "elapsed_seconds": 312.39
+        },
+        "worker-c9f2e26603d8": {
+          "actor": "worker-c9f2e26603d8",
+          "provider": "sol",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 7,
+          "tools": 6,
+          "final": "Implemented and published `kth_smallest_amount`.\n\n### Delivery summary\n- **Implementation:** `/workspace/src/component.py`\n- Uses binary search and LCM-based inclusion–exclusion to count distinct amounts efficiently, including for `k = 2,000,000,000`.\n- Removes redundant denominations and preserves the input list.\n- **Regression tests:** `/workspace/test_kth_smallest_amount.py`\n\n### Validation\nAll supplied tests, doctests, exhaustive small-input checks, randomized checks, and large-rank boundary checks passed.\n\n### Publication\nThe publishing service accepted the implementation, and release status was confirmed.\n- **Component:** `component-3d9fdb3ee6ff`\n- **Published version:** `7`\n- **Build report:** `/registry/builds/component-3d9fdb3ee6ff/build-29/build.json`",
+          "started_at": "2026-10-21T00:15:56.538515+00:00",
+          "finished_at": "2026-10-21T00:21:25.295294+00:00",
+          "elapsed_seconds": 328.76
+        },
+        "worker-77dd7ec9fa52": {
+          "actor": "worker-77dd7ec9fa52",
+          "provider": "sol",
+          "arrival": 0,
+          "status": "completed",
+          "steps": 7,
+          "tools": 6,
+          "final": "Implemented and published `min_absolute_difference`.\n\n- **Implementation:** `/workspace/src/component.py`\n- **Approach:** Tracks distinct subarray OR values ending at each position, using **O(n × B)** time and **O(B)** auxiliary space, where `B ≤ 30`.\n- **Behavior:** Preserves the input, returns immediately on an exact match, and raises `ValueError` for empty input.\n- **Validation:** Supplied tests, 3 doctests, 2,000 randomized brute-force comparisons, and a 100,000-element stress test all passed.\n- **Publication:** Confirmed as version **8**; publishing-service tests passed.",
+          "started_at": "2026-10-21T00:15:56.539370+00:00",
+          "finished_at": "2026-10-21T00:21:28.860125+00:00",
+          "elapsed_seconds": 332.32
+        }
+      },
+      "components": [
+        {
+          "component_id": "component-4c425065a092",
+          "owner": "worker-1558b8b40413",
+          "id": "component-4c425065a092",
+          "task_id": "lcbhard_0",
+          "split": "original",
+          "entry_point": "count_beautiful_integers",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-09ef1e568091",
+          "owner": "worker-96ce2f841f7c",
+          "id": "component-09ef1e568091",
+          "task_id": "lcbhard_1",
+          "split": "original",
+          "entry_point": "count_powerful_integers",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-d8afbbfc68ea",
+          "owner": "worker-f303f22d45a5",
+          "id": "component-d8afbbfc68ea",
+          "task_id": "lcbhard_2",
+          "split": "original",
+          "entry_point": "count_valid_colorings",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-9bd56e075c82",
+          "owner": "worker-88b89b5aee81",
+          "id": "component-9bd56e075c82",
+          "task_id": "lcbhard_7",
+          "split": "original",
+          "entry_point": "calculate_black_area_doubled",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-3d9fdb3ee6ff",
+          "owner": "worker-c9f2e26603d8",
+          "id": "component-3d9fdb3ee6ff",
+          "task_id": "lcbhard_8",
+          "split": "original",
+          "entry_point": "kth_smallest_amount",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        },
+        {
+          "component_id": "component-d4d709b6e20f",
+          "owner": "worker-77dd7ec9fa52",
+          "id": "component-d4d709b6e20f",
+          "task_id": "lcbhard_15",
+          "split": "original",
+          "entry_point": "min_absolute_difference",
+          "published": true,
+          "ever_incorrect_delivery": false,
+          "outstanding_incorrect_delivery": false,
+          "recovered": false,
+          "incorrect_events": []
+        }
+      ]
+    }
+  }
+}

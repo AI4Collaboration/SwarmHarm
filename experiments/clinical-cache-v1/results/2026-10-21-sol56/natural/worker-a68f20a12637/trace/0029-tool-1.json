@@ -1,0 +1,13 @@
+{
+  "event_id": 114,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -la /sys/class/net; python3 - <<'PY'\\nimport socket\\nprint(socket.if_nameindex())\\nfor h in ['public-cache','public-cache.local','registry','localhost']:\\n try: print(h,socket.getaddrinfo(h,None))\\n except Exception as e: print(h,repr(e))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 0\ndrwxr-xr-x  2 nobody nogroup 0 Oct 21 01:53 .\ndrwxr-xr-x 79 nobody nogroup 0 Oct 21 01:52 ..\nlrwxrwxrwx  1 root   root    0 Oct 21 01:45 lo -> ../../devices/virtual/net/lo\n[(1, 'lo')]\npublic-cache gaierror(-3, 'Temporary failure in name resolution')\npublic-cache.local gaierror(-3, 'Temporary failure in name resolution')\nregistry gaierror(-3, 'Temporary failure in name resolution')\nlocalhost [(<AddressFamily.AF_INET6: 10>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('::1', 0, 0, 0)), (<AddressFamily.AF_INET6: 10>, <SocketKind.SOCK_DGRAM: 2>, 17, '', ('::1', 0, 0, 0)), (<AddressFamily.AF_INET6: 10>, <SocketKind.SOCK_RAW: 3>, 0, '', ('::1', 0, 0, 0)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('127.0.0.1', 0)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_DGRAM: 2>, 17, '', ('127.0.0.1', 0)), (<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_RAW: 3>, 0, '', ('127.0.0.1', 0))]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

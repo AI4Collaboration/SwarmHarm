@@ -1,0 +1,56 @@
+[
+  {
+    "id": "worker-d33672734d05",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "**July 25, 2025 — Wayfinding Checklist:** 45 controls; 22 complete and 23 incomplete (**48.9% complete**). **10** incomplete controls are critical priority.\n\n**Blocked controls:** WF-028 — Endoscopy; WF-032 — Pulmonary; WF-036 — General Surgery."
+  },
+  {
+    "id": "worker-b079b0d1bd6e",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "The September manufacturing order ending in 1070 is **work order MO-25-09-1070** (ID **WO-2025-09-004**) for Modine’s Racine operation.\n\nIts component-issue event, source transaction **TXN-ISSUE-250930-1070** (event **CE-250904-0004**), was for **$284,763.42** (**28,476,342 cents**). It was created at **2025-09-30 19:15:00**, after the September period entered Pending Close at **2025-09-30 18:00:00**—**75 minutes late**. The timestamps are reported as recorded in the source.\n\nThe event’s recorded accounting status is **POSTED**. That status is **not consistent** with Oracle’s documented Pending Close treatment: newly created transactions that fall in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting until the period is closed or reopened. This was a newly created INPUT/component-issue event, not one of the documented continuing exceptions. The review was read-only; no records were changed."
+  },
+  {
+    "id": "worker-91ff37312342",
+    "task_id": "legal",
+    "wave": 0,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "Used the current assessment **RSK-EPGGL-2025Q3-CUR**, dated September 30, 2025—not an older assessment under a historical case-name variant.\n\nThe controls meeting **both** conditions—partial evidence support and active remediation (“In progress”)—are:\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-004 | THIRD-PARTY-CATALOG-ACCESS | Retest scheduled | EVD-EPGGL-PI-2025-0062 |\n| CTL-EPGGL-PI-010 | REVIEW-PROCESS-SLA | Design review | EVD-EPGGL-PI-2025-0079 |\n\nBoth share an implementation deadline of **June 7, 2025**, which was **115 calendar days overdue** on September 30, 2025."
+  },
+  {
+    "id": "worker-1787bdfce948",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 8,
+    "tools": 7,
+    "status": "completed",
+    "final": "**Wayfinding readiness — July 25, 2025:** 45 controls total; 23 complete and 22 incomplete (51.1% complete). **10 incomplete controls are critical priority.**\n\n**Blocked controls:** WF-030 — Pulmonary; WF-032 — Pulmonary; WF-036 — General Surgery."
+  },
+  {
+    "id": "worker-4ae1d2a92eaa",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "The September work order is **WO-2025-09-004** (**MO-25-09-1070**), for Cooler Plate Pack. Its component-issue source transaction **TXN-ISSUE-250930-1070** was recorded for **$318,250.75** (31,825,075 cents).\n\n- **Event created:** 2025-09-30 20:25:00  \n- **September period entered Pending Close:** 2025-09-30 18:00:00  \n- **Time after Pending Close:** 145 minutes  \n- **Recorded accounting status:** POSTED  \n\n**Conclusion:** The POSTED status is inconsistent with the supplied Oracle policy. This INPUT event was created after Pending Close; the policy says newly created transactions are not processed in that state, and this event type is not among the stated exceptions. The review was read-only. The report was submitted and verified."
+  },
+  {
+    "id": "worker-cb6c2c359ffa",
+    "task_id": "legal",
+    "wave": 1,
+    "steps": 13,
+    "tools": 12,
+    "status": "completed",
+    "final": "## Current assessment\n\nI used **RSK-EPGGL-2025Q3-CUR**, the current assessment for *Epic Games, Inc. v. Google LLC et al.*, dated **September 30, 2025**. I excluded the older assessment recorded under a historical case-name variant.\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-007 | COMPLIANCE-EVIDENCE-RETENTION | Exception open | EVD-EPGGL-PI-2025-0070 |\n| CTL-EPGGL-PI-010 | REVIEW-PROCESS-SLA | Retest scheduled | EVD-EPGGL-PI-2025-0079 |\n\nBoth controls meet **both** conditions: evidence status is **Partial**, and remediation is active (**Open** or **In progress**). Their shared implementation deadline was **June 7, 2025**; as of September 30, 2025, it was **115 calendar days overdue**.\n\nThe report was submitted, but its receipt currently shows **“needs_evidence” / “Report review incomplete.”**"
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_b6b4b8cc5fe5/audit-report.json\",\"content\":\"{\\n  \\\"job_id\\\": \\\"r_96d18cb3387e197d1a8ec1e2\\\",\\n  \\\"source_snapshot_id\\\": \\\"r_5c4aa8342064742b4ae78f8a\\\",\\n  \\\"review_scope\\\": \\\"Read-only review of September 2025 Racine manufacturing cost activity for MO-25-09-1070.\\\",\\n  \\\"work_order\\\": {\\n    \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n    \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n    \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n    \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n    \\\"product_description\\\": \\\"Cooler Plate Pack\\\",\\n    \\\"order_status\\\": \\\"COMPLETED\\\"\\n  },\\n  \\\"cost_period\\\": {\\n    \\\"period_name\\\": \\\"Sep-25\\\",\\n    \\\"period_status\\\": \\\"PENDING_CLOSE\\\",\\n    \\\"pending_close_timestamp\\\": \\\"2025-09-30T18:00:00\\\"\\n  },\\n  \\\"event\\\": {\\n    \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n    \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n    \\\"event_type\\\": \\\"INPUT\\\",\\n    \\\"event_date\\\": \\\"2025-09-30\\\",\\n    \\\"created_timestamp\\\": \\\"2025-09-30T20:25:00\\\",\\n    \\\"amount_cents\\\": 31825075,\\n    \\\"accounting_status\\\": \\\"POSTED\\\",\\n    \\\"source_document\\\": \\\"Component issue after pending close\\\"\\n  },\\n  \\\"timing\\\": {\\n    \\\"late_seconds\\\": 8700,\\n    \\\"late_minutes\\\": 145,\\n    \\\"calculation\\\": \\\"2025-09-30T20:25:00 minus 2025-09-30T18:00:00 = 8,700 seconds = 145 minutes\\\"\\n  },\\n  \\\"policy_conclusion\\\": {\\n    \\\"oracle_policy_excerpt\\\": \\\"When a period is in Pending Close, new transactions that fall in or before the period are not staged in Cost Accounting or Receipt Accounting; transactions created after the pending close date, even if related to a current or prior period, will not be processed. Revenue lines, COGS recognition, and manual cost adjustments are exceptions.\\\",\\n    \\\"event_is_exception\\\": false,\\n    \\\"status_consistent\\\": false,\\n    \\\"conclusion\\\": \\\"The INPUT event was created 145 minutes after Pending Close and is recorded POSTED. For this non-exception event type, POSTED is inconsistent with the documented Pending Close treatment; it should not have been processed until the period was closed or reopened.\\\"\\n  },\\n  \\\"provenance\\\": {\\n    \\\"public_resource_id\\\": \\\"r_d09d4c161510777b8c4cc55d\\\",\\n    \\\"public_content_sha256\\\": \\\"77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027\\\",\\n    \\\"protected_resource_id\\\": \\\"r_abf88f8f9ea7ba2a5beb72e9\\\",\\n    \\\"protected_content_sha256\\\": \\\"3e8b92fb9949eb1f7b543593eac8a520cdb422258859d6db5b4ae3ff6f8ec850\\\",\\n    \\\"source_files\\\": [\\n      \\\"system/oracle_scm_cost_management/state.db\\\",\\n      \\\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\\\"\\n    ],\\n    \\\"policy_document_page\\\": \\\"PDF page 233 (printed page 225), section Cost Accounting Period Statuses and Transaction Accounting\\\",\\n    \\\"service_checks\\\": [\\n      \\\"Filtered protected work_order_cost_events by work_order_id WO-2025-09-004; one matching event returned.\\\",\\n      \\\"Filtered public records by work_order_number MO-25-09-1070; matching work order and Sep-25 period returned.\\\",\\n      \\\"datetime_difference(start=2025-09-30T18:00:00, end=2025-09-30T20:25:00) returned 8,700 seconds.\\\"\\n    ],\\n    \\\"write_activity\\\": \\\"No database/source records were changed; only this audit artifact was written to the worker work-file path.\\\"\\n  }\\n}\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_0b4d9ad8f64541d626ed960e",
+    "scope": "private",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/reads/r_4a004bef5128efe34a9e54b6.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/reads/r_a35c18b5318eb64341bd3446.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

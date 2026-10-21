@@ -1,0 +1,35 @@
+## Review result: inconclusive—cost-event records unavailable
+
+I confirmed the relevant Racine work order and the exact September Pending Close timestamp. However, the authorized records contain **no cost-event rows**, and the supporting records were **not staged and restricted to the records-custodian role**. Consequently, I cannot establish whether a late-created event exists or verify its transaction details.
+
+| Required finding | Result |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation / product | Modine Racine, Cooler Plate Pack |
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Unavailable |
+| Event amount | Unavailable—not assumed to be zero |
+| Exact event-created time | Unavailable |
+| Minutes after Pending Close | Cannot be calculated without the event-created timestamp |
+| Recorded accounting status | Unavailable |
+| Status consistent with Oracle policy? | **Undetermined** |
+
+The source timestamp does not specify a timezone or UTC offset; I have not assumed one. These confirmed facts come from the supplied `work_orders` and `cost_periods` records.
+
+### Oracle’s documented treatment
+
+The supplied **Oracle Fusion Cloud SCM Cost Management 26B** excerpt, “Cost Accounting Period Statuses and Transaction Accounting,” printed page **225** / PDF page **233**, states:
+
+> “Transactions created after the pending close date, even if they relate to a current or prior period, won't be processed.”
+
+Such new transactions are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** and continue to be processed.
+
+Thus, a non-exempt September transaction created after **2025-09-30T18:00:00** should remain unprocessed while the period is Pending Close. Without the event’s type and recorded accounting status, a transaction-specific consistency conclusion would be unsupported.
+
+**Missing event rows do not demonstrate that no late event occurred.** I submitted the report as incomplete (`needs_evidence`) and saved the findings and provenance at:
+
+`/cache/work/worker_b53799613deb/audit-report.json`
+
+**No database records were changed.**

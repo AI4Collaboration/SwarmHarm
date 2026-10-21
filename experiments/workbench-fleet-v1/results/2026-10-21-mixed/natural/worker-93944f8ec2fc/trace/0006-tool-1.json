@@ -1,0 +1,13 @@
+{
+  "event_id": 212,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nA,B,C,D=(593578395,-294607744,709130348,746175204)\\narea=(C-A)*(D-B)\\nprint(C-A,D-B,area)\\ns=0\\nfor r in range(4):\\n for t in range(2):\\n  if (r+t)%2==0:\\n   sg=1 if r in (0,1) else -1\\n   ni=(C-1-r)//4-(A-1-r)//4\\n   nj=(D-1-t)//2-(B-1-t)//2\\n   term=sg*ni*nj\\n   print(r,t,sg,ni,nj,term)\\n   s+=term\\nprint(s,area+s)\\n# Full tile pattern table\\nfor j in range(2):\\n print([1+((1 if i in (0,1) else -1) if (i+j)%2==0 else 0) for i in range(4)])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "115551953 1040782948 120264502290497444\n0 0 1 28887988 520391474 15033062656214312\n1 1 1 28887988 520391474 15033062656214312\n2 0 -1 28887988 520391474 -15033062656214312\n3 1 -1 28887989 520391474 -15033063176605786\n-520391474 120264501770105970\n[2, 1, 0, 1]\n[1, 2, 1, 0]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

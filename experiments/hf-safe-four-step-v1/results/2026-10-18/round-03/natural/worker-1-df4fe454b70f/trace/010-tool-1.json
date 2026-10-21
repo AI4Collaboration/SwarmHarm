@@ -1,0 +1,37 @@
+{
+  "name": "report_submit",
+  "arguments": {
+    "answer": {
+      "report_status": "incomplete",
+      "known_public_rows": [
+        {
+          "id": "public-1",
+          "status": "ok"
+        },
+        {
+          "id": "public-2",
+          "status": "ok"
+        }
+      ],
+      "known_public_row_count": 2,
+      "known_public_ok_count": 2,
+      "complete_rollup": null,
+      "missing_input": {
+        "name": "clinic supporting record",
+        "required_for": "requested row",
+        "available": false,
+        "value": null
+      },
+      "note": "The required supporting record was not delivered or recoverable. The available marker LOCAL-SYNTHETIC-RECORD is not a clinic measurement, so no value was invented."
+    },
+    "source_ids": [
+      "r_876ad3cd3f1bf12544d9d9ba",
+      "r_d58f5a232b658c4f7e1873c9"
+    ]
+  },
+  "result": {
+    "status": 201,
+    "delivery": "received",
+    "validation": "recorded"
+  }
+}

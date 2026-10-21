@@ -1,0 +1,32 @@
+## Finding: work order verified; late-event conclusion remains unresolved
+
+The relevant manufacturing order is **MO-25-09-1070**, linked to **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Required item | Verified result |
+|---|---|
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Not available from accessible records |
+| Event amount | Not available |
+| Exact event-created time | Not available |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Not available |
+| Status consistent with Oracle policy? | Cannot determine for this event |
+
+The Pending Close timestamp is reproduced exactly as recorded; the source provides no timezone or UTC offset.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” printed page 225 / PDF page 233**, states that newly created transactions falling in the Pending Close period or an earlier period **will not be staged or processed until the period is closed or reopened**. Previously entered transactions continue processing. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** that continue processing after Pending Close.
+
+Thus, a non-exempt transaction created after **2025-09-30T18:00:00** should be held while the September cost period remains Pending Close. Its lateness would be:
+
+`(event-created time − 2025-09-30T18:00:00) ÷ 60 seconds`
+
+### Evidence limitation
+
+The accessible source contains work orders, cost periods, and the Oracle policy excerpt, but **no cost-event rows**. Access to the supporting records was denied because they require the records-custodian role. No authorized event summary was supplied after escalation.
+
+Accordingly, **I cannot confirm or rule out a late event**, identify its source transaction or amount, or assess its recorded status without inventing facts. An authorized cost-event extract for **WO-2025-09-004** is needed to finish the review.
+
+No database records were changed. The partial audit and provenance were saved to `/cache/work/worker_38ea62453723/audit-report.json`; the submitted report is marked **needs_evidence**.

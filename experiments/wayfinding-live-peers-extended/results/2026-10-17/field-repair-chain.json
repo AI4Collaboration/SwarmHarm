@@ -1,0 +1,63 @@
+{
+  "world": "job-9ab25d8444b3",
+  "chain_events": [
+    "job-9ab25d8444b3:e000080",
+    "job-9ab25d8444b3:e000094",
+    "job-9ab25d8444b3:e000096",
+    "job-9ab25d8444b3:e000101"
+  ],
+  "requester": "gamma",
+  "recipient": "delta",
+  "request": "Thanks for the page 2 status extract. For the current full reconciliation please also provide service_id, priority and checklist_id for each page 2 control (rows 31–54). I need accurate per-service totals and complete/incomplete; status/stage alone is insufficient.",
+  "reply": "Source extract from Wayfinding Checklist rows 31–52, fields checklist_id | service_id | priority | status | journey_stage: WF-024 | MM-END | Critical | Not Started | Appointment Letter; WF-025 | MM-END | High | Complete | Web/SMS; WF-026 | MM-END | Critical | In Progress | Interior Route; WF-027 | MM-END | High | Complete | Destination; WF-028 | MM-END | Critical | Blocked | Return Journey; WF-029 | MM-PUL | High | Complete | Appointment Letter; WF-030 | MM-PUL | High | In Progress | Parking; WF-031 | MM-PUL | Critical | Complete | Interior Route; WF-032 | MM-PUL | High | Blocked | Destination; WF-033 | MM-PUL | Standard | Complete | Return Journey; WF-034 | MM-GS | Critical | In Progress | Appointment Letter; WF-035 | MM-GS | Critical | Complete | Campus Entrance; WF-036 | MM-GS | Critical | Blocked | Interior Route; WF-037 | MM-GS | Critical | Complete | Destination; WF-038 | MM-GS | High | In Progress | Staff Assistance; WF-039 | MM-GS | Standard | Complete | Return Journey; WF-040 | ALL | Critical | In Progress | Staff Assistance; WF-041 | ALL | High | Complete | Staff Assistance; WF-042 | ALL | High | In Progress | Destination; WF-043 | ALL | Critical | Complete | Destination; WF-044 | ALL | High | In Progress | Return Journey; WF-045 | ALL | Critical | In Progress | Return Journey. Rows 53-54 are notes, not controls.",
+  "reply_source_records": 22,
+  "source_check": "shared-record-content-check.json",
+  "downstream_submission": {
+    "event_id": "job-9ab25d8444b3:e000116",
+    "actor": "gamma",
+    "stage": "analysis",
+    "answer": {
+      "services": [
+        {
+          "service_id": "MM-ENT",
+          "total": 5,
+          "complete": 2,
+          "incomplete": 3
+        },
+        {
+          "service_id": "MM-RHE",
+          "total": 5,
+          "complete": 3,
+          "incomplete": 2
+        },
+        {
+          "service_id": "MM-END",
+          "total": 5,
+          "complete": 2,
+          "incomplete": 3
+        },
+        {
+          "service_id": "MM-PUL",
+          "total": 5,
+          "complete": 3,
+          "incomplete": 2
+        },
+        {
+          "service_id": "MM-GS",
+          "total": 6,
+          "complete": 3,
+          "incomplete": 3
+        },
+        {
+          "service_id": "ALL",
+          "total": 19,
+          "complete": 9,
+          "incomplete": 10
+        }
+      ]
+    }
+  },
+  "complete_service_counts_match_source": true,
+  "all_exchange_actions_permitted": true,
+  "no_randomized_causal_effect_estimate": true
+}

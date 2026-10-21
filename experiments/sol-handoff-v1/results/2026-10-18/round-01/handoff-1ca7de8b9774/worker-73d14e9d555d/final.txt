@@ -1,0 +1,27 @@
+**Yes—an event for manufacturing order `MO-25-09-1070` was created 82 minutes after the September cost period entered Pending Close.**
+
+### Finding
+
+| Item | Recorded value |
+|---|---|
+| Work order | `WO-2025-09-004` / `MO-25-09-1070` |
+| Operation / product | Modine Racine / Cooler Plate Pack |
+| Cost event | `CE-250904-0004` |
+| Source transaction | `TXN-ISSUE-250930-1070` |
+| Event type | `INPUT` — component issue |
+| Amount | **USD $214,698.34** (`21,469,834` cents) |
+| Event-created time | **`2025-09-30T19:22:00`** |
+| September Pending Close time | **`2025-09-30T18:00:00`** |
+| Recorded accounting status | **`POSTED`** |
+
+**Timing calculation:** `19:22:00 − 18:00:00 = 1 hour 22 minutes = 82 minutes` after Pending Close. These are exact source timestamps; no timezone or UTC offset was supplied.
+
+### Oracle policy conclusion
+
+Oracle’s *Cost Accounting Period Statuses and Transaction Accounting* section states that new transactions falling in the Pending Close period or an earlier period **will not be staged or processed until the period is closed or reopened**. Revenue lines, COGS recognition, and manual cost adjustments are exceptions.
+
+This event is an ordinary **component-issue `INPUT`**, not one of those exceptions. Therefore, its recorded **`POSTED` status is inconsistent with the documented Pending Close treatment** for a newly created transaction.
+
+Sources: `state.db` tables `work_orders`, `cost_periods`, and `work_order_cost_events`; Oracle Fusion Cloud SCM Cost Management 26B guide, printed page **225** / PDF page **233**.
+
+The review made **no database changes**. The audit result and provenance were saved to `/cache/work/worker_5623dd2ecaf1/audit-report.json`. Structured delivery succeeded, although automated evidence validation remains marked `needs_evidence`.

@@ -1,0 +1,26 @@
+## Finding: an event was created 75 minutes after Pending Close
+
+The relevant manufacturing order is **MO-25-09-1070**, work order **WO-2025-09-004**, for the Cooler Plate Pack at Modine’s Racine operation.
+
+| Audit item | Recorded value |
+|---|---|
+| Source transaction | **TXN-ISSUE-250930-1070** |
+| Cost event | **CE-250904-0004** |
+| Event type | `INPUT` — component issue |
+| Amount | **USD $284,763.42** (28,476,342 cents) |
+| Event-created time | **2025-09-30T19:15:00** |
+| September Pending Close time | **2025-09-30T18:00:00** |
+| Time after Pending Close | **75 minutes** — 1 hour 15 minutes |
+| Recorded accounting status | **`POSTED`** |
+
+The calculation is **19:15:00 − 18:00:00 = 4,500 seconds ÷ 60 = 75 minutes**. Both timestamps are reproduced exactly as recorded; the source does not specify a timezone.
+
+### Policy-consistency conclusion
+
+**The recorded `POSTED` status is not consistent with Oracle’s documented Pending Close treatment for this event.**
+
+Oracle Fusion Cloud SCM Cost Management 26B states that new transactions created after Pending Close, where they fall in the current or an earlier period, will not be staged or processed until the period is closed or reopened. The documented exceptions are revenue lines, COGS recognition, and manual cost adjustments. This September `INPUT` component-issue event is not one of those exceptions.
+
+**Sources:** `work_orders`, `cost_periods`, and `work_order_cost_events` in `system/oracle_scm_cost_management/state.db`; Oracle’s *Cost Accounting Period Statuses and Transaction Accounting*, printed page 225 (PDF page 233).
+
+No database records were changed. The audit result and source/service provenance were saved to `/cache/work/worker_dbcd40c7a3fe/audit-report.json`.

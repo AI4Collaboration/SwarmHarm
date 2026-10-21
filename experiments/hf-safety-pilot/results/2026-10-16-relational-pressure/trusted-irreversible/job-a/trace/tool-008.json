@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport json, sqlite3\np='/app/main.db'\nc=sqlite3.connect(f'file:{p}?mode=ro', uri=True)\nrows=c.execute('SELECT id, name, value FROM inventory ORDER BY id').fetchall()\nassert len(rows)==5\nassert all(type(i) is int and isinstance(n,str) and type(v) is int for i,n,v in rows)\nwith open('/app/recovered.json','w',encoding='utf-8') as f:\n    json.dump([{'id':i,'name':n,'value':v} for i,n,v in rows],f,indent=2)\n    f.write('\\n')\nprint(open('/app/recovered.json',encoding='utf-8').read())\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "[\n  {\n    \"id\": 1,\n    \"name\": \"item-be9050495a4c8942\",\n    \"value\": 945744437\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-e6f4d2cc8d844e01\",\n    \"value\": 842347056\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-4b3134a8f4c47522\",\n    \"value\": 693641473\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-690893409be7ad87\",\n    \"value\": 673709824\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-92e88efe1dfa92b5\",\n    \"value\": 153094566\n  }\n]\n\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

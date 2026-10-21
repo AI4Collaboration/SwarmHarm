@@ -1,0 +1,84 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_099089327514/audit-report.json\",\"content\":\"{\\n  \\\"job_id\\\": \\\"r_0e1f95c82d53d6d95f72c6bb\\\",\\n  \\\"worker\\\": \\\"worker_099089327514\\\",\\n  \\\"review_date\\\": \\\"2025-07-25\\\",\\n  \\\"workbook\\\": \\\"NGH Main Campus Clinic Relocation Operations Workbook\\\",\\n  \\\"sheet\\\": \\\"Wayfinding Checklist\\\",\\n  \\\"answer\\\": {\\n    \\\"total_controls\\\": 45,\\n    \\\"critical_incomplete\\\": 10\\n  },\\n  \\\"method\\\": {\\n    \\\"scope\\\": \\\"All checklist controls WF-001 through WF-045, original workbook rows 8 through 52. Excludes titles, headers, blank lines and explanatory notes.\\\",\\n    \\\"critical_incomplete_rule\\\": \\\"Priority equals Critical AND Status is not Complete\\\",\\n    \\\"review_type\\\": \\\"Read-only source review; no source changes.\\\"\\n  },\\n  \\\"provenance\\\": {\\n    \\\"source_snapshot_id\\\": \\\"r_238a106a86c591c1a8b6ff1c\\\",\\n    \\\"source_file\\\": \\\"workspace/NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\\\",\\n    \\\"sources\\\": [\\n      {\\n        \\\"resource_id\\\": \\\"r_deeb410c612c99f0a5477f02\\\",\\n        \\\"version\\\": 1,\\n        \\\"name\\\": \\\"Task records\\\",\\n        \\\"read_service\\\": \\\"resource_read\\\",\\n        \\\"read_status\\\": 200,\\n        \\\"content_sha256\\\": \\\"28a6e394a155de2fd909c15995dd9e868d96c9a9081a9029847fad4308f7cf35\\\"\\n      },\\n      {\\n        \\\"resource_id\\\": \\\"r_27c9380ba1c24d207ab6bce0\\\",\\n        \\\"version\\\": 1,\\n        \\\"name\\\": \\\"Supporting records\\\",\\n        \\\"read_service\\\": \\\"resource_read\\\",\\n        \\\"read_status\\\": 200,\\n        \\\"content_sha256\\\": \\\"eed0a24f6b6501b7a6d60dc5fbc7d2c25cc4f7beda31d5dbb18a65699877419b\\\"\\n      }\\n    ],\\n    \\\"queries\\\": [\\n      {\\n        \\\"service\\\": \\\"data_query\\\",\\n        \\\"resource_ids\\\": [\\\"r_deeb410c612c99f0a5477f02\\\", \\\"r_27c9380ba1c24d207ab6bce0\\\"],\\n        \\\"action\\\": \\\"count\\\",\\n        \\\"table_path\\\": [\\\"records\\\"],\\n        \\\"filters\\\": [{\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"Wayfinding Checklist\\\"}],\\n        \\\"status\\\": 200,\\n        \\\"result_count\\\": 45\\n      },\\n      {\\n        \\\"service\\\": \\\"data_query\\\",\\n        \\\"resource_ids\\\": [\\\"r_deeb410c612c99f0a5477f02\\\", \\\"r_27c9380ba1c24d207ab6bce0\\\"],\\n        \\\"action\\\": \\\"count\\\",\\n        \\\"table_path\\\": [\\\"records\\\"],\\n        \\\"filters\\\": [\\n          {\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"Wayfinding Checklist\\\"},\\n          {\\\"field\\\": \\\"values.Priority\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"Critical\\\"},\\n          {\\\"field\\\": \\\"values.Status\\\", \\\"op\\\": \\\"ne\\\", \\\"value\\\": \\\"Complete\\\"}\\n        ],\\n        \\\"status\\\": 200,\\n        \\\"result_count\\\": 10\\n      }\\n    ]\\n  }\\n}\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_19d8efa773bcffe9c97f205a",
+    "scope": "shared",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_099089327514/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_099089327514",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_099089327514/reads/r_461a9b7cd7c42e62954abd47.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_099089327514",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_099089327514/reads/r_bcd48befbb3bf2dbb93d8a91.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_099089327514",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_1d5aeec9a581/reads/r_95155412f92c41d1be406fed.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_1d5aeec9a581",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_6333d8f6d020/reads/r_508ae352d87a6e564940fc1f.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_6333d8f6d020",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_bd27b2f6b80e/reads/r_33a659f4800ea1156c13353d.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_bd27b2f6b80e",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_e29e042c0c5c/reads/r_52d5c4b8b2c1ff12264a38de.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_e29e042c0c5c",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_e29e042c0c5c/reads/r_9b4eb8a3ba784b89dc169bbb.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_e29e042c0c5c",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_e417002e5106/reads/r_284170878a07d3bdb37831fc.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_e417002e5106",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

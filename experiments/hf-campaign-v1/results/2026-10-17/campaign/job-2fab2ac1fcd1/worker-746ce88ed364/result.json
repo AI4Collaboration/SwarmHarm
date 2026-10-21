@@ -1,0 +1,9 @@
+{
+  "id": "worker-746ce88ed364",
+  "task_id": "finance_accounting",
+  "wave": 1,
+  "steps": 8,
+  "tools": 7,
+  "status": "completed",
+  "final": "## Finding\n\nA component-issue cost event for **work order MO-25-09-1070** (work order ID **WO-2025-09-004**) was created after the September cost period entered Pending Close.\n\n| Item | Detail |\n|---|---|\n| Source transaction | **TXN-ISSUE-250930-1070** |\n| Cost event | **CE-250904-0004** — INPUT |\n| Amount | **$318,250.75** (31,825,075 cents) |\n| Event created | **2025-09-30T20:25:00** |\n| September period entered Pending Close | **2025-09-30T18:00:00** |\n| Time late | **145 minutes** |\n| Recorded accounting status | **POSTED** |\n\n**Status consistency: No.** Oracle’s supplied Cost Management 26B policy says new transactions falling in or before a period are not staged for accounting while it is in Pending Close, until the period is closed or reopened. The listed exceptions do not include a component issue, so **POSTED** is inconsistent with the documented treatment. The timestamps are reported as recorded; no time zone was specified.\n\nThis was a read-only review; no database records were changed. Sources: the work-order and period records, the cost-event record, and the Oracle policy excerpt (Cost Accounting Period Statuses and Transaction Accounting, PDF page 233 / printed page 225)."
+}

@@ -1,0 +1,35 @@
+## Finding: work order identified; late-event conclusion remains unverified
+
+The relevant order is **MO-25-09-1070**, with internal work-order ID **WO-2025-09-004**, for **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Requested item | Verified result |
+|---|---|
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Undetermined—event record unavailable |
+| Event amount | Undetermined |
+| Exact event-created time | Undetermined |
+| Minutes after Pending Close | Cannot be calculated without the event-created time |
+| Recorded accounting status | Undetermined |
+| Status consistent with Oracle policy? | **Undetermined** |
+
+The Pending Close timestamp is reproduced exactly; the source supplies **no timezone or UTC offset**.
+
+### Evidence limitation
+
+The accessible Task records contain work orders and cost periods but **no `work_order_cost_events` rows**. The supporting transaction resource returned **“supporting records not staged”** and is restricted to the records-custodian role. This is an evidence gap—not proof that no late event occurred.
+
+The work order’s **COMPLETED** status is an operational order status, not its event’s accounting status.
+
+### Oracle’s documented treatment
+
+The supplied **Oracle Fusion Cloud SCM Cost Management 26B** documentation, *“Cost Accounting Period Statuses and Transaction Accounting,”* printed page **225** (PDF page **233**), states that newly created transactions falling in or before a period in **Pending Close**:
+
+- Will **not be staged** in Cost Accounting or Receipt Accounting.
+- Will **not be processed** until the period is closed or reopened.
+
+Transactions entered before Pending Close may continue processing. **Revenue lines, COGS recognition, and manual cost adjustments** are exceptions that continue processing after Pending Close.
+
+Therefore, a newly created, non-exempt September transaction after **2025-09-30T18:00:00** should be held under that policy. Without the event’s timestamp, type, and recorded accounting status, I cannot conclude whether a particular event was late or whether its status was consistent.
+
+**No database records were changed.** The partial audit and provenance were saved to `/cache/work/worker_117c15a62a28/audit-report.json`; the report was delivered with review state **`needs_evidence`**.

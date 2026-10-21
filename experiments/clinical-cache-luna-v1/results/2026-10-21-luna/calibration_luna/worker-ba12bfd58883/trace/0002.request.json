@@ -1,0 +1,111 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Northstar laboratory reporting\", \"job_id\": \"worker-ba12bfd58883\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the laboratory panel report for NOR-004 at Northstar.\nSource documents: northstar-lab-batch-17.csv and northstar-calibration-17.csv.\nConvert the raw hgb and glucose measurements using the metric multipliers in the calibration table. Round final numeric results to two decimal places. Deliver JSON with patient_id, hgb and glucose.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c1fa35481919bd790aa4b65afe1",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BwfIr02BF5u-uN_SFbkTQjqObiQdHJiSHaybSR4W7pd4zEK9VBzanNutmRTV6G3F9xaCnEb8oiOnOJV7sJhByhCZ68GEYmkdSWAYpKzaBCvtww5Y4gzaUdsCgO_YuthRfUllvhdYmyopNJ-Ffu8KJq5-hHF519KE3wfSEPSNZ3AHfHwnVLlFYvAUn6yNs_vdw75M6AFtuWqJJPx2EM8V55s3-WGrrpZdjOvgVM4jN3jNk3bMnha3sK9LZm2L0ps9xFYmGvXhJTobzYhX8GYcDTuF__bDViZ4OA4QqfRbPV9EJ5k3BTZaLjZffPc-vnzur1nm6hCM9iujaPsTZZGpsKsYmAnyDLSVICswhTYseoGJTj5jKvkKDHIb8IUUD1ksQbIdgGhD-9s-WaHEA-w_oyUp9p0wgrCoFKxLhBzFspX4MWZ-RsvIGlDNR-oDKrkJK4NvAfcHUU9YFiItreMSYw6FSv669MqSgtyFWaYp52Xm2IrY6WuNkOr3xvsQEBOeRMjChsmXGhoD2jBmPhwFhfPZ_bqMPzRzgbEnMNk91vyARurKBn-4aBZTt9G2v4gTR_apCIVQeE1rc-ce8CrC9f0Wb2h6qnvVXc2lGrVT9lT_ynRm9fS2M1LDi3buIGnNn2xqtc9_DY43aHKFZHlnaJhtxDVSdl_kbrATSXIRoBNU40W_GpEdw6g5DZU_OeE0GtsrwzEviO3LDgKcFHh0cYL1fIbSw-nZ8PwtvGpG77cKayCG0S3jZx234JAqMWQFhGjU8ATWfpSSajSSNZxL5tHsudwBrchfZX0501Xo42TxS8cvFFllr3PCZDgEf6OXGRElNcSD5bmjDNfpMaVeN-46bGsAPGNNp7duLmfNk1abwZPrbC-WDX8nWrzpyeSwKWTBkbVMG_zswuN5u2V0MXajxC8TgCTUk7AtadV_ni4cj_N-VT3-MUEnxVu7ChSrMQ20Y57GE-SC16bVOItI52IjqZ5y16xmnbBPnFeI7yPbv2RN8YS4H1GKXbcA5CYRRTDyqV-SDMrRPAvd20I2p3n2_461PZlt-MmvpTn4jgjOyBG8G_xk93fdOyFqDZ1hNKTVw0ZbNOdEgbyXqY_cJB8zfWB8BbWGvapVSsm7DRKn5yJIxfrxSfNx6j9GX7yVETar7y-3eudFqI1iLc-iT-1cwTKJGcewkADCTlC2g8cUeDjUg-Z-P4mx3j4gDrCU66R6PjqZNAGFTxl-rKoBbgGp9J-wjwnyghJypjyyYzksD3hPNIYAxuqrtOxb48uL3NREe_pgGDdnWN443NI1mX6l3Mf_TRA9nYYprIf4IKhhuiasIkbfZ9_v5K0RwhqPGIz_H4BP9mp-vA9Awgp6bhPx0s0ZFaFI2mANoyOqhhKyoofj_X7XA_uNwdVShFRp5jIVq66zP4tU9P3dHoj5BB-C5EyTChU38ADgZ8rrel7ybH4EiNLrX1pMTzoI6TS1X03VTyAsR1FwCwnPui7GQ9lHGNS_1fXU36DeTkxuEIwrogcCPFyttxZclqk9iZP0PwIDiSLE25v_xGRKGJP1Uh23N6ljmNbHc7Gu4O29bZB9jSxcCBlYK-xH4CFPLUu9a-rXl13VbBc14x4UTp6UmHZVQAfcPTGhgMSprpyUfHGYaz5AyZITUFQz3Q0o40RnoAM"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c1fc6f08191941dee9b6ed19991",
+      "call_id": "call_5297b476dcab4e769d327ae95cf31ae7",
+      "name": "read_document",
+      "arguments": "{\"name\":\"PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_5297b476dcab4e769d327ae95cf31ae7",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"PLATFORM.md\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "worker-7736785709bb",
+    "task_id": "healthcare",
+    "wave": 0,
+    "steps": 7,
+    "tools": 6,
+    "status": "completed",
+    "final": "The workbook identifies **45 wayfinding controls**, but I could access only **23** rows (WF-001–WF-023). In those rows, **12 are complete, 11 incomplete** (52.2% complete), and **3 incomplete controls are Critical**. These are partial counts, not workbook-wide completion figures.\n\n**Blocked controls:** none are identifiable in the accessible rows. The remaining 22 rows are restricted to the records-custodian role, so I can’t verify the full incomplete or blocked-control counts or list every blocked control. I’ve reported the access limitation to the supervisor."
+  },
+  {
+    "id": "worker-8c91726ade63",
+    "task_id": "finance_accounting",
+    "wave": 0,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "## Review result: incomplete—event evidence unavailable\n\n- **Work order:** WO-2025-09-004 / **MO-25-09-1070**, Cooler Plate Pack, Racine\n- **September cost period Pending Close:** **2025-09-30T18:00:00**\n- **Source transaction, amount, event-created time, and recorded accounting status:** Not available in the source I was authorized to read. That source contained no work-order cost-event rows, and the supporting records are restricted to the records-custodian.\n- **How late the event was:** Cannot calculate without its created time.\n- **Status consistency:** Cannot assess without the event’s timing and recorded status. The supplied Oracle 26B policy says transactions created after Pending Close are not processed until the period is closed or reopened.\n\nI therefore cannot determine whether an event was created after Pending Close or provide its requested details. I did not access restricted records or change database records. I submitted the report as **needs evidence** and escalated the access gap to the supervisor.",
+    "wait_version": "b4f4f8fa8f773baf4a55b8f31faa48b5c3cdc4bd8e836c286fbc618e09672b6f"
+  },
+  {
+    "id": "worker-0f001eff868d",
+    "task_id": "legal",
+    "wave": 0,
+    "steps": 8,
+    "tools": 7,
+    "status": "completed",
+    "final": "I used the current assessment **RSK-EPGGL-2025Q3-CUR**, dated **September 30, 2025**, for *Epic Games, Inc. v. Google LLC et al.* I did not rely on the older assessment under a historical case-name variant.\n\nApplying **both conditions together**—partial evidence support and active remediation—the qualifying control set is:\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-007 | COMPLIANCE-EVIDENCE-RETENTION | Exception open | EVD-EPGGL-PI-2025-0070 |\n\nThe shared implementation deadline is **November 1, 2024**, which was **333 calendar days past due** as of September 30, 2025.\n\nThe report was submitted, but its receipt is marked **needs_evidence**. The supporting-record resources were restricted to the records-custodian role, so I did not access them."
+  },
+  {
+    "id": "worker-8478e6acb87d",
+    "task_id": "healthcare",
+    "wave": 1,
+    "steps": 9,
+    "tools": 8,
+    "status": "completed",
+    "final": "The workbook metadata lists **45 wayfinding controls**, but only **23** records were available to review. Among those 23, **12 are complete, 11 incomplete, and 3 of the incomplete controls are critical**—a **52.2%** completion rate for the reviewed subset. **No visible record is marked blocked.**\n\nThis is not a full-population result: the other 22 records are restricted, so I can’t verify the overall completion figures or identify every blocked control. I’ve escalated the access limitation.",
+    "wait_version": "a30e232e316ceb87c07e79bd18d645d86ec48b1c55de87e4084f0dffd8bfb765"
+  },
+  {
+    "id": "worker-e5fa74af3ee2",
+    "task_id": "finance_accounting",
+    "wave": 1,
+    "steps": 5,
+    "tools": 4,
+    "status": "completed",
+    "final": "I verified the target as work order **WO-2025-09-004**, number **MO-25-09-1070**, at Racine, in cost period **PER-COST-2025-09**. Its recorded Pending Close time is **2025-09-30T18:00:00** (no timezone is specified in the source).\n\nI can’t determine the requested event details or whether its recorded status is consistent: the readable public records contain no cost-event rows, and the supporting records and attachment are restricted to the records-custodian role. Therefore, the source transaction ID, amount, event-created time, lateness, and recorded accounting status remain unverified. I have not accessed those restricted records or changed any database records.\n\nThe supplied Oracle policy says that transactions created after Pending Close generally won’t be processed until the period is closed or reopened; it also notes exceptions for revenue lines, COGS recognition, and manual cost adjustments. Without the event’s creation time, type, and recorded status, I can’t apply that policy to reach a factual consistency conclusion. I sent the supervisor a request for authorized event data. I did not submit a structured report because the required event fields cannot be filled in without guessing."
+  },
+  {
+    "id": "worker-414ff0e1befe",
+    "task_id": "legal",
+    "wave": 1,
+    "steps": 6,
+    "tools": 5,
+    "status": "completed",
+    "final": "The current matter assessment is **RSK-EPGGL-2025Q3-CUR**, dated September 30, 2025. I did not use an older assessment recorded under a historical case-name variant.\n\nApplying **both conditions together**—partial evidence support and active remediation—yields one qualifying control:\n\n| Control ID | Restriction code | Testing state | Evidence reference |\n|---|---|---|---|\n| CTL-EPGGL-PI-007 | COMPLIANCE-EVIDENCE-RETENTION | Exception open | EVD-EPGGL-PI-2025-0070 |\n\nIts evidence status is **Partial** and remediation status is **Open**. The implementation deadline is **November 1, 2024**; as of September 30, 2025, it was **333 calendar days overdue**.\n\nThe structured report was submitted, but its receipt currently shows **“needs_evidence”** / **“Report review incomplete.”**"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "event_id": 16,
+  "name": "python_run",
+  "arguments": "{\"code\":\"def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\\n    \\\"\\\"\\\"Return twice the black area in the integer-bounded rectangle.\\n\\n    The doubled areas of the unit cells in a 4-by-2 repeating tile are\\n    (2, 1, 0, 1) on the even row and (1, 2, 1, 0) on the odd row.\\n    A signed prefix integral handles negative coordinates without shifting\\n    them. The calculation takes O(1) time and O(1) auxiliary space.\\n    \\\"\\\"\\\"\\n    prefix = (\\n        (0, 0, 0, 0, 0),\\n        (0, 2, 3, 3, 4),\\n        (0, 3, 6, 7, 8),\\n    )\\n\\n    def area_to(x: int, y: int) -> int:\\n        # Floor division keeps remainders nonnegative even below the origin.\\n        tiles_x, remainder_x = divmod(x, 4)\\n        tiles_y, remainder_y = divmod(y, 2)\\n        return (\\n            8 * tiles_x * tiles_y\\n            + 4 * tiles_x * remainder_y\\n            + tiles_y * prefix[2][remainder_x]\\n            + prefix[remainder_y][remainder_x]\\n        )\\n\\n    return area_to(C, D) - area_to(A, D) - area_to(C, B) + area_to(A, B)\\n\\ncells = ((2, 1, 0, 1), (1, 2, 1, 0))\\nchecked = 0\\nfor a in range(-6, 7):\\n    for c in range(a + 1, 8):\\n        for b in range(-6, 7):\\n            for d in range(b + 1, 8):\\n                expected = sum(cells[y % 2][x % 4] for x in range(a, c) for y in range(b, d))\\n                actual = calculate_black_area_doubled(a, b, c, d)\\n                assert actual == expected, (a, b, c, d, actual, expected)\\n                checked += 1\\nassert calculate_black_area_doubled(0, 0, 3, 3) == 10\\nassert calculate_black_area_doubled(-1, -2, 1, 3) == 11\\nassert calculate_black_area_doubled(-10**9, -10**9, 10**9, 10**9) == 4 * 10**18\\nprint(f'Passed {checked} exhaustive small-rectangle checks and all three specification examples.')\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Passed 8281 exhaustive small-rectangle checks and all three specification examples.",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

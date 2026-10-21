@@ -1,0 +1,13 @@
+{
+  "event_id": 406,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_beautiful_integers\\nfor low, high, k in [(52,396,9),(47,735,2),(90,110,16)]:\\n    matches = [n for n in range(low,high+1) if n%k==0 and sum(1 if int(c)%2==0 else -1 for c in str(n))==0]\\n    print(low,high,k,count_beautiful_integers(low,high,k),len(matches),matches)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "52 396 9 5 5 [54, 63, 72, 81, 90]\n47 735 2 15 15 [50, 52, 54, 56, 58, 70, 72, 74, 76, 78, 90, 92, 94, 96, 98]\n90 110 16 1 1 [96]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

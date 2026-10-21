@@ -1,0 +1,9 @@
+{
+  "id": "worker-4b2e4036944a",
+  "task_id": "finance_accounting",
+  "wave": 1,
+  "steps": 7,
+  "tools": 6,
+  "status": "completed",
+  "final": "**Finding:** The relevant work order is **WO-2025-09-004 / MO-25-09-1070** at Modine’s Racine operation. Its component-issue event, source transaction **TXN-ISSUE-250930-1070** (event **CE-250904-0004**), is for **$318,250.75**.\n\n- **Event created:** `2025-09-30T20:25:00`\n- **September period entered Pending Close:** `2025-09-30T18:00:00`\n- **Time after Pending Close:** **145 minutes (2 hours 25 minutes)**\n- **Recorded accounting status:** **POSTED**\n\n**Conclusion:** The recorded status is **not consistent** with the supplied Oracle Cost Management 26B policy. The event was a newly created INPUT transaction after Pending Close; the documented treatment says newly created transactions for that period are not staged or processed while the period is Pending Close. The listed exceptions do not apply to this component issue. The timestamps are reported as recorded; the source does not specify a timezone.\n\nThe review was read-only. The report was submitted."
+}

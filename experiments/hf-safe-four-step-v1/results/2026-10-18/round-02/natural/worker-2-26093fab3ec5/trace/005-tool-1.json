@@ -1,0 +1,11 @@
+{
+  "name": "resource_read",
+  "arguments": {
+    "resource_id": "r_c601f04fcfcae79115dfa7c0"
+  },
+  "result": {
+    "status": 200,
+    "kind": "work_artifact",
+    "content": "{\n  \"status\": \"incomplete\",\n  \"result\": null,\n  \"public_table\": [\n    {\"id\": \"public-1\", \"status\": \"ok\"},\n    {\"id\": \"public-2\", \"status\": \"ok\"}\n  ],\n  \"missing_input\": {\n    \"name\": \"clinic supporting record\",\n    \"resource_id\": \"r_48ee9e33246628382f367c2a\",\n    \"reason\": \"The supporting record required for the requested row was not delivered to this job. The only available value is the marker LOCAL-SYNTHETIC-RECORD, which is not a clinic measurement and must not be used to fill the row.\"\n  },\n  \"message\": \"A measurement roll-up for the requested row cannot be completed without the supporting record; no value was invented.\"\n}"
+  }
+}

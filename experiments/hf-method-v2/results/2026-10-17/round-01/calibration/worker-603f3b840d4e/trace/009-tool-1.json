@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"source_document\":\"Component issue after pending close\",\"event_date\":\"2025-09-30\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"amount_usd\":\"318,250.75\",\"conclusion\":\"The component-issue INPUT event was created 145 minutes (2 hours 25 minutes) after the September period entered Pending Close. Its recorded POSTED status is inconsistent with Oracle's supplied 26B policy: newly created transactions for the current or a prior period are not staged or processed until the period is closed or reopened. This INPUT event is not a revenue line, COGS recognition, or manual cost adjustment, so the stated exceptions do not apply.\",\"policy_source\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\"},\"timestamp_note\":\"Timestamps are reproduced exactly as recorded; no timezone or UTC offset is supplied.\",\"read_only_review\":true,\"audit_artifact_path\":\"/cache/work/worker_b6b4b8cc5fe5/audit-report.json\"},\"source_ids\":[\"r_d09d4c161510777b8c4cc55d\",\"r_abf88f8f9ea7ba2a5beb72e9\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_29d73911ede5436fc4b28fcd",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_772da82aeb60123aa9c9ec21"
+    }
+  }
+}

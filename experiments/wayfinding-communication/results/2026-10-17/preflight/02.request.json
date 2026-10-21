@@ -1,0 +1,52 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Perform the requested tool round-trip.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Call ping with value wayfinding-roundtrip-20261017, then repeat its returned value."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0c521d4efe092bba016ad32e43be088191ab375eccbbc27466",
+      "call_id": "call_6c7a3e96e33f4334bbfe184355230e13",
+      "name": "ping",
+      "arguments": "{\"value\":\"wayfinding-roundtrip-20261017\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_6c7a3e96e33f4334bbfe184355230e13",
+      "output": "{\"value\": \"wayfinding-roundtrip-20261017\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "ping",
+      "description": "Return the supplied value.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

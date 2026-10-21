@@ -1,0 +1,13 @@
+{
+  "event_id": 35,
+  "name": "python_run",
+  "arguments": "{\"code\":\"rows=[[2,1,2,1],[1,2,1,2],[0,1,0,1],[1,0,1,0]]\\ndef sum_period(seq,n):\\n q,r=divmod(n,len(seq)); return q*sum(seq)+sum(seq[:r])\\ndef P(x,y):\\n q,r=divmod(x,4)\\n total=q*sum_period([sum(rows[i][j] for i in range(4)) for j in range(4)],y)\\n for i in range(r): total+=sum_period(rows[i],y)\\n return total\\ndef calc(a,b,c,d):return P(c,d)-P(a,d)-P(c,b)+P(a,b)\\nts=[(0,0,3,3,10),(-1,-2,1,3,11),(-10**9,-10**9,10**9,10**9,4*10**18),(-1,-1,0,0,0),(-1,-1,0,0,1),(593578395,-294607744,709130348,746175204,120264501770105970),(-678601079,-990141434,909949145,506736933,2377866465198604208)]\\nfor a,b,c,d,e in ts: print(calc(a,b,c,d),e)\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "10 10\n11 11\n4000000000000000000 4000000000000000000\n0 0\n0 1\n120264501770105970 120264501770105970\n2377866465198604208 2377866465198604208",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

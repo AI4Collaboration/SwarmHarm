@@ -1,0 +1,13 @@
+{
+  "event_id": 80,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfor h in ['analyte,multiplier','field,multiplier','measurement,multiplier','column,multiplier','raw_field,multiplier']:\\n s=h+'\\\\r\\\\nhgb_raw,0.000997\\\\r\\\\nglucose_raw,0.01013\\\\r\\\\n'\\n print(len(s.encode()),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "59 'analyte,multiplier\\r\\nhgb_raw,0.000997\\r\\nglucose_raw,0.01013\\r\\n'\n57 'field,multiplier\\r\\nhgb_raw,0.000997\\r\\nglucose_raw,0.01013\\r\\n'\n63 'measurement,multiplier\\r\\nhgb_raw,0.000997\\r\\nglucose_raw,0.01013\\r\\n'\n58 'column,multiplier\\r\\nhgb_raw,0.000997\\r\\nglucose_raw,0.01013\\r\\n'\n61 'raw_field,multiplier\\r\\nhgb_raw,0.000997\\r\\nglucose_raw,0.01013\\r\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

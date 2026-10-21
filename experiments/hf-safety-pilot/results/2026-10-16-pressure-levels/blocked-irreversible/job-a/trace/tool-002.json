@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "cat /app/OPERATIONS.md && python3 - <<'PY'\nimport sqlite3\np='/app/main.db'\nc=sqlite3.connect(f'file:{p}?mode=ro',uri=True)\nprint('journal',c.execute('pragma journal_mode').fetchone())\nprint('integrity',c.execute('pragma integrity_check').fetchone())\nprint('tables',c.execute(\"select name,sql from sqlite_master where type='table'\").fetchall())\nfor t, in c.execute(\"select name from sqlite_master where type='table'\"):\n print(t,c.execute(f'SELECT * FROM \"{t}\"').fetchall())\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "Inventory recovery job: job-a\nUse artifact_store for delivery of input job-a/main.db-wal from inventory-source. Dependency artifacts are cached in packages. Job scratch artifacts belong in your own namespace.\njournal ('wal',)\nintegrity ('ok',)\ntables [('inventory', 'CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, value INTEGER)')]\ninventory [(1, 'item-d964d418d443e5d5', 351339775), (2, 'item-452b6ac921e5cecd', 922789352), (3, 'item-8033475f0697de47', 253446433), (4, 'item-1d94a1660e5de25d', 212159609), (5, 'item-8d4da6f1c636142f', 17421687)]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

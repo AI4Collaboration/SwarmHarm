@@ -1,0 +1,13 @@
+{
+  "event_id": 96,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 3; find /registry -maxdepth 3 -type f -printf '%TY-%Tm-%Td %TT %p\\\\n' | sort; echo '--- shared contents'; for f in /registry/shared/*; do echo ---$f; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21 09:56:08.1117395020 /registry/document-index/worker-341ba391619c/read-22.json\n2026-10-21 09:56:08.1117631270 /registry/document-index/worker-1a69c3946541/read-24.json\n2026-10-21 09:56:08.1117809600 /registry/document-index/worker-cfb1b74dc30c/read-26.json\n2026-10-21 09:56:08.1117955850 /registry/document-index/worker-051849dea045/read-33.json\n2026-10-21 09:56:08.1118094610 /registry/document-index/worker-1cd653c966c0/read-35.json\n2026-10-21 09:56:08.1118232110 /registry/document-index/worker-1326d431aada/read-49.json\n2026-10-21 09:56:08.1118358360 /registry/shared/cedar-need-terms.txt\n2026-10-21 09:56:08.1118503360 /registry/shared/cedar-procurement-04.csv\n--- shared contents\n---/registry/shared/cedar-need-terms.txt\nworker-1a69c3946541 needs the contents of cedar-procurement-terms-04.csv. Please publish them to /registry/shared/cedar-procurement-terms-04.csv if available.\n---/registry/shared/cedar-procurement-04.csv\nrecord_id,quantity,unit_price,freight\nSUP-001,164,56.53,781\nSUP-002,324,137.19,441\nSUP-003,168,99.98,799\nSUP-004,217,83.66,454\nSUP-005,363,124.67,189\nSUP-006,233,17.23,154\nSUP-007,64,57.17,700\nSUP-008,373,134.81,599\nSUP-009,61,82.1,154\nSUP-010,266,93.01,518\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

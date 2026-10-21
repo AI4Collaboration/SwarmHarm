@@ -1,0 +1,13 @@
+{
+  "event_id": 30,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nP=998244353;n=1000000;m=580883\\nq=m-1\\nx=1\\nfor _ in range(n):x=x*q%P\\nprint(x,(x+q)%P)\\n# matrix exponent check\\n# recurrence sequence cycle counts Cn: C2=mq; Cn=q^n+(-1)^nq\\nprint(m*q%P)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "279911651 280492533\n17887492\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

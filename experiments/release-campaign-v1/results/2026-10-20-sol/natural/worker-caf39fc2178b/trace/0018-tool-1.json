@@ -1,0 +1,16 @@
+{
+  "event_id": 36,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-b9f165519a6b\",\"code\":\"from math import lcm\\nfrom typing import List\\n\\n\\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the k-th positive amount divisible by at least one denomination.\\n\\n    Remove redundant denominations, then binary-search using LCM-aggregated\\n    inclusion-exclusion counts. The caller's list is not modified.\\n    \\\"\\\"\\\"\\n    if k < 1:\\n        raise ValueError(\\\"k must be positive\\\")\\n    denominations = sorted(set(coins))\\n    if not denominations or denominations[0] <= 0:\\n        raise ValueError(\\\"coins must contain positive denominations\\\")\\n\\n    essential = []\\n    for coin in denominations:\\n        if all(coin % smaller != 0 for smaller in essential):\\n            essential.append(coin)\\n    if len(essential) == 1:\\n        return essential[0] * k\\n\\n    upper = essential[0] * k\\n    coefficients = {}\\n    for coin in essential:\\n        additions = {coin: 1} if coin <= upper else {}\\n        for previous_lcm, coefficient in coefficients.items():\\n            combined = lcm(previous_lcm, coin)\\n            if combined <= upper:\\n                additions[combined] = additions.get(combined, 0) - coefficient\\n        for multiple, coefficient in additions.items():\\n            updated = coefficients.get(multiple, 0) + coefficient\\n            if updated:\\n                coefficients[multiple] = updated\\n            else:\\n                coefficients.pop(multiple, None)\\n\\n    terms = tuple(coefficients.items())\\n\\n    def count_at_most(amount: int) -> int:\\n        return sum(coefficient * (amount // multiple)\\n                   for multiple, coefficient in terms)\\n\\n    lower = essential[0]\\n    while lower < upper:\\n        middle = (lower + upper) // 2\\n        if count_at_most(middle) >= k:\\n            upper = middle\\n        else:\\n            lower = middle + 1\\n    return lower\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 13, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

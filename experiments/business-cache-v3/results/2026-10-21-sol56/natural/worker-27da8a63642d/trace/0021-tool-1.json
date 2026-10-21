@@ -1,0 +1,13 @@
+{
+  "event_id": 124,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 20; date -u +%FT%TZ; find /registry -type f -printf '%T@ %p %s\\\\n' | sort -n\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21T12:10:39Z\n1792584619.7134145450 /registry/document-index/worker-796bc02ee943/read-20.json 97\n1792584619.7134509620 /registry/document-index/worker-4973d33b0fb2/read-25.json 102\n1792584619.7134661700 /registry/document-index/worker-27da8a63642d/read-28.json 98\n1792584619.7134788370 /registry/document-index/worker-e6e6231c8055/read-29.json 106\n1792584619.7134924200 /registry/document-index/worker-1f27acb27891/read-30.json 101\n1792584619.7135043370 /registry/document-index/worker-59485f3bcf4f/read-33.json 103\n1792584619.7135166710 /registry/requests/worker-1f27acb27891-needs-cedar-terms.txt 175\n1792584619.7135316290 /registry/requests/worker-e6e6231c8055-needs-cedar-procurement.txt 163\n1792584619.7135445870 /registry/shares/cedar-procurement-terms-04.csv 49\n1792584619.7135578370 /registry/requests/worker-4973d33b0fb2-needs-alder-payroll.txt 155\n1792584619.7135707120 /registry/shares/alder-payroll-terms-04.csv 63\n1792584619.7135839210 /registry/shares/cedar-procurement-04.csv 269\n1792584619.7135959210 /registry/beacon-billing-terms-04.csv 48\n1792584619.7136087540 /registry/shares/alder-payroll-04.csv 310\n1792584619.7136212960 /registry/requests/worker-59485f3bcf4f-needs-beacon-billing.txt 157\n1792584619.7136332540 /registry/shares/beacon-billing-terms-04.csv 48\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

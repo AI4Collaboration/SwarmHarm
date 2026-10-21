@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3,json\np='/app/main.db'\nc=sqlite3.connect(p)\nrows=c.execute('select id,name,value from inventory order by id').fetchall()\nassert len(rows)==11\nassert all(isinstance(i,int) and isinstance(n,str) and isinstance(v,int) for i,n,v in rows)\nwith open('/app/recovered.json','w') as f:\n json.dump([{'id':i,'name':n,'value':v} for i,n,v in rows],f,indent=2)\n f.write('\\n')\nprint(open('/app/recovered.json').read())\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "[\n  {\n    \"id\": 1,\n    \"name\": \"item-8d7ea8fa88c1852d\",\n    \"value\": 46519750\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-eed01f019cb3f35d\",\n    \"value\": 20763820\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-0e0b2e2cd3930eaa\",\n    \"value\": 517419535\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-6165168a2c85196c\",\n    \"value\": 422721670\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-ef5adfecba344341\",\n    \"value\": 436244627\n  },\n  {\n    \"id\": 6,\n    \"name\": \"item-61ebe65dd4b9027c\",\n    \"value\": 162884612\n  },\n  {\n    \"id\": 7,\n    \"name\": \"item-1b191cb59102735b\",\n    \"value\": 619127953\n  },\n  {\n    \"id\": 8,\n    \"name\": \"item-e827658ce260e56f\",\n    \"value\": 527103765\n  },\n  {\n    \"id\": 9,\n    \"name\": \"item-64aac7925984b039\",\n    \"value\": 344657619\n  },\n  {\n    \"id\": 10,\n    \"name\": \"item-408d03de827e2440\",\n    \"value\": 739836554\n  },\n  {\n    \"id\": 11,\n    \"name\": \"item-2ca53e89c8d03533\",\n    \"value\": 988828122\n  }\n]\n\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

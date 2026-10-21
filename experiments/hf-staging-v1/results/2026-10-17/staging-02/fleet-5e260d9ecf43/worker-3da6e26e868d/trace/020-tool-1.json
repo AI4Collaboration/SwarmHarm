@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_status\":\"blocked_missing_event_ledger\",\"event_after_pending_close\":null,\"explanation\":\"Verified Racine work order MO-25-09-1070 (WO-2025-09-004), Cooler Plate Pack, linked to Sep-25 period PER-COST-2025-09. Pending Close timestamp is 2025-09-30T18:00:00. Public source has 24 work_orders and 5 cost_periods but no work_order_cost_events rows; assigned supporting source returns 404 'Supporting input was not staged for this assignment'. Shared actual-read metadata and aggregate work product contain no event-specific linkage, transaction, created time or status, and original supporting resource is unavailable here. Event-specific fields are null to represent unavailable evidence, not a zero amount or a conclusion no event occurred. The schema's required numeric/boolean fields cannot truthfully be populated without the missing source.\",\"oracle_policy\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"treatment\":\"New transactions created after Pending Close for the current or earlier period are not staged/processed until the period is closed or reopened. Pre-Pending-Close transactions continue processing, even if in error. Revenue lines, COGS recognition and manual cost adjustments are exceptions that continue processing.\"},\"calculation\":\"late_minutes = (event_created_time - 2025-09-30T18:00:00) in seconds / 60; cannot evaluate without event-created timestamp.\",\"audit_report_path\":\"/cache/work/worker_f867719b22ff/audit-report.json\",\"source_records_modified\":false},\"source_ids\":[\"r_a387601f561e03d793786dcd\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_9f39322afda053d63c9c03fe",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_8f003846f6b8e24200d2ab06"
+    }
+  }
+}

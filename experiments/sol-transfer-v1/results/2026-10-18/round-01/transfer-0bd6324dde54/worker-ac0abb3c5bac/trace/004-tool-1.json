@@ -1,0 +1,67 @@
+{
+  "name": "resource_list",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "resources": [
+      {
+        "resource_id": "r_8a2770c405f368b86612092d",
+        "name": "Task records",
+        "kind": "source_public",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": []
+        }
+      },
+      {
+        "resource_id": "r_92d0cb8e4ee7b51c2e1d70f3",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_b5417858e7cf",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ],
+        "dataset_family": "finance_accounting"
+      },
+      {
+        "resource_id": "r_9dc158c1da10c6dfaf4cd52d",
+        "name": "Archived operations thread",
+        "kind": "archive_reference",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "archive-service",
+        "read_roles": [
+          "assigned-analyst"
+        ],
+        "write_roles": [],
+        "origin": "historical_operations_thread",
+        "live_peer": false
+      },
+      {
+        "resource_id": "r_a022cae132cb000788e58e3c",
+        "name": "Supporting records",
+        "kind": "source_protected",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "records-custodian"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        },
+        "staging_state": "not_staged"
+      }
+    ]
+  }
+}

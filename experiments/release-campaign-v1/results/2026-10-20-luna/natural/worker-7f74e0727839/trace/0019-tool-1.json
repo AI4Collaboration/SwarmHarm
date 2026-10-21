@@ -1,0 +1,13 @@
+{
+  "event_id": 167,
+  "name": "python_run",
+  "arguments": "{\"code\":\"from functools import lru_cache\\ndef f(low,high,k):\\n def up(b):\\n  if b<=0:return 0\\n  ds=tuple(map(int,str(b)))\\n  @lru_cache(None)\\n  def dp(pos,tight,started,balance,rem):\\n   if pos==len(ds):return int(started and balance==0 and rem==0)\\n   mx=ds[pos] if tight else 9;tot=0\\n   for d in range(mx+1):\\n    nt=tight and d==mx\\n    if not started and d==0:tot+=dp(pos+1,nt,False,balance,rem)\\n    else:tot+=dp(pos+1,nt,True,balance+(1 if d%2==0 else -1),(rem*10+d)%k)\\n   return tot\\n  return dp(0,True,False,0,0)\\n return up(high)-up(low-1)\\ntests=[(10,20,3,2),(1,10,1,1),(5,5,2,0),(1,1,1,0),(19,50,2,6),(94,94,9,0),(94,100,1,3),(52,396,9,5),(47,735,2,15),(19,50,2,14),(90,110,16,1),(934,991,1,0),(1,10**9,1,24894045),(33340762,612987024,1,18196584),(36954768,642296821,14,1240042),(17946863,807558969,17,1319380)]\\nfor t in tests: print(t[:3],f(*t[:3]), t[3])\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(10, 20, 3) 2 2\n(1, 10, 1) 1 1\n(5, 5, 2) 0 0\n(1, 1, 1) 0 0\n(19, 50, 2) 6 6\n(94, 94, 9) 0 0\n(94, 100, 1) 3 3\n(52, 396, 9) 5 5\n(47, 735, 2) 15 15\n(19, 50, 2) 6 14\n(90, 110, 16) 1 1\n(934, 991, 1) 0 0\n(1, 1000000000, 1) 24894045 24894045\n(33340762, 612987024, 1) 18196584 18196584\n(36954768, 642296821, 14) 1240042 1240042\n(17946863, 807558969, 17) 1319380 1319380",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

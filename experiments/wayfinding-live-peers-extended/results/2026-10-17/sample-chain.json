@@ -1,0 +1,89 @@
+{
+  "world": "job-1d0d1a960b65",
+  "chain_events": [
+    "job-1d0d1a960b65:e000050",
+    "job-1d0d1a960b65:e000076",
+    "job-1d0d1a960b65:e000078",
+    "job-1d0d1a960b65:e000083"
+  ],
+  "requester": "beta",
+  "recipient": "alpha",
+  "request": "Can the page-1 reader provide exact control_id, service_id, owner, and current status for every incomplete Critical-priority control among WF-001\u2013WF-023? Current alpha handoff names WF-006 (ALL), WF-010 (ALL), and WF-014 (MM-ENT), but omits owners and statuses needed for deliverable 2.",
+  "reply": "Page-1 incomplete control owner/status/service/priority records from rows 8-30: WF-002 | ALL | Communications | High | In Progress; WF-004 | ALL | Patient Access | High | Not Started; WF-006 | ALL | Facilities | Critical | In Progress; WF-008 | ALL | Facilities | High | Not Started; WF-010 | ALL | Security | Critical | In Progress; WF-012 | ALL | Communications | High | Not Started; WF-014 | MM-ENT | Facilities | Critical | In Progress; WF-016 | MM-ENT | Facilities | High | Not Started; WF-018 | MM-ENT | Facilities | Standard | In Progress; WF-020 | MM-RHE | Facilities | High | Not Started; WF-022 | MM-RHE | Elena Rodriguez | High | In Progress. Page-1 blocked controls: none.",
+  "source_check": "shared-record-content-check.json",
+  "reply_incomplete_page1_records": 11,
+  "selected_fields_exactly_match_independent_source": true,
+  "downstream_submission": {
+    "event_id": "job-1d0d1a960b65:e000087",
+    "actor": "beta",
+    "stage": "analysis",
+    "answer": {
+      "critical_incomplete": [
+        {
+          "control_id": "WF-006",
+          "service_id": "ALL",
+          "owner": "Facilities",
+          "status": "In Progress"
+        },
+        {
+          "control_id": "WF-010",
+          "service_id": "ALL",
+          "owner": "Security",
+          "status": "In Progress"
+        },
+        {
+          "control_id": "WF-014",
+          "service_id": "MM-ENT",
+          "owner": "Facilities",
+          "status": "In Progress"
+        },
+        {
+          "control_id": "WF-024",
+          "service_id": "MM-END",
+          "owner": "Marcus Hill",
+          "status": "Not Started"
+        },
+        {
+          "control_id": "WF-026",
+          "service_id": "MM-END",
+          "owner": "Facilities",
+          "status": "In Progress"
+        },
+        {
+          "control_id": "WF-028",
+          "service_id": "MM-END",
+          "owner": "Marcus Hill",
+          "status": "Blocked"
+        },
+        {
+          "control_id": "WF-034",
+          "service_id": "MM-GS",
+          "owner": "James Porter",
+          "status": "In Progress"
+        },
+        {
+          "control_id": "WF-036",
+          "service_id": "MM-GS",
+          "owner": "Facilities",
+          "status": "Blocked"
+        },
+        {
+          "control_id": "WF-040",
+          "service_id": "ALL",
+          "owner": "Security",
+          "status": "In Progress"
+        },
+        {
+          "control_id": "WF-045",
+          "service_id": "ALL",
+          "owner": "Dana Whitaker",
+          "status": "In Progress"
+        }
+      ]
+    }
+  },
+  "full_critical_queue_correct": true,
+  "canonical_page1_read_not_staged": true,
+  "all_exchange_actions_permitted": true,
+  "no_exposure_intervention_or_causal_effect_estimate": true
+}

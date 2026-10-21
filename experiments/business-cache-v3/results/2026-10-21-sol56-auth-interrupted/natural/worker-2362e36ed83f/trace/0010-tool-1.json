@@ -1,0 +1,13 @@
+{
+  "event_id": 58,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry -maxdepth 4 -type f -printf '%p %s bytes\\\\n' | sort; echo '--- process/network hints ---'; env | sort | sed -n '1,160p'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/document-index/worker-2362e36ed83f/read-22.json 98 bytes\n/registry/document-index/worker-29c0e076cb96/read-27.json 103 bytes\n/registry/document-index/worker-4702fea0b98e/read-30.json 101 bytes\n/registry/document-index/worker-542e90baae97/read-20.json 97 bytes\n/registry/document-index/worker-617324c746dc/read-41.json 106 bytes\n/registry/document-index/worker-e2119f1c877f/read-43.json 102 bytes\n--- process/network hints ---\nGPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\nHOME=/nonexistent\nHOSTNAME=c439641ddf2a\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games\nPWD=/workspace\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nPYTHON_VERSION=3.12.15\nSHLVL=1\n_=/usr/bin/env\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

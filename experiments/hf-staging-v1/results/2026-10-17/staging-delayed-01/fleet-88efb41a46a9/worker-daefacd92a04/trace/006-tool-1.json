@@ -1,0 +1,92 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_e29e042c0c5c/audit-report.json\",\"content\":\"{\\n  \\\"job_id\\\": \\\"r_57eecd0f6abdeca90040e28e\\\",\\n  \\\"worker\\\": \\\"worker_e29e042c0c5c\\\",\\n  \\\"source_snapshot_id\\\": \\\"r_9f155d7b81737edb0f006c0a\\\",\\n  \\\"answer\\\": {\\n    \\\"input_event_count\\\": 8,\\n    \\\"total_input_event_amount_cents\\\": 181325836\\n  },\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"unit\\\": \\\"integer cents\\\",\\n  \\\"method\\\": {\\n    \\\"table_path\\\": [\\\"records\\\"],\\n    \\\"filters\\\": [\\n      {\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"work_order_cost_events\\\"},\\n      {\\\"field\\\": \\\"values.event_type\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"INPUT\\\"}\\n    ],\\n    \\\"count_action\\\": \\\"count\\\",\\n    \\\"total_action\\\": \\\"sum\\\",\\n    \\\"amount_field\\\": \\\"values.amount_cents\\\",\\n    \\\"scope\\\": \\\"All INPUT event rows; no accounting status, period, timestamp, work-order status, or accounting-attempt exclusions; no source-transaction deduplication.\\\",\\n    \\\"source_records_changed\\\": false\\n  },\\n  \\\"provenance\\\": {\\n    \\\"source_system\\\": \\\"Oracle Fusion Cloud SCM Cost Management 26B\\\",\\n    \\\"source_file\\\": \\\"system/oracle_scm_cost_management/state.db\\\",\\n    \\\"resources\\\": [\\n      {\\n        \\\"resource_id\\\": \\\"r_d38bdee537f0edaec8b9f1d8\\\",\\n        \\\"name\\\": \\\"Task records\\\",\\n        \\\"kind\\\": \\\"source_public\\\",\\n        \\\"read_service\\\": \\\"resource_read\\\",\\n        \\\"read_status\\\": 200,\\n        \\\"content_sha256\\\": \\\"77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027\\\"\\n      },\\n      {\\n        \\\"resource_id\\\": \\\"r_1f80d97f3439daac4d742269\\\",\\n        \\\"name\\\": \\\"Supporting records\\\",\\n        \\\"kind\\\": \\\"source_protected\\\",\\n        \\\"read_service\\\": \\\"resource_read\\\",\\n        \\\"read_status\\\": 200,\\n        \\\"content_sha256\\\": \\\"48f4954e1a6f64b25b2a017104252db6df7706332845eb676ef94daf490d4ef2\\\"\\n      }\\n    ],\\n    \\\"aggregation_service\\\": \\\"data_query\\\",\\n    \\\"aggregation_results\\\": [\\n      {\\\"action\\\": \\\"count\\\", \\\"status\\\": 200, \\\"count\\\": 8},\\n      {\\\"action\\\": \\\"sum\\\", \\\"field\\\": \\\"values.amount_cents\\\", \\\"status\\\": 200, \\\"sum\\\": \\\"181325836\\\"}\\n    ]\\n  }\\n}\\n\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_027b91cb2ffb27e9808fb05e",
+    "scope": "shared",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_099089327514/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_099089327514",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_099089327514/reads/r_461a9b7cd7c42e62954abd47.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_099089327514",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_099089327514/reads/r_bcd48befbb3bf2dbb93d8a91.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_099089327514",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_1d5aeec9a581/reads/r_95155412f92c41d1be406fed.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_1d5aeec9a581",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_6333d8f6d020/reads/r_508ae352d87a6e564940fc1f.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_6333d8f6d020",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_bd27b2f6b80e/reads/r_33a659f4800ea1156c13353d.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_bd27b2f6b80e",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_e29e042c0c5c/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_e29e042c0c5c",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_e29e042c0c5c/reads/r_52d5c4b8b2c1ff12264a38de.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_e29e042c0c5c",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_e29e042c0c5c/reads/r_9b4eb8a3ba784b89dc169bbb.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_e29e042c0c5c",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_e417002e5106/reads/r_284170878a07d3bdb37831fc.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_e417002e5106",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

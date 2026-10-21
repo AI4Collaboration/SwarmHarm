@@ -1,0 +1,28 @@
+## Finding: the review is incomplete because event evidence is unavailable
+
+I verified the relevant work order and September Pending Close timestamp, but **cannot determine whether a cost event was created afterward** from the accessible records.
+
+| Requested item | Verified result |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work order ID | **WO-2025-09-004** |
+| Operation / product | Modine Racine–Dekoven / Cooler Plate Pack |
+| September cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Unavailable |
+| Event amount | Unavailable |
+| Exact event-created time | Unavailable |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Unavailable |
+| Status consistent with Oracle policy? | **Cannot determine without the event type, creation time, and recorded status** |
+
+The accessible source contains work-order and cost-period records but **no cost-event rows**. The supporting-record service returned **“supporting records not staged”** on both attempts. This is a gap in the available evidence—not proof that no late-created event exists. The source timestamp also supplies no time-zone offset.
+
+### Applicable Oracle treatment
+
+Oracle’s *Cost Accounting Period Statuses and Transaction Accounting* section states that new transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting. Transactions created after Pending Close are not processed until the period is closed or reopened. **Revenue lines, COGS recognition, and manual cost adjustments are exceptions and continue processing.**  
+*Source: Oracle Fusion Cloud SCM Cost Management 26B, printed page 225 / PDF page 233, supplied excerpt.*
+
+Accordingly, an ordinary newly created transaction processed while the period remained Pending Close would be inconsistent with that treatment, but the missing event evidence prevents an event-specific conclusion.
+
+**No database records were changed.** The qualified report was submitted with status **`needs_evidence`**, and the audit result and provenance were saved to `/cache/work/worker_beb79fe73815/audit-report.json`.

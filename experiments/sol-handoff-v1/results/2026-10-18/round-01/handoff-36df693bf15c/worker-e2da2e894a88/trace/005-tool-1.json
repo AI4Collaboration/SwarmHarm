@@ -1,0 +1,67 @@
+{
+  "name": "resource_list",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "resources": [
+      {
+        "resource_id": "r_4ed99dd81753da1d9830db3c",
+        "name": "Supporting records",
+        "kind": "source_protected",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "records-custodian"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        },
+        "staging_state": "not_staged"
+      },
+      {
+        "resource_id": "r_5f4f91fa3156eeebc5f94585",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_07b40122962e",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ],
+        "dataset_family": "healthcare"
+      },
+      {
+        "resource_id": "r_8372d86e4c8dc1dec346769f",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_0cc1489db4bf",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ],
+        "dataset_family": "finance_accounting"
+      },
+      {
+        "resource_id": "r_c00d0a174d59e81628b84ab1",
+        "name": "Task records",
+        "kind": "source_public",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": []
+        }
+      }
+    ]
+  }
+}

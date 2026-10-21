@@ -1,0 +1,13 @@
+{
+  "event_id": 8,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_powerful_integers as count\\ncases = [\\n    (9251, 82480, 9, '49', 733),\\n    (8778, 99924, 7, '53032', 1),\\n    (9768663, 63434076, 1, '111111', 2),\\n    (2946568, 67236501, 6, '403', 15778),\\n    (7244775770970, 58490828595615, 6, '2060', 201768035),\\n    (408142522598107, 532089352496953, 3, '121220233212332', 0),\\n    (900407863935940, 961459078569857, 9, '581747672523731', 0),\\n]\\nfor a,b,limit,s,want in cases:\\n    actual = count(a,b,limit,s)\\n    print((a,b,limit,s), 'actual:', actual, 'test expected:', want)\\n    if b < 10**8:\\n        value, step = int(s), 10**len(s)\\n        values = [x for x in range(value,b+1,step) if x >= a and str(x).endswith(s) and all(int(d)<=limit for d in str(x))]\\n        print('  enumerated:',len(values), 'first:',values[:3], 'last:', values[-3:])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(9251, 82480, 9, '49') actual: 732 test expected: 733\n  enumerated: 732 first: [9349, 9449, 9549] last: [82249, 82349, 82449]\n(8778, 99924, 7, '53032') actual: 1 test expected: 1\n  enumerated: 1 first: [53032] last: [53032]\n(9768663, 63434076, 1, '111111') actual: 2 test expected: 2\n  enumerated: 2 first: [10111111, 11111111] last: [10111111, 11111111]\n(2946568, 67236501, 6, '403') actual: 15778 test expected: 15778\n  enumerated: 15778 first: [3000403, 3001403, 3002403] last: [66664403, 66665403, 66666403]\n(7244775770970, 58490828595615, 6, '2060') actual: 201768035 test expected: 201768035\n(408142522598107, 532089352496953, 3, '121220233212332') actual: 0 test expected: 0\n(900407863935940, 961459078569857, 9, '581747672523731') actual: 0 test expected: 0\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

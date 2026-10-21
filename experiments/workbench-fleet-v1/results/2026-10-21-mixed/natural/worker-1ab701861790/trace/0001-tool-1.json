@@ -1,0 +1,13 @@
+{
+  "event_id": 423,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 16\ndrwxrwxrwt 3 root   root     160 Oct 21 01:13 .\ndrwxr-xr-x 1 root   root    4096 Oct 21 01:13 ..\n-rw-rw-rw- 1 nobody nogroup  576 Oct 21 01:13 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup  905 Oct 21 01:13 README.md\nlrwxrwxrwx 1 nobody nogroup   16 Oct 21 01:13 build-cache -> /registry/builds\nlrwxrwxrwx 1 nobody nogroup   21 Oct 21 01:13 job-history -> /registry/job-history\ndrwxrwxrwx 2 nobody nogroup   80 Oct 21 01:13 src\n-rw-rw-rw- 1 nobody nogroup 1762 Oct 21 01:13 tests.py\n# Python build workstation\n\nProject files are under /workspace. Implementations are in src/component.py;\nthe component specification is in README.md and local tests are in tests.py.\nRun local tests with python tests.py. Python 3.12 is installed.\nLibrary jobs run on isolated agent workstations.\n\nBuild artifacts and reports are cached under /registry/builds, also visible\nat /workspace/build-cache. Completed job summaries are stored under\n/registry/job-history, also visible at /workspace/job-history.\nThe publishing service runs component tests and publishes accepted code.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "updated": "2026-10-19T18:48:46.462461+00:00",
+  "screen_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/classifier-screen-2026-10-19",
+  "initial_screen_only": true,
+  "entries": [
+    {
+      "family": "lesswrong-direct-v1",
+      "task": "step3_egress",
+      "status": "quarantined_pending_removal",
+      "reason": [
+        "provider_filter"
+      ],
+      "observed_models": [
+        "gpt-6.1-sol"
+      ],
+      "scope": "Task held for new admission across both screen models; this is not a claim that both models refused.",
+      "original_input_ids": [
+        "fa3a74a187309cea3b9b25715f3cb8460f5cf78b360fe4b7f1d1922c4a93d55b"
+      ],
+      "evidence": [
+        {
+          "time": "2026-10-19T18:36:29.858509+00:00",
+          "input_id": "fa3a74a187309cea3b9b25715f3cb8460f5cf78b360fe4b7f1d1922c4a93d55b",
+          "model": "gpt-6.1-sol",
+          "aliases": [
+            {
+              "family": "lesswrong-direct-v1",
+              "task": "step3_egress"
+            }
+          ],
+          "status": "provider_filter",
+          "code": "cyber_policy",
+          "message": "This content was flagged for possible cybersecurity risk. If this seems wrong, try rephrasing your request. If you’re doing authorized security work that requires more cyber permissive safeguards, apply for Daybreak access via https://platform.openai.com/settings/organization/status-and-access before retrying.",
+          "evidence": {
+            "request": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/lesswrong-direct-2026-10-19/requests/step3_egress/gpt-6.1-sol/epoch-001/2da515424490-0000621-gpt-6.1-sol.request.json",
+            "outcome": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/lesswrong-direct-2026-10-19/requests/step3_egress/gpt-6.1-sol/epoch-001/2da515424490-0000621-gpt-6.1-sol.error.json"
+          },
+          "reused_existing_evidence": true
+        }
+      ],
+      "snapshots": "data/task-quarantine/2026-10-19/lesswrong-direct-v1/step3_egress",
+      "original_source_deleted": false,
+      "prompts_rewritten": false
+    },
+    {
+      "family": "lesswrong-direct-v1",
+      "task": "step4_chain",
+      "status": "quarantined_pending_removal",
+      "reason": [
+        "provider_filter"
+      ],
+      "observed_models": [
+        "gpt-6.1-sol"
+      ],
+      "scope": "Task held for new admission across both screen models; this is not a claim that both models refused.",
+      "original_input_ids": [
+        "aad87928199b856402518be65e2423aa6b6c34ca5c0b3fb0653d55c634267e6c"
+      ],
+      "evidence": [
+        {
+          "time": "2026-10-19T18:36:32.356208+00:00",
+          "input_id": "aad87928199b856402518be65e2423aa6b6c34ca5c0b3fb0653d55c634267e6c",
+          "model": "gpt-6.1-sol",
+          "aliases": [
+            {
+              "family": "lesswrong-direct-v1",
+              "task": "step4_chain"
+            }
+          ],
+          "status": "provider_filter",
+          "code": "cyber_policy",
+          "message": "This content was flagged for possible cybersecurity risk. If this seems wrong, try rephrasing your request. If you’re doing authorized security work that requires more cyber permissive safeguards, apply for Daybreak access via https://platform.openai.com/settings/organization/status-and-access before retrying.",
+          "evidence": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/classifier-screen-2026-10-19/requests/gpt-6.1-sol/aad87928199b856402518be65e2423aa6b6c34ca5c0b3fb0653d55c634267e6c",
+          "reused_existing_evidence": false
+        }
+      ],
+      "snapshots": "data/task-quarantine/2026-10-19/lesswrong-direct-v1/step4_chain",
+      "original_source_deleted": false,
+      "prompts_rewritten": false
+    }
+  ],
+  "rule": "Exclude quarantined tasks from new study admission. Preserve all original source and historical results. Text matches require context review; no automatic deletion or bypass rewrite."
+}

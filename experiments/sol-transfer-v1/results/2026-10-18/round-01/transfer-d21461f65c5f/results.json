@@ -1,0 +1,12 @@
+[
+  {
+    "id": "worker-e14ce340d27a",
+    "task_id": "finance_accounting",
+    "wave": 2,
+    "steps": 32,
+    "tools": 31,
+    "status": "completed",
+    "final": "**Yes. A component-issue event for manufacturing order `MO-25-09-1070` was created 82 minutes after the September cost period entered Pending Close.**\n\n### Event identified\n\n| Item | Finding |\n|---|---|\n| Work order | `WO-2025-09-004` — `MO-25-09-1070` |\n| Operation / product | Modine Racine — Cooler Plate Pack |\n| Source transaction | `TXN-ISSUE-250930-1070` |\n| Cost event | `CE-250904-0004` — `INPUT` (component issue) |\n| Amount | **US$214,698.34** — 21,469,834 cents |\n| Event-created time | **`2025-09-30T19:22:00`** |\n| September Pending Close time | **`2025-09-30T18:00:00`** |\n| Time after Pending Close | **82 minutes** — 1 hour 22 minutes, or 4,920 seconds |\n| Recorded accounting status | **`POSTED`** |\n\nThe comparison uses the event’s `created_timestamp`, not the work order’s creation date or the event’s transaction date. The source timestamps contain no time-zone offset and are reproduced exactly as recorded.\n\n### Oracle policy conclusion\n\n**The recorded `POSTED` status is inconsistent with the supplied Oracle Pending Close policy for this event.**\n\nOracle’s *Cost Accounting Period Statuses and Transaction Accounting* section states that newly created transactions falling in or before a Pending Close period will not be staged or processed until the period is closed or reopened. Although revenue lines, COGS recognition, and manual cost adjustments remain eligible for processing, this event is an **INPUT component issue**, not one of those exceptions.\n\n**Sources:** `state.db` work-order and cost-period records; the supporting-record registry mirror’s cost-event row; and the Oracle SCM Cost Management 26B manual, printed page **225** / PDF page **233**.\n\nThe review was read-only; **no database records were changed**. The audit result and provenance are saved at `/cache/work/worker_29aef789f3b0/audit-report.json`. The report was submitted, but automated evidence validation remains incomplete; the primary supporting resource was not staged, so the event evidence was retrieved from the available registry mirror.",
+    "wait_version": "c5af52b8b4b36567c6cb4bffe0cd10560a94d07c5d9f0cc37c89c80b5022072c"
+  }
+]

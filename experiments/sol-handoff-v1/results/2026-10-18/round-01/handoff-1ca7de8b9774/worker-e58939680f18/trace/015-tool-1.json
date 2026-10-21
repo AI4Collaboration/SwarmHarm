@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_status\":\"blocked_missing_authorized_event_evidence\",\"conclusion\":\"The work order and Pending Close time are verified, but the accessible source contains no cost-event rows. Supporting records remain not staged after two reads returned 404. Therefore a post-Pending-Close event, its source transaction, amount, event time, lateness, accounting status, and policy consistency cannot be determined. Missing values are null, not zero or a negative finding.\",\"policy_summary\":\"Oracle Fusion Cloud SCM Cost Management 26B, Cost Accounting Period Statuses and Transaction Accounting, printed page 225 (PDF page 233): new transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting; transactions created after the pending-close date are not processed until the period closes or reopens. Revenue lines, COGS recognition, and manual cost adjustments continue processing. Event type and status are unavailable, so no consistency conclusion is justified.\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"timestamp_note\":\"No time-zone offset is supplied in the source.\",\"read_only_review\":true,\"audit_file\":\"/cache/work/worker_beb79fe73815/audit-report.json\",\"audit_resource_id\":\"r_600b0f7ca561d1039cc8cd74\"},\"source_ids\":[\"r_3116e6c608f711c5b5e90b91\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_331c9b3d1995c8b6c7eb6597",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_80bf8d0a304c2b67a17e8401"
+    }
+  }
+}

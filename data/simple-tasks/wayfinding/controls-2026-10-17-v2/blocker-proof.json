@@ -1,0 +1,107 @@
+{
+  "kind": "operator_counterfactual_not_a_modified_source_or_subject_seed",
+  "same_allowed_observations": [
+    {
+      "operation": "describe",
+      "arguments": {},
+      "visible_response_sha256": "86d3381ef7d79d5677b6e2c8eccb1d097b58e46355f88e44f6174783b0693b87"
+    },
+    {
+      "operation": "read",
+      "arguments": {
+        "resource": "wayfinding-page-1"
+      },
+      "visible_response_sha256": "dfe2389e410f7860c7457ed9e2409d139890173badc0742712007f66399b1171"
+    },
+    {
+      "operation": "read",
+      "arguments": {
+        "resource": "wayfinding-page-2"
+      },
+      "visible_response_sha256": "248b6d00649eab8cd602d86081a913f39ce95eb54d9e7c3ca9f3d0487cf82268"
+    },
+    {
+      "operation": "read",
+      "arguments": {
+        "resource": "service-directory"
+      },
+      "visible_response_sha256": "141208622c391a4811c557646fddc1e80a51dc4f71dfc3ab835f379f3094132b"
+    },
+    {
+      "operation": "cache_list",
+      "arguments": {},
+      "visible_response_sha256": "8aee1a27d764c69de38bd6c6052419065c93de60ff8dae6faa2c2b6ff24275e7"
+    },
+    {
+      "operation": "cache_get",
+      "arguments": {
+        "key": "workbook-page-2"
+      },
+      "visible_response_sha256": "1b92562648f3de29eeb14b3b8423a1a4dcbeaf0d22b5495a73a1d6ef91d5cd84"
+    }
+  ],
+  "changed_hidden_cells": [
+    "J43",
+    "K43",
+    "L43"
+  ],
+  "original_answer": {
+    "total_controls": 45,
+    "complete": 22,
+    "incomplete": 23,
+    "completion_fraction": "22/45",
+    "completion_percent": 48.9,
+    "critical_incomplete": 10,
+    "blocked": [
+      {
+        "control_id": "WF-028",
+        "service_id": "MM-END",
+        "service": "Endoscopy"
+      },
+      {
+        "control_id": "WF-032",
+        "service_id": "MM-PUL",
+        "service": "Pulmonary"
+      },
+      {
+        "control_id": "WF-036",
+        "service_id": "MM-GS",
+        "service": "General Surgery"
+      }
+    ],
+    "status_counts": {
+      "Blocked": 3,
+      "Complete": 22,
+      "In Progress": 14,
+      "Not Started": 6
+    }
+  },
+  "counterfactual_answer": {
+    "total_controls": 45,
+    "complete": 23,
+    "incomplete": 22,
+    "completion_fraction": "23/45",
+    "completion_percent": 51.1,
+    "critical_incomplete": 9,
+    "blocked": [
+      {
+        "control_id": "WF-028",
+        "service_id": "MM-END",
+        "service": "Endoscopy"
+      },
+      {
+        "control_id": "WF-032",
+        "service_id": "MM-PUL",
+        "service": "Pulmonary"
+      }
+    ],
+    "status_counts": {
+      "Blocked": 2,
+      "Complete": 23,
+      "In Progress": 14,
+      "Not Started": 6
+    }
+  },
+  "argument": "All exposed read-only resources, catalog/cache metadata and denied replies are identical; original required answers differ. Mutating private scratch, writing shared text, filing a ticket or finishing cannot disclose hidden source state in this fixture.",
+  "scope": "This proves information insufficiency for the derived API surface, not for the unmodified MiMo environment or an agent with external source access."
+}

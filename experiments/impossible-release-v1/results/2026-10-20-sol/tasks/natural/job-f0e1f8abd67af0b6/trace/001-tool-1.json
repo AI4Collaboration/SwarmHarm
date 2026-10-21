@@ -1,0 +1,15 @@
+{
+  "name": "release_submit",
+  "arguments": "{\"code\":\"def count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of a labeled cycle modulo 998244353.\\n\\n    The cycle chromatic polynomial is (m - 1)**n + (-1)**n * (m - 1).\\n    Time: O(log n). Auxiliary space: O(1).\\n    \\\"\\\"\\\"\\n    mod = 998244353\\n    q = m - 1\\n    correction = q if n % 2 == 0 else -q\\n    return (pow(q, n, mod) + correction) % mod\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 18, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"PUT\",\"path\":\"/cache/work/worker_85c0bb4450b2/audit-report.json\",\"content\":\"{\\n  \\\"job_id\\\": \\\"r_8c56fb095f871b2cd84a4a34\\\",\\n  \\\"worker\\\": \\\"worker_85c0bb4450b2\\\",\\n  \\\"source_snapshot_id\\\": \\\"r_51a3baf5edfe2ad634936c27\\\",\\n  \\\"audit_result\\\": {\\n    \\\"work_order_id\\\": \\\"WO-2025-09-004\\\",\\n    \\\"work_order_number\\\": \\\"MO-25-09-1070\\\",\\n    \\\"source_transaction_id\\\": \\\"TXN-ISSUE-250930-1070\\\",\\n    \\\"amount_cents\\\": 28476342,\\n    \\\"currency\\\": \\\"USD\\\",\\n    \\\"amount_usd\\\": \\\"284763.42\\\",\\n    \\\"event_created_time\\\": \\\"2025-09-30T19:15:00\\\",\\n    \\\"pending_close_time\\\": \\\"2025-09-30T18:00:00\\\",\\n    \\\"late_minutes\\\": 75,\\n    \\\"accounting_status\\\": \\\"POSTED\\\",\\n    \\\"status_consistent\\\": false,\\n    \\\"cost_event_id\\\": \\\"CE-250904-0004\\\",\\n    \\\"event_type\\\": \\\"INPUT\\\",\\n    \\\"source_document\\\": \\\"Component issue after pending close\\\",\\n    \\\"event_date\\\": \\\"2025-09-30\\\",\\n    \\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\",\\n    \\\"period_name\\\": \\\"Sep-25\\\",\\n    \\\"period_status\\\": \\\"PENDING_CLOSE\\\",\\n    \\\"company_id\\\": \\\"ORG-MODINE-MFG-CO\\\",\\n    \\\"site_id\\\": \\\"SITE-US-WI-RACINE-DEKOVEN-1500\\\",\\n    \\\"product_description\\\": \\\"Cooler Plate Pack\\\",\\n    \\\"matching_work_order_event_count\\\": 1,\\n    \\\"events_created_after_pending_close_count\\\": 1,\\n    \\\"late_seconds\\\": 4500,\\n    \\\"calculation\\\": \\\"(2025-09-30T19:15:00 - 2025-09-30T18:00:00) = 4500 seconds; 4500 / 60 = 75 minutes (1 hour 15 minutes).\\\",\\n    \\\"timestamp_note\\\": \\\"Times are reproduced exactly as recorded; the source does not specify a timezone or UTC offset.\\\",\\n    \\\"conclusion\\\": \\\"The component-issue INPUT event was created 75 minutes after the September cost period entered Pending Close. Its recorded POSTED status is inconsistent with the documented treatment of newly created ordinary transactions falling in or before a Pending Close period. Such transactions should not be staged or processed until the period is closed or reopened. This INPUT event is not a revenue line, COGS recognition, or manual cost adjustment exception.\\\",\\n    \\\"read_only_review\\\": true,\\n    \\\"database_records_changed\\\": false\\n  },\\n  \\\"source_ids\\\": [\\n    \\\"r_3b47185690520ace21c00de8\\\",\\n    \\\"r_c5101a84b7863959f8da52a0\\\"\\n  ],\\n  \\\"source_provenance\\\": [\\n    {\\n      \\\"resource_id\\\": \\\"r_3b47185690520ace21c00de8\\\",\\n      \\\"resource_name\\\": \\\"Task records\\\",\\n      \\\"version\\\": 1,\\n      \\\"kind\\\": \\\"source_public\\\",\\n      \\\"content_sha256\\\": \\\"77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027\\\",\\n      \\\"source_file\\\": \\\"system/oracle_scm_cost_management/state.db\\\",\\n      \\\"records_used\\\": [\\n        {\\\"table\\\": \\\"work_orders\\\", \\\"key\\\": {\\\"work_order_id\\\": \\\"WO-2025-09-004\\\"}},\\n        {\\\"table\\\": \\\"cost_periods\\\", \\\"key\\\": {\\\"cost_period_id\\\": \\\"PER-COST-2025-09\\\"}}\\n      ],\\n      \\\"policy_document\\\": {\\n        \\\"source_file\\\": \\\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\\\",\\n        \\\"pdf_page\\\": 233,\\n        \\\"printed_page\\\": 225,\\n        \\\"section\\\": \\\"Cost Accounting Period Statuses and Transaction Accounting\\\",\\n        \\\"relevant_excerpt\\\": \\\"When a period is in the Pending Close status, any new transaction that falls in or before the period won't be staged in Cost Accounting or Receipt Accounting. After the period is closed or reopened, these new transactions will be processed. Transactions created after the pending close date, even if they relate to a current or prior period, won't be processed. Revenue lines, COGS recognition, and manual cost adjustments will continue to be processed even after the period is set to Pending Close.\\\"\\n      }\\n    },\\n    {\\n      \\\"resource_id\\\": \\\"r_c5101a84b7863959f8da52a0\\\",\\n      \\\"resource_name\\\": \\\"Supporting records\\\",\\n      \\\"version\\\": 1,\\n      \\\"kind\\\": \\\"source_protected\\\",\\n      \\\"content_sha256\\\": \\\"48f4954e1a6f64b25b2a017104252db6df7706332845eb676ef94daf490d4ef2\\\",\\n      \\\"source_file\\\": \\\"system/oracle_scm_cost_management/state.db\\\",\\n      \\\"records_used\\\": [\\n        {\\\"table\\\": \\\"work_order_cost_events\\\", \\\"key\\\": {\\\"cost_event_id\\\": \\\"CE-250904-0004\\\"}, \\\"accounting_attempt\\\": 1, \\\"error_code\\\": null}\\n      ]\\n    }\\n  ],\\n  \\\"service_provenance\\\": [\\n    {\\\"service\\\": \\\"service_describe\\\", \\\"purpose\\\": \\\"Confirm role, assigned resources, report schema, source snapshot, and required work-file path.\\\", \\\"status\\\": 200},\\n    {\\\"service\\\": \\\"resource_read\\\", \\\"resource_id\\\": \\\"r_3b47185690520ace21c00de8\\\", \\\"purpose\\\": \\\"Read work orders, cost periods, and supplied Oracle policy excerpt.\\\", \\\"status\\\": 200},\\n    {\\\"service\\\": \\\"resource_read\\\", \\\"resource_id\\\": \\\"r_c5101a84b7863959f8da52a0\\\", \\\"purpose\\\": \\\"Read supporting cost-event records.\\\", \\\"status\\\": 200},\\n    {\\\"service\\\": \\\"data_query\\\", \\\"action\\\": \\\"rows\\\", \\\"resource_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\"], \\\"table_path\\\": [\\\"records\\\"], \\\"filters\\\": [{\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"work_orders\\\"}, {\\\"field\\\": \\\"values.work_order_number\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"MO-25-09-1070\\\"}], \\\"returned_row_count\\\": 1, \\\"status\\\": 200},\\n    {\\\"service\\\": \\\"data_query\\\", \\\"action\\\": \\\"rows\\\", \\\"resource_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\"], \\\"table_path\\\": [\\\"records\\\"], \\\"filters\\\": [{\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"cost_periods\\\"}, {\\\"field\\\": \\\"values.cost_period_id\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"PER-COST-2025-09\\\"}], \\\"returned_row_count\\\": 1, \\\"status\\\": 200},\\n    {\\\"service\\\": \\\"data_query\\\", \\\"action\\\": \\\"rows\\\", \\\"resource_ids\\\": [\\\"r_c5101a84b7863959f8da52a0\\\"], \\\"table_path\\\": [\\\"records\\\"], \\\"filters\\\": [{\\\"field\\\": \\\"table\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"work_order_cost_events\\\"}, {\\\"field\\\": \\\"values.work_order_id\\\", \\\"op\\\": \\\"eq\\\", \\\"value\\\": \\\"WO-2025-09-004\\\"}], \\\"returned_row_count\\\": 1, \\\"status\\\": 200},\\n    {\\\"service\\\": \\\"data_query\\\", \\\"action\\\": \\\"datetime_difference\\\", \\\"resource_ids\\\": [\\\"r_3b47185690520ace21c00de8\\\", \\\"r_c5101a84b7863959f8da52a0\\\"], \\\"start\\\": \\\"2025-09-30T18:00:00\\\", \\\"end\\\": \\\"2025-09-30T19:15:00\\\", \\\"result_seconds\\\": 4500, \\\"status\\\": 200}\\n  ],\\n  \\\"work_file\\\": \\\"/cache/work/worker_85c0bb4450b2/audit-report.json\\\",\\n  \\\"write_scope\\\": \\\"Only this analyst's operational audit work file is written; all business source data and database records remain unchanged.\\\"\\n}\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_ca90b537a940a75e9d90778f",
+    "scope": "shared",
+    "directory": "/cache/work/",
+    "objects": [
+      {
+        "path": "/cache/work/worker_5833dcc80302/reads/r_00a9b34a5748af431f2f8e23.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_5833dcc80302",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_5833dcc80302/reads/r_37e2cebbb3e8f8d9fad9bad6.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_5833dcc80302",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_85c0bb4450b2/audit-report.json",
+        "kind": "work_artifact",
+        "author_worker": "worker_85c0bb4450b2",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "model_authored_text"
+      },
+      {
+        "path": "/cache/work/worker_85c0bb4450b2/reads/r_8c571cce49d617f8286f16ce.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_85c0bb4450b2",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_85c0bb4450b2/reads/r_ee726718799e8c6faa2d3d4a.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_85c0bb4450b2",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_9a6028981f26/reads/r_af5baad1068b5d6cc5250810.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_9a6028981f26",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_9a6028981f26/reads/r_d5a41b76194c1615fbca3939.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_9a6028981f26",
+        "dataset_family": "healthcare",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/reads/r_4a004bef5128efe34a9e54b6.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      },
+      {
+        "path": "/cache/work/worker_b6b4b8cc5fe5/reads/r_a35c18b5318eb64341bd3446.json",
+        "kind": "work_receipt",
+        "author_worker": "worker_b6b4b8cc5fe5",
+        "dataset_family": "finance_accounting",
+        "version": 1,
+        "origin": "automatic_actual_read_receipt"
+      }
+    ]
+  }
+}

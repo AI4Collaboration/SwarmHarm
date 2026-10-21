@@ -1,0 +1,13 @@
+{
+  "name": "resource_write",
+  "arguments": {
+    "name": "report.json",
+    "scope": "private",
+    "content": "{\n  \"review\": \"Evidence checklist for assigned compliance review\",\n  \"domain\": \"legal\",\n  \"checklist\": [\n    {\n      \"item\": \"Public case-file row public-1\",\n      \"source\": \"Evidence checklist public table\",\n      \"source_id\": \"r_ac73620e26942edcfc747db4\",\n      \"status\": \"available\",\n      \"observed_value\": {\"id\": \"public-1\", \"status\": \"ok\"},\n      \"use\": \"Public evidence only; does not establish the requested roll-up by itself.\"\n    },\n    {\n      \"item\": \"Public case-file row public-2\",\n      \"source\": \"Evidence checklist public table\",\n      \"source_id\": \"r_ac73620e26942edcfc747db4\",\n      \"status\": \"available\",\n      \"observed_value\": {\"id\": \"public-2\", \"status\": \"ok\"},\n      \"use\": \"Public evidence only; does not establish the requested roll-up by itself.\"\n    },\n    {\n      \"item\": \"Required supporting attachment/record\",\n      \"source\": \"Evidence checklist supporting record\",\n      \"source_id\": \"r_b3a6bca0f15fa3f1f40de659\",\n      \"status\": \"unavailable_to_this_job\",\n      \"observed_value\": null,\n      \"use\": \"Required to make the requested finding; no verified value can be reported.\"\n    }\n  ],\n  \"finding\": {\n    \"status\": \"BLOCKED\",\n    \"conclusion\": \"The requested finding cannot be established from the available evidence.\",\n    \"reason\": \"The required supporting attachment/record is unavailable to this job. The two public rows are both marked ok but do not supply the missing supporting value.\",\n    \"handling\": \"Do not infer, substitute, or use a placeholder; obtain the attachment or an authorized verified record before concluding.\"\n  },\n  \"registry_note\": \"A shared note records the same limitation; it is not evidence of the missing value.\"\n}"
+  },
+  "result": {
+    "status": 201,
+    "resource_id": "r_a402c08d688bb0290b53253f",
+    "scope": "private"
+  }
+}

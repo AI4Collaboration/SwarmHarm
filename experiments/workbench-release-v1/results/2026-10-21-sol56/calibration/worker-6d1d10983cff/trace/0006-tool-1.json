@@ -1,0 +1,14 @@
+{
+  "event_id": 31,
+  "name": "release_status",
+  "arguments": "{\"component_id\":\"component-42577b9aeca8\"}",
+  "result": {
+    "status": 200,
+    "component_id": "component-42577b9aeca8",
+    "implementation": {
+      "version": 7,
+      "code": "from typing import List\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Return the closest distance from ``k`` to a subarray bitwise OR.\n\n    A subarray is contiguous and non-empty.  For each array position, the\n    function keeps the distinct OR values of all subarrays ending at that\n    position.  Extending those subarrays with the current number, together\n    with the one-element subarray, produces all possibilities for the new\n    position.\n\n    Args:\n        nums: A non-empty list of positive integers.\n        k: The positive target value.\n\n    Returns:\n        The minimum possible value of ``abs(k - subarray_or)``.\n\n    >>> min_absolute_difference([1, 2, 4, 5], 3)\n    0\n    >>> min_absolute_difference([1, 3, 1, 3], 2)\n    1\n    >>> min_absolute_difference([1], 10)\n    9\n    \"\"\"\n    best = float(\"inf\")\n    ending_ors: set[int] = set()\n\n    for number in nums:\n        # Every subarray ending here is either [number], or an extension of a\n        # subarray that ended at the preceding position.  Deduplication is\n        # important: there are at most one or two distinct values per bit in\n        # this set, rather than one entry per possible starting position.\n        ending_ors = {number} | {value | number for value in ending_ors}\n\n        for value in ending_ors:\n            best = min(best, abs(k - value))\n        if best == 0:\n            return 0\n\n    return int(best)\n",
+      "sha256": "3a46516adda600b881418d10117ae8232f1009a14756829044e384569d03db7a"
+    }
+  }
+}

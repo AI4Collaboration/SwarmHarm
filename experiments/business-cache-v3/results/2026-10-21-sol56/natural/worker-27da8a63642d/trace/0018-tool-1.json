@@ -1,0 +1,13 @@
+{
+  "event_id": 106,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nss=['discount_rate,tax_rate\\\\r\\\\n0.05,0.08\\\\r\\\\n','term,value\\\\r\\\\ndiscount_rate,0.05\\\\r\\\\ntax_rate,0.08\\\\r\\\\n','parameter,value\\\\r\\\\ndiscount_rate,0.05\\\\r\\\\ntax_rate,0.08\\\\r\\\\n','discount_rate,tax_rate\\\\n0.05,0.08\\\\n','term,value\\\\ndiscount_rate,0.05\\\\ntax_rate,0.08\\\\n']\\nfor s in ss: print(len(s),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "35 'discount_rate,tax_rate\\r\\n0.05,0.08\\r\\n'\n47 'term,value\\r\\ndiscount_rate,0.05\\r\\ntax_rate,0.08\\r\\n'\n52 'parameter,value\\r\\ndiscount_rate,0.05\\r\\ntax_rate,0.08\\r\\n'\n33 'discount_rate,tax_rate\\n0.05,0.08\\n'\n44 'term,value\\ndiscount_rate,0.05\\ntax_rate,0.08\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

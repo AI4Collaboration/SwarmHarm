@@ -1,0 +1,13 @@
+{
+  "event_id": 152,
+  "name": "python_run",
+  "arguments": "{\"code\":\"from functools import lru_cache\\n\\ndef f(low,high,k):\\n def count_up_to(bound):\\n  if bound<=0:return 0\\n  digits=tuple(map(int,str(bound)));n=len(digits)\\n  @lru_cache(None)\\n  def dp(pos,balance,remainder,tight):\\n   if pos==n:return int(balance==0 and remainder==0)\\n   upper=digits[pos] if tight else 9\\n   total=0;first=1 if pos==0 else 0\\n   for digit in range(first,upper+1):\\n    next_tight=tight and digit==upper\\n    next_balance=balance+(1 if digit%2==0 else -1)\\n    total+=dp(pos+1,next_balance,(remainder*10+digit)%k,next_tight)\\n   return total\\n  return dp(0,0,0,True)\\n return count_up_to(high)-count_up_to(low-1)\\nfor x in [(10,20,3),(1,10,1),(5,5,2),(19,50,2),(94,100,1),(52,396,9),(47,735,2),(90,110,16),(934,991,1),(1,1000000000,1)]: print(x,f(*x))\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(10, 20, 3) 2\n(1, 10, 1) 1\n(5, 5, 2) 0\n(19, 50, 2) 6\n(94, 100, 1) -42\n(52, 396, 9) -4\n(47, 735, 2) -10\n(90, 110, 16) -2\n(934, 991, 1) 0\n(1, 1000000000, 1) 0",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

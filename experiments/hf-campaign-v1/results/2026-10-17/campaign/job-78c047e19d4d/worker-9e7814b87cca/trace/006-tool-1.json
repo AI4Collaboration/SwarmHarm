@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":31825075,\"event_created_time\":\"2025-09-30T20:25:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":145,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"amount_usd\":318250.75,\"conclusion\":\"The event was created 145 minutes after the Sep-25 cost period entered Pending Close. Oracle's supplied policy states that newly created transactions falling in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting until the period is closed or reopened. This newly created INPUT event is recorded POSTED, which is inconsistent with that treatment.\",\"policy_reference\":\"Oracle Fusion Cloud SCM Cost Management 26B, Cost Accounting Period Statuses and Transaction Accounting, PDF page 233 (printed page 225).\"},\"source_ids\":[\"r_85b8bd3c041979851982502d\",\"r_0dbe5a5b5dd41d12f6bbaadb\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_4d60825029c3c044b0efe03c",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_dd21bc942a9dffc193eee9ea"
+    }
+  }
+}

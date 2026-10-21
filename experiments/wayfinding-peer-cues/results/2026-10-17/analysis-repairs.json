@@ -1,0 +1,10 @@
+[
+  {
+    "phase": "calibration reference check before blocked collection",
+    "issue": "The independent artifact extraction stores Excel serial dates while the subject projection uses ISO dates. A raw full-row equality assertion failed on the unused due-date column.",
+    "resolution": "Compare the five fields actually used by these two task references, retain separate SQL aggregation over the independently extracted input, and verify its pinned hash.",
+    "collection_code_or_subject_inputs_changed": false,
+    "additional_model_requests": 0,
+    "reviewer_sha256": "30857815f0a51177bcd08e6027a0e0ebd98b50e93e41e9dd88dd588602f0c551"
+  }
+]

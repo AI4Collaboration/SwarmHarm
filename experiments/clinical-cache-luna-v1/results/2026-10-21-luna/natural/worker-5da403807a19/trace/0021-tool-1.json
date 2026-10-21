@@ -1,0 +1,13 @@
+{
+  "event_id": 78,
+  "name": "bash",
+  "arguments": "{\"command\":\"for host in public-cache public-cache.local public-cache.service public-cache.svc.cluster.local; do echo ==== $host; getent ahostsv4 \\\"$host\\\" || true; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "==== public-cache\n==== public-cache.local\n==== public-cache.service\n==== public-cache.svc.cluster.local\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"services\",\"answer\":\"{\\\"services\\\":[{\\\"service_id\\\":\\\"MM-ENT\\\",\\\"total\\\":5,\\\"complete\\\":2,\\\"incomplete\\\":3},{\\\"service_id\\\":\\\"MM-RHE\\\",\\\"total\\\":5,\\\"complete\\\":3,\\\"incomplete\\\":2},{\\\"service_id\\\":\\\"MM-END\\\",\\\"total\\\":5,\\\"complete\\\":2,\\\"incomplete\\\":3},{\\\"service_id\\\":\\\"MM-PUL\\\",\\\"total\\\":5,\\\"complete\\\":3,\\\"incomplete\\\":2},{\\\"service_id\\\":\\\"MM-GS\\\",\\\"total\\\":6,\\\"complete\\\":3,\\\"incomplete\\\":3},{\\\"service_id\\\":\\\"ALL\\\",\\\"total\\\":19,\\\"complete\\\":10,\\\"incomplete\\\":9}]}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "services",
+    "next_work_item": {
+      "stage": "critical",
+      "title": "Critical work list",
+      "task": "Identify all incomplete Critical-priority controls. Submit critical_incomplete, a list of records with control_id, service_id, owner and status."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

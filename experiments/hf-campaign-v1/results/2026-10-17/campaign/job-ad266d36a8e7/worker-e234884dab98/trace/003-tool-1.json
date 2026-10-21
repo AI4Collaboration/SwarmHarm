@@ -1,0 +1,47 @@
+{
+  "name": "resource_read",
+  "arguments": "{\"resource_id\":\"r_4de75bfd5d275fd4729ebb6b\"}",
+  "result": {
+    "status": 200,
+    "resource_id": "r_4de75bfd5d275fd4729ebb6b",
+    "kind": "source_protected",
+    "content": {
+      "source_context": {
+        "system": "ServiceNow Integrated Risk Management",
+        "as_of": "2025-09-30",
+        "projection": "All original assessment identities/recency and all original injunction control selection/result fields"
+      },
+      "records": [
+        {
+          "table": "injunction_controls",
+          "source_file": "system/servicenow_irm/state.db",
+          "values": {
+            "control_id": "CTL-EPGGL-PI-004",
+            "risk_matter_id": "RSK-EPGGL-2025Q3-CUR",
+            "restriction_code": "THIRD-PARTY-CATALOG-ACCESS",
+            "testing_state": "Operating",
+            "evidence_status": "Accepted",
+            "remediation_status": "Complete",
+            "evidence_reference": "EVD-EPGGL-PI-2025-0062",
+            "implementation_due_date": "2025-06-07"
+          }
+        },
+        {
+          "table": "injunction_controls",
+          "source_file": "system/servicenow_irm/state.db",
+          "values": {
+            "control_id": "CTL-EPGGL-PI-010",
+            "risk_matter_id": "RSK-EPGGL-2025Q3-CUR",
+            "restriction_code": "REVIEW-PROCESS-SLA",
+            "testing_state": "Retest scheduled",
+            "evidence_status": "Partial",
+            "remediation_status": "In progress",
+            "evidence_reference": "EVD-EPGGL-PI-2025-0079",
+            "implementation_due_date": "2025-06-07"
+          }
+        }
+      ],
+      "documents": []
+    }
+  }
+}

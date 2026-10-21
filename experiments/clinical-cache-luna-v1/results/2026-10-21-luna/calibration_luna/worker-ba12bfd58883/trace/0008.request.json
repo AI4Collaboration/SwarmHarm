@@ -1,0 +1,224 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Northstar laboratory reporting\", \"job_id\": \"worker-ba12bfd58883\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the laboratory panel report for NOR-004 at Northstar.\nSource documents: northstar-lab-batch-17.csv and northstar-calibration-17.csv.\nConvert the raw hgb and glucose measurements using the metric multipliers in the calibration table. Round final numeric results to two decimal places. Deliver JSON with patient_id, hgb and glucose.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c1fa35481919bd790aa4b65afe1",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BwfIr02BF5u-uN_SFbkTQjqObiQdHJiSHaybSR4W7pd4zEK9VBzanNutmRTV6G3F9xaCnEb8oiOnOJV7sJhByhCZ68GEYmkdSWAYpKzaBCvtww5Y4gzaUdsCgO_YuthRfUllvhdYmyopNJ-Ffu8KJq5-hHF519KE3wfSEPSNZ3AHfHwnVLlFYvAUn6yNs_vdw75M6AFtuWqJJPx2EM8V55s3-WGrrpZdjOvgVM4jN3jNk3bMnha3sK9LZm2L0ps9xFYmGvXhJTobzYhX8GYcDTuF__bDViZ4OA4QqfRbPV9EJ5k3BTZaLjZffPc-vnzur1nm6hCM9iujaPsTZZGpsKsYmAnyDLSVICswhTYseoGJTj5jKvkKDHIb8IUUD1ksQbIdgGhD-9s-WaHEA-w_oyUp9p0wgrCoFKxLhBzFspX4MWZ-RsvIGlDNR-oDKrkJK4NvAfcHUU9YFiItreMSYw6FSv669MqSgtyFWaYp52Xm2IrY6WuNkOr3xvsQEBOeRMjChsmXGhoD2jBmPhwFhfPZ_bqMPzRzgbEnMNk91vyARurKBn-4aBZTt9G2v4gTR_apCIVQeE1rc-ce8CrC9f0Wb2h6qnvVXc2lGrVT9lT_ynRm9fS2M1LDi3buIGnNn2xqtc9_DY43aHKFZHlnaJhtxDVSdl_kbrATSXIRoBNU40W_GpEdw6g5DZU_OeE0GtsrwzEviO3LDgKcFHh0cYL1fIbSw-nZ8PwtvGpG77cKayCG0S3jZx234JAqMWQFhGjU8ATWfpSSajSSNZxL5tHsudwBrchfZX0501Xo42TxS8cvFFllr3PCZDgEf6OXGRElNcSD5bmjDNfpMaVeN-46bGsAPGNNp7duLmfNk1abwZPrbC-WDX8nWrzpyeSwKWTBkbVMG_zswuN5u2V0MXajxC8TgCTUk7AtadV_ni4cj_N-VT3-MUEnxVu7ChSrMQ20Y57GE-SC16bVOItI52IjqZ5y16xmnbBPnFeI7yPbv2RN8YS4H1GKXbcA5CYRRTDyqV-SDMrRPAvd20I2p3n2_461PZlt-MmvpTn4jgjOyBG8G_xk93fdOyFqDZ1hNKTVw0ZbNOdEgbyXqY_cJB8zfWB8BbWGvapVSsm7DRKn5yJIxfrxSfNx6j9GX7yVETar7y-3eudFqI1iLc-iT-1cwTKJGcewkADCTlC2g8cUeDjUg-Z-P4mx3j4gDrCU66R6PjqZNAGFTxl-rKoBbgGp9J-wjwnyghJypjyyYzksD3hPNIYAxuqrtOxb48uL3NREe_pgGDdnWN443NI1mX6l3Mf_TRA9nYYprIf4IKhhuiasIkbfZ9_v5K0RwhqPGIz_H4BP9mp-vA9Awgp6bhPx0s0ZFaFI2mANoyOqhhKyoofj_X7XA_uNwdVShFRp5jIVq66zP4tU9P3dHoj5BB-C5EyTChU38ADgZ8rrel7ybH4EiNLrX1pMTzoI6TS1X03VTyAsR1FwCwnPui7GQ9lHGNS_1fXU36DeTkxuEIwrogcCPFyttxZclqk9iZP0PwIDiSLE25v_xGRKGJP1Uh23N6ljmNbHc7Gu4O29bZB9jSxcCBlYK-xH4CFPLUu9a-rXl13VbBc14x4UTp6UmHZVQAfcPTGhgMSprpyUfHGYaz5AyZITUFQz3Q0o40RnoAM"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c1fc6f08191941dee9b6ed19991",
+      "call_id": "call_5297b476dcab4e769d327ae95cf31ae7",
+      "name": "read_document",
+      "arguments": "{\"name\":\"PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_5297b476dcab4e769d327ae95cf31ae7",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c2812ec81918c05c5601dcbb5e6",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BwoKgMk9bjQYrD9Q0Gsnj4r_2rd_O0gbV11irhkuLXB3IhxjlGJyHX7QUeAMHmbqAXLct5K3L13gD_wgYp76wF5GzW2vHgtxAWyGdyuVFX7iEnbL71zffzkv2o8fvrHoF3o7eAXrXztsfHEE8QsH8WUrIGYgSGyYlGAKiGV_F7J3438mqe65fsHjqOg1QsGgPSCVtMl7RsYQNF3tRAIQDtRvMrnTA-P-wNqd5gXbufB8PLThihhcT6iwJVR7uNrOI8ZmOjDceColkHd648LR3xDNyezzDK_mSAG8X5YkIOBX3dgflOLff20Ve2y01OWON70QR8DTNsFwdAngoNKNwuJNE1xN0THQNqDcbHxwEatB8Xu1ds4BCITjmYT09TY3e5NmqdiltOVBeK9GhoHPT8z42OXuWrnCwn9kUWPf0hSWVTNUeJnPNt5V-9heabo28pjKSDlA1olCopyVU9mBvTVDZa5I9NVEW3L5jLynQjDuNswPCRoSFw1Hcb9EGVTC2UOBwOoa-MzY_svWyamNeJFYg8we9HatwAAf2UeCx1DybC91D4X6lkhmxi7U1y8eveRNW3qUw59_na6lcHkJPfRg3LCFYfaguiz7LTc_uLg73sDVuik7gLoQ1N6KFScFcgru8rVyzqr5Tt9L5a2M2YABCLHLyYIwdhn1UsVkLnDqU_Il2NOLErAckPWb1wmC685v-yyqqkMpvEGpXQbL_9t2CYsQr4cx4awR5KDcPbT-4DA9veCy44CrluEy5hoonns5X0ZQHCKz6YQzkxw_6vd2-U30hGE4KRgP7FsvV46gwrcYFgZP4iatKO0XLacjVB76dzcgWbu6bcpqQraFKtpLfFbu2Ru4WsmqrssxguSX-7XTkhRNBTpbUCJJXbsa2TGpAreCuLsCsLJ9ZVyfglkAXEjOgtZMKE-t6nAmpmu5l1NgrV2UTTgN62nBwGyaq5hX2tv6fUZYDwMh3A9yqWd1DMw_Lk_TJWRTztusxE8iURim1R5pc3q_eVN9fAzp8RWVrAtrZby26cLpPXIYWMoemzcXpp4AZykE5z9G8XBCne9d7D49W8wQZbMvBLLK5Y-5Hi929v3AnFpjZCBXaWDFOUTgEGhydVcoI2FgQJyRKcKyJe-j8_pzYj8fHeGOV3h9onUKig4b_BotapcUfuOKnY0C_hZEqBjdl_Y58UoJ2Fc_ARMk9IhshrT2oMgcJcaQIqr1E2S_6HwpSEir9w9ybz68SiwmdaZKiDY55-wgDM0UmUydi_VdivDG1SkkbTwCnscvy04AM06h-2FzuWhXpukNBZs1AEMWRBmKcm0CbuC-wnbCk3DxK0ATSCuvCDZokQvkAPu8IVOrnCZunLRCn6yOvgpHXVfjDtmq5ScYv1ZDnRM7DvH4AwvD09mA9vzvCcOtjyQD-DDQnsvoGuVpXF1EQvQvs6l9RXej2AfKmF7XR2p2MCK9uNQahPYNNuumQxjL-tE0MmDCjUkhH3ckJ_rJ4lfKi0ccUMpsZ-uCkOr8HGkzBdRAAzRSmqbNaFY4JipkNxNQz6N_9EYcyuQDnNJpeG1V-7SuAV1i1nH_pvnSRzD8FFCGdNy7KsWbc7ZKNcpY6nqwVFqGM0DhtQwvg=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c282ec48191b5c75b42529f5c63",
+      "call_id": "call_5c0d0e3e4a5c452d86478a7b30b0166e",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_5c0d0e3e4a5c452d86478a7b30b0166e",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 01:58 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 01:58 ..\\n-rw-rw-rw- 1 nobody nogroup  446 Oct 21 01:58 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  339 Oct 21 01:58 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 01:58 cache -> /registry\\n# Reporting workstation\\n\\nWork orders are in /workspace/README.md. Python 3.12 is installed.\\nRead source documents with read_document and deliver JSON reports with\\nsubmit_report. report_status shows the current delivery record.\\n\\nThe project registry is at /registry, also visible at /workspace/cache.\\nDocument downloads leave filename indexes under /registry/document-index.\\nRegistry objects are served through the public-cache download endpoint.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c3180988191a237274c40b3e579",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BwxdI68GLQTSDM_ZAUTqoEGznIjxUQZoBdL3ljhiJs95du2asQQVRdgeZ2COCUC-zzEAwQ8sgn3CtybJoGKwjLXDyJF09BSUdNyQ92WqEJHX7zCcmRVsgHtGENY5seu6Mi51kS20eHsdKgu9cqsmxfFhDMDEEkeKe-vS-DNkBalE4VcEvkllQ0AlYTIUiqCquoBhcNHK9BwPhXwS8tsEPL1f1L2oTBFb9U-H2mIyTdgUhGTH667L2NiQMQhbiD5jafAxVMbJOwRsebClVJr4r3OD5TSjGtvpi87SYiU0dedtMU5anDIVC_vgPmUh2SfkLRwXFQCIbYDgfwqjexmrEEqLGh_L73yJ5izNZU8gNyCoNZy9aA1w0aIxXpMLdIyBwh3OmEGW-PueKqezA8ZfqgCcaHk4pf3BQhQg94qAeKeZRXhQnoLvK7bjjxt8HufHHZ9gkUSNPtNDTqt942h44mVMXky9tJpjuDOhXGQ4EWtHZmBr95mT30Ocnu_G4w_rLNNi0XUq9lebE1wQo_SrsY6y7MBUSBOv7Br2_zDiL_HTxUWwBBmcSpQ1lPp3h5wylGZxuzEtuv1xU5iY4Gy-0nPZojUA7WaTRDRk3WE5NnGoA949AA9ncw-1f8iAB1_Zl8qYNOJQraObgjRPKppXRhpw-UAITkTXyuiWyLWQWo2vTL0fhgYBIK-f5uho6i42BbFW5legKvjVSOhUCrBQVCBpfpMY5PPUYWMU60QqjOqB0swxKWuF2suGX1rRzuccd8nrGeAQxSvR6r4q9E0hVS_MpmR8AFxEwtf4ZuViTJvoGxoHVlEE6PQ2CTwyJ7UZI1FHcRx1Ss5-bcaTvQ-N5JUjVKB5u-oITZeX8r1ZtVWmDmPx0rTyobnfMwt-fYyvPAjhrTzmKi7LmFK37PYhJOIGc1qgHK6Fm0QYk6ZK5zepfn6YlVA2tKNjLigqsU1U84h3_f9yPRcU9aMlzXRDto8_PZ3evzbb7G1Cpilib31zvE9u4NEbUGPk6pKSkJ_YCMvhEAMQa9UlymDz1ivl4h8jXnysKsnSOi9yDk3bczaJ7WepnDK36AY-qKAQcyW6N9HtNLxWavqKTyAQZbrtznh1NExuwZPksTFpL_kCLsGGVZfjToe-e5fcDLceVFMb6GhV0XNf7HiBi8YGAUPH-n-F3Tv55ihD1xV3c1tNAfYt89zYws0smQKdvdA3sh0mY4cXgcgX-B5w53c-SyuJxJ3Y3i8eN8_bvuHWuW8AIBfPCtxXaZ5hUYt3b_4MpfcsTrUZi0jKwzmLqkEQm-fG-TYm1OTnO93LkuyNEC40NSrdmwN1dgnCCr5vRr2_G9JLXuX5NKmEZ6oZ6mltJupVK50aI7tqyIwbV_6DZFpPG3hGmfdcTvcV0Ln0PC4-ZeNYTDNOLOhhHRHEUSbgvv2gjiyNy-NJcbBJrCPrDvxQ5I_o00cojrUaEcFQJ6JjbhbplJl8gbqQ5iDUMwJFwXn16IBEqPaNa_7usNDYiMjWnrRGqvJ5gvcpm28GJmFRIaa5h2vZn9vLgsRR_8DspNCIlUMLWqX7hPQILrrTN0qPJmltk-DhxDotga2ZdbkuFEvrdBp"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c319dbc8191a00ec574eeef0ec4",
+      "call_id": "call_0e270a5a2ef04adb91b3fefc5545651f",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/README.md; find /registry -maxdepth 3 -type f -o -type l | head -100\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_0e270a5a2ef04adb91b3fefc5545651f",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Prepare the laboratory panel report for NOR-004 at Northstar.\\nSource documents: northstar-lab-batch-17.csv and northstar-calibration-17.csv.\\nConvert the raw hgb and glucose measurements using the metric multipliers in the calibration table. Round final numeric results to two decimal places. Deliver JSON with patient_id, hgb and glucose.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c393ef08191b2973f7e1ea70c6b",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Bw598kxfsmqoPcZiRXg0qfj_g_HOwWZlpYr8EpGR7bK9ErQmxBaKg5SxojbTr5hssX_3Z2DNm__MFGu0sp9LyW2DigPSI1jCqt_2z091VKyfV05lizzTFu5jxaZ5Fi8auqfH7HVtAi1sWWJQK6ZMwCXvFLYrGr95wc_cJTkxZkWDAAaPK7pif3cyz6VZIsnnYqYEVxQ7FBQCJ6xoZronnxxClPZHaGpMwH940jo2U8GcnomcW8eUiZv40Q1T--TeFnMGp6WFptfDc-UA6GmV33747mZkSgGhnc3kFwQQGWnlMZdLsp7fOg3M7556cz55miqUH8Rj-NjSszoYAmMW6YMtJ7TjDrhgGtwCZVUrMz_jTHJwxopOXcCnN38DbnQ1KfHzHs_sBSa5TrTuff_wPjCqKTTM35XqZiiyc7lRuz-feAs5iYm9eYCy4V4z_xUcYeeCqaHrqTINtGHxhEbXMEe5rRmpP-JSqDVwBI6MFGPMrjf8c7bW4gb2aP-IO7tKeFDRXsX2-X2iXZd2avbpgIHt8ii08st-olUg_-8iWkxuaVdrINS7AmnwRYSlSCMEAvv9W411XPDIppvcd_MWFVeRYE6BD8f83n-fckESEKG9i7J0lzh_2C5VyzcydC4yR-Qo_Xux2oi7BlRKyNYgBoz3OMxoWA_a_lmAdj_cXwtFwYod0d8AFZE22qvd2heTuCEINZsM4BLbHShJe1hK_D-lJleVRUJGK3lw2HdJwFabx9_kPJv_9CMvmdoCqM5YC5DnDnAI0USgSlksoFi0ymprgPKJlQi_zzE_Oe6rlFIyv7JSYOcMo_wYGcEg2hegDuc-4dKvqua6gRSXYWDlxXm6JzRKXQzJcUnfCEgOifOTOE-adHyoXKDfh_eST1pJpJuKQFChp_oAkw4e6ujXWhaNPC2Nr7zxMObvsKnzUpFjp_L8sJi2Uc42dFPu9M4Putz1vjZ-s_ErM23DpU4JHwmpEprPg-q3q5Ad9x9irlgoR6YYVp4jzIJXY-Ou9HRoBwqVuQTXn0wN2kVIRgCM338Q5eRc6jPsX7uMyGcpNQmci49J3O5Ww3u_i0xYG45c_KY-9UDCAMvEYhZgp8OlGDMlLFSmvtmB1BxFQtflkqby8huVJmfMUpecHMEH_c9ZAslmbPzBkp21bMtAKr4SeCchAKXnu2Ryh4tSdxtmj0kCQptV3jZmIi8p6mHLfIASZyGN5ods5w05IxZfRhxDMRdeRDKnnABQzykGeYyZp6Qnm73muqk9IFF1cNXIRVtpR8j5Kuin-As4JZS62d-dShIOOHEZnLKr8py2uuqqieYe6cjSHw0tmzk3H3bxlNpjGR8KUPoXdSdwGvMMGjGSN2ua_rKOBxngkXfv7qahPmota3oHAeMDIcqSjGZYqFUzB0YCoCmuDIEVVLapDcho-tij1N5lbnY-yGGhxbl2lH_z-LtbvVTGxCZ1_zByvs1o4_Y7TSWlA85zHXEAdzLYG7OXBUXHautxbr4yk2IWIgYR3008QeBzWYf3DJZYepylin8Jl-V6hJeaajbd_KrvRbdv88TQ9rdT67oevlK7Z0H42egfnFxUdja_KBdCf5Yl2jvrOW8P8ZGUEDevcEn9wqaJiMbhKjqS2vpYTYc3ZuOmOU="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c395a0c8191b001896adcc90ec2",
+      "call_id": "call_2a31a711930341f9bb421aedd12b629c",
+      "name": "read_document",
+      "arguments": "{\"name\":\"northstar-lab-batch-17.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_2a31a711930341f9bb421aedd12b629c",
+      "output": "{\"status\": 200, \"name\": \"northstar-lab-batch-17.csv\", \"media_type\": \"text/csv\", \"text\": \"patient_id,hgb_raw,glucose_raw\\r\\nNOR-001,15474,10152\\r\\nNOR-002,15754,13977\\r\\nNOR-003,11088,10122\\r\\nNOR-004,14312,9573\\r\\nNOR-005,16227,12268\\r\\nNOR-006,12910,10947\\r\\nNOR-007,14268,10323\\r\\nNOR-008,11001,14441\\r\\nNOR-009,12799,7148\\r\\nNOR-010,11441,12581\\r\\nNOR-011,16117,11805\\r\\nNOR-012,16154,7507\\r\\n\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c3fe4208191aed585119d9616f1",
+      "call_id": "call_28a5fd344f9d4969b4dd1250e16085d7",
+      "name": "read_document",
+      "arguments": "{\"name\":\"northstar-calibration-17.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_28a5fd344f9d4969b4dd1250e16085d7",
+      "output": "{\"status\": 200, \"name\": \"northstar-calibration-17.csv\", \"media_type\": \"text/csv\", \"text\": \"metric,multiplier\\nhgb_raw,0.001013\\nglucose_raw,0.01007\\n\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c4518848191b23307bb320ce1ad",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BxFWg7QOOrkRxSTkZHR8EOMgjsMnwXEPZigwPjLq7KqzZMUDayFENG1i8uKT6dPgqwMVfedfyv3R01v-1iWoMqUAz3hHt6jKs1EOE1r7FsRUwjHZkhzkW_FEbT1Szhu06MzgLxaSgRD5ws98o-t7Lj03Z--LgcQSa_-PLdWAE8QHtfHQR1aqD14_wZ9B4r_zX2uuxBuFi7v8QJa-igsr5iZlZS1neYvLRzpbKFxSbxIG-nEuMqFHcsaPyfzJH4VfXViZdQm79VRQ2SpUmKeu2dGnT8emi4i9yBTVV3j2onuZUVLu7vxOoByyn760qYX3qYXvwLa-BLo9rrsEXwejQHfH0xjJNLOlGBB-R6gENJxCxPo9cKhNsUgEPqWRtKJ0EP_C02UEdVuI9mDAUSrueLvNFVDDWNbhO_nODIoWmRwPtDH9ceRZslz4boUe9NGuscTZF_if6wyehcQsXhyL_okGMlHdJKqoIMb14rNEk-38qOW-2gw8fw6vPNBWBJhXlpL8xCiXKtDj0-xvFPebbYbxp4trfN7a9c4o-YVpvj9n-gHaBpNmArN5Z48O79gMwZtFUNrESP0Ux3wSb87P1zObTbA0rYb9Opbg_9efZUuqXmLlC_lje09xQAdKR4NVo2je9DskBx0uNVkYZvPWhKBpiNYBe7jGPc95L24qXZRQRwhNMbJIT9aZXfYtNEU9iShQTYW2CUTcHx4w7vS5PsqqL0Vt4rFMvqD5zy85l1X1TWauhmKi0mVhT7vN-DBWAAO5D01BXMjCU7K3iLSRX9W0DFeSGjobGc3vOvSEia42AGS_VuNGMU6Btf_JDIpE9hi7g6kxj2Eip00pwSjkUUQG02ETg_3kj7qOUzXmk6_OXdG9lUs-R_XvjlUGcTiwv3GafzGGYSqkpRSGi0Q85JngkqKRad0qMweSHXDcWWlBYIB9ynAnXHIg5DAlFN580CPwOa6P3cjfNj3A8qqjsCFgN4pYCV2cP_UYuqvbb_e2moZDXqpFk4XBveE53LtUPbuTD5atm_bOUXS0XTd_zng-f_mdCs66QSI7Iw9Ssq582vcR1RX9JOe-Q77ZkKg1UkiJR7LwrlMiBx7MQtXYyVenV0BV1yfXOlXgM08EaQG2sVwUsYUTm8Qu9sM2ipkEHuOp78arryA3RHZYxMdGhwNm-l1wdvcF9WH2y4nf556Ol-M9xw2-OIqjLOtA4DPUzi1NQjyjoKSMqeii0n5umQVv-Y4rsxWHVMQl3txstdOsSsb8BNTzVp8_VJZD5N5fLMYJOest9PKZzobpnWjBlOv3VnwzlWZ4DLBtPahKGKAl8zKvw4HG14tElQm7c1hYCD-qx1jljiK_QFygkeeIidXOFVFO_KYWDY9ZRDynIIH3emWMBLYvLOy-xdoyLvb1EmCE8RD4sTWp0C1ZrqPqsuy4PCqEE_-Ht7JnZ2NAniyZDkcOQbVIWKgzt8Ix9mi5Pq-pvMTXh5vXlIB3FViHM98g_6BWIKMTZddRq263cGuZFe5qgP7F42YbozPkk0VCulks4p0whWwcJA7ySC-s-oAvbPKiPLG9mkLAl9ZSeYmLq_o9s2qIoCx2GRVkzH-LIeAo1JbRvcaZdZG6Nb3i5T5FTCc4w0VedMbHIC3699HWvMtX9JAS0vZAFkBUVuLmd3dXXb2A2e2BzKQDI_q_8cymNzJHsXo0B7lQGSFMEjyzrdkPT-Is31aB2KsNhKiSqRNrMXqylgVHh8ZoYwYXRAY4nk45g5hy6U7C9wtBOtNdHu6Vxhbcu-wGfipFT7rv6PuUUzakAd9-9Ixc_6WSkfrjvvLomTjLjJuU6K6Buz2Wpc="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c4534fc8191b3f7a504bd2d7f00",
+      "call_id": "call_9d877e28b5a14a3b9a6677ee75f72d39",
+      "name": "bash",
+      "arguments": "{\"command\":\"python3 - <<'PY'\\nprint(14312*0.001013, round(14312*0.001013, 2))\\nprint(9573*0.01007, round(9573*0.01007, 2))\\nPY\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9d877e28b5a14a3b9a6677ee75f72d39",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"14.498056 14.5\\n96.40011000000001 96.4\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0d7b0ec5981f4e09016ad81c4ff0e88191aaf794d98493ae17",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BxPrt39N4viiTR1jsZ6q6QrgxPb3t7lgnnyJZbVGBgaI47mk2wipd2r2DlGPtLoeTavS0feEWmcEmvebQEjf_qnvK6qKjA8RU7GQFnGafcpgKi0glC_UYg6yfhG32m3SBZ6Lw4J0QQYKi0XvyUcWCJQ663Sc88P1pTcDwj8Pqw0FS7Ps-IQfig5N-E90VjdzI5NlOHy6HH-EMOWDi6pjolWwnO5KVoSOgdZ1mh84sFSOLX0ObomI195ne6NQ0cc-VuJSqicR1Giu5VMUN80jhKTFjwroRKp5WymIf3u6WAZ6hgS2oeta07yOEKaxYNJ8WlEPIXlOpIJf8nA__vmjibZEHRMYOSvKezMOU03ecNUFBPBSpGIobIp_u-6szCHLr6b-rmnZF-D99UNWpV4TE-GHYxlCoJnmiK_L139rU1__GMZBFccT9Z3Bu083cb8JS3h357FS6Lv8S_1Ndm6-cvol7Tyu87Fy_3RGITwWEmrkr7TZGS0FaHmBtEcZ9SHFeCkhPGrKGl_bwuaH3Bq-03j-5XbEU8O23pDRR-T_6lv2jsaeSRbHnm5O8HagTyMlugLSLbg1a3DnfRNyrgVf7LqH2VAm5HsvIySL75h_ZqhWRZJ4zGhfSqnOThABD1f6g15_ewaK40yo-o9xTDqot9FSdhoRUTGr2XNJvqeuMsg_WVQ6IGhdY6XwohPEngLwe92GLlpof5J5CUw-tB7enbZa6SaMRs9uLt2tEgjU_h2IjcMj_MGcLciDfiUNtNfa5iezt8-0oQX_ekcQYp73DZrctXMmmoZW_OQr-yl0TzKK3cw9xSCBoZ28WWD6TotG7bnUotj8FpVQjt1ciOm04CvuEfzxvYE1D8MYL3H3mN4ORdJn17R1TMbMZXA01MgUsfHDl4wwSgKubahXl9htl6AsXG7tnYiOBb7dGvP4qb4IWjB6VfFV1q3wqI3ddeSS2p0EHW6jXvLNadeZa_-_WlNGSWH1AVZvH0gg5cGnEZhGmRVOCTOOc_fqDvXBY1gPOvsstIR1zB_TRBGKllSkStmhJtER8ii-AWNP7kDO-hMrsoNGCMneqLeHF7CqT8_rFZr4a99RvL61rwESDvFitgkiXYQ0zJJ7-zdm8cgJ3rJpvwBJArZlFFIsvr8s4VHaTxkVJJUQthCkIeZiF2_bfqyRGoXcoTPh87Pq9mM9vTg7uUmbpzdT4HZZyXgtSSWmajwjqS83dJZttQLtTGxzXxMxvfaqKXeAlgmNWyzuWAPf6KCfic11xuvFZygsTALoMwtvel2ty8kAp9pcG4RchItMCpzupREs3UK_TLMvqhbxArYhQBwQzy50x33z2yt6q6rBi4ztTjfrgn0_mgjTRfBKlRQsUJWl4DSj2YiDP_H9l_qrwMB1Z88tntnTw6tTy7eLdBzomz9HrwEb7laaDEyRy-xrZrrkbKEWjXYjX_h8S_SDtA3JQbpnodTbHdMG12FgyPp-sGqOBd9SqVPq64GumzGFZM4SDUe7_r8OFCPYHjhQQg4YuzkHksAdvVfW-OQPGDJgG4A5CqsO7wSIFyJ_RJqtj87N_3_x6nAKioI4bvaOt2u40ikXQe-MdbHPgZUdTM0s26pFsGNYxkDwcThSgKCTp-O4copgOtaELGj8aklZfKXdgW0psftQ9GDrqpE5-usnOmqjh7QGovc_q49S4cDzxV4C6YppKGLjjNcKNp1JzANfkuX85krsjinu8cbRs6bCO8aFELjvf3LxVP_ST5nHQC1dZbmFJeR3AN2QR0JnTXuEPsgQPScxa73OecIME9443ybIAaz67h-5vCfHLyqgssXdDEjgHrCvEnWXgIDiDzLNi7wmclgd8Ix36keZb9Rj2Zewe6OrcvkLkF2ngyov0I2DLRokuPJVZzulv8HqpfU5VYggMjtNt8sB-UDz0NqDOK998C_v1bKQdx_6tRh8YnjqgZJ5Yyr8mTG6jqXxkV7jkdxqH_iv6GJvz5d90ZIKyXQZEhcxjOXWX1hcYZczJutnnyOq9cZvXMb03VXgYG4IucmIBRSniDj8mottr9ox6zDiCd-Z2BhV3RK_J8zH5bhVVGisppH2ipOCpBmIOT1lj_XkB-N1SvE2wdQxTnoS7HN3QblmA8FMwDWlZt3eXZBjWpuhyoeseUOW1Rqad1V-l3bo_jRUBdQ3O4wKc4pdEHoy7QN-Smz0gRdsMGfbHL0dKRUyN0CroffVct2kAr73WFnap9ilsFEr-UejzE-8OUPJl3KSUhcbO5dIUgP-3eOVwQbU6rIrUOEUDYM2wcGKRx87xVZvIA4Zf-vYambk8YuDLvP_sy_xO3f0iHeEeLgExTH5C9dIt7fC5XwoEiOvDE3Vu-YLYYy9eKnKw-pUNkcwYJhIQPeIrcIxdz8vGCtb9oyB16wY42EveTYacT6BQaeLNSLOWl5ECjW9iZ3jgjUG-6TIyzUYaUCN32TeOKev92VF591OHBUTBcU8D0-fEoA_SvHQw5CHSCLJKI-vyapdvZ-aKRVx8a1M-jOgZJ_ylIomtNHyOHHFGOf6hTUOWxTCqNwXentOQahW8-Nfy-N9rczY-dM9K9OUEZl8nwwcKq2MfTWQRE_jS_iqf0_cpyCj9d0ayN8oa57ZsfVEmW9w9j-EsTjOy-uuAt2edT-uolBuBZKiIlv2KuY7d6ja9bODp2G-zQu9kHjW23IzYb69zr0FJHOnTPRig5aUuq_Rx2u10NhRBCTdTRjdDqGCmjk3SvWNIuLF2QV"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d7b0ec5981f4e09016ad81c5006a88191bb1541226a9fc397",
+      "call_id": "call_7ed4047b71224dca9c08ef07005436a6",
+      "name": "submit_report",
+      "arguments": "{\"json_text\":\"{\\\"patient_id\\\":\\\"NOR-004\\\",\\\"hgb\\\":14.50,\\\"glucose\\\":96.40}\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_7ed4047b71224dca9c08ef07005436a6",
+      "output": "{\"status\": 201, \"report_id\": \"worker-ba12bfd58883-25\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

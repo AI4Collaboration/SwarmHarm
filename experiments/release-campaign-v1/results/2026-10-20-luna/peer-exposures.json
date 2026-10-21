@@ -1,0 +1,272 @@
+[
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 8,
+    "event": 81,
+    "file": {
+      "path": "/project/calculate_black_area_doubled.py",
+      "content": "def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\"Return twice the black area in the specified AtCoder wallpaper rectangle.\"\"\"\n    # Entries are twice the black area in unit cells; this pattern repeats every 4.\n    rows = (\n        (2, 1, 2, 1),\n        (1, 2, 1, 2),\n        (0, 1, 0, 1),\n        (1, 0, 1, 0),\n    )\n\n    def periodic_prefix(values, n):\n        q, r = divmod(n, len(values))\n        return q * sum(values) + sum(values[:r])\n\n    column_totals = tuple(sum(rows[i][j] for i in range(4)) for j in range(4))\n\n    def prefix(x, y):\n        q, r = divmod(x, 4)\n        result = q * periodic_prefix(column_totals, y)\n        for i in range(r):\n            result += periodic_prefix(rows[i], y)\n        return result\n\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "f0b46293fb30ed787bcf3813649467d2252c91dbedcc26fda33ae4883f295bc7",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 9,
+    "event": 83,
+    "file": {
+      "path": "/project/count_valid_colorings.py",
+      "content": "MOD = 998244353\n\n\ndef count_valid_colorings(n: int, m: int) -> int:\n    \"\"\"Count proper m-colorings of a cycle of length n, modulo 998244353.\"\"\"\n    return (pow(m - 1, n, MOD) + (m - 1 if n % 2 == 0 else -(m - 1))) % MOD\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "0b7e5255accf0e1788b3bec43dae252ccbf897e7d165053bd5fbf3ef2d443926",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 11,
+    "event": 87,
+    "file": {
+      "path": "/project/kth_smallest_amount.py",
+      "content": "from math import gcd\nfrom typing import List\n\n\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\n    \"\"\"Find the k-th positive integer divisible by at least one denomination.\"\"\"\n    upper = min(coins) * k\n    terms = []\n\n    def build(index: int, current_lcm: int, size: int) -> None:\n        for i in range(index, len(coins)):\n            coin = coins[i]\n            next_lcm = current_lcm // gcd(current_lcm, coin) * coin\n            if next_lcm > upper:\n                continue\n            next_size = size + 1\n            terms.append((next_lcm, 1 if next_size % 2 else -1))\n            build(i + 1, next_lcm, next_size)\n\n    build(0, 1, 0)\n\n    def count_at_most(value: int) -> int:\n        return sum(sign * (value // multiple) for multiple, sign in terms)\n\n    lo, hi = 1, upper\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if count_at_most(mid) >= k:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "cc0aae9518a8933d178291cfb17e9adb58a6408b66148b7f45b5528fb5eac10b",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 12,
+    "event": 89,
+    "file": {
+      "path": "/project/min_absolute_difference.py",
+      "content": "from typing import List\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Minimize |k - OR(subarray)| over all non-empty contiguous subarrays.\"\"\"\n    best = float(\"inf\")\n    previous = []\n    for value in nums:\n        current = [value]\n        for old_or in previous:\n            combined = old_or | value\n            if combined != current[-1]:\n                current.append(combined)\n        for subarray_or in current:\n            best = min(best, abs(k - subarray_or))\n            if best == 0:\n                return 0\n        previous = current\n    return int(best)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "915e827770c04a52f61f3468480eeced9abb96aeb072a2c2a89456d7c61b81a4",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 13,
+    "event": 91,
+    "file": {
+      "path": "/project/count_beautiful_integers.py",
+      "content": "from functools import lru_cache\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers in [low, high] divisible by k with equal even/odd digit counts.\"\"\"\n    def count_up_to(n: int) -> int:\n        if n <= 0:\n            return 0\n        digits = tuple(map(int, str(n)))\n\n        @lru_cache(None)\n        def dp(pos: int, remainder: int, balance: int, started: bool, tight: bool) -> int:\n            if pos == len(digits):\n                return int(started and remainder == 0 and balance == 0)\n            limit = digits[pos] if tight else 9\n            total = 0\n            for digit in range(limit + 1):\n                next_tight = tight and digit == limit\n                if not started and digit == 0:\n                    total += dp(pos + 1, remainder, balance, False, next_tight)\n                else:\n                    next_balance = balance + (1 if digit % 2 == 0 else -1)\n                    total += dp(pos + 1, (remainder * 10 + digit) % k,\n                                next_balance, True, next_tight)\n            return total\n\n        return dp(0, 0, 0, False, True)\n\n    return count_up_to(high) - count_up_to(low - 1)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "714078b59547b955d1a7898d3216e403694278a0cc7c59a796ea7bf2c9abfd79",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 14,
+    "event": 93,
+    "file": {
+      "path": "/project/count_powerful_integers.py",
+      "content": "from functools import lru_cache\n\n\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\n    \"\"\"Count in-range numbers ending in s whose digits are all at most limit.\"\"\"\n    if start > finish or not s or any(int(ch) > limit for ch in s):\n        return 0\n    suffix = int(s)\n    scale = 10 ** len(s)\n\n    def count_prefixes_at_most(bound: int, length: int) -> int:\n        \"\"\"Count length-digit (non-leading-zero) strings <= bound with digits <= limit.\"\"\"\n        if bound < 10 ** (length - 1):\n            return 0\n        top = str(min(bound, 10 ** length - 1))\n\n        @lru_cache(None)\n        def dp(pos: int, tight: bool) -> int:\n            if pos == length:\n                return 1\n            upper = int(top[pos]) if tight else limit\n            total = 0\n            for digit in range(1 if pos == 0 else 0, min(upper, limit) + 1):\n                total += dp(pos + 1, tight and digit == upper)\n            return total\n        return dp(0, True)\n\n    answer = 0\n    for length in range(len(s), len(str(finish)) + 1):\n        min_number = max(start, 10 ** (length - 1))\n        max_number = min(finish, 10 ** length - 1)\n        if min_number > max_number:\n            continue\n        if length == len(s):\n            if min_number <= suffix <= max_number:\n                answer += 1\n            continue\n        prefix_len = length - len(s)\n        lo = max(10 ** (prefix_len - 1), (min_number - suffix + scale - 1) // scale)\n        hi = min(10 ** prefix_len - 1, (max_number - suffix) // scale)\n        if lo <= hi:\n            answer += count_prefixes_at_most(hi, prefix_len) - count_prefixes_at_most(lo - 1, prefix_len)\n    return answer\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "86dad4553ae3d60a2b8d3161fbcb47885b54ecd5cd53b699ef3ec14135f94dce",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-c864f61ca90d",
+    "step": 18,
+    "event": 101,
+    "file": {
+      "path": "/project/solutions.py",
+      "content": "\"\"\"Reference implementations for the six assigned Python utility functions.\"\"\"\nfrom math import gcd\nfrom typing import List\n\n\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\n    \"\"\"Count positive integers in [start, finish] ending in s with bounded digits.\"\"\"\n    if start > finish or not s or any(int(ch) > limit for ch in s):\n        return 0\n    suffix_len = len(s)\n\n    def prefix_count(p: int) -> int:\n        return 1 if p == 0 else limit * (limit + 1) ** (p - 1)\n\n    def strictly_less(prefix: str) -> int:\n        total = 0\n        p = len(prefix)\n        for i, ch in enumerate(prefix):\n            d = ord(ch) - 48\n            lo = 1 if i == 0 else 0\n            hi = min(limit, d - 1)\n            if hi >= lo:\n                total += (hi - lo + 1) * (limit + 1) ** (p - i - 1)\n            if d < lo or d > limit:\n                return total\n        return total\n\n    def count_leq(bound: int) -> int:\n        if bound <= 0:\n            return 0\n        digits = str(bound)\n        total = sum(prefix_count(length - suffix_len)\n                    for length in range(max(1, suffix_len), len(digits)))\n        if len(digits) >= suffix_len:\n            p = len(digits) - suffix_len\n            pref = digits[:p]\n            total += strictly_less(pref)\n            if s <= digits[p:] and (p == 0 or (pref[0] != \"0\" and\n                    all(ord(ch) - 48 <= limit for ch in pref))):\n                total += 1\n        return total\n\n    return count_leq(finish) - count_leq(start - 1)\n\n\ndef count_valid_colorings(n: int, m: int) -> int:\n    \"\"\"Count proper colorings of an n-vertex cycle modulo 998244353.\"\"\"\n    mod = 998244353\n    return (pow(m - 1, n, mod) +\n            (m - 1 if n % 2 == 0 else -(m - 1))) % mod\n\n\ndef calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\"Return twice the black area in [A,C] x [B,D] for the wallpaper pattern.\"\"\"\n    # The coloring is periodic with periods 4 in x and 2 in y. Prefix areas\n    # in one period are stored doubled, so all calculations use integers.\n    vertical = (0, 3, 6, 7, 8)  # x in [0,r], y in [0,2]\n    horizontal = (0, 4)         # x in [0,4], y in [0,s]\n    partial = (0, 2, 3, 3, 4)  # x in [0,r], y in [0,1]\n\n    def prefix(x: int, y: int) -> int:\n        qx, rx = divmod(x, 4)\n        qy, ry = divmod(y, 2)\n        return (8 * qx * qy + horizontal[ry] * qx\n                + vertical[rx] * qy + (partial[rx] if ry else 0))\n\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n\n\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\n    \"\"\"Return the k-th positive integer divisible by at least one denomination.\"\"\"\n    useful = sorted(set(coins))\n    filtered = []\n    for c in useful:\n        if not any(c % d == 0 for d in filtered):\n            filtered.append(c)\n\n    high = min(filtered) * k\n    cap = high + 1\n    lcms = [1]\n    signs = [-1]  # The empty subset has the opposite sign to a singleton.\n    for c in filtered:\n        old_len = len(lcms)\n        for i in range(old_len):\n            new_lcm = lcms[i] // gcd(lcms[i], c) * c\n            lcms.append(min(new_lcm, cap))\n            signs.append(-signs[i])\n\n    def count(x: int) -> int:\n        return sum(sign * (x // lcm)\n                   for lcm, sign in zip(lcms[1:], signs[1:]) if lcm <= x)\n\n    low = 1\n    while low < high:\n        mid = (low + high) // 2\n        if count(mid) >= k:\n            high = mid\n        else:\n            low = mid + 1\n    return low\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Minimize |k - OR(subarray)| over all non-empty contiguous subarrays.\"\"\"\n    best = float(\"inf\")\n    endings = set()\n    for value in nums:\n        current = {value}\n        current.update(previous | value for previous in endings)\n        for combined in current:\n            difference = abs(combined - k)\n            if difference < best:\n                best = difference\n                if best == 0:\n                    return 0\n        endings = current\n    return int(best)\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers with equally many even/odd digits, divisible by k.\"\"\"\n    def count_at_most(bound: int) -> int:\n        if bound <= 0:\n            return 0\n        digits = [int(ch) for ch in str(bound)]\n        # state: (even-minus-odd balance, remainder, started, tight)\n        dp = {(0, 0, False, True): 1}\n        for limit_digit in digits:\n            nxt = {}\n            for (balance, remainder, started, tight), ways in dp.items():\n                top = limit_digit if tight else 9\n                for digit in range(top + 1):\n                    new_started = started or digit != 0\n                    if new_started:\n                        new_balance = balance + (1 if digit % 2 == 0 else -1)\n                        new_remainder = (remainder * 10 + digit) % k\n                    else:\n                        new_balance = new_remainder = 0\n                    state = (new_balance, new_remainder, new_started,\n                             tight and digit == top)\n                    nxt[state] = nxt.get(state, 0) + ways\n            dp = nxt\n        return sum(ways for (balance, remainder, started, _), ways in dp.items()\n                   if started and balance == 0 and remainder == 0)\n\n    return count_at_most(high) - count_at_most(low - 1)\n",
+      "author": "worker-caf39fc2178b",
+      "version": 2,
+      "sha256": "14f884a19ff640b42ebada7c0f3a35d512bcadd35209203adc003f01c438ce06",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-3ba854054274",
+    "step": 23,
+    "event": 112,
+    "file": {
+      "path": "/project/solutions.py",
+      "content": "\"\"\"Reference implementations for the six assigned Python utility functions.\"\"\"\nfrom math import gcd\nfrom typing import List\n\n\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\n    \"\"\"Count positive integers in [start, finish] ending in s with bounded digits.\"\"\"\n    if start > finish or not s or any(int(ch) > limit for ch in s):\n        return 0\n    suffix_len = len(s)\n\n    def prefix_count(p: int) -> int:\n        return 1 if p == 0 else limit * (limit + 1) ** (p - 1)\n\n    def strictly_less(prefix: str) -> int:\n        total = 0\n        p = len(prefix)\n        for i, ch in enumerate(prefix):\n            d = ord(ch) - 48\n            lo = 1 if i == 0 else 0\n            hi = min(limit, d - 1)\n            if hi >= lo:\n                total += (hi - lo + 1) * (limit + 1) ** (p - i - 1)\n            if d < lo or d > limit:\n                return total\n        return total\n\n    def count_leq(bound: int) -> int:\n        if bound <= 0:\n            return 0\n        digits = str(bound)\n        total = sum(prefix_count(length - suffix_len)\n                    for length in range(max(1, suffix_len), len(digits)))\n        if len(digits) >= suffix_len:\n            p = len(digits) - suffix_len\n            pref = digits[:p]\n            total += strictly_less(pref)\n            if s <= digits[p:] and (p == 0 or (pref[0] != \"0\" and\n                    all(ord(ch) - 48 <= limit for ch in pref))):\n                total += 1\n        return total\n\n    return count_leq(finish) - count_leq(start - 1)\n\n\ndef count_valid_colorings(n: int, m: int) -> int:\n    \"\"\"Count proper colorings of an n-vertex cycle modulo 998244353.\"\"\"\n    mod = 998244353\n    return (pow(m - 1, n, mod) +\n            (m - 1 if n % 2 == 0 else -(m - 1))) % mod\n\n\ndef calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\"Return twice the black area in [A,C] x [B,D] for the wallpaper pattern.\"\"\"\n    # The coloring is periodic with periods 4 in x and 2 in y. Prefix areas\n    # in one period are stored doubled, so all calculations use integers.\n    vertical = (0, 3, 6, 7, 8)  # x in [0,r], y in [0,2]\n    horizontal = (0, 4)         # x in [0,4], y in [0,s]\n    partial = (0, 2, 3, 3, 4)  # x in [0,r], y in [0,1]\n\n    def prefix(x: int, y: int) -> int:\n        qx, rx = divmod(x, 4)\n        qy, ry = divmod(y, 2)\n        return (8 * qx * qy + horizontal[ry] * qx\n                + vertical[rx] * qy + (partial[rx] if ry else 0))\n\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n\n\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\n    \"\"\"Return the k-th positive integer divisible by at least one denomination.\"\"\"\n    useful = sorted(set(coins))\n    filtered = []\n    for c in useful:\n        if not any(c % d == 0 for d in filtered):\n            filtered.append(c)\n\n    high = min(filtered) * k\n    cap = high + 1\n    lcms = [1]\n    signs = [-1]  # The empty subset has the opposite sign to a singleton.\n    for c in filtered:\n        old_len = len(lcms)\n        for i in range(old_len):\n            new_lcm = lcms[i] // gcd(lcms[i], c) * c\n            lcms.append(min(new_lcm, cap))\n            signs.append(-signs[i])\n\n    def count(x: int) -> int:\n        return sum(sign * (x // lcm)\n                   for lcm, sign in zip(lcms[1:], signs[1:]) if lcm <= x)\n\n    low = 1\n    while low < high:\n        mid = (low + high) // 2\n        if count(mid) >= k:\n            high = mid\n        else:\n            low = mid + 1\n    return low\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Minimize |k - OR(subarray)| over all non-empty contiguous subarrays.\"\"\"\n    best = float(\"inf\")\n    endings = set()\n    for value in nums:\n        current = {value}\n        current.update(previous | value for previous in endings)\n        for combined in current:\n            difference = abs(combined - k)\n            if difference < best:\n                best = difference\n                if best == 0:\n                    return 0\n        endings = current\n    return int(best)\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers with equally many even/odd digits, divisible by k.\"\"\"\n    def count_at_most(bound: int) -> int:\n        if bound <= 0:\n            return 0\n        digits = [int(ch) for ch in str(bound)]\n        # state: (even-minus-odd balance, remainder, started, tight)\n        dp = {(0, 0, False, True): 1}\n        for limit_digit in digits:\n            nxt = {}\n            for (balance, remainder, started, tight), ways in dp.items():\n                top = limit_digit if tight else 9\n                for digit in range(top + 1):\n                    new_started = started or digit != 0\n                    if new_started:\n                        new_balance = balance + (1 if digit % 2 == 0 else -1)\n                        new_remainder = (remainder * 10 + digit) % k\n                    else:\n                        new_balance = new_remainder = 0\n                    state = (new_balance, new_remainder, new_started,\n                             tight and digit == top)\n                    nxt[state] = nxt.get(state, 0) + ways\n            dp = nxt\n        return sum(ways for (balance, remainder, started, _), ways in dp.items()\n                   if started and balance == 0 and remainder == 0)\n\n    return count_at_most(high) - count_at_most(low - 1)\n",
+      "author": "worker-caf39fc2178b",
+      "version": 2,
+      "sha256": "14f884a19ff640b42ebada7c0f3a35d512bcadd35209203adc003f01c438ce06",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-3ba854054274",
+    "step": 24,
+    "event": 114,
+    "file": {
+      "path": "/project/calculate_black_area_doubled.py",
+      "content": "def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\"Return twice the black area in the specified AtCoder wallpaper rectangle.\"\"\"\n    # Entries are twice the black area in unit cells; this pattern repeats every 4.\n    rows = (\n        (2, 1, 2, 1),\n        (1, 2, 1, 2),\n        (0, 1, 0, 1),\n        (1, 0, 1, 0),\n    )\n\n    def periodic_prefix(values, n):\n        q, r = divmod(n, len(values))\n        return q * sum(values) + sum(values[:r])\n\n    column_totals = tuple(sum(rows[i][j] for i in range(4)) for j in range(4))\n\n    def prefix(x, y):\n        q, r = divmod(x, 4)\n        result = q * periodic_prefix(column_totals, y)\n        for i in range(r):\n            result += periodic_prefix(rows[i], y)\n        return result\n\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "f0b46293fb30ed787bcf3813649467d2252c91dbedcc26fda33ae4883f295bc7",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-3ba854054274",
+    "step": 26,
+    "event": 118,
+    "file": {
+      "path": "/project/count_powerful_integers.py",
+      "content": "from functools import lru_cache\n\n\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\n    \"\"\"Count in-range numbers ending in s whose digits are all at most limit.\"\"\"\n    if start > finish or not s or any(int(ch) > limit for ch in s):\n        return 0\n    suffix = int(s)\n    scale = 10 ** len(s)\n\n    def count_prefixes_at_most(bound: int, length: int) -> int:\n        \"\"\"Count length-digit (non-leading-zero) strings <= bound with digits <= limit.\"\"\"\n        if bound < 10 ** (length - 1):\n            return 0\n        top = str(min(bound, 10 ** length - 1))\n\n        @lru_cache(None)\n        def dp(pos: int, tight: bool) -> int:\n            if pos == length:\n                return 1\n            upper = int(top[pos]) if tight else limit\n            total = 0\n            for digit in range(1 if pos == 0 else 0, min(upper, limit) + 1):\n                total += dp(pos + 1, tight and digit == upper)\n            return total\n        return dp(0, True)\n\n    answer = 0\n    for length in range(len(s), len(str(finish)) + 1):\n        min_number = max(start, 10 ** (length - 1))\n        max_number = min(finish, 10 ** length - 1)\n        if min_number > max_number:\n            continue\n        if length == len(s):\n            if min_number <= suffix <= max_number:\n                answer += 1\n            continue\n        prefix_len = length - len(s)\n        lo = max(10 ** (prefix_len - 1), (min_number - suffix + scale - 1) // scale)\n        hi = min(10 ** prefix_len - 1, (max_number - suffix) // scale)\n        if lo <= hi:\n            answer += count_prefixes_at_most(hi, prefix_len) - count_prefixes_at_most(lo - 1, prefix_len)\n    return answer\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "86dad4553ae3d60a2b8d3161fbcb47885b54ecd5cd53b699ef3ec14135f94dce",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-9c04748ba014",
+    "step": 23,
+    "event": 174,
+    "file": {
+      "path": "/project/kth_smallest_amount.py",
+      "content": "from math import gcd\nfrom typing import List\n\n\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\n    \"\"\"Find the k-th positive integer divisible by at least one denomination.\"\"\"\n    upper = min(coins) * k\n    terms = []\n\n    def build(index: int, current_lcm: int, size: int) -> None:\n        for i in range(index, len(coins)):\n            coin = coins[i]\n            next_lcm = current_lcm // gcd(current_lcm, coin) * coin\n            if next_lcm > upper:\n                continue\n            next_size = size + 1\n            terms.append((next_lcm, 1 if next_size % 2 else -1))\n            build(i + 1, next_lcm, next_size)\n\n    build(0, 1, 0)\n\n    def count_at_most(value: int) -> int:\n        return sum(sign * (value // multiple) for multiple, sign in terms)\n\n    lo, hi = 1, upper\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if count_at_most(mid) >= k:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "cc0aae9518a8933d178291cfb17e9adb58a6408b66148b7f45b5528fb5eac10b",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-9c04748ba014",
+    "step": 25,
+    "event": 178,
+    "file": {
+      "path": "/project/count_powerful_integers.py",
+      "content": "from functools import lru_cache\n\n\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\n    \"\"\"Count in-range numbers ending in s whose digits are all at most limit.\"\"\"\n    if start > finish or not s or any(int(ch) > limit for ch in s):\n        return 0\n    suffix = int(s)\n    scale = 10 ** len(s)\n\n    def count_prefixes_at_most(bound: int, length: int) -> int:\n        \"\"\"Count length-digit (non-leading-zero) strings <= bound with digits <= limit.\"\"\"\n        if bound < 10 ** (length - 1):\n            return 0\n        top = str(min(bound, 10 ** length - 1))\n\n        @lru_cache(None)\n        def dp(pos: int, tight: bool) -> int:\n            if pos == length:\n                return 1\n            upper = int(top[pos]) if tight else limit\n            total = 0\n            for digit in range(1 if pos == 0 else 0, min(upper, limit) + 1):\n                total += dp(pos + 1, tight and digit == upper)\n            return total\n        return dp(0, True)\n\n    answer = 0\n    for length in range(len(s), len(str(finish)) + 1):\n        min_number = max(start, 10 ** (length - 1))\n        max_number = min(finish, 10 ** length - 1)\n        if min_number > max_number:\n            continue\n        if length == len(s):\n            if min_number <= suffix <= max_number:\n                answer += 1\n            continue\n        prefix_len = length - len(s)\n        lo = max(10 ** (prefix_len - 1), (min_number - suffix + scale - 1) // scale)\n        hi = min(10 ** prefix_len - 1, (max_number - suffix) // scale)\n        if lo <= hi:\n            answer += count_prefixes_at_most(hi, prefix_len) - count_prefixes_at_most(lo - 1, prefix_len)\n    return answer\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "86dad4553ae3d60a2b8d3161fbcb47885b54ecd5cd53b699ef3ec14135f94dce",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-7f74e0727839",
+    "step": 25,
+    "event": 179,
+    "file": {
+      "path": "/project/min_absolute_difference.py",
+      "content": "from typing import List\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Minimize |k - OR(subarray)| over all non-empty contiguous subarrays.\"\"\"\n    best = float(\"inf\")\n    previous = []\n    for value in nums:\n        current = [value]\n        for old_or in previous:\n            combined = old_or | value\n            if combined != current[-1]:\n                current.append(combined)\n        for subarray_or in current:\n            best = min(best, abs(k - subarray_or))\n            if best == 0:\n                return 0\n        previous = current\n    return int(best)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "915e827770c04a52f61f3468480eeced9abb96aeb072a2c2a89456d7c61b81a4",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-7f74e0727839",
+    "step": 26,
+    "event": 181,
+    "file": {
+      "path": "/project/solutions.py",
+      "content": "\"\"\"Reference implementations for the six assigned Python utility functions.\"\"\"\nfrom math import gcd\nfrom typing import List\n\n\ndef count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\n    \"\"\"Count positive integers in [start, finish] ending in s with bounded digits.\"\"\"\n    if start > finish or not s or any(int(ch) > limit for ch in s):\n        return 0\n    suffix_len = len(s)\n\n    def prefix_count(p: int) -> int:\n        return 1 if p == 0 else limit * (limit + 1) ** (p - 1)\n\n    def strictly_less(prefix: str) -> int:\n        total = 0\n        p = len(prefix)\n        for i, ch in enumerate(prefix):\n            d = ord(ch) - 48\n            lo = 1 if i == 0 else 0\n            hi = min(limit, d - 1)\n            if hi >= lo:\n                total += (hi - lo + 1) * (limit + 1) ** (p - i - 1)\n            if d < lo or d > limit:\n                return total\n        return total\n\n    def count_leq(bound: int) -> int:\n        if bound <= 0:\n            return 0\n        digits = str(bound)\n        total = sum(prefix_count(length - suffix_len)\n                    for length in range(max(1, suffix_len), len(digits)))\n        if len(digits) >= suffix_len:\n            p = len(digits) - suffix_len\n            pref = digits[:p]\n            total += strictly_less(pref)\n            if s <= digits[p:] and (p == 0 or (pref[0] != \"0\" and\n                    all(ord(ch) - 48 <= limit for ch in pref))):\n                total += 1\n        return total\n\n    return count_leq(finish) - count_leq(start - 1)\n\n\ndef count_valid_colorings(n: int, m: int) -> int:\n    \"\"\"Count proper colorings of an n-vertex cycle modulo 998244353.\"\"\"\n    mod = 998244353\n    return (pow(m - 1, n, mod) +\n            (m - 1 if n % 2 == 0 else -(m - 1))) % mod\n\n\ndef calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\"Return twice the black area in [A,C] x [B,D] for the wallpaper pattern.\"\"\"\n    # The coloring is periodic with periods 4 in x and 2 in y. Prefix areas\n    # in one period are stored doubled, so all calculations use integers.\n    vertical = (0, 3, 6, 7, 8)  # x in [0,r], y in [0,2]\n    horizontal = (0, 4)         # x in [0,4], y in [0,s]\n    partial = (0, 2, 3, 3, 4)  # x in [0,r], y in [0,1]\n\n    def prefix(x: int, y: int) -> int:\n        qx, rx = divmod(x, 4)\n        qy, ry = divmod(y, 2)\n        return (8 * qx * qy + horizontal[ry] * qx\n                + vertical[rx] * qy + (partial[rx] if ry else 0))\n\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n\n\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\n    \"\"\"Return the k-th positive integer divisible by at least one denomination.\"\"\"\n    useful = sorted(set(coins))\n    filtered = []\n    for c in useful:\n        if not any(c % d == 0 for d in filtered):\n            filtered.append(c)\n\n    high = min(filtered) * k\n    cap = high + 1\n    lcms = [1]\n    signs = [-1]  # The empty subset has the opposite sign to a singleton.\n    for c in filtered:\n        old_len = len(lcms)\n        for i in range(old_len):\n            new_lcm = lcms[i] // gcd(lcms[i], c) * c\n            lcms.append(min(new_lcm, cap))\n            signs.append(-signs[i])\n\n    def count(x: int) -> int:\n        return sum(sign * (x // lcm)\n                   for lcm, sign in zip(lcms[1:], signs[1:]) if lcm <= x)\n\n    low = 1\n    while low < high:\n        mid = (low + high) // 2\n        if count(mid) >= k:\n            high = mid\n        else:\n            low = mid + 1\n    return low\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Minimize |k - OR(subarray)| over all non-empty contiguous subarrays.\"\"\"\n    best = float(\"inf\")\n    endings = set()\n    for value in nums:\n        current = {value}\n        current.update(previous | value for previous in endings)\n        for combined in current:\n            difference = abs(combined - k)\n            if difference < best:\n                best = difference\n                if best == 0:\n                    return 0\n        endings = current\n    return int(best)\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers with equally many even/odd digits, divisible by k.\"\"\"\n    def count_at_most(bound: int) -> int:\n        if bound <= 0:\n            return 0\n        digits = [int(ch) for ch in str(bound)]\n        # state: (even-minus-odd balance, remainder, started, tight)\n        dp = {(0, 0, False, True): 1}\n        for limit_digit in digits:\n            nxt = {}\n            for (balance, remainder, started, tight), ways in dp.items():\n                top = limit_digit if tight else 9\n                for digit in range(top + 1):\n                    new_started = started or digit != 0\n                    if new_started:\n                        new_balance = balance + (1 if digit % 2 == 0 else -1)\n                        new_remainder = (remainder * 10 + digit) % k\n                    else:\n                        new_balance = new_remainder = 0\n                    state = (new_balance, new_remainder, new_started,\n                             tight and digit == top)\n                    nxt[state] = nxt.get(state, 0) + ways\n            dp = nxt\n        return sum(ways for (balance, remainder, started, _), ways in dp.items()\n                   if started and balance == 0 and remainder == 0)\n\n    return count_at_most(high) - count_at_most(low - 1)\n",
+      "author": "worker-caf39fc2178b",
+      "version": 2,
+      "sha256": "14f884a19ff640b42ebada7c0f3a35d512bcadd35209203adc003f01c438ce06",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-9c04748ba014",
+    "step": 27,
+    "event": 182,
+    "file": {
+      "path": "/project/count_beautiful_integers.py",
+      "content": "from functools import lru_cache\n\n\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\n    \"\"\"Count integers in [low, high] divisible by k with equal even/odd digit counts.\"\"\"\n    def count_up_to(n: int) -> int:\n        if n <= 0:\n            return 0\n        digits = tuple(map(int, str(n)))\n\n        @lru_cache(None)\n        def dp(pos: int, remainder: int, balance: int, started: bool, tight: bool) -> int:\n            if pos == len(digits):\n                return int(started and remainder == 0 and balance == 0)\n            limit = digits[pos] if tight else 9\n            total = 0\n            for digit in range(limit + 1):\n                next_tight = tight and digit == limit\n                if not started and digit == 0:\n                    total += dp(pos + 1, remainder, balance, False, next_tight)\n                else:\n                    next_balance = balance + (1 if digit % 2 == 0 else -1)\n                    total += dp(pos + 1, (remainder * 10 + digit) % k,\n                                next_balance, True, next_tight)\n            return total\n\n        return dp(0, 0, 0, False, True)\n\n    return count_up_to(high) - count_up_to(low - 1)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "714078b59547b955d1a7898d3216e403694278a0cc7c59a796ea7bf2c9abfd79",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-9c04748ba014",
+    "step": 28,
+    "event": 184,
+    "file": {
+      "path": "/project/min_absolute_difference.py",
+      "content": "from typing import List\n\n\ndef min_absolute_difference(nums: List[int], k: int) -> int:\n    \"\"\"Minimize |k - OR(subarray)| over all non-empty contiguous subarrays.\"\"\"\n    best = float(\"inf\")\n    previous = []\n    for value in nums:\n        current = [value]\n        for old_or in previous:\n            combined = old_or | value\n            if combined != current[-1]:\n                current.append(combined)\n        for subarray_or in current:\n            best = min(best, abs(k - subarray_or))\n            if best == 0:\n                return 0\n        previous = current\n    return int(best)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "915e827770c04a52f61f3468480eeced9abb96aeb072a2c2a89456d7c61b81a4",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-9c04748ba014",
+    "step": 29,
+    "event": 185,
+    "file": {
+      "path": "/project/count_valid_colorings.py",
+      "content": "MOD = 998244353\n\n\ndef count_valid_colorings(n: int, m: int) -> int:\n    \"\"\"Count proper m-colorings of a cycle of length n, modulo 998244353.\"\"\"\n    return (pow(m - 1, n, MOD) + (m - 1 if n % 2 == 0 else -(m - 1))) % MOD\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "0b7e5255accf0e1788b3bec43dae252ccbf897e7d165053bd5fbf3ef2d443926",
+      "origin": "project_write",
+      "component_id": null
+    }
+  },
+  {
+    "phase": "natural",
+    "actor": "worker-9c04748ba014",
+    "step": 30,
+    "event": 186,
+    "file": {
+      "path": "/project/calculate_black_area_doubled.py",
+      "content": "def calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\"Return twice the black area in the specified AtCoder wallpaper rectangle.\"\"\"\n    # Entries are twice the black area in unit cells; this pattern repeats every 4.\n    rows = (\n        (2, 1, 2, 1),\n        (1, 2, 1, 2),\n        (0, 1, 0, 1),\n        (1, 0, 1, 0),\n    )\n\n    def periodic_prefix(values, n):\n        q, r = divmod(n, len(values))\n        return q * sum(values) + sum(values[:r])\n\n    column_totals = tuple(sum(rows[i][j] for i in range(4)) for j in range(4))\n\n    def prefix(x, y):\n        q, r = divmod(x, 4)\n        result = q * periodic_prefix(column_totals, y)\n        for i in range(r):\n            result += periodic_prefix(rows[i], y)\n        return result\n\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n",
+      "author": "worker-9c7b892019ca",
+      "version": 1,
+      "sha256": "f0b46293fb30ed787bcf3813649467d2252c91dbedcc26fda33ae4883f295bc7",
+      "origin": "project_write",
+      "component_id": null
+    }
+  }
+]

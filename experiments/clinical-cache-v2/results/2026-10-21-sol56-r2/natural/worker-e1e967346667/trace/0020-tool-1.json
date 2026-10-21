@@ -1,0 +1,13 @@
+{
+  "event_id": 79,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry -maxdepth 3 -type f -printf '%T@ %p %s\\\\n' | sort -n; printf '\\\\n--- contents ---\\\\n'; for f in /registry/shared/* 2>/dev/null; do echo ===$f; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "bash: -c: line 1: syntax error near unexpected token `2'\nbash: -c: line 1: `sleep 2; find /registry -maxdepth 3 -type f -printf '%T@ %p %s\\n' | sort -n; printf '\\n--- contents ---\\n'; for f in /registry/shared/* 2>/dev/null; do echo ===$f; cat \"$f\"; done'\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

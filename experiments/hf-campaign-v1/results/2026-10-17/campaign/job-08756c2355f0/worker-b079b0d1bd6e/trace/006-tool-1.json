@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":28476342,\"amount_usd\":284763.42,\"event_created_time\":\"2025-09-30T19:15:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":75,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"event_type\":\"INPUT\",\"cost_event_id\":\"CE-250904-0004\",\"assessment\":\"The component-issue transaction was created 75 minutes after the September cost period entered Pending Close. Oracle policy says newly created transactions falling in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting until the period is closed or reopened. The recorded POSTED status is therefore inconsistent with the documented treatment for this new INPUT transaction (not one of the listed continuing exceptions).\"},\"source_ids\":[\"r_22c94e76523afb86d6e47421\",\"r_d693ed9cfa6ed1f820164986\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_94740a763bc5a7a07af2794e",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_0554053cd9f89ddcc9f219b4"
+    }
+  }
+}

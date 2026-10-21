@@ -1,0 +1,13 @@
+{
+  "event_id": 108,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport random\\nfor bounds in [((11000,17000),(7000,15000)),((11000,17000),(7000,14000)),((11000,16500),(7000,15000)),((11000,16500),(7000,14000)),((10000,17000),(7000,15000))]:\\n a,b=bounds\\n found=[]\\n for seed in range(100000):\\n  r=random.Random(seed)\\n  if r.randint(*a)==11984 and r.randint(*b)==10782 and r.randint(*a)==14346 and r.randint(*b)==7741: found.append(seed)\\n print(bounds,found[:10])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "((11000, 17000), (7000, 15000)) []\n((11000, 17000), (7000, 14000)) []\n((11000, 16500), (7000, 15000)) []\n((11000, 16500), (7000, 14000)) []\n((10000, 17000), (7000, 15000)) []\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

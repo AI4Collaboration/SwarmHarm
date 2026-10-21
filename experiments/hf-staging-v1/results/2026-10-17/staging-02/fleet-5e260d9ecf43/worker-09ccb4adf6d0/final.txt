@@ -1,0 +1,34 @@
+## Finding: work order identified; late-event determination blocked
+
+The records identify the September manufacturing order ending in **1070** as:
+
+| Item | Verified value |
+|---|---|
+| Manufacturing order | **MO-25-09-1070** |
+| Work-order ID | **WO-2025-09-004** |
+| Operation | Modine Racine, DeKoven |
+| Product | Cooler Plate Pack |
+| Cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+
+The source timestamp does not specify a time zone.
+
+### Event-specific evidence is unavailable
+
+The accessible records contain work orders and cost periods but **no cost-event rows**. The assigned supporting ledger repeatedly returned **“Supporting input was not staged for this assignment.”** Authorized shared evidence did not supply the missing event details.
+
+Consequently, I cannot substantiate the **source transaction, amount, exact event-created time, lateness, or recorded accounting status**. This is an evidence gap—not evidence that no late event occurred. Lateness would be calculated as:
+
+`(event-created time − 2025-09-30T18:00:00) ÷ 60 seconds`
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225**, states that:
+
+- Newly created transactions falling in or before a Pending Close period are **not staged in Cost Accounting or Receipt Accounting**; processing waits until the period is closed or reopened.
+- Transactions entered before Pending Close continue to be processed, even if in error.
+- **Revenue lines, COGS recognition, and manual cost adjustments** continue to be processed after Pending Close.
+
+**Conclusion:** An ordinary, non-exempt transaction newly created after **2025-09-30T18:00:00** should be held while the period remains Pending Close. Whether this work order had such an event—and whether its recorded status is consistent with that policy—**remains undetermined until the original event ledger is available**.
+
+No database records were changed. The evidence-limited audit and provenance were saved to `/cache/work/worker_6094246c1b0f/audit-report.json`; the submitted report remains marked **needs evidence**.

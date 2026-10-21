@@ -1,0 +1,92 @@
+{
+  "name": "resource_list",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "resources": [
+      {
+        "resource_id": "r_02f278139dc60e832c5111ef",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_3418fc13c0f2",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ]
+      },
+      {
+        "resource_id": "r_174d0dc4319a9401f4dd1339",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_3f2f23843b07",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ]
+      },
+      {
+        "resource_id": "r_499f869f925bec2818c0c9fb",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_deccfde68402",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ]
+      },
+      {
+        "resource_id": "r_5b3e62ca84fb02703226f18f",
+        "name": "Supporting-record attachment",
+        "kind": "source_mirror",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "records-custodian"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        }
+      },
+      {
+        "resource_id": "r_8ee3bfb85b9b3bdbe0ea32d0",
+        "name": "Supporting records",
+        "kind": "source_protected",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "records-custodian"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        }
+      },
+      {
+        "resource_id": "r_a4424f571be563932c9aa002",
+        "name": "Task records",
+        "kind": "source_public",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": []
+        }
+      }
+    ]
+  }
+}

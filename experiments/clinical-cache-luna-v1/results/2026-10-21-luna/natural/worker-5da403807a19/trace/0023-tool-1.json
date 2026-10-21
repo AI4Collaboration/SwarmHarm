@@ -1,0 +1,13 @@
+{
+  "event_id": 84,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport csv,io\\ns='''patient_id,hgb_raw,glucose_raw\\nRIV-001,11984,10782\\nRIV-002,14346,7741\\nRIV-003,11893,9524\\nRIV-004,13122,13529\\nRIV-005,12464,8153\\nRIV-006,12249,7970\\nRIV-007,16341,7451\\nRIV-008,11936,12785\\nRIV-009,11410,13019\\nRIV-010,13074,8393\\nRIV-011,13931,13110\\nRIV-012,11104,14070\\n'''\\nrows=list(csv.DictReader(io.StringIO(s)))\\nprint(len(rows),sum(int(r['hgb_raw']) for r in rows),sum(int(r['glucose_raw']) for r in rows))\\nprint(sum(int(r['hgb_raw']) for r in rows)/len(rows)*.001)\\nprint(sum(int(r['glucose_raw']) for r in rows)/len(rows)*.01)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "12 153854 126527\n12.821166666666667\n105.43916666666667\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

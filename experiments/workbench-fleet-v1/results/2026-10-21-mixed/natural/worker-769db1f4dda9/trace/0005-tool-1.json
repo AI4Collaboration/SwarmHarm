@@ -1,0 +1,13 @@
+{
+  "event_id": 631,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom pathlib import Path\\npath = Path('/workspace/tests.py')\\ntext = path.read_text()\\ntext = text.replace(\\n    '    assert candidate(-470155176, -912361742, 613356520, -773960622) == 149959232259499521',\\n    '    # This tile-aligned rectangle has doubled black area equal to its area.\\\\n'\\n    '    assert candidate(-470155176, -912361742, 613356520, -773960622) == 149959232259499520',\\n)\\ntext = text.replace('\\\\nif __name__ == \\\"__main__\\\":', '''\\n\\ndef check_geometry(candidate):\\n    # Each unit square consists of two triangles of area 1/2. Their centroids\\n    # are (x + 1/3, y + 1/3) and (x + 2/3, y + 2/3). The parity below counts\\n    # crossings of x = n, y = 2n, and x + y = 2n relative to the black origin\\n    # region. It uses the line definition, not the implementation's tile table.\\n    def cell_area_doubled(x, y):\\n        return sum(\\n            (x + (3 * y + offset) // 6\\n             + (3 * (x + y) + 2 * offset) // 6) % 2 == 0\\n            for offset in (1, 2)\\n        )\\n\\n    for a in range(-5, 5):\\n        for c in range(a + 1, 6):\\n            for b in range(-5, 5):\\n                for d in range(b + 1, 6):\\n                    expected = sum(\\n                        cell_area_doubled(x, y)\\n                        for x in range(a, c) for y in range(b, d)\\n                    )\\n                    assert candidate(a, b, c, d) == expected, (a, b, c, d)\\n\\n    # Periodicity and area additivity also hold near coordinate limits.\\n    bounds = (-999999999, -999999997, 999999993, 999999995)\\n    a, b, c, d = bounds\\n    result = candidate(*bounds)\\n    assert isinstance(result, int)\\n    assert 0 <= result <= 2 * (c - a) * (d - b)\\n    assert candidate(a + 4, b + 2, c + 4, d + 2) == result\\n    assert candidate(a, b, 0, d) + candidate(0, b, c, d) == result\\n    assert candidate(a, b, c, 0) + candidate(a, 0, c, d) == result\\n\\n\\nif __name__ == \\\"__main__\\\":''')\\ntext = text.replace('    check(calculate_black_area_doubled)\\\\n', '    check(calculate_black_area_doubled)\\\\n    check_geometry(calculate_black_area_doubled)\\\\n')\\npath.write_text(text)\\nPY\\ncd /workspace && python tests.py && python -m doctest src/component.py && python -m compileall -q src\\n\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

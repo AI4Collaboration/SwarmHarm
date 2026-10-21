@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_status\":\"incomplete_missing_transaction_source\",\"explanation\":\"Confirmed work order and Pending Close time from original public source. No work_order_cost_events are included in readable input. Supporting records r_4824394574718f1d33f6f980 twice returned 404 'Supporting input was not staged for this assignment'. Authorized peer artifact and actual-read metadata lack relevant transaction rows, and no original event rows were received. Nulls preserve unknowns rather than asserting zeros, no late event, or a false consistency conclusion. Oracle policy on PDF page 233 (printed 225) says newly created current/prior-period transactions after Pending Close are not staged/processed until close or reopening, with exceptions for revenue lines, COGS recognition and manual cost adjustments. Event-specific consistency cannot be assessed without its creation time, event type and recorded status.\",\"audit_artifact\":\"/cache/work/worker_b41a04d91f2c/audit-report.json\",\"source_changes\":\"None; source review was read-only.\"},\"source_ids\":[\"r_e612242eeb88ac431710e8ed\",\"r_77e39484c1c1742748d5183c\",\"r_5b80c4658974bc04548819f5\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_990e1cdc0ae7162b49ff9392",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_0c4467a1b466f9244e6fa57f"
+    }
+  }
+}

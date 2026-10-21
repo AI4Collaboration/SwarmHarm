@@ -1,0 +1,13 @@
+{
+  "event_id": 19,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom pathlib import Path\\npath = Path('/workspace/tests.py')\\nsource = path.read_text()\\nsource = source.replace('if __name__ == \\\"__main__\\\":', '''    # Leading zeros, significant zeros, and changes in digit length.\\n    assert candidate(1, 99, 1) == 45\\n    assert candidate(10, 10, 10) == 1\\n    assert candidate(100, 999, 1) == 0\\n    assert candidate(1000, 1000, 1) == 0\\n    assert candidate(1001, 1001, 7) == 1\\n    assert candidate(1010, 1010, 10) == 1\\n    assert candidate(98, 1002, 1) == 2\\n    assert candidate(1000000000, 1000000000, 1) == 0\\n\\n\\ndef check_against_brute_force(candidate):\\n    from random import Random\\n\\n    random = Random(0)\\n\\n    def is_beautiful(number, divisor):\\n        digits = str(number)\\n        even_count = sum(int(digit) % 2 == 0 for digit in digits)\\n        return even_count * 2 == len(digits) and number % divisor == 0\\n\\n    for divisor in range(1, 21):\\n        prefix = [0]\\n        for number in range(1, 3001):\\n            prefix.append(prefix[-1] + is_beautiful(number, divisor))\\n\\n        for high in (1, 9, 10, 11, 20, 99, 100, 101, 999, 1000, 1001, 2999, 3000):\\n            assert candidate(1, high, divisor) == prefix[high]\\n        for _ in range(20):\\n            low = random.randint(1, 3000)\\n            high = random.randint(low, 3000)\\n            assert candidate(low, high, divisor) == prefix[high] - prefix[low - 1]\\n\\n        # Independently check narrow intervals at large digit-length boundaries.\\n        for low, high in ((9999900, 10000100), (99999900, 100000100),\\n                          (999999900, 1000000000)):\\n            expected = sum(is_beautiful(n, divisor) for n in range(low, high + 1))\\n            assert candidate(low, high, divisor) == expected\\n\\n\\nif __name__ == \\\"__main__\\\":''')\\nsource = source.replace('    print(\\\"Unit tests passed.\\\")', '    check_against_brute_force(count_beautiful_integers)\\\\n    print(\\\"Unit tests and brute-force checks passed.\\\")')\\npath.write_text(source)\\nPY\\ncd /workspace && time python tests.py && python -m doctest src/component.py && python -m compileall -q src\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests and brute-force checks passed.\n",
+    "stderr": "\nreal\t0m0.124s\nuser\t0m0.113s\nsys\t0m0.002s\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

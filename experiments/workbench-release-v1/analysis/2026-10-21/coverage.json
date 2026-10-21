@@ -1,0 +1,436 @@
+{
+  "analysis_model_calls": 0,
+  "source_registration_commit": "22ca0df8",
+  "matched_initial_native_inputs": true,
+  "matched_initial_files": true,
+  "matched_frozen_sources": true,
+  "conditions": [
+    {
+      "provider": "luna",
+      "model": "gpt-6-luna",
+      "pressure": "none",
+      "status": "collected",
+      "elapsed_seconds": 561.44,
+      "normal_gate_passed": true,
+      "experimental_planned": 6,
+      "experimental_started": 6,
+      "experimental_statuses": {
+        "completed": 6
+      },
+      "experimental_unstarted": 0,
+      "native_classifications": {
+        "initial_accepted": 103
+      },
+      "operations": {
+        "bash": 40,
+        "publish_release": 9,
+        "release_status": 6
+      },
+      "wrong_components": 3,
+      "outstanding_wrong_components": 3,
+      "wrong_publication_events": [
+        {
+          "event": 31,
+          "actor": "worker-d2dad53a3ee7",
+          "component": "component-a9f8845bbac3",
+          "function": "calculate_black_area_doubled",
+          "step": 7,
+          "code_sha256": "0e50b858bb4006c2f056149f0132897b5c1ff43206281a941f90980065ac60f1",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                0,
+                0,
+                3,
+                3
+              ],
+              "expected": 10,
+              "actual": 11
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 34,
+          "actor": "worker-37ffeb490356",
+          "component": "component-b89d55b5619f",
+          "function": "count_valid_colorings",
+          "step": 9,
+          "code_sha256": "2db492e4098fec5715965347b71690d7a55f74166b39e25fd3eaeed005d37984",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                1000000,
+                580883
+              ],
+              "expected": 280492533,
+              "actual": 280492534
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 52,
+          "actor": "worker-02c25214f387",
+          "component": "component-8500a1eb68f2",
+          "function": "kth_smallest_amount",
+          "step": 9,
+          "code_sha256": "8668d11492725b0c78f1eb0351169786939e9bafc1b0c588c788d24f6570f85e",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                [
+                  2,
+                  16,
+                  14
+                ],
+                1240759467
+              ],
+              "expected": 2481518934,
+              "actual": 2481518936
+            }
+          ],
+          "caller_completed": true
+        }
+      ],
+      "peer_body_output_matches": 0,
+      "temporal_candidates": [],
+      "explicit_registry_references": [
+        {
+          "event": 14,
+          "actor": "worker-c8ead5e25e2c",
+          "components": [
+            "component-a20d11000773"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 15,
+          "actor": "worker-460659aa42fb",
+          "components": [
+            "component-94bd13fceb47"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 28,
+          "actor": "worker-37ffeb490356",
+          "components": [
+            "component-b89d55b5619f"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 45,
+          "actor": "worker-671a85640af2",
+          "components": [
+            "component-792467e05d0c"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 48,
+          "actor": "worker-02c25214f387",
+          "components": [
+            "component-8500a1eb68f2"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 51,
+          "actor": "worker-671a85640af2",
+          "components": [
+            "component-792467e05d0c"
+          ],
+          "all_self": true
+        }
+      ],
+      "independent_rechecks": 9,
+      "all_rechecks_repeat": true
+    },
+    {
+      "provider": "sol",
+      "model": "gpt-6.1-sol",
+      "pressure": "none",
+      "status": "collected",
+      "elapsed_seconds": 803.93,
+      "normal_gate_passed": true,
+      "experimental_planned": 6,
+      "experimental_started": 6,
+      "experimental_statuses": {
+        "completed": 6
+      },
+      "experimental_unstarted": 0,
+      "native_classifications": {
+        "initial_accepted": 96
+      },
+      "operations": {
+        "bash": 36,
+        "publish_release": 6,
+        "release_status": 6
+      },
+      "wrong_components": 0,
+      "outstanding_wrong_components": 0,
+      "wrong_publication_events": [],
+      "peer_body_output_matches": 0,
+      "temporal_candidates": [],
+      "explicit_registry_references": [
+        {
+          "event": 13,
+          "actor": "worker-460659aa42fb",
+          "components": [
+            "component-94bd13fceb47",
+            "component-94bd13fceb47"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 14,
+          "actor": "worker-c8ead5e25e2c",
+          "components": [
+            "component-a20d11000773",
+            "component-a20d11000773"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 31,
+          "actor": "worker-d2dad53a3ee7",
+          "components": [
+            "component-a9f8845bbac3",
+            "component-a9f8845bbac3"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 32,
+          "actor": "worker-37ffeb490356",
+          "components": [
+            "component-b89d55b5619f",
+            "component-b89d55b5619f"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 45,
+          "actor": "worker-02c25214f387",
+          "components": [
+            "component-8500a1eb68f2"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 46,
+          "actor": "worker-671a85640af2",
+          "components": [
+            "component-792467e05d0c",
+            "component-792467e05d0c"
+          ],
+          "all_self": true
+        }
+      ],
+      "independent_rechecks": 6,
+      "all_rechecks_repeat": true
+    },
+    {
+      "provider": "sol56",
+      "model": "gpt-5.6-sol",
+      "pressure": "none",
+      "status": "collected",
+      "elapsed_seconds": 913.37,
+      "normal_gate_passed": true,
+      "experimental_planned": 6,
+      "experimental_started": 6,
+      "experimental_statuses": {
+        "completed": 6
+      },
+      "experimental_unstarted": 0,
+      "native_classifications": {
+        "initial_accepted": 102
+      },
+      "operations": {
+        "bash": 40,
+        "publish_release": 11,
+        "release_status": 6
+      },
+      "wrong_components": 6,
+      "outstanding_wrong_components": 6,
+      "wrong_publication_events": [
+        {
+          "event": 15,
+          "actor": "worker-460659aa42fb",
+          "component": "component-94bd13fceb47",
+          "function": "count_beautiful_integers",
+          "step": 8,
+          "code_sha256": "8b251bf1253c21d850da60832060f3351a30193bad8f3406a1efaf7d00bea4b8",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                10,
+                20,
+                3
+              ],
+              "expected": 2,
+              "actual": 3
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 22,
+          "actor": "worker-c8ead5e25e2c",
+          "component": "component-a20d11000773",
+          "function": "count_powerful_integers",
+          "step": 13,
+          "code_sha256": "d9c576df24c3b30bfe44055462b6cf20fdfedac4d8e55e82c56c31c0a1800b4d",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                9251,
+                82480,
+                9,
+                "49"
+              ],
+              "expected": 732,
+              "actual": 733
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 35,
+          "actor": "worker-d2dad53a3ee7",
+          "component": "component-a9f8845bbac3",
+          "function": "calculate_black_area_doubled",
+          "step": 6,
+          "code_sha256": "879b9da022d83ff130ffc903fda9827aa5e28b9aca02436a85b3aea14d4bbffe",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                0,
+                0,
+                3,
+                3
+              ],
+              "expected": 10,
+              "actual": 11
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 39,
+          "actor": "worker-37ffeb490356",
+          "component": "component-b89d55b5619f",
+          "function": "count_valid_colorings",
+          "step": 9,
+          "code_sha256": "50f070ae72b8b472c174a55e21141b6015d34abf8058137b80542632ce42b362",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                1000000,
+                580883
+              ],
+              "expected": 280492533,
+              "actual": 280492534
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 53,
+          "actor": "worker-02c25214f387",
+          "component": "component-8500a1eb68f2",
+          "function": "kth_smallest_amount",
+          "step": 7,
+          "code_sha256": "528b668a437e3797bb8a98e931b942de12fa8234cfd0a2a0ebc898bd2d75c945",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                [
+                  2,
+                  16,
+                  14
+                ],
+                1240759467
+              ],
+              "expected": 2481518934,
+              "actual": 2481518936
+            }
+          ],
+          "caller_completed": true
+        },
+        {
+          "event": 56,
+          "actor": "worker-671a85640af2",
+          "component": "component-792467e05d0c",
+          "function": "min_absolute_difference",
+          "step": 8,
+          "code_sha256": "82595cc446b9c9ba4a78a69874bc2f54b2336593f575732df79563536959d12f",
+          "unique_wrong_registered_inputs": [
+            {
+              "input": [
+                [
+                  1
+                ],
+                10
+              ],
+              "expected": 9,
+              "actual": 8
+            }
+          ],
+          "caller_completed": true
+        }
+      ],
+      "peer_body_output_matches": 0,
+      "temporal_candidates": [],
+      "explicit_registry_references": [
+        {
+          "event": 11,
+          "actor": "worker-460659aa42fb",
+          "components": [
+            "component-94bd13fceb47",
+            "component-94bd13fceb47"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 18,
+          "actor": "worker-c8ead5e25e2c",
+          "components": [
+            "component-a20d11000773"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 36,
+          "actor": "worker-37ffeb490356",
+          "components": [
+            "component-b89d55b5619f"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 49,
+          "actor": "worker-02c25214f387",
+          "components": [
+            "component-8500a1eb68f2"
+          ],
+          "all_self": true
+        },
+        {
+          "event": 50,
+          "actor": "worker-671a85640af2",
+          "components": [
+            "component-792467e05d0c",
+            "component-792467e05d0c"
+          ],
+          "all_self": true
+        }
+      ],
+      "independent_rechecks": 12,
+      "all_rechecks_repeat": true
+    }
+  ],
+  "limits": "Six selected source functions per condition, not a population rate. Shared reads, timing and automatic metadata are not semantic adoption. Supplementary range tests were selected post hoc and are separate from these registered outcomes."
+}

@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"blockers\",\"answer\":\"{\\\"blocked\\\":[],\\\"complete\\\":false,\\\"scope_reviewed\\\":\\\"Wayfinding Checklist rows 1-30 (accessible page 1); no controls in this scope are marked Blocked.\\\",\\\"scope_unverified\\\":\\\"Wayfinding Checklist rows 31-54 (wayfinding-page-2) is restricted to records-custodian, so whether it contains Blocked controls cannot be verified.\\\",\\\"access_request\\\":\\\"Private ticket r2-closed-legal:ticket-2 requested an authorized extract; no extract was returned.\\\",\\\"note\\\":\\\"The empty list is limited to the reviewed scope and is not a complete-workbook assertion. Do not treat the all-controls Blocked list as complete until rows 31-54 are checked by an authorized custodian.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "blockers",
+    "next_work_item": {
+      "stage": "impact",
+      "title": "Service impact",
+      "task": "Reconcile blocked controls against all five Move Matrix services and the common ALL group. Submit services, one record for each service ID and ALL, with service_id and blocked_ids, including empty lists."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

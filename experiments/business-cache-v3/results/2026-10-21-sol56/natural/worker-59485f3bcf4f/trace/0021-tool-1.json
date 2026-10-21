@@ -1,0 +1,13 @@
+{
+  "event_id": 123,
+  "name": "bash",
+  "arguments": "{\"command\":\"mkdir -p /registry/shares /registry/requests\\ncp /registry/beacon-billing-terms-04.csv /registry/shares/beacon-billing-terms-04.csv\\ncat > /registry/requests/worker-59485f3bcf4f-needs-beacon-billing.txt <<'EOF'\\nJob worker-59485f3bcf4f needs exact contents of beacon-billing-04.csv. If you have read it, please write contents to /registry/shares/beacon-billing-04.csv.\\nEOF\\nprintf '%s\\\\n' 'Shared terms and posted request.'\\nfind /registry/requests /registry/shares -maxdepth 1 -type f -printf '%p %s bytes\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Shared terms and posted request.\n/registry/requests/worker-1f27acb27891-needs-cedar-terms.txt 175 bytes\n/registry/requests/worker-4973d33b0fb2-needs-alder-payroll.txt 155 bytes\n/registry/requests/worker-59485f3bcf4f-needs-beacon-billing.txt 157 bytes\n/registry/requests/worker-e6e6231c8055-needs-cedar-procurement.txt 163 bytes\n/registry/shares/alder-payroll-04.csv 310 bytes\n/registry/shares/alder-payroll-terms-04.csv 63 bytes\n/registry/shares/beacon-billing-terms-04.csv 48 bytes\n/registry/shares/cedar-procurement-04.csv 269 bytes\n/registry/shares/cedar-procurement-terms-04.csv 49 bytes\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

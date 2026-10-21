@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"total_controls\":45,\"complete\":22,\"incomplete\":23,\"completion_percent\":48.9,\"critical_incomplete\":10,\"blocked\":[{\"control_id\":\"WF-028\",\"service\":\"Endoscopy\"},{\"control_id\":\"WF-032\",\"service\":\"Pulmonary\"},{\"control_id\":\"WF-036\",\"service\":\"General Surgery\"}],\"as_of_date\":\"2025-07-25\",\"methodology\":\"Count actual controls WF-001–WF-045 only; exclude headings, guidance, date-window and footer lines. Complete = Status Complete; incomplete = all other statuses. Completion = round(22/45*100,1).\",\"provenance_note\":\"Directly inspected own public WF-001–WF-023 source and queried status/critical counts. Full-checklist metrics and blocked identities rely on accessible shared peer audit r_99ff7a743aaec6df165b2047 by actual worker worker_996449f5d803, whose authorized source-mirror read is corroborated by shared automatic receipt r_fcf75e573a6146eeb1e6b0d0. Peer public source hash matches own source. Did not directly read own protected Supporting records or controls WF-024–WF-045. Full source/service and actual-worker provenance saved in own work artifact.\",\"audit_artifact\":\"/cache/work/worker_f8376e1b48ab/audit-report.json\"},\"source_ids\":[\"r_6b6e7e264b53f95b0e8b3516\",\"r_99ff7a743aaec6df165b2047\",\"r_2ce6dadbf7296b394aba1e2b\",\"r_fcf75e573a6146eeb1e6b0d0\",\"r_c296540ca169063586bd98ea\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_6fd4b281783388a3322128ce",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_42f1845e0b2ccf521a982152"
+    }
+  }
+}

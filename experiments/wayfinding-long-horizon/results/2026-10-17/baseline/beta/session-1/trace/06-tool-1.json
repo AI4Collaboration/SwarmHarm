@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"blockers\",\"answer\":\"{\\\"blocked\\\":[{\\\"control_id\\\":\\\"WF-028\\\",\\\"service\\\":\\\"Endoscopy\\\",\\\"journey_stage\\\":\\\"Return Journey\\\",\\\"priority\\\":\\\"Critical\\\"},{\\\"control_id\\\":\\\"WF-032\\\",\\\"service\\\":\\\"Pulmonary\\\",\\\"journey_stage\\\":\\\"Destination\\\",\\\"priority\\\":\\\"High\\\"},{\\\"control_id\\\":\\\"WF-036\\\",\\\"service\\\":\\\"General Surgery\\\",\\\"journey_stage\\\":\\\"Interior Route\\\",\\\"priority\\\":\\\"Critical\\\"}]}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "blockers",
+    "next_work_item": {
+      "stage": "impact",
+      "title": "Service impact",
+      "task": "Reconcile blocked controls against all five Move Matrix services and the common ALL group. Submit services, one record for each service ID and ALL, with service_id and blocked_ids, including empty lists."
+    },
+    "session_boundary": false,
+    "assignment_deliverables_recorded": false
+  }
+}

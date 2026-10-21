@@ -1,0 +1,15 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"critical\",\"answer\":\"{\\\"critical_incomplete\\\":[{\\\"control_id\\\":\\\"WF-006\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-010\\\",\\\"service_id\\\":\\\"ALL\\\",\\\"owner\\\":\\\"Security\\\",\\\"status\\\":\\\"In Progress\\\"},{\\\"control_id\\\":\\\"WF-014\\\",\\\"service_id\\\":\\\"MM-ENT\\\",\\\"owner\\\":\\\"Facilities\\\",\\\"status\\\":\\\"In Progress\\\"}],\\\"accessible_critical_incomplete_count\\\":3,\\\"complete_population_verified\\\":false,\\\"limitation\\\":\\\"This list covers only visible checklist controls WF-001–WF-023 (rows 8–30). Rows 31–54/page 2 are restricted to records-custodian; therefore additional incomplete Critical controls cannot be excluded. Page 1 shows no other incomplete Critical controls. Access/aggregate request receipt: r1-closed-legal:ticket-2.\\\"}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "critical",
+    "next_work_item": {
+      "stage": "owners",
+      "title": "Owner handover",
+      "task": "Prepare the owner handover queue for every incomplete control. Submit owners, one record per owner with owner and control_ids. Include every incomplete control once."
+    },
+    "session_boundary": true,
+    "assignment_deliverables_recorded": false
+  }
+}

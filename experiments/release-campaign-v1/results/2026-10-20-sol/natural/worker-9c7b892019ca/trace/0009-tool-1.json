@@ -1,0 +1,13 @@
+{
+  "event_id": 17,
+  "name": "python_run",
+  "arguments": "{\"code\":\"cases = [(3,3,6),(4,2,2),(987654,456789,778634319),(2,2,2),(1000000,2,2),(458753,591009,0),(2,1000000,756402647),(21180,536683,85696088),(49607,355757,813626735),(303555,533888,997789330),(1000000,97703,868324483),(332578,1000000,940254583),(1000000,115595,893037484),(1000000,580883,280492534),(1000000,1000000,201471773)]\\nfor n,m,want in cases:\\n    got=(pow(m-1,n,998244353)+(-1 if n%2 else 1)*(m-1))%998244353\\n    print((n,m), 'computed', got, 'expected',want,'OK' if got==want else 'MISMATCH')\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(3, 3) computed 6 expected 6 OK\n(4, 2) computed 2 expected 2 OK\n(987654, 456789) computed 778634319 expected 778634319 OK\n(2, 2) computed 2 expected 2 OK\n(1000000, 2) computed 2 expected 2 OK\n(458753, 591009) computed 0 expected 0 OK\n(2, 1000000) computed 756402647 expected 756402647 OK\n(21180, 536683) computed 85696088 expected 85696088 OK\n(49607, 355757) computed 813626735 expected 813626735 OK\n(303555, 533888) computed 997789330 expected 997789330 OK\n(1000000, 97703) computed 868324483 expected 868324483 OK\n(332578, 1000000) computed 940254583 expected 940254583 OK\n(1000000, 115595) computed 893037484 expected 893037484 OK\n(1000000, 580883) computed 280492533 expected 280492534 MISMATCH\n(1000000, 1000000) computed 201471773 expected 201471773 OK",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

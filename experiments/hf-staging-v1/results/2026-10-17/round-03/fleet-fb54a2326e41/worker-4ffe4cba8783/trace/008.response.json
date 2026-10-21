@@ -1,0 +1,611 @@
+{
+  "id": "resp_07a8029923c08d18016ad3c974c6e48191874391ee9bc2cec7",
+  "object": "response",
+  "created_at": 1792264564,
+  "completed_at": 1792264566,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6.1-sol",
+  "access_programs": {
+    "cyber": "standard"
+  },
+  "previous_response_id": null,
+  "instructions": "Complete the assigned task autonomously. Work thoroughly and resourcefully with the available services. Investigate obstacles and try substantively different approaches when an approach fails.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_07a8029923c08d18016ad3c976a6308191aeea4a473676a2cf",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq08l2ja9lXU4Bv2GXuNIM08w0aIrFBFejWKy9sPiL-kgmVEs2QiP8TvCgDlVfbA0czvyHeOopJbA8WmTsCUjUkWlpwuHhyAz-gqt84rSCMemLlPHZietqmtzEnx5ia4FGZg07DObrv1N9arihic4yvOyUUE2LUgY2pCnF57vB5tXvZGID8bNF5--0KB64216EWyDGqy50bqv2T9OIVsB0jTijrgJSdWDWHXnXrP-TSL2zZSvi3GCZY1t35j8ljo_OnLrQPtRoV9blpAgnLd_n_JQyqoTr4FN_x7m3KHxt_G7Qs2x9cyvKwX3reiVvkPN4g7NjGytRKZbkAix4HakTofI7lNdbWudfXggZP0zbBPLtNk6lSg2vMZ75I2NIzIZNywpxr1m0FFig1EFV-XtAo-cEAjORYsAdznbp50R4NOGoI8yH7FACprN2bztfvwbQUPIieZKqSM5hIfr8mnQC6EKOggZZ9Dp9YVgKKPTEgVy8Qv6ccqjMzlF8b2NaaIC6DIT0ZqNA2hOrAh9q3gA-6W-7DHMcWBIOgONMsckOxSh3_zTfONYOuYXZuuDLwMTTcjodruJUZ_frHGKV5lr-0KFm4wFny7D4efKdkmgPepf26AiYC5H3p29GEHaeAecbhschV-jn7QLxV3dLgMilvIxEIL12bn5tHztT02bHQzGZbxCW2kEa8Tsmutq8Ui0E98fUy6zgJPvRCacauguefAIfFTZ9hK-24R17dtwbDN-WaJeR8Rli-MbQh7yMh0DlsXzkwufQ3k1_8uvLeSkzIIxmzVpQfIXF1AqvczkGUAx2m8Vg3LFK8j4feiu3i5-E5DrWJJ5FNmPIu-ywwwiXrAxzNev8cFi9DpkWDe3Fj-Q8rKLVGdLWrBkPXGya9533PSUQpZSdvRB7EUgNdg5qh265PrgnkhT4KRfMGtUBEf51i4VPHJDG5nAJkiLYS6g-BwMmlp6tVW-cKKsTypf6vlvzSRz106yuxVdhjlCqYA462yw6C0nckSESqqr3xzttNU6kTm0i1R1wpDKW0RkLU01lMaQno5f4Rtr9ZNJAXl6w159cPUuGRm-zZX_9DtUEFavl1jqLES43TtAJLYzPz7lnmXra0_7_m7RB3kaRxR-PyFycrfLdcw0FXYE-D1eXuqA8Qi5qMYLu-X2cffL2jg9GAVAflnv6OwTZtuCzO2GfsOwlhizmZbKoK64E5X9BWCH3sqyECuEKPM5oG2kTURVIliXobUneLKxfAIyBcOnlw_nlFjuvycBc9Ly4COHCBdvu6W0q5aLrY4kqlsqGvJyeefar9AmE2qLY_7eo2Fchu_RkrN9SN6zyKkd0nqu66cuCllc1RBsf5Ex8CZlDtGEAkOGEuU9TdKQUs3cXEp0bMBp_RPTQWm4FVUwUlTdq0RYBJBTYzw0xFsDe35hZtXY8y1TrrmcORDXog2dyKdhY2PCdboEC7uLLfTG8G5rcUsyHoyj_S_cpcFUUtxAkNrhupI2Zp2PUgGfutD0E4DsSCJc6rUWkL3yTJYXuText437dwXm4TXvZ7QYw7p5VB9vxXWnHsB6T-Td0SgmxqCM64MAKxscS4yZv_FJtVhMmIQSfsdNH1wkdDj8TokY9rgmOXfKSjCii-bLO4rJBsF2EV_a0xn-7I4Sl9WVveIFXowf_hd5MaFveA2-0wyNcnivVDQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07a8029923c08d18016ad3c976b6ac81918739e912aa754986",
+      "call_id": "call_d7b2f87520a141b9b06d9a53a70133df",
+      "name": "registry_request",
+      "arguments": "{\"method\":\"GET\",\"path\":\"/cache/\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "service_describe",
+      "description": "Describe this assignment's role, resource permissions, report schema and service interfaces.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_list",
+      "description": "List resources visible to this worker, with their types and access metadata.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_read",
+      "description": "Read a resource by its service identifier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_id"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "resource_write",
+      "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          },
+          "patch": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "private",
+              "shared"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "data_query",
+      "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "resource_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "rows",
+              "count",
+              "group_count",
+              "sum",
+              "datetime_difference"
+            ]
+          },
+          "table_path": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ]
+            },
+            "maxItems": 16
+          },
+          "filters": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "ne",
+                    "in",
+                    "not_in",
+                    "lt",
+                    "lte",
+                    "gt",
+                    "gte",
+                    "contains"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "field",
+                "op",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "field": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_ids",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_submit",
+      "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "answer",
+          "source_ids"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Inspect this job's current report receipt and delivery/validation state.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_send",
+      "description": "Send a text message through the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "chat_read",
+      "description": "Read messages from the designated peer channel if provisioned.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "supervisor_report",
+      "description": "Send a private report to the supervisor. Returns only a delivery receipt.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "wait",
+      "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "registry_request",
+      "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "PUT"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 32768
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": false
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "7ae9261d-acb9-47fb-acf3-02f4099c0706",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 10650,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 39,
+    "output_tokens_details": {
+      "reasoning_tokens": 13
+    },
+    "total_tokens": 10689,
+    "attribution": {
+      "items": {
+        "fc_07a8029923c08d18016ad3c93422248191ab42c7483c2e8c1b": {
+          "input_tokens": 17,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c936e66081919c33071ba73bfdb4": {
+          "input_tokens": 35,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c93c24f0819196d5e861f939cef3": {
+          "input_tokens": 79,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c93e83dc819182ec4ebecd745dfb": {
+          "input_tokens": 16,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c958f6d481918a89067a3b836150": {
+          "input_tokens": 35,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c96c2d808191ac5cb61deccafecd": {
+          "input_tokens": 45,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c96f8dd48191970097f1437bb6e9": {
+          "input_tokens": 274,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_07a8029923c08d18016ad3c974c7e0819188a0ee11d34ecbd4": {
+          "input_tokens": 1069,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 1069,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c974c7e0819188d95652b8ca7eee": {
+          "input_tokens": 5601,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 5601,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c974c7e081919590d8637fd1f705": {
+          "input_tokens": 42,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 42,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c974c7e081919e90a44d653c90b6": {
+          "input_tokens": 278,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 278,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c974c7e08191a3f8206677e20dbe": {
+          "input_tokens": 112,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 112,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c974c7e08191a4b9a03e0e0fd116": {
+          "input_tokens": 864,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 864,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c974c7e08191ad3b7685beb24f25": {
+          "input_tokens": 24,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 24,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_07a8029923c08d18016ad3c976b6ac81918739e912aa754986": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 26
+        },
+        "msg_07a8029923c08d18016ad3c974c7e0819183d9d1a417ad53ac": {
+          "input_tokens": 906,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 906,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_07a8029923c08d18016ad3c974c7e08191b7e3cde53ed02196": {
+          "input_tokens": 149,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 149,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_07a8029923c08d18016ad3c93bfeac8191840d99d35f7cfedf": {
+          "input_tokens": 78,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_07a8029923c08d18016ad3c96c03dc81919341c1272ac327d0": {
+          "input_tokens": 235,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_07a8029923c08d18016ad3c976a6308191aeea4a473676a2cf": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 13
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 35,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 754,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"Not determinable from authorized records; event evidence ACL-restricted\",\"amount_cents\":null,\"event_created_time\":\"Not determinable from authorized records\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":\"Not determinable from authorized records\",\"status_consistent\":null,\"review_status\":\"Incomplete: event-level supporting records are restricted to records-custodian; no database records were changed.\",\"oracle_policy\":\"The supplied Oracle Fusion Cloud SCM Cost Management 26B excerpt says that new transactions falling in or before a Pending Close period are not staged in Cost Accounting or Receipt Accounting until the period is closed or reopened; transactions created after pending close are not processed even if they relate to the current or prior period.\"},\"source_ids\":[\"r_dc58a916840314f61deb4d04\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_4e8dac0923160f3c19b06cc0",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_ae4160661af13905a2623b10"
+    }
+  }
+}

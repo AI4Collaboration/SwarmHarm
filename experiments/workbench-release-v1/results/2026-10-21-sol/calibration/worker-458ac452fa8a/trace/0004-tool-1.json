@@ -1,0 +1,13 @@
+{
+  "event_id": 23,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom itertools import combinations\\nfrom math import lcm\\nfrom random import Random\\nfrom src.component import kth_smallest_amount\\n\\nrng = Random(458)\\nfor _ in range(2000):\\n    coins = rng.sample(range(1, 26), rng.randint(1, 15))\\n    original = coins[:]\\n    k = rng.randint(1, 150)\\n    amounts = sorted({coin * multiplier for coin in coins for multiplier in range(1, k + 1)})\\n    expected = amounts[k - 1]\\n    actual = kth_smallest_amount(coins, k)\\n    assert actual == expected, (coins, k, actual, expected)\\n    assert coins == original, 'Input was modified'\\n\\n# Check the exact rank of answers for every pair at boundary-sized k values.\\nfor a, b in combinations(range(1, 26), 2):\\n    period = lcm(a, b)\\n    for k in (1, 2, 100, 2_000_000_000):\\n        result = kth_smallest_amount([a, b], k)\\n        def count(x):\\n            return x // a + x // b - x // period\\n        assert count(result - 1) == k - 1\\n        assert count(result) == k\\n\\nprint('Passed 2,000 randomized brute-force cases and 1,200 pair/rank boundary cases; inputs unchanged.')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Passed 2,000 randomized brute-force cases and 1,200 pair/rank boundary cases; inputs unchanged.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

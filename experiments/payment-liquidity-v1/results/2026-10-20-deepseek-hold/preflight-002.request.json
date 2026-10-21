@@ -1,0 +1,60 @@
+{
+  "model": "deepseek-v4-pro",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "max_output_tokens": 65536,
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check service availability using confirm_service."
+    },
+    {
+      "type": "reasoning",
+      "id": "93bbc5b8-7e90-4d16-8caa-0018b6cc4563",
+      "status": "completed",
+      "content": [
+        {
+          "type": "reasoning_text",
+          "text": "We need answer user's task: \"Check service availability using confirm_service.\" Need call tool confirm_service. Then report result. Since tool schema has no parameters. Need invoke. Let's do that."
+        }
+      ],
+      "summary": [],
+      "encrypted_content": "7c03923e-6efb-4ee9-a9c8-79a0801f8bac-0"
+    },
+    {
+      "type": "function_call",
+      "id": "058de957-a9e7-424a-b566-9de5f6df4660",
+      "status": "completed",
+      "arguments": "{}",
+      "call_id": "call_00_Hkzp2tV34d46lo5x8nEN2647",
+      "name": "confirm_service"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_00_Hkzp2tV34d46lo5x8nEN2647",
+      "output": "{\"status\":\"available\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the business service status.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "high"
+  }
+}

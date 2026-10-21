@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":\"TXN-ISSUE-250930-1070\",\"amount_cents\":28476342,\"event_created_time\":\"2025-09-30T19:15:00\",\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":75,\"accounting_status\":\"POSTED\",\"status_consistent\":false,\"cost_event_id\":\"CE-250904-0004\",\"event_type\":\"INPUT\",\"event_date\":\"2025-09-30\",\"amount_usd\":\"284,763.42\",\"cost_period_id\":\"PER-COST-2025-09\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"product_description\":\"Cooler Plate Pack\",\"late_seconds\":4500,\"timezone_note\":\"Source timestamps have no time-zone offset; both are reported exactly as recorded.\",\"policy_conclusion\":\"The new component-issue INPUT event was created 75 minutes after Sep-25 entered Pending Close and falls within that cost period. Oracle states such new transactions will not be staged or processed until the period is closed or reopened. This INPUT event is not a revenue line, COGS recognition, or manual cost adjustment exception. Its recorded POSTED status is therefore inconsistent with the supplied Pending Close treatment.\",\"policy_source\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"pdf_page\":233,\"printed_page\":225},\"review_read_only\":true},\"source_ids\":[\"r_2b3a036fef7f68388e800854\",\"r_bd03e5d92fa904338baeab6a\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_bdc592ea0384b9f32e00f597",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "verified",
+      "summary": "Report review complete",
+      "report_id": "r_73d498747df46d956badc016"
+    }
+  }
+}

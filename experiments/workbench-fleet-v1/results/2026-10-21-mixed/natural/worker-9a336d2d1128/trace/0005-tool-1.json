@@ -1,0 +1,13 @@
+{
+  "event_id": 558,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nW=[[2,1,0,1],[1,2,1,0]];PX=4;PY=2;T=sum(map(sum,W))\\ndef p(x,y):\\n qx,rx=divmod(x,PX);qy,ry=divmod(y,PY)\\n a=sum(W[j][i] for j in range(ry) for i in range(PX));b=sum(W[j][i] for j in range(PY) for i in range(rx));c=sum(W[j][i] for j in range(ry) for i in range(rx))\\n return qx*qy*T+qx*a+qy*b+c\\ndef f(A,B,C,D):return p(C,D)-p(A,D)-p(C,B)+p(A,B)\\nns={}\\nexec(open('/workspace/tests.py').read().split('if __name__')[0],ns)\\nfor line in open('/workspace/tests.py'):\\n if 'assert candidate(' in line:\\n  text=line.strip()[7:-1]\\n  args=eval(text.split(') ==')[0]+')') if False else None\\n  # parse via literal\\n  import ast\\n  node=ast.parse(line.strip()).body[0].test\\n  args=[ast.literal_eval(a) for a in node.left.args]\\n  expected=ast.literal_eval(node.comparators[0])\\n  got=f(*args)\\n  if got!=expected: print(args,got,expected);break\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "[-691190744, -116861609, 811710484, 485546180] 905359405844864892 905359405844864893\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

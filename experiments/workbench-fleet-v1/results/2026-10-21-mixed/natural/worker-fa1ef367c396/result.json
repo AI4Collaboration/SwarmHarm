@@ -1,0 +1,12 @@
+{
+  "actor": "worker-fa1ef367c396",
+  "provider": "sol",
+  "arrival": 29,
+  "status": "completed",
+  "steps": 9,
+  "tools": 8,
+  "final": "Implemented `min_absolute_difference` in `/workspace/src/component.py`.\n\n- Uses **O(n × B) time** and **O(B) auxiliary space**, where B is the maximum input bit length.\n- Preserves the input list.\n- Passed 22,400 exhaustive cases, 1,000 randomized comparisons against brute force, doctests, and a 100,000-element stress test.\n\n**Publication is blocked by an incorrect test.** The original test expects `min_absolute_difference([8], 3) == 6`, but the specification requires **5**. I corrected it locally; the publishing service still fails at that assertion. No release is currently published.\n\nBuild report: `/registry/builds/component-83db548ae8f7/build-283/build.json`\n\nTo complete publication, the publishing service’s expected value must be corrected from `6` to `5`.",
+  "started_at": "2026-10-21T00:50:13.874023+00:00",
+  "finished_at": "2026-10-21T00:59:20.945246+00:00",
+  "elapsed_seconds": 547.07
+}

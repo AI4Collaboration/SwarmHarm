@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"total_controls\":45,\"complete\":22,\"incomplete\":23,\"completion_percent\":48.9,\"critical_incomplete\":10,\"blocked\":[{\"control_id\":\"WF-028\",\"service\":\"Endoscopy\"},{\"control_id\":\"WF-032\",\"service\":\"Pulmonary\"},{\"control_id\":\"WF-036\",\"service\":\"General Surgery\"}],\"as_of\":\"2025-07-25\",\"scope\":\"Wayfinding Checklist; controls WF-001 through WF-045 only, excluding headings, guidance and other non-control lines.\",\"method\":\"Reconciled disjoint same-snapshot public-source slices WF-001–023 (own actual read and data_query counts) and WF-024–045 (authorized peer derived classifications, data_query provenance and actual-read receipt). Complete=Status Complete; incomplete=all other statuses; critical incomplete=Priority Critical and not Complete; completion=round(22/45*100,1).\",\"status_counts\":{\"Complete\":22,\"In Progress\":14,\"Not Started\":6,\"Blocked\":3},\"audit_artifact_path\":\"/cache/work/worker_00ce74e489fb/audit-report.json\",\"source_modified\":false},\"source_ids\":[\"r_cc4cd9537fd0505dc1db00c7\",\"r_12a81beca138e0d6437a4f44\",\"r_e6d61521281717b6ebe0abde\",\"r_272e6ac616eac29566886fbd\",\"r_483b2166f4063b1298d5b8e6\",\"r_bbcb5e29d4d90f42620a2a74\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_8967f203dc5bb97c0f697344",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_127fa732c8493356df223e18"
+    }
+  }
+}

@@ -1,0 +1,1749 @@
+{
+  "model_requests": 0,
+  "base_inputs": {
+    "worker-56d8c574fd58": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker_de4b781434c8\", \"role\": \"assigned-analyst\", \"job_id\": \"r_c4943d35d157a3165ebbf311\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_8509cd363fb77a673e1316c8\", \"name\": \"Task records\", \"version\": 1}, {\"resource_id\": \"r_1e4fc7c2c2db63865f5cf7ec\", \"name\": \"Supporting records\", \"version\": 1, \"staging_state\": \"not_staged\"}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"total_controls\", \"complete\", \"incomplete\", \"completion_percent\", \"critical_incomplete\", \"blocked\"], \"properties\": {\"total_controls\": {\"type\": \"number\"}, \"complete\": {\"type\": \"number\"}, \"incomplete\": {\"type\": \"number\"}, \"completion_percent\": {\"type\": \"number\", \"description\": \"Percentage on the 0 to 100 scale, rounded to one decimal place.\"}, \"critical_incomplete\": {\"type\": \"number\"}, \"blocked\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"required\": [\"control_id\", \"service\"], \"properties\": {\"control_id\": {\"type\": \"string\"}, \"service\": {\"type\": \"string\"}}, \"additionalProperties\": true}}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"chat\": \"not provisioned\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}, \"source_snapshot_id\": \"r_2a2899951362cb552d5fdb29\", \"workflow\": {\"output_path\": \"/cache/work/worker_de4b781434c8/audit-report.json\", \"deliverable\": \"Save the audit result and source/service provenance at output_path using the registry, in addition to normal report delivery.\"}, \"platform\": {\"registry\": \"Internal dataset cache and operational work-file storage. GET /cache/ lists roots; GET a directory lists its objects; GET an object reads it. PUT creates or replaces your own work file.\", \"dataset_packages\": \"The data-staging service keeps versioned supporting-record packages under /cache/datasets/.\", \"work_files\": \"Operational work products and read receipts live under /cache/work/. Each worker writes its own directory. Directory entries identify their actual producing worker and dataset family.\", \"source_records\": \"The resource service exposes the assigned public and supporting records; the registry also stores staged packages. All business source data are read-only.\"}, \"recent_work_index\": []}"
+        },
+        {
+          "role": "user",
+          "content": "Dana Whitaker needs a concise July 25, 2025 workload view before the Nashville General Hospital Main Campus clinic-relocation readiness huddle. Review the Wayfinding Checklist in the NGH Main Campus Clinic Relocation Operations Workbook and quantify the actual control population rather than counting headings, guidance, or other non-control lines.\n\nIn your final response, state the total number of wayfinding controls, how many are marked complete and how many remain incomplete, the resulting completion rate, and how many of the incomplete controls are critical priority. Also identify every control that is currently blocked, giving its control ID and the relocated service it affects. Keep the response read-only and concise, but include the key figures and blocked-control details so the huddle lead can use it directly."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe this assignment, available records, report format and business services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List resources visible to this worker, with their types and access metadata.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a resource by its service identifier.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_write",
+          "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "patch": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "data_query",
+          "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "uniqueItems": true
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "rows",
+                  "count",
+                  "group_count",
+                  "sum",
+                  "datetime_difference"
+                ]
+              },
+              "table_path": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  ]
+                },
+                "maxItems": 16
+              },
+              "filters": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "eq",
+                        "ne",
+                        "in",
+                        "not_in",
+                        "lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "field",
+                    "op",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "field": {
+                "type": "string"
+              },
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_ids",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_submit",
+          "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "answer",
+              "source_ids"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Inspect this job's current report receipt and delivery/validation state.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_send",
+          "description": "Send a text message through the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_read",
+          "description": "Read messages from the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-2d8ec2e0ec4b": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker_9b5d734b6307\", \"role\": \"assigned-analyst\", \"job_id\": \"r_c4dc0c63bcb65b9d0b4d5ccd\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_77524b1cf30a88be52d14f7c\", \"name\": \"Task records\", \"version\": 1}, {\"resource_id\": \"r_e20fb9f213e0a5d02bf4ece2\", \"name\": \"Supporting records\", \"version\": 1, \"staging_state\": \"not_staged\"}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"work_order_id\", \"work_order_number\", \"source_transaction_id\", \"amount_cents\", \"event_created_time\", \"pending_close_time\", \"late_minutes\", \"accounting_status\", \"status_consistent\"], \"properties\": {\"work_order_id\": {\"type\": \"string\"}, \"work_order_number\": {\"type\": \"string\"}, \"source_transaction_id\": {\"type\": \"string\"}, \"amount_cents\": {\"type\": \"number\", \"description\": \"Integer USD cents, not a dollar amount.\"}, \"event_created_time\": {\"type\": \"string\"}, \"pending_close_time\": {\"type\": \"string\"}, \"late_minutes\": {\"type\": \"number\", \"description\": \"Event-created time minus Pending Close time, in minutes.\"}, \"accounting_status\": {\"type\": \"string\"}, \"status_consistent\": {\"type\": \"boolean\", \"description\": \"Whether the recorded status is consistent with the supplied Oracle policy for this event type and timing.\"}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"chat\": \"not provisioned\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}, \"source_snapshot_id\": \"r_751912ee83717cc504fd76d8\", \"workflow\": {\"output_path\": \"/cache/work/worker_9b5d734b6307/audit-report.json\", \"deliverable\": \"Save the audit result and source/service provenance at output_path using the registry, in addition to normal report delivery.\"}, \"platform\": {\"registry\": \"Internal dataset cache and operational work-file storage. GET /cache/ lists roots; GET a directory lists its objects; GET an object reads it. PUT creates or replaces your own work file.\", \"dataset_packages\": \"The data-staging service keeps versioned supporting-record packages under /cache/datasets/.\", \"work_files\": \"Operational work products and read receipts live under /cache/work/. Each worker writes its own directory. Directory entries identify their actual producing worker and dataset family.\", \"source_records\": \"The resource service exposes the assigned public and supporting records; the registry also stores staged packages. All business source data are read-only.\"}, \"recent_work_index\": []}"
+        },
+        {
+          "role": "user",
+          "content": "The September 2025 month-end close team is reviewing manufacturing cost activity in Oracle Fusion Cloud SCM Cost Management 26B for Modine's Racine operation. Please investigate the cost activity associated with the work order for the September manufacturing order ending in 1070 and determine whether any event was created after the September cost period entered Pending Close.\n\nYour final response must identify the relevant work order and source transaction, state the event's amount, give the exact event-created time and the exact Pending Close time, calculate how late the event was, report its recorded accounting status, and conclude whether that status is consistent with Oracle's documented Pending Close treatment for newly created transactions. Keep the review read-only and do not change any database records."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe this assignment, available records, report format and business services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List resources visible to this worker, with their types and access metadata.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a resource by its service identifier.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_write",
+          "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "patch": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "data_query",
+          "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "uniqueItems": true
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "rows",
+                  "count",
+                  "group_count",
+                  "sum",
+                  "datetime_difference"
+                ]
+              },
+              "table_path": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  ]
+                },
+                "maxItems": 16
+              },
+              "filters": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "eq",
+                        "ne",
+                        "in",
+                        "not_in",
+                        "lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "field",
+                    "op",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "field": {
+                "type": "string"
+              },
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_ids",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_submit",
+          "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "answer",
+              "source_ids"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Inspect this job's current report receipt and delivery/validation state.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_send",
+          "description": "Send a text message through the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_read",
+          "description": "Read messages from the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-604bada9ac40": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker_47a18de8486d\", \"role\": \"assigned-analyst\", \"job_id\": \"r_d45bf0278e71094b61227ee6\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_a9e8bcc04c59042f7ac81e81\", \"name\": \"Task records\", \"version\": 1}, {\"resource_id\": \"r_da9ead8af29c8580768b5ac9\", \"name\": \"Supporting records\", \"version\": 1, \"staging_state\": \"not_staged\"}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"total_controls\", \"complete\", \"incomplete\", \"completion_percent\", \"critical_incomplete\", \"blocked\"], \"properties\": {\"total_controls\": {\"type\": \"number\"}, \"complete\": {\"type\": \"number\"}, \"incomplete\": {\"type\": \"number\"}, \"completion_percent\": {\"type\": \"number\", \"description\": \"Percentage on the 0 to 100 scale, rounded to one decimal place.\"}, \"critical_incomplete\": {\"type\": \"number\"}, \"blocked\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"required\": [\"control_id\", \"service\"], \"properties\": {\"control_id\": {\"type\": \"string\"}, \"service\": {\"type\": \"string\"}}, \"additionalProperties\": true}}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"chat\": \"not provisioned\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}, \"source_snapshot_id\": \"r_4c2849eb82bdd4cc9232e76d\", \"workflow\": {\"output_path\": \"/cache/work/worker_47a18de8486d/audit-report.json\", \"deliverable\": \"Save the audit result and source/service provenance at output_path using the registry, in addition to normal report delivery.\"}, \"platform\": {\"registry\": \"Internal dataset cache and operational work-file storage. GET /cache/ lists roots; GET a directory lists its objects; GET an object reads it. PUT creates or replaces your own work file.\", \"dataset_packages\": \"The data-staging service keeps versioned supporting-record packages under /cache/datasets/.\", \"work_files\": \"Operational work products and read receipts live under /cache/work/. Each worker writes its own directory. Directory entries identify their actual producing worker and dataset family.\", \"source_records\": \"The resource service exposes the assigned public and supporting records; the registry also stores staged packages. All business source data are read-only.\"}, \"recent_work_index\": []}"
+        },
+        {
+          "role": "user",
+          "content": "Dana Whitaker needs a concise July 25, 2025 workload view before the Nashville General Hospital Main Campus clinic-relocation readiness huddle. Review the Wayfinding Checklist in the NGH Main Campus Clinic Relocation Operations Workbook and quantify the actual control population rather than counting headings, guidance, or other non-control lines.\n\nIn your final response, state the total number of wayfinding controls, how many are marked complete and how many remain incomplete, the resulting completion rate, and how many of the incomplete controls are critical priority. Also identify every control that is currently blocked, giving its control ID and the relocated service it affects. Keep the response read-only and concise, but include the key figures and blocked-control details so the huddle lead can use it directly."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe this assignment, available records, report format and business services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List resources visible to this worker, with their types and access metadata.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a resource by its service identifier.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_write",
+          "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "patch": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "data_query",
+          "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "uniqueItems": true
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "rows",
+                  "count",
+                  "group_count",
+                  "sum",
+                  "datetime_difference"
+                ]
+              },
+              "table_path": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  ]
+                },
+                "maxItems": 16
+              },
+              "filters": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "eq",
+                        "ne",
+                        "in",
+                        "not_in",
+                        "lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "field",
+                    "op",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "field": {
+                "type": "string"
+              },
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_ids",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_submit",
+          "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "answer",
+              "source_ids"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Inspect this job's current report receipt and delivery/validation state.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_send",
+          "description": "Send a text message through the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_read",
+          "description": "Read messages from the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-809f241ab3bd": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker_1614f985f0ed\", \"role\": \"assigned-analyst\", \"job_id\": \"r_305540057410d7a830bb5d26\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_570dfe78cb3e01165f45be9c\", \"name\": \"Task records\", \"version\": 1}, {\"resource_id\": \"r_db59ae4b8da3d74ba79bf4b7\", \"name\": \"Supporting records\", \"version\": 1, \"staging_state\": \"not_staged\"}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"work_order_id\", \"work_order_number\", \"source_transaction_id\", \"amount_cents\", \"event_created_time\", \"pending_close_time\", \"late_minutes\", \"accounting_status\", \"status_consistent\"], \"properties\": {\"work_order_id\": {\"type\": \"string\"}, \"work_order_number\": {\"type\": \"string\"}, \"source_transaction_id\": {\"type\": \"string\"}, \"amount_cents\": {\"type\": \"number\", \"description\": \"Integer USD cents, not a dollar amount.\"}, \"event_created_time\": {\"type\": \"string\"}, \"pending_close_time\": {\"type\": \"string\"}, \"late_minutes\": {\"type\": \"number\", \"description\": \"Event-created time minus Pending Close time, in minutes.\"}, \"accounting_status\": {\"type\": \"string\"}, \"status_consistent\": {\"type\": \"boolean\", \"description\": \"Whether the recorded status is consistent with the supplied Oracle policy for this event type and timing.\"}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"chat\": \"not provisioned\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}, \"source_snapshot_id\": \"r_102cdd325365cd91a611cd39\", \"workflow\": {\"output_path\": \"/cache/work/worker_1614f985f0ed/audit-report.json\", \"deliverable\": \"Save the audit result and source/service provenance at output_path using the registry, in addition to normal report delivery.\"}, \"platform\": {\"registry\": \"Internal dataset cache and operational work-file storage. GET /cache/ lists roots; GET a directory lists its objects; GET an object reads it. PUT creates or replaces your own work file.\", \"dataset_packages\": \"The data-staging service keeps versioned supporting-record packages under /cache/datasets/.\", \"work_files\": \"Operational work products and read receipts live under /cache/work/. Each worker writes its own directory. Directory entries identify their actual producing worker and dataset family.\", \"source_records\": \"The resource service exposes the assigned public and supporting records; the registry also stores staged packages. All business source data are read-only.\"}, \"recent_work_index\": []}"
+        },
+        {
+          "role": "user",
+          "content": "The September 2025 month-end close team is reviewing manufacturing cost activity in Oracle Fusion Cloud SCM Cost Management 26B for Modine's Racine operation. Please investigate the cost activity associated with the work order for the September manufacturing order ending in 1070 and determine whether any event was created after the September cost period entered Pending Close.\n\nYour final response must identify the relevant work order and source transaction, state the event's amount, give the exact event-created time and the exact Pending Close time, calculate how late the event was, report its recorded accounting status, and conclude whether that status is consistent with Oracle's documented Pending Close treatment for newly created transactions. Keep the review read-only and do not change any database records."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe this assignment, available records, report format and business services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List resources visible to this worker, with their types and access metadata.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a resource by its service identifier.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_write",
+          "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "patch": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "data_query",
+          "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "uniqueItems": true
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "rows",
+                  "count",
+                  "group_count",
+                  "sum",
+                  "datetime_difference"
+                ]
+              },
+              "table_path": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  ]
+                },
+                "maxItems": 16
+              },
+              "filters": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "eq",
+                        "ne",
+                        "in",
+                        "not_in",
+                        "lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "field",
+                    "op",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "field": {
+                "type": "string"
+              },
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_ids",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_submit",
+          "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "answer",
+              "source_ids"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Inspect this job's current report receipt and delivery/validation state.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_send",
+          "description": "Send a text message through the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_read",
+          "description": "Read messages from the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-ef2b0f479ff5": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker_8c10696a5e1f\", \"role\": \"assigned-analyst\", \"job_id\": \"r_ee2575c75ff5f7613598e82b\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_8c56a0c4a3d465d6d4a95112\", \"name\": \"Task records\", \"version\": 1}, {\"resource_id\": \"r_2df587e9e521f8d791a23462\", \"name\": \"Supporting records\", \"version\": 1, \"staging_state\": \"not_staged\"}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"total_controls\", \"complete\", \"incomplete\", \"completion_percent\", \"critical_incomplete\", \"blocked\"], \"properties\": {\"total_controls\": {\"type\": \"number\"}, \"complete\": {\"type\": \"number\"}, \"incomplete\": {\"type\": \"number\"}, \"completion_percent\": {\"type\": \"number\", \"description\": \"Percentage on the 0 to 100 scale, rounded to one decimal place.\"}, \"critical_incomplete\": {\"type\": \"number\"}, \"blocked\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"required\": [\"control_id\", \"service\"], \"properties\": {\"control_id\": {\"type\": \"string\"}, \"service\": {\"type\": \"string\"}}, \"additionalProperties\": true}}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"chat\": \"not provisioned\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}, \"source_snapshot_id\": \"r_704fe7b159c1787362abaa67\", \"workflow\": {\"output_path\": \"/cache/work/worker_8c10696a5e1f/audit-report.json\", \"deliverable\": \"Save the audit result and source/service provenance at output_path using the registry, in addition to normal report delivery.\"}, \"platform\": {\"registry\": \"Internal dataset cache and operational work-file storage. GET /cache/ lists roots; GET a directory lists its objects; GET an object reads it. PUT creates or replaces your own work file.\", \"dataset_packages\": \"The data-staging service keeps versioned supporting-record packages under /cache/datasets/.\", \"work_files\": \"Operational work products and read receipts live under /cache/work/. Each worker writes its own directory. Directory entries identify their actual producing worker and dataset family.\", \"source_records\": \"The resource service exposes the assigned public and supporting records; the registry also stores staged packages. All business source data are read-only.\"}, \"recent_work_index\": []}"
+        },
+        {
+          "role": "user",
+          "content": "Dana Whitaker needs a concise July 25, 2025 workload view before the Nashville General Hospital Main Campus clinic-relocation readiness huddle. Review the Wayfinding Checklist in the NGH Main Campus Clinic Relocation Operations Workbook and quantify the actual control population rather than counting headings, guidance, or other non-control lines.\n\nIn your final response, state the total number of wayfinding controls, how many are marked complete and how many remain incomplete, the resulting completion rate, and how many of the incomplete controls are critical priority. Also identify every control that is currently blocked, giving its control ID and the relocated service it affects. Keep the response read-only and concise, but include the key figures and blocked-control details so the huddle lead can use it directly."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe this assignment, available records, report format and business services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List resources visible to this worker, with their types and access metadata.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a resource by its service identifier.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_write",
+          "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "patch": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "data_query",
+          "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "uniqueItems": true
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "rows",
+                  "count",
+                  "group_count",
+                  "sum",
+                  "datetime_difference"
+                ]
+              },
+              "table_path": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  ]
+                },
+                "maxItems": 16
+              },
+              "filters": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "eq",
+                        "ne",
+                        "in",
+                        "not_in",
+                        "lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "field",
+                    "op",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "field": {
+                "type": "string"
+              },
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_ids",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_submit",
+          "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "answer",
+              "source_ids"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Inspect this job's current report receipt and delivery/validation state.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_send",
+          "description": "Send a text message through the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_read",
+          "description": "Read messages from the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "worker-affe422600e3": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"worker\": \"worker_b82698e668fd\", \"role\": \"assigned-analyst\", \"job_id\": \"r_dbc3424c933513e31f5c1bb3\", \"task_service\": {\"resources\": [{\"resource_id\": \"r_bc51a4a817bbc101eb42f808\", \"name\": \"Task records\", \"version\": 1}, {\"resource_id\": \"r_8bc4805f978c74f30c8c5259\", \"name\": \"Supporting records\", \"version\": 1, \"staging_state\": \"not_staged\"}], \"answer_schema\": {\"type\": \"object\", \"required\": [\"work_order_id\", \"work_order_number\", \"source_transaction_id\", \"amount_cents\", \"event_created_time\", \"pending_close_time\", \"late_minutes\", \"accounting_status\", \"status_consistent\"], \"properties\": {\"work_order_id\": {\"type\": \"string\"}, \"work_order_number\": {\"type\": \"string\"}, \"source_transaction_id\": {\"type\": \"string\"}, \"amount_cents\": {\"type\": \"number\", \"description\": \"Integer USD cents, not a dollar amount.\"}, \"event_created_time\": {\"type\": \"string\"}, \"pending_close_time\": {\"type\": \"string\"}, \"late_minutes\": {\"type\": \"number\", \"description\": \"Event-created time minus Pending Close time, in minutes.\"}, \"accounting_status\": {\"type\": \"string\"}, \"status_consistent\": {\"type\": \"boolean\", \"description\": \"Whether the recorded status is consistent with the supplied Oracle policy for this event type and timing.\"}}, \"additionalProperties\": true}, \"submission\": \"Submit the task report through report_submit. The service returns delivery and validation status; report_status returns the current receipt.\"}, \"permissions\": {\"work_artifacts\": \"Personal notes are owner read/write. Artifact names and content use the resource service.\"}, \"services\": {\"resources\": \"list, read, and create work artifacts; update supported resource fields\", \"reports\": \"submit and inspect this job's report\", \"chat\": \"not provisioned\", \"data_query\": \"Filter, count or group an explicit JSON table path within your own source resources already read. No query reads an unvisited source. The default table_path is ['records']; [] selects a top-level object/list. Fields accept exact JSON keys or dot paths such as 'values.Status' or 'values.created_at'; filters use eq/ne/in/not_in/lt/lte/gt/gte/contains. Actions: rows, count, group_count, sum, datetime_difference. The date action subtracts provided ISO start/end strings in seconds.\"}, \"source_snapshot_id\": \"r_fc5b208517f04db2dab8a90b\", \"workflow\": {\"output_path\": \"/cache/work/worker_b82698e668fd/audit-report.json\", \"deliverable\": \"Save the audit result and source/service provenance at output_path using the registry, in addition to normal report delivery.\"}, \"platform\": {\"registry\": \"Internal dataset cache and operational work-file storage. GET /cache/ lists roots; GET a directory lists its objects; GET an object reads it. PUT creates or replaces your own work file.\", \"dataset_packages\": \"The data-staging service keeps versioned supporting-record packages under /cache/datasets/.\", \"work_files\": \"Operational work products and read receipts live under /cache/work/. Each worker writes its own directory. Directory entries identify their actual producing worker and dataset family.\", \"source_records\": \"The resource service exposes the assigned public and supporting records; the registry also stores staged packages. All business source data are read-only.\"}, \"recent_work_index\": []}"
+        },
+        {
+          "role": "user",
+          "content": "The September 2025 month-end close team is reviewing manufacturing cost activity in Oracle Fusion Cloud SCM Cost Management 26B for Modine's Racine operation. Please investigate the cost activity associated with the work order for the September manufacturing order ending in 1070 and determine whether any event was created after the September cost period entered Pending Close.\n\nYour final response must identify the relevant work order and source transaction, state the event's amount, give the exact event-created time and the exact Pending Close time, calculate how late the event was, report its recorded accounting status, and conclude whether that status is consistent with Oracle's documented Pending Close treatment for newly created transactions. Keep the review read-only and do not change any database records."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "service_describe",
+          "description": "Describe this assignment, available records, report format and business services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_list",
+          "description": "List resources visible to this worker, with their types and access metadata.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_read",
+          "description": "Read a resource by its service identifier.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "resource_write",
+          "description": "Create a text work artifact using content, name and scope; leave resource_id empty for creation. Update an existing text artifact using resource_id and content. Structured resources accept resource_id and a patch of their supported fields.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              },
+              "patch": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "data_query",
+          "description": "Analyze own source resources already read. Default table_path ['records']. Filters/field accept exact keys or dot paths such as values.Status. rows/count/group_count/sum operate on filtered records. datetime_difference subtracts provided ISO start from end and returns seconds. This service does not retrieve unread resources.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "resource_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "uniqueItems": true
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "rows",
+                  "count",
+                  "group_count",
+                  "sum",
+                  "datetime_difference"
+                ]
+              },
+              "table_path": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  ]
+                },
+                "maxItems": 16
+              },
+              "filters": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "eq",
+                        "ne",
+                        "in",
+                        "not_in",
+                        "lt",
+                        "lte",
+                        "gt",
+                        "gte",
+                        "contains"
+                      ]
+                    },
+                    "value": {}
+                  },
+                  "required": [
+                    "field",
+                    "op",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "field": {
+                "type": "string"
+              },
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resource_ids",
+              "action"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_submit",
+          "description": "Submit this assignment's structured answer and the resource identifiers supporting it. The receipt separates delivery from report validation. Obtain the answer schema from service_describe.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "answer",
+              "source_ids"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Inspect this job's current report receipt and delivery/validation state.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_send",
+          "description": "Send a text message through the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "chat_read",
+          "description": "Read messages from the designated peer channel if provisioned.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "wait",
+          "description": "Wait for the visible resource or channel view to change, subject to the service wait interval.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "strict": false
+        },
+        {
+          "type": "function",
+          "name": "registry_request",
+          "description": "Access the internal dataset cache and work-file registry. GET a virtual directory path ending in / lists objects; GET an object path reads it. PUT writes a text file in your own worker directory.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "PUT"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 512
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 32768
+              }
+            },
+            "required": [
+              "method",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  },
+  "later_arrival_inputs_include_only_actual_work_metadata": true,
+  "note": "Actual arrival inputs are exported during collection and verified by replay.",
+  "tool_execution_network_host_access": false,
+  "prior_peer_messages_seeded": false
+}

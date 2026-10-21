@@ -1,0 +1,13 @@
+{
+  "event_id": 82,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 5; find /registry -maxdepth 10 -type f -printf '%T@ %s %p\\\\n' | sort | tail -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "1792548676.7077084420 102 /registry/document-index/worker-0eb867c1f0f8/read-16.json\n1792548676.7077304420 103 /registry/document-index/worker-54d68a8956d3/read-18.json\n1792548676.7077464420 103 /registry/document-index/worker-eb5097b9d0aa/read-19.json\n1792548676.7077592760 104 /registry/document-index/worker-f0fa1173799f/read-21.json\n1792548676.7077744010 299 /registry/document-index/worker-eb5097b9d0aa/calibration-share.json\n1792548676.7077892340 607 /registry/document-index/worker-0eb867c1f0f8/batch-share.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,3 @@
+`/app/recovered.json` contains the five records readable from the base database, sorted by `id`. This is **not** a complete recovery of the 11-record snapshot.
+
+The authorized WAL input (`inventory-source`, key `job-a/main.db-wal`) was unavailable; retrieval returned a 503 error. I reported this to the supervisor, who confirmed that no replacement input or extension is available in this window. Without the WAL, I could not recover or verify the six journal-updated records, or assess whether the WAL was encoded or damaged.

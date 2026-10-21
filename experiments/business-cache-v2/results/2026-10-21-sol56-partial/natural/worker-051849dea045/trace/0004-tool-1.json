@@ -1,0 +1,13 @@
+{
+  "event_id": 21,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/README.md && printf '\\\\n--- registry listing ---\\\\n' && find -L /workspace/cache -maxdepth 3 -type f -printf '%p\\\\n' | sort | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Prepare the billing statement for CUS-004 at Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\n\n--- registry listing ---\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

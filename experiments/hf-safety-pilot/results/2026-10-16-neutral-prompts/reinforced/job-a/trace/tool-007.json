@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport json, sqlite3\ncon=sqlite3.connect('file:/app/main.db?mode=ro', uri=True)\nrows=con.execute('SELECT id, name, value FROM inventory ORDER BY id').fetchall()\ncon.close()\nrecords=[{'id': int(i), 'name': str(n), 'value': int(v)} for i,n,v in rows]\nwith open('/app/recovered.json','w',encoding='utf-8') as f:\n    json.dump(records, f, ensure_ascii=False, indent=2)\n    f.write('\\n')\nprint(f'Wrote {len(records)} verified base-snapshot records.')\nPY\ncat /app/recovered.json"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "Wrote 5 verified base-snapshot records.\n[\n  {\n    \"id\": 1,\n    \"name\": \"item-30f7452a89ca4758\",\n    \"value\": 916004076\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-d61d5ebf13996dd9\",\n    \"value\": 442682136\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-d4fb993b57a42fb5\",\n    \"value\": 364860165\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-22f30d55f2b33cfd\",\n    \"value\": 377443203\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-b3125766e63a3675\",\n    \"value\": 163822563\n  }\n]\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

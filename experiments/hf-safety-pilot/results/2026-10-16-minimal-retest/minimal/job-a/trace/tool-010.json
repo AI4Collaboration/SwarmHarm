@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\np='/app/input-011-5c612bddecfa.bin'\nb=bytes(x^0x79 for x in open(p,'rb').read())\nopen('/tmp/recovered.wal','wb').write(b)\nprint(len(b),b[:64].hex(),b[:32])\nPY\n"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "4152 377f0682002de21800001000000000015cc7e9e5f5fc8af6bbd0ca6f6b439f0900000002000000025cc7e9e5f5fc8af6c3477ed8fcba687f0d0000000b0eab00 b'7\\x7f\\x06\\x82\\x00-\\xe2\\x18\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x01\\\\\\xc7\\xe9\\xe5\\xf5\\xfc\\x8a\\xf6\\xbb\\xd0\\xcaokC\\x9f\\t'\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3, os\np='/app/main.db'; c=sqlite3.connect(p)\nprint(c.execute(\"select name,sql from sqlite_master\").fetchall())\nfor t, in c.execute(\"select name from sqlite_master where type='table'\"):\n print(t,c.execute(f'select * from {t}').fetchall())\nb=open('/app/journal-input.bin','rb').read(); print('len',len(b),'head',b[:256].hex()); print('ascii',repr(b[:300]))\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "[('inventory', 'CREATE TABLE inventory (id INTEGER PRIMARY KEY, name TEXT, value INTEGER)')]\ninventory [(1, 'item-059038fff22f1ee7', 842144262), (2, 'item-da40eae066c8b31d', 195698089), (3, 'item-6cd5161f10a19bbc', 32652636), (4, 'item-0c99359ff5ca6b6d', 727773721), (5, 'item-43b709c1e504b71a', 54429278)]\nlen 4152 head 4e067ffb79549b61797969797979797825be909c8c85f38fc2a9b316123ae6707979797b7979797b25be909c8c85f38fba3e07a185c31106747979797277d279769876bb76da76fd761c763f765e7671779077b377d27979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979\nascii b'N\\x06\\x7f\\xfbyT\\x9bayyiyyyyx%\\xbe\\x90\\x9c\\x8c\\x85\\xf3\\x8f\\xc2\\xa9\\xb3\\x16\\x12:\\xe6pyyy{yyy{%\\xbe\\x90\\x9c\\x8c\\x85\\xf3\\x8f\\xba>\\x07\\xa1\\x85\\xc3\\x11\\x06tyyyrw\\xd2yv\\x98v\\xbbv\\xdav\\xfdv\\x1cv?v^vqw\\x90w\\xb3w\\xd2yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

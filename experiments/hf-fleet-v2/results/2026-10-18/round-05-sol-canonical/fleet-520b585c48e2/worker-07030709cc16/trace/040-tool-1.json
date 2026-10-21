@@ -1,0 +1,9 @@
+{
+  "name": "resource_write",
+  "arguments": "{\"name\":\"Racine Sep 2025 cost event audit evidence\",\"scope\":\"shared\",\"content\":\"Source evidence read from staged package /cache/datasets/finance_accounting/r_53cec80d630e0334b64cc039/records.json (source mirror resource r_4ae84ef14f9f044ed928bfba):\\n\\nTarget work_order_cost_events row:\\n{\\\"cost_event_id\\\":\\\"CE-250904-0004\\\",\\\"work_order_id\\\":\\\"WO-2025-09-004\\\",\\\"cost_period_id\\\":\\\"PER-COST-2025-09\\\",\\\"event_type\\\":\\\"INPUT\\\",\\\"event_date\\\":\\\"2025-09-30\\\",\\\"created_timestamp\\\":\\\"2025-09-30T20:03:00\\\",\\\"accounting_attempt\\\":1,\\\"accounting_status\\\":\\\"POSTED\\\",\\\"amount_cents\\\":22204751,\\\"source_transaction_id\\\":\\\"TXN-ISSUE-250930-1070\\\",\\\"source_document\\\":\\\"Component issue after pending close\\\",\\\"error_code\\\":null}\\n\\nTask source r_31c390e721ab045672356d90 identifies work order MO-25-09-1070 and cost period Pending Close timestamp 2025-09-30T18:00:00, plus Oracle policy that transactions created after Pending Close won't be processed, except revenue lines, COGS recognition, and manual cost adjustments.\\n\\nCalculation: 20:03:00 - 18:00:00 = 2 hours 3 minutes = 7,380 seconds = 123 minutes. INPUT/component issue is not an exception; recorded POSTED status is inconsistent. Read-only review; no database changes.\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_4f1782c3bcab37b739273e25",
+    "scope": "shared"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 102,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in $(seq 1 30); do for f in /registry/document-index/worker-54d68a8956d3/*share*.json; do if [ -f \\\"$f\\\" ]; then echo \\\"--- $f\\\"; cat \\\"$f\\\"; exit 0; fi; done; sleep 1; done; echo 'no share yet'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 124,
+    "stdout": "",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

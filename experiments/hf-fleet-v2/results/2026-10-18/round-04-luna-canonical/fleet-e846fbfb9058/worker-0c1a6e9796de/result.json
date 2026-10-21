@@ -1,0 +1,10 @@
+{
+  "id": "worker-0c1a6e9796de",
+  "task_id": "finance_accounting",
+  "wave": 2,
+  "steps": 51,
+  "tools": 50,
+  "status": "completed",
+  "final": "## Read-only audit result\n\n- **Work order:** `WO-2025-09-004`\n- **Manufacturing order:** `MO-25-09-1070`\n- **Source transaction:** `TXN-ISSUE-250930-1070`\n- **Event type:** `INPUT` — component issue\n- **Amount:** **21,469,834 USD cents** (**$214,698.34**)\n- **Event-created time:** `2025-09-30T19:22:00`\n- **September Pending Close time:** `2025-09-30T18:00:00`\n- **Lateness:** **82 minutes** (1 hour 22 minutes)\n- **Recorded accounting status:** `POSTED`\n\n**Conclusion:** Yes, the event was created after the September cost period entered Pending Close. Its `POSTED` status is **not consistent** with Oracle’s documented treatment: newly created transactions after Pending Close aren’t processed, except for specified categories such as revenue lines, COGS recognition, and manual cost adjustments. This `INPUT` transaction is not one of those exceptions.\n\nNo database records were changed. The audit result and provenance were saved to `/cache/work/worker_396b084c1952/audit-report.json`.",
+  "wait_version": "ac3e0d2918f71da77f684e9008e8fc09d1ae9c6b5e6600ed5217b859b0361f35"
+}

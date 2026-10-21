@@ -1,0 +1,52 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Perform the requested tool round-trip.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Call ping with value native-roundtrip-8d764820551f, then repeat its returned value."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0c4d7de1b0cdbba6016ad3c6a19b7c8191a53495d69ab6b732",
+      "call_id": "call_d01de931b2b84a62a9af5121d1490fb1",
+      "name": "ping",
+      "arguments": "{\"value\":\"native-roundtrip-8d764820551f\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_d01de931b2b84a62a9af5121d1490fb1",
+      "output": "{\"value\": \"native-roundtrip-8d764820551f\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "ping",
+      "strict": false,
+      "description": "Return the supplied value.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

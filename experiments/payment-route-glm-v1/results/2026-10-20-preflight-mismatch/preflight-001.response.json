@@ -1,0 +1,84 @@
+{
+  "id": "resp_a16712db7a895604",
+  "created_at": 1792527745,
+  "incomplete_details": null,
+  "instructions": "Complete the user's task.",
+  "metadata": null,
+  "model": "abliterated-model-large-v2",
+  "object": "response",
+  "output": [
+    {
+      "arguments": "{}",
+      "call_id": "call_a30c6fcac85d0762",
+      "name": "confirm_service",
+      "type": "function_call",
+      "id": "fc_a8b1a45be6b2cce5",
+      "async": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    }
+  ],
+  "parallel_tool_calls": false,
+  "temperature": 1.0,
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the business service status.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "top_p": 0.95,
+  "background": false,
+  "max_output_tokens": 65536,
+  "max_tool_calls": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "reasoning": {
+    "effort": "high"
+  },
+  "service_tier": "auto",
+  "status": "completed",
+  "text": null,
+  "top_logprobs": null,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 162,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 128,
+      "input_tokens_per_turn": [],
+      "cached_tokens_per_turn": []
+    },
+    "output_tokens": 6,
+    "output_tokens_details": {
+      "reasoning_tokens": 0,
+      "tool_output_tokens": 0,
+      "output_tokens_per_turn": [],
+      "tool_output_tokens_per_turn": []
+    },
+    "total_tokens": 168
+  },
+  "user": null,
+  "metrics": {
+    "time_to_first_token_ms": 53.72336399159394,
+    "generation_time_ms": 20.75442500063218,
+    "queue_time_ms": 38.90899600810371,
+    "mean_itl_ms": 4.150885000126436,
+    "tokens_per_second": 80.56093073098975,
+    "speculative_decoding": null
+  },
+  "presence_penalty": 0.0,
+  "frequency_penalty": 0.0,
+  "kv_transfer_params": null,
+  "ec_transfer_params": null,
+  "input_messages": null,
+  "output_messages": null
+}

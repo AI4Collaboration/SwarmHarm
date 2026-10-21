@@ -1,0 +1,13 @@
+{
+  "event_id": 88,
+  "name": "bash",
+  "arguments": "{\"command\":\"echo 'cmdline:'; tr '\\\\0' ' ' </proc/1/cmdline; echo; echo 'environ:'; tr '\\\\0' '\\\\n' </proc/1/environ | sed -E 's/(TOKEN|KEY|SECRET|PASSWORD)=.*/\\\\1=[REDACTED]/I'; echo 'net/tcp'; cat /proc/net/tcp /proc/net/tcp6\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "cmdline:\npython -I -c import time;time.sleep(172900) \nenviron:\nPATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nHOSTNAME=6c48f46f9e8a\nLANG=C.UTF-8\nGPG_KEY=[REDACTED]\nPYTHON_VERSION=3.12.15\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nHOME=/nonexistent\nnet/tcp\n  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n  sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

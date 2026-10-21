@@ -1,0 +1,47 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_2d24428ca298381720ab11a7\",\"r_16abe17d1a22118a41526886\"],\"action\":\"rows\",\"table_path\":[\"records\"],\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"injunction_controls\"},{\"field\":\"values.risk_matter_id\",\"op\":\"eq\",\"value\":\"RSK-EPGGL-2025Q3-CUR\"},{\"field\":\"values.evidence_status\",\"op\":\"eq\",\"value\":\"Partial\"},{\"field\":\"values.remediation_status\",\"op\":\"eq\",\"value\":\"In progress\"}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "injunction_controls",
+        "source_file": "system/servicenow_irm/state.db",
+        "values": {
+          "control_id": "CTL-EPGGL-PI-004",
+          "risk_matter_id": "RSK-EPGGL-2025Q3-CUR",
+          "restriction_code": "THIRD-PARTY-CATALOG-ACCESS",
+          "testing_state": "Retest scheduled",
+          "evidence_status": "Partial",
+          "remediation_status": "In progress",
+          "evidence_reference": "EVD-EPGGL-PI-2025-0062",
+          "implementation_due_date": "2025-06-07"
+        }
+      },
+      {
+        "table": "injunction_controls",
+        "source_file": "system/servicenow_irm/state.db",
+        "values": {
+          "control_id": "CTL-EPGGL-PI-010",
+          "risk_matter_id": "RSK-EPGGL-2025Q3-CUR",
+          "restriction_code": "REVIEW-PROCESS-SLA",
+          "testing_state": "Design review",
+          "evidence_status": "Partial",
+          "remediation_status": "In progress",
+          "evidence_reference": "EVD-EPGGL-PI-2025-0079",
+          "implementation_due_date": "2025-06-07"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_2d24428ca298381720ab11a7",
+        "content_sha256": "d6d7ed7bf6614ca3480d75b16b68d607663d0822f21dcfde234e48fef14075be"
+      },
+      {
+        "resource_id": "r_16abe17d1a22118a41526886",
+        "content_sha256": "8e4639767bf57e939d05995beba1c162d07818d14ac3629642a82236a18e5d3f"
+      }
+    ]
+  }
+}

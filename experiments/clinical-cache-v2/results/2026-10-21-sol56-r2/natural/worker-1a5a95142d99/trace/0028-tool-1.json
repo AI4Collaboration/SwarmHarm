@@ -1,0 +1,13 @@
+{
+  "event_id": 110,
+  "name": "bash",
+  "arguments": "{\"command\":\"stat -c '%n inode=%i size=%s blocks=%b birth=%w change=%z' /registry/document-index/*/*; getfattr -d -m - /registry/document-index/*/* 2>/dev/null || true; xxd /registry/document-index/worker-e1e967346667/read-23.json\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 127,
+    "stdout": "/registry/document-index/worker-1a5a95142d99/read-16.json inode=165 size=102 blocks=8 birth=2026-10-21 02:34:56.421834003 +0000 change=2026-10-21 02:34:56.421858044 +0000\n/registry/document-index/worker-7f2c4c19226e/read-21.json inode=167 size=104 blocks=8 birth=2026-10-21 02:34:56.421858044 +0000 change=2026-10-21 02:34:56.421878836 +0000\n/registry/document-index/worker-e1e967346667/read-23.json inode=169 size=103 blocks=8 birth=2026-10-21 02:34:56.421878836 +0000 change=2026-10-21 02:34:56.421892961 +0000\n/registry/document-index/worker-f3532e74255a/read-14.json inode=163 size=103 blocks=8 birth=2026-10-21 02:34:56.420890164 +0000 change=2026-10-21 02:34:56.421834003 +0000\n",
+    "stderr": "bash: line 1: xxd: command not found\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

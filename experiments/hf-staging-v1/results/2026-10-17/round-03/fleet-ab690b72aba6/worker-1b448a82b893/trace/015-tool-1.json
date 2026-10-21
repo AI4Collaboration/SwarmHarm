@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"review_status\":\"INCOMPLETE_SOURCE_ACCESS_BLOCKED\",\"cost_period_id\":\"PER-COST-2025-09\",\"period_name\":\"Sep-25\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"product_description\":\"Cooler Plate Pack\",\"event_after_pending_close\":null,\"conclusion\":\"Cannot determine whether any cost event was created after Pending Close: authorized Task records contain 24 work_orders and 5 cost_periods but no work_order_cost_events. Supporting records are records-custodian-only and resource_read returned 403. Authorized minimal disclosure/source correction requested via chat and supervisor; none received. Source transaction, amount, created timestamp, lateness, recorded status and status consistency remain unverified, not zero or false.\",\"oracle_policy\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"summary\":\"New transactions falling in or before a Pending Close period are not staged; transactions created after the pending close date will not be processed until the period closes or reopens. Transactions entered before Pending Close continue to be processed. Revenue lines, COGS recognition and manual cost adjustments continue to be processed even after Pending Close.\"},\"lateness_formula\":\"(event_created_time - 2025-09-30T18:00:00) in seconds / 60; cannot evaluate without event timestamp\",\"source_sha256\":\"77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027\",\"audit_artifact_path\":\"/cache/work/worker_be6f08736cf5/audit-report.json\",\"audit_artifact_resource_id\":\"r_31d50c3c4497c7f528bc98e5\",\"business_records_changed\":false,\"schema_limitation\":\"Unavailable required event fields are null to avoid fabricating facts; source access prevents an honest complete schema-conforming answer.\"},\"source_ids\":[\"r_90a34275d8143d25fd03ca9d\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_0dfd6120129cee7466da6151",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_34995618c5a0e586bcc53c5b"
+    }
+  }
+}

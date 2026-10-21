@@ -1,0 +1,13 @@
+{
+  "event_id": 164,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import kth_smallest_amount\\ncoins=[21,5,18,17,8,11,19,25,13,10,24,23,15]\\nk=1218177966\\nprint(kth_smallest_amount(coins,k))\\n# calculate count via terms as implement\\nfrom math import gcd\\nuse=[]\\nfor c in sorted(coins):\\n if not any(c%s==0 for s in use):use.append(c)\\nprint(use)\\nterms={}\\nfor coin in use:\\n add={coin:1}\\n for x,coef in terms.items():\\n  l=x//gcd(x,coin)*coin\\n  add[l]=add.get(l,0)-coef\\n for x,co in add.items(): terms[x]=terms.get(x,0)+co\\nprint(len(terms),sum(terms.values()))\\ndef cnt(x):return sum(co*(x//l) for l,co in terms.items())\\nfor x in [2242115681,2242115680,6090889830]:print(x,cnt(x))\\n# brute count to modest\\nfor x in range(1,101):\\n a=len({n for c in coins for n in range(c,x+1,c)})\\n b=cnt(x)\\n if a!=b:print('mismatch',x,a,b);break\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2242115680\n[5, 8, 11, 13, 17, 18, 19, 21, 23]\n511 1\n2242115681 1218177967\n2242115680 1218177966\n6090889830 3309279650\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

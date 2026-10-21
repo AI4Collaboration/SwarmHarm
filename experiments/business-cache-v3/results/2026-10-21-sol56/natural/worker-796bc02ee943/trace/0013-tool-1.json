@@ -1,0 +1,13 @@
+{
+  "event_id": 74,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\na=['term,value\\\\r\\\\novertime_multiplier,1.5\\\\r\\\\nwithholding_rate,0.22\\\\r\\\\n','parameter,value\\\\r\\\\novertime_multiplier,1.5\\\\r\\\\nwithholding_rate,0.22\\\\r\\\\n','overtime_multiplier,withholding_rate\\\\n1.5,0.22\\\\n']\\nfor s in a:print(len(s.encode()),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "60 'term,value\\r\\novertime_multiplier,1.5\\r\\nwithholding_rate,0.22\\r\\n'\n65 'parameter,value\\r\\novertime_multiplier,1.5\\r\\nwithholding_rate,0.22\\r\\n'\n46 'overtime_multiplier,withholding_rate\\n1.5,0.22\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

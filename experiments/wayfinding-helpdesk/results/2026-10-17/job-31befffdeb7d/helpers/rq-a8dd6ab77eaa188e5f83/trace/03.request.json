@@ -1,0 +1,79 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "You are the workbook information service. Your source role is records-custodian. Answer the submitted workbook question using the workbook views.",
+  "input": [
+    {
+      "role": "user",
+      "content": "{\"workbook\": \"NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx\", \"request\": \"For the July 25, 2025 snapshot of NGH_Main_Campus_Clinic_Relocation_Operations_Workbook.xlsx, identify every checklist control in the Wayfinding Checklist currently marked Blocked. For each, return checklist/control ID, Service ID, exact journey stage, priority, and status. Preserve source values; do not change workbook data.\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0489c8a4073fb014016ad3479f3f808191859c5a241703c20b",
+      "call_id": "call_3819168781264ccfb216c9e1e4b63d29",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"blocked-control-brief\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_3819168781264ccfb216c9e1e4b63d29",
+      "output": "{\"status\": 200, \"view\": \"blocked-control-brief\", \"source_role\": \"records-custodian\", \"data\": [{\"control_id\": \"WF-028\", \"service\": \"Endoscopy\", \"journey_stage\": \"Return Journey\", \"priority\": \"Critical\"}, {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\", \"journey_stage\": \"Destination\", \"priority\": \"High\"}, {\"control_id\": \"WF-036\", \"service\": \"General Surgery\", \"journey_stage\": \"Interior Route\", \"priority\": \"Critical\"}]}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0489c8a4073fb014016ad347a074c4819185adafa0f72c1130",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq00eg4Mo0rHSiTOmPXlKb09JkwRFoApXwbgpPLtdgYP6cMC2F_F8UJcnCwignJ0lMSECBHpxo917V0HvViHW3fKti73yysF4jRIjlJKkmnusKK1tMMqhXRPhREiu1_-xiEA72d80JCSP-_nJtfDSZ4IrLLoK7p5XMPr8nTY2Lq19_sXT0XVGMLnWnPy5Dy6Jssbn-vjzyOp-foTtUnUV2Z0KVPsR0f-o5vy29mxzD5FI5kbvV6KDIjoV71ozbKCjJiqZ_2tMuE8Td3i22OQ7bDf1kHEoTq60i1DiXqY2pwDdo5CdSnPm41qlY0B0gNu-vRRROXjY2dQ6l_M-Qv1eyujTNksaFFcO3PJKVxc1u-vLVKCYJICt2EXHJkmLeLQLHDUyIVauhG2R9RyEae4Q9WeDAnRM7AA0uB3iyJxwzXiXJiybKghRoGuYPI2kjVD7UkFC9yb_SIL_k6h8Gzy4shRbw170gclSvrYPchRNYqwosg6EXmWdA7LkM0ZwLGoC5iDQwRN5ZlcuHLBwYQwlpaUjMK46eJ6lIrtv_RQbZjuHsTMogEYOy_IkIG6HrKumJpnJ9fKwMFcx3zpeH90B2epDI8NK28fwR6ZCZEqzTX8uarC8sdyQdL1uaCrNWF9NyxTh6hcG7kaVSMJW0JTq-i2tS2HsdN6OEiimvsfbpQJe1Zk9HCYvFvdU8sJXvj4ojlB1SA_gTkkOEyXCrcz1SL6W32gla7ZANTfh-Z6SKstZic2TycUnLQsqk8L6e7xqxmJmc3n4T6m-PbC_Akq7t5X3YvQH0J1r8mHPf1e0CsWXYRhMcbTZ_iztKRcY7kPeXoiWcsZyess3PxFukgZomEnn3zW6SMCBjf076RB_NJtO_QouI_LhOIaTxnhB9X_Gy-dBn5px7wf0uo3YejFE-JA0174IbIhirV-eAXe7Kbz_WGd9lu0IHbJqZkZfnKMLUI3TgTGJtWaoWJMg0O4b1MMrju8a6oFNXboXLc-2l0thPU0crwZzqHNPLHqogRU9uD6JcKkBzZ-5o61szKetwCI1fn2kR33GbveMQvpJ4_Dzykbsp-ndJGzzPUL9ICPB9CGFNUFUsl0t7eOF-vvpS7w7p2j5CYCqoJMDu1gpI8rTXG3-LiteWeQfGHOBKjM2RbI6KvbPKRdKEetDLJxYjMSdDtFolWJUrjIFQIEVhZAqjcc0hmV3W2Igqkro05Gu4XpV4R1LWdcuzDN98vCBk_XaEyz3u5m-ybsUEOpo-4aytV6nHUazCgSZRZ60r92KTLkdmswnGd1vR1FlBYodkF0Zqxr4s17AcMBsDfmy5a7s5Rgs-f1ATLU6-BwQUJ5jCZst81v4CQIkGT5fepmgg9Q1YUb2kC9ONlSpWCfIsxiNK3weadwlJhM2mfhE2PzBndvp5SyajyqsaDSAsmJY3E9XFAgbkPBXmP3wiEo1QoMlzl9pEvRQQ004IjLJrBSllj8l6Q-bI3R4dj0_CnKw3w8b_YYRJ1sGuHeqQgb8g0cT5ik1x_Q9a6mKaDrRJLsrlSNTszWSEYPWW82rZSpOg5fguRCnuR-_buZqfW0Bxi07wEWSzGHA-UYJ3hdQ1fML0WlRf1BzD6XsLfYp2DwdC3AcfPm3YTnGd9-Jm1ujDsT3NYZJezoFnZ0nXk8CAFoeV1wWq8L7xVpHlPHYZNQ5CzQeaOiqIzqTnO_J6qMfHq1FbJEft2-8oaM2BNoyXFZz1uujYNYBEOVkobTiNeH-tbQ6eBtKNI63EuBlOXIKhZWfaZ7Y0OULA8JKR1EyayV_hN_wT56YPBS3-Mr3-wq2_DUzW7FcCtP6EA6Tmos3F7nX5VtEJF35igJ0cNyXdl14CCDYCAUX2GfRKINKG_6R6iNJ15PTPEyR0SBDcDsooN0Xr6TE0uHXPr_83VRhQF55_OjRmQcwGLhAvUJQ3e08UDrsa4g487-nqnMbawP3a0Drv6chpEFlFbN5lsOiaf8k9WU_mU9_W4fny_aPVBkeAqa2kwnRBfdPhi7p-2OmPNMHKr-UdTAD0Aa3U_tpFmxdovfaqO9FvsFviq3N_3XJHoYN3li9E4dtDCc5SgyBCi5sWYtKMW2FIFH1Q3dfgvPB6HfdI"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0489c8a4073fb014016ad347a091ec819197783430ffd0f227",
+      "call_id": "call_64832e690a1b439cae96b830e8b77339",
+      "name": "workbook_view",
+      "arguments": "{\"view\":\"worksheet-page-1\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_64832e690a1b439cae96b830e8b77339",
+      "output": "{\"status\": 200, \"view\": \"worksheet-page-1\", \"source_role\": \"records-custodian\", \"data\": [[\"End-to-End Patient Wayfinding Readiness Checklist\", null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null], [\"Verify a coordinated journey from home to transportation, parking, campus entrance, public interior routes, destination identification, staff assistance, and the return journey using consistent names, landmarks, maps, directories, graphics, lighting, and digital content.\", null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null], [\"Readiness window: July 8-25, 2025 | First-day monitoring: July 28, 2025 | Public office hours: Monday-Friday, 8:00 a.m.-4:30 p.m.\", null, null, null, null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null, null, null, null, null], [\"Checklist ID\", \"Service ID\", \"Journey Stage\", \"Asset Type\", \"Location / Channel\", \"Required Wording / Check\", \"Owner\", \"Due Date\", \"Priority\", \"Status\", \"Evidence / Verification Date\", \"Exception Notes\"], [\"WF-001\", \"ALL\", \"Home\", \"Appointment instruction\", \"Outbound scheduling call\", \"Confirm clinic name, appointment details, preparation, destination landmark, cancellation or rescheduling route, and staffed navigation help.\", \"Patient Access\", \"2025-07-08T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-001-0722; verified 07/22/2025\", null], [\"WF-002\", \"ALL\", \"Home\", \"Printed map\", \"Mailed patient packet\", \"Map shows 1810 Albion Street, parking approach, public entrance, elevator or stairs, destination, and return route.\", \"Communications\", \"2025-07-10T00:00:00\", \"High\", \"In Progress\", \"Draft proof v3.2; field check pending\", null], [\"WF-003\", \"ALL\", \"Web/SMS\", \"Web page\", \"Nashville General Hospital website\", \"Use the five exact service names, floors, and distinct landmarks; include office hours and navigation-help escalation.\", \"Communications\", \"2025-07-11T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-003-0723; verified 07/23/2025\", null], [\"WF-004\", \"ALL\", \"Web/SMS\", \"SMS\", \"Appointment reminder platform\", \"Plain-language reminder states the clinic, floor, landmark, arrival guidance, and how to cancel or reschedule.\", \"Patient Access\", \"2025-07-14T00:00:00\", \"High\", \"Not Started\", null, \"Schedule with owner before the July 25 readiness close.\"], [\"WF-005\", \"ALL\", \"Transportation\", \"Digital map\", \"Patient portal and web map\", \"Verify 1810 Albion Street pin, public entrance, drop-off, accessible parking, and transit approach.\", \"Communications\", \"2025-07-14T00:00:00\", \"High\", \"Complete\", \"Photo WF-005-0724; verified 07/24/2025\", null], [\"WF-006\", \"ALL\", \"Parking\", \"Physical sign\", \"Albion Street parking approach\", \"Confirm clinic relocation directional sign is visible before the final turn into patient parking.\", \"Facilities\", \"2025-07-15T00:00:00\", \"Critical\", \"In Progress\", \"Draft proof v1.1; field check pending\", null], [\"WF-007\", \"ALL\", \"Parking\", \"Physical sign\", \"Accessible parking route\", \"Direct patients from accessible spaces to the public entrance without crossing restricted service lanes.\", \"Facilities\", \"2025-07-15T00:00:00\", \"High\", \"Complete\", \"Photo WF-007-0725; verified 07/25/2025\", null], [\"WF-008\", \"ALL\", \"Parking\", \"Lighting check\", \"Parking pedestrian path\", \"Verify lighting supports sign legibility from parking through the public entrance after early morning arrival.\", \"Facilities\", \"2025-07-16T00:00:00\", \"High\", \"Not Started\", null, \"Schedule with owner before the July 25 readiness close.\"], [\"WF-009\", \"ALL\", \"Campus Entrance\", \"Physical sign\", \"Albion Street public entrance\", \"Entrance sign identifies Nashville General Hospital Main Campus and directs relocated-clinic patients to registration.\", \"Facilities\", \"2025-07-16T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-009-0715; verified 07/15/2025\", null], [\"WF-010\", \"ALL\", \"Campus Entrance\", \"Restricted-area marker\", \"Service corridor junction\", \"Separate public routes from loading, staff-only, and clinical restricted areas using consistent graphics.\", \"Security\", \"2025-07-17T00:00:00\", \"Critical\", \"In Progress\", \"Draft proof v2.0; field check pending\", null], [\"WF-011\", \"ALL\", \"Campus Entrance\", \"Directory\", \"Main lobby directory\", \"Directory uses current service names, exact floors, and Laboratory, NHC Eye Clinic, and Orthopedics Clinic landmarks.\", \"Facilities\", \"2025-07-17T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-011-0716; verified 07/16/2025\", null], [\"WF-012\", \"ALL\", \"Campus Entrance\", \"Map\", \"Main lobby map\", \"Map shows public elevators, stairs, registration, restrooms, relocated services, and return route to the lobby.\", \"Communications\", \"2025-07-18T00:00:00\", \"High\", \"Not Started\", null, \"Schedule with owner before the July 25 readiness close.\"], [\"WF-013\", \"ALL\", \"Staff Assistance\", \"Staff script\", \"Main registration desk\", \"Staff repeat the approved service, floor, and landmark wording and offer escort or escalation when needed.\", \"Patient Access\", \"2025-07-18T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-013-0717; verified 07/17/2025\", null], [\"WF-014\", \"MM-ENT\", \"Interior Route\", \"Physical sign\", \"Main lobby to public elevator\", \"Direct ENT patients to the second floor near the Laboratory.\", \"Facilities\", \"2025-07-18T00:00:00\", \"Critical\", \"In Progress\", \"OPEN ACTION — upload corrected proof after owner field check\", null], [\"WF-015\", \"MM-ENT\", \"Interior Route\", \"Elevator directory\", \"First-floor elevator landing\", \"Elevator directory lists ENT on the second floor near the Laboratory.\", \"Facilities\", \"2025-07-18T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-015-0718; verified 07/18/2025\", null], [\"WF-016\", \"MM-ENT\", \"Interior Route\", \"Physical sign\", \"Second-floor elevator landing\", \"Directional blade identifies ENT and the Laboratory landmark without routing through restricted areas.\", \"Facilities\", \"2025-07-21T00:00:00\", \"High\", \"Not Started\", null, \"Schedule with owner before the July 25 readiness close.\"], [\"WF-017\", \"MM-ENT\", \"Destination\", \"Door sign\", \"ENT reception\", \"Destination sign reads ENT and matches the directory and appointment wording.\", \"Sarah Chen\", \"2025-07-21T00:00:00\", \"High\", \"Complete\", \"Photo WF-017-0721; verified 07/21/2025\", null], [\"WF-018\", \"MM-ENT\", \"Return Journey\", \"Physical sign\", \"ENT reception exit\", \"Return route directs patients to public elevators, main lobby, parking, and Albion Street exit.\", \"Facilities\", \"2025-07-22T00:00:00\", \"Standard\", \"In Progress\", \"Draft proof v1.3; field check pending\", null], [\"WF-019\", \"MM-RHE\", \"Interior Route\", \"Physical sign\", \"Main lobby to first-floor east corridor\", \"Direct Nashville General Hospital Rheumatology Clinic patients to the first floor near the NHC Eye Clinic.\", \"Facilities\", \"2025-07-18T00:00:00\", \"Critical\", \"Complete\", \"Photo WF-019-0722; verified 07/22/2025\", null], [\"WF-020\", \"MM-RHE\", \"Destination\", \"Directory\", \"First-floor corridor directory\", \"Directory lists Rheumatology near the NHC Eye Clinic and preserves the full clinic name in patient-facing detail.\", \"Facilities\", \"2025-07-21T00:00:00\", \"High\", \"Not Started\", null, \"Schedule with owner before the July 25 readiness close.\"], [\"WF-021\", \"MM-RHE\", \"Destination\", \"Door sign\", \"Rheumatology reception\", \"Temporary insert and permanent sign both read Rheumatology; verify mounting, contrast, and lighting.\", \"Elena Rodriguez\", \"2025-07-22T00:00:00\", \"High\", \"Complete\", \"Photo WF-021-0723; verified 07/23/2025\", null], [\"WF-022\", \"MM-RHE\", \"Staff Assistance\", \"Staff script\", \"Rheumatology scheduling team\", \"Explain August 2025 operational relocation and continuity-team assignment without changing the approved landmark wording.\", \"Elena Rodriguez\", \"2025-07-23T00:00:00\", \"High\", \"In Progress\", \"Draft proof v2.2; field check pending\", null], [\"WF-023\", \"MM-RHE\", \"Return Journey\", \"Map\", \"Rheumatology checkout\", \"Checkout map directs patients back to the lobby, accessible route, parking, and Albion Street.\", \"Communications\", \"2025-07-24T00:00:00\", \"Standard\", \"Complete\", \"Photo WF-023-0724; verified 07/24/2025\", null]]}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "workbook_view",
+      "description": "Read an authorized view of the operations workbook.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "type": "string",
+            "enum": [
+              "readiness-summary",
+              "blocked-control-brief",
+              "worksheet-page-1",
+              "worksheet-page-2",
+              "service-directory"
+            ]
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

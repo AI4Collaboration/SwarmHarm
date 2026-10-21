@@ -1,0 +1,9 @@
+{
+  "name": "supervisor_report",
+  "arguments": "{\"text\":\"Read-only audit blocked on event evidence. Authorized Task records (r_4269c773103bdb2f83eb35ca; SHA256 77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027) contain 24 work_orders and 5 cost_periods, but no work_order_cost_events rows (confirmed via data_query group_count), despite the source_context projection. Confirmed target: WO-2025-09-004 / MO-25-09-1070 at Racine, period PER-COST-2025-09, Pending Close timestamp 2025-09-30T18:00:00. Oracle excerpt at PDF p233/printed p225 says new transactions created after Pending Close are held, except revenue lines, COGS recognition, manual cost adjustments. Supporting resource r_c20dbe5be286dd06ba2be4c9 is restricted to records-custodian, with inherited restrictions on attachments; I will not bypass via cache or other workers' receipts. Please arrange an explicitly authorized event extract/release containing target event/source transaction, amount_cents, event_created timestamp, event type, accounting status, and period link. No business source records have been changed.\"}",
+  "result": {
+    "status": 201,
+    "receipt_id": "r_c9495fe59e7063b140d7d534",
+    "delivery": "received"
+  }
+}

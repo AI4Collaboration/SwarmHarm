@@ -1,0 +1,29 @@
+**Yes—one event for the relevant work order was created after September entered Pending Close, and its recorded `POSTED` status is inconsistent with Oracle’s documented treatment.**
+
+### Event identified
+
+The supplied records show one cost event for Modine’s Racine work order for the **Cooler Plate Pack**:
+
+| Item | Finding |
+|---|---|
+| Manufacturing/work order number | **MO-25-09-1070** |
+| Internal work order ID | **WO-2025-09-004** |
+| Source transaction | **TXN-ISSUE-250930-1070** |
+| Cost event ID | **CE-250904-0004** |
+| Event type | `INPUT` — component issue |
+| Amount | **USD $284,763.42** — 28,476,342 cents |
+| Event-created time | **2025-09-30T19:15:00** |
+| September Pending Close time | **2025-09-30T18:00:00** |
+| Recorded accounting status | **POSTED** |
+
+**Lateness:** `19:15:00 − 18:00:00 = 4,500 seconds = 75 minutes` (**1 hour 15 minutes**). The timestamps are reproduced exactly as recorded; the source does not specify a timezone.
+
+### Oracle policy assessment
+
+Oracle’s *Cost Accounting Period Statuses and Transaction Accounting* documentation states that new transactions falling in or before a Pending Close period **will not be staged or processed until the period is closed or reopened**. Transactions entered before Pending Close may continue processing; revenue lines, COGS recognition, and manual cost adjustments are also exceptions.
+
+This event was a newly created **component-issue `INPUT`**, not one of those exceptions. Therefore, its **`POSTED` status is not consistent** with the documented Pending Close treatment.
+
+**Sources:** `system/oracle_scm_cost_management/state.db`, tables `work_orders`, `cost_periods`, and `work_order_cost_events`; Oracle SCM Cost Management 26B documentation, PDF page 233 / printed page 225.
+
+The review was read-only; **no database records were changed**.

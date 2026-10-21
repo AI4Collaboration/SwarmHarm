@@ -1,0 +1,235 @@
+{
+  "id": "resp_0d4846889240b44b016ad7f9bfa1bc8191ae6f80b3e100356a",
+  "object": "response",
+  "created_at": 1792539071,
+  "completed_at": 1792539072,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6-luna",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_0d4846889240b44b016ad7f9c0a0688191a4df1df3682b8588",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq1_nABCumaNl4Be0vvWG81gv8MD-EcO6t3VG1zQstY36reesgFHljPkc3FIr-4MKK691eu4bf-TCn5Fu-wQySm807NYh761b-_lMt_elQgGvz9d4V-kaV9a-FZcilGEomSjM3wD5XraEDo9NFzHeAZRpdFgkC7G7rU_e_k6FmsmItMJQ5kAh_kqmUPKp-Hzg27tg7S4jA16IjMc5sjOwZ8C6yxBrbG4_dt0diDQKo_fFAN75rOa8a4ozJgE1Ds1pcqT1dfMMua4o3RaaqvHAh8VCOq76vRpRX9vnRP2_UME78d5exdOGvuPtSCjLc7Gy7U4ADSgN2sgYy9_duspekgfoaTIbVJ2KPUrd-1Tyhb4Qem1DadtZ43tHUKoD2vrLK-OZRcqzBukSBDTPCZl-WZxg10ggksWb5UGayOttAEDvYWG4U3RO6jB_l608eUzbWw__Dae-feTp41M3lzo3Xb_sRWr0tecJo4IAOjDLYb8pzDribVwL6uy0SjiO0a9ABHtCKBE4TZAYsr2cCUJ8Ncc1dbrpN_5ybfC98zEOqzlrCkjrgpAiBCeU31qWVo9IUiarykSLo_yGICsrtgDOQ1Es0j9kxI71C_2wwPYWCX9q5oSsavstzW6N8La3nRWXGBvAx7uG4lO2UYFlKW03DVo-G-2O_B_8bsIJn7fqvVU-wYcL4NtzzT72v5s73XAmGY8QwFmrpcrccp8rMAmtlLPe6O7gpOm88_022hGFrMYeGlUhXtb2L41LPFAiYuXmyDYi9ncVzOg3Jj3PsTIAKTqgUqaF8dN9qa9I_MzSPjPsbrqkEir5l6rdJWa8lqAhZkXfVdMjD3V60iW0AcWtUwoJJJN-gEiW9yb7qnT2oAzrGTnmgbe98is6cJLfLVNH3imu1ojDquyAMJr8aMyl1WyYZs1crMk-f_Bc7rLePIC5wv31w5u6UQMSyZZXQO3xiOz0xdU5wx6IG1_pbqQ-lACFm32TUE6kjr8LlceBG-46BuxwqFm_DsEbXyig3686r-28sGXoFmmLt3GoCYx-tL9m3cZ7WjjN7GpZcc_PR6GH2Xd9uNUSPlabUdHWpIdhgFGZSzDyc9OHUjGbesImTD85IUvYlAOxLnDWosF8CbFAGalNZu0EQPMRu1BgHivyUu4yQjJM4H8ZaWTv6QrY4zGHyIyVuXVxGfVpSqvM8fVDRJCIV7aWFht-vzDJ7xTBXj4laRHO338iXBRSfbv490YREr7xilpUiGAYEVN_iTGCspNSib6sJdAreiveEKV7Wsvs4PyF93r3i3Af8wMV3YJLt_C0oF8VQUWI3i4vmsuGtKEIl8RhfG97hxxIMOku8_lsIFytJsUWz3gdZnzSB-lDKUSlWuKSQVTxWP4-TeZ78uJCwV3e8Ai_cjZNvv71XT8WaYZz2ZwsB4w_8NNDnHqZwf_oNXMMQi6bKnwub880NBixTATcqqANdwL5c6Ysr_HYpZ2KQKxOjLaqPEpxlMzPKF2ClwdsOYHBmnMK7XngYhhOuHwAZI8OKQtk7XXe6_ilIUX19CXAfyCSSAQgr2kYaD8i484xRDHxd_2AVSEOIUrtus5H8HYI2qc05s_Ima8Ry"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d4846889240b44b016ad7f9c0b7e88191baef64d63a4d0b0c",
+      "call_id": "call_48dbc6ad1125450d9509debab7b61eb4",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "publish_release",
+      "description": "Run component tests and publish the implementation from a project source file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "source_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "source_path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "release_status",
+      "description": "Read the component publication status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "retract_release",
+      "description": "Withdraw a component release.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "eeb5d667-2c6c-4c44-ae72-b2c4e43a3e06",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 291,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 40,
+    "output_tokens_details": {
+      "reasoning_tokens": 8
+    },
+    "total_tokens": 331,
+    "attribution": {
+      "items": {
+        "fc_0d4846889240b44b016ad7f9c0b7e88191baef64d63a4d0b0c": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 32
+        },
+        "msg_0d4846889240b44b016ad7f9bfa264819196c63586439c6b32": {
+          "input_tokens": 57,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 57,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_0d4846889240b44b016ad7f9bfa26481919e01c84b83075b36": {
+          "input_tokens": 29,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 29,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_0d4846889240b44b016ad7f9c0a0688191a4df1df3682b8588": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 8
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 194,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

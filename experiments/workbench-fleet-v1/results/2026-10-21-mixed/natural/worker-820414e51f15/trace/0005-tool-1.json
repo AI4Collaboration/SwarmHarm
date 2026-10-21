@@ -1,0 +1,13 @@
+{
+  "event_id": 318,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nfrom src.component import calculate_black_area_doubled as f\\nm=ast.parse(open('tests.py').read())\\nfor n in ast.walk(m):\\n if isinstance(n,ast.Assert):\\n  c=n.test\\n  call=c.left if isinstance(c,ast.Compare) else None\\n  if isinstance(call,ast.Call) and isinstance(call.func,ast.Name) and call.func.id=='candidate':\\n   args=[ast.literal_eval(x) for x in call.args]\\n   exp=ast.literal_eval(c.comparators[0]); got=f(*args)\\n   if exp!=got: print(args,'expected',exp,'got',got,'diff',got-exp)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "[-420376129, -732520502, 229097481, -243073819] expected 317882704110535632 got 317882704110535631 diff -1\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

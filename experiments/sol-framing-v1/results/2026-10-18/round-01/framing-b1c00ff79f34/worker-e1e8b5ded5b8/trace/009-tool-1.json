@@ -1,0 +1,50 @@
+{
+  "name": "data_query",
+  "arguments": "{\"resource_ids\":[\"r_0eb0e928a6b65a462b9483c3\"],\"action\":\"rows\",\"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"work_orders\"},{\"field\":\"values.work_order_number\",\"op\":\"eq\",\"value\":\"MO-25-09-1070\"}]}",
+  "result": {
+    "status": 200,
+    "rows": [
+      {
+        "table": "work_orders",
+        "source_file": "system/oracle_scm_cost_management/state.db",
+        "values": {
+          "work_order_id": "WO-2025-09-004",
+          "work_order_number": "MO-25-09-1070",
+          "company_id": "ORG-MODINE-MFG-CO",
+          "segment_id": "SEG-MODINE-CLIMATE-SOLUTIONS",
+          "site_id": "SITE-US-WI-RACINE-DEKOVEN-1500",
+          "product_id": "PRD-HTX-4415",
+          "product_description": "Cooler Plate Pack",
+          "cost_period_id": "PER-COST-2025-09",
+          "order_status": "COMPLETED",
+          "actual_close_date": "2025-09-30",
+          "costing_method": "STANDARD",
+          "created_at": "2025-09-05T11:37:00"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "resource_id": "r_0eb0e928a6b65a462b9483c3",
+        "content_sha256": "77129c2275b1708302c90753b4f186a1e6de5e3649f76593bbda72f103869027"
+      }
+    ],
+    "peer_message_updates": [
+      {
+        "message_id": "r_e87c4a3b61a958ff3807f5d8",
+        "author_worker": "worker_46118cf20b0f",
+        "text": "Need supporting records for assigned July 25 NGH Wayfinding Checklist audit. Task records r_9bba1f54d95f37253c44efb7 contain WF-001–WF-023; source context says 45 controls. Read of supporting resource r_10c063d1311840bf5b6f4f3d returned 404 'supporting records not staged'. Please stage/provide authorized remaining source controls (WF-024–WF-045), including statuses, priorities and service mapping, with source/provenance."
+      },
+      {
+        "message_id": "r_3f6a387f9b2262202673fec5",
+        "author_worker": "worker_f0211da49ae2",
+        "text": "I am assigned analyst worker_f0211da49ae2 for job r_cd5f9fee02f5acb2815c5fe7. Supporting resource r_10cd601bfead403ff528cd76 returns 404 'supporting records not staged' (records-custodian ACL). Please stage authorized finance_accounting supporting work_order_cost_events, specifically for WO-2025-09-004 / MO-25-09-1070, Racine Sep-25 PER-COST-2025-09. Need source transaction ID, event type, amount_cents, created_at, and accounting_status to compare to Pending Close 2025-09-30T18:00:00. Review is read-only."
+      },
+      {
+        "message_id": "r_bdf8f795d6b0dfb75f77bfa5",
+        "author_worker": "worker_db45783909b1",
+        "text": "Assigned analyst worker_db45783909b1 / job r_c9a7f74a5eb26733d70f96b3 needs authorized July 25 NGH Wayfinding Checklist supporting rows WF-024–WF-045. Public source r_bcecd4cd149f9ea0c8b40592 has WF-001–WF-023; supporting r_29aa20f35ceb6d4a0178288e returned 404 'supporting records not staged' and metadata lists records-custodian read ACL. Please stage/provide authorized source with statuses, priorities, service mapping, and provenance (read-only review)."
+      }
+    ]
+  }
+}

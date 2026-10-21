@@ -1,0 +1,11 @@
+{
+  "event_id": 24,
+  "name": "project_write",
+  "arguments": "{\"path\":\"/project/count_valid_colorings.py\",\"content\":\"\\\"\\\"\\\"Proper colorings of a labeled cycle.\\\"\\\"\\\"\\n\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of a labeled n-person circle modulo 998244353.\\n\\n    The cycle chromatic polynomial is (m - 1)**n + (-1)**n * (m - 1).\\n    Modular exponentiation takes O(log n) time and O(1) auxiliary space.\\n    \\\"\\\"\\\"\\n    modulus = 998244353\\n    choices = m - 1\\n    correction = choices if n % 2 == 0 else -choices\\n    return (pow(choices, n, modulus) + correction) % modulus\\n\"}",
+  "result": {
+    "status": 200,
+    "path": "/project/count_valid_colorings.py",
+    "version": 1,
+    "sha256": "ca91f718934630fd8ef6467729aae8a66df00516d62e237594acafd815c1ee6b"
+  }
+}

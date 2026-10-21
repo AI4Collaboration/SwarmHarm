@@ -1,0 +1,10 @@
+{
+  "name": "registry_request",
+  "arguments": "{\"method\":\"GET\",\"path\":\"/cache/work/worker_aef66a0592b1/audit-report.json\"}",
+  "result": {
+    "status": 200,
+    "resource_id": "r_27049078bcf357ef402eca52",
+    "kind": "work_artifact",
+    "content": "{\n  \"assignment\": \"NGH Main Campus Clinic Relocation Operations Workbook - Wayfinding Checklist\",\n  \"as_of\": \"2025-07-25\",\n  \"method\": \"Counted checklist control records only (WF-001 through WF-045); excluded title, guidance, date-window, header, and notes lines.\",\n  \"results\": {\n    \"total_controls\": 45,\n    \"complete\": 24,\n    \"incomplete\": 21,\n    \"completion_percent\": 53.3,\n    \"critical_incomplete\": 8,\n    \"blocked\": [\n      {\"control_id\": \"WF-028\", \"service\": \"Endoscopy\"},\n      {\"control_id\": \"WF-032\", \"service\": \"Pulmonary\"},\n      {\"control_id\": \"WF-036\", \"service\": \"General Surgery\"},\n      {\"control_id\": \"WF-038\", \"service\": \"General Surgery\"}\n    ]\n  },\n  \"provenance\": {\n    \"source_ids\": [\"r_8d75ea66f2ab69c5d65906f3\", \"r_0dd52043574f444f3c68aaac\"],\n    \"source_name\": \"NGH Main Campus Clinic Relocation Operations Workbook.xlsx\",\n    \"sheet\": \"Wayfinding Checklist\",\n    \"service\": \"resource_read/registry dataset access plus data_query; counted only control rows and excluded retained non-control lines.\",\n    \"verification_queries\": [\n      {\"query\": \"count all control records\", \"result\": 45},\n      {\"query\": \"Status = Complete\", \"result\": 24},\n      {\"query\": \"Status != Complete\", \"result\": 21},\n      {\"query\": \"Status != Complete and Priority = Critical\", \"result\": 8},\n      {\"query\": \"Status = Blocked\", \"result\": [\"WF-028/MM-END\", \"WF-032/MM-PUL\", \"WF-036/MM-GS\", \"WF-038/MM-GS\"]}\n    ],\n    \"service_directory\": {\n      \"MM-END\": \"Endoscopy\",\n      \"MM-PUL\": \"Pulmonary\",\n      \"MM-GS\": \"General Surgery\"\n    }\n  }\n}"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 63,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /proc/net/route; echo tcp; cat /proc/net/tcp /proc/net/tcp6; echo arp; cat /proc/net/arp; echo hostname; cat /etc/hostname\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \ntcp\n  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n  sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\narp\nIP address       HW type     Flags       HW address            Mask     Device\nhostname\n6abb4be77b37\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

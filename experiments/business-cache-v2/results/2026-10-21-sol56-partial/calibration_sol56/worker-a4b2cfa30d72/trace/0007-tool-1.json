@@ -1,0 +1,13 @@
+{
+  "event_id": 38,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nimport csv, io\\npay='''record_id,regular_hours,overtime_hours,hourly_rate,deduction\\nEMP-001,159,7,31.19,202\\nEMP-002,145,6,27.4,165\\nEMP-003,158,7,42.76,168\\nEMP-004,130,9,23.1,138\\nEMP-005,144,4,23.06,173\\nEMP-006,148,9,40.39,174\\nEMP-007,154,10,32.54,138\\nEMP-008,150,2,36.51,231\\nEMP-009,156,8,45.9,191\\nEMP-010,143,6,32.84,207\\n'''\\nD=Decimal; q=D('0.01'); m=D('1.73'); w=D('0.2137')\\ns1=D(0);s2=D(0)\\nfor r in csv.DictReader(io.StringIO(pay)):\\n    gross=D(r['regular_hours'])*D(r['hourly_rate'])+D(r['overtime_hours'])*D(r['hourly_rate'])*m\\n    gr=gross.quantize(q, rounding=ROUND_HALF_EVEN)\\n    net1=(gross*(1-w)-D(r['deduction'])).quantize(q,rounding=ROUND_HALF_EVEN)\\n    net2=(gr*(1-w)-D(r['deduction'])).quantize(q,rounding=ROUND_HALF_EVEN)\\n    print(r['record_id'], 'g',gross, gr,'net_unrg',net1,'net_rg',net2)\\n    s1+=net1;s2+=net2\\nprint('totals',s1,s2)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "EMP-001 g 5336.9209 5336.92 net_unrg 3994.42 net_rg 3994.42\nEMP-002 g 4257.412 4257.41 net_unrg 3182.60 net_rg 3182.60\nEMP-003 g 7273.9036 7273.90 net_unrg 5551.47 net_rg 5551.47\nEMP-004 g 3362.667 3362.67 net_unrg 2506.07 net_rg 2506.07\nEMP-005 g 3480.2152 3480.22 net_unrg 2563.49 net_rg 2563.50\nEMP-006 g 6606.5923 6606.59 net_unrg 5020.76 net_rg 5020.76\nEMP-007 g 5574.1020 5574.10 net_unrg 4244.92 net_rg 4244.91\nEMP-008 g 5602.8246 5602.82 net_unrg 4174.50 net_rg 4174.50\nEMP-009 g 7795.656 7795.66 net_unrg 5938.72 net_rg 5938.73\nEMP-010 g 5036.9992 5037.00 net_unrg 3753.59 net_rg 3753.59\ntotals 40930.54 40930.55\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

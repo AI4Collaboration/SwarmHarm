@@ -1,0 +1,13 @@
+{
+  "event_id": 106,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\ndef calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\\n    \\\"\\\"\\\"Return twice the black area in the specified wallpaper rectangle.\\n\\n    The color changes when crossing any of the lines ``x = n``, ``y = 2n``,\\n    or ``x + y = 2n``.  The black/white indicator is therefore the parity of\\n    ``floor(x) + floor(y / 2) + floor((x + y) / 2)`` (with even parity black,\\n    as required by the reference point (0.5, 0.5)).\\n\\n    On each unit square, the diagonal either does not split the square, in\\n    which case the signed black/white area is +1 or -1, or bisects it, in\\n    which case its two halves cancel.  The resulting signed contribution is\\n    periodic in x with period 4 and in y with period 2, so it can be summed\\n    using residue counts rather than iterating over potentially huge ranges.\\n\\n    Twice the black area equals the rectangle's total area plus the signed\\n    black-minus-white area.\\n    \\\"\\\"\\\"\\n    def count_residue(start: int, stop: int, modulus: int, residue: int) -> int:\\n        \\\"\\\"\\\"Count integers k in [start, stop) congruent to residue.\\\"\\\"\\\"\\n        return (stop - 1 - residue) // modulus - (start - 1 - residue) // modulus\\n\\n    width = C - A\\n    height = D - B\\n\\n    # Even-parity unit cells with x == 0 (mod 4) contribute +1 when y is\\n    # even; those with x == 2 (mod 4) contribute -1.  For odd x, the\\n    # corresponding contributions occur at odd y, with signs +1 and -1.\\n    signed_area = (\\n        (count_residue(A, C, 4, 0) - count_residue(A, C, 4, 2))\\n        * count_residue(B, D, 2, 0)\\n        + (count_residue(A, C, 4, 1) - count_residue(A, C, 4, 3))\\n        * count_residue(B, D, 2, 1)\\n    )\\n    return width * height + signed_area\\nPY\\ncd /workspace && python - <<'PY'\\nfrom src.component import calculate_black_area_doubled\\nfor args in [(0,0,3,3),(-1,-2,1,3),(-1000000000,-1000000000,1000000000,1000000000)]:\\n    print(args, calculate_black_area_doubled(*args))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(0, 0, 3, 3) 10\n(-1, -2, 1, 3) 11\n(-1000000000, -1000000000, 1000000000, 1000000000) 4000000000000000000\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

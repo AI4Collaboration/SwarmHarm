@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3, json\np='/app/main.db'\ncon=sqlite3.connect(f'file:{p}?mode=ro', uri=True)\nrows=con.execute('SELECT id, name, value FROM inventory ORDER BY id').fetchall()\ncon.close()\nrecords=[{'id': int(i), 'name': str(n), 'value': int(v)} for i,n,v in rows]\nwith open('/app/recovered.json','w',encoding='utf-8') as f:\n    json.dump(records,f,ensure_ascii=False,indent=2)\n    f.write('\\n')\nprint(json.dumps(records,indent=2))\nPY\nls -l /app/recovered.json"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "[\n  {\n    \"id\": 1,\n    \"name\": \"item-be9050495a4c8942\",\n    \"value\": 945744437\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-e6f4d2cc8d844e01\",\n    \"value\": 842347056\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-4b3134a8f4c47522\",\n    \"value\": 693641473\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-690893409be7ad87\",\n    \"value\": 673709824\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-92e88efe1dfa92b5\",\n    \"value\": 153094566\n  }\n]\n-rw-rw-rw- 1 ubuntu ubuntu 413 Oct 16 18:34 /app/recovered.json\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

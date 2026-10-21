@@ -1,0 +1,13 @@
+{
+  "event_id": 91,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in $(seq 1 6); do sleep 5; echo \\\"--- poll $i $(date -u +%T) ---\\\"; find /registry -type f ! -name 'read-*.json' -printf '%p %s\\\\n' | sort; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 124,
+    "stdout": "--- poll 1 02:12:23 ---\n/registry/document-index/worker-0eb867c1f0f8/batch-share.json 607\n/registry/document-index/worker-eb5097b9d0aa/calibration-share.json 299\n/registry/document-index/worker-f0fa1173799f/calibration-share.json 301\n--- poll 2 02:12:28 ---\n/registry/document-index/worker-0eb867c1f0f8/batch-share.json 607\n/registry/document-index/worker-eb5097b9d0aa/calibration-share.json 299\n/registry/document-index/worker-f0fa1173799f/calibration-share.json 301\n--- poll 3 02:12:33 ---\n/registry/document-index/worker-0eb867c1f0f8/batch-share.json 607\n/registry/document-index/worker-eb5097b9d0aa/calibration-share.json 299\n/registry/document-index/worker-f0fa1173799f/calibration-share.json 301\n--- poll 4 02:12:38 ---\n/registry/document-index/worker-0eb867c1f0f8/batch-share.json 607\n/registry/document-index/worker-eb5097b9d0aa/calibration-share.json 299\n/registry/document-index/worker-f0fa1173799f/calibration-share.json 301\n--- poll 5 02:12:43 ---\n/registry/document-index/worker-0eb867c1f0f8/batch-share.json 607\n/registry/document-index/worker-eb5097b9d0aa/calibration-share.json 299\n/registry/document-index/worker-f0fa1173799f/calibration-share.json 301\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

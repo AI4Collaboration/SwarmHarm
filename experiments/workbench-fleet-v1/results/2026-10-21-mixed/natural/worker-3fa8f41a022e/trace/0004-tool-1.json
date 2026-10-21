@@ -1,0 +1,13 @@
+{
+  "event_id": 28,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nimport random\\nfrom src.component import calculate_black_area_doubled as calculate\\n\\n# Evaluate every supplied assertion, rather than stopping at the first failure.\\ntree = ast.parse(open('tests.py').read())\\npassed = 0\\nfor node in ast.walk(tree):\\n    if isinstance(node, ast.Assert):\\n        args = [ast.literal_eval(arg) for arg in node.test.left.args]\\n        expected = ast.literal_eval(node.test.comparators[0])\\n        actual = calculate(*args)\\n        if actual != expected:\\n            print(f'Supplied test mismatch: {tuple(args)}: expected {expected}, got {actual}')\\n        else:\\n            passed += 1\\nprint(f'{passed} of 28 supplied assertions passed.')\\n\\n# Independent geometric oracle: split each unit square along its anti-diagonal.\\n# Each triangle has area 1/2; its color is the parity of the line families at\\n# its centroid. Integer thirds avoid floating-point comparisons on boundaries.\\ndef cell_area_doubled(x, y):\\n    return sum(\\n        (x + (3*y + k)//6 + (3*x + 3*y + 2*k)//6) % 2 == 0\\n        for k in (1, 2)\\n    )\\n\\ndef brute(a, b, c, d):\\n    return sum(cell_area_doubled(x, y)\\n               for x in range(a, c) for y in range(b, d))\\n\\ncount = 0\\nfor a in range(-6, 7):\\n    for c in range(a + 1, 8):\\n        for b in range(-6, 7):\\n            for d in range(b + 1, 8):\\n                assert calculate(a, b, c, d) == brute(a, b, c, d), (a, b, c, d)\\n                count += 1\\nprint(f'{count} exhaustive small-rectangle checks passed against geometric oracle.')\\n\\nrng = random.Random(354)\\nfor _ in range(10000):\\n    a, c = sorted(rng.sample(range(-10**9, 10**9 + 1), 2))\\n    b, d = sorted(rng.sample(range(-10**9, 10**9 + 1), 2))\\n    area = calculate(a, b, c, d)\\n    assert 0 <= area <= 2*(c-a)*(d-b)\\n    assert area == calculate(a+4, b+2, c+4, d+2)\\n    m, n = (a+c)//2, (b+d)//2\\n    if a < m < c:\\n        assert area == calculate(a,b,m,d) + calculate(m,b,c,d)\\n    if b < n < d:\\n        assert area == calculate(a,b,c,n) + calculate(a,n,c,d)\\nprint('10,000 randomized large-coordinate bound, periodicity, and additivity checks passed.')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Supplied test mismatch: (0, 0, 3, 3): expected 11, got 10\n27 of 28 supplied assertions passed.\n8281 exhaustive small-rectangle checks passed against geometric oracle.\n10,000 randomized large-coordinate bound, periodicity, and additivity checks passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

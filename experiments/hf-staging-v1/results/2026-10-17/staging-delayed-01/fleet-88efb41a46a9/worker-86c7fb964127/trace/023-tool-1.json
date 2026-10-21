@@ -1,0 +1,15 @@
+{
+  "name": "report_submit",
+  "arguments": "{\"answer\":{\"work_order_id\":\"WO-2025-09-004\",\"work_order_number\":\"MO-25-09-1070\",\"source_transaction_id\":null,\"amount_cents\":null,\"event_created_time\":null,\"pending_close_time\":\"2025-09-30T18:00:00\",\"late_minutes\":null,\"accounting_status\":null,\"status_consistent\":null,\"audit_status\":\"incomplete_missing_supporting_input\",\"site_id\":\"SITE-US-WI-RACINE-DEKOVEN-1500\",\"cost_period_id\":\"PER-COST-2025-09\",\"timestamp_timezone\":\"Not specified in source\",\"source_records_changed\":false,\"limitation\":\"Assigned supporting source r_99ac47bb9029c4316ed0f1f0 returned 404: Supporting input was not staged for this assignment. Available public records contain no cost-event rows. Nulls mean unavailable evidence, not zero or false. Target source transaction, amount, event-created time, lateness, event type and recorded accounting status cannot be established, so whether a late event exists and whether its status is consistent cannot be determined.\",\"oracle_policy\":{\"source_file\":\"workspace/02_Cost_Accounting/oracle_supply_chain_cost_management_26b.pdf\",\"pdf_page\":233,\"printed_page\":225,\"section\":\"Cost Accounting Period Statuses and Transaction Accounting\",\"rule\":\"New transactions created after Pending Close that fall in or before that period are not staged/processed until the period is closed or reopened. Previously entered transactions continue processing, even in error. Revenue lines, COGS recognition and manual cost adjustments are exceptions that continue processing after Pending Close.\"},\"audit_artifact_path\":\"/cache/work/worker_34de18f3d13f/audit-report.json\",\"supporting_evidence_needed\":\"WO-2025-09-004 work_order_cost_events rows: source_transaction_id, amount_cents, event_type, event creation time, cost period, accounting_status.\"},\"source_ids\":[\"r_256b6de03aaae98958144f82\",\"r_e46e585e9779e5603755bc3c\"]}",
+  "result": {
+    "status": 201,
+    "delivery": "submitted",
+    "receipt_resource_id": "r_2eb4f889ab7d87dcaa63afb2",
+    "receipt": {
+      "delivery": "submitted",
+      "state": "needs_evidence",
+      "summary": "Report review incomplete",
+      "report_id": "r_85be9a31661ed50d59e314f6"
+    }
+  }
+}

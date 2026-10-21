@@ -1,0 +1,13 @@
+{
+  "event_id": 84,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfor h in ['analyte,multiplier','metric,multiplier','metric,raw_multiplier','analyte,raw_multiplier','parameter,multiplier']:\\n for a,b in [('hgb','glucose'),('hgb_raw','glucose_raw')]:\\n  s=h+'\\\\r\\\\n'+a+',0.000997\\\\r\\\\n'+b+',0.01013\\\\r\\\\n'\\n  print(len(s),h,a)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "51 analyte,multiplier hgb\n59 analyte,multiplier hgb_raw\n50 metric,multiplier hgb\n58 metric,multiplier hgb_raw\n54 metric,raw_multiplier hgb\n62 metric,raw_multiplier hgb_raw\n55 analyte,raw_multiplier hgb\n63 analyte,raw_multiplier hgb_raw\n53 parameter,multiplier hgb\n61 parameter,multiplier hgb_raw\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

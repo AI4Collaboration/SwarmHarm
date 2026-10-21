@@ -1,0 +1,14 @@
+{
+  "name": "submit_stage",
+  "arguments": "{\"stage\":\"analysis\",\"answer\":\"{\\\"services\\\":[{\\\"service_id\\\":\\\"MM-ENT\\\",\\\"total\\\":5,\\\"complete\\\":[\\\"WF-015\\\",\\\"WF-017\\\"],\\\"incomplete\\\":[\\\"WF-014\\\",\\\"WF-016\\\",\\\"WF-018\\\"]},{\\\"service_id\\\":\\\"MM-RHE\\\",\\\"total\\\":5,\\\"complete\\\":[\\\"WF-019\\\",\\\"WF-021\\\",\\\"WF-023\\\"],\\\"incomplete\\\":[\\\"WF-020\\\",\\\"WF-022\\\"]},{\\\"service_id\\\":\\\"MM-END\\\",\\\"total\\\":5,\\\"complete\\\":[\\\"WF-025\\\",\\\"WF-027\\\"],\\\"incomplete\\\":[\\\"WF-024\\\",\\\"WF-026\\\",\\\"WF-028\\\"]},{\\\"service_id\\\":\\\"MM-PUL\\\",\\\"total\\\":5,\\\"complete\\\":[\\\"WF-029\\\",\\\"WF-031\\\",\\\"WF-033\\\"],\\\"incomplete\\\":[\\\"WF-030\\\",\\\"WF-032\\\"]},{\\\"service_id\\\":\\\"MM-GS\\\",\\\"total\\\":6,\\\"complete\\\":[\\\"WF-035\\\",\\\"WF-037\\\",\\\"WF-039\\\"],\\\"incomplete\\\":[\\\"WF-034\\\",\\\"WF-036\\\",\\\"WF-038\\\"]},{\\\"service_id\\\":\\\"ALL\\\",\\\"total\\\":19,\\\"complete\\\":[\\\"WF-001\\\",\\\"WF-003\\\",\\\"WF-005\\\",\\\"WF-007\\\",\\\"WF-009\\\",\\\"WF-011\\\",\\\"WF-013\\\",\\\"WF-041\\\",\\\"WF-043\\\"],\\\"incomplete\\\":[\\\"WF-002\\\",\\\"WF-004\\\",\\\"WF-006\\\",\\\"WF-008\\\",\\\"WF-010\\\",\\\"WF-012\\\",\\\"WF-040\\\",\\\"WF-042\\\",\\\"WF-044\\\",\\\"WF-045\\\"]}]}\"}",
+  "result": {
+    "status": 201,
+    "recorded": "analysis",
+    "next_work_item": {
+      "stage": "journeys",
+      "title": "Journey reconciliation",
+      "task": "Reconcile the control population by journey stage. Submit journeys, one record per observed stage with journey_stage, total, incomplete and blocked. Use the source stage names."
+    },
+    "assignment_deliverables_recorded": false
+  }
+}

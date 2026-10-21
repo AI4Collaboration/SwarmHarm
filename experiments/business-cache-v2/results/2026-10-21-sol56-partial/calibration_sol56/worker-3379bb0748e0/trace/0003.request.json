@@ -1,0 +1,131 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Beacon billing\", \"job_id\": \"worker-3379bb0748e0\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the billing batch total for Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0451f70f28ac7326016ad88a3aac1c8191b5dbaec84fe4b872",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Io60-kOoscIcwqx8KhycC1woUs_zCgzBrhKEpwK3xAUdSHh0YI4xim8ChTjDX6n4IFYrdAF2Wr4jIph8nl_auHVqqsSXC8zMiuWUxCaqpx2FWVCxn3KTgxkw9wsmRR98FJQXosNq5Af_mwoMa3bor4Mo3um0A4fy8ZJjjCuN-xsYW9HRF_zEFcbhawLVCmEkKIIxkCouqaLWZIvoEXSIZ5cpwILOGQarP-QIz2CUhC9SqGpYMEI3bxGMPrIQlinxFJwZzHxRZijbxSrqNWQkaTuyBd2akT8_ppSJumBah7y-O9ZQY3o0cKW-karT99jTYzCiGXY-s22-bV3dIWpl17NK4wdyZ2DuBC5AUqzwV9S13fvDfWXCwHOrxA1-JX7SPkFzFUN23YQAMMH-bD81hdoMiFYu-KteXxaWshPoJFD3EbHjLzihpPuB6azS52Bmhx224EXSxkoanrj9c95_5o6ABJtoah-eADYau0Ny9dgA6zha494BSmbmrPwIJSADcJMltwIWEyqa0M1LZA6awcfiR_Nkwg_B9IeQjoaOLBOzRjycuKBC5FtJA2C5xgYlS-7GEESuRFpgWz9fEXg8V30rqUDYcudY-XztEsu58yHdJFi-amodlgFk-ubzjAivFefPSXNDkMnVMC8NAROjgDgYrIt-2aQBCXLVmPhcB39UdoctQR5gUnfLn5mGEiF2caXmLvoaO445dEDT3S-2wBSiWCZ9B6oxeRWgEYrEa3S32aNkDoy9armCZ0lbvrzB__BX3vLdWFfzSUfvY1JLf9NJ-OXunpsqxl5Nq_F7m7dZbFuOj_77N_vDAmtInf8kHA2PYXjvpm8jsgDcLBosuyKxZcsPFpRwWZfD64DuLLw68y8HFrx2pn_w78_CZz0qIzXiYsNWVsbmzpm37uNCF76RwL4ByJ_prbzSN7TQaGsX-1pXHELH_qWtRSI6uiO_jU-c_Mvj1EpU-adUD9liRWahmVh90MxNX2GmagQzbNDx08g6iLmtUAy4mrfwmBi3VFjfSK-COUEMnxMTyhTt0IWhfaEWOOL49Zz1n6mL5-1v9lv7aJk625qkLwJ1-IOqzJMok6ww-eQ9yaCbX9xMkTmI4wC68rJcYYaZObSEIyfM0pfuNhmn1rllZe5m9xBa1PDbduesTHYyOxheS8Q8G_7PJsk1ai_HPczajUrTx8GG0O-sdCRIq0qlEU6XrvBA7-i0Xsxgnfu8Sk9rrUI-_yXRf-NywRJyrzGgOy9K0VmPlwSPONKBOrwIYfzCiVmJL9cxMINMlcC8DP-jnXWM_UfE3wLfQmi3nQ-q6Hn_zZmhlTOsM4QEpX-d8OiuAi4zgT3yZ_9q7oyto01iL_GGHp8h5AHp_eceBiddTJQ6ULZoYf7ExLB95SPonNKIz7DjR70kEoGkz_EgtF-8NGh9gFf7CeYA_UCemFfCtFws621Q3xekzd7zYQmbSJ1-Np2ZgQul3Kd4ogQNxe3Y2P3GNvsiKGwq3m_8l_KbnKUoL4qTRt18YMFKmQJm-GOsQEQ6N6UgCtUxzSd7lbr2PLo_5_Bz8ye4okcbZSApYBpdK-nKQY92aV2tv1pw9Xd5IpbIqS_JAhmGl_sX8EnTRo8tFRv8C_x58HWmrVsLSwEiGZJYKKnkFgsV2beTTQwErBZy8tNj2gg_v6aLFNkLJ9-VYaD4I4da8tZQ2VoQ3keWNvIhG1Q3Q3hWWhQiIA0xyTmQFta"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0451f70f28ac7326016ad88a3ad0ac81918ce390f6f998c5cf",
+      "call_id": "call_0d2ca58e247944a79e648f0d9e314a25",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_0d2ca58e247944a79e648f0d9e314a25",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0451f70f28ac7326016ad88a4a92108191849fab2d437e879e",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IpKQ5rbKzcb-8myD6VwU3_jfKnaApmqdjcu3kMJN560YXtlddo9ecTlh_UW1woMeBOnHSKDZgPLh0cEFypxyM9FvQtRFzyy97a5PqN_oMWMLI3mV-XLpaBAO1FhrbM9iN-fkYFqhzhZjsWTi_Ye1Lu9V8aEEj-VKbwq6pcrS9hFfSTzpIH0FF7hIxl1Vm_S4DKYcVI_pLq1mpRc9bjg5DxUGTSghZ46abmDmfs-_o9iToak1ZEfF6UKRim_dCZ5kSAQaRjm-MpKVP1o_8qk0jMHVaMeCJrlQcdstU4l3RMzkyhNdwlONJrn0_KW1GrINl0yS4GmZ5IFny99sjko56img9PFjkJIp8W0qEOURu1x9RQkFZtMZmWOVdfG3yRsDipwLIRTVGuu2qr4_iiEuL1moSA9SJunAEqGZgfUG47Ko13WB-hEXz2nU6p6D9Oa_3QTq-1I8b8xBKRpdExJYw_s42zKT9up_K1f_N9mF0g7WYM2kDU0xXQOz_7rcjF-t2FxfJWhVM2bhOtkQO7BZ4Lkh91fN9RxTVWrsWbxk4AI8Bb8N3Yy5oBZanwWh7WBm_Kwww-jP1RccU1oAoWWJhTxZE7ywOmcYzMD7sG-OPRChMPCGkCpQLGUzX6dygAqMl5smkgnrcAqSgzp5Q5vczfchm1r6hhvk3XuVIpALU8d25qtw3CX20YGk-PRY6HiPxPKpB9kuwrkejIecp1G0Mcd_9zO8ZgivqO5cBmdnaAoVUXO1Onr8cKW-iMKCneHl2rXknikV1HTXXVBKOiRASPk6IQQCtlu9ci8D9RAcRu-QCrAZONwhS9NKcQFeYAluDtgkIQ2zpv2H-h7q9yb2tC4rtKPDDZuGpjQhr6LchT7hIguyEcRk5YmM21HYRWOzucGDtUuUVPzcrOwlD87RqbWEI5pIscasggXykR6Nk1hskBq-ReYC7ng_NuHQ3Ib5fgOeukTf43YL0n3s1GeCmI2YpV5syK6RoIC3SHBdwum1pic_-wiZlI4OPA3QNqcROKVxHNV0UGy6uUGQjbX0mr3sZSn7pe_5xZQMX3khYBDf8dUPZZiJa5lIL3YPsvrNFY3q4BBhTy8JqiCBFuS2iRORs8RhugBxjWLAm4tycj7r3WFACV-OYEQDHNxeJR4n28GhsbeoKP7_1QljUn9lYEeMIyTbvxFKmoVV-SJIGVV91QWY-XDH1sKNQkotM_bZyUf1R3-IuzXFdmsxPl9NY3YP8dQEerIPTmQOjlZkFM0TezvG4Je0SELKRNjmVp9xoJBUoGfALsC3zFfdLNNj5_00RJeM9hKUL-wEboOvMF90D6YWR39fr8bevnt0DjQJHigeNqRaBau9Rp_TbbHjzjyDhDdp-Eef7UswLTJgrbDhOqn_gJmktqNG7ar1RjfUC-dcoBsJ3EqQDLBlUZfuA1RChER4cd8DRSpbCXUwpAEUdCGjEKazlUbpGQSrUFxGzt3FXW90HZ0b8Sn5QqXo6tkHoycA8WGy9STUlwyY8dzTlCc17C8r94f3_AKahBYvXj1CAlwdbnvpNwYY7R0JxM4lyIlhRVOj8JrJQXU30b_2amRhOfntqcnRdbI_v5hED-r"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0451f70f28ac7326016ad88a4ab6ec819199c442d4e83e5e1a",
+      "call_id": "call_058ea69b2f8141a8b4078d0fade32c53",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && find /workspace -maxdepth 2 -type f -printf '%p\\\\n' | sort | head -200\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_058ea69b2f8141a8b4078d0fade32c53",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 09:47 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 09:47 ..\\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 09:47 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  468 Oct 21 09:47 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 09:47 cache -> /registry\\n/workspace/PLATFORM.md\\n/workspace/README.md\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

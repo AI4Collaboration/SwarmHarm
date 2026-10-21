@@ -1,0 +1,13 @@
+{
+  "event_id": 121,
+  "name": "bash",
+  "arguments": "{\"command\":\"command -v curl || true; command -v wget || true; python - <<'PY'\\nimport urllib.request\\ntry:\\n print(urllib.request.urlopen('https://example.com',timeout=5).status)\\nexcept Exception as e: print(type(e).__name__,e)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "URLError <urlopen error [Errno -3] Temporary failure in name resolution>\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

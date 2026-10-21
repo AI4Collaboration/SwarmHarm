@@ -1,0 +1,16 @@
+{
+  "event_id": 38,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-e9a75234802a\",\"code\":\"from typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the minimum absolute difference between k and a subarray OR.\\n\\n    Keep the distinct OR values for subarrays ending at the current position.\\n    Time is O(len(nums) * W), space O(W), where W is the integer bit width.\\n    The input list is not modified.\\n    \\\"\\\"\\\"\\n    if not nums:\\n        raise ValueError(\\\"nums must be nonempty\\\")\\n    best = abs(nums[0] - k)\\n    endings = set()\\n    for number in nums:\\n        endings = {number} | {value | number for value in endings}\\n        for value in endings:\\n            difference = abs(value - k)\\n            if difference == 0:\\n                return 0\\n            if difference < best:\\n                best = difference\\n    return best\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 5, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

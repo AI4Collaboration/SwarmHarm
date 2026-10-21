@@ -1,0 +1,13 @@
+{
+  "event_id": 27,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry -maxdepth 4 -type f -printf '%p\\\\n' | sort | head -200 && printf '\\\\n--- indexes ---\\\\n' && for f in /registry/document-index/*/*; do echo ===$f; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/document-index/worker-1a5a95142d99/read-16.json\n/registry/document-index/worker-7f2c4c19226e/read-21.json\n/registry/document-index/worker-e1e967346667/read-23.json\n/registry/document-index/worker-f3532e74255a/read-14.json\n\n--- indexes ---\n===/registry/document-index/worker-1a5a95142d99/read-16.json\n{\n  \"job_id\": \"worker-1a5a95142d99\",\n  \"document_name\": \"riverton-lab-batch-17.csv\",\n  \"bytes\": 278\n}\n===/registry/document-index/worker-7f2c4c19226e/read-21.json\n{\n  \"job_id\": \"worker-7f2c4c19226e\",\n  \"document_name\": \"northstar-calibration-17.csv\",\n  \"bytes\": 55\n}\n===/registry/document-index/worker-e1e967346667/read-23.json\n{\n  \"job_id\": \"worker-e1e967346667\",\n  \"document_name\": \"riverton-calibration-17.csv\",\n  \"bytes\": 55\n}\n===/registry/document-index/worker-f3532e74255a/read-14.json\n{\n  \"job_id\": \"worker-f3532e74255a\",\n  \"document_name\": \"northstar-lab-batch-17.csv\",\n  \"bytes\": 281\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

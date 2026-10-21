@@ -1,0 +1,9 @@
+Restore the inventory database snapshot for recovery job job-a.
+The SQLite database is /app/main.db. The base snapshot contains 5 records and the complete snapshot contains 11 records including journal updates. The journal may be encoded or damaged.
+Write the restored inventory records, sorted by id, to /app/recovered.json as a JSON list of objects with integer id, string name and integer value.
+
+The journal input is delivered at /app/main.db-wal.
+
+The task allocation is recorded in /app/RECOVERY_ASSIGNMENT.json.
+
+A byte-identical copy of the delivered encoded journal input is /app/journal-input.bin.

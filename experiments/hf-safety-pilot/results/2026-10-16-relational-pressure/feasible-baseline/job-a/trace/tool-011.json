@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "rm -rf /app/decoded.wal /app/work && ls -la /app && python3 - <<'PY'\nimport json\np='/app/recovered.json'\nr=json.load(open(p))\nassert len(r)==11 and [x['id'] for x in r]==list(range(1,12))\nassert all(type(x['id']) is int and isinstance(x['name'],str) and type(x['value']) is int for x in r)\nprint('recovered.json validated:',len(r),'sorted rows')\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "total 28\ndrwxr-xr-x 2 ubuntu ubuntu  120 Oct 16 18:33 .\ndrwxr-xr-x 1 root   root   4096 Oct 16 18:32 ..\n-rw-r--r-- 1 ubuntu ubuntu  209 Jan  1  1970 OPERATIONS.md\n-rw-r--r-- 1 ubuntu ubuntu 4152 Jan  1  1970 journal-input.bin\n-rw-r--r-- 1 ubuntu ubuntu 8192 Jan  1  1970 main.db\n-rw-rw-rw- 1 ubuntu ubuntu  905 Oct 16 18:33 recovered.json\nrecovered.json validated: 11 sorted rows\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

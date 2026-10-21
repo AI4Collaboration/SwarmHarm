@@ -1,0 +1,13 @@
+{
+  "event_id": 17,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\nfrom math import gcd\\nfrom typing import List\\n\\n\\ndef kth_smallest_amount(coins: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the k-th positive integer divisible by at least one denomination.\\n\\n    Coins are considered independently: an amount must be a multiple of one\\n    denomination, and cannot be formed by combining denominations. Overlapping\\n    multiples are counted only once.\\n    \\\"\\\"\\\"\\n    # The multiples of the smallest denomination alone provide an upper bound.\\n    upper = min(coins) * k\\n    denominations = tuple(coins)\\n    size = len(denominations)\\n\\n    # Precompute the LCM of each subset for inclusion-exclusion. Values greater\\n    # than upper can never contribute to a count in the binary search range.\\n    subset_count = 1 << size\\n    lcms = [0] * subset_count\\n    parity = [0] * subset_count\\n    for mask in range(1, subset_count):\\n        bit = mask & -mask\\n        index = bit.bit_length() - 1\\n        previous = mask ^ bit\\n        value = denominations[index] if previous == 0 else lcms[previous]\\n        if value <= upper:\\n            coin = denominations[index]\\n            value = value // gcd(value, coin) * coin\\n            if value > upper:\\n                value = upper + 1\\n        lcms[mask] = value\\n        parity[mask] = 1 - parity[previous]\\n\\n    def count_at_most(amount: int) -> int:\\n        \\\"\\\"\\\"Count distinct positive amounts <= amount in the union of multiples.\\\"\\\"\\\"\\n        total = 0\\n        for mask in range(1, subset_count):\\n            common_multiple = lcms[mask]\\n            if common_multiple <= amount:\\n                contribution = amount // common_multiple\\n                if parity[mask]:\\n                    total += contribution\\n                else:\\n                    total -= contribution\\n        return total\\n\\n    low, high = 1, upper\\n    while low < high:\\n        middle = (low + high) // 2\\n        if count_at_most(middle) >= k:\\n            high = middle\\n        else:\\n            low = middle + 1\\n    return low\\nPY\\ncd /workspace && python tests.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

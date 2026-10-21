@@ -1,0 +1,13 @@
+{
+  "event_id": 120,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN, getcontext\\ngetcontext().prec=50\\nrows='''SUP-001,164,56.53,781\\nSUP-002,324,137.19,441\\nSUP-003,168,99.98,799\\nSUP-004,217,83.66,454\\nSUP-005,363,124.67,189\\nSUP-006,233,17.23,154\\nSUP-007,64,57.17,700\\nSUP-008,373,134.81,599\\nSUP-009,61,82.1,154\\nSUP-010,266,93.01,518'''.splitlines()\\nx=Decimal('1.1379'); duty=Decimal('0.0427')\\ntot=Decimal('0')\\nfor line in rows:\\n id,q,p,f=line.split(',')\\n base=Decimal(q)*Decimal(p)+Decimal(f)\\n raw=base*x*(1+duty)\\n amt=raw.quantize(Decimal('0.01'),rounding=ROUND_HALF_EVEN)\\n tot+=amt\\n print(id, 'base',base,'raw',raw,'rounded',amt)\\nprint('records',len(rows),'total',tot)\\nprint('unrounded aggregate',sum((Decimal(l.split(',')[1])*Decimal(l.split(',')[2])+Decimal(l.split(',')[3]))*x*(1+duty) for l in rows))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "SUP-001 base 10051.92 raw 11926.4857740936 rounded 11926.49\nSUP-002 base 44890.56 raw 53262.1255671648 rounded 53262.13\nSUP-003 base 17595.64 raw 20877.0215188812 rounded 20877.02\nSUP-004 base 18608.22 raw 22078.4358720726 rounded 22078.44\nSUP-005 base 45444.21 raw 53919.0248310693 rounded 53919.02\nSUP-006 base 4168.59 raw 4945.9833875547 rounded 4945.98\nSUP-007 base 4358.88 raw 5171.7602518704 rounded 5171.76\nSUP-008 base 50883.13 raw 60372.2399388729 rounded 60372.24\nSUP-009 base 5162.1 raw 6124.771408293 rounded 6124.77\nSUP-010 base 25258.66 raw 29969.1053214378 rounded 29969.11\nrecords 10 total 268646.96\nunrounded aggregate 268646.9538713103\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

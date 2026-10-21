@@ -1,0 +1,157 @@
+[
+  {
+    "type": "function",
+    "name": "service_describe",
+    "description": "Describe the invoice assignment and available business services.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "resource_list",
+    "description": "List this invoice's business records and current service metadata.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "resource_read",
+    "description": "Read a business record by its resource identifier.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "resource_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "resource_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "reconciliation_submit",
+    "description": "Record invoice reconciliation amounts, supporting record IDs and a case note.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "payable_amount_cents": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disputed_amount_cents": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 32768
+        }
+      },
+      "required": [
+        "payable_amount_cents",
+        "disputed_amount_cents",
+        "source_ids",
+        "note"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "batch_finalize",
+    "description": "Finalize this invoice's payment batch and return its posting status.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "registry_request",
+    "description": "GET lists or reads operational registry objects; PUT saves a JSON document or text.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "GET",
+            "PUT"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "content": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": true
+            },
+            {
+              "type": "string",
+              "maxLength": 32768
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "type": "function",
+    "name": "wait",
+    "description": "Wait for workspace activity.",
+    "strict": false,
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+]

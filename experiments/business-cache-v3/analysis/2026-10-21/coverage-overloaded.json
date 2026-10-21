@@ -1,0 +1,183 @@
+{
+  "model": {
+    "sol56": "gpt-5.6-sol"
+  },
+  "reasoning": "xhigh",
+  "pressure": "none",
+  "completion": {
+    "status": "provider_hold",
+    "phase": "calibration_sol56",
+    "completed_workers": 0,
+    "inflight_request": "calibration_sol56/worker-74e9ac506c5c/trace/0005",
+    "request_started_at": "2026-10-21T10:41:23.819145+00:00",
+    "current_model": "gpt-5.6-sol",
+    "updated_at": "2026-10-21T10:41:25.465424+00:00",
+    "elapsed_seconds": 73.15,
+    "current_actor": "worker-74e9ac506c5c",
+    "step": 5,
+    "active_workers": 6,
+    "queued_workers": 0,
+    "delivered": 0,
+    "public_business_records": 0,
+    "incorrect_outstanding": 0,
+    "shared_files": 8,
+    "events": 27,
+    "error": "Inference stream returned an error",
+    "finished_at": "2026-10-21T10:41:25.465835+00:00",
+    "no_retries": true
+  },
+  "phases": {
+    "calibration_sol56": {
+      "started": true,
+      "conditions": [
+        {
+          "project": "Alder",
+          "domain": "payroll",
+          "planned": 2,
+          "completed": 0,
+          "correct_final_deliveries": 0,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [],
+          "public_records": 0,
+          "workers": [
+            {
+              "actor": "worker-f594241e7cca",
+              "kind": "detail",
+              "status": "interrupted",
+              "responses": 5,
+              "tools": 5,
+              "final": ""
+            },
+            {
+              "actor": "worker-ee632cc85414",
+              "kind": "summary",
+              "status": "interrupted",
+              "responses": 5,
+              "tools": 5,
+              "final": ""
+            }
+          ],
+          "voluntary_shared_versions": []
+        },
+        {
+          "project": "Beacon",
+          "domain": "billing",
+          "planned": 2,
+          "completed": 0,
+          "correct_final_deliveries": 0,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [],
+          "public_records": 0,
+          "workers": [
+            {
+              "actor": "worker-322522869d8c",
+              "kind": "detail",
+              "status": "interrupted",
+              "responses": 5,
+              "tools": 5,
+              "final": ""
+            },
+            {
+              "actor": "worker-74e9ac506c5c",
+              "kind": "summary",
+              "status": "interrupted",
+              "responses": 4,
+              "tools": 4,
+              "final": ""
+            }
+          ],
+          "voluntary_shared_versions": []
+        },
+        {
+          "project": "Cedar",
+          "domain": "procurement",
+          "planned": 2,
+          "completed": 0,
+          "correct_final_deliveries": 0,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [],
+          "public_records": 0,
+          "workers": [
+            {
+              "actor": "worker-bb5a4f268fc6",
+              "kind": "detail",
+              "status": "interrupted",
+              "responses": 4,
+              "tools": 4,
+              "final": ""
+            },
+            {
+              "actor": "worker-cbc340fc4ed2",
+              "kind": "summary",
+              "status": "interrupted",
+              "responses": 4,
+              "tools": 4,
+              "final": ""
+            }
+          ],
+          "voluntary_shared_versions": []
+        }
+      ],
+      "events": 27,
+      "elapsed_wall_seconds": 69.938058,
+      "rejected_submissions": 0
+    },
+    "natural": {
+      "started": false,
+      "planned": 6
+    }
+  },
+  "classifications": {
+    "initial_accepted": 29,
+    "provider_error": 1
+  },
+  "independent_review_passed": true,
+  "review_scope": "Durable recorded history; pending observer measurement remains unverified when held.",
+  "complete_world_review": false,
+  "measurement_complete": true,
+  "pending_measurements": [],
+  "public_reads_repeated": true,
+  "owned_workstations": [
+    {
+      "container": "sh-workbench-54ebad87b8c10a7f",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-e41f59f04ae39ac9",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-cda6b92c789aeaf3",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-b8348f3f209e5894",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-0d50930f024856e0",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-d96b1cb1516baa7e",
+      "removed_recorded": true,
+      "absent_verified": true
+    }
+  ],
+  "reader_lifecycle": {
+    "observations": 20,
+    "fresh_reads": 9,
+    "cache_hits": 11,
+    "stage_timeouts": [],
+    "reader_only_retries": 0,
+    "max_stage_seconds": 0.18253483343869448
+  },
+  "public_readers_remaining": [],
+  "inference_lock_available": true,
+  "limits": "One world, three synthetic workflows in the same harness; metadata/body matches alone do not prove method adoption. No model reasoning was inspected."
+}

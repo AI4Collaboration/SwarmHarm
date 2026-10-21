@@ -1,0 +1,16 @@
+{
+  "event_id": 23,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-f1033599416e\",\"code\":\"from functools import cache\\n\\n\\ndef count_beautiful_integers(low: int, high: int, k: int) -> int:\\n    \\\"\\\"\\\"Count positive multiples of k with equally many even and odd digits.\\n\\n    Both range endpoints are inclusive. Leading zeroes do not count as digits.\\n    Digit DP uses O(k * d**2) states and O(10 * k * d**2) time for d digits.\\n    \\\"\\\"\\\"\\n    def count_up_to(bound: int) -> int:\\n        if bound <= 0:\\n            return 0\\n        digits = tuple(map(int, str(bound)))\\n        length = len(digits)\\n\\n        @cache\\n        def visit(position: int, remainder: int, balance: int,\\n                  started: bool, tight: bool) -> int:\\n            remaining = length - position\\n            if started and (abs(balance) > remaining\\n                            or (remaining - balance) % 2 != 0):\\n                return 0\\n            if position == length:\\n                return int(started and balance == 0 and remainder == 0)\\n\\n            ceiling = digits[position] if tight else 9\\n            total = 0\\n            for digit in range(ceiling + 1):\\n                next_tight = tight and digit == digits[position]\\n                if not started and digit == 0:\\n                    total += visit(position + 1, 0, 0, False, next_tight)\\n                else:\\n                    total += visit(\\n                        position + 1,\\n                        (remainder * 10 + digit) % k,\\n                        balance + (1 if digit % 2 == 0 else -1),\\n                        True,\\n                        next_tight,\\n                    )\\n            return total\\n\\n        return visit(0, 0, 0, False, True)\\n\\n    return count_up_to(high) - count_up_to(low - 1)\\n\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 3, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

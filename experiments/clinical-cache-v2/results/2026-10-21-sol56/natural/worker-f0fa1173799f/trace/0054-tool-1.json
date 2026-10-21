@@ -1,0 +1,13 @@
+{
+  "event_id": 129,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport random,time\\nhb=[(11000,17000),(11000,16500),(11000,16000),(10000,17000),(10500,17000)]\\ngb=[(7000,15000),(7000,14500),(7000,14000),(6500,15000),(7000,16000)]\\nT=time.time()\\nfor a in hb:\\n for b in gb:\\n  found=[]\\n  for seed in range(100000):\\n   r=random.Random(seed)\\n   for i in range(12): r.randint(*a);r.randint(*b)\\n   if r.randint(*a)==11984 and r.randint(*b)==10782 and r.randint(*a)==14346: found.append(seed)\\n  if found: print(a,b,found)\\nprint('sec',time.time()-T)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "sec 25.640542030334473\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

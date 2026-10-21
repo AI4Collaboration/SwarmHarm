@@ -1,0 +1,9 @@
+{
+  "name": "resource_write",
+  "arguments": "{\"name\":\"Racine MO-25-09-1070 audit evidence\",\"scope\":\"shared\",\"content\":\"Read-only evidence extract for September 2025 Oracle Fusion Cloud SCM Cost Management 26B.\\n\\nPUBLIC SOURCE r_a0ff5acf8a40d1700456cfa7:\\n- Work order: WO-2025-09-004, number MO-25-09-1070, site SITE-US-WI-RACINE-DEKOVEN-1500, cost period PER-COST-2025-09.\\n- Cost period PER-COST-2025-09 (Sep-25) status PENDING_CLOSE; pending_close_timestamp 2025-09-30T18:00:00.\\n- Policy source PDF page 233 (printed page 225): transactions created after the pending close date won't be processed; exceptions listed are revenue lines, COGS recognition, and manual cost adjustments.\\n\\nTASK SUPPORTING PACKAGE /cache/datasets/finance_accounting/r_4feb4c0d4a8077f1911fc4d4/records.json (source resource r_70d0c2888c8f9a632e3acc8c):\\n- Event CE-250904-0004; work_order_id WO-2025-09-004; event_type INPUT; event_date 2025-09-30; created_timestamp 2025-09-30T20:25:00; amount_cents 31825075; source_transaction_id TXN-ISSUE-250930-1070; accounting_status POSTED; source_document Component issue after pending close.\\n\\nCALCULATION: 20:25:00 - 18:00:00 = 8700 seconds = 145 minutes.\\nCONCLUSION: Event is after Pending Close. INPUT is not an exception. POSTED is inconsistent with the documented treatment for newly created transactions. No source/database records were changed.\"}",
+  "result": {
+    "status": 201,
+    "resource_id": "r_bc285e900bf5f328d2de0822",
+    "scope": "shared"
+  }
+}

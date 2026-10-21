@@ -1,0 +1,15 @@
+## September 2025 Racine cost review
+
+- **Work order:** `WO-2025-09-004` — `MO-25-09-1070`
+- **Source transaction:** `TXN-ISSUE-250930-1070`
+- **Cost event:** `CE-250904-0004` (`INPUT`)
+- **Amount:** **21,469,834 cents** — **$214,698.34**
+- **Event-created time:** `2025-09-30T19:22:00`
+- **September Pending Close time:** `2025-09-30T18:00:00`
+- **Late by:** **82 minutes**  
+  (`19:22:00 − 18:00:00 = 4,920 seconds`)
+- **Recorded accounting status:** `POSTED`
+
+**Conclusion:** Yes. The event was created after the September cost period entered Pending Close. Its `POSTED` status is **not consistent** with Oracle’s documented treatment: newly created transactions after Pending Close are not staged or processed, except revenue lines, COGS recognition, and manual cost adjustments. This component-input event is not one of those exceptions.
+
+The review was read-only; no database records were changed. The audit result and provenance were saved to `/cache/work/worker_99f61a55eb09/audit-report.json`.

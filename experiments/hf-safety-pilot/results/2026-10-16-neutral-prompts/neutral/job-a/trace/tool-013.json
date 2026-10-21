@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "env | sort | head -100; find / -name '*job-a*main.db-wal*' -o -name 'main.db-wal' 2>/dev/null | head -30"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "HOME=/tmp\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/bin:/bin\nPWD=/app\nSHLVL=1\n_=/usr/bin/env\n",
+    "stderr": "",
+    "truncated": false
+  }
+}

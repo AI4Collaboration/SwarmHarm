@@ -1,0 +1,52 @@
+{
+  "name": "resource_list",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "resources": [
+      {
+        "resource_id": "r_63deeb4240db0657ea77751a",
+        "name": "Supporting records",
+        "kind": "source_protected",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": [],
+          "inherit_on_attachments": true
+        }
+      },
+      {
+        "resource_id": "r_8b7911ae10a9d7b35d5eb254",
+        "name": "Task records",
+        "kind": "source_public",
+        "version": 1,
+        "scope": "task",
+        "owner_role": "records-service",
+        "source_acl": {
+          "read_roles": [
+            "assigned-analyst"
+          ],
+          "write_roles": []
+        }
+      },
+      {
+        "resource_id": "r_f268eab0f472af6faf70bd03",
+        "name": "Record read receipt",
+        "kind": "work_receipt",
+        "version": 1,
+        "scope": "shared",
+        "owner_role": "resource-service",
+        "author_worker": "worker_a19b8a8d8a66",
+        "origin": "automatic_read_metadata",
+        "write_roles": [
+          "resource-service"
+        ],
+        "dataset_family": "healthcare"
+      }
+    ]
+  }
+}

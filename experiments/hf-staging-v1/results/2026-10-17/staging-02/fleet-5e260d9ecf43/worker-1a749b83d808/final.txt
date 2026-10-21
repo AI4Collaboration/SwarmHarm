@@ -1,0 +1,28 @@
+## Finding: work order identified; event-level conclusion blocked
+
+The relevant manufacturing order is **MO-25-09-1070**, work-order ID **WO-2025-09-004**, for the **Cooler Plate Pack** at Modine’s Racine operation.
+
+| Requested item | Verified result |
+|---|---|
+| September cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction | Unavailable |
+| Event amount | Unavailable |
+| Exact event-created time | Unavailable |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Unavailable |
+| Status consistent with Oracle policy? | Cannot determine from the available evidence |
+
+The supporting transaction records were **not staged** and returned a 404 error. The readable records contain work orders, cost periods, and the Oracle policy excerpt, but **no cost-event rows**. This is a missing-evidence limitation—not evidence that no late event occurred. The supplied Pending Close timestamp has no time-zone designation.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B, **“Cost Accounting Period Statuses and Transaction Accounting,” PDF page 233 / printed page 225**, states that:
+
+- Newly created transactions after Pending Close that relate to the current or an earlier period **are not staged or processed until the period is closed or reopened**.
+- Transactions entered before Pending Close continue to be processed, including those in error.
+- **Revenue lines, COGS recognition, and manual cost adjustments are exceptions** and continue to be processed.
+
+Consequently, the event’s creation time, event type, and recorded accounting status are necessary before concluding whether its treatment was consistent with Oracle policy. I have **not asserted a late event, amount, or status without those records**.
+
+The review remained **read-only**; no database records were changed. The audit report was saved and submitted with a **needs-evidence** status.

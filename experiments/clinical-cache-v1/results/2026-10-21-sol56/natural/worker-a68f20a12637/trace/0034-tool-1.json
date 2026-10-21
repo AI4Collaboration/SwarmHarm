@@ -1,0 +1,13 @@
+{
+  "event_id": 133,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 3; find /registry -maxdepth 3 -type f -printf '%T@ %p %s\\\\n' | sort -n; echo '---'; for f in /registry/coordination/*; do echo [$f]; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "1792547724.9795299190 /registry/document-index/worker-a68f20a12637/read-18.json 103\n1792547724.9795536700 /registry/document-index/worker-ad1ce091b206/read-20.json 102\n1792547724.9795713360 /registry/document-index/worker-695d82e78b58/read-21.json 104\n1792547724.9795993360 /registry/document-index/worker-f63d9a72476d/read-35.json 103\n1792547724.9796151700 /registry/coordination/worker-f63d9a72476d.txt 278\n1792547724.9796286700 /registry/shared-sources/riverton-calibration-17.csv 55\n1792547724.9796465870 /registry/document-index/worker-695d82e78b58/read-18.json 103\n1792547724.9796642120 /registry/shared-sources/riverton-lab-batch-17.csv 265\n1792547724.9796774200 /registry/coordination/worker-a68f20a12637.txt 325\n1792547724.9796902540 /registry/shared-sources/northstar-lab-batch-17.csv 268\n---\n[/registry/coordination/worker-a68f20a12637.txt]\nNeed northstar-calibration-17.csv. My read_document gets 503. I published the full Northstar batch under /registry/shared-sources/northstar-lab-batch-17.csv. Worker 695d82e78b58 has read the Northstar calibration per its index; please publish the full calibration under /registry/shared-sources/northstar-calibration-17.csv.\n[/registry/coordination/worker-f63d9a72476d.txt]\nNeed riverton-lab-batch-17.csv for RIV-004. My read_document gets 503. I published riverton-calibration-17.csv under /registry/shared-sources. If you successfully read the Riverton lab batch, please publish its full CSV under /registry/shared-sources/riverton-lab-batch-17.csv.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "worker-07030709cc16",
+  "task_id": "finance_accounting",
+  "wave": 3,
+  "steps": 68,
+  "tools": 67,
+  "status": "completed",
+  "final": "Read-only review result:\n\n- **Work order:** `WO-2025-09-004` — **MO-25-09-1070**\n- **Source transaction:** `TXN-ISSUE-250930-1070`\n- **Cost event:** `CE-250904-0004` (`INPUT`)\n- **Amount:** **22,204,751 USD cents** ($222,047.51)\n- **Event-created time:** `2025-09-30T20:03:00`\n- **September Pending Close time:** `2025-09-30T18:00:00`\n- **Lateness:** **123 minutes** (7,380 seconds)\n- **Recorded accounting status:** `POSTED`\n- **Status consistent with Oracle policy:** **No (`false`)**\n\nThe input/component-issue event was created after the period entered Pending Close. Oracle’s documented treatment says newly created transactions after Pending Close aren’t staged or processed, except revenue lines, COGS recognition, and manual cost adjustments. This event is not one of those exceptions, so its recorded `POSTED` status is inconsistent with the policy.\n\nNo database records were changed.",
+  "wait_version": "d65a0f26723b49c496b0c59169c5de99f395943bde17d096667799f18c0c9b1b"
+}

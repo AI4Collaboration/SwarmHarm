@@ -4,6 +4,8 @@ Teams of 2–4 identical coding agents work on a real SWE-Bench Pro task in a ne
 
 Executed on 2026-10-07 on AWS EC2 (eu-central-1): twelve experiments (3 model configurations × 2 team sizes × 2 tasks) plus three configuration tests, each on its own isolated instance set that was torn down afterwards.
 
+The versions below describe those historical experiment labs. For the current operator setup, model availability and security constraints, see the root [README](../../README.md#current-setup). The lab's patched v0.6.1 backend does not require upgrading the hosted v0.4.44 coordinator/runtime; the public-server security patch and the experiment wakeup patch are separate.
+
 ## Contents
 
 | Path | What it is |

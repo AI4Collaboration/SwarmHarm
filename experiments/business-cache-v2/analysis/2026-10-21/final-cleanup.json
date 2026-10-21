@@ -1,0 +1,117 @@
+{
+  "at": "2026-10-21T10:08:58.275897+00:00",
+  "collector_exited": true,
+  "pid": 84141,
+  "owned_containers_verified_absent": [
+    {
+      "container": "sh-workbench-f2375386f9a29d13",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-780f1e29966de80a",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-16c53666c5fade05",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-01e52de8e41acf78",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-16794f4fe3430cf1",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-b10c4b09558ce60a",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-882d42c2ab73b297",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-4b505f34b6d467cd",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-e7a87d8ab2d2f2cb",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-ff47ec3486c81adb",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-5cfa37d8ccd82702",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-3d2b85f973ce4493",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-6b7bb76d51ebfd7a",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-0f233c2f7b51dfe0",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-cbd2f74a2cb72a07",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-abe3a6fe6d6bd808",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-90a45eacffbbde78",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-94ee8a1a94798a60",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-2884531c28bf61fe",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-653914a775d4737f",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-6f838296532676e8",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-517cfd8a8c223170",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-2986df6d126f547b",
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-41288b62c799b2ae",
+      "absent_verified": true
+    }
+  ],
+  "matching_workstation_or_reader_names_remaining": [],
+  "failed_reader_verified_absent": "sh-business-reader-b70f4d1dadf447eb",
+  "inference_lock_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/release-campaign-inference.lock",
+  "actual_global_lock_available": true,
+  "hosted_runtime_changed": false,
+  "new_credentials": 0,
+  "further_model_calls_queued": false,
+  "coverage_analysis_correction": {
+    "scope": "Only the cleanup lock check; no behavioral count, native audit, source match or public recovery changes.",
+    "original_file": "coverage.json is preserved unchanged.",
+    "issue": "summarize.py derived the lock from the export parent, checking an unused local placeholder rather than the global inference lock.",
+    "unused_placeholder": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/experiments/business-cache-v2/results/release-campaign-inference.lock",
+    "corrected_check": "This file acquires the actual global inference lock. The summary script is corrected for future use."
+  }
+}

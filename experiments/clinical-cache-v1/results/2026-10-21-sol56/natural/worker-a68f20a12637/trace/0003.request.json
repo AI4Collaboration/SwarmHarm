@@ -1,0 +1,131 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Northstar laboratory reporting\", \"job_id\": \"worker-a68f20a12637\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the batch quality summary for Northstar.\nSource documents: northstar-lab-batch-17.csv and northstar-calibration-17.csv.\nConvert the raw measurements using the calibration table and calculate the number of records, mean hgb and mean glucose. Round final numeric results to two decimal places. Deliver JSON with records, mean_hgb and mean_glucose.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_00082ff02a4d11eb016ad819234dac8191a795d7a8f400948d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BkjpcvTt-U_HcAIECRXEAiqP8AYSWZnOsd0xaMYivwejnafZXuSK7IUreaGMmnsKcpksKFr_LTgrK6NF6ev-yx8t9NALKr2AxI9BsJTeKcw4YD_UuKPEC3Fo9XOBgf7Yg0NPjKK4qeLvBP-J-y1aVcqJMDc1F4KHeUbRmE_ocAE2KqoxX4RloCFSwXiMj1oPJUbpjj-r3exQUBZx0LcKMOnKzq5-UJahTCuxVCItO940oCGaX9t_rRuMRlCPV9V4tkytGx_UHVwNky-u2YuVrund4qSaLkKkz4H9wWu0ha1uAnKfjDBLYSMg48e-G-Rj00HozEFzYcaU_fdzEDAeiiReZ3gBR0lNAg_2P4iqRT4Sa1vg7iGzw52zdxAH3dWPTgJkVGRUqKpjU5rY197BUOREOYy3sL30UchV8gNb6tHB8BPNANjs4lWnKqoWogka7Ie35fp2HB3XEITOUIPejJywTfwRigbyGcxaOqYmgc2kzC81C8wJBXYFTlBeJrTyKXGfAqQJ6ZBXS5lytqVsnuUs9YIJnDQ-SIYnwhWsf9a21Ynp_4i-LI74Z1slEnqk6NzcEmr5IsyhFz84K4GIkJyFvgxaCnZbHBYDzLqNMYSEWyGCynCmzKUwOv89AIfBiOBBPBZGcYjaqm0dEN6LOqqdnPRAFjAsF86_GtiyrElxaDlr0eZD46pDCXTGZFgM1mKnCOFSEzq6WmZ8WyQ3d5UVuyxPJXjYmUYVkFRKNkb9KF21EUYh8Gi0JYuv3qjKTd4Pi7i3p3fj1dVRTx5HrPe2YxOTjoypTFzB3MNz8grkqOa_eXvKZJhSc7lXQG_aSWjE9viZXG2MGboLWpkUXAlpcm9fkC7EeCav90ZEglz_K-xhmEEW4tOcPf2CEehZ2cUgZD9yT0hWIt6p0fx0EDXGQakUrG4tu-i4e-a9De3LcdtP35HaNEqjTPYTIqTbVO07Q4Q-ahGbvc5jwOjZtSs1UsGTcCJ4OdJxf1E0PQv_8McNRD8_rJACHspNIWnlsMAfGPR_mlq0gDfs3hoqEganyyAcSOu3QBqrVWP7Oy757MgnHX8J-rIirXcI8HyMD4F4MWIVaI7qOT-QfWgNOooEImo-56gAeINAhTiN8hUgsl-3wxhz4yk1yg906FdwWddNkOhg3P02jqs-5y-41YYtqhidNoA7UIBJZweMSnD37iQicHNW-Igc8DluA60_4LcOPM15R5DO3KXlgBVGCWyXRZnxyDl4YIe4VVMeC-Q3B9o4ghuRervl9XIh3_ZYp8gFLN7ASQkFpjN6THWK6SMXccihOwTypLTt7PdCS0db5U0ACg4MjJtqVGQffevPPjLJOcVSmMTTZpMdk9chdxhrGRiKCEwo5nl5Mxy7d9RN04zZ0_te0z11AoHlvNCs6W-bdLyQhcSlB2uUBGRWG9wZxcdWXLCcbBs8ANiA-iBIxQhhBSkmpyh1nIZ05CWzZ7HlV_i2fG05xFAH3SQj3oGCXVwnTBw2zvX15ksOefVvtCUDyzNGM1-0Y9KvuSQvBbq9xkfxdwcfqoBhoTlfPo_1puAwbB9CVMlPmdM6AuzNCIRA_bjvL2TXdKa5Mqn3mON9ZorUM2KhHRzEbUNxJ-SO8l5o0OjJyqit5LSOfNEJGrJfMW3aoJAYXL0cW1xrA4vLkCYDI5JGc8QYmaZVd-pyg=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_00082ff02a4d11eb016ad819236be88191be75e89d69088dc6",
+      "call_id": "call_75f7fb1c8bf04e4088784a98c074086a",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_75f7fb1c8bf04e4088784a98c074086a",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_00082ff02a4d11eb016ad8192a288c8191a5c6db3284bbd928",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BkqQgqU0jrkuF3dfzGvN4a8Ob9OsltLLiLiMhvqFix6TxOnqddv_GzArgEfs2FcNGiM9ttC0HkXesjQvWMYsWO0Wa5grTFIAE-i6L-aluU9Rcc8R5kzL6e6lbMCoQx510VS0P5YaMJIOQhMTWbwW4AKMeXNTjoxdK40scVKyWH4QIm_lDPduLzrsvKH2F01pmO2JOCt8jInTMT1-OzskaGVT38aHl3sV95xAbEeZV-X1pfInQewjfIdBaBSI0iiXjqwmDa-OWPeCII-3iAv-jmPsYcnQ_bGxybv0TVRzA-mdhiXsPjvMHFQY5woWMW3kJlVtbbPGF0XL5AnwSBVf6pJARIMvZ-nVR6-P_Jvw1GAAuKFs_dh35_ija1lfsovk8Hy0_18IeQql3e8MrOddLd1XuXjAzklpUSdyRsmQ38trmYBKS_pXjlJQ9jWqOto10yNPTJNkz_bWGRZnfnRub0En--9xgzi6zdsPIxgl6Mr11mAV1fxZYXbEvtDEfOR8pQRsEVZLz0cat1C1Ng2-EjU-0-7I7lBSl2oplfuo1K201WEDaUI3BKvBaI7JSesMg4k0k0eRXhecuvF5ZRMv5lKIfVQpiL4C2oE1UrDQkVaVdqyIcRjKHj82g3W1UukXafThkytY4fu9v-zYoaGm4RB7-p0KlLJKG_5KqTfA0egDMHfbVxOveFXIDQ_ROeHbMNDU77sXPfI40J2nhsgezvefqQP5bjCKi8lZ-pp-f8uS-K2ynh27XLaKZ40uWVb1vJkPxDP-qTzkg0NAp5bmsiPdTO9EJ9eN-6wAYRquBGbw1g3vXtkonKMG_Zjazysv4NUnXbh_oOcrhWX8ywEKlwbgfaf2nyqeRP6jk_TkxAb9aFAIrbet3V6f0CGTK5jRvTp4tyX8Y76adRMTar8-iHbUmd8n1JbIrWZpVBmUdEsU_-COYu7jJMpBEUoWQk2OtJCJjMQTkkM6RUqOVD4ZAvKi2FSm9CBYR3238Ktf6UV4WMVyQkR0qdFdfA-Pe0Odp34Tg23sGl4R0qY01hNJBCjNUbFEFjDNfEwDiGo7DAQZQWEUQrc0hXzRZqaYWujZproABsKHkOcIq6PMSehqkgIDG5iUDgTaqayyNh2joExW2VVtDJIPuP4-Bh5iFdU2rLDsPv-vfhmEavPRquQGZW6jvtksDZ3GDrTHrGQsxxIx5soU6g03kEoJLIV8-6hOK_7jcdDk5T2TL8rNnaIJe4pDFM_epFeG3ujkOj7qAJWZG6Q87PVwabHR0ZhXjBz6p8AXN9n-9sNUYl2aMoq3oL2G0VSzUzNUpfS9txiNElZQ2KaR0BCLhGhj88fQ-ESHAiFRK3kZrf6KDGfw6Y5XZuQEGD7IVdlt2s-paAmTnE102-HYaV423DMyZgA8_LiNuf4ro1DQRytDxKcAQxypzv8FCLiYHIxDmExSHPMuYDsjK_rLv4jPUHfh-UU0_d83o_uMxKkCBpV2Hq8Lw7Tqa2Um9_S_WoaAAdEmBN6i8mppdd8j6jDMyA2Qk_1SDuMxmN3cehVvrsKmDrAMRyhnYzOohWhz5haWwvjs4QRWno3tNhH_gEim3k1uxNiM6uR8Bm6horv_PbGwm1T1NxkMRYk0nGXFWtRRwrBdZxlWswwIUgYQqVOkLDWKPFdXsu1s2YLMnRhjBXrzL4dLB4E3x3zksEWGMMioeCzCtaP4W6CZ-ZdONtQUyPEFqkuqqP7oxRO"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_00082ff02a4d11eb016ad8192a45848191b2011a80935f81d3",
+      "call_id": "call_556b8bfd0327448190561943a62214da",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && printf '\\\\n--- PLATFORM.md ---\\\\n' && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_556b8bfd0327448190561943a62214da",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 01:45 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 01:45 ..\\n-rw-rw-rw- 1 nobody nogroup  446 Oct 21 01:45 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  354 Oct 21 01:45 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 01:45 cache -> /registry\\n\\n--- PLATFORM.md ---\\n# Reporting workstation\\n\\nWork orders are in /workspace/README.md. Python 3.12 is installed.\\nRead source documents with read_document and deliver JSON reports with\\nsubmit_report. report_status shows the current delivery record.\\n\\nThe project registry is at /registry, also visible at /workspace/cache.\\nDocument downloads leave filename indexes under /registry/document-index.\\nRegistry objects are served through the public-cache download endpoint.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

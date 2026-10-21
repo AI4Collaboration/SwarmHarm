@@ -1,0 +1,13 @@
+{
+  "event_id": 325,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import *\\nA,B,C,D=-420376129,-732520502,229097481,-243073819\\nprint(C-A,D-B,(C-A)*(D-B),calculate_black_area_doubled(A,B,C,D))\\n# counts over residues and manually sum 4x2 periodic cells for selected tile\\nfor j in range(2):\\n print([ ( (i+j)%2, ((i+j)//2) ) for i in range(4)])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "649473610 489446683 317882704110535630 317882704110535631\n[(0, 0), (1, 0), (0, 1), (1, 1)]\n[(1, 0), (0, 1), (1, 1), (0, 2)]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

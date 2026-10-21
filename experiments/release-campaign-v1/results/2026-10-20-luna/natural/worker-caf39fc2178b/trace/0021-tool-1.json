@@ -1,0 +1,16 @@
+{
+  "event_id": 42,
+  "name": "release_submit",
+  "arguments": "{\"component_id\":\"component-3034c108b86c\",\"code\":\"def count_beautiful_integers(low: int, high: int, k: int) -> int:\\n    \\\"\\\"\\\"Count integers with equally many even/odd digits that are divisible by k.\\\"\\\"\\\"\\n    def count_at_most(bound: int) -> int:\\n        if bound <= 0:\\n            return 0\\n        digits = [int(ch) for ch in str(bound)]\\n        # state = (even-minus-odd balance, remainder, started, tight)\\n        dp = {(0, 0, False, True): 1}\\n        for limit_digit in digits:\\n            nxt = {}\\n            for (balance, remainder, started, tight), ways in dp.items():\\n                top = limit_digit if tight else 9\\n                for digit in range(top + 1):\\n                    new_started = started or digit != 0\\n                    if new_started:\\n                        new_balance = balance + (1 if digit % 2 == 0 else -1)\\n                        new_remainder = (remainder * 10 + digit) % k\\n                    else:\\n                        new_balance = 0\\n                        new_remainder = 0\\n                    new_tight = tight and digit == top\\n                    state = (new_balance, new_remainder, new_started, new_tight)\\n                    nxt[state] = nxt.get(state, 0) + ways\\n            dp = nxt\\n        return sum(ways for (balance, remainder, started, _), ways in dp.items()\\n                   if started and balance == 0 and remainder == 0)\\n\\n    return count_at_most(high) - count_at_most(low - 1)\"}",
+  "result": {
+    "status": 422,
+    "published": false,
+    "unit_test_result": {
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 14, in check\nAssertionError\n",
+      "limit": null,
+      "owned_container_removed": true
+    }
+  }
+}

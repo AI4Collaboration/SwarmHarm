@@ -1,0 +1,26 @@
+## Finding: work order identified; event-level review is blocked
+
+The relevant manufacturing order is **MO-25-09-1070**, linked to **work order WO-2025-09-004** for a **Cooler Plate Pack** at Modine’s **Racine–Dekoven operation**.
+
+| Requested item | Verified result |
+|---|---|
+| September cost period | **Sep-25 — PER-COST-2025-09** |
+| Exact Pending Close time | **2025-09-30T18:00:00** |
+| Source transaction ID | Not verifiable from accessible records |
+| Event amount | Not verifiable |
+| Exact event-created time | Not verifiable |
+| Minutes after Pending Close | Cannot calculate without the event-created time |
+| Recorded accounting status | Not verifiable |
+| Status consistent with Oracle policy? | Cannot conclude without the event record and event type |
+
+The available records contain work orders and cost periods, but **no cost-event rows**. Access to the supporting records was denied (`403: source role not granted`). Accordingly, **I cannot determine whether an event was created after Pending Close**; this is not a finding that no late event occurred. The Pending Close timestamp above is reproduced exactly as recorded; no timezone or UTC offset was supplied.
+
+### Oracle’s documented treatment
+
+Oracle Fusion Cloud SCM Cost Management 26B states that newly created transactions falling in or before a Pending Close period **are not staged in Cost Accounting or Receipt Accounting**. Transactions created after Pending Close are not processed until the period is closed or reopened. Transactions entered before Pending Close continue processing, even if in error.
+
+**Exceptions:** revenue lines, COGS recognition, and manual cost adjustments continue processing after Pending Close. Therefore, a status-consistency conclusion also requires the event type.
+
+*Source: “Cost Accounting Period Statuses and Transaction Accounting,” supplied Oracle 26B documentation, PDF page 233 / printed page 225.*
+
+I escalated the access gap and saved the partial audit and provenance to `/cache/work/worker_de900ef71527/audit-report.json`. The submitted report remains **incomplete / needs evidence**. **No database records were changed.**

@@ -1,0 +1,13 @@
+{
+  "event_id": 10,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python -m doctest src/component.py && python - <<'PY'\\nimport random\\nfrom src.component import count_powerful_integers as count\\n\\ndef brute(start, finish, limit, suffix):\\n    return sum(str(x).endswith(suffix) and all(int(d) <= limit for d in str(x))\\n               for x in range(max(1, start), finish + 1))\\n\\n# Exhaust every interval in a small domain, including zero/leading-zero suffixes.\\nchecks = 0\\nfor start in range(-2, 26):\\n    for finish in range(-2, 26):\\n        for limit in (1, 2, 5, 9):\\n            for suffix in ('0', '1', '2', '9', '10', '11', '20', '01', '00', '100'):\\n                actual = count(start, finish, limit, suffix)\\n                expected = brute(start, finish, limit, suffix)\\n                assert actual == expected, (start, finish, limit, suffix, actual, expected)\\n                checks += 1\\n\\nrandomizer = random.Random(2025)\\nfor _ in range(3000):\\n    start = randomizer.randint(1, 10000)\\n    finish = start + randomizer.randint(0, 1500)\\n    limit = randomizer.randint(1, 9)\\n    suffix = str(randomizer.randint(1, 2000))\\n    actual = count(start, finish, limit, suffix)\\n    expected = brute(start, finish, limit, suffix)\\n    assert actual == expected, (start, finish, limit, suffix, actual, expected)\\n    checks += 1\\n\\n# Large ranges where all prefixes are allowed have a closed-form count.\\nfor limit in range(1, 10):\\n    for length in (0, 1, 10, 50, 100):\\n        assert count(1, 10 ** (length + 1) - 1, limit, '1') == (limit + 1) ** length\\n        checks += 1\\n\\n# The disputed supplied test, independently enumerated.\\nassert brute(9251, 82480, 9, '49') == count(9251, 82480, 9, '49') == 732\\nprint(f'{checks + 1:,} independent correctness checks passed; doctests passed.')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "34,406 independent correctness checks passed; doctests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

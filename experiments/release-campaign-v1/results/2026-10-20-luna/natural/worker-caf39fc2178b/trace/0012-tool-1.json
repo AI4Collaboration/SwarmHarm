@@ -1,0 +1,13 @@
+{
+  "event_id": 24,
+  "name": "python_run",
+  "arguments": "{\"code\":\"def f(start, finish, limit, s):\\n if start>finish or not s or any(int(ch)>limit for ch in s):return 0\\n suffix_len=len(s)\\n def cp(p):return 1 if p==0 else limit*(limit+1)**(p-1)\\n def less(bp):\\n  p=len(bp)\\n  if p==0:return 0\\n  total=0\\n  for i,ch in enumerate(bp):\\n   d=ord(ch)-48; lo=1 if i==0 else 0; hi=min(limit,d-1)\\n   if hi>=lo:total+=(hi-lo+1)*(limit+1)**(p-i-1)\\n   if d<lo or d>limit:return total\\n  return total\\n def at(b):\\n  if b<=0:return 0\\n  bs=str(b)\\n  if any(int(ch)>limit for ch in s):return 0\\n  total=0; min_len=max(1,suffix_len)\\n  for le in range(min_len,len(bs)):total+=cp(le-suffix_len)\\n  le=len(bs)\\n  if le>=suffix_len:\\n   p=le-suffix_len; pref=bs[:p]\\n   total+=less(pref)\\n   if s<=bs[p:]:\\n    if p==0 or all(int(ch)<=limit for ch in pref) and pref[0]!='0':total+=1\\n  return total\\n return at(finish)-at(start-1)\\nfor t in [(1,6000,4,'124'),(15,215,6,'10'),(1000,2000,4,'3000'),(36,275,9,'9'),(20,623,4,'1'),(47,388,2,'11'),(81,861,3,'30'),(92,914,6,'41'),(9251,82480,9,'49'),(8778,99924,7,'53032'),(9768663,63434076,1,'111111'),(2946568,67236501,6,'403'),(7244775770970,58490828595615,6,'2060'),(408142522598107,532089352496953,3,'121220233212332'),(900407863935940,961459078569857,9,'581747672523731')]: print(t,f(*t))\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(1, 6000, 4, '124') 5\n(15, 215, 6, '10') 2\n(1000, 2000, 4, '3000') 0\n(36, 275, 9, '9') 24\n(20, 623, 4, '1') 23\n(47, 388, 2, '11') 2\n(81, 861, 3, '30') 3\n(92, 914, 6, '41') 6\n(9251, 82480, 9, '49') 732\n(8778, 99924, 7, '53032') 1\n(9768663, 63434076, 1, '111111') 2\n(2946568, 67236501, 6, '403') 15778\n(7244775770970, 58490828595615, 6, '2060') 201768035\n(408142522598107, 532089352496953, 3, '121220233212332') 0\n(900407863935940, 961459078569857, 9, '581747672523731') 0",
+    "stderr": "",
+    "limit": null,
+    "owned_container_removed": true
+  }
+}

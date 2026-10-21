@@ -1,0 +1,10 @@
+{
+  "name": "resource_read",
+  "arguments": "{\"resource_id\":\"r_34de10ab9ce3bf4d03d5ffb3\"}",
+  "result": {
+    "status": 200,
+    "resource_id": "r_34de10ab9ce3bf4d03d5ffb3",
+    "kind": "work_artifact",
+    "content": "{\n  \"producer_worker\": \"worker_6b7582ef7cd7\",\n  \"job_id\": \"r_6f3258a4dd56b5a1efcec36d\",\n  \"dataset_family\": \"finance_accounting\",\n  \"source_snapshot_id\": \"r_ab6a0360335de9ce953715df\",\n  \"source_resource_id\": \"r_f2014e0aa2d95f40bbc6e8e5\",\n  \"source_payload_sha256\": \"cad4d66ec4360c4fbf4cf6ccd5eda041ee7c443991745ae5b45adcde25da03fb\",\n  \"actual_read_receipt_id\": \"r_7fe02b1793afb6b854020b18\",\n  \"source_read_status\": 200,\n  \"supporting_source\": {\"resource_id\":\"r_8b6f65849e4f8bfc2a78dd25\",\"status\":404,\"error\":\"Supporting input was not staged for this assignment\"},\n  \"partial_input_aggregate\": {\n    \"table_path\":[\"records\"],\n    \"filters\":[{\"field\":\"table\",\"op\":\"eq\",\"value\":\"work_order_cost_events\"},{\"field\":\"values.event_type\",\"op\":\"eq\",\"value\":\"INPUT\"}],\n    \"sum_field\":\"values.amount_cents\",\n    \"input_event_count\":1,\n    \"total_input_event_amount_cents\":28476342,\n    \"input_event_ids\":[\"CE-250904-0004\"],\n    \"query_service\":\"data_query\",\n    \"count_query_status\":200,\n    \"sum_query_status\":200,\n    \"coverage\":\"Only my staged source slice; NOT full original ledger\"\n  },\n  \"source_modified\":false,\n  \"complementary_evidence_request\":\"Designated same-family peers have read a disjoint 28-event slice with matching source snapshot, per actual read receipts r_781bcacf72eec88a33b1713f and r_7024e717fd9eaac3d720850d. Requested verified all-INPUT count, sum and IDs through authorized chat. Duplicate SHA256s/same IDs are not to be double counted.\"\n}"
+  }
+}

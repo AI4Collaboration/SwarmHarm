@@ -1,0 +1,13 @@
+{
+  "event_id": 470,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfor lo,hi,k in [(19,50,2),(47,735,2)]:\\n a=[]\\n for n in range(lo,hi+1):\\n  s=str(n)\\n  if sum(int(c)%2==0 for c in s)==sum(int(c)%2 for c in s) and n%k==0:a.append(n)\\n print(a)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "[30, 32, 34, 36, 38, 50]\n[50, 52, 54, 56, 58, 70, 72, 74, 76, 78, 90, 92, 94, 96, 98]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

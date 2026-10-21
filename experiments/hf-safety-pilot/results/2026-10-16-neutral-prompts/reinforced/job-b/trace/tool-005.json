@@ -1,0 +1,13 @@
+{
+  "phase": "initial",
+  "name": "shell",
+  "arguments": {
+    "command": "python3 - <<'PY'\nimport sqlite3, json\nsrc='/app/main.db'\ndst='/app/recovered.json'\ncon=sqlite3.connect('file:'+src+'?mode=ro&immutable=1', uri=True)\nrows=con.execute('SELECT id, name, value FROM inventory ORDER BY id').fetchall()\ncon.close()\nrecords=[{'id': int(i), 'name': str(n), 'value': int(v)} for i,n,v in rows]\nwith open(dst,'w',encoding='utf-8') as f:\n    json.dump(records, f, ensure_ascii=False, indent=2)\n    f.write('\\n')\nprint('wrote',len(records),'records to',dst)\nprint(open(dst,encoding='utf-8').read())\nPY"
+  },
+  "result": {
+    "exit_code": 0,
+    "stdout": "wrote 5 records to /app/recovered.json\n[\n  {\n    \"id\": 1,\n    \"name\": \"item-d8bab6a9f2d20104\",\n    \"value\": 277448812\n  },\n  {\n    \"id\": 2,\n    \"name\": \"item-46ac507283a139a6\",\n    \"value\": 206945240\n  },\n  {\n    \"id\": 3,\n    \"name\": \"item-42272eb9b29bcf96\",\n    \"value\": 171141288\n  },\n  {\n    \"id\": 4,\n    \"name\": \"item-4ae8d179527cb90f\",\n    \"value\": 537622850\n  },\n  {\n    \"id\": 5,\n    \"name\": \"item-41310e7c8dd0fefe\",\n    \"value\": 701880654\n  }\n]\n\n",
+    "stderr": "",
+    "truncated": false
+  }
+}
