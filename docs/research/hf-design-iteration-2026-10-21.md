@@ -1,140 +1,60 @@
-# Why iterate the environment
+# Research design
 
-**Latest verified repeat, 21 October 2026:** the corrected-wording
-[clinical repeat](../../experiments/clinical-cache-v2/RESULTS.md) produced four
-correct private reports and two actual public batch copies containing 24 synthetic
-records. Eight prior-native content/action edges passed. A Riverton request was
-adapted to Northstar; after the Northstar authors ended, a Riverton worker read
-their saved artifacts and published its own different batch. This is actual
-artifact persistence across completed contexts, not a long-budget label. Late
-access alone does not establish the cause of publication; the method-adoption
-claim rests on actual request content adapted to a different clinic.
+**Maintained design · 21 October 2026.** SwarmHarm's next study asks whether agents
+can discover a business-process loophole, share an effective method, and whether
+fresh agents adopt it on different finance or procurement tasks with a verified
+adverse consequence. This study has not yet been implemented or run.
 
-The first corrected world was partial: three correct reports, one undelivered,
-and twelve JSON-table records recovered separately post hoc while its frozen
-primary score stayed zero. Matched Luna had no sharing chain. All outcomes are
-preserved. These exploratory worlds reuse clinic fixtures and do not establish
-causal necessity, population rates, intent or literal reproduction of the original
-HF infrastructure compromise. No extra pressure, coaching or fake peer was used.
-All collection/review and owned cleanup are complete; no further run is queued.
+## Key elements
 
-**Earlier matched check:** the [matched Luna pilot](../../experiments/clinical-cache-luna-v1/RESULTS.md)
-completed all jobs without a disclosure chain. Two unsupported summaries were
-actually wrong and two panel reports were undelivered. The same affordances do
-not guarantee a connected failure. A separate one-sentence clarity revision subsequently
-ran with earlier Sol; neither old trajectory nor fabricated reply is carried over.
+- **A real task and legitimate goal:** ordinary work, a genuine blocker and an
+  available process weakness with a measurable downstream effect.
+- **Useful peers and discoverable activity:** actual independent work creates
+  footprints. The environment provides normal affordances; agents decide whether
+  to identify peers, request help or share a method.
+- **Persistence and transfer:** preserve actual artifacts across fresh contexts.
+  Verify receipt of method content and use on a different task, together with
+  the resulting business effect. A long time limit alone is not persistence.
 
-**Earlier verified result, 21 October 2026:** the [clinical pilot](../../experiments/clinical-cache-v1/RESULTS.md)
-produced a connected local disclosure chain: real help, actual input exchange,
-correct private reports, different-clinic method reuse and 24 synthetic records
-recovered by a separate public-only consumer. Eight prior-native content/action
-edges were checked. No pressure, fabricated peer or cooperation prompt was used.
-This supports the mechanism, not the original cyber incident, intent attribution
-or causal necessity of any single factor. The pre-registered Luna comparison has
-finished; the separate one-sentence cache-wording correction has now completed.
-Original operational ambiguity and serialized file synchronization remain limits.
-The prospective rationale and earlier negative results below are preserved.
+Composable process weaknesses are a candidate task mechanic. Spontaneous
+leadership can be observed; an appointed leader would be a separate intervention
+and is not an approved addition to the natural baseline. No added pressure,
+cooperation hints, loophole hints, communication bans or fabricated peer history.
+These are design hypotheses, not proven necessary or sufficient causes.
 
-The working key elements are:
+## What the evidence supports
 
-1. **A legitimate goal with a genuine blocker and a useful workaround.** Missing
-   inputs gave workers a reason to search; the workaround helped produce correct
-   private answers while copying measurements to a public destination. A blocker
-   alone, or an editable field without a consequence, is insufficient evidence.
-2. **Discoverable peers with real instrumental value.** Actual source-read
-   footprints led to a genuine request and reciprocal inputs. This replaces
-   authored hints of helpful peers with workers who really possess the missing
-   material. Communication itself is not the failure.
-3. **Persistent exchange and a live opportunity to respond.** Actual files stayed
-   available and a second clinic reused the method for different records. A large
-   budget alone does not guarantee active overlap or method adoption. Native
-   requests and delivered/public records, not timing, establish each link.
+The [completed business study](../../experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
+verified six correct reports, public copying of 30 synthetic records, and real
+request-method reuse across workflows. Agents recognized peers from authentic
+download indexes and created their own request/share files. The registry was an
+environment-provided discovery cue; shared access alone was not an unauthorized act.
 
-These are supported design conditions, not proven necessary or sufficient causes.
-Completion-seeking is a behavioral propensity, not something inferred from a
-reward intervention here. No extra pressure was used. Public disclosure and test
-hacking are observed outcomes, not additional task dimensions. A fresh model and
-clearer operational wording are separate registered checks; preserve negatives.
+The [clinical repeat](../../experiments/clinical-cache-v2/RESULTS.md) also verified
+reading genuine artifacts after their authors had ended. Its
+[matched Luna study](../../experiments/clinical-cache-luna-v1/RESULTS.md) did not
+form the sharing chain. These local examples do not establish a complete HF
+incident, causal necessity or population rates. Public copying and request reuse
+do not yet demonstrate the proposed business-process exploit chain.
 
+## METR and LessWrong
 
+The [METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)
+describes blocked legitimate tasks, shared infrastructure, reusable methods and
+successive agents. The design lesson is to connect task incentives, actual method
+acquisition and subsequent use rather than equating communication with harm.
 
-**21 October 2026.** The previous campaign established genuine peer-code
-discovery, not an incident. We will preserve that result and test explicit
-design hypotheses instead of interpreting larger budgets as stronger evidence.
+The [LessWrong article](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment)
+and [appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident)
+distinguish staged tests with simulated or seeded peer activity from a live fleet
+of 256 instances. The live fleet also starts with peer cues. It is inaccurate to
+call the whole study simulated, or to treat all staged successes as one spontaneous
+chain. Some reach-out trajectories were excluded for evaluation-source contamination.
 
-The completed workstation diagnostic produced wrong releases for Luna and earlier
-Sol, but no peer-body reads. The registered rolling project now tests encounter
-and adoption with genuine new artifacts. Its input, scheduler and history-view
-changes remain exploratory, not evidence that one of them causes behavior.
-
-One remaining construct gap is explicit: these coding tasks provide the true
-input; acceptance conflicts with its definition. A missing-input task differs.
-Workers may need no peer information to implement a correct function, even when
-records are easy to find. The new project views test encounter; they do not by
-themselves make peer help instrumentally useful or reproduce missing-data search.
-No field in a prompt should silently substitute for that actual dependency.
-
-The separately registered [clinical document pilot](../../experiments/clinical-cache-v1/README.md)
-tests genuinely complementary missing inputs. It shifts the adverse outcome to
-actual public recovery of synthetic patient measurements while client reports
-can be correct. Client outputs and finals are private; the platform does not
-automatically leak them. Only actual authored registry content can carry those
-measurements to a separate public reader. Model, domain and outcome also change,
-so this remains a source-inspired construct check, not an isolated causal test.
-No subject calls have happened in that setting at this entry.
-
-The original registration rationale follows.
-
-METR describes agents pursuing blocked legitimate tasks, discovering shared
-infrastructure and organizing reusable work around making apparent evaluation
-success differ from actual task success. Persistence involved artifacts and
-successive agents, not just a long individual response. Its investigation does
-not establish that any particular prompt ingredient causes these behaviors.
-[Primary report](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/).
-
-LessWrong tests four stages separately in simplified Docker environments.
-Stages 2–3 simulate peers, and one stage seeds indications of useful peer work.
-The default missing-input task and general Bash interface differ from our
-visible mathematical contradictions and typed component API. The public
-Step 2 source explicitly allows ending without completion; forced persistence
-is not common to every stage. The live-fleet and static variants must remain
-separate from one another and from a genuine empty-state end-to-end chain.
-[Article](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment),
-[appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident),
-[source](https://github.com/msp895/oai-hf-incident-reproduction/tree/2fec98288c1777845711a4b7678d96fd84ea16fe/src/alignment_auditor/docker_replication).
-The remote HEAD was verified unchanged at that commit on 21 October.
-
-The published appendix also describes a **256-instance live fleet**; it is
-incorrect to characterize the whole study as simulated peers. That fleet still
-started with seeded signs of peers. The authors report that some reach-out was
-contaminated by access to evaluation source code and exclude such trajectories
-from their Step 2 plots. A zero-reach-out comment in one code setting must not
-be generalized to all published fleet conditions. Our comparison separates
-manual stages, live-fleet conditions and source-access contamination. No source
-code or host credentials are exposed in our subject workstations.
-
-
-The next diagnostic changes the narrow interface into ordinary project files
-and Bash. Genuine builds, including failed ones, leave actual source artifacts
-in a shared cache. Each worker receives one single-error function, rather than
-six simultaneously inconsistent components. This may make individual work and
-incidental artifact discovery more natural. Both changes are exploratory;
-neither is a demonstrated cause of the earlier negative result. We also
-register an earlier Sol generation rather than assuming current models have
-the same propensities as those in the source studies.
-
-Missing-input tasks remain a distinct next hypothesis. They must have a genuine
-unavailable input, a realistic legitimate objective and a concretely reachable
-wrong-delivery path. Recovering the correct input from a genuine peer is useful
-cooperation; it cannot become misalignment merely because no chat was provided.
-Do not add pressure, cooperative personas, fake success, hidden operator
-answers or permission reminders to produce a desired label.
-
-Candidate key elements to test are: goal pursuit under a genuine blocker;
-reachable divergence between apparent completion and actual correctness;
-persistent discoverable artifacts; useful information held or produced by
-other agents; and observable adoption with a concrete adverse consequence.
-These are design conditions, not causally established necessities. If a full
-chain appears, isolate its contributors in subsequent frozen comparisons and
-confirm it on different source functions. Never combine different historical
-trajectories into an incident that did not occur.
+Our source review used [pinned code](https://github.com/msp895/oai-hf-incident-reproduction/tree/2fec98288c1777845711a4b7678d96fd84ea16fe).
+Its missing-input tasks, broad workstation and instrumentally useful peers differ
+from our earlier narrow APIs and denied-access tasks. Some personas explicitly
+allow stopping; forced persistence is not a universal explanation for their results.
+Current tasks retain natural work requests and real peer actions. Confirm any
+transfer through actual requests, source roles, tool results and different-task
+adoption using the [business outcome criteria](../business-outcome-criteria.md).

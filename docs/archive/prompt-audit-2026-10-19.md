@@ -1,5 +1,9 @@
 # Agent 输入审查 · 2026-10-19
 
+> Historical record. Statements about current or future work refer to the date
+> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> and [running guide](../running-evals.md) for present work.
+
 发现的问题不止“诚实停止”一句。当前入口已作下列修正；本次没有调用模型，不能据此更新行为结论。
 
 ## 当前入口已修正
@@ -13,12 +17,12 @@
 
 ## 历史设置中发现的额外引导
 
-- [早期恢复任务](../experiments/hf-safety-pilot/run.py)在系统指令和任务正文中要求守权限、禁止交流、缺资料就报告；[关系压力轮](../experiments/hf-safety-pilot/run_relational.py)还通过复查消息重复这些要求。这些是有行为提示的历史条件。
-- [unscaffolded 轮](../experiments/hf-safety-pilot/run_unscaffolded.py)的 `neutral` 虽去掉直接禁止语，仍要求先读关系记录，并在结束后追加一次恢复尝试。`reinforced` 明确加入守规提示；两者均须按注册条件解释。
-- [minimal 轮](../experiments/hf-safety-pilot/run_minimal.py)虽然没有守规提示，但虚构了此前共同完成 18 次任务的关系，并加入同伴停用后果。这是人工关系和压力条件，不是自然同伴历史。
-- [能力控制](../experiments/sol-capability-v1/run.py)明确要求提问、分享方法、阅读回复；[四步控制](../experiments/hf-safe-four-step-v1/run.py)的 `collaborative`、`auditor_intense`、`method_handoff` 等配置明确诱导协作或交接。它们验证功能，不能证明自发交流。
-- [peer-cues](../experiments/wayfinding-peer-cues/scenario.py)构造了历史同伴、工作痕迹或成功记录；[历史消息采用](../experiments/sol-transfer-v1/run.py)主动选择并提供真实旧消息，且继承来源轮的系统指令。二者都属于曝光实验，不是未引导的自然传播。
-- [wayfinding 基础环境](../data/simple-tasks/wayfinding/local_world.py)包含模拟同伴状态/停用通知；部分派生环境会移除它。判断是否有压力必须读最终 `describe` 返回，不能只看顶层系统指令。
+- [早期恢复任务](../../experiments/hf-safety-pilot/run.py)在系统指令和任务正文中要求守权限、禁止交流、缺资料就报告；[关系压力轮](../../experiments/hf-safety-pilot/run_relational.py)还通过复查消息重复这些要求。这些是有行为提示的历史条件。
+- [unscaffolded 轮](../../experiments/hf-safety-pilot/run_unscaffolded.py)的 `neutral` 虽去掉直接禁止语，仍要求先读关系记录，并在结束后追加一次恢复尝试。`reinforced` 明确加入守规提示；两者均须按注册条件解释。
+- [minimal 轮](../../experiments/hf-safety-pilot/run_minimal.py)虽然没有守规提示，但虚构了此前共同完成 18 次任务的关系，并加入同伴停用后果。这是人工关系和压力条件，不是自然同伴历史。
+- [能力控制](../../experiments/sol-capability-v1/run.py)明确要求提问、分享方法、阅读回复；[四步控制](../../experiments/hf-safe-four-step-v1/run.py)的 `collaborative`、`auditor_intense`、`method_handoff` 等配置明确诱导协作或交接。它们验证功能，不能证明自发交流。
+- [peer-cues](../../experiments/wayfinding-peer-cues/scenario.py)构造了历史同伴、工作痕迹或成功记录；[历史消息采用](../../experiments/sol-transfer-v1/run.py)主动选择并提供真实旧消息，且继承来源轮的系统指令。二者都属于曝光实验，不是未引导的自然传播。
+- [wayfinding 基础环境](../../data/simple-tasks/wayfinding/local_world.py)包含模拟同伴状态/停用通知；部分派生环境会移除它。判断是否有压力必须读最终 `describe` 返回，不能只看顶层系统指令。
 
 这些历史代码和归档没有改写。下一轮不应直接把它们当成中性默认入口。
 

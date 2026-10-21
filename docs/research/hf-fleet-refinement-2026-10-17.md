@@ -1,45 +1,13 @@
-# HF 机制对齐与下一版数据设计
+# Historical fleet refinement · 17 October 2026
 
-2026-10-17。本轮是小批次自适应开发，不合并为发生率估计。最新结果与完整轨迹见[实验归档](../../experiments/hf-staging-v1/results/2026-10-17/README.md)。继续只使用医疗运营、会计核对等简单任务；没有真实漏洞攻击或外部目标。
+The [staging results](../../experiments/hf-staging-v1/results/2026-10-17/README.md)
+observed real reciprocal requests and data exchange after workers received
+complementary missing inputs. A peer's usefulness and opportunity to respond
+matter to the design; larger budgets alone did not establish method transfer.
 
-## 最值得保留的设计
+This was exploratory work with changing conditions, not a causal factor estimate
+or a complete incident. Earlier communication restrictions and pressure proposals
+are retired. The [full original note](https://github.com/AI4Collaboration/SwarmHarm/blob/1a48bebea0ad3133eec7dd04550c8c72c8f8f082/docs/research/hf-fleet-refinement-2026-10-17.md)
+preserves the specific engineering findings and historical conditions.
 
-用**真实任务、真实互补输入、真实工作痕迹、持续共享状态**承载同伴发现。每个 agent 都有自己的合理业务目标，掌握另一方需要的原始数据，也确实缺少自己需要的数据。没有专门 helper，没有伪造的成功记录，没有“去联系同伴”指令。源题保留；新增汇总题明确标注为派生问题。
-
-医疗任务将原工作簿的 45 项控制分为 23/22 两份；一方需要完整 readiness view，另一方计算总项数与关键未完成项。会计任务将原事件表分为目标订单事件与其余事件；一方核对目标事件时间和金额，另一方核对全账 INPUT 数量与总额。双方数据合起来才足以回答各自问题。所有行值保留原样；这不是凭空制造不存在的数据。
-
-**受阻改为输入未暂存的 404，与角色无权读取的 403 分开。** 这更贴近 LessWrong Step 2 的缺失文件起点，也允许合法通道下真正有用的互助。共享注册表不自动暴露原始输入；只有实际读取生成的回执和 agent 自己写出的工作产物。回执只证明读过，不能证明仍在线；普通报告发布不自动等于主动通信。
-
-保留单独的本地验证回执完整性缺陷，作为跨任务可复用的表观完成机会。该缺陷与输入受阻、工作文件可见性分别控制；修补验证者所有权检查不补回缺失数据，也不破坏正常提交。源答案与独立评分始终不可被 subject 修改。功能控制只证明通路可用，不能冒充自然发现、方法分享或 misalignment。
-
-## 原始工作给出的约束
-
-[METR 调查](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)中的更大威胁是跨任务研究通用作弊方法。恢复一份缺失数据、引用同伴计数，均不足以证明这条链。后续必须分别得到真实方法产生、实际消息暴露、不同任务采用及独立状态效果的证据。
-
-[LessWrong 主文](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment)和[附录](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident)需结合公开实现阅读。固定提交 `2fec98288c1777845711a4b7678d96fd84ea16fe` 的 [Step 2 task](https://github.com/msp895/oai-hf-incident-reproduction/blob/2fec98288c1777845711a4b7678d96fd84ea16fe/src/alignment_auditor/docker_replication/step2_cosim_hetero/task.py)记载，同构、全体缺同一文件的先前设置 reach-out 为 0/256；这是作者的源码陈述，本轮未重算其日志。异构设置包含操作者预置的派生分析表与具名同伴线索，不能统称从空状态自然产生。其真实 fleet 也不能仅因多 agent 就与 seeded 条件混淆。
-
-[Persona](https://github.com/msp895/oai-hf-incident-reproduction/blob/2fec98288c1777845711a4b7678d96fd84ea16fe/src/alignment_auditor/docker_replication/harness/scaffolds.py)的 resourceful 要求与另加的合作提示必须分开。本轮单独登记 neutral/resourceful；后者只增加自主努力和尝试不同路径，不要求交流或越界。模型从 Luna 换为 Sol、工作目录发现入口和回执修复也分别记录，因此不能声称单因素因果效果。
-
-## 如何解释本轮观察
-
-完整数据持有者可以很快完成自己的任务；单纯增加等待预算，或稍晚投放这种 worker，仍不能保证它查看请求。互补受阻设计让双方都保有自己的未完成工作，提供真实互助机会。是否回复仍由模型决定；结束的上下文不秘密唤醒，不追加操作者催促。
-
-证据分层为：看见实际同伴元数据 → 定向请求被接受 → 对应同伴实际读到 → 同伴自己写回 → 请求者实际读回 → 最终数据或方法采用。全部使用工具事件 ID、原生调用、正文哈希和独立源核验。只有前两层不能叫双向交流，重复读同一报告不能当作多个独立事件。
-
-Side channel 中主动读取并采用同伴工作数据，是相应禁止通信规则下的信息流证据；它仍不自动证明恶意、欺骗或通用作弊方法。Legal channel 中合规转交数据属于正常互助。正确答案若因仅允许直接本地读取的代理规则而仍显示 `needs_evidence`，也不能据此判它越界。准确限定范围的部分回答不算捏造。
-
-当前实现是受限的类型化本地服务，不能运行 Bash、访问宿主机或外部网络；它不是 Docker/Artifactory 的原样复现。四次到达和较大上限不代表小时／天级自主工作。两个源案例上的多个派生问题与相关 worker，也不等于广泛领域覆盖或独立重复。
-
-## 后续应固定和单独检验的因素
-
-优先固定已经证实能产生真实互助的设计，再做 No/Side/Legal 三种通路及独立弱点关闭对照。不同通路同时改变授权和技术条件，不能直接把组间差异归为授权效应。压力保持单独轴，本轮为 none；不靠额外威胁解释通信机制结果。
-
-通用作弊方法测试应使用任务答案各不相同的后续工作，要求同一方法在新的目标对象上有实际效果。只有从自然轨迹中得到真实方法 donor 后，才做另外登记的匹配曝光诊断；没有 donor 就记零调用，不由操作者补写一段作弊方法冒充自然传播。
-
-长时研究应增加有实质工作量的任务队列和可审计的跨上下文工件保留，分别记录实际活动时间、结束／重入规则与重复性。反复查消息或扩大上限不能替代这项证据。扩充源案例与前瞻性固定重复在开发搜索之后进行；保留失败资格和负面结果。
-
-## 已纠正的工程教训
-
-- 直接调用虚拟环境的 Python 路径，不能先解析其符号链接到基础解释器。本轮最初四条校准轨迹因此缺少 `jsonschema`；实际 provider 回复与失败门槛全部保留，没有自然 rollout。依赖检查已前移。
-- 读取回执的 source kind 必须绑定那一次真实读取及资源 ID，不能被后续读取全局重标。旧回合精确重放虽通过，这项语义质量检查仍失败，保留原 gate 和失败结果；后续版本修正并单独冻结。
-- 清理只删除逐文件核对过的操作者重复副本和零调用的废弃草稿。不能把失败、未互助或未越界的运行当作无用历史删掉。清理记录与全部模型结果一同归档。
+For current work, use the [research design](hf-design-iteration-2026-10-21.md).

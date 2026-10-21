@@ -1,5 +1,9 @@
 # Natural-input correction · 20 October 2026
 
+> Historical record. Statements about current or future work refer to the date
+> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> and [running guide](../running-evals.md) for present work.
+
 **Source-permission front-loading is removed from current task introductions.**
 The user requires natural business tasks and withdrew the upfront intervention.
 This is an offline input correction, not a new model result.
@@ -30,9 +34,9 @@ Verification checks actual assembled inputs, inherited environments, normal ACL
 discovery, authorized and unauthorized source effects, shared-work access and
 exact replay. No subject or judge requests, model retries, cloud provisioning or
 credential changes are part of this correction. The latest completed behavioral
-evidence remains the [19 October study](../experiments/sol-factor-v1/RESULTS.md).
+evidence remains the [19 October study](../../experiments/sol-factor-v1/RESULTS.md).
 
-[Offline evidence](../experiments/prompt-contract/audits/2026-10-20.json): eight
+[Offline evidence](../../experiments/prompt-contract/audits/2026-10-20.json): eight
 prompt-contract checks, eleven related base/derived suites and nine factor
 controls passed. A fresh prepare-only audit checked 52 initial inputs and 36
 matched comparisons; all eight prospective worlds use on-access metadata. All
