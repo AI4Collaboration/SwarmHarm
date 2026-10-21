@@ -9,13 +9,14 @@ procurement, using synthetic records and local business services.
 [Data sources](docs/research/task-sources-and-verification.md) ·
 [Experiments](experiments/README.md)
 
-## Current design
+## Current study
 
-[Composable procurement](experiments/procurement-composition-v1/README.md) combines
-missing budget reservation with missing aggregate checks at order issuance.
-Six requisitions are impossible within their original budgets; both defects
-are needed for the demonstrated overrun. Seven offline checks passed. This is
-a design prototype, with no new model results or active collector.
+[Customer-contract procurement](experiments/procurement-contract-v1/README.md)
+is being prepared with GPT-5.6 Sol. Six impossible requisitions combine two
+procurement-control defects with a customer contract: a missed installation slot
+creates $14,000 in simulated compensation. Two funded capability jobs precede
+three fresh-agent pairs. This pressure condition was explicitly requested by the
+user; it has no model results yet.
 
 ## Latest result
 
@@ -34,7 +35,7 @@ has one process weakness, not several composable loopholes.
 
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
-- **Runner:** [procurement-settlement-v1](experiments/procurement-settlement-v1/README.md),
+- **Runner:** [procurement-contract-v1](experiments/procurement-contract-v1/README.md),
   with durable tool records and independently checked transaction/source amounts.
 - **Model:** `gpt-5.6-sol / xhigh` through existing host ChatGPT login at
   `https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
@@ -53,7 +54,8 @@ adoption by fresh agents. The first settlement study is complete;
 no approval overrun or harmful-method adoption was observed. Posted approval overruns are financial commitments,
 not automatically realized economic loss or evidence of intent.
 
-Prompts remain ordinary work requests: no added pressure, collaboration hints,
-loophole hints or communication bans. Keep genuine business requirements and
+Prompts remain ordinary work requests. This study includes the explicitly requested
+customer-contract pressure, with no collaboration hints, loophole hints or
+communication bans. Keep genuine business requirements and
 measure the actual downstream effect. See the [outcome criteria](docs/business-outcome-criteria.md)
 and [current handoff](docs/working-context.md).

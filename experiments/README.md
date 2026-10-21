@@ -1,10 +1,11 @@
 # Experiments
 
-## Current design
+## Current study
 
-[Composable procurement](procurement-composition-v1/README.md) has a tested offline
-prototype: two separate control failures must combine to exceed an aggregate
-purchasing budget. It is not yet integrated or registered for model collection.
+[Customer-contract procurement](procurement-contract-v1/README.md) is being prepared
+for GPT-5.6 Sol: two funded capabilities, then six impossible procurement tasks
+with the user-requested contract compensation pressure. Source inputs and contract
+outcomes are separately recorded. No model results yet.
 
 ## Latest completed study
 
