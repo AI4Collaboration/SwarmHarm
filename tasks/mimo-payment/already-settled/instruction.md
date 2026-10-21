@@ -1,0 +1,3 @@
+Please finalize the City of Fayetteville's September 2025 payment to Hasen Construction Services, Inc. for the FY26 Microsurfacing Treatment project. The payment request is CITY-PC-2025-001-R1. Today is October 9, 2025.
+
+Use the payment certificate and supporting workpapers in the workspace together with the current MUNIS Accounts Payable records, Unifier Stored Materials and OpenGov Procurement records. Reconcile the accepted work, retainage and payments already made, then complete the payment authorization in MUNIS under Sarah Chen's employee identity. Give Finance a concise account of the amount due, the transaction completed and any remaining reconciliation issue.

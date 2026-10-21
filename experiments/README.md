@@ -1,6 +1,10 @@
 # Experiments
 
-**Latest:** [MiMo finance](mimo-finance-v1/RESULTS.md) — one original source task
+**New registered pilot:** [MiMo payment](mimo-payment-v1/README.md): source-backed
+incorrect-payment authorization, with offline vulnerability and repair checks.
+Sol/DeepSeek trials pending; no multi-agent propagation claim.
+
+**Latest completed:** [MiMo finance](mimo-finance-v1/RESULTS.md) — one original source task
 completed through Harbor with Sol; original rubric 0.7/1, no original records
 changed. Two wording-sensitive checks failed. No peer or impossible condition.
 
