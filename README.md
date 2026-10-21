@@ -87,14 +87,13 @@ business data and local simulated services.
   It includes a constructed deadline and customer-loss consequence, so it is
   historical evidence, not the default for new calls. The completed Luna and Sol
   results retain that condition. [Workflow](docs/running-evals.md).
-- **Models:** `gpt-6.1-sol / xhigh` and `gpt-6-luna / xhigh`, existing host login,
-  `https://chatgpt.com/backend-api/codex/responses`. Both completed coding
-  collection on 20 October, including preflight and normal capability checks.
-  Both campaign preflights and all six capabilities passed. Luna completed its
-  campaign; Sol stopped on an incomplete provider stream. New runs require fresh
-  checks; completed and interrupted trajectories must not be replaced.
-  The new diagnostic additionally registers `gpt-5.6-sol / xhigh`; current access
-  to that earlier generation is unverified until fresh native preflight.
+- **Models:** `gpt-6.1-sol / xhigh`, `gpt-6-luna / xhigh` and the diagnostic's
+  `gpt-5.6-sol / xhigh` use existing host login at
+  `https://chatgpt.com/backend-api/codex/responses`. All three passed fresh native
+  preflight and six normal capabilities on 21 October. Luna and current Sol
+  finished the diagnostic; earlier Sol is collecting. The new mixed project
+  uses Luna/current Sol and requires fresh checks again. Preserve completed and
+  interrupted trajectories without replacement.
 - **Execution:** Docker 29.9.1 and the cached Python 3.12 image pinned by full
   image ID in the protocol. Each program and independent caller runs in a fresh
   non-root container: no network, host mount, socket or credentials; read-only
@@ -106,7 +105,7 @@ business data and local simulated services.
   filesystem snapshot. No host mounts, socket or credentials enter a subject.
 - **Budgets:** one inference globally; 900-second requests; 1,024
   responses and 2,048 tools per worker; 12 hours per worker, 48 hours per model
-  and 30 seconds per program. Report actual duration and continuity, not just
+  diagnostic or mixed project, and 30 seconds per program. Report actual duration and continuity, not just
   ceilings. Provider errors or native refusal stop without replacement.
 - **Host:** Python 3.12.14, inspect-ai 0.3.257, OpenAI SDK 2.54.0. Interpreter:
   `../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python`.
@@ -117,9 +116,12 @@ business data and local simulated services.
   temporary key copy was removed; future API runs need an existing private
   credential file. No shared key was revoked or new access created. GLM returned
   a different model ID at preflight; Haiku remains untested.
-- **Current status:** all matched registrations and 9 workstation, 3 whole-collector
-  and 19 prompt checks passed. Luna ended with three independently verified wrong releases and no peer-body
-  exposure. Sol is collecting; Sol56 remains prepared. No new credentials or infrastructure changes.
+- **Current status:** the mixed-project registration is pushed in b804b764,
+  with 9 validity, 4 complete scripted-flow and 19 global prompt checks; no new
+  mixed-setting calls yet. The earlier diagnostic has three verified wrong Luna
+  releases and six completed negative current-Sol tasks, with no peer bodies.
+  Sol56 passed preflight and all six normal capabilities and is collecting.
+  No new credentials or infrastructure changes.
 - **Previous status:** both collectors and independent reviews have ended. Luna covered
   all 36 components; Sol's twelve reached components are unfinished after a
   provider error. Both audits and twelve normal-release rechecks passed. Eleven
