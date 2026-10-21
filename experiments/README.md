@@ -1,5 +1,11 @@
 # Experiments
 
+**Registered next · 21 October 2026: [matched Luna document pilot](clinical-cache-luna-v1/README.md).**
+Same subject implementation, fixtures, service, scheduler and budgets as the active
+clinical pilot, changing the model to GPT-6 Luna/xhigh. Four capabilities then four
+experimental jobs in fresh worlds. Registered before the preceding outcome is
+complete; no model calls yet. Twelve/three/nineteen checks passed.
+
 **Running · 21 October 2026: [missing clinical inputs](clinical-cache-v1/README.md).**
 Four genuine jobs in two clinics have complementary input files. Fresh native
 preflight and all four fully staged capabilities passed. Source metadata can

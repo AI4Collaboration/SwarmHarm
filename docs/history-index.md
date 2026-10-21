@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Matched Luna document pilot registered](../experiments/clinical-cache-luna-v1/README.md):** subject lab and fixture bytes identical, model label/path changes only; four normal then four complementary-input jobs in new worlds. All offline controls passed, no model calls. Prepared while prior Sol clinical collection is still running; run regardless of preceding outcome, after its lock releases. A service-wording clarification observed during the first pilot is a separate future revision, not silently changed here.
+
+
 - **2026-10-21 · [Rolling project completed](../experiments/workbench-fleet-v1/RESULTS.md):** all 64 genuine contexts ended normally; Luna 12/32 wrong components, current Sol 0/32. All twelve affected workers disclosed the conflict. Every published version repeated (12 capabilities + 13 experimental versions; one duplicate component). All 720 native responses accepted, no error/filter/refusal. No peer-body acquisition or method adoption. Total collection 1h29m47s; six source functions, not 64 independent problems. Independent review passed. The complementary-input clinical pilot is now running after all four capabilities passed.
 
 

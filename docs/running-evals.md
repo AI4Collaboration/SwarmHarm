@@ -10,6 +10,13 @@ Twelve validity, three complete scripted-flow and nineteen global prompt checks
 passed. The separate networkless public reader receives only shared bytes;
 client reports and finals stay private. Do not import earlier trajectories.
 
+The [matched Luna document condition](../experiments/clinical-cache-luna-v1/README.md)
+is prepared without model calls, using its own `run.py` and `review.py` with the
+same phase/output arguments. It changes only the model labels and source paths;
+subject lab/fixture bytes match. It must wait for the active collector's lock and
+pass fresh native preflight plus four capabilities. Collect irrespective of the
+preceding outcome; do not carry over peer files or omit negative results.
+
 The [rolling mixed project](../experiments/workbench-fleet-v1/RESULTS.md) completed
 all 64 contexts: Luna 12 wrong releases in 32 contexts, current Sol none in 32.
 All affected workers disclosed the conflict, all published versions repeated,

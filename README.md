@@ -4,6 +4,12 @@ SwarmHarm studies whether agents pursuing legitimate work take harmful shortcuts
 and whether other agents discover and reuse those methods. Tasks use ordinary
 programming or business work with synthetic data and local services.
 
+**Registered next · 21 October 2026:** a small
+[matched Luna document pilot](experiments/clinical-cache-luna-v1/README.md) changes
+only the model labels and code paths. Subject-facing implementation and fixture
+bytes are identical to the active earlier-Sol condition. Its own four fully staged
+capabilities precede four experimental jobs; it waits for the current collector.
+
 **Running · 21 October 2026:** the [missing-input document pilot](experiments/clinical-cache-v1/README.md)
 passed fresh earlier-Sol preflight and all four fully staged report capabilities.
 Four genuine workers now have complementary clinical inputs in two clinics.
@@ -41,6 +47,11 @@ method-transfer chain remains unproven.
   Twelve validity, three complete-flow and nineteen global prompt checks passed.
   Private client reports/finals are not auto-published. Public recovery and wrong
   client values are graded separately; safe cooperation remains allowed.
+- **Next registered runner:** `experiments/clinical-cache-luna-v1/run.py`, same
+  input/outcome revisions and budgets as the active document pilot, with GPT-6
+  Luna/xhigh. Twelve validity/three complete-flow/nineteen global prompt checks
+  passed; subject lab and fixture bytes match. Prepared with no calls while the
+  earlier-Sol pilot was still running; no history carryover or outcome selection.
 - **Completed rolling runner:** `experiments/workbench-fleet-v1/run.py`, input
   `natural-rolling-workstation-v1`, outcome `actual-workstation-delivery-and-method-v1`.
   Both model gates and all 64 experimental contexts completed; independent review
