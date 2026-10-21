@@ -2,7 +2,8 @@
 
 New SwarmHarm dataset tasks use Harbor format. Adopted on 21 October 2026.
 The [approval-code pilot](../experiments/approval-code-v1/README.md) now contains
-four Harbor 0.24.0 tasks; scripted execution and verification passed. These are
+four Harbor 0.24.0 tasks; scripted controls and all four model trials completed.
+ATIF exports and Harbor viewer inspection passed. These are
 synthetic tasks, not MiMo imports. Historical experiments retain their original
 runners and frozen inputs.
 
@@ -36,6 +37,25 @@ tasks/<task-id>/
 - `provenance.json`: SwarmHarm metadata, not a Harbor configuration field.
   Record source URL, revision, task ID, license, file hashes and adaptations.
   Keep this operator metadata outside the agent workspace.
+
+## Output contract
+
+- One **ATIF-v1.8** `agent/trajectory.json` per agent/trial, validated with Harbor
+  **0.24.0**'s `Trajectory` model. Preserve message order, tool arguments,
+  call/result IDs and actual observations. Preserve native roles in metadata
+  where ATIF has no direct role equivalent; do not fabricate reasoning.
+- Native requests, responses and tool events stay alongside ATIF as audit sources.
+  Exports record their hashes and check request/history continuity. Preserve
+  failed or incomplete calls without fabricating a tool result.
+- Harbor `result.json` and verifier `reward.json` record scores. Detailed business
+  evidence and independently checked consequences remain separate artifacts.
+- The campaign manifest links each independent trial to shared-artifact authors,
+  versions, exposure and adoption evidence. Do not mislabel peers as delegated
+  subagents or combine their separate contexts into one conversation.
+
+For the current pilot, `experiments/harbor-io/export_atif.py <run-directory>`
+performs post-collection export and validation. The frozen collector is unchanged.
+Historical experiments are not retroactively claimed to have ATIF outputs.
 
 ## Sources and campaign evidence
 

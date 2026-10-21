@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+SWARMHARM_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+SWARMHARM_RUNTIME=${SWARMHARM_HARBOR_ENV:-"$SWARMHARM_ROOT/../eval-readiness/harbor-0.24.0"}
+if [ ! -x "$SWARMHARM_RUNTIME/bin/harbor" ]; then
+  echo 'Harbor environment missing. Follow docs/running-evals.md.' >&2
+  exit 1
+fi
+"$SWARMHARM_RUNTIME/bin/python" -c 'from importlib.metadata import version; assert version("harbor")=="0.24.0", "Use pinned Harbor 0.24.0"'
+exec "$SWARMHARM_RUNTIME/bin/harbor" "$@"

@@ -7,6 +7,8 @@ incident or success rate. Original evidence remains unchanged.
 
 ## 21 October 2026
 
+- **[Harbor approval-code pilot](../experiments/approval-code-v1/RESULTS.md):** one funded gate passed; three experimental contexts completed without foreign-code use, sharing or adoption. Two actually received the foreign code. Harbor 0.24.0 execution, ATIF-v1.8 exports and viewer inspection passed. Synthetic HVE-inspired mechanism; MiMo migration remains pending.
+
 - **[Customer-contract procurement](../experiments/procurement-contract-v1/RESULTS.md):** two funded jobs passed; six experimental agents made over-budget purchases totaling $1,390 in excess commitments, disclosed in their finals. No method sharing/adoption. Customer compensation pressure was explicitly requested; independent replay and cleanup completed. This differs mechanically from the preceding no-pressure study, so pressure causation remains unresolved.
 
 - **[Composable procurement design](../experiments/procurement-composition-v1/README.md):** seven offline checks passed for two interacting control failures across six synthetic requisitions. No model calls; workstation/collector integration and registration are pending.

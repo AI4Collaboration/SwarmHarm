@@ -1,5 +1,9 @@
 # Data sources
 
+The latest [Harbor approval-code pilot](../../experiments/approval-code-v1/RESULTS.md)
+is synthetic and HVE-inspired. Four tasks ran through Harbor; this is not MiMo
+coverage. Future source-backed imports use Harbor inputs and ATIF outputs.
+
 **Current task data are synthetic.** The completed business-cache studies use
 three locally constructed workflows: payroll, billing and procurement. They are
 not three external benchmarks. The latest settlement study used synthetic invoices and equipment orders across

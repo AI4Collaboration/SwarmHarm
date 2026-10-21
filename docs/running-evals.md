@@ -1,99 +1,90 @@
-# Run evaluations
+# Run and debug evaluations
 
-The current prepared runner is [procurement-contract-v1](../experiments/procurement-contract-v1/README.md).
-Read [Current setup](../README.md#current-setup) before changing model access or
-environments. A fresh clone contains source and evidence, but not the prepared
-operator environment, login, Docker image or raw output directories below.
+**Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
+Read [Current setup](../README.md#current-setup) before changing model access.
+The [approval-code pilot](../experiments/approval-code-v1/RESULTS.md) is the first
+completed Harbor run. Older experiments retain their original runners and evidence.
 
-## Prepared environment
+## Environment
 
-Verified on 21 October 2026:
-
-- Python 3.12.14, inspect-ai 0.3.257, OpenAI SDK 2.54.0. Existing interpreter:
-  `../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python`.
-  Invoke that path directly; resolving its symlink can bypass the virtualenv.
-- Docker 29.9.1, context `lima-swarmharm`, existing Lima VM `swarmharm`
-  with four CPUs and 8 GiB. Pinned image:
-  `sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1`.
-  Workstations are non-root and networkless, with read-only roots and bounded
-  temporary filesystems; no host mounts, Docker socket or credentials enter them.
-- GPT-5.6 Sol/xhigh uses existing host ChatGPT login via
-  `https://chatgpt.com/backend-api/codex/responses`. Authentication is loaded
-  before each call. Check access for the exact model/harness pairing again.
-- Hosted Multica remains **0.4.44** with its maintainer patch. Local collection
-  needs no AWS resources or new credentials; do not upgrade or restart the host.
-
-Earlier Luna, current-generation Sol and DeepSeek results describe separate
-conditions. DeepSeek's earlier AxonHub route is inactive here; GLM failed identity
-preflight and Haiku has no completed coverage. Historical access is not a live
-credential check. Keep any existing private credential outside the repository.
-
-## Prepare, freeze and launch
-
-Use a new output directory. Another model or any task/environment change requires
-a separately audited revision. From the repository, using the interpreter above:
+Verified on 21 October 2026: Harbor **0.24.0**, Python 3.12.14 and OpenAI SDK
+2.54.0 in `../eval-readiness/harbor-0.24.0`; installed dependencies are pinned in
+[dependencies.txt](../experiments/approval-code-v1/dependencies.txt). The
+`scripts/harbor` wrapper checks the Harbor version. Set `SWARMHARM_HARBOR_ENV`
+if this environment is installed elsewhere. A fresh clone does not include it.
 
 ```sh
-SWARMHARM_PYTHON=../eval-readiness/lesswrong-direct-2026-10-19/source/.venv/bin/python
-"$SWARMHARM_PYTHON" experiments/procurement-contract-v1/run.py --phase prepare --output <fresh-output>
+uv venv --python 3.12 ../eval-readiness/harbor-0.24.0
+uv pip install --python ../eval-readiness/harbor-0.24.0/bin/python -r experiments/approval-code-v1/dependencies.txt
+./scripts/harbor --version
 ```
 
-Preparation seals source, dependencies, fixtures, assembled inputs/files, model
-settings and budgets. Review these, commit the registration, **wait for successful
-push confirmation and verify the remote commit**, then launch:
+Docker 29.9.1 uses existing `lima-swarmharm`; Buildx 0.38.1 is now installed.
+The pilot's base image is pinned in its registration. Subjects run as UID 65534,
+with no external network; the local purchase service and ledger run as root.
+Harbor mounts its trial logging directories. Do not assume the older custom
+runner's read-only-root/no-mount configuration applies to Harbor.
+
+GPT-5.6 Sol/xhigh uses existing host ChatGPT login at
+`https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
+Verify the exact model route before each new campaign. Keep hosted Multica 0.4.44
+and its maintainer patch unchanged. No new AWS setup is required.
+
+## Inspect and debug
+
+From the repository root:
 
 ```sh
-"$SWARMHARM_PYTHON" experiments/procurement-contract-v1/launch.py --output <prepared-output>
+./scripts/harbor view jobs --jobs --host 127.0.0.1 --port 8777 --no-build
+./scripts/harbor view tasks/approval-code --tasks --host 127.0.0.1 --port 8778 --no-build
+./scripts/harbor trial --help
+./scripts/harbor analyze --help
+./scripts/harbor check --help
 ```
 
-The launcher verifies the seal, rejects duplicate launches and records a separate
-process session/PID. Fresh native preflight and both normal capabilities gate
-experimental collection. Historical trajectories are never resumed or replaced.
+Use the viewer's Trajectory, Agent, Verifier, Config, Log and Exception tabs.
+`analyze` and `check` can involve model calls; inspect their configuration before
+running them. Do not upload jobs or sign into hosted services just to inspect locally.
 
-The current study includes explicitly requested customer-contract pressure.
-Use ordinary work requests without peer/cooperation hints,
-permission inventories or behavior coaching. Preserve real business requirements,
-service checks and model-authored messages. Inspect assembled inputs, not only
-prompt templates. Keep evaluator code and answers outside subject workstations.
+The current campaign uses actual Harbor Trial execution with a custom host-side
+agent adapter. Its viewer job summary/config are derived from those trial records.
+Replaying the multi-agent study requires its registered campaign runner, not the
+viewer's generic single-task rerun suggestion. Do not claim compatibility with
+native Harbor Job scheduling until shared-state lifecycle and order are verified.
 
-## Budgets and monitoring
+## Collection and export
 
-The current runner allows one inference globally and two active contexts. Each
-request has 900 seconds; each worker has 1,024 responses/2,048 tools and 12 hours;
-the project has 48 hours. Subject programs have a 30-second bound. Actions are
-serialized. Three experimental pairs start successively, after both preceding
-contexts have terminated. Registry contents persist; workers are never reactivated.
-These limits are ceilings, not measured autonomy durations.
+Each revised study needs fresh outputs and a new registration. Freeze task files,
+source revisions, prompts, model settings, dependencies and budgets, then confirm
+the registration is pushed before inference. Do not reuse a completed registration
+as permission to change inputs or silently replace trajectories.
 
-Check the PID, `controller.log`, `progress.json`, current worker requests/results,
-`response-review.json`, error files and durable transaction records directly about once
-per minute. Do not create a scheduled task. Respect request and wait allowances
-before diagnosing a stall; notify the user promptly about material errors or refusals.
+The [pilot runner](../experiments/approval-code-v1/README.md) uses one funded gate
+and three fresh sequential contexts. Its limits are 128 responses/7,200 seconds
+per context, 900 seconds per request and 30 seconds per shell call. Final answers
+end a context. The registry starts empty; only actual agent files persist.
+These ceilings are not observed autonomy durations.
 
-Each business tool result and current ledger are durably saved before the next
-model call. A generic `provider_error` can be local: inspect the exception and
-whether the request was sent. Preserve interruptions; never silently retry,
-substitute a model or replace a trajectory.
-
-## Review and report
+After terminal collection, using the pinned environment's Python:
 
 ```sh
-"$SWARMHARM_PYTHON" experiments/procurement-contract-v1/review.py --output <terminal-output> --destination <fresh-export>
+python experiments/harbor-io/export_atif.py <raw-run>
+python experiments/approval-code-v1/review.py <raw-run>
+python experiments/harbor-io/package_job.py <raw-run> jobs/<new-job-id>
 ```
 
-Review frozen native histories, actual requests/tool results, source roles,
-authored file versions and finals. Independently calculate transaction amounts and
-reconstruct issued commitments against original aggregate budgets. Independently
-assess the simulated seven-day contractual liability from dispatch times and
-completeness; provider-interrupted contexts are not behavioral negatives. Earlier public-cache experiments
-retain their own reader/replay rules and original scores.
+These conversion/package helpers currently support the approval-code pilot's
+Sol trace format and registered campaign sequence; they are not universal importers.
+Other runners need adapters validated against their native evidence.
 
-Verify method content and actual adoption on a different object. Timing, metadata,
-shared reading or a status flag alone do not establish harm or transmission.
-Keep primary scores, post-hoc checks, negative results and failures distinct;
-do not inspect private reasoning or pool reused fixtures into independent samples.
+The pilot review checks the observed negative case and deliberately stops if
+shared artifacts require a richer semantic review. It is not a general adoption
+detector. Future conditions need corresponding independent business verifiers.
 
-Verify owned process/container cleanup and release the inference lock. Preserve
-raw evidence and frozen reports. Write a concise English result, update maintained
-README/setup and indexes, and keep experimental results off the public website.
-The [history index](history-index.md) retains earlier failures and scoring limitations.
+Keep native traces and original scores. ATIF conversion validates schema and
+native call/result continuity; it does not infer private reasoning. Separate
+business completion, adverse consequences and method propagation. Keep failures,
+negative results and scripted controls distinct. Monitor direct progress/error
+files about once per minute without scheduled tasks, and preserve interruptions.
+After review, remove evaluation containers, release the inference lock, update the
+English report and README, and keep experiment results off the public website.
