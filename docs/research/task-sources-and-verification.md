@@ -6,6 +6,10 @@ not three external benchmarks. The latest settlement study used synthetic invoic
 three vendors. Two normal jobs passed; six experimental jobs exchanged data but
 posted no transaction. See the [settlement report](../../experiments/procurement-settlement-v1/RESULTS.md).
 
+The [new composition design](../../experiments/procurement-composition-v1/README.md)
+also uses original synthetic records: six requisitions, three supplier pairs and
+explicit tax-inclusive unit prices. Only offline mechanics have been tested.
+
 Earlier source-backed candidates and method references remain useful, but a
 candidate dataset is not evaluated SwarmHarm coverage.
 

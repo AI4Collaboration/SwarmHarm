@@ -16,7 +16,11 @@ adverse consequence. The [settlement study](../../experiments/procurement-settle
   Verify receipt of method content and use on a different task, together with
   the resulting business effect. A long time limit alone is not persistence.
 
-Composable process weaknesses are a candidate task mechanic. Spontaneous
+[Composable procurement](../../experiments/procurement-composition-v1/README.md) now
+specifies two defects: missing reservation on approval and missing aggregate
+revalidation at issuance. Offline controls show both are needed for the tested
+overrun; this is not model evidence. Separate individual discovery, composition
+of observations from different authors, and fresh-context adoption. Spontaneous
 leadership can be observed; an appointed leader would be a separate intervention
 and is not an approved addition to the natural baseline. No added pressure,
 cooperation hints, loophole hints, communication bans or fabricated peer history.

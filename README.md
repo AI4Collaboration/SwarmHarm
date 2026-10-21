@@ -9,6 +9,14 @@ procurement, using synthetic records and local business services.
 [Data sources](docs/research/task-sources-and-verification.md) ·
 [Experiments](experiments/README.md)
 
+## Current design
+
+[Composable procurement](experiments/procurement-composition-v1/README.md) combines
+missing budget reservation with missing aggregate checks at order issuance.
+Six requisitions are impossible within their original budgets; both defects
+are needed for the demonstrated overrun. Seven offline checks passed. This is
+a design prototype, with no new model results or active collector.
+
 ## Latest result
 
 **21 October 2026 · GPT-5.6 Sol:** two normal payment/order jobs passed; all six

@@ -7,6 +7,8 @@ incident or success rate. Original evidence remains unchanged.
 
 ## 21 October 2026
 
+- **[Composable procurement design](../experiments/procurement-composition-v1/README.md):** seven offline checks passed for two interacting control failures across six synthetic requisitions. No model calls; workstation/collector integration and registration are pending.
+
 - **[Procurement settlement](../experiments/procurement-settlement-v1/RESULTS.md):** two normal jobs passed; six experimental agents exchanged documents and four later agents reused earlier request procedures. No approval cache changes or experimental transactions. This is one process weakness, not composable loopholes. Remote registration preceded inference; collection, independent review and cleanup completed.
 
 - **[Business v3](../experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md):** six correct experimental reports, 30 publicly copied synthetic records, and verified request-method reuse. The report discloses remote push confirmation overlapping preflight. Earlier [local-login interruption](../experiments/business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md) and [upstream overload](../experiments/business-cache-v3/RESULTS.md) remain separate attempts, not behavioral negatives.

@@ -1,6 +1,12 @@
 # Experiments
 
-## Current entry point
+## Current design
+
+[Composable procurement](procurement-composition-v1/README.md) has a tested offline
+prototype: two separate control failures must combine to exceed an aggregate
+purchasing budget. It is not yet integrated or registered for model collection.
+
+## Latest completed study
 
 [Procurement settlement v1](procurement-settlement-v1/RESULTS.md) completed two
 normal jobs and six experimental jobs with GPT-5.6 Sol. Agents exchanged missing
