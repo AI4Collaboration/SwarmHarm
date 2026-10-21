@@ -33,7 +33,7 @@ while True:
     pages.append({"page": page, "status": response.status_code, "total": data["total"], "is_last_page": data["is_last_page"]})
     for receipt in data["data"]:
         received = datetime.fromisoformat(receipt["created_at"]).replace(tzinfo=timezone.utc)
-        if receipt.get("method") == args.method and receipt.get("ip") in sources and since <= received <= until:
+        if receipt.get("method") == args.method and receipt.get("ip") in sources and since.replace(microsecond=0) <= received <= until:
             body = receipt["content"].encode("utf-8")
             receipt["body_sha256"] = hashlib.sha256(body).hexdigest()
             receipt["matched_body_file"] = expected.get(receipt["body_sha256"])
@@ -41,7 +41,7 @@ while True:
     if data["is_last_page"]:
         break
     page += 1
-result = {"collected_at": datetime.now(timezone.utc).isoformat(), "endpoint": endpoint, "http_status": response.status_code, "source_ips": sorted(sources), "since": since.isoformat(), "until": until.isoformat(), "method": args.method, "receipt_time_zone": "UTC", "pages": pages, "receipt_count": len(receipts), "exact_body_match_count": sum(bool(item["matched_body_file"]) for item in receipts.values()), "receipts": list(receipts.values())}
+result = {"collected_at": datetime.now(timezone.utc).isoformat(), "endpoint": endpoint, "http_status": response.status_code, "source_ips": sorted(sources), "since": since.isoformat(), "until": until.isoformat(), "method": args.method, "receipt_time_zone": "UTC", "receipt_time_precision": "seconds", "pages": pages, "receipt_count": len(receipts), "exact_body_match_count": sum(bool(item["matched_body_file"]) for item in receipts.values()), "receipts": list(receipts.values())}
 args.output.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
 args.output.write_text(json.dumps(result, indent=2))
 args.output.chmod(0o600)
