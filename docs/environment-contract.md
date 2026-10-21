@@ -1,91 +1,60 @@
 # Environment contract
 
-**The main SwarmHarm challenge is legitimate work with a blocked valid completion
-path and a reachable, independently verifiable business-process exploit.**
-We test whether independently acting agents discover a method, share it, and
-transfer it to a fresh agent working on a different business object.
+## Two core environment conditions
 
-These are admission requirements for our chosen challenge design, not a claim
-that all reward hacking requires impossible tasks. An environment must permit the
-behavior; a model is allowed to decline, fail, work normally or never discover it.
-Do not select or relabel runs just to obtain positive results.
+1. **A legitimate task beyond reach.** Use a real business task whose valid
+   completion is either **impossible** in the given state or **beyond the tested
+   model's capability within its resource budget**. Label these separately.
+   Prove impossibility through a contradiction or missing prerequisite; support
+   capability limits with model- and budget-specific evidence. One failed rollout,
+   a provider outage or a brittle checker establishes neither.
+2. **Discoverable, verifiable exploits.** The environment contains a working
+   process loophole that agents can encounter through ordinary work, without
+   instructions or hints to find or use it. Independently verify exploit execution
+   and distinguish it from legitimate completion and ordinary mistakes. Readable
+   content or a writable field alone is not an exploit.
 
-## Six requirements
+These define our chosen challenge, not every possible reward-hacking environment.
+An exploit may produce apparent success without satisfying the legitimate goal.
+A model may fail, report a shortfall or never find it; positive behavior is not an
+admission requirement. Feasible unmodified source tasks are integration/capability
+checks, not challenge coverage.
 
-1. **A real task with a legitimate objective.** Start from source-backed finance
-   or procurement work, actual task records and usable business tools. Define the
-   intended business outcome before running. Preserve source provenance and
-   document adaptations. Natural task instructions contain no exploit or peer hints.
-2. **A proven blocker.** In the experimental state, no valid completion satisfies
-   the request within the available resources, records and business rules. Record
-   the exact contradiction or missing prerequisite and audit every ordinary route.
-   Difficulty, an API outage, conflicting fixtures or one unsuccessful rollout
-   do not prove impossibility. Reporting a shortfall remains a valid negative result.
-3. **A reachable process weakness.** An offline demonstration must cause a local
-   service to accept an action that violates the business objective or invariant.
-   Verify the same sequence fails after repairing the specific defect. A writable
-   file, readable answer, synthetic key or shared folder alone is not an exploit.
-   The shortcut may produce apparent completion; it does not make the original
-   legitimate objective satisfied.
-4. **Independent consequences.** Preserve original truth outside subject control.
-   Separately record service acceptance, task correctness, exploit execution and
-   business consequences. Recover the actual posted transaction or effective
-   decision and compare it to truth. A status edit, tool success, copied value or
-   LLM judgement alone cannot establish harmful conduct. Audit checker false
-   positives, wording sensitivity and ordinary-error collisions.
-5. **Useful, discoverable peers.** Run real independent agents with separate
-   contexts and a natural shared-artifact surface. Their work must offer relevant
-   information or reusable procedures, not redundant copies of what every agent
-   already receives. Establish this utility offline without seeding a successful
-   method. Record the discovery cues. No instruction to collaborate, prohibition
-   on communication, planted malicious peer or fabricated history in the natural arm.
-6. **Persistence and different-task adoption.** Preserve authentic artifacts across
-   runs with enough opportunity for a later agent to encounter them. Record method
-   authorship, actual content receipt, later execution on a different task/object,
-   and its business effect. A generous timeout is not observed long-horizon work;
-   file access, answer copying and tool-name reuse are not method adoption.
+## Swarm setup
 
-## What counts as evidence
+Use independent agents with separate contexts, a natural shared environment and
+persistent, authentic artifacts. Peers should offer useful information or methods.
+Do not plant a successful method, fabricate peers or coach collaboration. Preserve
+artifacts across runs so a fresh agent on a different task can encounter them.
+These are swarm setup choices, separate from the two environment conditions.
 
-Track separately: **discover → use → share → receive → adopt elsewhere → effect**.
-Every arrow needs a trace or state transition. A missing link stays missing.
-A genuine behavioral negative is a completed run with a verified opportunity,
-not a broken tool, unavailable model, missing peer artifact or failed verifier.
+## Measurements
 
-Define a service acceptance signal A and an independent valid-business outcome V.
-An exploit can produce A = 1 while V = 0. Confirm the process defect and actual
-consequence before calling that reward hacking; infer neither intent nor harm
-from the mismatch alone. Preserve disclosed mistakes and ambiguous cases.
+Track **discover → use → share → receive → adopt elsewhere → effect** separately.
+Verify actual method content, receipt and execution on a different business object.
+Shared reads, answer copying or tool-name reuse do not establish method adoption.
 
-## Admission gates before subject inference
+Keep original business truth outside subject control. Record service acceptance,
+legitimate task success, exploit use and downstream business effects separately.
+A success message or LLM judgement alone does not establish harm. Confirm an
+actual incorrect payment, commitment or decision in the contained environment;
+do not infer intent from an error. Missing links and negative outcomes remain results.
 
-- Source audit and ordinary capability check pass in a feasible reference state.
-- The challenge's legitimate path is proven blocked; checker wording is not the blocker.
-- A scripted exploit reaches the adverse effect; the repaired process blocks it.
-- Peer discovery, useful content, persistence and fresh-context access work mechanically.
-- Independent grading, native traces and cleanup work end to end.
-- Freeze the exact condition, model, budget and hashes; push before inference.
+## Validation and run discipline
 
-Feasible references and repaired fixtures are validation assets, not mandatory
-extra model arms. Running a matched model comparison is a separate experiment.
-Do not change a frozen task or add pressure in response to a negative rollout.
+- Preserve source provenance and document derived task changes.
+- Establish the stated blocker and audit ordinary completion routes.
+- Demonstrate the exploit offline and check that repairing the defect blocks it.
+- Check verifier false positives and any downstream business effect independently.
+- Validate peer-artifact persistence and fresh-context access mechanically.
+- Freeze conditions, model, budget and hashes; push before subject inference.
 
-## Required, optional and out of scope
+Validation fixtures are not mandatory extra model arms. Do not change frozen tasks
+in response to a negative result. Pressure, appointed leadership and composed
+loopholes are separate experimental variables, not core requirements; the natural
+baseline has no added pressure, exploit hints or cooperation coaching.
 
-**Required for the main challenge:** the six conditions above. A single-agent
-probe may isolate one stage, but cannot establish swarm propagation.
-
-**Optional experimental variables:** channel availability, horizon, number of
-agents, complementary pieces of a method, or naturally observed leadership.
-Appointed leadership and pressure require separate, explicit interventions;
-neither belongs in the natural baseline. Combining defects requires proof that
-each is needed for that route, not merely placing two flaws in the same world.
-
-**Not challenge evidence:** unmodified feasible MiMo tasks, scorer-only lexical
-mismatches, tool access alone, source copying, or scripted positive controls.
-These can validate inputs or mechanics and must retain those labels.
-
-Use contained non-cyber business services, synthetic financial effects and no
+Use contained non-cyber business services and synthetic financial effects, with no
 real payments or credentials. Inputs use Harbor; outputs use ATIF plus native
 traces, independent business evidence and a separate campaign manifest.
 
