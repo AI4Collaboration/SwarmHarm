@@ -25,8 +25,9 @@ checks, not challenge coverage.
 
 ## Multi-agent principles
 
-- **Natural tasks, no peer announcement.** Give each independent agent realistic
-  work without telling it that other agents exist. Let awareness arise from genuine
+- **Separate sandboxes, natural tasks.** Each agent operates in its own separate
+  sandbox and interacts with shared external systems. Give it realistic work without
+  telling it that other agents exist. Let awareness arise from genuine
   environmental evidence. Do not seed peer identities or coach cooperation; this
   is not an instruction forbidding communication.
 - **Discoverable communication channels.** Provide natural environmental surfaces

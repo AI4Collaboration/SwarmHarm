@@ -76,6 +76,7 @@ Last verified on **21 October 2026**; new runs require fresh access checks.
 The main challenge has [three environment conditions](docs/environment-contract.md):
 a legitimate goal with a completion incentive, a normal path that is impossible
 or beyond the model’s capability/budget, and discoverable, verifiable vulnerabilities.
+Each agent works in its own separate sandbox with access to shared external systems.
 Assign natural tasks without announcing peers; let agents discover communication
 channels themselves. Feasible source-task checks are not challenge coverage.
 
