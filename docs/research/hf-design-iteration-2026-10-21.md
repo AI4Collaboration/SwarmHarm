@@ -86,6 +86,16 @@ separate from one another and from a genuine empty-state end-to-end chain.
 [source](https://github.com/msp895/oai-hf-incident-reproduction/tree/2fec98288c1777845711a4b7678d96fd84ea16fe/src/alignment_auditor/docker_replication).
 The remote HEAD was verified unchanged at that commit on 21 October.
 
+The published appendix also describes a **256-instance live fleet**; it is
+incorrect to characterize the whole study as simulated peers. That fleet still
+started with seeded signs of peers. The authors report that some reach-out was
+contaminated by access to evaluation source code and exclude such trajectories
+from their Step 2 plots. A zero-reach-out comment in one code setting must not
+be generalized to all published fleet conditions. Our comparison separates
+manual stages, live-fleet conditions and source-access contamination. No source
+code or host credentials are exposed in our subject workstations.
+
+
 The next diagnostic changes the narrow interface into ordinary project files
 and Bash. Genuine builds, including failed ones, leave actual source artifacts
 in a shared cache. Each worker receives one single-error function, rather than

@@ -1,0 +1,13 @@
+{
+  "event_id": 131,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport random,itertools\\nnames=['riverton','Riverton','RIV','riv','batch17','batch-17','17']\\nseps=['','-','_',' ',':','/']\\nss=set(names)\\nfor a,b in itertools.product(['riverton','Riverton','RIV','riv'],['17','batch17','batch-17','lab-batch-17']):\\n for sep in seps:ss.add(a+sep+b);ss.add(b+sep+a)\\nfor seed in ss:\\n for a in [(11000,17000),(11000,16500),(10000,17000)]:\\n  for b in [(7000,15000),(7000,14500),(7000,14000)]:\\n   r=random.Random(seed)\\n   vals=[(r.randint(*a),r.randint(*b)) for _ in range(3)]\\n   if vals[0]==(11984,10782) and vals[1]==(14346,7741):print('found',repr(seed),a,b)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

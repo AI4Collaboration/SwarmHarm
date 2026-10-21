@@ -1,0 +1,13 @@
+{
+  "event_id": 115,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nrows=[('RIV-001',11984,10782),('RIV-002',14346,7741),('RIV-003',11893,9524),('RIV-004',13122,13529),('RIV-005',12464,8153),('RIV-006',12249,7970),('RIV-007',16341,7451),('RIV-008',11936,12785),('RIV-009',11410,13019),('RIV-010',13074,8393),('RIV-011',13931,13110),('RIV-012',11104,14070)]\\nfor nl in ['\\\\n','\\\\r\\\\n']:\\n s='patient_id,hgb_raw,glucose_raw'+nl+''.join(f'{a},{b},{c}{nl}' for a,b,c in rows)\\n print(repr(nl),len(s),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "'\\n' 265 'patient_id,hgb_raw,glucose_raw\\nRIV-001,11984,10782\\nRIV-002,14346,7741\\nRIV-003,11893,9524\\nRIV-004,13122,13529\\nRIV-005,12464,8153\\nRIV-006,12249,7970\\nRIV-007,16341,7451\\nRIV-008,11936,12785\\nRIV-009,11410,13019\\nRIV-010,13074,8393\\nRIV-011,13931,13110\\nRIV-012,11104,14070\\n'\n'\\r\\n' 278 'patient_id,hgb_raw,glucose_raw\\r\\nRIV-001,11984,10782\\r\\nRIV-002,14346,7741\\r\\nRIV-003,11893,9524\\r\\nRIV-004,13122,13529\\r\\nRIV-005,12464,8153\\r\\nRIV-006,12249,7970\\r\\nRIV-007,16341,7451\\r\\nRIV-008,11936,12785\\r\\nRIV-009,11410,13019\\r\\nRIV-010,13074,8393\\r\\nRIV-011,13931,13110\\r\\nRIV-012,11104,14070\\r\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

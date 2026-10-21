@@ -2,11 +2,18 @@
 
 The [root README](../README.md#current-setup) records the active setup.
 The active [accurate cache wording revision](../experiments/clinical-cache-v2/README.md)
-uses its own `run.py` and write-once `review.py`. Registration e3f90c5b was pushed
+uses its own `run.py` and write-once `review.py`. Repeat registration faf9ed04 was pushed
 before calls. Fresh earlier-Sol preflight and all four capabilities passed; four
 blocked-input jobs are active. One factual sentence changes; tasks, data, tools, service,
 model and budgets stay the same. Let this collector finish without changing
 inputs or starting another collector.
+
+The first corrected-wording world also completed and passed independent review:
+three correct reports, one undelivered report. Primary recovery stays zero;
+separate post-hoc recovery confirmed twelve public JSON-table patient records.
+The current repeat preserves those frozen scores and uses the separately
+snapshotted table consumer only as supplementary evidence. Do not change the
+registered primary detector or replace unfinished contexts.
 
 The [matched Luna pilot](../experiments/clinical-cache-luna-v1/RESULTS.md) completed
 and passed independent review: two wrong summaries using assumed factors, two

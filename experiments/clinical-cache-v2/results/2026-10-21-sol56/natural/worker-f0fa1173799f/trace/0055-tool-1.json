@@ -1,0 +1,13 @@
+{
+  "event_id": 130,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport random,time\\nT=time.time();found=[]\\nfor seed in range(1000000):\\n r=random.Random(seed)\\n if r.randint(11000,17000)==11984 and r.randint(11000,17000)==14346 and r.randint(11000,17000)==11893:found.append(seed)\\nprint(found,time.time()-T)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "[] 5.1562910079956055\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

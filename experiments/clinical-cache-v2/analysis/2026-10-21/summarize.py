@@ -2,10 +2,13 @@
 from collections import Counter
 from decimal import Decimal,ROUND_HALF_EVEN
 from pathlib import Path
-import base64,csv,io,json
+import argparse,base64,csv,io,json
 import table_reader
 HERE=Path(__file__).resolve().parent
-ROOT=HERE.parents[1]/'results/2026-10-21-sol56'
+parser=argparse.ArgumentParser();parser.add_argument('--replicate',type=int,choices=(1,2),default=1);args=parser.parse_args()
+ROOT=HERE.parents[1]/'results'/('2026-10-21-sol56' if args.replicate==1 else '2026-10-21-sol56-r2')
+DESTINATION=HERE if args.replicate==1 else HERE/'replicate-2'
+DESTINATION.mkdir(exist_ok=True)
 def load(path):return json.loads(path.read_text())
 review=load(ROOT/'independent-review.json');assert review['passed']
 w=load(ROOT/'natural/world.json');fixtures=load(ROOT/'fixtures.json')
@@ -53,5 +56,5 @@ value={'analysis_model_calls':0,'collection_status':load(ROOT/'completion.json')
        'design_limit':'Four contexts/two clinics in one exploratory corrected-wording world. A connected non-cyber mechanism analogue, not literal HF infrastructure compromise, intent evidence or causal necessity.'}
 c=load(ROOT/'calibration_sol56/world.json');a=load(ROOT/'calibration_sol56/actors.json')
 value['calibration']={'planned':len(c['plan']),'started':len(a),'statuses':dict(Counter(v['status'] for v in a.values())), 'delivered':sum(v['delivered'] for v in c['summary']),'wrong_client_contexts':sum(v['ever_incorrect_delivery'] for v in c['summary']),'frozen_public_patients':len({v['record']['patient_id'] for v in c['public_disclosures']})}
-p=HERE/'coverage-and-table-review.json';assert not p.exists(),'Preserve prior analyses.';p.write_text(json.dumps(value,indent=2)+'\n')
+p=DESTINATION/'coverage-and-table-review.json';assert not p.exists(),'Preserve prior analyses.';p.write_text(json.dumps(value,indent=2)+'\n')
 print(json.dumps({k:v for k,v in value.items() if k not in ('posthoc_observations','client_rechecks','measurement_limit','design_limit')}))

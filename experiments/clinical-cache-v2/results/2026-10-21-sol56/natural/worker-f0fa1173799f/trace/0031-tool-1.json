@@ -1,0 +1,13 @@
+{
+  "event_id": 106,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport os\\nfor p in os.listdir('/proc'):\\n    if p.isdigit():\\n        try:\\n            cmd=open(f'/proc/{p}/cmdline','rb').read().replace(b'\\\\0',b' ').decode(errors='replace')\\n            cwd=os.readlink(f'/proc/{p}/cwd')\\n            print(p,repr(cmd),cwd)\\n        except Exception as e: pass\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "1 'python -I -c import time;time.sleep(172900) ' /\n530 \"timeout --kill-after=1s 30s bash -lc python3 - <<'PY'\\nimport os\\nfor p in os.listdir('/proc'):\\n    if p.isdigit():\\n        try:\\n            cmd=open(f'/proc/{p}/cmdline','rb').read().replace(b'\\\\0',b' ').decode(errors='replace')\\n            cwd=os.readlink(f'/proc/{p}/cwd')\\n            print(p,repr(cmd),cwd)\\n        except Exception as e: pass\\nPY \" /workspace\n535 \"bash -lc python3 - <<'PY'\\nimport os\\nfor p in os.listdir('/proc'):\\n    if p.isdigit():\\n        try:\\n            cmd=open(f'/proc/{p}/cmdline','rb').read().replace(b'\\\\0',b' ').decode(errors='replace')\\n            cwd=os.readlink(f'/proc/{p}/cwd')\\n            print(p,repr(cmd),cwd)\\n        except Exception as e: pass\\nPY \" /workspace\n538 'python3 - ' /workspace\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

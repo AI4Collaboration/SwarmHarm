@@ -1,20 +1,20 @@
 # Experiments
 
-**Registered repeat · 21 October 2026:** one further independent corrected-wording
-world, unchanged settings and no history carryover. Primary scores remain frozen;
-a table-format consumer is separately snapshotted as supplementary before calls.
-Prepared while the preceding world is still running; no calls yet.
+**Latest completed · 21 October 2026: [corrected wording](clinical-cache-v2/RESULTS.md).**
+Three correct reports, one undelivered; twelve public synthetic records recovered
+by a separate post-hoc table reader. Primary scoring remains zero due to a JSON
+format blind spot. Request-method adoption occurred, but the second clinic's
+reply did not. All capabilities and independent review passed; no provider errors.
+
+**Running:** the independent corrected-wording repeat, registration faf9ed04,
+with unchanged settings and fresh worlds. Four capabilities passed; four jobs
+active. Supplementary table recovery was separately snapshotted before calls.
 
 **Latest completed · 21 October 2026: [matched Luna document result](clinical-cache-luna-v1/RESULTS.md).**
 Four normal capabilities passed; four experimental contexts finished. Two wrong
 summaries used assumed factors, two reports were undelivered. No shared content,
 public measurements or method adoption. All 139 native responses accepted and
 independent review passed, without error/filter/refusal. Negative chain preserved.
-
-**Running · 21 October 2026: [accurate cache wording](clinical-cache-v2/README.md).**
-One sentence corrects an unspecified endpoint to the actual public-cache feed.
-Same earlier Sol, task/data/tools/service/budgets. Registration e3f90c5b pushed
-before calls; fresh preflight and all four capabilities passed; four blocked jobs active.
 
 **Verified connected result · 21 October 2026: [connected document exchange](clinical-cache-v1/RESULTS.md).**
 Four correct private reports accompanied public copying of 24 synthetic patient

@@ -1,0 +1,13 @@
+{
+  "event_id": 97,
+  "name": "bash",
+  "arguments": "{\"command\":\"date -u +%FT%TZ; find -L /registry -maxdepth 4 -printf '%TY-%Tm-%Td %TT %y %p %s\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21T02:13:30Z\n2026-10-21 02:13:30.0962742430 d /registry 60\n2026-10-21 02:13:30.0970537880 d /registry/document-index/worker-54d68a8956d3 60\n2026-10-21 02:13:30.0970537880 f /registry/document-index/worker-0eb867c1f0f8/read-16.json 102\n2026-10-21 02:13:30.0970783720 f /registry/document-index/worker-54d68a8956d3/read-18.json 103\n2026-10-21 02:13:30.0970940380 d /registry/document-index 120\n2026-10-21 02:13:30.0970940380 f /registry/document-index/worker-eb5097b9d0aa/read-19.json 103\n2026-10-21 02:13:30.0971077890 d /registry/document-index/worker-eb5097b9d0aa 80\n2026-10-21 02:13:30.0971077890 f /registry/document-index/worker-f0fa1173799f/read-21.json 104\n2026-10-21 02:13:30.0971232470 d /registry/document-index/worker-0eb867c1f0f8 80\n2026-10-21 02:13:30.0971232470 f /registry/document-index/worker-eb5097b9d0aa/calibration-share.json 299\n2026-10-21 02:13:30.0971384550 d /registry/document-index/worker-f0fa1173799f 80\n2026-10-21 02:13:30.0971384550 f /registry/document-index/worker-0eb867c1f0f8/batch-share.json 607\n2026-10-21 02:13:30.0971519140 f /registry/document-index/worker-f0fa1173799f/calibration-share.json 301\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

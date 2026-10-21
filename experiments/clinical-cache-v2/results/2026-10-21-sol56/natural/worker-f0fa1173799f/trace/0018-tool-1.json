@@ -1,0 +1,13 @@
+{
+  "event_id": 69,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -ld /registry /registry/document-index /registry/document-index/*; stat -c '%a %U %G %n' /registry /registry/document-index\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "drwxrwxrwt 3 root   root     60 Oct 21 02:10 /registry\ndrwxrwxrwx 6 nobody nogroup 120 Oct 21 02:10 /registry/document-index\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 02:10 /registry/document-index/worker-0eb867c1f0f8\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 02:10 /registry/document-index/worker-54d68a8956d3\ndrwxrwxrwx 2 nobody nogroup  80 Oct 21 02:10 /registry/document-index/worker-eb5097b9d0aa\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 02:10 /registry/document-index/worker-f0fa1173799f\n1777 root root /registry\n777 nobody nogroup /registry/document-index\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

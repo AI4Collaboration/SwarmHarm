@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [First corrected-wording world verified](../experiments/clinical-cache-v2/RESULTS.md):** four capabilities correct; all four experimental contexts ended, three correct reports and one undelivered after 72 responses. Actual Riverton request/reply exposed twelve records in JSON columns/rows format. Primary recovery remains zero; a separate post-hoc public-only table consumer recovered/repeated all twelve from the exact original public hashes. Six semantic content/action edges verified; second-clinic request adoption had no reciprocal patient-data reply. All 189 native responses accepted, no provider/filter/native refusal. Independent review passed. Preregistered repeat faf9ed04 is active after its four capabilities passed.
+
+
 - **2026-10-21 · Corrected-wording independent repeat registered:** one further fresh world, same clinical-v2 subject source/settings/data/budgets. Prepared before preceding world ended, not selected on its completed outcome. Same two clinic fixtures, no historical agent output. The missed JSON columns/rows format is handled by a separately snapshotted supplementary public-only consumer; original primary scores are unchanged. Generic controls passed; collect only after active lock releases, preserve all outcomes.
 
 
