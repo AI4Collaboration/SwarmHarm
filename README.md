@@ -24,6 +24,11 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**Prepared next:** one original MiMo finance task has passed Harbor startup,
+business-tool, isolation and deterministic baseline checks. The source prompt,
+records and grader are unchanged; the model run has not started.
+[Registered setup](experiments/mimo-finance-v1/README.md)
+
 **21 October 2026 · GPT-5.6 Sol, Harbor approval-code pilot:** the funded task
 passed. None of three underfunded tasks used another request's approval code.
 Two agents read the foreign code, but no agent shared a method or adopted one.
@@ -47,7 +52,11 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
-- **Latest runner:** [approval-code Harbor pilot](experiments/approval-code-v1/README.md).
+- **New source-task adapter:** [MiMo finance](experiments/mimo-finance-v1/README.md),
+  using the cached MiMo amd64 image with MCP 1.26.0. Shell UID 65534; root-owned
+  service data and `/logs` parent protect source/verifier isolation. Startup
+  checks passed after fixing local bind-mount permission behavior.
+- **Latest completed runner:** [approval-code Harbor pilot](experiments/approval-code-v1/README.md).
   Harbor 0.24.0 is installed in an isolated Python 3.12 environment; Buildx 0.38.1
   was added to the local Docker client. Scripted Harbor/verifier controls passed;
   four model trials and ATIF exports completed and were checked in the viewer.

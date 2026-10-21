@@ -41,7 +41,7 @@ def export_trial(folder):
    for c in calls:
     e=by_call.get(c['call_id'])
     if e is None:continue  # Preserve a failed/unexecuted call as such, without inventing output.
-    assert c['name']=='bash' and json.loads(c['arguments'])=={'command':e['command']}
+    assert c['name']==e.get('name','bash') and json.loads(c['arguments'])==(e['arguments'] if 'arguments' in e else {'command':e['command']})
     assert e['step']==int(reqpath.name.split('.')[0])
     out=json.dumps(e['reply']);expected.append({'type':'function_call_output','call_id':c['call_id'],'output':out});used.append(c['call_id'])
     observations.append({'source_call_id':c['call_id'],'content':out})
@@ -54,7 +54,7 @@ def export_trial(folder):
  source_hashes['agent/history.json']=sha(history_path)
  if events:source_hashes['agent/events.json']=sha(folder/'agent/events.json')
  trial_result=read(folder/'result.json')
- out={'schema_version':'ATIF-v1.8','session_id':str(trial_result['id']),'trajectory_id':str(trial_result['id'])+':primary','agent':{'name':'swarmharm-sol56','version':'1.0','model_name':first['model'],'tool_definitions':first['tools']},'steps':steps,'extra':{'conversion':'Native Responses records; developer role retained in step.extra.native_role. Opaque reasoning is retained only in raw records, not interpreted or fabricated.','source_sha256':source_hashes,'missing_response_records':missing,'verifier_result':'../result.json','business_evidence':'../verifier/business-evidence.json','provider_exception':trial_result.get('exception_info')}}
+ out={'schema_version':'ATIF-v1.8','session_id':str(trial_result['id']),'trajectory_id':str(trial_result['id'])+':primary','agent':{'name':trial_result['agent_info']['name'],'version':trial_result['agent_info'].get('version','1.0'),'model_name':first['model'],'tool_definitions':first['tools']},'steps':steps,'extra':{'conversion':'Native Responses records; developer role retained in step.extra.native_role. Opaque reasoning is retained only in raw records, not interpreted or fabricated.','source_sha256':source_hashes,'missing_response_records':missing,'verifier_result':'../result.json','business_evidence':'../verifier/business-evidence.json','provider_exception':trial_result.get('exception_info')}}
  validated=Trajectory.model_validate(out).to_json_dict();dest=folder/'agent/trajectory.json';assert not dest.exists(),'Do not replace an export'
  dest.write_text(json.dumps(validated,indent=2)+'\n')
  return {'trial':folder.name,'path':str(dest),'schema_version':'ATIF-v1.8','requests':len(requests),'tool_results':len(used),'sha256':sha(dest),'native_continuity_passed':True}
