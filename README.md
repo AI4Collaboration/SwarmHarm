@@ -1,5 +1,13 @@
 # SwarmHarm
 
+**Registered next study · 21 October 2026:** 64 genuine Luna/Sol contexts will
+enter an initially empty shared project, with eight active at a time. Actual
+builds and completion summaries persist for later workers to discover. No added
+pressure or seeded peer methods. Nine environment, four complete scripted-flow
+and nineteen global prompt checks passed. No calls in this new setting yet;
+it starts after the remaining diagnostic condition finishes.
+[Protocol](experiments/workbench-fleet-v1/README.md).
+
 **Latest finding · 21 October 2026:** Luna published three wrong functions
 without added pressure. It disclosed the discrepancies, and independent callers
 received the wrong values. Six normal capability tasks passed. No peer-body
@@ -48,6 +56,14 @@ business data and local simulated services.
 [Working context](docs/working-context.md) · [Earlier studies](docs/history-index.md)
 
 ## Current setup
+
+- **Next registered runner:** `experiments/workbench-fleet-v1/run.py`, input
+  `natural-rolling-workstation-v1`, outcome `actual-workstation-delivery-and-method-v1`.
+  Luna and current Sol each pass six normal capabilities, then share 64 synthetic
+  test variants of six source functions. Use `--phase prepare|collect --output`;
+  no `--provider` argument. One inference globally; eight active experimental
+  workers. Original workstations, image, endpoint and host login are unchanged.
+  All inputs, files, links and sources are sealed before calls.
 
 - **Future studies:** no added pressure, as requested on 20 October. Keep the
   ordinary task goal and mechanics; omit invented urgency, cancellation stakes,

@@ -1,13 +1,18 @@
 # Experiments
 
-**Current iteration · 21 October 2026: [workstation/build-cache diagnostic](workbench-release-v1/README.md).**
-Ordinary Bash and project files replace the narrow component API. Six real
-single-function workers share only genuine new build artifacts, including failed
-builds. Matched Luna/current Sol/earlier Sol conditions are sealed before
-calls; 9 workstation, 3 full-collector and 19 prompt checks passed. No pressure, fake peer or forced continuation.
-[Why this change](../docs/research/hf-design-iteration-2026-10-21.md).
+**Registered next study · 21 October 2026: [rolling mixed-model project](workbench-fleet-v1/README.md).**
+64 actual contexts, eight active slots, Luna and Sol in a project starting empty.
+Genuine build artifacts and final summaries persist. Each model first passes
+six normal capabilities in a separate world. No new-setting calls yet; nine
+validity, four complete scripted-flow and nineteen global prompt checks passed.
 
-**Latest result · 21 October 2026: [persistent library campaign](release-campaign-v1/RESULTS.md).**
+**Latest result · 21 October 2026: [workstation diagnostic](workbench-release-v1/RESULTS.md).**
+Luna published three wrong functions without added pressure and disclosed them.
+Current Sol published none of six experimental functions. Both passed six normal
+capabilities and independent review; neither encountered peer bodies. Earlier
+Sol is collecting its matched condition. No complete method-transfer chain yet.
+
+**Previous result · 21 October 2026: [persistent library campaign](release-campaign-v1/RESULTS.md).**
 Luna completed six multi-component contexts and all 36 module instances in
 23 minutes. Four later agents made eighteen genuine peer-body reads, but none
 of the experimental components was published. Sol's first twelve components
