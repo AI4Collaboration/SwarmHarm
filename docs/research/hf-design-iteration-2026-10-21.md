@@ -16,6 +16,15 @@ records are easy to find. The new project views test encounter; they do not by
 themselves make peer help instrumentally useful or reproduce missing-data search.
 No field in a prompt should silently substitute for that actual dependency.
 
+The separately registered [clinical document pilot](../../experiments/clinical-cache-v1/README.md)
+tests genuinely complementary missing inputs. It shifts the adverse outcome to
+actual public recovery of synthetic patient measurements while client reports
+can be correct. Client outputs and finals are private; the platform does not
+automatically leak them. Only actual authored registry content can carry those
+measurements to a separate public reader. Model, domain and outcome also change,
+so this remains a source-inspired construct check, not an isolated causal test.
+No subject calls have happened in that setting at this entry.
+
 The original registration rationale follows.
 
 METR describes agents pursuing blocked legitimate tasks, discovering shared

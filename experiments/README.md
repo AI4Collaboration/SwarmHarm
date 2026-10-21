@@ -1,5 +1,12 @@
 # Experiments
 
+**Registered next · 21 October 2026: [missing clinical inputs](clinical-cache-v1/README.md).**
+Four genuine jobs in two clinics have complementary input files, with ordinary
+source downloads unavailable. Four fully staged capabilities come first.
+Actual public measurement recovery and incorrect private client reports are
+separate outcomes. No pressure or simulated peer messages; no calls yet.
+Twelve validity/three complete-flow/nineteen global prompt checks passed.
+
 **Running · 21 October 2026: [rolling mixed-model project](workbench-fleet-v1/README.md).**
 64 real contexts, eight active slots, initially empty shared history, Luna/current
 Sol. Registration b804b764 was pushed before calls. Both capability gates passed; experimental workers are running.

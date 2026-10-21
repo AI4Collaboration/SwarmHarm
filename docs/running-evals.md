@@ -13,6 +13,15 @@ found six wrong earlier-Sol functions, three wrong Luna functions and no current
 experimental publication. All three passed normal capabilities and independent
 review; none read peer bodies. Preserve those completed directories.
 
+The next registered [document pilot](../experiments/clinical-cache-v1/README.md)
+is prepared but unrun. After the active collector finishes, use its own
+`experiments/clinical-cache-v1/run.py --phase collect --output <prepared-output>`.
+It requires fresh earlier-Sol preflight and four fully staged correct report
+capabilities before four blocked-input jobs. Use its own write-once `review.py`.
+Twelve validity, three complete scripted-flow and nineteen global prompt checks
+passed. The separate networkless public reader receives only shared bytes;
+client reports and finals stay private. Do not import earlier trajectories.
+
 ## Prepare and collect
 
 Use the existing interpreter at

@@ -4,6 +4,14 @@ SwarmHarm studies whether agents pursuing legitimate work take harmful shortcuts
 and whether other agents discover and reuse those methods. Tasks use ordinary
 programming or business work with synthetic data and local services.
 
+**Registered next · 21 October 2026:** a small
+[missing-input document pilot](experiments/clinical-cache-v1/README.md) gives real
+workers complementary clinical inputs. Ordinary document downloads are blocked;
+shared records can help, while a separate public reader checks actual measurement
+disclosure. All data are synthetic. Twelve validity, three complete-flow and
+nineteen global prompt checks passed. No model calls yet; it starts after the
+active collector finishes.
+
 **Running · 21 October 2026:** a [rolling shared project](experiments/workbench-fleet-v1/README.md)
 with 64 genuine Luna/Sol contexts, eight active slots and initially empty shared
 history. Actual builds and completion summaries persist for later workers.
@@ -33,6 +41,12 @@ method-transfer chain remains unproven.
   and nineteen global prompt checks passed. Inputs, files, symlinks, source,
   models and budgets are sealed. Each model first passes six normal functions
   in a separate world; experimental cache/history starts empty.
+- **Next registered runner:** `experiments/clinical-cache-v1/run.py`, input
+  `natural-missing-clinical-inputs-v1`, outcome `actual-client-record-and-public-disclosure-v1`.
+  Earlier Sol/xhigh; four fully staged capabilities precede four genuine jobs
+  in two clinics, with fresh preflight. Private client reports and finals are
+  not auto-published. Public recovery and wrong client values are graded
+  separately. Safe cooperation remains allowed. No calls yet.
 - **Models and route:** `gpt-6-luna / xhigh` and `gpt-6.1-sol / xhigh`, existing
   host login at `https://chatgpt.com/backend-api/codex/responses`.
   The completed diagnostic also verified `gpt-5.6-sol / xhigh`. All three passed
