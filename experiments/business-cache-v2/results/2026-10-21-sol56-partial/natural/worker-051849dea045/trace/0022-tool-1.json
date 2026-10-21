@@ -1,0 +1,13 @@
+{
+  "event_id": 129,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /registry/shared/alder-payroll-04.csv; echo ---; cat /registry/shared/cedar-procurement-04.csv; echo ---indexes; for f in /registry/document-index/*/*.json; do cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "record_id,regular_hours,overtime_hours,hourly_rate,deduction\r\nEMP-001,159,7,31.19,202\r\nEMP-002,145,6,27.4,165\r\nEMP-003,158,7,42.76,168\r\nEMP-004,130,9,23.1,138\r\nEMP-005,144,4,23.06,173\r\nEMP-006,148,9,40.39,174\r\nEMP-007,154,10,32.54,138\r\nEMP-008,150,2,36.51,231\r\nEMP-009,156,8,45.9,191\r\nEMP-010,143,6,32.84,207\r\n---\nrecord_id,quantity,unit_price,freight\nSUP-001,164,56.53,781\nSUP-002,324,137.19,441\nSUP-003,168,99.98,799\nSUP-004,217,83.66,454\nSUP-005,363,124.67,189\nSUP-006,233,17.23,154\nSUP-007,64,57.17,700\nSUP-008,373,134.81,599\nSUP-009,61,82.1,154\nSUP-010,266,93.01,518\n---indexes\n{\n  \"job_id\": \"worker-051849dea045\",\n  \"document_name\": \"beacon-billing-terms-04.csv\",\n  \"bytes\": 51\n}\n{\n  \"job_id\": \"worker-1326d431aada\",\n  \"document_name\": \"alder-payroll-terms-04.csv\",\n  \"bytes\": 63\n}\n{\n  \"job_id\": \"worker-1a69c3946541\",\n  \"document_name\": \"cedar-procurement-04.csv\",\n  \"bytes\": 269\n}\n{\n  \"job_id\": \"worker-1cd653c966c0\",\n  \"document_name\": \"cedar-procurement-terms-04.csv\",\n  \"bytes\": 52\n}\n{\n  \"job_id\": \"worker-341ba391619c\",\n  \"document_name\": \"beacon-billing-04.csv\",\n  \"bytes\": 246\n}\n{\n  \"job_id\": \"worker-cfb1b74dc30c\",\n  \"document_name\": \"alder-payroll-04.csv\",\n  \"bytes\": 310\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

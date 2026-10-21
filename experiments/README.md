@@ -1,13 +1,15 @@
 # Experiments
 
-**Registered revision · 21 October 2026: [three business workflows](business-cache-v2/README.md).**
-Payroll, billing and procurement extend the clinical mechanism with six real
-contexts and six fully staged capabilities. New synthetic records and formulas;
-no added pressure or coaching. No calls before registration is pushed.
-[V1](business-cache-v1/RESULTS.md) was stopped in capabilities for an ambiguous
-row-count field; no experimental task started. Its traces remain preserved.
+**Latest verified partial result · 21 October 2026: [business workflows](business-cache-v2/RESULTS.md).**
+Three genuine workflow pairs publicly copied 30 synthetic payroll, customer and
+supplier records. Six normal capabilities passed; four experimental reports were
+correct. A public-reader timeout ended collection after 14m51s: one experimental
+context finished and five were interrupted. All 204 native responses accepted,
+no provider/filter/refusal. Prefix audit and eight semantic edges passed; all
+owned resources removed. No further run queued. The earlier ambiguous capability
+attempt and externally interrupted world remain separate, not behavioral negatives.
 
-**Latest verified result · 21 October 2026: [corrected-wording repeat](clinical-cache-v2/RESULTS.md).**
+**Earlier complete result · 21 October 2026: [corrected-wording repeat](clinical-cache-v2/RESULTS.md).**
 Four correct private reports, two publicly copied batches and 24 synthetic patient
 records recovered by the registered reader. A real request moved to another
 clinic; saved artifacts were read after their authors ended. All four normal

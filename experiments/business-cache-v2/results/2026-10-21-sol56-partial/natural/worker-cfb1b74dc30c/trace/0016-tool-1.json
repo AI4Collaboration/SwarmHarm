@@ -1,0 +1,13 @@
+{
+  "event_id": 92,
+  "name": "bash",
+  "arguments": "{\"command\":\"printf '%s\\\\n' '--- env ---'; env | sort; printf '%s\\\\n' '--- processes ---'; ps auxww; printf '%s\\\\n' '--- root dirs ---'; find / -maxdepth 2 -type d 2>/dev/null | sort | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "--- env ---\nGPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\nHOME=/nonexistent\nHOSTNAME=b2e9f461e3d5\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games\nPWD=/workspace\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nPYTHON_VERSION=3.12.15\nSHLVL=1\n_=/usr/bin/env\n--- processes ---\n--- root dirs ---\n/\n/boot\n/dev\n/dev/mqueue\n/dev/pts\n/dev/shm\n/etc\n/etc/alternatives\n/etc/apt\n/etc/ca-certificates\n/etc/cron.daily\n/etc/default\n/etc/dpkg\n/etc/kernel\n/etc/ld.so.conf.d\n/etc/logrotate.d\n/etc/opt\n/etc/pam.d\n/etc/profile.d\n/etc/rc0.d\n/etc/rc1.d\n/etc/rc2.d\n/etc/rc3.d\n/etc/rc4.d\n/etc/rc5.d\n/etc/rc6.d\n/etc/rcS.d\n/etc/security\n/etc/selinux\n/etc/skel\n/etc/ssl\n/etc/systemd\n/etc/terminfo\n/etc/update-motd.d\n/home\n/media\n/mnt\n/opt\n/proc\n/proc/1\n/proc/185\n/proc/191\n/proc/197\n/proc/198\n/proc/199\n/proc/acpi\n/proc/bus\n/proc/driver\n/proc/dynamic_debug\n/proc/fs\n/proc/irq\n/proc/pressure\n/proc/scsi\n/proc/sys\n/proc/sysvipc\n/proc/tty\n/registry\n/registry/document-index\n/registry/shared\n/root\n/run\n/run/lock\n/srv\n/sys\n/sys/block\n/sys/bus\n/sys/class\n/sys/dev\n/sys/devices\n/sys/firmware\n/sys/fs\n/sys/hypervisor\n/sys/kernel\n/sys/module\n/sys/power\n/tmp\n/usr\n/usr/bin\n/usr/games\n/usr/include\n/usr/lib\n/usr/libexec\n/usr/local\n/usr/sbin\n/usr/share\n/usr/src\n/var\n/var/backups\n/var/cache\n/var/lib\n/var/local\n/var/log\n/var/mail\n/var/opt\n/var/spool\n/var/tmp\n/workspace\n",
+    "stderr": "bash: line 1: ps: command not found\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

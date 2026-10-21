@@ -6,7 +6,7 @@ import argparse,json,subprocess,fcntl
 
 def load(p):return json.loads(Path(p).read_text())
 def summarize(root,destination):
- root=Path(root);destination=Path(destination);assert not destination.exists()
+ root=Path(root);destination=Path(destination);assert not destination.exists();completion=load(root/'completion.json')
  review=load(root/'independent-review.json');assert review['passed']
  reg=load(root/'registration.json');fixtures=load(root/'fixtures.json');phases={}
  for phase,plan in reg['plan'].items():
@@ -26,18 +26,18 @@ def summarize(root,destination):
     'voluntary_shared_versions':versions})
   starts=[datetime.fromisoformat(load(root/phase/a/'result.json')['started_at']) for a in plan if (root/phase/a/'result.json').exists()]
   ends=[datetime.fromisoformat(load(root/phase/a/'result.json')['finished_at']) for a in plan if (root/phase/a/'result.json').exists() and 'finished_at' in load(root/phase/a/'result.json')]
-  phases[phase]={'started':True,'conditions':rows,'events':len(world['events']),'elapsed_wall_seconds':(max(ends)-min(starts)).total_seconds() if starts and ends else None,
+  phases[phase]={'started':True,'conditions':rows,'events':len(world['events']),'elapsed_wall_seconds':((datetime.fromisoformat(completion['finished_at']) if any(c['completed']<c['planned'] for c in rows) else max(ends))-min(starts)).total_seconds() if starts and ends else (datetime.fromisoformat(completion['finished_at'])-min(starts)).total_seconds() if starts else None,
    'rejected_submissions':sum(e['operation']=='submit_report' and e['result']['status']!=201 for e in world['events'])}
  clean=load(root/'cleanup-summary.json');checks=[]
  for v in clean['owned_workstations']:
   result=subprocess.run(['docker','inspect',v['container']],capture_output=True)
   checks.append({'container':v['container'],'removed_recorded':v['removed'],'absent_verified':result.returncode!=0 and b'no such' in result.stderr.lower()})
  assert all(v['removed_recorded'] and v['absent_verified'] for v in checks)
- lock=(root.parent/'release-campaign-inference.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
+ lock=(Path(__file__).resolve().parents[4].parent/'eval-readiness/release-campaign-inference.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);fcntl.flock(lock,fcntl.LOCK_UN);lock.close()
  running=subprocess.check_output(['docker','ps','-a','--format','{{.Names}}'],text=True).splitlines()
  readers=[v for v in running if v.startswith('sh-business-reader-')];assert not readers
  result={'model':reg['models'],'reasoning':reg['reasoning'],'pressure':reg['pressure'],'completion':load(root/'completion.json'),'phases':phases,'classifications':review['classifications'],
-  'independent_review_passed':True,'public_reads_repeated':review['all_rechecks_repeat'],'owned_workstations':checks,'public_readers_remaining':readers,'inference_lock_available':True,
+  'independent_review_passed':True,'review_scope':review.get('review_scope','Full world'),'complete_world_review':review.get('complete_world_review',True),'public_reads_repeated':review['all_rechecks_repeat'],'owned_workstations':checks,'public_readers_remaining':readers,'inference_lock_available':True,
   'limits':'One world, three synthetic workflows in the same harness; metadata/body matches alone do not prove method adoption. No model reasoning was inspected.'}
  destination.parent.mkdir(parents=True,exist_ok=True);destination.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({'written':str(destination),'classifications':result['classifications'],'conditions':{p:v.get('conditions') and [{k:c[k] for k in ('domain','planned','completed','correct_final_deliveries','ever_wrong_deliveries','public_records')} for c in v['conditions']] for p,v in phases.items()}}))
 if __name__=='__main__':

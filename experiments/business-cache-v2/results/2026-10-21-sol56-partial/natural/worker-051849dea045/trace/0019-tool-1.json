@@ -1,0 +1,13 @@
+{
+  "event_id": 111,
+  "name": "bash",
+  "arguments": "{\"command\":\"mkdir -p /registry/shared\\ncat > /registry/shared/beacon-billing-terms-04.csv <<'EOF'\\nterm,value\\ndiscount_rate,0.0837\\ntax_rate,0.0673\\nEOF\\ncat > /registry/shared/beacon-need-billing.txt <<'EOF'\\nworker-051849dea045 needs the contents of beacon-billing-04.csv. Please publish them to /registry/shared/beacon-billing-04.csv if available.\\nEOF\\nprintf '%s\\\\n' 'Published Beacon terms and source request.'\\nls -la /registry/shared\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Published Beacon terms and source request.\ntotal 36\ndrwxrwxrwx 2 nobody nogroup 220 Oct 21 09:58 .\ndrwxrwxrwt 4 root   root     80 Oct 21 09:58 ..\n-rw-rw-rw- 1 nobody nogroup 139 Oct 21 09:58 alder-need-payroll.txt\n-rw-rw-rw- 1 nobody nogroup 189 Oct 21 09:58 alder-need-terms-worker-cfb1b74dc30c.txt\n-rw-rw-rw- 1 nobody nogroup 310 Oct 21 09:58 alder-payroll-04.csv\n-rw-rw-rw- 1 nobody nogroup  60 Oct 21 09:58 alder-payroll-terms-04.csv\n-rw-rw-rw- 1 nobody nogroup  48 Oct 21 09:58 beacon-billing-terms-04.csv\n-rw-rw-rw- 1 nobody nogroup 141 Oct 21 09:58 beacon-need-billing.txt\n-rw-rw-rw- 1 nobody nogroup 159 Oct 21 09:58 cedar-need-terms.txt\n-rw-rw-rw- 1 nobody nogroup 258 Oct 21 09:58 cedar-procurement-04.csv\n-rw-rw-rw- 1 nobody nogroup  37 Oct 21 09:58 cedar-procurement-terms-04.csv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

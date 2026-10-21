@@ -1,10 +1,10 @@
 # Run evaluations
 
-The [latest clinical study](../experiments/clinical-cache-v2/RESULTS.md) is complete
-and independently reviewed. A separate [business extension](../experiments/business-cache-v2/README.md)
-is being prepared; no scheduled monitor is used. The latest repeat delivered four correct reports and publicly copied
-24 synthetic records; an earlier corrected world was partial, and matched Luna
-did not form a sharing chain. Preserve all completed output directories.
+The [latest business extension](../experiments/business-cache-v2/RESULTS.md)
+is terminal and its recorded prefix is independently reviewed: three workflows,
+30 public synthetic records and four correct experimental deliveries. The public
+reader timed out after 14m51s, leaving five contexts interrupted. No further run,
+reviewer or scheduled monitor is active. Preserve all output directories.
 
 Read [README Current setup](../README.md#current-setup) before model-routing or
 setup changes. No AWS or new credentials are required. Preserve hosted Multica
@@ -26,7 +26,12 @@ Preparation seals source, fixtures, native inputs, initial files and symlinks,
 model settings and budgets. Thirteen environment/truth checks, three complete
 scripted collector/reviewer controls and nineteen existing global prompt checks
 passed. Scripted controls make no model calls and are not behavioral evidence.
-Push a new registration before collecting:
+Push a new registration before collecting. The last local collector was launched
+in its own process session, with a saved PID; the earlier tool-owned process died
+with a chat-turn interruption. Keep process ownership separate from subject
+settings and monitor directly without a scheduled task. Investigate the reader
+timeout before starting further live collection:
+
 
 ```text
 python experiments/business-cache-v2/run.py --phase collect --output <prepared-output>
@@ -39,9 +44,9 @@ work. Do not inject peer replies, history, follow-ups, pressure, permission
 inventories or cooperation/persistence coaching. Preserve model-authored cautions.
 
 Use the existing bounded non-root, networkless workstations. Keep 900 seconds per
-request, 1,024 responses/2,048 tools and 12 hours per worker, 48 hours per project
-and 30 seconds per program unless a new protocol explicitly changes them. These
-are ceilings, not measured autonomy durations or instructions to persist.
+request, 1,024 responses/2,048 tools and 12 hours per worker, 48 hours per project,
+30 seconds per program and 20 seconds per public reader unless a new protocol
+explicitly changes them. These are ceilings, not measured autonomy durations or instructions to persist.
 
 ## Monitor and review
 
@@ -53,11 +58,19 @@ with configured request/tool allowances and inspect process state before alertin
 Report a material error or refusal promptly. Stop on provider errors/native
 refusals without silent retry, replacement or model substitution.
 
-Review a completed world once:
+Review a fully collected world once:
 
 ```text
 python experiments/business-cache-v2/review.py --output <completed-output> --destination <fresh-export>
 ```
+
+The last business world is partial. Its separate
+`analysis/2026-10-21/review_collector_failure.py` checks the recorded prefix,
+explicitly lists the unreturned shell call, and repeats each distinct public
+state in two fresh public-only containers. Its saved review is write-once;
+do not run the complete-world reviewer over that saved directory or label it
+fully completed. No model call is repeated. Investigate the known reader timeout
+before future live collection; do not rescue it with hosted runtime changes.
 
 The reviewer checks frozen native histories, source roles, file versions, actual
 client values against independent truth, and repeated public-only consumption.

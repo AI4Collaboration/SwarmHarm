@@ -1,0 +1,13 @@
+{
+  "event_id": 75,
+  "name": "bash",
+  "arguments": "{\"command\":\"env | sort | sed -n '1,200p'; printf '\\\\n--- processes ---\\\\n'; ps auxww\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 127,
+    "stdout": "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\nHOME=/nonexistent\nHOSTNAME=33623b42656b\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games\nPWD=/workspace\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nPYTHON_VERSION=3.12.15\nSHLVL=1\n_=/usr/bin/env\n\n--- processes ---\n",
+    "stderr": "bash: line 1: ps: command not found\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

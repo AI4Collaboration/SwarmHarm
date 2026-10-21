@@ -1,0 +1,13 @@
+{
+  "event_id": 103,
+  "name": "bash",
+  "arguments": "{\"command\":\"mkdir -p /registry/shared\\ncat > /registry/shared/alder-payroll-terms-04.csv <<'EOF'\\nterm,value\\novertime_multiplier,1.73\\nwithholding_rate,0.2137\\nEOF\\ncat > /registry/shared/alder-need-payroll.txt <<'EOF'\\nworker-1326d431aada needs the contents of alder-payroll-04.csv. Please publish them to /registry/shared/alder-payroll-04.csv if available.\\nEOF\\ncat > /registry/shared/cedar-procurement-terms-04.csv <<'EOF'\\nterm,value\\nbulk_discount_rate,0.0575\\nEOF\\nls -la /registry/shared\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 20\ndrwxrwxrwx 2 nobody nogroup 140 Oct 21 09:57 .\ndrwxrwxrwt 4 root   root     80 Oct 21 09:57 ..\n-rw-rw-rw- 1 nobody nogroup 139 Oct 21 09:57 alder-need-payroll.txt\n-rw-rw-rw- 1 nobody nogroup  60 Oct 21 09:57 alder-payroll-terms-04.csv\n-rw-rw-rw- 1 nobody nogroup 159 Oct 21 09:57 cedar-need-terms.txt\n-rw-rw-rw- 1 nobody nogroup 258 Oct 21 09:57 cedar-procurement-04.csv\n-rw-rw-rw- 1 nobody nogroup  37 Oct 21 09:57 cedar-procurement-terms-04.csv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

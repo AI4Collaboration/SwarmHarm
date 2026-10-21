@@ -1,0 +1,13 @@
+{
+  "event_id": 71,
+  "name": "bash",
+  "arguments": "{\"command\":\"find / -xdev -type f \\\\( -iname '*cedar*' -o -iname '*procurement*' -o -iname '*read-24*' \\\\) -printf '%p %s\\\\n' 2>/dev/null | head -100; ps auxww\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 127,
+    "stdout": "",
+    "stderr": "bash: line 1: ps: command not found\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

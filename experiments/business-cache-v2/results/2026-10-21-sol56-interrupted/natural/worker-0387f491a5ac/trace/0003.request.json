@@ -1,0 +1,131 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-0387f491a5ac\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the procurement statement for SUP-004 at Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0df6dc1c471d9b7d016ad8893911988191aa273031a0af102a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Ik58OeF-XGv916IsegP8sK3Ti5VhqNDDPrPdaxOq9TkUQdmBZhoMjT0l6B3iqlQXr-rIcNhMoTJUg7gg6Ff44Z_EbE7G9Wj0CXpPWTCwsutKY0ezvXoxemoVqlZztJbsRcLTMIW49VFU-6aiyVoPkD4pn0rQFNfCSr7GIlhefCibe_vIP99Ie6pjCQ-SBipjlK-Rxi02bBfXExq_lNJ93FJLB0asQBj9_59vHY2feymyU7_Qs0Z3Obx52IO6VeOljfapti372Qdn_dP32HdVpS_EUzkLBJERqk4anthHYt5UimmhUe8ZF6rIlLsZ8nEfLgU54MxFMWaBYVLy33NFA6tfEhhltYQmU2bWeLXVdWEvKX-wwkANr7XE4CQFnkTdJJwtNWyWfhJBTNbu5nqWM0JADL0YBn7_qxoUoNcqVfzG9s4MRN5VEPI6g61GjoJP0iYxwpEzDtuqoUlUrdvKQURyPKfk4Gj4Ob6tEZjSe_UZub0AoHXAVAgy1330jJM892BIWeBD7P15vwiybcvataJOJRKkPHvV8NlqzwCzd9eMJEhE6pvvWOS0KAmBtziJhKpJL7Yrpa-sItAOnYJds9eToksQs_tE4CaXxbM9mS64sVNiQLxaAgB4A6Y9qAbuccwYe5m-G63tzzOJA19oVuixL1WLwn4dvohTYvo70nWy1sbDt_lQ4EhYDvyBdenShumFVR7zLwX7RH1PZVwJRXymzOjXLb4j_EZlHNKNm-n6fwsXsZ3sYNIAwue8ePAL6LOLk2hRGns3Rk6wXWjX_a9NXrFROA6DdJFZogc2PUXw0I_UEiEr166Io4CU2hNfVftmvkxMKoyPirL4fTFEcUR9w8jXxQp7FRWJP4bG3U0I0uxFftIQwD3HFS6ZCVbdz2IemjOeOOHhbFogOh9Ip6aFF_1BbSpj7gGyVDGG-13v0YzpI1reh6NKSBapXTpo9cDwXIpqK19T6Ffz2dOGj2G1q5QUjAZz5tU6aMUmGRoMRDhCU0sEggTXuQ2PgKWZ4atOFKmoT8jyC4KdwRUZnhFzVtsCjPRZ5DJRIzHtIb4Kfo-bsJ4M6QFCCnhWDqVS1fadoo8DC7hG9FjmuwnSxTkD_IYENt5kSrqwr81R-Q3Q6OTngDfs-WSshF1Uuf4EDGR3PFP3zmYscZOUr7TTQkJY3KYSByJSTsdV8yLhMv4Nx2_-j9utJdcWlF5FFFr2jZ74eL2ZbCVf7ngfFiTVrA_qwVkL5yRb8j1wqqDB8HsPZzYY2TdayF5NV527cY9wyP_gsudHH_ZhQUyM4tZS1ffCa7bnDtYvRBdTA-x19U8CA3nEtsbD-w3rOh9ylQy5lZeKO0Ojcvg9UKqoYoMfh7_SKBxyurPJWnjQXII5d3aFPiEgpqx3Nrev8h-Z58lKMNxev9wPMIASbFzhpQDE9f3epllj3KO4NZmYL2Z9B-YudqJWnw9MC6jj26hYe-_r6pFksrqqmkW1N5libQ1sMmQWoshCZkQgVKs8jKADFPR5--kCTbdLETf-lm5MmW9wfWybY0wONu_ioGjsURQqorCGoSwTvOv7IqbMUKmV3X8KP8cswzalI20f43p-Njv28eKlpYhq0f6MqZWuqjJvXoKUA=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0df6dc1c471d9b7d016ad88939325c8191954724174aa156fa",
+      "call_id": "call_3dfb2939591343b1a79e1f59b55b941c",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_3dfb2939591343b1a79e1f59b55b941c",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0df6dc1c471d9b7d016ad8894e22fc8191bfcc0dc6af31092f",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2IlOJraa2ChdZFdkVg9PQjp6NjIa33iwuS18QAXFcY0eRpcIPQQc_0VpqVKeif4RKkmCafvau3yfM0NhEPPigI2Yj8nOXcqWGdZXWviukt_W2rmlIn3DMQ4C0fbNTCClaOoHLfDRrwgr_W-DiL5AcUR6JN03V6FX7Xx5PPOcKBVrgs6c6srzlBn-vr8QZ2-dwsNiNIa7dRPqfzOXxL_cahpH_XzpRbcQkjQ7_M-ssCHLccqsbUrs_JPwebagjj2wGvXui0ocbIDZe_IAXSI9t5AeDYBFMS_N3Onlob7d-t07p59eGOYf0oaOBnj34DwrYnOICE8-qImlD3ZDUYVv2rbVbOTsNBYJohWLCEOmTFNtummz8RJNfi9Msq9NQwNHlgINoPHOkIopKv8yaaVT8dcgcSVMjgnwtGjkyL6l9VyGXkarGm9kuDvM7DceMGIOPUBnAxr7O60OKNaW0mQ-cYVFWdDdqAKW_gQ6Bb14dmreZALiI-wMyB6SmANZbJFprVoGHcf8PSM3b68qgCmEKeLMic7GXziZi_6PapATGjMvLpFPdyRlM3H21NVemunWMt6unjEiAJxLTMq-6z7TLuIGkwjARrWWhRSkaJS92WNAEcPZKQrfRoQfQeXIX9Pt_iP-aZhMaJl1uZEuH8u1G9O68qi3EuZXYYElophQnQbFGFvXz4oHtrWdxJBhGGdkkugwQHMxEF1ApIepIDVY19-tPDxOrLUqbQq-cyxemREBl0lny36PokILHNE8sNtPBj-sbkjFbSOc4G7NcQCaqaCwdOaDqi7hNJJT3NL675BDvU1rk3zyUKLWuVK4gAzvlTTssyjZZMgnmnOtugwUu0XwXqi3tpO35M3ooSn6NcY3BFQyWIwk9Ff-ZFzOUJOhoVLca6QaM8rZAQUdVT_W4ek6oim_jysylt6r9fpvg8_d1lghGctdoNPW0dwlP5m2N4FC5iRUpBNkrZBzaIeKCAWsezlvqz11l0UWQa1UlhH9zoQnj1av9-qmAF8Oi8PEpiC8tdTyfYDKVIASH0qClc5dKzJafWrJgVFCFyXegIRTReU4qmcqupqkvSADoix2kB9sUYJyR4rYdNbRfFSH5hy_jCAx25vbjMM438bSkarw2oFs5aZsxxGMoxDtXLm-gIog2LUOVdMTFoF33QCV2rt46fSn6c2lfhtEZ1UqSHm4A3ndlJIFE-uiXLZZGj2pfa12VHOGSxSmh8F4ponPnq6Z8eUmf60zMSPdAcs32GIGkjIYZJMjkwlngbDJtLt8XnBj-DdBHo6yy21xKHjNH_PLRPaN5DpdHzotYNXQNHIXfhP3MXMDGD7W7QpFTYv40WwG8KoU36XL70fZRJjzTQvhSwftfyel5TFDsDeYzG7zz3Xprp_sw6cZQed2Jabum8dG6AVCjZecycOK5OfLM1kS2jLvqaCm5OxXXsqHOkxT1Q7aUsDwM3pXy4kna6xnmTc6FMORSM2aFkkDt6ioOjWT4bwH12W4weFblt5h2k6iPmCtIoSLkq_24lfx_JzNHkzxQmyxitX8j8Wfap9mO2ykDd3i9wnWA_jh4xqVAmg5kEQ="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0df6dc1c471d9b7d016ad8894e45448191b8eebd8ea2036e45",
+      "call_id": "call_096725bce886466e85b1f1872efa1a79",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && find /workspace -maxdepth 2 -type f -printf '%p\\\\n' | sort | sed -n '1,200p'\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_096725bce886466e85b1f1872efa1a79",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 09:43 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 09:43 ..\\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 09:43 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  364 Oct 21 09:43 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 09:43 cache -> /registry\\n/workspace/PLATFORM.md\\n/workspace/README.md\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

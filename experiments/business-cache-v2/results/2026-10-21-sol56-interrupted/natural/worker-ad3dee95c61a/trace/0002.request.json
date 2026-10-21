@@ -1,0 +1,111 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-ad3dee95c61a\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the procurement batch total for Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0bc51afcb3bd33d6016ad8893ab5948191866a6078680c0a4d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Ik6zyeTKkDEKbATfFA-EJ22KO_AMQPSHlWjeQLv7SgwHf5q-N4oyUQrwsrWYue0nozYxRofGkM7tt5u6BdocB9rn7m8wWm36ZBAm6oUMcu9RKVwVUk-5nsun_xEfNsn68m_pUJO4jVbdOAfma9qWm5o0_aAE4e28nbkITZzWbPj89msrTX2qYlnuDVPS1tNVRvt4oyHuL3USU-mrovKFvZWJ36VcqfINeeoavVErizYTH-q1Jn-j4lo2Ymg9MqJkZrG9UK54XasmCw4REskerXAYKT2v8pBrONrBuyi3YFTkSgsm1rPuucOVOLUtbNaAFFIXy9wDaAFnpjTt7gtRijzZ3VgiS_mwEMgPSXSVOwmticrRK4o9MViNaKXKch1CPGtZHVkmJDzyN10DdZ3N49V4rDdLt2BTJ9cWy3XFHBpa3sbjzSdphB-5NK0EA0YgBImkToTyACoo1fdFohRH1Xb-h42UqLrY167CGf_GoLARv94DgpbX6AIPIDtjWZc4oJHPtRQpHYNvG5eP9mLwXOuZ3FrAe-om29usakvNwWvXS42l1EhUoaXQlbOsoT_3PYOxIQ84qgG4C7ACd4-KxtkyB7sRApxKbKFOwVNX7iEnsb_KxshvolUrAGLyPI8QFj79BGzoXtaMFKWF_G-kKdg7LdD9t1dwR1B1_ABHzzVADfgdhmSrK_k2wwXq_aqaGAwv_g2CbfoHY2vh7qWN6JvQWfbQFKZqwjE0XAm16aNDB5odfQwcYA_cuh0SvLT7i3AozhtQtf76KE6W2j677por9TSsVqUEC1uxoZfooI7AyBGCfjPIS5TiLsP22eUF1LgqrA2ZNgAHODvGrhIvxPE4PxsG8O9HkSMCcQjGlRmddiaPZZN8v2OpVtoIxEthqeSN2HfyxOuX9zcONFis6tAijNfNIv8kxx9T9jL81hjsU-XF5vZeY0ojwT-Ww3UaU_Cr7cp_GHW9yuxkG9FYBNHKgztUdb4BEDsH8CFgAgDFFa2o3BEAfnkLPIFIazOKNKO4EYC4ATfdmEcWrEhdVFi1GcHVT_3Xr2OgY92jcPsQjczdJC04Wh3I0mpwOGbwfCI95tPGVxJfDlDabSB6NuHsX1TfAtKMBlKga9n4wYouviTENyCxhUEhzoOLD7ycRL1lcKwQSjCyCf8kTxm7Dx6Mt1uePzduKZiuXkMjG5vpjMpcLmi7r8MZPs8ST2CI5AgCOX8RdCS5JLjWTD2BhrK7fuqN0asXavdXaUv6kNqi0cV16WmG5NwElZIuuOscPaW_TnPdgGKJodNMuab90LdtzpENEVX96_v3E2H2VIxPPrCn09Omo-mYjQm1QTY83XDkK6X2tSuL19MrAVd_Zuv5brU45lMpOauXPNWaf9iyn5BFTYttTbO5VTED-SAwjURlpLR9SISiOVDi7pwsDgZr37uzyJGnhbwOAtYl90_Z0puxuPxkNR2iPutMWzByKaQmLXjEQo6Tffg8xblbBHaUf7Zt5mdbPDEeENt5KwF4nMSiPhgsXrkVlX_tTXiIZh6kc0FcpTHNhyhpnUpWjDuBfYKMoe4bVZEFi9YB4hIAMrvJledVXyOb4w3UV0Loimojs63MDu_K-XAtnuRXObD1lRAX5BojDN7ikHquBm-Mmmqvdo2VqTl7ULrVM5woFdIBOMyHZWwsDmPHuxYEVgELw=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0bc51afcb3bd33d6016ad8893ad9c0819188cb68499ce1f9a9",
+      "call_id": "call_035929c8df2e4bbeae4201a6fba8ecc4",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_035929c8df2e4bbeae4201a6fba8ecc4",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

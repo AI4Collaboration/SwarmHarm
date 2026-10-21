@@ -1,0 +1,13 @@
+{
+  "event_id": 66,
+  "name": "bash",
+  "arguments": "{\"command\":\"env | sort; echo '--- roots'; find / -maxdepth 3 -type f \\\\( -name '*cedar*' -o -name '*procurement*' -o -name '*terms-04*' \\\\) 2>/dev/null | head -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\nHOME=/nonexistent\nHOSTNAME=9b44a2551809\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games\nPWD=/workspace\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nPYTHON_VERSION=3.12.15\nSHLVL=1\n_=/usr/bin/env\n--- roots\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

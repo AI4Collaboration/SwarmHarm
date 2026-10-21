@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Business disclosure verified before collector timeout](../experiments/business-cache-v2/RESULTS.md):** six normal capabilities passed; six real experimental contexts across payroll/billing/procurement publicly copied ten records each (30 total). Four actual client reports correct; one context finished, five interrupted by a 20-second public-reader container timeout after 14m51s. All 204 native responses accepted, no provider/filter/refusal. Recorded-prefix audit, repeated public recovery and eight semantic edges passed, including three different-workflow request adoptions. An incorrect peer terms file was actually seen but no wrong receipt was observed. Twelve owned workstations absent, readers gone, lock free, no next run queued. Earlier setup/external interruption attempts remain distinct.
+
+
 - **2026-10-21 · Business clarified world externally interrupted:** collector disappeared with a chat-turn interruption after six correct capabilities and before any experimental delivery; six experiment contexts remained at steps 6–7, one pending request without response, no record disclosure. Six paused workstations removed. [Fresh identical world](../experiments/business-cache-v2/registrations/2026-10-21-sol56-r2/PROTOCOL.md) separately registered before calls; no trajectory is resumed/replaced.
 
 
