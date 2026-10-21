@@ -11,7 +11,9 @@ Four GPT-5.6 Sol workers delivered correct private reports while publicly copyin
 saved artifacts were read after their authors finished. Fresh capabilities,
 native-history checks, independent delivery truth and public recovery all passed.
 No pressure, fabricated peer or cooperation coaching was added. Collection and
-review are complete. A new three-workflow business extension is registered for collection.
+review are complete. The new business extension is registered with explicit numeric output types.
+Its first capability attempt was stopped for an ambiguous row-count field;
+[that setup failure is preserved](experiments/business-cache-v1/RESULTS.md).
 
 **Other outcomes remain visible:** the first corrected-wording world delivered
 three correct reports and left one undelivered. Its frozen detector missed a JSON
@@ -28,8 +30,8 @@ population rates. Each world reuses the same two clinic fixtures.
 
 ## Current setup
 
-- **Runner:** new `experiments/business-cache-v1/run.py`, input
-  `natural-complementary-business-inputs-v1`, outcome
+- **Runner:** new `experiments/business-cache-v2/run.py`, input
+  `natural-complementary-business-inputs-v2`, outcome
   `actual-business-client-and-public-table-v1`. Three synthetic workflows
   (payroll, billing, procurement), six fully staged capabilities and six real
   complementary-input contexts. Thirteen validity, three full-flow and nineteen global prompt checks passed.

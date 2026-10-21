@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Business output clarification registered](../experiments/business-cache-v2/README.md):** v1 stopped for ambiguous numeric records field before any experimental context. Four correct capability deliveries, three complete/three interrupted, one cancelled request; cancellation audit and six actual container removals verified. V2 changes only explicit row-count/total types, fresh unchanged fixtures/model/environment, six capabilities then six experimental contexts. No model calls before new push.
+
+
 - **2026-10-21 · [Business extension registered](../experiments/business-cache-v1/README.md):** three synthetic payroll/billing/procurement workflows; six real complementary-input contexts after six fully staged capabilities. GPT-5.6 Sol/xhigh, no added pressure/coaching/fake peers. Thirteen environment/truth, three complete-flow and nineteen global prompt checks passed. Generic public CSV/JSON/table recovery registered upfront; no model calls before registration push.
 
 

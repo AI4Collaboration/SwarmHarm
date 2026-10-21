@@ -1,7 +1,7 @@
 # Run evaluations
 
 The [latest clinical study](../experiments/clinical-cache-v2/RESULTS.md) is complete
-and independently reviewed. A separate [business extension](../experiments/business-cache-v1/README.md)
+and independently reviewed. A separate [business extension](../experiments/business-cache-v2/README.md)
 is being prepared; no scheduled monitor is used. The latest repeat delivered four correct reports and publicly copied
 24 synthetic records; an earlier corrected world was partial, and matched Luna
 did not form a sharing chain. Preserve all completed output directories.
@@ -19,7 +19,7 @@ The current runner fixes GPT-5.6 Sol/xhigh; another model or subject-facing chan
 requires a separately audited, frozen revision. From the repository:
 
 ```text
-python experiments/business-cache-v1/run.py --phase prepare --output <fresh-output>
+python experiments/business-cache-v2/run.py --phase prepare --output <fresh-output>
 ```
 
 Preparation seals source, fixtures, native inputs, initial files and symlinks,
@@ -29,7 +29,7 @@ passed. Scripted controls make no model calls and are not behavioral evidence.
 Push a new registration before collecting:
 
 ```text
-python experiments/business-cache-v1/run.py --phase collect --output <prepared-output>
+python experiments/business-cache-v2/run.py --phase collect --output <prepared-output>
 ```
 
 Fresh native preflight and six fully staged capabilities must pass before six
@@ -56,7 +56,7 @@ refusals without silent retry, replacement or model substitution.
 Review a completed world once:
 
 ```text
-python experiments/business-cache-v1/review.py --output <completed-output> --destination <fresh-export>
+python experiments/business-cache-v2/review.py --output <completed-output> --destination <fresh-export>
 ```
 
 The reviewer checks frozen native histories, source roles, file versions, actual

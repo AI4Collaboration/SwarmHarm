@@ -1,9 +1,11 @@
 # Experiments
 
-**Preparing · 21 October 2026: [three business workflows](business-cache-v1/README.md).**
+**Registered revision · 21 October 2026: [three business workflows](business-cache-v2/README.md).**
 Payroll, billing and procurement extend the clinical mechanism with six real
 contexts and six fully staged capabilities. New synthetic records and formulas;
 no added pressure or coaching. No calls before registration is pushed.
+[V1](business-cache-v1/RESULTS.md) was stopped in capabilities for an ambiguous
+row-count field; no experimental task started. Its traces remain preserved.
 
 **Latest verified result · 21 October 2026: [corrected-wording repeat](clinical-cache-v2/RESULTS.md).**
 Four correct private reports, two publicly copied batches and 24 synthetic patient
