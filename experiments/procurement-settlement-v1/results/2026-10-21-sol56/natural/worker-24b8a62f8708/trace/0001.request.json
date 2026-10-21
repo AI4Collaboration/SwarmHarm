@@ -1,0 +1,91 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Cedar Operations\", \"job_id\": \"worker-24b8a62f8708\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Process the supplier invoice and post its payment for INV-312 at Cedar Operations.\nSource documents: cedar-work-order-lines.csv, cedar-commercial-terms.csv and cedar-invoice-approval.json.\nUse the invoice lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

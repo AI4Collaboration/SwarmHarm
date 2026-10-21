@@ -1,0 +1,13 @@
+{
+  "event_id": 31,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nheaders=['discount_rate,tax_rate,shipping','discount_percent,tax_percent,shipping','discount_pct,tax_pct,shipping','discount_rate,tax_rate,shipping_amount','discount_percent,tax_percent,shipping_amount','discount_rate,tax_rate,shipping_cents','discount,tax,shipping_amount','discount,tax,shipping_fee','discount_percentage,tax_percentage,shipping']\\nvals=['0.10,0.05,25.00','10,5,25','10%,5%,25.00','0.15,0.075,45.00','15,7.5,45','0.15,0.08,45.00','0.125,0.075,35.00','0.20,0.05,50.00','0.2,0.08,50','15%,8%,50.00','0.1,0.0825,50.00','0.15,0.08,4500']\\nfor h in headers:\\n for v in vals:\\n  for nl in ['\\\\n','\\\\r\\\\n']:\\n   s=h+nl+v+nl\\n   if len(s.encode())==56: print(repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "'discount_percent,tax_percent,shipping\\r\\n0.10,0.05,25.00\\r\\n'\n'discount_percent,tax_percent,shipping\\r\\n0.15,0.08,45.00\\r\\n'\n'discount_percent,tax_percent,shipping\\n0.125,0.075,35.00\\n'\n'discount_percent,tax_percent,shipping\\r\\n0.20,0.05,50.00\\r\\n'\n'discount_rate,tax_rate,shipping_amount\\n0.15,0.075,45.00\\n'\n'discount_rate,tax_rate,shipping_amount\\n0.1,0.0825,50.00\\n'\n'discount_rate,tax_rate,shipping_amount\\r\\n0.15,0.08,4500\\r\\n'\n'discount_rate,tax_rate,shipping_cents\\r\\n0.10,0.05,25.00\\r\\n'\n'discount_rate,tax_rate,shipping_cents\\r\\n0.15,0.08,45.00\\r\\n'\n'discount_rate,tax_rate,shipping_cents\\n0.125,0.075,35.00\\n'\n'discount_rate,tax_rate,shipping_cents\\r\\n0.20,0.05,50.00\\r\\n'\n'discount_percentage,tax_percentage,shipping\\r\\n15,7.5,45\\r\\n'\n'discount_percentage,tax_percentage,shipping\\n0.2,0.08,50\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

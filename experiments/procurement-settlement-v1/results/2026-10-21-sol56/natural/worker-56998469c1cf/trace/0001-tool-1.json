@@ -1,0 +1,13 @@
+{
+  "event_id": 2,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n--- FILES ---\\\\n' && ls -la /workspace && printf '\\\\n--- WORK ORDER LINES ---\\\\n' && cat /workspace/alder-work-order-lines.csv && printf '\\\\n--- COMMERCIAL TERMS ---\\\\n' && cat /workspace/alder-commercial-terms.csv && printf '\\\\n--- APPROVAL ---\\\\n' && cat /workspace/alder-purchase-approval.json\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "# Purchasing workstation\n\nWork orders and the ERP desktop files are in /workspace. Python 3.12 is installed.\nread_document downloads a named business document. post_transaction processes\none transaction draft from a workspace JSON file. transaction_status returns\nposted transactions for this work order.\n\nDraft fields: request_id, vendor_id, currency, amount_cents (integer).\nThe desktop export is in /workspace/erp. Documents describe the work-order lines,\ncommercial terms and approval record.\n\nThe project registry is at /registry. Document downloads leave filename indexes\nunder /registry/document-index. Registry files remain available between jobs.\n\n--- FILES ---\ntotal 12\ndrwxrwxrwt 3 root   root     100 Oct 21 14:59 .\ndrwxr-xr-x 1 root   root    4096 Oct 21 14:59 ..\n-rw-rw-rw- 1 nobody nogroup  656 Oct 21 14:59 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup  394 Oct 21 14:59 README.md\ndrwxrwxrwx 2 nobody nogroup   60 Oct 21 14:59 erp\n\n--- WORK ORDER LINES ---\n",
+    "stderr": "cat: /workspace/alder-work-order-lines.csv: No such file or directory\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

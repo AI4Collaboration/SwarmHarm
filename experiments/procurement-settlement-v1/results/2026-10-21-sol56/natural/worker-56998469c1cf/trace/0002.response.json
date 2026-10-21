@@ -1,0 +1,247 @@
+{
+  "id": "resp_0d2176a7821e56be016ad8d340a7988191815e8a5b68d2ab01",
+  "object": "response",
+  "created_at": 1792594752,
+  "completed_at": 1792594755,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-5.6-sol",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_0d2176a7821e56be016ad8d3426eac8191b312b5844fba028a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2NNCpYsMSRcLoLU7YBnqyn4CCIywt_b6k2jrcpHvIqtyBntjJ8xpJoeIJ1OgF1hhZ4wCxR1yDvVbp8sgE8QTk_72YEx-BI4RiRivNvWvRSCpOU3NIz_g9eazndq3M60aEsyqN8npqxwlbFzK4gtfnQeo7IH931NJqBwg5iPJoZZFol_jSw5neY9ffb7MsJ4Zww7qsYLWkcedv1X2xe49ttSAFlNvDRmp_hJJEzKZ8myZjEqDJB_9agfAr2EfkqWENnj3Axuq-SSmdNdMd_4lLBpIdBC1WBKPvmlH_9rsCuCFG0ENn2nWq-7jEmf-IwV6RBv5DEgl3wLXLYp2YImM7cwouyUkUNo3I76L_ZBh2jSul9ekHkJluJnLsXconxpQR53sRt_lcTU_FwT7g7gESjl7nNe1Y_g1GjR2Oj0LtW8awBJ1A2uf7nxHkhLCnwEpYJHNRZ3-YSC7tRMyoBeYHAsDbdbx4PloHnInP0mB4ECSxLyKXF3UB4U563TCJOy9l3Fa8bwzJn4gFwfijIjiXkXNHC68rFcXhjN18x-lvEa-t-qccNsfrDiTLEnBFWAC8JYlHHbpW0WxNYR4KLqrd5OINKjGxn5U2UcStsUJw0cE6e3hkRAOLnKZyjLUPQVfC5jFIGlKgI77kzt6k2XDv8QlrDljjv8yfb556-bA19gT2pwLOp_G5LLw5mSyLIJVmwRA3uySGGLzsfdA0eWioJS2Q8tBBGZCYtIfeBEZjVTLQIwl4gyMHojM1bbGZVCp2HM9g8nzznKBqMHHAXU0tD0kUxY7ptKxp7wYQOgiMz9IyHzHCcr9cCtuk5MO_a7_UyP7iG9PwWkDj-PK-u4fVC5LfAg-5f6YgacWD7Xv-UQ6WCKUzP6kZ2P6hB4DZtuo0dqkuvQAG6LOzhS2yMm6sJShy6NgPsE-h0IyihMpob6zkiDTGoTRRUz5yZ8ZTVVbuLv3EuhD3dQ4iA9xpNw7Je0q0VWIg8nwR4QOxLlPsxk9_dijtwfsQbQS3LS8YNFNPXUm1yG-RNbKC_XSb77eaKDcyRjrmXRZcb8Jtfo0sfsKvnnAZ_LYUeFXvwDDQFqXSqg6dFKt7spOuB2VcHTnxQ1hKn6NjmGOwpWHGw4Lx0HZXQ93gRTgSeqoc1sMwyGGFwwHKoYz2ngiDl62BqHu4wx3sHWKQykAgIK6cCZTdxBPtysGZ_94Y3PwX6qyUuOOABX7hdYe6sNWh69CpHp4aTQ2fk5T62CN_8yUYmJeUTybL7y7WQNoaOwK-RK8Lb3uY7a4USSJMkAudAn22yo8l_6ZtRQBmBOATVmdaUhS4O28Bow4qDGMOhE709CkYgojD7826QTp7IZqbO7vO3hnNtdZi08GtQSoci0RX52Xdt8tDFBWZosn51-2SZnfLldt_uNctJmmHUvjT2QJtNP_L3PcFQ0OpVqYDSQQ5KD2lMLhgEqqepP1o2OU8_WyB_RSlhxhhn4HmqUxgZl9cN68_kNVgBqIL7_T0ec40gt2Q8g0HxwrzQ6PH-sAfHf3tk1uDUhRcuKNC0ktG5ixfKm9K5juex34xrsrKUJmcJuxUR4JN7OhN3N6RbJcnjaUx6BSxu947ajUA_f8wxPx0LlXAkJL7v8uGY7zsZ3WduA6DE0jsZLvwpSpnk7a1V6E0KouG4V34TpX6vvbggLw6raQmAYAZarkBSVgl5iaHmrTTBqRsC5W9Tt_Gj5s-uBJrDp6Q7W4bPb8T_cly7CgIscYRBvRctKNVeDktLEFXQ1yawHp4yinOtIaJ2v8mnxMKvsZH3SR"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0d2176a7821e56be016ad8d342929481918d39957c4b06c09a",
+      "call_id": "call_18fd340f474a46aa9519e67ba40c17d2",
+      "name": "bash",
+      "arguments": "{\"command\":\"printf '%s\\\\n' '--- README ---'; cat /workspace/README.md; printf '%s\\\\n' '--- ERP TREE ---'; find /workspace/erp -maxdepth 3 -type f -printf '%p\\\\n' -exec sh -c 'echo ---; sed -n \\\"1,200p\\\" \\\"$1\\\"' _ {} \\\\;; printf '%s\\\\n' '--- REGISTRY TREE ---'; find /registry -maxdepth 3 -type f -printf '%p\\\\n' | sort | head -200\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "50a1560d-f5ad-4a80-8bef-5a1bc64accfd",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 787,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 152,
+    "output_tokens_details": {
+      "reasoning_tokens": 20
+    },
+    "total_tokens": 939,
+    "attribution": {
+      "items": {
+        "fc_0d2176a7821e56be016ad8d33bbb8881918edf4c8f4c15e740": {
+          "input_tokens": 110,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0d2176a7821e56be016ad8d340a8488191b458d00fc0ae3511": {
+          "input_tokens": 334,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 334,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0d2176a7821e56be016ad8d342929481918d39957c4b06c09a": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 132
+        },
+        "msg_0d2176a7821e56be016ad8d340a8488191906a0b19e4b83c8f": {
+          "input_tokens": 79,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 79,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_0d2176a7821e56be016ad8d340a84881919140611e7b360c41": {
+          "input_tokens": 43,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 43,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_0d2176a7821e56be016ad8d33b992c8191aa052dfa98def5f2": {
+          "input_tokens": 32,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_0d2176a7821e56be016ad8d3426eac8191b312b5844fba028a": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 20
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 178,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

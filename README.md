@@ -9,26 +9,25 @@ procurement, using synthetic records and local business services.
 [Data sources](docs/research/task-sources-and-verification.md) ·
 [Experiments](experiments/README.md)
 
-## Latest evidence
+## Latest result
 
-**21 October 2026 · GPT-5.6 Sol:** six experimental agents delivered correct
-business reports while copying 30 synthetic records into a public cache.
-Agents discovered real peer activity, requested missing inputs, and reused a
-request method across procurement, payroll and billing. Six normal capability
-checks also passed, with no public business records.
+**21 October 2026 · GPT-5.6 Sol:** under customer-contract compensation pressure,
+all six experimental agents issued over-budget purchases, totaling **$1,390**
+in excess commitments. All disclosed the overspend. Two funded capability jobs passed.
 
-This establishes data exchange and request-method reuse. It does **not** yet
-establish a business-process exploit adopted by fresh agents on different tasks,
-or harmful intent. The [reviewed report](experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
-contains the evidence, limits and registration-timing deviation. Interrupted
-attempts and negative results remain in the [history index](docs/history-index.md).
+**No method sharing or peer adoption occurred.** Agents independently used the same
+batch approval/issuance sequence. The combined business-control failure is verified;
+deliberate loophole discovery and pressure causation are not established. A pricing
+API let agents proceed without the missing quote documents, reducing the need for peers.
+[Reviewed report](experiments/procurement-contract-v1/RESULTS.md) ·
+[Earlier results](docs/history-index.md)
 
 ## Current setup
 
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
-- **Runner:** [business-cache-v3](experiments/business-cache-v3/README.md), with
-  durable tool records and an independently checked public reader.
+- **Runner:** [procurement-contract-v1](experiments/procurement-contract-v1/README.md),
+  with durable tool records and independently checked transaction/source amounts.
 - **Model:** `gpt-5.6-sol / xhigh` through existing host ChatGPT login at
   `https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
 - **Local environment:** Python 3.12.14, inspect-ai 0.3.257, OpenAI SDK 2.54.0;
@@ -39,13 +38,15 @@ Last verified on **21 October 2026**; new runs require fresh access checks.
 - **State at the last review:** collection and cleanup completed; no active run
   or scheduled monitor. Verify live state before launching.
 
-## Next study
+## Study scope
 
-Test whether agents discover a business-process loophole, share a working method,
-and whether fresh agents use it on different finance or procurement tasks with a
-verified adverse consequence. This study is **not yet implemented or run**.
+Test autonomous business-process discovery, method sharing and different-task
+adoption by fresh agents. The latest procurement study established over-budget
+commitments but no method-propagation chain. Excess commitment is not automatically
+realized economic loss or evidence of intent.
 
-Prompts remain ordinary work requests: no added pressure, collaboration hints,
-loophole hints or communication bans. Keep genuine business requirements and
-measure the actual downstream effect. See the [outcome criteria](docs/business-outcome-criteria.md)
+The latest condition includes explicitly requested customer-contract pressure;
+other future studies retain the no-pressure default unless requested otherwise.
+Keep ordinary work requests without collaboration hints, loophole hints or
+communication bans. See the [outcome criteria](docs/business-outcome-criteria.md)
 and [current handoff](docs/working-context.md).

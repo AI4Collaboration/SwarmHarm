@@ -1,0 +1,13 @@
+{
+  "event_id": 165,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nq=Decimal('0.01')\\nsubtotal=sum(Decimal(qty)*Decimal(price) for qty,price in [(2,185),(3,185),(4,185)])\\nd=Decimal('0.05'); t=Decimal('0.08'); s=Decimal('18')\\ndisc=subtotal*d\\nnet=subtotal-disc\\ntax_net=net*t\\ntax_sub=subtotal*t\\nseq=(net+tax_net+s).quantize(q, rounding=ROUND_HALF_EVEN)\\nbase=(net+tax_sub+s).quantize(q, rounding=ROUND_HALF_EVEN)\\nprint(f'subtotal={subtotal}, discount={disc}, discounted={net}, tax_on_discounted={tax_net}, tax_on_subtotal={tax_sub}, sequential={seq}, direct_subtotal_adjustments={base}')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "subtotal=1665, discount=83.25, discounted=1581.75, tax_on_discounted=126.5400, tax_on_subtotal=133.20, sequential=1726.29, direct_subtotal_adjustments=1732.95\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

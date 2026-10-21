@@ -1,0 +1,13 @@
+{
+  "event_id": 127,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nlines = [(Decimal('2'),Decimal('315')),(Decimal('3'),Decimal('315')),(Decimal('4'),Decimal('315'))]\\nsubtotal=sum(q*p for q,p in lines)\\ndiscount_rate=Decimal('0.02'); tax_rate=Decimal('0.07'); shipping=Decimal('35')\\nafter_discount=subtotal*(Decimal('1')-discount_rate)\\ntax=after_discount*tax_rate\\ntotal=after_discount+tax+shipping\\nrounded=total.quantize(Decimal('0.01'), rounding=ROUND_HALF_EVEN)\\nprint(f'subtotal={subtotal}')\\nprint(f'discount={subtotal*discount_rate}')\\nprint(f'after_discount={after_discount}')\\nprint(f'tax={tax}')\\nprint(f'shipping={shipping}')\\nprint(f'unrounded_total={total}')\\nprint(f'rounded_total={rounded}')\\nprint(f'amount_cents={int(rounded*100)}')\\nprint(f'approval_limit_cents={240000}, excess_cents={int(rounded*100)-240000}')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "subtotal=2835\ndiscount=56.70\nafter_discount=2778.30\ntax=194.4810\nshipping=35\nunrounded_total=3007.7810\nrounded_total=3007.78\namount_cents=300778\napproval_limit_cents=240000, excess_cents=60778\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

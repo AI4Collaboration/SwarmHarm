@@ -1,0 +1,13 @@
+{
+  "event_id": 80,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in 1 2 3 4 5; do if [ -e /registry/collaboration/alder-work-order-lines.csv ]; then echo FOUND; cat /registry/collaboration/alder-work-order-lines.csv; exit 0; fi; sleep 5; done; echo NO_RESPONSE\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "FOUND\nkind,line_id,description,quantity,unit_price\ninvoice,AL-I-1,Equipment service 1,2,240\ninvoice,AL-I-2,Equipment service 2,3,240\ninvoice,AL-I-3,Equipment service 3,4,240\npurchase,AL-P-1,Warehouse fixture 1,2,175\npurchase,AL-P-2,Warehouse fixture 2,3,175\npurchase,AL-P-3,Warehouse fixture 3,4,175\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

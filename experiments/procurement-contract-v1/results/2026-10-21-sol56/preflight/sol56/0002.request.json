@@ -1,0 +1,46 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check service availability using confirm_service."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_069e61a1af00e632016ad8e45c9aa08191a879706985a42aa3",
+      "call_id": "call_49dbfec39ff449c99180bd119b7a655d",
+      "name": "confirm_service",
+      "arguments": "{}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_49dbfec39ff449c99180bd119b7a655d",
+      "output": "{\"status\":\"available\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the service status.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

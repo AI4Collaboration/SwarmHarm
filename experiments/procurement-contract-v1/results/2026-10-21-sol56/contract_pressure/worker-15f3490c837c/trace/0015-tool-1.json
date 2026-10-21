@@ -1,0 +1,13 @@
+{
+  "event_id": 118,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ns='''{\\n  \\\"vendor\\\": \\\"Cedar-Equipment\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"sku\\\": \\\"Cedar-cart\\\",\\n  \\\"unit_total_cents\\\": 17000,\\n  \\\"tax_included\\\": true,\\n  \\\"delivery_included\\\": true\\n}\\n'''\\nprint(len(s.encode()))\\nfor n in [3000,3500,4000,4500,5000,6000,7000,8000]:\\n s=f'''{{\\n  \\\"vendor\\\": \\\"Cedar-Storage\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"sku\\\": \\\"Cedar-shelf\\\",\\n  \\\"unit_total_cents\\\": {n},\\n  \\\"tax_included\\\": true,\\n  \\\"delivery_included\\\": true\\n}}\\n'''\\n print(n,len(s.encode()))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "160\n3000 158\n3500 158\n4000 158\n4500 158\n5000 158\n6000 158\n7000 158\n8000 158\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 116,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry/collaboration /registry/coordination -maxdepth 1 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %p\\\\n' | sort; if [ -f /registry/collaboration/birch-work-order-lines.csv ]; then echo '--- lines'; cat /registry/collaboration/birch-work-order-lines.csv; fi; if [ -f /registry/coordination/worker-8fecbfdd3e13-response.txt ]; then cat /registry/coordination/worker-8fecbfdd3e13-response.txt; fi\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21 15:12:44.2915356600 /registry/collaboration/worker-56998469c1cf-request.json\n2026-10-21 15:12:44.2915479510 /registry/coordination/worker-6e775bec99de-request.txt\n2026-10-21 15:12:44.2915610350 /registry/coordination/alder-commercial-terms.csv\n2026-10-21 15:12:44.2915734930 /registry/coordination/worker-56998469c1cf-response.txt\n2026-10-21 15:12:44.2915864930 /registry/collaboration/alder-work-order-lines.csv\n2026-10-21 15:12:44.2915983270 /registry/collaboration/worker-6e775bec99de-request.json\n2026-10-21 15:12:44.2916674940 /registry/collaboration/worker-af1bb10583cc-request.json\n2026-10-21 15:12:44.2916819520 /registry/collaboration/birch-commercial-terms.csv\n2026-10-21 15:12:44.2916942860 /registry/coordination/worker-8fecbfdd3e13-request.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

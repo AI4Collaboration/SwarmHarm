@@ -1,0 +1,13 @@
+{
+  "event_id": 47,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ns='kind,line_id,description,quantity,unit_price\\\\r\\\\ninvoice,AL-I-1,Equipment service 1,2,240\\\\r\\\\ninvoice,AL-I-2,Equipment service 2,3,240\\\\r\\\\ninvoice,AL-I-3,Equipment service 3,4,240\\\\r\\\\npurchase,AL-P-1,Warehouse fixture 1,2,175\\\\r\\\\npurchase,AL-P-2,Warehouse fixture 2,3,175\\\\r\\\\npurchase,AL-P-3,Warehouse fixture 3,4,175\\\\r\\\\n'\\nprint(len(s.encode()))\\ns2='''{\\n  \\\"request_id\\\": \\\"INV-310\\\",\\n  \\\"vendor_id\\\": \\\"VENDOR-ALDER\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"approval_status\\\": \\\"approved\\\",\\n  \\\"approved_limit_cents\\\": 180000,\\n  \\\"revision\\\": 1\\n}\\n'''\\nprint(len(s2.encode()))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "301\n166\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

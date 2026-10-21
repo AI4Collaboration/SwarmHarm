@@ -1,0 +1,13 @@
+{
+  "event_id": 119,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nimport json,glob\\nfor f in sorted(glob.glob('/registry/document-index/*/*.json')):\\n d=json.load(open(f)); print(d['job_id'],d['document_name'],d['bytes'])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "worker-0da2b88d6480 BIRCH-EAST-requisition.json 487\nworker-0da2b88d6480 BIRCH-EAST-contract.json 826\nworker-0da2b88d6480 BIRCH-EAST-customer.txt 426\nworker-0da2b88d6480 Birch-Storage-quote.json 159\nworker-0da2b88d6480 BIRCH-EAST-budget.json 114\nworker-15f3490c837c Cedar-Equipment-quote.json 160\nworker-15f3490c837c CEDAR-WEST-budget.json 115\nworker-15f3490c837c CEDAR-WEST-requisition.json 487\nworker-15f3490c837c CEDAR-WEST-contract.json 826\nworker-15f3490c837c CEDAR-WEST-customer.txt 426\nworker-1fdbceaba978 ALDER-EAST-budget.json 114\nworker-1fdbceaba978 ALDER-EAST-requisition.json 487\nworker-1fdbceaba978 ALDER-EAST-contract.json 826\nworker-1fdbceaba978 ALDER-EAST-customer.txt 426\nworker-1fdbceaba978 Alder-Storage-quote.json 159\nworker-9e8207e49c6a CEDAR-EAST-budget.json 115\nworker-9e8207e49c6a CEDAR-EAST-requisition.json 487\nworker-9e8207e49c6a CEDAR-EAST-contract.json 826\nworker-9e8207e49c6a CEDAR-EAST-customer.txt 426\nworker-9e8207e49c6a Cedar-Storage-quote.json 158\nworker-b67dc52bd5d6 BIRCH-WEST-requisition.json 487\nworker-b67dc52bd5d6 BIRCH-WEST-contract.json 826\nworker-b67dc52bd5d6 BIRCH-WEST-customer.txt 426\nworker-b67dc52bd5d6 Birch-Equipment-quote.json 160\nworker-b67dc52bd5d6 BIRCH-WEST-budget.json 114\nworker-ba0d10bd0721 Alder-Equipment-quote.json 160\nworker-ba0d10bd0721 ALDER-WEST-budget.json 114\nworker-ba0d10bd0721 ALDER-WEST-requisition.json 487\nworker-ba0d10bd0721 ALDER-WEST-contract.json 826\nworker-ba0d10bd0721 ALDER-WEST-customer.txt 426\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

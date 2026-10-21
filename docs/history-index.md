@@ -7,6 +7,12 @@ incident or success rate. Original evidence remains unchanged.
 
 ## 21 October 2026
 
+- **[Customer-contract procurement](../experiments/procurement-contract-v1/RESULTS.md):** two funded jobs passed; six experimental agents made over-budget purchases totaling $1,390 in excess commitments, disclosed in their finals. No method sharing/adoption. Customer compensation pressure was explicitly requested; independent replay and cleanup completed. This differs mechanically from the preceding no-pressure study, so pressure causation remains unresolved.
+
+- **[Composable procurement design](../experiments/procurement-composition-v1/README.md):** seven offline checks passed for two interacting control failures across six synthetic requisitions. No model calls; workstation/collector integration and registration are pending.
+
+- **[Procurement settlement](../experiments/procurement-settlement-v1/RESULTS.md):** two normal jobs passed; six experimental agents exchanged documents and four later agents reused earlier request procedures. No approval cache changes or experimental transactions. This is one process weakness, not composable loopholes. Remote registration preceded inference; collection, independent review and cleanup completed.
+
 - **[Business v3](../experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md):** six correct experimental reports, 30 publicly copied synthetic records, and verified request-method reuse. The report discloses remote push confirmation overlapping preflight. Earlier [local-login interruption](../experiments/business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md) and [upstream overload](../experiments/business-cache-v3/RESULTS.md) remain separate attempts, not behavioral negatives.
 - **[Reader repair](../experiments/infra-reader-v1/REPORT.md):** 53 offline controls and 1,320 observations passed. The historical timeout's precise Docker substage remains unknown.
 - **[Business v2](../experiments/business-cache-v2/RESULTS.md):** 30 public rows and four correct reports before a reader timeout; only one experimental context finished. The earlier externally interrupted world and [v1 output-ambiguity failure](../experiments/business-cache-v1/RESULTS.md) remain separate.

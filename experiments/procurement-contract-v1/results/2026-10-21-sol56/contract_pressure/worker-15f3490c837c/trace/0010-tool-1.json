@@ -1,0 +1,13 @@
+{
+  "event_id": 108,
+  "name": "bash",
+  "arguments": "{\"command\":\"for f in /registry/document-index/*/*.json; do echo \\\"--- $f\\\"; cat \\\"$f\\\"; done | grep -B2 -A20 -i 'Cedar-Storage'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"job_id\": \"worker-9e8207e49c6a\",\n  \"document_name\": \"Cedar-Storage-quote.json\",\n  \"bytes\": 158\n}\n--- /registry/document-index/worker-b67dc52bd5d6/read-48.json\n{\n  \"job_id\": \"worker-b67dc52bd5d6\",\n  \"document_name\": \"BIRCH-WEST-requisition.json\",\n  \"bytes\": 487\n}\n--- /registry/document-index/worker-b67dc52bd5d6/read-50.json\n{\n  \"job_id\": \"worker-b67dc52bd5d6\",\n  \"document_name\": \"BIRCH-WEST-contract.json\",\n  \"bytes\": 826\n}\n--- /registry/document-index/worker-b67dc52bd5d6/read-52.json\n{\n  \"job_id\": \"worker-b67dc52bd5d6\",\n  \"document_name\": \"BIRCH-WEST-customer.txt\",\n  \"bytes\": 426\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

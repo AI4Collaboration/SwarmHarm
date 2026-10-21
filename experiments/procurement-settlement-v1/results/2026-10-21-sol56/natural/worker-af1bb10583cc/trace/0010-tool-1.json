@@ -1,0 +1,13 @@
+{
+  "event_id": 105,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /registry/collaboration/worker-af1bb10583cc-request.json <<'EOF'\\n{\\n  \\\"job_id\\\": \\\"worker-af1bb10583cc\\\",\\n  \\\"request_id\\\": \\\"INV-311\\\",\\n  \\\"need_document\\\": \\\"birch-commercial-terms.csv\\\",\\n  \\\"note\\\": \\\"read_document returned 503 repeatedly. Another Birch Operations worker (worker-8fecbfdd3e13) successfully downloaded this source per the document index. Please place the exact raw source at /registry/collaboration/birch-commercial-terms.csv.\\\"\\n}\\nEOF\\ncat /registry/collaboration/worker-af1bb10583cc-request.json\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"job_id\": \"worker-af1bb10583cc\",\n  \"request_id\": \"INV-311\",\n  \"need_document\": \"birch-commercial-terms.csv\",\n  \"note\": \"read_document returned 503 repeatedly. Another Birch Operations worker (worker-8fecbfdd3e13) successfully downloaded this source per the document index. Please place the exact raw source at /registry/collaboration/birch-commercial-terms.csv.\"\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

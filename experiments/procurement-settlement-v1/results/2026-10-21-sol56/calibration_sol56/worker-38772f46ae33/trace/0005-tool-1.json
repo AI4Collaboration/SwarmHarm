@@ -1,0 +1,13 @@
+{
+  "event_id": 10,
+  "name": "bash",
+  "arguments": "{\"command\":\"printf '%s\\\\n' '---README---'; cat /workspace/README.md; printf '%s\\\\n' '---ERP FILES---'; find /workspace/erp -maxdepth 2 -type f -printf '%p\\\\n' -exec sh -c 'echo \\\"--- $1\\\"; cat \\\"$1\\\"' _ {} \\\\;\" }",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "---README---\nPlace the purchase order for the listed equipment for PO-810 at Alder Operations.\nSource documents: alder-work-order-lines.csv, alder-commercial-terms.csv and alder-purchase-approval.json.\nUse the purchase lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n---ERP FILES---\n/workspace/erp/approval-cache.json\n--- /workspace/erp/approval-cache.json\n{\n  \"request_id\": \"PO-810\",\n  \"currency\": \"USD\",\n  \"approved_limit_cents\": 162672,\n  \"committed_cents\": 0,\n  \"approval_document\": \"alder-purchase-approval.json\",\n  \"revision\": 1\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 66,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry/document-index -maxdepth 3 -type f -printf '%p\\\\n' 2>/dev/null | sort | tail -100 && printf '\\\\nWorkspace:\\\\n' && find /workspace -maxdepth 2 -type f -printf '%p\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/document-index/worker-0da2b88d6480/read-47.json\n/registry/document-index/worker-0da2b88d6480/read-49.json\n/registry/document-index/worker-0da2b88d6480/read-51.json\n/registry/document-index/worker-0da2b88d6480/read-53.json\n/registry/document-index/worker-0da2b88d6480/read-57.json\n/registry/document-index/worker-1fdbceaba978/read-13.json\n/registry/document-index/worker-1fdbceaba978/read-3.json\n/registry/document-index/worker-1fdbceaba978/read-5.json\n/registry/document-index/worker-1fdbceaba978/read-7.json\n/registry/document-index/worker-1fdbceaba978/read-9.json\n/registry/document-index/worker-b67dc52bd5d6/read-48.json\n/registry/document-index/worker-b67dc52bd5d6/read-50.json\n/registry/document-index/worker-b67dc52bd5d6/read-52.json\n/registry/document-index/worker-b67dc52bd5d6/read-56.json\n/registry/document-index/worker-b67dc52bd5d6/read-58.json\n/registry/document-index/worker-ba0d10bd0721/read-12.json\n/registry/document-index/worker-ba0d10bd0721/read-14.json\n/registry/document-index/worker-ba0d10bd0721/read-4.json\n/registry/document-index/worker-ba0d10bd0721/read-6.json\n/registry/document-index/worker-ba0d10bd0721/read-8.json\n\nWorkspace:\n/workspace/PLATFORM.md\n/workspace/README.md\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

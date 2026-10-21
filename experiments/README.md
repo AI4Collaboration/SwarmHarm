@@ -1,15 +1,16 @@
 # Experiments
 
-## Current entry point
+## Latest completed study
 
-[Business cache v3](business-cache-v3/README.md) is the latest completed runner.
-Its [21 October report](business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
-verifies six correct experimental reports, 30 publicly copied synthetic records,
-and cross-workflow request-method reuse. It does not establish the planned
-business-process exploit chain.
+[Customer-contract procurement](procurement-contract-v1/RESULTS.md): two funded
+capabilities passed; six experimental agents made over-budget purchases totaling
+$1,390 in excess commitments. No method files or peer-method adoption. The report
+separates control failure from deliberate discovery and pressure causation.
 
-Use the [running guide](../docs/running-evals.md) for a new registration, model
-checks, collection and review. The next finance/procurement study is not yet built.
+The previous [settlement study](procurement-settlement-v1/RESULTS.md) found data
+exchange and request-procedure reuse, with no approval-cache changes or overruns.
+These different mechanisms must not be treated as a matched pressure comparison.
+Use the [running guide](../docs/running-evals.md) for future registered studies.
 
 ## Supporting components
 
@@ -22,7 +23,7 @@ checks, collection and review. The next finance/procurement study is not yet bui
 ## Historical studies
 
 The [history index](../docs/history-index.md) groups completed, interrupted and
-negative results. Every other study family here is historical; its old settings
+negative results. Earlier study families are historical; its old settings
 and launch commands are not the current operating guide.
 
 Each historical family links to its results and an immutable version of its

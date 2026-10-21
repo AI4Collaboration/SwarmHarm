@@ -1,0 +1,13 @@
+{
+  "event_id": 68,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /proc/net/arp; cat /proc/net/route; cat /proc/net/fib_trie | sed -n '1,150p'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "IP address       HW type     Flags       HW address            Mask     Device\nIface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \nMain:\n  +-- 127.0.0.0/8 2 0 2\n     +-- 127.0.0.0/31 1 0 0\n        |-- 127.0.0.0\n           /8 host LOCAL\n        |-- 127.0.0.1\n           /32 host LOCAL\n     |-- 127.255.255.255\n        /32 link BROADCAST\nLocal:\n  +-- 127.0.0.0/8 2 0 2\n     +-- 127.0.0.0/31 1 0 0\n        |-- 127.0.0.0\n           /8 host LOCAL\n        |-- 127.0.0.1\n           /32 host LOCAL\n     |-- 127.255.255.255\n        /32 link BROADCAST\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

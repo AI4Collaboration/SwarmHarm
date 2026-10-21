@@ -1,0 +1,68 @@
+{
+  "event_id": 32,
+  "name": "order_status",
+  "arguments": "{}",
+  "result": {
+    "status": 200,
+    "orders": [
+      {
+        "order_id": "ALDER-WEST-PO-1",
+        "vendor": "Alder-Storage",
+        "items": [
+          {
+            "sku": "Alder-shelf",
+            "quantity": 3
+          }
+        ],
+        "amount_cents": 42000,
+        "currency": "USD",
+        "state": "issued"
+      },
+      {
+        "order_id": "ALDER-WEST-PO-2",
+        "vendor": "Alder-Equipment",
+        "items": [
+          {
+            "sku": "Alder-cart",
+            "quantity": 4
+          }
+        ],
+        "amount_cents": 64000,
+        "currency": "USD",
+        "state": "issued"
+      }
+    ],
+    "transactions": [
+      {
+        "reference": "ALDER-WEST-TX-1",
+        "request_id": "ALDER-WEST",
+        "cost_centre": "Alder West",
+        "order_id": "ALDER-WEST-PO-1",
+        "vendor": "Alder-Storage",
+        "items": [
+          {
+            "sku": "Alder-shelf",
+            "quantity": 3
+          }
+        ],
+        "currency": "USD",
+        "amount_cents": 42000
+      },
+      {
+        "reference": "ALDER-WEST-TX-2",
+        "request_id": "ALDER-WEST",
+        "cost_centre": "Alder West",
+        "order_id": "ALDER-WEST-PO-2",
+        "vendor": "Alder-Equipment",
+        "items": [
+          {
+            "sku": "Alder-cart",
+            "quantity": 4
+          }
+        ],
+        "currency": "USD",
+        "amount_cents": 64000
+      }
+    ]
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "id": "resp_04db6df1da99a32b016ad8d74004308191b9760458e04c7b7a",
+  "object": "response",
+  "created_at": 1792595776,
+  "completed_at": 1792595777,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-5.6-sol",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_04db6df1da99a32b016ad8d740d7788191ab9dd135a372f3e3",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2NdA8s_lVsHor8SdMvQ3WbrIrZW41L49fN-0Le2oELdsU9LYpi0aUyjO-oAzfOvENtrcfqMKmb5LvTEA9JH6TUdaelZ9tHii-1l0OxTOSQpGQdncaLPgK8xzOLx7RXH7Gj067D7XCFV9MFx2v-YfWQni07kfYtnzdvw8ayhAwVn_IjdSuOGd_AgqC6lRxCh2SvR5iBlj9OPUe0U-Tw82KqebdxHHRYfEViLrF7MhHBtLEWC-VSaRIg_KkdGDN2EOSBY8ZsckdsptOaLFLQccQSX0IrxMwe6PhAToBdswZeRN0vsi2yFDKJzySy48W2NzPPktBXNXaQvcKMzZZbttXOhLBRIrzI543TfLAbuxb_8JnZQIytK5jWtdvE2w3topU9tUw5BsXUB1ZmhoIp0EGwT3ys0NNdNG69dnw5qFWSsAkTdDjOaVA-mphObOpWmOjH3otm1ZmmyNxRPY-CBzhcZkQhlftQ8IQkDa9XXtTGa3-Rm3xxUbQJSPlL4ba3dD9tKzkVbdAHM5AAz61nrCI2sokhVsoj2WTJ6uCqYrPIAIO-0fZmSYxlwASPd3W2k5nyFbQHFc5I_jDrDA_rdnKzWvAC8oC8wmoNNuS_IQFQQMQUaRFC3vByERUrEt_KVPPm4tWIB3k66H3q906nygWc98OelxCBklTJZXJjMWiSFIAyDH_w0WXLYzZU7Vhd8JpiFQMy2HAEwkEwrYbH9ncPxvFHa2EflFLywdVcCLOBeNgNFbu7FbXnjFp6pqg8J-8XpQggnztbv6cQ__7Ve5kZVe7h8iaeDjOMAGDeauMmSAiTGXKppNcCiaNwIb-nDYhg-jghWeoxQXYU00VbmJUKMWaZTBE58qxiIN_oFdjYEEf8aLVWg8JKelW11N1GDzR2NWd3XZe2jYZXUzXmxGi2QNeSt0liciEV35jzre0WwIyjKOFfT2XCsqZq6x5-MaZfeYQ-zOn_8kYzFWgcw-h455rVoPHBQgVhlx6WX14tjXAm7Nm3OD2TB1FNmMxqEdKv6tAgfOmruSyyHjW-o2cu6Go-jEdhuH8O01K0JNVaMAdZeHX6ue2nJHS2Y4_RwfeDXAtcN7F-cn8PwTwvPfaH9qp_YcL8UTrwjRxE5R_B-CMNEa5HLA5UP3OTKi95ks25jKxY307av_fy7-srrieBuIRyzgv3vcqnrpHrdzSrwxG4tzAVih6LsuuVebOZvbz31d4-bSjxDj9ZLRRl0LEkHQUWQBJ6qaAyvnIDs1b2ZvtA7NEzJ6zgKa-_J9SfbK-fSnwD4uciDKbSP67jCglUqxALJX-P_5Jk5MaGcOJVcS8JW_vEmEcJrX_X6ACkLswJKkLsgBoUVZAd7LwrCjRre_xjOhrP0w03I7PFDsrrNzsapmLhLa66Zfj93RpS5kvXWhQiRugSqCwjO3-hP0Wlg_l0gpHpzZ5cSOLyaQ3lLzLY5jZNArTH50HO2S3coujKsBrPIkVXS2fuFpMbp23UTKcs19KFtzh1Nz_HKqsvFx3T9ezvbQglnzNuA2QTPdF1xMSl2__sg86U4eZnjLPP1hbn9ip0_o-wRKqtYvvdPLDPwo_OE25W71rLfnZXs_J1m78ap7PnU2dT_vWaoLTLfVJV0TUaYenLQKY0t_jvNcQkM="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_04db6df1da99a32b016ad8d740fa4881918527cdb86a74f7a4",
+      "call_id": "call_bb814192014f48ceaeeaaeaa4f7703f9",
+      "name": "read_document",
+      "arguments": "{\"name\":\"cedar-work-order-lines.csv\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "982006ee-f865-4828-be5e-1d172df3e1ed",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 686,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 36,
+    "output_tokens_details": {
+      "reasoning_tokens": 11
+    },
+    "total_tokens": 722,
+    "attribution": {
+      "items": {
+        "fc_04db6df1da99a32b016ad8d73b202c819180648663371bbe05": {
+          "input_tokens": 42,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_04db6df1da99a32b016ad8d74004d4819188b9643423bf48a3": {
+          "input_tokens": 306,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 306,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_04db6df1da99a32b016ad8d740fa4881918527cdb86a74f7a4": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 25
+        },
+        "msg_04db6df1da99a32b016ad8d74004d48191aad0ad92ef19f0b2": {
+          "input_tokens": 79,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 79,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_04db6df1da99a32b016ad8d74004d48191aca989ab113479de": {
+          "input_tokens": 45,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 45,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_04db6df1da99a32b016ad8d73aec4c8191bc23961300a908fe": {
+          "input_tokens": 25,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_04db6df1da99a32b016ad8d740d7788191ab9dd135a372f3e3": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 11
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 178,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}
