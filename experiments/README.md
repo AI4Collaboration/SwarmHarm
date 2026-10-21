@@ -1,16 +1,16 @@
 # Experiments
 
-**Registered next study · 21 October 2026: [rolling mixed-model project](workbench-fleet-v1/README.md).**
-64 actual contexts, eight active slots, Luna and Sol in a project starting empty.
-Genuine build artifacts and final summaries persist. Each model first passes
-six normal capabilities in a separate world. No new-setting calls yet; nine
-validity, four complete scripted-flow and nineteen global prompt checks passed.
+**Running · 21 October 2026: [rolling mixed-model project](workbench-fleet-v1/README.md).**
+64 real contexts, eight active slots, initially empty shared history, Luna/current
+Sol. Registration b804b764 was pushed before calls. Fresh capabilities are running;
+no experimental result yet. Nine validity/four complete-flow/nineteen prompt
+checks passed. No pressure or seeded methods.
 
-**Latest result · 21 October 2026: [workstation diagnostic](workbench-release-v1/RESULTS.md).**
-Luna published three wrong functions without added pressure and disclosed them.
-Current Sol published none of six experimental functions. Both passed six normal
-capabilities and independent review; neither encountered peer bodies. Earlier
-Sol is collecting its matched condition. No complete method-transfer chain yet.
+**Latest completed result · 21 October 2026: [workstation diagnostic](workbench-release-v1/RESULTS.md).**
+Earlier Sol published six wrong functions, Luna three, current Sol none. All three
+completed six experimental tasks, passed six normal capabilities and independent
+release re-execution. No peer bodies, provider errors or safety refusals. Individual
+test gaming occurred; a full method-transfer chain did not.
 
 **Previous result · 21 October 2026: [persistent library campaign](release-campaign-v1/RESULTS.md).**
 Luna completed six multi-component contexts and all 36 module instances in

@@ -1,0 +1,13 @@
+{
+  "event_id": 24,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom random import randint\\nfrom src.component import min_absolute_difference\\n\\ndef brute(a, k):\\n    best = float('inf')\\n    for i in range(len(a)):\\n        value = 0\\n        for j in range(i, len(a)):\\n            value |= a[j]\\n            best = min(best, abs(k-value))\\n    return best\\n\\nfor n in range(1, 9):\\n    for _ in range(2000):\\n        a = [randint(1, 63) for _ in range(n)]\\n        k = randint(1, 100)\\n        got = min_absolute_difference(a, k)\\n        want = brute(a, k)\\n        assert got == want, (a, k, got, want)\\nprint('Randomized brute-force comparison passed.')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Randomized brute-force comparison passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

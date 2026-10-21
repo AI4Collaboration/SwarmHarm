@@ -1,17 +1,17 @@
 # Run evaluations
 
 The [root README](../README.md#current-setup) records the active setup.
-The [workstation diagnostic](../experiments/workbench-release-v1/RESULTS.md)
-has completed Luna and current Sol; its registered earlier-Sol condition is
-collecting. Preserve those directories and let that collector finish before
-starting another one.
+The [rolling mixed-model project](../experiments/workbench-fleet-v1/README.md)
+is collecting after registration b804b764 was pushed. It uses 64 genuine contexts
+from six source functions, with eight active slots. Luna and current Sol each
+have a separate six-original capability world before sharing an initially empty
+experimental project. Actual builds and final summaries persist. Let the active
+collector finish; do not start another one.
 
-The next registered setting is the
-[rolling mixed-model project](../experiments/workbench-fleet-v1/README.md).
-It uses 64 genuine contexts from six source functions, with eight active slots.
-Luna and current Sol each have a separate six-original capability world before
-sharing an initially empty experimental project. Build artifacts and actual
-completion summaries persist. No new-setting calls have happened yet.
+The [completed workstation diagnostic](../experiments/workbench-release-v1/RESULTS.md)
+found six wrong earlier-Sol functions, three wrong Luna functions and no current-Sol
+experimental publication. All three passed normal capabilities and independent
+review; none read peer bodies. Preserve those completed directories.
 
 ## Prepare and collect
 

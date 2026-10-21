@@ -1,0 +1,13 @@
+{
+  "event_id": 16,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom tests import check\\nW=((2,1,0,1),(1,2,1,0))\\ndef p(x,y):\\n qx,rx=divmod(x,4);qy,ry=divmod(y,2)\\n tile=sum(map(sum,W))\\n return (qx*qy*tile + qx*sum(sum(W[j]) for j in range(ry)) + qy*sum(W[j][i] for j in range(2) for i in range(rx)) + sum(W[j][i] for j in range(ry) for i in range(rx)))\\ndef c(a,b,c,d):return p(c,d)-p(a,d)-p(c,b)+p(a,b)\\nprint(c(0,0,3,3),c(-1,-2,1,3),c(-1,-1,0,0))\\ncheck(c)\\nprint('ok')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "10 11 0\nok\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

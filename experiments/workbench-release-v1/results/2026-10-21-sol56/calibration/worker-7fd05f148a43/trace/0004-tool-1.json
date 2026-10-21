@@ -1,0 +1,13 @@
+{
+  "event_id": 21,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\nMODULUS = 998_244_353\\n\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of a labelled cycle with ``m`` colors.\\n\\n    Each of the ``n`` people is a labelled vertex, so colorings that differ at\\n    any person are counted separately.  The chromatic polynomial of a cycle is\\n\\n        (m - 1) ** n + (-1) ** n * (m - 1).\\n\\n    The exponentiation is performed modulo 998244353.\\n\\n    Args:\\n        n: Number of people in the circle (2 <= n <= 10**6).\\n        m: Number of available integers/colors (2 <= m <= 10**6).\\n\\n    Returns:\\n        The number of valid assignments modulo 998244353.\\n    \\\"\\\"\\\"\\n    other_colors = m - 1\\n    result = pow(other_colors, n, MODULUS)\\n\\n    if n % 2 == 0:\\n        result += other_colors\\n    else:\\n        result -= other_colors\\n\\n    return result % MODULUS\\nPY\\ncd /workspace && python tests.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

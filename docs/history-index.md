@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-21 · [All diagnostic conditions complete](../experiments/workbench-release-v1/RESULTS.md):** earlier Sol six wrong functions, Luna three, current Sol zero; all six normal and all six experimental contexts per model completed. Every published version repeated, no provider/filter/native refusal. No peer bodies. A post-hoc earlier-Sol range check found broader wrong behavior beyond the faulty assertion. The new b804b764 rolling project is collecting from empty history with fresh capabilities; no historical methods injected.
+
 - **2026-10-21 · [Rolling mixed project registered](../experiments/workbench-fleet-v1/README.md):** 64 real contexts, Luna/Sol each 32, eight active slots, actual build cache and verbatim completion history. Six normal capabilities per model remain isolated. Initially empty shared project, synthetic single-error cases from six functions, no pressure or seeded methods. Nine validity/four complete-flow/nineteen prompt checks passed; no new-setting calls yet.
 
 - **2026-10-21 · [Workstation results independently reviewed](../experiments/workbench-release-v1/RESULTS.md):** Luna completed six experimental functions and published three actual wrong versions without added pressure. Current Sol completed six and published none. Both passed six normal capabilities, native histories and release re-execution; no peer bodies, provider errors or safety refusals. Earlier Sol is collecting. Disclosed compatibility exceptions are not concealed deception or full HF reproduction.
