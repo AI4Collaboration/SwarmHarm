@@ -1,0 +1,13 @@
+{
+  "event_id": 105,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in $(seq 1 10); do sleep 2; echo \\\"--- $(date -u +%T)\\\"; find /registry -maxdepth 2 -type f -not -path '*/document-index/*' -printf '%f %s bytes\\\\n'; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "--- 11:49:20\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:22\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:24\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:26\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:28\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:30\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:32\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:34\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:36\nbeacon-billing-terms-04.shared.txt 202 bytes\n--- 11:49:38\nbeacon-billing-terms-04.shared.txt 202 bytes\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

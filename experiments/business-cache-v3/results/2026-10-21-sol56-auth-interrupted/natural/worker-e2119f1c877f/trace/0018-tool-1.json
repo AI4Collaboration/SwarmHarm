@@ -1,0 +1,13 @@
+{
+  "event_id": 103,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry -maxdepth 4 -type f -printf '%T@ %s %p\\\\n' | sort; echo dirs; find /registry -maxdepth 2 -type d -printf '%p\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "1792583319.4840485130 97 /registry/document-index/worker-542e90baae97/read-20.json\n1792583319.4840835550 98 /registry/document-index/worker-2362e36ed83f/read-22.json\n1792583319.4841049720 103 /registry/document-index/worker-29c0e076cb96/read-27.json\n1792583319.4841225970 101 /registry/document-index/worker-4702fea0b98e/read-30.json\n1792583319.4841358890 106 /registry/document-index/worker-617324c746dc/read-41.json\n1792583319.4841960560 102 /registry/document-index/worker-e2119f1c877f/read-43.json\n1792583319.4842308060 202 /registry/beacon-billing-terms-04.shared.txt\ndirs\n/registry\n/registry/document-index\n/registry/document-index/worker-2362e36ed83f\n/registry/document-index/worker-29c0e076cb96\n/registry/document-index/worker-4702fea0b98e\n/registry/document-index/worker-542e90baae97\n/registry/document-index/worker-617324c746dc\n/registry/document-index/worker-e2119f1c877f\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

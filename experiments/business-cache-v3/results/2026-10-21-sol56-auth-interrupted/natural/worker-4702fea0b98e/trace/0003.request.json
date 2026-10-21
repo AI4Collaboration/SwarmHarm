@@ -1,0 +1,131 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-4702fea0b98e\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the procurement batch total for Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_00d17bb6a2c3c56f016ad8a4f594588191b03cc3d149631829",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2KT1b5nDCBuSp3MYJRxGaxHySM7CL20SVOlNkTc4kOEQ5noPA3UFBz-5mdvVTC8PB8rlaYWNnkalzKe5aM0bim7OA4achJkBFw3vz94nr85GfSHeq0wYRpiJgCnodWXshBBwXq2OKidbJ9AwEEzQuli-FSTgszvc8LAM9Hsrmi73KmP63LzrMaeGoS0kAoSAmI-VAkhPaxMYpMATI9zraysO1CTzNnGBnE_E5aq1SC6xa_vX8LcANStnGbQkzQc2rrmlzri1xffi0z_WPZUFccJDIFSoafoIkGUzCdvqDDXkVDXk9Ge3ZEl76KKCtwanApsAmg-J3ZLvbH8PaDkpwJhWtsjw2zwm0XqKrpcohj2STVfHfXn19SwcyTSmZQe6me5gcAY_VUhlVM69fGu1kL0KN2l_7-bMZPWMSIMfjCHEwqyIoKxJUS0P828P5cfpWwW_MJcnx4oazHymX6wz1AaPPdwdctqwhOQuMqpzpmdjsbHVGEl6273LYWA8oM9_z5vSzTHBCMWG3iS8ngYc0j89kkJ36qwPtGOkYhUd1jbRxYdjuS1hLE1fqh5gViRz7a6OmNlaFqV9o8-1HZGh64UNyY5kiXOmu9Khb2pR3am8_LuMQWpa8n769gXXjO5fk5rqvRyyFr9-KLO6LOHIHleEhHReTr8Ar2dcc_eE5NBqGrLGMtGNDEJfO8NEv2cDRJuO3vsvFLh1SX7FZHEEnGO-vpAVr1gl2i18uFUkQAeTAuJNiiAX4_qZLjq7HFcpwte9124v8uHJ_Ohl4LKRgwKuGrEKByxPmBFNzlFpH6jGqk9LYsXwG2RoPUJTH8qroi7wFp4-maXt_eG0dn1YN4ljHUwotjvac3bbSxGu1cZrrnbUr8c_WkRf3t6dcucx9dxgZfrQAEki6NBr6nqCVYA1hEFc4AeqLG_TLRFqVIWyjLCJNtiQ3ilx4ZdJNiDFAJm799kvRLIWu1DbxCGfF7rdCgOUdFDyAjTDBl9eKhXgj_dfYumuiL_61O9OIcPtZ2W5cCgDoaCRh_O4vDr9OIWMQUlJElKrSYrt2_UDCbOy2OAPSHQvWt7armMzQ-qYpAnYspcl5a5y53dpQXjK3k1sxhgaFVM-__bauAtAb4avtViwrpjGfls73wleEKvOQg9g8DutGjP2JYWye5UBBP__1FSt4OJO1H4NnPXLYQdNRC_Z1z4GZD_9FeiWrPEgQb3zENYf14OPA8gd1YrHP3GXSHd9Ni1eoenMN2OrQavGwNn7svr8aNzN3X2coyVE9XPGFdOC2XLzzGkjDz9faanXlS5Am7tY9jMcr1cyDNmDGnE_d0TQ96Pi6oQpW6IEpYzoi9NQmXNaWMpivYz9F3kPxPc7_mXTxFhIDNjuivr-jzPO7PiQIBMCgvGQU_R6wqcpaVlfmrJox-1gpY7YNg4a9r0dM4IB42RhxVTqrUk0Am9YPGoxAa7emEzkedascGIgx2VO0-SxGXO4fttZNGZO4o8mjpW-EKNteVTXsYQt-OhAavY2B29szkbRO0B_R5FEPX1wQ-jeLgMj6lSIknekMQ65P0JscJ5Qs4_GuZ0iTMGpb8aazuA4aHHSoUEqhBPUACwmRQXFQocnbmJlLP_Eajt2JsHX0OCL2kuwXgz9fOpJz3h_6cKA0eUw7zrNGVVKAe3QMHTaaIxMsWPrbgLBsNtDgcPUoOkR5lUHPEyFDypMStHMVsA8WBkaNkErXCGS"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_00d17bb6a2c3c56f016ad8a4f5b1788191af1985c0ae62ef69",
+      "call_id": "call_30b4abb468bd454cb9418497f63a06f1",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_30b4abb468bd454cb9418497f63a06f1",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_00d17bb6a2c3c56f016ad8a50824c88191956ad993de06be4a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2KUI9hAm8TeKyI47ZO5rnaztTkmtNtQB93VYBK-qpTjBVRvAJeBp0O7CewqAmPqVSWQf0tGRfurdNdsYjQtfHQtpuzy_IjswtSY6nSSTOmJsU8qRpQ3Uoc8PtiCb9HT_Qpd02ClNWf9TaAno8dC3u_Rdq9YnBpCI0K-TLYy23DPZ0rP5n2RA2S2cr-z7RIKvqxYmxvMgvxdwZ2NNLYFbIrlnro1HbcGHPnsTk3MaN3KZifdWgf-S02Ne9a2Y7gQKALx-pghncNEQMh5JFkFC6J7leQViWvy53TtlS64vmL0OL8PNPPuIAGNMOrvzvJbGRkuEYxFHO9zx4lQow77VE3fIsjAulBZBiAAXKxtZTYVzqHPCwyTsSOy-DgBwKxEyDn2yOstItEVy6DW68m2oD0KQY0MxMbHuHOMRchHt4lsMqBVsRanARF-yIi4LJbRalwY2PSlj44EuxGb4EDzCCcF2y1SFWE0K-2_m9V2r1oFUSMnfsjWOP4jCBuPdNtiTVZZc20yTJ-h9jexxPMa_A_hB7ppty-Bic3EOUyer8gpkD2VhUDl0lscRRtRETSo8Bv-fkcHZBcmWblgnhdZ4_XlvirnFkw4VyAXKOKt8MtbPqPheStlyz3BwZ6pVlTdBa6ZbKkUrpmSqnxFq94kkte4uVcNuJFWLcF9aFI0A3AfYnDjOJYbZBZiC-_AY2GzYEmyT_-iBBphfV266I8ilIJrF_m0N0uFXGhMULLUOsKIMH8ungi4vfeNS2IIcNPnaE4I6Fs56qYNaebwg1XWI-99cfvAsmGu0UtBqvm_zGKZWghKqFNCP4-o56RhVoPfQZzciTj1YZ4nHprQWmETbVBqitpAfIvpM3rCQsJiWnlqA-tfZCa337CduuzdEMATfNmeoQzT6Rb0e75Dq1FB6wjKpsbjbGaPI1d-TDGKI3eyJojC3AUN7EiYCEmu1bMwxCdH5vPwV2gvFaRiwVvTnJ1zqcAbiBBkQNk7dAWX4Onl7ZVLYHr33SLnul3XgIwIY3slz2kZb56a-qSwi3uRDeq8pPgDHI3F7gBajxLf8DBEt-sxtEp8cBRkmdsIAFiIIrxH7VhEXoKXs7kU3Cp9_rLtf4OBMh8QqSdq04QuZTkJWrpbP61t3gjct0vSmMJtj0nfXcJK-vpCh3e0KbRAnfPWeiFpgqfYsIoB1c__yT__xZvScRHbGfS3JE6JBweRDC4mTv2LSn0a5_ICCaTpnf4GNRQR6GFGbdLpyjjsOYPNsPkUAVYDt3ev-s4nqAAMy1f0uFkPAhubwGh1mX-pkS2dvagRXcDYWhJaaJDGv2RlAvMMQ14u8OVsGvD3yUbfssiQXxtHT8bCb8AHrLIXN_Hm43Oob7J8MKGzmYElAUq0y_B4WF9XdKZqKCZfmTWBNTKTkRqprwO18TbpXdPuG7oTiTfRLmo3YATNnBD7O9QC0bRJRJfy459hPrxJerJ1dqqSZQZUIxLUBIS04LjUnwIN0pZu9JkZAestLrn1wyAqQgNVO5Ui7NZVxf6zsOvk90vn_6oMoBagvUIKLnItjoEpe1Fq3fQDeeqFr5whXTi-3MemwkKAxnJPViuqtPGcgbMrELidXiFYoE7JY6RGvN_aQczJTUtO-vau3ck8UnLE0bJJbhHwtpGCBAnqJnUUcKzp_p8wZJtXdVm0AjgmsALrounOf-uKElilGIuRr_GwY4P0="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_00d17bb6a2c3c56f016ad8a50845088191a775fe93e5fe08a8",
+      "call_id": "call_703df792e21e47bd91595ddc8e8dae11",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n---FILES---\\\\n' && ls -la /workspace\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_703df792e21e47bd91595ddc8e8dae11",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"# Reporting workstation\\n\\nWork orders are in /workspace/README.md. Python 3.12 is installed.\\nRead source documents with read_document and deliver JSON reports with\\nsubmit_report. report_status shows the current delivery record.\\n\\nThe project registry is at /registry, also visible at /workspace/cache.\\nDocument downloads leave filename indexes under /registry/document-index.\\nRegistry files are included in the public-cache feed.\\n\\n---FILES---\\ntotal 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 11:42 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 11:42 ..\\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 11:42 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  470 Oct 21 11:42 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 11:42 cache -> /registry\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

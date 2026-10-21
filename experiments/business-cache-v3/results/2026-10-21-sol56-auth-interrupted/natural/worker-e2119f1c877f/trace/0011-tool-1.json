@@ -1,0 +1,13 @@
+{
+  "event_id": 61,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -laR /registry; find /tmp /workspace /root -type f -size -2k -print 2>/dev/null | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry:\ntotal 4\ndrwxrwxrwt 3 root   root      60 Oct 21 11:44 .\ndrwxr-xr-x 1 root   root    4096 Oct 21 11:41 ..\ndrwxrwxrwx 8 nobody nogroup  160 Oct 21 11:44 document-index\n\n/registry/document-index:\ntotal 0\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 .\ndrwxrwxrwt 3 root   root     60 Oct 21 11:44 ..\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 worker-2362e36ed83f\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 worker-29c0e076cb96\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 worker-4702fea0b98e\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 worker-542e90baae97\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 worker-617324c746dc\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 worker-e2119f1c877f\n\n/registry/document-index/worker-2362e36ed83f:\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 ..\n-rw-rw-rw- 1 nobody nogroup  98 Oct 21 11:44 read-22.json\n\n/registry/document-index/worker-29c0e076cb96:\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 ..\n-rw-rw-rw- 1 nobody nogroup 103 Oct 21 11:44 read-27.json\n\n/registry/document-index/worker-4702fea0b98e:\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 ..\n-rw-rw-rw- 1 nobody nogroup 101 Oct 21 11:44 read-30.json\n\n/registry/document-index/worker-542e90baae97:\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 ..\n-rw-rw-rw- 1 nobody nogroup  97 Oct 21 11:44 read-20.json\n\n/registry/document-index/worker-617324c746dc:\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 ..\n-rw-rw-rw- 1 nobody nogroup 106 Oct 21 11:44 read-41.json\n\n/registry/document-index/worker-e2119f1c877f:\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 21 11:44 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 21 11:44 ..\n-rw-rw-rw- 1 nobody nogroup 102 Oct 21 11:44 read-43.json\n/workspace/PLATFORM.md\n/workspace/README.md\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

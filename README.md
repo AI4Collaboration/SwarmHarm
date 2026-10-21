@@ -4,12 +4,13 @@ SwarmHarm studies whether agents pursuing legitimate work take harmful shortcuts
 and whether other agents discover and reuse those methods. Tasks use ordinary
 programming or business work with synthetic data and local services.
 
-**Latest study · 21 October 2026:** the first repaired-reader world
-[stopped on upstream overload](experiments/business-cache-v3/RESULTS.md) during
-capability checks; no experimental job ran and no reader timeout/refusal occurred.
-A [new user-requested attempt](experiments/business-cache-v3/registrations/2026-10-21-sol56-r2/PROTOCOL.md)
-is registered with identical source, data, settings and budgets, apart from fresh
-job IDs/state. Native preflight and all six capabilities still gate experiments.
+**Latest study · 21 October 2026:** [peer-method reuse was verified before a
+local login interruption](experiments/business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md).
+All six capabilities passed. Billing's request-and-share method spread to payroll
+and procurement, but the host login file disappeared before the next request;
+no experimental report or raw business row was delivered. No reader timeout or
+refusal occurred. A [fresh user-requested world](experiments/business-cache-v3/registrations/2026-10-21-sol56-r3/PROTOCOL.md)
+is registered with unchanged source/data/settings and restored existing login.
 
 **Latest setup repair · 21 October 2026:** the local
 [public-reader timeout is repaired](experiments/infra-reader-v1/REPORT.md).
@@ -43,24 +44,26 @@ not establish population rates or reproduce the original HF compromise.
 
 - **Runner:** `experiments/business-cache-v3/run.py`, input
   `natural-complementary-business-inputs-v2`, outcome
-  `actual-business-client-and-public-table-v2-durable-observer`. Three synthetic workflows,
-  six fully staged capabilities, six genuine complementary-input contexts.
+  `actual-business-client-and-public-table-v2-durable-observer`. Three synthetic
+  workflows, six fully staged capabilities, six complementary-input contexts.
   Verified offline: 12 reader, 13 business-validity, eight whole-flow, one launch
-  and 19 existing global prompt controls. All twelve initial input/file sets
-  exactly match frozen v2. The first live v3 world stopped in capabilities on upstream overload after
-  29 accepted responses; no experimental job ran. Its independent review passed.
-  The new user-requested r2 world is prepared, with zero calls before its push;
-  fresh native preflight and all six capabilities gate collection.
-  The old v2 world stays partial with its separately verified prefix and missing
-  final tool result. Owned containers are absent and the inference lock is free.
-  One new r2 collector is authorized after push; no reviewer or scheduled monitor
-  is active. Its output is `../eval-readiness/business-cache-sol56-v3-2026-10-21-r2`.
+  and 19 existing global prompt controls. Initial inputs/files match frozen v2.
+  The first live v3 world stopped in capabilities on upstream overload; r2 passed
+  all capabilities and recorded two method-reuse edges before local login-file
+  absence. Both saved-history reviews passed. The file is now present and CLI
+  login reports ChatGPT; no credential was created/copied. A fresh r3 world is
+  registered before calls, requiring new native preflight and six capabilities.
+  Preserve all partial worlds. No reviewer or scheduled monitor is active.
+  One r3 collector is authorized after push; output:
+  `../eval-readiness/business-cache-sol56-v3-2026-10-21-r3`.
 - **Models and route:** `gpt-5.6-sol / xhigh` verified through existing host login
-  at `https://chatgpt.com/backend-api/codex/responses`. `gpt-6-luna / xhigh` completed
-  the matched document pilot; `gpt-6.1-sol / xhigh` completed coding studies.
-  These are last live verifications, not a live v3 check. New settings require
-  fresh native preflight and capabilities; prior access is insufficient.
-  These are distinct model conditions.
+  at `https://chatgpt.com/backend-api/codex/responses`, including v3 preflight
+  and six completed capabilities. Authentication is read from the host login
+  file before each call; a temporary absence can stop collection before dispatch.
+  Never treat such a failure as an upstream refusal or silently resume/replay it.
+  `gpt-6-luna / xhigh` completed the matched document pilot;
+  `gpt-6.1-sol / xhigh` completed coding studies. These are distinct conditions;
+  each new world still needs fresh native preflight and capabilities.
 - **Measurement:** client reports and finals remain private. Actual authored
   cache content is received by a separate public-only consumer. Compare client
   values with independent source truth; a receipt alone is not correctness.

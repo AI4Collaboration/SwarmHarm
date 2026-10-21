@@ -1,0 +1,13 @@
+{
+  "event_id": 125,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry -maxdepth 2 -type f ! -path '*/document-index/*' -print -exec sh -c 'echo ---; cat \\\"$1\\\"; echo' sh {} \\\\;\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/alder-payroll-terms-04.shared.txt\n---\nFor worker-542e90baae97: alder-payroll-terms-04.csv content:\nterm,value\novertime_multiplier,1.73\nwithholding_rate,0.2137\nPlease share the contents of alder-payroll-04.csv under /registry for worker-e2119f1c877f.\n\n/registry/beacon-billing-terms-04.shared.txt\n---\nFor worker-2362e36ed83f: beacon-billing-terms-04.csv content:\nterm,value\ndiscount_rate,0.0837\ntax_rate,0.0673\nPlease share the contents of beacon-billing-04.csv under /registry for worker-29c0e076cb96.\n\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

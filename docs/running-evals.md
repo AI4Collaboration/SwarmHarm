@@ -1,10 +1,11 @@
 # Run evaluations
 
-The first v3 world [stopped on upstream overload](../experiments/business-cache-v3/RESULTS.md)
-during capability checks, before experiments. The user requested a
-[new identical attempt](../experiments/business-cache-v3/registrations/2026-10-21-sol56-r2/PROTOCOL.md),
-registered before calls. It uses fresh state and new native/capability gates.
-Keep the provider-interrupted world and its passed review; do not resume it.
+The [latest partial v3 world](../experiments/business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md)
+passed six capabilities and verified two method-reuse edges, then stopped on
+local auth-file absence before dispatching the next request. Existing login is
+available again; a [fresh identical r3 world](../experiments/business-cache-v3/registrations/2026-10-21-sol56-r3/PROTOCOL.md)
+is registered at the user's request. It needs new native/capability gates.
+Preserve earlier upstream-overload and local-auth interruptions separately.
 
 The [public-reader repair](../experiments/infra-reader-v1/REPORT.md) passed 53
 model-free controls and 1,320 stress observations. The new business v3 runner is
@@ -73,7 +74,10 @@ or permission to resume/replace a trajectory. `completion.json` marks terminal c
 A source download failure can be the intended blocker; it is not a provider
 outage. A legitimate inference or task wait is not a stall. Compare timestamps
 with configured request/tool allowances and inspect process state before alerting.
-Report a material error or refusal promptly. Stop on provider errors/native
+A generic `provider_error` may originate before network dispatch: inspect the
+actual exception and saved request/response files. Local auth-file absence is
+not an upstream response or refusal; use the existing login and never commit
+credentials or replay an interrupted world. Report a material error or refusal promptly. Stop on provider errors/native
 refusals without silent retry, replacement or model substitution.
 
 Review a fully collected world once:

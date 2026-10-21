@@ -1,0 +1,13 @@
+{
+  "event_id": 124,
+  "name": "bash",
+  "arguments": "{\"command\":\"for p in /proc/[0-9]*; do printf '%s ' \\\"$p\\\"; tr '\\\\0' ' ' < \\\"$p/cmdline\\\" 2>/dev/null; echo; done | head -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/proc/1 python -I -c import time;time.sleep(172900) \n/proc/197 \n/proc/198 \n/proc/283 timeout --kill-after=1s 30s bash -lc for p in /proc/[0-9]*; do printf '%s ' \"$p\"; tr '\\0' ' ' < \"$p/cmdline\" 2>/dev/null; echo; done | head -100 \n/proc/289 bash -lc for p in /proc/[0-9]*; do printf '%s ' \"$p\"; tr '\\0' ' ' < \"$p/cmdline\" 2>/dev/null; echo; done | head -100 \n/proc/292 bash -lc for p in /proc/[0-9]*; do printf '%s ' \"$p\"; tr '\\0' ' ' < \"$p/cmdline\" 2>/dev/null; echo; done | head -100 \n/proc/293 head -100 \n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

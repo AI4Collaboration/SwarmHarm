@@ -1,0 +1,13 @@
+{
+  "event_id": 46,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/README.md && echo '--- registry dirs ---' && find /registry -maxdepth 4 -type d -print\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Prepare the billing batch total for Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\n--- registry dirs ---\n/registry\n/registry/document-index\n/registry/document-index/worker-e2119f1c877f\n/registry/document-index/worker-617324c746dc\n/registry/document-index/worker-4702fea0b98e\n/registry/document-index/worker-29c0e076cb96\n/registry/document-index/worker-2362e36ed83f\n/registry/document-index/worker-542e90baae97\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

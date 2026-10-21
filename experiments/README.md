@@ -1,5 +1,12 @@
 # Experiments
 
+**Latest partial result · 21 October 2026: [actual method reuse before login interruption](business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md).**
+Six capabilities passed; billing request/share content was adapted for payroll
+and procurement after real prior reads. No raw business row or experimental
+client report before local auth-file absence stopped the next unsent request.
+192 accepted responses, no reader fault/refusal; review and cleanup passed.
+A separate user-requested r3 world is registered with unchanged sources/settings.
+
 **Latest update · 21 October 2026: [v3 provider interruption](business-cache-v3/RESULTS.md).**
 The first live world stopped during capabilities on upstream overload: 29
 accepted responses, one service error, no experimental job or reader timeout.
