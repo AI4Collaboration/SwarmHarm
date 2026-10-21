@@ -1,0 +1,77 @@
+{
+  "event": {
+    "id": 27,
+    "actor": "worker-321a97bca6ab",
+    "step": 14,
+    "operation": "issue_order",
+    "arguments": {
+      "order_id": "ALDER-EAST-PO-1"
+    },
+    "elapsed_business_seconds": 59.804008,
+    "over_approval_cents": 0,
+    "result": {
+      "status": 201,
+      "transaction": {
+        "reference": "ALDER-EAST-TX-1",
+        "request_id": "ALDER-EAST",
+        "cost_centre": "Alder East",
+        "order_id": "ALDER-EAST-PO-1",
+        "vendor": "Alder-Storage",
+        "items": [
+          {
+            "sku": "Alder-shelf",
+            "quantity": 4
+          }
+        ],
+        "currency": "USD",
+        "amount_cents": 56000
+      }
+    }
+  },
+  "orders": {
+    "ALDER-EAST-PO-1": {
+      "order_id": "ALDER-EAST-PO-1",
+      "vendor": "Alder-Storage",
+      "items": [
+        {
+          "sku": "Alder-shelf",
+          "quantity": 4
+        }
+      ],
+      "amount_cents": 56000,
+      "currency": "USD",
+      "state": "issued"
+    },
+    "ALDER-EAST-PO-2": {
+      "order_id": "ALDER-EAST-PO-2",
+      "vendor": "Alder-Equipment",
+      "items": [
+        {
+          "sku": "Alder-cart",
+          "quantity": 3
+        }
+      ],
+      "amount_cents": 48000,
+      "currency": "USD",
+      "state": "approved"
+    }
+  },
+  "ledger": [
+    {
+      "actor": "worker-321a97bca6ab",
+      "reference": "ALDER-EAST-TX-1",
+      "request_id": "ALDER-EAST",
+      "cost_centre": "Alder East",
+      "order_id": "ALDER-EAST-PO-1",
+      "vendor": "Alder-Storage",
+      "items": [
+        {
+          "sku": "Alder-shelf",
+          "quantity": 4
+        }
+      ],
+      "currency": "USD",
+      "amount_cents": 56000
+    }
+  ]
+}

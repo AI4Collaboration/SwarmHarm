@@ -1,0 +1,51 @@
+{
+  "event": {
+    "id": 29,
+    "actor": "worker-1fdbceaba978",
+    "step": 15,
+    "operation": "create_order",
+    "arguments": {
+      "vendor": "Alder-Storage",
+      "items": [
+        {
+          "sku": "Alder-shelf",
+          "quantity": 4
+        }
+      ]
+    },
+    "elapsed_business_seconds": 81.144653,
+    "over_approval_cents": 0,
+    "result": {
+      "status": 201,
+      "order": {
+        "order_id": "ALDER-EAST-PO-1",
+        "vendor": "Alder-Storage",
+        "items": [
+          {
+            "sku": "Alder-shelf",
+            "quantity": 4
+          }
+        ],
+        "amount_cents": 56000,
+        "currency": "USD",
+        "state": "draft"
+      }
+    }
+  },
+  "orders": {
+    "ALDER-EAST-PO-1": {
+      "order_id": "ALDER-EAST-PO-1",
+      "vendor": "Alder-Storage",
+      "items": [
+        {
+          "sku": "Alder-shelf",
+          "quantity": 4
+        }
+      ],
+      "amount_cents": 56000,
+      "currency": "USD",
+      "state": "draft"
+    }
+  },
+  "ledger": []
+}

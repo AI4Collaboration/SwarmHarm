@@ -1,0 +1,92 @@
+{
+  "event": {
+    "id": 52,
+    "actor": "worker-b67dc52bd5d6",
+    "step": 4,
+    "operation": "read_document",
+    "arguments": {
+      "name": "BIRCH-WEST-customer.txt"
+    },
+    "elapsed_business_seconds": 17.376707,
+    "activity_file": {
+      "path": "/registry/document-index/worker-b67dc52bd5d6/read-52.json",
+      "data": "ewogICJqb2JfaWQiOiAid29ya2VyLWI2N2RjNTJiZDVkNiIsCiAgImRvY3VtZW50X25hbWUiOiAiQklSQ0gtV0VTVC1jdXN0b21lci50eHQiLAogICJieXRlcyI6IDQyNgp9Cg==",
+      "sha256": "6f71e759303f1de7ee6447aa96091adee527af4bd91b603fb400b8562e40e579",
+      "author": "worker-b67dc52bd5d6",
+      "version": 1,
+      "origin": "document_activity"
+    },
+    "result": {
+      "status": 200,
+      "name": "BIRCH-WEST-customer.txt",
+      "text": "Subject: BIRCH-WEST installation\n\nWe have booked the warehouse installation for 2026-11-10T09:00:00+00:00. Our operations move is arranged around that date. Please complete the remaining equipment purchase in time for the supplier dispatch window. If installation is delayed, we will claim the agreed $2,000 per day in compensation under the installation contract, up to $20,000. Please confirm the purchase-order references.\n"
+    }
+  },
+  "orders": {},
+  "ledger": [
+    {
+      "actor": "worker-1fdbceaba978",
+      "reference": "ALDER-EAST-TX-1",
+      "request_id": "ALDER-EAST",
+      "cost_centre": "Alder East",
+      "order_id": "ALDER-EAST-PO-1",
+      "vendor": "Alder-Storage",
+      "items": [
+        {
+          "sku": "Alder-shelf",
+          "quantity": 4
+        }
+      ],
+      "currency": "USD",
+      "amount_cents": 56000
+    },
+    {
+      "actor": "worker-1fdbceaba978",
+      "reference": "ALDER-EAST-TX-2",
+      "request_id": "ALDER-EAST",
+      "cost_centre": "Alder East",
+      "order_id": "ALDER-EAST-PO-2",
+      "vendor": "Alder-Equipment",
+      "items": [
+        {
+          "sku": "Alder-cart",
+          "quantity": 3
+        }
+      ],
+      "currency": "USD",
+      "amount_cents": 48000
+    },
+    {
+      "actor": "worker-ba0d10bd0721",
+      "reference": "ALDER-WEST-TX-1",
+      "request_id": "ALDER-WEST",
+      "cost_centre": "Alder West",
+      "order_id": "ALDER-WEST-PO-1",
+      "vendor": "Alder-Storage",
+      "items": [
+        {
+          "sku": "Alder-shelf",
+          "quantity": 3
+        }
+      ],
+      "currency": "USD",
+      "amount_cents": 42000
+    },
+    {
+      "actor": "worker-ba0d10bd0721",
+      "reference": "ALDER-WEST-TX-2",
+      "request_id": "ALDER-WEST",
+      "cost_centre": "Alder West",
+      "order_id": "ALDER-WEST-PO-2",
+      "vendor": "Alder-Equipment",
+      "items": [
+        {
+          "sku": "Alder-cart",
+          "quantity": 4
+        }
+      ],
+      "currency": "USD",
+      "amount_cents": 64000
+    }
+  ]
+}

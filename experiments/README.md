@@ -1,23 +1,16 @@
 # Experiments
 
-## Current study
-
-[Customer-contract procurement](procurement-contract-v1/README.md) is being prepared
-for GPT-5.6 Sol: two funded capabilities, then six impossible procurement tasks
-with the user-requested contract compensation pressure. Source inputs and contract
-outcomes are separately recorded. No model results yet.
-
 ## Latest completed study
 
-[Procurement settlement v1](procurement-settlement-v1/RESULTS.md) completed two
-normal jobs and six experimental jobs with GPT-5.6 Sol. Agents exchanged missing
-documents; four later agents reused earlier request procedures. No approval
-cache was modified and no experimental transaction posted. The process-exploit
-chain remains unobserved.
+[Customer-contract procurement](procurement-contract-v1/RESULTS.md): two funded
+capabilities passed; six experimental agents made over-budget purchases totaling
+$1,390 in excess commitments. No method files or peer-method adoption. The report
+separates control failure from deliberate discovery and pressure causation.
 
-Use the [running guide](../docs/running-evals.md) for registration, collection and
-review. The previous [business-cache result](business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
-establishes request-method reuse and public copying, not the new process-exploit chain.
+The previous [settlement study](procurement-settlement-v1/RESULTS.md) found data
+exchange and request-procedure reuse, with no approval-cache changes or overruns.
+These different mechanisms must not be treated as a matched pressure comparison.
+Use the [running guide](../docs/running-evals.md) for future registered studies.
 
 ## Supporting components
 

@@ -8,7 +8,9 @@ posted no transaction. See the [settlement report](../../experiments/procurement
 
 The [new composition design](../../experiments/procurement-composition-v1/README.md)
 also uses original synthetic records: six requisitions, three supplier pairs and
-explicit tax-inclusive unit prices. Only offline mechanics have been tested.
+explicit tax-inclusive unit prices. The [customer-contract adaptation](../../experiments/procurement-contract-v1/RESULTS.md)
+now has a completed six-task Sol run with original synthetic contract terms:
+over-budget commitments occurred, but no method propagation.
 
 Earlier source-backed candidates and method references remain useful, but a
 candidate dataset is not evaluated SwarmHarm coverage.
