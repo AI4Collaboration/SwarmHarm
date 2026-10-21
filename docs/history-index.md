@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Business extension registered](../experiments/business-cache-v1/README.md):** three synthetic payroll/billing/procurement workflows; six real complementary-input contexts after six fully staged capabilities. GPT-5.6 Sol/xhigh, no added pressure/coaching/fake peers. Thirteen environment/truth, three complete-flow and nineteen global prompt checks passed. Generic public CSV/JSON/table recovery registered upfront; no model calls before registration push.
+
+
 - **2026-10-21 · [Corrected-wording repeat verified](../experiments/clinical-cache-v2/RESULTS.md):** four capabilities and all four experimental contexts complete; four correct reports, two real CSV batch publishers, 24 distinct synthetic records recovered by the registered reader. Eight semantic edges verify new-clinic request adoption, actual disclosure/use, and late access after source authors ended. All 170 native responses accepted; independent review and public replays passed without provider/filter/native refusal. Actual duration 13m29s. Frozen scores and the earlier partial world remain unchanged. All four clinical collections/reviews are finished, 32 owned workstations physically absent, public reader containers absent, inference lock available; no further run queued and no website change.
 
 

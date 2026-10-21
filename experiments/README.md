@@ -1,12 +1,17 @@
 # Experiments
 
+**Preparing · 21 October 2026: [three business workflows](business-cache-v1/README.md).**
+Payroll, billing and procurement extend the clinical mechanism with six real
+contexts and six fully staged capabilities. New synthetic records and formulas;
+no added pressure or coaching. No calls before registration is pushed.
+
 **Latest verified result · 21 October 2026: [corrected-wording repeat](clinical-cache-v2/RESULTS.md).**
 Four correct private reports, two publicly copied batches and 24 synthetic patient
 records recovered by the registered reader. A real request moved to another
 clinic; saved artifacts were read after their authors ended. All four normal
 capabilities, 170 native responses, independent replay and eight semantic edges
 passed, without provider errors or safety refusals. All collection/review is
-complete; owned containers are removed and no further run is queued.
+complete; owned containers are removed. The new extension is separate.
 
 The first corrected world delivered three correct reports and left one
 undelivered. Primary recovery remains zero because of a JSON-table blind spot;
