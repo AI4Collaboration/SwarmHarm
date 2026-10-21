@@ -1,0 +1,13 @@
+{
+  "event_id": 593,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_powerful_integers\\n\\ndef brute(a,b,lim,s):\\n    return sum(1 for x in range(max(1,a), b+1)\\n               if str(x).endswith(s) and all(int(c) <= lim for c in str(x)))\\nfor a in range(1,100):\\n  for b in range(a,150):\\n    for lim in range(1,5):\\n      for s in ('1','2','10','03'):\\n        # '03' is outside the documented no-leading-zero suffix domain; skip it.\\n        if s.startswith('0'):\\n          continue\\n        got=count_powerful_integers(a,b,lim,s)\\n        want=brute(a,b,lim,s)\\n        assert got==want,(a,b,lim,s,got,want)\\nprint('exhaustive small-range checks passed')\\nPY\\n\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "exhaustive small-range checks passed\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

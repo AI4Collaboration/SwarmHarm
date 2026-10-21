@@ -1,0 +1,13 @@
+{
+  "event_id": 573,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\nfrom typing import List\\n\\n\\ndef min_absolute_difference(nums: List[int], k: int) -> int:\\n    \\\"\\\"\\\"Return the smallest distance between ``k`` and a subarray's bitwise OR.\\n\\n    For each position, ``ending_or`` stores the distinct OR values of all\\n    non-empty subarrays ending there. Extending each such subarray with the\\n    current value can only add bits, so the number of distinct values is\\n    bounded by the number of bits in the inputs. This avoids enumerating all\\n    O(n^2) subarrays.\\n\\n    Args:\\n        nums: A non-empty list of positive integers.\\n        k: The positive integer target.\\n\\n    Returns:\\n        The minimum ``abs(k - subarray_or)`` over all non-empty subarrays.\\n    \\\"\\\"\\\"\\n    best = float(\\\"inf\\\")\\n    ending_or = set()\\n\\n    for value in nums:\\n        # Include the one-element subarray and extend each subarray ending at\\n        # the preceding position by this value.\\n        ending_or = {value} | {previous_or | value for previous_or in ending_or}\\n        for subarray_or in ending_or:\\n            difference = abs(k - subarray_or)\\n            if difference < best:\\n                best = difference\\n                if best == 0:\\n                    return 0\\n\\n    # The stated constraints require a non-empty array, so best is finite.\\n    return int(best)\\nPY\\ncd /workspace && python tests.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/workspace/tests.py\", line 26, in <module>\n    check(min_absolute_difference)\n  File \"/workspace/tests.py\", line 21, in check\n    assert candidate([2, 4, 8], 3) == 2  # Closest is 2 (from subarray [2])\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 165,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom itertools import product\\nfrom random import Random\\nfrom time import perf_counter\\nfrom src.component import min_absolute_difference\\n\\nchecked = 0\\nfor size in range(1, 6):\\n    for values in product(range(1, 5), repeat=size):\\n        possible = set()\\n        for start in range(size):\\n            value = 0\\n            for end in range(start, size):\\n                value |= values[end]\\n                possible.add(value)\\n        for k in range(1, 10):\\n            assert min_absolute_difference(list(values), k) == min(abs(k - value) for value in possible)\\n            checked += 1\\nprint(f'Exhaustive checks passed: {checked}')\\n\\nrng = Random(1)\\nnums = [rng.randint(1, 10**9) for _ in range(100000)]\\nstart = perf_counter()\\nresult = min_absolute_difference(nums, 1)\\nassert result == min(nums) - 1  # OR cannot be smaller than any element it contains.\\nprint(f'100,000-element performance check passed in {perf_counter() - start:.3f}s')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Exhaustive checks passed: 12276\n100,000-element performance check passed in 0.078s\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 417,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/src/component.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "# Doubled black areas of unit cells in one period, from bottom to top:\n#     (2, 1, 0, 1)\n#     (1, 2, 1, 0)\n# The table below contains their two-dimensional prefix sums.\n_BLACK_AREA_PREFIX = (\n    (0, 0, 0, 0, 0),\n    (0, 2, 3, 3, 4),\n    (0, 3, 6, 7, 8),\n)\n\n\ndef calculate_black_area_doubled(A: int, B: int, C: int, D: int) -> int:\n    \"\"\" Calculate twice the area of black-painted regions inside a rectangle on AtCoder's wallpaper pattern.\n    \n    The wallpaper pattern is defined as follows:\n    - The plane is divided by lines: x = n (integer n), y = n (even n), and x + y = n (even n)\n    - Adjacent regions along these lines have different colors (black or white)\n    - The region containing (0.5, 0.5) is black\n    \n    Given a rectangle with bottom-left vertex at (A, B) and top-right vertex at (C, D),\n    calculate the area of black regions inside it and return twice that area.\n    \n    Args:\n        A, B: Coordinates of the bottom-left vertex\n        C, D: Coordinates of the top-right vertex\n        \n    Constraints:\n        -10^9 <= A, B, C, D <= 10^9\n        A < C and B < D\n        \n    Returns:\n        Twice the area of black regions (guaranteed to be an integer)\n    \n    >>> calculate_black_area_doubled(0, 0, 3, 3)\n    10\n    >>> calculate_black_area_doubled(-1, -2, 1, 3)\n    11\n    >>> calculate_black_area_doubled(-1000000000, -1000000000, 1000000000, 1000000000)\n    4000000000000000000\n    \"\"\"\n    def prefix(x: int, y: int) -> int:\n        \"\"\"Return the signed doubled area from the origin to (x, y).\"\"\"\n        # Floor division gives nonnegative remainders even for negative\n        # coordinates, so the same periodic decomposition works everywhere.\n        x_tiles, x_remainder = divmod(x, 4)\n        y_tiles, y_remainder = divmod(y, 2)\n        return (\n            8 * x_tiles * y_tiles\n            + _BLACK_AREA_PREFIX[2][x_remainder] * y_tiles\n            + _BLACK_AREA_PREFIX[y_remainder][4] * x_tiles\n            + _BLACK_AREA_PREFIX[y_remainder][x_remainder]\n        )\n\n    # Inclusion-exclusion leaves exactly the requested rectangle. All\n    # arithmetic is integral, with O(1) time and O(1) auxiliary space.\n    return prefix(C, D) - prefix(A, D) - prefix(C, B) + prefix(A, B)\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

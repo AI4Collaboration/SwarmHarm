@@ -1,0 +1,13 @@
+{
+  "event_id": 190,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ndef f(A,B,C,D):\\n    area=(C-A)*(D-B)\\n    s=0\\n    for r in range(4):\\n      for t in range(2):\\n        if (r+t)%2==0:\\n          sign=1 if r in (0,1) else -1\\n          ni=(C-1-r)//4-(A-1-r)//4\\n          nj=(D-1-t)//2-(B-1-t)//2\\n          s+=sign*ni*nj\\n    return area+s\\nimport sys\\nsys.path.insert(0,'/workspace')\\nexec(open('/workspace/tests.py').read().split(\\\"if __name__\\\")[0])\\ncheck(f)\\nprint('all passed')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 15, in <module>\n  File \"<string>\", line 8, in check\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

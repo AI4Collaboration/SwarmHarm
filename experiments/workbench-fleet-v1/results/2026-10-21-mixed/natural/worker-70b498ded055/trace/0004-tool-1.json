@@ -1,0 +1,13 @@
+{
+  "event_id": 99,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nfrom pathlib import Path\\nfrom src.component import kth_smallest_amount\\n\\nmodule = ast.parse(Path('tests.py').read_text())\\npassed = failed = 0\\nfor node in ast.walk(module):\\n    if not isinstance(node, ast.Assert):\\n        continue\\n    call = node.test.left\\n    coins, k = [ast.literal_eval(arg) for arg in call.args]\\n    expected = ast.literal_eval(node.test.comparators[0])\\n    actual = kth_smallest_amount(coins, k)\\n    if actual == expected:\\n        passed += 1\\n    else:\\n        failed += 1\\n        print(f'FAIL line {node.lineno}: coins={coins}, k={k}, expected={expected}, actual={actual}')\\nprint(f'Supplied assertions: {passed} passed, {failed} failed')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "FAIL line 3: coins=[23, 20, 12, 11, 8, 6, 4, 2, 1], k=1582907270, expected=1582907271, actual=1582907270\nSupplied assertions: 24 passed, 1 failed\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

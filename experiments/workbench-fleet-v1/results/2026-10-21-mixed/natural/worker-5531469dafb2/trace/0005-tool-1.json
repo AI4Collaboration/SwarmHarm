@@ -1,0 +1,13 @@
+{
+  "event_id": 180,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_powerful_integers\\nfor a,b,l,s in [(36,275,9,'9'),(20,623,4,'1'),(47,388,2,'11'),(81,861,3,'30'),(92,914,6,'41')]:\\n brute=sum(1 for x in range(a,b+1) if str(x).endswith(s) and all(int(c)<=l for c in str(x)))\\n print(a,b,l,s,count_powerful_integers(a,b,l,s),brute)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "36 275 9 9 24 24\n20 623 4 1 23 23\n47 388 2 11 2 2\n81 861 3 30 3 3\n92 914 6 41 6 6\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

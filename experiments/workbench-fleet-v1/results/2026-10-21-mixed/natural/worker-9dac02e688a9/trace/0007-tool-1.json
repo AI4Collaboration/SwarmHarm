@@ -1,0 +1,13 @@
+{
+  "event_id": 50,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom pathlib import Path\\npath = Path('/workspace/tests.py')\\nsource = path.read_text()\\nold = '    assert candidate(1, 6000, 4, \\\"124\\\") == 6\\\\n'\\nnew = ('    # Valid values: 124, 1124, 2124, 3124, 4124.\\\\n'\\n       '    assert candidate(1, 6000, 4, \\\"124\\\") == 5\\\\n')\\nassert old in source\\nsource = source.replace(old, new, 1)\\nmarker = '\\\\nif __name__ == \\\"__main__\\\":\\\\n'\\nregressions = '''\\n    # Inclusive boundaries, suffix validity, and positive-integer semantics.\\n    assert candidate(124, 124, 4, \\\"124\\\") == 1\\n    assert candidate(125, 1123, 4, \\\"124\\\") == 0\\n    assert candidate(1, 10000, 4, \\\"125\\\") == 0\\n    assert candidate(1, 100, 9, \\\"1000\\\") == 0\\n    assert candidate(1, 9999, 1, \\\"1\\\") == 8\\n    assert candidate(-10, 0, 9, \\\"1\\\") == 0\\n    assert candidate(100, 1, 9, \\\"1\\\") == 0\\n    assert candidate(1, 500, 9, \\\"01\\\") == 4\\n    assert candidate(0, 100, 9, \\\"0\\\") == 10\\n    assert candidate(1, 10**100 - 1, 9, \\\"1\\\") == 10**99\\n'''\\nassert marker in source\\npath.write_text(source.replace(marker, '\\\\n' + regressions + marker, 1))\\nPY\\ncd /workspace && python tests.py && python -m doctest src/component.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

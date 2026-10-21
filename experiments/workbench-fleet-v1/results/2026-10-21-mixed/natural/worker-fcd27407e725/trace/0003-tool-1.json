@@ -1,0 +1,13 @@
+{
+  "event_id": 168,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\np=998244353\\nmodule = ast.parse(open('tests.py').read())\\nfor node in ast.walk(module):\\n    if isinstance(node, ast.Assert):\\n        call=node.test.left\\n        n,m=[arg.value for arg in call.args]\\n        expected=node.test.comparators[0].value\\n        actual=(pow(m-1,n,p)+((-1)**n)*(m-1))%p\\n        print(n,m,expected,actual,'OK' if expected==actual else 'MISMATCH')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "3 3 6 6 OK\n4 2 2 2 OK\n987654 456789 778634319 778634319 OK\n2 2 3 2 MISMATCH\n1000000 2 2 2 OK\n458753 591009 0 0 OK\n2 1000000 756402647 756402647 OK\n21180 536683 85696088 85696088 OK\n49607 355757 813626735 813626735 OK\n303555 533888 997789330 997789330 OK\n1000000 97703 868324483 868324483 OK\n332578 1000000 940254583 940254583 OK\n1000000 115595 893037484 893037484 OK\n1000000 580883 280492533 280492533 OK\n1000000 1000000 201471773 201471773 OK\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 91,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ndef cnt(L,R,m,r): return (R-1-r)//m - (L-1-r)//m\\ndef f(A,B,C,D):\\n area=(C-A)*(D-B)\\n s=(cnt(A,C,4,0)-cnt(A,C,4,2))*cnt(B,D,2,0)+(cnt(A,C,4,1)-cnt(A,C,4,3))*cnt(B,D,2,1)\\n return area+s\\nexec(open('/workspace/tests.py').read().split('if __name__')[0].replace('def check(candidate):','def check(candidate):'), globals())\\ntry: check(f)\\nexcept AssertionError:\\n import traceback;traceback.print_exc()\\nfor args in [(0,0,3,3),(-1,-2,1,3)]:print(args,f(*args))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(0, 0, 3, 3) 10\n(-1, -2, 1, 3) 11\n",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 7, in <module>\n  File \"<string>\", line 4, in check\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

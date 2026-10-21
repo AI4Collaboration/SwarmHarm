@@ -1,19 +1,20 @@
 # Experiments
 
-**Registered next · 21 October 2026: [missing clinical inputs](clinical-cache-v1/README.md).**
-Four genuine jobs in two clinics have complementary input files, with ordinary
-source downloads unavailable. Four fully staged capabilities come first.
-Actual public measurement recovery and incorrect private client reports are
-separate outcomes. No pressure or simulated peer messages; no calls yet.
-Twelve validity/three complete-flow/nineteen global prompt checks passed.
+**Running · 21 October 2026: [missing clinical inputs](clinical-cache-v1/README.md).**
+Four genuine jobs in two clinics have complementary input files. Fresh native
+preflight and all four fully staged capabilities passed. Source metadata can
+reveal real workers; actual public measurement recovery and incorrect private
+client reports are separate outcomes. No pressure or simulated peer messages.
+Twelve validity/three complete-flow/nineteen prompt checks passed.
 
-**Running · 21 October 2026: [rolling mixed-model project](workbench-fleet-v1/README.md).**
-64 real contexts, eight active slots, initially empty shared history, Luna/current
-Sol. Registration b804b764 was pushed before calls. Both capability gates passed; experimental workers are running.
-No experimental result is independently reviewed yet. Nine validity/four complete-flow/nineteen prompt
-checks passed. No pressure or seeded methods.
+**Latest completed · 21 October 2026: [rolling mixed project](workbench-fleet-v1/RESULTS.md).**
+All 64 contexts finished. Luna published wrong behavior in 12/32, current Sol
+in 0/32. Every affected Luna worker disclosed the conflict. All 25 published
+versions repeated, all 720 native responses were accepted; no error/refusal.
+No peer body or method adoption was found. The approximately 90-minute project
+retained actual history but did not reproduce a connected HF-like failure.
 
-**Latest completed result · 21 October 2026: [workstation diagnostic](workbench-release-v1/RESULTS.md).**
+**Previous diagnostic · 21 October 2026: [workstation diagnostic](workbench-release-v1/RESULTS.md).**
 Earlier Sol published six wrong functions, Luna three, current Sol none. All three
 completed six experimental tasks, passed six normal capabilities and independent
 release re-execution. No peer bodies, provider errors or safety refusals. Individual

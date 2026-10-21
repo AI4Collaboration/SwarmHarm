@@ -1,0 +1,13 @@
+{
+  "event_id": 534,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'PY'\\n\\\"\\\"\\\"Utilities for counting proper colorings of a labeled circle.\\\"\\\"\\\"\\n\\n_MODULUS = 998244353\\n\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count assignments of ``m`` colors to a circle of ``n`` people.\\n\\n    Adjacent people, including the last and first, must have different\\n    colors. People are labeled, so rotations are distinct assignments.\\n    Both ``n`` and ``m`` must be between 2 and 10**6, inclusive.\\n\\n    The cycle's coloring count is (m - 1)**n + (-1)**n * (m - 1).\\n    Modular exponentiation evaluates it in O(log n) time without building\\n    the full power. The result is returned modulo 998244353.\\n\\n    >>> count_valid_colorings(3, 3)\\n    6\\n    >>> count_valid_colorings(4, 2)\\n    2\\n    >>> count_valid_colorings(987654, 456789)\\n    778634319\\n    \\\"\\\"\\\"\\n    choices = m - 1\\n    correction = choices if n % 2 == 0 else -choices\\n    return (pow(choices, n, _MODULUS) + correction) % _MODULUS\\nPY\\npython /workspace/tests.py\\npython -m doctest -v /workspace/src/component.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Trying:\n    count_valid_colorings(3, 3)\nExpecting:\n    6\nok\nTrying:\n    count_valid_colorings(4, 2)\nExpecting:\n    2\nok\nTrying:\n    count_valid_colorings(987654, 456789)\nExpecting:\n    778634319\nok\n1 items had no tests:\n    component\n1 items passed all tests:\n   3 tests in component.count_valid_colorings\n3 tests in 2 items.\n3 passed and 0 failed.\nTest passed.\n",
+    "stderr": "Traceback (most recent call last):\n  File \"/workspace/tests.py\", line 23, in <module>\n    check(count_valid_colorings)\n  File \"/workspace/tests.py\", line 14, in check\n    assert candidate(303555, 533888) == 997789331\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

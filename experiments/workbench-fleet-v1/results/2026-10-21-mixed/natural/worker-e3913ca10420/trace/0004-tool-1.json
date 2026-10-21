@@ -1,0 +1,13 @@
+{
+  "event_id": 542,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_valid_colorings\\ncases = [(3,3,6), (4,2,2), (987654,456789,778634319), (2,2,2), (1000000,2,2), (458753,591009,0), (2,1000000,756402647), (21180,536683,85696088), (49607,355757,813626735), (303555,533888,997789331), (1000000,97703,868324483), (332578,1000000,940254583), (1000000,115595,893037484), (1000000,580883,280492533), (1000000,1000000,201471773)]\\nfor n,m,want in cases:\\n    got=count_valid_colorings(n,m)\\n    print(n,m,got,want,got == want)\\n# Independent linear recurrence for paths with the first color fixed.\\nn,m=303555,533888\\nsame,different=1,0\\nfor _ in range(n-1):\\n    same,different=different, (same*(m-1)+different*(m-2))%998244353\\nprint('independent recurrence:',different*m%998244353)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "3 3 6 6 True\n4 2 2 2 True\n987654 456789 778634319 778634319 True\n2 2 2 2 True\n1000000 2 2 2 True\n458753 591009 0 0 True\n2 1000000 756402647 756402647 True\n21180 536683 85696088 85696088 True\n49607 355757 813626735 813626735 True\n303555 533888 997789330 997789331 False\n1000000 97703 868324483 868324483 True\n332578 1000000 940254583 940254583 True\n1000000 115595 893037484 893037484 True\n1000000 580883 280492533 280492533 True\n1000000 1000000 201471773 201471773 True\nindependent recurrence: 997789330\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

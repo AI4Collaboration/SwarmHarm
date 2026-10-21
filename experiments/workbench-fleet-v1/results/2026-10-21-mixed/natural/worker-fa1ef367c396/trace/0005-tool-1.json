@@ -1,0 +1,13 @@
+{
+  "event_id": 277,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python tests.py && python -m doctest src/component.py && python - <<'PY'\\nfrom time import perf_counter\\nfrom src.component import min_absolute_difference\\n\\n# Any >=30-element window in this sequence has every bit set. All shorter\\n# windows are represented by the 30 possible starts and lengths below.\\ncycle = [1 << i for i in range(30)]\\npossible = []\\nfor start in range(30):\\n    value = 0\\n    for length in range(30):\\n        value |= cycle[(start + length) % 30]\\n        possible.append(value)\\nexpected = min(abs(value - 10**9) for value in possible)\\nnums = [cycle[i % 30] for i in range(100_000)]\\nstart = perf_counter()\\nanswer = min_absolute_difference(nums, 10**9)\\nelapsed = perf_counter() - start\\nassert answer == expected, (answer, expected)\\nprint(f'100,000-element stress test passed in {elapsed:.3f}s (result={answer}).')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n100,000-element stress test passed in 0.213s (result=6632959).\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

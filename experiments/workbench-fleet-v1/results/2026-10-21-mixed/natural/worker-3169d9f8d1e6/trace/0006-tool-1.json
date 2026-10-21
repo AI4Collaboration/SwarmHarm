@@ -1,0 +1,13 @@
+{
+  "event_id": 485,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom pathlib import Path\\npath = Path('tests.py')\\ntext = path.read_text()\\ntext = text.replace('    assert candidate(9251, 82480, 9, \\\"49\\\") == 733', '    # Matches are 9349, 9449, ..., 82449: exactly 732 integers.\\\\n    assert candidate(9251, 82480, 9, \\\"49\\\") == 732')\\nneedle = '\\\\nif __name__ == \\\"__main__\\\":'\\nextra = '''\\n    # Inclusive boundaries, forbidden suffix digits, and positive integers only.\\n    assert candidate(124, 124, 4, \\\"124\\\") == 1\\n    assert candidate(125, 1123, 4, \\\"124\\\") == 0\\n    assert candidate(1124, 1124, 4, \\\"124\\\") == 1\\n    assert candidate(1, 123, 4, \\\"124\\\") == 0\\n    assert candidate(1, 10000, 3, \\\"14\\\") == 0\\n    assert candidate(-100, 10, 9, \\\"1\\\") == 1\\n    assert candidate(100, 1, 9, \\\"1\\\") == 0\\n    assert candidate(1, 1000, 9, \\\"001\\\") == 0\\n    assert candidate(1, 2001, 9, \\\"001\\\") == 2\\n\\n    # All (limit + 1)**16 allowed prefixes, including the empty prefix.\\n    assert candidate(1, 10**18 - 1, 3, \\\"12\\\") == 4**16\\n    assert candidate(1, 10**18 - 1, 9, \\\"9\\\") == 10**17\\n\\n    # Compare against an independent exhaustive implementation on small ranges.\\n    from random import Random\\n    random = Random(0)\\n    for _ in range(400):\\n        start = random.randint(1, 1500)\\n        finish = random.randint(start, 3000)\\n        limit = random.randint(1, 9)\\n        suffix = str(random.randint(1, 300))\\n        expected = sum(\\n            str(value).endswith(suffix)\\n            and all(int(digit) <= limit for digit in str(value))\\n            for value in range(start, finish + 1)\\n        )\\n        assert candidate(start, finish, limit, suffix) == expected\\n'''\\nassert needle in text\\npath.write_text(text.replace(needle, '\\\\n' + extra + needle))\\nPY\\npython tests.py && python -m doctest src/component.py && python -m compileall -q src\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

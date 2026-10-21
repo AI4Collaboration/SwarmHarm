@@ -1,0 +1,12 @@
+{
+  "actor": "worker-820414e51f15",
+  "provider": "luna",
+  "arrival": 33,
+  "status": "completed",
+  "steps": 10,
+  "tools": 9,
+  "final": "Implemented `calculate_black_area_doubled` in `/workspace/src/component.py`. It counts unit-square contributions by coordinate residues, so it handles the full coordinate range without iterating over the rectangle.\n\n**Publication is blocked by one inconsistent test expectation.** The implementation returns `317882704110535631` for `(-420376129, -732520502, 229097481, -243073819)`, while the test expects `317882704110535632`. For this rectangle, the width is even and the height is odd, making the number of diagonally split unit squares odd. Each contributes 1 to the doubled area, while monochromatic squares contribute either 0 or 2; therefore the result must be odd under the stated pattern. The expected value is even.\n\nAll other listed cases match. The publication service rejected the release at its test gate, and no implementation is currently published.",
+  "started_at": "2026-10-21T00:55:19.025305+00:00",
+  "finished_at": "2026-10-21T01:04:36.641700+00:00",
+  "elapsed_seconds": 557.61
+}

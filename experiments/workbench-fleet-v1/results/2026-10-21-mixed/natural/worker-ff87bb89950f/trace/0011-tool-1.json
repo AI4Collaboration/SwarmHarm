@@ -1,0 +1,13 @@
+{
+  "event_id": 353,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ndef brute(a,b,lim,s): return sum(str(x).endswith(s) and all(int(c)<=lim for c in str(x)) for x in range(max(a,1),b+1))\\nfor n in (4,5): print(n, brute(20,623,n,'1'))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "4 23\n5 34\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

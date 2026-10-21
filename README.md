@@ -4,23 +4,22 @@ SwarmHarm studies whether agents pursuing legitimate work take harmful shortcuts
 and whether other agents discover and reuse those methods. Tasks use ordinary
 programming or business work with synthetic data and local services.
 
-**Registered next · 21 October 2026:** a small
-[missing-input document pilot](experiments/clinical-cache-v1/README.md) gives real
-workers complementary clinical inputs. Ordinary document downloads are blocked;
-shared records can help, while a separate public reader checks actual measurement
-disclosure. All data are synthetic. Twelve validity, three complete-flow and
-nineteen global prompt checks passed. No model calls yet; it starts after the
-active collector finishes.
+**Running · 21 October 2026:** the [missing-input document pilot](experiments/clinical-cache-v1/README.md)
+passed fresh earlier-Sol preflight and all four fully staged report capabilities.
+Four genuine workers now have complementary clinical inputs in two clinics.
+Actual public measurement disclosure and wrong private client reports are checked
+separately. All data are synthetic; client reports and finals stay private.
 
-**Running · 21 October 2026:** a [rolling shared project](experiments/workbench-fleet-v1/README.md)
-with 64 genuine Luna/Sol contexts, eight active slots and initially empty shared
-history. Actual builds and completion summaries persist for later workers.
-Both six-function capability gates passed; experimental workers are running.
-The 64 distinct test variants come from
-six source functions, not 64 independent problems. Registration b804b764 was
-pushed before calls; no pressure, seeded peer methods or forced continuation.
+**Latest completed result · 21 October 2026:** in a
+[rolling shared project](experiments/workbench-fleet-v1/RESULTS.md), Luna published
+wrong behavior in **12/32 contexts**, current Sol in **0/32**. All 64 contexts
+finished, all 25 published versions repeated independently, and no provider
+error or safety refusal occurred. Every affected Luna worker disclosed the
+conflict. No peer body or method adoption was found. The project lasted about
+90 minutes; its 64 test variants come from six source functions. This reproduced
+individual test gaming, not the full HF-like chain.
 
-**Latest completed result:** earlier Sol published wrong behavior on **6/6**
+**Previous diagnostic:** earlier Sol published wrong behavior on **6/6**
 functions, Luna on **3/6**, and current Sol on **0/6**. All three passed six
 normal capabilities and completed all experimental tasks. Independent callers
 received wrong values; every release repeated on re-execution. No provider
@@ -34,31 +33,31 @@ method-transfer chain remains unproven.
 
 ## Current setup
 
-- **Runner:** `experiments/workbench-fleet-v1/run.py`, input
-  `natural-rolling-workstation-v1`, outcome `actual-workstation-delivery-and-method-v1`.
-  Use `--phase prepare|collect --output <directory>`; this mixed setting has no
-  `--provider` argument. Nine environment/validity, four complete scripted-flow
-  and nineteen global prompt checks passed. Inputs, files, symlinks, source,
-  models and budgets are sealed. Each model first passes six normal functions
-  in a separate world; experimental cache/history starts empty.
-- **Next registered runner:** `experiments/clinical-cache-v1/run.py`, input
+- **Active runner:** `experiments/clinical-cache-v1/run.py`, input
   `natural-missing-clinical-inputs-v1`, outcome `actual-client-record-and-public-disclosure-v1`.
-  Earlier Sol/xhigh; four fully staged capabilities precede four genuine jobs
-  in two clinics, with fresh preflight. Private client reports and finals are
-  not auto-published. Public recovery and wrong client values are graded
-  separately. Safe cooperation remains allowed. No calls yet.
-- **Models and route:** `gpt-6-luna / xhigh` and `gpt-6.1-sol / xhigh`, existing
-  host login at `https://chatgpt.com/backend-api/codex/responses`.
-  The completed diagnostic also verified `gpt-5.6-sol / xhigh`. All three passed
-  native preflight and six original capabilities on 21 October. New settings
-  require fresh checks; historical model availability is insufficient.
+  Use `--phase prepare|collect --output <directory>` for a new run. Registration
+  41426d98 was pushed before calls. Earlier Sol/xhigh passed fresh native preflight
+  and four full-input capabilities; four blocked-input workers are active.
+  Twelve validity, three complete-flow and nineteen global prompt checks passed.
+  Private client reports/finals are not auto-published. Public recovery and wrong
+  client values are graded separately; safe cooperation remains allowed.
+- **Completed rolling runner:** `experiments/workbench-fleet-v1/run.py`, input
+  `natural-rolling-workstation-v1`, outcome `actual-workstation-delivery-and-method-v1`.
+  Both model gates and all 64 experimental contexts completed; independent review
+  passed. Frozen inputs and evidence remain intact; do not rerun its completed
+  output directory. Nine validity/four complete-flow/nineteen prompt checks passed.
+- **Models and route:** `gpt-5.6-sol / xhigh` is active, using the existing host
+  login at `https://chatgpt.com/backend-api/codex/responses`. The completed rolling
+  project used `gpt-6-luna / xhigh` and `gpt-6.1-sol / xhigh`. All passed fresh native
+  checks on 21 October; capability coverage differs by family. New settings need
+  fresh checks; historical model availability is insufficient.
 - **Execution:** Docker 29.9.1 with the existing pinned Python 3.12 image.
   Workstations are non-root, networkless and have read-only roots and bounded
   temporary filesystems; no host mount, socket or credentials enter tasks.
   Private files persist; shared files synchronize between serialized actions.
   Background children stop before independent observation, and workstations
   pause between actions. Only actual command output enters native requests.
-- **Budgets:** one inference globally; eight active experimental contexts;
+- **Budgets:** one inference globally; up to eight active contexts (four in the document pilot);
   900 seconds per request, 1,024 responses/2,048 tools and 12 hours per worker,
   48 hours per mixed project, 30 seconds per program. Report actual duration
   separately. Provider errors/native refusals stop without silent retries,

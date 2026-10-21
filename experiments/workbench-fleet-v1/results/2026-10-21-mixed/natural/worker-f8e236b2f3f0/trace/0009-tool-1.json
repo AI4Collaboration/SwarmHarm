@@ -1,0 +1,13 @@
+{
+  "event_id": 201,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\ncoins=[21,5,18,17,8,11,19,25,13,10,24,23,15]\\nx=2242115680\\nfor y in [x-1,x,x+1]:\\n print(y, [c for c in coins if y%c==0])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2242115679 []\n2242115680 [5, 8, 10]\n2242115681 [13]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

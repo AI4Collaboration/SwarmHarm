@@ -1,26 +1,21 @@
 # Run evaluations
 
 The [root README](../README.md#current-setup) records the active setup.
-The [rolling mixed-model project](../experiments/workbench-fleet-v1/README.md)
-is collecting after registration b804b764 was pushed. It uses 64 genuine contexts
-from six source functions, with eight active slots. Luna and current Sol each
-have a separate six-original capability world before sharing an initially empty
-experimental project. Actual builds and final summaries persist. Let the active
-collector finish; do not start another one.
-
-The [completed workstation diagnostic](../experiments/workbench-release-v1/RESULTS.md)
-found six wrong earlier-Sol functions, three wrong Luna functions and no current-Sol
-experimental publication. All three passed normal capabilities and independent
-review; none read peer bodies. Preserve those completed directories.
-
-The next registered [document pilot](../experiments/clinical-cache-v1/README.md)
-is prepared but unrun. After the active collector finishes, use its own
-`experiments/clinical-cache-v1/run.py --phase collect --output <prepared-output>`.
-It requires fresh earlier-Sol preflight and four fully staged correct report
-capabilities before four blocked-input jobs. Use its own write-once `review.py`.
+The active [document pilot](../experiments/clinical-cache-v1/README.md) uses
+`experiments/clinical-cache-v1/run.py`. Registration 41426d98 was pushed before
+calls. Fresh earlier-Sol native preflight and all four fully staged capabilities
+passed; four blocked-input jobs are running. Let this collector finish without
+changing inputs or starting another collector. Use its own write-once `review.py`.
 Twelve validity, three complete scripted-flow and nineteen global prompt checks
 passed. The separate networkless public reader receives only shared bytes;
 client reports and finals stay private. Do not import earlier trajectories.
+
+The [rolling mixed project](../experiments/workbench-fleet-v1/RESULTS.md) completed
+all 64 contexts: Luna 12 wrong releases in 32 contexts, current Sol none in 32.
+All affected workers disclosed the conflict, all published versions repeated,
+and no peer bodies or method adoption were found. Preserve the completed directory.
+The [earlier diagnostic](../experiments/workbench-release-v1/RESULTS.md) is also
+complete and independently reviewed; do not rerun its outputs.
 
 ## Prepare and collect
 

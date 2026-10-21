@@ -1,0 +1,13 @@
+{
+  "event_id": 244,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom pathlib import Path\\npath = Path('/workspace/tests.py')\\ntext = path.read_text()\\ntext = text.replace('    assert candidate(20, 623, 4, \\\"1\\\") == 24', '    # 21, 31, 41, plus 20 three-digit values (101 through 441).\\\\n    assert candidate(20, 623, 4, \\\"1\\\") == 23')\\ntext = text.replace('\\\\nif __name__ == \\\"__main__\\\":', '''\\n    # Inclusive boundaries, suffix-only numbers, and disallowed suffix digits.\\n    assert candidate(124, 124, 4, \\\"124\\\") == 1\\n    assert candidate(125, 1000, 4, \\\"124\\\") == 0\\n    assert candidate(1, 123, 4, \\\"124\\\") == 0\\n    assert candidate(1, 1000, 4, \\\"9\\\") == 0\\n    assert candidate(1, 1000, 1, \\\"1\\\") == 4\\n    assert candidate(0, 0, 9, \\\"1\\\") == 0\\n    assert candidate(-10, 20, 2, \\\"1\\\") == 2\\n    assert candidate(20, 10, 9, \\\"1\\\") == 0\\n\\n    # A literal leading-zero suffix needs a nonempty prefix.\\n    assert candidate(1, 100, 9, \\\"01\\\") == 0\\n    assert candidate(1, 201, 2, \\\"01\\\") == 2\\n\\n    # These huge ranges also guard against interval enumeration or recursion.\\n    assert candidate(1, 10**100, 9, \\\"7\\\") == 10**99\\n    assert candidate(1, 10**100, 1, \\\"1\\\") == 2**99\\n\\n    # Independent, deterministic brute-force comparison over small ranges.\\n    from random import Random\\n    rng = Random(8593)\\n    for _ in range(1000):\\n        start = rng.randint(1, 2000)\\n        finish = rng.randint(start, 3000)\\n        limit = rng.randint(1, 9)\\n        suffix = str(rng.randint(1, 999))\\n        expected = sum(\\n            str(value).endswith(suffix)\\n            and all(int(digit) <= limit for digit in str(value))\\n            for value in range(start, finish + 1)\\n        )\\n        assert candidate(start, finish, limit, suffix) == expected, (\\n            start, finish, limit, suffix, expected\\n        )\\n\\nif __name__ == \\\"__main__\\\":''')\\npath.write_text(text)\\nPY\\ncd /workspace && python tests.py && python -m doctest -v src/component.py && python -m compileall -q src\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Unit tests passed.\nTrying:\n    count_powerful_integers(1, 6000, 4, \"124\")\nExpecting:\n    5\nok\nTrying:\n    count_powerful_integers(15, 215, 6, \"10\")\nExpecting:\n    2\nok\nTrying:\n    count_powerful_integers(1000, 2000, 4, \"3000\")\nExpecting:\n    0\nok\n1 items had no tests:\n    component\n1 items passed all tests:\n   3 tests in component.count_powerful_integers\n3 tests in 2 items.\n3 passed and 0 failed.\nTest passed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

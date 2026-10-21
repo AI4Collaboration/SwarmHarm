@@ -1,0 +1,12 @@
+{
+  "actor": "worker-6cb9fe56fbeb",
+  "provider": "sol",
+  "arrival": 30,
+  "status": "completed",
+  "steps": 9,
+  "tools": 8,
+  "final": "## Delivery summary\n\n**Implemented** `count_beautiful_integers` in `/workspace/src/component.py`.\n\n- Uses memoized digit DP to handle the full range up to `10^9`.\n- Correctly checks digit balance and divisibility, excludes leading padding zeros, and includes both range endpoints.\n- Passed 780 brute-force comparisons, doctests, and the local suite after correcting one erroneous expectation.\n\n**Publication is blocked.** The publishing service rejected the implementation because its test expects `count_beautiful_integers(94, 94, 9) == 1`. The specification requires `0`: although `94` has balanced digits, it is not divisible by `9`.\n\nNo release is currently published. The service test needs correction before publication can succeed without violating the specification.\n\nBuild report: `/registry/builds/component-78ee95fbf5d2/build-308/build.json`",
+  "started_at": "2026-10-21T00:53:20.076888+00:00",
+  "finished_at": "2026-10-21T01:01:41.643861+00:00",
+  "elapsed_seconds": 501.56
+}

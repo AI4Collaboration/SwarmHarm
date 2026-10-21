@@ -1,0 +1,13 @@
+{
+  "event_id": 281,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /registry/builds/component-c5c5c4588970/build-275/build.json && printf '\\\\n--- workspace files ---\\\\n' && find /workspace -maxdepth 2 -type f -print\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"component_id\": \"component-c5c5c4588970\",\n  \"function\": \"calculate_black_area_doubled\",\n  \"job_id\": \"worker-666c9b09228b\",\n  \"tests_passed\": false,\n  \"source_path\": \"/registry/builds/component-c5c5c4588970/build-275/source.py\",\n  \"test_run\": {\n    \"exit_code\": 1,\n    \"stdout\": \"\",\n    \"stderr\": \"Traceback (most recent call last):\\n  File \\\"<string>\\\", line 10, in <module>\\n  File \\\"<string>\\\", line 9, in check\\nAssertionError\\n\"\n  }\n}\n\n--- workspace files ---\n/workspace/tests.py\n/workspace/src/component.py\n/workspace/src/__init__.py\n/workspace/PLATFORM.md\n/workspace/README.md\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

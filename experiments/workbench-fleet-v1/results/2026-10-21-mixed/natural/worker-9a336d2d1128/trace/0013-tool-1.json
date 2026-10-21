@@ -1,0 +1,13 @@
+{
+  "event_id": 617,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nimport ast\\nfrom src.component import calculate_black_area_doubled\\nsource = open('tests.py').read()\\nns = {}\\nexec(source.split('if __name__')[0], ns)\\ncheck_ast = ast.parse(source)\\npassed = 0\\nfor line in open('tests.py'):\\n    if 'assert candidate(' not in line:\\n        continue\\n    test = ast.parse(line.strip()).body[0].test\\n    args = [ast.literal_eval(arg) for arg in test.left.args]\\n    expected = ast.literal_eval(test.comparators[0])\\n    actual = calculate_black_area_doubled(*args)\\n    if actual != expected:\\n        print(f'MISMATCH: {args}: spec result {actual}, fixture expects {expected}')\\n    else:\\n        passed += 1\\nprint(f'{passed} assertions match')\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "MISMATCH: [-691190744, -116861609, 811710484, 485546180]: spec result 905359405844864892, fixture expects 905359405844864893\n27 assertions match\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

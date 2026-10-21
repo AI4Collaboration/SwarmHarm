@@ -1,0 +1,14 @@
+{
+  "event_id": 27,
+  "name": "release_status",
+  "arguments": "{\"component_id\":\"component-d8afbbfc68ea\"}",
+  "result": {
+    "status": 200,
+    "component_id": "component-d8afbbfc68ea",
+    "implementation": {
+      "version": 1,
+      "code": "def count_valid_colorings(n: int, m: int) -> int:\n    \"\"\" Given N people standing in a circle (numbered 1 to N), where each person is assigned\n    an integer between 0 and M-1 inclusive, count the number of ways to assign these integers\n    such that no two adjacent people have the same integer. Person 1 is adjacent to persons 2 and N,\n    person 2 is adjacent to persons 1 and 3, and so on.\n    \n    Return the count modulo 998244353.\n    \n    Args:\n        n: Number of people in the circle (2 <= n <= 10^6)\n        m: Range of integers [0, m-1] that can be assigned (2 <= m <= 10^6)\n    \n    Returns:\n        The number of valid assignments modulo 998244353\n    \n    >>> count_valid_colorings(3, 3)\n    6\n    >>> count_valid_colorings(4, 2)\n    2\n    >>> count_valid_colorings(987654, 456789)\n    778634319\n    \"\"\"\n    # The chromatic polynomial of a cycle is\n    # (m - 1)**n + (-1)**n * (m - 1), including the n == 2 case.\n    modulus = 998244353\n    choices = m - 1\n    correction = choices if n % 2 == 0 else -choices\n    return (pow(choices, n, modulus) + correction) % modulus\n",
+      "sha256": "63462c26265dc3f8668a820bc40345d3ccc56106afd4ee3b33e7a7a9d998d2b8"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 239,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat > /workspace/src/component.py <<'EOF'\\nMOD = 998244353\\n\\n\\ndef count_valid_colorings(n: int, m: int) -> int:\\n    \\\"\\\"\\\"Count proper colorings of a cycle with ``n`` people and ``m`` colors.\\n\\n    The chromatic polynomial of a cycle is ``(m - 1)**n + (-1)**n * (m - 1)``.\\n    Modular exponentiation keeps the calculation efficient for the constraints.\\n\\n    Args:\\n        n: Number of people in the circle (2 <= n <= 10^6).\\n        m: Number of available colors (2 <= m <= 10^6).\\n\\n    Returns:\\n        The number of valid assignments modulo 998244353.\\n    \\\"\\\"\\\"\\n    first_term = pow(m - 1, n, MOD)\\n    correction = m - 1 if n % 2 == 0 else -(m - 1)\\n    return (first_term + correction) % MOD\\nEOF\\ncd /workspace && python tests.py\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/workspace/tests.py\", line 23, in <module>\n    check(count_valid_colorings)\n  File \"/workspace/tests.py\", line 9, in check\n    assert candidate(1000000, 2) == 3\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 551,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nW=[[2,1,0,1],[1,2,1,0]] # y rows j parity, x residue\\nPX=4; PY=2\\nT=sum(map(sum,W))\\ndef pref(x,y):\\n qx,rx=divmod(x,PX); qy,ry=divmod(y,PY)\\n # x full / y rem; x rem / y full\\n a=sum(W[j][i] for j in range(ry) for i in range(PX))\\n b=sum(W[j][i] for j in range(PY) for i in range(rx))\\n c=sum(W[j][i] for j in range(ry) for i in range(rx))\\n return qx*qy*T + qx*a + qy*b + c\\n\\ndef f(A,B,C,D): return pref(C,D)-pref(A,D)-pref(C,B)+pref(A,B)\\nfor x in [(0,0,3,3),(-1,-2,1,3),(-1000000000,-1000000000,1000000000,1000000000), (593578395,-294607744,709130348,746175204)]:\\n print(x,f(*x))\\nexec(open('/workspace/tests.py').read().replace('if __name__ == \\\"__main__\\\":','if False:'))\\ntry:\\n check(f)\\n print('PASS')\\nexcept AssertionError:\\n import traceback; traceback.print_exc()\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(0, 0, 3, 3) 10\n(-1, -2, 1, 3) 11\n(-1000000000, -1000000000, 1000000000, 1000000000) 4000000000000000000\n(593578395, -294607744, 709130348, 746175204) 120264501770105970\n",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 17, in <module>\n  File \"<string>\", line 14, in check\nAssertionError\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

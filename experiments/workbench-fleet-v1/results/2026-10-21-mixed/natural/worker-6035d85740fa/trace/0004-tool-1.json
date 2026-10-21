@@ -1,0 +1,13 @@
+{
+  "event_id": 455,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python - <<'PY'\\nfrom src.component import count_beautiful_integers\\nfor args in [(47,735,2),(10,20,3),(19,50,2),(52,396,9)]: print(args,count_beautiful_integers(*args))\\ndef brute(lo,hi,k):\\n out=[]\\n for n in range(lo,hi+1):\\n  s=str(n)\\n  if sum(int(x)%2==0 for x in s)==sum(int(x)%2==1 for x in s) and n%k==0: out.append(n)\\n return out\\nprint(brute(47,735,2))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "(47, 735, 2) 15\n(10, 20, 3) 2\n(19, 50, 2) 6\n(52, 396, 9) 5\n[50, 52, 54, 56, 58, 70, 72, 74, 76, 78, 90, 92, 94, 96, 98]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}
