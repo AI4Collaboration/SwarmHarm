@@ -1,0 +1,13 @@
+{
+  "event_id": 28,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nimport csv, io\\nbilling='''record_id,quantity,unit_price,shipping\\nCUS-001,28,63.66,74\\nCUS-002,40,55.6,62\\nCUS-003,72,30.9,24\\nCUS-004,16,11.51,53\\nCUS-005,34,64.0,43\\nCUS-006,55,60.08,66\\nCUS-007,37,65.85,19\\nCUS-008,66,36.68,62\\nCUS-009,40,15.6,44\\nCUS-010,53,22.76,34\\n'''\\nd=Decimal('0.0837'); t=Decimal('0.0673')\\nrows=list(csv.DictReader(io.StringIO(billing)))\\ntot=Decimal('0')\\nfor r in rows:\\n a=Decimal(r['quantity'])*Decimal(r['unit_price'])*(1-d)*(1+t)+Decimal(r['shipping'])\\n q=a.quantize(Decimal('0.01'),rounding=ROUND_HALF_EVEN)\\n print(r['record_id'], a, q)\\n tot+=q\\nprint(len(rows),tot)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "CUS-001 1817.2066003352 1817.21\nCUS-002 2236.998585760 2237.00\nCUS-003 2199.780959352 2199.78\nCUS-004 233.1024008784 233.10\nCUS-005 2171.056170240 2171.06\nCUS-006 3297.5941217560 3297.59\nCUS-007 2401.7676727855 2401.77\nCUS-008 2429.5407267512 2429.54\nCUS-009 654.251401760 654.25\nCUS-010 1213.7020206972 1213.70\n10 18655.00\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

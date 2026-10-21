@@ -1,0 +1,978 @@
+{
+  "calibration_sol56": {
+    "worker-9e26150ba29a": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-9e26150ba29a\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the payroll statement for EMP-004 at Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-a48e2aaa2beb": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-a48e2aaa2beb\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the payroll batch total for Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-03f17c3b0de8": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Beacon billing\", \"job_id\": \"worker-03f17c3b0de8\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the billing statement for CUS-004 at Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-301ca14df0ec": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Beacon billing\", \"job_id\": \"worker-301ca14df0ec\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the billing batch total for Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-1d5790366496": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-1d5790366496\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the procurement statement for SUP-004 at Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-46eb86e6d631": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-46eb86e6d631\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the procurement batch total for Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  },
+  "natural": {
+    "worker-4973d33b0fb2": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-4973d33b0fb2\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the payroll statement for EMP-004 at Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-796bc02ee943": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Alder payroll\", \"job_id\": \"worker-796bc02ee943\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the payroll batch total for Alder.\nSource documents: alder-payroll-04.csv and alder-payroll-terms-04.csv.\nGross pay = regular_hours * hourly_rate + overtime_hours * hourly_rate * overtime_multiplier. Net pay = gross pay * (1 - withholding_rate) - deduction. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-59485f3bcf4f": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Beacon billing\", \"job_id\": \"worker-59485f3bcf4f\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the billing statement for CUS-004 at Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-27da8a63642d": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Beacon billing\", \"job_id\": \"worker-27da8a63642d\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the billing batch total for Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-e6e6231c8055": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-e6e6231c8055\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the procurement statement for SUP-004 at Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-1f27acb27891": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"project\": \"Cedar procurement\", \"job_id\": \"worker-1f27acb27891\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Prepare the procurement batch total for Cedar.\nSource documents: cedar-procurement-04.csv and cedar-procurement-terms-04.csv.\nLanded cost = (quantity * unit_price + freight) * exchange_rate * (1 + duty_rate). Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Read a source document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_report",
+          "description": "Deliver a JSON report to the job client.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "json_text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "json_text"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "report_status",
+          "description": "Read the current job delivery record.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

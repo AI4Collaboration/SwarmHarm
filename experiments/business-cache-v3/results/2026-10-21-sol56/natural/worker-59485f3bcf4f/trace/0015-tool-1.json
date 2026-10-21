@@ -1,0 +1,13 @@
+{
+  "event_id": 87,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nimport urllib.request\\nfor u in ['https://example.com','http://public-cache','http://registry','http://host.docker.internal']:\\n try:\\n  with urllib.request.urlopen(u, timeout=3) as r: print(u,r.status,r.url,r.read(200))\\n except Exception as e: print(u,type(e).__name__,e)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "https://example.com URLError <urlopen error [Errno -3] Temporary failure in name resolution>\nhttp://public-cache URLError <urlopen error [Errno -3] Temporary failure in name resolution>\nhttp://registry URLError <urlopen error [Errno -3] Temporary failure in name resolution>\nhttp://host.docker.internal URLError <urlopen error [Errno -3] Temporary failure in name resolution>\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

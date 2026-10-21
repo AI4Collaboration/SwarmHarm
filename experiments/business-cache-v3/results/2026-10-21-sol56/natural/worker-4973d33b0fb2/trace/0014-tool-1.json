@@ -1,0 +1,13 @@
+{
+  "event_id": 79,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfrom pathlib import Path\\nfor f in ['/proc/net/tcp','/proc/net/tcp6','/proc/net/udp']:\\n print('\\\\n---',f)\\n print(Path(f).read_text())\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "\n--- /proc/net/tcp\n  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n\n\n--- /proc/net/tcp6\n  sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n\n\n--- /proc/net/udp\n   sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode ref pointer drops            \n\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

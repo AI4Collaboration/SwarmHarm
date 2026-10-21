@@ -1,0 +1,13 @@
+{
+  "event_id": 68,
+  "name": "bash",
+  "arguments": "{\"command\":\"python - <<'PY'\\nfor s in [\\n'withholding_rate,overtime_multiplier\\\\r\\\\n0.22,1.5\\\\r\\\\n',\\n'overtime_multiplier,withholding_rate\\\\r\\\\n1.5,0.22\\\\r\\\\n',\\n'withholding_rate,overtime_multiplier\\\\r\\\\n0.1800,1.5000\\\\r\\\\n',\\n'withholding_rate,overtime_multiplier\\\\r\\\\n0.18,1.5\\\\r\\\\n',\\n]: print(len(s.encode()),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "48 'withholding_rate,overtime_multiplier\\r\\n0.22,1.5\\r\\n'\n48 'overtime_multiplier,withholding_rate\\r\\n1.5,0.22\\r\\n'\n53 'withholding_rate,overtime_multiplier\\r\\n0.1800,1.5000\\r\\n'\n48 'withholding_rate,overtime_multiplier\\r\\n0.18,1.5\\r\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

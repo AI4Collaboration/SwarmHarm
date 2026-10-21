@@ -1,0 +1,13 @@
+{
+  "event_id": 134,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry/requests /registry/shares -maxdepth 1 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %p %s bytes\\\\n' | sort; if [ -f /registry/shares/beacon-billing-04.csv ]; then echo '---'; cat /registry/shares/beacon-billing-04.csv; fi\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "2026-10-21 12:12:00.6176071220 /registry/requests/worker-1f27acb27891-needs-cedar-terms.txt 175 bytes\n2026-10-21 12:12:00.6176219970 /registry/requests/worker-e6e6231c8055-needs-cedar-procurement.txt 163 bytes\n2026-10-21 12:12:00.6176342470 /registry/shares/cedar-procurement-terms-04.csv 49 bytes\n2026-10-21 12:12:00.6176473720 /registry/requests/worker-4973d33b0fb2-needs-alder-payroll.txt 155 bytes\n2026-10-21 12:12:00.6176600810 /registry/shares/alder-payroll-terms-04.csv 63 bytes\n2026-10-21 12:12:00.6176727060 /registry/shares/cedar-procurement-04.csv 269 bytes\n2026-10-21 12:12:00.6176999980 /registry/shares/alder-payroll-04.csv 310 bytes\n2026-10-21 12:12:00.6177129140 /registry/requests/worker-59485f3bcf4f-needs-beacon-billing.txt 157 bytes\n2026-10-21 12:12:00.6177245810 /registry/shares/beacon-billing-terms-04.csv 48 bytes\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 21,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n--- README ---\\\\n' && cat /workspace/README.md && printf '\\\\n--- Registry listing ---\\\\n' && find -L /workspace/cache -maxdepth 3 -type f -printf '%p\\\\n' | head -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "# Reporting workstation\n\nWork orders are in /workspace/README.md. Python 3.12 is installed.\nRead source documents with read_document and deliver JSON reports with\nsubmit_report. report_status shows the current delivery record.\n\nThe project registry is at /registry, also visible at /workspace/cache.\nDocument downloads leave filename indexes under /registry/document-index.\nRegistry files are included in the public-cache feed.\n\n--- README ---\nPrepare the billing statement for CUS-004 at Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Deliver JSON with record_id and amount.\n\n--- Registry listing ---\n/workspace/cache/document-index/worker-796bc02ee943/read-20.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

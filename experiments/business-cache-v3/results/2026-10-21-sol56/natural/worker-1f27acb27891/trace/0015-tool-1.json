@@ -1,0 +1,13 @@
+{
+  "event_id": 90,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 3; find /registry -maxdepth 4 -type f -printf '%T@ %p\\\\n' | sort -n | tail -30 | while read t f; do echo \\\"### $t $f\\\"; cat \\\"$f\\\"; echo; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "### 1792584297.7262506550 /registry/document-index/worker-796bc02ee943/read-20.json\n{\n  \"job_id\": \"worker-796bc02ee943\",\n  \"document_name\": \"alder-payroll-04.csv\",\n  \"bytes\": 310\n}\n\n### 1792584297.7262747390 /registry/document-index/worker-4973d33b0fb2/read-25.json\n{\n  \"job_id\": \"worker-4973d33b0fb2\",\n  \"document_name\": \"alder-payroll-terms-04.csv\",\n  \"bytes\": 63\n}\n\n### 1792584297.7262910310 /registry/document-index/worker-27da8a63642d/read-28.json\n{\n  \"job_id\": \"worker-27da8a63642d\",\n  \"document_name\": \"beacon-billing-04.csv\",\n  \"bytes\": 246\n}\n\n### 1792584297.7263089890 /registry/document-index/worker-e6e6231c8055/read-29.json\n{\n  \"job_id\": \"worker-e6e6231c8055\",\n  \"document_name\": \"cedar-procurement-terms-04.csv\",\n  \"bytes\": 52\n}\n\n### 1792584297.7263233220 /registry/document-index/worker-1f27acb27891/read-30.json\n{\n  \"job_id\": \"worker-1f27acb27891\",\n  \"document_name\": \"cedar-procurement-04.csv\",\n  \"bytes\": 269\n}\n\n### 1792584297.7263352390 /registry/document-index/worker-59485f3bcf4f/read-33.json\n{\n  \"job_id\": \"worker-59485f3bcf4f\",\n  \"document_name\": \"beacon-billing-terms-04.csv\",\n  \"bytes\": 51\n}\n\n### 1792584297.7263486980 /registry/requests/worker-1f27acb27891-needs-cedar-terms.txt\nJob worker-1f27acb27891 needs exact contents of cedar-procurement-terms-04.csv. If you have read it, please write contents to /registry/shares/cedar-procurement-terms-04.csv.\n\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

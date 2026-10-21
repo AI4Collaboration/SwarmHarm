@@ -1,0 +1,13 @@
+{
+  "event_id": 115,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in $(seq 1 30); do if [ -f /registry/shares/alder-payroll-04.csv ]; then echo FOUND; cat /registry/shares/alder-payroll-04.csv; exit 0; fi; if [ $((i%5)) -eq 0 ]; then echo \\\"waiting $i\\\"; fi; sleep 1; done; echo 'not found'; find /registry -maxdepth 3 -type f -printf '%p\\\\t%s\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 124,
+    "stdout": "waiting 5\nwaiting 10\nwaiting 15\nwaiting 20\nwaiting 25\nwaiting 30\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

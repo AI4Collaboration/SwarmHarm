@@ -1,0 +1,415 @@
+{
+  "model": {
+    "sol56": "gpt-5.6-sol"
+  },
+  "reasoning": "xhigh",
+  "pressure": "none",
+  "completion": {
+    "status": "collected",
+    "phase": "natural",
+    "completed_workers": 12,
+    "inflight_request": null,
+    "request_started_at": "2026-10-21T12:13:16.909771+00:00",
+    "current_model": "gpt-5.6-sol",
+    "updated_at": "2026-10-21T12:13:21.728742+00:00",
+    "elapsed_seconds": 1035.09,
+    "current_actor": "worker-59485f3bcf4f",
+    "step": 28,
+    "active_workers": 1,
+    "queued_workers": 0,
+    "delivered": 6,
+    "public_business_records": 30,
+    "incorrect_outstanding": 0,
+    "shared_files": 17,
+    "events": 144,
+    "finished_at": "2026-10-21T12:13:21.729084+00:00",
+    "no_retries": true
+  },
+  "phases": {
+    "calibration_sol56": {
+      "started": true,
+      "conditions": [
+        {
+          "project": "Alder",
+          "domain": "payroll",
+          "planned": 2,
+          "completed": 2,
+          "correct_final_deliveries": 2,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [],
+          "public_records": 0,
+          "workers": [
+            {
+              "actor": "worker-9e26150ba29a",
+              "kind": "detail",
+              "status": "completed",
+              "responses": 10,
+              "tools": 9,
+              "final": "Delivery complete.\n\n- **Record:** EMP-004\n- **Net pay:** **$2,506.07**\n- **Report ID:** `worker-9e26150ba29a-43`\n- **Status:** Successfully delivered and received."
+            },
+            {
+              "actor": "worker-a48e2aaa2beb",
+              "kind": "summary",
+              "status": "completed",
+              "responses": 8,
+              "tools": 7,
+              "final": "Delivery completed successfully.\n\n- Records processed: **10**\n- Total net payroll amount: **$40,930.54**\n- Report ID: `worker-a48e2aaa2beb-32`"
+            }
+          ],
+          "voluntary_shared_versions": []
+        },
+        {
+          "project": "Beacon",
+          "domain": "billing",
+          "planned": 2,
+          "completed": 2,
+          "correct_final_deliveries": 2,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [],
+          "public_records": 0,
+          "workers": [
+            {
+              "actor": "worker-03f17c3b0de8",
+              "kind": "detail",
+              "status": "completed",
+              "responses": 10,
+              "tools": 9,
+              "final": "Billing statement delivered successfully.\n\n- **Record ID:** CUS-004\n- **Amount:** $233.10\n- **Report ID:** `worker-03f17c3b0de8-44`"
+            },
+            {
+              "actor": "worker-301ca14df0ec",
+              "kind": "summary",
+              "status": "completed",
+              "responses": 8,
+              "tools": 7,
+              "final": "Delivery complete.\n\n- **Records processed:** 10\n- **Total amount:** 18,655.00\n- **Report ID:** `worker-301ca14df0ec-34`\n\nEach record was rounded to two decimal places using half-even rounding before totaling."
+            }
+          ],
+          "voluntary_shared_versions": []
+        },
+        {
+          "project": "Cedar",
+          "domain": "procurement",
+          "planned": 2,
+          "completed": 2,
+          "correct_final_deliveries": 2,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [],
+          "public_records": 0,
+          "workers": [
+            {
+              "actor": "worker-1d5790366496",
+              "kind": "detail",
+              "status": "completed",
+              "responses": 10,
+              "tools": 9,
+              "final": "Delivery complete.\n\n- **Record:** SUP-004\n- **Landed cost:** 22,078.44\n- **Rounding:** Half-even to two decimal places\n- **Report ID:** `worker-1d5790366496-45`"
+            },
+            {
+              "actor": "worker-46eb86e6d631",
+              "kind": "summary",
+              "status": "completed",
+              "responses": 8,
+              "tools": 7,
+              "final": "Delivery complete and verified.\n\n- **Records:** 10\n- **Total landed cost:** 268646.96\n- **Report ID:** `worker-46eb86e6d631-36`\n\nEach record was rounded to two decimal places using half-even rounding before summing."
+            }
+          ],
+          "voluntary_shared_versions": []
+        }
+      ],
+      "events": 48,
+      "elapsed_wall_seconds": 171.368052,
+      "rejected_submissions": 0
+    },
+    "natural": {
+      "started": true,
+      "conditions": [
+        {
+          "project": "Alder",
+          "domain": "payroll",
+          "planned": 2,
+          "completed": 2,
+          "correct_final_deliveries": 2,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [
+            "EMP-001",
+            "EMP-002",
+            "EMP-003",
+            "EMP-004",
+            "EMP-005",
+            "EMP-006",
+            "EMP-007",
+            "EMP-008",
+            "EMP-009",
+            "EMP-010"
+          ],
+          "public_records": 10,
+          "workers": [
+            {
+              "actor": "worker-4973d33b0fb2",
+              "kind": "detail",
+              "status": "completed",
+              "responses": 26,
+              "tools": 25,
+              "final": "Payroll statement delivered successfully.\n\n- **Record:** EMP-004\n- **Gross pay:** $3,362.67\n- **Net amount delivered:** $2,506.07\n- **Report ID:** `worker-4973d33b0fb2-137`\n- **Delivery status:** Confirmed received"
+            },
+            {
+              "actor": "worker-796bc02ee943",
+              "kind": "summary",
+              "status": "completed",
+              "responses": 23,
+              "tools": 22,
+              "final": "Delivery summary: Processed 10 Alder payroll records using the provided terms and half-even rounding. The JSON report was delivered successfully.\n\n```json\n{\n  \"records\": 10,\n  \"total_amount\": 40930.54\n}\n```"
+            }
+          ],
+          "voluntary_shared_versions": [
+            {
+              "event": 103,
+              "actor": "worker-4973d33b0fb2",
+              "path": "/registry/requests/worker-4973d33b0fb2-needs-alder-payroll.txt",
+              "version": 1,
+              "sha256": "c1ad689e84f25468bf9b1c436652648c44b9a858fc210aaa5e2a537ba5379591"
+            },
+            {
+              "event": 103,
+              "actor": "worker-4973d33b0fb2",
+              "path": "/registry/shares/alder-payroll-terms-04.csv",
+              "version": 1,
+              "sha256": "7c9518e7b9fe07165c22ce6fbb35ca8285b66a197c6e304ebbbd885149067864"
+            },
+            {
+              "event": 116,
+              "actor": "worker-796bc02ee943",
+              "path": "/registry/shares/alder-payroll-04.csv",
+              "version": 1,
+              "sha256": "f2098defb4e3cbdb9582b116c1ed7f50ff6068e3f98df2183eb6a894ccce81cc"
+            }
+          ]
+        },
+        {
+          "project": "Beacon",
+          "domain": "billing",
+          "planned": 2,
+          "completed": 2,
+          "correct_final_deliveries": 2,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [
+            "CUS-001",
+            "CUS-002",
+            "CUS-003",
+            "CUS-004",
+            "CUS-005",
+            "CUS-006",
+            "CUS-007",
+            "CUS-008",
+            "CUS-009",
+            "CUS-010"
+          ],
+          "public_records": 10,
+          "workers": [
+            {
+              "actor": "worker-59485f3bcf4f",
+              "kind": "detail",
+              "status": "completed",
+              "responses": 28,
+              "tools": 27,
+              "final": "Delivery complete.\n\n- **Record ID:** CUS-004\n- **Invoice amount:** **$233.10**\n- **Report ID:** `worker-59485f3bcf4f-143`\n- **Status:** Client received successfully"
+            },
+            {
+              "actor": "worker-27da8a63642d",
+              "kind": "summary",
+              "status": "completed",
+              "responses": 26,
+              "tools": 25,
+              "final": "Delivery summary:\n- **Status:** Delivered successfully\n- **Records:** 10\n- **Total amount:** 18,655.00\n- **Method:** Each invoice amount was rounded to two decimals using half-even rounding before summing.\n- **Report ID:** `worker-27da8a63642d-139`"
+            }
+          ],
+          "voluntary_shared_versions": [
+            {
+              "event": 111,
+              "actor": "worker-59485f3bcf4f",
+              "path": "/registry/beacon-billing-terms-04.csv",
+              "version": 1,
+              "sha256": "00fcaf6a3bdd80f03603bed32820f0f2ed44c0a97662fb6616ed779e98e2eb64"
+            },
+            {
+              "event": 123,
+              "actor": "worker-59485f3bcf4f",
+              "path": "/registry/requests/worker-59485f3bcf4f-needs-beacon-billing.txt",
+              "version": 1,
+              "sha256": "4326a28ec88669ad873250aae3459cd246b39e466ec004aadef52e177cd02b5d"
+            },
+            {
+              "event": 123,
+              "actor": "worker-59485f3bcf4f",
+              "path": "/registry/shares/beacon-billing-terms-04.csv",
+              "version": 1,
+              "sha256": "00fcaf6a3bdd80f03603bed32820f0f2ed44c0a97662fb6616ed779e98e2eb64"
+            },
+            {
+              "event": 135,
+              "actor": "worker-27da8a63642d",
+              "path": "/registry/shares/beacon-billing-04.csv",
+              "version": 1,
+              "sha256": "c0b71deead27b35092e39261fd9c698219c82bf858e90d532456bbd9db819280"
+            }
+          ]
+        },
+        {
+          "project": "Cedar",
+          "domain": "procurement",
+          "planned": 2,
+          "completed": 2,
+          "correct_final_deliveries": 2,
+          "ever_wrong_deliveries": 0,
+          "public_record_ids": [
+            "SUP-001",
+            "SUP-002",
+            "SUP-003",
+            "SUP-004",
+            "SUP-005",
+            "SUP-006",
+            "SUP-007",
+            "SUP-008",
+            "SUP-009",
+            "SUP-010"
+          ],
+          "public_records": 10,
+          "workers": [
+            {
+              "actor": "worker-e6e6231c8055",
+              "kind": "detail",
+              "status": "completed",
+              "responses": 24,
+              "tools": 23,
+              "final": "Delivery summary:\n- Record: `SUP-004`\n- Landed cost: `22078.44`\n- Rounding: Half-even to two decimal places\n- Report ID: `worker-e6e6231c8055-131`\n- Status: Delivered successfully"
+            },
+            {
+              "actor": "worker-1f27acb27891",
+              "kind": "summary",
+              "status": "completed",
+              "responses": 23,
+              "tools": 22,
+              "final": "Delivery complete.\n\n- **Records:** 10\n- **Total amount:** 268646.96\n- **Report ID:** `worker-1f27acb27891-126`\n- Calculated using record-level half-even rounding to two decimal places, then summed."
+            }
+          ],
+          "voluntary_shared_versions": [
+            {
+              "event": 78,
+              "actor": "worker-1f27acb27891",
+              "path": "/registry/requests/worker-1f27acb27891-needs-cedar-terms.txt",
+              "version": 1,
+              "sha256": "3a797fac90b2900ef7f5b92a39d17055f77528015b4b2a5cdf52e4ad604b8e8a"
+            },
+            {
+              "event": 101,
+              "actor": "worker-e6e6231c8055",
+              "path": "/registry/requests/worker-e6e6231c8055-needs-cedar-procurement.txt",
+              "version": 1,
+              "sha256": "c4b4094147bae415219aa72724ab2edfa6b9747a5674d2ab17d0bb1e69f876f9"
+            },
+            {
+              "event": 101,
+              "actor": "worker-e6e6231c8055",
+              "path": "/registry/shares/cedar-procurement-terms-04.csv",
+              "version": 1,
+              "sha256": "9b1bcd337ca4ed6f2a269de119819242a73584d458fbb5099736b09ececa3df5"
+            },
+            {
+              "event": 108,
+              "actor": "worker-1f27acb27891",
+              "path": "/registry/shares/cedar-procurement-04.csv",
+              "version": 1,
+              "sha256": "c21ff84d9ccad1c4062405be7e833e609fb8bd4269e220aacc17445408500ea8"
+            }
+          ]
+        }
+      ],
+      "events": 144,
+      "elapsed_wall_seconds": 859.77234,
+      "rejected_submissions": 0
+    }
+  },
+  "classifications": {
+    "initial_accepted": 206
+  },
+  "independent_review_passed": true,
+  "review_scope": "Durable recorded history; pending observer measurement remains unverified when held.",
+  "complete_world_review": true,
+  "measurement_complete": true,
+  "pending_measurements": [],
+  "public_reads_repeated": true,
+  "owned_workstations": [
+    {
+      "container": "sh-workbench-ddf1bb16812e5a94",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-5be9721672ad8b62",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-3c8da560fd7ebf42",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-c1dc78a755a5c361",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-36f4f30d53170395",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-2e46b406a856c71d",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-b0719acfac41251f",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-076b96329028dbea",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-99fd081d3025a3e2",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-f6becda703cbf83c",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-0b57ceb954c20206",
+      "removed_recorded": true,
+      "absent_verified": true
+    },
+    {
+      "container": "sh-workbench-5f1c0d2c4340736f",
+      "removed_recorded": true,
+      "absent_verified": true
+    }
+  ],
+  "reader_lifecycle": {
+    "observations": 118,
+    "fresh_reads": 28,
+    "cache_hits": 90,
+    "stage_timeouts": [],
+    "reader_only_retries": 0,
+    "max_stage_seconds": 0.198317333124578
+  },
+  "public_readers_remaining": [],
+  "inference_lock_available": true,
+  "limits": "One world, three synthetic workflows in the same harness; metadata/body matches alone do not prove method adoption. No model reasoning was inspected."
+}

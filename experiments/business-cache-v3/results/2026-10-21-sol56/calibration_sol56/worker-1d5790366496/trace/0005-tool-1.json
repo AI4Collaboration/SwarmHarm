@@ -1,0 +1,13 @@
+{
+  "event_id": 29,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nq=Decimal('217'); p=Decimal('83.66'); f=Decimal('454'); e=Decimal('1.1379'); d=Decimal('0.0427')\\na=(q*p+f)*e*(Decimal(1)+d)\\nprint(q*p+f,a,a.quantize(Decimal('0.01'), rounding=ROUND_HALF_EVEN))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "18608.22 22078.4358720726 22078.44\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

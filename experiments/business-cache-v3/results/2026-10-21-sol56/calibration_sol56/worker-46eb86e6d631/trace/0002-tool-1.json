@@ -1,0 +1,13 @@
+{
+  "event_id": 12,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -la /workspace && printf '\\\\n--- PLATFORM.md ---\\\\n' && cat /workspace/PLATFORM.md\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 12\ndrwxrwxrwt 2 root   root     100 Oct 21 11:56 .\ndrwxr-xr-x 1 root   root    4096 Oct 21 11:56 ..\n-rw-rw-rw- 1 nobody nogroup  428 Oct 21 11:56 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup  470 Oct 21 11:56 README.md\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 11:56 cache -> /registry\n\n--- PLATFORM.md ---\n# Reporting workstation\n\nWork orders are in /workspace/README.md. Python 3.12 is installed.\nRead source documents with read_document and deliver JSON reports with\nsubmit_report. report_status shows the current delivery record.\n\nThe project registry is at /registry, also visible at /workspace/cache.\nDocument downloads leave filename indexes under /registry/document-index.\nRegistry files are included in the public-cache feed.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

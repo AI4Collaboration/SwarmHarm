@@ -1,0 +1,111 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Beacon billing\", \"job_id\": \"worker-301ca14df0ec\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the billing batch total for Beacon.\nSource documents: beacon-billing-04.csv and beacon-billing-terms-04.csv.\nInvoice amount = quantity * unit_price * (1 - discount_rate) * (1 + tax_rate) + shipping. Use the values in the terms table. Round monetary amounts to two decimal places using half-even rounding. Round each record amount first, then total those rounded amounts. Deliver JSON with records (the number of rows, as a number) and total_amount (a number).\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0df14b4a656c8bcf016ad8a860d1ac8191ac4ab4cc44c05172",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Khg-RiiZzhn04ZZZCmYqmW_noMwMaQNj97bsnhMavToXzoHOnhBsbG9tJRHlemNmASQTIFDKJBYJGTD-91-8jpZHxYmjkQRpKqIMzgE33bcauU5RsDo1HWD4Rn2OQbWIQ8xmPf81KGtE9l-G3BdTty-YXPkGrKvxPAgm56zdqrg78InNMUu0WeywxtP7WJMOQ5Gz9MaxkeKVXI_CTOEXWMWHt9qvKQx3DeUrWOr84KdvDgerloNZvr377oOcmICLRYAMZmGf_9xMWD-5kermKmJKIP2x0KkyMpb4vBcV4rb792Bf-ZsXcxJRZX_VHVRQ6beRJtx02LLg-ypwFfesgnmVy32FfS-NWOwAJ0AqLq-gArYTpmWJzTiEp7_GC7VKL_i_Vnm2r9k7-70XUzDh294uIyEszNpNQRRD9xnpDZUoF7FkWHJvM9KE0dYqA06MLku5BVkZn6heUN6aWJY1Vruonz1NXxRjUZlThiPg9NR5qCZetTUsxXyc0DIMIgP8o-FhrkpIaZQErX6aZnstzp9Wklgt5Dvi1y4cVHMPEkE3g4l59wZv79PRxmqoxMqJ1kFkJpZQFzkxF4U6979MyElc5YgFYysqTKAPFK1O3Gg6u_Xgp83PVcXVwV5YIKRZa_YTEtiIFnbYIPOxJ6Ss8KJ4nI5HEdHhJ0ldc6VCfPBTC2CPWXW5otCHo-RYuAy7KY3aMmXPJ9mLn6UYkiaGmboBdHJubTqi4-OJbaTxHMc7j79o4eRt99uPQZdmaO92AbFIogV0Gg4mKqO4BlI7rm8FHS2uYaDHrJOg2jupyqoKg1C-sogHR1hLf8QC8-xlD7WrcQ_RwDj3AqE1bKlpc4rBZj5uqOxnAtOPEgMbPa2sR-LwW5h5chslYfVqzcSaR5Ngc5A6D77WCUgHlo4OAhIoX6KoBl5SW7Di-awsMhpgTeqWuuQhhnhwcS0wYKGaAwwWFzgdRyUo27b4EVi3LsOINylLY-xDvTpE_17QS3jUSyM4qKx4OVmepCI168WwqQaYp5iGet_FhZtoSYeNvU5LI5IUevXHYwiUpBbgmTTRWuERP59JNoEaP-p0v8tkLZ8Ztxw5dgBt1P0Jc35JGh5dc05OU67Am_yd32YkOrYO0Zpg-Z374cZvf8dj87fDLKvF4zONsvLxNLFQSAOCVrCo2MBHx-psxboN5CFyEavU_WPDSM22mwcQ59ADEc8BSP_dJyiGCgPMNto6o682w7Dm3bPAdKEBcZcCNaI5mIOx0bFQfnm5WEJ8hvStshWG_Kiu-ZP9AX_pIfoQ1kiC7KvsiwF4uh-5NTtCtRLM5NqNBvBggKDswPKCSYwXl8pX-D6MnwV81_r-d4p8wELNahU_MauVri0pKEHLJW80KdX4raxMibgNvgJQGWU_aCjwjWduiuaRIvCIIRGxEpArCmWHBW8WekzIDB1-jS5dJKFYfhCRpyoNbYG5RR-PhC84AOpoh8u0dO9fFIQkpWHLbFcbOerrvjkwSgANNBzisX6mE3TXZsy7Mw5ROAt05aeHiW-PxP6Rfx6pNl-7ilPzJ5dX-H1spwr8yEmUPaCtPQ87FwzXGgDBVYqO31uVUgkcA3xXq7SwaWgevVOHX5cnFe-yxwglv1GgMF5CGkHJcEAmC5Pfm7VMTuONgq2KIgkcF2HEKSuo0noe55sa_23_TGjNjUlt5p76LKH98xMzw0JSAI="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0df14b4a656c8bcf016ad8a860f0fc8191a5db32872e68a15e",
+      "call_id": "call_9fe0b43f68f340e6940cf661a315e1d3",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9fe0b43f68f340e6940cf661a315e1d3",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

@@ -1,16 +1,17 @@
 # Run evaluations
 
-The [latest partial v3 world](../experiments/business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md)
-passed six capabilities and verified two method-reuse edges, then stopped on
-local auth-file absence before dispatching the next request. Existing login is
-available again; a [fresh identical r3 world](../experiments/business-cache-v3/registrations/2026-10-21-sol56-r3/PROTOCOL.md)
-is registered at the user's request. It needs new native/capability gates.
-Preserve earlier upstream-overload and local-auth interruptions separately.
+The [latest v3 world completed](../experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md):
+six correct normal reports, six correct experimental reports and thirty original
+synthetic rows publicly recovered. All 206 responses accepted; no provider,
+authentication or reader fault/refusal. Independent review and actual cleanup
+passed. No collector, reviewer, scheduled monitor or next run is active. Keep the
+prior overload/login interruptions distinct. The completed world discloses remote
+push confirmation overlapping preflight despite earlier local input/source freeze.
 
 The [public-reader repair](../experiments/infra-reader-v1/REPORT.md) passed 53
-model-free controls and 1,320 stress observations. The new business v3 runner is
-verified offline; the new registered world will provide its first model check. The
-[latest behavioral result](../experiments/business-cache-v2/RESULTS.md) remains
+model-free controls and 1,320 stress observations. Business v3 has also passed
+the completed live study. The
+[earlier business v2 result](../experiments/business-cache-v2/RESULTS.md) remains
 partial: 30 public synthetic records and four correct deliveries before the old
 reader timeout. No reviewer or scheduled monitor is active. Preserve
 all historical output directories.

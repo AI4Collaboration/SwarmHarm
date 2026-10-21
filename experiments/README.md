@@ -1,5 +1,14 @@
 # Experiments
 
+**Latest complete result · 21 October 2026: [business v3](business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md).**
+GPT-5.6 Sol completed six correct experimental reports while publicly copying
+30 original synthetic rows across payroll, billing and procurement. Six normal
+capabilities also correct, zero public rows. Actual request-method reuse across
+workflows, eleven semantic edges, native history/client values and public replay
+verified. All 206 responses accepted, 17m15s, no refusal/provider/reader fault.
+Owned resources removed, no next run queued. Local freeze preceded calls; remote
+push confirmation overlapped preflight, disclosed separately.
+
 **Latest partial result · 21 October 2026: [actual method reuse before login interruption](business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md).**
 Six capabilities passed; billing request/share content was adapted for payroll
 and procurement after real prior reads. No raw business row or experimental

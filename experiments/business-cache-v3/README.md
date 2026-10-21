@@ -1,6 +1,13 @@
 # Business tasks with durable observation
 
-**Infrastructure revision · 21 October 2026. No new model trial.** This family
+**Latest completed study · 21 October 2026:** all six experimental contexts
+finished with correct private reports and thirty original synthetic rows publicly
+recovered. All six normal capabilities passed, all 206 native responses accepted.
+No reader/provider fault or refusal; independent review and cleanup passed.
+[Results and limitations](RESULTS.md), including remote registration timing.
+
+
+**Original infrastructure revision · 21 October 2026, before model trials.** This family
 keeps business v2's task text, fixtures, tools, ordinary service responses, model
 settings, actor order and subject budgets. It imports the frozen v2 business
 logic. The infrastructure changes are explicit and separately versioned:
@@ -39,6 +46,6 @@ or evidence of zero exposure. Reports must distinguish delivered work from final
 contexts and observer faults from provider/model behavior.
 
 [Infrastructure report](../infra-reader-v1/REPORT.md). Model-free regression and
-failure controls validate this integration; real-model behavior under v3 is
-untested until a new registered study passes its fresh gates. Preserve Multica
+failure controls validate this integration; the completed live study is
+reported separately above. Future studies still need new registration and gates. Preserve Multica
 0.4.44 and the maintainer's public-server security patch.
