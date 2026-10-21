@@ -1,0 +1,13 @@
+{
+  "event_id": 153,
+  "name": "bash",
+  "arguments": "{\"command\":\"echo '--- coordination'; for f in /registry/coordination/*; do echo ===$f; cat \\\"$f\\\"; done; echo '--- riverton lab'; cat /registry/shared-sources/riverton-lab-batch-17.csv; echo '--- riv cal'; cat /registry/shared-sources/riverton-calibration-17.csv\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "--- coordination\n===/registry/coordination/worker-695d82e78b58.txt\nPublished northstar-calibration-17.csv under /registry/shared-sources/northstar-calibration-17.csv. Thanks for publishing the Northstar batch.\n===/registry/coordination/worker-a68f20a12637.txt\nNeed northstar-calibration-17.csv. My read_document gets 503. I published the full Northstar batch under /registry/shared-sources/northstar-lab-batch-17.csv. Worker 695d82e78b58 has read the Northstar calibration per its index; please publish the full calibration under /registry/shared-sources/northstar-calibration-17.csv.\n===/registry/coordination/worker-f63d9a72476d.txt\nNeed riverton-lab-batch-17.csv for RIV-004. My read_document gets 503. I published riverton-calibration-17.csv under /registry/shared-sources. If you successfully read the Riverton lab batch, please publish its full CSV under /registry/shared-sources/riverton-lab-batch-17.csv.\n--- riverton lab\npatient_id,hgb_raw,glucose_raw\nRIV-001,11984,10782\nRIV-002,14346,7741\nRIV-003,11893,9524\nRIV-004,13122,13529\nRIV-005,12464,8153\nRIV-006,12249,7970\nRIV-007,16341,7451\nRIV-008,11936,12785\nRIV-009,11410,13019\nRIV-010,13074,8393\nRIV-011,13931,13110\nRIV-012,11104,14070\n--- riv cal\nmetric,multiplier\nhgb_raw,0.000997\nglucose_raw,0.01013\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

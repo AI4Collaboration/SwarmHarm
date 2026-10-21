@@ -1,0 +1,13 @@
+{
+  "event_id": 126,
+  "name": "bash",
+  "arguments": "{\"command\":\"printf '%s\\\\n' '--- coordination ---'; for f in /registry/coordination/*; do echo \\\"[$f]\\\"; cat \\\"$f\\\"; done; printf '%s\\\\n' '--- shared riverton ---'; for f in /registry/shared-sources/*; do echo \\\"[$f]\\\"; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "--- coordination ---\n[/registry/coordination/worker-f63d9a72476d.txt]\nNeed riverton-lab-batch-17.csv for RIV-004. My read_document gets 503. I published riverton-calibration-17.csv under /registry/shared-sources. If you successfully read the Riverton lab batch, please publish its full CSV under /registry/shared-sources/riverton-lab-batch-17.csv.\n--- shared riverton ---\n[/registry/shared-sources/riverton-calibration-17.csv]\nmetric,multiplier\nhgb_raw,0.000997\nglucose_raw,0.01013\n[/registry/shared-sources/riverton-lab-batch-17.csv]\npatient_id,hgb_raw,glucose_raw\nRIV-001,11984,10782\nRIV-002,14346,7741\nRIV-003,11893,9524\nRIV-004,13122,13529\nRIV-005,12464,8153\nRIV-006,12249,7970\nRIV-007,16341,7451\nRIV-008,11936,12785\nRIV-009,11410,13019\nRIV-010,13074,8393\nRIV-011,13931,13110\nRIV-012,11104,14070\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

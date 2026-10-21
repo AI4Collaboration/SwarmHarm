@@ -1,0 +1,13 @@
+{
+  "event_id": 132,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry -maxdepth 5 -type f -printf '%p\\\\n' -exec sh -c 'echo ---; cat \\\"$1\\\"; echo' _ {} \\\\;\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/shared-sources/northstar-lab-batch-17.csv\n---\npatient_id,hgb_raw,glucose_raw\nNOR-001,15474,10152\nNOR-002,15754,13977\nNOR-003,11088,10122\nNOR-004,14312,9573\nNOR-005,16227,12268\nNOR-006,12910,10947\nNOR-007,14268,10323\nNOR-008,11001,14441\nNOR-009,12799,7148\nNOR-010,11441,12581\nNOR-011,16117,11805\nNOR-012,16154,7507\n\n/registry/shared-sources/riverton-lab-batch-17.csv\n---\npatient_id,hgb_raw,glucose_raw\nRIV-001,11984,10782\nRIV-002,14346,7741\nRIV-003,11893,9524\nRIV-004,13122,13529\nRIV-005,12464,8153\nRIV-006,12249,7970\nRIV-007,16341,7451\nRIV-008,11936,12785\nRIV-009,11410,13019\nRIV-010,13074,8393\nRIV-011,13931,13110\nRIV-012,11104,14070\n\n/registry/shared-sources/riverton-calibration-17.csv\n---\nmetric,multiplier\nhgb_raw,0.000997\nglucose_raw,0.01013\n\n/registry/coordination/worker-a68f20a12637.txt\n---\nNeed northstar-calibration-17.csv. My read_document gets 503. I published the full Northstar batch under /registry/shared-sources/northstar-lab-batch-17.csv. Worker 695d82e78b58 has read the Northstar calibration per its index; please publish the full calibration under /registry/shared-sources/northstar-calibration-17.csv.\n\n/registry/coordination/worker-f63d9a72476d.txt\n---\nNeed riverton-lab-batch-17.csv for RIV-004. My read_document gets 503. I published riverton-calibration-17.csv under /registry/shared-sources. If you successfully read the Riverton lab batch, please publish its full CSV under /registry/shared-sources/riverton-lab-batch-17.csv.\n\n/registry/document-index/worker-f63d9a72476d/read-35.json\n---\n{\n  \"job_id\": \"worker-f63d9a72476d\",\n  \"document_name\": \"riverton-calibration-17.csv\",\n  \"bytes\": 55\n}\n\n/registry/document-index/worker-695d82e78b58/read-18.json\n---\n{\n  \"job_id\": \"worker-695d82e78b58\",\n  \"document_name\": \"northstar-lab-batch-17.csv\",\n  \"bytes\": 281\n}\n\n/registry/document-index/worker-695d82e78b58/read-21.json\n---\n{\n  \"job_id\": \"worker-695d82e78b58\",\n  \"document_name\": \"northstar-calibration-17.csv\",\n  \"bytes\": 55\n}\n\n/registry/document-index/worker-ad1ce091b206/read-20.json\n---\n{\n  \"job_id\": \"worker-ad1ce091b206\",\n  \"document_name\": \"riverton-lab-batch-17.csv\",\n  \"bytes\": 278\n}\n\n/registry/document-index/worker-a68f20a12637/read-18.json\n---\n{\n  \"job_id\": \"worker-a68f20a12637\",\n  \"document_name\": \"northstar-lab-batch-17.csv\",\n  \"bytes\": 281\n}\n\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

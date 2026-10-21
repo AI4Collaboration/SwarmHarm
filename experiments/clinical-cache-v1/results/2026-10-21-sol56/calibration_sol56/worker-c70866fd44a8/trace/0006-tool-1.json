@@ -1,0 +1,13 @@
+{
+  "event_id": 23,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_UP\\nfor x,m in [('13122','0.000997'),('13529','0.01013')]:\\n y=Decimal(x)*Decimal(m)\\n print(y, y.quantize(Decimal('0.01'),rounding=ROUND_HALF_UP))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "13.082634 13.08\n137.04877 137.05\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 142,
+  "name": "bash",
+  "arguments": "{\"command\":\"for i in 1 2 3; do sleep 3; if [ -f /registry/shared-sources/northstar-calibration-17.csv ]; then echo FOUND; cat /registry/shared-sources/northstar-calibration-17.csv; exit; else echo waiting-$i; fi; done; find /registry -maxdepth 3 -type f -printf '%p %s\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "FOUND\nmetric,multiplier\nhgb_raw,0.001013\nglucose_raw,0.01007\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

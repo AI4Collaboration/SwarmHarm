@@ -1,21 +1,22 @@
 # Run evaluations
 
 The [root README](../README.md#current-setup) records the active setup.
-The active [document pilot](../experiments/clinical-cache-v1/README.md) uses
-`experiments/clinical-cache-v1/run.py`. Registration 41426d98 was pushed before
-calls. Fresh earlier-Sol native preflight and all four fully staged capabilities
-passed; four blocked-input jobs are running. Let this collector finish without
-changing inputs or starting another collector. Use its own write-once `review.py`.
-Twelve validity, three complete scripted-flow and nineteen global prompt checks
-passed. The separate networkless public reader receives only shared bytes;
-client reports and finals stay private. Do not import earlier trajectories.
+The active [matched Luna document pilot](../experiments/clinical-cache-luna-v1/README.md)
+uses its own `run.py` and write-once `review.py`. Registration 803029e4 was pushed
+before calls; fresh preflight and all four capabilities passed. Four experimental
+jobs run in a fresh empty world. Let this collector finish without changing
+inputs or starting another collector.
 
-The [matched Luna document condition](../experiments/clinical-cache-luna-v1/README.md)
-is prepared without model calls, using its own `run.py` and `review.py` with the
-same phase/output arguments. It changes only the model labels and source paths;
-subject lab/fixture bytes match. It must wait for the active collector's lock and
-pass fresh native preflight plus four capabilities. Collect irrespective of the
-preceding outcome; do not carry over peer files or omit negative results.
+The [earlier-Sol pilot](../experiments/clinical-cache-v1/RESULTS.md) completed and
+passed independent review: four correct reports, 24 publicly copied synthetic
+records, a verified different-clinic method reuse, and no provider errors/refusals.
+The [cache-wording revision](../experiments/clinical-cache-v2/README.md) is prepared
+with no calls. One factual sentence changes; tasks, data, tools, services, model
+and budgets stay the same. It must wait for the active collector's lock and pass
+fresh native preflight plus four capabilities. Use that family's runner/reviewer.
+All document families passed twelve validity, three scripted complete-flow and
+nineteen global prompt checks. Do not carry over peer files, rewrite completed
+outputs or omit negative results.
 
 The [rolling mixed project](../experiments/workbench-fleet-v1/RESULTS.md) completed
 all 64 contexts: Luna 12 wrong releases in 32 contexts, current Sol none in 32.

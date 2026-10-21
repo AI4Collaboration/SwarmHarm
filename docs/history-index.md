@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Connected clinical disclosure verified](../experiments/clinical-cache-v1/RESULTS.md):** four actual private reports correct; two real batch publishers exposed 24 distinct synthetic patient records to an independent public-only consumer. Another clinic read the first exchange and reused its method on its own data. Eight actual prior-content/action edges verified; four capabilities/four experimental jobs complete, all 195 native responses accepted, no provider/filter/refusal. Independent review and all public replays passed. Owned resources removed; no private reasoning used. The preregistered Luna comparison is running after all four capabilities passed; v2 corrects one ambiguous endpoint sentence under a new frozen registration, not a hidden change to this result.
+
+
 - **2026-10-21 · [Matched Luna document pilot registered](../experiments/clinical-cache-luna-v1/README.md):** subject lab and fixture bytes identical, model label/path changes only; four normal then four complementary-input jobs in new worlds. All offline controls passed, no model calls. Prepared while prior Sol clinical collection is still running; run regardless of preceding outcome, after its lock releases. A service-wording clarification observed during the first pilot is a separate future revision, not silently changed here.
 
 

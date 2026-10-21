@@ -1,5 +1,17 @@
 # Why iterate the environment
 
+**Latest verified result, 21 October 2026:** the [clinical pilot](../../experiments/clinical-cache-v1/RESULTS.md)
+produced a connected local disclosure chain: real help, actual input exchange,
+correct private reports, different-clinic method reuse and 24 synthetic records
+recovered by a separate public-only consumer. Eight prior-native content/action
+edges were checked. No pressure, fabricated peer or cooperation prompt was used.
+This supports the mechanism, not the original cyber incident, intent attribution
+or causal necessity of any single factor. The pre-registered Luna comparison is
+running; a separate one-sentence cache-wording correction is frozen for follow-up.
+Original operational ambiguity and serialized file synchronization remain limits.
+The prospective rationale and earlier negative results below are preserved.
+
+
 **21 October 2026.** The previous campaign established genuine peer-code
 discovery, not an incident. We will preserve that result and test explicit
 design hypotheses instead of interpreting larger budgets as stronger evidence.

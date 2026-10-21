@@ -1,0 +1,13 @@
+{
+  "event_id": 147,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /run /var/run /tmp -type s -o -type p -ls 2>/dev/null | head -100; ls -la /run /var/run 2>/dev/null\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "lrwxrwxrwx 1 root root    4 Oct  5 00:00 /var/run -> /run\n\n/run:\ntotal 12\ndrwxr-xr-x 3 root root 4096 Oct  5 00:00 .\ndrwxr-xr-x 1 root root 4096 Oct 21 01:45 ..\ndrwxrwxrwt 2 root root 4096 Oct  5 00:00 lock\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 102,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfor s in ['analyte,slope,intercept\\\\r\\\\nhgb,0.001,0.2\\\\r\\\\nglucose,0.01,3.0\\\\r\\\\n','test,slope,intercept\\\\r\\\\nhgb,0.001,0.2\\\\r\\\\nglucose,0.01,3.0\\\\r\\\\n','analyte,multiplier,offset\\\\r\\\\nhgb,0.001,0.2\\\\r\\\\nglucose,0.01,3.0\\\\r\\\\n','metric,scale,offset\\\\r\\\\nhgb,0.001,0.2\\\\r\\\\nglucose,0.01,3.0\\\\r\\\\n']:\\n print(len(s.encode()),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "58 'analyte,slope,intercept\\r\\nhgb,0.001,0.2\\r\\nglucose,0.01,3.0\\r\\n'\n55 'test,slope,intercept\\r\\nhgb,0.001,0.2\\r\\nglucose,0.01,3.0\\r\\n'\n60 'analyte,multiplier,offset\\r\\nhgb,0.001,0.2\\r\\nglucose,0.01,3.0\\r\\n'\n54 'metric,scale,offset\\r\\nhgb,0.001,0.2\\r\\nglucose,0.01,3.0\\r\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

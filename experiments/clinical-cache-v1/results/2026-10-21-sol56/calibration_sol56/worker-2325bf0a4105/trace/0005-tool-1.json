@@ -1,0 +1,13 @@
+{
+  "event_id": 18,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_UP\\nh=[15474,15754,11088,14312,16227,12910,14268,11001,12799,11441,16117,16154]\\ng=[10152,13977,10122,9573,12268,10947,10323,14441,7148,12581,11805,7507]\\nfor vals,mult in ((h,Decimal('0.001013')),(g,Decimal('0.01007'))):\\n    conv=[Decimal(v)*mult for v in vals]\\n    mean=sum(conv)/len(conv)\\n    print(sum(vals), sum(vals)/len(vals), mean, mean.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "167545 13962.083333333334 14.14359041666666666666666667 14.14\n130844 10903.666666666666 109.7999233333333333333333333 109.80\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

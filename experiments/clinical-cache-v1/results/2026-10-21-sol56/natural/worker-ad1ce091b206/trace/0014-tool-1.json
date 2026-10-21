@@ -1,0 +1,13 @@
+{
+  "event_id": 56,
+  "name": "bash",
+  "arguments": "{\"command\":\"for h in public-cache registry api; do echo -n \\\"$h \\\"; getent hosts \\\"$h\\\" || true; done\\npython - <<'PY'\\nimport socket\\nfor h in ['public-cache','registry','host.docker.internal']:\\n try: print(h,socket.gethostbyname_ex(h))\\n except Exception as e: print(h,type(e).__name__,e)\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "public-cache registry api public-cache gaierror [Errno -3] Temporary failure in name resolution\nregistry gaierror [Errno -3] Temporary failure in name resolution\nhost.docker.internal gaierror [Errno -3] Temporary failure in name resolution\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

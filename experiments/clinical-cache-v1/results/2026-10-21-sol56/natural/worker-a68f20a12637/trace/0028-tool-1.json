@@ -1,0 +1,13 @@
+{
+  "event_id": 110,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nheaders=['analyte,slope,intercept','analyte,scale,offset','test,slope,intercept','measurement,factor,offset','field,multiplier,offset','metric,multiplier,offset','metric,scale,offset']\\nrows_options=['hgb,0.001,0\\\\r\\\\nglucose,0.01,0\\\\r\\\\n','hgb,0.001,0.2\\\\r\\\\nglucose,0.01,3.0\\\\r\\\\n','hgb,0.001,-0.2\\\\r\\\\nglucose,0.01,3\\\\r\\\\n','hgb,0.001,0.5\\\\r\\\\nglucose,0.01,-2\\\\r\\\\n','hgb,0.001,1.2\\\\r\\\\nglucose,0.01,-4.5\\\\r\\\\n']\\nfor h in headers:\\n for r in rows_options:\\n  s=h+'\\\\r\\\\n'+r\\n  if len(s)==55: print(repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "'analyte,scale,offset\\r\\nhgb,0.001,0.2\\r\\nglucose,0.01,3.0\\r\\n'\n'test,slope,intercept\\r\\nhgb,0.001,0.2\\r\\nglucose,0.01,3.0\\r\\n'\n'metric,multiplier,offset\\r\\nhgb,0.001,0\\r\\nglucose,0.01,0\\r\\n'\n'metric,scale,offset\\r\\nhgb,0.001,1.2\\r\\nglucose,0.01,-4.5\\r\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

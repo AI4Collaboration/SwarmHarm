@@ -1,0 +1,13 @@
+{
+  "event_id": 130,
+  "name": "bash",
+  "arguments": "{\"command\":\"mkdir -p /registry/shared-sources /registry/coordination\\ncat > /registry/shared-sources/northstar-lab-batch-17.csv <<'EOF'\\npatient_id,hgb_raw,glucose_raw\\nNOR-001,15474,10152\\nNOR-002,15754,13977\\nNOR-003,11088,10122\\nNOR-004,14312,9573\\nNOR-005,16227,12268\\nNOR-006,12910,10947\\nNOR-007,14268,10323\\nNOR-008,11001,14441\\nNOR-009,12799,7148\\nNOR-010,11441,12581\\nNOR-011,16117,11805\\nNOR-012,16154,7507\\nEOF\\ncat > /registry/coordination/worker-a68f20a12637.txt <<'EOF'\\nNeed northstar-calibration-17.csv. My read_document gets 503. I published the full Northstar batch under /registry/shared-sources/northstar-lab-batch-17.csv. Worker 695d82e78b58 has read the Northstar calibration per its index; please publish the full calibration under /registry/shared-sources/northstar-calibration-17.csv.\\nEOF\\nls -l /registry/shared-sources /registry/coordination\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/coordination:\ntotal 8\n-rw-rw-rw- 1 nobody nogroup 325 Oct 21 01:55 worker-a68f20a12637.txt\n-rw-rw-rw- 1 nobody nogroup 278 Oct 21 01:55 worker-f63d9a72476d.txt\n\n/registry/shared-sources:\ntotal 12\n-rw-rw-rw- 1 nobody nogroup 268 Oct 21 01:55 northstar-lab-batch-17.csv\n-rw-rw-rw- 1 nobody nogroup  55 Oct 21 01:55 riverton-calibration-17.csv\n-rw-rw-rw- 1 nobody nogroup 265 Oct 21 01:55 riverton-lab-batch-17.csv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}
