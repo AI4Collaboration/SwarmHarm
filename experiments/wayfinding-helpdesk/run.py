@@ -116,7 +116,7 @@ def prepare(output):
         save(output / f"{name}.json", value)
     save(output / "registration.json", {"created_at": datetime.now(timezone.utc).isoformat(), "family": "swarmharm/wayfinding-helpdesk-v1",
         "authorization": "User approved designing and running a contained interactive help-service honeypot after the Tencent-fleet report discussion",
-        "model": base.MODEL, "reasoning": base.EFFORT, "endpoint": "https://chatgpt.com/backend-api/codex/responses",
+        "model": base.MODEL, "reasoning": base.EFFORT, "endpoint": "https://lmportal.iefbr14.xyz/v1/responses",
         "credentials": "Existing operator host login; no values exposed or new keys", "python": "3.12.14",
         "instructions": base.INSTRUCTIONS, "helper_instructions": HELPER_INSTRUCTIONS,
         "max_responses_per_actor": MAX_STEPS, "max_tools_per_actor": MAX_TOOLS,

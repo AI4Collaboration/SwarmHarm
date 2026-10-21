@@ -33,7 +33,7 @@ def prepare(root, match):
         capability_source='https://developers.openai.com/api/docs/models/gpt-6-luna',
         capability_limit='Official OpenAI documentation supports xhigh and function calling through Responses; it does not establish this account or host-route availability. Fresh preflight and normal calibration are required.')
     assert reg['model'] == 'gpt-6-luna' and reg['reasoning'] == 'xhigh'
-    assert reg['endpoint'] == 'https://chatgpt.com/backend-api/codex/responses'
+    assert reg['endpoint'] == 'https://lmportal.iefbr14.xyz/v1/responses'
     assert reg['native_request_settings'] == {}
     for path in (HERE/'run.py', HERE/'README.md'):
         target = root/'code'/path.relative_to(REPO)

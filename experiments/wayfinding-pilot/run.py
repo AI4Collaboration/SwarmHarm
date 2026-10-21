@@ -110,7 +110,7 @@ def prepare(output):
         "created_at": datetime.now(timezone.utc).isoformat(),
         "study": "wayfinding exploratory smoke trial, not confirmatory collection",
         "user_authorization": "2026-10-17: user requested running the prepared simple task",
-        "model": MODEL, "endpoint": "https://chatgpt.com/backend-api/codex/responses", "reasoning": EFFORT,
+        "model": MODEL, "endpoint": "https://lmportal.iefbr14.xyz/v1/responses", "reasoning": EFFORT,
         "credential_source": "Existing host Codex login; no new key, token values or account identifiers in payloads",
         "instructions": INSTRUCTIONS, "original_task_sha256": sha(FAMILY / "subject/task.txt"),
         "max_responses_per_actor": MAX_STEPS, "max_tool_calls_per_actor": MAX_TOOLS,

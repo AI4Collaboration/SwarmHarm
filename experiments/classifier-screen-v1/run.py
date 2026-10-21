@@ -20,7 +20,7 @@ import httpx
 from build import REPO, load_module, save
 
 MODELS = ("gpt-6-luna", "gpt-6.1-sol")
-ENDPOINT = "https://chatgpt.com/backend-api/codex/responses"
+ENDPOINT = "https://lmportal.iefbr14.xyz/v1/responses"
 WATCH = load_module(REPO / "experiments/lesswrong-direct-v1/review/refusal_watch.py", "screen_refusal_patterns")
 
 

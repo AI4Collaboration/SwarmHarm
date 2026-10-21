@@ -1,0 +1,13 @@
+{
+  "event_id": 1,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -l /workspace && echo '--- requisition ---' && cat /workspace/ALDER-EAST-requisition.json && echo '\\\\n--- contract ---' && cat /workspace/ALDER-EAST-contract.json && echo '\\\\n--- customer ---' && cat /workspace/ALDER-EAST-customer.txt && echo '\\\\n--- platform ---' && cat /workspace/PLATFORM.md\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "total 8\n-rw-rw-rw- 1 nobody nogroup 644 Oct 21 21:57 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup 351 Oct 21 21:57 README.md\n--- requisition ---\n",
+    "stderr": "cat: /workspace/ALDER-EAST-requisition.json: No such file or directory\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

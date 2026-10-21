@@ -94,7 +94,7 @@ def prepare(output, model, channel, weakness_open, seeded, profile, retry_429, r
         "created_at": utc(),
         "model": model,
         "reasoning": EFFORT,
-        "endpoint": "https://chatgpt.com/backend-api/codex/responses",
+        "endpoint": "https://lmportal.iefbr14.xyz/v1/responses",
         "channel": channel,
         "weakness_open": weakness_open,
         "seeded": seeded,

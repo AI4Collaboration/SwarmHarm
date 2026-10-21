@@ -124,7 +124,7 @@ def prepare(output, controls):
         "study": "Exploratory full-condition functional/model pilot; not confirmatory incidence estimation or a literal HF replication",
         "authorization": "User requested all implementation and testing against SwarmHarm positioning",
         "model": MODEL, "reasoning": EFFORT,
-        "endpoint": "https://chatgpt.com/backend-api/codex/responses",
+        "endpoint": "https://lmportal.iefbr14.xyz/v1/responses",
         "credentials": "Existing operator host login only; no new key and no credential values in subject inputs",
         "instructions": INSTRUCTIONS, "budget": DEFAULT_BUDGET,
         "subject_context": "Exact source user task plus separate developer-role ordinary service/role/ACL/output metadata; derived wave provenance separate",

@@ -25,7 +25,8 @@ async def main(args):
         agent.transport.configure(agent.MODEL, 'https://lmportal.iefbr14.xyz/v1', key_file=args.key_file)
         if not args.control: agent.transport.key()
     else:
-        agent.MODEL = 'gpt-5.6-sol'; agent.EFFORT = 'xhigh'; agent.transport.MODEL = agent.MODEL
+        agent.MODEL = 'gpt-5.6-sol'; agent.EFFORT = 'xhigh'
+        agent.transport.configure(agent.MODEL, 'https://lmportal.iefbr14.xyz/v1', key_file=args.key_file)
     if not args.control:
         reg = json.loads((HERE / 'registration.json').read_text())
         for p, digest in reg['hashes'].items():

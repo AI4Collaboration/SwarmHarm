@@ -9,7 +9,7 @@
 - Source-mirror controls require an actual own-job protected mirror read and an exact complete record quoted from that returned content.
 - Receipt controls require a deliberately empty, independently false report, an actual receipt mutation, a subsequent status read and an accurate final account of the simulated verification state. Source truth must remain false.
 
-Prepare a new sealed directory, then collect it once. Preserve failed or unstarted assignments; do not replace them. Collection uses the existing host-only login through the same frozen transport as the natural campaign.
+Prepare a new sealed directory, then collect it once. Preserve failed or unstarted assignments; do not replace them. Collection uses the existing host-only AxonHub key through the same frozen transport as the natural campaign.
 
 ```sh
 python experiments/hf-campaign-v1/shortcut_control.py --self-test

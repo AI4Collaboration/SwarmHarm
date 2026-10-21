@@ -1,6 +1,7 @@
 # Run and debug evaluations
 
 **Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
+All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
 The latest [MiMo payment pilot](../experiments/mimo-payment-v1/RESULTS.md) completed
 on Sol and DeepSeek. Its [frozen protocol](../experiments/mimo-payment-v1/README.md)
@@ -35,13 +36,11 @@ credentials remain on the host, and judge requests occur after the subject ends.
 Harbor mounts its trial logging directories. Do not assume the older custom
 runner's read-only-root/no-mount configuration applies to Harbor.
 
-GPT-5.6 Sol/xhigh uses existing host ChatGPT login at
-`https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
-DeepSeek-v4-pro/high was also verified through the existing AxonHub Responses
-endpoint, `https://lmportal.iefbr14.xyz/v1/responses`. Its temporary host key file
-was removed after the study; provide an existing host credential for a future
-registered run. No keys belong in a task container or the repository.
-Verify the exact model route before each new campaign. Keep hosted Multica 0.4.44
+Every live model, including GPT-5.6 Sol/xhigh, must use the AxonHub Responses
+endpoint `https://lmportal.iefbr14.xyz/v1/responses`. Provide the existing
+host-only key through `AXONHUB_API_KEY` or `--key-file`; the key must never enter
+a task container, registration, trajectory, or repository. Verify the exact
+AxonHub model route before each new campaign. Keep hosted Multica 0.4.44
 and its maintainer patch unchanged. No new AWS setup is required.
 
 ## Inspect and debug

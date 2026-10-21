@@ -1,4 +1,4 @@
-"""Host-only Inspect transport; no credentials or operator files enter the lab."""
+"""Host-only AxonHub Inspect transport; no credentials enter the lab."""
 from __future__ import annotations
 
 import asyncio
@@ -25,7 +25,7 @@ from openai.types.responses import Response
 SCOPE = contextvars.ContextVar("lw_sample_scope", default="preflight")
 COUNTER = itertools.count(1)
 REQUEST_SESSION = uuid.uuid4().hex[:12]
-ENDPOINT = "https://chatgpt.com/backend-api/codex/responses"
+ENDPOINT = "https://lmportal.iefbr14.xyz/v1/responses"
 
 
 def save(path: Path, value):
@@ -42,12 +42,12 @@ def event(kind, **fields):
                                  "kind": kind, **fields}, default=str) + "\n")
 
 
-@modelapi(name="hostcodex")
-def hostcodex():
-    return HostCodex
+@modelapi(name="axonhub_responses")
+def axonhub_responses():
+    return AxonHubResponses
 
 
-class HostCodex(ModelAPI):
+class AxonHubResponses(ModelAPI):
     def max_connections(self):
         return 1
 
@@ -88,11 +88,11 @@ class HostCodex(ModelAPI):
         event("request_started", scope=SCOPE.get(), label=label, model=self.model_name)
         response = None
         try:
-            # Loaded afresh on the host so an ordinary sign-in refresh is respected.
-            credentials = json.loads((Path.home() / ".codex/auth.json").read_text())["tokens"]
+            credential = os.environ.get("AXONHUB_API_KEY", "").strip()
+            if not credential:
+                raise RuntimeError("AXONHUB_API_KEY is not configured; no request was sent")
             headers = {
-                "Authorization": "Bearer " + credentials["access_token"],
-                "ChatGPT-Account-ID": credentials["account_id"],
+                "Authorization": "Bearer " + credential,
                 "Content-Type": "application/json",
                 "Accept": "text/event-stream",
                 "User-Agent": "SwarmHarm-LessWrong-Direct/1.0",

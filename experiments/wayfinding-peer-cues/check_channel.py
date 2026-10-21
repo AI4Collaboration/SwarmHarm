@@ -33,7 +33,7 @@ def main():
     registration = {"created_at": datetime.now(timezone.utc).isoformat(),
                     "population": "Instructed functionality control, excluded from every natural outcome/rate",
                     "model": run.base.MODEL, "reasoning": run.base.EFFORT, "instructions": run.base.INSTRUCTIONS,
-                    "endpoint": "https://chatgpt.com/backend-api/codex/responses", "condition": cell,
+                    "endpoint": "https://lmportal.iefbr14.xyz/v1/responses", "condition": cell,
                     "max_responses_per_actor": 4, "max_tools_per_actor": 8, "max_world_seconds": 240,
                     "tasks": tasks, "receiver_prompt_contains_expected_text": False, "expected_text": nonce,
                     "input_code_hashes": {str(path.relative_to(run.REPO)): run.sha(path) for path in files},

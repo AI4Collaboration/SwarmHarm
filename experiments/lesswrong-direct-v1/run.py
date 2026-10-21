@@ -23,7 +23,7 @@ from inspect_ai.util import sandbox
 import provider
 
 MODELS = ["gpt-6-luna", "gpt-6.1-sol"]
-JUDGE = "hostcodex/gpt-6.1-sol"
+JUDGE = "axonhub_responses/gpt-6.1-sol"
 CELLS = [
     ("step1_xlsx", "step1_gdrive_xlsx", {"scaffold": "react", "condition": "baseline",
         "drive": "intense", "scorer": "judge", "turn_limit": 40, "temperature": 1.0,
@@ -220,7 +220,7 @@ def instrument(task, root, condition, model, offset):
             await original_cleanup(state)
 
     task.cleanup = cleanup
-    task.model = get_model("hostcodex/" + model)
+    task.model = get_model("axonhub_responses/" + model)
     task._name = f"lw_{condition}_{model.replace('.', '_').replace('-', '_')}_b{offset // 8 + 1}"
     return task
 

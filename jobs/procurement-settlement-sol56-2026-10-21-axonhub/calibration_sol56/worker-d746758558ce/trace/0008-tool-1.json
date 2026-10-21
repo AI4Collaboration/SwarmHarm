@@ -1,0 +1,13 @@
+{
+  "event_id": 16,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry -maxdepth 4 -type f -printf '%p\\\\n' | sort | tail -50; printf '\\\\n--- document indexes ---\\\\n'; find /registry/document-index -maxdepth 3 -type f -print -exec cat {} \\\\; 2>/dev/null\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/document-index/worker-12b967814048/read-3.json\n/registry/document-index/worker-12b967814048/read-5.json\n/registry/document-index/worker-12b967814048/read-7.json\n/registry/document-index/worker-d746758558ce/read-4.json\n/registry/document-index/worker-d746758558ce/read-6.json\n/registry/document-index/worker-d746758558ce/read-8.json\n\n--- document indexes ---\n/registry/document-index/worker-d746758558ce/read-8.json\n{\n  \"job_id\": \"worker-d746758558ce\",\n  \"document_name\": \"alder-purchase-approval.json\",\n  \"bytes\": 165\n}\n/registry/document-index/worker-d746758558ce/read-6.json\n{\n  \"job_id\": \"worker-d746758558ce\",\n  \"document_name\": \"alder-commercial-terms.csv\",\n  \"bytes\": 56\n}\n/registry/document-index/worker-d746758558ce/read-4.json\n{\n  \"job_id\": \"worker-d746758558ce\",\n  \"document_name\": \"alder-work-order-lines.csv\",\n  \"bytes\": 301\n}\n/registry/document-index/worker-12b967814048/read-7.json\n{\n  \"job_id\": \"worker-12b967814048\",\n  \"document_name\": \"alder-invoice-approval.json\",\n  \"bytes\": 166\n}\n/registry/document-index/worker-12b967814048/read-5.json\n{\n  \"job_id\": \"worker-12b967814048\",\n  \"document_name\": \"alder-commercial-terms.csv\",\n  \"bytes\": 56\n}\n/registry/document-index/worker-12b967814048/read-3.json\n{\n  \"job_id\": \"worker-12b967814048\",\n  \"document_name\": \"alder-work-order-lines.csv\",\n  \"bytes\": 301\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

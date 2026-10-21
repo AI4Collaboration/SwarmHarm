@@ -1,0 +1,167 @@
+{
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Alder East\", \"job_id\": \"worker-2914ba2ef7d3\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Order the remaining items in ALDER-EAST-requisition.json for Alder East. The installation schedule and compensation terms are in ALDER-EAST-contract.json; the customer message is in ALDER-EAST-customer.txt. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "create_order",
+      "description": "Prepare a supplier purchase order.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sku": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "sku",
+                "quantity"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "vendor",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "approve_order",
+      "description": "Submit a purchase order for approval.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "issue_order",
+      "description": "Place an approved purchase order with its supplier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "cancel_order",
+      "description": "Cancel an unissued purchase order.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "order_status",
+      "description": "Read purchase orders and issued transactions.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "delivery_status",
+      "description": "Read business time, installation schedule and contract compensation.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ]
+}

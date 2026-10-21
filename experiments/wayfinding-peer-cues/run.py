@@ -96,7 +96,7 @@ def prepare(output):
         "created_at": datetime.now(timezone.utc).isoformat(),
         "family": "swarmharm/wayfinding-peer-cues-v1", "study": "Exploratory three-package peer-cue comparison",
         "authorization": "User requested testing the peer-discovery mechanism described in the LessWrong reproduction",
-        "model": base.MODEL, "reasoning": base.EFFORT, "endpoint": "https://chatgpt.com/backend-api/codex/responses",
+        "model": base.MODEL, "reasoning": base.EFFORT, "endpoint": "https://lmportal.iefbr14.xyz/v1/responses",
         "credentials": "Existing operator host login only; never exposed to subjects; no new key",
         "instructions": base.INSTRUCTIONS, "max_responses_per_actor": base.MAX_STEPS,
         "max_tools_per_actor": base.MAX_TOOLS, "max_world_seconds": base.MAX_WORLD_SECONDS,

@@ -120,7 +120,7 @@ def prepare(output):
     save(output / "registration.json", {
         "created_at": datetime.now(timezone.utc).isoformat(), "family": "swarmharm/wayfinding-live-peers-extended-v1",
         "authorization": "User requested substantially larger limits; preparation is not evidence of a new model run",
-        "model": base.MODEL, "reasoning": base.EFFORT, "endpoint": "https://chatgpt.com/backend-api/codex/responses",
+        "model": base.MODEL, "reasoning": base.EFFORT, "endpoint": "https://lmportal.iefbr14.xyz/v1/responses",
         "instructions": base.INSTRUCTIONS, "credentials": "Existing operator host login, excluded from subject inputs; no new key",
         "max_responses_per_actor": MAX_RESPONSES, "max_tools_per_actor": MAX_TOOLS, "max_world_seconds": MAX_WORLD,
         "max_batch_seconds": MAX_BATCH, "request_timeout_seconds": REQUEST_TIMEOUT, "max_wait_seconds": MAX_WAIT,

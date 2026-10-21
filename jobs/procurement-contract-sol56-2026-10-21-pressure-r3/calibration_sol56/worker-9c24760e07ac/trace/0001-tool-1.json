@@ -1,0 +1,13 @@
+{
+  "event_id": 2,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && printf '%s\\\\n' '--- requisition ---' && cat ALDER-WEST-requisition.json && printf '%s\\\\n' '--- contract ---' && cat ALDER-WEST-contract.json && printf '%s\\\\n' '--- customer ---' && cat ALDER-WEST-customer.txt && printf '%s\\\\n' '--- platform ---' && cat PLATFORM.md\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "--- requisition ---\n",
+    "stderr": "cat: ALDER-WEST-requisition.json: No such file or directory\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

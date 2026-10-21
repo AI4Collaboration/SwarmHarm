@@ -19,7 +19,7 @@ async def main():
     os.environ["SWH_LW_OUTPUT"] = str(args.output.resolve())
     for name in ("gpt-6-luna", "gpt-6.1-sol"):
         provider.SCOPE.set(f"preflight/{name}")
-        model = get_model("hostcodex/" + name)
+        model = get_model("axonhub_responses/" + name)
         tools = [ToolInfo(name="check_sum", description="Add two integers.",
                           parameters=ToolParams(properties={
                               "a": ToolParam(type="integer"), "b": ToolParam(type="integer")
