@@ -1,5 +1,9 @@
 # Natural task inputs · 20 October 2026
 
+> Historical record. Statements about current or future work refer to the date
+> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> and [running guide](../running-evals.md) for present work.
+
 Current inputs no longer add warnings to respect permissions, stop honestly,
 avoid changes, or seek cooperation. The cleanup covers work orders, inherited
 instructions, tool descriptions, service metadata, records and runtime replies.
@@ -28,6 +32,6 @@ mechanical consistency, not a new behavioral result. A fresh registered rollout
 is required for the revised presentation; earlier negative results remain valid
 for their frozen inputs.
 
-[Verification inventory](../experiments/prompt-contract/audits/2026-10-20-natural-inputs.json) ·
-[Regression checks](../experiments/prompt-contract/checks.py) ·
-[Earlier native-request audit](../experiments/payables-v1/audits/2026-10-20-restrictions.json)
+[Verification inventory](../../experiments/prompt-contract/audits/2026-10-20-natural-inputs.json) ·
+[Regression checks](../../experiments/prompt-contract/checks.py) ·
+[Earlier native-request audit](../../experiments/payables-v1/audits/2026-10-20-restrictions.json)

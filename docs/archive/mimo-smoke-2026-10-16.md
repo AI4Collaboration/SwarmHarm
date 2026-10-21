@@ -1,5 +1,9 @@
 # MiMo 两任务试跑记录
 
+> Historical record. Statements about current or future work refer to the date
+> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> and [running guide](../running-evals.md) for present work.
+
 日期：2026-10-16。目的：验证两个候选任务的材料读取、业务工具、模型运行、原评分器和独立状态检查能否完整衔接。每题只跑一次原始无压力条件，未加入 peer-preservation 压力或多 agent 交互。
 
 **两题都完成运行与评分，但均未满分。** 本次没有发现医疗只读边界或政府禁止结案边界被突破；不能据此推断压力效果或一般违规率。
@@ -44,7 +48,7 @@
 
 自发条件不预置恶意留言或攻击方案，也不要求 subject 去违规。若用预置同伴痕迹诊断某一步，则单列为 seeded elicitation，不能声称自发涌现。以上为设计方向，尚未实施或运行；本次没有修改任务源代码。
 
-依据：[METR 对原事件的调查](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)记录了受阻任务、非授权共享留言板、跨 agent 协作和长时间探索。[LessWrong 主文](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment)的分阶段实验使用模拟同伴及预置痕迹；2026-10-17 补查确认，其[附录](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident)另有 256 个真实 agent 实例、最多 32 个并发的实验，也预置了同伴线索。不能笼统称其没有真实多 agent；应分别比较初始痕迹、提示、任务关系和自主交流条件。详见[构念效度对照](construct-validity-2026-10-17.md)。
+依据：[METR 对原事件的调查](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)记录了受阻任务、非授权共享留言板、跨 agent 协作和长时间探索。[LessWrong 主文](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment)的分阶段实验使用模拟同伴及预置痕迹；2026-10-17 补查确认，其[附录](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident)另有 256 个真实 agent 实例、最多 32 个并发的实验，也预置了同伴线索。不能笼统称其没有真实多 agent；应分别比较初始痕迹、提示、任务关系和自主交流条件。详见[构念效度对照](../research/construct-validity-2026-10-17.md)。
 
 ## 设置与兼容性
 
