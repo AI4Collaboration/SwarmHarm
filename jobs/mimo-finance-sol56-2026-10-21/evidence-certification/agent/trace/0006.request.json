@@ -1,0 +1,1253 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Workspace: /work/workspace. The provided business-system tools access the local company records."
+    },
+    {
+      "role": "user",
+      "content": "Financial Controls is closing the evidence file for The Travelers Companies, Inc. activity-based expense allocation methodology. Review the Travelers FY2024 ABC Management Approval Memo and Travelers Expense Allocation Methodology and Controls, then reconcile them to the approval trail and evidence inventory in ServiceNow GRC case AMC-2025-0917. The approval history contains a non-final evidence review as well as the governing committee decision, and the inventory contains one superseded draft workbook that is no longer attached. Determine which action actually established the approved methodology, how the draft workbook must be treated, and why the fiscal year 2024 statutory and U.S. GAAP results remain unchanged.\n\nAppend one Evidence Certification in ServiceNow GRC for the affected workbook evidence. Record it as Accepted, attested by Michael T. Callahan on September 29, 2025, and use the certification notes to preserve the complete disposition and approval rationale. Do not revise the historical evidence record, the approval history, or any unrelated GRC data.\n\nAlso create a new concise DOCX control memo in the Governance and Approval folder. The memo should identify the evidence and source workbook, state its checksum and disposition, explain its retained follow-up role and why it cannot establish final approval, identify the authoritative approval body and date, state the activation period, and document the fiscal year 2024 no-restatement conclusion. Leave both existing governance documents unchanged.\n\nIn your final response, report the evidence record and condition you found, distinguish the non-final review from the authoritative approval, summarize the no-restatement basis, identify the ServiceNow certification you recorded, and name the new memo you created."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe8ccbe08191ab1033747ded8a50",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6MnDRzQWJcc9VbJXVxKhI8sne0TvXCGB8Gyf1WfAqtaJfnJnAwG5o2DzpjntQ-utWTU6YJ5KhQ22-FCLAZf7iOV83fjCsoys4LMDWP_u84iJS0Nqu0CTRQKfVCL6o3J02_jJGZK-911j7mo53CBLqqkfJ8OX8tBGXtpdHEHkQFLfvNOEu6YzS7OCdZyNW3LRiA5pY9mcF9Y9_0yIe0wjROSMa4_c7HOkgOVhf9l6byO7N0pNE9X5htDhToP0SLgXXTF6JHBX8f48ewqVLeO5jWz-01W1GzMtTwyhPDS66x1_Hduk8Oz-_CGU6b3qvie89_s5R8So3wUWcW0ceRwkMDOM-jECnwX0SNAIB1wqAzv1IbU6V_Oa5rE_18VqTYXoQdBjePF4-tjd_Dl-hdZB5aM6h4J5gVMtH5VQ8VX3LXJ-WBAI1anJ4vN4NzM4MB7k9PccC28sis6yHxp3LqalQVL87f7wGEIljZKjWdiWgTSR3ylea9uYm8k3VrEmWXFx2AUWQ96cMTn6xD4EnT89oklnbY8glDbfbwiZujJPtYtrcbBVk0ru_9SOX_Xfevy-3NrSg87vl5WgghPAodTtJoJaT6BFKhOJ-G_1rBoxYzciWTaIcwXmTCQJC6v80fdG1iLkvyWvVhBR8AOX8V4LvL0Qw6CyNJv9L_9asOvvoh-Mc-7FG2weDQGM6zFTiM3t8CNe-eWK9ng5o9IKMMAIi9jmwIpArgrARMxc0ye6Nqon_jXunfUvFTKP37jP9meoJ4J9WcBYnXEa3mT0nhzaFlPDpBBMCz24O20YxqCuDR7vdoGIchYH8bAzqBo8xj3yZJQ9NhDFiOY4p43ikthX7Vnuj4uAo6Rpl8QXqoxIkpagG6b-J8wEB07sNTxErpJV4ZQXGlLNoaFKJ5MbKw86rXyxIhKJADbep1fFXfN1Kk5aHIx_xsmvh9LfE7aLGUWh2SMmfdeo9UqbUxGYtggHqyXITz97-HixrMmSnuuvunqsmtMVa8GbSIZyQd7L7Y4B_uo8WkYjN1Qh9otankjXtb7eY2jey0AXZLtDMbrCn9hKYMxT1-ZrsunY2zni9MQkOoyrTczITKobgdSSF0yST2uTEATQ-3UcnISafKwwDnzrESpwDEGcF4htQ5Q-Ofg3TFPCdKoqpsQ_vrhvB5I8KuUayjcEhflC0F5E1HnTuHVV9r5iauMayytCPUcAHJCGt7MmB4AvmqGlwSrJI9rh-qzp_t3ieDGG-lSBLr8EAkW5GR5XoDqIIbToGfygOWa9_PWxrPUnszjXnuV62rxMcz4mdNqZJMcC4irPi-muPIb50Vnhg8PfVQPy99OOy8QxPcN_iVVdicKzgAu5Oma3A1aQLoNmPeksykx0F4MxfIamxJcARD1zgCcVVUxFRmKPGqUDxU5fNrhjJ4laHLjKe_wOYAiudrmPfYUWENGpP5LQK9uAecv--JpqSt9WEx938or_iCJ-mSXg_u9AeFd5RPJl81vJEyoTIZ8uYL2gxRAPfNxrKCZfBHpCA5pKFm4lhbG_Pgt-1Z_rTR-8sw3rErLf-OXpy2jxPLgb07EtC3ZnsERBBhshN1Pv1VdvNBNW2sShjz1_xEWDOXm3YI2LJk6ivceh1AE9NPRQq_XQfjW1cZghgWBzD3_3sQ8raCz5cFsG9Bn_A96mYUoAPe77JfNjmHpd-hTFNj5Wyu4gYtAqvwOCnhNvyKtGyuprxh35AT1nudeH1Jcs9eW3Lpq8fO-cV9Emhb6fNmRHOYcaJf01_XFXyyA8KrjMeSAxeFBY_EOLVAiiC21tSopk3WhEsxsNOviFF1Eb7BQSTY9VgNzKFICwolM27oVFCgPAlPo1_4Ly95sgQ7_o25Mi4lGl8cnPFfnkMz3lP3jQitgBnFzP4jAma7c4Aft916adSG4ItgHQS4loa8qCLQmOBKZ1S98__vcBltMPQcS23cYKZsVw8RLbZtHMa_u59B8h17tcTnblbEV4XRGTIrl8TlNYSVCkHAUEGpIZbsA3U-Sl8af5G-7Iry-aqrucxvaTjkITY2q5IZZ9SRamfFKNOn0_0aGTe8rXRhEMVKDJ9JwPIwnJWywdvp2RaBtHVn7Ec6umJAgLcGa23jDXFJnIsSjYmNuSX6F46R8eEb1PtVgpaVOKF4qJCrKTkzP3NrOZe9haEszigr1wZAGmPEOvqaC0v_Gc-MDhwhL1QpPRhFkoHqWUDL-D0nPJc6Rh-ZCwk-GUPt7l0ugXHDnMha566B66pDl8a2kZWLDhamJKrw5hoIOZ6SYkjP72TVan6Sj1pK28GodHgJU6QbIcW3FrDX179gfQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe8cee0c8191a5512be187aba57b",
+      "call_id": "call_2b6859d6903a43b5a2e39ab767cc8b00",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /work/workspace -maxdepth 4 -type f -printf '%P\\\\n' | sort\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_2b6859d6903a43b5a2e39ab767cc8b00",
+      "output": "{\"exit_code\": 0, \"stdout\": \"01_Source_Extracts/Travelers_FY2024_Claim_Activity_Detail.csv\\n01_Source_Extracts/Travelers_FY2024_Shared_Service_Usage_Detail.csv\\n01_Source_Extracts/cas_claim_department_work_measurement_systems.pdf\\n01_Source_Extracts/travelers_4q2024_financial_supplement.pdf\\n02_Allocation_Model/Travelers_FY2024_Activity_Based_Cost_Allocation_Model.xlsx\\n02_Allocation_Model/Travelers_FY2024_Allocation_Impact_Analysis.xlsx\\n02_Allocation_Model/cas_insurance_expense_exhibit_allocation.pdf\\n03_Governance_and_Approval/Travelers_Expense_Allocation_Methodology_and_Controls.docx\\n03_Governance_and_Approval/Travelers_FY2024_ABC_Management_Approval_Memo.docx\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe8fa0808191bf0a37caabb5145d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6PnQbYRauBNXs9i2WnOMG33V4bBW67Z3CNV69CZwuCvn6koikOKpVHWZj-HTy4lz0L39esYgxXOy4hFqRdXrf6fYx95zBNUjm2hd-XC-8L9ah1zGocMBJUo3GWIkZeRxKjZZM_QoV0QwJmtA89h3-bXpGrYmiGBlegQn3Ja3mUclO2zG4FN2FQSfLSxHZNJiOnvkLI0bkkAuesla60okRcXE4JzmIzYtWnv0pqr7lByyTndMlo2smUxKS2JpIQuBtQftncxXMlEYTZsTT_88pa8GebZKQpsAAs4QGfzhKGEsLtqRcmsYAThGCqpPtBlg7EBA4_jD8YDeh2Wk2XeK7yNG9odG2W2uKuaqAdhLUHanBD_BXU3ndVVdRwjqLjZbzbtzWYiS-XGMv8IimQlfsJwhytzULKovKoPMjSQAZTqCuMDLqIjsAVZgV2rDHQSpDhuNm40HKL3xFoShLbevrQJ500YroEOpIEHFSyo0nhQ-zIdpcRyP-h9zB30Ro78cDoUY_Z38dAcJsgaEGyo3uYGln2hNXxDP1F4Rg4uZhPlv3CcM39kmfyBvj_hiVeXN1O8pkDRKZ7cXyyuB_a7uQmaA767mocGbThqK7tbbVsqpEsXOkzE2DOqFx2PzOmQyuQMTTLAD1uV0QhDIiwT61Bb2Cd5f5s0eLjjVVeAqcvzIVopkMcn1GUH9caURiPbMOCoF2lX1dUMDkccZQz043ytM3LR8_7Vc9cAabWjQW434XAHC0JhwyGmtSDRxDSbfLr7l3zEQN7aP0vv5bVzcVoXW-CDP6cl-1zeW-txNomh0BraZKOaFME5hAVPTBt4382r_Brw4j2IyWC2GRgte9c49b_ElCu_BQLbKVQsLA0mhI0dOGKRHdWXC4cx01_D0WLakAqENj8h4jIGqMUpDQcu9e7lMSTINL3qzuGRAW-F62QFAKt0ga-6cufp36fk_xOp0cSfLa7fz2EMptszuSjUZ9ZtlyuE_Xbfvt8o68W6OZpSTM44aexQ97HcoAmlPFf7fUHQTmAVjM1D5siUUa0V43D9g6dSeSbfreiXSGzLa3QpIenCQWWMIpz4_SXES3jiUIUR1qZm8VjdoJzpFZTClZB0B5KKEz8fWvwgMIBZQuxQQu_PFb-hitbpbncUes4jLu-AbmMQsctA0yPNaIvBgyDVoQeDjhouTvQZxTMsJ4mTwMkzYmcReIVMxt0eTCUMlsfmyu0xm3ljq6GlRkFKtoMPZct8Zdfu1ixsxUsH26IwsT7XgkWCj34xwxNeCE1Lh7W_Vao3qa1BO_3IzIAiHJQqO3HLO-fpCW2Gl9YmhmMZLsb46ouYscvQDUnlIGrIefH607t67wCnMmyMwdZknR10SirWhUr8sMzAAvuXHSsqrtG15d3QRYB4s5WBlxlsqw5-IP_N_heSddFvFI-GjkdayGzc85URdur7bayf6ks7xXgSk30U0leR9BBgXztCWOzQ1Ci4LU_vTXFqBUqo8vQHdXsYP3KiXC7p0Nn8o-zuwrheSU2nDxvzV9RQ17NHNlzEMmgazRYUC7BR4xe-ofdnhvWdSH1dGnPWcv31oIEcrJqTjmJF3ixRsW4IGZYHIlq52sC5rlX6LYF9f_8bqykYX3VrIXySFiRG68UuBpMLNcTxBvzfR_yYLGwwXIDY3SHxAlniiAAOE3m73pbShMsrEjSKsmNI_Z4je59JNlnORKHDDXuK47pYIDpyTWzh2UDEKm0POBtwaZUXxvTEE37bDXQ3-mko6uSzcHepASpmDCNwnzwlzVPGqNANotpr3ZJn7SIzIFx2oYKaABKHDlLqksNcGd5clEegYBfW_LTylKWkYGWAHxuSSHnyZaaqVx2u82T_o1zsPr6XbQspvieLB1nko6OcjFwLnLkUbcAaq46vG6Hxj9uKcdUbfCF0cqzk7LUJz2qI24pUH2ds-vjS4djAcxNi3KMvmacg6CJbVzWi2TYvDkrK0v3s7vdzCgaGx3iuogVfzPPH1VCIx7STfMcjw7w21X2KtPS9SY="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe8fc0f88191a6d5c586c1087c5a",
+      "call_id": "call_9186fdfe947c4a79bd5a1ddc6b887bbe",
+      "name": "bash",
+      "arguments": "{\"command\":\"python - <<'PY'\\nfrom docx import Document\\nfrom pathlib import Path\\nfor p in Path('/work/workspace/03_Governance_and_Approval').glob('*.docx'):\\n    print('\\\\n'+'='*100+'\\\\n'+p.name)\\n    d=Document(p)\\n    for i,para in enumerate(d.paragraphs):\\n        t=para.text.strip()\\n        if t: print(f'P{i}: {t}')\\n    for ti,table in enumerate(d.tables):\\n        print(f'--TABLE {ti}--')\\n        for row in table.rows:\\n            print(' | '.join(c.text.replace('\\\\n',' / ').strip() for c in row.cells))\\nPY\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9186fdfe947c4a79bd5a1ddc6b887bbe",
+      "output": "{\"exit_code\": 0, \"stdout\": \"\\n====================================================================================================\\nTravelers_FY2024_ABC_Management_Approval_Memo.docx\\nP0: Decision Memorandum\\nP1: Activity-Based Shared Expense Allocation | Fiscal Year 2025 Management Reporting\\nP2: The Travelers Companies, Inc.\\nP3: Prepared by Elena M. Marquez, Financial Manager, Corporate Finance\\nP4: To: The Travelers Expense Allocation Steering Committee\\nP5: Review period: 2025-Q3 | Approval date: September 26, 2025\\nP6: Implementation: Fiscal year 2025 management reporting beginning with 2025-Q4\\nP7: 485 Lexington Avenue, New York, NY 10017\\nP8: Decision Memo v1.2\\nP10: Table of Contents\\nP12: Decision Requested\\nP13: Elena M. Marquez, Financial Manager, Corporate Finance, requests formal approval from The Travelers Expense Allocation Steering Committee for the fiscal year 2025 activity-based allocation methodology used in management reporting beginning with 2025-Q4.\\nP14: The decision owner is the Steering Committee, with David R. Holloway as executive sponsor and named review support from Priya S. Raman, Claims Finance, and Michael T. Callahan, Financial Controls. The effective reporting period is fiscal year 2025 management reporting beginning with 2025-Q4.\\nP15: The decision is management-reporting-only. Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated. Approval is requested through the signature block below and the formal approval record in this memo.\\nP16: Table 1. Requested decision, effective period, scope, and reporting treatment\\nP18: Approval signature block: Committee Chair ____________________  Date __________; Financial Manager Elena M. Marquez ____________________  Date __________; Controllership Representative ____________________  Date __________.\\nP19: Executive Summary\\nP20: The legacy allocation left claims-handling and shared-service costs insufficiently connected to the resources consumed by each operating segment. That distortion obscured the management view of performance even though consolidated expense was unchanged.\\nP21: The modeled unallocated expense pool is $1,286.597 million, comprising $742.684 million of shared Adjusting & Other claim-handling expense and $543.913 million of shared-service expense. The affected segments are Travelers Business Insurance, Travelers Bond & Specialty Insurance, and Travelers Personal Insurance.\\nP22: The principal driver changes are measured claim counts and handling hours for shared claim-handling activity, and in-force policy equivalents and measured system usage for shared services. The activity-based method better reflects consumed resources while preserving consolidated expense.\\nP23: Executive callout: the redesign reallocates expense among segments without changing the consolidated pool or the reported fiscal year 2024 consolidated combined ratio of 92.5%.\\nP24: See Table 5 for the complete three-segment result and the consolidated reconciliation.\\nP25: Scope, Reporting Context, and Source Basis\\nP26: The analysis covers the fiscal year ended December 31, 2024 and was prepared during the 2025-Q3 governance review. It is a management allocation study, not an amendment to the fiscal year 2024 Form 10-K, statutory statements, or published financial supplement.\\nP27: The reporting view follows Travelers Business Insurance, Travelers Bond & Specialty Insurance, and Travelers Personal Insurance, consistent with the segment structure used in Travelers public management reporting.\\nP28: Source documents and purpose:\\nP29: Travelers 2024 Form 10-K \\u2014 registrant, headquarters, and fiscal-year reporting basis.\\nP30: Travelers 4Q 2024 Financial Supplement \\u2014 segment reporting structure and consolidated combined ratio.\\nP31: CAS Claim Department Work Measurement Systems \\u2014 transaction-based work measurement terminology.\\nP32: CAS Insurance Expense Exhibit Allocation and NAIC Issue Paper No. 94 \\u2014 expense classification and allocation principles.\\nP33: External evidence links: Travelers 2024 Form 10-K | Travelers 4Q 2024 Financial Supplement | CAS work-measurement source\\nP34: NAIC classification note: Issue Paper No. 94 classifies allocable property-and-casualty expenses into loss adjustment expenses, investment expenses, and other underwriting expenses.\\nP35: CAS terminology note: the work-measurement paper distinguishes paid-to-paid, claim-reporting/closing-pattern, and transaction-based approaches for ULAE; this memo uses measured handling activity as a transaction-based control input.\\nP36: Allocation Policy Principles\\nP37: The policy hierarchy is deliberately conservative: direct identification comes first, activity-based allocation is limited to genuinely shared costs, and expenses solely attributable to one entity or operating segment remain with that incurring entity.\\nP38: 1. Specific identification to the incurring entity or operating segment.\\nP39: 2. Activity-based allocation only where costs are genuinely shared and validated activity is available.\\nP40: 3. Exclusion of expenses solely attributable to one entity or segment from shared pools.\\nP41: NAIC guidance generally favors specific identification. When direct identification is not feasible, pertinent factors such as employee-activity studies, salary ratios, premium ratios, or similar analyses may be used.\\nP42: The policy treatment is applied before any allocation run is approved: specific identification is retained, genuinely shared costs use validated drivers, and excluded categories remain outside the shared pools.\\nP43: Activity-Based Cost Model\\nP44: The model applies specific identification before shared allocation. Shared Adjusting & Other claim-handling expense is allocated using a 35% claim-count factor and a 65% measured handling-hour factor. Shared-service expense is allocated using a 55% in-force policy-equivalent factor and a 45% measured system-usage factor.\\nP45: Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools. Claims Finance owns claim activity; Shared Services Finance owns policy and system activity; FP&A owns the allocation run.\\nP46: Identify and remove specifically attributable expenses.\\nP47: Validate monthly activity extracts by segment and service tower.\\nP48: Apply approved driver weights to the eligible pool.\\nP49: Allocate each pool by validated activity share.\\nP50: Reconcile segment totals to the consolidated pool and certify exceptions.\\nP51: Table 4. Driver dictionary and pool eligibility\\nP53: Formula: segment allocation equals pool multiplied by validated activity share. The six pool-by-segment amounts in Table 5 sum exactly to the three segment totals, and the three segment totals sum exactly to $1,286.597 million.\\nP54: Fiscal Year 2024 Modeled Redistribution\\nP55: The locked fiscal year 2024 result is a total modeled unallocated expense pool of $1,286.597 million, comprising $742.684 million of shared Adjusting & Other claim-handling expense and $543.913 million of shared-service expense.\\nP56: The claim-handling pool is allocated as Travelers Business Insurance $330.214 million, Travelers Bond & Specialty Insurance $43.872 million, and Travelers Personal Insurance $368.598 million. The shared-service pool is allocated as Travelers Business Insurance $195.126 million, Travelers Bond & Specialty Insurance $45.997 million, and Travelers Personal Insurance $302.790 million.\\nP57: Table 6. Fiscal year 2024 activity-based allocation result; amounts in millions\\nP59: Reconciliation: $742.684 million plus $543.913 million equals $1,286.597 million; $525.340 million plus $89.869 million plus $671.388 million also equals $1,286.597 million.\\nP60: Legacy-to-Activity-Based Impact\\nP61: The activity-based result reallocates cost toward measured consumption. Travelers Business Insurance and Travelers Bond & Specialty Insurance receive lower allocated expense, while Travelers Personal Insurance receives higher allocated expense.\\nP62: For each segment, activity-based less legacy equals the activity-based allocation minus the legacy allocation. Legacy allocations and activity-based allocations each total $1,286.597 million, making the consolidated impact exactly $0.000 million.\\nP63: Table 7. Legacy-to-activity-based impact analysis; amounts in millions except basis points\\nP65: The expense-ratio effect equals the segment impact divided by the segment earned-premium denominator, multiplied by 10,000 and rounded to one decimal basis point; see Table 7.\\nP66: The reported segment analytics therefore show a (58.3) basis-point effect for Travelers Business Insurance, a (95.3) basis-point effect for Travelers Bond & Specialty Insurance, and a 96.4 basis-point effect for Travelers Personal Insurance.\\nP67: Management Reporting and Ratio Consequence\\nP68: Consolidated allocated expense remains $1,286.597 million. Because the redesign changes only the segment attribution of that fixed pool, the reported fiscal year 2024 consolidated combined ratio remains 92.5%.\\nP69: Conclusion: segment expense-ratio effects are management-reporting analytics and do not restate fiscal year 2024 statutory or U.S. GAAP reported results.\\nP70: Ratio interpretation: Travelers Business Insurance changes by (58.3) basis points, Travelers Bond & Specialty Insurance by (95.3) basis points, Travelers Personal Insurance by 96.4 basis points, while the consolidated combined ratio remains 92.5%; these are management analytics only.\\nP71: Control Framework\\nP72: The control framework combines preventive, detective, and governance controls. FP&A owns the methodology and allocation run; Claims Finance and Shared Services Finance own source activity; Controllership approves pool eligibility and reconciliations; Internal Audit evaluates design and operating effectiveness.\\nP73: Preventive controls restrict eligible expense categories, require specific identification before allocation, and lock approved driver weights. Detective controls compare source activity to prior periods, investigate anomalies, and reconcile allocated totals to the eligible pool.\\nP74: Governance controls require quarterly certification, annual driver refresh, documented change control, evidence retention, and escalation of unresolved exceptions before quarter-close reporting is released.\\nP75: The controller review note is to confirm that the system-usage feed excludes duplicate authentication events before the October driver freeze.\\nP76: Control matrix\\nP78: Minimum evidence retained: source extracts, pool eligibility review, driver approval, allocation run, reconciliation, exception log, quarterly certification, annual refresh memo, and change-control approval.\\nP79: Controller review note: confirm the system-usage feed excludes duplicate authentication events before final approval.\\nP80: FP&A evidence note: retain the parallel-run reconciliation with the quarter-close evidence package.\\nP81: Implementation Plan\\nP82: The approved implementation date is fiscal year 2025 management reporting beginning with 2025-Q4. The plan moves from governance approval through driver freeze, parallel run, close readiness, and a January 2026 post-implementation review.\\nP83: Final confirmation mark: October 15, 2025 driver freeze.\\nP84: The September 26, 2025 approval milestone authorizes the implementation sequence. October locks the drivers, November runs legacy and activity-based allocations in parallel, December confirms close readiness, and January 2026 evaluates outcomes and exceptions.\\nP85: Implementation milestones\\nP87: Readiness gates: approved methodology, frozen drivers, completed parallel run, reconciled quarter-close evidence, and documented no-restatement treatment for fiscal year 2024 statutory and U.S. GAAP results.\\nP88: Revision history: 2025 annual reporting after committee review.\\nP89: Risks, Exceptions, and Escalation\\nP90: Primary risks include incomplete claim-handler time capture, policy-equivalent definition drift, system-usage anomalies, manual overrides, late source feeds, and segment disputes. Each risk requires a visible trigger, a documented response, and an accountable escalation owner.\\nP91: Any expense identified as solely attributable must be removed from the shared pool before allocation. If a source feed is late or fails validation, the fallback is the last approved driver only for the affected period, with a documented true-up in the next available run.\\nP92: Escalation triggers include a source variance above 5.0%, an unapproved manual override, an unreconciled pool variance above $0.100 million, or a segment dispute unresolved within five business days.\\nP93: Risk and response register\\nP95: Pending validation note: the system-usage feed remains subject to controller confirmation that duplicate authentication events are excluded.\\nP96: Formal Approval\\nP97: On September 26, 2025, The Travelers Expense Allocation Steering Committee approved the activity-based methodology for fiscal year 2025 management reporting beginning with 2025-Q4.\\nP98: The approved hierarchy is: first, specific identification to the incurring entity or operating segment; second, claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; third, in-force policy equivalents and measured system usage for shared-service costs. Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools.\\nP99: Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated. Named approvers are David R. Holloway, Priya S. Raman, and Michael T. Callahan; Elena M. Marquez is the preparer.\\nP100: Committee Chair: David R. Holloway ____________________  Date __________\\nClaims Finance: Priya S. Raman ____________________  Date __________\\nFinancial Controls: Michael T. Callahan ____________________  Date __________\\nPreparer: Elena M. Marquez ____________________  Date __________\\nP101: Version marker: Decision Memo v1.2.\\nP103: Appendix A: Definitions and Driver Governance\\nP104: This appendix defines the controlled terms used by the allocation model and assigns a governance owner to each driver. Definitions are written for repeatable management reporting and audit review.\\nP105: Driver governance requires monthly source validation, quarterly certification, and an annual refresh of definitions, weights, and eligibility decisions.\\nP106: The controlled terms align to the NAIC Insurance Expense Exhibit framework and CAS work-measurement terminology.\\nP107: Changes to controlled terminology require Financial Controls approval before the next reporting activation.\\nP108: Controlled terminology\\nP110: Footnote references: NAIC Issue Paper No. 94 supports specific identification and pertinent-factor allocation; the CAS work-measurement paper supports measured transaction-based claim activity.\\nP111: Appendix B: Reconciliation and Sign-Off Checklist\\nP112: The checklist below is the minimum audit-ready evidence package for each activated allocation run. A completed item requires both a named owner and retained evidence.\\nP113: The package must be stored in the controlled methodology repository before quarter-close reporting is released.\\nP114: Repository reference: controlled methodology repository.\\nP115: Pool completeness confirmed.\\nP116: Excluded-cost review completed for Defense & Cost Containment, investment expenses, and solely attributable expenses.\\nP117: Segment allocation reconciled to $1,286.597 million.\\nP118: Earned-premium denominators validated.\\nP119: Expense-ratio recalculation reviewed.\\nP120: Consolidated tie-out confirms $0.000 million impact.\\nP121: Management approval evidence retained.\\nP122: Reporting-period activation confirmed for 2025-Q4.\\nP123: Sign-off evidence must include pool reconciliation, excluded-cost review, segment tie-out, premium denominator support, ratio bridge, signed decision memo, and the 2025-Q4 configuration record. Sign-off is complete when the committee signature, controller confirmation, and activation record are retained with quarter-close evidence.\\n--TABLE 0--\\nDecision attribute | Approved position | Effective date\\nMethodology approval | Approve activity-based allocation for shared Adjusting & Other claim-handling and shared-service expense. | September 26, 2025\\nDecision owner | The Travelers Expense Allocation Steering Committee. | September 26, 2025\\nPreparer | Elena M. Marquez, Financial Manager, Corporate Finance. | 2025-Q3\\nExecutive sponsor | David R. Holloway, Senior Vice President, Corporate Finance. | September 26, 2025\\nReporting activation | Fiscal year 2025 management reporting beginning with 2025-Q4. | 2025-Q4\\nHistorical treatment | No restatement of fiscal year 2024 statutory or U.S. GAAP reported results. | Fiscal year 2024\\nApproval evidence | Signed committee record and retained methodology package. | September 26, 2025\\n--TABLE 1--\\nExpense category | Pool status | Primary driver | Source owner | Refresh frequency\\nShared Adjusting & Other claim-handling | Included | 35% claim counts; 65% measured handling hours | Travelers Claims Finance | Monthly\\nShared-service expense | Included | 55% in-force policy equivalents; 45% measured system usage | Travelers Shared Services Finance | Monthly\\nDefense & Cost Containment | Excluded | Not applicable | Travelers Claims Finance | Quarterly\\nInvestment expenses | Excluded | Not applicable | Corporate Treasury | Monthly\\nSolely attributable costs | Specifically identified | Entity or segment ledger trace | Controllership | Monthly\\nClaim count | Driver input | Reported claims | Claims Operations Analytics | Monthly\\nMeasured handling hour | Driver input | Claim-handler hours | Claims Operations Analytics | Monthly\\nIn-force policy equivalent | Driver input | Policies in force | Policy Administration | Monthly\\nMeasured system usage | Driver input | Authenticated service transactions excluding duplicates | Shared Services Technology Finance | Monthly\\n--TABLE 2--\\nAllocation component | Travelers Business Insurance | Travelers Bond & Specialty Insurance | Travelers Personal Insurance | Consolidated total\\nClaim-handling pool | $330.214 | $43.872 | $368.598 | $742.684\\nShared-service pool | $195.126 | $45.997 | $302.790 | $543.913\\nTotal activity-based allocation | $525.340 | $89.869 | $671.388 | $1,286.597\\nReconciliation variance | $0.000 | $0.000 | $0.000 | $0.000\\nPool status | Included | Included | Included | Reconciled\\n--TABLE 3--\\nOperating segment | Legacy allocation | Activity-based allocation | Activity-based less legacy | Earned-premium denominator | Expense-ratio effect\\nTravelers Business Insurance | $646.912 | $525.340 | $(121.572) | $20,842.317 | (58.3)\\nTravelers Bond & Specialty Insurance | $129.674 | $89.869 | $(39.805) | $4,176.842 | (95.3)\\nTravelers Personal Insurance | $510.011 | $671.388 | $161.377 | $16,735.506 | 96.4\\nConsolidated total | $1,286.597 | $1,286.597 | $0.000 | $41,754.665 | 0.0\\n--TABLE 4--\\nControl ID | Control objective | Control activity | Control owner | Frequency | Evidence retained\\nEA-01 | Pool eligibility | Review specific identification and excluded-cost listing. | Controllership | Monthly | Signed eligibility checklist\\nEA-02 | Driver integrity | Validate claim counts and handling hours to source extracts. | Claims Finance | Monthly | Source-to-ledger reconciliation\\nEA-03 | Service activity | Validate policy equivalents and system usage by tower. | Shared Services Finance | Monthly | Usage validation report\\nEA-04 | Allocation accuracy | Reperform weighted driver allocation and reconcile to pool. | FP&A | Monthly | Allocation run and tie-out\\nEA-05 | Exception handling | Document overrides, late feeds, and temporary fallback. | FP&A | Event-driven | Exception log\\nEA-06 | Quarterly certification | Certify methodology, drivers, exclusions, and reconciliation. | Controllership | Quarterly | Quarterly certification\\nEA-07 | Annual refresh | Refresh driver definitions and weights. | FP&A and Claims Finance | Annual | Approved driver memo\\nEA-08 | Change control | Approve methodology or system changes before activation. | Financial Controls | Event-driven | Change ticket and approval\\nEA-09 | Independent review | Assess control design and evidence sufficiency. | Internal Audit | Annual | Internal audit workpaper\\n--TABLE 5--\\nMilestone | Owner | Target date | Exit evidence\\nCommittee approval | Expense Allocation Steering Committee | September 26, 2025 | Signed approval record\\nDriver definition and freeze | FP&A | October 15, 2025 | Approved driver package\\nParallel run | FP&A and Controllership | November 14, 2025 | Legacy-to-activity reconciliation\\nQuarter-close readiness | Controllership | December 12, 2025 | Close checklist and sign-off\\n2025-Q4 activation | Management Reporting Owners | December 31, 2025 | Activated reporting configuration\\nPost-implementation review | Internal Audit and FP&A | January 30, 2026 | Review memo and action log\\n--TABLE 6--\\nRisk | Trigger | Response | Escalation owner\\nIncomplete time capture | Handling-hour completeness below 98.0%. | Use validated claim-count component and document temporary fallback. | Claims Finance\\nPolicy-equivalent drift | Definition changes without approved change ticket. | Freeze affected driver and obtain Controllership review. | Shared Services Finance\\nSystem-usage anomaly | Duplicate or unexplained usage spike above 5.0%. | Exclude duplicates, reconcile service tower, and retain evidence. | Shared Services Technology Finance\\nManual override | Any override lacks approval or rationale. | Reject run until override is approved and logged. | FP&A\\nLate source feed | Monthly extract not received by close calendar date. | Apply last approved driver temporarily and true-up. | Controllership\\nSegment dispute | Issue remains open five business days. | Escalate to Steering Committee with impact analysis. | David R. Holloway\\n--TABLE 7--\\nTerm | Definition | Source or authority\\nAdjusting & Other | Remaining claim-adjusting work after Defense & Cost Containment is separately identified. | CAS work-measurement terminology; Claims Finance\\nDefense & Cost Containment | Defense, litigation, and medical-cost-containment work excluded from the shared claim-handling pool. | CAS work-measurement terminology\\nClaim count | Validated reported-claim activity used as a weighted shared claim-handling driver. | Claims Operations Analytics; monthly\\nMeasured handling hour | Validated claim-handler work time used as a weighted shared claim-handling driver. | Claims Operations Analytics; monthly\\nIn-force policy equivalent | Normalized policy volume used for shared-service allocation. | Policy Administration; monthly\\nMeasured system usage | Validated service transactions excluding duplicate authentication events. | Shared Services Technology Finance; monthly\\nShared pool | Eligible expense genuinely shared across operating segments after specific identification. | NAIC Issue Paper No. 94\\nSpecific identification | Assignment of expense to the entity or segment that incurred it. | NAIC Issue Paper No. 94\\nLegacy allocation | Prior allocation approach used for the fiscal year 2024 comparison. | Corporate Controllership\\nActivity-based allocation | Approved allocation using validated activity shares and weighted drivers. | Expense Allocation Steering Committee\\n\\n====================================================================================================\\nTravelers_Expense_Allocation_Methodology_and_Controls.docx\\nP0: THE TRAVELERS COMPANIES, INC.\\nP1: Expense Allocation Methodology\\nand Controls\\nP2: FIN-ALLOC-2025-04  |  Version 1.0  |  Internal finance governance standard\\nP4: Document control\\nP5: Prepared for controlled methodology repository | Last updated September 26, 2025\\nP7: Contents and navigation\\nP8: This controlled document defines the activity-based allocation hierarchy, eligible pools, driver calculations, control checkpoints, and evidence requirements for management reporting. Use the internal links below to navigate the methodology.\\nP9: 1. Executive summary\\nP10: 2. Scope, principles, and controlled terminology\\nP11: 3. Allocation hierarchy and decision rules\\nP12: 4. Driver methodology and calculations\\nP13: 5. FY2024 modeled result and reconciliation\\nP14: 6. Controls, exceptions, and evidence\\nP15: 7. Operating calendar and responsibilities\\nP16: Appendix A. Controlled terminology\\nP17: Appendix B. Reconciliation and sign-off checklist\\nP18: 1. Executive summary\\nP19: On September 26, 2025, The Travelers Expense Allocation Steering Committee approved the activity-based methodology for fiscal year 2025 management reporting beginning with 2025-Q4. The approved hierarchy is: first, specific identification to the incurring entity or operating segment; second, claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; third, in-force policy equivalents and measured system usage for shared-service costs. Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools. Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated.\\nP20: The methodology is designed to improve causal attribution of shared expenses without weakening the controlled ledger, statutory reporting, or segment governance framework. The allocation run begins with specific identification; only genuinely shared costs proceed into an eligible pool.\\nP21: Approved methodology at a glance\\nP22: 2. Scope, principles, and controlled terminology\\nP23: The standard applies to fiscal year 2025 management reporting activation beginning with 2025-Q4. It covers the shared Adjusting & Other claim-handling pool, the shared-service pool, allocation driver governance, exception handling, and management approval evidence.\\nP24: The standard does not use the allocation output to restate fiscal year 2024 statutory or U.S. GAAP reported results. The FY2024 values in this document are a controlled comparison and model baseline only.\\nP25: Specific identification takes precedence over any pooled allocation when the incurring entity or operating segment can be evidenced.\\nP26: A shared pool is eligible only after excluded costs and directly attributable costs are removed.\\nP27: Driver inputs must be validated, period-aligned, and retained with the run package.\\nP28: Rounding occurs only at the presentation layer; the controlled total must tie to the source pool to $0.001 million.\\nP29: Any methodology change requires Finance Controls approval before the next reporting activation.\\nP30: Scope boundaries\\nP31: 3. Allocation hierarchy and decision rules\\nP32: The decision tree below is the operating rule for every expense population. A reviewer must be able to trace each included amount to either a direct attribution record or an eligible shared-pool record.\\nP34: Decision rule matrix\\nP35: The approval hierarchy is deliberately sequential. A later-stage driver cannot override a reliable earlier-stage direct attribution decision.\\nP36: 4. Driver methodology and calculations\\nP37: The driver framework uses measured activity rather than a blanket premium or revenue allocation. The controlled model stores the driver numerator, denominator, calculated share, and allocated amount for each operating segment.\\nP38: Driver definitions and formulas\\nP39: Driver governance thresholds\\nP40: Primary source extract: cas_claim_department_work_measurement_systems.pdf\\nP41: Allocation exhibit: cas_insurance_expense_exhibit_allocation.pdf\\nP42: 5. FY2024 modeled result and reconciliation\\nP43: The following controlled baseline is used to explain the impact of the approved methodology. Amounts are shown in millions of U.S. dollars and are not a restatement of FY2024 reported results.\\nP44: Pool reconciliation\\nP45: Segment allocation bridge\\nP46: Legacy comparison and modeled impact\\nP47: 6. Controls, exceptions, and evidence\\nP48: The control framework is designed to prevent unsupported pooling, driver denominator errors, stale source data, and unapproved methodology changes. Each control owner retains evidence in the controlled methodology repository.\\nP49: Key controls\\nP50: Exception handling\\nP51: Financial reporting context: travelers_4q2024_financial_supplement.pdf\\nP52: Management approval reference: Travelers_FY2024_ABC_Management_Approval_Memo.docx\\nP53: 7. Operating calendar and responsibilities\\nP54: Operating calendar\\nP55: Responsibility matrix\\nP57: Appendix A. Controlled terminology\\nP58: The terms below are controlled for this methodology. Changes to definitions require Financial Controls approval before the next reporting activation.\\nP59: Controlled terminology\\nP60: CAS work-measurement reference: cas_claim_department_work_measurement_systems.pdf\\nP61: Appendix B. Reconciliation and sign-off checklist\\nP62: A completed checklist requires a named owner, date, and retained evidence. The package must be stored in the controlled methodology repository before quarter-close reporting is released.\\nP63: Minimum release checklist\\nP64: Document end | FIN-ALLOC-2025-04\\n--TABLE 0--\\n | APPROVAL STATUS / On September 26, 2025, The Travelers Expense Allocation Steering Committee approved the activity-based methodology for fiscal year 2025 management reporting beginning with 2025-Q4. The approved hierarchy is: first, specific identification to the incurring entity or operating segment; second, claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; third, in-force policy equivalents and measured system usage for shared-service costs. Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools. Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated.\\n--TABLE 1--\\nField | Controlled value\\nOwner | Enterprise Management Metrics / Finance Controls\\nApproved by | Travelers Expense Allocation Steering Committee\\nApproval date | September 26, 2025\\nEffective reporting activation | 2025-Q4 management reporting\\nPrior-period treatment | Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated.\\nClassification | Confidential - internal finance use\\n--TABLE 2--\\n | USE LIMITATION / This document is a management-reporting methodology and control standard. It does not amend statutory reporting, U.S. GAAP financial statements, legal entity accounting policies, or regulatory capital calculations.\\n--TABLE 3--\\nStage | Required treatment | Control outcome\\n1 | Specific identification to the incurring entity or operating segment. | No shared allocation where reliable direct attribution exists.\\n2 | Allocate shared Adjusting & Other claim-handling expense using validated claim counts and measured handling hours. | Driver denominator and activity source are retained for each run.\\n3 | Allocate shared-service expense using in-force policy equivalents and measured system usage. | Policy and usage drivers are reconciled to source extracts.\\n4 | Exclude Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment from shared pools. | Excluded-cost review is signed before reporting release.\\n--TABLE 4--\\n | CONTROLLED CONCLUSION / Total modeled unallocated expense pool: $1,286.597 million, comprising $742.684 million of shared Adjusting & Other claim-handling expense and $543.913 million of shared-service expense. The claim-handling pool is allocated as Travelers Business Insurance $330.214 million, Travelers Bond & Specialty Insurance $43.872 million, and Travelers Personal Insurance $368.598 million. The shared-service pool is allocated as Travelers Business Insurance $195.126 million, Travelers Bond & Specialty Insurance $45.997 million, and Travelers Personal Insurance $302.790 million. Total activity-based allocation is therefore Travelers Business Insurance $525.340 million, Travelers Bond & Specialty Insurance $89.869 million, and Travelers Personal Insurance $671.388 million.\\n--TABLE 5--\\nIncluded in this standard | Excluded from this standard\\nShared Adjusting & Other claim-handling costs | Defense & Cost Containment costs\\nShared-service costs | Investment expenses\\nClaim counts and measured handling hours | Expenses solely attributable to one entity or segment\\nIn-force policy equivalents and measured system usage | Statutory or U.S. GAAP restatement entries\\nEvidence, review, exception, and sign-off controls | Changes to the general ledger chart of accounts\\n--TABLE 6--\\nQuestion | Yes path | No path | Evidence\\nCan the expense be specifically identified? | Assign to incurring entity or operating segment. | Proceed to shared-pool eligibility review. | Ledger detail, contract, cost center, or source transaction.\\nIs the expense an excluded category? | Remove from shared pool and retain exclusion support. | Proceed to driver classification. | Exclusion review and controller sign-off.\\nIs the cost claim-handling activity? | Use claim counts and measured handling hours. | Use shared-service driver framework. | CAS work-measurement extract and driver bridge.\\nIs the driver complete and period aligned? | Calculate allocation share and reconcile to 100%. | Hold run and open exception. | Source owner attestation and denominator check.\\n--TABLE 7--\\nPool | Primary driver | Allocation share formula | Required validation\\nShared Adjusting & Other | Claim counts and measured handling hours | Segment weighted activity \\u00f7 total eligible weighted activity | No missing segment, duplicate claim event, or invalid handling-hour record.\\nShared service | In-force policy equivalents and measured system usage | Segment weighted service activity \\u00f7 total eligible weighted service activity | Policy period aligns to reporting period; usage excludes duplicate authentication events.\\nDirectly attributable expense | Specific identification | 100% to identified entity or segment | Source transaction and ownership evidence retained.\\n--TABLE 8--\\nCheck | Pass criterion | Escalation\\nCompleteness | All eligible segments have a non-blank numerator or documented zero. | Open exception before close.\\nDenominator | Denominator equals the sum of segment numerators after exclusions. | Controller review and rerun.\\nShare total | Rounded presentation shares reconcile to 100.000%. | Investigate rounding or missing segment.\\nPool tie-out | Allocated amount equals controlled pool to $0.001 million. | Hold release until resolved.\\nPeriod alignment | Source activity covers the same management reporting period. | Obtain source-owner attestation.\\n--TABLE 9--\\nPool component | Amount ($mm) | Reconciliation note\\nShared Adjusting & Other claim-handling expense | $742.684 | Eligible shared claim-handling pool after exclusions.\\nShared-service expense | $543.913 | Eligible shared-service pool after exclusions.\\nTotal modeled unallocated expense pool | $1,286.597 | 742.684 + 543.913 = 1,286.597.\\n--TABLE 10--\\nSegment | Claim handling ($mm) | Shared service ($mm) | Total activity-based ($mm)\\nTravelers Business Insurance | $330.214 | $195.126 | $525.340\\nTravelers Bond & Specialty Insurance | $43.872 | $45.997 | $89.869\\nTravelers Personal Insurance | $368.598 | $302.790 | $671.388\\nControlled total | $742.684 | $543.913 | $1,286.597\\n--TABLE 11--\\nSegment | Legacy allocation ($mm) | Activity-based ($mm) | Modeled impact ($mm)\\nTravelers Business Insurance | $646.912 | $525.340 | $(121.572)\\nTravelers Bond & Specialty Insurance | $129.674 | $89.869 | $(39.805)\\nTravelers Personal Insurance | $510.011 | $671.388 | $161.377\\nControlled total | $1,286.597 | $1,286.597 | $0.000\\n--TABLE 12--\\n | INTERPRETATION / The modeled impact is a reallocation of management-reporting expense attribution. It is not evidence of a change in consolidated expense, statutory results, or U.S. GAAP expense recognition.\\n--TABLE 13--\\nControl ID | Control activity | Owner | Frequency | Evidence retained\\nFIN-ALLOC-01 | Review direct-attribution and excluded-cost decisions before pool formation. | Corporate Controllership | Each run | Signed pool preparation checklist.\\nFIN-ALLOC-02 | Reconcile claim counts and measured handling hours to source extract. | Claims Finance | Each run | Source extract, denominator bridge, owner attestation.\\nFIN-ALLOC-03 | Reconcile policy equivalents and system usage to shared-service source files. | Shared Services Finance | Each run | Usage file, policy denominator, exception log.\\nFIN-ALLOC-04 | Confirm segment shares total 100.000% and allocated pool ties to controlled total. | Financial Controls | Each run | Model tie-out and reviewer sign-off.\\nFIN-ALLOC-05 | Approve methodology, driver, or scope changes before activation. | Steering Committee | As needed | Decision memo and configuration record.\\n--TABLE 14--\\nException | Required action | Release status\\nMissing or late driver file | Hold affected pool; obtain source owner attestation or approved fallback. | Not released until cleared.\\nDuplicate or invalid activity record | Remove duplicate, document adjustment, and rerun denominator check. | Conditional only with controller approval.\\nPool does not reconcile | Investigate exclusions, rounding, and segment completeness. | Blocked.\\nRequested methodology change | Prepare impact assessment and obtain Steering Committee approval. | Deferred to next activation unless approved.\\n--TABLE 15--\\nTiming | Activity | Primary owner | Output\\nBefore quarter close | Extract claim and shared-service driver files; confirm period alignment. | Claims Finance / Shared Services Finance | Versioned source extracts.\\nPre-close review | Complete exclusion review and build allocation model. | Corporate Controllership | Pool bridge and model output.\\nReviewer checkpoint | Review denominators, shares, tie-outs, and exceptions. | Financial Controls | Signed control checklist.\\nManagement approval | Approve release and record any conditions. | Expense Allocation Steering Committee | Approval evidence.\\nPost-release archive | Retain model, source files, sign-offs, and configuration record. | Finance Controls repository owner | Audit-ready run package.\\n--TABLE 16--\\nRole | Accountability\\nCorporate Controllership | Owns pool formation, exclusion review, model preparation, and controlled total reconciliation.\\nClaims Finance | Owns claim count and measured handling-hour source quality and attestation.\\nShared Services Finance | Owns policy-equivalent and system-usage source quality and attestation.\\nFinancial Controls | Performs independent review of calculations, exceptions, evidence, and release status.\\nExpense Allocation Steering Committee | Approves methodology, scope, and material changes.\\n--TABLE 17--\\nTerm | Definition | Source or authority\\nAdjusting & Other | Remaining claim-adjusting work after Defense & Cost Containment is separately identified. | CAS work-measurement terminology; Claims Finance\\nDefense & Cost Containment | Defense, litigation, and medical-cost-containment work excluded from the shared claim-handling pool. | CAS work-measurement terminology\\nClaim count | Validated reported-claim activity used as a weighted shared claim-handling driver. | Claims Operations Analytics; monthly\\nMeasured handling hour | Validated claim-handler work time used as a weighted driver. | Claims Operations Analytics; monthly\\nIn-force policy equivalent | Normalized policy volume used for shared-service allocation. | Policy Administration; monthly\\nMeasured system usage | Validated service transactions excluding duplicate authentication events. | Shared Services Technology Finance; monthly\\nShared pool | Eligible expense genuinely shared across operating segments after specific identification. | NAIC Issue Paper No. 94\\nSpecific identification | Assignment of expense to the entity or segment that incurred it. | NAIC Issue Paper No. 94\\nLegacy allocation | Prior allocation approach used for the fiscal year 2024 comparison. | Corporate Controllership\\nActivity-based allocation | Approved allocation using validated activity shares and weighted drivers. | Expense Allocation Steering Committee\\n--TABLE 18--\\nCheck ID | Required evidence | Owner | Status\\nCHK-01 | Pool completeness confirmed. | Assigned reviewer | Pending completion\\nCHK-02 | Excluded-cost review completed for Defense & Cost Containment, investment expenses, and solely attributable expenses. | Assigned reviewer | Pending completion\\nCHK-03 | Segment allocation reconciled to $1,286.597 million. | Assigned reviewer | Pending completion\\nCHK-04 | Claim-handling denominator validated. | Assigned reviewer | Pending completion\\nCHK-05 | Shared-service denominator validated. | Assigned reviewer | Pending completion\\nCHK-06 | Segment shares reconcile to 100.000%. | Assigned reviewer | Pending completion\\nCHK-07 | Consolidated tie-out confirms $0.000 million modeled impact. | Assigned reviewer | Pending completion\\nCHK-08 | Management approval evidence retained. | Assigned reviewer | Pending completion\\nCHK-09 | Reporting-period activation confirmed for 2025-Q4. | Assigned reviewer | Pending completion\\n--TABLE 19--\\n | RELEASE CONDITION / Sign-off is complete only when the committee decision, controller confirmation, allocation model, source extracts, exception log, and 2025-Q4 configuration record are retained together.\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe9359908191a4b46e4e345c60bf",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6T1mXjKhjDd9rtfsoZQ7S8jNGIWxqqB6FpY_koUf83ci6a8mC6rehUBHM8_nO6aUSFvXW51j08BJDwTCPQqt8SLx8enbHLaBXhERJyFDprlLYplNcl_7cU8hVchA8cSeoVomQ1HZqRru08Gc-0n5V0EhzvBXGptP9BGqHxW33X3rMt6MWJcVise8VcxCoH_FX-nnxyQ-mT3ufapEL4F8Zil1dpFtzbWHiaR0_UTfE5Zwl9XrFU6Eza6vbA34ipgLdc6nDfmaEiMsI_3m_D-6wyK0s85CZz9ItN3nr086KCtOG2xIKkHoper_UgP2aENVGV1IvBdiwNxi-igYUj2oKPOX-xLJ02_uaIPemZdUnpq8glPgS0d0Eoj0s7ZTY1Hpg1W83j2NulZmBZJ9cIAq9Vc2I43RbcEXFCtzwM6dssZ3u3VAJCB_p2UoxVswKcdLEBKQ-UN314gACUlgeLD0bdLITRgeFZCcHxTPJEcW3v7jOWxKspbEEF6iz3f9hmc4BLKZk8HTo8uLX7t2IXqH8BbswnvS3IdyagCP3fUao2yqHp1Mqy0PeqOsVTYr-hhKhJRP8s9QqT29a8s1vmhV8OZGInhA_gDWO-IQqZdO4Y9Jh0SErpHg6qTTjMQXWPJKCyVwcns9YLj85YlLiKDgQntooGTCwi_3RthuGVpkLBONjdhY2gIPjsyiCH3FXBX1cuLOAgolRuXBh3hR9kPzYxvX_iEw_EE-D-mKRw6uLAXzdwzdsDLY9TUxSnVZQ4NEyp-y4tttsEaqdmZkw1l1bUaccFADzCCXfpMFfA2-jf915e4oKPxb1a2XcdQ200BKQyqVxCDSk4tkYjUYRwbgArH3wMn9sQwGhH1cLAmsj7X3zJM3Icbx8T0aVK7w6brjyotXnMCXdNMxycISpboo413y53c5n5JvUt6I3jqPmSSv7bdQlpb7bumJY_Ov-zPj_yvJ35_s_QMDZyHvgDfPgSXcOxPcuqywdyCn4Ut_lZtjOOgTRnFc_Ni3uygiPscy2lKQzq31KYhOBaESRKVkc0XRisYKU6K-gVbykeZkTmgdn9Hi26LYRgcw0MBAViWSMgYcWcv3kLCLqDD0ldSalMIjiO6_a_IAW_rT9deVL7Y6l8U9s6xiN0fp9RQ4PgZIHCDNMCS7KSVlN1i2CEt2BnKXocVCJw6EIqHdn54-VsJjwlcgs1d1s_bbJ2_REkatzEsZ0OUFv1s8WTrkGEoW4Q8nhOKfCyeHwqfXRkM_wRjjrEl9mF9jpLNl4MIbwuNhe_2FTW4ruL1-g4xUbU2hzv0f1qmJp2NALqBWmRypOQJWvvqVuVpZREB3bsVD_Lo4YGiCdipIxiEh_yjE2Lv37uduSymBsqeEoqm-4CiaHmD6LEYGLvddwG7DOnxk8RZpQEZVTU8XWyNPqImyX5dyOG9N3nl_lj-ovnc56J77gjcPFsdlg2YRJ0wpDQTV5TjYlzBusA65V3ziQoVv5YL_bea77tCnpdHYBuiPuhsYEXjWoTUXRe9E4Ni_w6I6nV1HPPWGBSPSSO0_VsweU5aoo98yqmnqTuJidEX0Ln-C9dYSHIAGv3RnyXcVMFQCpb4FOiJZUQjryILugfLg8UmCrqtppnU7aDLjhIfXOwyFsAufA="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe937a34819187f5c9cd6f4d7aba",
+      "call_id": "call_9e246f2706874c8a8f91188a62d2f3cf",
+      "name": "m3_get_methodology_case",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9e246f2706874c8a8f91188a62d2f3cf",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"case\\\": {\\n    \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n    \\\"registrant_id\\\": \\\"TRV_INC\\\",\\n    \\\"headquarters_id\\\": \\\"LOC_NYC_485_LEX\\\",\\n    \\\"analysis_period_id\\\": \\\"PERIOD_FY2024\\\",\\n    \\\"review_period_id\\\": \\\"PERIOD_2025_Q3\\\",\\n    \\\"approval_body_id\\\": \\\"TRAVELERS_EXPENSE_ALLOCATION_STEERING_COMMITTEE\\\",\\n    \\\"methodology_name\\\": \\\"Activity-Based Cost Allocation Methodology for FY2025 Management Reporting\\\",\\n    \\\"decision_status\\\": \\\"Approved\\\",\\n    \\\"approval_date_id\\\": \\\"DATE_2025_09_26\\\",\\n    \\\"implementation_period_id\\\": \\\"PERIOD_2025_Q4\\\",\\n    \\\"external_framework_id\\\": \\\"NAIC_ISSUE_PAPER_94\\\",\\n    \\\"technical_reference_id\\\": \\\"CAS_ULAE_WORK_MEASUREMENT\\\",\\n    \\\"approved_hierarchy\\\": \\\"1 specific identification to incurring entity or operating segment; 2 claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; 3 in-force policy equivalents and measured system usage for shared-service costs\\\",\\n    \\\"shared_pool_inclusions\\\": \\\"Shared Adjusting & Other claim-handling costs; shared-service costs\\\",\\n    \\\"exclusion_scope\\\": \\\"Defense & Cost Containment; investment expenses; expenses solely attributable to one entity or operating segment\\\",\\n    \\\"no_restatement_flag\\\": 1,\\n    \\\"statutory_restated_flag\\\": 0,\\n    \\\"gaap_restated_flag\\\": 0,\\n    \\\"created_at\\\": \\\"2025-07-11T14:22:00Z\\\"\\n  }\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe95a0d88191b8ed16faca63e0d0",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6V5hy6hP7ZOKScy1QQlYzj0nGRFa2DKcAE7SptxEyuyLeIawqHP4VPb6VXVxGiimKZLBwP3k7sGZG3s0zNJuaEzXOBK7W8yvzy9N9OKfeUgHI4rFH9hmRLnTcePxAgbi0u_F7X-Gq7AOk5zaftT28bL1RKJT1rw6GZYnVJDELpp28II4KvXu0Ax_XYbkkKVCnZ53y-P_Z4qcIIKeeJTYxVBB-ZXBoFxxBQudidXyGei_jmUB4JuVbcJt-SWTJxRZStyOThyRmYoVnfVKiME2w1mibrFwQRkQYkFSdoz9uO3Mfzg6Mc7JAtevk9GMD8laBeocmgBaj8NFB7p_3dsGfSXmU-pjF4xjkv0LjZrkeQ_fS0om50-8GEi4IwjGqaCNdzSol7izHtv1MubGJRmWbEJimIDD4kMP_-7y5ICKFAXqUb0_cwgJrzNlwip1-WJadB6u27BJys2a0j6kytrI6w-MeMITscqwCifCioEGuqOVjxLfTJOdaCtn3aFtoo2YfSPFG3Ox7cb_PvVSZGMo_m7B3Hs1Qi4nJ2Kr8QSxRQOlzz3o4Q8fWiMKxGUvPQk7Gkdy4aiC5xTGW__b_oeWyAqHaag2goRdytyKwIo0gRskyMC3WyY5ABaNkEL83cS2U-YhZXwr0GqLZnemMDbpCXICPWyOTjcfdQXsrvogr7gHvMhxu788Rdmf4-fAP22dt_gcBZXtwechjG-1a0jTheCQzi8I0WxvOPYovqJ9tCAIIUF94soI51KRmRSC8yBG-HKnXKIPcwBKxP8dbgR5IYCi1FIk_QwFHuSLRxp_eaxXcfF8bXypXf5LECBCPFklTTjaMIYpVxNyjyqSnEjlVuwc25H5QciQnHAJ5aP56mF530E8wMwY7iTWFwqy9hl-qU7IaVxO2HPvmxFvvaka3pgSsYb-to8ulUWnO-XNPUr0JaJwvzRjiKkFbgFs5b3FMEcEPM-ZvYYAan8_8AfWcOnbgkhfG9GmoPmI0zKiL1dJU5tqlOhogm2i8WuqjqLFHfS6weUeCTYS-Z2sQyKvGVhBCoIEZ_0DKhU9I8zb8mn-X618AM-EKhUllOXdJWAQHw-lI6nOcS6R2Af9JkFzKvx85k8zFGzS_K8qFANCDCZeOg2rL_9NJltOMvKSj_1G-m5r2ebeYAjLn1RP2sskYWAPNPQmQnW33Uz3ULDqQZRG3ftPCMoOZu6FNzKWrmys5QmP_7XiT8leIv9TthobZtaO3jvxl8-Fi92jHOhbFlZkkDzb9ClAEHAuea3FiBcSZo63B0NUw6V5goQ7JH3ypojR2rsZU5v2iolzAkXU7HfnPHoW043wDSn9wIQAM0MeW3YfFh0HLaQd-jQI8xYN7f_A5POZ9oVJATpBr8-ENd-Oy9moklECRmWoGBMM6gFE7vJNprqoZJXD5bpEn2RzbUJqaADREGF7741AadrzRVXLER4O6TKDslD0t6AZIEiGncIOpCXwjOmIMhc4lLbl22R35wE1iEotNLERB_J5A_HJZJLcyuX_x9m9OKkKJ06KZclczbig3SeG9cF52WRiLjXvufvSQNfnuIcQLRhaJ76zjZ_4int40z0erac66Ei7cJyivdlgzb65dHaLED8xIXM3uzHxNSLnmu48uKKhiYXcnnOtZDjye0KHOD0pE2ICmD"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe95c0ac8191b0e3bf0c8b9d6c7f",
+      "call_id": "call_18dab5d119954cef8a518b2d02af2665",
+      "name": "m3_list_approval_actions",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"final_only\":false,\"page_size\":50}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_18dab5d119954cef8a518b2d02af2665",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"actions\\\": [\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0718-01\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"ELENA_M_MARQUEZ\\\",\\n      \\\"approver_name\\\": \\\"Elena M. Marquez\\\",\\n      \\\"approver_role\\\": \\\"Financial Manager\\\",\\n      \\\"action_date\\\": \\\"2025-07-18\\\",\\n      \\\"action_sequence\\\": 1,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Approved finance-methodology submission for functional review.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0804-02\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"DAVID_R_HOLLOWAY\\\",\\n      \\\"approver_name\\\": \\\"David R. Holloway\\\",\\n      \\\"approver_role\\\": \\\"Executive Sponsor\\\",\\n      \\\"action_date\\\": \\\"2025-08-04\\\",\\n      \\\"action_sequence\\\": 2,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Approved sponsor review subject to control evidence completion.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0812-03\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"PRIYA_S_RAMAN\\\",\\n      \\\"approver_name\\\": \\\"Priya S. Raman\\\",\\n      \\\"approver_role\\\": \\\"Claims Finance Lead\\\",\\n      \\\"action_date\\\": \\\"2025-08-12\\\",\\n      \\\"action_sequence\\\": 3,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Claims-count and measured-handling-hour drivers accepted for shared A&O costs.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0820-04\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"MICHAEL_T_CALLAHAN\\\",\\n      \\\"approver_name\\\": \\\"Michael T. Callahan\\\",\\n      \\\"approver_role\\\": \\\"Financial Controls Director\\\",\\n      \\\"action_date\\\": \\\"2025-08-20\\\",\\n      \\\"action_sequence\\\": 4,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Control design and evidence retention requirements accepted.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0902-05\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"ELENA_M_MARQUEZ\\\",\\n      \\\"approver_name\\\": \\\"Elena M. Marquez\\\",\\n      \\\"approver_role\\\": \\\"Financial Manager\\\",\\n      \\\"action_date\\\": \\\"2025-09-02\\\",\\n      \\\"action_sequence\\\": 5,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Management memo finalized for committee agenda.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0909-06\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"DAVID_R_HOLLOWAY\\\",\\n      \\\"approver_name\\\": \\\"David R. Holloway\\\",\\n      \\\"approver_role\\\": \\\"Executive Sponsor\\\",\\n      \\\"action_date\\\": \\\"2025-09-09\\\",\\n      \\\"action_sequence\\\": 6,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Executive sponsor confirmed implementation readiness.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0909-07\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"EARLY_EVIDENCE_REVIEW_PANEL\\\",\\n      \\\"approver_name\\\": \\\"Early Evidence Review Panel\\\",\\n      \\\"approver_role\\\": \\\"Evidence Review Panel\\\",\\n      \\\"action_date\\\": \\\"2025-09-09\\\",\\n      \\\"action_sequence\\\": 7,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Draft evidence review approval; does not establish the final methodology decision.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0926-08\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"TRAVELERS_EXPENSE_ALLOCATION_STEERING_COMMITTEE\\\",\\n      \\\"approver_name\\\": \\\"Travelers Expense Allocation Steering Committee\\\",\\n      \\\"approver_role\\\": \\\"Final Approval Committee\\\",\\n      \\\"action_date\\\": \\\"2025-09-26\\\",\\n      \\\"action_sequence\\\": 8,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 1,\\n      \\\"comments\\\": \\\"Final committee approval for FY2025 management reporting beginning 2025-Q4.\\\"\\n    }\\n  ],\\n  \\\"next_page_token\\\": null,\\n  \\\"total_count\\\": 8\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe9978ec8191ac5fc2ce4171920d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6ZBujNcrfW5WVSfBdIxAZeDfFiSXLdwa1lHXpkOOT2rCWSbUSvz6WQVckXQ4vHPZvjk0z9O4d9CCkqN02rMm07NJLtPvuGbHvL3s3AMSIAG2Mj8Wl3jEVYyTsCsMFcfTOr1BFxqoqkKar4of8xOcxQKD7yOXrSYA64S_So8IeBkWj-n3FEdXWuFdxE4dbwJrIXcyecdC_L1lfGloh9MvjCfBmAzmWKoQWMzKSlAGpGlYevPN0FokiBgc72SgfQMXs0-xXx6qBXnOTHbZAoPsZcuBTSMQetVWlJlRss8SB7CfRsirZiOfm4cShDUphdJmch6zubiIB4ulhYhYjMhaxzGgzV29ZGYMmjBue8MDq8hawCgXqKLFPaGi6HQ-lgT-t-zqrE4mpS9TlGIK6j_Z2n1qYgICgiNDuvvYgJjsxl2smIKGhPgPJejgxvkdXES73JWu-SUy_UL_JTSJmYFVyMLvNxHZzwrV4ZCV9_vXwF2pitpsDk13yltZIXKugYbth6VQwsaw30eVqOQZsE38CSB7Hhi9DGpzgMeS6VNPzoSoinpCWqty9V1l7PlrX22sTvElZXd6qQ_XaFNdO3bZnE_hzW6sMNShidLidSNEQrOlKW2QsAUUfc-GGyj17im7teiuLM9RNA1I2-9Tz5RFSAtGz19nj_1yJvMI8WCUUDXZ3qXR-e5HwflGE4klaQQneZib1Uk1qsUpbxyTOIhJ0CGD554M_xfJ4gWnbKJ4aIIBGXQLfqv4yc6LVdeC_OG3OccL8yXRrZ5fZtySCSIVOwSqZcSRhNcFqPRNBc8pN-e3JULS01kAH1HD8usc0ys3JL2lTKm9eqFCEQ7ccJVqskKCEVz0eKI28eI7TDWgUz_8U8FNX9IHuKc93kdGfszAwE9kCLV-rgV6NSPCkfnQbGk10OleHPuhVOLDzNa_cxYEEhRFWTOxexXthcBL600dhEKl0xypynFqbEDvJ8KQPASDggg6KiSTAqTOSKLlmeT_nmzwXxAOCFlfCPMAvY6u7ISf0nXMKbmgfvBBGqW9G47vtOq7z6yH_wlsj0tXBk6k7zyzAQmLEj0arjB_-FfZQlw2-vlv50HO9VU_4y-LKr7S4tsD9xKnLTYIlZblSvF3iID5jZ2_pwb-pxykBa93OBZMSUXOHR_xpMFz5OBh0dRV_KgreMA9v3dQVVQYG1RGLgP5ixNwn8R6IwtLLIcmnCYBNvLMZkNJCVqZJ92dWYXGTN3ZdDUfXmi5Jm7qMI3Q1UWCvWdbFL7th85tnZZo6G7SJHltvUWdJWEbqdRU19JV2sNuqOnw40zZOZcOE7sEkMgR15BU3DZgQ7o4hNmpPpApaLBI7ddDZuOTgyC0Uyt2JC4tDqWK3VVcPX9ep4EmnUYncDu96KwqVQKAcZdbMDYio-X6VqjUvD6PnqoPqf6a4wQ-uSZN7WOOXt_ClxkCthUZ7zo7ItyHobsg7y9tEz87uGwwGKY5VFLeVW7Yp5B1SKiKwOEB2oJDJKUhuO3WNpa38G2PvnTnjNwf0QNTkfvOF4myKWDoXMP-_8EahYWVng7vKR9oB1_s2dd7FxuHRXZ9gQ-L-bV1w7bnqDsTbq7KC0Z8EowkEb0cjkwXj0i5iebQvcrLmw5BUcVOqHOPFcJMpitIlu181WOyIWUIC4UYyWiyZrGtzJIivTUIbKXbTJc-WpS1VFo5OGwommk7o="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe9999948191a030ee9a65b2d299",
+      "call_id": "call_b9c0f5eba953478a9f6b30b835182d6a",
+      "name": "m3_search_control_evidence",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"page_size\":50}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b9c0f5eba953478a9f6b30b835182d6a",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"evidence\\\": [\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0715-008\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Workbook Test\\\",\\n      \\\"source_system\\\": \\\"ServiceNow GRC Attachment Repository\\\",\\n      \\\"source_reference\\\": \\\"WB-ALLOC-FY2025-DRAFT-v1.xlsx\\\",\\n      \\\"test_date\\\": \\\"2025-07-15\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Orphaned\\\",\\n      \\\"checksum_status\\\": \\\"Missing\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"WB-VERSION-FY2025-DRAFT-V1\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Superseded workbook version is no longer attached; audit follow-up item and invalid final approval evidence.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0910-001\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Controlled Export\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-EXP-2025Q3-ALLOC-001\\\",\\n      \\\"test_date\\\": \\\"2025-09-10\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"RECON-2025Q3-SHARED-001\\\",\\n      \\\"source_amount_wan\\\": 1248700,\\n      \\\"ledger_amount_wan\\\": 1248700,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Controlled expense-pool export received and checksum verified.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0911-002\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Ledger Reconciliation\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-LEDGER-2025Q3-POOL-001\\\",\\n      \\\"test_date\\\": \\\"2025-09-11\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"RECON-2025Q3-SHARED-001\\\",\\n      \\\"source_amount_wan\\\": 1250000,\\n      \\\"ledger_amount_wan\\\": 1248700,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Classification and timing difference of 1,300 wan resolved; ledger pool is the controlled accounting amount.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0912-003\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Controlled Export\\\",\\n      \\\"source_system\\\": \\\"Guidewire ClaimCenter\\\",\\n      \\\"source_reference\\\": \\\"GC-CLAIMS-2025Q3-EXPORT-017\\\",\\n      \\\"test_date\\\": \\\"2025-09-12\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"CLAIM-2025Q3-017\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Claim-count export used for driver testing; duplicate-resolution evidence attached.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0913-004\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Exclusion Test\\\",\\n      \\\"source_system\\\": \\\"Guidewire ClaimCenter\\\",\\n      \\\"source_reference\\\": \\\"GC-EXCLUSION-2025Q3-017\\\",\\n      \\\"test_date\\\": \\\"2025-09-13\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"CLAIM-2025Q3-017\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"Defense & Cost Containment excluded from shared pool\\\",\\n      \\\"notes\\\": \\\"Defense and cost-containment categories excluded from allocation-driver population.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0914-005\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Exclusion Test\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-INVESTMENT-2025Q3-004\\\",\\n      \\\"test_date\\\": \\\"2025-09-14\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"EXCL-2025Q3-INVESTMENT\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"Investment expenses excluded from shared pool\\\",\\n      \\\"notes\\\": \\\"Investment expense category tested and excluded.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0915-006\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"No-Restatement Evidence\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-FY2024-STAT-GAAP-NORESTATE-001\\\",\\n      \\\"test_date\\\": \\\"2025-09-15\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Out of Scope\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 0,\\n      \\\"reconciliation_key\\\": \\\"FY2024-NO-RESTATEMENT\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"FY2024 statutory reporting closed; no restatement\\\",\\n      \\\"notes\\\": \\\"Governance support only; excluded from 2025-Q4 management-allocation execution.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0916-007\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"No-Restatement Evidence\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-FY2024-USGAAP-NORESTATE-002\\\",\\n      \\\"test_date\\\": \\\"2025-09-16\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Out of Scope\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 0,\\n      \\\"reconciliation_key\\\": \\\"FY2024-NO-RESTATEMENT\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"FY2024 U.S. GAAP reporting closed; no restatement\\\",\\n      \\\"notes\\\": \\\"U.S. GAAP support retained for governance and explicitly out of execution scope.\\\"\\n    }\\n  ],\\n  \\\"next_page_token\\\": null,\\n  \\\"total_count\\\": 8\\n}\"}], \"isError\": false}}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command in /work/workspace. Python docx, openpyxl and pypdf are installed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "m0_aggregate_claim_drivers",
+      "description": "guidewire_claimcenter: Calculate segment driver shares and pool allocations.",
+      "parameters": {
+        "properties": {
+          "pool_id": {
+            "default": "POOL_AO_2024",
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": "2024-01-01",
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": "2024-12-31",
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "deduplicate": {
+            "default": true,
+            "title": "Deduplicate",
+            "type": "boolean"
+          },
+          "include_ineligible": {
+            "default": false,
+            "title": "Include Ineligible",
+            "type": "boolean"
+          }
+        },
+        "title": "aggregate_claim_driversArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_get_claim_handling_pools",
+      "description": "guidewire_claimcenter: Retrieve claim-handling pool controls and allocation settings.",
+      "parameters": {
+        "properties": {
+          "pool_id": {
+            "default": null,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "fiscal_year": {
+            "default": null,
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "allocation_scope": {
+            "default": null,
+            "title": "Allocation Scope",
+            "type": "string"
+          },
+          "eligible_only": {
+            "default": false,
+            "title": "Eligible Only",
+            "type": "boolean"
+          }
+        },
+        "title": "get_claim_handling_poolsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_get_operating_segments",
+      "description": "guidewire_claimcenter: Return canonical operating segments and source-label crosswalks.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "active_only": {
+            "default": true,
+            "title": "Active Only",
+            "type": "boolean"
+          }
+        },
+        "title": "get_operating_segmentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_resolve_claim_activity_duplicate",
+      "description": "guidewire_claimcenter: Validate and optionally record a duplicate-row resolution.",
+      "parameters": {
+        "properties": {
+          "claim_id": {
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "activity_date": {
+            "title": "Activity Date",
+            "type": "string"
+          },
+          "activity_code": {
+            "title": "Activity Code",
+            "type": "string"
+          },
+          "retained_export_row_id": {
+            "title": "Retained Export Row Id",
+            "type": "string"
+          },
+          "resolution_reason": {
+            "title": "Resolution Reason",
+            "type": "string"
+          },
+          "control_reference": {
+            "title": "Control Reference",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "claim_id",
+          "activity_date",
+          "activity_code",
+          "retained_export_row_id",
+          "resolution_reason",
+          "control_reference"
+        ],
+        "title": "resolve_claim_activity_duplicateArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_search_claim_activity",
+      "description": "guidewire_claimcenter: Search claim activity with business filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "claim_id": {
+            "default": null,
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": null,
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": null,
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "activity_code": {
+            "default": null,
+            "title": "Activity Code",
+            "type": "string"
+          },
+          "claim_adjustment_category_id": {
+            "default": null,
+            "title": "Claim Adjustment Category Id",
+            "type": "string"
+          },
+          "pool_id": {
+            "default": null,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "eligible_for_shared_pool": {
+            "default": null,
+            "title": "Eligible For Shared Pool",
+            "type": "boolean"
+          },
+          "export_batch_id": {
+            "default": null,
+            "title": "Export Batch Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          }
+        },
+        "title": "search_claim_activityArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_validate_claim_activity",
+      "description": "guidewire_claimcenter: Report actionable claim-activity data-quality exceptions.",
+      "parameters": {
+        "properties": {
+          "export_batch_id": {
+            "default": "GWCC_FY2024_CONTROLLED",
+            "title": "Export Batch Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": "2024-01-01",
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": "2024-12-31",
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "severity": {
+            "default": null,
+            "title": "Severity",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          }
+        },
+        "title": "validate_claim_activityArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_aggregate_policy_drivers",
+      "description": "policycenter_servicenow_usage: Aggregate annual policy-equivalent and system-usage drivers by segment.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "include_excluded": {
+            "default": false,
+            "title": "Include Excluded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "aggregate_policy_driversArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_calculate_service_allocation",
+      "description": "policycenter_servicenow_usage: Allocate an eligible service pool using independently normalized policy and usage drivers.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "rounding": {
+            "default": "nearest_usd",
+            "title": "Rounding",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "calculate_service_allocationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_get_shared_service_pools",
+      "description": "policycenter_servicenow_usage: Return controlled shared-service pool definitions with optional eligibility and scope filters.",
+      "parameters": {
+        "properties": {
+          "service_pool_id": {
+            "default": null,
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "eligible_for_abc": {
+            "default": null,
+            "title": "Eligible For Abc",
+            "type": "boolean"
+          },
+          "allocation_scope": {
+            "default": null,
+            "title": "Allocation Scope",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "get_shared_service_poolsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_get_usage_segments",
+      "description": "policycenter_servicenow_usage: Return the canonical PolicyCenter segment crosswalk with optional paging.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "get_usage_segmentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_search_monthly_usage",
+      "description": "policycenter_servicenow_usage: Return filtered monthly PolicyCenter and ServiceNow usage records in stable paginated order.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "service_pool_id": {
+            "default": null,
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "usage_month": {
+            "default": null,
+            "title": "Usage Month",
+            "type": "string"
+          },
+          "source_platform": {
+            "default": null,
+            "title": "Source Platform",
+            "type": "string"
+          },
+          "eligible_for_shared_pool": {
+            "default": null,
+            "title": "Eligible For Shared Pool",
+            "type": "boolean"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "search_monthly_usageArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_validate_usage_export",
+      "description": "policycenter_servicenow_usage: Run completeness, integrity, platform, crosswalk, and eligibility controls on a usage export.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "fail_on_excluded_platform": {
+            "default": false,
+            "title": "Fail On Excluded Platform",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "validate_usage_exportArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_calculate_segment_impact",
+      "description": "sap_travelers_corporate_ledger: Compare activity-based and legacy segment allocations against earned-premium denominators.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "title": "Analysis Period Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "denominator_status": {
+            "default": "APPROVED",
+            "title": "Denominator Status",
+            "type": "string"
+          },
+          "display_precision_bps": {
+            "default": 1,
+            "title": "Display Precision Bps",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "analysis_period_id"
+        ],
+        "title": "calculate_segment_impactArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_expense_pools",
+      "description": "sap_travelers_corporate_ledger: Query expense-pool controls and allocations using scoped filters and pagination.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "expense_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expense Category Id"
+          },
+          "shared_pool_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Shared Pool Flag"
+          },
+          "summary_row_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Summary Row Flag"
+          },
+          "row_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Row Type"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_expense_poolsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_legacy_allocations",
+      "description": "sap_travelers_corporate_ledger: Read legacy segment allocations for a selected period, segment, or basis.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "allocation_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allocation Basis"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_legacy_allocationsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_premium_denominators",
+      "description": "sap_travelers_corporate_ledger: Read segment earned-premium denominators by period, segment, and approval status.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "denominator_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Denominator Status"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_premium_denominatorsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_reconcile_activity_allocation",
+      "description": "sap_travelers_corporate_ledger: Rebuild activity-based AO and shared-service components and reconcile them to controls.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "title": "Analysis Period Id",
+            "type": "string"
+          },
+          "include_exclusions": {
+            "default": true,
+            "title": "Include Exclusions",
+            "type": "boolean"
+          },
+          "include_summary_control": {
+            "default": false,
+            "title": "Include Summary Control",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "analysis_period_id"
+        ],
+        "title": "reconcile_activity_allocationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_search_ledger_expense_detail",
+      "description": "sap_travelers_corporate_ledger: Search FY2024 ledger journal lines with business filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "document_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Number"
+          },
+          "posting_date_from": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Posting Date From"
+          },
+          "posting_date_to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Posting Date To"
+          },
+          "pool_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Pool Id"
+          },
+          "cost_center": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Center"
+          },
+          "expense_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expense Category Id"
+          },
+          "claim_adjustment_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claim Adjustment Category Id"
+          },
+          "shared_pool_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Shared Pool Flag"
+          },
+          "specific_identification_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Specific Identification Flag"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "search_ledger_expense_detailArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_check_approval_completeness",
+      "description": "servicenow_grc: Evaluate required approvals and the final committee decision for a case.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "required_parties": {
+            "default": null,
+            "items": {},
+            "title": "Required Parties",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "check_approval_completenessArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_get_methodology_case",
+      "description": "servicenow_grc: Retrieve a methodology case and its allocation governance attributes.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "get_methodology_caseArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_list_approval_actions",
+      "description": "servicenow_grc: List sequenced approval and review actions for one methodology case.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "final_only": {
+            "default": false,
+            "title": "Final Only",
+            "type": "boolean"
+          },
+          "decision": {
+            "default": null,
+            "title": "Decision",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "list_approval_actionsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_record_control_attestation",
+      "description": "servicenow_grc: Append a control attestation and immutable audit event to the GRC ledger.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "evidence_id": {
+            "default": null,
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "attestation_type": {
+            "title": "Attestation Type",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "attested_by_party_id": {
+            "title": "Attested By Party Id",
+            "type": "string"
+          },
+          "attested_by_name": {
+            "title": "Attested By Name",
+            "type": "string"
+          },
+          "attestation_date": {
+            "title": "Attestation Date",
+            "type": "string"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string"
+          },
+          "remediation_due_date": {
+            "default": null,
+            "title": "Remediation Due Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "attestation_type",
+          "status",
+          "attested_by_party_id",
+          "attested_by_name",
+          "attestation_date",
+          "notes"
+        ],
+        "title": "record_control_attestationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_search_control_evidence",
+      "description": "servicenow_grc: Search control evidence for a methodology case using governance filters.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "source_system": {
+            "default": null,
+            "title": "Source System",
+            "type": "string"
+          },
+          "evidence_type": {
+            "default": null,
+            "title": "Evidence Type",
+            "type": "string"
+          },
+          "control_status": {
+            "default": null,
+            "title": "Control Status",
+            "type": "string"
+          },
+          "in_scope_only": {
+            "default": false,
+            "title": "In Scope Only",
+            "type": "boolean"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "search_control_evidenceArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_summarize_control_results",
+      "description": "servicenow_grc: Aggregate evidence dispositions, checksums, scope, and source-system results.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "in_scope_only": {
+            "default": false,
+            "title": "In Scope Only",
+            "type": "boolean"
+          },
+          "source_system": {
+            "default": null,
+            "title": "Source System",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "summarize_control_resultsArguments",
+        "type": "object"
+      },
+      "strict": false
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

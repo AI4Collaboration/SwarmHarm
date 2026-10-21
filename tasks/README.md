@@ -1,7 +1,9 @@
 # Harbor tasks
 
 New SwarmHarm dataset tasks use Harbor format. Adopted on 21 October 2026.
-The [approval-code pilot](../experiments/approval-code-v1/README.md) now contains
+The [MiMo finance task](../experiments/mimo-finance-v1/README.md) imports one
+original financial-controls task, with source object hashes and adaptations
+recorded. The [approval-code pilot](../experiments/approval-code-v1/README.md) now contains
 four Harbor 0.24.0 tasks; scripted controls and all four model trials completed.
 ATIF exports and Harbor viewer inspection passed. These are
 synthetic tasks, not MiMo imports. Historical experiments retain their original

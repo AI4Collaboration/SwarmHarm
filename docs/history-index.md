@@ -1,5 +1,9 @@
 # Study history
 
+- **21 October 2026, latest:** [MiMo finance](../experiments/mimo-finance-v1/RESULTS.md):
+  one source task completed through Harbor; 0.7/1 original score, requested writes
+  verified, original records unchanged. No multi-agent condition.
+
 This index records outcomes, not active runs or launch instructions. Use the
 [current setup](../README.md#current-setup) and [running guide](running-evals.md)
 for new work. Different settings and reused fixtures must not be pooled into an

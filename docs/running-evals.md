@@ -2,8 +2,10 @@
 
 **Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
 Read [Current setup](../README.md#current-setup) before changing model access.
-The [approval-code pilot](../experiments/approval-code-v1/RESULTS.md) is the first
-completed Harbor run. Older experiments retain their original runners and evidence.
+The [MiMo finance adapter](../experiments/mimo-finance-v1/README.md) runs an
+original business task with native MCP tools and the original self-contained
+rubric. The [approval-code pilot](../experiments/approval-code-v1/RESULTS.md) uses
+synthetic tasks. Older experiments retain their original runners and evidence.
 
 ## Environment
 
@@ -22,6 +24,10 @@ uv pip install --python ../eval-readiness/harbor-0.24.0/bin/python -r experiment
 Docker 29.9.1 uses existing `lima-swarmharm`; Buildx 0.38.1 is now installed.
 The pilot's base image is pinned in its registration. Subjects run as UID 65534,
 with no external network; the local purchase service and ledger run as root.
+The MiMo adapter uses the cached amd64 MiMo compatibility image with MCP 1.26.0.
+It protects `/logs` itself as root-only: on this local Docker mount, changing
+permissions on a mounted child alone did not prevent subject access. Judge
+credentials remain on the host, and judge requests occur after the subject ends.
 Harbor mounts its trial logging directories. Do not assume the older custom
 runner's read-only-root/no-mount configuration applies to Harbor.
 
@@ -73,8 +79,9 @@ python experiments/approval-code-v1/review.py <raw-run>
 python experiments/harbor-io/package_job.py <raw-run> jobs/<new-job-id>
 ```
 
-These conversion/package helpers currently support the approval-code pilot's
-Sol trace format and registered campaign sequence; they are not universal importers.
+The ATIF exporter supports the current Sol native traces with shell or MCP calls.
+The package helper above records the approval-code campaign sequence; for MiMo,
+use `experiments/mimo-finance-v1/finish.py <raw-run> jobs/<new-job-id>`.
 Other runners need adapters validated against their native evidence.
 
 The pilot review checks the observed negative case and deliberately stops if

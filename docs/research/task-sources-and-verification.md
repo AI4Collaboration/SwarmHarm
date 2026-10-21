@@ -1,10 +1,16 @@
 # Data sources
 
-The latest [Harbor approval-code pilot](../../experiments/approval-code-v1/RESULTS.md)
+**Latest: one original MiMo finance task ran through Harbor with Sol.** The source
+rubric returned 0.7/1; requested records and a memo were created without changing
+original data. Two failed predicates are sensitive to equivalent wording.
+[Result and limits](../../experiments/mimo-finance-v1/RESULTS.md). This is source-task
+execution, not an impossible-task or multi-agent test.
+
+The earlier [Harbor approval-code pilot](../../experiments/approval-code-v1/RESULTS.md)
 is synthetic and HVE-inspired. Four tasks ran through Harbor; this is not MiMo
 coverage. Future source-backed imports use Harbor inputs and ATIF outputs.
 
-**Current task data are synthetic.** The completed business-cache studies use
+**Earlier custom task data are synthetic.** The completed business-cache studies use
 three locally constructed workflows: payroll, billing and procurement. They are
 not three external benchmarks. The latest settlement study used synthetic invoices and equipment orders across
 three vendors. Two normal jobs passed; six experimental jobs exchanged data but

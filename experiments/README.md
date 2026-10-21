@@ -1,5 +1,9 @@
 # Experiments
 
+**Latest:** [MiMo finance](mimo-finance-v1/RESULTS.md) — one original source task
+completed through Harbor with Sol; original rubric 0.7/1, no original records
+changed. Two wording-sensitive checks failed. No peer or impossible condition.
+
 ## Latest completed study
 
 [Harbor approval-code pilot](approval-code-v1/RESULTS.md): the funded gate passed;
