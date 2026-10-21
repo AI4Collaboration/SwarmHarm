@@ -1,0 +1,293 @@
+{
+  "id": "resp_079c92408fb59fd1016ad81c3d945c8191b7db70e207d59a28",
+  "object": "response",
+  "created_at": 1792547901,
+  "completed_at": 1792547902,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-6-luna",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c3e496481919557c79cd893926a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Bw-E1EdIm-UZKwS7jfpO6Z7NrhT2Ar2z0kNH3UmOKBFS21oXzY9Hf5QWLdKCF_9BScNBTWTk1xfiVWza9Nd31RXop2tm6h02HdZilAVS4KVRlnuuvUHQg6xJvic3hm6EDnQ8ybLiylNhQ41P80RBct_xo5vBI48bzHVbqYjsNv2jxWClRfvSTUOd_EPvr-R9xpaT8P57d4DY9araWSKknlyBonhSKKOe6ELzGmVsw1hn3loYBNb2jC2viZwyur8C-8wJn1rkWptKTCjkorxELTFY69VM5ZgJfnhpLM8YVzMCfJamMLhWf-2POL4_0aDOHLHvhC4ZZmX5stUZDwJ9A5yt5I2UpqVzbcJIKxImgJtamcPG0kBRbYOIdD82SFbxzsTCX9dgSD86JCDNSrdYMTpu_ng1GXoIFIMcIxRLkIswfEsdrzZXmLeSAoRusRZVY9_5B-y1-fYlJ7tnCCf0SpGPf_H8ruIC9V_WynU_H4u6JVgIN2h9qv10F8FQ1UV6vF1hlnW-i_ZCs5F1qRqcbwkHs9eQws6U__Q3loGMIeZuvhUZMEO8lW35uM0iLoAiCIuia68CI2zECDCvwuV6_j-4qyqwBvXtplFGG_tmEZiarHB7k8t-BlIKlS_fu4aSOivoVeT2BvK0m7_9mH_LQUGWmuvU8isZ5-GZqXqjIQyf3Cx0j9aKVSVJXVGlVuV4unYJAr7ObSLsT4N-5RS6UptLKRxpoE4a55bg8wReo-zHCLtqOl6kB23ydD9ThdJ4jcRJWKNE1MQeBB26eJFJG4x9tuiBOG7p_Kt9m_NiYX-vj7BYPjOnvDl10_eFv03bT7QP8b7Fj4Bc3G9JkVv0NaDjHwA1CBOghmVrjArHSdm1dFDOWLI7EM2kc3nSR7gtqbdaOeKB-Eowwo1THbJGAwaG7nk2LMhLfdrhLRXs2BgbR02FgVtcGwRcKSl7IChaupi8NX-jQ8O-GWNClkLZBCBhFsufyw7t-KYF48gpcVixZtl4joRgDu86XS65oNfajZPIZfg9ZOceq1wgkFQtYd6wQnmylPRsgUojrke4dMO61EQ-eIz2JvSV-dD37B0sU4dCqHn3Y1f16SI6nQsJ77AH5u9pDJiJ0H6bHtNATrgkpH3051on3rsSpl365tM4vRQajecxeAdwD2tN5Wgbx-RP9cQXdbWYvRYjwXVDPZvrFJ7k_54EGw8yQWHcj6anmBh6yEfkMgH_-ldQxu4mQg8EVJz_LaZe9cjyDzVqlBZOQZBCs_8hXkTS2KGJFpp0mkvLH5J4bv3O5Nt4wtJTVeH5BYJ_DDz88Ba5Hb7_EAxyLhJZI88bmQ4lecHf2sV_9EvzJ_FZ_RYFNn0F4fgFITu1GINdsNmQSWRvS-daD7qjUSl27jacMH63qukVCSe9uy3Olvx2jeQVN9jgIlav5V8X49lpfSmtkbBRIzQRsr4uwjWhJ4Uc19X85uzJNuJMbVHOuUcFixVFi8aKO8m6QWla4T15NnnCy6TyKWoZYPvSnJTswV352n_v1GmKgzDy0SV0d9KkPebPZHA-NIwqTeQuqoktIFKfj8T-KqMduKbI43FqkHRictXRDu5sx-EL96N_9JQAfJIoDi4gMgSBOnzLbd-6NLjmY8EKA6Ff5jZ4KY="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c3e63188191bd5e84aa10db97ef",
+      "call_id": "call_41c489e3604542dcbc83e272f8c13f29",
+      "name": "read_document",
+      "arguments": "{\"name\":\"riverton-lab-batch-17.csv\"}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "784adbdf-70a8-4c85-a35f-c57d9f23954b",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 855,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 40,
+    "output_tokens_details": {
+      "reasoning_tokens": 12
+    },
+    "total_tokens": 895,
+    "attribution": {
+      "items": {
+        "fc_079c92408fb59fd1016ad81c272bb08191b85304702edc5700": {
+          "input_tokens": 22,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_079c92408fb59fd1016ad81c2f7a4881919a85eb8c6af97fee": {
+          "input_tokens": 32,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_079c92408fb59fd1016ad81c37608c8191b5f8418e8d7577f6": {
+          "input_tokens": 39,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_079c92408fb59fd1016ad81c3d94ec81918d37a1a60073fc24": {
+          "input_tokens": 120,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 120,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_079c92408fb59fd1016ad81c3d94ec8191b5d6b950b6f1e4c5": {
+          "input_tokens": 260,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 260,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_079c92408fb59fd1016ad81c3d94ec8191b6c52927c772181f": {
+          "input_tokens": 31,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 31,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_079c92408fb59fd1016ad81c3e63188191bd5e84aa10db97ef": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 28
+        },
+        "msg_079c92408fb59fd1016ad81c3d94ec819180fe9e77c75c5153": {
+          "input_tokens": 47,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 47,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_079c92408fb59fd1016ad81c3d94ec8191ac3ad1402d0e7bfe": {
+          "input_tokens": 85,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 85,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_079c92408fb59fd1016ad81c270b2c81918438c9b195777f50": {
+          "input_tokens": 13,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_079c92408fb59fd1016ad81c2f5f44819193d0a7a3cc6ed703": {
+          "input_tokens": 19,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_079c92408fb59fd1016ad81c3e496481919557c79cd893926a": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 12
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 176,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

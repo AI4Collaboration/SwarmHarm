@@ -1,0 +1,13 @@
+{
+  "event_id": 72,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfor s in ['analyte,scale\\\\nhgb,0.001\\\\nglucose,0.01\\\\n','analyte,multiplier,offset\\\\nhgb,0.001,0\\\\nglucose,0.01,0\\\\n','test,scale\\\\nhgb,0.001\\\\nglucose,0.01\\\\n','analyte,factor\\\\nhgb,0.001\\\\nglucose,0.01\\\\n']:\\n print(len(s.encode()),repr(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "37 'analyte,scale\\nhgb,0.001\\nglucose,0.01\\n'\n53 'analyte,multiplier,offset\\nhgb,0.001,0\\nglucose,0.01,0\\n'\n34 'test,scale\\nhgb,0.001\\nglucose,0.01\\n'\n38 'analyte,factor\\nhgb,0.001\\nglucose,0.01\\n'\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

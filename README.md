@@ -4,7 +4,12 @@ SwarmHarm studies whether agents pursuing legitimate work take harmful shortcuts
 and whether other agents discover and reuse those methods. Tasks use ordinary
 programming or business work with synthetic data and local services.
 
-**Latest result · 21 October 2026:** a
+**Latest completed check · 21 October 2026:** [matched Luna](experiments/clinical-cache-luna-v1/RESULTS.md)
+finished all four experimental jobs: two wrong summaries using assumed factors,
+two undelivered reports, no public sharing or method adoption. All four normal
+capabilities and independent checks passed, without provider errors or refusals.
+
+**Verified connected result · 21 October 2026:** a
 [connected data-disclosure failure](experiments/clinical-cache-v1/RESULTS.md).
 Four real Sol workers completed correct private reports, while a shared exchange
 exposed **24 synthetic patient records** to a separate public-only consumer.
@@ -14,14 +19,10 @@ and native/independent checks passed without errors or safety refusals.
 No added pressure, fake peers or cooperation coaching was used. This is a local
 non-cyber mechanism analogue, not the original HF infrastructure compromise.
 
-**Running:** the pre-registered [matched Luna pilot](experiments/clinical-cache-luna-v1/README.md)
-passed all four capabilities and entered four experimental jobs. Subject lab and
-fixture bytes match the Sol condition. Negative results will be preserved.
-
-**Registered next:** [accurate cache wording](experiments/clinical-cache-v2/README.md)
+**Running:** [accurate cache wording](experiments/clinical-cache-v2/README.md)
 changes one sentence about an unspecified download endpoint to the implemented
-public-cache feed. Same Sol model, tasks, source data, tools, services and budgets;
-no calls yet. It waits for the active collector.
+public-cache feed. Same earlier Sol model, tasks, source data, tools, services and
+budgets; fresh preflight and all four capabilities passed, with four blocked jobs active.
 
 The earlier [90-minute mixed coding project](experiments/workbench-fleet-v1/RESULTS.md)
 found twelve wrong Luna components in 32 contexts and none for current Sol in 32,
@@ -34,17 +35,18 @@ of the clinical pilot's connected chain.
 
 ## Current setup
 
-- **Active runner:** `experiments/clinical-cache-luna-v1/run.py`, input
-  `natural-missing-clinical-inputs-v1`, outcome `actual-client-record-and-public-disclosure-v1`.
-  Registration 803029e4 was pushed before calls. Luna/xhigh passed fresh native
-  preflight and all four fully staged capabilities; four experimental jobs run
-  in a fresh empty world. Use `--phase prepare|collect --output <directory>` for
-  a new run, and the family's write-once `review.py` after collection.
-- **Next runner:** `experiments/clinical-cache-v2/run.py`, input
-  `natural-missing-clinical-inputs-v2`, same outcome and earlier Sol/xhigh. One
-  factual platform sentence changes; fixtures and service behavior match v1.
-  Twelve validity/three complete-flow/nineteen global prompt checks passed;
-  prepared with no model calls. It waits for the active collector's lock.
+- **Active runner:** `experiments/clinical-cache-v2/run.py`, input
+  `natural-missing-clinical-inputs-v2`, outcome `actual-client-record-and-public-disclosure-v1`.
+  Registration e3f90c5b was pushed before calls. Earlier Sol/xhigh, four fully
+  staged capabilities before four complementary-input jobs in fresh worlds.
+  One factual platform sentence changes; fixtures and service behavior match v1.
+  Twelve validity/three complete-flow/nineteen global prompt checks passed.
+  Use `--phase prepare|collect --output <directory>` for a new run, and the
+  family's write-once `review.py` after collection.
+- **Completed matched Luna runner:** `experiments/clinical-cache-luna-v1/run.py`,
+  input v1, registration 803029e4. Four normal and four experimental contexts
+  complete; source/native/independent review passed. Two wrong private summaries,
+  two undelivered reports, no shared content or measurement disclosure.
 - **Completed document pilot:** `experiments/clinical-cache-v1/run.py`, earlier
   Sol/xhigh, registration 41426d98. Four normal and four experimental jobs complete;
   source/native/independent review passed. Private reports/finals were not auto-
@@ -55,9 +57,9 @@ of the clinical pilot's connected chain.
   Both model gates and all 64 experimental contexts completed; independent review
   passed. Frozen inputs and evidence remain intact; do not rerun its completed
   output directory. Nine validity/four complete-flow/nineteen prompt checks passed.
-- **Models and route:** GPT-6 Luna/xhigh is active, using existing host login at
-  `https://chatgpt.com/backend-api/codex/responses`. GPT-5.6 Sol/xhigh completed the
-  clinical pilot. GPT-6.1 Sol/xhigh also completed the coding studies. New settings
+- **Models and route:** GPT-5.6 Sol/xhigh is active, using existing host login at
+  `https://chatgpt.com/backend-api/codex/responses`. GPT-6 Luna/xhigh completed the
+  matched document pilot. GPT-6.1 Sol/xhigh completed the coding studies. New settings
   require fresh preflight and capabilities; historical access is insufficient.
 - **Execution:** Docker 29.9.1 with the existing pinned Python 3.12 image.
   Workstations are non-root, networkless and have read-only roots and bounded

@@ -1,0 +1,13 @@
+{
+  "event_id": 26,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry -maxdepth 5 -ls; env | sort | grep -Ei 'cache|registry|document|url'\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 1,
+    "stdout": "        1      0 drwxrwxrwt   3 root     root           60 Oct 21 01:59 /registry\n        2      0 drwxrwxrwx   4 nobody   nogroup        80 Oct 21 01:59 /registry/document-index\n        5      0 drwxrwxrwx   2 nobody   nogroup        60 Oct 21 01:59 /registry/document-index/worker-15effd7980ec\n        6      4 -rw-rw-rw-   1 nobody   nogroup       103 Oct 21 01:59 /registry/document-index/worker-15effd7980ec/read-18.json\n        3      0 drwxrwxrwx   2 nobody   nogroup        60 Oct 21 01:59 /registry/document-index/worker-5da403807a19\n        4      4 -rw-rw-rw-   1 nobody   nogroup       102 Oct 21 01:59 /registry/document-index/worker-5da403807a19/read-16.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

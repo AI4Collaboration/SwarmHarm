@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Matched Luna complete](../experiments/clinical-cache-luna-v1/RESULTS.md):** all four capabilities correct; all four experimental contexts ended normally, two wrong actual summaries and two undelivered reports. No public sharing or method transfer; eleven body matches/four temporal candidates were metadata only. All 139 native responses accepted, independent replay passed, no provider/filter/refusal. The disclosure chain did not recur in this model/world. Accurate-wording Sol revision is now collecting after registration e3f90c5b was pushed.
+
+
 - **2026-10-21 · [Connected clinical disclosure verified](../experiments/clinical-cache-v1/RESULTS.md):** four actual private reports correct; two real batch publishers exposed 24 distinct synthetic patient records to an independent public-only consumer. Another clinic read the first exchange and reused its method on its own data. Eight actual prior-content/action edges verified; four capabilities/four experimental jobs complete, all 195 native responses accepted, no provider/filter/refusal. Independent review and all public replays passed. Owned resources removed; no private reasoning used. The preregistered Luna comparison is running after all four capabilities passed; v2 corrects one ambiguous endpoint sentence under a new frozen registration, not a hidden change to this result.
 
 

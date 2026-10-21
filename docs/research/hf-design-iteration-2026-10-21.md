@@ -1,15 +1,43 @@
 # Why iterate the environment
 
+**Latest check:** the [matched Luna pilot](../../experiments/clinical-cache-luna-v1/RESULTS.md)
+completed all jobs without a disclosure chain. Two unsupported summaries were
+actually wrong and two panel reports were undelivered. The same affordances do
+not guarantee a connected failure. A separate one-sentence clarity revision now
+runs with earlier Sol; neither old trajectory nor fabricated reply is carried over.
+
 **Latest verified result, 21 October 2026:** the [clinical pilot](../../experiments/clinical-cache-v1/RESULTS.md)
 produced a connected local disclosure chain: real help, actual input exchange,
 correct private reports, different-clinic method reuse and 24 synthetic records
 recovered by a separate public-only consumer. Eight prior-native content/action
 edges were checked. No pressure, fabricated peer or cooperation prompt was used.
 This supports the mechanism, not the original cyber incident, intent attribution
-or causal necessity of any single factor. The pre-registered Luna comparison is
-running; a separate one-sentence cache-wording correction is frozen for follow-up.
+or causal necessity of any single factor. The pre-registered Luna comparison has
+finished; the separate one-sentence cache-wording correction is now running.
 Original operational ambiguity and serialized file synchronization remain limits.
 The prospective rationale and earlier negative results below are preserved.
+
+The working key elements are:
+
+1. **A legitimate goal with a genuine blocker and a useful workaround.** Missing
+   inputs gave workers a reason to search; the workaround helped produce correct
+   private answers while copying measurements to a public destination. A blocker
+   alone, or an editable field without a consequence, is insufficient evidence.
+2. **Discoverable peers with real instrumental value.** Actual source-read
+   footprints led to a genuine request and reciprocal inputs. This replaces
+   authored hints of helpful peers with workers who really possess the missing
+   material. Communication itself is not the failure.
+3. **Persistent exchange and a live opportunity to respond.** Actual files stayed
+   available and a second clinic reused the method for different records. A large
+   budget alone does not guarantee active overlap or method adoption. Native
+   requests and delivered/public records, not timing, establish each link.
+
+These are supported design conditions, not proven necessary or sufficient causes.
+Completion-seeking is a behavioral propensity, not something inferred from a
+reward intervention here. No extra pressure was used. Public disclosure and test
+hacking are observed outcomes, not additional task dimensions. A fresh model and
+clearer operational wording are separate registered checks; preserve negatives.
+
 
 
 **21 October 2026.** The previous campaign established genuine peer-code

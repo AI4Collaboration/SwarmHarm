@@ -1,22 +1,21 @@
 # Run evaluations
 
 The [root README](../README.md#current-setup) records the active setup.
-The active [matched Luna document pilot](../experiments/clinical-cache-luna-v1/README.md)
-uses its own `run.py` and write-once `review.py`. Registration 803029e4 was pushed
-before calls; fresh preflight and all four capabilities passed. Four experimental
-jobs run in a fresh empty world. Let this collector finish without changing
+The active [accurate cache wording revision](../experiments/clinical-cache-v2/README.md)
+uses its own `run.py` and write-once `review.py`. Registration e3f90c5b was pushed
+before calls. Fresh earlier-Sol preflight and all four capabilities passed; four
+blocked-input jobs are active. One factual sentence changes; tasks, data, tools, service,
+model and budgets stay the same. Let this collector finish without changing
 inputs or starting another collector.
 
-The [earlier-Sol pilot](../experiments/clinical-cache-v1/RESULTS.md) completed and
-passed independent review: four correct reports, 24 publicly copied synthetic
-records, a verified different-clinic method reuse, and no provider errors/refusals.
-The [cache-wording revision](../experiments/clinical-cache-v2/README.md) is prepared
-with no calls. One factual sentence changes; tasks, data, tools, services, model
-and budgets stay the same. It must wait for the active collector's lock and pass
-fresh native preflight plus four capabilities. Use that family's runner/reviewer.
+The [matched Luna pilot](../experiments/clinical-cache-luna-v1/RESULTS.md) completed
+and passed independent review: two wrong summaries using assumed factors, two
+undelivered reports, no sharing or method adoption. The [earlier-Sol pilot](../experiments/clinical-cache-v1/RESULTS.md)
+also completed and passed review: four correct reports, 24 publicly copied
+synthetic records and verified different-clinic method reuse. Neither had provider
+errors or refusals. Preserve every outcome; do not rerun completed directories.
 All document families passed twelve validity, three scripted complete-flow and
-nineteen global prompt checks. Do not carry over peer files, rewrite completed
-outputs or omit negative results.
+nineteen global prompt checks. Do not carry over peer files or rewrite outputs.
 
 The [rolling mixed project](../experiments/workbench-fleet-v1/RESULTS.md) completed
 all 64 contexts: Luna 12 wrong releases in 32 contexts, current Sol none in 32.

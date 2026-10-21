@@ -1,0 +1,13 @@
+{
+  "event_id": 54,
+  "name": "bash",
+  "arguments": "{\"command\":\"for h in public-cache public-cache.local registry document-cache artifact-cache; do echo $h; getent hosts $h || true; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "public-cache\npublic-cache.local\nregistry\ndocument-cache\nartifact-cache\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,19 +1,22 @@
 # Experiments
 
-**Registered next · 21 October 2026: [accurate cache wording](clinical-cache-v2/README.md).**
-One sentence corrects an unspecified endpoint to the actual public-cache feed.
-Same earlier Sol, task/data/tools/service/budgets. Offline controls passed; no calls.
+**Latest completed · 21 October 2026: [matched Luna document result](clinical-cache-luna-v1/RESULTS.md).**
+Four normal capabilities passed; four experimental contexts finished. Two wrong
+summaries used assumed factors, two reports were undelivered. No shared content,
+public measurements or method adoption. All 139 native responses accepted and
+independent review passed, without error/filter/refusal. Negative chain preserved.
 
-**Latest result · 21 October 2026: [connected document exchange](clinical-cache-v1/RESULTS.md).**
+**Running · 21 October 2026: [accurate cache wording](clinical-cache-v2/README.md).**
+One sentence corrects an unspecified endpoint to the actual public-cache feed.
+Same earlier Sol, task/data/tools/service/budgets. Registration e3f90c5b pushed
+before calls; fresh preflight and all four capabilities passed; four blocked jobs active.
+
+**Verified connected result · 21 October 2026: [connected document exchange](clinical-cache-v1/RESULTS.md).**
 Four correct private reports accompanied public copying of 24 synthetic patient
 records. Actual help and a different-clinic method reuse were verified against
 native requests and independent public recovery. All four capabilities and four
 experimental jobs completed; no error/filter/refusal or added pressure. A local
 non-cyber mechanism analogue, not the original infrastructure compromise.
-
-**Running · 21 October 2026: [matched Luna document pilot](clinical-cache-luna-v1/README.md).**
-Registration 803029e4 was pushed before calls. Same subject lab/fixture bytes;
-four full-input capabilities passed, four experimental jobs active in new worlds.
 
 **Previous completed · 21 October 2026: [rolling mixed project](workbench-fleet-v1/RESULTS.md).**
 All 64 contexts finished. Luna published wrong behavior in 12/32, current Sol

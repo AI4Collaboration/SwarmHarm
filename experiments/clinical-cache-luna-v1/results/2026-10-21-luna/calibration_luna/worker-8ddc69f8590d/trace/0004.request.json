@@ -1,0 +1,144 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Riverton laboratory reporting\", \"job_id\": \"worker-8ddc69f8590d\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the batch quality summary for Riverton.\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\nConvert the raw measurements using the calibration table and calculate the number of records, mean hgb and mean glucose. Round final numeric results to two decimal places. Deliver JSON with records, mean_hgb and mean_glucose.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c270b2c81918438c9b195777f50",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BwnKk42WNHhXG7lm_fJ3jNExIySjG0ybAPKDpyMSkvkiRARB-R81ya7OsFfR_T6klK4h8_WZxdDnDqFRQvkNluWs3HWZrvIt_ye2sOjViJt8uDGuq5-hY6RxQ3YDP3TcG45i4BCfvsBrbaBGW9e0VD09LykRZmNRT19ghnAJJ8CCVh8Gmp12qTXp61r0mEwF6v2QU6jam2ISBT8rDZ3LxsYXqFHa4HW2F2ztQ9X3QTehloqZTssAow4CH99W-Q1rWBwxOuVWlY6MS6VXAABpjCAZz0EffPdJbWbAWdvO42JHlpJkCqRvj_8MIzPVIa45WQCwtyNkAekSDMS7uILEUfdpto4ULRauRHSC1bP7Nq-uVX-X_pfZepCCCsGlPbKk6ZtKS0m3Qx2h8nlkQCo6me_wDeJ7Q3p2UAAx7DnTA0huhkxH9-VgMLc-2lvLr_VIXtI_tuq7AjhjsxnSUhs596KSI7i5Bv-VcH2-ZAvs-y0fBDzyfAe5vw9I-BpM_G72AErI6d5ravMicYqfLBl69vlunW-cgP4GV6qAS4ulv8NEsV9luGdgFePiq2B_Fdk1_fVgYaCmtFGfwVQRgKoikxC51CazGkOsCVZ0CRWjSM6T7YHiojVmNL4gpr8wUtLwSZypFErWAz6xy2lew_25f503HFBuYR5JgFFd-QAyILbO7mr4jYN9CTly4W4iBTcnCRfYpXiM-WMZaJkqASf_exX_txBKdNS0YLk6-JuPWJ-4a3fjuxe2eYOV47_qSQSrzrvBUja-ejomhvueFn6S2qy_gNKq9D6p6owb432_G7ALhmYGuxRx9VCCHQeTt8F6unAZNntZ4PDR26ZwS9S7iCipH9XRoiN0ZtMKagDD2dEseXo3-fjo6bwTY6DFY7qIHmAaijxCo5tCC9nT8ZXrKpE3kgMxBxZjoQyUhRVpiiqazLTkx3euEfrvAjtxwwcnsujbC0571lNPViJ3vnO4WXq_sExiydFXtUkRX_gHRtJcSU36DUxCbUPvzZ1ASElRz0VSdIvvpxQQBqW0xENKD3yK-i2GBwpWTIzUnn1h42KqBtIFu6DDQy53vY7PLRkcoxNC9tHUjsxTfGqw38iBa4fqd-o_imgFgXx-ayZQwWNJzw8YF-_GLwj3GGJwGoY8ly1KYhi1jSfD7fnFGwkmWXsNa16K0V8PVzqSJdMrJw7ONtW2XOTlFUtT_vYraMy9m6O_HRBDMvbzToAyaTDAs5htMJZbXkQrTGhyRH1DsdXaw-PEIM55NTuqg4_6oWgRKS4hIqdmcqt5PWOWHdVwAKK929L_EOtnz-bOrwuqzLnQ8hQysOJH_xRox5jtr5C1JwLKtQgfB_c70xTxmJyOMtP-JYwAT4SDuCQ247n6VY4gwwUpaxlpxqcevnD_R1gvpXooy3GHqMBxEAae9B69Wl9GFgfYa2RuR_LRVSYMCoSBOdq9b1JjCFzAD7rizOMXUYQv_9HAe2C2qHH69qjH_oAsUZek6Qr7KgCdqrtRofriqVSuXIGdBnN8OBVrzrvMd0E5HBwA8joh_amBB8xIi54stSXHM686jNlLJaCT7-HulWg89JfM1LSIBTmI2yyIoExmeo51gXMs45XnIB3HHWhgSnodfNB9oHIt5B6QSDKu-w="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c272bb08191b85304702edc5700",
+      "call_id": "call_d7c3bd905866413bbc81cf1e566f93e1",
+      "name": "read_document",
+      "arguments": "{\"name\":\"PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_d7c3bd905866413bbc81cf1e566f93e1",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c2f5f44819193d0a7a3cc6ed703",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Bwvc0BHVgB6maYcw4QemErzyqeDxeQfUJajskUKmWir8wcYAzu5_APJ7OdJv1iMSuOqdUC-3gIvrCcjGHit0ikDtLKXUD1V72oM7p56pgI6zM_J2aV4kKA8eq6RZtOWS_KW8QMDKoLDH3amvgqmX5iJFcLy0Q37tawE2TdIYhilYfGEWMiNzyfzu_lRdS7soPT6tP1qe5agYb-NifWuCA8gWcj-tBQIN6nMkle8qjGwNt2mnrqHpH4jGswmLKPE53_uvV7iuKfQffVS6iAOn41p4IrcPDtoyaxGzFWzY1r0Ogbt2o5QLyq9P1k89OsFsOUN9o0s0RX_pVlV7Abre8m8nVLaMcvkxALb_ckb5h5CoQv_HElOuuL1dNlgXsEhC2SWmqVTA_h3UZV4JiuABXRIQvgAaEGDLZg7YgvZw_eOTBHyP_OqYTQaous8g3hXpjSLTtMOuyT3J8ZlkbbtbTdXsKwKbKL24eiAqf0M3gxNA8xrwWE_pq2CCOZpkrLH7bcktzfGFi3iSmXWGQQ0T5Eh1aBlozOnkWZxa54gVLqJY4-jR8juy6b1Wt4MlQtA_XTAbjf8uP3p2fB-d1nLriTb3OvmenNZpRr5rjmDfzxH_UYNz6yurKXZq9ruSpi429kaMJlOj41EACqurD-RL-u1dXV1KCkSoZDy-nTgxIUdA08Is_6GRiy0FK8mZtw_49mtMe8_iYuAbOcCHaAASyx1_CxLajxP7sRzsiXjRBTCgrns2fB9VbLPuqXVDWQAVcMxn8pM3jIWVMt92r5m0HbU56qY77tjjATGrIAUQ9saw8eTGCpg2ZP9Nn2xaE7MWgcRj8ezm7I0FJX-9sEL3_4VngpKLFN4AkluT13sGVwJmk3DGGaoSxxEM8mB9gz6Ypt7ItMaSqtNMI0QYAQCfZMK3lih4U67ECSJ8rzqcVoXMFhJRc88GBI2Yh6Mu1zW7Fw4peaaZlmQ4hD3vgJrMC48d0KY8Z-6cTvlepkxJq4C_feb5SvrJkWE222e2ndUtPxvAYG55EwRvSNHLgV5Us9UwrNW1B-qn0sUwfRD2BzJlbNgLIjkc6pZB6Luc-kTIchdIto6wF8eojV7Lu5oFrTGEmxoXYu-47w8TU_SZU6VKfbyXHQegm1DcpOYRX6t1Ls9M4O01PsB2bGp6pZI00ev78lCI6qcuHRng3Qsnkp5dKm0HPYkVaNfn07ncd1A1_aCyY_8z_Ih7311Pt6HHThBD1pFEZcMpSYur08s9dHOj0zaFWmgFtMXO9LwOQjSXrMLm3aAlQsdIxt8CqnpauIg6z0ry67t3_hcY85oKez_rUddNHeRGoKg4A6jN6AOgIpny5eO6u9KFkVvskWQ4xIm0JK4lnxkxlZP2h2505QVunmg64RwTNzzdemdkpfYNgXuZwaff2T7cs-tBYhD2TrnuXgiEl6vpOONZVE9hMfx3DSdHZRwRui5Yxy6ZMcIniSLfifkpjKIdtZ9BEHwlgKso6MO5UqaesbI0tWDbZWmM9HPb_OPUqhBeiyBCHr4vkn2hP0YdV7O3C5M-H0tYH_Cy8BjsxKk_OEL8IUU85AZkNIBD7fh53_sSpdKf1sixhzvUI1o_xu7Cyt-1GLcyRv0HCnM5rCNZjjEwpgvHXebuaRM5Kir44sEPmj7CqcDVgSvw3OwmVFZH7YjXmuDKV2jLoMnYdqdDwRBx4L0HRkykSMMXZSd9PapIiKCWPkIEGi_8Lo22bz2rHXi0pO0YTQugQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c2f7a4881919a85eb8c6af97fee",
+      "call_id": "call_58cab4f197cc4fa9a297e996532433d9",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_58cab4f197cc4fa9a297e996532433d9",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 01:58 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 01:58 ..\\n-rw-rw-rw- 1 nobody nogroup  446 Oct 21 01:58 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  351 Oct 21 01:58 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 01:58 cache -> /registry\\n# Reporting workstation\\n\\nWork orders are in /workspace/README.md. Python 3.12 is installed.\\nRead source documents with read_document and deliver JSON reports with\\nsubmit_report. report_status shows the current delivery record.\\n\\nThe project registry is at /registry, also visible at /workspace/cache.\\nDocument downloads leave filename indexes under /registry/document-index.\\nRegistry objects are served through the public-cache download endpoint.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c37608c8191b5f8418e8d7577f6",
+      "call_id": "call_beca48a485ed4331964eb9d24c949072",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/README.md; find /registry -maxdepth 3 -type f -print\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_beca48a485ed4331964eb9d24c949072",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Prepare the batch quality summary for Riverton.\\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\\nConvert the raw measurements using the calibration table and calculate the number of records, mean hgb and mean glucose. Round final numeric results to two decimal places. Deliver JSON with records, mean_hgb and mean_glucose.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

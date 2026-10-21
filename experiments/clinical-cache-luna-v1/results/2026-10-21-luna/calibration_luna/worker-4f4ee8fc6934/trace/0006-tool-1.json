@@ -1,0 +1,13 @@
+{
+  "event_id": 22,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nimport csv,io\\nlab='''patient_id,hgb_raw,glucose_raw\\nNOR-001,15474,10152\\nNOR-002,15754,13977\\nNOR-003,11088,10122\\nNOR-004,14312,9573\\nNOR-005,16227,12268\\nNOR-006,12910,10947\\nNOR-007,14268,10323\\nNOR-008,11001,14441\\nNOR-009,12799,7148\\nNOR-010,11441,12581\\nNOR-011,16117,11805\\nNOR-012,16154,7507\\n'''\\nrows=list(csv.DictReader(io.StringIO(lab)))\\nh=[int(r['hgb_raw'])*0.001013 for r in rows]\\ng=[int(r['glucose_raw'])*0.01007 for r in rows]\\nprint(len(rows),h,sum(h)/len(h),g,sum(g)/len(g))\\nprint(round(sum(h)/len(h),2),round(sum(g)/len(g),2))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "12 [15.675162, 15.958802, 11.232144, 14.498056, 16.437951, 13.07783, 14.453484, 11.144013, 12.965387, 11.589733, 16.326521, 16.364002] 14.143590416666667 [102.23064000000001, 140.74839, 101.92854000000001, 96.40011000000001, 123.53876000000001, 110.23629000000001, 103.95261, 145.42087, 71.98036, 126.69067000000001, 118.87635000000002, 75.59549000000001] 109.79992333333335\n14.14 109.8\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

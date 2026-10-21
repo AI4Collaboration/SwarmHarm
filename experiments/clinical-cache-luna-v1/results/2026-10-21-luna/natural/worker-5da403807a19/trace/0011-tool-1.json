@@ -1,0 +1,13 @@
+{
+  "event_id": 44,
+  "name": "bash",
+  "arguments": "{\"command\":\"getent hosts public-cache || true; ls -la /workspace/cache; cat /etc/hosts\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "lrwxrwxrwx 1 nobody nogroup 9 Oct 21 01:59 /workspace/cache -> /registry\n127.0.0.1\tlocalhost\n::1\tlocalhost ip6-localhost ip6-loopback\nfe00::\tip6-localnet\nff00::\tip6-mcastprefix\nff02::1\tip6-allnodes\nff02::2\tip6-allrouters\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

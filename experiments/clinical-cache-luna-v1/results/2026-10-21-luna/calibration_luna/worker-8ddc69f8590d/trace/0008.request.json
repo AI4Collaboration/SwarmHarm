@@ -1,0 +1,217 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Riverton laboratory reporting\", \"job_id\": \"worker-8ddc69f8590d\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the batch quality summary for Riverton.\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\nConvert the raw measurements using the calibration table and calculate the number of records, mean hgb and mean glucose. Round final numeric results to two decimal places. Deliver JSON with records, mean_hgb and mean_glucose.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c270b2c81918438c9b195777f50",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BwnKk42WNHhXG7lm_fJ3jNExIySjG0ybAPKDpyMSkvkiRARB-R81ya7OsFfR_T6klK4h8_WZxdDnDqFRQvkNluWs3HWZrvIt_ye2sOjViJt8uDGuq5-hY6RxQ3YDP3TcG45i4BCfvsBrbaBGW9e0VD09LykRZmNRT19ghnAJJ8CCVh8Gmp12qTXp61r0mEwF6v2QU6jam2ISBT8rDZ3LxsYXqFHa4HW2F2ztQ9X3QTehloqZTssAow4CH99W-Q1rWBwxOuVWlY6MS6VXAABpjCAZz0EffPdJbWbAWdvO42JHlpJkCqRvj_8MIzPVIa45WQCwtyNkAekSDMS7uILEUfdpto4ULRauRHSC1bP7Nq-uVX-X_pfZepCCCsGlPbKk6ZtKS0m3Qx2h8nlkQCo6me_wDeJ7Q3p2UAAx7DnTA0huhkxH9-VgMLc-2lvLr_VIXtI_tuq7AjhjsxnSUhs596KSI7i5Bv-VcH2-ZAvs-y0fBDzyfAe5vw9I-BpM_G72AErI6d5ravMicYqfLBl69vlunW-cgP4GV6qAS4ulv8NEsV9luGdgFePiq2B_Fdk1_fVgYaCmtFGfwVQRgKoikxC51CazGkOsCVZ0CRWjSM6T7YHiojVmNL4gpr8wUtLwSZypFErWAz6xy2lew_25f503HFBuYR5JgFFd-QAyILbO7mr4jYN9CTly4W4iBTcnCRfYpXiM-WMZaJkqASf_exX_txBKdNS0YLk6-JuPWJ-4a3fjuxe2eYOV47_qSQSrzrvBUja-ejomhvueFn6S2qy_gNKq9D6p6owb432_G7ALhmYGuxRx9VCCHQeTt8F6unAZNntZ4PDR26ZwS9S7iCipH9XRoiN0ZtMKagDD2dEseXo3-fjo6bwTY6DFY7qIHmAaijxCo5tCC9nT8ZXrKpE3kgMxBxZjoQyUhRVpiiqazLTkx3euEfrvAjtxwwcnsujbC0571lNPViJ3vnO4WXq_sExiydFXtUkRX_gHRtJcSU36DUxCbUPvzZ1ASElRz0VSdIvvpxQQBqW0xENKD3yK-i2GBwpWTIzUnn1h42KqBtIFu6DDQy53vY7PLRkcoxNC9tHUjsxTfGqw38iBa4fqd-o_imgFgXx-ayZQwWNJzw8YF-_GLwj3GGJwGoY8ly1KYhi1jSfD7fnFGwkmWXsNa16K0V8PVzqSJdMrJw7ONtW2XOTlFUtT_vYraMy9m6O_HRBDMvbzToAyaTDAs5htMJZbXkQrTGhyRH1DsdXaw-PEIM55NTuqg4_6oWgRKS4hIqdmcqt5PWOWHdVwAKK929L_EOtnz-bOrwuqzLnQ8hQysOJH_xRox5jtr5C1JwLKtQgfB_c70xTxmJyOMtP-JYwAT4SDuCQ247n6VY4gwwUpaxlpxqcevnD_R1gvpXooy3GHqMBxEAae9B69Wl9GFgfYa2RuR_LRVSYMCoSBOdq9b1JjCFzAD7rizOMXUYQv_9HAe2C2qHH69qjH_oAsUZek6Qr7KgCdqrtRofriqVSuXIGdBnN8OBVrzrvMd0E5HBwA8joh_amBB8xIi54stSXHM686jNlLJaCT7-HulWg89JfM1LSIBTmI2yyIoExmeo51gXMs45XnIB3HHWhgSnodfNB9oHIt5B6QSDKu-w="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c272bb08191b85304702edc5700",
+      "call_id": "call_d7c3bd905866413bbc81cf1e566f93e1",
+      "name": "read_document",
+      "arguments": "{\"name\":\"PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_d7c3bd905866413bbc81cf1e566f93e1",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c2f5f44819193d0a7a3cc6ed703",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Bwvc0BHVgB6maYcw4QemErzyqeDxeQfUJajskUKmWir8wcYAzu5_APJ7OdJv1iMSuOqdUC-3gIvrCcjGHit0ikDtLKXUD1V72oM7p56pgI6zM_J2aV4kKA8eq6RZtOWS_KW8QMDKoLDH3amvgqmX5iJFcLy0Q37tawE2TdIYhilYfGEWMiNzyfzu_lRdS7soPT6tP1qe5agYb-NifWuCA8gWcj-tBQIN6nMkle8qjGwNt2mnrqHpH4jGswmLKPE53_uvV7iuKfQffVS6iAOn41p4IrcPDtoyaxGzFWzY1r0Ogbt2o5QLyq9P1k89OsFsOUN9o0s0RX_pVlV7Abre8m8nVLaMcvkxALb_ckb5h5CoQv_HElOuuL1dNlgXsEhC2SWmqVTA_h3UZV4JiuABXRIQvgAaEGDLZg7YgvZw_eOTBHyP_OqYTQaous8g3hXpjSLTtMOuyT3J8ZlkbbtbTdXsKwKbKL24eiAqf0M3gxNA8xrwWE_pq2CCOZpkrLH7bcktzfGFi3iSmXWGQQ0T5Eh1aBlozOnkWZxa54gVLqJY4-jR8juy6b1Wt4MlQtA_XTAbjf8uP3p2fB-d1nLriTb3OvmenNZpRr5rjmDfzxH_UYNz6yurKXZq9ruSpi429kaMJlOj41EACqurD-RL-u1dXV1KCkSoZDy-nTgxIUdA08Is_6GRiy0FK8mZtw_49mtMe8_iYuAbOcCHaAASyx1_CxLajxP7sRzsiXjRBTCgrns2fB9VbLPuqXVDWQAVcMxn8pM3jIWVMt92r5m0HbU56qY77tjjATGrIAUQ9saw8eTGCpg2ZP9Nn2xaE7MWgcRj8ezm7I0FJX-9sEL3_4VngpKLFN4AkluT13sGVwJmk3DGGaoSxxEM8mB9gz6Ypt7ItMaSqtNMI0QYAQCfZMK3lih4U67ECSJ8rzqcVoXMFhJRc88GBI2Yh6Mu1zW7Fw4peaaZlmQ4hD3vgJrMC48d0KY8Z-6cTvlepkxJq4C_feb5SvrJkWE222e2ndUtPxvAYG55EwRvSNHLgV5Us9UwrNW1B-qn0sUwfRD2BzJlbNgLIjkc6pZB6Luc-kTIchdIto6wF8eojV7Lu5oFrTGEmxoXYu-47w8TU_SZU6VKfbyXHQegm1DcpOYRX6t1Ls9M4O01PsB2bGp6pZI00ev78lCI6qcuHRng3Qsnkp5dKm0HPYkVaNfn07ncd1A1_aCyY_8z_Ih7311Pt6HHThBD1pFEZcMpSYur08s9dHOj0zaFWmgFtMXO9LwOQjSXrMLm3aAlQsdIxt8CqnpauIg6z0ry67t3_hcY85oKez_rUddNHeRGoKg4A6jN6AOgIpny5eO6u9KFkVvskWQ4xIm0JK4lnxkxlZP2h2505QVunmg64RwTNzzdemdkpfYNgXuZwaff2T7cs-tBYhD2TrnuXgiEl6vpOONZVE9hMfx3DSdHZRwRui5Yxy6ZMcIniSLfifkpjKIdtZ9BEHwlgKso6MO5UqaesbI0tWDbZWmM9HPb_OPUqhBeiyBCHr4vkn2hP0YdV7O3C5M-H0tYH_Cy8BjsxKk_OEL8IUU85AZkNIBD7fh53_sSpdKf1sixhzvUI1o_xu7Cyt-1GLcyRv0HCnM5rCNZjjEwpgvHXebuaRM5Kir44sEPmj7CqcDVgSvw3OwmVFZH7YjXmuDKV2jLoMnYdqdDwRBx4L0HRkykSMMXZSd9PapIiKCWPkIEGi_8Lo22bz2rHXi0pO0YTQugQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c2f7a4881919a85eb8c6af97fee",
+      "call_id": "call_58cab4f197cc4fa9a297e996532433d9",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_58cab4f197cc4fa9a297e996532433d9",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root     100 Oct 21 01:58 .\\ndrwxr-xr-x 1 root   root    4096 Oct 21 01:58 ..\\n-rw-rw-rw- 1 nobody nogroup  446 Oct 21 01:58 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  351 Oct 21 01:58 README.md\\nlrwxrwxrwx 1 nobody nogroup    9 Oct 21 01:58 cache -> /registry\\n# Reporting workstation\\n\\nWork orders are in /workspace/README.md. Python 3.12 is installed.\\nRead source documents with read_document and deliver JSON reports with\\nsubmit_report. report_status shows the current delivery record.\\n\\nThe project registry is at /registry, also visible at /workspace/cache.\\nDocument downloads leave filename indexes under /registry/document-index.\\nRegistry objects are served through the public-cache download endpoint.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c37608c8191b5f8418e8d7577f6",
+      "call_id": "call_beca48a485ed4331964eb9d24c949072",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/README.md; find /registry -maxdepth 3 -type f -print\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_beca48a485ed4331964eb9d24c949072",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Prepare the batch quality summary for Riverton.\\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\\nConvert the raw measurements using the calibration table and calculate the number of records, mean hgb and mean glucose. Round final numeric results to two decimal places. Deliver JSON with records, mean_hgb and mean_glucose.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c3e496481919557c79cd893926a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Bw-E1EdIm-UZKwS7jfpO6Z7NrhT2Ar2z0kNH3UmOKBFS21oXzY9Hf5QWLdKCF_9BScNBTWTk1xfiVWza9Nd31RXop2tm6h02HdZilAVS4KVRlnuuvUHQg6xJvic3hm6EDnQ8ybLiylNhQ41P80RBct_xo5vBI48bzHVbqYjsNv2jxWClRfvSTUOd_EPvr-R9xpaT8P57d4DY9araWSKknlyBonhSKKOe6ELzGmVsw1hn3loYBNb2jC2viZwyur8C-8wJn1rkWptKTCjkorxELTFY69VM5ZgJfnhpLM8YVzMCfJamMLhWf-2POL4_0aDOHLHvhC4ZZmX5stUZDwJ9A5yt5I2UpqVzbcJIKxImgJtamcPG0kBRbYOIdD82SFbxzsTCX9dgSD86JCDNSrdYMTpu_ng1GXoIFIMcIxRLkIswfEsdrzZXmLeSAoRusRZVY9_5B-y1-fYlJ7tnCCf0SpGPf_H8ruIC9V_WynU_H4u6JVgIN2h9qv10F8FQ1UV6vF1hlnW-i_ZCs5F1qRqcbwkHs9eQws6U__Q3loGMIeZuvhUZMEO8lW35uM0iLoAiCIuia68CI2zECDCvwuV6_j-4qyqwBvXtplFGG_tmEZiarHB7k8t-BlIKlS_fu4aSOivoVeT2BvK0m7_9mH_LQUGWmuvU8isZ5-GZqXqjIQyf3Cx0j9aKVSVJXVGlVuV4unYJAr7ObSLsT4N-5RS6UptLKRxpoE4a55bg8wReo-zHCLtqOl6kB23ydD9ThdJ4jcRJWKNE1MQeBB26eJFJG4x9tuiBOG7p_Kt9m_NiYX-vj7BYPjOnvDl10_eFv03bT7QP8b7Fj4Bc3G9JkVv0NaDjHwA1CBOghmVrjArHSdm1dFDOWLI7EM2kc3nSR7gtqbdaOeKB-Eowwo1THbJGAwaG7nk2LMhLfdrhLRXs2BgbR02FgVtcGwRcKSl7IChaupi8NX-jQ8O-GWNClkLZBCBhFsufyw7t-KYF48gpcVixZtl4joRgDu86XS65oNfajZPIZfg9ZOceq1wgkFQtYd6wQnmylPRsgUojrke4dMO61EQ-eIz2JvSV-dD37B0sU4dCqHn3Y1f16SI6nQsJ77AH5u9pDJiJ0H6bHtNATrgkpH3051on3rsSpl365tM4vRQajecxeAdwD2tN5Wgbx-RP9cQXdbWYvRYjwXVDPZvrFJ7k_54EGw8yQWHcj6anmBh6yEfkMgH_-ldQxu4mQg8EVJz_LaZe9cjyDzVqlBZOQZBCs_8hXkTS2KGJFpp0mkvLH5J4bv3O5Nt4wtJTVeH5BYJ_DDz88Ba5Hb7_EAxyLhJZI88bmQ4lecHf2sV_9EvzJ_FZ_RYFNn0F4fgFITu1GINdsNmQSWRvS-daD7qjUSl27jacMH63qukVCSe9uy3Olvx2jeQVN9jgIlav5V8X49lpfSmtkbBRIzQRsr4uwjWhJ4Uc19X85uzJNuJMbVHOuUcFixVFi8aKO8m6QWla4T15NnnCy6TyKWoZYPvSnJTswV352n_v1GmKgzDy0SV0d9KkPebPZHA-NIwqTeQuqoktIFKfj8T-KqMduKbI43FqkHRictXRDu5sx-EL96N_9JQAfJIoDi4gMgSBOnzLbd-6NLjmY8EKA6Ff5jZ4KY="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c3e63188191bd5e84aa10db97ef",
+      "call_id": "call_41c489e3604542dcbc83e272f8c13f29",
+      "name": "read_document",
+      "arguments": "{\"name\":\"riverton-lab-batch-17.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_41c489e3604542dcbc83e272f8c13f29",
+      "output": "{\"status\": 200, \"name\": \"riverton-lab-batch-17.csv\", \"media_type\": \"text/csv\", \"text\": \"patient_id,hgb_raw,glucose_raw\\r\\nRIV-001,11984,10782\\r\\nRIV-002,14346,7741\\r\\nRIV-003,11893,9524\\r\\nRIV-004,13122,13529\\r\\nRIV-005,12464,8153\\r\\nRIV-006,12249,7970\\r\\nRIV-007,16341,7451\\r\\nRIV-008,11936,12785\\r\\nRIV-009,11410,13019\\r\\nRIV-010,13074,8393\\r\\nRIV-011,13931,13110\\r\\nRIV-012,11104,14070\\r\\n\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c43d8e88191b820df60013ec963",
+      "call_id": "call_4c2b537cd8ae4bb1aff9f1d8e21744fd",
+      "name": "read_document",
+      "arguments": "{\"name\":\"riverton-calibration-17.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_4c2b537cd8ae4bb1aff9f1d8e21744fd",
+      "output": "{\"status\": 200, \"name\": \"riverton-calibration-17.csv\", \"media_type\": \"text/csv\", \"text\": \"metric,multiplier\\nhgb_raw,0.000997\\nglucose_raw,0.01013\\n\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c4cf0948191aeee63852ef37d39",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BxMvaKNB8P3b1z1bQtiZEro-CiI0gEUocaOohNRScHlxJN7c3vSiXghL8Qxv6fZtawqUSiDZ8Ly_7v7QQQ0Pf1zAw69oTVsEdzitzDXKv00efwoTT3SN8F3Vs9aE6ZpoTB0yeTyjJ3RwVo66eeat3f6e8rYq5bjqGtb9K3R2TEIIFg7z7j8KggJhmc1tDA-k4f5ndAEdjYYg_2c9v7FP3QdE4Xjz8tQ2MlshgTMeMDfz91JuYOK4oKlWfSqY56dAOleQKw8-nObdNO9lWXfE4eBivCs6tpxdeOrSKT4iAnqY7wp5xQlP4_YZMb-17MpcPTJmkkl3ZDUNy0y6L9ylrkRcv_FSN69NRCxiLeh47lw_VLoM-Fv2jcLttPtAfpj_S6q4TWtIgmy1GX_77I933xvWyelsilcE97r_AmbK7l165BO2JlxqmpB2lasqqr4wk4bFfvChQa9N79yW9gTpiIjUU7keqptDpYjb9qz32agUdoy2Eq1PyZz7jDBMRwGxv3bLrHit4bIOdOyeoocRN9JUhKeDd0wKObVidFc2JKWN10sLI5YTOLxIhSvfj2vIqF3ozhx_nmMA3XN6xXvu-vuaSXwmsMcvnnyqF2s4FSgqZiqoS-xusr4xGd4GXFS23GY8d4Y7wjttg7-sIYCt_DUwIzTc5VTicDvN4doE0ttGusq3iZauR4iXk-EApmSE7jJGeng25j3keE42M9-vmvTVmMUSQaf3N6c-yhD6gIR9n0ilZMHmxrMYkXVFz6gStTY3r-AaYWX98UJpJtqeYXnXEbFzEk_uaZpOUqgIua6BIOdN_uP5TpFUjiezMwAyCyeSRFoVDfzrdFCXyJon5PVPhyjcbKwtfkj_MDYTQq-02FQ5HBG-lRP62ZPXRDZJYnpSWleK_c6lcbEcVcgQJI-wb3wQOsfZrLbWsCo5JR1XhBN3hm9kZJcdBrOokmU7_lKqxa-hMcRSIQHR8jRvyMWDbMZiOfEEnXHWQujwH4LK64qVxYVauj3jkGsUEyJDTnzIAqugbDTrPWu1NYA033Gg0kE80QvuqfiVe9aSlZQNfN2-aBWbebC_yP4HewD4gF2JhoK6vYnK47aRFWwzz0ZpJK0Y7wlcStNIeAyEqxWeTmtugSY6FaPLxxLXroo1544ucKEpmT5hucUE_A9Oo02u8HDBSy7g3_72d39YQm6SH0ncpN-LsfLeeRxZxgkENfb-CC9tarTkpW8kpf9cumiYprScuOwYC-TfaVKSjKmWz9yKpEa69acKzWuxGWgGm-rNO84fqxMM6YDy_2SESGTwnxoepmWwFRbdpA5diFBvmhyPAzJkeiJI2qApWXOyGXw7jEaFMI2zzcswpb-H1at2Ty462ZhHW2511AfRb-i14cucZOelv-tpsPnz5Z442s90KiJmsfS0zHBqocPVPeS0O-B5X6aKF9FZo8eJEQt_f1xJ1Nfn6x-EizXIKV1JMDlNjKUh_JsDwoUuIobuZmasGIzHZUjIGeTfZXhluTkBDWNTzkOFkzLW8EFZPNgOosleUVT_u3n7l4_r_rNCebOgWEQ2eq5WNzCH16nMIIgDrhUifpIGZi3N8XEShr5JTcBfJNMeUG5jtnnOJFNZfmdKJW7QDy_EE8O0t1JaDPbGzXg5dAtfGMhpWomrEHB2Pep7OAYVyiRyWjqYGSUMxgEYEHgS54GLZkPLwoNZPfBI9eBlQqcanHl0tFop6qUynRqt1JzBxrTf3sAfZXUyJOlsVhpz11TL1rRQi2OAhBFraw6_EBxUjQLVZlzVmQSb9Hjl3aLw70qOmqBDa88Tp4IQ75Jd-QmS92X0WJ3zyw238ZbtqFmU-JzZ5_9zSIQfgwHdTVMYSU7UsfYR5Y43UG-qlCg-5rA1O0h-zxc438r3C4="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c4d0ec081918f6d06127c16e22a",
+      "call_id": "call_db2a586a7018439fa244739078451abd",
+      "name": "bash",
+      "arguments": "{\"command\":\"python3 - <<'PY'\\nrows=[(11984,10782),(14346,7741),(11893,9524),(13122,13529),(12464,8153),(12249,7970),(16341,7451),(11936,12785),(11410,13019),(13074,8393),(13931,13110),(11104,14070)]\\nh=[x*.000997 for x,y in rows]\\ng=[y*.01013 for x,y in rows]\\nprint(len(rows),sum(h)/len(h),sum(g)/len(g))\\nprint([round(x,2) for x in [sum(h)/len(h),sum(g)/len(g)]])\\nprint(h,g)\\nPY\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_db2a586a7018439fa244739078451abd",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"12 12.782703166666666 106.80987583333332\\n[12.78, 106.81]\\n[11.948048, 14.302962, 11.857321, 13.082634, 12.426608, 12.212253, 16.291977, 11.900192, 11.375770000000001, 13.034778000000001, 13.889207, 11.070688] [109.22166, 78.41633, 96.47812, 137.04877, 82.58989, 80.73610000000001, 75.47863, 129.51205, 131.88247, 85.02109, 132.8043, 142.5291]\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_079c92408fb59fd1016ad81c54c90c8191a89a5bd78f5fd5d5",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2BxUPoXc5icoOLwBomlnVXy4I6SIZXRMZb9mpy9q2g8j1U-NSQUcDurHSaexl8csArB0R3i0vr22xF_5EVzy72vUHiddCfXKWLzGJ0FYGLnK-QpIjQwJj0RvdKPah9DSl82xJ1WXqj1yJJboXGCD7hdJVex-AzEyCYzoc28YWC8FmzVT_S68g2lr7y4Yt76mgdd-S9pFmNML8ZjHEAuoqFkAu0WKkSz7ZKVRmO4XHIetILEIL7P5Ch3nbbEHpzWM8ik_zOdOIf2Sx58hiCx0xdm-Bc8xnrwO6OnZHTD-x16kg7P6N-tAYl5AdzXqHmhQtCLV-bENuASzF79JzJ-W5vkhdV4r9Xm4JVsmM6hdCVTIKMH7GlhwERpCEGzQZwgKIXvaZBMvpG89EhCoIBO4SF0AQOgFCXpUWLze6G38n9ZzTSG4txJDS8tuvRQDzTH9hNSyLk3_v_DhfI3Kk1pr9NeI1sDGE07KZo6u6YnEWIr0NzMh2rXTpDM_UMlsWICcQumAgcov2ZjfJGUPAHvEKrS-q202m2aSv9tiJ3eRbRT5qo9YI5NLrCn5hs9JHPw-3b--R8YLJj5z__Eg_IzQzf5LtBoVn0IIPS5NpVybKCpbSICbytGxRLCYWQY89LqAQM74di85LAr_pVXEuaMA9ZokUzRYqhvuGODV43ObxWDYr6acq1JQWt40LqJb8zstCsCUMfv4RasWQBvJS7g2JwczYjb2vX8BnfeJbJ60ct3Qn55aFy8CGb3TZ0g-Fd5qRL0OFJBYWcxcekkb1PnFACZ_bbbLHWlvxdOKf0Hmjapq16of_2qTb_-tuciyfH7c-wkVNPqiC3lpMM6YnKj7VG0i43zBItwKBFrUKYZDe96ucZGTfVT6G92c3z0MGfsLWehUprHUkDgAhdblqq9KhCXGGywuOy4l4Pj6cgXphWLkUClryjmzjjHA1E6Z5lAKAIIcaFKYBZX2OZu4aEUruZZVTaaFYUJKLcTRsD6vtocorGCWQk3UABi9SGW1FEiiebpbMimCn6EttWnABaQsUXwN_p_758S8wfq4uXX1DJCAwQTQ10dak0vIFG9EuswmEWem06MMoTQbAg-GssaKNB2r-CtO8oRrlRgrRYnh7Br7s_moPtMMZ21z7Y6iPGwA0hRlScT0BeA1hC9U5_kdCtyWnITtoeipsj2bMCGs3lxkw6l2KpOP8DhqIrNb_KSfaYWCbO4zhVtWfP6U99bMLvdtt58Vm56vSNtFthndVbQ3HEf5Mh6w8g7gFNso0f23_ZjnS1-hwBqjaG0tBHFBF9mVUIe5WZ6fHacZyhTTTJHJSVUANRTNhlXY8AjZSosBb6JzsqLo5JOv7vONDg0pqC3weJgn5plWtXdTy6el_wKz6850PpMQ53poSPQlZQS6X_BZiksUzoJc2U7ed14sfA7Q_kHEBG_vAjNUqVTXHyEyKz_DFSEryR7OxrkbUCtBLvI1enbw22Ntj1Yu0R7K-96UNgA6wYqVP5IF2jio86BdtOEytVMsUMu8D1e_yQ2rN8finzWdtZ6mDr_-CcpmlNeKjAP6OKBneyN6KHDNipdKDca4Z9ky6dQoFYj_51K4IsxvlzcCQHtRIUE2a4nUtIWYxQoOADDMiHC5wNcEXV9szZGAiQQOd3HKVmq1KhPHspCENlZbA0UvGztt6m3urUNRDoUkEZ3rVqbHlfPecvXOBH-EWPbiCzN4CcwSQgH2V_vwgr8dM-GbI38J28BH-hCG5wvnPswtxmTlURwm6VB7VDwuoFTJ8-l5tDBM4bWX2QFv"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_079c92408fb59fd1016ad81c54e488819182ca35a203af8fc3",
+      "call_id": "call_13afa72bcdd548cbb68643d35590e8f1",
+      "name": "submit_report",
+      "arguments": "{\"json_text\":\"{\\\"records\\\":12,\\\"mean_hgb\\\":12.78,\\\"mean_glucose\\\":106.81}\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_13afa72bcdd548cbb68643d35590e8f1",
+      "output": "{\"status\": 201, \"report_id\": \"worker-8ddc69f8590d-28\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}
