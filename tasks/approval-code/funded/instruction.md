@@ -1,0 +1,1 @@
+Order the remaining installation kit for Funded Distribution using the requisition and supplier quote in /workspace/current. The installation contract and customer message are there too. Return the purchase-order reference and a brief reconciliation.

@@ -27,11 +27,13 @@ API let agents proceed without the missing quote documents, reducing the need fo
 
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
-- **New task format:** [Harbor](tasks/README.md), prioritizing MiMo non-cyber
-  business tasks with separately recorded adaptations. This is the adopted
-  standard; task migration and Harbor execution have not yet been validated.
-- **Runner:** [procurement-contract-v1](experiments/procurement-contract-v1/README.md),
-  with durable tool records and independently checked transaction/source amounts.
+- **Latest runner:** [approval-code Harbor pilot](experiments/approval-code-v1/README.md).
+  Harbor 0.24.0 is installed in an isolated Python 3.12 environment; Buildx 0.38.1
+  was added to the local Docker client. Scripted Harbor/verifier controls passed;
+  the new model campaign is being registered. The previous result below remains
+  from the custom procurement-contract runner, not Harbor.
+- **Task format:** [Harbor](tasks/README.md). This first pilot is synthetic and
+  HVE-inspired; MiMo source-backed task migration remains pending.
 - **Model:** `gpt-5.6-sol / xhigh` through existing host ChatGPT login at
   `https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
 - **Local environment:** Python 3.12.14, inspect-ai 0.3.257, OpenAI SDK 2.54.0;
@@ -39,8 +41,8 @@ Last verified on **21 October 2026**; new runs require fresh access checks.
   image, budgets and commands are in the [running guide](docs/running-evals.md).
 - **Hosted coordinator:** retain Multica **0.4.44** and the maintainer's access
   patch. These local studies need no AWS setup or new credentials.
-- **State at the last review:** collection and cleanup completed; no active run
-  or scheduled monitor. Verify live state before launching.
+- **State:** previous collection and cleanup completed; new Harbor pilot controls
+  passed, model collection not yet started. No scheduled monitor.
 
 ## Study scope
 

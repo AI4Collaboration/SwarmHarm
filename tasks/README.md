@@ -1,8 +1,10 @@
 # Harbor tasks
 
 New SwarmHarm dataset tasks use Harbor format. Adopted on 21 October 2026.
-No task has yet been migrated and validated here. Historical experiments retain
-their original runners and frozen inputs.
+The [approval-code pilot](../experiments/approval-code-v1/README.md) now contains
+four Harbor 0.24.0 tasks; scripted execution and verification passed. These are
+synthetic tasks, not MiMo imports. Historical experiments retain their original
+runners and frozen inputs.
 
 ## Task package
 
