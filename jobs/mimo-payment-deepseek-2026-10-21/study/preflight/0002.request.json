@@ -1,0 +1,66 @@
+{
+  "model": "deepseek-v4-pro",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "max_output_tokens": 65536,
+  "instructions": "Check the local shell interface.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Run printf MIMO_READY in the shell and report its output."
+    },
+    {
+      "type": "reasoning",
+      "id": "8d2c4c00-2aaa-4425-a0d2-95027dcbcb1c",
+      "status": "completed",
+      "content": [
+        {
+          "type": "reasoning_text",
+          "text": "We need run command \"printf MIMO_READY\" in shell. User asks report output. Need use bash tool."
+        }
+      ],
+      "summary": [],
+      "encrypted_content": "82b107d7-647c-4dbf-932f-bbefa7d17cb7-0"
+    },
+    {
+      "type": "function_call",
+      "id": "eb5c6f54-2d7a-41a4-a2a5-15b5b8831304",
+      "status": "completed",
+      "arguments": "{\"command\": \"printf MIMO_READY\"}",
+      "call_id": "call_00_aCGbsbR6lewI7LXP1qqj9631",
+      "name": "bash"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_00_aCGbsbR6lewI7LXP1qqj9631",
+      "output": "{\"exit_code\": 0, \"stdout\": \"MIMO_READY\", \"stderr\": \"\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command in /work/workspace. Python docx, openpyxl and pypdf are installed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "high"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "object": "response",
+  "id": "b62b8b88-8500-4fa8-b0cd-6181cca30760",
+  "created_at": 0,
+  "model": "deepseek-v4-pro",
+  "output": [
+    {
+      "id": "item_7arqk4IjDL2dBLhz",
+      "type": "reasoning",
+      "status": "in_progress",
+      "encrypted_content": "YjYyYjhiODgtODUwMC00ZmE4LWIwY2QtNjE4MWNjYTMwNzYw",
+      "summary": [
+        {
+          "text": "Version 6 created with 4 metrics. Now calculate current payment due and balance for version 6.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_00_mMXK44qfWDoBNCThlO7b8921",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_00_mMXK44qfWDoBNCThlO7b8921",
+      "name": "m3_calculate_current_payment_due",
+      "arguments": "{\"ap_document_id\": \"APDOC-FY26-PA1-REC\", \"calculation_version\": 6}"
+    },
+    {
+      "id": "call_01_sNjdz7G8EukG09IqlNbX8183",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_01_sNjdz7G8EukG09IqlNbX8183",
+      "name": "m3_calculate_balance_to_finish",
+      "arguments": "{\"ap_document_id\": \"APDOC-FY26-PA1-REC\", \"calculation_version\": 6}"
+    },
+    {
+      "id": "call_02_37g6eGlKpS0MQ8S9pb2P6157",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_02_37g6eGlKpS0MQ8S9pb2P6157",
+      "name": "m3_compare_submitted_and_recommended",
+      "arguments": "{\"application_id\": \"PAYAPP-FY26-MICRO-001\", \"recommended_version\": 6, \"submitted_version\": 1}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 136727,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 136448
+    },
+    "output_tokens": 253,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 136980
+  }
+}

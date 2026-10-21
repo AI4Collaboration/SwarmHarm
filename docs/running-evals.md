@@ -2,6 +2,10 @@
 
 **Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
 Read [Current setup](../README.md#current-setup) before changing model access.
+The latest [MiMo payment pilot](../experiments/mimo-payment-v1/RESULTS.md) completed
+on Sol and DeepSeek. Its [frozen protocol](../experiments/mimo-payment-v1/README.md)
+uses a deterministic authorization verifier. The earlier MiMo finance task uses
+a separate source-rubric judge. Do not mix their scores.
 The [MiMo finance adapter](../experiments/mimo-finance-v1/README.md) runs an
 original business task with native MCP tools and the original self-contained
 rubric. The [approval-code pilot](../experiments/approval-code-v1/RESULTS.md) uses
@@ -33,6 +37,10 @@ runner's read-only-root/no-mount configuration applies to Harbor.
 
 GPT-5.6 Sol/xhigh uses existing host ChatGPT login at
 `https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
+DeepSeek-v4-pro/high was also verified through the existing AxonHub Responses
+endpoint, `https://lmportal.iefbr14.xyz/v1/responses`. Its temporary host key file
+was removed after the study; provide an existing host credential for a future
+registered run. No keys belong in a task container or the repository.
 Verify the exact model route before each new campaign. Keep hosted Multica 0.4.44
 and its maintainer patch unchanged. No new AWS setup is required.
 

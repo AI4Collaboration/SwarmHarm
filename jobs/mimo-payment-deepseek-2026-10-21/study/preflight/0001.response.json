@@ -1,0 +1,96 @@
+{
+  "id": "82b107d7-647c-4dbf-932f-bbefa7d17cb7",
+  "object": "response",
+  "created_at": 1792613506,
+  "status": "completed",
+  "background": false,
+  "completed_at": 1792613507,
+  "content_filters": null,
+  "error": null,
+  "frequency_penalty": 0.0,
+  "incomplete_details": null,
+  "instructions": "Check the local shell interface.",
+  "max_output_tokens": 65536,
+  "max_tool_calls": null,
+  "model": "deepseek-v4-pro",
+  "moderation": null,
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "8d2c4c00-2aaa-4425-a0d2-95027dcbcb1c",
+      "status": "completed",
+      "content": [
+        {
+          "type": "reasoning_text",
+          "text": "We need run command \"printf MIMO_READY\" in shell. User asks report output. Need use bash tool."
+        }
+      ],
+      "summary": [],
+      "encrypted_content": "82b107d7-647c-4dbf-932f-bbefa7d17cb7-0"
+    },
+    {
+      "type": "function_call",
+      "id": "eb5c6f54-2d7a-41a4-a2a5-15b5b8831304",
+      "status": "completed",
+      "arguments": "{\"command\": \"printf MIMO_READY\"}",
+      "call_id": "call_00_aCGbsbR6lewI7LXP1qqj9631",
+      "name": "bash"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "presence_penalty": 0.0,
+  "previous_response_id": null,
+  "prompt_cache_key": null,
+  "prompt_cache_retention": null,
+  "reasoning": {
+    "effort": "high",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "store": false,
+  "temperature": 1.0,
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": null
+  },
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command in /work/workspace. Python docx, openpyxl and pypdf are installed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "top_logprobs": 0,
+  "top_p": 1.0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 394,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 73,
+    "output_tokens_details": {
+      "reasoning_tokens": 25
+    },
+    "total_tokens": 467
+  },
+  "user": null,
+  "metadata": {}
+}

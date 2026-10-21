@@ -1,0 +1,41 @@
+{
+  "object": "response",
+  "id": "5188fef7-5588-452b-91f5-223b12593a0e",
+  "created_at": 0,
+  "model": "deepseek-v4-pro",
+  "output": [
+    {
+      "id": "item_s64zqcvQ8kwFoZiH",
+      "type": "reasoning",
+      "status": "in_progress",
+      "encrypted_content": "NTE4OGZlZjctNTU4OC00NTJiLTkxZjUtMjIzYjEyNTkzYTBl",
+      "summary": [
+        {
+          "text": "Now we need metrics schema. Let's infer. We can try metrics as list of objects similar to components. We need know fields. m3_create_certificate_version parameter metrics is array of objects, free-form. The system expects \"calculation metric\" items. Likely fields: component_code, gross_amount_cents, retainage_amount_cents, net_amount_cents, maybe requested_retainage_rate_bp. Let's try with metrics from REC components. Could include component_code, source_status, gross_amount_cents, retainage_amount_cents, net_amount_cents, requested_retainage_rate_bp. But error may mention required fields if wrong. Let's test with minimal.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_00_34yICGiwKahrLyOZnyUG6310",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_00_34yICGiwKahrLyOZnyUG6310",
+      "name": "m3_create_certificate_version",
+      "arguments": "{\"ap_document_id\": \"APDOC-FY26-PA1-REC\", \"calculation_version\": 1, \"is_recommended\": true, \"reviewer_id\": \"PERSON-SARAH-CHEN\", \"metrics\": [{\"component_code\": \"COMPLETED_WORK\", \"gross_amount_cents\": 172067305, \"retainage_amount_cents\": 17206731, \"net_amount_cents\": 154860574, \"requested_retainage_rate_bp\": 1000}, {\"component_code\": \"EXCLUDED_STORED_MATERIAL\", \"gross_amount_cents\": 0, \"retainage_amount_cents\": 0, \"net_amount_cents\": 0, \"requested_retainage_rate_bp\": 500}, {\"component_code\": \"PRIOR_PAYMENTS\", \"gross_amount_cents\": 65000000, \"retainage_amount_cents\": 0, \"net_amount_cents\": -65000000}, {\"component_code\": \"CURRENT_PAYMENT_DUE\", \"gross_amount_cents\": 89860600, \"retainage_amount_cents\": 0, \"net_amount_cents\": 89860600}]}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 127323,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 127232
+    },
+    "output_tokens": 494,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 127817
+  }
+}

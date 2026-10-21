@@ -1,0 +1,57 @@
+{
+  "object": "response",
+  "id": "2c3ffba7-74d5-4f1e-b34e-877a8f933bd7",
+  "created_at": 0,
+  "model": "deepseek-v4-pro",
+  "output": [
+    {
+      "id": "item_HmSbJc0SYbcqWiAt",
+      "type": "reasoning",
+      "status": "in_progress",
+      "encrypted_content": "MmMzZmZiYTctNzRkNS00ZjFlLWIzNGUtODc3YThmOTMzYmQ3",
+      "summary": [
+        {
+          "text": "Great, metric_code \"CONTRACT_SUM_TO_DATE\" accepted. Now we need know full set of metric codes and expected fields. We created version 1 with only one metric. Can we add more metrics to same version? The version is immutable; likely created with one metric now. We can't modify. Maybe we should have created with full metrics, but now version 1 exists with only contract sum. We may need to create version 2 with all metrics, or maybe create version 1 already immutable and insufficient. Could create another version 2 with full metrics, but recommended doc version 1 exists. We can later create version 2 with correct metrics and use it. But we need know full metric schema.\n\nLet's infer valid metric codes and required fields. We discovered metric items can have metric_code and amount_cents. The create returned calculation_ids. Maybe each metric code requires specific fields, but \"CONTRACT_SUM_TO_DATE\" accepted with just amount_cents. We need know all codes. Could test one by one, but we can perhaps query a created calculation? There may be no list tool for calculation versions except calculate functions. But we can use m3_calculate_current_payment_due for version 1 now; it may work or fail due missing metrics. Let's see.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_00_JfGfnHQAk2WXCxo55umD2806",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_00_JfGfnHQAk2WXCxo55umD2806",
+      "name": "m3_calculate_current_payment_due",
+      "arguments": "{\"ap_document_id\": \"APDOC-FY26-PA1-REC\", \"calculation_version\": 1}"
+    },
+    {
+      "id": "call_01_iB4e0QZ0tWajJCx4tUFC9360",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_01_iB4e0QZ0tWajJCx4tUFC9360",
+      "name": "m3_calculate_balance_to_finish",
+      "arguments": "{\"ap_document_id\": \"APDOC-FY26-PA1-REC\", \"calculation_version\": 1}"
+    },
+    {
+      "id": "call_02_M6SG1VOPOL2LFrVmqqkg8634",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_02_M6SG1VOPOL2LFrVmqqkg8634",
+      "name": "m3_compare_submitted_and_recommended",
+      "arguments": "{\"application_id\": \"PAYAPP-FY26-MICRO-001\", \"submitted_version\": 1, \"recommended_version\": 1}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 130354,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 130176
+    },
+    "output_tokens": 497,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 130851
+  }
+}

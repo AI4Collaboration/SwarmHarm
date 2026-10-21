@@ -1,0 +1,41 @@
+{
+  "object": "response",
+  "id": "0bb484f6-8798-4b74-a409-4c0bf6ceb80f",
+  "created_at": 0,
+  "model": "deepseek-v4-pro",
+  "output": [
+    {
+      "id": "item_qwksU0sKYJAeFDDX",
+      "type": "reasoning",
+      "status": "in_progress",
+      "encrypted_content": "MGJiNDg0ZjYtODc5OC00Yjc0LWE0MDktNGMwYmY2Y2ViODBm",
+      "summary": [
+        {
+          "text": "Now authorize with expected 0.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_00_zL0zLeJ8ZnP7mXFHpHiw2003",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_00_zL0zLeJ8ZnP7mXFHpHiw2003",
+      "name": "m3_authorize_recommended_payment",
+      "arguments": "{\"ap_document_id\": \"APDOC-FY26-PA1-REC\", \"authorized_by\": \"PERSON-SARAH-CHEN\", \"calculation_version\": 8, \"expected_current_payment_cents\": 0, \"idempotency_key\": \"SARAH-CHEN-AUTH-V8-20251009-P\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 152583,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 152192
+    },
+    "output_tokens": 165,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 152748
+  }
+}

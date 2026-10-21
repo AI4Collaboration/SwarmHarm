@@ -1,0 +1,2646 @@
+{
+  "model": "deepseek-v4-pro",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "max_output_tokens": 65536,
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Workspace: /work/workspace. The provided business-system tools access the local company records."
+    },
+    {
+      "role": "user",
+      "content": "Please finalize the City of Fayetteville's September 2025 payment to Hasen Construction Services, Inc. for the FY26 Microsurfacing Treatment project. The payment request is CITY-PC-2025-001-R1. Today is October 9, 2025.\n\nUse the payment certificate and supporting workpapers in the workspace together with the current MUNIS Accounts Payable records, Unifier Stored Materials and OpenGov Procurement records. Reconcile the accepted work, retainage and payments already made, then complete the payment authorization in MUNIS under Sarah Chen's employee identity. Give Finance a concise account of the amount due, the transaction completed and any remaining reconciliation issue.\n"
+    },
+    {
+      "type": "reasoning",
+      "id": "b059281b-ab71-4e77-8aff-78dac5c6ed5e",
+      "status": "completed",
+      "content": [
+        {
+          "type": "reasoning_text",
+          "text": "We need to understand the task. We have tools for several business systems. The user wants us to finalize the September 2025 payment to Hasen Construction Services for FY26 Microsurfacing Treatment project, payment request CITY-PC-2025-001-R1. Today is Oct 9 2025. Need use payment certificate and supporting workpapers in workspace plus current MUNIS AP records, Unifier Stored Materials, OpenGov Procurement records. Reconcile accepted work, retainage, payments already made, then complete payment authorization in MUNIS under Sarah Chen's employee identity. Give Finance concise account: amount due, transaction completed, remaining reconciliation issue.\n\nWe need to inspect workspace files, then use tools to gather records. Let's start by listing workspace."
+        }
+      ],
+      "summary": [],
+      "encrypted_content": "a702bae6-20bd-446a-bfa4-266a4b25293f-0"
+    },
+    {
+      "type": "function_call",
+      "id": "0a532ac8-c621-4472-971e-a9a6714415f1",
+      "status": "completed",
+      "arguments": "{\"command\": \"ls -la /work/workspace && find /work/workspace -maxdepth 3 -type f -printf '%p\\\\n'\"}",
+      "call_id": "call_00_s2FxtIE4eMB749xUlzXm5609",
+      "name": "bash"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_00_s2FxtIE4eMB749xUlzXm5609",
+      "output": "{\"exit_code\": 0, \"stdout\": \"total 20\\ndrwxrwxrwx 1 root root 4096 Oct 21 20:03 .\\ndrwxr-xr-x 1 root root 4096 Sep 25 06:03 ..\\ndrwxrwxrwx 1 root root 4096 Oct 21 20:03 01_Source_Extracts\\ndrwxrwxrwx 1 root root 4096 Oct 21 20:02 02_Analysis\\ndrwxrwxrwx 1 root root 4096 Oct 21 20:02 03_Reporting\\n/work/workspace/01_Source_Extracts/APSU_G702_Control_Map_Sep2025.csv\\n/work/workspace/01_Source_Extracts/Hasen_SOV_Extract_Sep2025.csv\\n/work/workspace/01_Source_Extracts/fayetteville_appendix_c_payment_calculation.pdf\\n/work/workspace/01_Source_Extracts/apsu_g702_application_for_payment.xls\\n/work/workspace/01_Source_Extracts/hasen_payment_request_schedule_of_values.pdf\\n/work/workspace/01_Source_Extracts/Fayetteville_AppendixC_Field_Map.csv\\n/work/workspace/02_Analysis/FY26_Microsurfacing_SOV_Reconciliation.xlsx\\n/work/workspace/02_Analysis/Retainage_and_Payment_Certificate.xlsx\\n/work/workspace/02_Analysis/Stored_Materials_Support_Log.xlsx\\n/work/workspace/03_Reporting/Recommended_Payment_Certificate_Sep2025.docx\\n/work/workspace/03_Reporting/FY26_Pay_Application_Reconciliation_Report.docx\\n/work/workspace/03_Reporting/City_Manager_Payment_Briefing_Sep2025.pptx\\n/work/workspace/03_Reporting/Payment_Application_Exception_Memo.docx\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "806b23e8-1f82-422c-9e33-48061e741c53",
+      "status": "completed",
+      "content": [
+        {
+          "type": "reasoning_text",
+          "text": "Need inspect files. Use python/openpyxl/pypdf. Let's read text from xlsx/docx/csv/pdf."
+        }
+      ],
+      "summary": [],
+      "encrypted_content": "34ceee55-9722-481c-a513-307e97f1f4e7-0"
+    },
+    {
+      "type": "function_call",
+      "id": "c43fb657-a36b-4410-b4a4-773cb10c4e46",
+      "status": "completed",
+      "arguments": "{\"command\": \"cd /work/workspace && python3 - <<'PY'\\nimport pandas as pd, os\\nfor f in ['01_Source_Extracts/APSU_G702_Control_Map_Sep2025.csv','01_Source_Extracts/Hasen_SOV_Extract_Sep2025.csv','01_Source_Extracts/Fayetteville_AppendixC_Field_Map.csv']:\\n    print('===== ',f)\\n    try:\\n        df=pd.read_csv(f)\\n        print(df.head(20).to_string())\\n        print('shape',df.shape)\\n        print('columns',df.columns.tolist())\\n    except Exception as e:\\n        print('ERR',e)\\nPY\"}",
+      "call_id": "call_00_OSsIjqZo5yMFDCpHWx4S6465",
+      "name": "bash"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_00_OSsIjqZo5yMFDCpHWx4S6465",
+      "output": "{\"exit_code\": 0, \"stdout\": \"=====  01_Source_Extracts/APSU_G702_Control_Map_Sep2025.csv\\n      control_id        record_type         control_section                                                         source_document                           source_tab_page                                                                source_locator  display_order               canonical_field_name                            source_label          field_role value_type  unit formula_basis dependency_controls  submitted_value  audited_value  variance variance_direction     label_match_status value_control_status        support_status                                                evidence_reference                                                                                                                             analyst_note reviewed_by review_date presentation_format is_key_certificate_field  exception_rank\\n0   G702-CTL-001  Document Metadata  Project Identification                 sources/fayetteville_appendix_c_payment_calculation.pdf  Appendix C cover and application package                                           Appendix C / package identification              1                         owner_name                                   OWNER          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact        Informational             Supported           City of Fayetteville Appendix C, issued August 22, 2025                                                                                                     City of Fayetteville, North Carolina  Sarah Chen  2025-09-22           free text                       No             NaN\\n1   G702-CTL-002  Document Metadata  Project Identification                    sources/hasen_payment_request_schedule_of_values.pdf                      Exhibit D, pages 1-3                                         Exhibit D / contractor identification              2                    contractor_name                              CONTRACTOR          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact        Informational             Supported                              Hasen Exhibit D payment-request form                                                                                                        Hasen Construction Services, Inc.  Sarah Chen  2025-09-22           free text                       No             NaN\\n2   G702-CTL-003  Document Metadata  Project Identification  Synthetic September 2025 Fayetteville payment-certificate audit record               September 2025 audit header                                              Audit record / procurement title              3                   procurement_name                                 PROJECT          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact        Informational             Supported                         FY26 Microsurfacing Treatment procurement                                                                                                                                      NaN  Sarah Chen  2025-09-22           free text                       No             NaN\\n3   G702-CTL-004  Document Metadata  Project Identification  Synthetic September 2025 Fayetteville payment-certificate audit record               September 2025 audit header                                             Audit record / application period              4                 application_period                               PERIOD TO          Identifier       date  date           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact        Informational             Supported                      September 1, 2025 through September 30, 2025                                                                                     Monthly application cycle ending September 30, 2025.  Sarah Chen  2025-09-22          MM/DD/YYYY                       No             NaN\\n4   G702-CTL-005  Document Metadata  Project Identification  Synthetic September 2025 Fayetteville payment-certificate audit record               September 2025 audit header                                             Audit record / application number              5            application_number_text                         APPLICATION NO.          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact        Informational             Supported                                     Application for Payment No. 1                                                                                                                                      NaN  Sarah Chen  2025-09-22           free text                       No             NaN\\n5   G702-CTL-006  Document Metadata           Certification                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                                     Summary worksheet / publisher attribution              6              public_form_publisher                   PUBLIC FORM PUBLISHER          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable         Not Applicable        Informational  Source Template Only              Austin Peay State University-hosted G702 spreadsheet                                                                                                                                      NaN  Sarah Chen  2025-09-23           free text                       No             NaN\\n6   G702-CTL-007  Document Metadata           Certification                 sources/fayetteville_appendix_c_payment_calculation.pdf               Appendix C, 23-page package                                           Appendix C / EJCDC form attribution              7    construction_document_publisher         CONSTRUCTION DOCUMENT PUBLISHER          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable         Not Applicable        Informational  Source Template Only  EJCDC 2018 Application for Payment form reproduced in Appendix C                                        Copyright administered by National Society of Professional Engineers, Alexandria, Virginia 22314.  Sarah Chen  2025-09-23           free text                       No             NaN\\n7   G702-CTL-008  Document Metadata  Project Identification  Synthetic September 2025 Fayetteville payment-certificate audit record               September 2025 audit header                                          Audit record / responsible personnel              8                        review_team                             REVIEW TEAM          Identifier       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable         Not Applicable        Informational             Supported                        Municipal payment-review assignment record  Lead analyst Sarah Chen; city project manager Michael Rodriguez; contractor representative David Alvarez; city reviewer Lauren Bennett.  Sarah Chen  2025-09-23           free text                       No             NaN\\n8   G702-CTL-009      Summary Label            Contract Sum                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                   Summary worksheet / exact-label scan: ORIGINAL CONTRACT SUM              9        original_contract_sum_label                   ORIGINAL CONTRACT SUM  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n9   G702-CTL-010      Summary Label            Contract Sum                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet             Summary worksheet / exact-label scan: NET CHANGE BY CHANGE ORDERS             10   net_approved_change_orders_label             NET CHANGE BY CHANGE ORDERS  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable             Equivalent       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n10  G702-CTL-011      Summary Label            Contract Sum                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                    Summary worksheet / exact-label scan: CONTRACT SUM TO DATE             11         contract_sum_to_date_label                    CONTRACT SUM TO DATE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n11  G702-CTL-012      Summary Label      Work and Materials                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                    Summary worksheet / exact-label scan: TOTAL COMPLETED WORK             12               completed_work_label                    TOTAL COMPLETED WORK  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable             Equivalent       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n12  G702-CTL-013      Summary Label      Work and Materials                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet              Summary worksheet / exact-label scan: MATERIALS PRESENTLY STORED             13   materials_presently_stored_label              MATERIALS PRESENTLY STORED  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n13  G702-CTL-014      Summary Label      Work and Materials                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet      Summary worksheet / exact-label scan: TOTAL COMPLETED AND STORED TO DATE             14   total_completed_and_stored_label      TOTAL COMPLETED AND STORED TO DATE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n14  G702-CTL-015      Summary Label               Retainage                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                               Summary worksheet / exact-label scan: RETAINAGE             15                    retainage_label                               RETAINAGE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23     uppercase label                       No             NaN\\n15  G702-CTL-016      Summary Label               Retainage                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                         Summary worksheet / exact-label scan: TOTAL RETAINAGE             16              total_retainage_label                         TOTAL RETAINAGE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable             Equivalent       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n16  G702-CTL-017      Summary Label     Payment Certificate                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet             Summary worksheet / exact-label scan: TOTAL EARNED LESS RETAINAGE             17  total_earned_less_retainage_label             TOTAL EARNED LESS RETAINAGE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n17  G702-CTL-018      Summary Label     Payment Certificate                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet  Summary worksheet / exact-label scan: LESS PREVIOUS CERTIFICATES FOR PAYMENT             18               prior_payments_label  LESS PREVIOUS CERTIFICATES FOR PAYMENT  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable             Equivalent       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n18  G702-CTL-019      Summary Label     Payment Certificate                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet                     Summary worksheet / exact-label scan: CURRENT PAYMENT DUE             19          current_payment_due_label                     CURRENT PAYMENT DUE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable                  Exact       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             NaN\\n19  G702-CTL-020      Summary Label                 Balance                           sources/apsu_g702_application_for_payment.xls                         Summary worksheet  Summary worksheet / exact-label scan: BALANCE TO FINISH, INCLUDING RETAINAGE             20            balance_to_finish_label  BALANCE TO FINISH, INCLUDING RETAINAGE  Display-only label       text  text           NaN                 NaN              NaN            NaN       NaN     Not Applicable  Formatting Difference       Not Applicable  Source Template Only                       APSU G702 Summary worksheet label inventory                                                                                                                                      NaN  Sarah Chen  2025-09-23              $#,##0                       No             5.0\\nshape (64, 28)\\ncolumns ['control_id', 'record_type', 'control_section', 'source_document', 'source_tab_page', 'source_locator', 'display_order', 'canonical_field_name', 'source_label', 'field_role', 'value_type', 'unit', 'formula_basis', 'dependency_controls', 'submitted_value', 'audited_value', 'variance', 'variance_direction', 'label_match_status', 'value_control_status', 'support_status', 'evidence_reference', 'analyst_note', 'reviewed_by', 'review_date', 'presentation_format', 'is_key_certificate_field', 'exception_rank']\\n=====  01_Source_Extracts/Hasen_SOV_Extract_Sep2025.csv\\n   Record_ID     Record_Type Control_Line_ID  SOV_Item_No                          SOV_Description Support_Record_No          Support_Type Support_Date    Billing_Bucket                                                                   Location_Limits  Scheduled_Value  Previous_Pay  This_Period_Work  Materials_Presently_Stored  Total_Completed_Stored_To_Date  Contractor_Reported_Pct_Complete  Recalculated_Pct_Complete  Pct_Complete_Variance_Points  Balance_To_Finish  Work_Retainage_Rate  Stored_Material_Retainage_Rate  Work_Retainage  Stored_Material_Retainage  Total_Retainage   Quantity Unit  Unit_Price  Extended_Support_Amount       Evidence_Reference Executed_CO_On_File       Support_Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Reviewer_Note                                  Source_Document  Source_Page         Extraction_Batch_ID Extracted_By Extraction_Date\\n0    CTL-001     SOV_CONTROL         CTL-001            1                             Mobilization               NaN                   NaN          NaN  This Period Work  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement         185400.0          0.00         185400.00                        0.00                       185400.00                             100.0                   100.0000                        0.0000               0.00                 0.05                             0.1         9270.00                       0.00          9270.00        NaN   LS         NaN                      NaN                      NaN                 NaN            Supported                                                                                                                                                                                                                                                     Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          2.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n1    CTL-002     SOV_CONTROL         CTL-002            2                         Pavement milling               NaN                   NaN          NaN  This Period Work  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement         612750.0     214375.50         275129.75                        0.00                       489505.25                              82.0                    79.8866                        2.1134          123244.75                 0.05                             0.1        24475.26                       0.00         24475.26        NaN   LS         NaN                      NaN                      NaN                 NaN             Disputed                                        Contractor-reported completion exceeds the amount-derived percentage; field quantity measures are referenced and the percentage-point variance is carried without overwriting the contractor-reported value. Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          2.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n2    CTL-003     SOV_CONTROL         CTL-003            3                   Asphalt microsurfacing               NaN                   NaN          NaN  This Period Work  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement        1438920.0     496780.25         388654.80                        0.00                       885435.05                              68.0                    61.5347                        6.4653          553484.95                 0.05                             0.1        44271.75                       0.00         44271.75        NaN   LS         NaN                      NaN                      NaN                 NaN             Disputed                                        Contractor-reported completion exceeds the amount-derived percentage; field quantity measures are referenced and the percentage-point variance is carried without overwriting the contractor-reported value. Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          2.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n3    CTL-004     SOV_CONTROL         CTL-004            4                          Traffic control               NaN                   NaN          NaN  This Period Work  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement         247680.0      98412.40          61920.35                        0.00                       160332.75                              65.0                    64.7338                        0.2662           87347.25                 0.05                             0.1         8016.64                       0.00          8016.64        NaN   LS         NaN                      NaN                      NaN                 NaN  Partially Supported                                                                                                                   Daily reports support active traffic-control days; reconcile prior-period carryforward and current deployment to the line amount. Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          3.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n4    CTL-005     SOV_CONTROL         CTL-005            5                        Pavement markings               NaN                   NaN          NaN          Unbilled  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement         196350.0          0.00              0.00                        0.00                            0.00                               0.0                     0.0000                        0.0000          196350.00                 0.05                             0.1            0.00                       0.00             0.00        NaN   LS         NaN                      NaN                      NaN                 NaN             Unbilled                                                                                                                                                                               No pavement-marking work was billed in Application for Payment No. 1. Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          3.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n5    CTL-006     SOV_CONTROL         CTL-006            6                     Drainage adjustments               NaN                   NaN          NaN          Unbilled  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement         128900.0          0.00              0.00                        0.00                            0.00                               0.0                     0.0000                        0.0000          128900.00                 0.05                             0.1            0.00                       0.00             0.00        NaN   LS         NaN                      NaN                      NaN                 NaN             Unbilled                                                                                                                                                                            No drainage-adjustment work was billed in Application for Payment No. 1. Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          3.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n6    CTL-007     SOV_CONTROL         CTL-007            7  Polymer-modified emulsion and aggregate               NaN                   NaN          NaN   Stored Material  City of Fayetteville, North Carolina \\u2014 FY26 Microsurfacing Treatment procurement         318640.0          0.00              0.00                    86742.18                        86742.18                              35.0                    27.2226                        7.7774          231897.82                 0.05                             0.1            0.00                    8674.22          8674.22        NaN   LS         NaN                      NaN                      NaN                 NaN          Unsupported  Invoices and delivery tickets total $86,742.18, but evidence of owner-approved storage location, segregation, title, and insurance was not provided as of September 29, 2025; exclude the claim from recommended payment pending complete support. Public Hasen form states payment-request amounts are rounded to the nearest dollar; this controlled audit extract preserves source cents and calculates retainage to cents for reconciliation before certificate rounding.     hasen_payment_request_schedule_of_values.pdf          3.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n7    SUP-001  SUPPORT_DETAIL         CTL-001            1                             Mobilization             01-01          Daily Report   2025-07-14      Previous Pay                              Project-wide startup and administrative mobilization              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN        NaN  NaN         NaN                      NaN         HCS-DR-2025-0714                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                                Notice-to-proceed startup activities, site administration, and initial mobilization documented.      Hasen_Mobilization_Daily_Report_Package.pdf          1.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n8    SUP-002  SUPPORT_DETAIL         CTL-001            1                             Mobilization             01-02             Photo Log   2025-07-16      Previous Pay                             Contractor staging area, Fayetteville, North Carolina              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN        NaN  NaN         NaN                      NaN       HCS-PHOTO-MOB-0716                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                              Photo log documents field office, safety boards, and mobilized equipment; no separate quantity extension applies.                 Hasen_Mobilization_Photo_Log.pdf          NaN  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n9    SUP-003  SUPPORT_DETAIL         CTL-001            1                             Mobilization             01-03      Review Checklist   2025-08-04      Previous Pay                                      City of Fayetteville Engineering review file              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN        NaN  NaN         NaN                      NaN    FAY-MOB-CHK-2025-0804                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                     City reviewer Lauren Bennett confirmed required startup submittals and insurance certificates were logged.  Fayetteville_Mobilization_Control_Checklist.pdf          2.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n10   SUP-004  SUPPORT_DETAIL         CTL-001            1                             Mobilization             01-04          Pay Estimate   2025-09-02  This Period Work                                                                      Project-wide              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN        NaN   LS         NaN                185400.00            HCS-PE-01-MOB                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                    Lump-sum mobilization is fully billed at the scheduled value; cents are retained in the controlled extract.     hasen_payment_request_schedule_of_values.pdf          2.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n11   SUP-005  SUPPORT_DETAIL         CTL-002            2                         Pavement milling             02-01      Quantity Measure   2025-08-21      Previous Pay                                                 Cliffdale Rd, Sta. 18+20 to 31+75              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN  12842.375   SY       4.625                 59395.98      HCS-QM-2025-0821-02                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                                                    Prior-period field measure retained for cumulative quantity reconciliation.        Hasen_Field_Quantity_Measures_Sep2025.pdf          3.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n12   SUP-006  SUPPORT_DETAIL         CTL-002            2                         Pavement milling             02-02      Quantity Measure   2025-09-05  This Period Work                                                 Cliffdale Rd, Sta. 31+75 to 42+50              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN  10486.625   SY       4.625                 48500.64      HCS-QM-2025-0905-01                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                                                Inspector-measured milling quantity for the first September production segment.        Hasen_Field_Quantity_Measures_Sep2025.pdf          4.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n13   SUP-007  SUPPORT_DETAIL         CTL-002            2                         Pavement milling             02-03          Daily Report   2025-09-11  This Period Work                                                 Cliffdale Rd, Sta. 42+50 to 49+10              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN   6328.500   SY       4.625                 29269.31         HCS-DR-2025-0911                 NaN  Partially Supported                                                                                                                                                                                                                                                                                                                                         Daily report quantity is subject to final City measurement and does not independently support the contractor-reported 82.0000 percent.                Hasen_September_Daily_Reports.pdf          8.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n14   SUP-008  SUPPORT_DETAIL         CTL-002            2                         Pavement milling             02-04  Review Recalculation   2025-09-26    Not Applicable                                      City of Fayetteville Engineering review file              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN        NaN  NaN         NaN                      NaN   FAY-REV-MILL-2025-0926                 NaN             Disputed                                                                                                                                                                                                                                                                                                                                                 Amount-derived completion is 79.8866 percent versus 82.0000 percent reported; carry a 2.1134-point variance to reconciliation.           Hasen_SOV_Audit_Workpapers_Sep2025.pdf          5.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n15   SUP-009  SUPPORT_DETAIL         CTL-003            3                   Asphalt microsurfacing             03-01      Quantity Measure   2025-08-28      Previous Pay                                                 Cliffdale Rd, Sta. 18+20 to 36+40              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN  18452.370   SY       4.875                 89955.30      HCS-QM-2025-0828-03                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                                               Prior-period measured placement retained in the cumulative quantity rollforward.        Hasen_Field_Quantity_Measures_Sep2025.pdf          7.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n16   SUP-010  SUPPORT_DETAIL         CTL-003            3                   Asphalt microsurfacing             03-02      Quantity Measure   2025-09-18  This Period Work                                                 Cliffdale Rd, Sta. 42+50 to 57+80              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN  22347.625   SY       4.875                108944.67      HCS-QM-2025-0918-04                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                                               City field measure for the principal September microsurfacing placement segment.        Hasen_Field_Quantity_Measures_Sep2025.pdf          9.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n17   SUP-011  SUPPORT_DETAIL         CTL-003            3                   Asphalt microsurfacing             03-03          Daily Report   2025-09-22  This Period Work                                               Morganton Rd approaches and tie-ins              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN   6842.850   SY       4.875                 33358.89         HCS-DR-2025-0922                 NaN  Partially Supported                                                                                                                                                                                                                                                                                                                                                                      Production quantity is supported by the daily report but awaits final station-based field reconciliation.                Hasen_September_Daily_Reports.pdf         14.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n18   SUP-012  SUPPORT_DETAIL         CTL-003            3                   Asphalt microsurfacing             03-04  Review Recalculation   2025-09-26    Not Applicable                                      City of Fayetteville Engineering review file              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN        NaN  NaN         NaN                      NaN  FAY-REV-MICRO-2025-0926                 NaN             Disputed                                                                                                                                                                                                                                                                                                                                                 Amount-derived completion is 61.5347 percent versus 68.0000 percent reported; carry a 6.4653-point variance to reconciliation.           Hasen_SOV_Audit_Workpapers_Sep2025.pdf          6.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\n19   SUP-013  SUPPORT_DETAIL         CTL-004            4                          Traffic control             04-01          Daily Report   2025-08-19      Previous Pay                                                            Cliffdale Rd work zone              NaN           NaN               NaN                         NaN                             NaN                               NaN                        NaN                           NaN                NaN                  NaN                             NaN             NaN                        NaN              NaN     12.000   EA    1850.375                 22204.50      HCS-TC-DR-2025-0819                 NaN            Supported                                                                                                                                                                                                                                                                                                                                                                                                      Prior-period traffic-control deployment days documented by daily reports.                    Hasen_Traffic_Control_Log.pdf          2.0  FAY-FY26-MICRO-PA-SEP25-R1   Sarah Chen      2025-09-29\\nshape (35, 37)\\ncolumns ['Record_ID', 'Record_Type', 'Control_Line_ID', 'SOV_Item_No', 'SOV_Description', 'Support_Record_No', 'Support_Type', 'Support_Date', 'Billing_Bucket', 'Location_Limits', 'Scheduled_Value', 'Previous_Pay', 'This_Period_Work', 'Materials_Presently_Stored', 'Total_Completed_Stored_To_Date', 'Contractor_Reported_Pct_Complete', 'Recalculated_Pct_Complete', 'Pct_Complete_Variance_Points', 'Balance_To_Finish', 'Work_Retainage_Rate', 'Stored_Material_Retainage_Rate', 'Work_Retainage', 'Stored_Material_Retainage', 'Total_Retainage', 'Quantity', 'Unit', 'Unit_Price', 'Extended_Support_Amount', 'Evidence_Reference', 'Executed_CO_On_File', 'Support_Status', 'Reviewer_Note', 'Source_Document', 'Source_Page', 'Extraction_Batch_ID', 'Extracted_By', 'Extraction_Date']\\n=====  01_Source_Extracts/Fayetteville_AppendixC_Field_Map.csv\\n     Mapping_ID  Source_Order                           Form_Family Worksheet                                              Source_File  Source_Page                      Source_Field_Label                                         Source_Cell_or_Region     Source_Data_Type Source_Required                       Audit_Model_Field        Audit_Category                                                                 Line_Item_Key_Rule                                                                                                                                                           Definition                                                                                                                       Calculation_Basis                                                                                                                 Formula_Expression Sign_Convention Unit_of_Measure                                                                                   Rounding_Rule   Retainage_Class                                                                                                                                                                  Support_Requirement                                                                                                             Exception_Test                                                  Payment_Certificate_Use Control_ID As_of_Date Billable_Flag Executed_CO_Required  Example_Scheduled_Value  Example_Previous_Pay  Example_This_Period_Work  Example_Stored_Materials  Example_Total_Completed_Stored  Example_Percent_Complete  Example_Balance_to_Finish  Example_Work_Retainage_Rate  Example_Stored_Retainage_Rate  Example_Retainage  Example_Current_Payment_Due Review_Status Analyst_Note\\n0   MAP-SUM-001             1  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0                                   Owner  Summary worksheet / application and payment-certificate area                 text             Yes                              owner_name        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                 City of Fayetteville, North Carolina          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational             NaN                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n1   MAP-SUM-002             2  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0                              Contractor  Summary worksheet / application and payment-certificate area                 text             Yes                         contractor_name        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                    Hasen Construction Services, Inc.          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational             NaN                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n2   MAP-SUM-003             3  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0                                 Project  Summary worksheet / application and payment-certificate area                 text             Yes                        procurement_name        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                            FY26 Microsurfacing Treatment procurement          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational             NaN                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n3   MAP-SUM-004             4  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0             Application for Payment No.  Summary worksheet / application and payment-certificate area             currency             Yes                      application_number        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                        Application for Payment No. 1          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational             USD  Calculate to $0.01; certificate summary rounds payment-request amounts to nearest whole dollar               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n4   MAP-SUM-005             5  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0                 Application Period From  Summary worksheet / application and payment-certificate area                 date             Yes                application_period_start        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                                    September 1, 2025          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational   calendar date                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n5   MAP-SUM-006             6  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0              Application Period Through  Summary worksheet / application and payment-certificate area                 date             Yes                  application_period_end        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                                   September 30, 2025          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational   calendar date                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n6   MAP-SUM-007             7  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0          Application Package Issue Date  Summary worksheet / application and payment-certificate area                 date             Yes          application_package_issue_date        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                                      August 22, 2025          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational   calendar date                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n7   MAP-SUM-008             8  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0                      Contractor Address  Summary worksheet / application and payment-certificate area                 text             Yes                      contractor_address        identification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                              Fort Worth, Texas 76107          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational             NaN                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                              Source-form identification and consistency with the application package  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n8   MAP-SUM-009             9  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0             Engineer or Project Manager  Summary worksheet / application and payment-certificate area                 text             Yes                    city_project_manager         certification  Not a line-item join; map by application, contract, or package-control identifier                                                                                                                                                    Michael Rodriguez          Map the source value without assuming a populated Fayetteville project amount; synthetic examples are validation vectors only.                                                                                                                                NaN   Informational             NaN                                N/A; preserve source text exactly after whitespace normalization               NaN                                                                                                                     Authorized signature, dated certification, and role confirmation  Flag missing required identification, inconsistent names, dates outside the application period, or unmapped source values                                                               Disclosure        NaN        NaN           NaN                   No                      NaN                   NaN                       NaN                       NaN                             NaN                       NaN                        NaN                          NaN                            NaN                NaN                          NaN      Verified          NaN\\n9   MAP-SUM-010            10  Fayetteville Appendix C / EJCDC 2018   Summary  sources/fayetteville_appendix_c_payment_calculation.pdf         17.0                   Original Contract Sum  Summary worksheet / application and payment-certificate area             currency             Yes                   original_contract_sum        contract value  Not a line-item join; map by application, contract, or package-control identifier                                                                   \", \"stderr\": \"\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command in /work/workspace. Python docx, openpyxl and pypdf are installed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "m0_calculate_measured_progress",
+      "description": "acc_field_progress: Calculate quantity-supported progress from posted, accepted field entries.",
+      "parameters": {
+        "properties": {
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "canonical_sov_item_id": {
+            "title": "Canonical Sov Item Id",
+            "type": "string"
+          },
+          "through_date": {
+            "title": "Through Date",
+            "type": "string"
+          },
+          "target_quantity_milliunits": {
+            "title": "Target Quantity Milliunits",
+            "type": "integer"
+          },
+          "start_date": {
+            "default": null,
+            "title": "Start Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field_project_id",
+          "canonical_sov_item_id",
+          "through_date",
+          "target_quantity_milliunits"
+        ],
+        "title": "calculate_measured_progressArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_compare_progress_assessments",
+      "description": "acc_field_progress: Align contractor and City progress assessments for selected SOV items.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "canonical_sov_item_ids": {
+            "items": {},
+            "title": "Canonical Sov Item Ids",
+            "type": "array"
+          },
+          "current_only": {
+            "default": true,
+            "title": "Current Only",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "application_id",
+          "field_project_id",
+          "canonical_sov_item_ids"
+        ],
+        "title": "compare_progress_assessmentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_list_field_disputes",
+      "description": "acc_field_progress: List field-progress disputes and their supporting daily reports.",
+      "parameters": {
+        "properties": {
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "application_id": {
+            "default": null,
+            "title": "Application Id",
+            "type": "string"
+          },
+          "resolution_status": {
+            "default": null,
+            "title": "Resolution Status",
+            "type": "string"
+          },
+          "reason_code": {
+            "default": null,
+            "title": "Reason Code",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "field_project_id"
+        ],
+        "title": "list_field_disputesArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_list_installed_quantities",
+      "description": "acc_field_progress: List installed-quantity observations for a project, SOV item, and period.",
+      "parameters": {
+        "properties": {
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "canonical_sov_item_id": {
+            "title": "Canonical Sov Item Id",
+            "type": "string"
+          },
+          "start_date": {
+            "title": "Start Date",
+            "type": "string"
+          },
+          "end_date": {
+            "title": "End Date",
+            "type": "string"
+          },
+          "accepted_flag": {
+            "default": null,
+            "title": "Accepted Flag",
+            "type": "boolean"
+          },
+          "include_voided_reports": {
+            "default": false,
+            "title": "Include Voided Reports",
+            "type": "boolean"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "field_project_id",
+          "canonical_sov_item_id",
+          "start_date",
+          "end_date"
+        ],
+        "title": "list_installed_quantitiesArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_record_progress_assessment",
+      "description": "acc_field_progress: Create a new current progress-assessment version transactionally.",
+      "parameters": {
+        "properties": {
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "canonical_sov_item_id": {
+            "title": "Canonical Sov Item Id",
+            "type": "string"
+          },
+          "assessment_source": {
+            "title": "Assessment Source",
+            "type": "string"
+          },
+          "percent_complete_bp": {
+            "title": "Percent Complete Bp",
+            "type": "integer"
+          },
+          "target_quantity_milliunits": {
+            "title": "Target Quantity Milliunits",
+            "type": "integer"
+          },
+          "assessment_date": {
+            "title": "Assessment Date",
+            "type": "string"
+          },
+          "assessor_id": {
+            "title": "Assessor Id",
+            "type": "string"
+          },
+          "rationale": {
+            "default": null,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field_project_id",
+          "application_id",
+          "canonical_sov_item_id",
+          "assessment_source",
+          "percent_complete_bp",
+          "target_quantity_milliunits",
+          "assessment_date",
+          "assessor_id"
+        ],
+        "title": "record_progress_assessmentArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_resolve_field_dispute",
+      "description": "acc_field_progress: Move an open field dispute into a terminal resolution state.",
+      "parameters": {
+        "properties": {
+          "dispute_id": {
+            "title": "Dispute Id",
+            "type": "string"
+          },
+          "resolution_status": {
+            "title": "Resolution Status",
+            "type": "string"
+          },
+          "reviewer_id": {
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "resolution_note": {
+            "title": "Resolution Note",
+            "type": "string"
+          },
+          "resolved_at": {
+            "title": "Resolved At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dispute_id",
+          "resolution_status",
+          "reviewer_id",
+          "resolution_note",
+          "resolved_at"
+        ],
+        "title": "resolve_field_disputeArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_search_daily_reports",
+      "description": "acc_field_progress: Search daily reports for one project and a closed date range.",
+      "parameters": {
+        "properties": {
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "start_date": {
+            "title": "Start Date",
+            "type": "string"
+          },
+          "end_date": {
+            "title": "End Date",
+            "type": "string"
+          },
+          "inspector_id": {
+            "default": null,
+            "title": "Inspector Id",
+            "type": "string"
+          },
+          "report_status": {
+            "default": null,
+            "title": "Report Status",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "field_project_id",
+          "start_date",
+          "end_date"
+        ],
+        "title": "search_daily_reportsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_summarize_period_production",
+      "description": "acc_field_progress: Summarize accepted, rejected, and voided-parent production by SOV item.",
+      "parameters": {
+        "properties": {
+          "field_project_id": {
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "application_id": {
+            "default": "PAYAPP-FY26-MICRO-001",
+            "title": "Application Id",
+            "type": "string"
+          },
+          "period_start": {
+            "default": "2025-09-01",
+            "title": "Period Start",
+            "type": "string"
+          },
+          "period_end": {
+            "default": "2025-09-30",
+            "title": "Period End",
+            "type": "string"
+          },
+          "canonical_sov_item_ids": {
+            "default": null,
+            "items": {},
+            "title": "Canonical Sov Item Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "field_project_id"
+        ],
+        "title": "summarize_period_productionArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_calculate_accepted_work_value",
+      "description": "cityworks_inspections: Calculate accepted completed-work value through a decision cutoff date.",
+      "parameters": {
+        "properties": {
+          "procurement_id": {
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "payment_application_id": {
+            "title": "Payment Application Id",
+            "type": "string"
+          },
+          "decision_cutoff_date": {
+            "title": "Decision Cutoff Date",
+            "type": "string"
+          },
+          "include_conditional": {
+            "default": false,
+            "title": "Include Conditional",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "procurement_id",
+          "payment_application_id",
+          "decision_cutoff_date"
+        ],
+        "title": "calculate_accepted_work_valueArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_compare_field_and_billed_work",
+      "description": "cityworks_inspections: Compare accepted field value with contractor-billed work and stored materials.",
+      "parameters": {
+        "properties": {
+          "procurement_id": {
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "payment_application_id": {
+            "title": "Payment Application Id",
+            "type": "string"
+          },
+          "decision_cutoff_date": {
+            "title": "Decision Cutoff Date",
+            "type": "string"
+          },
+          "group_by": {
+            "default": "canonical_sov_item_id",
+            "title": "Group By",
+            "type": "string"
+          }
+        },
+        "required": [
+          "procurement_id",
+          "payment_application_id",
+          "decision_cutoff_date"
+        ],
+        "title": "compare_field_and_billed_workArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_create_deficiency_case",
+      "description": "cityworks_inspections: Create an open deficiency case for an existing inspection observation.",
+      "parameters": {
+        "properties": {
+          "observation_id": {
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "work_order_id": {
+            "title": "Work Order Id",
+            "type": "string"
+          },
+          "deficiency_code": {
+            "title": "Deficiency Code",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "payment_hold_cents": {
+            "default": 0,
+            "title": "Payment Hold Cents",
+            "type": "integer"
+          },
+          "opened_date": {
+            "default": null,
+            "title": "Opened Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "observation_id",
+          "work_order_id",
+          "deficiency_code",
+          "description"
+        ],
+        "title": "create_deficiency_caseArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_list_line_item_observations",
+      "description": "cityworks_inspections: List field observations for one canonical schedule-of-values line item.",
+      "parameters": {
+        "properties": {
+          "canonical_sov_item_id": {
+            "title": "Canonical Sov Item Id",
+            "type": "string"
+          },
+          "procurement_id": {
+            "default": null,
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "payment_application_id": {
+            "default": null,
+            "title": "Payment Application Id",
+            "type": "string"
+          },
+          "observation_date_from": {
+            "default": null,
+            "title": "Observation Date From",
+            "type": "string"
+          },
+          "observation_date_to": {
+            "default": null,
+            "title": "Observation Date To",
+            "type": "string"
+          },
+          "acceptance_status": {
+            "default": null,
+            "title": "Acceptance Status",
+            "type": "string"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "canonical_sov_item_id"
+        ],
+        "title": "list_line_item_observationsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_list_open_deficiencies",
+      "description": "cityworks_inspections: List payment deficiencies that remained open on a specified date.",
+      "parameters": {
+        "properties": {
+          "procurement_id": {
+            "default": null,
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "payment_application_id": {
+            "default": null,
+            "title": "Payment Application Id",
+            "type": "string"
+          },
+          "observation_id": {
+            "default": null,
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "deficiency_code": {
+            "default": null,
+            "title": "Deficiency Code",
+            "type": "string"
+          },
+          "as_of_date": {
+            "default": null,
+            "title": "As Of Date",
+            "type": "string"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "list_open_deficienciesArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_record_acceptance_decision",
+      "description": "cityworks_inspections: Record a payment-review decision for an observation or related deficiency.",
+      "parameters": {
+        "properties": {
+          "observation_id": {
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "deficiency_id": {
+            "default": null,
+            "title": "Deficiency Id",
+            "type": "string"
+          },
+          "reviewer_id": {
+            "default": null,
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "reviewer_name": {
+            "default": null,
+            "title": "Reviewer Name",
+            "type": "string"
+          },
+          "decision_code": {
+            "default": null,
+            "title": "Decision Code",
+            "type": "string"
+          },
+          "decision_date": {
+            "default": null,
+            "title": "Decision Date",
+            "type": "string"
+          },
+          "payment_eligible_cents": {
+            "default": 0,
+            "title": "Payment Eligible Cents",
+            "type": "integer"
+          },
+          "rationale": {
+            "default": null,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "observation_id"
+        ],
+        "title": "record_acceptance_decisionArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_search_inspection_work_orders",
+      "description": "cityworks_inspections: Search inspection work orders using project, date, inspector, or status filters.",
+      "parameters": {
+        "properties": {
+          "procurement_id": {
+            "default": null,
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "field_project_id": {
+            "default": null,
+            "title": "Field Project Id",
+            "type": "string"
+          },
+          "inspection_date_from": {
+            "default": null,
+            "title": "Inspection Date From",
+            "type": "string"
+          },
+          "inspection_date_to": {
+            "default": null,
+            "title": "Inspection Date To",
+            "type": "string"
+          },
+          "assigned_inspector_id": {
+            "default": null,
+            "title": "Assigned Inspector Id",
+            "type": "string"
+          },
+          "work_order_status": {
+            "default": null,
+            "title": "Work Order Status",
+            "type": "string"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "search_inspection_work_ordersArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_add_review_citation",
+      "description": "laserfiche_records: Add a review citation from one immutable version to controlled evidence.",
+      "parameters": {
+        "properties": {
+          "document_version_id": {
+            "title": "Document Version Id",
+            "type": "string"
+          },
+          "cited_document_id": {
+            "title": "Cited Document Id",
+            "type": "string"
+          },
+          "cited_document_version_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cited Document Version Id"
+          },
+          "anchor_name": {
+            "title": "Anchor Name",
+            "type": "string"
+          },
+          "anchor_locator": {
+            "title": "Anchor Locator",
+            "type": "string"
+          },
+          "citation_status": {
+            "default": "DRAFT",
+            "title": "Citation Status",
+            "type": "string"
+          },
+          "reviewer_id": {
+            "default": "",
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "citation_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Citation Note"
+          }
+        },
+        "required": [
+          "document_version_id",
+          "cited_document_id",
+          "cited_document_version_id",
+          "anchor_name",
+          "anchor_locator"
+        ],
+        "title": "add_review_citationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_get_current_document_version",
+      "description": "laserfiche_records: Resolve the effective immutable document version at a requested cutoff.",
+      "parameters": {
+        "properties": {
+          "document_id": {
+            "title": "Document Id",
+            "type": "string"
+          },
+          "as_of_date": {
+            "default": "2025-09-30",
+            "title": "As Of Date",
+            "type": "string"
+          },
+          "include_superseded": {
+            "default": false,
+            "title": "Include Superseded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "title": "get_current_document_versionArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_get_publisher_provenance",
+      "description": "laserfiche_records: Resolve publisher provenance by profile, canonical entity, or document.",
+      "parameters": {
+        "properties": {
+          "publisher_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Publisher Id"
+          },
+          "canonical_entity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Canonical Entity Id"
+          },
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Id"
+          },
+          "include_variants": {
+            "default": true,
+            "title": "Include Variants",
+            "type": "boolean"
+          }
+        },
+        "title": "get_publisher_provenanceArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_list_extracted_controls",
+      "description": "laserfiche_records: List extracted controls for one immutable document version.",
+      "parameters": {
+        "properties": {
+          "document_version_id": {
+            "title": "Document Version Id",
+            "type": "string"
+          },
+          "canonical_field_codes": {
+            "default": null,
+            "items": {},
+            "title": "Canonical Field Codes",
+            "type": "array"
+          },
+          "value_types": {
+            "default": null,
+            "items": {},
+            "title": "Value Types",
+            "type": "array"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cursor"
+          }
+        },
+        "required": [
+          "document_version_id"
+        ],
+        "title": "list_extracted_controlsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_register_document_version",
+      "description": "laserfiche_records: Register an immutable document version and optionally make it current.",
+      "parameters": {
+        "properties": {
+          "document_id": {
+            "title": "Document Id",
+            "type": "string"
+          },
+          "version_number": {
+            "title": "Version Number",
+            "type": "integer"
+          },
+          "effective_date": {
+            "title": "Effective Date",
+            "type": "string"
+          },
+          "upload_timestamp": {
+            "title": "Upload Timestamp",
+            "type": "string"
+          },
+          "content_hash": {
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "mime_type": {
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "storage_locator": {
+            "title": "Storage Locator",
+            "type": "string"
+          },
+          "registered_by": {
+            "title": "Registered By",
+            "type": "string"
+          },
+          "make_current": {
+            "default": false,
+            "title": "Make Current",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "document_id",
+          "version_number",
+          "effective_date",
+          "upload_timestamp",
+          "content_hash",
+          "mime_type",
+          "storage_locator",
+          "registered_by"
+        ],
+        "title": "register_document_versionArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_search_controlled_documents",
+      "description": "laserfiche_records: Search document metadata using combined text and record filters.",
+      "parameters": {
+        "properties": {
+          "query": {
+            "default": "",
+            "title": "Query",
+            "type": "string"
+          },
+          "procurement_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Procurement Id"
+          },
+          "application_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Application Id"
+          },
+          "publisher_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Publisher Id"
+          },
+          "document_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "CONTROLLED",
+            "title": "Document Status"
+          },
+          "document_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Type"
+          },
+          "limit": {
+            "default": 25,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cursor"
+          }
+        },
+        "title": "search_controlled_documentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_trace_anchor_citations",
+      "description": "laserfiche_records: Trace a citation anchor across immutable review and evidence versions.",
+      "parameters": {
+        "properties": {
+          "anchor_name": {
+            "title": "Anchor Name",
+            "type": "string"
+          },
+          "procurement_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Procurement Id"
+          },
+          "application_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Application Id"
+          },
+          "as_of_date": {
+            "default": "2025-09-30",
+            "title": "As Of Date",
+            "type": "string"
+          },
+          "citation_status": {
+            "default": "VERIFIED",
+            "title": "Citation Status",
+            "type": "string"
+          },
+          "max_depth": {
+            "default": 4,
+            "title": "Max Depth",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "anchor_name"
+        ],
+        "title": "trace_anchor_citationsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_validate_field_map",
+      "description": "laserfiche_records: Validate the Appendix C and G702 field map at an effective-date cutoff.",
+      "parameters": {
+        "properties": {
+          "procurement_id": {
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "required_profile": {
+            "default": "APPENDIX_C_G702",
+            "title": "Required Profile",
+            "type": "string"
+          },
+          "as_of_date": {
+            "default": "2025-09-30",
+            "title": "As Of Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "procurement_id",
+          "application_id"
+        ],
+        "title": "validate_field_mapArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_authorize_recommended_payment",
+      "description": "munis_ap: Authorize a recommended payment and advance its document to the payment queue.",
+      "parameters": {
+        "properties": {
+          "ap_document_id": {
+            "title": "Ap Document Id",
+            "type": "string"
+          },
+          "calculation_version": {
+            "title": "Calculation Version",
+            "type": "integer"
+          },
+          "authorized_by": {
+            "title": "Authorized By",
+            "type": "string"
+          },
+          "expected_current_payment_cents": {
+            "title": "Expected Current Payment Cents",
+            "type": "integer"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ap_document_id",
+          "calculation_version",
+          "authorized_by",
+          "expected_current_payment_cents",
+          "idempotency_key"
+        ],
+        "title": "authorize_recommended_paymentArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_calculate_balance_to_finish",
+      "description": "munis_ap: Calculate balance to finish for an explicit recommended certificate version.",
+      "parameters": {
+        "properties": {
+          "ap_document_id": {
+            "title": "Ap Document Id",
+            "type": "string"
+          },
+          "calculation_version": {
+            "title": "Calculation Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ap_document_id",
+          "calculation_version"
+        ],
+        "title": "calculate_balance_to_finishArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_calculate_current_payment_due",
+      "description": "munis_ap: Recalculate current payment due for an explicit certificate version.",
+      "parameters": {
+        "properties": {
+          "ap_document_id": {
+            "title": "Ap Document Id",
+            "type": "string"
+          },
+          "calculation_version": {
+            "title": "Calculation Version",
+            "type": "integer"
+          },
+          "valid_transaction_statuses": {
+            "default": [
+              "CLEARED",
+              "ISSUED"
+            ],
+            "items": {},
+            "title": "Valid Transaction Statuses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ap_document_id",
+          "calculation_version"
+        ],
+        "title": "calculate_current_payment_dueArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_calculate_separate_retainage",
+      "description": "munis_ap: Calculate separate retainage for completed work and accepted stored materials.",
+      "parameters": {
+        "properties": {
+          "completed_work_cents": {
+            "title": "Completed Work Cents",
+            "type": "integer"
+          },
+          "completed_work_rate_bp": {
+            "title": "Completed Work Rate Bp",
+            "type": "integer"
+          },
+          "accepted_stored_material_cents": {
+            "title": "Accepted Stored Material Cents",
+            "type": "integer"
+          },
+          "stored_material_rate_bp": {
+            "title": "Stored Material Rate Bp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "completed_work_cents",
+          "completed_work_rate_bp",
+          "accepted_stored_material_cents",
+          "stored_material_rate_bp"
+        ],
+        "title": "calculate_separate_retainageArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_compare_submitted_and_recommended",
+      "description": "munis_ap: Compare explicitly selected submitted and recommended payment calculations.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "submitted_version": {
+            "title": "Submitted Version",
+            "type": "integer"
+          },
+          "recommended_version": {
+            "title": "Recommended Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id",
+          "submitted_version",
+          "recommended_version"
+        ],
+        "title": "compare_submitted_and_recommendedArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_create_certificate_version",
+      "description": "munis_ap: Create an immutable set of certificate calculation metrics in one transaction.",
+      "parameters": {
+        "properties": {
+          "ap_document_id": {
+            "title": "Ap Document Id",
+            "type": "string"
+          },
+          "calculation_version": {
+            "title": "Calculation Version",
+            "type": "integer"
+          },
+          "is_recommended": {
+            "title": "Is Recommended",
+            "type": "boolean"
+          },
+          "reviewer_id": {
+            "default": null,
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "metrics": {
+            "default": null,
+            "items": {},
+            "title": "Metrics",
+            "type": "array"
+          },
+          "idempotency_key": {
+            "default": null,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ap_document_id",
+          "calculation_version",
+          "is_recommended"
+        ],
+        "title": "create_certificate_versionArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_list_certificate_components",
+      "description": "munis_ap: List accounting components for one payment application or certificate.",
+      "parameters": {
+        "properties": {
+          "ap_document_id": {
+            "title": "Ap Document Id",
+            "type": "string"
+          },
+          "component_codes": {
+            "default": null,
+            "items": {},
+            "title": "Component Codes",
+            "type": "array"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ap_document_id"
+        ],
+        "title": "list_certificate_componentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_list_payment_history",
+      "description": "munis_ap: List payment transactions and replacement chains without collapsing exceptions.",
+      "parameters": {
+        "properties": {
+          "vendor_id": {
+            "default": null,
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "application_id": {
+            "default": null,
+            "title": "Application Id",
+            "type": "string"
+          },
+          "ap_document_id": {
+            "default": null,
+            "title": "Ap Document Id",
+            "type": "string"
+          },
+          "statuses": {
+            "default": null,
+            "items": {},
+            "title": "Statuses",
+            "type": "array"
+          },
+          "date_from": {
+            "default": null,
+            "title": "Date From",
+            "type": "string"
+          },
+          "date_to": {
+            "default": null,
+            "title": "Date To",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "list_payment_historyArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_search_vendor_documents",
+      "description": "munis_ap: Search AP documents by vendor, entity, application, status, type, or date.",
+      "parameters": {
+        "properties": {
+          "vendor_id": {
+            "default": null,
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "canonical_entity_id": {
+            "default": null,
+            "title": "Canonical Entity Id",
+            "type": "string"
+          },
+          "application_id": {
+            "default": null,
+            "title": "Application Id",
+            "type": "string"
+          },
+          "document_type": {
+            "default": null,
+            "title": "Document Type",
+            "type": "string"
+          },
+          "document_status": {
+            "default": null,
+            "title": "Document Status",
+            "type": "string"
+          },
+          "date_from": {
+            "default": null,
+            "title": "Date From",
+            "type": "string"
+          },
+          "date_to": {
+            "default": null,
+            "title": "Date To",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "search_vendor_documentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_calculate_approved_change_total",
+      "description": "opengov_procurement: Calculate executed change-order value effective on or before an application cutoff.",
+      "parameters": {
+        "properties": {
+          "award_id": {
+            "title": "Award Id",
+            "type": "string"
+          },
+          "application_cutoff": {
+            "title": "Application Cutoff",
+            "type": "string"
+          }
+        },
+        "required": [
+          "award_id",
+          "application_cutoff"
+        ],
+        "title": "calculate_approved_change_totalArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_evaluate_change_billing_eligibility",
+      "description": "opengov_procurement: Evaluate change requests against execution state and active billing controls.",
+      "parameters": {
+        "properties": {
+          "award_id": {
+            "title": "Award Id",
+            "type": "string"
+          },
+          "application_cutoff": {
+            "title": "Application Cutoff",
+            "type": "string"
+          },
+          "change_request_ids": {
+            "default": null,
+            "items": {},
+            "title": "Change Request Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "award_id",
+          "application_cutoff"
+        ],
+        "title": "evaluate_change_billing_eligibilityArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_get_awarded_contract",
+      "description": "opengov_procurement: Retrieve one awarded contract by exactly one award or contract identifier.",
+      "parameters": {
+        "properties": {
+          "award_id": {
+            "default": null,
+            "title": "Award Id",
+            "type": "string"
+          },
+          "contract_id": {
+            "default": null,
+            "title": "Contract Id",
+            "type": "string"
+          }
+        },
+        "title": "get_awarded_contractArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_list_approval_history",
+      "description": "opengov_procurement: List approval actions chronologically for an award or one of its requests.",
+      "parameters": {
+        "properties": {
+          "award_id": {
+            "default": null,
+            "title": "Award Id",
+            "type": "string"
+          },
+          "change_request_id": {
+            "default": null,
+            "title": "Change Request Id",
+            "type": "string"
+          },
+          "action_through": {
+            "default": null,
+            "title": "Action Through",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "list_approval_historyArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_list_change_order_requests",
+      "description": "opengov_procurement: List change requests for one award with optional status and date cutoff.",
+      "parameters": {
+        "properties": {
+          "award_id": {
+            "title": "Award Id",
+            "type": "string"
+          },
+          "status": {
+            "default": null,
+            "title": "Status",
+            "type": "string"
+          },
+          "requested_through": {
+            "default": null,
+            "title": "Requested Through",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 25,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "award_id"
+        ],
+        "title": "list_change_order_requestsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_record_approval_action",
+      "description": "opengov_procurement: Append an approval-history action and apply its permitted request transition atomically.",
+      "parameters": {
+        "properties": {
+          "change_request_id": {
+            "title": "Change Request Id",
+            "type": "string"
+          },
+          "approver_id": {
+            "title": "Approver Id",
+            "type": "string"
+          },
+          "approver_role": {
+            "title": "Approver Role",
+            "type": "string"
+          },
+          "action_code": {
+            "title": "Action Code",
+            "type": "string"
+          },
+          "action_comment": {
+            "default": null,
+            "title": "Action Comment",
+            "type": "string"
+          },
+          "action_timestamp": {
+            "default": null,
+            "title": "Action Timestamp",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "default": null,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "change_request_id",
+          "approver_id",
+          "approver_role",
+          "action_code"
+        ],
+        "title": "record_approval_actionArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_search_procurements",
+      "description": "opengov_procurement: Search procurement masters with conjunctive filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "owner_id": {
+            "default": null,
+            "title": "Owner Id",
+            "type": "string"
+          },
+          "title_query": {
+            "default": null,
+            "title": "Title Query",
+            "type": "string"
+          },
+          "fiscal_year": {
+            "default": null,
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "issue_date_from": {
+            "default": null,
+            "title": "Issue Date From",
+            "type": "string"
+          },
+          "issue_date_to": {
+            "default": null,
+            "title": "Issue Date To",
+            "type": "string"
+          },
+          "status": {
+            "default": null,
+            "title": "Status",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 25,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "search_procurementsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m4_submit_change_order_request",
+      "description": "opengov_procurement: Create a submitted change request and its initial submission action atomically.",
+      "parameters": {
+        "properties": {
+          "award_id": {
+            "title": "Award Id",
+            "type": "string"
+          },
+          "change_order_number": {
+            "title": "Change Order Number",
+            "type": "string"
+          },
+          "request_title": {
+            "title": "Request Title",
+            "type": "string"
+          },
+          "requested_amount_cents": {
+            "title": "Requested Amount Cents",
+            "type": "integer"
+          },
+          "requested_date": {
+            "title": "Requested Date",
+            "type": "string"
+          },
+          "billing_reference": {
+            "default": null,
+            "title": "Billing Reference",
+            "type": "string"
+          },
+          "submitted_by": {
+            "default": null,
+            "title": "Submitted By",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "default": null,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "award_id",
+          "change_order_number",
+          "request_title",
+          "requested_amount_cents",
+          "requested_date"
+        ],
+        "title": "submit_change_order_requestArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_compare_reported_percentages",
+      "description": "procore_pay_apps: Compare reported completion percentages with monetary line calculations.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "sov_item_ids": {
+            "default": null,
+            "items": {},
+            "title": "Sov Item Ids",
+            "type": "array"
+          },
+          "tolerance_bp": {
+            "default": 50,
+            "title": "Tolerance Bp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "compare_reported_percentagesArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_export_g703_control_view",
+      "description": "procore_pay_apps: Produce a controlled G703 reconciliation extract from current audited lines.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "include_zero_lines": {
+            "default": true,
+            "title": "Include Zero Lines",
+            "type": "boolean"
+          },
+          "format": {
+            "default": "json",
+            "title": "Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "export_g703_control_viewArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_flag_duplicate_submission_line",
+      "description": "procore_pay_apps: Mark an imported duplicate line as superseded while preserving audit history.",
+      "parameters": {
+        "properties": {
+          "application_line_id": {
+            "title": "Application Line Id",
+            "type": "string"
+          },
+          "superseded_by_line_id": {
+            "title": "Superseded By Line Id",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "actor_id": {
+            "title": "Actor Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "application_line_id",
+          "superseded_by_line_id",
+          "reason",
+          "actor_id"
+        ],
+        "title": "flag_duplicate_submission_lineArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_get_pay_application",
+      "description": "procore_pay_apps: Return one payment application header with its linked contract identity.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "get_pay_applicationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_list_application_lines",
+      "description": "procore_pay_apps: Return G703 line detail joined to the controlled schedule of values.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "include_superseded": {
+            "default": false,
+            "title": "Include Superseded",
+            "type": "boolean"
+          },
+          "audit_status": {
+            "default": "audited",
+            "title": "Audit Status",
+            "type": "string"
+          },
+          "sov_item_id": {
+            "default": null,
+            "title": "Sov Item Id",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 200,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "list_application_linesArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_list_application_summary_entries",
+      "description": "procore_pay_apps: List versioned AIA-style payment application summary components.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "summary_version": {
+            "default": null,
+            "title": "Summary Version",
+            "type": "integer"
+          },
+          "submission_basis": {
+            "default": null,
+            "title": "Submission Basis",
+            "type": "string"
+          },
+          "current_only": {
+            "default": true,
+            "title": "Current Only",
+            "type": "boolean"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "list_application_summary_entriesArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_list_sov_items",
+      "description": "procore_pay_apps: List controlled schedule-of-values items for one prime contract.",
+      "parameters": {
+        "properties": {
+          "contract_id": {
+            "title": "Contract Id",
+            "type": "string"
+          },
+          "cost_code": {
+            "default": null,
+            "title": "Cost Code",
+            "type": "string"
+          },
+          "source_type": {
+            "default": null,
+            "title": "Source Type",
+            "type": "string"
+          },
+          "search": {
+            "default": null,
+            "title": "Search",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "contract_id"
+        ],
+        "title": "list_sov_itemsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_recalculate_application_totals",
+      "description": "procore_pay_apps: Recalculate current monetary totals from deduplicated application lines.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "include_rejected": {
+            "default": false,
+            "title": "Include Rejected",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "recalculate_application_totalsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_search_contracts",
+      "description": "procore_pay_apps: Search prime contracts using all supplied filters with AND semantics.",
+      "parameters": {
+        "properties": {
+          "procurement_id": {
+            "default": null,
+            "title": "Procurement Id",
+            "type": "string"
+          },
+          "owner_id": {
+            "default": null,
+            "title": "Owner Id",
+            "type": "string"
+          },
+          "contractor_id": {
+            "default": null,
+            "title": "Contractor Id",
+            "type": "string"
+          },
+          "contract_number": {
+            "default": null,
+            "title": "Contract Number",
+            "type": "string"
+          },
+          "status": {
+            "default": null,
+            "title": "Status",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "search_contractsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m5_update_application_summary_entry",
+      "description": "procore_pay_apps: Update the controlled amount and reported percentage for one summary entry.",
+      "parameters": {
+        "properties": {
+          "summary_entry_id": {
+            "title": "Summary Entry Id",
+            "type": "string"
+          },
+          "amount_cents": {
+            "title": "Amount Cents",
+            "type": "integer"
+          },
+          "percent_bp": {
+            "default": null,
+            "title": "Percent Bp",
+            "type": "integer"
+          },
+          "is_current": {
+            "default": true,
+            "title": "Is Current",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "summary_entry_id",
+          "amount_cents"
+        ],
+        "title": "update_application_summary_entryArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_build_material_support_log",
+      "description": "unifier_materials: Build a paginated claim-level stored-material support log.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "contractor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contractor Id"
+          },
+          "include_eligible": {
+            "default": false,
+            "title": "Include Eligible",
+            "type": "boolean"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "build_material_support_logArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_calculate_unsupported_claim_amount",
+      "description": "unifier_materials: Calculate unsupported stored-material claims for a pay application.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "contractor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contractor Id"
+          },
+          "canonical_sov_item_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Canonical Sov Item Id"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "calculate_unsupported_claim_amountArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_evaluate_support_completeness",
+      "description": "unifier_materials: Evaluate required evidence and custody controls for one claim.",
+      "parameters": {
+        "properties": {
+          "material_claim_id": {
+            "title": "Material Claim Id",
+            "type": "string"
+          },
+          "as_of_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "As Of Date"
+          }
+        },
+        "required": [
+          "material_claim_id"
+        ],
+        "title": "evaluate_support_completenessArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_get_custody_controls",
+      "description": "unifier_materials: Return each custody location without combining controls across sites.",
+      "parameters": {
+        "properties": {
+          "material_claim_id": {
+            "title": "Material Claim Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "material_claim_id"
+        ],
+        "title": "get_custody_controlsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_list_claim_evidence",
+      "description": "unifier_materials: List directly linked evidence documents for one material claim.",
+      "parameters": {
+        "properties": {
+          "material_claim_id": {
+            "title": "Material Claim Id",
+            "type": "string"
+          },
+          "document_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Type"
+          },
+          "verification_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Verification Status"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "material_claim_id"
+        ],
+        "title": "list_claim_evidenceArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_place_claim_on_hold",
+      "description": "unifier_materials: Place an unsupported claim on evidence hold without changing contractor status.",
+      "parameters": {
+        "properties": {
+          "material_claim_id": {
+            "title": "Material Claim Id",
+            "type": "string"
+          },
+          "reason_code": {
+            "title": "Reason Code",
+            "type": "string"
+          },
+          "reviewer_id": {
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "material_claim_id",
+          "reason_code",
+          "reviewer_id",
+          "note"
+        ],
+        "title": "place_claim_on_holdArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_record_evidence_review",
+      "description": "unifier_materials: Create or concurrency-safe update a claim requirement review.",
+      "parameters": {
+        "properties": {
+          "material_claim_id": {
+            "title": "Material Claim Id",
+            "type": "string"
+          },
+          "requirement_id": {
+            "title": "Requirement Id",
+            "type": "string"
+          },
+          "evidence_document_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Evidence Document Id"
+          },
+          "review_result": {
+            "title": "Review Result",
+            "type": "string"
+          },
+          "exemption_rule_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Exemption Rule Code"
+          },
+          "reviewer_id": {
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "reviewer_name": {
+            "title": "Reviewer Name",
+            "type": "string"
+          },
+          "review_note": {
+            "title": "Review Note",
+            "type": "string"
+          },
+          "expected_existing_review_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expected Existing Review Id"
+          }
+        },
+        "required": [
+          "material_claim_id",
+          "requirement_id",
+          "review_result",
+          "reviewer_id",
+          "reviewer_name",
+          "review_note"
+        ],
+        "title": "record_evidence_reviewArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m6_search_material_claims",
+      "description": "unifier_materials: Search material claims using bounded exact-match and amount filters.",
+      "parameters": {
+        "properties": {
+          "application_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Application Id"
+          },
+          "contractor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contractor Id"
+          },
+          "canonical_sov_item_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Canonical Sov Item Id"
+          },
+          "material_category_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Material Category Code"
+          },
+          "claim_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claim Status"
+          },
+          "certification_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Certification Status"
+          },
+          "min_amount_cents": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Min Amount Cents"
+          },
+          "max_amount_cents": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Amount Cents"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 25,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "search_material_claimsArguments",
+        "type": "object"
+      },
+      "strict": false
+    }
+  ],
+  "reasoning": {
+    "effort": "high"
+  }
+}
