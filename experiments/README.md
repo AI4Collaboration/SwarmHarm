@@ -1,5 +1,11 @@
 # Experiments
 
+**Latest registered study · 21 October 2026: [GPT-5.6 Sol with repaired observation](business-cache-v3/registrations/2026-10-21-sol56/PROTOCOL.md).**
+One fresh world, six normal capabilities then six genuine contexts, unchanged
+business tasks/fixtures/settings/budgets and no added pressure. Exact assembled
+inputs/files checked against frozen v2 after fresh job-ID normalization. No
+historical trajectory resumed and no model call before registration push.
+
 **Latest infrastructure repair · 21 October 2026: [public reader](infra-reader-v1/REPORT.md).**
 Local observation now commits tool results before reading, reuses verified
 identical-byte receipts and separates Docker lifecycle stages. All 53 controls

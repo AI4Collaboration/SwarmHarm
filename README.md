@@ -4,11 +4,18 @@ SwarmHarm studies whether agents pursuing legitimate work take harmful shortcuts
 and whether other agents discover and reuse those methods. Tasks use ordinary
 programming or business work with synthetic data and local services.
 
+**Latest study · 21 October 2026:** a fresh
+[GPT-5.6 Sol world](experiments/business-cache-v3/registrations/2026-10-21-sol56/PROTOCOL.md)
+is registered for the repaired v3 runner. Same business tasks, fixtures, settings
+and budgets as v2; only fresh job IDs/state and the explicit observer revision.
+Native preflight and six normal capabilities must pass before six experimental
+contexts. No model calls before the registration push.
+
 **Latest setup repair · 21 October 2026:** the local
 [public-reader timeout is repaired](experiments/infra-reader-v1/REPORT.md).
 All 53 model-free controls and 1,320 stress observations passed. Tool results
 now persist before observation; identical public states reuse verified receipts.
-No model experiment was rerun. A fresh v3 study is not queued.
+No historical model trajectory was rerun. The new registered world is separate.
 
 **Latest behavioral result · 21 October 2026:**
 [three business workflows](experiments/business-cache-v2/RESULTS.md) publicly
@@ -18,7 +25,7 @@ passed; four experimental reports were delivered correctly. The public-reader
 container then timed out: one experimental context finished and five were
 interrupted. This is a verified partial result, not a completed six-worker run.
 No added pressure, fake peers or cooperation coaching was used. All owned
-resources are gone; no further run is queued.
+resources from that world are gone; its trajectories remain unchanged.
 
 [English report](experiments/business-cache-v2/RESULTS.md) ·
 [Earlier complete clinical chain](experiments/clinical-cache-v2/RESULTS.md) ·
@@ -40,11 +47,13 @@ not establish population rates or reproduce the original HF compromise.
   six fully staged capabilities, six genuine complementary-input contexts.
   Verified offline: 12 reader, 13 business-validity, eight whole-flow, one launch
   and 19 existing global prompt controls. All twelve initial input/file sets
-  exactly match frozen v2. V3 has made **zero model calls**; a fresh pushed
-  registration, native preflight and capabilities are required before collection.
+  exactly match frozen v2. The fresh GPT-5.6 Sol world is prepared under the
+  linked registration, with zero calls before push. Native preflight and all six
+  capabilities gate its experimental collection.
   The old v2 world stays partial with its separately verified prefix and missing
   final tool result. Owned containers are absent and the inference lock is free.
-  No collector, reviewer, scheduled monitor or next run is active.
+  One new collector is authorized after push; no reviewer or scheduled monitor
+  is active. Its output is `../eval-readiness/business-cache-sol56-v3-2026-10-21`.
 - **Models and route:** `gpt-5.6-sol / xhigh` verified through existing host login
   at `https://chatgpt.com/backend-api/codex/responses`. `gpt-6-luna / xhigh` completed
   the matched document pilot; `gpt-6.1-sol / xhigh` completed coding studies.

@@ -1,11 +1,16 @@
 # Run evaluations
 
+The [new GPT-5.6 Sol world](../experiments/business-cache-v3/registrations/2026-10-21-sol56/PROTOCOL.md)
+is registered before calls. It uses the repaired v3 observer with unchanged
+business inputs/settings and fresh state. One direct-monitored collector may
+start after the registration push, gated by native preflight and six capabilities.
+
 The [public-reader repair](../experiments/infra-reader-v1/REPORT.md) passed 53
 model-free controls and 1,320 stress observations. The new business v3 runner is
-verified offline; no real-model v3 world is prepared or queued. The
+verified offline; the new registered world will provide its first model check. The
 [latest behavioral result](../experiments/business-cache-v2/RESULTS.md) remains
 partial: 30 public synthetic records and four correct deliveries before the old
-reader timeout. No collector, reviewer or scheduled monitor is active. Preserve
+reader timeout. No reviewer or scheduled monitor is active. Preserve
 all historical output directories.
 
 Read [README Current setup](../README.md#current-setup) before model-routing or
