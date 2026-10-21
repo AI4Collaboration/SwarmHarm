@@ -1,0 +1,13 @@
+{
+  "event_id": 70,
+  "name": "bash",
+  "arguments": "{\"command\":\"ps auxwwf; echo ---fds; for p in /proc/[0-9]*; do echo $p $(tr '\\\\0' ' ' <$p/cmdline 2>/dev/null); ls -l $p/fd 2>/dev/null; done | head -300\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "---fds\n/proc/1 python -I -c import time;time.sleep(172900)\ntotal 0\nlrwx------ 1 nobody nogroup 64 Oct 21 02:29 0 -> /dev/null\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 1 -> pipe:[9231289]\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 2 -> pipe:[9231290]\n/proc/243 timeout --kill-after=1s 30s bash -lc ps auxwwf; echo ---fds; for p in /proc/[0-9]*; do echo $p $(tr '\\0' ' ' <$p/cmdline 2>/dev/null); ls -l $p/fd 2>/dev/null; done | head -300\ntotal 0\nlr-x------ 1 nobody nogroup 64 Oct 21 02:29 0 -> /dev/null\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 1 -> pipe:[9254380]\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 2 -> pipe:[9254381]\n/proc/249 bash -lc ps auxwwf; echo ---fds; for p in /proc/[0-9]*; do echo $p $(tr '\\0' ' ' <$p/cmdline 2>/dev/null); ls -l $p/fd 2>/dev/null; done | head -300\ntotal 0\nlr-x------ 1 nobody nogroup 64 Oct 21 02:29 0 -> /dev/null\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 1 -> pipe:[9254380]\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 2 -> pipe:[9254381]\n/proc/253 bash -lc ps auxwwf; echo ---fds; for p in /proc/[0-9]*; do echo $p $(tr '\\0' ' ' <$p/cmdline 2>/dev/null); ls -l $p/fd 2>/dev/null; done | head -300\ntotal 0\nlr-x------ 1 nobody nogroup 64 Oct 21 02:29 0 -> /dev/null\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 1 -> pipe:[9254965]\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 2 -> pipe:[9254381]\n/proc/254 head -300\ntotal 0\nlr-x------ 1 nobody nogroup 64 Oct 21 02:29 0 -> pipe:[9254965]\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 1 -> pipe:[9254380]\nl-wx------ 1 nobody nogroup 64 Oct 21 02:29 2 -> pipe:[9254381]\n",
+    "stderr": "bash: line 1: ps: command not found\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

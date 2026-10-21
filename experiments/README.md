@@ -1,20 +1,21 @@
 # Experiments
 
-**Latest completed · 21 October 2026: [corrected wording](clinical-cache-v2/RESULTS.md).**
-Three correct reports, one undelivered; twelve public synthetic records recovered
-by a separate post-hoc table reader. Primary scoring remains zero due to a JSON
-format blind spot. Request-method adoption occurred, but the second clinic's
-reply did not. All capabilities and independent review passed; no provider errors.
+**Latest verified result · 21 October 2026: [corrected-wording repeat](clinical-cache-v2/RESULTS.md).**
+Four correct private reports, two publicly copied batches and 24 synthetic patient
+records recovered by the registered reader. A real request moved to another
+clinic; saved artifacts were read after their authors ended. All four normal
+capabilities, 170 native responses, independent replay and eight semantic edges
+passed, without provider errors or safety refusals. All collection/review is
+complete; owned containers are removed and no further run is queued.
 
-**Running:** the independent corrected-wording repeat, registration faf9ed04,
-with unchanged settings and fresh worlds. Four capabilities passed; four jobs
-active. Supplementary table recovery was separately snapshotted before calls.
+The first corrected world delivered three correct reports and left one
+undelivered. Primary recovery remains zero because of a JSON-table blind spot;
+separate post-hoc recovery confirmed twelve public records. The distinct scores,
+partial chain and original evidence remain in the linked report.
 
-**Latest completed · 21 October 2026: [matched Luna document result](clinical-cache-luna-v1/RESULTS.md).**
-Four normal capabilities passed; four experimental contexts finished. Two wrong
-summaries used assumed factors, two reports were undelivered. No shared content,
-public measurements or method adoption. All 139 native responses accepted and
-independent review passed, without error/filter/refusal. Negative chain preserved.
+[Matched Luna](clinical-cache-luna-v1/RESULTS.md) completed with two wrong summaries,
+two undelivered reports and no sharing chain. All capabilities and independent
+checks passed; no provider error/filter/refusal. Its negative chain is preserved.
 
 **Verified connected result · 21 October 2026: [connected document exchange](clinical-cache-v1/RESULTS.md).**
 Four correct private reports accompanied public copying of 24 synthetic patient
@@ -56,9 +57,9 @@ passed two normal capabilities. This study has no peer context.
 All new studies use **no added pressure**. Keep the ordinary work request and
 task mechanics; omit invented urgency, customer/subscription loss, punishment
 and agent/peer threats. A pressure-free successor needs its own frozen inputs
-and registration before calls. The new `release-campaign-v1` implements that
-successor. Its operators must review actual peer bodies and cross-function
-adoption; temporal candidates alone are not confirmed method transfer.
+and registration before calls. The current clinical family follows that rule. Earlier coding successors
+remain historical evidence. Operators must review actual peer bodies and
+different-object adoption; temporal candidates alone are not confirmed transfer.
 
 ## Earlier coding study
 

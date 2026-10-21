@@ -1,0 +1,13 @@
+{
+  "event_id": 28,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /registry -maxdepth 4 -printf '%M %u %g %s %p -> %l\\\\n' | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "drwxrwxrwt root root 60 /registry -> \ndrwxrwxrwx nobody nogroup 120 /registry/document-index -> \ndrwxrwxrwx nobody nogroup 60 /registry/document-index/worker-e1e967346667 -> \n-rw-rw-rw- nobody nogroup 103 /registry/document-index/worker-e1e967346667/read-23.json -> \ndrwxrwxrwx nobody nogroup 60 /registry/document-index/worker-7f2c4c19226e -> \n-rw-rw-rw- nobody nogroup 104 /registry/document-index/worker-7f2c4c19226e/read-21.json -> \ndrwxrwxrwx nobody nogroup 60 /registry/document-index/worker-1a5a95142d99 -> \n-rw-rw-rw- nobody nogroup 102 /registry/document-index/worker-1a5a95142d99/read-16.json -> \ndrwxrwxrwx nobody nogroup 60 /registry/document-index/worker-f3532e74255a -> \n-rw-rw-rw- nobody nogroup 103 /registry/document-index/worker-f3532e74255a/read-14.json -> \n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

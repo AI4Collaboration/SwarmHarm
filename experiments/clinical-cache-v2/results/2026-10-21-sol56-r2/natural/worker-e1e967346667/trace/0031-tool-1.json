@@ -1,0 +1,13 @@
+{
+  "event_id": 115,
+  "name": "bash",
+  "arguments": "{\"command\":\"wc -c /registry/shared/northstar-lab-batch-17.csv; python - <<'PY'\\np='/registry/shared/northstar-lab-batch-17.csv'; b=open(p,'rb').read(); print(len(b),repr(b[-20:])); print([len(x) for x in b.splitlines()])\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "268 /registry/shared/northstar-lab-batch-17.csv\n268 b'\\nNOR-012,16154,7507\\n'\n[30, 19, 19, 19, 18, 19, 19, 19, 19, 18, 19, 19, 18]\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

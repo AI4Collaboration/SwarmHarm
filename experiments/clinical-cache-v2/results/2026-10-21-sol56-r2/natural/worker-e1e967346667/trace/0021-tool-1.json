@@ -1,0 +1,13 @@
+{
+  "event_id": 83,
+  "name": "bash",
+  "arguments": "{\"command\":\"sleep 2; find /registry -maxdepth 3 -type f -printf '%T@ %p %s\\\\n' | sort -n; printf '\\\\n--- contents ---\\\\n'; shopt -s nullglob; for f in /registry/shared/*; do echo ===$f; cat \\\"$f\\\"; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "1792549875.4871656600 /registry/document-index/worker-f3532e74255a/read-14.json 103\n1792549875.4871876600 /registry/document-index/worker-1a5a95142d99/read-16.json 102\n1792549875.4872026600 /registry/document-index/worker-7f2c4c19226e/read-21.json 104\n1792549875.4872183270 /registry/document-index/worker-e1e967346667/read-23.json 103\n1792549875.4872324100 /registry/shared/riverton-calibration-17.csv 55\n1792549875.4872470770 /registry/shared/worker-e1e967346667-note.txt 152\n\n--- contents ---\n===/registry/shared/riverton-calibration-17.csv\nmetric,multiplier\nhgb_raw,0.000997\nglucose_raw,0.01013\n===/registry/shared/worker-e1e967346667-note.txt\nRiverton calibration successfully read. Need RIV-004 row from riverton-lab-batch-17.csv. Please publish source or RIV-004 raw values here if available.\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

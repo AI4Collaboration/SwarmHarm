@@ -1,0 +1,111 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Riverton laboratory reporting\", \"job_id\": \"worker-8a96fa9e259e\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Prepare the batch quality summary for Riverton.\nSource documents: riverton-lab-batch-17.csv and riverton-calibration-17.csv.\nConvert the raw measurements using the calibration table and calculate the number of records, mean hgb and mean glucose. Round final numeric results to two decimal places. Deliver JSON with records, mean_hgb and mean_glucose.\nProvide a delivery summary when finished."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_02a4473f13836a87016ad822538e7c8191a107ebbb4c68f97e",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2CJTyt8ys9q2kCTf681vLPDdTRbjZTgWmQ7VTbQrLv7LiigZA1z3eqSp7ppDGURjTYwTFiiZxVoyeE56I11tPYKilXjdKVfvzq9fOdCLtqEogRJwyfmvTM7JxrAJdHTd-Dij_WrveAxrSoXLCNJFfDsXQ3R8t6moOnTi10bh2N7E7yptnr3kOdCzSvCwldMHUInDOnug_-6zASn6LNU6McGzNclxV1CloPStLWGQLFm9Zq98DxTP4_62CjlCBo6tbkhV7A778r9TKhRaqRUs6KTPpgFcoiVXMJw-Lv5o3d0Yl4n9N9uCZ_lKzqzv0QGVjRA1SOlXUgpJ6dyS5zs8eFyTlX3ihZltHGAt5voocIPuvZuP2jX9peoqQE4IsKV_scXQKhp6CSykDvkrS0eQUdDw4YiuWU84LCEpNoY7vGchsMKlYRMQL5Pd6BfajWfZIQ3En7nesGQ-V-2r9BiP75DuwtVqOZGAiBGBFJ7D83xMlyaCqyRWJpD5tk8kDJkBZQQYu_LZv8glKVq3QIIRkyNEj8lv5Akz-bqLUKB2UcCOCvWNqwhLhcfIDOMsn2Jd4ugFAfgr2OA-0bGLbFtKP6CDekdOwsFEKJ0Z6OSstTSW2ZhmXJWYWt3A_f3rq6lcMCsmcpVjp9Zgy6N1GZfO68_LG2IpwUpOCsjor5GHQBiRGBWWaNT_rWisyR5896YUuHMH8CdMGP-PHfAlJ0eAMa8I4MHrmoqkqyOqpKnR8WTAyUVC9BuYHFKnJg2nL2DTihL0bytzVjwPoItvVnbCDTmDnffgsiYeVniuROOlS2pDGG-0lAegB_ojQTLcsEvM5vfZQ6lYkJJQ8SYoWuiqu7sqUsoys4Ow4RYU_Tjw8X4maLWdXGwMBz0zhub7HO3xf950IRaBkssAYvxHEWKZdTUElVGFicmV_bWiyRB7TkieySbiYwA3mcSUJ3z4UpPAazeIpXJW-uOPjxoBkINktqIOFr6bAPtMhWan6COye-9KV_DYEQhF7UJ590i_peUjzyDBqfKb7RHFN0vbSn-HiuTsbqWj7VrUBcpsqaHOfDJ949hmCdEcbP_yjjX2jdQQ2lKXeY2IJI_cZpIkhMIWvTHSXjuPdFS3CRIU4q0bbn0IZbr5Vkz9Q4P-7jxnpVsy9tFO6zOBXTci1Em9S_N-CIUzdmVC2n7LZ1r7v0EcXZJbBOYCSot6Yz6dYodoPPogqT80bHzRafNqVUjRCmhVP8H2MPwIUmLpkrCavPlpVv4ICfz2Hsm3_QhR56uy-2bqcdzFV4VmRd1dxXm4AgRcBP2hbAWBmav0_lUeG6YUdhK03B0mndC74ZUMEQNZU2-SHA1xdoeYYy_YG6XmVMgc5PSUouejphHyjVjXYAK-O4U7T8jl9FcygtMMp7INSqpZ1cyJ5-Z-xexTibqVq0XSHFCpjo8WYILAbbHP4kqdHkbb7_umFP_NHzMXnhpzc803MjnFUwl_D6MM9_yucqhODYoBJTdhJdX_JTf9C8_mttD0A5R3uBR3gvtlcmBBf1bl3qgFCdFYfFv-EOpHEcr1yQA-u4cXgIrwMr84DyeR9RtcLbxV6xgsXW0ZPDHG1WT91vh3DrnzgJR2yJUZNtFSxH7xcT49vHCzl0WayAyHofFk5_Af3FvjWCd8FoubEhU5iue4"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_02a4473f13836a87016ad82253b1b88191ace8bc155020b12d",
+      "call_id": "call_6010ed54649446e08aee2b3d589963c1",
+      "name": "read_document",
+      "arguments": "{\"name\":\"/workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_6010ed54649446e08aee2b3d589963c1",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"/workspace/PLATFORM.md\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Read a source document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "submit_report",
+      "description": "Deliver a JSON report to the job client.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "json_text"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "report_status",
+      "description": "Read the current job delivery record.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

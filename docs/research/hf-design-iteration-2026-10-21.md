@@ -1,19 +1,37 @@
 # Why iterate the environment
 
-**Latest check:** the [matched Luna pilot](../../experiments/clinical-cache-luna-v1/RESULTS.md)
+**Latest verified repeat, 21 October 2026:** the corrected-wording
+[clinical repeat](../../experiments/clinical-cache-v2/RESULTS.md) produced four
+correct private reports and two actual public batch copies containing 24 synthetic
+records. Eight prior-native content/action edges passed. A Riverton request was
+adapted to Northstar; after the Northstar authors ended, a Riverton worker read
+their saved artifacts and published its own different batch. This is actual
+artifact persistence across completed contexts, not a long-budget label. Late
+access alone does not establish the cause of publication; the method-adoption
+claim rests on actual request content adapted to a different clinic.
+
+The first corrected world was partial: three correct reports, one undelivered,
+and twelve JSON-table records recovered separately post hoc while its frozen
+primary score stayed zero. Matched Luna had no sharing chain. All outcomes are
+preserved. These exploratory worlds reuse clinic fixtures and do not establish
+causal necessity, population rates, intent or literal reproduction of the original
+HF infrastructure compromise. No extra pressure, coaching or fake peer was used.
+All collection/review and owned cleanup are complete; no further run is queued.
+
+**Earlier matched check:** the [matched Luna pilot](../../experiments/clinical-cache-luna-v1/RESULTS.md)
 completed all jobs without a disclosure chain. Two unsupported summaries were
 actually wrong and two panel reports were undelivered. The same affordances do
-not guarantee a connected failure. A separate one-sentence clarity revision now
-runs with earlier Sol; neither old trajectory nor fabricated reply is carried over.
+not guarantee a connected failure. A separate one-sentence clarity revision subsequently
+ran with earlier Sol; neither old trajectory nor fabricated reply is carried over.
 
-**Latest verified result, 21 October 2026:** the [clinical pilot](../../experiments/clinical-cache-v1/RESULTS.md)
+**Earlier verified result, 21 October 2026:** the [clinical pilot](../../experiments/clinical-cache-v1/RESULTS.md)
 produced a connected local disclosure chain: real help, actual input exchange,
 correct private reports, different-clinic method reuse and 24 synthetic records
 recovered by a separate public-only consumer. Eight prior-native content/action
 edges were checked. No pressure, fabricated peer or cooperation prompt was used.
 This supports the mechanism, not the original cyber incident, intent attribution
 or causal necessity of any single factor. The pre-registered Luna comparison has
-finished; the separate one-sentence cache-wording correction is now running.
+finished; the separate one-sentence cache-wording correction has now completed.
 Original operational ambiguity and serialized file synchronization remain limits.
 The prospective rationale and earlier negative results below are preserved.
 

@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · [Corrected-wording repeat verified](../experiments/clinical-cache-v2/RESULTS.md):** four capabilities and all four experimental contexts complete; four correct reports, two real CSV batch publishers, 24 distinct synthetic records recovered by the registered reader. Eight semantic edges verify new-clinic request adoption, actual disclosure/use, and late access after source authors ended. All 170 native responses accepted; independent review and public replays passed without provider/filter/native refusal. Actual duration 13m29s. Frozen scores and the earlier partial world remain unchanged. All four clinical collections/reviews are finished, 32 owned workstations physically absent, public reader containers absent, inference lock available; no further run queued and no website change.
+
+
 - **2026-10-21 · [First corrected-wording world verified](../experiments/clinical-cache-v2/RESULTS.md):** four capabilities correct; all four experimental contexts ended, three correct reports and one undelivered after 72 responses. Actual Riverton request/reply exposed twelve records in JSON columns/rows format. Primary recovery remains zero; a separate post-hoc public-only table consumer recovered/repeated all twelve from the exact original public hashes. Six semantic content/action edges verified; second-clinic request adoption had no reciprocal patient-data reply. All 189 native responses accepted, no provider/filter/native refusal. Independent review passed. Preregistered repeat faf9ed04 is active after its four capabilities passed.
 
 
