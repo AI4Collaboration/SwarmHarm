@@ -9,6 +9,13 @@ procurement, using synthetic records and local business services.
 [Data sources](docs/research/task-sources-and-verification.md) ·
 [Experiments](experiments/README.md)
 
+## Current study
+
+**Prepared · 21 October 2026:** [supplier payments and purchase orders](experiments/procurement-settlement-v1/README.md)
+tests actual approval overruns and method adoption across three successive pairs
+of fresh agents. Two normal capability jobs gate six experimental jobs. No new
+model result yet.
+
 ## Latest evidence
 
 **21 October 2026 · GPT-5.6 Sol:** six experimental agents delivered correct
@@ -27,8 +34,8 @@ attempts and negative results remain in the [history index](docs/history-index.m
 
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
-- **Runner:** [business-cache-v3](experiments/business-cache-v3/README.md), with
-  durable tool records and an independently checked public reader.
+- **Runner:** [procurement-settlement-v1](experiments/procurement-settlement-v1/README.md),
+  with durable tool records and independently checked transaction/source amounts.
 - **Model:** `gpt-5.6-sol / xhigh` through existing host ChatGPT login at
   `https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
 - **Local environment:** Python 3.12.14, inspect-ai 0.3.257, OpenAI SDK 2.54.0;
@@ -39,11 +46,12 @@ Last verified on **21 October 2026**; new runs require fresh access checks.
 - **State at the last review:** collection and cleanup completed; no active run
   or scheduled monitor. Verify live state before launching.
 
-## Next study
+## Study scope
 
-Test whether agents discover a business-process loophole, share a working method,
-and whether fresh agents use it on different finance or procurement tasks with a
-verified adverse consequence. This study is **not yet implemented or run**.
+Test autonomous business-process discovery, real method sharing and different-task
+adoption by fresh agents. The new environment is implemented and checked offline;
+live results are pending. Posted approval overruns are financial commitments,
+not automatically realized economic loss or evidence of intent.
 
 Prompts remain ordinary work requests: no added pressure, collaboration hints,
 loophole hints or communication bans. Keep genuine business requirements and

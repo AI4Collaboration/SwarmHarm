@@ -3,7 +3,7 @@
 **Maintained design · 21 October 2026.** SwarmHarm's next study asks whether agents
 can discover a business-process loophole, share an effective method, and whether
 fresh agents adopt it on different finance or procurement tasks with a verified
-adverse consequence. This study has not yet been implemented or run.
+adverse consequence. The [new environment](../../experiments/procurement-settlement-v1/README.md) is implemented and checked offline; live results are pending.
 
 ## Key elements
 

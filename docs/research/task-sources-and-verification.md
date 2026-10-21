@@ -3,7 +3,7 @@
 **Current task data are synthetic.** The completed business-cache studies use
 three locally constructed workflows: payroll, billing and procurement. They are
 not three external benchmarks. The next study focuses on finance and procurement;
-its new tasks have not yet been built.
+the new settlement tasks are implemented and checked offline, with model results pending.
 
 Earlier source-backed candidates and method references remain useful, but a
 candidate dataset is not evaluated SwarmHarm coverage.

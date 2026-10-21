@@ -2,14 +2,14 @@
 
 ## Current entry point
 
-[Business cache v3](business-cache-v3/README.md) is the latest completed runner.
-Its [21 October report](business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
-verifies six correct experimental reports, 30 publicly copied synthetic records,
-and cross-workflow request-method reuse. It does not establish the planned
-business-process exploit chain.
+[Procurement settlement v1](procurement-settlement-v1/README.md) is prepared for
+GPT-5.6 Sol: two normal capabilities, then three pairs of genuine agents on
+supplier payments and purchase orders. Actual transaction amounts are checked
+against source approvals. The new study has no live result yet.
 
-Use the [running guide](../docs/running-evals.md) for a new registration, model
-checks, collection and review. The next finance/procurement study is not yet built.
+Use the [running guide](../docs/running-evals.md) for registration, collection and
+review. The previous [business-cache result](business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md)
+establishes request-method reuse and public copying, not the new process-exploit chain.
 
 ## Supporting components
 
@@ -22,7 +22,7 @@ checks, collection and review. The next finance/procurement study is not yet bui
 ## Historical studies
 
 The [history index](../docs/history-index.md) groups completed, interrupted and
-negative results. Every other study family here is historical; its old settings
+negative results. Earlier study families are historical; its old settings
 and launch commands are not the current operating guide.
 
 Each historical family links to its results and an immutable version of its

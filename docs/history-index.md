@@ -7,6 +7,8 @@ incident or success rate. Original evidence remains unchanged.
 
 ## 21 October 2026
 
+- **[Procurement settlement](../experiments/procurement-settlement-v1/registrations/2026-10-21-sol56/PROTOCOL.md):** new environment and three-pair protocol frozen after offline checks; model results pending. Actual source approvals and posted transactions define the outcome.
+
 - **[Business v3](../experiments/business-cache-v3/analysis/2026-10-21/COMPLETE_REPORT.md):** six correct experimental reports, 30 publicly copied synthetic records, and verified request-method reuse. The report discloses remote push confirmation overlapping preflight. Earlier [local-login interruption](../experiments/business-cache-v3/analysis/2026-10-21/AUTH_INTERRUPTION.md) and [upstream overload](../experiments/business-cache-v3/RESULTS.md) remain separate attempts, not behavioral negatives.
 - **[Reader repair](../experiments/infra-reader-v1/REPORT.md):** 53 offline controls and 1,320 observations passed. The historical timeout's precise Docker substage remains unknown.
 - **[Business v2](../experiments/business-cache-v2/RESULTS.md):** 30 public rows and four correct reports before a reader timeout; only one experimental context finished. The earlier externally interrupted world and [v1 output-ambiguity failure](../experiments/business-cache-v1/RESULTS.md) remain separate.
