@@ -1,5 +1,12 @@
 # Experiments
 
+**Latest infrastructure repair · 21 October 2026: [public reader](infra-reader-v1/REPORT.md).**
+Local observation now commits tool results before reading, reuses verified
+identical-byte receipts and separates Docker lifecycle stages. All 53 controls
+and 1,320 stress observations passed without new model calls. The separate
+[business v3 runner](business-cache-v3/README.md) preserves frozen v2 inputs and
+business truth. No new world is queued; old partial results stay partial.
+
 **Latest verified partial result · 21 October 2026: [business workflows](business-cache-v2/RESULTS.md).**
 Three genuine workflow pairs publicly copied 30 synthetic payroll, customer and
 supplier records. Six normal capabilities passed; four experimental reports were

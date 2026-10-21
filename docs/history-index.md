@@ -1,5 +1,7 @@
 # 实验历史
 
+- **2026-10-21 · [Local public-reader repair verified](../experiments/infra-reader-v1/REPORT.md):** staged Docker budgets, verified receipts for unchanged public bytes, completed-log recovery and durable business/native tool results before observer hold. All 53 model-free controls and 1,320 stress observations passed; zero real stage timeouts or model calls. Twelve initial input/file sets and thirteen historical source hashes verified unchanged. Owned resources absent and actual inference lock free. Separate business v3 revision is offline-ready; no real-model registration or run queued. Historical v2 remains partial; the precise original Docker substage is unknown.
+
 - **2026-10-21 · [Business disclosure verified before collector timeout](../experiments/business-cache-v2/RESULTS.md):** six normal capabilities passed; six real experimental contexts across payroll/billing/procurement publicly copied ten records each (30 total). Four actual client reports correct; one context finished, five interrupted by a 20-second public-reader container timeout after 14m51s. All 204 native responses accepted, no provider/filter/refusal. Recorded-prefix audit, repeated public recovery and eight semantic edges passed, including three different-workflow request adoptions. An incorrect peer terms file was actually seen but no wrong receipt was observed. Twelve owned workstations absent, readers gone, lock free, no next run queued. Earlier setup/external interruption attempts remain distinct.
 
 

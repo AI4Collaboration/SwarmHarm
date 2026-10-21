@@ -1,10 +1,12 @@
 # Run evaluations
 
-The [latest business extension](../experiments/business-cache-v2/RESULTS.md)
-is terminal and its recorded prefix is independently reviewed: three workflows,
-30 public synthetic records and four correct experimental deliveries. The public
-reader timed out after 14m51s, leaving five contexts interrupted. No further run,
-reviewer or scheduled monitor is active. Preserve all output directories.
+The [public-reader repair](../experiments/infra-reader-v1/REPORT.md) passed 53
+model-free controls and 1,320 stress observations. The new business v3 runner is
+verified offline; no real-model v3 world is prepared or queued. The
+[latest behavioral result](../experiments/business-cache-v2/RESULTS.md) remains
+partial: 30 public synthetic records and four correct deliveries before the old
+reader timeout. No collector, reviewer or scheduled monitor is active. Preserve
+all historical output directories.
 
 Read [README Current setup](../README.md#current-setup) before model-routing or
 setup changes. No AWS or new credentials are required. Preserve hosted Multica
@@ -19,22 +21,20 @@ The current runner fixes GPT-5.6 Sol/xhigh; another model or subject-facing chan
 requires a separately audited, frozen revision. From the repository:
 
 ```text
-python experiments/business-cache-v2/run.py --phase prepare --output <fresh-output>
+python experiments/business-cache-v3/run.py --phase prepare --output <fresh-output>
 ```
 
-Preparation seals source, fixtures, native inputs, initial files and symlinks,
-model settings and budgets. Thirteen environment/truth checks, three complete
-scripted collector/reviewer controls and nineteen existing global prompt checks
-passed. Scripted controls make no model calls and are not behavioral evidence.
-Push a new registration before collecting. The last local collector was launched
-in its own process session, with a saved PID; the earlier tool-owned process died
-with a chat-turn interruption. Keep process ownership separate from subject
-settings and monitor directly without a scheduled task. Investigate the reader
-timeout before starting further live collection:
-
+Preparation seals source/dependencies, fixtures, native inputs, initial files and
+symlinks, reader configuration, model settings and budgets. V3 passed twelve
+reader, thirteen business-truth, eight whole-flow, one launcher and nineteen
+existing global prompt controls. Its twelve initial native input/file sets exactly
+match frozen v2. These controls make no model calls and are not behavioral evidence.
+Push the new registration before collection. Use the launcher to separate process
+ownership from the chat turn; it verifies the seal, records the PID, rejects
+duplicate launch and starts an independent process session:
 
 ```text
-python experiments/business-cache-v2/run.py --phase collect --output <prepared-output>
+python experiments/business-cache-v3/launch.py --output <prepared-output>
 ```
 
 Fresh native preflight and six fully staged capabilities must pass before six
@@ -45,13 +45,25 @@ inventories or cooperation/persistence coaching. Preserve model-authored caution
 
 Use the existing bounded non-root, networkless workstations. Keep 900 seconds per
 request, 1,024 responses/2,048 tools and 12 hours per worker, 48 hours per project,
-30 seconds per program and 20 seconds per public reader unless a new protocol
-explicitly changes them. These are ceilings, not measured autonomy durations or instructions to persist.
+30 seconds per subject program. The registered v3 reader has separate limits:
+60 seconds for creation, 30 for attachment, 10 for in-container execution and
+15 per control/cleanup command. It allows at most two reader-only attempts for
+retryable lifecycle faults and reuses checksummed receipts only for identical
+public bytes/image/decoder/wrapper/execution bound. Every event records fresh or
+cached provenance. These are ceilings, not measured autonomy durations or
+instructions to persist. Model calls are never retried to rescue a trajectory.
 
 ## Monitor and review
 
-Inspect `progress.json`, `response-review.json`, current worker traces/results,
-provider error files and `world.json`. `completion.json` marks terminal collection.
+Inspect `launcher.json` and its PID, `controller.log`, `progress.json`,
+`response-review.json`, current worker traces/results, provider errors and
+`world.json` directly, without a scheduled task. Each phase also saves
+`operator/tool-commits`, `operator/observations` and
+`operator/public-reader/lifecycle.jsonl`. Business results/public snapshots commit
+before observation. A persistent observer failure saves the regular trace/native
+output pair and `observer-hold.json`, marks pending measurement, and stops before
+dispatching any later tool call. Do not treat it as zero exposure, provider failure
+or permission to resume/replace a trajectory. `completion.json` marks terminal collection.
 A source download failure can be the intended blocker; it is not a provider
 outage. A legitimate inference or task wait is not a stall. Compare timestamps
 with configured request/tool allowances and inspect process state before alerting.
@@ -61,16 +73,21 @@ refusals without silent retry, replacement or model substitution.
 Review a fully collected world once:
 
 ```text
-python experiments/business-cache-v2/review.py --output <completed-output> --destination <fresh-export>
+python experiments/business-cache-v3/review.py --output <terminal-output> --destination <fresh-export>
 ```
 
-The last business world is partial. Its separate
+For v3, the reviewer verifies durable commits and receipt provenance and repeats
+each distinct public state twice with fresh readers. It separately lists pending
+measurements and undispatched native tool calls. A passed history audit with
+`measurement_complete: false` does not mean the eval completed or exposure is zero.
+
+The historical v2 world is partial. Its separate
 `analysis/2026-10-21/review_collector_failure.py` checks the recorded prefix,
 explicitly lists the unreturned shell call, and repeats each distinct public
 state in two fresh public-only containers. Its saved review is write-once;
 do not run the complete-world reviewer over that saved directory or label it
-fully completed. No model call is repeated. Investigate the known reader timeout
-before future live collection; do not rescue it with hosted runtime changes.
+fully completed. The repair changes observation timing in a separate revision;
+it does not complete this old world or authorize historical model calls to repeat.
 
 The reviewer checks frozen native histories, source roles, file versions, actual
 client values against independent truth, and repeated public-only consumption.
