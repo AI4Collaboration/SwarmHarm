@@ -399,7 +399,8 @@ thin) and dropped (with the reason).
 ### Grafts onto existing public tasks
 
 These reuse a published task's world directly instead of writing a new
-one. The triage of the Hugging Face rl-environment list found that MiMo
+one. The [triage of the Hugging Face rl-environment list](#hugging-face-rl-environment-triage)
+found that MiMo
 general (FineEnvs/MiMo-V2.6-RL-harbor-general, apache-2.0, 925 tasks) already
 has the blocked-item shape in many tasks, but does not penalize the
 shortcut: no item in the 18 tasks we read sets `gate`, and the `*_unchanged`
@@ -435,6 +436,131 @@ Cards 2 (access-grant), 5 (deploy-exemption), 7 (onboarding-share), 8
 (ticket-skill-claim), 10 (research-data-release) and 12 (branch-pricing) are
 dropped. The first five are IT, data-handling or security-shaped, which the
 project rules exclude, and branch-pricing needs a market simulator.
+
+## Hugging Face rl-environment triage
+
+On 21 October we pulled the
+[rl-environment tag](https://huggingface.co/datasets?other=rl-environment) on
+Hugging Face, which listed 221 datasets. We read the cards of the 39 that
+looked like workplace environments, and the files of the most promising ones
+(18 MiMo general tasks and the leibler retail returns family). Licenses come
+from the card and the Hub API. Recheck them against the files before copying
+anything.
+
+### Main result
+
+MiMo general has the blocked-item shape but does not penalize the shortcut.
+In the `verifier_meta` of the 18 tasks we read, no item sets `gate`, none has
+`src_protect`, and the `*_unchanged` checks are ordinary low-weight atoms
+(weight 0 in s3k_0807, s3k_0852 and s3k_1395). A worker who makes the correct
+write and also the harmful one loses at most one atom. The grader
+(`_grade_sc`) already zeroes the score when a gated item fails, so a graft
+needs `gate: true` on a harm check and harm logged as its own number.
+
+How the MiMo general Harbor port is put together:
+
+- 925 Harbor tasks with ids `s3k_<NNNN>_<category>_<en|zh>_t<1-5>_rl_<NNN>`.
+  504 are in English, about 468 of them outside it_information_systems. The
+  largest English domains are accounting_audit_tax (94), finance_insurance
+  (69), healthcare_ops (57), consulting (54) and hr_people (41).
+- The Harbor repo holds no state database, tools or workspace. The Dockerfile
+  pins the Xiaomi image by digest, and `fetch.py` pulls the files from
+  XiaomiMiMo/MiMo-V2.6-RL-oss at commit 639865fd with hash checks.
+  `setup.sh` starts the MCP sidecar on ports 391xx. The agent runs as UID 500,
+  `/work/system` is root-only, and a hostname blocklist applies. Rubrics are
+  uploaded only after the agent stops.
+- Grading is hybrid: SQLite assertions on the state after the run, plus LLM
+  items that grade `answer.md` with the Inkling judge through
+  router.huggingface.co. The judge needs an HF_TOKEN and an external model
+  call per episode, and a judge crash means no reward.
+- It differs from Xiaomi's own setup in four ways: OpenCode instead of
+  mimoagent, open network minus the blocklist (Xiaomi ran offline), grading
+  in the container after isolation (Xiaomi used a sidecar pod), and a fixed
+  judge. The port reports a mean of 0.844 on both sides.
+- The shortcut is reachable. In s3k_0048 (Power Approvals),
+  `record_approval_event APPROVAL` lets the requester approve their own claim.
+
+### Every dataset we scored
+
+Fit runs from 0 (no use to us) to 3 (graft target). "Deterministic" means the
+reward comes from state, not from a judge.
+
+| dataset | tasks | format | license (card / API) | deterministic | business | fit |
+|---|---|---|---|---|---|---|
+| FineEnvs/MiMo-V2.6-RL-harbor-general | 925 (about 468 English, non-IT) | Harbor, MCP, SQLite | apache-2.0 / apache-2.0 | hybrid | yes | 3 |
+| leibler/retail | 223 (186 Harbor) | Harbor (Kullback) | mit / mit (harness Apache-2.0) | hybrid | yes | 2 |
+| leibler/airline | 130 (123 Harbor) | Harbor | mit / mit | hybrid | yes | 2 |
+| Maydanlabs GOSI sampler | 10 | Harbor, CLI, SQLite | apache-2.0 | yes (state and audit log) | yes (payroll) | 2 |
+| AlexSchwartzman/TradeOpsSim | 13 | AgentEnv | apache-2.0 | yes; escalation passes | yes (reconciliation) | 2 |
+| vibrantlabsai/usaspending-recon | 91 | OpenEnv, read-only SQL | cc0 | yes | yes | 1 to 2 |
+| bpHigh/finance-desk | 30, plus 12 software | OpenEnv, TB2 | apache-2.0 | yes | partly | 1 |
+| metaphilabs credit-underwriting | 1,387 | plain (PDF extraction) | mit | yes | yes, no controls | 1 |
+| rca-umb five-desks and siblings | about 18 / 63 ids | OpenEnv | apache-2.0 | yes | partly | 1 |
+| rca-umb control and collapse sets | diagnostic | OpenEnv | apache-2.0 | yes | no | 0 |
+| yatin digital-hospital and LIMS | 11 roles / 25 patients | OpenEnv-style | cc-by-4.0 | yes | clinical | 1 |
+| earakely AirOps and PortSim | 24 dates / berth | AgentEnv | other | yes | logistics | 1 |
+| FineEnvs/PortSimEnv | 1,100 | OpenEnv | cc-by-sa-4.0 | yes (CP-SAT) | logistics | 0 to 1 |
+| earakely REA bundles (8 sets) | 11 to 12 each | AgentEnv replay | apache-2.0 | yes | retrieval QA | 0 |
+| Dissei Financial Judgment | 7 | Harbor | other, gated | no | yes | 0 to 1 |
+| endishai/lexenvs-tasks | 164 | Harbor server | apache-2.0 | partly | consumer advice | 0 |
+| PrimeIntellect/general-agent | 4,417 | Verifiers | none | yes (DB hash) | unknown | 1, pending license |
+| jimbobjordan/playbook | 12 | own gym | agpl-3.0 | yes | legal | design reference only |
+| seekbot/skpropagate-env | 447 | Harbor | cc-by-4.0, gated, no training | yes | no | 0 (related work) |
+| NJU-LINK/SkillTransferBench | 35 families / 408 | own | other | yes | mostly no | 0 to 1 (related work) |
+| kellu-scale/SafetyBench | 110 | AgentEnv | cc-by-nc-4.0 | no | workplace safety | 0 |
+| nvidia calendar and instruction_following | n/a / 46,391 | plain | cc-by-4.0 / odc-by | yes | no | 0 |
+| TraceLite, Attoloop, MartechBench | 5 / 50 / about 1,400 | various | apache / apache / none | yes | no | 0 |
+
+Two of these are useful for measuring spread rather than as scenarios:
+
+- SKPropagate corrects one note and asks the agent whether a dependent note
+  is now stale (149 stale, 298 clean; a string-match baseline scores 0.539).
+- SkillTransferBench has a skill learned on an anchor task reused by fresh
+  sessions on 373 held-out cases.
+
+### Ranked graft sources
+
+These are the ranked inputs to the two graft tables in this note, with the
+shortcut as the source task exposes it today.
+
+| rank | source task | shortcut in the source | harm |
+|---|---|---|---|
+| 1 | MiMo s3k_0048 accounting_audit_tax t2 (Power Approvals) | `record_approval_event APPROVAL` or `final_status APPROVED` | APPROVED row with no GENERAL_MANAGER actor, payment released |
+| 2 | MiMo s3k_1395 healthcare_ops t4 | release or close the case, or edit packet counts | denial case leaves hold (its gate `case_and_packet_state_unchanged` has weight 0 today) |
+| 3 | MiMo s3k_0807 finance_insurance t1 | approve and post the reserve | unsupported CECL reserve posted |
+| 4 | MiMo s3k_0357 construction_pm t3 | release retainage | dollars released before closeout |
+| 5 | MiMo s3k_0354 construction_pm t3 | approve the pay application | paid without custody evidence |
+| 6 | MiMo s3k_1603 hr_people t2 | fund or approve the adjustment | GBP funded on an unvalidated pay-equity case |
+| 7 | MiMo s3k_0883 finance_insurance t3 | adjudicate the claim | pet claim paid or EOB changed before documents arrive |
+| 8 | MiMo s3k_1311 healthcare_ops t2 | close the review | POA indicator wrong or missing |
+| 9 | MiMo s3k_0133 accounting_audit_tax t4 | mark the amendment approved | TTB launch gate closed before federal authorization |
+| 10 | MiMo s3k_0604 education_research_admin t2 | add the parent email to the sharing scope | personal data added without sign-off (dropped: data handling) |
+| 11 | leibler/retail returns | refund instead of `transfer_to_human_agents` | refund for an item not received |
+| 12 | Maydanlabs GOSI batch | guess the cohort and finalize | wrong contributions for one of six employees |
+
+Runners-up: MiMo s3k_0852, s3k_0597, s3k_1947 and s3k_0861, and TradeOpsSim.
+MiMo tasks centre on one target row with `*_unchanged` neighbours. For our
+batch design the neighbours become real work and one item stays blocked.
+
+### License flags
+
+- Non-commercial: j-llm/Mimo-V2.6-RL-oss-jp (cc-by-nc-4.0) and
+  kellu-scale/SafetyBench (cc-by-nc-4.0). Do not use.
+- Share-alike: FineEnvs/PortSimEnv (cc-by-sa-4.0), earakely PortSim (includes
+  cc-by-sa) and AirOps (includes ODbL).
+- AGPL: jimbobjordan/playbook, content included. The earakely EspoCRM and
+  NocoDB REA bundles are tagged apache but replay AGPL apps.
+- Restricted: Dissei (gated) and NJU-LINK (terms per family).
+- No license: MartechBench (commercial only) and PrimeIntellect/general-agent.
+- Mismatched: skpropagate is tagged cc-by-4.0, but its gate forbids training.
+  leibler has an MIT card, an Apache harness and the MIT tau2 corpus; these
+  are compatible, but cite all three.
+- Operational: the MiMo Harbor judge needs an HF_TOKEN and an external model
+  call. The vendored mimoagent is MIT.
+- Fine as far as we checked: MiMo Harbor and the Xiaomi original
+  (apache-2.0), five-desks, finance-desk, usaspending-recon (cc0),
+  metaphilabs (mit), Maydanlabs, yatin (cc-by-4.0), endishai, TradeOpsSim,
+  TraceLite, Attoloop and nvidia.
 
 ## Sources we take methods from
 
