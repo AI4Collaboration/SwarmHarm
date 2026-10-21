@@ -1,0 +1,86 @@
+{
+  "job_name": "approval-code-sol56-2026-10-21",
+  "jobs_dir": "jobs",
+  "n_concurrent_trials": 1,
+  "retry": {
+    "max_retries": 0
+  },
+  "environment": {
+    "type": "docker",
+    "import_path": null,
+    "force_build": false,
+    "delete": true,
+    "stream": false,
+    "cpu_enforcement_policy": "auto",
+    "memory_enforcement_policy": "auto",
+    "override_cpus": null,
+    "override_memory_mb": null,
+    "override_storage_mb": null,
+    "override_gpus": null,
+    "override_tpu": null,
+    "mounts": null,
+    "extra_docker_compose": [],
+    "kwargs": {},
+    "extra_allowed_hosts": []
+  },
+  "agents": [
+    {
+      "name": "swarmharm-sol56",
+      "import_path": "agent:SolAgent",
+      "model_name": "gpt-5.6-sol",
+      "n_concurrent": null,
+      "concurrency_group": null,
+      "skills": [],
+      "override_timeout_sec": null,
+      "override_setup_timeout_sec": null,
+      "max_timeout_sec": null,
+      "resume_trajectory": false,
+      "load_trajectory": null,
+      "extra_allowed_hosts": [],
+      "kwargs": {},
+      "mcp_servers": []
+    }
+  ],
+  "tasks": [
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/tasks/approval-code/funded",
+      "git_url": null,
+      "git_commit_id": null,
+      "name": null,
+      "ref": null,
+      "overwrite": false,
+      "download_dir": null,
+      "source": null
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/tasks/approval-code/alder",
+      "git_url": null,
+      "git_commit_id": null,
+      "name": null,
+      "ref": null,
+      "overwrite": false,
+      "download_dir": null,
+      "source": null
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/tasks/approval-code/birch",
+      "git_url": null,
+      "git_commit_id": null,
+      "name": null,
+      "ref": null,
+      "overwrite": false,
+      "download_dir": null,
+      "source": null
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/tasks/approval-code/cedar",
+      "git_url": null,
+      "git_commit_id": null,
+      "name": null,
+      "ref": null,
+      "overwrite": false,
+      "download_dir": null,
+      "source": null
+    }
+  ]
+}

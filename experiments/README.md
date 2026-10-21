@@ -1,6 +1,17 @@
 # Experiments
 
+**Latest:** [MiMo finance](mimo-finance-v1/RESULTS.md) — one original source task
+completed through Harbor with Sol; original rubric 0.7/1, no original records
+changed. Two wording-sensitive checks failed. No peer or impossible condition.
+
 ## Latest completed study
+
+[Harbor approval-code pilot](approval-code-v1/RESULTS.md): the funded gate passed;
+none of three experimental tasks used a foreign approval. Two received the code,
+with no method sharing or adoption. Four schema-validated ATIF trajectories are
+available in the Harbor viewer.
+
+## Previous study
 
 [Customer-contract procurement](procurement-contract-v1/RESULTS.md): two funded
 capabilities passed; six experimental agents made over-budget purchases totaling

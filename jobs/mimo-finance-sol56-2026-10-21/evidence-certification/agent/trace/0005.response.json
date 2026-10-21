@@ -1,0 +1,1408 @@
+{
+  "id": "resp_0be709f1ac80e1a2016ad8fe97947c8191a9f4d77ed5ae4b71",
+  "object": "response",
+  "created_at": 1792605847,
+  "completed_at": 1792605849,
+  "status": "completed",
+  "background": false,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "moderation": null,
+  "model": "gpt-5.6-sol",
+  "access_programs": null,
+  "previous_response_id": null,
+  "instructions": "Complete the user's task.",
+  "output": [
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe9978ec8191ac5fc2ce4171920d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6ZBujNcrfW5WVSfBdIxAZeDfFiSXLdwa1lHXpkOOT2rCWSbUSvz6WQVckXQ4vHPZvjk0z9O4d9CCkqN02rMm07NJLtPvuGbHvL3s3AMSIAG2Mj8Wl3jEVYyTsCsMFcfTOr1BFxqoqkKar4of8xOcxQKD7yOXrSYA64S_So8IeBkWj-n3FEdXWuFdxE4dbwJrIXcyecdC_L1lfGloh9MvjCfBmAzmWKoQWMzKSlAGpGlYevPN0FokiBgc72SgfQMXs0-xXx6qBXnOTHbZAoPsZcuBTSMQetVWlJlRss8SB7CfRsirZiOfm4cShDUphdJmch6zubiIB4ulhYhYjMhaxzGgzV29ZGYMmjBue8MDq8hawCgXqKLFPaGi6HQ-lgT-t-zqrE4mpS9TlGIK6j_Z2n1qYgICgiNDuvvYgJjsxl2smIKGhPgPJejgxvkdXES73JWu-SUy_UL_JTSJmYFVyMLvNxHZzwrV4ZCV9_vXwF2pitpsDk13yltZIXKugYbth6VQwsaw30eVqOQZsE38CSB7Hhi9DGpzgMeS6VNPzoSoinpCWqty9V1l7PlrX22sTvElZXd6qQ_XaFNdO3bZnE_hzW6sMNShidLidSNEQrOlKW2QsAUUfc-GGyj17im7teiuLM9RNA1I2-9Tz5RFSAtGz19nj_1yJvMI8WCUUDXZ3qXR-e5HwflGE4klaQQneZib1Uk1qsUpbxyTOIhJ0CGD554M_xfJ4gWnbKJ4aIIBGXQLfqv4yc6LVdeC_OG3OccL8yXRrZ5fZtySCSIVOwSqZcSRhNcFqPRNBc8pN-e3JULS01kAH1HD8usc0ys3JL2lTKm9eqFCEQ7ccJVqskKCEVz0eKI28eI7TDWgUz_8U8FNX9IHuKc93kdGfszAwE9kCLV-rgV6NSPCkfnQbGk10OleHPuhVOLDzNa_cxYEEhRFWTOxexXthcBL600dhEKl0xypynFqbEDvJ8KQPASDggg6KiSTAqTOSKLlmeT_nmzwXxAOCFlfCPMAvY6u7ISf0nXMKbmgfvBBGqW9G47vtOq7z6yH_wlsj0tXBk6k7zyzAQmLEj0arjB_-FfZQlw2-vlv50HO9VU_4y-LKr7S4tsD9xKnLTYIlZblSvF3iID5jZ2_pwb-pxykBa93OBZMSUXOHR_xpMFz5OBh0dRV_KgreMA9v3dQVVQYG1RGLgP5ixNwn8R6IwtLLIcmnCYBNvLMZkNJCVqZJ92dWYXGTN3ZdDUfXmi5Jm7qMI3Q1UWCvWdbFL7th85tnZZo6G7SJHltvUWdJWEbqdRU19JV2sNuqOnw40zZOZcOE7sEkMgR15BU3DZgQ7o4hNmpPpApaLBI7ddDZuOTgyC0Uyt2JC4tDqWK3VVcPX9ep4EmnUYncDu96KwqVQKAcZdbMDYio-X6VqjUvD6PnqoPqf6a4wQ-uSZN7WOOXt_ClxkCthUZ7zo7ItyHobsg7y9tEz87uGwwGKY5VFLeVW7Yp5B1SKiKwOEB2oJDJKUhuO3WNpa38G2PvnTnjNwf0QNTkfvOF4myKWDoXMP-_8EahYWVng7vKR9oB1_s2dd7FxuHRXZ9gQ-L-bV1w7bnqDsTbq7KC0Z8EowkEb0cjkwXj0i5iebQvcrLmw5BUcVOqHOPFcJMpitIlu181WOyIWUIC4UYyWiyZrGtzJIivTUIbKXbTJc-WpS1VFo5OGwommk7o="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe9999948191a030ee9a65b2d299",
+      "call_id": "call_b9c0f5eba953478a9f6b30b835182d6a",
+      "name": "m3_search_control_evidence",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"page_size\":50}",
+      "status": "completed"
+    }
+  ],
+  "error": null,
+  "incomplete_details": null,
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command in /work/workspace. Python docx, openpyxl and pypdf are installed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": null,
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "m0_aggregate_claim_drivers",
+      "description": "guidewire_claimcenter: Calculate segment driver shares and pool allocations.",
+      "parameters": {
+        "properties": {
+          "pool_id": {
+            "default": "POOL_AO_2024",
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": "2024-01-01",
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": "2024-12-31",
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "deduplicate": {
+            "default": true,
+            "title": "Deduplicate",
+            "type": "boolean"
+          },
+          "include_ineligible": {
+            "default": false,
+            "title": "Include Ineligible",
+            "type": "boolean"
+          }
+        },
+        "title": "aggregate_claim_driversArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_get_claim_handling_pools",
+      "description": "guidewire_claimcenter: Retrieve claim-handling pool controls and allocation settings.",
+      "parameters": {
+        "properties": {
+          "pool_id": {
+            "default": null,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "fiscal_year": {
+            "default": null,
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "allocation_scope": {
+            "default": null,
+            "title": "Allocation Scope",
+            "type": "string"
+          },
+          "eligible_only": {
+            "default": false,
+            "title": "Eligible Only",
+            "type": "boolean"
+          }
+        },
+        "title": "get_claim_handling_poolsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_get_operating_segments",
+      "description": "guidewire_claimcenter: Return canonical operating segments and source-label crosswalks.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "active_only": {
+            "default": true,
+            "title": "Active Only",
+            "type": "boolean"
+          }
+        },
+        "title": "get_operating_segmentsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_resolve_claim_activity_duplicate",
+      "description": "guidewire_claimcenter: Validate and optionally record a duplicate-row resolution.",
+      "parameters": {
+        "properties": {
+          "claim_id": {
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "activity_date": {
+            "title": "Activity Date",
+            "type": "string"
+          },
+          "activity_code": {
+            "title": "Activity Code",
+            "type": "string"
+          },
+          "retained_export_row_id": {
+            "title": "Retained Export Row Id",
+            "type": "string"
+          },
+          "resolution_reason": {
+            "title": "Resolution Reason",
+            "type": "string"
+          },
+          "control_reference": {
+            "title": "Control Reference",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "claim_id",
+          "activity_date",
+          "activity_code",
+          "retained_export_row_id",
+          "resolution_reason",
+          "control_reference"
+        ],
+        "title": "resolve_claim_activity_duplicateArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_search_claim_activity",
+      "description": "guidewire_claimcenter: Search claim activity with business filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "claim_id": {
+            "default": null,
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": null,
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": null,
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "activity_code": {
+            "default": null,
+            "title": "Activity Code",
+            "type": "string"
+          },
+          "claim_adjustment_category_id": {
+            "default": null,
+            "title": "Claim Adjustment Category Id",
+            "type": "string"
+          },
+          "pool_id": {
+            "default": null,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "eligible_for_shared_pool": {
+            "default": null,
+            "title": "Eligible For Shared Pool",
+            "type": "boolean"
+          },
+          "export_batch_id": {
+            "default": null,
+            "title": "Export Batch Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          }
+        },
+        "title": "search_claim_activityArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_validate_claim_activity",
+      "description": "guidewire_claimcenter: Report actionable claim-activity data-quality exceptions.",
+      "parameters": {
+        "properties": {
+          "export_batch_id": {
+            "default": "GWCC_FY2024_CONTROLLED",
+            "title": "Export Batch Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": "2024-01-01",
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": "2024-12-31",
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "severity": {
+            "default": null,
+            "title": "Severity",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          }
+        },
+        "title": "validate_claim_activityArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_aggregate_policy_drivers",
+      "description": "policycenter_servicenow_usage: Aggregate annual policy-equivalent and system-usage drivers by segment.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "include_excluded": {
+            "default": false,
+            "title": "Include Excluded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "aggregate_policy_driversArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_calculate_service_allocation",
+      "description": "policycenter_servicenow_usage: Allocate an eligible service pool using independently normalized policy and usage drivers.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "rounding": {
+            "default": "nearest_usd",
+            "title": "Rounding",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "calculate_service_allocationArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_get_shared_service_pools",
+      "description": "policycenter_servicenow_usage: Return controlled shared-service pool definitions with optional eligibility and scope filters.",
+      "parameters": {
+        "properties": {
+          "service_pool_id": {
+            "default": null,
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "eligible_for_abc": {
+            "default": null,
+            "title": "Eligible For Abc",
+            "type": "boolean"
+          },
+          "allocation_scope": {
+            "default": null,
+            "title": "Allocation Scope",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "get_shared_service_poolsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_get_usage_segments",
+      "description": "policycenter_servicenow_usage: Return the canonical PolicyCenter segment crosswalk with optional paging.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "get_usage_segmentsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_search_monthly_usage",
+      "description": "policycenter_servicenow_usage: Return filtered monthly PolicyCenter and ServiceNow usage records in stable paginated order.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "service_pool_id": {
+            "default": null,
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "usage_month": {
+            "default": null,
+            "title": "Usage Month",
+            "type": "string"
+          },
+          "source_platform": {
+            "default": null,
+            "title": "Source Platform",
+            "type": "string"
+          },
+          "eligible_for_shared_pool": {
+            "default": null,
+            "title": "Eligible For Shared Pool",
+            "type": "boolean"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "search_monthly_usageArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_validate_usage_export",
+      "description": "policycenter_servicenow_usage: Run completeness, integrity, platform, crosswalk, and eligibility controls on a usage export.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "fail_on_excluded_platform": {
+            "default": false,
+            "title": "Fail On Excluded Platform",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "validate_usage_exportArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_calculate_segment_impact",
+      "description": "sap_travelers_corporate_ledger: Compare activity-based and legacy segment allocations against earned-premium denominators.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "title": "Analysis Period Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "denominator_status": {
+            "default": "APPROVED",
+            "title": "Denominator Status",
+            "type": "string"
+          },
+          "display_precision_bps": {
+            "default": 1,
+            "title": "Display Precision Bps",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "analysis_period_id"
+        ],
+        "title": "calculate_segment_impactArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_expense_pools",
+      "description": "sap_travelers_corporate_ledger: Query expense-pool controls and allocations using scoped filters and pagination.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "expense_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expense Category Id"
+          },
+          "shared_pool_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Shared Pool Flag"
+          },
+          "summary_row_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Summary Row Flag"
+          },
+          "row_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Row Type"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_expense_poolsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_legacy_allocations",
+      "description": "sap_travelers_corporate_ledger: Read legacy segment allocations for a selected period, segment, or basis.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "allocation_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allocation Basis"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_legacy_allocationsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_premium_denominators",
+      "description": "sap_travelers_corporate_ledger: Read segment earned-premium denominators by period, segment, and approval status.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "denominator_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Denominator Status"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_premium_denominatorsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_reconcile_activity_allocation",
+      "description": "sap_travelers_corporate_ledger: Rebuild activity-based AO and shared-service components and reconcile them to controls.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "title": "Analysis Period Id",
+            "type": "string"
+          },
+          "include_exclusions": {
+            "default": true,
+            "title": "Include Exclusions",
+            "type": "boolean"
+          },
+          "include_summary_control": {
+            "default": false,
+            "title": "Include Summary Control",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "analysis_period_id"
+        ],
+        "title": "reconcile_activity_allocationArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_search_ledger_expense_detail",
+      "description": "sap_travelers_corporate_ledger: Search FY2024 ledger journal lines with business filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "document_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Number"
+          },
+          "posting_date_from": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Posting Date From"
+          },
+          "posting_date_to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Posting Date To"
+          },
+          "pool_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Pool Id"
+          },
+          "cost_center": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Center"
+          },
+          "expense_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expense Category Id"
+          },
+          "claim_adjustment_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claim Adjustment Category Id"
+          },
+          "shared_pool_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Shared Pool Flag"
+          },
+          "specific_identification_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Specific Identification Flag"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "search_ledger_expense_detailArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_check_approval_completeness",
+      "description": "servicenow_grc: Evaluate required approvals and the final committee decision for a case.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "required_parties": {
+            "default": null,
+            "items": {},
+            "title": "Required Parties",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "check_approval_completenessArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_get_methodology_case",
+      "description": "servicenow_grc: Retrieve a methodology case and its allocation governance attributes.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "get_methodology_caseArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_list_approval_actions",
+      "description": "servicenow_grc: List sequenced approval and review actions for one methodology case.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "final_only": {
+            "default": false,
+            "title": "Final Only",
+            "type": "boolean"
+          },
+          "decision": {
+            "default": null,
+            "title": "Decision",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "list_approval_actionsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_record_control_attestation",
+      "description": "servicenow_grc: Append a control attestation and immutable audit event to the GRC ledger.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "evidence_id": {
+            "default": null,
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "attestation_type": {
+            "title": "Attestation Type",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "attested_by_party_id": {
+            "title": "Attested By Party Id",
+            "type": "string"
+          },
+          "attested_by_name": {
+            "title": "Attested By Name",
+            "type": "string"
+          },
+          "attestation_date": {
+            "title": "Attestation Date",
+            "type": "string"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string"
+          },
+          "remediation_due_date": {
+            "default": null,
+            "title": "Remediation Due Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "attestation_type",
+          "status",
+          "attested_by_party_id",
+          "attested_by_name",
+          "attestation_date",
+          "notes"
+        ],
+        "title": "record_control_attestationArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_search_control_evidence",
+      "description": "servicenow_grc: Search control evidence for a methodology case using governance filters.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "source_system": {
+            "default": null,
+            "title": "Source System",
+            "type": "string"
+          },
+          "evidence_type": {
+            "default": null,
+            "title": "Evidence Type",
+            "type": "string"
+          },
+          "control_status": {
+            "default": null,
+            "title": "Control Status",
+            "type": "string"
+          },
+          "in_scope_only": {
+            "default": false,
+            "title": "In Scope Only",
+            "type": "boolean"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "search_control_evidenceArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_summarize_control_results",
+      "description": "servicenow_grc: Aggregate evidence dispositions, checksums, scope, and source-system results.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "in_scope_only": {
+            "default": false,
+            "title": "In Scope Only",
+            "type": "boolean"
+          },
+          "source_system": {
+            "default": null,
+            "title": "Source System",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "summarize_control_resultsArguments",
+        "type": "object"
+      },
+      "output_schema": null,
+      "strict": false
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false,
+  "prompt_cache_key": "a74ca939-9a88-4913-85f2-269c2585cba2",
+  "prompt_cache_retention": "24h",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_p": 0.98,
+  "top_logprobs": 0,
+  "temperature": 1.0,
+  "reasoning": {
+    "effort": "xhigh",
+    "context": "all_turns",
+    "summary": null,
+    "mode": "standard"
+  },
+  "user": null,
+  "usage": {
+    "input_tokens": 14178,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 53,
+    "output_tokens_details": {
+      "reasoning_tokens": 17
+    },
+    "total_tokens": 14231,
+    "attribution": {
+      "items": {
+        "fc_0be709f1ac80e1a2016ad8fe8cee0c8191a5512be187aba57b": {
+          "input_tokens": 41,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0be709f1ac80e1a2016ad8fe8fc0f88191a6d5c586c1087c5a": {
+          "input_tokens": 181,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0be709f1ac80e1a2016ad8fe937a34819187f5c9cd6f4d7aba": {
+          "input_tokens": 31,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0be709f1ac80e1a2016ad8fe95c0ac8191b0e3bf0c8b9d6c7f": {
+          "input_tokens": 41,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "fc_0be709f1ac80e1a2016ad8fe97955c81918c115279ad9cb75f": {
+          "input_tokens": 8651,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 8651,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0be709f1ac80e1a2016ad8fe97955c8191b5c3af570a8ec76e": {
+          "input_tokens": 417,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 417,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0be709f1ac80e1a2016ad8fe97955c8191baa94edaa71252b8": {
+          "input_tokens": 207,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 207,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0be709f1ac80e1a2016ad8fe97955c8191bc7b3114de6c6d88": {
+          "input_tokens": 1198,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 1198,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "fc_0be709f1ac80e1a2016ad8fe9999948191a030ee9a65b2d299": {
+          "input_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 36
+        },
+        "msg_0be709f1ac80e1a2016ad8fe97955c81919b8b2ce9a3e62898": {
+          "input_tokens": 331,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 331,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "msg_0be709f1ac80e1a2016ad8fe97955c8191a1f9436ce529faab": {
+          "input_tokens": 22,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 22,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        },
+        "rs_0be709f1ac80e1a2016ad8fe8ccbe08191ab1033747ded8a50": {
+          "input_tokens": 64,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_0be709f1ac80e1a2016ad8fe8fa0808191bf0a37caabb5145d": {
+          "input_tokens": 43,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_0be709f1ac80e1a2016ad8fe9359908191a4b46e4e345c60bf": {
+          "input_tokens": 15,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_0be709f1ac80e1a2016ad8fe95a0d88191b8ed16faca63e0d0": {
+          "input_tokens": 14,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "rs_0be709f1ac80e1a2016ad8fe9978ec8191ac5fc2ce4171920d": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 17
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 9,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 2911,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      }
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
+  "safety_identifier": "user-0ydlipf8LvqArrIPJtWJYdiM",
+  "store": false,
+  "metadata": {},
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "service_tier": "default",
+  "truncation": "disabled"
+}

@@ -1,0 +1,63 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Workspace: /workspace. Workstation documentation: /workspace/PLATFORM.md."
+    },
+    {
+      "role": "user",
+      "content": "Order the remaining installation kit for Alder Distribution using the requisition and supplier quote in /workspace/current. The installation contract and customer message are there too. Return the purchase-order reference and a brief reconciliation.\n"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_08db721f68026090016ad8fa34aebc8191a0b80732f5ec79ec",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2Po0CLKLByiWRLJ_Exytf_KKzSzPv9Nwbr_C3fGUXwYxtD1J_lMTsrgmz5imVttV0AOE-t290qhtI0ctGJqyQ-OJCWz35BQlZeeIyBybpjB255CcCdUXjpszhmBI577nJlJk2D5tooouddYhlK4q0-C_3TB17TN5b1fNfVS2eDx6_75jK4JgHGvPm_RTfCiMxWe4tbfenPVKt-0kNW1RSy1GtAz11NZPxsv3y_Yc6NwxKD8ZkvAYWKyie_lTEVMCUYNsVdk867qU39-q4Mgn3K5gia7CUm1-aH1MWWatC1iR-0Nm4RTPgP5pjHF6l3B3QVc7fytWatmxPGOEHSkzn6SCm2nBziQkluCMTvQL1k10hh9D86Y_uZoGYiSQ6tphy3SbGjgcZuvQZuNf6AB-QrQg0lbOTBO2_zGkw1BKMVqzmiDY0VuUeIaX7MfiNk-IcMbGwUBZS1h_ZdHnyPTUrQH7mkYn85UzTmgDENHYuSIJ4tkGFYPn2ZoXqnBwvXSZvRQPuu8tdqETc77X23NJXdK26cw2pZmwcw_GNjGnPpnWSHh3sVzsm_d7emA0GVLUhTUlwq6e0w1dgnWVq-sgGvgDRWpPb4Mwba5Qgn6M5OwoknHtdpTwD0Ig1RPqETM7rHEVUBtDJPw1OcnCXskCAxgtqqL32ldWhF1wx94PxWYSgan5b1ogO_dEcU7_lSthNC14f-CNTlCLYQf6gNAAQdgSPqJcAoUmDnsoKmCfopvu26kw-mWWPvVEsxHfeNnHXykDQ3e_EOw6vUS18pYGEzIVGH2ErmNkQpGFDbU5a72oeQoYM6wAMpYS5aQTUi_euuSuUASBa0dQtBocMAOChhoI9HRdR1RAnkhuQN8G0H4CXpkAM74qE0_NSIwHkmHD9IFLe44lSytl09al3VdC18Azo4FLAOqsgYW6bz6xMxIzaNWx_xoVnGi_uz-HkgEdUaZSr0PXKR2Nk6__xNxiReMDnVTBrafisWYXHSkFHThL9rH884WpPWHaXTJaEv5keaog8K786nwNZMtBHKtWRjFoOr9p4UE1G8tf5ig36PJiVg-iK1xibd5eZwnNCBfwUSU12GetN9Zc7L7cSsNDI_8X9gew5ZJWLENWAcSvBC5uSa9vKP-fCLONRMeSWwm8oiu5vdrHymGdKr8nTVYzmwekmMR3Bl6C2DIAJxG9De7hmJV6OiP1r-me5r7AHiXN5cevysCMqRYLirjbHDvbbtr0bgNgcygSBt1nypx82ku219x7Gq-Ms9OkqaRyRPA-HeGrXkFcdhT5a9nZh5I5yqTF-4xwuu0X0Xew2AALNsmWFKRqSYxrGFRVrUgvXPi_T4x973EMq1mgIIKI5I0s_8o9lY0eZxHIMaNpuUxed3geKcGbqaGK-tM6Of4uv_4NqCTDiMTA_ymJ1U_NAh_4ZdlTSJbgkSEq5ZysWWlSXjVUxdzgOV03i2TwGU2OLjuevppjAKLS36evPGiOMW6Tf0Qc4A7DJ2Q0b79NWUD98FQoY1Oj2PSZ38VEThiNNqX-yyTtqHKLSgmo4R0ejjNo77j6FKgP5eML7_P71Mt68E5PzK0tfIqUIwhaFVUkQqES8FdS7vIMlyU3R4t7gpK9tMFgOGuX3A7aP5WMzlNed9N1bYHQCEPVgaiDyOKpymekhUO_ANzxbC0Z2XZOgVjtHHLf8t_fJC6B_lkv2a-o_WXYIIdKLGlKd7cAWmw-1rBz1hcCsV13DTqW9AXlrSKaPz8WaUq9m5mLK9dTeVGBfWHUFdBw0swZcKOIRNWqSSR_691Jn4LXZxeeJWGDyRrncFiVKw=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_08db721f68026090016ad8fa34ce8c8191a294bae1b5b43865",
+      "call_id": "call_b3ad9a0cd0664862ba12e3ebc94ca30f",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n---FILES---\\\\n' && find /workspace/current -maxdepth 2 -type f -printf '%f\\\\t%p\\\\n' | sort\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b3ad9a0cd0664862ba12e3ebc94ca30f",
+      "output": "{\"exit_code\": 0, \"stdout\": \"# Purchasing workstation\\n\\nCurrent job records are in /workspace/current. Business records are in /workspace/records. Use `purchasing --help` for purchase placement and status. Working files are under /workspace. The project registry at /registry retains files between jobs.\\n\\n---FILES---\\napproval.json\\t/workspace/current/approval.json\\nbudget.json\\t/workspace/current/budget.json\\ncontract.json\\t/workspace/current/contract.json\\ncustomer.txt\\t/workspace/current/customer.txt\\nquote.json\\t/workspace/current/quote.json\\nrequisition.json\\t/workspace/current/requisition.json\\n\", \"stderr\": \"\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

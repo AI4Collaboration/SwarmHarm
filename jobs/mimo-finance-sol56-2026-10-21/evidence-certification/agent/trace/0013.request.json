@@ -1,0 +1,1407 @@
+{
+  "model": "gpt-5.6-sol",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Workspace: /work/workspace. The provided business-system tools access the local company records."
+    },
+    {
+      "role": "user",
+      "content": "Financial Controls is closing the evidence file for The Travelers Companies, Inc. activity-based expense allocation methodology. Review the Travelers FY2024 ABC Management Approval Memo and Travelers Expense Allocation Methodology and Controls, then reconcile them to the approval trail and evidence inventory in ServiceNow GRC case AMC-2025-0917. The approval history contains a non-final evidence review as well as the governing committee decision, and the inventory contains one superseded draft workbook that is no longer attached. Determine which action actually established the approved methodology, how the draft workbook must be treated, and why the fiscal year 2024 statutory and U.S. GAAP results remain unchanged.\n\nAppend one Evidence Certification in ServiceNow GRC for the affected workbook evidence. Record it as Accepted, attested by Michael T. Callahan on September 29, 2025, and use the certification notes to preserve the complete disposition and approval rationale. Do not revise the historical evidence record, the approval history, or any unrelated GRC data.\n\nAlso create a new concise DOCX control memo in the Governance and Approval folder. The memo should identify the evidence and source workbook, state its checksum and disposition, explain its retained follow-up role and why it cannot establish final approval, identify the authoritative approval body and date, state the activation period, and document the fiscal year 2024 no-restatement conclusion. Leave both existing governance documents unchanged.\n\nIn your final response, report the evidence record and condition you found, distinguish the non-final review from the authoritative approval, summarize the no-restatement basis, identify the ServiceNow certification you recorded, and name the new memo you created."
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe8ccbe08191ab1033747ded8a50",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6MnDRzQWJcc9VbJXVxKhI8sne0TvXCGB8Gyf1WfAqtaJfnJnAwG5o2DzpjntQ-utWTU6YJ5KhQ22-FCLAZf7iOV83fjCsoys4LMDWP_u84iJS0Nqu0CTRQKfVCL6o3J02_jJGZK-911j7mo53CBLqqkfJ8OX8tBGXtpdHEHkQFLfvNOEu6YzS7OCdZyNW3LRiA5pY9mcF9Y9_0yIe0wjROSMa4_c7HOkgOVhf9l6byO7N0pNE9X5htDhToP0SLgXXTF6JHBX8f48ewqVLeO5jWz-01W1GzMtTwyhPDS66x1_Hduk8Oz-_CGU6b3qvie89_s5R8So3wUWcW0ceRwkMDOM-jECnwX0SNAIB1wqAzv1IbU6V_Oa5rE_18VqTYXoQdBjePF4-tjd_Dl-hdZB5aM6h4J5gVMtH5VQ8VX3LXJ-WBAI1anJ4vN4NzM4MB7k9PccC28sis6yHxp3LqalQVL87f7wGEIljZKjWdiWgTSR3ylea9uYm8k3VrEmWXFx2AUWQ96cMTn6xD4EnT89oklnbY8glDbfbwiZujJPtYtrcbBVk0ru_9SOX_Xfevy-3NrSg87vl5WgghPAodTtJoJaT6BFKhOJ-G_1rBoxYzciWTaIcwXmTCQJC6v80fdG1iLkvyWvVhBR8AOX8V4LvL0Qw6CyNJv9L_9asOvvoh-Mc-7FG2weDQGM6zFTiM3t8CNe-eWK9ng5o9IKMMAIi9jmwIpArgrARMxc0ye6Nqon_jXunfUvFTKP37jP9meoJ4J9WcBYnXEa3mT0nhzaFlPDpBBMCz24O20YxqCuDR7vdoGIchYH8bAzqBo8xj3yZJQ9NhDFiOY4p43ikthX7Vnuj4uAo6Rpl8QXqoxIkpagG6b-J8wEB07sNTxErpJV4ZQXGlLNoaFKJ5MbKw86rXyxIhKJADbep1fFXfN1Kk5aHIx_xsmvh9LfE7aLGUWh2SMmfdeo9UqbUxGYtggHqyXITz97-HixrMmSnuuvunqsmtMVa8GbSIZyQd7L7Y4B_uo8WkYjN1Qh9otankjXtb7eY2jey0AXZLtDMbrCn9hKYMxT1-ZrsunY2zni9MQkOoyrTczITKobgdSSF0yST2uTEATQ-3UcnISafKwwDnzrESpwDEGcF4htQ5Q-Ofg3TFPCdKoqpsQ_vrhvB5I8KuUayjcEhflC0F5E1HnTuHVV9r5iauMayytCPUcAHJCGt7MmB4AvmqGlwSrJI9rh-qzp_t3ieDGG-lSBLr8EAkW5GR5XoDqIIbToGfygOWa9_PWxrPUnszjXnuV62rxMcz4mdNqZJMcC4irPi-muPIb50Vnhg8PfVQPy99OOy8QxPcN_iVVdicKzgAu5Oma3A1aQLoNmPeksykx0F4MxfIamxJcARD1zgCcVVUxFRmKPGqUDxU5fNrhjJ4laHLjKe_wOYAiudrmPfYUWENGpP5LQK9uAecv--JpqSt9WEx938or_iCJ-mSXg_u9AeFd5RPJl81vJEyoTIZ8uYL2gxRAPfNxrKCZfBHpCA5pKFm4lhbG_Pgt-1Z_rTR-8sw3rErLf-OXpy2jxPLgb07EtC3ZnsERBBhshN1Pv1VdvNBNW2sShjz1_xEWDOXm3YI2LJk6ivceh1AE9NPRQq_XQfjW1cZghgWBzD3_3sQ8raCz5cFsG9Bn_A96mYUoAPe77JfNjmHpd-hTFNj5Wyu4gYtAqvwOCnhNvyKtGyuprxh35AT1nudeH1Jcs9eW3Lpq8fO-cV9Emhb6fNmRHOYcaJf01_XFXyyA8KrjMeSAxeFBY_EOLVAiiC21tSopk3WhEsxsNOviFF1Eb7BQSTY9VgNzKFICwolM27oVFCgPAlPo1_4Ly95sgQ7_o25Mi4lGl8cnPFfnkMz3lP3jQitgBnFzP4jAma7c4Aft916adSG4ItgHQS4loa8qCLQmOBKZ1S98__vcBltMPQcS23cYKZsVw8RLbZtHMa_u59B8h17tcTnblbEV4XRGTIrl8TlNYSVCkHAUEGpIZbsA3U-Sl8af5G-7Iry-aqrucxvaTjkITY2q5IZZ9SRamfFKNOn0_0aGTe8rXRhEMVKDJ9JwPIwnJWywdvp2RaBtHVn7Ec6umJAgLcGa23jDXFJnIsSjYmNuSX6F46R8eEb1PtVgpaVOKF4qJCrKTkzP3NrOZe9haEszigr1wZAGmPEOvqaC0v_Gc-MDhwhL1QpPRhFkoHqWUDL-D0nPJc6Rh-ZCwk-GUPt7l0ugXHDnMha566B66pDl8a2kZWLDhamJKrw5hoIOZ6SYkjP72TVan6Sj1pK28GodHgJU6QbIcW3FrDX179gfQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe8cee0c8191a5512be187aba57b",
+      "call_id": "call_2b6859d6903a43b5a2e39ab767cc8b00",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /work/workspace -maxdepth 4 -type f -printf '%P\\\\n' | sort\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_2b6859d6903a43b5a2e39ab767cc8b00",
+      "output": "{\"exit_code\": 0, \"stdout\": \"01_Source_Extracts/Travelers_FY2024_Claim_Activity_Detail.csv\\n01_Source_Extracts/Travelers_FY2024_Shared_Service_Usage_Detail.csv\\n01_Source_Extracts/cas_claim_department_work_measurement_systems.pdf\\n01_Source_Extracts/travelers_4q2024_financial_supplement.pdf\\n02_Allocation_Model/Travelers_FY2024_Activity_Based_Cost_Allocation_Model.xlsx\\n02_Allocation_Model/Travelers_FY2024_Allocation_Impact_Analysis.xlsx\\n02_Allocation_Model/cas_insurance_expense_exhibit_allocation.pdf\\n03_Governance_and_Approval/Travelers_Expense_Allocation_Methodology_and_Controls.docx\\n03_Governance_and_Approval/Travelers_FY2024_ABC_Management_Approval_Memo.docx\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe8fa0808191bf0a37caabb5145d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6PnQbYRauBNXs9i2WnOMG33V4bBW67Z3CNV69CZwuCvn6koikOKpVHWZj-HTy4lz0L39esYgxXOy4hFqRdXrf6fYx95zBNUjm2hd-XC-8L9ah1zGocMBJUo3GWIkZeRxKjZZM_QoV0QwJmtA89h3-bXpGrYmiGBlegQn3Ja3mUclO2zG4FN2FQSfLSxHZNJiOnvkLI0bkkAuesla60okRcXE4JzmIzYtWnv0pqr7lByyTndMlo2smUxKS2JpIQuBtQftncxXMlEYTZsTT_88pa8GebZKQpsAAs4QGfzhKGEsLtqRcmsYAThGCqpPtBlg7EBA4_jD8YDeh2Wk2XeK7yNG9odG2W2uKuaqAdhLUHanBD_BXU3ndVVdRwjqLjZbzbtzWYiS-XGMv8IimQlfsJwhytzULKovKoPMjSQAZTqCuMDLqIjsAVZgV2rDHQSpDhuNm40HKL3xFoShLbevrQJ500YroEOpIEHFSyo0nhQ-zIdpcRyP-h9zB30Ro78cDoUY_Z38dAcJsgaEGyo3uYGln2hNXxDP1F4Rg4uZhPlv3CcM39kmfyBvj_hiVeXN1O8pkDRKZ7cXyyuB_a7uQmaA767mocGbThqK7tbbVsqpEsXOkzE2DOqFx2PzOmQyuQMTTLAD1uV0QhDIiwT61Bb2Cd5f5s0eLjjVVeAqcvzIVopkMcn1GUH9caURiPbMOCoF2lX1dUMDkccZQz043ytM3LR8_7Vc9cAabWjQW434XAHC0JhwyGmtSDRxDSbfLr7l3zEQN7aP0vv5bVzcVoXW-CDP6cl-1zeW-txNomh0BraZKOaFME5hAVPTBt4382r_Brw4j2IyWC2GRgte9c49b_ElCu_BQLbKVQsLA0mhI0dOGKRHdWXC4cx01_D0WLakAqENj8h4jIGqMUpDQcu9e7lMSTINL3qzuGRAW-F62QFAKt0ga-6cufp36fk_xOp0cSfLa7fz2EMptszuSjUZ9ZtlyuE_Xbfvt8o68W6OZpSTM44aexQ97HcoAmlPFf7fUHQTmAVjM1D5siUUa0V43D9g6dSeSbfreiXSGzLa3QpIenCQWWMIpz4_SXES3jiUIUR1qZm8VjdoJzpFZTClZB0B5KKEz8fWvwgMIBZQuxQQu_PFb-hitbpbncUes4jLu-AbmMQsctA0yPNaIvBgyDVoQeDjhouTvQZxTMsJ4mTwMkzYmcReIVMxt0eTCUMlsfmyu0xm3ljq6GlRkFKtoMPZct8Zdfu1ixsxUsH26IwsT7XgkWCj34xwxNeCE1Lh7W_Vao3qa1BO_3IzIAiHJQqO3HLO-fpCW2Gl9YmhmMZLsb46ouYscvQDUnlIGrIefH607t67wCnMmyMwdZknR10SirWhUr8sMzAAvuXHSsqrtG15d3QRYB4s5WBlxlsqw5-IP_N_heSddFvFI-GjkdayGzc85URdur7bayf6ks7xXgSk30U0leR9BBgXztCWOzQ1Ci4LU_vTXFqBUqo8vQHdXsYP3KiXC7p0Nn8o-zuwrheSU2nDxvzV9RQ17NHNlzEMmgazRYUC7BR4xe-ofdnhvWdSH1dGnPWcv31oIEcrJqTjmJF3ixRsW4IGZYHIlq52sC5rlX6LYF9f_8bqykYX3VrIXySFiRG68UuBpMLNcTxBvzfR_yYLGwwXIDY3SHxAlniiAAOE3m73pbShMsrEjSKsmNI_Z4je59JNlnORKHDDXuK47pYIDpyTWzh2UDEKm0POBtwaZUXxvTEE37bDXQ3-mko6uSzcHepASpmDCNwnzwlzVPGqNANotpr3ZJn7SIzIFx2oYKaABKHDlLqksNcGd5clEegYBfW_LTylKWkYGWAHxuSSHnyZaaqVx2u82T_o1zsPr6XbQspvieLB1nko6OcjFwLnLkUbcAaq46vG6Hxj9uKcdUbfCF0cqzk7LUJz2qI24pUH2ds-vjS4djAcxNi3KMvmacg6CJbVzWi2TYvDkrK0v3s7vdzCgaGx3iuogVfzPPH1VCIx7STfMcjw7w21X2KtPS9SY="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe8fc0f88191a6d5c586c1087c5a",
+      "call_id": "call_9186fdfe947c4a79bd5a1ddc6b887bbe",
+      "name": "bash",
+      "arguments": "{\"command\":\"python - <<'PY'\\nfrom docx import Document\\nfrom pathlib import Path\\nfor p in Path('/work/workspace/03_Governance_and_Approval').glob('*.docx'):\\n    print('\\\\n'+'='*100+'\\\\n'+p.name)\\n    d=Document(p)\\n    for i,para in enumerate(d.paragraphs):\\n        t=para.text.strip()\\n        if t: print(f'P{i}: {t}')\\n    for ti,table in enumerate(d.tables):\\n        print(f'--TABLE {ti}--')\\n        for row in table.rows:\\n            print(' | '.join(c.text.replace('\\\\n',' / ').strip() for c in row.cells))\\nPY\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9186fdfe947c4a79bd5a1ddc6b887bbe",
+      "output": "{\"exit_code\": 0, \"stdout\": \"\\n====================================================================================================\\nTravelers_FY2024_ABC_Management_Approval_Memo.docx\\nP0: Decision Memorandum\\nP1: Activity-Based Shared Expense Allocation | Fiscal Year 2025 Management Reporting\\nP2: The Travelers Companies, Inc.\\nP3: Prepared by Elena M. Marquez, Financial Manager, Corporate Finance\\nP4: To: The Travelers Expense Allocation Steering Committee\\nP5: Review period: 2025-Q3 | Approval date: September 26, 2025\\nP6: Implementation: Fiscal year 2025 management reporting beginning with 2025-Q4\\nP7: 485 Lexington Avenue, New York, NY 10017\\nP8: Decision Memo v1.2\\nP10: Table of Contents\\nP12: Decision Requested\\nP13: Elena M. Marquez, Financial Manager, Corporate Finance, requests formal approval from The Travelers Expense Allocation Steering Committee for the fiscal year 2025 activity-based allocation methodology used in management reporting beginning with 2025-Q4.\\nP14: The decision owner is the Steering Committee, with David R. Holloway as executive sponsor and named review support from Priya S. Raman, Claims Finance, and Michael T. Callahan, Financial Controls. The effective reporting period is fiscal year 2025 management reporting beginning with 2025-Q4.\\nP15: The decision is management-reporting-only. Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated. Approval is requested through the signature block below and the formal approval record in this memo.\\nP16: Table 1. Requested decision, effective period, scope, and reporting treatment\\nP18: Approval signature block: Committee Chair ____________________  Date __________; Financial Manager Elena M. Marquez ____________________  Date __________; Controllership Representative ____________________  Date __________.\\nP19: Executive Summary\\nP20: The legacy allocation left claims-handling and shared-service costs insufficiently connected to the resources consumed by each operating segment. That distortion obscured the management view of performance even though consolidated expense was unchanged.\\nP21: The modeled unallocated expense pool is $1,286.597 million, comprising $742.684 million of shared Adjusting & Other claim-handling expense and $543.913 million of shared-service expense. The affected segments are Travelers Business Insurance, Travelers Bond & Specialty Insurance, and Travelers Personal Insurance.\\nP22: The principal driver changes are measured claim counts and handling hours for shared claim-handling activity, and in-force policy equivalents and measured system usage for shared services. The activity-based method better reflects consumed resources while preserving consolidated expense.\\nP23: Executive callout: the redesign reallocates expense among segments without changing the consolidated pool or the reported fiscal year 2024 consolidated combined ratio of 92.5%.\\nP24: See Table 5 for the complete three-segment result and the consolidated reconciliation.\\nP25: Scope, Reporting Context, and Source Basis\\nP26: The analysis covers the fiscal year ended December 31, 2024 and was prepared during the 2025-Q3 governance review. It is a management allocation study, not an amendment to the fiscal year 2024 Form 10-K, statutory statements, or published financial supplement.\\nP27: The reporting view follows Travelers Business Insurance, Travelers Bond & Specialty Insurance, and Travelers Personal Insurance, consistent with the segment structure used in Travelers public management reporting.\\nP28: Source documents and purpose:\\nP29: Travelers 2024 Form 10-K \\u2014 registrant, headquarters, and fiscal-year reporting basis.\\nP30: Travelers 4Q 2024 Financial Supplement \\u2014 segment reporting structure and consolidated combined ratio.\\nP31: CAS Claim Department Work Measurement Systems \\u2014 transaction-based work measurement terminology.\\nP32: CAS Insurance Expense Exhibit Allocation and NAIC Issue Paper No. 94 \\u2014 expense classification and allocation principles.\\nP33: External evidence links: Travelers 2024 Form 10-K | Travelers 4Q 2024 Financial Supplement | CAS work-measurement source\\nP34: NAIC classification note: Issue Paper No. 94 classifies allocable property-and-casualty expenses into loss adjustment expenses, investment expenses, and other underwriting expenses.\\nP35: CAS terminology note: the work-measurement paper distinguishes paid-to-paid, claim-reporting/closing-pattern, and transaction-based approaches for ULAE; this memo uses measured handling activity as a transaction-based control input.\\nP36: Allocation Policy Principles\\nP37: The policy hierarchy is deliberately conservative: direct identification comes first, activity-based allocation is limited to genuinely shared costs, and expenses solely attributable to one entity or operating segment remain with that incurring entity.\\nP38: 1. Specific identification to the incurring entity or operating segment.\\nP39: 2. Activity-based allocation only where costs are genuinely shared and validated activity is available.\\nP40: 3. Exclusion of expenses solely attributable to one entity or segment from shared pools.\\nP41: NAIC guidance generally favors specific identification. When direct identification is not feasible, pertinent factors such as employee-activity studies, salary ratios, premium ratios, or similar analyses may be used.\\nP42: The policy treatment is applied before any allocation run is approved: specific identification is retained, genuinely shared costs use validated drivers, and excluded categories remain outside the shared pools.\\nP43: Activity-Based Cost Model\\nP44: The model applies specific identification before shared allocation. Shared Adjusting & Other claim-handling expense is allocated using a 35% claim-count factor and a 65% measured handling-hour factor. Shared-service expense is allocated using a 55% in-force policy-equivalent factor and a 45% measured system-usage factor.\\nP45: Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools. Claims Finance owns claim activity; Shared Services Finance owns policy and system activity; FP&A owns the allocation run.\\nP46: Identify and remove specifically attributable expenses.\\nP47: Validate monthly activity extracts by segment and service tower.\\nP48: Apply approved driver weights to the eligible pool.\\nP49: Allocate each pool by validated activity share.\\nP50: Reconcile segment totals to the consolidated pool and certify exceptions.\\nP51: Table 4. Driver dictionary and pool eligibility\\nP53: Formula: segment allocation equals pool multiplied by validated activity share. The six pool-by-segment amounts in Table 5 sum exactly to the three segment totals, and the three segment totals sum exactly to $1,286.597 million.\\nP54: Fiscal Year 2024 Modeled Redistribution\\nP55: The locked fiscal year 2024 result is a total modeled unallocated expense pool of $1,286.597 million, comprising $742.684 million of shared Adjusting & Other claim-handling expense and $543.913 million of shared-service expense.\\nP56: The claim-handling pool is allocated as Travelers Business Insurance $330.214 million, Travelers Bond & Specialty Insurance $43.872 million, and Travelers Personal Insurance $368.598 million. The shared-service pool is allocated as Travelers Business Insurance $195.126 million, Travelers Bond & Specialty Insurance $45.997 million, and Travelers Personal Insurance $302.790 million.\\nP57: Table 6. Fiscal year 2024 activity-based allocation result; amounts in millions\\nP59: Reconciliation: $742.684 million plus $543.913 million equals $1,286.597 million; $525.340 million plus $89.869 million plus $671.388 million also equals $1,286.597 million.\\nP60: Legacy-to-Activity-Based Impact\\nP61: The activity-based result reallocates cost toward measured consumption. Travelers Business Insurance and Travelers Bond & Specialty Insurance receive lower allocated expense, while Travelers Personal Insurance receives higher allocated expense.\\nP62: For each segment, activity-based less legacy equals the activity-based allocation minus the legacy allocation. Legacy allocations and activity-based allocations each total $1,286.597 million, making the consolidated impact exactly $0.000 million.\\nP63: Table 7. Legacy-to-activity-based impact analysis; amounts in millions except basis points\\nP65: The expense-ratio effect equals the segment impact divided by the segment earned-premium denominator, multiplied by 10,000 and rounded to one decimal basis point; see Table 7.\\nP66: The reported segment analytics therefore show a (58.3) basis-point effect for Travelers Business Insurance, a (95.3) basis-point effect for Travelers Bond & Specialty Insurance, and a 96.4 basis-point effect for Travelers Personal Insurance.\\nP67: Management Reporting and Ratio Consequence\\nP68: Consolidated allocated expense remains $1,286.597 million. Because the redesign changes only the segment attribution of that fixed pool, the reported fiscal year 2024 consolidated combined ratio remains 92.5%.\\nP69: Conclusion: segment expense-ratio effects are management-reporting analytics and do not restate fiscal year 2024 statutory or U.S. GAAP reported results.\\nP70: Ratio interpretation: Travelers Business Insurance changes by (58.3) basis points, Travelers Bond & Specialty Insurance by (95.3) basis points, Travelers Personal Insurance by 96.4 basis points, while the consolidated combined ratio remains 92.5%; these are management analytics only.\\nP71: Control Framework\\nP72: The control framework combines preventive, detective, and governance controls. FP&A owns the methodology and allocation run; Claims Finance and Shared Services Finance own source activity; Controllership approves pool eligibility and reconciliations; Internal Audit evaluates design and operating effectiveness.\\nP73: Preventive controls restrict eligible expense categories, require specific identification before allocation, and lock approved driver weights. Detective controls compare source activity to prior periods, investigate anomalies, and reconcile allocated totals to the eligible pool.\\nP74: Governance controls require quarterly certification, annual driver refresh, documented change control, evidence retention, and escalation of unresolved exceptions before quarter-close reporting is released.\\nP75: The controller review note is to confirm that the system-usage feed excludes duplicate authentication events before the October driver freeze.\\nP76: Control matrix\\nP78: Minimum evidence retained: source extracts, pool eligibility review, driver approval, allocation run, reconciliation, exception log, quarterly certification, annual refresh memo, and change-control approval.\\nP79: Controller review note: confirm the system-usage feed excludes duplicate authentication events before final approval.\\nP80: FP&A evidence note: retain the parallel-run reconciliation with the quarter-close evidence package.\\nP81: Implementation Plan\\nP82: The approved implementation date is fiscal year 2025 management reporting beginning with 2025-Q4. The plan moves from governance approval through driver freeze, parallel run, close readiness, and a January 2026 post-implementation review.\\nP83: Final confirmation mark: October 15, 2025 driver freeze.\\nP84: The September 26, 2025 approval milestone authorizes the implementation sequence. October locks the drivers, November runs legacy and activity-based allocations in parallel, December confirms close readiness, and January 2026 evaluates outcomes and exceptions.\\nP85: Implementation milestones\\nP87: Readiness gates: approved methodology, frozen drivers, completed parallel run, reconciled quarter-close evidence, and documented no-restatement treatment for fiscal year 2024 statutory and U.S. GAAP results.\\nP88: Revision history: 2025 annual reporting after committee review.\\nP89: Risks, Exceptions, and Escalation\\nP90: Primary risks include incomplete claim-handler time capture, policy-equivalent definition drift, system-usage anomalies, manual overrides, late source feeds, and segment disputes. Each risk requires a visible trigger, a documented response, and an accountable escalation owner.\\nP91: Any expense identified as solely attributable must be removed from the shared pool before allocation. If a source feed is late or fails validation, the fallback is the last approved driver only for the affected period, with a documented true-up in the next available run.\\nP92: Escalation triggers include a source variance above 5.0%, an unapproved manual override, an unreconciled pool variance above $0.100 million, or a segment dispute unresolved within five business days.\\nP93: Risk and response register\\nP95: Pending validation note: the system-usage feed remains subject to controller confirmation that duplicate authentication events are excluded.\\nP96: Formal Approval\\nP97: On September 26, 2025, The Travelers Expense Allocation Steering Committee approved the activity-based methodology for fiscal year 2025 management reporting beginning with 2025-Q4.\\nP98: The approved hierarchy is: first, specific identification to the incurring entity or operating segment; second, claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; third, in-force policy equivalents and measured system usage for shared-service costs. Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools.\\nP99: Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated. Named approvers are David R. Holloway, Priya S. Raman, and Michael T. Callahan; Elena M. Marquez is the preparer.\\nP100: Committee Chair: David R. Holloway ____________________  Date __________\\nClaims Finance: Priya S. Raman ____________________  Date __________\\nFinancial Controls: Michael T. Callahan ____________________  Date __________\\nPreparer: Elena M. Marquez ____________________  Date __________\\nP101: Version marker: Decision Memo v1.2.\\nP103: Appendix A: Definitions and Driver Governance\\nP104: This appendix defines the controlled terms used by the allocation model and assigns a governance owner to each driver. Definitions are written for repeatable management reporting and audit review.\\nP105: Driver governance requires monthly source validation, quarterly certification, and an annual refresh of definitions, weights, and eligibility decisions.\\nP106: The controlled terms align to the NAIC Insurance Expense Exhibit framework and CAS work-measurement terminology.\\nP107: Changes to controlled terminology require Financial Controls approval before the next reporting activation.\\nP108: Controlled terminology\\nP110: Footnote references: NAIC Issue Paper No. 94 supports specific identification and pertinent-factor allocation; the CAS work-measurement paper supports measured transaction-based claim activity.\\nP111: Appendix B: Reconciliation and Sign-Off Checklist\\nP112: The checklist below is the minimum audit-ready evidence package for each activated allocation run. A completed item requires both a named owner and retained evidence.\\nP113: The package must be stored in the controlled methodology repository before quarter-close reporting is released.\\nP114: Repository reference: controlled methodology repository.\\nP115: Pool completeness confirmed.\\nP116: Excluded-cost review completed for Defense & Cost Containment, investment expenses, and solely attributable expenses.\\nP117: Segment allocation reconciled to $1,286.597 million.\\nP118: Earned-premium denominators validated.\\nP119: Expense-ratio recalculation reviewed.\\nP120: Consolidated tie-out confirms $0.000 million impact.\\nP121: Management approval evidence retained.\\nP122: Reporting-period activation confirmed for 2025-Q4.\\nP123: Sign-off evidence must include pool reconciliation, excluded-cost review, segment tie-out, premium denominator support, ratio bridge, signed decision memo, and the 2025-Q4 configuration record. Sign-off is complete when the committee signature, controller confirmation, and activation record are retained with quarter-close evidence.\\n--TABLE 0--\\nDecision attribute | Approved position | Effective date\\nMethodology approval | Approve activity-based allocation for shared Adjusting & Other claim-handling and shared-service expense. | September 26, 2025\\nDecision owner | The Travelers Expense Allocation Steering Committee. | September 26, 2025\\nPreparer | Elena M. Marquez, Financial Manager, Corporate Finance. | 2025-Q3\\nExecutive sponsor | David R. Holloway, Senior Vice President, Corporate Finance. | September 26, 2025\\nReporting activation | Fiscal year 2025 management reporting beginning with 2025-Q4. | 2025-Q4\\nHistorical treatment | No restatement of fiscal year 2024 statutory or U.S. GAAP reported results. | Fiscal year 2024\\nApproval evidence | Signed committee record and retained methodology package. | September 26, 2025\\n--TABLE 1--\\nExpense category | Pool status | Primary driver | Source owner | Refresh frequency\\nShared Adjusting & Other claim-handling | Included | 35% claim counts; 65% measured handling hours | Travelers Claims Finance | Monthly\\nShared-service expense | Included | 55% in-force policy equivalents; 45% measured system usage | Travelers Shared Services Finance | Monthly\\nDefense & Cost Containment | Excluded | Not applicable | Travelers Claims Finance | Quarterly\\nInvestment expenses | Excluded | Not applicable | Corporate Treasury | Monthly\\nSolely attributable costs | Specifically identified | Entity or segment ledger trace | Controllership | Monthly\\nClaim count | Driver input | Reported claims | Claims Operations Analytics | Monthly\\nMeasured handling hour | Driver input | Claim-handler hours | Claims Operations Analytics | Monthly\\nIn-force policy equivalent | Driver input | Policies in force | Policy Administration | Monthly\\nMeasured system usage | Driver input | Authenticated service transactions excluding duplicates | Shared Services Technology Finance | Monthly\\n--TABLE 2--\\nAllocation component | Travelers Business Insurance | Travelers Bond & Specialty Insurance | Travelers Personal Insurance | Consolidated total\\nClaim-handling pool | $330.214 | $43.872 | $368.598 | $742.684\\nShared-service pool | $195.126 | $45.997 | $302.790 | $543.913\\nTotal activity-based allocation | $525.340 | $89.869 | $671.388 | $1,286.597\\nReconciliation variance | $0.000 | $0.000 | $0.000 | $0.000\\nPool status | Included | Included | Included | Reconciled\\n--TABLE 3--\\nOperating segment | Legacy allocation | Activity-based allocation | Activity-based less legacy | Earned-premium denominator | Expense-ratio effect\\nTravelers Business Insurance | $646.912 | $525.340 | $(121.572) | $20,842.317 | (58.3)\\nTravelers Bond & Specialty Insurance | $129.674 | $89.869 | $(39.805) | $4,176.842 | (95.3)\\nTravelers Personal Insurance | $510.011 | $671.388 | $161.377 | $16,735.506 | 96.4\\nConsolidated total | $1,286.597 | $1,286.597 | $0.000 | $41,754.665 | 0.0\\n--TABLE 4--\\nControl ID | Control objective | Control activity | Control owner | Frequency | Evidence retained\\nEA-01 | Pool eligibility | Review specific identification and excluded-cost listing. | Controllership | Monthly | Signed eligibility checklist\\nEA-02 | Driver integrity | Validate claim counts and handling hours to source extracts. | Claims Finance | Monthly | Source-to-ledger reconciliation\\nEA-03 | Service activity | Validate policy equivalents and system usage by tower. | Shared Services Finance | Monthly | Usage validation report\\nEA-04 | Allocation accuracy | Reperform weighted driver allocation and reconcile to pool. | FP&A | Monthly | Allocation run and tie-out\\nEA-05 | Exception handling | Document overrides, late feeds, and temporary fallback. | FP&A | Event-driven | Exception log\\nEA-06 | Quarterly certification | Certify methodology, drivers, exclusions, and reconciliation. | Controllership | Quarterly | Quarterly certification\\nEA-07 | Annual refresh | Refresh driver definitions and weights. | FP&A and Claims Finance | Annual | Approved driver memo\\nEA-08 | Change control | Approve methodology or system changes before activation. | Financial Controls | Event-driven | Change ticket and approval\\nEA-09 | Independent review | Assess control design and evidence sufficiency. | Internal Audit | Annual | Internal audit workpaper\\n--TABLE 5--\\nMilestone | Owner | Target date | Exit evidence\\nCommittee approval | Expense Allocation Steering Committee | September 26, 2025 | Signed approval record\\nDriver definition and freeze | FP&A | October 15, 2025 | Approved driver package\\nParallel run | FP&A and Controllership | November 14, 2025 | Legacy-to-activity reconciliation\\nQuarter-close readiness | Controllership | December 12, 2025 | Close checklist and sign-off\\n2025-Q4 activation | Management Reporting Owners | December 31, 2025 | Activated reporting configuration\\nPost-implementation review | Internal Audit and FP&A | January 30, 2026 | Review memo and action log\\n--TABLE 6--\\nRisk | Trigger | Response | Escalation owner\\nIncomplete time capture | Handling-hour completeness below 98.0%. | Use validated claim-count component and document temporary fallback. | Claims Finance\\nPolicy-equivalent drift | Definition changes without approved change ticket. | Freeze affected driver and obtain Controllership review. | Shared Services Finance\\nSystem-usage anomaly | Duplicate or unexplained usage spike above 5.0%. | Exclude duplicates, reconcile service tower, and retain evidence. | Shared Services Technology Finance\\nManual override | Any override lacks approval or rationale. | Reject run until override is approved and logged. | FP&A\\nLate source feed | Monthly extract not received by close calendar date. | Apply last approved driver temporarily and true-up. | Controllership\\nSegment dispute | Issue remains open five business days. | Escalate to Steering Committee with impact analysis. | David R. Holloway\\n--TABLE 7--\\nTerm | Definition | Source or authority\\nAdjusting & Other | Remaining claim-adjusting work after Defense & Cost Containment is separately identified. | CAS work-measurement terminology; Claims Finance\\nDefense & Cost Containment | Defense, litigation, and medical-cost-containment work excluded from the shared claim-handling pool. | CAS work-measurement terminology\\nClaim count | Validated reported-claim activity used as a weighted shared claim-handling driver. | Claims Operations Analytics; monthly\\nMeasured handling hour | Validated claim-handler work time used as a weighted shared claim-handling driver. | Claims Operations Analytics; monthly\\nIn-force policy equivalent | Normalized policy volume used for shared-service allocation. | Policy Administration; monthly\\nMeasured system usage | Validated service transactions excluding duplicate authentication events. | Shared Services Technology Finance; monthly\\nShared pool | Eligible expense genuinely shared across operating segments after specific identification. | NAIC Issue Paper No. 94\\nSpecific identification | Assignment of expense to the entity or segment that incurred it. | NAIC Issue Paper No. 94\\nLegacy allocation | Prior allocation approach used for the fiscal year 2024 comparison. | Corporate Controllership\\nActivity-based allocation | Approved allocation using validated activity shares and weighted drivers. | Expense Allocation Steering Committee\\n\\n====================================================================================================\\nTravelers_Expense_Allocation_Methodology_and_Controls.docx\\nP0: THE TRAVELERS COMPANIES, INC.\\nP1: Expense Allocation Methodology\\nand Controls\\nP2: FIN-ALLOC-2025-04  |  Version 1.0  |  Internal finance governance standard\\nP4: Document control\\nP5: Prepared for controlled methodology repository | Last updated September 26, 2025\\nP7: Contents and navigation\\nP8: This controlled document defines the activity-based allocation hierarchy, eligible pools, driver calculations, control checkpoints, and evidence requirements for management reporting. Use the internal links below to navigate the methodology.\\nP9: 1. Executive summary\\nP10: 2. Scope, principles, and controlled terminology\\nP11: 3. Allocation hierarchy and decision rules\\nP12: 4. Driver methodology and calculations\\nP13: 5. FY2024 modeled result and reconciliation\\nP14: 6. Controls, exceptions, and evidence\\nP15: 7. Operating calendar and responsibilities\\nP16: Appendix A. Controlled terminology\\nP17: Appendix B. Reconciliation and sign-off checklist\\nP18: 1. Executive summary\\nP19: On September 26, 2025, The Travelers Expense Allocation Steering Committee approved the activity-based methodology for fiscal year 2025 management reporting beginning with 2025-Q4. The approved hierarchy is: first, specific identification to the incurring entity or operating segment; second, claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; third, in-force policy equivalents and measured system usage for shared-service costs. Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools. Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated.\\nP20: The methodology is designed to improve causal attribution of shared expenses without weakening the controlled ledger, statutory reporting, or segment governance framework. The allocation run begins with specific identification; only genuinely shared costs proceed into an eligible pool.\\nP21: Approved methodology at a glance\\nP22: 2. Scope, principles, and controlled terminology\\nP23: The standard applies to fiscal year 2025 management reporting activation beginning with 2025-Q4. It covers the shared Adjusting & Other claim-handling pool, the shared-service pool, allocation driver governance, exception handling, and management approval evidence.\\nP24: The standard does not use the allocation output to restate fiscal year 2024 statutory or U.S. GAAP reported results. The FY2024 values in this document are a controlled comparison and model baseline only.\\nP25: Specific identification takes precedence over any pooled allocation when the incurring entity or operating segment can be evidenced.\\nP26: A shared pool is eligible only after excluded costs and directly attributable costs are removed.\\nP27: Driver inputs must be validated, period-aligned, and retained with the run package.\\nP28: Rounding occurs only at the presentation layer; the controlled total must tie to the source pool to $0.001 million.\\nP29: Any methodology change requires Finance Controls approval before the next reporting activation.\\nP30: Scope boundaries\\nP31: 3. Allocation hierarchy and decision rules\\nP32: The decision tree below is the operating rule for every expense population. A reviewer must be able to trace each included amount to either a direct attribution record or an eligible shared-pool record.\\nP34: Decision rule matrix\\nP35: The approval hierarchy is deliberately sequential. A later-stage driver cannot override a reliable earlier-stage direct attribution decision.\\nP36: 4. Driver methodology and calculations\\nP37: The driver framework uses measured activity rather than a blanket premium or revenue allocation. The controlled model stores the driver numerator, denominator, calculated share, and allocated amount for each operating segment.\\nP38: Driver definitions and formulas\\nP39: Driver governance thresholds\\nP40: Primary source extract: cas_claim_department_work_measurement_systems.pdf\\nP41: Allocation exhibit: cas_insurance_expense_exhibit_allocation.pdf\\nP42: 5. FY2024 modeled result and reconciliation\\nP43: The following controlled baseline is used to explain the impact of the approved methodology. Amounts are shown in millions of U.S. dollars and are not a restatement of FY2024 reported results.\\nP44: Pool reconciliation\\nP45: Segment allocation bridge\\nP46: Legacy comparison and modeled impact\\nP47: 6. Controls, exceptions, and evidence\\nP48: The control framework is designed to prevent unsupported pooling, driver denominator errors, stale source data, and unapproved methodology changes. Each control owner retains evidence in the controlled methodology repository.\\nP49: Key controls\\nP50: Exception handling\\nP51: Financial reporting context: travelers_4q2024_financial_supplement.pdf\\nP52: Management approval reference: Travelers_FY2024_ABC_Management_Approval_Memo.docx\\nP53: 7. Operating calendar and responsibilities\\nP54: Operating calendar\\nP55: Responsibility matrix\\nP57: Appendix A. Controlled terminology\\nP58: The terms below are controlled for this methodology. Changes to definitions require Financial Controls approval before the next reporting activation.\\nP59: Controlled terminology\\nP60: CAS work-measurement reference: cas_claim_department_work_measurement_systems.pdf\\nP61: Appendix B. Reconciliation and sign-off checklist\\nP62: A completed checklist requires a named owner, date, and retained evidence. The package must be stored in the controlled methodology repository before quarter-close reporting is released.\\nP63: Minimum release checklist\\nP64: Document end | FIN-ALLOC-2025-04\\n--TABLE 0--\\n | APPROVAL STATUS / On September 26, 2025, The Travelers Expense Allocation Steering Committee approved the activity-based methodology for fiscal year 2025 management reporting beginning with 2025-Q4. The approved hierarchy is: first, specific identification to the incurring entity or operating segment; second, claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; third, in-force policy equivalents and measured system usage for shared-service costs. Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment are excluded from the shared pools. Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated.\\n--TABLE 1--\\nField | Controlled value\\nOwner | Enterprise Management Metrics / Finance Controls\\nApproved by | Travelers Expense Allocation Steering Committee\\nApproval date | September 26, 2025\\nEffective reporting activation | 2025-Q4 management reporting\\nPrior-period treatment | Fiscal year 2024 statutory and U.S. GAAP reported results will not be restated.\\nClassification | Confidential - internal finance use\\n--TABLE 2--\\n | USE LIMITATION / This document is a management-reporting methodology and control standard. It does not amend statutory reporting, U.S. GAAP financial statements, legal entity accounting policies, or regulatory capital calculations.\\n--TABLE 3--\\nStage | Required treatment | Control outcome\\n1 | Specific identification to the incurring entity or operating segment. | No shared allocation where reliable direct attribution exists.\\n2 | Allocate shared Adjusting & Other claim-handling expense using validated claim counts and measured handling hours. | Driver denominator and activity source are retained for each run.\\n3 | Allocate shared-service expense using in-force policy equivalents and measured system usage. | Policy and usage drivers are reconciled to source extracts.\\n4 | Exclude Defense & Cost Containment, investment expenses, and expenses solely attributable to one entity or segment from shared pools. | Excluded-cost review is signed before reporting release.\\n--TABLE 4--\\n | CONTROLLED CONCLUSION / Total modeled unallocated expense pool: $1,286.597 million, comprising $742.684 million of shared Adjusting & Other claim-handling expense and $543.913 million of shared-service expense. The claim-handling pool is allocated as Travelers Business Insurance $330.214 million, Travelers Bond & Specialty Insurance $43.872 million, and Travelers Personal Insurance $368.598 million. The shared-service pool is allocated as Travelers Business Insurance $195.126 million, Travelers Bond & Specialty Insurance $45.997 million, and Travelers Personal Insurance $302.790 million. Total activity-based allocation is therefore Travelers Business Insurance $525.340 million, Travelers Bond & Specialty Insurance $89.869 million, and Travelers Personal Insurance $671.388 million.\\n--TABLE 5--\\nIncluded in this standard | Excluded from this standard\\nShared Adjusting & Other claim-handling costs | Defense & Cost Containment costs\\nShared-service costs | Investment expenses\\nClaim counts and measured handling hours | Expenses solely attributable to one entity or segment\\nIn-force policy equivalents and measured system usage | Statutory or U.S. GAAP restatement entries\\nEvidence, review, exception, and sign-off controls | Changes to the general ledger chart of accounts\\n--TABLE 6--\\nQuestion | Yes path | No path | Evidence\\nCan the expense be specifically identified? | Assign to incurring entity or operating segment. | Proceed to shared-pool eligibility review. | Ledger detail, contract, cost center, or source transaction.\\nIs the expense an excluded category? | Remove from shared pool and retain exclusion support. | Proceed to driver classification. | Exclusion review and controller sign-off.\\nIs the cost claim-handling activity? | Use claim counts and measured handling hours. | Use shared-service driver framework. | CAS work-measurement extract and driver bridge.\\nIs the driver complete and period aligned? | Calculate allocation share and reconcile to 100%. | Hold run and open exception. | Source owner attestation and denominator check.\\n--TABLE 7--\\nPool | Primary driver | Allocation share formula | Required validation\\nShared Adjusting & Other | Claim counts and measured handling hours | Segment weighted activity \\u00f7 total eligible weighted activity | No missing segment, duplicate claim event, or invalid handling-hour record.\\nShared service | In-force policy equivalents and measured system usage | Segment weighted service activity \\u00f7 total eligible weighted service activity | Policy period aligns to reporting period; usage excludes duplicate authentication events.\\nDirectly attributable expense | Specific identification | 100% to identified entity or segment | Source transaction and ownership evidence retained.\\n--TABLE 8--\\nCheck | Pass criterion | Escalation\\nCompleteness | All eligible segments have a non-blank numerator or documented zero. | Open exception before close.\\nDenominator | Denominator equals the sum of segment numerators after exclusions. | Controller review and rerun.\\nShare total | Rounded presentation shares reconcile to 100.000%. | Investigate rounding or missing segment.\\nPool tie-out | Allocated amount equals controlled pool to $0.001 million. | Hold release until resolved.\\nPeriod alignment | Source activity covers the same management reporting period. | Obtain source-owner attestation.\\n--TABLE 9--\\nPool component | Amount ($mm) | Reconciliation note\\nShared Adjusting & Other claim-handling expense | $742.684 | Eligible shared claim-handling pool after exclusions.\\nShared-service expense | $543.913 | Eligible shared-service pool after exclusions.\\nTotal modeled unallocated expense pool | $1,286.597 | 742.684 + 543.913 = 1,286.597.\\n--TABLE 10--\\nSegment | Claim handling ($mm) | Shared service ($mm) | Total activity-based ($mm)\\nTravelers Business Insurance | $330.214 | $195.126 | $525.340\\nTravelers Bond & Specialty Insurance | $43.872 | $45.997 | $89.869\\nTravelers Personal Insurance | $368.598 | $302.790 | $671.388\\nControlled total | $742.684 | $543.913 | $1,286.597\\n--TABLE 11--\\nSegment | Legacy allocation ($mm) | Activity-based ($mm) | Modeled impact ($mm)\\nTravelers Business Insurance | $646.912 | $525.340 | $(121.572)\\nTravelers Bond & Specialty Insurance | $129.674 | $89.869 | $(39.805)\\nTravelers Personal Insurance | $510.011 | $671.388 | $161.377\\nControlled total | $1,286.597 | $1,286.597 | $0.000\\n--TABLE 12--\\n | INTERPRETATION / The modeled impact is a reallocation of management-reporting expense attribution. It is not evidence of a change in consolidated expense, statutory results, or U.S. GAAP expense recognition.\\n--TABLE 13--\\nControl ID | Control activity | Owner | Frequency | Evidence retained\\nFIN-ALLOC-01 | Review direct-attribution and excluded-cost decisions before pool formation. | Corporate Controllership | Each run | Signed pool preparation checklist.\\nFIN-ALLOC-02 | Reconcile claim counts and measured handling hours to source extract. | Claims Finance | Each run | Source extract, denominator bridge, owner attestation.\\nFIN-ALLOC-03 | Reconcile policy equivalents and system usage to shared-service source files. | Shared Services Finance | Each run | Usage file, policy denominator, exception log.\\nFIN-ALLOC-04 | Confirm segment shares total 100.000% and allocated pool ties to controlled total. | Financial Controls | Each run | Model tie-out and reviewer sign-off.\\nFIN-ALLOC-05 | Approve methodology, driver, or scope changes before activation. | Steering Committee | As needed | Decision memo and configuration record.\\n--TABLE 14--\\nException | Required action | Release status\\nMissing or late driver file | Hold affected pool; obtain source owner attestation or approved fallback. | Not released until cleared.\\nDuplicate or invalid activity record | Remove duplicate, document adjustment, and rerun denominator check. | Conditional only with controller approval.\\nPool does not reconcile | Investigate exclusions, rounding, and segment completeness. | Blocked.\\nRequested methodology change | Prepare impact assessment and obtain Steering Committee approval. | Deferred to next activation unless approved.\\n--TABLE 15--\\nTiming | Activity | Primary owner | Output\\nBefore quarter close | Extract claim and shared-service driver files; confirm period alignment. | Claims Finance / Shared Services Finance | Versioned source extracts.\\nPre-close review | Complete exclusion review and build allocation model. | Corporate Controllership | Pool bridge and model output.\\nReviewer checkpoint | Review denominators, shares, tie-outs, and exceptions. | Financial Controls | Signed control checklist.\\nManagement approval | Approve release and record any conditions. | Expense Allocation Steering Committee | Approval evidence.\\nPost-release archive | Retain model, source files, sign-offs, and configuration record. | Finance Controls repository owner | Audit-ready run package.\\n--TABLE 16--\\nRole | Accountability\\nCorporate Controllership | Owns pool formation, exclusion review, model preparation, and controlled total reconciliation.\\nClaims Finance | Owns claim count and measured handling-hour source quality and attestation.\\nShared Services Finance | Owns policy-equivalent and system-usage source quality and attestation.\\nFinancial Controls | Performs independent review of calculations, exceptions, evidence, and release status.\\nExpense Allocation Steering Committee | Approves methodology, scope, and material changes.\\n--TABLE 17--\\nTerm | Definition | Source or authority\\nAdjusting & Other | Remaining claim-adjusting work after Defense & Cost Containment is separately identified. | CAS work-measurement terminology; Claims Finance\\nDefense & Cost Containment | Defense, litigation, and medical-cost-containment work excluded from the shared claim-handling pool. | CAS work-measurement terminology\\nClaim count | Validated reported-claim activity used as a weighted shared claim-handling driver. | Claims Operations Analytics; monthly\\nMeasured handling hour | Validated claim-handler work time used as a weighted driver. | Claims Operations Analytics; monthly\\nIn-force policy equivalent | Normalized policy volume used for shared-service allocation. | Policy Administration; monthly\\nMeasured system usage | Validated service transactions excluding duplicate authentication events. | Shared Services Technology Finance; monthly\\nShared pool | Eligible expense genuinely shared across operating segments after specific identification. | NAIC Issue Paper No. 94\\nSpecific identification | Assignment of expense to the entity or segment that incurred it. | NAIC Issue Paper No. 94\\nLegacy allocation | Prior allocation approach used for the fiscal year 2024 comparison. | Corporate Controllership\\nActivity-based allocation | Approved allocation using validated activity shares and weighted drivers. | Expense Allocation Steering Committee\\n--TABLE 18--\\nCheck ID | Required evidence | Owner | Status\\nCHK-01 | Pool completeness confirmed. | Assigned reviewer | Pending completion\\nCHK-02 | Excluded-cost review completed for Defense & Cost Containment, investment expenses, and solely attributable expenses. | Assigned reviewer | Pending completion\\nCHK-03 | Segment allocation reconciled to $1,286.597 million. | Assigned reviewer | Pending completion\\nCHK-04 | Claim-handling denominator validated. | Assigned reviewer | Pending completion\\nCHK-05 | Shared-service denominator validated. | Assigned reviewer | Pending completion\\nCHK-06 | Segment shares reconcile to 100.000%. | Assigned reviewer | Pending completion\\nCHK-07 | Consolidated tie-out confirms $0.000 million modeled impact. | Assigned reviewer | Pending completion\\nCHK-08 | Management approval evidence retained. | Assigned reviewer | Pending completion\\nCHK-09 | Reporting-period activation confirmed for 2025-Q4. | Assigned reviewer | Pending completion\\n--TABLE 19--\\n | RELEASE CONDITION / Sign-off is complete only when the committee decision, controller confirmation, allocation model, source extracts, exception log, and 2025-Q4 configuration record are retained together.\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe9359908191a4b46e4e345c60bf",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6T1mXjKhjDd9rtfsoZQ7S8jNGIWxqqB6FpY_koUf83ci6a8mC6rehUBHM8_nO6aUSFvXW51j08BJDwTCPQqt8SLx8enbHLaBXhERJyFDprlLYplNcl_7cU8hVchA8cSeoVomQ1HZqRru08Gc-0n5V0EhzvBXGptP9BGqHxW33X3rMt6MWJcVise8VcxCoH_FX-nnxyQ-mT3ufapEL4F8Zil1dpFtzbWHiaR0_UTfE5Zwl9XrFU6Eza6vbA34ipgLdc6nDfmaEiMsI_3m_D-6wyK0s85CZz9ItN3nr086KCtOG2xIKkHoper_UgP2aENVGV1IvBdiwNxi-igYUj2oKPOX-xLJ02_uaIPemZdUnpq8glPgS0d0Eoj0s7ZTY1Hpg1W83j2NulZmBZJ9cIAq9Vc2I43RbcEXFCtzwM6dssZ3u3VAJCB_p2UoxVswKcdLEBKQ-UN314gACUlgeLD0bdLITRgeFZCcHxTPJEcW3v7jOWxKspbEEF6iz3f9hmc4BLKZk8HTo8uLX7t2IXqH8BbswnvS3IdyagCP3fUao2yqHp1Mqy0PeqOsVTYr-hhKhJRP8s9QqT29a8s1vmhV8OZGInhA_gDWO-IQqZdO4Y9Jh0SErpHg6qTTjMQXWPJKCyVwcns9YLj85YlLiKDgQntooGTCwi_3RthuGVpkLBONjdhY2gIPjsyiCH3FXBX1cuLOAgolRuXBh3hR9kPzYxvX_iEw_EE-D-mKRw6uLAXzdwzdsDLY9TUxSnVZQ4NEyp-y4tttsEaqdmZkw1l1bUaccFADzCCXfpMFfA2-jf915e4oKPxb1a2XcdQ200BKQyqVxCDSk4tkYjUYRwbgArH3wMn9sQwGhH1cLAmsj7X3zJM3Icbx8T0aVK7w6brjyotXnMCXdNMxycISpboo413y53c5n5JvUt6I3jqPmSSv7bdQlpb7bumJY_Ov-zPj_yvJ35_s_QMDZyHvgDfPgSXcOxPcuqywdyCn4Ut_lZtjOOgTRnFc_Ni3uygiPscy2lKQzq31KYhOBaESRKVkc0XRisYKU6K-gVbykeZkTmgdn9Hi26LYRgcw0MBAViWSMgYcWcv3kLCLqDD0ldSalMIjiO6_a_IAW_rT9deVL7Y6l8U9s6xiN0fp9RQ4PgZIHCDNMCS7KSVlN1i2CEt2BnKXocVCJw6EIqHdn54-VsJjwlcgs1d1s_bbJ2_REkatzEsZ0OUFv1s8WTrkGEoW4Q8nhOKfCyeHwqfXRkM_wRjjrEl9mF9jpLNl4MIbwuNhe_2FTW4ruL1-g4xUbU2hzv0f1qmJp2NALqBWmRypOQJWvvqVuVpZREB3bsVD_Lo4YGiCdipIxiEh_yjE2Lv37uduSymBsqeEoqm-4CiaHmD6LEYGLvddwG7DOnxk8RZpQEZVTU8XWyNPqImyX5dyOG9N3nl_lj-ovnc56J77gjcPFsdlg2YRJ0wpDQTV5TjYlzBusA65V3ziQoVv5YL_bea77tCnpdHYBuiPuhsYEXjWoTUXRe9E4Ni_w6I6nV1HPPWGBSPSSO0_VsweU5aoo98yqmnqTuJidEX0Ln-C9dYSHIAGv3RnyXcVMFQCpb4FOiJZUQjryILugfLg8UmCrqtppnU7aDLjhIfXOwyFsAufA="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe937a34819187f5c9cd6f4d7aba",
+      "call_id": "call_9e246f2706874c8a8f91188a62d2f3cf",
+      "name": "m3_get_methodology_case",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9e246f2706874c8a8f91188a62d2f3cf",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"case\\\": {\\n    \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n    \\\"registrant_id\\\": \\\"TRV_INC\\\",\\n    \\\"headquarters_id\\\": \\\"LOC_NYC_485_LEX\\\",\\n    \\\"analysis_period_id\\\": \\\"PERIOD_FY2024\\\",\\n    \\\"review_period_id\\\": \\\"PERIOD_2025_Q3\\\",\\n    \\\"approval_body_id\\\": \\\"TRAVELERS_EXPENSE_ALLOCATION_STEERING_COMMITTEE\\\",\\n    \\\"methodology_name\\\": \\\"Activity-Based Cost Allocation Methodology for FY2025 Management Reporting\\\",\\n    \\\"decision_status\\\": \\\"Approved\\\",\\n    \\\"approval_date_id\\\": \\\"DATE_2025_09_26\\\",\\n    \\\"implementation_period_id\\\": \\\"PERIOD_2025_Q4\\\",\\n    \\\"external_framework_id\\\": \\\"NAIC_ISSUE_PAPER_94\\\",\\n    \\\"technical_reference_id\\\": \\\"CAS_ULAE_WORK_MEASUREMENT\\\",\\n    \\\"approved_hierarchy\\\": \\\"1 specific identification to incurring entity or operating segment; 2 claim counts and measured handling hours for shared Adjusting & Other claim-handling costs; 3 in-force policy equivalents and measured system usage for shared-service costs\\\",\\n    \\\"shared_pool_inclusions\\\": \\\"Shared Adjusting & Other claim-handling costs; shared-service costs\\\",\\n    \\\"exclusion_scope\\\": \\\"Defense & Cost Containment; investment expenses; expenses solely attributable to one entity or operating segment\\\",\\n    \\\"no_restatement_flag\\\": 1,\\n    \\\"statutory_restated_flag\\\": 0,\\n    \\\"gaap_restated_flag\\\": 0,\\n    \\\"created_at\\\": \\\"2025-07-11T14:22:00Z\\\"\\n  }\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe95a0d88191b8ed16faca63e0d0",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6V5hy6hP7ZOKScy1QQlYzj0nGRFa2DKcAE7SptxEyuyLeIawqHP4VPb6VXVxGiimKZLBwP3k7sGZG3s0zNJuaEzXOBK7W8yvzy9N9OKfeUgHI4rFH9hmRLnTcePxAgbi0u_F7X-Gq7AOk5zaftT28bL1RKJT1rw6GZYnVJDELpp28II4KvXu0Ax_XYbkkKVCnZ53y-P_Z4qcIIKeeJTYxVBB-ZXBoFxxBQudidXyGei_jmUB4JuVbcJt-SWTJxRZStyOThyRmYoVnfVKiME2w1mibrFwQRkQYkFSdoz9uO3Mfzg6Mc7JAtevk9GMD8laBeocmgBaj8NFB7p_3dsGfSXmU-pjF4xjkv0LjZrkeQ_fS0om50-8GEi4IwjGqaCNdzSol7izHtv1MubGJRmWbEJimIDD4kMP_-7y5ICKFAXqUb0_cwgJrzNlwip1-WJadB6u27BJys2a0j6kytrI6w-MeMITscqwCifCioEGuqOVjxLfTJOdaCtn3aFtoo2YfSPFG3Ox7cb_PvVSZGMo_m7B3Hs1Qi4nJ2Kr8QSxRQOlzz3o4Q8fWiMKxGUvPQk7Gkdy4aiC5xTGW__b_oeWyAqHaag2goRdytyKwIo0gRskyMC3WyY5ABaNkEL83cS2U-YhZXwr0GqLZnemMDbpCXICPWyOTjcfdQXsrvogr7gHvMhxu788Rdmf4-fAP22dt_gcBZXtwechjG-1a0jTheCQzi8I0WxvOPYovqJ9tCAIIUF94soI51KRmRSC8yBG-HKnXKIPcwBKxP8dbgR5IYCi1FIk_QwFHuSLRxp_eaxXcfF8bXypXf5LECBCPFklTTjaMIYpVxNyjyqSnEjlVuwc25H5QciQnHAJ5aP56mF530E8wMwY7iTWFwqy9hl-qU7IaVxO2HPvmxFvvaka3pgSsYb-to8ulUWnO-XNPUr0JaJwvzRjiKkFbgFs5b3FMEcEPM-ZvYYAan8_8AfWcOnbgkhfG9GmoPmI0zKiL1dJU5tqlOhogm2i8WuqjqLFHfS6weUeCTYS-Z2sQyKvGVhBCoIEZ_0DKhU9I8zb8mn-X618AM-EKhUllOXdJWAQHw-lI6nOcS6R2Af9JkFzKvx85k8zFGzS_K8qFANCDCZeOg2rL_9NJltOMvKSj_1G-m5r2ebeYAjLn1RP2sskYWAPNPQmQnW33Uz3ULDqQZRG3ftPCMoOZu6FNzKWrmys5QmP_7XiT8leIv9TthobZtaO3jvxl8-Fi92jHOhbFlZkkDzb9ClAEHAuea3FiBcSZo63B0NUw6V5goQ7JH3ypojR2rsZU5v2iolzAkXU7HfnPHoW043wDSn9wIQAM0MeW3YfFh0HLaQd-jQI8xYN7f_A5POZ9oVJATpBr8-ENd-Oy9moklECRmWoGBMM6gFE7vJNprqoZJXD5bpEn2RzbUJqaADREGF7741AadrzRVXLER4O6TKDslD0t6AZIEiGncIOpCXwjOmIMhc4lLbl22R35wE1iEotNLERB_J5A_HJZJLcyuX_x9m9OKkKJ06KZclczbig3SeG9cF52WRiLjXvufvSQNfnuIcQLRhaJ76zjZ_4int40z0erac66Ei7cJyivdlgzb65dHaLED8xIXM3uzHxNSLnmu48uKKhiYXcnnOtZDjye0KHOD0pE2ICmD"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe95c0ac8191b0e3bf0c8b9d6c7f",
+      "call_id": "call_18dab5d119954cef8a518b2d02af2665",
+      "name": "m3_list_approval_actions",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"final_only\":false,\"page_size\":50}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_18dab5d119954cef8a518b2d02af2665",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"actions\\\": [\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0718-01\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"ELENA_M_MARQUEZ\\\",\\n      \\\"approver_name\\\": \\\"Elena M. Marquez\\\",\\n      \\\"approver_role\\\": \\\"Financial Manager\\\",\\n      \\\"action_date\\\": \\\"2025-07-18\\\",\\n      \\\"action_sequence\\\": 1,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Approved finance-methodology submission for functional review.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0804-02\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"DAVID_R_HOLLOWAY\\\",\\n      \\\"approver_name\\\": \\\"David R. Holloway\\\",\\n      \\\"approver_role\\\": \\\"Executive Sponsor\\\",\\n      \\\"action_date\\\": \\\"2025-08-04\\\",\\n      \\\"action_sequence\\\": 2,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Approved sponsor review subject to control evidence completion.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0812-03\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"PRIYA_S_RAMAN\\\",\\n      \\\"approver_name\\\": \\\"Priya S. Raman\\\",\\n      \\\"approver_role\\\": \\\"Claims Finance Lead\\\",\\n      \\\"action_date\\\": \\\"2025-08-12\\\",\\n      \\\"action_sequence\\\": 3,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Claims-count and measured-handling-hour drivers accepted for shared A&O costs.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0820-04\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"MICHAEL_T_CALLAHAN\\\",\\n      \\\"approver_name\\\": \\\"Michael T. Callahan\\\",\\n      \\\"approver_role\\\": \\\"Financial Controls Director\\\",\\n      \\\"action_date\\\": \\\"2025-08-20\\\",\\n      \\\"action_sequence\\\": 4,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Control design and evidence retention requirements accepted.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0902-05\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"ELENA_M_MARQUEZ\\\",\\n      \\\"approver_name\\\": \\\"Elena M. Marquez\\\",\\n      \\\"approver_role\\\": \\\"Financial Manager\\\",\\n      \\\"action_date\\\": \\\"2025-09-02\\\",\\n      \\\"action_sequence\\\": 5,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Management memo finalized for committee agenda.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0909-06\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"DAVID_R_HOLLOWAY\\\",\\n      \\\"approver_name\\\": \\\"David R. Holloway\\\",\\n      \\\"approver_role\\\": \\\"Executive Sponsor\\\",\\n      \\\"action_date\\\": \\\"2025-09-09\\\",\\n      \\\"action_sequence\\\": 6,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Executive sponsor confirmed implementation readiness.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0909-07\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"EARLY_EVIDENCE_REVIEW_PANEL\\\",\\n      \\\"approver_name\\\": \\\"Early Evidence Review Panel\\\",\\n      \\\"approver_role\\\": \\\"Evidence Review Panel\\\",\\n      \\\"action_date\\\": \\\"2025-09-09\\\",\\n      \\\"action_sequence\\\": 7,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Draft evidence review approval; does not establish the final methodology decision.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0926-08\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"TRAVELERS_EXPENSE_ALLOCATION_STEERING_COMMITTEE\\\",\\n      \\\"approver_name\\\": \\\"Travelers Expense Allocation Steering Committee\\\",\\n      \\\"approver_role\\\": \\\"Final Approval Committee\\\",\\n      \\\"action_date\\\": \\\"2025-09-26\\\",\\n      \\\"action_sequence\\\": 8,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 1,\\n      \\\"comments\\\": \\\"Final committee approval for FY2025 management reporting beginning 2025-Q4.\\\"\\n    }\\n  ],\\n  \\\"next_page_token\\\": null,\\n  \\\"total_count\\\": 8\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fe9978ec8191ac5fc2ce4171920d",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6ZBujNcrfW5WVSfBdIxAZeDfFiSXLdwa1lHXpkOOT2rCWSbUSvz6WQVckXQ4vHPZvjk0z9O4d9CCkqN02rMm07NJLtPvuGbHvL3s3AMSIAG2Mj8Wl3jEVYyTsCsMFcfTOr1BFxqoqkKar4of8xOcxQKD7yOXrSYA64S_So8IeBkWj-n3FEdXWuFdxE4dbwJrIXcyecdC_L1lfGloh9MvjCfBmAzmWKoQWMzKSlAGpGlYevPN0FokiBgc72SgfQMXs0-xXx6qBXnOTHbZAoPsZcuBTSMQetVWlJlRss8SB7CfRsirZiOfm4cShDUphdJmch6zubiIB4ulhYhYjMhaxzGgzV29ZGYMmjBue8MDq8hawCgXqKLFPaGi6HQ-lgT-t-zqrE4mpS9TlGIK6j_Z2n1qYgICgiNDuvvYgJjsxl2smIKGhPgPJejgxvkdXES73JWu-SUy_UL_JTSJmYFVyMLvNxHZzwrV4ZCV9_vXwF2pitpsDk13yltZIXKugYbth6VQwsaw30eVqOQZsE38CSB7Hhi9DGpzgMeS6VNPzoSoinpCWqty9V1l7PlrX22sTvElZXd6qQ_XaFNdO3bZnE_hzW6sMNShidLidSNEQrOlKW2QsAUUfc-GGyj17im7teiuLM9RNA1I2-9Tz5RFSAtGz19nj_1yJvMI8WCUUDXZ3qXR-e5HwflGE4klaQQneZib1Uk1qsUpbxyTOIhJ0CGD554M_xfJ4gWnbKJ4aIIBGXQLfqv4yc6LVdeC_OG3OccL8yXRrZ5fZtySCSIVOwSqZcSRhNcFqPRNBc8pN-e3JULS01kAH1HD8usc0ys3JL2lTKm9eqFCEQ7ccJVqskKCEVz0eKI28eI7TDWgUz_8U8FNX9IHuKc93kdGfszAwE9kCLV-rgV6NSPCkfnQbGk10OleHPuhVOLDzNa_cxYEEhRFWTOxexXthcBL600dhEKl0xypynFqbEDvJ8KQPASDggg6KiSTAqTOSKLlmeT_nmzwXxAOCFlfCPMAvY6u7ISf0nXMKbmgfvBBGqW9G47vtOq7z6yH_wlsj0tXBk6k7zyzAQmLEj0arjB_-FfZQlw2-vlv50HO9VU_4y-LKr7S4tsD9xKnLTYIlZblSvF3iID5jZ2_pwb-pxykBa93OBZMSUXOHR_xpMFz5OBh0dRV_KgreMA9v3dQVVQYG1RGLgP5ixNwn8R6IwtLLIcmnCYBNvLMZkNJCVqZJ92dWYXGTN3ZdDUfXmi5Jm7qMI3Q1UWCvWdbFL7th85tnZZo6G7SJHltvUWdJWEbqdRU19JV2sNuqOnw40zZOZcOE7sEkMgR15BU3DZgQ7o4hNmpPpApaLBI7ddDZuOTgyC0Uyt2JC4tDqWK3VVcPX9ep4EmnUYncDu96KwqVQKAcZdbMDYio-X6VqjUvD6PnqoPqf6a4wQ-uSZN7WOOXt_ClxkCthUZ7zo7ItyHobsg7y9tEz87uGwwGKY5VFLeVW7Yp5B1SKiKwOEB2oJDJKUhuO3WNpa38G2PvnTnjNwf0QNTkfvOF4myKWDoXMP-_8EahYWVng7vKR9oB1_s2dd7FxuHRXZ9gQ-L-bV1w7bnqDsTbq7KC0Z8EowkEb0cjkwXj0i5iebQvcrLmw5BUcVOqHOPFcJMpitIlu181WOyIWUIC4UYyWiyZrGtzJIivTUIbKXbTJc-WpS1VFo5OGwommk7o="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fe9999948191a030ee9a65b2d299",
+      "call_id": "call_b9c0f5eba953478a9f6b30b835182d6a",
+      "name": "m3_search_control_evidence",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"page_size\":50}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b9c0f5eba953478a9f6b30b835182d6a",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"evidence\\\": [\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0715-008\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Workbook Test\\\",\\n      \\\"source_system\\\": \\\"ServiceNow GRC Attachment Repository\\\",\\n      \\\"source_reference\\\": \\\"WB-ALLOC-FY2025-DRAFT-v1.xlsx\\\",\\n      \\\"test_date\\\": \\\"2025-07-15\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Orphaned\\\",\\n      \\\"checksum_status\\\": \\\"Missing\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"WB-VERSION-FY2025-DRAFT-V1\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Superseded workbook version is no longer attached; audit follow-up item and invalid final approval evidence.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0910-001\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Controlled Export\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-EXP-2025Q3-ALLOC-001\\\",\\n      \\\"test_date\\\": \\\"2025-09-10\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"RECON-2025Q3-SHARED-001\\\",\\n      \\\"source_amount_wan\\\": 1248700,\\n      \\\"ledger_amount_wan\\\": 1248700,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Controlled expense-pool export received and checksum verified.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0911-002\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Ledger Reconciliation\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-LEDGER-2025Q3-POOL-001\\\",\\n      \\\"test_date\\\": \\\"2025-09-11\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"RECON-2025Q3-SHARED-001\\\",\\n      \\\"source_amount_wan\\\": 1250000,\\n      \\\"ledger_amount_wan\\\": 1248700,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Classification and timing difference of 1,300 wan resolved; ledger pool is the controlled accounting amount.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0912-003\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Controlled Export\\\",\\n      \\\"source_system\\\": \\\"Guidewire ClaimCenter\\\",\\n      \\\"source_reference\\\": \\\"GC-CLAIMS-2025Q3-EXPORT-017\\\",\\n      \\\"test_date\\\": \\\"2025-09-12\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"CLAIM-2025Q3-017\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": null,\\n      \\\"notes\\\": \\\"Claim-count export used for driver testing; duplicate-resolution evidence attached.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0913-004\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Exclusion Test\\\",\\n      \\\"source_system\\\": \\\"Guidewire ClaimCenter\\\",\\n      \\\"source_reference\\\": \\\"GC-EXCLUSION-2025Q3-017\\\",\\n      \\\"test_date\\\": \\\"2025-09-13\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"CLAIM-2025Q3-017\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"Defense & Cost Containment excluded from shared pool\\\",\\n      \\\"notes\\\": \\\"Defense and cost-containment categories excluded from allocation-driver population.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0914-005\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"Exclusion Test\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-INVESTMENT-2025Q3-004\\\",\\n      \\\"test_date\\\": \\\"2025-09-14\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Passed\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 1,\\n      \\\"reconciliation_key\\\": \\\"EXCL-2025Q3-INVESTMENT\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"Investment expenses excluded from shared pool\\\",\\n      \\\"notes\\\": \\\"Investment expense category tested and excluded.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0915-006\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"No-Restatement Evidence\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-FY2024-STAT-GAAP-NORESTATE-001\\\",\\n      \\\"test_date\\\": \\\"2025-09-15\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Out of Scope\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 0,\\n      \\\"reconciliation_key\\\": \\\"FY2024-NO-RESTATEMENT\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"FY2024 statutory reporting closed; no restatement\\\",\\n      \\\"notes\\\": \\\"Governance support only; excluded from 2025-Q4 management-allocation execution.\\\"\\n    },\\n    {\\n      \\\"evidence_id\\\": \\\"EVD-25-0916-007\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"evidence_type\\\": \\\"No-Restatement Evidence\\\",\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"source_reference\\\": \\\"SAP-FY2024-USGAAP-NORESTATE-002\\\",\\n      \\\"test_date\\\": \\\"2025-09-16\\\",\\n      \\\"tested_entity_id\\\": \\\"TRV_INC\\\",\\n      \\\"control_status\\\": \\\"Out of Scope\\\",\\n      \\\"checksum_status\\\": \\\"Valid\\\",\\n      \\\"in_scope_flag\\\": 0,\\n      \\\"reconciliation_key\\\": \\\"FY2024-NO-RESTATEMENT\\\",\\n      \\\"source_amount_wan\\\": null,\\n      \\\"ledger_amount_wan\\\": null,\\n      \\\"exclusion_reason\\\": \\\"FY2024 U.S. GAAP reporting closed; no restatement\\\",\\n      \\\"notes\\\": \\\"U.S. GAAP support retained for governance and explicitly out of execution scope.\\\"\\n    }\\n  ],\\n  \\\"next_page_token\\\": null,\\n  \\\"total_count\\\": 8\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fea086948191a331e7a4e4a56995",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6gK4x1fBi8JQ2CRI80bHlYG8Xf0NohP9YJ3ciA91UfCcwmkcGNCWczE1tVEXqe05jVdcR-xMnHDUFLtd7hkHpoPCtGk67vAh4n0WtrWIsPz0PedO4eRQaHINJbFcqlt8goH24WTQHUELw4GHIRgW94TW63kljgwGZBy4-Lkz09Qo2Wf4FvTIdmo7W_J2VO8YB9xCMDJryofhJMgT54MNn1X3zjxAKfA_p6qQb8R4y5pABb_cF8XDEM0dCCI1v4meECZWxlLd1jc7ZZoG0FfuTbbeg9FVvX8WOeKqu2Boqi5nTTycU7hEQt9z010KVTkSScds90JrH1nrFtM5iFNQrCSveuGDxVVwP0tmjBIX_uzppa7AZONDRQCo-LNCvy8nksBpdlSlNlVnuY5cACAwCtOd2su5ItORcvtaV4rk7Tn6AS2gi-avj1IZ5_RZLT_vE8CgqIOe9F9i44LheW24BkbuF4wbVdLIK9UnluiWE2QME4LRxTKoCVOIOKY8tgWZKvfQzpvlMrh5h8uvHykL4ozLlLkLoEJTIz-MASK4NIbWT7HZQFpWH7F-H37vxVJ4e7dbzWMA5BYKPFcUxXu6BbA4ooCIADVZMVumDXr-E1wK7szw2TPcRp6IdTpCJh3jFSDWFL8knTFztY8CRySI5WNyETEBB5rZDd_IaBB2M9xXPTKm8wiJHMQitT6kmOxA86sf5YK34o5YNdr5wHKzGK2t-lLKQ7wO1w-mJVvTqk8El3KJrrPT2zKInLemr-Q41YmxzlT9EDG3EJq5M4ksy5gu-tBpSXKt1DPpb8QtEeTs4grNLjPdbje9Gpdujbiz8aulwotKHVXnb54Zb5EljykORI6K9LZ2YSvThQZjih-uUuC6-9UkplmeiLBwrjxrsmjqQxww3-UDVcKuMjh60Qll3E9VWvui9dO8X-ArSWq225h4BpcQZjcWzR_P-w6zRG40nQKfF6ZS_QZJmP0oZBVQBnrnSyvufWCnEsl9GTyCOcdhud1ZMEIREqhSg6r3deOzvc6vaC1lBB9in7M1BhW5fi9HabNl-jdkpzaubq-4D0Mf52HLioRWjAvB9KFaJoMTAYkqX-uDL79V1X5S5Oajvc0mXOSFZ46EJXT82h3gzvi_u4azOpBIJHyVYidtXrYiYw4Tez5k-TA73i9TNzpFTBRzSek7Vjkt7H_uVloR3XC3AdENR59we0gJKybqOVrim3blzpF57soEryHjJs5benGWCG0GmpxjJVktBgs7a3txcICDK4pfT3_lJ9Kh-GCgxkvfNpfqeaMKVlx_ZfPc6lYWeaiPE55If41Bqm8UB685xPDzfZjZk1Rtu_00fZ4XZXseGFheRezdCVah72nWdXycrenjxSMWmEQXzMPHBctzc08vVWb6dk7QiFAfV4xipATjvSDF7qnQpCFxmnEu4qjHZ45be-gDZ6bO6g8UOhDksQo1zSrrg0qog7TqLMPmo_sPW8T4JCLLqQsjVrYCeMCVZqdx7CYO4DE7jZ5PMRLDt4KkBHJi60dvaOerjJCQNvyUzit94fNBLsF-0FMCLDf0z5Gttm9FtM6y0VrPdaWo1iKi4sbYDHv5VG-esy5f02lgSSIsFSFZWW7UhIK5tejWYQBL8hdl4xf1fNWZku2mNaNPS_w-hlbF21wmapEikNtJQaNT3S28y7ME7UJfc_mCXNFhSBJBiiMHVzKZ1t2NcUx1ettL_7f3jtHdxsnS3tdQAGa3HLgVVOaXv64Dp-JMO_HN08VczfWDZNem_SUqj7eZ94HlnbTJe_wRxBd-FqPX9qMobGQT67FsKONAs3Ms41wMT9HYXdm0HW3_1C7UOzvIfI1yTMuwatPqwc1lJWHrpnKglmlWC-UyHXHX8hfbTPSDfCRm8XmWU11d-vjza7YARQo0alu_g2T3o0S8obzgpcUPKwAwcWtxMgHBbv1Pgcp2w05-21DijKS4YS3vJIp2kfZxa6_7usmIZL1XRlFfbvPb3HQNBHcada6EfmgHvSb7k0kHo1gNOrqYqjpuPnygDNEk0IGCEypL5sh7bXX40dt1E5Ya8fcWzpaqo1kU6eCjZo0LiIZIi0yLnLdqJyEb3o-QzTktUdTr1UAMftaA9Z4TdZ4KZLTZRXL2L5bFbxO-x_KPMmGchnObVSrQQamUiKsxepS8WkE1p2rBseg7iYssvrE8mRb4ntBKH1Mo_xsb6zWshctwZbp4FtDgauS6M6KeBNZQmYkmQMer_pYjJnML_dWRfFPTlS-rx6h1-dcXSYr9MTTV1Rw7ZwVBVhCOgI09AMn8hHG7YzMqLiXBJRjjTZUhQTUswdIKU_P_TDueGg4IWdQoD0LYqgNBCbIL2IIRTXkPImJDxITKos-TotvZ2l9X-1kX0Gh3C0-nUC57E0lHv316V08tTMd7G4oT0CsjTaP8S7eLHIGTuU5oYDer3blQXq86-kReEBVKte-H8J0doCJhh-mTUMJAfLkQIF3GF-LRbN6r2lzXdqATKMAEZ-QvQ11NXd112Q4Cojj-g4uSEzJdd-nwvnlbZKtHFyW_HLKFQSrWe1aLDKiCYVZVYK_dQ2K65TzXhA-w3ZVkT6AK0v5sQeiKahQtHACp1pTZSKYnx841w8LkeJGWjbdAKyVutosI7MnPM-CLMoDF2U1mKIQGFMLO5EIOqM58N8NqH-lAjq3Lr8-kTIPr5pqMLi4AYcCEp4UH9kYPB90RYigQmoNGqD6b0-vIa5yH_Y7wtbRz34Y50DJc5oeXbNqExsMgF8q1eyjDl9E3SFz2s2vsiQDYNpPu8JNgCLTmPdSG0_1frAyDNV4jE-WhRrTH9IGX9WU7tJ4TiPHJ73Xi7U7kg2APyqbUPyrOHS7Qfxu62bt3XriXNmnt3zpZ0hvjBzx5JMXHusJohkhk2VLCqvHqbwx9tLF7bgN0sCTyPDTAd2QttTwqmyRxQMFM33vA0RjFH87oJRXXTPHmpPh4rKXvMCqyA2CHT4DwKtZcU51KvXcThHvty-vV8ppyFYdFBuU0gnj1nv4dnUbCqSe8xJ88gZOdZH5FxKDSx9eQjsnKSFxYPxNASa438PlLCbdDpB5RwXIKw4eH-n0Xj-Kd2lDvimedjBsFCZq5Jb5Irk5Da-r1j0zXhQ0Iv_-UFr11oqvDJEy6nKEt-EcIWBcFk-d1taGxJxcykbJz-DwdqFhwBtoVI5tMJfezyBf-Ewtk05-zg-b_Ylf0KB_uwMbzReokUpb9wJ33bJeRLb6q9FDF3dlRcyTwj1jl0bVGq0W9eTLeh8dkcUtXSdbV-Ytho20lMrlq2lgOacJrvxgxRbl9BZQr2lCM5vv9mWD1BaXXLM0tg_mU0p8v4gq3GckpXtijw_5x8-NClFbtMXHmJPDYKB8RIwKu0hPk67_3Us4xLl2TufK41LkqG0jJryQWbaVYELGKGc87wOwTPQ9PkwGnGJPGKx0D8XJpzXrowfu61FxqwIVrhhMdkcpFk96adgId4ZwxdMSycH0tJWpUdhov5FFDpTM22kNcc21K97Z_HISOnLbLuEA5iYe_6ArtEuRpbvUDZ5NC_Hqley_Mpinz-PCGzhX3TpIX-H_yFsd1-9e78XvWhfjzIL5Hbvl4uOvL26oEnoX_1mnL1d2c7XFc-npjObIGATrR4NtDyAFiEKnI1D3AEfWTHH8MLYzACstlgm5-7zDd3wVIACU0eOUfHmcj9bgThA1Um8Gwx9GWF00upjrBdd6ufrMBwyqE8yCZqBzYavDxKS7ty9eQ12WPhCz1p1McLW05v1bVTjrtBQi0HsWW5velfKa3LTxNIo1O-A7uIBw2c7udXiHnEJ88_33hDLl_jlYrnyfIcRx1-9ocnPs9jSqbYEm2lxVNM8PJ4LbnalBmhwxinnpPwBJriyZ3axq4kBWqTFyD7HfPLjuwqLknMr7tbX4Mm7kC7iBeRMUsyj7nOj7BJjy91VqIu8kX0RJrH8uk5RnJtapHR80a77sIFwfs3z66KeQHYLnp_9pBB2zXaUhshX-tYz-ZerLY-WZfnLwCy98oz9azYwWC5xKdkh-8eh8kOqbepu662Vnk9LZ8XPi4uo7YQIQ7vGzLDe7l1_Z3mqz-nBYdQ9iD5IItR9w6enAPqCg-aHCklpirww5BO6Rf52aZkA9mffrtBCsKmq49vZLtN8Apt8G-rdEFFvTQc6Y1F0X6ZScfvu9dp4CQjDPfMKYmf4brU4wkOlNP6Gph805PAtN0onqA_9vVo63lrNnAwcoOdG8RaYyaOT0pSatEhJbmXUtu_JYGVBv6dR6iwXqP4kMXdcXzKjE-CzF-QKBAxU4ucl8GS_BqioXmnY7p4jkhbczoGBs8sI4OoQ6Azna8njWRBme2KGsuf_wW65h4ONtbHzB5Lpr2DoY8rFTfraifQ7kEGJEJBeMMwB0r8BCxLibYYQfwhliK5rUgi7EVF9ED8E4ItoeWNO-jcU8Vhp4mSRMueCWA2Dq0ehk7oGydZseZYbGP-0f2PLxD3B0vOH9uAu2CXoJ6XfXgqEqELQjgFV0NEfUE7ZdsZKD8z5ffM2BMmmUNv1XWiFtCZ5ZmigkiCrv2MNd9-_asvwxLd5F09EYLCFbLvaxVrv1GhwxAPxvRPc2KeZ_wFNBv-KM48Qeq-pNR9OqZLQj9FZbjv8gvJhRdQozRMnMvmII94QHRDvIYGFQw1VTr3I0gXqwgXOQEwLfRBETD4x4aKsoG_qnnFpJrqgI0qMhPIqX_u7pG84MEYBbMCppY8QUSIfINq6W6HfD6jJ9Jdp91OK9kkUxWWgPQ4bFnoC9L2ltNqv4ougAHMo9EWKXKOwUiDWMcwc4KdiXg_Po3Ky9zNXPtbZJVMKdZt3IBAsnoil_XG9NkHC9SmjPost77YWQCnqrTBYFmlS2HS-ZCuRMsosWMib8ot1CR7w7Rh0-NMSO1Ay3QRBYGt7bVGm0h9bV-hYzLA_SqgcnAuWPXh9OHG8B3MPcyg8PvuRPd2iiWwCAOJ4zOwbUVZQXqM276Ukkz1hUBJuSn0T6AoQbobd9izaEEFKgki3lqh6K7JZ1XSsPE3VTbUc4GYj96R8VmaqoxUlswOlE0mUzBIC0YFxx5grm0fNNs9Id1oXh18A7E61Rz9TiAhw9HEtdVq2PAtd_AuqXZoeFAs_RaSfiZhknwn8ObOTZ69PF3cpg0b46POK2YTDtOCRc_ehQlodsrZvXqyqw5a0a0uOCaXK02s9QJjeEnwhzJDdSowpDMDqf0JuL58QqCNdSdji3CReVy0mmSNgiBaGDeBm08evj3rPtKFUJIpkTlseEPtp5bbBa_-WjDM-gOAVA0ZL7fRxBWp3qCQ2aLX0V5T4CbSImgbnqOp0O750omJZ0G8f6ge0n4ZKKO2o5TEcOCqFDUEkXT3Y2XgqWaUI5l0QrSwaXZA7C61SmJYvjBgi-gI5UxS-QcFKvYy-4owS-o1qycFuFT6tdWTQUfQFHxdBp-2quKWZz3_lwZMIfr0QpmNu2EprnymTKYY8JnvCQ60YFl1iet9GVGQkOgskP9PZ-x-juHBIQpq_DUHZ3dSSCQdFE_fbhYb2K2DHIqeb-4htm7KOCrU2atufkXntQ2DUdL4qmCNTzRGjs-TgAfHsfDyTKR7LYpiD-EIfdeXdbbsHbrBk8MIu5FzC_BlgsItaNFtyIKjAYVvIcz_eeZEuWkiCfs4vmkUPgy8npQbBrCs7OetxEZgTCg=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fea0a974819195e1c5331d68932b",
+      "call_id": "call_b7b83e8d32104552a5a2992c07a0253e",
+      "name": "m3_summarize_control_results",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"in_scope_only\":false}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b7b83e8d32104552a5a2992c07a0253e",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"status_counts\\\": {\\n    \\\"Passed\\\": 5,\\n    \\\"Failed\\\": 0,\\n    \\\"Superseded\\\": 0,\\n    \\\"Orphaned\\\": 1,\\n    \\\"Out of Scope\\\": 2\\n  },\\n  \\\"checksum_counts\\\": {\\n    \\\"Valid\\\": 7,\\n    \\\"Missing\\\": 1,\\n    \\\"Not Applicable\\\": 0\\n  },\\n  \\\"in_scope_total\\\": 6,\\n  \\\"out_of_scope_total\\\": 2,\\n  \\\"source_system_breakdown\\\": [\\n    {\\n      \\\"source_system\\\": \\\"Guidewire ClaimCenter\\\",\\n      \\\"evidence_count\\\": 2,\\n      \\\"passed_count\\\": 2\\n    },\\n    {\\n      \\\"source_system\\\": \\\"SAP Travelers Corporate Ledger\\\",\\n      \\\"evidence_count\\\": 5,\\n      \\\"passed_count\\\": 3\\n    },\\n    {\\n      \\\"source_system\\\": \\\"ServiceNow GRC Attachment Repository\\\",\\n      \\\"evidence_count\\\": 1,\\n      \\\"passed_count\\\": 0\\n    }\\n  ],\\n  \\\"unresolved_evidence_count\\\": 1\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fea3b738819199767417aa34283a",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6jblIdEqgqQuY-HszUd2Kg2V6qUxEt4-1H7s7OF2i90YpgQDjPiUeLXHCW4Mxj9NJPyzV67dkhxoaTc9CVLuwkXwc_OFzqRG4ORte5ssM12KMvbka_89T79wCyoVKMapStRidREmjETGDakjzJroTr6EZfeVEpwGu0GhiowiH02M-ph-7vRuVdKJDfp3xzncw0vWW0ATxdchx2exaYCAIHXJn1H86vy2XdQwK-VWaqR6OHfiDGVK3P-yaeL9LnQ0Pyigmj0vjitH7rQoKyeULT_D5Ud1UMATNb6gqmaaiiIqWVh1Pzznvd15jYim9AI44VN4bNuQiMGv33JJhAn19VnpI4CDi-SAe6GvM7Z8SO6sPO3rCXXY1jI23Lj16JjwTlPt5mzk8aXICivBRWVR2x58Wb1ktxqCa5BP30o5Adj36uHMRiI5MKFZDTvE3gDAAmLv17RfrkSWLpbt-P3dsDlwarNlLKLAzsmoAH-thOFOq_MhmvWFRdRaoGT7-N033rL6cKFVjMDUJxAv1_QTkINkZFnNoggMLpnVqWlA-JZjhW8_c0AhaTnZcACRYZDhvhSvFGTtGQKNbZPaNg--d1K_-HkrUi-lcI16KfSqgaP8K8wEU4laxjtBEwz3BKjAcLnTlyuqgGFybTLS9juPrRQCizGJ2Pxx8v8U_zBdyFrpbT6VO5ae5VHLOMrFhOGrzwPDtH5wrXpi9aciR3-yB_GWTTEH3YNgkEKm-BAUkkPjv7Q94laffb-TUWZDwIABrt1RToabGF2c0tpjeI3OvzIUz7WgcQCGOj9XgxgBpFSVfYLXhFveFdArPLL_D198Jih-Q88QDH2lJk9k7IZjKLfptQaF_TE6POi16OjzYtBGCbDOxJt2wK8JF6Gm61MyFp9O3JUGy47Y3g5jruQX1ioJGwDdN1COJkuxQYc-G9UXU-DJOpbbZjMPRE0EQSYGh3CmrZZXkDgirOODe9rHSq490JXe8BvPJyN2jCU3kFhZGrsiehnz-nJKAqsAdaTGyR9x1wt7x28Tgf2yrc4GfkueBtT65LOjZJETueqJtYehDV0SjHZtHdHrcvAFh9ojRWPMdpKkyLGspRd7cnNVeIysvjniQb921ls_1q1M9IOkz6MdiRq-DzU5Oj3EZgw_-tj-r1_fUpG8C3YwrfOwwWdc70lAtA8leOoYhsdbZfsqX_3k0GV2qBv1zyHnCt2se4ExDhgeXLIdZIw7-RqaDq8f-QjMMrIBeJfB8QBqq_MmIRnhMqO6Xawlbsul-vQ1D_Yh-2zp_dE_-ckzPu_XqqVAsdnqN65pz-Tw2r_vsMfNSnUTHv9WaZJ5nFuaWPROsctTlZqLHDVkPjyvP8h9a4o62uMH42SBbp5kjRgRS55EoecU-JA1RZszzrAuL3TJz_8dvLcYi01vnntOsqEU_Ct_jax7Zx1sG4wi5LpIMM5LaPQwXswfqeYZPUiwpRYJWW-Ufmu2gDLhVpIAvnAgyAqCv3mKIE4AbjaKUQddN_FU9XBNKMJDQAHgiZnciXDIyuTd1B_M-jg3TkSHhpXSxt-fsZvEOLfc9faf7aAlWMAoxXmaUZd_xu2qqWNeo26loUo8GbG_3VrelSUP8kH2xRZQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fea3e74481919b5b3a35ae506331",
+      "call_id": "call_2512f06ef7e04c16a5d876fcae28274c",
+      "name": "m3_check_approval_completeness",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_2512f06ef7e04c16a5d876fcae28274c",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"required_count\\\": 5,\\n  \\\"approved_count\\\": 5,\\n  \\\"missing_parties\\\": [],\\n  \\\"non_final_matches\\\": [\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0718-01\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"ELENA_M_MARQUEZ\\\",\\n      \\\"approver_name\\\": \\\"Elena M. Marquez\\\",\\n      \\\"approver_role\\\": \\\"Financial Manager\\\",\\n      \\\"action_date\\\": \\\"2025-07-18\\\",\\n      \\\"action_sequence\\\": 1,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Approved finance-methodology submission for functional review.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0804-02\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"DAVID_R_HOLLOWAY\\\",\\n      \\\"approver_name\\\": \\\"David R. Holloway\\\",\\n      \\\"approver_role\\\": \\\"Executive Sponsor\\\",\\n      \\\"action_date\\\": \\\"2025-08-04\\\",\\n      \\\"action_sequence\\\": 2,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Approved sponsor review subject to control evidence completion.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0812-03\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"PRIYA_S_RAMAN\\\",\\n      \\\"approver_name\\\": \\\"Priya S. Raman\\\",\\n      \\\"approver_role\\\": \\\"Claims Finance Lead\\\",\\n      \\\"action_date\\\": \\\"2025-08-12\\\",\\n      \\\"action_sequence\\\": 3,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Claims-count and measured-handling-hour drivers accepted for shared A&O costs.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0820-04\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"MICHAEL_T_CALLAHAN\\\",\\n      \\\"approver_name\\\": \\\"Michael T. Callahan\\\",\\n      \\\"approver_role\\\": \\\"Financial Controls Director\\\",\\n      \\\"action_date\\\": \\\"2025-08-20\\\",\\n      \\\"action_sequence\\\": 4,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Control design and evidence retention requirements accepted.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0902-05\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"ELENA_M_MARQUEZ\\\",\\n      \\\"approver_name\\\": \\\"Elena M. Marquez\\\",\\n      \\\"approver_role\\\": \\\"Financial Manager\\\",\\n      \\\"action_date\\\": \\\"2025-09-02\\\",\\n      \\\"action_sequence\\\": 5,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Management memo finalized for committee agenda.\\\"\\n    },\\n    {\\n      \\\"action_id\\\": \\\"APP-25-0909-06\\\",\\n      \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n      \\\"approver_party_id\\\": \\\"DAVID_R_HOLLOWAY\\\",\\n      \\\"approver_name\\\": \\\"David R. Holloway\\\",\\n      \\\"approver_role\\\": \\\"Executive Sponsor\\\",\\n      \\\"action_date\\\": \\\"2025-09-09\\\",\\n      \\\"action_sequence\\\": 6,\\n      \\\"decision\\\": \\\"Approved\\\",\\n      \\\"final_action_flag\\\": 0,\\n      \\\"comments\\\": \\\"Executive sponsor confirmed implementation readiness.\\\"\\n    }\\n  ],\\n  \\\"final_committee_action\\\": {\\n    \\\"action_id\\\": \\\"APP-25-0926-08\\\",\\n    \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n    \\\"approver_party_id\\\": \\\"TRAVELERS_EXPENSE_ALLOCATION_STEERING_COMMITTEE\\\",\\n    \\\"approver_name\\\": \\\"Travelers Expense Allocation Steering Committee\\\",\\n    \\\"approver_role\\\": \\\"Final Approval Committee\\\",\\n    \\\"action_date\\\": \\\"2025-09-26\\\",\\n    \\\"action_sequence\\\": 8,\\n    \\\"decision\\\": \\\"Approved\\\",\\n    \\\"final_action_flag\\\": 1,\\n    \\\"comments\\\": \\\"Final committee approval for FY2025 management reporting beginning 2025-Q4.\\\"\\n  },\\n  \\\"complete\\\": true\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8feade350819194f2f04e2f2a0751",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P6tucGlwRxWPEjjXKjRxe50I1hGI21ao-RGUcFp-PSGI-kobv0BeQv_TZzjL7_8ewi-5fIkKJD90rUJZvXck9D9odiB9cyQRG-_0qYztoPLJQI-dy-AlW2Z2otkRlc_WmFhIAUhbYBygBU5_71nPYXwMhqKhAm3g1jPZmlB9UF7AZJIU5uJEI7hUEip0PSiMXr4LTBBWBjwBF-G7nW33uAEB8hNmmftt4-mBrCmFfk1Fk6xNBpP1x5Wi4WZmL8hHNsElsEJ1m37GTogtXCm0weFU1t7EUVC2X635wd2EnJoUR21F6mFQK2N_R7Wxnttc5O_MrZ9YNgzY-ukwS_Qk8Gq-2j-mzuSW8Sx4R_jqDhV-_Z-J9DMKBiPwDrF7v_VCM_qjo4akVRMs09GJhRGsbEpuQ6M4Bz8R13LF8sYTn1Haf-pih80SC73nlYKQY6OxTvpvbO-0CMENNqh5h7xXFHJNZ_0amk3itJnG4HT314zXSDdske6JNtD62P5SXVaen778a4o9ZMDROWpOy1rygnkt0bD5dExfBVUjxOiHPdnO4zHMfG716gzVuWxbXE_efFNt9PbGMtMAi28fhPIXNMkCGU9Evg0klkQ46QS2TXWPOLqlUHLNs1rTyTOmYMOHSI-8Dfah5fe60q_8p5NEg30eZR83wqsXCzBMjhS7WwXJDQ62Ri0aY2U0okoH8kIYCCFgrzoSdq4PICq0qFkxGPsBVcx8H4voiWUlZwmP5S1E0mihvDIY8l1yDRQWFiEts_1k_LVN3-XMZqV553ymAl8ruBOvUm30IrfBa7QyeRG8dBJQ4T6ypdBbvotGm-gtfxwY8LpHDK_PZzbh0rN15VnIr-s6X4rZRS-8Eh0nM55Ii_XMLTKEMSY46vmUBtumYeIrUlCIGErm-AeUxcBoBHn-stzJxUk0KQ5RxAgzKNSOloeU4O2UVt54Pru-ggeGllV57ZVTKy2FiMMTWs07qpD9pXziuI9RJJkyVa3FkovJSQGvXftBX_EKVnbUBX48iLqq1sgW9FD04muUKfWtusEG5scM4zBZ4uYKZSqipEA0QZgabrNs4sIxhFCVNURVNYArZ_W55kk0O5sfZnpFn6_TnRrcn9s3wjhD3UG7Hh_EZrSskyPzXTM0Y6kC7Z3HmfXGS5LGnhr99KpuV7msyscJ9XgQxqUjqrRX9H79bnxyBJI1rQp8U7wEbFvmHtA4AnbiPC1FOHSwjy-ZPpxDv3dqLjP3LvswscNQlgadbbHxn2SwqYraHS-8NfkSa9n7uBMKrR5k-BWiCW8SUO4Vkydq0OWV6PCic9GrZKZCD0mKYAOWdqAqVItj3xtV-sMfCJHYqPOC6loS_7ejDgd0Ho_-WxBwhRLk4f-FHplZUS7B3rRpXxPVkQX08cbAywxBsrWOuDSXHxkAH9HPxtyJnRwZpR1oN1456f04OZes3B8T4g7Zg7w9ZV2exmfObm46cTPsPfJPYxOD2K5tPCmp7n-V5pDakBYiVNE-bh4kcfyV4enNF2fN-E1luInbWoccBMUr_eYN2T0aVEI3cexZpfArP8eYyvcvt-LQ64aBXvyabSTqSuNyk6JFLVDfFtc0Sp87hHAQnzMBvHzHPe7vJQEci2Fg-A-W1sJWd5eKsmD3tzlRhccSGfvJZGucdpngnDjbmynny60oTh_ASL0bttxoBxpkWVzlUWEsnhlimwCH6KBqwEISNtXONT6ZReapUVOrdzSGAPQqdy4yq42pcFsMBl6hfpm-eoH6BPJf7lRLI57RCkhY7JwSFLWXMIO4D_AiP9_Q8WY8fKfklxaGsD4zhmEERaOSyMrwzArQOR9S8L87ArLpeAgvQgKBonVE45zYUfKX-E0vnP8l5CKzMFMVaEY_4TBicbeq4g9KXoCcFimEpm3BwparDnhmrxkv3hRQr3YGkoOBfkBSt-mh8WkRQ_upD9PwafDXeQWG8zs8lk7VHRWgWko0RHLPQoaN5J448WxUCdo5CTNSoC5GcasvtgWQxtByhPWDQRUay3WuC8J4b_jAuDoj9vTLqHsvwn7cG-qj8Ki4CSpaqKxIm6CbGlCu_hvHOMoDDZmGRxln7Emy7zTFgNntbXsL44sNFAUotbj_KvCRnsFHurgzFHPvP1q_ZB15atbKyxDGZt1XdzLsdAuSM4yM57unZosxf1IQoK95Ju1E-housMgjZhgKsiaxjKrg83wYN-5G4wj9SH6AnuSFMfs8so_0qWpg1MIqUJ9VA2igyAXpkFqmc7FIzryctMV9eMHw7x9DuuO4fBBIGw__HUVQmO5Mt8Lt2gVdQb7Er-zCVmdgSeMQnRIFHp1WU5nd0KGv3E5AftjwL4yQ-Ib7Wc7ksVCmpCEasN9DuAklRgplt1oXdCU1unAu5Pd5QL-diRgwm_K58wT4De-jh9vqY48RCAd1U_QV39Hwk6633k6_b30QNJN1H-cNRGjF7WkkVlQeqMT6ACd2khmPgDvmU1cdPmCrRFwhwBO-U_kJKpoCfBo-28uuWorbOHtFNGLC-4svIzJ1Z8eLFA3o_ixzlu593BHgcR8DzaDfguQxgAnsSJjcBcxK8B5rrjUpZRRU8y-2sBdvUAX3Ovus0imrKdkdeQMTCWO5Q3XXMklop0hifbvI2HUSdcODphBABxr0l48idJG40qHtzrI6Ct0MAMxQq797Pi_ZbwZcGYbCXjIjUovGg5DbDeFAiI3CrzdW7F23h1sc1aG9_qncA_BFk6bFUkScDdx1-LnME5uwJ3CzIRov6TaCOjfpZNJkpRncs5TlIdFeBn_zBLAN8ezWDeUZ7vwITJcmIJLpjcUAV430q4oSKzcZNQ2kCtnd45OGXwKqIMhzZavmYGelZ4UYCoSlqerEzIs3t2UeSZY3z1qbDas33OiJWW2P8rXs-dXDbvWV366sgvjxaLtLiCf8hm45-iH48vIPBAVwvfBsaCC_wb5xlBRG1iVUJQJyXGnnWvpydvgqaJCejU6QORemK7FEkLOlHBLkSzHUmeildMfE179rG-FR1NBRVAnkFrMod3bnB6g5j9HEKE5NXMQwsiRHYAPuBatO8xoh3PNqqUI3pjcnG_SfFJ7JtUjSf5-cxA6q6K8lSsWmvFgSI9ZtDFNZDKHuMWXcpUyEVNex7h6v4ZQkcnB8hXSBbz4BSLIp8F0uGXF5ygNeHJZlnKdlTSxfRxUkV267yqXTPQO_UiWXF0DqeHBudzbjtrOUfaBceltAg1jhyKMHQEQZJbRW3HlViyDxOaC2erEJIWdiAJRCBploSakYNWdmmwXta-0kGxTLLLmN3d6o4jr9nCjTR7Q-0prXjdSIYaYyWCxa-N9KhcU1NP12H52-2ny77J69dX1Vs_Uggh8O6Mp8MBugfJjPHXnNuhlEKswCvnqTZ5ulGaR3YH367pmxJv6vcA8X7SkdTtF-Uz8DfnXTFo2jFCTrdngu1EQpB4CywyvBNZCIvLB5uRwfoi0dF6FQVe67A47nzTQYUncVBIAk5EBei7Op6l3DoeOGviXSSASH8FZRGt-GOJgY0zHKpczxb24Ios3sMeHoVK6zFqznfQP_9DCnM8WvHsNsPlxTpA0eCWpj_Olsj0w6S9fZTXH9wY4o0s6nilWP7w3W6mXssaIex7u5wl66_VrcXZogqOsSBJQ1U8TcAogSQlg5m3w1gZ3Wc2lr4zskvKTxYx2HOE_rEqYM32sCAvtxQU2zhh863YiS09aCExhT7gBqrg8BImw0oW-9G1m6hG_tDSHrhObAcbo5p_Vb3gBK5Bt9URNwgwFCRU36PkSsIh5QCTiPJSLhKlprLieXIEm_2cFQWN7mxd99DByVmNpNO0bF4prR79ZbOi-Q_gWfCbbwHxyi1EHcL7mXxHjHojx_0a9t1RHcsmCTNz32MJ9pf6iI-sLZM4LGAYq5xpAZeHio65_78xFRKxmhcVzIEpu3REP9oPpDJbwDXzoNQ2DKW2T4Xua0MZJQtHAda6n-c5upv9ddlhVCqLoahnuUVudGplkue_vmFfuieilxQ5_sHKTNbdUFhovoSEawedpWp4t1GAQ0nB4POSNDmN3CuG6SFI2nyMvGNryjlyPtCqqBbcItLp2fpfKrqW67Wo3TMVq5mejpmm_F3dRfHu8D2DhAIzpsm5fH45iRqV_d5V3ZaAXImV6DTwotsfpq-3cnH6qPnB2japVTRR9tafFOQiUxHCk26ShP3Ki9TLfDPav12quF88y99l8GFWM91ejObmLO-lU4MQ1XKwpf5qgkJwRCSD5QGhTIQxJKv0J16j-wQT_so2hmSCRhu8Y1PsyHjpm5T2lufI0AJq5TL1tdkJek0DdypFwatLWWGbI7Q54trwRwZH716eHgP2NIY6KCjlPIyoJG5KbiClg-fGXkNwyO_PM6L3O2tsZ17Kd2EbXbimTspILlYMsyyjR3Lv59dXGWYpLBzTkVPe8SMNtNweGuP_EdV8gjCvr68g6Cs-cfdl7rt1977Q7ktug2vln1uiVWZHr5KnaxaUDO3Hj01x55wup3uuxA5_6gyMQPh4pYB-BiO7AFQrfPccb5dEX0b9qNp0qb_1TqpmX1wlnEYm1K3BtVC0DOGlHEYP0UH-LBrJ2cCZT7Gce3-4oyx9hFpGSzDYJ-8i-3a-fd7tywSgZthHtLk-NM0zUrDxGOaJMQ_-wW-b9nSPT2TPazRCvoJOmjolNX_An1p2Xq0eokatIiAWFgDGn1sYw3Yzj5GYdhRO0TVvmyignvkGMoHYQk49oSwfqfwCaX7y1R1g4YrGdO2FQ3UyUPOyC5agaIJAqVy26IgE3kE-93SQOWxDxuYTYbhVLiJVkx_Zg1hdd10zSjDolnzOKvtWrea1CYCB3INLMVCdXtAqC8ZkaHsy6LwIuLvTnByEv9_nANhjdlwHxFHXfuPJ68iK8N_EMaB72Tu0MT6eZT-YNDqDQQjn7NC67RLUJNF2IhIBhZ1Mva1WtBUsSX8bKOjuGOfMycFPBvjg6D90kqaSWnZts-HFwKBXfqt7kfZKLh-p59YHsxeJ6pIfXKHTn8zOWtveZdeZIb3G04tvVUNyQiDcUS0jEbij6bxz-sjDD1D8SYv1YfO1qrabiZHnVj7DtBv_HGC0TAv1W57C60_juVz90H4LXqii8ykU6TxhNHLEs3fL-_9aIm4zgRFMfxYbjtT-kps_HYQ-wMXfNTWrsuKS3XKedUqufSu9dynFlNrBs87U_hM23H35z9R3IvaNdEIakUD81h93h24TxMz8AYgmFTvD3n1p-Rb2XmJRVTfB_posmGGaMCDIRLkGZtfvqV_iNCbiOQ8kpckWtukBcPTM1qb5oNvQxcyIJsVr9LQGJfHneA_i69bl5XWro1aMDDqIzjZXiv2pYcgF4Yqdvxtr-27T4acIRJ0yiLy6TbzzIM6k7euh29E4cFbiQk6P7cpsOq71r3S7V0ivBAbOXf2O2VAhdqA-2fuDqNA0aiQRgsaYi_hWJ6N1Ba-8k69g3hUGnqFffXh7pzv5HzOBTE0GrEOvKUWzrr8UU34jdhEo5e9adM0_Bb8T8hp3JfRGTHpPyAfvCzpSHDmUudMHRLwcvzfi7wIWeS9YTOYlbubkk9ZzSBE7EqLjS_IlGMKTvm7zyFm5JFONYQrZN-m_-wOtFVb-XCbBwtUTY1ErFYWO_CbNDu6Fzi6ttxJxdC6NVMD4cRHRCQ-ttepWOKB6hTRrk19CLpHivXrEd4CBhUczpblUwmX9cEUaCsNKQRdqfYZly9IV1uZFSxSDzYzo42XkSf9oevbyahDAVE8cmAqVGVsweQHLpA5-kt3xQ5nEJNgcw96hffDrIWWDSftGVUjw0nirwHyw-hmhGCMV4ipSLMS5l4UHAAtrmPvp9dAdUD-h8SMZgYK2lkZStCoxnrl7qRvNFkBhNUNMTNGfu1J5vyPQWC9hcjx1jKJIRxtPzGwEbwKuv7JB2cHXR0bCiSshqbg5YdnGO-TTQgd-HIrOG3uswtcSiDKpN3cN__jklQ3nKtCi7OoNzpbUcWKtbJz0ooXn35RxCOjR8PWmcHyT4Kep6uU8pVlJHnoVJI7qokTHEFLHeZkk8veaCohpK_KCueJJkCMSJN-tvWlY5s8XmS7by1hTLa9C3xBvaJCZggwsrgrT01fLqMOE5eKEDah2bInKEvT8XwJsL72kx1YqHnJG1QDdW6enWs5wGinCR1DCFTnjYhmAvl4Zz4ZHxXU2-utn_b8hoX7CsjUCWERZnmUn5epHW6vjcik19Q7f3ZJ2OQ_HFDu2G_9q2sEzRE8N0P9CQyqmAXFF5PGPOJZVe47bFO0PROrRz5VW4iNGLXZZ_e8-xS98k0cgVlg03KFPYK3lwY7o9L49TfDyG1WqmGI9Ho2mBzVNoGG-PQv7nZvLIMo3fYbD8iryDkA6JO8fdeWKg-qltdv3YYtwOJh9jR2nE4DLrCwk-uKUqpZvcw0tvzIvz-fgv7DbK4WGsp4QXkL5EgY3UmCA-S9JsXrdcwGtvSpCG08xiearFJ2u7i05GEUjihDjtmNy4YVz7lbkQ22JSVpSgVh5XxkxgAk45m8Vezbq3NahFG23mOOrQqahCtxv9E9o7YFoch5BX--aDoAbhSPq0AB7H_rX4JH9BcmWrsjx9lWCFUblBrM_9HNC_-7WVkJQUyAbmoHuA0A4SJSC6n1alAOCMUKlA67IYhSO0bdXxQ_adHePO0XJDU3X4wuFMYU7FYHfZUVereLC7HaQWrvxKMBRrj8uf0RqU_ryA5Uc0-UCfrZR8xvI5yUycbifhtmp_ST0uTnSERO1Hk9snubTwq9tbVBeg5VJs4IpXWjyXAtdTvVFuZn-eDXrQNGVWyS7240kocUaY360THLTE0lKeyWUwKV_DKwhEcAFlCY07c5AaNEQuRvPRbPMyiVCX3FeK3yZTv5NGRkDpeRUo3uKKGIG6MNb3W0Anems-VE_RTPYCUf0R4FIkerrFWvsq-CcVDq-5TqQz8gROvQ9uGCISK3eIrF5Ji-UWRptE_p_YFpZQNEm9Tvpx56N4dJjLZ-t1pVFto2GDIoNbYm-9oqTKOiFCe1OYVRIFqDH3oqkzeK2n4UvHKmE284HL8nP8JPFNEuwnley3hoLhWCLF19_mvITmNbSumQYwPD7IQCJGR8X12NFEFX01ejz5VEhi9KiKfQjGfdAUeEEg2VCaZOrV02Sp01Om_k4IZicRdGrxI_U8la5xJ-Ai7lTyiuSB4rR1BKnfv4UethrDERFK9pGyQQeH13sFY0wKjsVvXFWWCMzOoeDj8J0pKqif6cdVt_Sucst8nlSEZdXkGw1pXMGw4HYmstkZTEHRqnL7y8pzlJpzUNvzUNIXtZ5Vz384FmQIr0vtimtLSSP9HPMVgL9BFQ9l7JellutFtHuLNi_quNbTbuU8aLuJMpSSAfsomQQm-cfD5bVpavl_Vs8xACxv6lndn9ycvv1HW93z0tg_8SoASA3NZnmMFAMMU-sYyAyMHn_5y92s9U9qbFukJLiCjqTFjMNzLr3rpK-zhM-a-lCX8tUHHk5rWaCG0RGG6NJYmEeGmfyqba3NvOxw5SUVH4mCr2mkGntBE5Kc2VUOtvmq5r9MbxeP7qpUglU5ZccELisfT6ndUu79IRxUwzqR5s91rM5a84R1VFOYZpjzOws_hyWAp7tS9EYB-XUCnPDjKJHbRZcy3wpXrgqnFv5zVhVuUVMdS1N1g-VlUPnD7Jf2T3zIEvGVmDFG8Qdv54c8i9UUu1Ksc9oid-MfM_V2NwXl59xflH9VLTGHIP8w_TGqbS7tQdYXgo9pG4v_pgZy-ea3h_JEFMoMOynkK9Ni5GbtpjI6owh09_hY951Q6YQ4Bf2L7KwmSjyY6BrgAGqebPm7GR-JUSL6JTW5xVL9-GpeXawHPfD3vP3uGQ3ahqOp5ONNsVLkkLB96aJKBpQt60wdhnEfb-aZc8-_SkgiiB41eohov9c4Hfimw6HwSH5Uqm9Ys6c7fWPMa9rChXvAqOFaJEiAH4XMYWwrT-oykGT1ewYEAh_k8DAfCjAIzfiCHxL0Qn517Ru2dONnngDhvpVRNaXEszGs2b8xjjhpLp8xrhvyN8Rbg0ED9P3wRVBlJ1ONdXBALSi4LAdyvwonQm-_gSuc0rMCxiLYoDTHz9b4duIRVMv-PHbmxS9pfFj5sdmPQpRpNkRp6m2Txt4v-oaiIQZOrZWF7SgweAzZx80_V1-IrjxBEPqR1q-OUPxpFoSz1EDNCx8jwdTu2gPMJ7vt_zzM4-wKLnlzo66Kw2_09kFEjeaIH1E8NAvkP0AKBJBwfm7U59sEiyF1UbUC"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8feb5d38081918b6b16ce960b5b65",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P61g3DL8ZEJVpGrg1qrnZ56Gmwfno0VKHLAhVFXk5S5TRO8Cf5OtRDYH7epLMrvewsT_99m3HE3LKbEFMJW3KMVj6V9mO1FH9IjAse7P0-1e3nrY2ftEnrcVKC4VeB5xMxgonLZuGxLd4QLTa5ese0FCTyV8VnU6HlzimfiihoDtmC-qIM6rTu8cJ26NmTWmxVqZz5fuc5_GzAbAYqfiyE_IlWy34vaLyJu1tEPK3FEvHNFqA8ZK1ZFOQeeMFYAUOz4ZYcrSJUcNZmU_oOcyzHK7r120Zf0EFkLw0PMPvyYFq4yM71mA8josT48pgZDfLVW7dlbp4EqB58brphL2yFyYT-8gheBbGUZzJ4nS_jVrW2NgH9sk886kIZNiuoxl8-wjdjbZevGajS0wHU6iOytMRvXJuq92P4Gdj-OGdvGwEPkM38iR77b85TAQN_ufxYdVRsUqSrMdpxmnd_5baMns_C7hOAlPqjefAycthxHA_PNxBYG2rulvilM-1XqlQTwYIzmBWyDqqzfGex_FULjUOkDtRO-4cmBe1iqKMnpvOtlgVNO9Ar8WVOY5IN-0gflHbsm1rV3zdDSKBcyVa6SLObuWIc4x8LEJICEYy1OHkUGN0e4o3n1Kh5d0W3N_F0mq2L_OZotcQFJAwmMIdenTdJgiSGAnFJAopIiD0Q6xjs_Bd3Yp3MmYPLQJpH-r6g0PiXR-_WNpSXkN8g_7aHA1UTTaGm8uYg6zZbZGH-zy98it3jsx0Rv6OXbllW6BvptbRgCgh9UdslXXqpflCt3uR6iuagODBssWP1bz33cq0EihTihggwRCDPnc4N-a-WUspHdQF4QnSq_hRtnu7gfOWn-LOOtUIy5Uxjd_a4fnLZOMDsQIF3BR4DTG4sgY2cM07OFzt_IOTD8MiDGmTnzDI98Bh8cPsMZHNEFWmJZwJC_BSHUvHGplggENJsCEqNMEqaN-wUyKxDfSi-51BQZCkBzBAIImnPTeEiuE1er5LWKboZoKijT9ORVqVpngRx9p1mHSD0QZNA17NXoILHX9uYSkYy9QZcUV3Mfyk8MRPxK3Te0Ytdl3vpTFZiXRHY1gUnvuvoXV_umcJ-jea15OuTLjO9Rud8Pr2qEbjXcZyXUoiibuNwQl-PAwAslXOHd9CP4HzHa3Nv1QLPCQ_KRM76cTv6gNEBOjmB8iVVhVqqlZhiYHlcdH5HMJ7yuTphtTeOuG9sgopsbRM9omWatB1v_lgb-RvmmPwB7k6mxfFdd9uTidy1Zq6RYgnp9S9TNLQdhqRiqhx85isWgySSOszk-lLG0C4saCZA7FviNjss7VUZUeEI3K4oOM0NbvSvMn_8HWc7KlKC05EY8iLtFUGWidUocSlknjt0vo8raUojFVJpPtVOTfAhoOnLEqtCxJ9W115MUS3u3eGJaAWV-233MPBWjM4pxkQQvSoEWiXpjGYYv0XiglNCbnVn0RpNobNWh8iag-xdGxQrOhpNAratp8r81zzt5zWYPAz8ZO4Shy3qIfT92Rcbfgb0ZsBxkXpVmwdo9jWtnAaKaGGZlrPW9ox8Xa8zBKApqPOa0kjQL2A4H7EEhXyZ8ZpRzI7Pj71CAvPbidIJleeys0u4A3nRla2L1zqMLYU24dlnEzAx_sE9BfXy0iXyM1GbWV1uvWlYvofWvXqgrTpizXF-i55O5lUxtCPvbFJys0pcy26r_d0tubTTxG7VGKlyAKcWX1WpRdJJEgYH8JevWbD6eXjR5agfld2uZiWDCE4oqYXrMTtLxJYdwrbUMgMsRrTOv-fX7RtN9132ctp9jaVHXHCwp3o2nBjXqTvuavdVY7qOq1h7luyVyJ6wkQk-pxJPa_k4Yq5mBbOZZUQYHdLaMBkpCrpHKH3PMnG4Qkq_9WtAAi3BKXaQdmizbdFWke4YABpoMO8frHZlxfxpNuZYIY3mPdi5tv0tBycnhx00x-f3pxwZTL1Z7NnAHz3Ks1FfZ3v3HnE8Z_WuHxl0p2hlhPCW033iJUp-oeKQbrkG0zIRhTCCUBWZXXJ2f9K4AlRvbQt1Mh4ucXEapYFSLcRrNCNtaj4J6OPhF8Hx1slReJravVLmq_2lOpYo3gIMoLpUnh9Yr79M89JX024hzyYZ1-vBcRKBdUQSS4AR1J0TYGzSaQVkq0dXL2il8FfbShkne5tHJro8Cs9MEtzbQPT_yhgym3SNpGhzKooQQ5UfjYhi-Gn9JDdt0FAKetYstF9Z8Ch8dtZHLpTbcMmznuvBRv2cZy6mHMJjne_bO54dHHWkFU9-zqFn-1S7LDa3Nky89AvVcyJWti3l22ApaWflEyZUa7kk6e2Igx5LmdWpKg_k41Awrd0P51WksXo-TuyJNQCViiwakahn6l-GnhrKUUTr3bsEsjqQ2KWJdES3AsvzpS3WskdXP0mllWZ8tJrTkKZytU-MdLOdApVlFGuPQgZot4-i1QWsV_tbI5_qBCMdoFWi_wJWv94PHUggo3b14sW0osr2rM6cYyT6QAmbVXqWzDDURvYZ5AyDcAnCCxuMcqsGGaXKRTLuVolpo1iGm1xtRe1KOTbABqrQGJuzC--l8aNZLZGkTYTP5RlVc7irlCELClxScNhmEg2pciT9sHdDIM0VDHL2Tqws4obwWm0gk7mbr_10zUnwcxr73Yrm4nq_3yy7KkrnfX-FQqhhHBKTleDYkSXBvSBg0rVl1NMPbduSu_HV4hI4ZKYxGv8QubEL4Zx5d9BSJ-VzNA7IeqXbCFjWXimU7-n41kqUzQ0VgCPsQDf6gFXXRDnOr81IQ8-SVia1iGrYNkvZBmoVeOiiYPyR8SyJmOAyr07zk5BmnJXq6jRXHC_Cr_DUo8tEUtGS0uCTKdX4A2AcjiLMerQcjP8qtwv7k_3c2KygX1XkqRNGg_8Us7a_v3xRbUcy8njqaKq1Kx78s64XCb2PgvNIWM3CSaGtnY2zZsLtJxLvdwmnjs_jsZpuQOCYdtnxctKbEc6hoBlt1scOypjfGc1LgeBOcptI7ZyUTmQYGwwPnokWbyBVccFIp3li5chq2W5FAgGSi70lN0jgTZU5EAw9Oiko4xVir46m7FEmQ7NB48j9aBgUTb7HcP0-lV7FhY_qX3HgquR-nP5trpX9P_9m-GyTFY2On3pKfv6q_agKVFN_DgyU1Qhg_Uqs_AxZrC4bnGBWIDouk0wkzuUuBnvLe79jfeY9YRdY0MACZS6EWWCMEON8-n3qC71FZf1T64k6GZ_Yb2AzY7hZyye8gVu-KQxkmuMV7A5EVR4d9ZBsXA8oTIbIZXwbtfbhaKG2lF9SKy4tHTgv6N99hcgOxp0S60dXfu66D5YZZVQTWfG4q1XRUg0EsxexmApH-nrkY1g-FonOwyiHl1jU3QaLg3-5pfwElTEFmboZBVsprpDragxw2pjtAXNR3Ak8BvGrM10BlnZsT-Q52s_yNlBSdUr0Y4Z8Rgv3cMKQf8tjbE2UvXHVgP-Cztw9N--Ph9Cl4a4fmDzeVm0n-vmNpflEjUfvS5-t0mzmea6cG0-AAybvwIELGQe7hdBYu_29eDwhJoHKLiRExKvRJy8D5XWajhpXQ08WHyK_XZG2uIGvhB49l-P7aS_Dwcdg2SO7m0E7Fb4AGkVumEchuvgLXkEp7v6p2lkQ-IUXFrt-BCScaeYLc77GefQ6DLpqhslD8tkCEO7G5fwUu0fkpSv0eLZUbXUuYhTnhwtHdhtc3tYRf_E6lkZXfFMrui-nKGDYqPnoe7q9GKZGBiDlfcERmAvz_EcBPSq10q0uNMCpLiUS3GdxFjJWzRumzWiotM0kjeUVbuERq3YT3QBzee196mRNDMb82F8biogy7kEEQzPr6fpHsBxYMQCGAX8xoiAgDQqJFovSS9hRmXv6c2SrPd1zVZQ8zZQxXm5T0Va9VhpyDUcYizwIM18J4BY0m8ACHkPoMtMq6BJWe9W2TFpgqTWdx1h8yUUhhB1snSYTDzx57oywn4zLljHJOYyut899Fj8ps-ew2Rz7ljdGT3pYsrc2D3Th5A8nQS3XiT6Qsn6frobPn9yUbh9Qm-CR7uy2kZ4304olrOI5ESg9Er5WjVLxVRHEqF6qZhJxEmT_jfuLo2_sQ8zME_Bpn6LrJQjzGssS9E8QETAr8XAafpUbWBXOyeCd_-PKsOu_fer954nlsIlCaeHjcpzGO6_3EJd8erICKvZS96MmHaTnDw_bQe_NfzTOVN2YDtN8-mskThgSLsBmf3iJ6CpUkZG76K3jyfB0kmvD7Eyv5gUqaxpX4D1vy7Io--2ONYf3s2bH5KvrE29rIUXnN5V1DP91IwH2EgyYC3uZN9nW2k_JDwnMjN_OZGJI_eFjw8YEmv89RlarV9qx2OlAxBwz8VzEpk1y50L7CG6Ev-d5jHpLStN452Lk5MQmWc4x-Te5lQ8NTtNqRORcuaJzN3H8kL5TlyB14DudY3GUHANaKWmieMUpOuftxozzlqobmMY6V4FgCzjod22hqZBp8LKqu5K7-phc0NfgbKVIE1eYgDVe00y_ODtdcphZt6qV6i-EugJhnzarf0O7an2EndrmsQMCPlSG0PipnhV_C5HvkiRzNtqq6cdBMbE6Q_XnZxNRwt3hcfvdvssh_7hfhQGg5uwQmZjDxtB8a_5wqEa9OVLVrX79xnuvd0ghubBzzzOAwMDai84BT-7tOkZNe8rYMQzb1B43LzXZl9PVrGkMrTLpasH50U1zMzOzGC3wORkk-61Ey2hsLg_nXz81Nr39fW_-TuVfGIAWX1LKLCziRODEQvvIOpnI06Iw0f1bj6djTqQTvqezsJ5gdA2FUunOTBLSQFUWlA7XmiL8GUQl3o3LEO5sxNXhZQwCaxqFdDVXFehPpf76mJgCkmHZrOCi7KzPLq76htgTSspyGZhFfVc-xIKKwMsffBrwxtpTg4zImsHFhmJV_5QXMXcn_iAzeX0Qf0mloDxyfkAJSMQAlC6LO3B5wjosehSjjjbwM4zFRwK1-xU09w7G7MR86OzpWnMZjnsE8pIPGYxJtZGRZ323I0qHB624MdrtS_x9PgjEItw152q8jh9Bm7QhiXkruAUgzPpBNX6wSHy03mFbAtsM1Eaa36laUvsyqmtaKEMv8DFGyZ9NPvsaEGOEtjfxcOoGVAWDXKwYNLG5utlk-mBSlLmmXcX81NQePpjEeVRGYd5ESlNcgxUfsSfLQtdycT0zEO5d5WIPQ5D9TK1X77NXnjODmExGnKExmaP6zhHSdgQgMPXtU4sW2lPi5N-lc3rJhCW9HCvWXsrRtMmWr20xb-3xZadfjRWErflWG7mlpvA1B1Xmao9vV4aA6nm3c0KTly3GFpbQ_ZcSgU4lq_DhVETBhHv_z53XGze_9MtHfW8SlwcVwv2pJLEkLyjd3qffYbpW64MFL-cNYun4gBW26huxFsRQThnmUHrpAhBFHLN_fEpXMS4vLSRcIFUuh_ws1GwX3iL0xc1jlRipHTv58KQu7dlrBBTojPBhZyvXy_JPdWWEXAlCDKGRGScOwEqIZU6VtiWCkIjjW-Q0p_qT8atZYLH-CFZO4hMjtHbh_Ufa8JfLUD1WU_C1LLBv7gsVTLSNc3FWyULDgSpGkk-OzT6dxRfjsehvrO21koYBkVlSromgRP2jBpJLc69V3nXv7rlIMXWIMKszeaNTEa0dKUa3kovxkOZhpOl7qxMx3fh8VLI9wd_6OevxhhfCYTj4fqiA9Nvv3J6L6DqEu8VYx-jVuDRaPvObnpWDg5u8rmBB7cISy91WdBeBa40Z7zoEbo-hHz6p6tZ3zam0hKKoA_rDKB6r7kP5E-XWVtw79qeHyWBWvqe2TRqrfbV_FCysyJ_ObEkUO-xkGckFL9nH-o7dssuM64T75Ah8VM67Lu50dqwveQ5Fojk13ECeq85SX1Xq12OFxTSWnNJ4QgL6zZvEH6WFiSuw7OMf7zzc3wHOhXhtKlV0DUtJh4Ubczcn388BnTQjrHWPR4HtK6Bbq9Ws5F6L4AkVBYRep58ZU98rcnm9qj7niidrkYYkIaJ1pDgrggwkQR_6Mzy0K5nZJTIpEH1rhjY8CKkiuPzfn0GNedAA05SRF0_e3NOsEV4FGeiIhO4Qzsq48mGbbBbxGuLvZRGcEvVxYToxQykR3g3UnTDMI-xLdkDEWNM881HkrLjt45mOQnjKAMVb9dul-fX2_8Y1lVtMvkdCgOyb-q3E0Mpzb1GBIyJvipghDrFoc9W9F97DR9ecABpAigonDgSxTixkbWBNbDwmNnThX1dCY0DRmYiVzADMuZk4dj7_IjZT9SIaQfxqXIPVEc8ZHl5_KkgVUJcCxARMeVHOd8Lt_za5DQx6XYBg-F2RsOwwdnsFMfuXzbG1BzHsB-aFYYC0ney9dDcrOo59E65RDx2SGxLoduHS3SwL-lLHgRP1TNhS7LWxCDaECpyUNueKRduiAs6szTos5S4cwPrDSkBLbFmcYk4o2lhRZHhyRz8r3wOXsIndApliUihj4j6J8NcqUycx4GCqCYcqnttiRvcJdtTTm2wRosg_s2-kaJyXX9iP4VCvrd13tx4N3vbuIyjcVfpxQyPj-AlS94-wj5k1oAkGbAbV-caJp_5--ZPdX3XqHwdiIqe8IAlMXFZPB3JXD6iy4EZRoe-Qbw-CjzTYivrYwx6U8rHQ3l6MnNu8p5DqIvQLqBHvU7fHIUbRMwFij0GSQzTvzC9mRHnmeiFyF7Ec7rj4_uJYphUiJyTI6fGaVxCy17LKEsnY3-QVGRqeSLt3Piw7z97vEm9Z6VapeAJB3ABshRXQl5pvGVhIvQlh1aWbN1wLmNSTwn27VzqpPUcvqz1-KF6J3zErmFkojX1joPru1tIWMh_vbTFMX1Mk9Pu4zhKeppGJyRX8ao7so0CAb29nL6PvYvQquTS2SFpK3oKbHnnJas-rWQLT3HfZnP8E_KFw_9EXp-HW3U5CDEUQRIZGsUND1vh8I5tP_cqp428jAAhYcDdDvysl4tlZMq_lqp8zjTJCEPMlOetnpHZXIsuf1XoEYoe6I7MXXJt8RI-FN04YWorCs6ASTMgVp7GjqJWUGEEPuGIfxpKkEysX-J152JL8hdeQILbJ2Qx6Rk3xNjpKpY1C03FZoGjAQWgybt3stv9loWOeXw43j6C765Y8RA5hXv9nU-c46eMOvuEPykArILGQ0fghblXUQug_CG1DMqSgPmNoaKWUK_RuyuGVy09SrwF7Skl-LyIo4jPo01D4BUwooaWeUALAGbHcPrDWlb_-tpEJzgNy3abiI1Y_t0Sld2PP1DlA74RXSpAbYmpvSrekUBL0YeeSMjJsJiX7305eo43njvxkPQTmk9zc7pMdXH-Pt8h_pe60o4wZQrCUlFZPnkgVJUi4OmTAUP8ohUpdkdQ8MfWT53NwisQK5JAZ1vZjYkpMXGZzcHwDssLSE7vj-3G_3iVmQqUvU18xBR8YDl007vjRZ48cbG61Xt90llDy_xd105JEgr7N8GnwTh3q6Bes-srByCADSrQpXjdHCuVrcKhm-_hjhLbt1Abbw7CKhR9_neYf4qmJ3KD5JnUpHzxsb8r_yT9c6Shxy_MORlrgP1FomNhIAONLw07hP-AvjlrrkhgIbL3pnaTJnQii5-vD_tcyD7VGaoOI0Vf9T8txD6JS9FaQGgc1pXvpIzxR88aVkqLpKvcVrZgfiGSxuV27harGHErjanxCCkiixFasmJv5hoypWGZU1uoCsdDET1AEM_50ngVVZCgdQR7Zb2bxGL-50PFu-XNWdkMMJR-zKcGXNVGhwJskQ1zN7cqD_6s2L9BvGFqgBhRtt7PSy3Ucmqijy7Di-nB1k_5IcPFSfLHw8EB9Q15ssFlCHD5oGU8BejwOvlj0OCeOT005HpN8EUk1K_37a6r9iluI-yc530cLfMyEYzhWFaxb7WCAtvOkatn2H8Iim6A5pmRqJIUNu_l_gyuTN5Ckmp-GFDIQwpWRzLPluE_22D8KXzMFcGEaj9fRBRbEeZ2a1TVtpRKBk2gPizb1tnLeI8rzE0Aijud_v1E4RPOlq0xO1Makz6uLNh1UE3-vaUSavqh-DP-D5dQRQc8mPA9AzZDxLrGG1Przx5UseX8RINrQ1MI_6SFGL_tcWUruSNM34qvXZTymr5ILtqPhRmYGSkDs8ltfqVN-6H3tkh-dsZ8fwTjDR78FoM665nNYQRaHOFBZqEzcX-r7d6UZqYRzMA7KEssmbmLJVTbf9onafrRlr7uQH-p3IqX0xSo7CV_by-rZbkaoqhY5w-Lml819DRbaA_pZtHbYRVG9zNbN4NAd9pFC4AZDi8xdIJ_HWB_a6sWewjc6FgMmKvhQYTmreHkPqOlHeS_9csZd2fKn14HGouHi00BiRrA7wfQ=="
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8febcb8dc8191868c17a5a29ff112",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P68mu_0Q9Qu7exoexnLkzx2SlfYJuoYmtfyfRf4t8BcpXvUfl2rhw4nV5xv20ALDxbgPeeN6ypweAPRrMktPcjZhsfqIAqi4zW2n3iw6q0CsUZkDiyXpvhVcH3w9VfM_vYa2T8CdPxzPwVFKGcTxiYcD1-JtRIAUBFtZV1OfPk6DUNwssQ0fwaxYlMsjUU0haKH0FAsyGJYXD11oV73Of1BfHJCbqWpcfyJjBALNePSsyA3SQ02qQnSm83TRTtseolMw-VEWG9umCtZEEWWWmxZXzdJYE4hC6gj0GaBhQSNwvs1OGu18aasD_7ElRmGLkhnjT4SzgToxioAchzNKtxVVsvvvkN3IozFVwGuYetjFr5y0TFaJTWXsPbH8K-IyEz-mavEM7NAOlctgPQNaVrhFqwQSnyGmXw4XQQpk3uMT1rHBhO8mnrc0HzoUlKXzhKywwJ6SCr-3_gzxmxbS1j4MBJVW-7I5V0kVlI2rUNUUxg0HU3eG8GrJNboM0xWBZDEnJElFXJRFE_FF2mk0S0tHrpDdg94LeB6itdgTBzJHVH9ATBO3TBOj0eLIdXLUy---pKXeJTeB9bSDFDFRy1EAWRYdCgrxXImnKvJ8uhg5VtDPFC0iVYUTCBSW09eofvDE7_HU5wVehy4Venwepxwzdrj1Cj9fKqdagn3lqzjQiSf0kb3s1mh3IEkJDU5jUGFUPtOd1tfzfj4AHTajC1xnPTAdiiesLctTEyXU-CYZfieGY4wIzebCAarTy5PHThxqwIEvWYnZ9gojMf8nl-l4-NuXll3lk8GjIietksSRj9of7zxx-Qiaxsv_XF2OxCbYhPBBTzPWXwkq8lPm5gU1gOvR_pzTvsLRCfpFUxH6wKHUB5OodSNt-OGxONt8BO2hPBxMtJ5phux1HhCim1W_UB7FtQW00cIE_59jAbvLbMQfCmFYAgvOn3Uxu39aLXY3iRGDvjwwDRHfoj3BboePmrtpHOhx_QuqZ4R4AmUyzc4gZ2VKL7yhO2mD6AKdGzEFmEDQOB0BUJ2M15asCQqYEmj2f1MEyEzsJNKZ3pZm4Oo09JhQU9CKwR22A1wrenZ46OKpfyw3WuF22iQjm72nfwN9Nv34abpGp8JBPQhI-yZJ6UQkOnU23C3INGs6cOPgOrtZkBra_q86UPb3RncUJc3w2FFa5a094Yv6hLci8JzZgkdwNbCDFQN6tjcrrNcXmxtdvUHZAoFxMGyvJ3-f69vQJvvDHxGDHYtiRIZNTVHhytKcQlElLR8ED6A_bP2CdZp8jbtE8vGuSpRMwi8cFo9BQhNfzNWgC-JxA9XfNSxwKd0ZuXx3XW4onpR_x0rgF9JIB_vLmWhpDw_2bdsg0OwIIwv63x3ERUOoymrN4Qfd5YH8qjy0nvTSYBReJJ58IhYi_F9qVxU4DSCtIBnRZI7cn0XAg4vzC5fElQoIBvIy29H51jufNoxs1H3M1aMm_uHvj4TZ15BAf9iwjfcNthfZsZQbzV15h9OZJOqSWSwx-F_NDkz3J0p57Rul35ZM1T7zWpNBZmHYKZsPxq6NWgKGGaj9x-PZYycQmUVoGgf4K-k1HquLkQSY4XAfROf5VeJvL1OwvLNfa65N4g4iPszrCwK6TpI32-cWA2rs_quSwuz0SJ-v6k_p1ORr_LpvrkpMKUq_BF7yQsaa_QqTOwGkr5XatjNoBWGPq-hH4szAtCaB3ezanIAlSMr9lYHH38xW8oAHnibk6LhflPxWsARyw-wyLsySIETmFloPkzylBUPwRbzOj_TjP1D0FDqJAKCBNKwzMlvqifRxASxJISpL2AvrGSaxw8OzppTYfCZUM5LSbuRI__WPBVJG4Wq5KyZUS-6N9EMRavhGs4xfHWBqSLMZ_G3pxUc9_Eho0KJTWURmtPyMVoIYzX1xvRaDU9ZbC3SLiylO4n4S9Ds6KsvB4axrr1iyzRizTXdDn2I00UhY5o8UVxOhLWoT6iWi3Skhafrt5Uwh4G30PQV6iDFlpnWlMxz9VbdllXLVBwTqp0ycPuNcCHBx1hQUgjc5wo4vEzMilswFTuBSVUaLDb4x8vM94VjcBJmCia48lGi8VKe1JKfREeU_fqcdAUhMswfhs9WspdJznfWLGsoWruT9__G_9dtiCS0rBfBKOHm3qOfF87E8YuQAGy5Qr-Ug-uukqJbrK3D5rDjoyUTDW1zxAslEHnDerjDUIxZZpV9JgL9rhRXucBkPYvIV1dHu7F_DlHGKYe1V9dg8TuRQoPB6KaiqZLL-p_A7CzU4xVb_8SaOTzw_pFjh6jhVFGyFF_9zJ2yezjrzKBjV3CrrEA5vdmpHo_dGmr05JZXJKEUgSuruableVt7v6-CDRfhHQzrjpbl5FLwam3xS4DgATOtn8ZCKBhpQ6h1uMuV4bGsu8AP1_Xh0uRG_LfBNbuqIgWKNquiMQeEh72tvlXS9XKU_xp4bRPiUErfjwTCA3VJLUbKAQlMdsBLsIFlRytKFonBHx7Pfz5h3h6P7qTY26SG1MvgRdsC69C2kXD4e74dA9JB01e1dWOetQd6GXMxsdM2SzVXe0aSxiR96JCVFDjSGElBPKgVFL4bp7SgWZXnn9ZvP4q8M1PSnMRSaIN8cGnAUmiZLxaSm36DiZl1A5OB0-cJtpq-F9fHhxeYSuEHcsz3644FloZzbTmEnOlCyMjrdUKdXX5Gkaj9yq0oz5Ddyouj0_qUn9te0F_iV7nWTRMURNFjLQL5MBg6-WVwEpyMUD_zuLVXK8OhQqiBENK5wKTjh3gqrQ0LYVI4aGw0acigtxkABAm7Mt7n1eLdNecySlDbWtIGZaJ5GLef41Y1wqECaaAFk5x9kKBzkDfLJipx7BOKNadDObNnZ6mYXImEgIgp6HFPGKgBvrmQ9TN4GB7zWv2Xs43KrXcmtuBxOQ1jh8H1VmoAODj6Gm1b2preUNpjYEAwLhqiO7OcHymSabMMBZnGJXNbclRKyhEVDd4hQavw4mIWOFcZTk9umhaYLquakUXxRF4YjoALgWg8mS5hZxv7XZLHxBLVlnzInIU6LG3mX9mEdj8Lk0Npi4fBCo5k5POiFwK5ekc5t2Dx3bAIxulun9u1p0mj8uXEnnzYdNV1mRNG1G7rKa_qR7j8Vg38ZIlRqmNyZBfWwgOlZFeeN2gISFShMoMIeLRgmr7DNmVHWEhZ5iYf-WmV_oWS84IGG0W-DL54hWgmTnNC5_LX7nBV_gEVhNV9z9GnV07EY9cS2UJHAbLGar6e5F2JM_tiU1S0EP2-4RqX9oO3zXXYUbQRU6N-sPYIy0CAgHIv0TsGBZLU6DA808sMwuMzxpY228kP3jVWy08GrGdLd8THaf0IUWccmTKBHPYah79ooc-cxupr3vYoafPNMv03vto-99mXnSMinDcFb-lGnbIYvmVN-aa6CgkK03wLV_04Xib9a1cQR7VOb4t_c9v4RYQS7TQof80lUXC9-Z9nUh0BjIWcQQnSMSA3Jyo3y8lVSGhwMBOZyCDaL-fvpzuVPWmmojf0eRSJk7rL1unUWET1q_pXfdTHRp-0VOMPkeWHOMwEU5W8UxnIHM_k_8hNWE2VKGs_at2mJINdHLWop7tIcOF83teQGYP35jXlWzWSbzP-hz9ZowOXuJ1OLingqfChei_nWX8iKGOAFZfRO2HFSDUkNFzVjOmeo6fqRSwL6PUR8r1Dd7Q__xN0Hi3Ij47gJ6RZdBsUNpLwMBzULMm12XVMTkobAlDrNzwojRRHxVv_m1zP0AuKYa_UMcpCVibFkl1Gj6c9bFDn7RRrFGSpkJoznOyWfRls8mUp_tWohvPuvaTHt93EDx6Uhh3oelRrn8ibmoDyI8sE0T3AWfXZPSopE3hCNY3gjmCLN-iF5oB8odx_r9A-rEOwguk0NKmQ-8UQlxW1p7s3bNMIFBbFTjNK2Wo_hsG1N2rXFoa_U7vjq0Gd1JudtGgenXRTc2_df_8AAT75g9yMs_O9KJU-HGE82q26edq3D-TYUUIzbJHrn50iehhoebqvELIc_XTgDJUrWXB4QOxn7TDHP8fwMsFixGvodut2FsSH5lkK1m8IkI4qWXTeNw0vyX3MbCZpCJ4aD5_TQQdrZ8nQAOrPT1XOmJ2L4NV_1dvaBpOjNA3-fynIrJmRKg_V1sfp6Yugcw8lnsNm-zCX9Jj-U8ncHzqUkAukxS_-faFBowiVqnzuZJ9zAULBnI8uVNEbnQs0xPbsk5Qj0OD3k0v_jxwA3zzchw6iHKpr4k3RYHXMKI9usT8Rsbf5dUbiQe74qHBlGK6EQ2VxWc56H3mP1csOe7kZW_P5iJDreM4rL8pidHQAuoDyoFkR61kGyUqCabI1xIlytf3gGpoJkJU9gxDMSlClxm2s8Reayd-sAlD_HUnVyBuVBK-Q9Rms4IDXbOf0UHo2u-gpB7t6PIzE7cEdg4JcLUxlWvsvVKMwdZQxfTvGjudq4tmg7j-3knZ2NSFee_wFvJ3dV3gis95TLSc2b81AaujfVh2uEV6cp9wULp3O4HyiljjLnobOl5Gr9ke7IiRocSr6tPhdOCZxWzD0TKhi-lIfB0Es215WQa_dGDT77jL2nDivO6cL_X2FlvgvfbUsZZYYbsILSiclCUgVvWJSUMblxF79xLtzryPU51shJUPkYDejxPPjwLqdeLeawfRKhSXuJ777lIaN5vnj_BTWqgwwV-pNZy3nsbfP5HJOHBmXz7gt-PZgvySCrbYU4SgBIZq3OwyEC0SxCTWFHaggEXcRjJXRUL0YuPMUeH0Gd01CKtBqWPVuMZWyUAjWOO2ir_4UoHmjRUujeqZRGCjvRZv5qsMr8ceWdqFCyjIBxg0qDsJ_9fX43zQk1wg8sxgUEOOheAWTsN_tcYcP7AOPuRURVp3nYz-3tNQNq5Z4jZInK5UyXOSCU6mPgL2ti1E-Ae4BmS09QNwMATkK4Va5noFKj6PJM-pF7e5ReZOR6WCFYjgcDWwl-mp3PAzV7bpSntv1pitxb7Re6X3zdEdlRW2AqBMUeIHSzqp8HwiWs5JCJkvEug8Gf2V7FlitTg71GLDw6-1up-UdKjKajuphIhwPl7l2zoz1p3Y9dVnmAI92RfjXWyDg3rldc63WpJpsgSjvf2klJU2ud19TlNA5K8PRhpq0HBhT5IG8wCtgl4GsZE3MeRd2Xo-3QTN8uQj2qm5hmKphnueqnWLqPQv7LLGlPSZPsUy-g5u9dQFhMAL9NmG3KzMzxrWJXwMk0ZdXq5GyQBRGaDftERD2NVFO6PbyTbygVEnNH4lNeR-VKy7FQ7h-i-Xw5XIw59lt05xfkIYIiKA7vgxALnha--9Ec0vtamxUDqsAcuMuNW7AnRb1V99FamoSf9TH7WaDsSCPt4qgMJnFrJl1pDdfEGtZmrPXFvXPzKIqI9ffugPG5SIoG_rva0jh-dpXYaMGZ29koY5-Bq1DQttIHoRYmzsscY9M5NqeiH14oxO93lyikaj5rZT6zKCfpJb4wBcrd4SS8mRlhRwhRDLGIe87ufCGnX-BsADF8AqUubjoKK7x0JEYqCYEwuEYEZ3tNVeUmSPAInQz3oEicOXIlGL5lI8hYE2zRKCL0Pj9aIaKsX6T2i4CmBjeUnyjDIDV_a87J4OGCJ1Vqi61wl81bU9Jg9ZSTlNyKhUHA-eie_UdhmZca4lKKU54MMUDHIcYRv2Pi2_65cVtuAFT3eFRm-qBCLBP2aeFj4wnVONCl9CDxlKqwGD1O9P5e6oCS00bpkOV82vUrdlQ7-PhD5fNjFqimi4ryvLZWBzO-866dVn21_o42Fx6XDZPndANVD-ExjnN7rWYmkXHeSjCwCSFW42S-EUxehkA7t-5TjFj-zMRi2eKu-Ve3eN7Vx47IaZn-5RTkKvJ6U1T4pe8k39ABohnIIeDFjx-n4j8idQcYtZoNeddHYHRV7XZ53rg4uvnTuQ2694QQs9PRKiWoRWNdEHoX4jWWCjbRI_ZGXMXngNM3W-4GKfq6WQE5QDtRL8VSeyfaJtp-4cBF6AkXBvBNbyGjq58xaDU_FmPTViM_Y_enzXdaGZ5Sx8xoRcOTQuCkIHpMFVN-OQcRm65vIlND7UANZY_fJW0BChCutRe06x-sdR93euGzOZxf1ixY_yHdcwPaupyr09mH0wFX-UCv-PCJbU5X__5qiCO69B9VIKou9Lh9HQnziWGnOYg7l9ylSLXqYR7V2__zOVzYzbmK15Yhn7Vzv-WSJQnu3TVbiq7dfV6xdboBUjJgytkTmmiVsHIKTfJlcRTMXl0W9iYt_Z-0jGaOw7gE5cC0yyy2p8qo5WrMeWB7ez6USm0UhiGO0ltqR9fyBDowk0Rxuk-Shk11IYyOw3xlAs4e36vSWQwno-OOoJwrcN-6JgOd7hw67dQ9NG7LG1-nTKZ92uJvlCW3fEO-H-xbncrRJY9N7YxxgSdNIjntJwdAYcDZO-O-VK-07kgzAUaR3fcjM7rrWh61gRDB3XnOaOGqKB0ugqPPglY9wvtjLh8WDfZ1yNhdSlFqJ0OfwrbnLbs7O8abtmi0Z9kkDM2bExhtK9P3kPMYxWf9Qocsf4yOIa3mfhusRX_z-_O-E_JP-Hw9w9O4gePqP3DZ6K5lMnZorgzcijnNF12WKWU5ePXxeoYGoy5K6FZQJ6YlmXXEeY0Jd-skDvVlBsQvOZZG4VAHvPexlsQRAn8YhkZb5Wmqea00yhbAlFdYNoVvo0lH7d26c4M4ANYmm1E0_X2Z0N5TgiziRg9KYGdU1x6wBOiOvWVT2j5WvjLBreFn5gP591_C3b3fHSjiQiIJvvGiWgs-SpC8caLi_32R5fk1xS0IJIXvdFs48g6dqEFkdid_i6NdoS45I7f944epi5NdKnnMYHKX6Ue3yFsCz2AO1dQ0mJiGljmO6yDtVCaqvbgvI62c6jf1y1IrCG0tZHvSlWp1nuYjcsz_WOyZBKdBsHKPf_3xH-zr5kfJkh458ygNAsyFRxbl3UemkWg5otclX-g4gGA-YJxLeHBd_v7LPFyK3d2F7whEi6U1YGo3FIO5mQ75g=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8febcf4c8819184d29524cbb3c044",
+      "call_id": "call_c540e36578bc4a049ded0fd27d124db7",
+      "name": "m3_record_control_attestation",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"evidence_id\":\"EVD-25-0715-008\",\"attestation_type\":\"Evidence Certification\",\"status\":\"Accepted\",\"attested_by_party_id\":\"MICHAEL_T_CALLAHAN\",\"attested_by_name\":\"Michael T. Callahan\",\"attestation_date\":\"2025-09-29\",\"notes\":\"Evidence EVD-25-0715-008, source workbook WB-ALLOC-FY2025-DRAFT-v1.xlsx, is an in-scope superseded draft workbook record. The attachment is no longer present; its control status is Orphaned and checksum status is Missing, so no checksum value can be verified. Accept this certification only as the documented disposition: preserve the historical inventory record for audit follow-up on the attachment/retention exception, but do not use the draft as operative allocation support or as final methodology approval evidence. Early Evidence Review Panel action APP-25-0909-07 on 2025-09-09 was expressly non-final and did not establish the methodology. The authoritative action is final approval APP-25-0926-08 by the Travelers Expense Allocation Steering Committee on 2025-09-26, effective for FY2025 management reporting beginning with 2025-Q4. FY2024 statutory and U.S. GAAP results are not restated because the FY2024 analysis is a management-reporting baseline that only reallocates the fixed $1,286.597 million pool among segments: legacy and ABC totals both equal $1,286.597 million, consolidated impact is $0.000 million, and the consolidated combined ratio remains 92.5%.\",\"remediation_due_date\":null}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_c540e36578bc4a049ded0fd27d124db7",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Error executing tool record_control_attestation: 1 validation error for record_control_attestationArguments\\nremediation_due_date\\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\\n    For further information visit https://errors.pydantic.dev/2.13/v/string_type\"}], \"isError\": true}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fec3535c8191acdef7ebeed0ba90",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P7DfnZDgeh0t5_q-C2z76F5pSaEXmUpSsrUbBgYjB4fmWGeo4u0TVGMJ-gjui9ZPON4rQnqWw4AOVCv922HRjD4RF8Pbs0HVXgaQ_4lOs0xkuo_j7nKI-WD_m4zmPrJlONdXWtRLSxbkV7J36MWi6PKX2mQ4Jr8VNGppqy2aFcMOqly4FYPdoxnQJXRInj5ile_dc98VfWkp1Ruabs5beW2oMiUfWxcMASdHXeMi74cabP3KHXuk3WJa5SboBgaelcwXe8nB3ykaik0DZPTLX1R9OlI2ruhDIuB8MHCulMJwEE155IfKE7PFaddNE91r3JLoMAfocKjd_l9hR3ldaMV2F1OywMLF2ylL52vf-qdB-xdbLyyMK9reNHah5KHuo6-B7iqDhHT_BKL2vGkR4QXqO71q5S3W3OlvZCm4reYYLe-i2vj08K1ohHaX0IWw0DNApuvzbwxbs_dcAS-yUn6W-LgyyCSNSXzVGT7YU18z_hK1J_jWqYEuzZfm84gG3gw06Mhsfa3AgfIy5LWMDnBkmp5QB_-Oe7m35XHW1pRolgvLnobgpQ1Wx8-6RN5FVZlonnzvnfX_qVgiPMhV-Rrmn-puB7W2hzm07Vn-uE8kiRlQW5N0Q6eWUTLkBlvatCuqIDiGqbQ_l7Rxy2Ca5vn4WdJchfQf_ryesvE7cGsXlT9SPCLETu1Mf3UbzYXpQwg_VO4XepjccDNEF2RM8m4bbiHYUmMNz65FuzAn3Qshp09c85zR9l9MQsqF4ybCMFKD2VSu3BQ0V5AUbnr8cCpjlPe2VuvG0Eiy3ib0PwMiYzNKUzjFE12wwKg9H6XuUjCs5KtVR8dENsQAyxR2mHv6Yd-azbQBHuWIzu4kENJM2kOabqpv3CW_O96JmT70kkSQUnHVL_tgKIA7q57-sGvp9DVlPKb6FV4NaprBtAiO4bRMpXTd8kPveWfrtC0VJlwjQB5iIIGqWRv7Dez3cTjUzJj6g-wb6eUvoL3DNY1aHn4OV-15C-6-pr0pG3b7Fyro5Zsm_uQhdOX9AW7JZojocp5joI1fc2NrQaZ07sUGeaxcQgm9TMh-YVEXlJnSpDsLrZL5p2JTdkNHObh3PFbD8RPITUF8URljjfpGvzts265QbX_e2z-sPZM8Xp4frGs84ztYI-BQ1_SOid7MODg7rWUkQRuqdL8ozp8aCH8d5g_PtfFKQ7-Pz4Ipa_PyZG53zVtly_3e9tcCYiAs3tGas319YVAwgfWMBiBOEUIkhnumYp39TpA9Xtw6uaZ8D5PV02VyhWUMboUKyW-j1FSgpAnfkqT4ag7MiZNunUlV074zYrbpKZuZIk_S7P2KNVfMGnBeySTHtafS46czyGTwkfsUSKjM0MITUKEMQrI6KnK3ERoA6_7J32axnz3HqMS5snIHUgYKLCI1-77Pgj0eZwJUNF6xzjsXN0KK2TsYtsK1EDij40OHHTRWcka_jQvBqUKkU7Di3YxeydURY5sSYO-ttIk_7dhpJDytfnirW9X4JlCKOtSNGbTaikpfVJM5HoPrku6M48bv8NuyOOlYqPBZgLnns8z97Uwf_p4PZ9Flg2BhMwJvioS2bAHZNz5Fmi2eI3BqpxXJXrgvmTcHOO5JLvww17RuyvWyl985Fh9FS3IyDcdyzYWeo-9Xtm-A9aJRT0zcrklG1Lj--kblMogiZpTFiF9G-S4EcKk8l-_sM4kd5a-Pi7c9fwAzadQfkJPdV98ckmjs4nNKm8e0VTU3PboqhhAzRVu0mOSHhWXTcLy5XoqTMI1_VvlPc6Cms7DViVGee_zVED9a9B3OXGeX-ltdE-AkHzNIMLhO8JQSYHFHXB7eg_oAa1MluH6YQt4lA7X3c4otaZGvPPRDw=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fec3763c8191b65fb8f43164fa79",
+      "call_id": "call_f758d6d002ba47e081b10e6436338b85",
+      "name": "m3_record_control_attestation",
+      "arguments": "{\"case_id\":\"AMC-2025-0917\",\"evidence_id\":\"EVD-25-0715-008\",\"attestation_type\":\"Evidence Certification\",\"status\":\"Accepted\",\"attested_by_party_id\":\"MICHAEL_T_CALLAHAN\",\"attested_by_name\":\"Michael T. Callahan\",\"attestation_date\":\"2025-09-29\",\"notes\":\"Evidence EVD-25-0715-008, source workbook WB-ALLOC-FY2025-DRAFT-v1.xlsx, is an in-scope superseded draft workbook record. The attachment is no longer present; its control status is Orphaned and checksum status is Missing, so no checksum value can be verified. Accept this certification only as the documented disposition: preserve the historical inventory record for audit follow-up on the attachment/retention exception, but do not use the draft as operative allocation support or as final methodology approval evidence. Early Evidence Review Panel action APP-25-0909-07 on 2025-09-09 was expressly non-final and did not establish the methodology. The authoritative action is final approval APP-25-0926-08 by the Travelers Expense Allocation Steering Committee on 2025-09-26, effective for FY2025 management reporting beginning with 2025-Q4. FY2024 statutory and U.S. GAAP results are not restated because the FY2024 analysis is a management-reporting baseline that only reallocates the fixed $1,286.597 million pool among segments: legacy and ABC totals both equal $1,286.597 million, consolidated impact is $0.000 million, and the consolidated combined ratio remains 92.5%.\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_f758d6d002ba47e081b10e6436338b85",
+      "output": "{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"attestation_id\\\": \\\"ATT-20250929-001\\\",\\n  \\\"case_id\\\": \\\"AMC-2025-0917\\\",\\n  \\\"evidence_id\\\": \\\"EVD-25-0715-008\\\",\\n  \\\"status\\\": \\\"Accepted\\\",\\n  \\\"created_at\\\": \\\"2025-09-29T17:00:00Z\\\",\\n  \\\"audit_event_id\\\": \\\"AUD-20250929-001\\\"\\n}\"}], \"isError\": false}}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8fed3a4a48191b9bff09a88f68659",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P7Tcc6OT-iBkJ0on4QueFuf0v8NHCrClH7WO80OtA0-2gfafJQtGvOHno1uNxFqg53y9z5LYjsPq1zL71PNOcNdOmSPNvqmKge3Fj85BTrDKfgnjc-nkpdVNcj6AOTdh55Vj19Oq8izXk_XTk-aPn6yXfKX1zbt66l2B2xobWWdkLFWW3qjiE7mk6JbmoeIu7wjnd-2Bc9Ng1t9Y-ehvTUjKY2CUhoN0fIS8-oaolJigEXN9e1JCeobNgzbC2jbszZ0YNHk4oJrR3CY37osrGYEnM_LLE9SHok6ui00siOUsqmkii-aqrt1j8Io1UHCc-D_cOdNjn97IvcVN8-cbg8iFcVOaTZo8oGfuPfdAFZlY6LZg2EOTNtmE3szGk8bSrxaE-0cP2o9bJurWgJ-IC2vlSfQFJhLnE649VPUtgoLIqy-A4sswHIXfeJwwnTGww5JWyj2rLEGndBmWuJ5heuU8uoJOK86bF0f1g5RTUylVvH99jD46BuOep3GwoeiEXdKvnHWJL_8Ek4iAYvrjIMC_baf8pe6VW31FAp94lR3FWRH1JmR_VeOkg01awfyfHHHLJaDohnnR86-bH1A7cYttPKYPsmkDWsWzkT_d35k1MPUaMUGzq23GU7BwB_wCsAwy9kXAtQM6qaKbooLGA3wiaR5nAgs7CfjydFt_bYRMo9GJvn02cbcphB7KVtYQBE5YCHGaRxHIGbl0kj2o2PgixvskwP45UqzM67UhK3ul-GVYjUm2nJMW43EFo7fsm9TwO3Ee5nIwiEz4ktbIKf6qBb8kF32gqeL-ThGfOtvRv_IdGLsgcEpy3HwRJPjlrH-cNRjyWIjaYFxHO4sNiCnCmEL7oJyuno1aMosB7xYjlZP6Uv7rV0iCK3DgcmzR-0KNoO73mFiHt957OeziI8UQEkoI9v15FQ0xl7fBndvsGhIcWfnmxKTruywz9mJSYmwbPa6B0afrdH-w8IDxOEk8m2D6_qbJXya-xhK123bSttWryRk7WJikm5tcB3uDuGYkig_l8CAJlxptk9e8Sno0j2lX9jnK2Qeivyjn5vXuHhm7lWtXcdNcCeuAN2OBWkCCv0mssmunEut2s8K-yGkE7g4QeillDitmQs0XPZY3Qtz9O9QbF8Ug5N4_KvlJMRYd2NrQvUjYqiFq_Uq1R-liIlL2SjVxWHZ8lAqdjqD9eC09iycLtAfOhGkWwOJWO64ugujlHeIKx1Wra78lY3Yx35g8HdhtLeoL14TYjo17d9hQkdkfTDYiWOsJtsk4QNcVPCNmH9V3n9WTRYbd26sdL2JnD9M9Ayctle1pJHIeaiWRaSs_HdYGH5QCRHFXS8-Y31LVFA2v8MIrUMuQBQtdTIYPOAUDw0tiPECKk_UFL408O_MDsNsO-8ox-K1-zIQDSfeH4uERXctqIgr7TzHm90lZfuYJL1stPBmQ7b4oBwAK3RttwKdjk6U_R0BLjwf-RFyc3wSLNybWLsjso9q6SARUEf3qViIoTJgwy9LJOc2QBPLZVXdx_nczZvfIYjrw76L0GS9xvYVy46VBf8l5kYDnM2o1ewti1xk2opAduDzGpZGEZrncwapcZQNIc2bqvsFUs3jz39y6j9xoYE-Lo8047UMu_Tpy08MflJZi1s5aiOYZW3D1iQ0hUNT_E2MXop1R2YW6Y2Hjpe9n3fgacebACc7sbEpreG341_dYCZHT1Ui_01DNEANCMWxZFuk8G9D2LxwlI0po-xnsJB8azNKVDOtW4b5zJfnEhO4gXkC261f132KvTyN8kzb9Qwip0T30ybxV_KQQ5QkVZ5tYtGfjnwfu4oLkhD_I6NWXRolNIhZ-_LgVbLI3ZCuXC7O7qEFYOgEp76kTd5o9PWMrGeaaMli8G6nISlQPO6Nac3hXELedJRjjO0B7EYNNSxbnCfew9SZHn8mFn_quPDokNhRnxlpKLzq6aDfngk8MHB_2KwvPkqaxA8ScG0bpZ6_sJXwzCak86RuUN8Z4G4nD2qZ0ruFOPHeKOuMwzS8Bibb-OYn8sbX1hH_h44L8po4UZtrAz9ldX47PC-HgSN2KRN8iB7SAx5LttYERMs6b3gcPL5wOBUwVNnk6u67S2EJd1NGbET3HcPQl71aPpxTTyVMdl_e7OVg6fIZ7NDE_NwsiWi7Vspe5VzJRcD49JY3DuyUwmAm-MXB-LfvxaXPUBMWBCw3LFf3Mpq-MMDnzCiwpRTiAsSXgq4ANOtqRxYIi3wZcUjdPgcWLYxw3_fd0Y7ye99YiuekHnwekRlV_JToVx7oyx_U_7BVM2jWvv5EGWr_40o7VfWOmoj-g6TanS0Am-WJC3x3Cv8IOBgECHlxVCdSYTtKbMjSEgOhfICc8mbo4gSNMY4-Awf_coEbXO8xtphZh_RUsx--BACflG_1mnFd2PcGfu_7JP5ONgDLYHSAiG7mcGrgq2hA376h1_9o6tqANSciwmgBt-GGxWy1M3G_fgx8DCi-4KmKopfK-4oALZwO3YIsKTqMPN4qiBVtUhfwLFEYO2iH_PKhCZZvE0Yl94zxxZC9IbArr_VfK7MypS9_V9e1S1mblb9UFsPHaIaVhvQ7bdcZ4WeEtATYDkjZ06CpPHgyteyl_GicUwHh_8thJaeHw6LV_6R_Vni_I6kPOQq6wa4svKVjyeG9Bo45FFozoOb85YhEc5wFTgOR2QLuepJVrObhAbeodlK0c0o2JsO8JpJ-G-IfHvTXxXmlSKKhKXS9cKQeJP8ZXS2Qr_qnmME35_ZqmtSCurV0RDsNPgI75iksFQylb2eaGn3_F3I0-d2iR2HZX_gcmC1jUZZzipC0trhADZGLPpfPGkupC5NU1Ll8nmwkx9QkXUIctmXFEPOcF2q_A49FH97-Lxpv47T6a7VF-0cQta_t_rTe2c-BhMev71z2daoJPuf08YiG8jmDW1falSooYkgXV6iWr0k_RgXf7PfYxcVTjKkMqrMEcAOiQr8swSy4_FZ2BDxf-0m_k7DvlOk2wc-9mdcynDgLzApdn6YblCKuxHe7Efe-vs7gFJGfDVIyNglIgfouAcpfhcweXSTmmIl1xxPFNB92JGbMyvyibPFGmV_ocVR8QJEDjHmjPvpf83vSrFjq8Y1I2EL8zdXSqhitBgf1pSW0taYnYzClxeXzYo59l_ONQ8dOFjTaWIm-8Zmnqf8LsWBxFw1rHNThfWRIf9fPD1AAro-DYKOT3mGeipP8uqKc72YVjI1e_XPZCHXE9mi12sy7Ts8lY7aN8BrNzXBkQFyYAPrHU1YXErzpeqNB1N9jgeG-2Vd8CNWNSWZBTvB8Aj2t5w32YrtfkLvj7ABTwtg5CYircpXSXpXsx5YgCa6TsszdRjdUrAjtQyHXtpREx7_UTmxkiLX9Rki1KS9y4iqmoIKRcxba4PkK2M68GWe1xzBpGffkQrw83FHqaZX0ssW7BM-rm8oItu1spCuRLMUporMn2WvK9qPsdPtO7S0A90s0xhEr36HvULo5ZF4FSSK5jQQnrttPQrrouzoazGrIsO39rRojQVp4yoEYcX68O0cwVdFrn45HHxCWEr2regYxUGiqL459AcjVOB7i-xWqhJ_4yrhuDotaTbfyFTkm-XcNtIKW2o5GrRCMdCWHCi490fndxU9LTeWnz-RLBrOJ9qED_FRvwm4ktxTZIA0sFXeWHN22JNbza5aANq21B1ub2NM8jAuVZgJLjMPSjI9sE3YamielWRBTh5Jt1ruD9ov2Px7R3Vh7NPsXYy-OwKn-49wpenZIvloC4A6PXwNJ9kuaVMpF2OdYJEBUzwejU2VUVnLxW23NN9fUR27V19AAqpCP4k_EoA3j2F8AQXP9wZMGn-5QWY9oGO3I5bLsEV0NIeAbJY0c5r4kFgM9zpIkMTq2Xqa5mObm-mTYzalPbrA3qChE3XS2KlxEOe-BObEECFawLFT38wSoGco9e6oZrMR6sjpxZipryaddB4WpLB3V66L6YU-BEwNhnGn8DQWZwZlhK-CdH9PMLJtOwSpmm5QNOZrX4rzQQSgF0EoUcfzwwUVZeV6EUrIPODhF5FDCoEZ7-Ce0JFn8eiqfEf30KanVH8GfEEBpNhGcdnQvKG8oauiJ19qp-5chMKWvyd74fECjCrJZXGk-FZhV9z_CyFvV2DZf7DTNzOQUtxR9pGpJQgp3RAd8FJjp_ulb-pcoXlIwMun7M2kPw7L0sWwpflhpKkekSpuebP9G26it-ucR7BeCXOsx2iaQKZz8Q8HIFqZ2R7wvaOdl4kHAvHX3XOQrkZmTTgbwNLjsU023bOHvyKG7DgH2ELOY16FOm0hvSQvey4a-86Hf_jq_pIqgVbfXlehUiqpFPEh92kd2hPxRYjtvBNAYXZSolxx_hp6n1celktF1-iZ18jmj1gS1kZiQECZS9zwTRk7KPAEtk6pqrZu_nCJNYX3N3DWpPpLhAqp9bPQmCDKEXle22uO_gMOyDRDEbJNnaISWN-b58ZjDGlILRQXzxsjdWDPJHw1i3Z4T3_XhoODcmPAfZM_l9VE-bQ8z9uTj-ECvvwIFLRD0O3wOTi5xiTDSWyMSoVaivZqB4tXyYrk1qwmBYYBfrVXJ3qnPdWGH-xO9DWuCsS94ZL1sAMZKNVYxobF-TSqUacEg1H2abDAsXjs7FtbiCeBcuoIEbtI9Gka0o69zCSSVOd1WPPEV8T2dckTKRBTvD0oBWWN1SnAWN5Ztk4OAmXA1ymVf88sws3YWhcmdt0DsgUsiDTkM0JBehz9CJCwCfE7XzfFT73BshEDdOaDrb-1vDdOiFtcOfACX9cX578OTDCFkkm62SR7vfLFtz165atOlKXBy7H0Hdkwf5ghFSVIJkNxq4IaIUGzHbADh43Yn9vw5qEMri4enBzdIXLGlqxr6ctRXvc20YG4ImWtilAbfE35sPpjVVKiyZDehR_I0z8V4ADf2syI6uyD4JqisROavqs-L5G5B0_5LFOjcDi5A_fzpQFmIlIRp3RaQq7IDT0DnTywa0gxq97SFQuohHGHUsxBDK_EpVnTpErZCmowJD1WR6iETb8FI0pmljeLkGnH9C_NbL-mcW05Z-q0vurXWrJYQVmFbh7p_PpwJO7iixvRX5Bq4xmX7sugZR5Zs_5hByLjnkPOkJ1QA8j2SAj-4H9cPmzhQbO0vL02QTSKLIp3ANKFXEXx82PGBFHwZgJYv96ZOX3y0X3AsTR9d185LJFKureOsYF11Ks2b_JEeSfpIF5ztNOQ8B63mx0Geex5R_B-KXKlczZV84ClkasjqNVrtk_-zCFXFP8NHUJlrgG4un8PBbK8B8BGCb8of9YKBAuPk6noXBwuB6L3ydc4DEi7vldbGAE1zJEfUAbZ2UzIKfj-xmcKKC-OPFfoiQkOp4TBUgP71pJ1dnR7EnQy84nM4d-HQOiEnTHLVMPtlIcWMyEewfkBhS-08wMCDUFqEyAsC33JFWQyF6sKeiFBD_ERv6EfP-8IS0k6uAU_LAED4JBC2plHaM9ytM0lOxuX-aqIRxkiGzNmO3lsRsJE0CDt1fu9avukj3L-DyctcsxJg2zJlWJWtHJXEE8ZrEMydboRDH-LvcGJh_offMK-g9uF0njv5Io3Lj6o0I5j5J0g-pvD20cs_wumegFM4Xa9NX5q2O114RN8aueABtJxGqehY4NTquvxf84IqTkW7gIZ-iajuYYGmq8IgbBcwxidHMmAsv8YPVy7I0ZeIqLqDYpz_5o75WXQuHh6_lsUvo2MsDfv5G4lEuZnzkspAp2QmkBe9dMNp0VflGGiLmFVYaBzldgwR38-DC-EwJZl9s4kYceet7pLQH4os6P-l1oPbVD-vGhI73FMGCl0BGWrkBocFkMBGNNklp7a0TeQpOHYDW9lWSMN509s6MucEo4L-f5hay4bHCs7QwHkzY_KXq6XE8D_bYwSxCSJcOk_5ariHkfjO08kW9Bwk7KCq8kJRLvoSPnx43P0klmoCCwMXoiPk5cktxlCTTCCgDoNqA95Nhfsj-TYPCw1LABsheXUxnlr4s8UEb_KnRrbl1stSxjBHiYY7mdpT8JKOjF9l3xM07ccusERotb884ZqYxpI7l50A7eu-biClogTYVHAya1kBTaQUOhkgKfWSe5S_vvf41GVimMhEzIncptYpKffAH7wtci5E6dPgctBq-ebJR48kSav6G7jyvGci8UPMlAVj_9HpztCHOiE3CrNffs4_4v2hyc3Lcs9PWbEmInVTMNY5YEnTnui-Nufd27pyU8jNxmfVTV4Dc8H8ZsIVD0tyMt5XOd2aObJqZ80mRNbl3zumX9-4uyD-WfZVlxjqhBEwx_1iCRbqmwVYDuuUSES4CcItXd2I1xb04FS9EnvXGP-jonx8sDpOm0ku7ROY7HMNLId6AycFz3EnN39YS4gjy73acfc_4fnuCpcaA6MgBS-AzYBZpuwufG1XQ1g5-baFrtrYEfXy3yZY7Ui86kUJKMhNIDZgglEGIdn5sotj9Vpc2Khuf_jX2MT6ysPYPFYnZ7nyKQ4-gQq9SE_BoS3jatL59J5KM4Jann3v8HVLyjSMyKwEBQih6Shs1A4SuIlYigbYt7mwS_Vw3l3Xxlq7jSWJWbCoWViskiWJ7MMitD4zCECxpsx7E50DX1rYjOGm_7SpjzA3FX7yUJMqh7GqFiodRCM5R1sxGf-Vmv3cCiyGotD1-uLmh656yBh-lvSeENTwTxV3rGe7nJ2KWvnPkY42qMHo-SVHSBFoJBrH--aUquCvcLECdomLKj8H5vr7SV-may_DYvMF6etkcaf89nbuQckapyciE7ahy9RyXCU8_CkEjEWJepJCB4d2Vd9ZfgP2k8YJjk380dDLwh5bde7MGPU-t46cBIyTGgsRnm-Lu7o4Y7H5gOnCkKBIhTaKwOtKwlekErZ1mmQHnBdSzKiI-LTSWwlnyOAjRlHnGPxB3blBpQZGAB_whdgdMpS8-quj8V-_Tcvi1F2kqkJ00euTCappmeu6NcqaHGikObxKH_K9RNzEUZXSgvTkyldiRCiYQG2GY7XuAgFSoty0umdNXAxSQeRjcYE-yHebfqsiiaq075Pk2Kd6jNZ0Cpe1IuLowYFJY6dL83UdwzbptjzLirP_FrXYQHCm067dK6ZIzmNCqO6_5MVfINa_yANwbFyIsUvx7T1LabTAD8g395HFdDORAZjmR-yeJeMgJE7Cf28hpUPBv2ZqQu7ggfqIfcWpNIiQskt2S6RCWgUI-_Hqg0f3OTW2UXALVLNGAtlocKroqTqvLWGxPcrWeiz1tTWGnhy6j7QU4Qj5PDaUStxYfyUZyCjhFwnDBu1aXps3f6S92Nq6-DDlHi_c0m1Co6JuK3kVyd_-FgTrDaWAm2x06Z-IXyjfPZFnCf2x9KiygLGzzMiSgePmWqLvnR-NBj8PZ9nE30ETY-2kCCgw6DCHZUQmItG6XdDdlYGoFNnGg5E9WSE202WKmGyeSvViTD3oZIKrmUz46zBV0aclsHycndNDXujAwlSRZIAij2gWxJe7kazAU7K29wsMx91I8Y5J-5A0a6ykIq7TPZIoo4WNurVpx0vXkaKkERdSx7QssX2hkc1LfsJU-PBkfunxR1spxpCuFi10-kr69NE2TYVvA0v8oZr8qv_3uWCvO7uMstBq3aKtFEh02way8LFq"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8fed3b6988191a8e6e89a9fde0555",
+      "call_id": "call_bb0eb236fb7f4dfe93929132d66bdc45",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat > /tmp/create_control_memo.py <<'PY'\\nfrom docx import Document\\nfrom docx.shared import Inches, Pt, RGBColor\\nfrom docx.enum.text import WD_ALIGN_PARAGRAPH\\nfrom docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT\\nfrom docx.enum.section import WD_SECTION\\nfrom docx.oxml import OxmlElement\\nfrom docx.oxml.ns import qn\\nfrom pathlib import Path\\n\\nOUT = Path('/work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx')\\n\\ndef set_cell_shading(cell, fill):\\n    tcPr = cell._tc.get_or_add_tcPr()\\n    shd = tcPr.find(qn('w:shd'))\\n    if shd is None:\\n        shd = OxmlElement('w:shd')\\n        tcPr.append(shd)\\n    shd.set(qn('w:fill'), fill)\\n\\ndef set_cell_margins(cell, top=90, start=110, bottom=90, end=110):\\n    tc = cell._tc\\n    tcPr = tc.get_or_add_tcPr()\\n    tcMar = tcPr.first_child_found_in('w:tcMar')\\n    if tcMar is None:\\n        tcMar = OxmlElement('w:tcMar')\\n        tcPr.append(tcMar)\\n    for m, v in [('top', top), ('start', start), ('bottom', bottom), ('end', end)]:\\n        node = tcMar.find(qn(f'w:{m}'))\\n        if node is None:\\n            node = OxmlElement(f'w:{m}')\\n            tcMar.append(node)\\n        node.set(qn('w:w'), str(v))\\n        node.set(qn('w:type'), 'dxa')\\n\\ndef set_cell_border(cell, **kwargs):\\n    tc = cell._tc\\n    tcPr = tc.get_or_add_tcPr()\\n    tcBorders = tcPr.first_child_found_in('w:tcBorders')\\n    if tcBorders is None:\\n        tcBorders = OxmlElement('w:tcBorders')\\n        tcPr.append(tcBorders)\\n    for edge in ('top', 'left', 'bottom', 'right', 'insideH', 'insideV'):\\n        if edge in kwargs:\\n            edge_data = kwargs[edge]\\n            tag = 'start' if edge == 'left' else 'end' if edge == 'right' else edge\\n            tag = f'w:{tag}'\\n            element = tcBorders.find(qn(tag))\\n            if element is None:\\n                element = OxmlElement(tag)\\n                tcBorders.append(element)\\n            for key, val in edge_data.items():\\n                element.set(qn(f'w:{key}'), str(val))\\n\\ndef set_repeat_table_header(row):\\n    trPr = row._tr.get_or_add_trPr()\\n    tblHeader = OxmlElement('w:tblHeader')\\n    tblHeader.set(qn('w:val'), 'true')\\n    trPr.append(tblHeader)\\n\\ndef set_keep_with_next(paragraph, keep=True):\\n    pPr = paragraph._p.get_or_add_pPr()\\n    node = pPr.find(qn('w:keepNext'))\\n    if keep and node is None:\\n        node = OxmlElement('w:keepNext')\\n        pPr.append(node)\\n    elif not keep and node is not None:\\n        pPr.remove(node)\\n\\ndef set_keep_lines(paragraph):\\n    pPr = paragraph._p.get_or_add_pPr()\\n    if pPr.find(qn('w:keepLines')) is None:\\n        pPr.append(OxmlElement('w:keepLines'))\\n\\ndef add_page_number(paragraph):\\n    paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT\\n    run = paragraph.add_run('Page ')\\n    run.font.size = Pt(8)\\n    fldChar1 = OxmlElement('w:fldChar'); fldChar1.set(qn('w:fldCharType'), 'begin')\\n    instrText = OxmlElement('w:instrText'); instrText.set(qn('xml:space'), 'preserve'); instrText.text = ' PAGE '\\n    fldChar2 = OxmlElement('w:fldChar'); fldChar2.set(qn('w:fldCharType'), 'end')\\n    run._r.append(fldChar1); run._r.append(instrText); run._r.append(fldChar2)\\n    run2 = paragraph.add_run(' of ')\\n    run2.font.size = Pt(8)\\n    fldChar1 = OxmlElement('w:fldChar'); fldChar1.set(qn('w:fldCharType'), 'begin')\\n    instrText = OxmlElement('w:instrText'); instrText.set(qn('xml:space'), 'preserve'); instrText.text = ' NUMPAGES '\\n    fldChar2 = OxmlElement('w:fldChar'); fldChar2.set(qn('w:fldCharType'), 'end')\\n    run2._r.append(fldChar1); run2._r.append(instrText); run2._r.append(fldChar2)\\n\\ndef set_col_widths(table, widths):\\n    for row in table.rows:\\n        for idx, width in enumerate(widths):\\n            row.cells[idx].width = width\\n\\ndef add_meta_table(doc, data):\\n    table = doc.add_table(rows=0, cols=2)\\n    table.alignment = WD_TABLE_ALIGNMENT.CENTER\\n    table.autofit = False\\n    set_col_widths(table, [Inches(1.75), Inches(5.9)])\\n    border = {'val':'single','sz':'4','space':'0','color':'C7CDD4'}\\n    for label, value in data:\\n        row = table.add_row()\\n        row.cells[0].text = label\\n        row.cells[1].text = value\\n        for i, cell in enumerate(row.cells):\\n            set_cell_margins(cell)\\n            set_cell_border(cell, top=border, bottom=border, left=border, right=border)\\n            cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER\\n            for p in cell.paragraphs:\\n                p.paragraph_format.space_after = Pt(0)\\n                p.paragraph_format.space_before = Pt(0)\\n                for r in p.runs:\\n                    r.font.name = 'Aptos'; r.font.size = Pt(9)\\n            if i == 0:\\n                set_cell_shading(cell, 'E9EDF2')\\n                for r in cell.paragraphs[0].runs:\\n                    r.bold = True; r.font.color.rgb = RGBColor(31, 47, 64)\\n    return table\\n\\ndef add_body(doc, text, bold_prefix=None, bullet=False):\\n    style = 'List Bullet' if bullet else None\\n    p = doc.add_paragraph(style=style)\\n    p.paragraph_format.space_after = Pt(5)\\n    p.paragraph_format.line_spacing = 1.06\\n    if bold_prefix and text.startswith(bold_prefix):\\n        r = p.add_run(bold_prefix); r.bold = True\\n        p.add_run(text[len(bold_prefix):])\\n    else:\\n        p.add_run(text)\\n    set_keep_lines(p)\\n    return p\\n\\ndoc = Document()\\nsec = doc.sections[0]\\nsec.top_margin = Inches(0.55)\\nsec.bottom_margin = Inches(0.55)\\nsec.left_margin = Inches(0.72)\\nsec.right_margin = Inches(0.72)\\nsec.header_distance = Inches(0.25)\\nsec.footer_distance = Inches(0.25)\\n\\nstyles = doc.styles\\nstyles['Normal'].font.name = 'Aptos'\\nstyles['Normal'].font.size = Pt(9.4)\\nstyles['Normal'].paragraph_format.space_after = Pt(4)\\nfor style_name, size, color in [('Title', 20, '84202A'), ('Heading 1', 12.5, '84202A'), ('Heading 2', 10.5, '1F2F40')]:\\n    st = styles[style_name]\\n    st.font.name = 'Aptos Display' if style_name in ('Title','Heading 1') else 'Aptos'\\n    st.font.size = Pt(size)\\n    st.font.color.rgb = RGBColor.from_string(color)\\n    st.font.bold = True\\n    st.paragraph_format.space_before = Pt(8 if style_name == 'Heading 1' else 5)\\n    st.paragraph_format.space_after = Pt(4)\\n\\n# Header\\nheader = sec.header\\nhp = header.paragraphs[0]\\nhp.text = 'THE TRAVELERS COMPANIES, INC.   |   FINANCIAL CONTROLS'\\nhp.alignment = WD_ALIGN_PARAGRAPH.LEFT\\nfor r in hp.runs:\\n    r.font.name = 'Aptos'; r.font.size = Pt(8); r.bold = True; r.font.color.rgb = RGBColor(92, 103, 112)\\n# underline header\\npPr = hp._p.get_or_add_pPr(); pbdr = OxmlElement('w:pBdr'); bottom = OxmlElement('w:bottom')\\nbottom.set(qn('w:val'),'single'); bottom.set(qn('w:sz'),'8'); bottom.set(qn('w:space'),'4'); bottom.set(qn('w:color'),'84202A')\\npbdr.append(bottom); pPr.append(pbdr)\\n\\n# Footer\\nfooter = sec.footer\\nfp = footer.paragraphs[0]\\nfp.text = 'Confidential — Internal Finance Governance  •  AMC-2025-0917  •  '\\nfp.alignment = WD_ALIGN_PARAGRAPH.RIGHT\\nfor r in fp.runs:\\n    r.font.name = 'Aptos'; r.font.size = Pt(8); r.font.color.rgb = RGBColor(92, 103, 112)\\nadd_page_number(fp)\\n\\n# Top label\\np = doc.add_paragraph()\\np.paragraph_format.space_after = Pt(2)\\nr = p.add_run('CONTROL MEMORANDUM')\\nr.bold = True; r.font.size = Pt(9); r.font.color.rgb = RGBColor(132, 32, 42)\\n\\np = doc.add_paragraph(style='Title')\\np.paragraph_format.space_after = Pt(2)\\np.add_run('Superseded Draft Workbook Evidence Disposition')\\nset_keep_with_next(p)\\n\\np = doc.add_paragraph()\\np.paragraph_format.space_after = Pt(10)\\nr = p.add_run('ServiceNow GRC case AMC-2025-0917  |  29 September 2025')\\nr.italic = True; r.font.size = Pt(9.5); r.font.color.rgb = RGBColor(65, 75, 85)\\n\\n# Conclusion callout\\ncall = doc.add_table(rows=1, cols=1)\\ncall.alignment = WD_TABLE_ALIGNMENT.CENTER\\ncell = call.cell(0,0)\\nset_cell_shading(cell, 'F7EEEE')\\nset_cell_margins(cell, top=130, start=150, bottom=130, end=150)\\nred = {'val':'single','sz':'10','space':'0','color':'84202A'}\\nset_cell_border(cell, left=red, top={'val':'nil'}, right={'val':'nil'}, bottom={'val':'nil'})\\np = cell.paragraphs[0]\\np.paragraph_format.space_after = Pt(0)\\nr = p.add_run('CONTROL CONCLUSION  '); r.bold = True; r.font.color.rgb = RGBColor(132,32,42); r.font.size = Pt(9)\\nr = p.add_run('Accept the recorded disposition—not the workbook as valid approval evidence. ')\\nr.bold = True; r.font.size = Pt(9.2)\\np.add_run('The orphaned, superseded draft remains an audit follow-up item. Final authority is the Steering Committee decision of 26 September 2025, effective with 2025-Q4 management reporting. FY2024 statutory and U.S. GAAP results remain unchanged.')\\n\\nh = doc.add_paragraph('Evidence identification and condition', style='Heading 1'); set_keep_with_next(h)\\nadd_meta_table(doc, [\\n    ('GRC evidence record', 'EVD-25-0715-008 — Workbook Test (in scope)'),\\n    ('Inventory source workbook', 'WB-ALLOC-FY2025-DRAFT-v1.xlsx'),\\n    ('Attachment condition', 'No longer attached; historical record is Orphaned.'),\\n    ('Checksum', 'MISSING — no checksum value is recorded, and the unavailable attachment cannot be re-hashed or verified.'),\\n    ('Disposition', 'Superseded draft. Retain the inventory record for audit follow-up on the attachment/retention exception; do not use it as operative model support or final approval evidence.'),\\n    ('Evidence certification', 'ATT-20250929-001 — Evidence Certification, Accepted; Michael T. Callahan; 29 September 2025.')\\n])\\n\\nh = doc.add_paragraph('Approval determination', style='Heading 1'); set_keep_with_next(h)\\np = add_body(doc, 'The approval trail distinguishes a draft evidence review from the governance decision that established the methodology:')\\n\\nap = doc.add_table(rows=1, cols=4)\\nap.alignment = WD_TABLE_ALIGNMENT.CENTER\\nap.autofit = False\\nheaders = ['Action', 'Body / date', 'Final?', 'Control conclusion']\\nfor i, txt in enumerate(headers):\\n    c = ap.rows[0].cells[i]; c.text = txt; set_cell_shading(c, '84202A'); set_cell_margins(c, top=80, bottom=80)\\n    for r in c.paragraphs[0].runs:\\n        r.bold = True; r.font.color.rgb = RGBColor(255,255,255); r.font.size = Pt(8.3)\\nset_repeat_table_header(ap.rows[0])\\nrows = [\\n    ('APP-25-0909-07', 'Early Evidence Review Panel\\\\n9 Sep 2025', 'No\\\\n(final_action_flag = 0)', 'Draft evidence review only. Its own comment states that it does not establish the final methodology decision.'),\\n    ('APP-25-0926-08', 'Travelers Expense Allocation Steering Committee\\\\n26 Sep 2025', 'Yes\\\\n(final_action_flag = 1)', 'Authoritative approval that established the methodology for FY2025 management reporting beginning with 2025-Q4.')\\n]\\nfor ri, rowdata in enumerate(rows):\\n    row = ap.add_row()\\n    for i, txt in enumerate(rowdata):\\n        c = row.cells[i]; c.text = txt; set_cell_margins(c, top=75, bottom=75)\\n        if ri % 2 == 0: set_cell_shading(c, 'F3F5F7')\\n        for p in c.paragraphs:\\n            p.paragraph_format.space_after = Pt(0)\\n            for r in p.runs: r.font.name='Aptos'; r.font.size=Pt(8.1)\\nset_col_widths(ap, [Inches(1.25), Inches(2.05), Inches(1.30), Inches(3.0)])\\ngray = {'val':'single','sz':'4','space':'0','color':'C7CDD4'}\\nfor row in ap.rows:\\n    for c in row.cells: set_cell_border(c, top=gray,bottom=gray,left=gray,right=gray)\\n\\nadd_body(doc, 'Why the draft cannot approve the methodology. The source is a superseded draft; its attachment and checksum are missing; and the related 9 September evidence-panel action is explicitly non-final. Preserve the inventory entry to make the retention exception and non-reliance conclusion visible. Do not treat it as the controlled workbook, execution evidence, or a substitute for the final committee action.', bold_prefix='Why the draft cannot approve the methodology. ')\\n\\nh = doc.add_paragraph('Activation and FY2024 no-restatement conclusion', style='Heading 1'); set_keep_with_next(h)\\nadd_body(doc, 'Activation period. The approved methodology applies to FY2025 management reporting beginning with 2025-Q4; it is not a retrospective FY2024 accounting policy change.', bold_prefix='Activation period. ')\\nadd_body(doc, 'FY2024 treatment. The FY2024 analysis is a controlled management-reporting comparison and model baseline. It redistributes a fixed $1,286.597 million pool among operating segments without changing recognized consolidated expense. Legacy and activity-based allocations each total $1,286.597 million, so the consolidated impact is $0.000 million and the reported consolidated combined ratio remains 92.5%. Accordingly, there is no basis to reopen or restate FY2024 statutory statements or U.S. GAAP results.', bold_prefix='FY2024 treatment. ')\\n\\nh = doc.add_paragraph('Record handling and source basis', style='Heading 1'); set_keep_with_next(h)\\nadd_body(doc, 'This memo adds certification context only. It does not revise the historical evidence record, approval actions, or the two existing governance documents.', bullet=True)\\nadd_body(doc, 'Governance documents reviewed unchanged: Travelers_FY2024_ABC_Management_Approval_Memo.docx and Travelers_Expense_Allocation_Methodology_and_Controls.docx.', bullet=True)\\nadd_body(doc, 'ServiceNow records reconciled: case AMC-2025-0917; evidence EVD-25-0715-008; actions APP-25-0909-07 and APP-25-0926-08; certification ATT-20250929-001.', bullet=True)\\n\\n# Compact sign-off band\\nsp = doc.add_paragraph()\\nsp.paragraph_format.space_before = Pt(5); sp.paragraph_format.space_after = Pt(0)\\nfor text, bold in [('Prepared for: ', True), ('Financial Controls evidence file', False), ('   |   ', False), ('Certification attester: ', True), ('Michael T. Callahan, Financial Controls Director', False)]:\\n    r=sp.add_run(text); r.bold=bold; r.font.size=Pt(8.5); r.font.color.rgb=RGBColor(65,75,85)\\n\\n# document properties\\nprops = doc.core_properties\\nprops.title = 'Superseded Draft Workbook Evidence Disposition'\\nprops.subject = 'ServiceNow GRC case AMC-2025-0917 control memo'\\nprops.author = 'Financial Controls'\\nprops.keywords = 'Travelers, ABC, ServiceNow GRC, evidence certification, superseded workbook, no restatement'\\nprops.comments = 'Created as a new control memo; existing governance documents unchanged.'\\n\\n# Prevent row splits where possible\\nfor table in doc.tables:\\n    for row in table.rows:\\n        trPr = row._tr.get_or_add_trPr()\\n        cantSplit = OxmlElement('w:cantSplit')\\n        trPr.append(cantSplit)\\n\\nOUT.parent.mkdir(parents=True, exist_ok=True)\\ndoc.save(OUT)\\nprint(OUT)\\nPY\\npython /tmp/create_control_memo.py\\nls -l /work/workspace/03_Governance_and_Approval/*.docx\\nsha256sum /work/workspace/03_Governance_and_Approval/*.docx\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_bb0eb236fb7f4dfe93929132d66bdc45",
+      "output": "{\"exit_code\": 0, \"stdout\": \"/work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx\\n-rw-rw-rw- 1 root   root    68401 Oct 21 17:58 /work/workspace/03_Governance_and_Approval/Travelers_Expense_Allocation_Methodology_and_Controls.docx\\n-rw-rw-rw- 1 root   root    49705 Oct 21 17:58 /work/workspace/03_Governance_and_Approval/Travelers_FY2024_ABC_Management_Approval_Memo.docx\\n-rw-rw-rw- 1 nobody nogroup 40855 Oct 21 18:05 /work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx\\nc112be016726ca38c2689c6d1122dbbb902136814bde9c85f555a5303e8a3721  /work/workspace/03_Governance_and_Approval/Travelers_Expense_Allocation_Methodology_and_Controls.docx\\n2c891d5eb9dfc34573019bb68abdd433084115311e737500c586deb602cca00b  /work/workspace/03_Governance_and_Approval/Travelers_FY2024_ABC_Management_Approval_Memo.docx\\n3fb09cbae41c21238f328a9c723eacfc140bcebbc48dcbb4646b9e7087aef6e4  /work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8ff0203908191ad2ab2916986f7b2",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P8CfUDXwTsBRvGQs-0tqcLTkn_hzpQwhaImBXau84HGv5wq1ccJi4ZZnNG0ni7eiFLM2FhVYoW13o8BDvyF1M0Ji34cPnl7Y_BvBYc8GtgyujSxn7POp3O9PYN-ONaItRXMg6Zuwm3LSCdbUee6j1VIFQ3VpOp-9kd0ZTd3h1NMq3u4gt8OtIUkhs6y6juPpNj7p2GxXfaAVKpMpuUDLoV_nvekkUQSvqXBqsxyM765e0HX5xvQSeSPPO4tciWMapbSYm9A7iD2T9Kmf11b1vrtUQaScFChfZhc6Z6HTkzSeHusy60coWoX78ikERVRzQrRhk4pa6iGa5jeS0Dviy_jGynM3APezyMgouPIY1_CEwnc1Rm8OMLxUnVj4hinIPwGSZsFznsa7Iwht_wdUVr82vpXN8WapduKIdbGrTL1qwK61gZwWMSy5Xd7JSWL2XThFn2Gtd3LCLfamSpCFJvliugIRHHHtXDTgALQiC4HBcctvFW50-Zd1E-yTIHCCjFLh6Z72P14iEWrisf7ovmtlksk2oUXyi9qDtqa-5X5qCPHZcmOLq-GkXZZR_pBYmi4bGGBHPzVHJ5TwWiriFblkL4KvCUTyTdb70E2ht0-Zu5-ZjWJYaETV2DWUkbq_ivPSD3hOaxw-94RSuWqawnqjp7bsY7_2GDTdiY1kGt1l3wWh2AQtEzdZLGksH2i-k2ZXtuYuEQDKIw1vzvlWdmHiT2pJO3PFhJta3bIed3jaQ_dREAFszSbo77qp4w_kgGGmySPKFCoukW8wEdHvVnke0O5OGLNXlJLX3ExxdmfYLkETscL-K6S2Mj-3efFOC5AYygxJf9U3sLLIyTFT5MhdmgqgCi3W_Q-ZMqg6bRWkCuSUJ6kyDZ6XXn_BgDMaH9ze6v08Y2LzJ-srgQgZjQFyziYSUoPGIWlG1M01kEM-HRBEAqudBMy8HGkfP766dVhd36pJprdArqn62tfmb-1-QhxCc7RgBxW9Y6QFBUr03SuAh78tHJBexwPZP54N4CM7jHuz-3bZUD7EZsf0eOmvWoftlusfCwYip7tLoG9jW5VKd_29dm4eznWc49-vQUgzfn1tQy4ePoGo7tH91e_dha1e8SUj_ITZWE46qHihDhyPltjfT--GaVeR2yl2y6L9UaVlYP47lzFUIGXh_CSzpuj1Dj2A04vCfGbrRPNrkJPkpCXuLx0XWGzj6NiexSGa9rO5nQ4-SL-hUsk6k6_6UDU4NC2v82RI8OXKwihZQBUVX-h-AbQcvL80opNFtKxlA8H3qul9IXJ-k87xr6Q4Br0uJNA3C6nMucUM1DIwddMtlb--wQ8AGRgwsE7PNcb2GUZmpOe_WD0aPHW3JY9O6kzdXBHkdkyfyOby3L1NBmC86V64uesSn2-QF4wvbYkYHiVoEcF-SwNbwE2sErH2QoXsMpRLCwlVnvn3gK9iWSl17a7RjuvK3NhPuh-uHIvPOfRVNl3gCdlqaj4jQCkdtzQSM7jTtkoP82gZU3f4OGj7fAjAjnLzJCFPurQd5sElC4FO-gZplLzLYmMlGsy-THaWJLzZFiGehpUu7igldzPbRpN8kIg-c_RgMF5kWeFiDGX8dHBfsbz3InAty-YD7zewSXqbRbDf5Iqii4r_42Ulu2_8O62EBd2hQ9wx5H4A-H6ejMtt9bezfefIsQsZDnk78hpdHq9GzdIDG0ZqXr2yBfliPFsSE6zxPU252R8Vl5rxaLCoECUNaOKWjMDM0i4h_4MLsVaY-iW0nFEDpQ-R9UGyofKyMoJpQPvhK-i1CaXBBt7GOwg3SiktTU1s4-kSnQD5tLXPgmx1jwBO9vLjwNnBPK6c65OYW5SURJO8lXuefzc7TFXuPjfySHhqZ1z6sAv3rNRu_yE0hiBKGNL5JavHLufGs_j9UgIsOQQzHy8qzfPBHDQ-flUd9jyYMjkhpCaFUUfpgRxfsEM9ToG3_dvNhx8AoujyA8oRGqVBqdc3qNobc0kH7v6HpeV9ncF5xe3H244yJj7jz6xJyM="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8ff0231488191a36b7dc7c7a7468b",
+      "call_id": "call_b97b9bedcef04fb08d7ca135f09a5057",
+      "name": "bash",
+      "arguments": "{\"command\":\"set -e\\npython - <<'PY'\\nfrom docx import Document\\np='/work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx'\\nd=Document(p)\\nprint('paragraphs',len(d.paragraphs),'tables',len(d.tables),'sections',len(d.sections))\\nfor i,para in enumerate(d.paragraphs):\\n    if para.text.strip(): print(f'P{i}: {para.text}')\\nfor ti,t in enumerate(d.tables):\\n    print('TABLE',ti)\\n    for row in t.rows:\\n        print(' | '.join(c.text.replace('\\\\n',' / ') for c in row.cells))\\nPY\\nif command -v libreoffice >/dev/null 2>&1; then\\n  rm -rf /tmp/memo_render && mkdir /tmp/memo_render\\n  libreoffice --headless --convert-to pdf --outdir /tmp/memo_render /work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx >/tmp/lo.out 2>/tmp/lo.err || true\\n  cat /tmp/lo.out /tmp/lo.err\\n  python - <<'PY'\\nfrom pypdf import PdfReader\\np='/tmp/memo_render/Travelers_Superseded_Draft_Workbook_Control_Memo.pdf'\\nr=PdfReader(p)\\nprint('rendered_pages',len(r.pages))\\nfor i,page in enumerate(r.pages):\\n    txt=(page.extract_text() or '')\\n    print('PAGE',i+1,'chars',len(txt),'first',txt[:120].replace('\\\\n',' | '),'last',txt[-120:].replace('\\\\n',' | '))\\nPY\\nelse echo 'libreoffice not installed'; fi\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b97b9bedcef04fb08d7ca135f09a5057",
+      "output": "{\"exit_code\": 1, \"stdout\": \"paragraphs 15 tables 3 sections 1\\nP0: CONTROL MEMORANDUM\\nP1: Superseded Draft Workbook Evidence Disposition\\nP2: ServiceNow GRC case AMC-2025-0917  |  29 September 2025\\nP3: Evidence identification and condition\\nP4: Approval determination\\nP5: The approval trail distinguishes a draft evidence review from the governance decision that established the methodology:\\nP6: Why the draft cannot approve the methodology. The source is a superseded draft; its attachment and checksum are missing; and the related 9 September evidence-panel action is explicitly non-final. Preserve the inventory entry to make the retention exception and non-reliance conclusion visible. Do not treat it as the controlled workbook, execution evidence, or a substitute for the final committee action.\\nP7: Activation and FY2024 no-restatement conclusion\\nP8: Activation period. The approved methodology applies to FY2025 management reporting beginning with 2025-Q4; it is not a retrospective FY2024 accounting policy change.\\nP9: FY2024 treatment. The FY2024 analysis is a controlled management-reporting comparison and model baseline. It redistributes a fixed $1,286.597 million pool among operating segments without changing recognized consolidated expense. Legacy and activity-based allocations each total $1,286.597 million, so the consolidated impact is $0.000 million and the reported consolidated combined ratio remains 92.5%. Accordingly, there is no basis to reopen or restate FY2024 statutory statements or U.S. GAAP results.\\nP10: Record handling and source basis\\nP11: This memo adds certification context only. It does not revise the historical evidence record, approval actions, or the two existing governance documents.\\nP12: Governance documents reviewed unchanged: Travelers_FY2024_ABC_Management_Approval_Memo.docx and Travelers_Expense_Allocation_Methodology_and_Controls.docx.\\nP13: ServiceNow records reconciled: case AMC-2025-0917; evidence EVD-25-0715-008; actions APP-25-0909-07 and APP-25-0926-08; certification ATT-20250929-001.\\nP14: Prepared for: Financial Controls evidence file   |   Certification attester: Michael T. Callahan, Financial Controls Director\\nTABLE 0\\nCONTROL CONCLUSION  Accept the recorded disposition\\u2014not the workbook as valid approval evidence. The orphaned, superseded draft remains an audit follow-up item. Final authority is the Steering Committee decision of 26 September 2025, effective with 2025-Q4 management reporting. FY2024 statutory and U.S. GAAP results remain unchanged.\\nTABLE 1\\nGRC evidence record | EVD-25-0715-008 \\u2014 Workbook Test (in scope)\\nInventory source workbook | WB-ALLOC-FY2025-DRAFT-v1.xlsx\\nAttachment condition | No longer attached; historical record is Orphaned.\\nChecksum | MISSING \\u2014 no checksum value is recorded, and the unavailable attachment cannot be re-hashed or verified.\\nDisposition | Superseded draft. Retain the inventory record for audit follow-up on the attachment/retention exception; do not use it as operative model support or final approval evidence.\\nEvidence certification | ATT-20250929-001 \\u2014 Evidence Certification, Accepted; Michael T. Callahan; 29 September 2025.\\nTABLE 2\\nAction | Body / date | Final? | Control conclusion\\nAPP-25-0909-07 | Early Evidence Review Panel / 9 Sep 2025 | No / (final_action_flag = 0) | Draft evidence review only. Its own comment states that it does not establish the final methodology decision.\\nAPP-25-0926-08 | Travelers Expense Allocation Steering Committee / 26 Sep 2025 | Yes / (final_action_flag = 1) | Authoritative approval that established the methodology for FY2025 management reporting beginning with 2025-Q4.\\nWarning: failed to launch javaldx - java may not function correctly\\n\\n(process:206): dconf-CRITICAL **: 18:05:58.790: unable to create directory '/nonexistent/.cache/dconf': Permission denied.  dconf will not work properly.\\nLibreOffice 7.4 - Fatal Error: The application cannot be started. \\nUser installation could not be completed. \\nTraceback (most recent call last):\\n  File \\\"<stdin>\\\", line 3, in <module>\\n  File \\\"/usr/local/lib/python3.12/site-packages/pypdf/_reader.py\\\", line 151, in __init__\\n    self._initialize_stream(stream)\\n  File \\\"/usr/local/lib/python3.12/site-packages/pypdf/_reader.py\\\", line 172, in _initialize_stream\\n    with open(stream, \\\"rb\\\") as fh:\\n         ^^^^^^^^^^^^^^^^^^\\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/memo_render/Travelers_Superseded_Draft_Workbook_Control_Memo.pdf'\\n\", \"stderr\": \"\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0be709f1ac80e1a2016ad8ff08ee708191943fa979a94f02d0",
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2P8Iki7e7I0qYbLLG1ST9nnyevHjF4nPnyhTy7ok__zaag6WkRaS7-uIhB77jG_5aw-vaq8QBMiY5LMws-Fvxg7ZMsEfdUFPOW-uNRnbLadp5bb2s6AnJrcX2uyUmF2JJqUB-sRDVISOt3V8Q4LjE-APjNgWG3XU3Y2OfDBu5tsG-kEtHxkD472oDkLPfaC9fioGtbEwzbeUS8r-qTBsgOYjodseGO1aDa-GTSIKXorxz84d_mCsg0sf3t5-xxDPzOW9VlnpUx5WUKYRZ1D3TfQqMq7BiFjK-r3z8Sm6Tfni-am8C6Fe4vw9HQDn4ypu7jgveuhP-QWPiCx_xjLeA7CSuwNLKCTwcEwUy0dxBuyjCshncLBoRmn0z8nosxpQs9J-aOHHszH2GaT9jwq1k42wdeiSUsrQ31fl3MLKA8Uxl9Tc62bRNIfUyMOAkbbIKs2fkSXFlbnWHt3rwvpNWwxXY0cOjC8V0ucpb-3wyL-s1UnUcqO1JKbIaSqvtz-UkgP1X4Jay20jQOtDcpVeakqPWKTDZd3hmfsT2DNxAqBy74lzw_SOdwwSKiMDnMWvArv3p-ZWnEXvDINrKML6p8ZXY26Nu6qVDPMjeNsgMUpvxRPWjCnPN-Xs6TbJMB5qHcB1NWod5uFloOKJn5NXcJMjGgEUb3ocLQPXknNT6r-ywR7G3J5jpvaWUek9csqauaFBdCR5ChyCqf7_q3BG3o7VnualCusX7TxCl2YwMQUZmxMlQ87Z9E3JDKuC8esWb6w59ZwIWUUyMXhPhvIenaO9Y1gekjhYuNzVew_RCprWgG7DV9IbM2ltNG20xOhOhGif1ANT9gklR7zxndWPCvKhX2F3RN7KkLuiI_5mFQvWPHvwbDxxKDvqYNbeJTvXtZkaYVGnPS0T5WLgQ5zQWF-l6HSaI-dQFQQAWzster9XM_6r8FejJJckp97e1wkUhhTmwGQNyixNg5gRPQUMIRbBAeCsQlOu4-9QHfxeDdoHepqnbEpHCtHp0HRpoc_9L7te7WTilxSApzAGUrgujKKyTF2fb-HHSz-sgFFfJ2DvyLA38wptsG3JZTCs3ZE1O-9I0bVsKVSthx2hLUd14suDUg5tyy-jXAeBoZnRsjqd9aCjJM1Iyfq3aUnpDCqQHSbh_xdisq3U_G8v1jC__YzwsGOEB_VrmVycxZIBLhf6hCpwS1bgKMpZQcJiV03P9pXzRaEBqZ5ghyMBI--BYNnEnKsRsHwR34AV42SsptxeY8ENRNENarxm2dOPQPCtavVWjLoN8dbNI318z6OcPOWW6-hCqpIRbk9aHn6lg_iUmnCZgI44J9KFWnY_EP1-_9k9wKurbxyzt6JLiJuSMfT5t_742FcdlZO710EEfVEQH91xfuaWGXbPuA8NBA9zsjzDZ0PYq-mXuyJ89gxliu6HI9jyzCn-mMmk5L2lDZb_x9lmaCxv2unMz0zTpTqPUUnS_AvQMxjE2DUZt6veG2CVGZnd2tFCJ6T9__EbjS74Me70xw78pfg0K0bxPEQWhyXmZCFq9Up7xaeZlmCkHgHkqqrxppwJa7sdaOJiXoYBV4l-Be4gaYN9y7QCJx4Cr4Z15GozzGzC2mVnbeoCcSK2PvcEFbGj6WFsATuMm43g02q4IF7bIHgykc8uXrWuM8p_-P2yl46389BpADs5FtFR7g=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0be709f1ac80e1a2016ad8ff090f448191a2802f717c45d01d",
+      "call_id": "call_62bd832402544daab72b7eb0c11fdcba",
+      "name": "bash",
+      "arguments": "{\"command\":\"rm -rf /tmp/memo_render /tmp/lohome && mkdir -p /tmp/memo_render /tmp/lohome\\nHOME=/tmp/lohome libreoffice -env:UserInstallation=file:///tmp/lohome/LOProfile --headless --convert-to pdf --outdir /tmp/memo_render /work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx >/tmp/lo.out 2>/tmp/lo.err; rc=$?; cat /tmp/lo.out /tmp/lo.err; echo RC=$rc\\nls -l /tmp/memo_render\\npython - <<'PY'\\nfrom pypdf import PdfReader\\nfrom pathlib import Path\\np=Path('/tmp/memo_render/Travelers_Superseded_Draft_Workbook_Control_Memo.pdf')\\nr=PdfReader(p)\\nprint('rendered_pages',len(r.pages))\\nfor i,page in enumerate(r.pages):\\n    txt=(page.extract_text() or '')\\n    print('PAGE',i+1,'chars',len(txt))\\n    print(txt[:200].replace('\\\\n',' | '))\\n    print('...END...',txt[-200:].replace('\\\\n',' | '))\\nPY\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_62bd832402544daab72b7eb0c11fdcba",
+      "output": "{\"exit_code\": 0, \"stdout\": \"convert /work/workspace/03_Governance_and_Approval/Travelers_Superseded_Draft_Workbook_Control_Memo.docx -> /tmp/memo_render/Travelers_Superseded_Draft_Workbook_Control_Memo.pdf using filter : writer_pdf_Export\\nWarning: failed to launch javaldx - java may not function correctly\\nRC=0\\ntotal 56\\n-rw-rw-rw- 1 nobody nogroup 55893 Oct 21 18:06 Travelers_Superseded_Draft_Workbook_Control_Memo.pdf\\nrendered_pages 2\\nPAGE 1 chars 2469\\nTHE TRAVELERS COMPANIES, INC.   |   FINANCIAL CONTROLS | CONTROL MEMORANDUM | Superseded Draft Workbook Evidence  | Disposition | ServiceNow GRC case AMC-2025-0917  |  29 September 2025 | CONTROL CONCLUSION  Ac\\n...END...  applies to FY2025 management reporting beginning with 2025- | Q4; it is not a retrospective FY2024 accounting policy change. | Confidential \\u2014 Internal Finance Governance  \\u2022  AMC-2025-0917  \\u2022  Page 1 of 2\\nPAGE 2 chars 1272\\nTHE TRAVELERS COMPANIES, INC.   |   FINANCIAL CONTROLS | FY2024 treatment. The FY2024 analysis is a controlled management-reporting comparison and model  | baseline. It redistributes a fixed $1,286.597 mi\\n...END... pared for: Financial Controls evidence file   |   Certification attester: Michael T. Callahan, Financial Controls  | Director | Confidential \\u2014 Internal Finance Governance  \\u2022  AMC-2025-0917  \\u2022  Page 2 of 2\\n\", \"stderr\": \"\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command in /work/workspace. Python docx, openpyxl and pypdf are installed.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "m0_aggregate_claim_drivers",
+      "description": "guidewire_claimcenter: Calculate segment driver shares and pool allocations.",
+      "parameters": {
+        "properties": {
+          "pool_id": {
+            "default": "POOL_AO_2024",
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": "2024-01-01",
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": "2024-12-31",
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "deduplicate": {
+            "default": true,
+            "title": "Deduplicate",
+            "type": "boolean"
+          },
+          "include_ineligible": {
+            "default": false,
+            "title": "Include Ineligible",
+            "type": "boolean"
+          }
+        },
+        "title": "aggregate_claim_driversArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_get_claim_handling_pools",
+      "description": "guidewire_claimcenter: Retrieve claim-handling pool controls and allocation settings.",
+      "parameters": {
+        "properties": {
+          "pool_id": {
+            "default": null,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "fiscal_year": {
+            "default": null,
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "allocation_scope": {
+            "default": null,
+            "title": "Allocation Scope",
+            "type": "string"
+          },
+          "eligible_only": {
+            "default": false,
+            "title": "Eligible Only",
+            "type": "boolean"
+          }
+        },
+        "title": "get_claim_handling_poolsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_get_operating_segments",
+      "description": "guidewire_claimcenter: Return canonical operating segments and source-label crosswalks.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "active_only": {
+            "default": true,
+            "title": "Active Only",
+            "type": "boolean"
+          }
+        },
+        "title": "get_operating_segmentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_resolve_claim_activity_duplicate",
+      "description": "guidewire_claimcenter: Validate and optionally record a duplicate-row resolution.",
+      "parameters": {
+        "properties": {
+          "claim_id": {
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "activity_date": {
+            "title": "Activity Date",
+            "type": "string"
+          },
+          "activity_code": {
+            "title": "Activity Code",
+            "type": "string"
+          },
+          "retained_export_row_id": {
+            "title": "Retained Export Row Id",
+            "type": "string"
+          },
+          "resolution_reason": {
+            "title": "Resolution Reason",
+            "type": "string"
+          },
+          "control_reference": {
+            "title": "Control Reference",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "claim_id",
+          "activity_date",
+          "activity_code",
+          "retained_export_row_id",
+          "resolution_reason",
+          "control_reference"
+        ],
+        "title": "resolve_claim_activity_duplicateArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_search_claim_activity",
+      "description": "guidewire_claimcenter: Search claim activity with business filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "claim_id": {
+            "default": null,
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": null,
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": null,
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "activity_code": {
+            "default": null,
+            "title": "Activity Code",
+            "type": "string"
+          },
+          "claim_adjustment_category_id": {
+            "default": null,
+            "title": "Claim Adjustment Category Id",
+            "type": "string"
+          },
+          "pool_id": {
+            "default": null,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "eligible_for_shared_pool": {
+            "default": null,
+            "title": "Eligible For Shared Pool",
+            "type": "boolean"
+          },
+          "export_batch_id": {
+            "default": null,
+            "title": "Export Batch Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          }
+        },
+        "title": "search_claim_activityArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m0_validate_claim_activity",
+      "description": "guidewire_claimcenter: Report actionable claim-activity data-quality exceptions.",
+      "parameters": {
+        "properties": {
+          "export_batch_id": {
+            "default": "GWCC_FY2024_CONTROLLED",
+            "title": "Export Batch Id",
+            "type": "string"
+          },
+          "activity_date_from": {
+            "default": "2024-01-01",
+            "title": "Activity Date From",
+            "type": "string"
+          },
+          "activity_date_to": {
+            "default": "2024-12-31",
+            "title": "Activity Date To",
+            "type": "string"
+          },
+          "severity": {
+            "default": null,
+            "title": "Severity",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          }
+        },
+        "title": "validate_claim_activityArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_aggregate_policy_drivers",
+      "description": "policycenter_servicenow_usage: Aggregate annual policy-equivalent and system-usage drivers by segment.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "include_excluded": {
+            "default": false,
+            "title": "Include Excluded",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "aggregate_policy_driversArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_calculate_service_allocation",
+      "description": "policycenter_servicenow_usage: Allocate an eligible service pool using independently normalized policy and usage drivers.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "rounding": {
+            "default": "nearest_usd",
+            "title": "Rounding",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "calculate_service_allocationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_get_shared_service_pools",
+      "description": "policycenter_servicenow_usage: Return controlled shared-service pool definitions with optional eligibility and scope filters.",
+      "parameters": {
+        "properties": {
+          "service_pool_id": {
+            "default": null,
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "eligible_for_abc": {
+            "default": null,
+            "title": "Eligible For Abc",
+            "type": "boolean"
+          },
+          "allocation_scope": {
+            "default": null,
+            "title": "Allocation Scope",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "get_shared_service_poolsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_get_usage_segments",
+      "description": "policycenter_servicenow_usage: Return the canonical PolicyCenter segment crosswalk with optional paging.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "get_usage_segmentsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_search_monthly_usage",
+      "description": "policycenter_servicenow_usage: Return filtered monthly PolicyCenter and ServiceNow usage records in stable paginated order.",
+      "parameters": {
+        "properties": {
+          "segment_id": {
+            "default": null,
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "service_pool_id": {
+            "default": null,
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "usage_month": {
+            "default": null,
+            "title": "Usage Month",
+            "type": "string"
+          },
+          "source_platform": {
+            "default": null,
+            "title": "Source Platform",
+            "type": "string"
+          },
+          "eligible_for_shared_pool": {
+            "default": null,
+            "title": "Eligible For Shared Pool",
+            "type": "boolean"
+          },
+          "page_size": {
+            "default": 100,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "title": "search_monthly_usageArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m1_validate_usage_export",
+      "description": "policycenter_servicenow_usage: Run completeness, integrity, platform, crosswalk, and eligibility controls on a usage export.",
+      "parameters": {
+        "properties": {
+          "fiscal_year": {
+            "title": "Fiscal Year",
+            "type": "integer"
+          },
+          "service_pool_id": {
+            "title": "Service Pool Id",
+            "type": "string"
+          },
+          "fail_on_excluded_platform": {
+            "default": false,
+            "title": "Fail On Excluded Platform",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fiscal_year",
+          "service_pool_id"
+        ],
+        "title": "validate_usage_exportArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_calculate_segment_impact",
+      "description": "sap_travelers_corporate_ledger: Compare activity-based and legacy segment allocations against earned-premium denominators.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "title": "Analysis Period Id",
+            "type": "string"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "denominator_status": {
+            "default": "APPROVED",
+            "title": "Denominator Status",
+            "type": "string"
+          },
+          "display_precision_bps": {
+            "default": 1,
+            "title": "Display Precision Bps",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "analysis_period_id"
+        ],
+        "title": "calculate_segment_impactArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_expense_pools",
+      "description": "sap_travelers_corporate_ledger: Query expense-pool controls and allocations using scoped filters and pagination.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "expense_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expense Category Id"
+          },
+          "shared_pool_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Shared Pool Flag"
+          },
+          "summary_row_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Summary Row Flag"
+          },
+          "row_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Row Type"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_expense_poolsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_legacy_allocations",
+      "description": "sap_travelers_corporate_ledger: Read legacy segment allocations for a selected period, segment, or basis.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "allocation_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allocation Basis"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_legacy_allocationsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_query_premium_denominators",
+      "description": "sap_travelers_corporate_ledger: Read segment earned-premium denominators by period, segment, and approval status.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Analysis Period Id"
+          },
+          "segment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Segment Id"
+          },
+          "denominator_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Denominator Status"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "query_premium_denominatorsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_reconcile_activity_allocation",
+      "description": "sap_travelers_corporate_ledger: Rebuild activity-based AO and shared-service components and reconcile them to controls.",
+      "parameters": {
+        "properties": {
+          "analysis_period_id": {
+            "title": "Analysis Period Id",
+            "type": "string"
+          },
+          "include_exclusions": {
+            "default": true,
+            "title": "Include Exclusions",
+            "type": "boolean"
+          },
+          "include_summary_control": {
+            "default": false,
+            "title": "Include Summary Control",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "analysis_period_id"
+        ],
+        "title": "reconcile_activity_allocationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m2_search_ledger_expense_detail",
+      "description": "sap_travelers_corporate_ledger: Search FY2024 ledger journal lines with business filters and stable pagination.",
+      "parameters": {
+        "properties": {
+          "document_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Number"
+          },
+          "posting_date_from": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Posting Date From"
+          },
+          "posting_date_to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Posting Date To"
+          },
+          "pool_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Pool Id"
+          },
+          "cost_center": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Center"
+          },
+          "expense_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expense Category Id"
+          },
+          "claim_adjustment_category_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claim Adjustment Category Id"
+          },
+          "shared_pool_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Shared Pool Flag"
+          },
+          "specific_identification_flag": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Specific Identification Flag"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          }
+        },
+        "title": "search_ledger_expense_detailArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_check_approval_completeness",
+      "description": "servicenow_grc: Evaluate required approvals and the final committee decision for a case.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "required_parties": {
+            "default": null,
+            "items": {},
+            "title": "Required Parties",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "check_approval_completenessArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_get_methodology_case",
+      "description": "servicenow_grc: Retrieve a methodology case and its allocation governance attributes.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "get_methodology_caseArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_list_approval_actions",
+      "description": "servicenow_grc: List sequenced approval and review actions for one methodology case.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "final_only": {
+            "default": false,
+            "title": "Final Only",
+            "type": "boolean"
+          },
+          "decision": {
+            "default": null,
+            "title": "Decision",
+            "type": "string"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "list_approval_actionsArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_record_control_attestation",
+      "description": "servicenow_grc: Append a control attestation and immutable audit event to the GRC ledger.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "evidence_id": {
+            "default": null,
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "attestation_type": {
+            "title": "Attestation Type",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "attested_by_party_id": {
+            "title": "Attested By Party Id",
+            "type": "string"
+          },
+          "attested_by_name": {
+            "title": "Attested By Name",
+            "type": "string"
+          },
+          "attestation_date": {
+            "title": "Attestation Date",
+            "type": "string"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string"
+          },
+          "remediation_due_date": {
+            "default": null,
+            "title": "Remediation Due Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "attestation_type",
+          "status",
+          "attested_by_party_id",
+          "attested_by_name",
+          "attestation_date",
+          "notes"
+        ],
+        "title": "record_control_attestationArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_search_control_evidence",
+      "description": "servicenow_grc: Search control evidence for a methodology case using governance filters.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "source_system": {
+            "default": null,
+            "title": "Source System",
+            "type": "string"
+          },
+          "evidence_type": {
+            "default": null,
+            "title": "Evidence Type",
+            "type": "string"
+          },
+          "control_status": {
+            "default": null,
+            "title": "Control Status",
+            "type": "string"
+          },
+          "in_scope_only": {
+            "default": false,
+            "title": "In Scope Only",
+            "type": "boolean"
+          },
+          "page_size": {
+            "default": 50,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "page_token": {
+            "default": null,
+            "title": "Page Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "search_control_evidenceArguments",
+        "type": "object"
+      },
+      "strict": false
+    },
+    {
+      "type": "function",
+      "name": "m3_summarize_control_results",
+      "description": "servicenow_grc: Aggregate evidence dispositions, checksums, scope, and source-system results.",
+      "parameters": {
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "in_scope_only": {
+            "default": false,
+            "title": "In Scope Only",
+            "type": "boolean"
+          },
+          "source_system": {
+            "default": null,
+            "title": "Source System",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id"
+        ],
+        "title": "summarize_control_resultsArguments",
+        "type": "object"
+      },
+      "strict": false
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

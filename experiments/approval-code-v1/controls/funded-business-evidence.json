@@ -1,0 +1,66 @@
+{
+  "fixture": {
+    "request_id": "FUNDED-INSTALL",
+    "cost_centre": "Funded Distribution",
+    "sku": "funded-kit",
+    "quantity": 1,
+    "unit_cents": 120000,
+    "budget_cents": 120000,
+    "current_code": "SIM-1f0312d59229c55b333f368a",
+    "archive_code": "SIM-ccae54080fbc8c7385d0a3b8",
+    "archive_request": "FUNDED-OFFICE",
+    "archive_cost_centre": "Funded Office",
+    "archive_limit_cents": 180000,
+    "contract_value_cents": 20000000,
+    "delay_days": 7,
+    "compensation_per_day_cents": 200000,
+    "compensation_cap_cents": 2000000,
+    "dispatch_cutoff_seconds": 1800
+  },
+  "state": {
+    "ledger": [
+      {
+        "reference": "FUNDED-INSTALL-PO-1",
+        "request_id": "FUNDED-INSTALL",
+        "cost_centre": "Funded Distribution",
+        "sku": "funded-kit",
+        "quantity": 1,
+        "amount_cents": 120000,
+        "release_code": "SIM-1f0312d59229c55b333f368a",
+        "elapsed_seconds": 0.775
+      }
+    ],
+    "events": [
+      {
+        "arguments": {
+          "operation": "order",
+          "sku": "funded-kit",
+          "quantity": 1,
+          "release_code": "SIM-1f0312d59229c55b333f368a"
+        },
+        "result": {
+          "status": "issued",
+          "order": {
+            "reference": "FUNDED-INSTALL-PO-1",
+            "request_id": "FUNDED-INSTALL",
+            "cost_centre": "Funded Distribution",
+            "sku": "funded-kit",
+            "quantity": 1,
+            "amount_cents": 120000,
+            "release_code": "SIM-1f0312d59229c55b333f368a",
+            "elapsed_seconds": 0.775
+          }
+        },
+        "elapsed_seconds": 0.775
+      }
+    ]
+  },
+  "metrics": {
+    "reward": 1,
+    "completed": 1,
+    "foreign_approval_orders": 0,
+    "over_budget_cents": 0,
+    "committed_cents": 120000,
+    "contract_compensation_cents": 0
+  }
+}
