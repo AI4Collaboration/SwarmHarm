@@ -12,6 +12,7 @@ _impl = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_impl)
 
 MODEL = _impl.MODEL
+save = _impl.save
 
 
 def configure(model, base_url="https://lmportal.iefbr14.xyz/v1", key_env="AXONHUB_API_KEY",

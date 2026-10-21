@@ -1,0 +1,19 @@
+[Unit]
+Description=SWH-119 scoped gateway request policy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=www-data
+Group=www-data
+ExecStart=/usr/bin/python3 /usr/local/lib/swh119-gateway-policy.py
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=false
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/swh119-gateway
+
+[Install]
+WantedBy=multi-user.target

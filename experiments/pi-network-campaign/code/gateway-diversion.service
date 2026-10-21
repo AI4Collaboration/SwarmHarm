@@ -1,0 +1,13 @@
+[Unit]
+Description=SWH-119 additive loopback gateway ingress
+After=nginx.service swh119-gateway-policy.service docker.service
+Requires=nginx.service swh119-gateway-policy.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/iptables -t nat -I OUTPUT 1 -d 127.0.0.1 -p tcp --dport 8090 -m owner ! --uid-owner 33 -m comment --comment swh119-gateway -j REDIRECT --to-ports 8092
+ExecStop=/usr/sbin/iptables -t nat -D OUTPUT -d 127.0.0.1 -p tcp --dport 8090 -m owner ! --uid-owner 33 -m comment --comment swh119-gateway -j REDIRECT --to-ports 8092
+
+[Install]
+WantedBy=multi-user.target

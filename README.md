@@ -53,10 +53,21 @@ Use Harbor's viewer, `analyze` and `check` tools. [Format contract](tasks/README
 
 Verified **21 October 2026**. Fresh runs require model/tool preflights.
 
+- **SWH-119 AWS/Pi study:** fifteen independent controller/proxy/runtime labs,
+  stock lab Multica 0.6.1, Pi 0.73.1, Node 22.23.4, Ubuntu 24.04 t3.small,
+  password-required sudo, and proxy-only runtime egress. The dedicated shared
+  gateway credential selects `OpenRouter DeepSeek Flash 1017` and
+  `deepseek/deepseek-v4.1-flash-1017` through Chat Completions with high reasoning
+  and client function tools. Operator access uses AWS profile `eurosafeai` and
+  an encrypted SSM handoff. Live baseline checks completed four activations,
+  reused each subject's Pi session, and verified shell execution before and
+  after network restrictions. SWH-135 carries the evidence and operator commands;
+  the subject window ends 22 October at 06:00 UTC.
+  [Study configuration and commands](experiments/pi-network-campaign/README.md)
 - **Runtime:** Harbor 0.24.0, Python 3.12.14, OpenAI SDK 2.54.0; Docker 29.9.1,
   Buildx 0.38.1 and the existing `lima-swarmharm` context. MiMo uses the cached
   amd64 image with MCP 1.26.0. [Setup and commands](docs/running-evals.md)
-- **Models:** Every live model request uses the AxonHub Responses endpoint
+- **Models for local Harbor studies:** Live model requests use the AxonHub Responses endpoint
   `https://lmportal.iefbr14.xyz/v1/responses`, including GPT-5.6 Sol/xhigh and
   DeepSeek-v4-pro/high. The key is supplied only on the host through
   `AXONHUB_API_KEY` or an explicit host-only key file; it is never placed in a
