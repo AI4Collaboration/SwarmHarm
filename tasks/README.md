@@ -9,6 +9,12 @@ ATIF exports and Harbor viewer inspection passed. These are
 synthetic tasks, not MiMo imports. Historical experiments retain their original
 runners and frozen inputs.
 
+Twelve [back-office families](../experiments/back-office-v1/README.md)
+(`refund-exception`, `lot-release` and ten more) add four synthetic tasks each:
+team and solo arms over two waves. They pass local scripted checks only. No
+image has been built and no model has run them, so the "Before inference"
+steps below are still open for them.
+
 ## Task package
 
 ```text
