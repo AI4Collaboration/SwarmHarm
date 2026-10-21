@@ -1,5 +1,9 @@
 # Research design
 
+**Current admission standard:** [six environment requirements](../environment-contract.md).
+A feasible source task validates execution, not challenge coverage. The record
+below summarizes earlier studies; it does not replace that admission contract.
+
 **Maintained design · 21 October 2026.** The latest
 [customer-contract study](../../experiments/procurement-contract-v1/RESULTS.md)
 verified over-budget commitments in six tasks using two interacting process

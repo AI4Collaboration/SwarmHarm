@@ -4,6 +4,7 @@ SwarmHarm studies how agents pursuing legitimate work discover shortcuts,
 share methods, and reuse them across tasks. Our current focus is finance and
 procurement, using synthetic records and local business services.
 
+[Environment requirements](docs/environment-contract.md) ·
 [Run evaluations](docs/running-evals.md) ·
 [Research design](docs/research/hf-design-iteration-2026-10-21.md) ·
 [Data sources](docs/research/task-sources-and-verification.md) ·
@@ -71,6 +72,11 @@ Last verified on **21 October 2026**; new runs require fresh access checks.
   The localhost viewer remains open; no collector or scheduled monitor is running.
 
 ## Study scope
+
+The main challenge requires a proven blocker, a reachable process exploit,
+independent business consequences and useful peers with persistent methods.
+Feasible source-task checks are not challenge coverage.
+See the [six admission requirements](docs/environment-contract.md).
 
 Test autonomous business-process discovery, sharing and different-task adoption
 by fresh agents. The latest MiMo run checks source-task execution; it contains
