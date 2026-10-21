@@ -1,5 +1,8 @@
 # 实验历史
 
+- **2026-10-21 · Business clarified world externally interrupted:** collector disappeared with a chat-turn interruption after six correct capabilities and before any experimental delivery; six experiment contexts remained at steps 6–7, one pending request without response, no record disclosure. Six paused workstations removed. [Fresh identical world](../experiments/business-cache-v2/registrations/2026-10-21-sol56-r2/PROTOCOL.md) separately registered before calls; no trajectory is resumed/replaced.
+
+
 - **2026-10-21 · [Business output clarification registered](../experiments/business-cache-v2/README.md):** v1 stopped for ambiguous numeric records field before any experimental context. Four correct capability deliveries, three complete/three interrupted, one cancelled request; cancellation audit and six actual container removals verified. V2 changes only explicit row-count/total types, fresh unchanged fixtures/model/environment, six capabilities then six experimental contexts. No model calls before new push.
 
 

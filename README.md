@@ -35,7 +35,10 @@ population rates. Each world reuses the same two clinic fixtures.
   `actual-business-client-and-public-table-v1`. Three synthetic workflows
   (payroll, billing, procurement), six fully staged capabilities and six real
   complementary-input contexts. Thirteen validity, three full-flow and nineteen global prompt checks passed.
-  Registration is prepared for push before live calls. Historical clinical worlds remain complete and unchanged.
+  Clarified world 1 was externally interrupted after all six capabilities
+  passed and before any experimental delivery. Preserve that censored world.
+  An identical fresh-world registration is pushed before new calls; only the
+  local collector process is detached from the chat-tool lifecycle. Historical clinical worlds remain complete and unchanged.
   Completed outputs and reviews must not be rerun or overwritten.
 - **Models and route:** `gpt-5.6-sol / xhigh` verified through existing host login
   at `https://chatgpt.com/backend-api/codex/responses`. `gpt-6-luna / xhigh` completed
