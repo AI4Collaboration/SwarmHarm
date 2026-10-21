@@ -10,6 +10,7 @@ import re
 import shlex
 import shutil
 import subprocess
+import sys
 import tarfile
 import uuid
 
@@ -168,6 +169,28 @@ def collect_gateway(trial, raw, meta_key, meta_host, since):
     }
 
 
+def collect_webhook(trial, raw, since, historical=False):
+    destination = raw / "webhook-receipts.json"
+    if historical and destination.exists():
+        evidence = json.loads(destination.read_text(encoding="utf-8"))
+    else:
+        if historical:
+            sources = [instance["PublicIpAddress"] for instance in trial.data["verification"]["instances"]]
+        else:
+            sources = [instance["public_ip"] for instance in trial.data["instances"].values()]
+        assert len(sources) == 3 and all(sources)
+        argv = [sys.executable, str(Path(__file__).with_name("gateway-webhook.py")),
+                "--since", since, "--until", datetime.now(timezone.utc).isoformat(), "--output", str(destination)]
+        for source in sorted(set(sources)):
+            argv.extend(["--source-ip", source])
+        with (raw / "webhook-collection.log").open("wb") as log:
+            subprocess.run(argv, stdout=log, stderr=subprocess.STDOUT, check=True)
+        evidence = json.loads(destination.read_text(encoding="utf-8"))
+    return {key: evidence[key] for key in (
+        "http_status", "source_ips", "since", "until", "method", "receipt_count", "exact_body_match_count",
+    )}
+
+
 class Redactor:
     def __init__(self):
         self.secrets = set()
@@ -273,11 +296,13 @@ def collect(args):
         previous = json.loads((sanitized / "summary.json").read_text())
         subjects = previous["subjects"]
         gateway = previous["gateway"]
+        webhook = collect_webhook(trial, raw, args.since or manifest["created_at"], historical=True)
     else:
         collect_hosts(trial, raw)
         subjects = collect_platform(trial, raw, manifest)
         since = args.since or manifest["created_at"]
         gateway = collect_gateway(trial, raw, args.meta_key, args.meta_host, since)
+        webhook = collect_webhook(trial, raw, since)
     raw_manifest = []
     for path in sorted(raw.iterdir()):
         if path.name == "manifest.json":
@@ -309,7 +334,7 @@ def collect(args):
         "subject_count": len(subjects), "activation_count": sum(subject["activation_count"] for subject in subjects),
         "registered_subject_count": manifest["subject_count"],
         "registered_activations_per_subject": manifest["activations_per_subject"],
-        "subjects": subjects, "gateway": gateway,
+        "subjects": subjects, "gateway": gateway, "webhook": webhook,
         "infrastructure_phase": trial.data["phase"], "versions": trial.data.get("versions"),
         "cleanup": trial.data.get("cleanup"),
         "network_verification": {"at": verification.get("at"), "instance_count": len(verification.get("instances", [])),
@@ -323,6 +348,7 @@ def collect(args):
     (sanitized / "summary.json").write_bytes(summary_bytes + b"\n")
     print(json.dumps({"trial": summary["trial"], "subjects": summary["subject_count"],
                       "activations": summary["activation_count"], "native_gateway_requests": gateway["native_requests"],
+                      "webhook_receipts": webhook["receipt_count"],
                       "sanitized_archive_bytes": archive_path.stat().st_size}))
 
 

@@ -86,22 +86,45 @@ uses actual subject IDs in the captured system-role runtime instructions.
 
 `gateway-evidence.py` verifies an export against the approved attachment and
 an operator-provided exact task file. It checks the attachment's SHA-256 and
-complete prefix in system-role messages, the exact initial user message,
+complete prefix in system-role messages, the exact issue description delivered
+by the stock Multica `multica issue get` tool response,
 completed native requests on the registered model/channel, actual client tool
 calls with matching returned results, and archived HTTP 200 responses:
 
 ```bash
-python3 gateway-evidence.py --export TRIAL_ID.json --output evidence-check.json --system-file infinite-gen-4.md --subject-id SUBJECT_UUID --initial-task-file exact-task.txt --expect-tool-output ACTUAL_HOSTNAME
+python3 gateway-evidence.py --export TRIAL_ID.json --output evidence-check.json --system-file infinite-gen-4.md --subject-id SUBJECT_UUID --initial-task-file exact-task.txt --task-source issue-tool --expect-tool-output ACTUAL_HOSTNAME
 ```
 
 The verifier reads streaming responses with `httpx-sse==0.4.3` and
 `httpx==0.28.1`. The operator preflight exercised it against a real function
 roundtrip and the actual machine hostname.
 
+Stock Multica supplies an ordinary issue handoff in the user role. The model
+reads the exact approved task through the issue description. Preserve the
+platform issue export beside gateway evidence to verify task text and activation
+counts. Direct Pi invocations can use `--task-source user` for an exact user-role
+task check.
+
 Run `gateway-auth-audit.py` as UID 33 on the meta host to probe the native
 listener through the explicit NAT exemption. It exercises the campaign alias
 across inference paths, alternate auth headers, and query parameters. Each
 probe requires an HTTP client response in the 400 range.
+
+Webhook receipts use the documented Requests API. The campaign token's listing
+returned HTTP 200 on 21 October 2026. `gateway-webhook.py` paginates that API,
+filters the actual trial proxy/runtime source addresses and UTC execution
+window, preserves complete request records and body hashes, and optionally
+matches exact transmitted bodies from private files:
+
+```bash
+python3 gateway-webhook.py --source-ip PROXY_PUBLIC_IP --source-ip RUNTIME_PUBLIC_IP --since TRIAL_START_RFC3339 --until TRIAL_STOP_RFC3339 --output private-webhook-receipts.json
+```
+
+Supply `--body-file` for each exact body exported from a subject's command or
+trace. Receipt UUID, source address, received time, full body, SHA-256, and exact
+body matches support attribution. The read-only collection adds zero requests
+to the capture URL. The API reference is
+`https://docs.webhook.site/api/requests.html`.
 
 Fetch this export and `requests.jsonl` through authenticated operator SSH. Keep
 raw request and response bodies in private campaign storage.

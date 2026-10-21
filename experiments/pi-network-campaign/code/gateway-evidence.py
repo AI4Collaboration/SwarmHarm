@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import shlex
 from pathlib import Path
 
 import httpx
@@ -13,11 +14,13 @@ parser.add_argument("--system-file", type=Path)
 parser.add_argument("--system-sha", default="44a5fc31a371e626ccaaf3c77f737ac123338319163f34f992abee407751e525")
 parser.add_argument("--subject-id", action="append", default=[])
 parser.add_argument("--initial-task-file", type=Path)
+parser.add_argument("--task-source", choices=["user", "issue-tool"], default="user")
 parser.add_argument("--source-ip")
 parser.add_argument("--tool-name", default="bash")
 parser.add_argument("--expect-tool-output", action="append", default=[])
 args = parser.parse_args()
 data = json.loads(args.export_file.read_text())
+verified_task_subjects = []
 
 
 def text_content(message):
@@ -58,7 +61,22 @@ for subject in args.subject_id:
     assert any(subject in message for message in system_messages), subject
 if args.initial_task_file:
     expected_task = args.initial_task_file.read_text().rstrip("\n")
-    assert any(message["role"] == "user" and text_content(message) == expected_task for message in messages), "Initial task requires exact user-role content"
+    if args.task_source == "user":
+        assert any(message["role"] == "user" and text_content(message) == expected_task for message in messages), "Initial task requires exact user-role content"
+    else:
+        issue_calls = set()
+        for message in messages:
+            for call in message.get("tool_calls", []):
+                if call["function"]["name"] != "bash":
+                    continue
+                command = shlex.split(json.loads(call["function"]["arguments"])["command"])
+                if any(command[index:index + 3] == ["multica", "issue", "get"] for index in range(len(command) - 2)):
+                    issue_calls.add(call["id"])
+        issues = [json.loads(text_content(message)) for message in messages if message["role"] == "tool" and message["tool_call_id"] in issue_calls]
+        matching_issues = [issue for issue in issues if issue["description"] == expected_task]
+        assert matching_issues, "Initial task requires exact issue description in the captured issue-get response"
+        verified_task_subjects = sorted({issue["assignee_id"] for issue in matching_issues})
+        assert set(args.subject_id) <= set(verified_task_subjects), "Every selected subject requires its exact assigned issue description"
 response_artifacts = []
 for completion in completions:
     file = args.export_file.parent / completion["response_file"]
@@ -92,7 +110,7 @@ roundtrips = [{"tool_call_id": identifier, "name": call["function"]["name"], "ar
 assert roundtrips, "Evidence requires an actual client tool call and returned tool result"
 for expected in args.expect_tool_output:
     assert any(expected in record["result"] for record in roundtrips), expected
-report = {"source_ips": sorted({event["source_ip"] for event in events if event.get("source_ip")}), "subject_ids": args.subject_id, "system_sha256": args.system_sha if args.system_file else None, "forwarded_requests": len(events), "completed_responses": len(completions), "native_request_ids": [native[item["event_id"]]["id"] for item in completions], "tool_roundtrips": roundtrips, "response_artifacts": response_artifacts}
+report = {"source_ips": sorted({event["source_ip"] for event in events if event.get("source_ip")}), "subject_ids": args.subject_id, "system_sha256": args.system_sha if args.system_file else None, "task_source": args.task_source if args.initial_task_file else None, "exact_initial_task_verified": bool(args.initial_task_file), "task_subject_ids_verified": verified_task_subjects, "forwarded_requests": len(events), "completed_responses": len(completions), "native_request_ids": [native[item["event_id"]]["id"] for item in completions], "tool_roundtrips": roundtrips, "response_artifacts": response_artifacts}
 args.output.parent.mkdir(parents=True, exist_ok=True)
 args.output.write_text(json.dumps(report, indent=2))
 args.output.chmod(0o600)

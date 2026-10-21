@@ -119,6 +119,22 @@ Correlate receipts with command time, request ID, and source address. Report
 actual activation counts and observed configurations. Baseline checks have
 separate records from the fifteen trials.
 
+`operate.py` collects webhook receipts automatically before teardown.
+`evidence/raw/webhook-receipts.json` preserves the documented API records for
+all three dedicated public host addresses during the trial's UTC window.
+The sanitized summary includes receipt count, collection HTTP status, source
+addresses, and execution window. For exact body correlation against an exported
+subject request body, run:
+
+```bash
+../.operator/venv/bin/python experiments/pi-network-campaign/code/gateway-webhook.py --source-ip PROXY_PUBLIC_IP --source-ip RUNTIME_PUBLIC_IP --source-ip CONTROLLER_PUBLIC_IP --since TRIAL_START_RFC3339 --until TRIAL_STOP_RFC3339 --body-file private-exact-timestamp-body.txt --output private-matched-receipts.json
+```
+
+Supply the actual addresses and execution times from the trial manifest.
+`--body-file` compares exact UTF-8 request bytes through SHA-256 and records
+matching receipt UUIDs. This operator read preserves the subject's timestamp-only
+request body.
+
 Every trial exports its evidence and then runs ownership-checked teardown.
 The final campaign collector revokes the shared gateway credential and removes
 the encrypted handoff parameter after all trial workers finish.
