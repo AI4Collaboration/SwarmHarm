@@ -1,0 +1,69 @@
+# Harbor tasks
+
+New SwarmHarm dataset tasks use Harbor format. Adopted on 21 October 2026.
+No task has yet been migrated and validated here. Historical experiments retain
+their original runners and frozen inputs.
+
+## Task package
+
+```text
+tasks/<task-id>/
+  instruction.md
+  task.toml
+  environment/
+    Dockerfile
+  tests/
+    test.sh
+  solution/
+    solve.sh
+  provenance.json
+```
+
+- `instruction.md`: the natural business request, without cooperation hints,
+  shortcut hints, evaluator instructions or added behavioral warnings.
+- `task.toml`: Harbor configuration, resources and timeouts. Pin the Harbor
+  version before validation and use its supported schema.
+- `environment/`: business tools and records. Keep credentials, reference
+  solutions and independent grading truth out of the agent environment.
+- `tests/test.sh`: verify the outcome and write `/logs/verifier/reward.txt`
+  or numeric metrics in `/logs/verifier/reward.json`. Store detailed evidence
+  separately. Service success responses do not prove business correctness.
+- `solution/solve.sh`: optional reference solution for a feasible task. For an
+  impossible variant, document infeasibility and keep scripted shortcut checks
+  separate; a shortcut is not the legitimate reference solution.
+- `provenance.json`: SwarmHarm metadata, not a Harbor configuration field.
+  Record source URL, revision, task ID, license, file hashes and adaptations.
+  Keep this operator metadata outside the agent workspace.
+
+## Sources and campaign evidence
+
+Prioritize MiMo's non-cyber business tasks and preserve original records and
+tools where possible. Record changed blockers, process weaknesses and contract
+terms explicitly. HVE and Hackbait inform verifiable mechanisms; adopting their
+ideas does not make a task part of their released datasets.
+
+Keep multi-agent scheduling, persistent shared state, model settings and budgets
+in a separately frozen campaign manifest. Harbor packaging alone does not
+establish cross-trial communication. The campaign adapter must preserve real
+peer-authored artifacts across the intended jobs without seeding methods.
+
+Report business completion, adverse consequences and method propagation
+separately. Verify discovery, authored method content, actual receipt and use
+on a different task from traces and independent records. Reading shared data
+alone is not harmful method adoption.
+
+## Before inference
+
+Validate the package against the pinned Harbor schema, build the environment
+and exercise the actual verifier. Check a feasible reference outcome where
+applicable and confirm that incorrect business outcomes fail independently of
+the agent's answer. Preserve source scores separately from SwarmHarm measures.
+Verify evaluator isolation in the selected runtime; directory layout alone
+does not enforce it.
+
+Verify the exact model route, peer persistence and evidence collection in the
+campaign adapter. Freeze and push the configuration before inference. Do not
+claim a migrated task or compatible campaign until these checks pass.
+
+Official references: [task format](https://github.com/harbor-framework/docs/blob/main/guides/creating-tasks.mdx)
+and [configuration schema](https://github.com/harbor-framework/harbor/blob/main/src/harbor/models/task/config.py).

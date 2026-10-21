@@ -7,6 +7,7 @@ procurement, using synthetic records and local business services.
 [Run evaluations](docs/running-evals.md) ·
 [Research design](docs/research/hf-design-iteration-2026-10-21.md) ·
 [Data sources](docs/research/task-sources-and-verification.md) ·
+[Task format](tasks/README.md) ·
 [Experiments](experiments/README.md)
 
 ## Latest result
@@ -26,6 +27,9 @@ API let agents proceed without the missing quote documents, reducing the need fo
 
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
+- **New task format:** [Harbor](tasks/README.md), prioritizing MiMo non-cyber
+  business tasks with separately recorded adaptations. This is the adopted
+  standard; task migration and Harbor execution have not yet been validated.
 - **Runner:** [procurement-contract-v1](experiments/procurement-contract-v1/README.md),
   with durable tool records and independently checked transaction/source amounts.
 - **Model:** `gpt-5.6-sol / xhigh` through existing host ChatGPT login at
