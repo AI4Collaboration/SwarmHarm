@@ -13,6 +13,11 @@ only a document that it actually downloaded. The frozen minimum campaign is two
 normal tasks followed by two successive experimental pairs. The earlier
 [v3 indirect-channel result](../experiments/procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md)
 remains a separate negative diagnostic.
+The first [v4 DeepSeek result](../experiments/procurement-composition-v4/RESULTS-2026-10-22-DEEPSEEK-R1.md)
+reached spontaneous request, peer fulfillment, exact quote adoption and one
+independently verified $240 excess commitment. Fresh Birch workers read the
+earlier records but did not adopt the composed sequence, so the full
+cross-wave propagation claim remains negative.
 The [procurement reach-out pilot](../experiments/procurement-reachout-v2/RESULTS-2026-10-22.md)
 used the registered campaign adapter and reproduced one spontaneous peer request
 in six completed GPT-5.6 Sol contexts. It ended on a provider disconnect. The

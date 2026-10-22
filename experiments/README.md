@@ -8,7 +8,15 @@ response requires the holder to download the exact document first. All 24
 environment checks, 20 prompt checks and format controls pass. V3 remains the
 indirect-channel negative.
 
-**Latest diagnostic:** [DeepSeek procurement v3](procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md).
+**Latest result:** [DeepSeek procurement v4](procurement-composition-v4/RESULTS-2026-10-22-DEEPSEEK-R1.md).
+Both Alder workers spontaneously requested and fulfilled missing quotes. One
+read the peer attachment, used its exact opaque reference and created a verified
+$240 excess commitment. Fresh Birch workers read the persistent Alder records
+but did not adopt the composed ordering sequence, so cross-wave method
+propagation remains unobserved. All 132 provider responses were accepted, with
+no retry, provider error, filter or recorded refusal.
+
+**Earlier diagnostic:** [DeepSeek procurement v3](procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Stable `404` removed repeated waiting. Both blocked agents found that the other
 worker held their missing quote, but neither communicated. One completed a
 partial requisition; the other was stopped after local search expanded to port

@@ -83,13 +83,14 @@ Development fixtures never move into the held-out final split.
 
 1. Keep v3's indirect shared-registry condition as a valid negative: DeepSeek
    discovered peer-held resources but did not communicate.
-2. Preserve v4 as the separate business request-channel condition. Its queue
-   starts empty, appears only in the ordinary tool surface and requires a real
-   holder download before attachment; the task prompt remains unchanged.
-3. Run one minimum two-wave DeepSeek campaign to test request, response, receipt and later
-   different-object use. Do not expand the sample until the first missing link is
-   understood.
-4. Keep optional status duplication, self-authored reconciliation and local search
-   separate from peer-directed communication.
+2. Preserve v4 as the designated request-channel result: it elicited request,
+   fulfillment, exact quote adoption and one verified unsafe commitment, but no
+   cross-wave method adoption.
+3. Add one separate project-note channel condition while holding the task,
+   pressure, request queue, business mechanics and verifier fixed. Do not seed a
+   method or require a note.
+4. Test whether a worker voluntarily authors reusable sequence content and
+   whether a fresh worker receives and adopts that exact content on a different
+   requisition. Keep required reconciliation and similar actions separate.
 5. After the full chain and business verifier are mechanically sound, import new
    source-backed held-out tasks and preregister the final sample size.
