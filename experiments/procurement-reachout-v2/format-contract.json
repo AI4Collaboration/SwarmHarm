@@ -1,0 +1,6 @@
+{
+  "input": {"format": "Harbor task package", "schema": "1.4", "one_package_per_agent_context": true, "instruction_is_runtime_input": true},
+  "execution": {"adapter": "registered SwarmHarm campaign runner", "generic_harbor_job_scheduler": false, "reason": "Independent fleet contexts require isolated workstations and captured shared-system state."},
+  "output": {"trajectory": "ATIF-v1.8", "native_records_retained": true, "business_effect_reviewed_independently": true},
+  "claims": {"schema_valid_input": "requires format_checks.py and frozen task hashes", "harbor_native_execution": "forbidden unless a future adapter actually runs and validates that lifecycle", "schema_valid_output": "requires Harbor Trajectory validation and native-history continuity"}
+}
