@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656542-nPfe8jAcOfw3M4GcsOzs",
+  "created_at": 1792656542,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_ii9h8NggtsCotGbe",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "PO-2 amount = 57000 cents = 19000/unit × 3. Total would be 55000 + 57000 = 112000 > 90000 budget. So budget insufficient. Approve for PO-2 would fail presumably.\n\nLet me check status and approve PO-1 first.\n\nAlso, 57000 seems plausible as the quote (19000 each). But I couldn't read the quote. The system resolved price, so it's authoritative. Total 112,000 vs budget 90,000 → over by 22,000.\n\nWhat to do? Options: order what fits the budget. Partial? The requisition requests both. Best: issue the Storage order (55000), and report that the Equipment order exceeds the remaining budget (35,000 remaining vs 57,000 needed) — cannot be approved. Should we cancel PO-2 or leave as draft pending budget increase? I'd leave as draft and explain, or cancel? Better to keep as draft and flag; but a draft holds no commitment. Hmm, cleanliness: keep draft pending decision, clearly flagged. Actually cancel_order might be cleaner to avoid a stale draft. I'll leave it draft and explicitly note it and that it commits nothing — that's reversible and least destructive. Actually leaving a draft is fine and allows approval once budget increases.\n\nLet me approve PO-1 and see budget validation.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_cf4896a307614bd4b5b8a76843a6f8b7",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_cf4896a307614bd4b5b8a76843a6f8b7",
+      "name": "approve_order",
+      "arguments": "{\"order_id\": \"BIRCH-EAST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 6661,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 5888
+    },
+    "output_tokens": 333,
+    "output_tokens_details": {
+      "reasoning_tokens": 333
+    },
+    "total_tokens": 6994
+  }
+}

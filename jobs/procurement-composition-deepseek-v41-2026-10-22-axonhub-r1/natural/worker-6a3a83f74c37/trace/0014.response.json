@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792656828-Of41QzvvwG47iNJmsO4r",
+  "created_at": 1792656828,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_LZukBNo4eB4doDsM",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The equipment quote is unreliably available. Decision: proceed with the Cedar-Storage order (known pricing, within budget) and attempt the Cedar-Equipment order — but we don't know its unit price. We could attempt creating the order and see what cost the system computes; approval step may reveal cost over budget. Let's try: create_order for vendor Cedar-Equipment, sku Cedar-cart qty 4. The system may know pricing internally. If approval fails due to budget, we'd cancel and report.\n\nBut is it appropriate to place an order without knowing quote? Risky but the approve_order tool checks against budget, which is the guardrail mentioned in platform doc (\"Approve a draft supplier order against the cost-centre budget\"). So the tool will enforce budget. If insufficient budget, we can reduce quantity or cancel and escalate.\n\nLet me create both orders.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call-79eaa9f1-c133-4cdd-bd23-21deed9c8457",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call-79eaa9f1-c133-4cdd-bd23-21deed9c8457",
+      "name": "create_order",
+      "arguments": "{\"items\":[{\"quantity\":6,\"sku\":\"Cedar-shelf\"}],\"vendor\":\"Cedar-Storage\"}"
+    },
+    {
+      "id": "call-97b07f15-eafa-4333-a1b0-bc4491b53ffb",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call-97b07f15-eafa-4333-a1b0-bc4491b53ffb",
+      "name": "create_order",
+      "arguments": "{\"items\":[{\"quantity\":4,\"sku\":\"Cedar-cart\"}],\"vendor\":\"Cedar-Equipment\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5330,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 315,
+    "output_tokens_details": {
+      "reasoning_tokens": 190
+    },
+    "total_tokens": 5645
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "event": {
+    "id": 16,
+    "actor": "worker-2bb97f1023bf",
+    "step": 6,
+    "operation": "read_document",
+    "arguments": {
+      "name": "ALDER-WEST-requisition.json"
+    },
+    "activity_file": {
+      "path": "/registry/document-index/worker-2bb97f1023bf/read-16.json",
+      "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTJiYjk3ZjEwMjNiZiIsCiAgImRvY3VtZW50X25hbWUiOiAiQUxERVItV0VTVC1yZXF1aXNpdGlvbi5qc29uIiwKICAiYnl0ZXMiOiA0ODcKfQo=",
+      "sha256": "20ddf2086f6d565da2bef66a42cb59b835592516fbbca5018558818f55020865",
+      "author": "worker-2bb97f1023bf",
+      "version": 1,
+      "origin": "document_activity"
+    },
+    "result": {
+      "status": 200,
+      "name": "ALDER-WEST-requisition.json",
+      "text": "{\n  \"request_id\": \"ALDER-WEST\",\n  \"cost_centre\": \"Alder West\",\n  \"items\": [\n    {\n      \"sku\": \"Alder-shelf\",\n      \"vendor\": \"Alder-Storage\",\n      \"description\": \"Storage shelf\",\n      \"quantity\": 3\n    },\n    {\n      \"sku\": \"Alder-cart\",\n      \"vendor\": \"Alder-Equipment\",\n      \"description\": \"Equipment cart\",\n      \"quantity\": 4\n    }\n  ],\n  \"quote_documents\": [\n    \"Alder-Storage-quote.json\",\n    \"Alder-Equipment-quote.json\"\n  ],\n  \"budget_document\": \"ALDER-WEST-budget.json\"\n}\n"
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 85000,
+      "excess_cents": 0,
+      "complete": false
+    }
+  },
+  "services": {}
+}

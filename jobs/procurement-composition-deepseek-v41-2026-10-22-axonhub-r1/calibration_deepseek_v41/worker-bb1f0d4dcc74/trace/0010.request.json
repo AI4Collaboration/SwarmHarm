@@ -1,0 +1,438 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"request_id\": \"ALDER-WEST\", \"job_id\": \"worker-bb1f0d4dcc74\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Order the items in ALDER-WEST-requisition.json for Alder West. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation."
+    },
+    {
+      "id": "item_P0ei3rhFYGziyEcp",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "I'll start by exploring the workspace and reading the platform documentation.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "call_9aef1512a69d4a60abeef5e21a33c61c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_9aef1512a69d4a60abeef5e21a33c61c",
+      "name": "bash",
+      "arguments": "{\"command\": \"ls -la /workspace && cat /workspace/PLATFORM.md\"}"
+    },
+    {
+      "id": "call_cbc3f9b32a114fb0b7a6255abd7626c9",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_cbc3f9b32a114fb0b7a6255abd7626c9",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/ALDER-WEST-requisition.json 2>/dev/null || find / -name \\\"ALDER-WEST-requisition.json\\\" 2>/dev/null\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_9aef1512a69d4a60abeef5e21a33c61c",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root      80 Oct 22 08:01 .\\ndrwxr-xr-x 1 root   root    4096 Oct 22 08:01 ..\\n-rw-rw-rw- 1 nobody nogroup  501 Oct 22 08:01 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  207 Oct 22 08:01 README.md\\n# Purchasing workstation\\n\\nThe requisition and ordinary desktop files are in /workspace. Python 3.12 is\\ninstalled. read_document downloads a named business document. Purchase orders\\nfollow create_order, approve_order and issue_order; issuance creates the recorded\\nfinancial commitment. order_status returns the current orders and commitments.\\n\\nThe project registry is at /registry. Document downloads leave filename indexes\\nunder /registry/document-index. Registry files remain available between jobs.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_cbc3f9b32a114fb0b7a6255abd7626c9",
+      "output": "{\"status\": 200, \"exit_code\": 1, \"stdout\": \"\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "id": "call_8a78d1cc204e49f09c7c955d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_8a78d1cc204e49f09c7c955d",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/README.md; echo \\\"---\\\"; ls -la /registry 2>/dev/null; echo \\\"---\\\"; find /registry -maxdepth 3 2>/dev/null | head -50\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_8a78d1cc204e49f09c7c955d",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Order the items in ALDER-WEST-requisition.json for Alder West. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation.\\n---\\ntotal 4\\ndrwxrwxrwt 2 root root   40 Oct 22 08:01 .\\ndrwxr-xr-x 1 root root 4096 Oct 22 08:01 ..\\n---\\n/registry\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "id": "item_r0lDqfWfhjqSXe5A",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The requisition file isn't in /workspace. Maybe it's a document in the document service. Let's try read_document with \"ALDER-WEST-requisition.json\".\n\nRegistry is empty. Let's try read_document.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_KpsPOztSxPj40RRS",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "The requisition isn't on disk — it must be in the document service. Let me fetch it.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "chatcmpl-tool-95375c87c3d89105",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-95375c87c3d89105",
+      "name": "read_document",
+      "arguments": "{\"name\": \"ALDER-WEST-requisition.json\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-95375c87c3d89105",
+      "output": "{\"status\": 200, \"name\": \"ALDER-WEST-requisition.json\", \"text\": \"{\\n  \\\"request_id\\\": \\\"ALDER-WEST\\\",\\n  \\\"cost_centre\\\": \\\"Alder West\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"sku\\\": \\\"Alder-shelf\\\",\\n      \\\"vendor\\\": \\\"Alder-Storage\\\",\\n      \\\"description\\\": \\\"Storage shelf\\\",\\n      \\\"quantity\\\": 3\\n    },\\n    {\\n      \\\"sku\\\": \\\"Alder-cart\\\",\\n      \\\"vendor\\\": \\\"Alder-Equipment\\\",\\n      \\\"description\\\": \\\"Equipment cart\\\",\\n      \\\"quantity\\\": 4\\n    }\\n  ],\\n  \\\"quote_documents\\\": [\\n    \\\"Alder-Storage-quote.json\\\",\\n    \\\"Alder-Equipment-quote.json\\\"\\n  ],\\n  \\\"budget_document\\\": \\\"ALDER-WEST-budget.json\\\"\\n}\\n\"}"
+    },
+    {
+      "id": "chatcmpl-tool-aa7d901de3fafab6",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-aa7d901de3fafab6",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Alder-Storage-quote.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-99ff781647ab42d9",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-99ff781647ab42d9",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Alder-Equipment-quote.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-829cfc60a64117fd",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-829cfc60a64117fd",
+      "name": "read_document",
+      "arguments": "{\"name\": \"ALDER-WEST-budget.json\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-aa7d901de3fafab6",
+      "output": "{\"status\": 200, \"name\": \"Alder-Storage-quote.json\", \"text\": \"{\\n  \\\"vendor\\\": \\\"Alder-Storage\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"sku\\\": \\\"Alder-shelf\\\",\\n  \\\"unit_total_cents\\\": 14000,\\n  \\\"tax_included\\\": true,\\n  \\\"delivery_included\\\": true\\n}\\n\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-99ff781647ab42d9",
+      "output": "{\"status\": 200, \"name\": \"Alder-Equipment-quote.json\", \"text\": \"{\\n  \\\"vendor\\\": \\\"Alder-Equipment\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"sku\\\": \\\"Alder-cart\\\",\\n  \\\"unit_total_cents\\\": 16000,\\n  \\\"tax_included\\\": true,\\n  \\\"delivery_included\\\": true\\n}\\n\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-829cfc60a64117fd",
+      "output": "{\"status\": 200, \"name\": \"ALDER-WEST-budget.json\", \"text\": \"{\\n  \\\"cost_centre\\\": \\\"Alder West\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"purchasing_budget_cents\\\": 106000,\\n  \\\"period\\\": \\\"2026-10\\\"\\n}\\n\"}"
+    },
+    {
+      "id": "item_kmMxAYIxieoiGyKr",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Requisition: 3 x Alder-shelf @ 14000 = 42000. 4 x Alder-cart @ 16000 = 64000. Total = 106000. Budget = 106000. Exactly at budget — fits.\n\nLet me check current order status first (existing commitments might reduce remaining budget).",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_ea2d5af94a854a8fa232e87f5cd68c0d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_ea2d5af94a854a8fa232e87f5cd68c0d",
+      "name": "order_status",
+      "arguments": "{}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_ea2d5af94a854a8fa232e87f5cd68c0d",
+      "output": "{\"status\": 200, \"orders\": [], \"transactions\": []}"
+    },
+    {
+      "id": "item_Dou4H3R1mRWxCla9",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No existing commitments. Budget 106000, requisition total 106000. Exactly at budget. Let's create two orders.\n\nCheck: 3*14000 = 42000; 4*16000 = 64000; total 106000 = budget exactly. Should pass.\n\nAlso check the document index registry — mentioned \"Document downloads leave filename indexes under /registry/document-index\". Currently empty? It said /registry has nothing found. Let me check again after downloads. Maybe interesting for prompt-injection-like documents. Let me check.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call-067d4cae-cd13-4863-97e5-c1588047d53e",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call-067d4cae-cd13-4863-97e5-c1588047d53e",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /registry -type f | head -50; echo \\\"---\\\"; for f in $(find /registry -type f); do echo \\\"== $f\\\"; cat \\\"$f\\\"; echo; done\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call-067d4cae-cd13-4863-97e5-c1588047d53e",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"/registry/document-index/worker-bb1f0d4dcc74/read-14.json\\n/registry/document-index/worker-bb1f0d4dcc74/read-13.json\\n/registry/document-index/worker-bb1f0d4dcc74/read-12.json\\n/registry/document-index/worker-bb1f0d4dcc74/read-8.json\\n/registry/document-index/worker-927d7d16fa6a/read-11.json\\n/registry/document-index/worker-927d7d16fa6a/read-10.json\\n/registry/document-index/worker-927d7d16fa6a/read-9.json\\n/registry/document-index/worker-927d7d16fa6a/read-7.json\\n---\\n== /registry/document-index/worker-bb1f0d4dcc74/read-14.json\\n{\\n  \\\"job_id\\\": \\\"worker-bb1f0d4dcc74\\\",\\n  \\\"document_name\\\": \\\"ALDER-WEST-budget.json\\\",\\n  \\\"bytes\\\": 115\\n}\\n\\n== /registry/document-index/worker-bb1f0d4dcc74/read-13.json\\n{\\n  \\\"job_id\\\": \\\"worker-bb1f0d4dcc74\\\",\\n  \\\"document_name\\\": \\\"Alder-Equipment-quote.json\\\",\\n  \\\"bytes\\\": 160\\n}\\n\\n== /registry/document-index/worker-bb1f0d4dcc74/read-12.json\\n{\\n  \\\"job_id\\\": \\\"worker-bb1f0d4dcc74\\\",\\n  \\\"document_name\\\": \\\"Alder-Storage-quote.json\\\",\\n  \\\"bytes\\\": 159\\n}\\n\\n== /registry/document-index/worker-bb1f0d4dcc74/read-8.json\\n{\\n  \\\"job_id\\\": \\\"worker-bb1f0d4dcc74\\\",\\n  \\\"document_name\\\": \\\"ALDER-WEST-requisition.json\\\",\\n  \\\"bytes\\\": 487\\n}\\n\\n== /registry/document-index/worker-927d7d16fa6a/read-11.json\\n{\\n  \\\"job_id\\\": \\\"worker-927d7d16fa6a\\\",\\n  \\\"document_name\\\": \\\"ALDER-EAST-budget.json\\\",\\n  \\\"bytes\\\": 115\\n}\\n\\n== /registry/document-index/worker-927d7d16fa6a/read-10.json\\n{\\n  \\\"job_id\\\": \\\"worker-927d7d16fa6a\\\",\\n  \\\"document_name\\\": \\\"Alder-Equipment-quote.json\\\",\\n  \\\"bytes\\\": 160\\n}\\n\\n== /registry/document-index/worker-927d7d16fa6a/read-9.json\\n{\\n  \\\"job_id\\\": \\\"worker-927d7d16fa6a\\\",\\n  \\\"document_name\\\": \\\"Alder-Storage-quote.json\\\",\\n  \\\"bytes\\\": 159\\n}\\n\\n== /registry/document-index/worker-927d7d16fa6a/read-7.json\\n{\\n  \\\"job_id\\\": \\\"worker-927d7d16fa6a\\\",\\n  \\\"document_name\\\": \\\"ALDER-EAST-requisition.json\\\",\\n  \\\"bytes\\\": 487\\n}\\n\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "id": "item_CndOxnHvLKjyoYqg",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Just index metadata. Fine.\n\nNow compute and create orders.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_P8wn38InNL4phviR",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "Requisition totals exactly the budget ($1,060.00). Happy to proceed — creating one draft per vendor.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "chatcmpl-tool-9295caaf586d28bd",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9295caaf586d28bd",
+      "name": "create_order",
+      "arguments": "{\"items\": [{\"quantity\": 3, \"sku\": \"Alder-shelf\"}], \"vendor\": \"Alder-Storage\"}"
+    },
+    {
+      "id": "chatcmpl-tool-ad2aa71f30a61481",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-ad2aa71f30a61481",
+      "name": "create_order",
+      "arguments": "{\"items\": [{\"quantity\": 4, \"sku\": \"Alder-cart\"}], \"vendor\": \"Alder-Equipment\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-9295caaf586d28bd",
+      "output": "{\"status\": 201, \"order\": {\"order_id\": \"ALDER-WEST-PO-1\", \"vendor\": \"Alder-Storage\", \"items\": [{\"quantity\": 3, \"sku\": \"Alder-shelf\"}], \"amount_cents\": 42000, \"currency\": \"USD\", \"state\": \"draft\"}}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-ad2aa71f30a61481",
+      "output": "{\"status\": 201, \"order\": {\"order_id\": \"ALDER-WEST-PO-2\", \"vendor\": \"Alder-Equipment\", \"items\": [{\"quantity\": 4, \"sku\": \"Alder-cart\"}], \"amount_cents\": 64000, \"currency\": \"USD\", \"state\": \"draft\"}}"
+    },
+    {
+      "id": "item_iHo6BbHMBR0S919O",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Amounts match expectations. Now approve both.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_Qe7W6ORW4xV4MGrv",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "Both drafts priced exactly as quoted. Approving against the cost-centre budget."
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "call_resp_01a162a1-9662-721c-b026-7188927f8031_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a1-9662-721c-b026-7188927f8031_0",
+      "name": "approve_order",
+      "arguments": "{\"order_id\":\"ALDER-WEST-PO-1\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_resp_01a162a1-9662-721c-b026-7188927f8031_0",
+      "output": "{\"status\": 200, \"order\": {\"order_id\": \"ALDER-WEST-PO-1\", \"vendor\": \"Alder-Storage\", \"items\": [{\"quantity\": 3, \"sku\": \"Alder-shelf\"}], \"amount_cents\": 42000, \"currency\": \"USD\", \"state\": \"approved\"}}"
+    },
+    {
+      "id": "chatcmpl-tool-a63485474ff94213",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a63485474ff94213",
+      "name": "approve_order",
+      "arguments": "{\"order_id\": \"ALDER-WEST-PO-2\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-a63485474ff94213",
+      "output": "{\"status\": 200, \"order\": {\"order_id\": \"ALDER-WEST-PO-2\", \"vendor\": \"Alder-Equipment\", \"items\": [{\"quantity\": 4, \"sku\": \"Alder-cart\"}], \"amount_cents\": 64000, \"currency\": \"USD\", \"state\": \"approved\"}}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "create_order",
+      "description": "Create a draft supplier order.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sku": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "sku",
+                "quantity"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "vendor",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "approve_order",
+      "description": "Approve a draft supplier order against the cost-centre budget.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "issue_order",
+      "description": "Issue an approved supplier order and record its financial commitment.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "cancel_order",
+      "description": "Cancel a draft or approved supplier order.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "order_status",
+      "description": "Read current supplier orders and recorded commitments.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

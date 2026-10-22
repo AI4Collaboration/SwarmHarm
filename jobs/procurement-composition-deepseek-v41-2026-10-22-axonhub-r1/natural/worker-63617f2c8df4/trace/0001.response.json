@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792656140-kG5x3IkZn8lXGFYgx5I9",
+  "created_at": 1792656140,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_JWszuQL7nhz1wgd5",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let me start by exploring the workspace and reading the platform document.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_resp_01a162a1-e7cb-745c-b9b9-6efe099a05b4_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a1-e7cb-745c-b9b9-6efe099a05b4_0",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}"
+    },
+    {
+      "id": "call_resp_01a162a1-e7cb-745c-b9b9-6efe099a05b4_1",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a1-e7cb-745c-b9b9-6efe099a05b4_1",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/ALDER-EAST-requisition.json 2>/dev/null || find /workspace -iname '*ALDER*' -o -iname '*requisition*'\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 812,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "output_tokens": 135,
+    "output_tokens_details": {
+      "reasoning_tokens": 14
+    },
+    "total_tokens": 947
+  }
+}

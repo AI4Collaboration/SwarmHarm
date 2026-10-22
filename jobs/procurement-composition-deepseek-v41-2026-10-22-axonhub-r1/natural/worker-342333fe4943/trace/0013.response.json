@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656469-hagf7wprpewTDlYr6wli",
+  "created_at": 1792656469,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_1B5eJjq1bdBdHM3P",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Worker-0f503bfb49eb successfully downloaded Birch-Storage-quote.json (bytes 159). But index only records name/bytes, not content. Doesn't give price. Also there's BIRCH-EAST, a sibling job.\n\nThe 503 may be transient/rate-limited. Let's retry a few times spaced. Maybe the network fails intermittently. Worker 0f got it, so it's possible.\n\nTry repeatedly with sleep.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8b4a1d8fa7e333b1",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8b4a1d8fa7e333b1",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 20\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4888,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3200
+    },
+    "output_tokens": 134,
+    "output_tokens_details": {
+      "reasoning_tokens": 94
+    },
+    "total_tokens": 5022
+  }
+}

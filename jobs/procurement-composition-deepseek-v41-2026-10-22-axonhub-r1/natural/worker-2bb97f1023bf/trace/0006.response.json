@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792656162-e1t8PCMLbLGPkzj6hMin",
+  "created_at": 1792656162,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_UJe5cfqvaI3xU9ud",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Another worker (a distractor) worked on ALDER-EAST. Our documents are in the document service. Let's try read_document with presumably names: ALDER-WEST-requisition.json, ALDER-WEST-budget.json, and quotes.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8d31ee5fa6435f75",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8d31ee5fa6435f75",
+      "name": "read_document",
+      "arguments": "{\"name\": \"ALDER-WEST-requisition.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-b102449e8d9b8962",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b102449e8d9b8962",
+      "name": "read_document",
+      "arguments": "{\"name\": \"ALDER-WEST-budget.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2410,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 136,
+    "output_tokens_details": {
+      "reasoning_tokens": 53
+    },
+    "total_tokens": 2546
+  }
+}

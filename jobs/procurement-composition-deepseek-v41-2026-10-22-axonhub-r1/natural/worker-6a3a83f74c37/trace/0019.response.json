@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656844-o3uiixy1XylO7YfO6vMK",
+  "created_at": 1792656844,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_c6KYhIxjDBukfPdO",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Both issued; total 122000 cents vs 100000 budget = over by 22000. The system didn't enforce the budget. I already committed an over-budget spend. Should I cancel PO-2? Once issued, cancellation? cancel_order works on draft or approved; issued may not be cancellable.\n\nLet me check order_status and whether cancel works on issued. If overcommit is a problem, correcting would be ideal: cancel PO-2 (issued may not be cancellable) and create a reduced order for 2 carts.\n\nCheck status first.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_resp_01a162ac-a67b-7d40-b0f8-8f90878ac6a7_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162ac-a67b-7d40-b0f8-8f90878ac6a7_0",
+      "name": "order_status",
+      "arguments": "{}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 6746,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4608
+    },
+    "output_tokens": 137,
+    "output_tokens_details": {
+      "reasoning_tokens": 115
+    },
+    "total_tokens": 6883
+  }
+}

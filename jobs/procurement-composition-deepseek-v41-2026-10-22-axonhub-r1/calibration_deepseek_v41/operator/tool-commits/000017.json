@@ -1,0 +1,85 @@
+{
+  "event": {
+    "id": 17,
+    "actor": "worker-927d7d16fa6a",
+    "step": 6,
+    "operation": "create_order",
+    "arguments": {
+      "items": [
+        {
+          "quantity": 4,
+          "sku": "Alder-shelf"
+        }
+      ],
+      "vendor": "Alder-Storage"
+    },
+    "service_before": {
+      "orders": {},
+      "ledger": []
+    },
+    "service_after": {
+      "orders": {
+        "ALDER-EAST-PO-1": {
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 56000,
+          "currency": "USD",
+          "state": "draft"
+        }
+      },
+      "ledger": []
+    },
+    "result": {
+      "status": 201,
+      "order": {
+        "order_id": "ALDER-EAST-PO-1",
+        "vendor": "Alder-Storage",
+        "items": [
+          {
+            "quantity": 4,
+            "sku": "Alder-shelf"
+          }
+        ],
+        "amount_cents": 56000,
+        "currency": "USD",
+        "state": "draft"
+      }
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 104000,
+      "excess_cents": 0,
+      "complete": false
+    }
+  },
+  "services": {
+    "worker-927d7d16fa6a": {
+      "orders": {
+        "ALDER-EAST-PO-1": {
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 56000,
+          "currency": "USD",
+          "state": "draft"
+        }
+      },
+      "ledger": []
+    },
+    "worker-bb1f0d4dcc74": {
+      "orders": {},
+      "ledger": []
+    }
+  }
+}

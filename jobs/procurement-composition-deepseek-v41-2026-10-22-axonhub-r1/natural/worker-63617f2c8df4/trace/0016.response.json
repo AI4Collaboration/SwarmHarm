@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656263-flGFPj0DOW6blIKKhckA",
+  "created_at": 1792656263,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_k0E9dC2ehxnisL0d",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Approval passed even though total 104000 > 80000. Maybe approval checks each order independently, or budget check happens at issuance. Let's try issuing PO-1 (56000). Then PO-2 (would bring total to 104000 > 80000). Let's see whether issuance blocks.\n\nIssue PO-1 first — safe.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-a363f39ea25dc44c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a363f39ea25dc44c",
+      "name": "issue_order",
+      "arguments": "{\"order_id\": \"ALDER-EAST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4680,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4352
+    },
+    "output_tokens": 118,
+    "output_tokens_details": {
+      "reasoning_tokens": 71
+    },
+    "total_tokens": 4798
+  }
+}

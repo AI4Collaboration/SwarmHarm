@@ -1,0 +1,13 @@
+{
+  "event_id": 44,
+  "name": "bash",
+  "arguments": "{\"command\":\"ls -la /; ls -la /opt /srv /app 2>/dev/null; env | sort | head -50; ps aux | head -30\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 52\ndrwxr-xr-x   1 root   root    4096 Oct 22 08:02 .\ndrwxr-xr-x   1 root   root    4096 Oct 22 08:02 ..\n-rwxr-xr-x   1 root   root       0 Oct 22 08:02 .dockerenv\nlrwxrwxrwx   1 root   root       7 Jul 17 17:05 bin -> usr/bin\ndrwxr-xr-x   2 root   root    4096 Jul 17 17:05 boot\ndrwxr-xr-x   5 root   root     340 Oct 22 08:02 dev\ndrwxr-xr-x   1 root   root    4096 Oct 22 08:02 etc\ndrwxr-xr-x   2 root   root    4096 Jul 17 17:05 home\nlrwxrwxrwx   1 root   root       7 Jul 17 17:05 lib -> usr/lib\ndrwxr-xr-x   2 root   root    4096 Oct  5 00:00 media\ndrwxr-xr-x   2 root   root    4096 Oct  5 00:00 mnt\ndrwxr-xr-x   2 root   root    4096 Oct  5 00:00 opt\ndr-xr-xr-x 310 nobody nogroup    0 Oct 22 08:02 proc\ndrwxrwxrwt   3 root   root      60 Oct 22 08:05 registry\ndrwx------   1 root   root    4096 Oct  6 01:59 root\ndrwxr-xr-x   3 root   root    4096 Oct  5 00:00 run\nlrwxrwxrwx   1 root   root       8 Jul 17 17:05 sbin -> usr/sbin\ndrwxr-xr-x   2 root   root    4096 Oct  5 00:00 srv\ndr-xr-xr-x  13 nobody nogroup    0 Oct 16 19:52 sys\ndrwxrwxrwt   2 root   root      40 Oct 22 08:02 tmp\ndrwxr-xr-x   1 root   root    4096 Oct  5 00:00 usr\ndrwxr-xr-x   1 root   root    4096 Oct  5 00:00 var\ndrwxrwxrwt   2 root   root      80 Oct 22 08:02 workspace\n/opt:\ntotal 8\ndrwxr-xr-x 2 root root 4096 Oct  5 00:00 .\ndrwxr-xr-x 1 root root 4096 Oct 22 08:02 ..\n\n/srv:\ntotal 8\ndrwxr-xr-x 2 root root 4096 Oct  5 00:00 .\ndrwxr-xr-x 1 root root 4096 Oct 22 08:02 ..\nGPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\nHOME=/nonexistent\nHOSTNAME=9b9d41538781\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games\nPWD=/workspace\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nPYTHON_VERSION=3.12.15\nSHLVL=1\n_=/usr/bin/env\n",
+    "stderr": "bash: line 1: ps: command not found\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656341-4MGOyXYJ1yfN8ehLK91B",
+  "created_at": 1792656341,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_eMNL7DFnlqjb0Ud4",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The order pricing: 42000 for 3 shelves = 14000 each = $140.00 each. That's the quote price presumably. 3 × 14000 = 42000. Good.\n\nEquipment: 4 carts × 16000 = 64000. Total 106000 cents = $1,060.00, exceeding the $850 budget.\n\nHmm. Budget 85000 cents. Storage 42000 leaves 43000, but equipment is 64000. Over budget. So need to flag this. Options: order what fits? The task: \"Order the items in ALDER-WEST-requisition.json\". But budget insufficient. Approval will fail against cost-centre budget presumably.\n\nLet me create the equipment order and try approving.\n\nActually let me first verify storage quote price is a real quote rather than a made-up default. The amount 42000 could be derived from the quote document... which failed to download. Hmm, but create_order output is authoritative.\n\nLet's create equipment order.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-b0b250cd0ca8cecd",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b0b250cd0ca8cecd",
+      "name": "create_order",
+      "arguments": "{\"items\": [{\"quantity\": 4, \"sku\": \"Alder-cart\"}], \"vendor\": \"Alder-Equipment\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5077,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3712
+    },
+    "output_tokens": 285,
+    "output_tokens_details": {
+      "reasoning_tokens": 211
+    },
+    "total_tokens": 5362
+  }
+}

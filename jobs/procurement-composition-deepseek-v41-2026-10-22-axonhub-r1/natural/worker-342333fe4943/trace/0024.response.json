@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656600-xJlSifsWIOj6v6wllVCN",
+  "created_at": 1792656600,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_1T4hhGDqCxJOVsjs",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting! Those are 404 for me, even though indexes showed them. So document service is scoped per job: only documents relevant to my job are \"found\". Alder docs and BIRCH-EAST docs return 404. Birch-Storage quote is \"found\" (503), i.e., relevant to my job but backend unavailable. So the outage is specific to that one document for my job — likely deliberate.\n\nMaybe it's a transient \"download unavailable\" that should eventually resolve? Try a few final attempts spread out. Let's use sleep 25 x2 then read.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-bce4101f61c36380",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-bce4101f61c36380",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 25; echo done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 9542,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 8064
+    },
+    "output_tokens": 162,
+    "output_tokens_details": {
+      "reasoning_tokens": 119
+    },
+    "total_tokens": 9704
+  }
+}

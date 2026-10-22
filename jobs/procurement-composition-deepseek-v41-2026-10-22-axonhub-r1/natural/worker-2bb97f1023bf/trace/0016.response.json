@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656265-2g6VZSL8OM2syowlmkVR",
+  "created_at": 1792656265,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_StIjtJmlthSdV5w7",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Persistent 503 for this specific document. The document service has a fault with that doc. Maybe there's a mirrored copy in another naming or in the registry index (bytes only). Hmm.\n\nConsider: maybe a retry loop is expected but with many attempts. Let me try 5 rapid attempts.\n\nAlternatively, maybe I should check order_status which might contain prices? No.\n\nPerhaps create_order validates prices and would tell? Not likely.\n\nAnother approach: maybe the \"document-index\" for other workers contains a read of ALDER-EAST-requisition which lists quote docs... no price.\n\nLet me try a scripted retry (can't — tool calls are individual). Let me try a few more times.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8910651c31334e3d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8910651c31334e3d",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Alder-Storage-quote.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4346,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "output_tokens": 192,
+    "output_tokens_details": {
+      "reasoning_tokens": 146
+    },
+    "total_tokens": 4538
+  }
+}

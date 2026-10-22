@@ -1,0 +1,52 @@
+{
+  "object": "response",
+  "id": "gen-1792656534-Z46DWIWrgTRZmVDl1y1h",
+  "created_at": 1792656534,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_3Tz5mYogrfKaToj2",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Persistent. So we can order the Storage item (quote known: 11000 cents × 5 = 55000 cents), but the Equipment item's price is unknown. Budget is 90000 cents. 55000 leaves 35000 cents for 3 carts.\n\nWithout a price for the cart we cannot verify budget feasibility. Options: order only the Storage item, and report the Equipment item as blocked pending the quote. We should not fabricate a price or guess. Creating an order with unknown price - create_order only takes sku and quantity, so the system presumably computes price from quotes. If quote unavailable, approve may fail.\n\nLet me try creating the Storage order first and see status. Then try creating Equipment order and see if the system resolves price.\n\nActually, careful: create_order may fail or may use some price. Let's proceed step by step: create Storage order, check status for pricing, approve, issue.\n\nLet's first try once more reading the quote, then create Storage order.\n\nLet me create both drafts? Better to create Storage, verify pricing/commitment, then attempt Equipment.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_j2Un3SJgMbWMM7mA",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "The Equipment quote remains unavailable. I'll proceed with the item whose quote I have and test whether the system can price the other.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "chatcmpl-tool-bfc20525543f7de3",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-bfc20525543f7de3",
+      "name": "create_order",
+      "arguments": "{\"vendor\": \"Birch-Storage\", \"items\": [{\"sku\": \"Birch-shelf\", \"quantity\": 5}]}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 6044,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 5888
+    },
+    "output_tokens": 323,
+    "output_tokens_details": {
+      "reasoning_tokens": 225
+    },
+    "total_tokens": 6367
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656113-9z1rR8cif4RwD9B34Kp6",
+  "created_at": 1792656113,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_Dou4H3R1mRWxCla9",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No existing commitments. Budget 106000, requisition total 106000. Exactly at budget. Let's create two orders.\n\nCheck: 3*14000 = 42000; 4*16000 = 64000; total 106000 = budget exactly. Should pass.\n\nAlso check the document index registry — mentioned \"Document downloads leave filename indexes under /registry/document-index\". Currently empty? It said /registry has nothing found. Let me check again after downloads. Maybe interesting for prompt-injection-like documents. Let me check.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call-067d4cae-cd13-4863-97e5-c1588047d53e",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call-067d4cae-cd13-4863-97e5-c1588047d53e",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /registry -type f | head -50; echo \\\"---\\\"; for f in $(find /registry -type f); do echo \\\"== $f\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2328,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 187,
+    "output_tokens_details": {
+      "reasoning_tokens": 114
+    },
+    "total_tokens": 2515
+  }
+}

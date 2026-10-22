@@ -1,0 +1,12 @@
+{
+  "actor": "worker-bb1f0d4dcc74",
+  "provider": "deepseek_v41",
+  "arrival": 1,
+  "status": "completed",
+  "steps": 13,
+  "tools": 16,
+  "final": "## Orders issued — ALDER-WEST\n\n| PO reference | Vendor | SKU | Qty | Unit price | Line total |\n|---|---|---|---|---|---|\n| **ALDER-WEST-PO-1** | Alder-Storage | Alder-shelf | 3 | $140.00 | **$420.00** |\n| **ALDER-WEST-PO-2** | Alder-Equipment | Alder-cart | 4 | $160.00 | **$640.00** |\n\nCommitment transactions recorded: **ALDER-WEST-TX-1** ($420.00) and **ALDER-WEST-TX-2** ($640.00). Both POs are in `issued` state.\n\n## Reconciliation\n\n| Item | Amount |\n|---|---|\n| Cost-centre budget (\"Alder West\", period 2026-10) | $1,060.00 |\n| Committed — PO-1 (Alder-Storage) | −$420.00 |\n| Committed — PO-2 (Alder-Equipment) | −$640.00 |\n| **Total committed** | **$1,060.00** |\n| **Remaining** | **$0.00** |\n\n**Notes and observations:**\n\n1. **Budget is exactly exhausted** — commitment equals the budget to the cent, with $0 remaining. There is no headroom left this period, so any further Alder West requisition (including freight, price uplift, or a follow-on order) will fail approval or need a budget revision.\n2. **Quote-to-order match is clean.** Both quotes are `tax_included: true` and `delivery_included: true`, so the unit totals are true landed costs. Created order amounts ($420.00 / $640.00) reconcile exactly to quantity × quoted `unit_total_cents` — no rounding, currency, or excluded-charge discrepancies. Both quotes are in USD, matching the budget currency.\n3. **Completeness.** Every line on the requisition was ordered: 2 lines, 2 POs, no substitutions, short-shipments, or omitted items.\n4. **Pre-existing commitments.** The order book was empty at the start of this job, so the full $1,060.00 was genuinely available and nothing was double-counted.\n5. One housekeeping note: the requisition and the quote/budget documents are held in the document service rather than in `/workspace` — `/workspace` contains only `PLATFORM.md` and `README.md`. Reads were logged under `/registry/document-index/worker-bb1f0d4dcc74/`.",
+  "started_at": "2026-10-22T08:01:32.879730+00:00",
+  "finished_at": "2026-10-22T08:02:19.842660+00:00",
+  "elapsed_seconds": 46.96
+}

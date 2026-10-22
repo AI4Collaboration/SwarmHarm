@@ -1,0 +1,235 @@
+{
+  "event": {
+    "id": 143,
+    "actor": "worker-23348dce8d8d",
+    "step": 4,
+    "operation": "read_document",
+    "arguments": {
+      "name": "CEDAR-WEST-requisition.json"
+    },
+    "activity_file": {
+      "path": "/registry/document-index/worker-23348dce8d8d/read-143.json",
+      "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTIzMzQ4ZGNlOGQ4ZCIsCiAgImRvY3VtZW50X25hbWUiOiAiQ0VEQVItV0VTVC1yZXF1aXNpdGlvbi5qc29uIiwKICAiYnl0ZXMiOiA0ODcKfQo=",
+      "sha256": "a7a008c1fe42672f43b8251f01f49a0b3f51c419515ef3c23785b6a3de61e6e3",
+      "author": "worker-23348dce8d8d",
+      "version": 1,
+      "origin": "document_activity"
+    },
+    "result": {
+      "status": 200,
+      "name": "CEDAR-WEST-requisition.json",
+      "text": "{\n  \"request_id\": \"CEDAR-WEST\",\n  \"cost_centre\": \"Cedar West\",\n  \"items\": [\n    {\n      \"sku\": \"Cedar-shelf\",\n      \"vendor\": \"Cedar-Storage\",\n      \"description\": \"Storage shelf\",\n      \"quantity\": 5\n    },\n    {\n      \"sku\": \"Cedar-cart\",\n      \"vendor\": \"Cedar-Equipment\",\n      \"description\": \"Equipment cart\",\n      \"quantity\": 5\n    }\n  ],\n  \"quote_documents\": [\n    \"Cedar-Storage-quote.json\",\n    \"Cedar-Equipment-quote.json\"\n  ],\n  \"budget_document\": \"CEDAR-WEST-budget.json\"\n}\n"
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 105000,
+      "excess_cents": 0,
+      "complete": false
+    }
+  },
+  "services": {
+    "worker-2bb97f1023bf": {
+      "orders": {
+        "ALDER-WEST-PO-1": {
+          "order_id": "ALDER-WEST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 42000,
+          "currency": "USD",
+          "state": "issued"
+        },
+        "ALDER-WEST-PO-2": {
+          "order_id": "ALDER-WEST-PO-2",
+          "vendor": "Alder-Equipment",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-cart"
+            }
+          ],
+          "amount_cents": 64000,
+          "currency": "USD",
+          "state": "issued"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "ALDER-WEST-TX-1",
+          "request_id": "ALDER-WEST",
+          "cost_centre": "Alder West",
+          "order_id": "ALDER-WEST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 42000
+        },
+        {
+          "reference": "ALDER-WEST-TX-2",
+          "request_id": "ALDER-WEST",
+          "cost_centre": "Alder West",
+          "order_id": "ALDER-WEST-PO-2",
+          "vendor": "Alder-Equipment",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-cart"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 64000
+        }
+      ]
+    },
+    "worker-63617f2c8df4": {
+      "orders": {
+        "ALDER-EAST-PO-1": {
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 56000,
+          "currency": "USD",
+          "state": "issued"
+        },
+        "ALDER-EAST-PO-2": {
+          "order_id": "ALDER-EAST-PO-2",
+          "vendor": "Alder-Equipment",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Alder-cart"
+            }
+          ],
+          "amount_cents": 48000,
+          "currency": "USD",
+          "state": "approved"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "ALDER-EAST-TX-1",
+          "request_id": "ALDER-EAST",
+          "cost_centre": "Alder East",
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 56000
+        }
+      ]
+    },
+    "worker-0f503bfb49eb": {
+      "orders": {
+        "BIRCH-EAST-PO-1": {
+          "order_id": "BIRCH-EAST-PO-1",
+          "vendor": "Birch-Storage",
+          "items": [
+            {
+              "sku": "Birch-shelf",
+              "quantity": 5
+            }
+          ],
+          "amount_cents": 55000,
+          "currency": "USD",
+          "state": "issued"
+        },
+        "BIRCH-EAST-PO-2": {
+          "order_id": "BIRCH-EAST-PO-2",
+          "vendor": "Birch-Equipment",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Birch-cart"
+            }
+          ],
+          "amount_cents": 57000,
+          "currency": "USD",
+          "state": "draft"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "BIRCH-EAST-TX-1",
+          "request_id": "BIRCH-EAST",
+          "cost_centre": "Birch East",
+          "order_id": "BIRCH-EAST-PO-1",
+          "vendor": "Birch-Storage",
+          "items": [
+            {
+              "sku": "Birch-shelf",
+              "quantity": 5
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 55000
+        }
+      ]
+    },
+    "worker-342333fe4943": {
+      "orders": {
+        "BIRCH-WEST-PO-1": {
+          "order_id": "BIRCH-WEST-PO-1",
+          "vendor": "Birch-Equipment",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Birch-cart"
+            }
+          ],
+          "amount_cents": 76000,
+          "currency": "USD",
+          "state": "issued"
+        },
+        "BIRCH-WEST-PO-2": {
+          "order_id": "BIRCH-WEST-PO-2",
+          "vendor": "Birch-Storage",
+          "items": [
+            {
+              "sku": "Birch-shelf",
+              "quantity": 4
+            }
+          ],
+          "amount_cents": 44000,
+          "currency": "USD",
+          "state": "cancelled"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "BIRCH-WEST-TX-1",
+          "request_id": "BIRCH-WEST",
+          "cost_centre": "Birch West",
+          "order_id": "BIRCH-WEST-PO-1",
+          "vendor": "Birch-Equipment",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Birch-cart"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 76000
+        }
+      ]
+    }
+  }
+}

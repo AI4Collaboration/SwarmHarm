@@ -21,7 +21,7 @@ Three claims must always remain separate:
    execution format.
 
 Current-format experiments must state these fields in `format-contract.json`,
-run `scripts/check-format-contract`, execute their format controls during prepare,
+pass `scripts/check-format-contract`, execute their format controls during prepare,
 and seal the hashes of every task package before inference.
 
 ## Task package

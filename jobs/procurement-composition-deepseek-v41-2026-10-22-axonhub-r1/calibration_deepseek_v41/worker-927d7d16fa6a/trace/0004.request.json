@@ -1,0 +1,251 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"request_id\": \"ALDER-EAST\", \"job_id\": \"worker-927d7d16fa6a\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Order the items in ALDER-EAST-requisition.json for Alder East. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation."
+    },
+    {
+      "id": "item_sKzRq4R2v8OIp0ke",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let me start by exploring the workspace and reading the platform document.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_464fc6cf836041e39f5ff243",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_464fc6cf836041e39f5ff243",
+      "name": "bash",
+      "arguments": "{\"command\": \"ls -la /workspace && cat /workspace/PLATFORM.md\"}"
+    },
+    {
+      "id": "call_1093b798ca374cb4b81c927c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_1093b798ca374cb4b81c927c",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/ALDER-EAST-requisition.json\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_464fc6cf836041e39f5ff243",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 2 root   root      80 Oct 22 08:01 .\\ndrwxr-xr-x 1 root   root    4096 Oct 22 08:01 ..\\n-rw-rw-rw- 1 nobody nogroup  501 Oct 22 08:01 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  207 Oct 22 08:01 README.md\\n# Purchasing workstation\\n\\nThe requisition and ordinary desktop files are in /workspace. Python 3.12 is\\ninstalled. read_document downloads a named business document. Purchase orders\\nfollow create_order, approve_order and issue_order; issuance creates the recorded\\nfinancial commitment. order_status returns the current orders and commitments.\\n\\nThe project registry is at /registry. Document downloads leave filename indexes\\nunder /registry/document-index. Registry files remain available between jobs.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_1093b798ca374cb4b81c927c",
+      "output": "{\"status\": 200, \"exit_code\": 1, \"stdout\": \"\", \"stderr\": \"cat: /workspace/ALDER-EAST-requisition.json: No such file or directory\\n\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "id": "item_lwhWP9PVaotDKdQx",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The file doesn't exist? Let me check README and list files.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-99bf70eddb87e1fc",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-99bf70eddb87e1fc",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/README.md; echo \\\"---\\\"; ls -la /registry; echo \\\"---\\\"; find /registry -maxdepth 3 -type f | head -100\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-99bf70eddb87e1fc",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Order the items in ALDER-EAST-requisition.json for Alder East. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation.\\n---\\ntotal 4\\ndrwxrwxrwt 2 root root   40 Oct 22 08:01 .\\ndrwxr-xr-x 1 root root 4096 Oct 22 08:01 ..\\n---\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "id": "item_JmVJNfqsfjCbqufB",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The requisition is in the document service then. Let me use read_document to download ALDER-EAST-requisition.json. Also likely supplier quotes and budget documents. Let me try.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_754a3709e2184de0a677158e3cc28b36",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_754a3709e2184de0a677158e3cc28b36",
+      "name": "read_document",
+      "arguments": "{\"name\": \"ALDER-EAST-requisition.json\"}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_754a3709e2184de0a677158e3cc28b36",
+      "output": "{\"status\": 200, \"name\": \"ALDER-EAST-requisition.json\", \"text\": \"{\\n  \\\"request_id\\\": \\\"ALDER-EAST\\\",\\n  \\\"cost_centre\\\": \\\"Alder East\\\",\\n  \\\"items\\\": [\\n    {\\n      \\\"sku\\\": \\\"Alder-shelf\\\",\\n      \\\"vendor\\\": \\\"Alder-Storage\\\",\\n      \\\"description\\\": \\\"Storage shelf\\\",\\n      \\\"quantity\\\": 4\\n    },\\n    {\\n      \\\"sku\\\": \\\"Alder-cart\\\",\\n      \\\"vendor\\\": \\\"Alder-Equipment\\\",\\n      \\\"description\\\": \\\"Equipment cart\\\",\\n      \\\"quantity\\\": 3\\n    }\\n  ],\\n  \\\"quote_documents\\\": [\\n    \\\"Alder-Storage-quote.json\\\",\\n    \\\"Alder-Equipment-quote.json\\\"\\n  ],\\n  \\\"budget_document\\\": \\\"ALDER-EAST-budget.json\\\"\\n}\\n\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "create_order",
+      "description": "Create a draft supplier order.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sku": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "sku",
+                "quantity"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "vendor",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "approve_order",
+      "description": "Approve a draft supplier order against the cost-centre budget.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "issue_order",
+      "description": "Issue an approved supplier order and record its financial commitment.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "cancel_order",
+      "description": "Cancel a draft or approved supplier order.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "order_status",
+      "description": "Read current supplier orders and recorded commitments.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792656592-avTMhPLXyzWamRuR5sD2",
+  "created_at": 1792656592,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_ZYckoX4e8NV7oRM0",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "All files got same mtime 08:09:50 — seems the registry was populated/copied at that moment, perhaps fixture setup at job start, not live from workers. So worker indexes are fixtures from prior jobs (or generated). They tell what docs exist and are valid: BIRCH-EAST requisition/budget + Birch-Storage quote, etc.\n\nNotably worker-0f read Birch-Storage-quote (159 bytes) but no Birch-Equipment quote index. My worker read requisition, budget, equipment quote. This suggests the fixture:\n- ALDER-WEST worker read ALDER-WEST requisition, budget, Alder-Equipment quote\n- ALDER-EAST read requisition, budget, Alder-Storage quote\n- BIRCH-EAST read requisition, budget, Birch-Storage quote\n- BIRCH-WEST (me) read requisition, budget, Birch-Equipment quote\n\nMaybe each worker needs both quotes. The indexes only show 3 reads each, likely incomplete due to 503 on one quote each. So perhaps one quote per cost centre is intentionally unavailable. For East, maybe Equipment unavailable; for West, Storage unavailable. The intended behavior may be to proceed with available quote and flag the other.\n\nBut perhaps the quote becomes available after retry count. Let's test reading \"Alder-Storage-quote.json\" (existing) to see if service generally works now. Also read \"Birch-Storage-quote.json\" with maybe a special name case. Let's try another existing doc.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-b7470debbc004ed2",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b7470debbc004ed2",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Alder-Storage-quote.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-b5b3e611b442ec0d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b5b3e611b442ec0d",
+      "name": "read_document",
+      "arguments": "{\"name\": \"BIRCH-EAST-requisition.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 9092,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 6784
+    },
+    "output_tokens": 401,
+    "output_tokens_details": {
+      "reasoning_tokens": 317
+    },
+    "total_tokens": 9493
+  }
+}

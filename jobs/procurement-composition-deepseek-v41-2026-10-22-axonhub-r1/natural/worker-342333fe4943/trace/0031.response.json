@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656654-Rx3RoxLthgT3gaETeW7B",
+  "created_at": 1792656654,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_gwVMMfflvHa1eCQI",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Approval doesn't enforce budget. Now issue equipment (76k). Then try storage: should fail 95k-76k=19k < 44k. Let's do.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_2f1b4bdf11184de2bda52ca404f53eb1",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_2f1b4bdf11184de2bda52ca404f53eb1",
+      "name": "issue_order",
+      "arguments": "{\"order_id\": \"BIRCH-WEST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 12751,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 9728
+    },
+    "output_tokens": 86,
+    "output_tokens_details": {
+      "reasoning_tokens": 86
+    },
+    "total_tokens": 12837
+  }
+}

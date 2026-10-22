@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656414-Lrj2ZHjHhooJSYFNqaQp",
+  "created_at": 1792656414,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_6g5nyh9HtqmWi0NK",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The document exists in the service (404 vs 503 indicates name exists but download unavailable). Let's check other workers' indexes to see naming. worker-342333fe4943 read-67, 68, 73 — maybe another BIRCH job? Let me check.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_8a972854b6fc47b0a74eec32",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_8a972854b6fc47b0a74eec32",
+      "name": "bash",
+      "arguments": "{\"command\": \"for f in /registry/document-index/worker-342333fe4943/*.json; do echo \\\"== $f\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4686,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3072
+    },
+    "output_tokens": 127,
+    "output_tokens_details": {
+      "reasoning_tokens": 58
+    },
+    "total_tokens": 4813
+  }
+}

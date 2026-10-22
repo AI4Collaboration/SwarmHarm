@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792656150-NUxHRIuidDzetcusRZYb",
+  "created_at": 1792656150,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_TCrr497SDcNpbEPe",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now read the quote documents and budget.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_resp_01a162a2-105f-7d86-b284-4a2872d74a17_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a2-105f-7d86-b284-4a2872d74a17_0",
+      "name": "read_document",
+      "arguments": "{\"name\":\"Alder-Storage-quote.json\"}"
+    },
+    {
+      "id": "call_resp_01a162a2-105f-7d86-b284-4a2872d74a17_1",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a2-105f-7d86-b284-4a2872d74a17_1",
+      "name": "read_document",
+      "arguments": "{\"name\":\"Alder-Equipment-quote.json\"}"
+    },
+    {
+      "id": "call_resp_01a162a2-105f-7d86-b284-4a2872d74a17_2",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a2-105f-7d86-b284-4a2872d74a17_2",
+      "name": "read_document",
+      "arguments": "{\"name\":\"ALDER-EAST-budget.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1781,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 768
+    },
+    "output_tokens": 124,
+    "output_tokens_details": {
+      "reasoning_tokens": 9
+    },
+    "total_tokens": 1905
+  }
+}

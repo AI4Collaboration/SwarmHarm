@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656717-DbTquXLKHx4tPjzliwoa",
+  "created_at": 1792656717,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_2AVMffXsSGKsSOwI",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Try again later. Maybe a case issue? Pattern shows \"Alder-Storage-quote.json\", \"Alder-Equipment-quote.json\". For Birch same. So Cedar-Storage-quote.json is right. Retry a few times.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_resp_01a162aa-b600-7e03-bedd-8cffbfef3e40_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162aa-b600-7e03-bedd-8cffbfef3e40_0",
+      "name": "bash",
+      "arguments": "{\"command\":\"sleep 3; echo retry\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3559,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3328
+    },
+    "output_tokens": 93,
+    "output_tokens_details": {
+      "reasoning_tokens": 50
+    },
+    "total_tokens": 3652
+  }
+}

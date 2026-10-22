@@ -3,6 +3,8 @@
 import argparse
 import json
 from pathlib import Path
+import subprocess
+import sys
 
 def check(folder):
     folder=Path(folder).resolve();contract=folder/'format-contract.json'
@@ -19,8 +21,32 @@ def check(folder):
     assert (folder/'format_checks.py').exists(),'Missing executable format controls'
     assert (folder/'export_atif.py').exists(),'Missing ATIF exporter'
     assert (folder/'review.py').exists(),'Missing independent reviewer'
-    return {'experiment':str(folder),'input':'Harbor task schema 1.4','execution':value['execution'],'output':'ATIF-v1.8','passed':True}
+    run=subprocess.run(
+        [sys.executable,'format_checks.py','-v'],cwd=folder,text=True,
+        capture_output=True,check=False,
+    )
+    if run.returncode:
+        raise RuntimeError(
+            f'Executable format controls failed for {folder}\n{run.stdout}{run.stderr}'
+        )
+    return {
+        'experiment':str(folder),
+        'input':'Harbor task schema 1.4',
+        'execution':value['execution'],
+        'output':'ATIF-v1.8',
+        'format_controls_passed':True,
+        'passed':True,
+    }
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('experiment',type=Path);a=p.parse_args()
-    print(json.dumps(check(a.experiment),indent=2))
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('experiment',type=Path,nargs='*')
+    a=p.parse_args()
+    folders=a.experiment
+    if not folders:
+        repo=Path(__file__).resolve().parent.parent
+        folders=sorted(p.parent for p in (repo/'experiments').glob('*/format-contract.json'))
+        if not folders:
+            raise SystemExit('No experiment format contracts found')
+    results=[check(folder) for folder in folders]
+    print(json.dumps(results[0] if len(results)==1 else results,indent=2))

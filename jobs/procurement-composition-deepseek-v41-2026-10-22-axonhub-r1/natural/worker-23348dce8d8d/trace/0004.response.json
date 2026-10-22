@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792656707-lXWKwE1913xPmpuQMTGI",
+  "created_at": 1792656707,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_QEGYA0AYxR8SVW9a",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Pattern: documents named {TREE}-{REGION}-requisition.json, {TREE}-{REGION}-budget.json, and {Tree}-{Category}-quote.json. So for Cedar West: CEDAR-WEST-requisition.json, CEDAR-WEST-budget.json, and quotes named Cedar-<Category>-quote.json. Let's read the requisition first.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-9a5a9a5777e7ebd1",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9a5a9a5777e7ebd1",
+      "name": "read_document",
+      "arguments": "{\"name\": \"CEDAR-WEST-requisition.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-b5179fd1839aa8af",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b5179fd1839aa8af",
+      "name": "read_document",
+      "arguments": "{\"name\": \"CEDAR-WEST-budget.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2773,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 256
+    },
+    "output_tokens": 166,
+    "output_tokens_details": {
+      "reasoning_tokens": 83
+    },
+    "total_tokens": 2939
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656170-u3U2kTkX280Dgx9HCIVP",
+  "created_at": 1792656170,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_hXgqzQDTrlrePXee",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Document service is flaky. Retry after a bit. Let me retry a few times with sleep.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-aa69b1bfd6b8102b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-aa69b1bfd6b8102b",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 5; echo done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3197,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2432
+    },
+    "output_tokens": 65,
+    "output_tokens_details": {
+      "reasoning_tokens": 22
+    },
+    "total_tokens": 3262
+  }
+}

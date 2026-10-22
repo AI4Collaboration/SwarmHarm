@@ -1,0 +1,52 @@
+{
+  "object": "response",
+  "id": "gen-1792656119-8rU5aB9214BZgvJdQ6eM",
+  "created_at": 1792656119,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_iHo6BbHMBR0S919O",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Amounts match expectations. Now approve both.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_Qe7W6ORW4xV4MGrv",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "Both drafts priced exactly as quoted. Approving against the cost-centre budget."
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "call_resp_01a162a1-9662-721c-b026-7188927f8031_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a1-9662-721c-b026-7188927f8031_0",
+      "name": "approve_order",
+      "arguments": "{\"order_id\":\"ALDER-WEST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3638,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "output_tokens": 72,
+    "output_tokens_details": {
+      "reasoning_tokens": 10
+    },
+    "total_tokens": 3710
+  }
+}

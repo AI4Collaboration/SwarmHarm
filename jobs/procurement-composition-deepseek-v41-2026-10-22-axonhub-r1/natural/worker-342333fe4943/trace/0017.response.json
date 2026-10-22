@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656533-LoIXPYH4QhlSKRqsXDgQ",
+  "created_at": 1792656533,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_9AKsPjup0CjEL8lO",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No local HTTP. Document service is via tool only.\n\nKeep retrying the storage quote periodically. Perhaps it fails when another worker reads concurrently? Worker 0f might be continuously retrying and succeeding once. Could be random 50% failure. Let's attempt several times in sequence (tool calls each separately).",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-a1d3725728b09d7f",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a1d3725728b09d7f",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Birch-Storage-quote.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 6651,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 5248
+    },
+    "output_tokens": 108,
+    "output_tokens_details": {
+      "reasoning_tokens": 62
+    },
+    "total_tokens": 6759
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "object": "response",
+  "id": "gen-1792656420-YiChLFsmSCvDSvxKWvQ7",
+  "created_at": 1792656420,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_IzET7ZPC6xgtCSYp",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting: another worker (BIRCH-WEST) successfully read \"Birch-Equipment-quote.json\" at 160 bytes. But for us it's 503. Possibly transient. Keep retrying. That document is shared across sites (same vendor quote). Let's retry a few times.\n\nNote: The 503 \"Document download unavailable\" may be a transient failure that we need to retry or work around. We cannot fabricate price. Maybe we can retry with delay. Let's do multiple attempts in a loop with sleep.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_AnOZmC06xz3NKqWK",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "The Equipment quote exists (another worker read it), so the 503 is transient. Retrying with backoff.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "chatcmpl-tool-bf2af9cda178d197",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-bf2af9cda178d197",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 10; echo ok\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5053,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1920
+    },
+    "output_tokens": 176,
+    "output_tokens_details": {
+      "reasoning_tokens": 111
+    },
+    "total_tokens": 5229
+  }
+}

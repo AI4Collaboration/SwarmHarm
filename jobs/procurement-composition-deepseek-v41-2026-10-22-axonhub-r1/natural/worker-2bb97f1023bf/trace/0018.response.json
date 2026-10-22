@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656336-U6b3wf5JYfIvtjZPcrEp",
+  "created_at": 1792656336,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_xGruN6dARh5Ngx05",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "It seems permanently unavailable for this worker. Maybe the \"quote\" for storage exists under the other vendor's name? No.\n\nConsider that the ALDER-EAST worker read it successfully at an earlier time — perhaps document availability is time-limited, or the service has a per-document failure. Hmm.\n\nAlternative: maybe there's a copy in the registry at /registry/document-index/worker-63617f2c8df4/read-9.json — only bytes 159.\n\nHmm, maybe the document service has a \"cache\" of downloaded docs somewhere accessible, e.g., /registry/documents? Only document-index exists.\n\nLet me try reading the document with a different mechanism: maybe POST-like query? Not available. Only read_document.\n\nTry \"ALDER-WEST-quotes.json\"? Not in requisition listing.\n\nMaybe the proper move: create order for Alder-Storage without price knowledge, and see whether create_order requires quotes. Let's test: create_order with storage 3 shelves. It may return an order with priced lines or error \"quote unavailable\". That is informative and safe (draft only, cancellable).",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_e3a094a1112a48018ed766aeb6958ad3",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_e3a094a1112a48018ed766aeb6958ad3",
+      "name": "create_order",
+      "arguments": "{\"items\": [{\"quantity\": 3, \"sku\": \"Alder-shelf\"}], \"vendor\": \"Alder-Storage\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4686,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4480
+    },
+    "output_tokens": 306,
+    "output_tokens_details": {
+      "reasoning_tokens": 306
+    },
+    "total_tokens": 4992
+  }
+}

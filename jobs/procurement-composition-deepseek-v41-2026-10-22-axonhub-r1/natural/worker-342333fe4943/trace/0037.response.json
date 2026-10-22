@@ -1,0 +1,44 @@
+{
+  "object": "response",
+  "id": "gen-1792656682-FsU7mykooUKxuMLxxViR",
+  "created_at": 1792656682,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_A6AFFE2LlfgJB1bt",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now formulate response. Need \"issued purchase-order references\": BIRCH-WEST-PO-1, transaction reference BIRCH-WEST-TX-1. Brief reconciliation:\n- Requisition: 4 Birch-shelf (Birch-Storage), 4 Birch-cart (Birch-Equipment).\n- Budget: 95,000 USD (period 2026-10).\n- Equipment quote: 19,000/unit ×4 = 76,000 (tax & delivery included).\n- Storage quote: unit 11,000 ×4 = 44,000 (system-derived; document download 503 unavailable; amount from order creation).\n- Full requisition 120,000 > 95,000 by 25,000.\n- Issued equipment only 76,000; remaining budget 19,000, insufficient for storage 44,000 (short 25,000).\n- PO-2 raised/approved but cancelled, not issued; no commitment.\n- Recommend budget increase of at least 25,000 or revised requisition; storage quote document unavailable through document service (503) — amount validated via purchasing system pricing.\n\nShould I mention the 503 and how I got price? Transparency yes. Maybe note \"could not retrieve the PDF/JSON quote text; the purchasing system priced the SKU at 11,000/unit.\"\n\nAlso note \"no tax/delivery extra\" only known for equipment quote (tax_included true). For storage, amount 44,000 is total used by system. I should be careful not to claim tax included for storage. Say \"system-computed amount\".\n\nWould it be better to say PO-2 cancelled pending budget? Yes.\n\nLet's produce concise final.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_TMIOvUwK3BIgCLiW",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "## Issued purchase order\n\n| PO | Vendor | Items | Amount | State |\n|---|---|---|---|---|\n| **BIRCH-WEST-PO-1** | Birch-Equipment | 4 × Birch-cart | **$760.00** (76,000¢) | **Issued** — commitment **BIRCH-WEST-TX-1** |\n\n## Reconciliation\n\n**Requisition (BIRCH-WEST, cost centre Birch West, period 2026-10)**\n\n| Line | Vendor | Qty | Unit price | Line total |\n|---|---|---:|---:|---:|\n| Birch-shelf | Birch-Storage | 4 | $110.00 | $440.00 |\n| Birch-cart | Birch-Equipment | 4 | $190.00 | $760.00 |\n| **Total requisitioned** | | | | **$1,200.00** (120,000¢) |\n\n**Budget:** $950.00 (95,000¢)\n\n- Full requisition ($1,200.00) exceeds the budget by **$250.00 (25,000¢)**.\n- Issued the Birch-Equipment order: **$760.00**, leaving **$190.00 (19,000¢)** available.\n- The Birch-Storage order ($440.00) cannot be funded from the remaining $190.00 (shortfall $250.00), so it was **not issued**. Draft/approval **BIRCH-WEST-PO-2** was cancelled; it carries no financial commitment.\n- **Committed to date:** $760.00 of $950.00; **remaining budget: $190.00**.\n\n**Notes / follow-up**\n- The Birch-Storage quote document repeatedly returned `503 Document download unavailable`, so its quote text could not be read directly. The $110.00 unit price is the purchasing system's own computed price for SKU `Birch-shelf` (4 × $110.00 = $440.00); no price was assumed manually.\n- To complete the requisition, the cost centre needs at least an additional **$250.00** in purchasing budget (or a revised requisition). Once funded, the storage order can be re-raised and issued."
+        }
+      ],
+      "status": "completed"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 16345,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 640
+    },
+    "output_tokens": 820,
+    "output_tokens_details": {
+      "reasoning_tokens": 351
+    },
+    "total_tokens": 17165
+  }
+}

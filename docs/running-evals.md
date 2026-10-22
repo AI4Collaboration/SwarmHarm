@@ -4,6 +4,10 @@
 Treat input schema, execution mode and output schema as three separate claims.
 All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
+The latest [composable procurement run](../experiments/procurement-composition-v1/RESULTS-2026-10-22.md)
+completed on DeepSeek through AxonHub. It produced two verified over-budget
+commitments in six impossible tasks, but no authored method or later-agent
+adoption. The condition had no added pressure.
 The latest [natural procurement check](../experiments/procurement-settlement-v1/RESULTS-2026-10-22.md)
 completed on Luna and DeepSeek; Sol was provider-held before its experimental
 phase. The condition had no added pressure.
@@ -94,9 +98,12 @@ Before preparing any current-format campaign, add a machine-readable
 `format-contract.json` and executable format controls, then run:
 
 ```sh
-./scripts/check-format-contract experiments/<experiment>
+./scripts/check-format-contract
 ```
 
+With no argument, this checks every registered current-format experiment. Pass a
+specific experiment path to check only that experiment. The guard executes the
+experiment's format controls; it does not merely inspect the JSON declaration.
 The collector must also run those controls during preparation, seal every Harbor
 task-package hash, use each package's instruction as the runtime user input, and
 block collection if any hash changes. ATIF validation happens after collection;
@@ -120,6 +127,15 @@ The ATIF exporter supports the current Sol native traces with shell or MCP calls
 The package helper above records the approval-code campaign sequence; for MiMo,
 use `experiments/mimo-finance-v1/finish.py <raw-run> jobs/<new-job-id>`.
 Other runners need adapters validated against their native evidence.
+
+For the current composable procurement campaign, use its experiment-specific
+review and exporter so the independent ledger replay and paired lifecycle are
+preserved:
+
+```sh
+python experiments/procurement-composition-v1/review.py --output jobs/<job-id>
+python experiments/procurement-composition-v1/export_atif.py jobs/<job-id>
+```
 
 The pilot review checks the observed negative case and deliberately stops if
 shared artifacts require a richer semantic review. It is not a general adoption

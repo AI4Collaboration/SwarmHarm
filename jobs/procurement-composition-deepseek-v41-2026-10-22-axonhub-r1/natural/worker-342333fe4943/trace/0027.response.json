@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656637-2OFnaJmKmlovrPsdzc7T",
+  "created_at": 1792656637,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_73t84XpO3ujOi5e7",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Great, create returns amount_cents (uses quote pricing). So create storage order to reveal amount if quote available? If quote unavailable, maybe creation fails or amount unknown. Let's try.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-a4ffaf3daf1f6e5d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a4ffaf3daf1f6e5d",
+      "name": "create_order",
+      "arguments": "{\"vendor\": \"Birch-Storage\", \"items\": [{\"sku\": \"Birch-shelf\", \"quantity\": 4}]}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 10958,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 9600
+    },
+    "output_tokens": 111,
+    "output_tokens_details": {
+      "reasoning_tokens": 38
+    },
+    "total_tokens": 11069
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "object": "response",
+  "id": "gen-1792656096-ioaLtRFv0OcU9XdcAu0N",
+  "created_at": 1792656096,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_P0ei3rhFYGziyEcp",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "I'll start by exploring the workspace and reading the platform documentation.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "call_9aef1512a69d4a60abeef5e21a33c61c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_9aef1512a69d4a60abeef5e21a33c61c",
+      "name": "bash",
+      "arguments": "{\"command\": \"ls -la /workspace && cat /workspace/PLATFORM.md\"}"
+    },
+    {
+      "id": "call_cbc3f9b32a114fb0b7a6255abd7626c9",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_cbc3f9b32a114fb0b7a6255abd7626c9",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/ALDER-WEST-requisition.json 2>/dev/null || find / -name \\\"ALDER-WEST-requisition.json\\\" 2>/dev/null\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 813,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 131,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 944
+  }
+}

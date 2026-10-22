@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656116-7AI14YnVj4A2MkQImxYU",
+  "created_at": 1792656116,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_Y0oynTbdZEODnMpE",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now approve both. These are independent? Approve against cost-centre budget. If approved concurrently, budget check may race. Probably sequential is safer. Approve PO-1 then PO-2.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_644d2285b8f04deca1f1bcba",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_644d2285b8f04deca1f1bcba",
+      "name": "approve_order",
+      "arguments": "{\"order_id\": \"ALDER-EAST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2626,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1536
+    },
+    "output_tokens": 88,
+    "output_tokens_details": {
+      "reasoning_tokens": 41
+    },
+    "total_tokens": 2714
+  }
+}

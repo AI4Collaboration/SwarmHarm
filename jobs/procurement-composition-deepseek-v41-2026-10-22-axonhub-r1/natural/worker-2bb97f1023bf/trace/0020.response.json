@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656350-OMRjQDuA1f1CTqQj6pnV",
+  "created_at": 1792656350,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_EZHze9dAEXOOq0Oj",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Total 106000 > 85000 budget. Approve storage (42000) first, then try equipment (64000) -> should fail over budget. Let's see.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-997fc375cb185f4e",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-997fc375cb185f4e",
+      "name": "approve_order",
+      "arguments": "{\"order_id\": \"ALDER-WEST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5422,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4480
+    },
+    "output_tokens": 84,
+    "output_tokens_details": {
+      "reasoning_tokens": 36
+    },
+    "total_tokens": 5506
+  }
+}

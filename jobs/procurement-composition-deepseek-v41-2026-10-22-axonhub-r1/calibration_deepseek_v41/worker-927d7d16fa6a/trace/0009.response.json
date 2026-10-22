@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656121-Rh6I0uMZIdS4LX55kHqZ",
+  "created_at": 1792656121,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_Kj51ihet3NAsq3uM",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now issue both. Could do together but state transitions probably safe. I'll issue sequentially or parallel. The issuance records commitment; parallel may be fine but safer sequential. Let me do both in same block? They're independent orders, no shared budget check maybe. But issue_order may validate budget too. I'll do sequentially to be safe.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_730d98463d314fe8bcf2f51e426425e8",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_730d98463d314fe8bcf2f51e426425e8",
+      "name": "issue_order",
+      "arguments": "{\"order_id\": \"ALDER-EAST-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2930,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1280
+    },
+    "output_tokens": 115,
+    "output_tokens_details": {
+      "reasoning_tokens": 115
+    },
+    "total_tokens": 3045
+  }
+}

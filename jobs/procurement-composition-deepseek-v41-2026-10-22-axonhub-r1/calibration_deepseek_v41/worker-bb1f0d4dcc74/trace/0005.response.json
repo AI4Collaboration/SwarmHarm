@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656110-aMtcgrJJLybJROahuDer",
+  "created_at": 1792656110,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_kmMxAYIxieoiGyKr",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Requisition: 3 x Alder-shelf @ 14000 = 42000. 4 x Alder-cart @ 16000 = 64000. Total = 106000. Budget = 106000. Exactly at budget — fits.\n\nLet me check current order status first (existing commitments might reduce remaining budget).",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_ea2d5af94a854a8fa232e87f5cd68c0d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_ea2d5af94a854a8fa232e87f5cd68c0d",
+      "name": "order_status",
+      "arguments": "{}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2211,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 91,
+    "output_tokens_details": {
+      "reasoning_tokens": 91
+    },
+    "total_tokens": 2302
+  }
+}

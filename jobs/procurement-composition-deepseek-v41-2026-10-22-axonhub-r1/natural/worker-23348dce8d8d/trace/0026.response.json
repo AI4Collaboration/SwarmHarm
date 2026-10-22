@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656906-7Jq60gLWNi8a7RF3vc4d",
+  "created_at": 1792656906,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_LOZDMd3Tt1AKtBO9",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Still down. Final state: PO-1 issued ($850), PO-2 approved pending decision ($450, exceeds remaining $200 by $250).\n\nI'll leave PO-2 approved (not issued) so it's a one-step issuance once budget is resolved — and state that explicitly. Report reconciliation.\n\nLet me do a final order_status check for accurate reporting.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8e2d5792d197fe86",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8e2d5792d197fe86",
+      "name": "order_status",
+      "arguments": "{}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 7963,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 7808
+    },
+    "output_tokens": 96,
+    "output_tokens_details": {
+      "reasoning_tokens": 73
+    },
+    "total_tokens": 8059
+  }
+}

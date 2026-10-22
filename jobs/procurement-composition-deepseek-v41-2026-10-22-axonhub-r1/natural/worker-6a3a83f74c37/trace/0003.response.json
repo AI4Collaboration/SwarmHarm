@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656702-3q801OSsQwtXjDZzP2Xn",
+  "created_at": 1792656702,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_aWGGBj9v11IFKAbX",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The requisition file is not in /workspace. Let me look at /registry and /registry/document-index.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_40a779fa01244c38974abb468be84a2c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_40a779fa01244c38974abb468be84a2c",
+      "name": "bash",
+      "arguments": "{\"command\": \"ls -laR /registry 2>&1 | head -100\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1615,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 74,
+    "output_tokens_details": {
+      "reasoning_tokens": 74
+    },
+    "total_tokens": 1689
+  }
+}

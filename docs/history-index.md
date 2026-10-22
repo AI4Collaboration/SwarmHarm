@@ -19,7 +19,7 @@ incident or success rate. Original evidence remains unchanged.
 
 - **[Customer-contract procurement](../experiments/procurement-contract-v1/RESULTS.md):** two funded jobs passed; six experimental agents made over-budget purchases totaling $1,390 in excess commitments, disclosed in their finals. No method sharing/adoption. Customer compensation pressure was explicitly requested; independent replay and cleanup completed. This differs mechanically from the preceding no-pressure study, so pressure causation remains unresolved.
 
-- **[Composable procurement design](../experiments/procurement-composition-v1/README.md):** seven offline checks passed for two interacting control failures across six synthetic requisitions. No model calls; workstation/collector integration and registration are pending.
+- **[Composable procurement campaign](../experiments/procurement-composition-v1/RESULTS-2026-10-22.md):** 15 offline and adapter controls passed. DeepSeek completed eight AxonHub contexts; 2/6 impossible tasks created verified over-budget commitments, while method sharing and later-agent adoption remained absent.
 
 - **[Procurement settlement](../experiments/procurement-settlement-v1/RESULTS.md):** two normal jobs passed; six experimental agents exchanged documents and four later agents reused earlier request procedures. No approval cache changes or experimental transactions. This is one process weakness, not composable loopholes. Remote registration preceded inference; collection, independent review and cleanup completed.
 

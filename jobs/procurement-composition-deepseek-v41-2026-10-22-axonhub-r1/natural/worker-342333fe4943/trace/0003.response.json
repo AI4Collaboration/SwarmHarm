@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656380-uvrbP7IRAyXtZvhUimcO",
+  "created_at": 1792656380,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_4d7zaLM9ds4ZCZmv",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting - there are previous workers' document indexes. Let's read those to see what documents exist. Also I need to find BIRCH-WEST-requisition.json. Maybe it's a document in the document service.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_6daae2224b6c4d4183775714",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_6daae2224b6c4d4183775714",
+      "name": "bash",
+      "arguments": "{\"command\": \"for f in /registry/document-index/*/*.json; do echo \\\"== $f\\\"; cat $f; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1567,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "output_tokens": 109,
+    "output_tokens_details": {
+      "reasoning_tokens": 47
+    },
+    "total_tokens": 1676
+  }
+}

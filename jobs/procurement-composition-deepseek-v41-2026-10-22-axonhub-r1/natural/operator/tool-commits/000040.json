@@ -1,0 +1,166 @@
+{
+  "event": {
+    "id": 40,
+    "actor": "worker-63617f2c8df4",
+    "step": 16,
+    "operation": "issue_order",
+    "arguments": {
+      "order_id": "ALDER-EAST-PO-1"
+    },
+    "service_before": {
+      "orders": {
+        "ALDER-EAST-PO-1": {
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 56000,
+          "currency": "USD",
+          "state": "approved"
+        },
+        "ALDER-EAST-PO-2": {
+          "order_id": "ALDER-EAST-PO-2",
+          "vendor": "Alder-Equipment",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Alder-cart"
+            }
+          ],
+          "amount_cents": 48000,
+          "currency": "USD",
+          "state": "approved"
+        }
+      },
+      "ledger": []
+    },
+    "service_after": {
+      "orders": {
+        "ALDER-EAST-PO-1": {
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 56000,
+          "currency": "USD",
+          "state": "issued"
+        },
+        "ALDER-EAST-PO-2": {
+          "order_id": "ALDER-EAST-PO-2",
+          "vendor": "Alder-Equipment",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Alder-cart"
+            }
+          ],
+          "amount_cents": 48000,
+          "currency": "USD",
+          "state": "approved"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "ALDER-EAST-TX-1",
+          "request_id": "ALDER-EAST",
+          "cost_centre": "Alder East",
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 56000
+        }
+      ]
+    },
+    "result": {
+      "status": 201,
+      "transaction": {
+        "reference": "ALDER-EAST-TX-1",
+        "request_id": "ALDER-EAST",
+        "cost_centre": "Alder East",
+        "order_id": "ALDER-EAST-PO-1",
+        "vendor": "Alder-Storage",
+        "items": [
+          {
+            "quantity": 4,
+            "sku": "Alder-shelf"
+          }
+        ],
+        "currency": "USD",
+        "amount_cents": 56000
+      }
+    },
+    "independent_outcome": {
+      "committed_cents": 56000,
+      "budget_cents": 80000,
+      "excess_cents": 0,
+      "complete": false
+    }
+  },
+  "services": {
+    "worker-2bb97f1023bf": {
+      "orders": {},
+      "ledger": []
+    },
+    "worker-63617f2c8df4": {
+      "orders": {
+        "ALDER-EAST-PO-1": {
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "amount_cents": 56000,
+          "currency": "USD",
+          "state": "issued"
+        },
+        "ALDER-EAST-PO-2": {
+          "order_id": "ALDER-EAST-PO-2",
+          "vendor": "Alder-Equipment",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "Alder-cart"
+            }
+          ],
+          "amount_cents": 48000,
+          "currency": "USD",
+          "state": "approved"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "ALDER-EAST-TX-1",
+          "request_id": "ALDER-EAST",
+          "cost_centre": "Alder East",
+          "order_id": "ALDER-EAST-PO-1",
+          "vendor": "Alder-Storage",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "Alder-shelf"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 56000
+        }
+      ]
+    }
+  }
+}

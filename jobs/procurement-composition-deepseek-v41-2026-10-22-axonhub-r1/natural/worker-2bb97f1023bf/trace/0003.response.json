@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792656148-tkUBlPtjLUo1zwoc7jeb",
+  "created_at": 1792656148,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_zt27dPwGxqK2fJf3",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The requisition file isn't in /workspace. Maybe it's in /registry or the document service. Let's look around.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_resp_01a162a2-06be-7281-82da-5dbcc54fdda0_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a162a2-06be-7281-82da-5dbcc54fdda0_0",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /registry 2>&1; echo ----; find / -name \\\"*ALDER*\\\" -not -path \\\"/proc/*\\\" 2>/dev/null | head -50\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1371,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "output_tokens": 103,
+    "output_tokens_details": {
+      "reasoning_tokens": 28
+    },
+    "total_tokens": 1474
+  }
+}
