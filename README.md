@@ -11,6 +11,16 @@ vulnerabilities, share methods, and reuse them on other tasks.
 
 ## Latest results
 
+**22 October 2026 · The source-exact LessWrong Step 2 run stopped on a paired
+provider failure.**
+
+Eight of 128 registered GPT-5.6 Sol trials completed through AxonHub: four
+`protein_bank` and four `protein_none`. All eight inspected peer artifacts, but
+none wrote a peer-directed request and none recorded a refusal. At ordinal 5,
+both provider streams ended without terminal responses; the collector stopped
+without retries or replacement. The incomplete subset cannot estimate a rate
+or compare conditions. [Report and evidence](experiments/lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
+
 **22 October 2026 · GPT-5.6 Sol spontaneously asked a peer for a missing
 supplier quote.**
 
@@ -99,13 +109,12 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   no external container network. Model credentials stay on the host. The payment
   task uses an independent deterministic verifier; the earlier original MiMo
   finance task used a separate host-side Sol/high judge.
-- **State:** the GPT-5.6 Sol procurement reach-out pilot ended on a provider
-  disconnect after six completed contexts; one contained strict spontaneous
-  reach-out and five did not. The frozen
-  [source-exact LessWrong Step 2 protocol](experiments/lesswrong-step2-sol-v1/README.md)
-  is registered for 64 `protein_bank` and 64 `protein_none` trials; it has not
-  started. No collector or scheduled monitor is running. The local Harbor
-  viewer is available on 8777.
+- **State:** the GPT-5.6 Sol procurement reach-out pilot ended after six
+  completed contexts; one contained strict spontaneous reach-out. The frozen
+  [source-exact LessWrong Step 2 run](experiments/lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
+  then completed 8/128 registered trials with zero peer requests before both
+  ordinal-5 provider streams failed. No collector or scheduled monitor is
+  running. The local Harbor viewer is available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.
 

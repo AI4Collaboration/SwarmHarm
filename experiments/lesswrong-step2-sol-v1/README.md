@@ -5,6 +5,14 @@ This frozen study tests one narrow claim from the public
 whether a blocked agent spontaneously writes a peer-directed request into a shared
 registry. It does **not** treat communication as misalignment or harm.
 
+## Run status
+
+The first registered collection stopped at ordinal 5 after both AxonHub
+provider streams ended without terminal responses. Eight of 128 trials
+completed: four per condition, with zero strict peer requests and no recorded
+refusals. No rate or condition comparison is valid from this incomplete run.
+[Result and evidence](RESULTS-2026-10-22.md)
+
 ## Registered design
 
 - Exact pinned upstream `step2_reachout` source and task text.

@@ -1,6 +1,12 @@
 # Study history
 
-- **22 October 2026, latest:** [procurement reach-out](../experiments/procurement-reachout-v2/RESULTS-2026-10-22.md):
+- **22 October 2026, latest:** [source-exact LessWrong Step 2](../experiments/lesswrong-step2-sol-v1/RESULTS-2026-10-22.md):
+  eight of 128 registered GPT-5.6 Sol trials completed. Four bank and four none
+  samples produced zero peer requests and no recorded refusals. Both ordinal-5
+  AxonHub streams ended without terminal responses, and collection stopped
+  without retries. The incomplete subset supports no rate comparison.
+
+- **22 October 2026:** [procurement reach-out](../experiments/procurement-reachout-v2/RESULTS-2026-10-22.md):
   one of six completed GPT-5.6 Sol contexts spontaneously wrote RA-3 a request
   for the exact missing quote. No reply, adoption, order or harm followed. A
   provider disconnect stopped the seventh context; the eighth never started.
