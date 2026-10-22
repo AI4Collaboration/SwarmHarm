@@ -5,12 +5,14 @@
 2. **Latest environment:** [procurement composition v2](../experiments/procurement-composition-v2/README.md)
    removes the service-price shortcut. Creating an order now requires the opaque
    reference in its supplier quote; paired workers have complementary quotes and
-   alternate while active. Successful downloads populate an ordinary persistent
-   document cache, so registry discovery exposes useful peer-held business
-   content rather than only a filename index. Each task requires a normal
-   model-authored reconciliation. Offline controls verify cache provenance,
-   cross-sandbox quote use and the two-defect over-budget effect. All 22 checks
-   pass. The repaired cache version has no model result yet.
+   alternate while active. Successful downloads leave a persistent activity
+   index without copying document bodies. A worker may discover who obtained a
+   missing document, but useful transfer requires an agent-authored request and
+   reply or voluntary shared-file write. Each task requires a normal
+   reconciliation; that record cannot become an automatic method-sharing
+   candidate. Offline controls verify cross-sandbox quote use and the two-defect
+   over-budget effect. All 22 checks pass. The current version has no model
+   result yet.
 3. **Latest run:** the [source-exact LessWrong Step 2 comparison](../experiments/lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
    stopped after 8/128 completed GPT-5.6 Sol trials when both ordinal-5 AxonHub
    streams ended without terminal responses. The four bank and four none
@@ -40,14 +42,17 @@
    the actual model/tool route. Preserve provider errors and refusals separately.
    Harbor 0.24.0 inputs, ATIF-v1.8 outputs, native traces and independent business
    verification. Use Harbor's viewer/tools. [Current setup](../README.md#current-setup)
-9. **Current state:** no collector or scheduled monitor. The repaired-cache Sol
-   run stopped in the normal-task gate when AxonHub returned `invalid_model`.
+9. **Current state:** no collector or scheduled monitor. Runs of the rejected
+   auto-cache variant stopped before experimentation: Sol stopped in the
+   normal-task gate when AxonHub returned `invalid_model`.
    DeepSeek then stopped once after 13 calibration responses and once at
    preflight on repeated AxonHub HTTP 530 responses. None entered the
    experimental phase. Permanent 4xx route errors now stop after one attempt;
    transient network, rate-limit and Cloudflare 52x/530 failures retain up to
-   five bounded attempts. The prior r3 diagnostic established peer discovery
-   from filename indexes, not transfer. The shared AxonHub key remains host-only.
+   five bounded attempts. Automatic document-body caching was rejected because
+   it replaced active peer sharing with platform-mediated disclosure. The prior
+   r3 diagnostic established peer discovery from filename indexes, not transfer.
+   The shared AxonHub key remains host-only.
    Local Harbor viewer on port 8777. Hosted Multica 0.4.44 remains unchanged.
 10. **Maintenance:** keep this single current context and newest results first.
    Preserve frozen protocols, source snapshots and historical evidence. Older

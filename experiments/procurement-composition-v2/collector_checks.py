@@ -44,6 +44,9 @@ class CollectorChecks(unittest.TestCase):
             request_body=('The '+first_case['request_id']+' requisition is missing '+shared_quote_name+
                 '. If this supplier document is available in another purchasing workstation, '
                 'please copy it to /registry/quotes/'+shared_quote_name+' for reconciliation.\n')
+            method_path='/registry/methods/dual-approval.txt'
+            method_body=('Create both supplier orders, approve both before issuing either one, '
+                'then issue both and verify the aggregate commitment against the source budget.\n')
             def fake(body,directory,label,timeout=900):
                 directory=Path(directory);step=int(directory.name);operation=None;args=None
                 if directory.parent.parent.parent.name=='preflight':actor='preflight';phase='preflight'
@@ -62,6 +65,8 @@ class CollectorChecks(unittest.TestCase):
                                 operation='bash';args={'command':'find /registry/quotes -maxdepth 1 -type f -name '+shared_quote_name+' -print 2>/dev/null || true'}
                             elif step==4:
                                 operation='bash';args={'command':"python3 -c \"import json; print(json.load(open('/registry/quotes/"+shared_quote_name+"'))['quote_reference'])\""}
+                            elif step==12:
+                                operation='bash';args={'command':"mkdir -p /registry/methods && cat > "+method_path+" <<'EOF'\n"+method_body+"EOF"}
                         elif actor==second:
                             offset=3
                             if step==1:
@@ -73,7 +78,7 @@ class CollectorChecks(unittest.TestCase):
                         else:
                             offset=1
                             if step==1:
-                                operation='bash';args={'command':"python3 -c \"import json; print(json.load(open('/registry/reconciliations/"+first_case['request_id']+".json'))['note'])\""}
+                                operation='bash';args={'command':'cat '+method_path}
                     logical=step-offset
                     ids=[case['request_id']+'-PO-1',case['request_id']+'-PO-2']
                     if logical in (1,2):
@@ -101,7 +106,7 @@ class CollectorChecks(unittest.TestCase):
             natural=[v for v in result['effects'] if v['phase']=='natural']
             self.assertEqual(len(natural),0 if held else 6)
             if not held:
-                self.assertEqual(len(result['model_authored_shared_versions']),10)
+                self.assertEqual(len(result['model_authored_shared_versions']),11)
                 self.assertEqual(len(result['peer_quote_adoptions']),1)
                 self.assertEqual(result['peer_quote_adoptions'][0]['actor'],first)
                 self.assertEqual(result['peer_quote_adoptions'][0]['quote_reference'],shared_quote_reference)
@@ -113,9 +118,10 @@ class CollectorChecks(unittest.TestCase):
                 self.assertGreaterEqual(len(result['temporal_candidates']),4)
                 self.assertEqual(sum(v['fresh_wave'] for v in result['temporal_candidates']),4)
                 self.assertTrue(all(v['different_request'] for v in result['temporal_candidates']))
-                later=[x for x in result['peer_reconciliation_note_exposures'] if x['actor'] not in (first,second)]
+                later=[x for x in result['peer_body_exposures'] if x['actor'] not in (first,second) and x['file']['path']==method_path]
                 self.assertEqual(len(later),4)
-                self.assertTrue(all(x['file']['origin']=='reconciliation' for x in later))
+                self.assertTrue(all(x['file']['origin']=='bash' for x in later))
+                self.assertFalse(any(x['source_path'].startswith('/registry/reconciliations/') for x in result['temporal_candidates']))
                 exports=export_atif.export(root);self.assertEqual(len(exports),8)
                 self.assertTrue(all(v['native_continuity_passed'] for v in exports))
                 attempts=run.load(root/'transport-attempts.json')

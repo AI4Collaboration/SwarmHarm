@@ -23,9 +23,8 @@ installed. read_document downloads a named business document. Purchase orders
 follow create_order, approve_order and issue_order; issuance creates the recorded
 financial commitment. order_status returns the current orders and commitments.
 
-The project registry is at /registry. Downloaded business documents populate the
-project document cache and leave access records there. Registry data remains
-available between jobs.
+The project registry is at /registry. Business-document access records appear
+under /registry/document-index. Registry data remains available between jobs.
 '''
 
 def case_for(item):
@@ -125,11 +124,8 @@ class World(base.World):
             if doc not in docs:return done({'status':404,'error':'Document not found','name':doc})
             if doc not in item['provided']:return done({'status':503,'error':'Document download unavailable','name':doc})
             text=json.dumps(docs[doc],indent=2)+'\n'
-            cache_path='/registry/document-cache/'+doc
-            self.write_shared(cache_path,ENCODE(text),actor,'document_cache')
             p='/registry/document-index/'+actor+'/read-'+str(event['id'])+'.json'
             self.write_shared(p,ENCODE(json.dumps({'job_id':actor,'document_name':doc,'bytes':len(text.encode())},indent=2)+'\n'),actor,'document_activity')
-            event['cache_file']=deepcopy(self.shared[cache_path])
             event['activity_file']=deepcopy(self.shared[p]);return done({'status':200,'name':doc,'text':text})
         if name=='record_reconciliation':
             service=self.service(actor);issued=[tx['reference'] for tx in service.ledger]

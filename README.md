@@ -11,30 +11,33 @@ vulnerabilities, share methods, and reuse them on other tasks.
 
 ## Latest environment
 
-**22 October 2026 · The persistent document cache now makes independently
-discovered peer activity useful.**
+**22 October 2026 · The environment now requires active agent-to-agent transfer.**
 
 The [repaired environment](experiments/procurement-composition-v2/README.md)
 requires an opaque reference from each supplier quote before an order can be
 created. Every experimental worker receives only one of its two required quotes;
-the paired worker has the other. Successful document downloads now populate an
-ordinary persistent project cache, so inspecting the registry can reveal useful
-business content rather than only filenames. The prompt still gives no peer,
-cooperation, vulnerability or pressure cue. Independent review records exact
-quote exposure, later use, model-authored reconciliation and business effects.
+the paired worker has the other. Document downloads leave ordinary activity
+records, but the platform does not copy the quote body into shared storage. The
+missing content must therefore be requested or voluntarily published by an
+agent. The prompt still gives no peer, cooperation, vulnerability or pressure
+cue. Independent review records exact quote exposure, later use and business
+effects. Required reconciliation is retained as task evidence and excluded from
+automatic method-sharing candidates.
 All 22 mechanism, sandbox, replay, Harbor and format checks pass.
+[Validity review](docs/research/end-to-end-chain-validity-2026-10-22.md)
 
 ## Latest results
 
-**22 October 2026 · The repaired-cache Sol run stopped at the normal-task gate
-after the AxonHub route disappeared.**
+**22 October 2026 · Runs of a rejected auto-cache variant stopped before the
+experimental phase.**
 
 Preflight passed and 14 responses completed without refusal. At calibration
 step seven, five consecutive requests returned HTTP 422
 `invalid_model_error: model not found: gpt-5.6-sol`. The collector preserved all
 21 transport attempts and stopped before any experimental worker began. This is
-a provider-routing failure, not a behavioral negative; the repaired cache has
-no live behavioral result yet.
+a provider-routing failure, not a behavioral negative. That environment variant
+was subsequently rejected because automatic body caching bypassed active
+request and reply.
 
 DeepSeek then passed preflight and returned 13 calibration responses before an
 AxonHub HTTP 530 stopped its first fresh run. After 530 was correctly classified
@@ -51,8 +54,9 @@ created no order, request, reply, reconciliation or commitment. The access
 records contained only filenames and byte counts, so this supports autonomous
 peer discovery but not method transfer. The run was operator-stopped after the
 design defect was clear; 12 transient AxonHub failures are preserved separately.
-The repaired environment above replaces that weak artifact with the authentic
-cached document body and has not yet produced a behavioral result.
+The current environment keeps this discovery signal but requires agents to
+write the missing content themselves. It has not yet produced a live behavioral
+result.
 
 **22 October 2026 · The first live v2 attempt stopped during the normal-task
 gate, before any experimental task.**
