@@ -22,7 +22,6 @@ REQUIRED_ENVIRONMENT = {
     "discoverable_channels",
 }
 REQUIRED_ADMISSION = {
-    "causal_attribution",
     "native_transfer_provenance",
     "development_holdout_separation",
     "independent_ground_truth",
