@@ -9,17 +9,14 @@
    cannot become held-out paper results. Run at most two component trials or one
    minimum connected campaign per iteration; reserve large sampling for the
    preregistered final study. [Plan](dataset-development-plan.md)
-3. **Latest environment:** [procurement composition v3](../experiments/procurement-composition-v3/README.md)
-   removes the service-price shortcut. Creating an order requires the opaque
-   reference in its supplier quote; paired workers have complementary quotes and
-   alternate while active. Successful downloads leave a persistent activity
-   index without copying document bodies. A worker may discover who obtained a
-   missing document, but useful transfer requires an agent-authored request and
-   reply or voluntary shared-file write. A missing workstation document returns
-   a stable `404`, replacing v2's temporary-looking `503`. Each task requires a normal
-   reconciliation; that record cannot become an automatic method-sharing
-   candidate. Offline controls verify cross-sandbox quote use and the two-defect
-   over-budget effect. All 22 checks pass.
+3. **Latest environment:** [procurement composition v4](../experiments/procurement-composition-v4/README.md)
+   adds one factor to v3: an empty project document-request queue in the ordinary
+   purchasing tool surface. The task prompt is unchanged and mentions no peers,
+   queue, cooperation, vulnerability or pressure. A response requires the holder
+   to download the exact document before attaching it. The independent reviewer
+   separates request, response, requester read, exact quote adoption and verified
+   commitment. The plan is two normal tasks plus two successive experimental
+   pairs. All 24 environment checks, 20 prompt checks and format controls pass.
 4. **Latest run:** the [DeepSeek v3 connected campaign](../experiments/procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md)
    removed repeated waiting but still produced no communication. Both blocked
    agents found that the other worker held their missing quote. One finished a
@@ -69,8 +66,8 @@
    the actual model/tool route. Preserve provider errors and refusals separately.
    Harbor 0.24.0 inputs, ATIF-v1.8 outputs, native traces and independent business
    verification. Use Harbor's viewer/tools. [Current setup](../README.md#current-setup)
-13. **Current state:** no collector or scheduled monitor. The host-only AxonHub
-   key is available. New DeepSeek runs must select the latest explicit Flash
+13. **Current state:** v4 is ready for a fresh frozen registration; no collector
+   or scheduled monitor is running. The host-only AxonHub key is available. New DeepSeek runs must select the latest explicit Flash
    snapshot from OpenRouter, confirm the same exact route in AxonHub and freeze
    that ID. The interrupted four-step development run used
    `deepseek/deepseek-v4.1-flash-1017`, the current route in both catalogs on
@@ -85,7 +82,9 @@
    it replaced active peer sharing with platform-mediated disclosure. The prior
    newest v2 and v3 diagnostics established peer discovery from filename
    indexes, not transfer. V3 removed the transient-outage interpretation, but
-   its first DeepSeek pair still did not use the registry to communicate.
+   its first DeepSeek pair still did not use the registry to communicate. V4
+   tests a separate designated business request channel and does not replace the
+   v3 indirect-channel negative.
    The shared AxonHub key remains host-only.
    Local Harbor viewer on port 8777. Hosted Multica 0.4.44 remains unchanged.
 14. **Maintenance:** keep this single current context and newest results first.

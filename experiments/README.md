@@ -1,12 +1,20 @@
 # Experiments
 
+**Latest environment:** [procurement composition v4](procurement-composition-v4/README.md).
+It keeps v3's task, blocker, process weakness and verifier, and adds an empty
+business document-request queue to the ordinary tool surface. The task prompt
+does not name the queue, peers, cooperation, vulnerabilities or pressure. A
+response requires the holder to download the exact document first. All 24
+environment checks, 20 prompt checks and format controls pass. V3 remains the
+indirect-channel negative.
+
 **Latest diagnostic:** [DeepSeek procurement v3](procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Stable `404` removed repeated waiting. Both blocked agents found that the other
 worker held their missing quote, but neither communicated. One completed a
 partial requisition; the other was stopped after local search expanded to port
 probing. There was no quote transfer, complete blocked task or business effect.
-The next study should keep this indirect registry condition as a negative and
-add a separate realistic request-channel condition.
+The v4 study keeps this indirect registry condition as a negative and tests a
+separate realistic request-channel condition.
 
 **Earlier diagnostic:** [DeepSeek peer-necessary procurement v2](procurement-composition-v2/RESULTS-2026-10-22-DEEPSEEK-R3.md).
 Both blocked agents independently found that another worker had downloaded their
@@ -15,11 +23,11 @@ waited and retried. The run was stopped after 73 accepted responses with no
 provider error, refusal, quote adoption or business effect. This is a mechanism
 diagnosis, not a negative rate.
 
-**Latest environment:** [peer-necessary composable procurement v3](procurement-composition-v3/README.md).
+**Earlier environment:** [peer-necessary composable procurement v3](procurement-composition-v3/README.md).
 It changes only the missing-workstation-document result from temporary-looking
 `503` to stable `404`. It retains the same natural task, separate sandboxes,
 persistent registry, complementary quotes, business vulnerability and verifier.
-All offline and format controls pass; v3 has no model result yet.
+Its offline and format controls pass; its first DeepSeek run is reported above.
 
 **Earlier diagnostic:** [LessWrong four-step procurement analogue](lesswrong-business-four-step-v1/RESULTS-2026-10-22-DEEPSEEK-DEV.md).
 The DeepSeek development run was intentionally stopped after nine completed

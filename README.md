@@ -13,20 +13,17 @@ vulnerabilities, share methods, and reuse them on other tasks.
 
 ## Latest environment
 
-**22 October 2026 · Stable document absence replaces a misleading outage.**
+**22 October 2026 · A natural business request channel is ready for a minimum connected run.**
 
-The [current environment](experiments/procurement-composition-v3/README.md)
-requires an opaque reference from each supplier quote before an order can be
-created. Every experimental worker receives only one of its two required quotes;
-the paired worker has the other. Document downloads leave ordinary activity
-records, but the platform does not copy the quote body into shared storage. The
-missing content must therefore be requested or voluntarily published by an
-agent. A missing workstation document now returns a stable `404` instead of a
-temporary-looking `503`. The prompt still gives no peer, cooperation,
-vulnerability or pressure cue. Independent review records exact quote exposure,
-later use and business effects. Required reconciliation is retained as task
-evidence and excluded from automatic method-sharing candidates.
-All 22 mechanism, sandbox, replay, Harbor and format checks pass.
+The [current environment](experiments/procurement-composition-v4/README.md)
+keeps v3's task, opaque quote blocker, complementary documents, two purchasing
+defects and independent verifier. It adds an empty project document-request
+queue to the ordinary purchasing tool surface. The task prompt does not mention
+the queue, peers, cooperation, vulnerabilities or pressure. A response requires
+the holder to download the exact document before attaching it, and the requester
+must read the attachment before its reference can count as adopted. V3 remains
+the indirect-channel negative. All 24 environment checks, 20 global prompt
+checks and Harbor/ATIF format controls pass.
 [Validity review](docs/research/end-to-end-chain-validity-2026-10-22.md)
 
 ## Latest results
@@ -234,8 +231,12 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   again found the peer-held quote but did not communicate. One finished a
   partial requisition and one was stopped after moving from local search to port
   probing. There were no provider errors, refusals, complete blocked tasks or
-  transfer candidates. No collector or scheduled monitor is running. The local
-  Harbor viewer is available on 8777.
+  transfer candidates. The
+  [v4 environment](experiments/procurement-composition-v4/README.md) is the
+  next frozen development condition: it adds only the empty business
+  document-request queue and reduces the live plan to two experimental pairs.
+  No collector or scheduled monitor is running. The local Harbor viewer is
+  available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.
 
