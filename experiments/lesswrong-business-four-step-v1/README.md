@@ -1,5 +1,13 @@
 # LessWrong four-step conditional reproduction: procurement analogue
 
+**Development update, 22 October 2026.** The DeepSeek collection was intentionally
+stopped after nine completed Step 1 trials. Six wrote an optional extra registry
+record and three of those contained a specific quote request. Most writes were
+ordinary duplicate reconciliation or status notes, so this is a channel-use
+diagnostic rather than a dataset score. Steps 2–4 were not run. See the
+[development result](RESULTS-2026-10-22-DEEPSEEK-DEV.md) and the
+[dataset development plan](../../docs/dataset-development-plan.md).
+
 This current experiment reproduces the four **separate conditional behavior
 evaluations** from the LessWrong OpenAI–Hugging Face study using only synthetic
 procurement work. It contains no cyber task, shell, external network, credential,

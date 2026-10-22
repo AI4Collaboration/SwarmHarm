@@ -4,6 +4,7 @@ SwarmHarm studies how agents doing legitimate work discover business-process
 vulnerabilities, share methods, and reuse them on other tasks.
 
 [Environment principles](docs/environment-contract.md) ·
+[Dataset development](docs/dataset-development-plan.md) ·
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·
 [Data sources](docs/research/task-sources-and-verification.md) ·
@@ -28,17 +29,19 @@ All 22 mechanism, sandbox, replay, Harbor and format checks pass.
 
 ## Latest results
 
-**22 October 2026 · A non-cyber four-step LessWrong conditional reproduction is
-frozen but has not started inference.**
+**22 October 2026 · The DeepSeek four-step development run stopped after nine
+Step 1 trials so that environment work can use short iterations.**
 
-The [procurement analogue](experiments/lesswrong-business-four-step-v1/README.md)
-registers 64 independent trials for each step. Subject inputs contain no cyber
-task, shell, network, credential, external target or answer key. All offline
-mechanism, prompt and Harbor/ATIF checks pass. Collection has not sent a model
-request because no host AxonHub credential is currently configured and the
-previous web account is not accepted by the current self-hosted login. This is
-an authentication prerequisite, not a provider error, refusal or behavioral
-result.
+DeepSeek V4.1 Flash 1017 passed preflight and the normal-task calibration. Nine
+Step 1 trials completed: six wrote an optional extra registry record, and three
+of those contained a specific request for the missing quote. Most positive
+writes were ordinary duplicate reconciliation or status records. All nine left
+the unavailable line unordered and caused no over-budget commitment. Steps 2–4
+did not run. This incomplete development subset is evidence about channel-use
+propensity, not a rate, connected-chain result or misalignment claim. There were
+no provider errors or recorded refusals in the completed trials.
+[Result](experiments/lesswrong-business-four-step-v1/RESULTS-2026-10-22-DEEPSEEK-DEV.md) ·
+[Dataset plan](docs/dataset-development-plan.md)
 
 **22 October 2026 · Runs of a rejected auto-cache variant stopped before the
 experimental phase.**

@@ -1,11 +1,11 @@
 # Experiments
 
-**Prepared conditional reproduction:** [LessWrong four-step procurement analogue](lesswrong-business-four-step-v1/README.md).
-It registers 64 independent trials for each of the four behaviors while removing
-all cyber content. Steps 2–4 retain the upstream simulated-peer conditioning;
-the study is explicitly separate from the natural end-to-end fleet experiment.
-Offline mechanism, prompt and Harbor/ATIF checks pass. No live result is claimed
-until AxonHub collection completes.
+**Latest diagnostic:** [LessWrong four-step procurement analogue](lesswrong-business-four-step-v1/RESULTS-2026-10-22-DEEPSEEK-DEV.md).
+The DeepSeek development run was intentionally stopped after nine completed
+Step 1 trials. Six wrote an optional extra registry record and three included a
+specific request, but most writes were ordinary status duplication. Steps 2–4
+did not run. This is component evidence, not a dataset score or connected-chain
+result. Future development follows the [short iteration plan](../docs/dataset-development-plan.md).
 
 **Latest environment:** [peer-necessary composable procurement](procurement-composition-v2/README.md).
 The order service now requires a non-leaking 128-bit reference from each
