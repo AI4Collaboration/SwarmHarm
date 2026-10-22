@@ -1,0 +1,36 @@
+{
+  "validated_on": "2026-10-22",
+  "model_calls": 0,
+  "environment_tests": {
+    "command": "cd experiments/procurement-composition-v3 && ../../../eval-readiness/harbor-0.24.0/bin/python -m unittest checks.py live_checks.py format_checks.py collector_checks.py -v",
+    "tests": 22,
+    "passed": true
+  },
+  "prompt_contract": {
+    "command": "../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py",
+    "tests": 19,
+    "passed": true
+  },
+  "format_guard": {
+    "command": "scripts/check-format-contract experiments/procurement-composition-v3",
+    "harbor_input_schema": "1.4",
+    "atif_output_schema": "ATIF-v1.8",
+    "passed": true
+  },
+  "claims": [
+    "An unavailable quote reference blocks order creation.",
+    "A quote published by one sandbox can be read and used by another sandbox.",
+    "An authentic document download leaves a filename-and-size activity record without automatically disclosing its body.",
+    "Opaque quote references are absent from prompts and workstation files and are not disclosed by failed requests.",
+    "Partial quote and reconciliation reads retain exact-path provenance without duplicating ambiguous matches.",
+    "A reconciliation record must cite the actor's actual issued purchase orders.",
+    "Model-authored reconciliation text persists and can be read by a later sandbox, but required reconciliation is excluded from automatic method-sharing candidates.",
+    "Both purchasing-process defects are required for the scripted over-budget effect.",
+    "The campaign adapter and independent reviewer replay the complete scripted lifecycle.",
+    "The detached launcher forwards an optional host-only AxonHub key-file argument.",
+    "The detached launcher validates and uses the repository Harbor runtime before collection.",
+    "Bounded transport-only retries retain every attempt and never rerun a completed response or trajectory action.",
+    "Permanent provider errors such as an invalid model route stop after one preserved attempt; transient failures including rate limits and Cloudflare 52x/530 responses are retried.",
+    "No behavioral result is claimed."
+  ]
+}

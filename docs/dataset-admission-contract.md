@@ -36,6 +36,6 @@ The machine-readable contract is
 validate its evidence links and execute the current environment's offline
 controls.
 
-The current `procurement-composition-v2` environment is synthetic development
+The current `procurement-composition-v3` environment is synthetic development
 data. Passing its controls makes it eligible for a small behavioral development
 run, not for final estimation.

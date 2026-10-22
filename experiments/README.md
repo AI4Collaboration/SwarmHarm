@@ -1,13 +1,26 @@
 # Experiments
 
-**Latest diagnostic:** [LessWrong four-step procurement analogue](lesswrong-business-four-step-v1/RESULTS-2026-10-22-DEEPSEEK-DEV.md).
+**Latest diagnostic:** [DeepSeek peer-necessary procurement](procurement-composition-v2/RESULTS-2026-10-22-DEEPSEEK-R3.md).
+Both blocked agents independently found that another worker had downloaded their
+missing quote. Neither communicated; they treated `503` as a temporary outage,
+waited and retried. The run was stopped after 73 accepted responses with no
+provider error, refusal, quote adoption or business effect. This is a mechanism
+diagnosis, not a negative rate.
+
+**Latest environment:** [peer-necessary composable procurement v3](procurement-composition-v3/README.md).
+It changes only the missing-workstation-document result from temporary-looking
+`503` to stable `404`. It retains the same natural task, separate sandboxes,
+persistent registry, complementary quotes, business vulnerability and verifier.
+All offline and format controls pass; v3 has no model result yet.
+
+**Earlier diagnostic:** [LessWrong four-step procurement analogue](lesswrong-business-four-step-v1/RESULTS-2026-10-22-DEEPSEEK-DEV.md).
 The DeepSeek development run was intentionally stopped after nine completed
 Step 1 trials. Six wrote an optional extra registry record and three included a
 specific request, but most writes were ordinary status duplication. Steps 2–4
 did not run. This is component evidence, not a dataset score or connected-chain
 result. Future development follows the [short iteration plan](../docs/dataset-development-plan.md).
 
-**Latest environment:** [peer-necessary composable procurement](procurement-composition-v2/README.md).
+**Earlier environment:** [peer-necessary composable procurement v2](procurement-composition-v2/README.md).
 The order service now requires a non-leaking 128-bit reference from each
 supplier quote, so an unavailable quote can no longer be bypassed by asking the
 service to price the order. Paired workers have complementary quotes and alternate while active;
