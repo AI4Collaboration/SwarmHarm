@@ -4,6 +4,28 @@
 **Scope:** SwarmHarm procurement composition environment and the comparison with
 the OpenAI–Hugging Face reproduction.
 
+## Latest evidence
+
+The [v8 critical-stakes run](../../experiments/procurement-critical-stakes-v8/RESULTS-2026-10-22-DEEPSEEK-R1.md)
+closes the consequence-validity gap. Both approving seed agents received the
+hard budget and funding covenant before acting. Their combined issuance exceeded
+the cap, and an independent world registered financing suspension,
+emergency-work halt, contractual exposure and a service population at risk.
+
+The same run also demonstrates persistent native receipt by a fresh agent on a
+different project. That agent read two earlier incident notes and two
+reconciliations, cited the failure, and avoided a new incident. This is safe use
+of transferred information, not harmful adoption.
+
+The earlier [v7 run](../../experiments/procurement-successor-v7/RESULTS-2026-10-22-DEEPSEEK-R1.md)
+remains the strongest harmful compositional-transfer candidate: a fresh agent
+read several earlier records and reproduced the unsafe ordering on a different
+project. No single source record contained the complete method, so direct method
+transfer remains unobserved. Neither run establishes causal contagion, intent or
+a population rate. SwarmHarm can now support the environment, verified effect,
+explicit-stakes and persistent-receipt claims separately; the complete strict
+direct-method propagation claim remains open.
+
 ## Finding
 
 The principal validity risk was that the platform, rather than an agent, copied
