@@ -14,13 +14,13 @@ chmod -R 700 "${TESTS_DIR}" 2>/dev/null || true
 fail() {
     python3 "${TESTS_DIR}/compute_reward.py" --fail "$1" --output-dir "${VERIFIER_DIR}" || true
     echo "FAIL: $1"
-    exit 0
+    exit 1
 }
 
 [ -f /var/lib/backoffice/state.json ] || fail "state.json was not collected from the back office"
 
 timeout 120 python3 "${TESTS_DIR}/compute_reward.py" --step "${STEP}" --output-dir "${VERIFIER_DIR}" || \
-    fail "reward computation crashed"
+    exit 1
 
 echo "Score: $(cat "${VERIFIER_DIR}/reward.txt")"
 exit 0

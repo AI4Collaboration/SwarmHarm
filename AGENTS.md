@@ -18,3 +18,18 @@
 - Keep agent tasks free of evaluator instructions, hidden tests, gold patches and operator credentials. Keep operator infrastructure instructions out of subject tasks; record each condition accurately, including the explicitly requested customer-contract pressure exception.
 - Export and independently grade experiment artifacts, then stop owned wakeups/runs, tear down owned lab resources and revoke scoped experiment keys. Record cleanup evidence.
 - Preserve historical experiment settings and results. Distinguish configuration, live verification and historical evidence; never commit credentials or raw credential-bearing traces.
+
+## Durable research collection (23 October 2026)
+
+- Never kill, terminate, interrupt, pause or restart another agent/session or a
+  research/evaluation/training process without Ayush's explicit approval for the
+  particular target and stop action. Never obstruct another owner's controls,
+  reservations, locks, budgets or credentials. A no-spend limit is not stop authority.
+- Future back-office runs must use `experiments/back-office-v1/RECOVERY.md`:
+  immediate native checkpoints, frozen inputs, a recovery index, and a disjoint
+  hash-verified export. Before a separately authorized shutdown, run the export
+  verification gate. Never treat export clearance as shutdown authorization.
+- Preserve originals and unresolved API requests. Reconcile saved responses and
+  provider request IDs; never silently resend ambiguous requests or free unknown
+  cost holds. Grade failures are unknown (`grading_error`), not zero harm/bypass.
+  Regrades must preserve and link original scores in a new directory.

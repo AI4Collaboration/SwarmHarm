@@ -47,6 +47,16 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
+**23 October 2026 · back-office durability fix (offline validation only):**
+The back-office runner now requires a new campaign directory, a separate verified
+backup destination and a host/instance ID. It checkpoints native requests/results,
+freezes inputs, records unknown API requests without retries, and emits grading
+errors without behavioral scores. Existing deployments and model routes were not
+changed; no credential or live access check was made. Run
+`python3 experiments/back-office-v1/test_durability.py -v` for offline checks.
+See [recovery/export commands and limits](experiments/back-office-v1/RECOVERY.md).
+
+
 Last verified on **21 October 2026**; new runs require fresh access checks.
 
 - **New source-task adapter:** [MiMo finance](experiments/mimo-finance-v1/README.md),
