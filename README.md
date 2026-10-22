@@ -43,15 +43,19 @@ either model's single trial.**
 
 ## Format and debugging
 
-**Input: Harbor tasks. Output: ATIF-v1.8 trajectories, native traces and separate
-business-verifier evidence.** Both latest exports passed schema and history
-checks. Each agent keeps its own context and trajectory.
+**Input: one schema-validated Harbor task package per agent context. Output:
+ATIF-v1.8 trajectories, native traces and separate business-verifier evidence.**
+Input-schema validation, execution mode and output-schema validation are recorded
+as separate claims. Multi-agent studies use their frozen campaign adapter until
+generic Harbor scheduling can reproduce separate workstations, admission order
+and persistent shared state. Each agent keeps its own context and trajectory.
 
 ```sh
 ./scripts/harbor view jobs --jobs --host 127.0.0.1 --port 8777 --no-build
 ```
 
 Use Harbor's viewer, `analyze` and `check` tools. [Format contract](tasks/README.md)
+New collectors must pass the repository format guard before any model call.
 
 ## Current setup
 

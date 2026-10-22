@@ -9,6 +9,21 @@ ATIF exports and Harbor viewer inspection passed. These are
 synthetic tasks, not MiMo imports. Historical experiments retain their original
 runners and frozen inputs.
 
+Three claims must always remain separate:
+
+1. **Harbor input:** every agent context has a schema-valid task package, and its
+   `instruction.md` is the exact runtime user instruction.
+2. **Execution:** record whether Harbor ran the trial natively or a registered
+   campaign adapter consumed the task. A Harbor package alone does not prove
+   native scheduling.
+3. **ATIF output:** validate each exported trajectory and its continuity against
+   native request, response and tool records. ATIF alone proves neither input nor
+   execution format.
+
+Current-format experiments must state these fields in `format-contract.json`,
+run `scripts/check-format-contract`, execute their format controls during prepare,
+and seal the hashes of every task package before inference.
+
 ## Task package
 
 ```text

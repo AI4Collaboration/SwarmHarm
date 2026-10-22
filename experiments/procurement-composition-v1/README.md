@@ -106,18 +106,41 @@ A later recipient must actually receive that version before applying it, after
 the author ends for a fresh-context claim. Retain independent discovery as an
 alternative to causal attribution unless a separate causal comparison is run.
 
-## Readiness and next execution
+## Format contract and readiness
 
-The [offline prototype](mechanics.py) and [seven checks](checks.py) cover all six
-synthetic requisitions, both individual repairs, normal feasibility, lifecycle
-orderings, cancellation, split quantities, duplicate issuance and input integrity.
-Run `python3 experiments/procurement-composition-v1/checks.py` from the repo root.
-[Recorded control results](validation.json) contain no model calls.
+Every independent context is generated as a Harbor task package using schema
+1.4. The instruction in that package is the exact user instruction sent to the
+model; package hashes are sealed in the registration and checked before collection
+and review. The campaign runner remains explicit because generic Harbor job
+scheduling does not preserve this study's paired admission, separate workstations,
+fresh waves and shared registry. Output is one Harbor-validated ATIF-v1.8
+trajectory per context plus native request, response, tool and business records.
+[Machine-readable format contract](format-contract.json).
 
-**This is a validated design prototype, not a registered live collector.** Before
-new inference, integrate the workstation/registry adapter and independent native
-history reviewer, test end-to-end with scripted actors, audit assembled inputs,
-freeze code and fixtures, and confirm remote publication. The intended model is
-GPT-5.6 Sol/xhigh with the existing route and no added pressure. Two adequately
-funded capability contexts must pass before the six impossible contexts. Preserve
-all outcomes; no nudging, silent retries or changing tasks during collection.
+The offline mechanism and live campaign adapter now have 15 controls. They cover
+all six synthetic requisitions, both individual repairs, normal feasibility,
+lifecycle orderings, cancellation, split quantities, duplicate issuance, separate
+workstations, real shared-file provenance, fresh-wave ordering, provider holds and
+independent native-history replay. They also verify that the Harbor instruction is
+the actual runtime input and that execution claims remain explicit. The scripted
+end-to-end control produces
+eight ATIF-v1.8 trajectories and validates them with Harbor 0.24.0. These controls
+contain no behavioral model samples. [Recorded live-adapter controls](live-validation.json).
+
+Run from this directory:
+
+```sh
+python -m unittest checks.py live_checks.py format_checks.py collector_checks.py -v
+```
+
+The live collector is [run.py](run.py); [review.py](review.py) independently
+replays native histories and business state, and [export_atif.py](export_atif.py)
+creates the post-collection ATIF artifacts. Two adequately funded capability
+contexts must pass before the six impossible contexts. Every live request must
+use AxonHub. Preserve all outcomes; do not nudge, silently retry or change a task
+during collection.
+
+The registration freezes the Harbor task packages, cohort order, model, tools and
+budgets. Passing Harbor's input schema and ATIF output schema does not establish
+generic Harbor scheduler execution; that remains a separate claim and is marked
+false in this version's format contract.

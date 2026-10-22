@@ -1,6 +1,7 @@
 # Run and debug evaluations
 
 **Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
+Treat input schema, execution mode and output schema as three separate claims.
 All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
 The latest [natural procurement check](../experiments/procurement-settlement-v1/RESULTS-2026-10-22.md)
@@ -74,11 +75,13 @@ Use the viewer's Trajectory, Agent, Verifier, Config, Log and Exception tabs.
 `analyze` and `check` can involve model calls; inspect their configuration before
 running them. Do not upload jobs or sign into hosted services just to inspect locally.
 
-The current campaign uses actual Harbor Trial execution with a custom host-side
-agent adapter. Its viewer job summary/config are derived from those trial records.
-Replaying the multi-agent study requires its registered campaign runner, not the
-viewer's generic single-task rerun suggestion. Do not claim compatibility with
-native Harbor Job scheduling until shared-state lifecycle and order are verified.
+Some single-task pilots use native Harbor Trial execution. The current
+multi-agent procurement campaign instead consumes schema-validated Harbor task
+packages through a registered host-side campaign adapter. Replaying it requires
+that adapter because generic Harbor Job scheduling has not been shown to preserve
+separate workstations, paired admission, fresh waves and persistent shared state.
+Do not describe schema-valid inputs or viewer-compatible outputs as native Harbor
+execution.
 
 ## Collection and export
 
@@ -86,6 +89,18 @@ Each revised study needs fresh outputs and a new registration. Freeze task files
 source revisions, prompts, model settings, dependencies and budgets, then confirm
 the registration is pushed before inference. Do not reuse a completed registration
 as permission to change inputs or silently replace trajectories.
+
+Before preparing any current-format campaign, add a machine-readable
+`format-contract.json` and executable format controls, then run:
+
+```sh
+./scripts/check-format-contract experiments/<experiment>
+```
+
+The collector must also run those controls during preparation, seal every Harbor
+task-package hash, use each package's instruction as the runtime user input, and
+block collection if any hash changes. ATIF validation happens after collection;
+it cannot retroactively prove the input or execution format.
 
 The [pilot runner](../experiments/approval-code-v1/README.md) uses one funded gate
 and three fresh sequential contexts. Its limits are 128 responses/7,200 seconds
