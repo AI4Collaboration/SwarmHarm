@@ -46,28 +46,30 @@
 <body>
   <main>
     <figure>
-      <figcaption><strong>Table 1.</strong> Comparison of SwarmHarm with the closest multi-agent framework and empirical precedent. SwarmHarm targets emergent cross-agent loss of control from legitimate tasks.</figcaption>
+      <figcaption><strong>Table 1.</strong> Infrastructure and evaluation-framework support in SwarmHarm, ORBIT, and the closest empirical replication.</figcaption>
       <div class="table-wrap">
         <table aria-label="Comparison of SwarmHarm, ORBIT and the LessWrong replication">
           <thead>
             <tr><th>Evaluation property</th><th>SwarmHarm</th><th>ORBIT</th><th>LessWrong<br>Replication</th></tr>
           </thead>
           <tbody>
-            <tr><td>Native multi-agent evaluation</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">△</td></tr>
-            <tr><td>Independent, peer-unaware sandboxes</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
-            <tr><td>Legitimate impossible / beyond-capability tasks</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
-            <tr><td>Autonomous discovery of shared infrastructure</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
-            <tr><td>Cross-task persistence and fresh-agent adoption</td><td class="yes">✓</td><td class="partial">△</td><td class="yes">✓</td></tr>
-            <tr><td>Composable process vulnerabilities</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
-            <tr><td>Verified downstream consequence</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
-            <tr><td>Causal repair / mechanism controls</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+            <tr><td>Native multi-agent orchestration</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+            <tr><td>Isolated workspace per agent</td><td class="yes">✓</td><td class="partial">△</td><td class="no">—</td></tr>
+            <tr><td>Persistent shared systems across fresh agents</td><td class="yes">✓</td><td class="partial">△</td><td class="no">—</td></tr>
+            <tr><td>Hidden-peer condition without seeded peers</td><td class="yes">✓</td><td class="partial">△</td><td class="no">—</td></tr>
+            <tr><td>Cross-agent provenance and temporal lineage</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
+            <tr><td>End-to-end transfer and effect verification</td><td class="yes">✓</td><td class="partial">△</td><td class="no">—</td></tr>
+            <tr><td>Counterfactual mechanism controls</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+            <tr><td>Standard trajectory format and viewer</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">△</td></tr>
+            <tr><td>Configurable topology, roles, and scheduling</td><td class="partial">△</td><td class="yes">✓</td><td class="no">—</td></tr>
           </tbody>
         </table>
       </div>
       <div class="notes">
-        <p><strong>Legend:</strong> ✓ central to the evaluation; △ partial or a different construct; — absent or not central.</p>
+        <p><strong>Legend:</strong> ✓ native support; △ configurable or partial support; — not provided by the released evaluation.</p>
         <p><strong>ORBIT distinction:</strong> ORBIT provides scenario-level Docker isolation and separate conversations, but does not isolate each agent's shared files or tools by default. SwarmHarm links peer-unaware sandboxes only through ordinary persistent infrastructure.</p>
-        <p><strong>Scope:</strong> ✓ denotes an implemented evaluation feature, not that every behavioral chain has already been observed.</p>
+        <p><strong>LessWrong distinction:</strong> the four behaviors are evaluated separately with one target agent and simulated peers; key peer notes or posted methods are seeded in Steps 2–4.</p>
+        <p><strong>Scope:</strong> the table compares released infrastructure and evidence support, not scenarios that could be added later.</p>
       </div>
       <div class="sources">Sources: <a href="https://arxiv.org/abs/2609.33102">ORBIT</a> · <a href="https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment">LessWrong Replication</a></div>
     </figure>

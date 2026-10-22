@@ -26,12 +26,18 @@ AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':900,'max_transport_attempts_per_request':5,'transport_retry_backoff_seconds':2,
         'max_responses_per_actor':1024,'max_tools_per_actor':2048,
         'max_actor_seconds':43200,'max_batch_seconds':172800,'provider_concurrency':1,'program_timeout_seconds':30,'active_contexts_calibration':2,'active_contexts_natural':2}
+RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}
 
 def load(path):return json.loads(Path(path).read_text())
 def save(path,value):lab.infra.atomic_json(path,value)
 
 def sha(path):return sha256(Path(path).read_bytes()).hexdigest()
 def utc():return datetime.now(timezone.utc).isoformat()
+def retryable_transport_error(error,error_file):
+    if isinstance(error,(ValueError,AssertionError)):return False
+    if not error_file.exists():return True
+    payload=load(error_file);status=payload.get('http_status')
+    return status is None or status in RETRYABLE_HTTP_STATUS
 def module(name,path):
     spec=importlib.util.spec_from_file_location(name,path);result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result);return result
 
@@ -117,7 +123,7 @@ def collect(root):
                 transport_attempts.append({'path':str((folder/label).relative_to(root)),'attempt':attempt,
                     'status':'failed','classification':attempt_class,'error_type':type(error).__name__,'at':utc()})
                 save(root/'transport-attempts.json',transport_attempts)
-                retryable=not isinstance(error,(ValueError,AssertionError))
+                retryable=retryable_transport_error(error,error_file)
                 if retryable and attempt<limit and time.monotonic()<deadline:
                     time.sleep(BUDGET['transport_retry_backoff_seconds']);continue
                 folder.mkdir(parents=True,exist_ok=True)

@@ -9,6 +9,15 @@ import export_atif,launch,review,run
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_only_transient_transport_errors_are_retried(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'error.json'
+            run.save(path,{'http_status':422,'provider_error':{'type':'invalid_model_error'}})
+            self.assertFalse(run.retryable_transport_error(RuntimeError('HTTP 422'),path))
+            run.save(path,{'http_status':429,'provider_error':{'type':'rate_limit'}})
+            self.assertTrue(run.retryable_transport_error(RuntimeError('HTTP 429'),path))
+            path.unlink();self.assertTrue(run.retryable_transport_error(RuntimeError('connection closed'),path))
+
     def test_launcher_forwards_host_only_key_file(self):
         root=Path('/tmp/swarmharm-frozen-study');key=Path('/tmp/axonhub-host-only.key')
         argv=launch.collector_command(root,key)
