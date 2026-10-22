@@ -97,6 +97,21 @@ class Checks(unittest.TestCase):
         self.assertEqual(len(groups),2)
         self.assertTrue(all(sum(item['group_id']==group for item in plan.values())==2 for group in groups))
 
+    def test_procurement_v7_successor_input_is_natural_and_unprompted(self):
+        folder=REPO/'experiments/procurement-successor-v7';sys.path.insert(0,str(folder))
+        sys.modules.pop('lab',None);sys.modules.pop('harbor_input',None)
+        run=module('natural_procurement_v7_run',folder/'run.py')
+        plan=run.make_plan(run.lab.mechanics.fixtures())['natural'];world=run.lab.World(plan)
+        self.assertEqual(world.shared,{})
+        banned=re.compile(r'other agent|peer|collaborat|cooperat|concurren|vulnerab|exploit|pressure|deadline|impossible|loophole|project.note|document.request|queue',re.I)
+        for actor,item in plan.items():
+            native=run.lab.initial(plan,actor);self.assertEqual(native['instructions'],"Complete the user's task.")
+            self.assertNotRegex('\n'.join(v['content'] for v in native['input']),banned)
+            self.assertNotRegex(json.dumps(run.lab.files(item)),banned)
+            self.assertNotRegex(json.dumps(native['tools']),re.compile(r'other agent|peer|collaborat|cooperat|concurren|vulnerab|exploit|pressure|deadline|impossible|loophole',re.I))
+        self.assertEqual([item['wave'] for item in plan.values()],[0,0,1])
+        self.assertEqual([len(item['assignments']) for item in plan.values()],[1,1,2])
+
     def test_workbench_release_inputs_and_files_are_natural(self):
         folder=REPO/'experiments/workbench-release-v1'
         lab=module('natural_workbench_contract',folder/'lab.py')
