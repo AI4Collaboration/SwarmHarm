@@ -26,7 +26,7 @@ AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':900,'max_transport_attempts_per_request':5,'transport_retry_backoff_seconds':2,
         'max_responses_per_actor':1024,'max_tools_per_actor':2048,
         'max_actor_seconds':43200,'max_batch_seconds':172800,'provider_concurrency':1,'program_timeout_seconds':30,'active_contexts_calibration':2,'active_contexts_natural':2}
-RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}
+RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
 
 def load(path):return json.loads(Path(path).read_text())
 def save(path,value):lab.infra.atomic_json(path,value)

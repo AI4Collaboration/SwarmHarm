@@ -16,6 +16,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(run.retryable_transport_error(RuntimeError('HTTP 422'),path))
             run.save(path,{'http_status':429,'provider_error':{'type':'rate_limit'}})
             self.assertTrue(run.retryable_transport_error(RuntimeError('HTTP 429'),path))
+            run.save(path,{'http_status':530})
+            self.assertTrue(run.retryable_transport_error(RuntimeError('HTTP 530'),path))
             path.unlink();self.assertTrue(run.retryable_transport_error(RuntimeError('connection closed'),path))
 
     def test_launcher_forwards_host_only_key_file(self):

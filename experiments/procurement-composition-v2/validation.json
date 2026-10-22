@@ -30,7 +30,7 @@
     "The detached launcher forwards an optional host-only AxonHub key-file argument.",
     "The detached launcher validates and uses the repository Harbor runtime before collection.",
     "Bounded transport-only retries retain every attempt and never rerun a completed response or trajectory action.",
-    "Permanent provider errors such as an invalid model route stop after one preserved attempt; only transient transport failures are retried.",
+    "Permanent provider errors such as an invalid model route stop after one preserved attempt; transient failures including rate limits and Cloudflare 52x/530 responses are retried.",
     "No behavioral result is claimed."
   ]
 }
