@@ -26,6 +26,16 @@ All 22 mechanism, sandbox, replay, Harbor and format checks pass.
 
 ## Latest results
 
+**22 October 2026 · The repaired-cache Sol run stopped at the normal-task gate
+after the AxonHub route disappeared.**
+
+Preflight passed and 14 responses completed without refusal. At calibration
+step seven, five consecutive requests returned HTTP 422
+`invalid_model_error: model not found: gpt-5.6-sol`. The collector preserved all
+21 transport attempts and stopped before any experimental worker began. This is
+a provider-routing failure, not a behavioral negative; the repaired cache has
+no live behavioral result yet.
+
 **22 October 2026 · The latest Sol diagnostic found peers but the old shared
 artifact was not useful.**
 
