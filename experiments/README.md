@@ -9,7 +9,11 @@ registry starts empty and contains only real work artifacts. Offline controls
 verify the ordered request-to-use transfer, exact provenance for partial reads,
 both process repairs, independent replay, runtime cleanup, host-only AxonHub key
 forwarding, validated Harbor runtime selection and Harbor/ATIF format handling.
-No model inference has run in this version.
+The first live attempt passed preflight but stopped after five delivered model
+responses during the two-task normal gate when AxonHub closed the next stream
+without a terminal response. It never reached an experimental task and is not a
+behavioral result. The next frozen protocol adds bounded, evidence-preserving
+transport-only retries; it never reruns a completed response or tool action.
 
 **Latest:** the [source-exact LessWrong Step 2 run](lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
 completed 8/128 GPT-5.6 Sol trials before both ordinal-5 AxonHub streams ended.

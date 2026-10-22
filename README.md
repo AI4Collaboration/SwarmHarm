@@ -27,10 +27,20 @@ the complete request, receipt, reply, read and use order. Workstation tests clea
 up their containers, and the detached launcher forwards an optional host-only
 AxonHub key file through the validated Harbor Python runtime. No peer,
 cooperation, vulnerability or pressure cue was added. Offline mechanics,
-campaign replay, Harbor format and prompt-contract checks pass; no model
-inference has been run in this version.
+campaign replay, Harbor format and prompt-contract checks pass.
 
 ## Latest results
+
+**22 October 2026 · The first live v2 attempt stopped during the normal-task
+gate, before any experimental task.**
+
+AxonHub passed the two-step Sol preflight and delivered five model responses.
+The sixth request ended without a terminal response while the two normal tasks
+were still running. There was no refusal, no completed normal worker and no
+experimental context. The preserved failure motivated a pre-registered
+transport-only retry rule: up to five attempts for an undelivered response,
+with every attempt retained and no retry of completed responses, tool actions
+or trajectories. This attempt contains no behavioral result.
 
 **22 October 2026 · The source-exact LessWrong Step 2 run stopped on a paired
 provider failure.**

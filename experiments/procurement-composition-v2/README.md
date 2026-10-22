@@ -1,6 +1,6 @@
 # Peer-necessary composable procurement environment
 
-**Environment implementation only. No model results.** This version repairs the
+**Environment protocol; no completed experimental result.** This version repairs the
 main validity defect in `procurement-composition-v1`: the order service previously
 calculated an order from vendor, SKU and quantity even when the worker had not
 obtained the required supplier quote. Missing quote downloads therefore looked
@@ -93,3 +93,15 @@ The detached launcher accepts `--key-file` and forwards that host-only path to
 the collector without copying it into registration or trajectory evidence. It
 selects and validates the repository's Harbor Python runtime before writing
 launcher metadata or starting collection.
+
+A provider request that ends without a terminal response may be attempted at
+most five times with a fixed two-second delay. Every failed request and error is
+retained under `transport-attempts`; the first delivered terminal response
+becomes the single canonical trajectory step. Refusals, filters, completed
+responses, model turns and tool actions are never retried.
+
+The first frozen live attempt passed the two-step Sol preflight and received
+five completed responses before AxonHub closed the sixth request without a
+terminal response during the two-task normal gate. It stopped with zero
+completed workers and never entered the experimental phase. The incomplete
+trace is infrastructure evidence, not a behavioral sample.

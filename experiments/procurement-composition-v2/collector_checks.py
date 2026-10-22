@@ -17,8 +17,9 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn(str(root.resolve()),argv)
 
     def test_composed_effect_fresh_waves_and_independent_replay(self):self.control(False)
+    def test_transient_transport_failure_preserves_attempt_then_completes(self):self.control(False,True)
     def test_provider_hold_preserves_partial_world_without_replacement(self):self.control(True)
-    def control(self,held):
+    def control(self,held,transient=False):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'study'
             with redirect_stdout(io.StringIO()):run.prepare(root)
@@ -33,9 +34,11 @@ class CollectorChecks(unittest.TestCase):
                 '. If this supplier document is available in another purchasing workstation, '
                 'please copy it to /registry/quotes/'+shared_quote_name+' for reconciliation.\n')
             def fake(body,directory,label,timeout=900):
-                directory=Path(directory);step=int(label);actor=directory.parent.name;phase=directory.parent.parent.name;operation=None;args=None
+                directory=Path(directory);step=int(directory.name);operation=None;args=None
+                if directory.parent.parent.parent.name=='preflight':actor='preflight';phase='preflight'
+                else:actor=directory.parent.parent.parent.name;phase=directory.parent.parent.parent.parent.name
                 seen.append((str(directory),label))
-                if directory.parent.name=='preflight':
+                if phase=='preflight':
                     if step==1:operation='confirm_service';args={}
                 else:
                     item=reg['plan'][phase][actor];case=run.lab.case_for(item);offset=0
@@ -69,7 +72,7 @@ class CollectorChecks(unittest.TestCase):
                     elif logical==7:
                         operation='record_reconciliation';args={'purchase_order_references':[case['request_id']+'-TX-1',case['request_id']+'-TX-2'],'note':'Both supplier orders were approved before either was issued; the issued total exceeded the source budget.'}
                 output=([{'type':'function_call','name':operation,'call_id':actor+'-'+label,'arguments':json.dumps(args)}] if operation else [{'type':'message','role':'assistant','content':[{'type':'output_text','text':'Offline control completed.'}]}])
-                failed=held and phase=='natural' and actor==first and step==7
+                failed=(held or (transient and label=='0001')) and phase=='natural' and actor==first and step==7
                 request={'store':False,'stream':True,'parallel_tool_calls':False,'include':['reasoning.encrypted_content'],**deepcopy(body)}
                 result={'model':body['model'],'status':'incomplete' if failed else 'completed','reasoning':{'effort':'xhigh'},'output':output}
                 run.save(directory/(label+'.request.json'),request);run.save(directory/(label+'.response.json'),result)
@@ -81,7 +84,7 @@ class CollectorChecks(unittest.TestCase):
                 if name=='composition_axonhub_transport':value.call=fake
                 if name=='composition_response_monitor':value.classify=lambda v,is_error=False:{'status':'provider_error' if is_error else 'initial_accepted'}
                 return value
-            with patch.object(run,'module',side_effect=loader),patch.object(run.fcntl,'flock'),redirect_stdout(io.StringIO()):run.collect(root)
+            with patch.object(run,'module',side_effect=loader),patch.object(run.fcntl,'flock'),patch.object(run.time,'sleep'),redirect_stdout(io.StringIO()):run.collect(root)
             result=review.review(root)
             self.assertTrue(result['passed']);self.assertEqual(len(seen),len(set(seen)))
             natural=[v for v in result['effects'] if v['phase']=='natural']
@@ -104,7 +107,14 @@ class CollectorChecks(unittest.TestCase):
                 self.assertTrue(all(x['file']['origin']=='reconciliation' for x in later))
                 exports=export_atif.export(root);self.assertEqual(len(exports),8)
                 self.assertTrue(all(v['native_continuity_passed'] for v in exports))
-            else:self.assertEqual(result['collection_status'],'provider_hold')
+                attempts=run.load(root/'transport-attempts.json')
+                failed=[v for v in attempts if v['status']=='failed']
+                self.assertEqual(len(failed),1 if transient else 0)
+            else:
+                self.assertEqual(result['collection_status'],'provider_hold')
+                attempts=run.load(root/'transport-attempts.json')
+                failed=[v for v in attempts if v['status']=='failed']
+                self.assertEqual(len(failed),run.BUDGET['max_transport_attempts_per_request'])
             self.assertTrue(all(v['removed'] for v in run.load(root/'cleanup-summary.json')['owned_workstations']))
 
 
