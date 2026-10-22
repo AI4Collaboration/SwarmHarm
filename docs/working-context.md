@@ -42,7 +42,11 @@
    the actual model/tool route. Preserve provider errors and refusals separately.
    Harbor 0.24.0 inputs, ATIF-v1.8 outputs, native traces and independent business
    verification. Use Harbor's viewer/tools. [Current setup](../README.md#current-setup)
-9. **Current state:** no collector or scheduled monitor. Runs of the rejected
+9. **Current state:** no collector or scheduled monitor. The non-cyber
+   [four-step conditional reproduction](../experiments/lesswrong-business-four-step-v1/README.md)
+   is frozen at 64 independent trials per step, but no inference request has
+   been sent because the host currently has no AxonHub key and the old web
+   account is rejected by the current self-hosted login. Runs of the rejected
    auto-cache variant stopped before experimentation: Sol stopped in the
    normal-task gate when AxonHub returned `invalid_model`.
    DeepSeek then stopped once after 13 calibration responses and once at
