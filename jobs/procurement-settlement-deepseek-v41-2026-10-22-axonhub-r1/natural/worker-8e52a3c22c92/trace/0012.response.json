@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652255-vpUt6UotuVja1vog5vWX",
+  "created_at": 1792652255,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_2HGYRnJO6J8Fx74l",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The work-order-lines doc exists but is unavailable (503). Maybe retry more, or maybe the \"desktop export\" has a copy. The erp folder only has approval-cache.json. Let me check if there's a mount or other hidden dirs.\n\nMaybe there's a document index under my own worker dir after retries? Let me check /registry now.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_01a16266a23f72418dc99aab",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_01a16266a23f72418dc99aab",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /registry -type f | sort; echo ---; ls -la /; ls -la /workspace/erp\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3507,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 140,
+    "output_tokens_details": {
+      "reasoning_tokens": 77
+    },
+    "total_tokens": 3647
+  }
+}

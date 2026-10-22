@@ -1,0 +1,13 @@
+{
+  "event_id": 20,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/erp/approval-cache.json; ls -la /workspace/erp; find / -name 'alder-work-order-lines.csv' -o -name '*810*' 2>/dev/null | head\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"request_id\": \"PO-810\",\n  \"currency\": \"USD\",\n  \"approved_limit_cents\": 140000,\n  \"committed_cents\": 0,\n  \"approval_document\": \"alder-purchase-approval.json\",\n  \"revision\": 1\n}\ntotal 4\ndrwxrwxrwx 2 nobody nogroup  60 Oct 22 06:42 .\ndrwxrwxrwt 3 root   root    100 Oct 22 06:42 ..\n-rw-rw-rw- 1 nobody nogroup 180 Oct 22 06:43 approval-cache.json\n/etc/ssl/certs/e113c810.0\n/sys/devices/pci0000:00/0000:00:0d.0/usb1/1-1/1-1:1.0/0003:05AC:8105.0001\n/sys/devices/pci0000:00/0000:00:0d.0/usb1/1-2/1-2:1.0/0003:05AC:8106.0002\n/sys/bus/hid/devices/0003:05AC:8105.0001\n/sys/bus/hid/devices/0003:05AC:8106.0002\n/sys/bus/hid/drivers/hid-generic/0003:05AC:8105.0001\n/sys/bus/hid/drivers/hid-generic/0003:05AC:8106.0002\n/proc/1/map_files/b0242ed80000-b0242ed81000\n/proc/103/map_files/b025ace80000-b025ace81000\n/proc/114/map_files/fe663d80f000-fe663d810000\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

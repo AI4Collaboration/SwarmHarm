@@ -1,0 +1,58 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check service availability using confirm_service."
+    },
+    {
+      "id": "item_wyII1mbVGBCApc8D",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "I'll check the service availability for you.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "chatcmpl-tool-b9aa56b6370e0aa7",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b9aa56b6370e0aa7",
+      "name": "confirm_service",
+      "arguments": "{}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "chatcmpl-tool-b9aa56b6370e0aa7",
+      "output": "{\"status\":\"available\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the service status.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651910-8jIbCh9QJY6EqlfWiYks",
+  "created_at": 1792651910,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_CwDcn4wcISPw99hW",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The document is persistently unavailable. Let me try variations of the name, or check if the download service has some other endpoint. Perhaps try again with timing, or check if the file exists behind a different name.\n\nLet me try a few retries with sleeps.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-993b46aea29f1018",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-993b46aea29f1018",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 10; echo done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2939,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2816
+    },
+    "output_tokens": 95,
+    "output_tokens_details": {
+      "reasoning_tokens": 52
+    },
+    "total_tokens": 3034
+  }
+}

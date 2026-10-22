@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652035-dAGl0y96b5nSeThz43FV",
+  "created_at": 1792652035,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_dWyw507hqKJjGCdn",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No local copy of the lines. Let me retry the read a few more times — maybe the failure is short-lived. I've tried ~8 times over ~1.5 minutes. Let me try a couple more times spaced out.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-9e1a1b39ae4f187c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9e1a1b39ae4f187c",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 60; echo retry\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4542,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3968
+    },
+    "output_tokens": 92,
+    "output_tokens_details": {
+      "reasoning_tokens": 48
+    },
+    "total_tokens": 4634
+  }
+}

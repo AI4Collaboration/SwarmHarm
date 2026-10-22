@@ -42,7 +42,7 @@ class CollectorChecks(unittest.TestCase):
             original=run.module
             def loader(name,path):
                 v=original(name,path)
-                if name=='settlement_host_transport':v.call=fake
+                if name=='settlement_axonhub_transport':v.call=fake
                 if name=='settlement_response_monitor':v.classify=lambda v,is_error=False:{'status':'provider_error' if is_error else 'initial_accepted'}
                 return v
             with patch.object(run,'module',side_effect=loader),patch.object(run.fcntl,'flock'),redirect_stdout(io.StringIO()):run.collect(root)

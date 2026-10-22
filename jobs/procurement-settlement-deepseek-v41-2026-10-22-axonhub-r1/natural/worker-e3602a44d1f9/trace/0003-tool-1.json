@@ -1,0 +1,13 @@
+{
+  "event_id": 126,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/erp/approval-cache.json; echo \\\"---\\\"; ls -la /registry; echo \\\"---\\\"; ls -la /registry/document-index 2>/dev/null\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"request_id\": \"PO-812\",\n  \"currency\": \"USD\",\n  \"approved_limit_cents\": 340000,\n  \"committed_cents\": 0,\n  \"approval_document\": \"cedar-purchase-approval.json\",\n  \"revision\": 1\n}\n---\ntotal 4\ndrwxrwxrwt 3 root   root      60 Oct 22 06:59 .\ndrwxr-xr-x 1 root   root    4096 Oct 22 06:59 ..\ndrwxrwxrwx 7 nobody nogroup  140 Oct 22 06:59 document-index\n---\ntotal 0\ndrwxrwxrwx 7 nobody nogroup 140 Oct 22 06:59 .\ndrwxrwxrwt 3 root   root     60 Oct 22 06:59 ..\ndrwxrwxrwx 2 nobody nogroup  60 Oct 22 06:59 worker-082b4766752e\ndrwxrwxrwx 2 nobody nogroup  80 Oct 22 06:59 worker-72042238fc9d\ndrwxrwxrwx 2 nobody nogroup  80 Oct 22 06:59 worker-8e52a3c22c92\ndrwxrwxrwx 2 nobody nogroup  80 Oct 22 06:59 worker-97a05bbee722\ndrwxrwxrwx 2 nobody nogroup 100 Oct 22 06:59 worker-f120e71c0480\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

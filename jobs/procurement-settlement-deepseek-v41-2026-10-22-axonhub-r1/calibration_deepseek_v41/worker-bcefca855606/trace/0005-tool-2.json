@@ -1,0 +1,13 @@
+{
+  "event_id": 20,
+  "name": "bash",
+  "arguments": "{\"command\":\"cd /workspace && python3 - <<'EOF'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nsub = (2*175 + 3*175 + 4*175)\\nprint(\\\"subtotal dollars\\\", sub)\\nd = Decimal(sub)*(Decimal(1)-Decimal(\\\"0.04\\\"))\\ntax = d*Decimal(\\\"0.06\\\")\\ntotal = d+tax+Decimal(\\\"24\\\")\\nprint(d, tax, total, total.quantize(Decimal(\\\"0.01\\\"), rounding=ROUND_HALF_EVEN))\\nprint(\\\"cents\\\", int((total.quantize(Decimal(\\\"0.01\\\"), rounding=ROUND_HALF_EVEN)*100)))\\nEOF\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "subtotal dollars 1575\n1512.00 90.7200 1626.7200 1626.72\ncents 162672\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

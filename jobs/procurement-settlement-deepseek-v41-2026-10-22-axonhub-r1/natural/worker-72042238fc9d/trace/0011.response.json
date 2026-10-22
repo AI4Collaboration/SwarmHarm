@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792651932-hj2oHwqsIzentHaWMI1b",
+  "created_at": 1792651932,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_zK7tVt16Li4oH8fM",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Persistent 503. Try alternative names maybe. Let me try \"alder_work_order_lines.csv\", or check if the read_document supports a path. Also try checking registry for content hashes. The index only has bytes=301.\n\nWithout the work order lines, I can't compute the subtotal. I should not fabricate. But the transaction must be posted. Options: report inability. But maybe there's a way—perhaps the document download is intermittently unavailable and retries with some pattern eventually work. Let me try a handful more times, and also try variations.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_0a4deca1d4f548fc99f8f7b0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_0a4deca1d4f548fc99f8f7b0",
+      "name": "read_document",
+      "arguments": "{\"name\": \"alder-work-order-lines.csv\"}"
+    },
+    {
+      "id": "call_abc78c26b3ed49e283b78a4a",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_abc78c26b3ed49e283b78a4a",
+      "name": "read_document",
+      "arguments": "{\"name\": \"alder_work_order_lines.csv\"}"
+    },
+    {
+      "id": "call_76fa4b0c04ae424aab99df0e",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_76fa4b0c04ae424aab99df0e",
+      "name": "read_document",
+      "arguments": "{\"name\": \"/workspace/alder-work-order-lines.csv\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3191,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3072
+    },
+    "output_tokens": 238,
+    "output_tokens_details": {
+      "reasoning_tokens": 120
+    },
+    "total_tokens": 3429
+  }
+}

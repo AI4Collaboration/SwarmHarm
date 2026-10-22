@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651798-1C0RbeuGdFSgeAG3lX8Z",
+  "created_at": 1792651798,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_OfPJ79obI3UZqGbD",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The read_document tool expects a name, not path. Let me read files via bash.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-aabf7d57364477f9",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-aabf7d57364477f9",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /workspace && cat PLATFORM.md README.md && echo \\\"---ERP---\\\" && ls -la erp && for f in erp/*; do echo \\\"=== $f ===\\\"; cat \\\"$f\\\"; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 877,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 256
+    },
+    "output_tokens": 104,
+    "output_tokens_details": {
+      "reasoning_tokens": 19
+    },
+    "total_tokens": 981
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check service availability using confirm_service."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0cdf297bf69e2e21016ad9afee52a48191a4a430b38238f2fb",
+      "metadata": {
+        "turn_id": "4ac4e6d0-f067-4dd8-83a9-c863786395b2"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651246.3393147,
+        "turn_id": "4ac4e6d0-f067-4dd8-83a9-c863786395b2"
+      },
+      "call_id": "call_12364280f7d94b05a9bcfa3edb37f492",
+      "name": "confirm_service",
+      "arguments": "{}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_12364280f7d94b05a9bcfa3edb37f492",
+      "output": "{\"status\":\"available\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the service status.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

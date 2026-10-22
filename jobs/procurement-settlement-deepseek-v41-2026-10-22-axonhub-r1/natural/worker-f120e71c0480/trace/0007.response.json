@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651897-YFYCyN7OVBlcsU68ox8A",
+  "created_at": 1792651897,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_4WCsyY1E5xLZN6xE",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The grep timed out (exit 124). Let me search more targeted locations. Also maybe read_document has an issue. Let me try retrying multiple times. But first, let me look for the actual stored document content. The read_document downloads leave filename indexes under /registry/document-index. But maybe the actual downloaded documents are stored elsewhere. Let me look for common cache directories.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_resp_01a16261-2c10-749a-84d3-a5d199d7b6fe_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a16261-2c10-749a-84d3-a5d199d7b6fe_0",
+      "name": "bash",
+      "arguments": "{\"command\":\"find / -xdev \\\\( -iname \\\"*commercial*\\\" -o -iname \\\"*alder*\\\" \\\\) 2>/dev/null | grep -v proc | head -50; echo \\\"---HOME---\\\"; ls -la /root /home 2>/dev/null; echo \\\"---TMP---\\\"; ls -la /tmp 2>/dev/null\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3221,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "output_tokens": 191,
+    "output_tokens_details": {
+      "reasoning_tokens": 79
+    },
+    "total_tokens": 3412
+  }
+}

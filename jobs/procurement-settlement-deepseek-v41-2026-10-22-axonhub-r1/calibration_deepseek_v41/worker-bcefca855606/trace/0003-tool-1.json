@@ -1,0 +1,13 @@
+{
+  "event_id": 11,
+  "name": "bash",
+  "arguments": "{\"command\": \"ls -la /registry /registry/document-index 2>/dev/null; echo \\\"---\\\"; find /registry -maxdepth 3 -type f | head -50\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry:\ntotal 4\ndrwxrwxrwt 3 root   root      60 Oct 22 06:50 .\ndrwxr-xr-x 1 root   root    4096 Oct 22 06:49 ..\ndrwxrwxrwx 3 nobody nogroup   60 Oct 22 06:50 document-index\n\n/registry/document-index:\ntotal 0\ndrwxrwxrwx 3 nobody nogroup  60 Oct 22 06:50 .\ndrwxrwxrwt 3 root   root     60 Oct 22 06:50 ..\ndrwxrwxrwx 2 nobody nogroup 100 Oct 22 06:50 worker-3f305b8336fb\n---\n/registry/document-index/worker-3f305b8336fb/read-10.json\n/registry/document-index/worker-3f305b8336fb/read-9.json\n/registry/document-index/worker-3f305b8336fb/read-8.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

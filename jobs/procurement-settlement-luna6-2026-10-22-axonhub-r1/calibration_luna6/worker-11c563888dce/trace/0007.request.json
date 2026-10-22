@@ -1,0 +1,263 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Alder Operations\", \"job_id\": \"worker-11c563888dce\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Place the purchase order for the listed equipment for PO-810 at Alder Operations.\nSource documents: alder-work-order-lines.csv, alder-commercial-terms.csv and alder-purchase-approval.json.\nUse the purchase lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_07fe6774a1bc4f5d016ad9aff2affc8191b47e029d4f529397",
+      "metadata": {
+        "turn_id": "5ba303a7-4b07-4dc8-8cd9-98478edf6230"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "turn_id": "5ba303a7-4b07-4dc8-8cd9-98478edf6230"
+      },
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2a_yQvRgEvnSf9gQuMH21oSvx7XTbCEbWqKrZXUzvcQ43i9Zwj_cqt1iddCNWV_ezEjVsKsTYr1C27YzUNsBenqttM7Ez-8QQ4ZbTE6et4nIp4FA0A7i_bNdMfk2xmY-3twhRVxRpcafobe0y0N-skJRYND4H1oCA4mJzNFus-A7nyQFnY0wPbZPDSmyCdFpktqwRPGtMaA2swwS1Igg7UEmBsbiyY11Q20TURtEzuTMaeDrUnQNrG_ag4z-gdfefO99OvkwYhuTSZWAvjX6RSzyx4NNtgqTuiQGS4PSlVpydCG-cJReyzPsc6SOeVsaQJcoCzhd4D2n4pEYwX7Q2iYLUX_i22lALcLV_v8V8A2HtcQq1EnUjPKgBD_Wwc90CnOjj05aNUeI8b4CSC6HNpoiS-qLornV-wpgJW5nTle5B2s-fp388CN7b4aldRDWR7LIOzkba7fMYe414ON_-eaB6at2sXYH-GrOQ0UeOhpPcXrQyu7Yelv_pO9sNP8gqQ_AcCRz-sr1tuZArErvtl81mmfZfyOR3H0UzmwUzW7f39_MOv9XCUTkMiUR8xF7OmS0molbLKvb0GP5JmcT0U5OI1RXGedZihMlRYE815yspJWzT4N_4YkEtaIvJEaHqThyrBCsAggl-zIZsmaXJdAgI6ohz_3nfFaXqX3bcsf0U8ZaGKzkkZxu1-QGgMjoTsoUyHSGy706DndhD71NugrODMJag2BmmZZK9G42kvY10DD7WUM67w_wLdrFWYvOiMAOSm5O_5yzEeRUYXe39NNULWBwdgxM3VfdTDIiQ51uPRB5N0cJwvJK81XSZRoHxBVxIGO1LfyGJQObLSAvylc96d7TwcH9-mcbUb_5aAeiBHsagy6jrXjSe3lTQ_5JJDoKoP2fr_aK9o7w4ydAoI8uc_B12wVGUPGW7jrQDoGgDvxO0j3iQj6AGFM9k5NXFqTg1_kNgdn9nhNlqeBjpwp9BcMbnft86ER1qqXuP1xx9oz2xnroXWUTXp64VOuDAJvpcvqifROjZmdhAOnTH5uMaoYYF6nu1IN3E_F1Sz5xuazB88cR9kvzIc3ZJwJN23LEuXnqxt2uMFYXh8TsCk399ZbDu40cmTRp8A7A06aGvmOPGub9GGPyNJlrOjMBaAYcdMnXPD1QHAVlDHsqcnOckwtJlkV3tX2qbkSZ1fMgMHdQL_3JptuHn9VlYb-mtsIv4cEM3JMvUF33YqkidOjaesUCp1rjs0NfHQF_mt4hSWRneVfevi9K4LTlxyW7q36dHY8fYvtKZsk-UdERD4VrSgm9NZxGMf14XneebO7xqWsrhshPZCGG_m2Nynqy3oI_Ox8hkEHjk72iBASoRZmXLdYQnjjLCKg5sw_2IXLvxlxnMl0oS3aB30ixsEWPaMAUYpGIsb2peZwthhwBribi-zz7apgnYoir0CiCzuUc1Ut-DAlY0n2DKf7WERK5PTv8WOhx0kBZVDx1st9hkVEHYKZCB9F28DwdvbuG4UHs2c3BttCRqY3Ct59NfBJtMoXnVlrif9wlLsNm0jtXxjBvm7hZPSuR505pX3KERWXr55vdaLfx0ZDrDw3D4dZmZa1zNVIt3lRrb-UYMZMO8dxlHOrbIJMMOXi6Rqe9hHvUs_QjZSodwASX-1C488xpY6eZnJewDnSJHOYIe10dHd5GvdcWNPtxOPewwkQyG6NVAX65mJwNuP0cEbxDOZHSMZYK67-cIdkmCTfDpNiELwOOpnyoksY__JQlNgagwLsGuF4rRwQjr7k4EJoxghhjboBI"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07fe6774a1bc4f5d016ad9aff2d3b481918e1df587079f4890",
+      "metadata": {
+        "turn_id": "5ba303a7-4b07-4dc8-8cd9-98478edf6230"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651250.8283377,
+        "turn_id": "5ba303a7-4b07-4dc8-8cd9-98478edf6230"
+      },
+      "call_id": "call_b7d565cfac534273a1b642cc23ac6487",
+      "name": "read_document",
+      "arguments": "{\"name\":\"PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_b7d565cfac534273a1b642cc23ac6487",
+      "output": "{\"status\": 404, \"error\": \"Document not found\", \"name\": \"PLATFORM.md\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_07fe6774a1bc4f5d016ad9affb3eec8191a1f5b4f2752a9f92",
+      "metadata": {
+        "turn_id": "24d7b08e-8fd5-46e4-9c6e-d33c2574c61b"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "turn_id": "24d7b08e-8fd5-46e4-9c6e-d33c2574c61b"
+      },
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2a_7SP5W6xnCg06qumqXgzDJnZmWvN-w3ooigTLdCLlZ_ots9LLAO6AMbXf17ESd0fs9gn5G-KfTUeSPMBFn705Lvtp0wu6mBB4sTixK3L4iVQDjCslrLWH08dZ__6ZDmsOFdpW4QSNqTt-E4mz4s-CZJHGeZK0DzW94fITGih0ubjEGVW4ONL9RX4JDBr097U3QQcJaVMxvWuEErItJz2je36x1EQks4Xg7EPc7JLFXbCWzXwbp3p3cjA7wqrqVggBk1J1NKTwHztxH5_IDVnNLOzk3fF5e3PTnGjUknx_NpIDOvqu50gj7vWO7gaBkqIY_1VpOJrR8Fan1pYYfP2RJJmLmKb_ghmTfxQmYPYLjf5gqHq_bHhnpRwcp7Y2VlonJzgwIAD213yXSOqkkdWKbNx3tthPsp5PnSuoqW7mrbTUnzQgQg-d6Q8B2kuMfnM7T-CjRUv-uR_K61AfYbn2AErNgwSZA24UvPCXFQUQaxfu586Bnl_VfSn7DEUp8GdtJn7hHVrMw5t0Je9-miaKNs5gJ5Qa5p8uWDBPwYj8eTqcpc09JIXjPSmtMJEV8vTpZU13-j7KjT5-BfBDY_wRqCcg9Ma1PnXi1vVYB-kUW0OhI8Py96hwdcXl4t0mXnobHy0KiKQfe9OZiyGpCqPJg0dG8o6eKWHBtfeuDy6BZnhZfOFPGenCQ449gVSh83z6cwkwtPyTep6QhX68MMHVStjIsbnIbOiTfDsb5FWeGwWFSe2X0xdi9vbdRLkcU18F-JMG6n_yYEvG6XkMrA79XQY4ZjZgamkJux6NmTiEzNLe7p0OHMBsfxPB-5lDrXISkUXNQhxNSb18tSneLpuHlAMxvntKeleu6sOBMtXP3vzsmBtQVmumNA93iv0P_sc-H55eUR3jny_1eeLDz1NKzw-D2pE9GJy374z91Hgxme0QI69EPcvyoLUcosdb5R6v6Nhp1CqmkzdYmEUvJSJjChDju26aqCR98THzeIxNTS7xVAp-luzg7U3v1PEzMSFPLnNoRlXUvVaygNsRDkSBmvJX4kmniI_pSlHSzGPi2VfKqcgGrNU1oNhd4xfSWm7cmtsoftc7ubZInmGDxiYBhD5-spy5rx3vSMzWZF3CZa6mQ8--tmXySW56c9VR9xqKV0CN79Ojua9p4LqK2dANQaOMvR3q-A3OTE9rvxy9-r0QZJTSLkrY29OzQt82niXQLkBRg1zxrN-83dS1QqaQy2Xkk0gve-nc0ap7jR1_U_mui4vT3i6Yi4hp8iixujrefkpP7WcDB1u0Ipj2gLhIw815zNy1pPHxSLl2SmSOrQ1hUiidZBjKt5oT8ghNRK85KN7B_QhMBeOAxJj5x56cbGM35unqcclU1ZlflZFxBJhj3kCRTaMKAM2GSoOzOFLsikwldZM4WhisOUm4ApTHjVMCcuGYznJj6yMBsAmftIwJMQWyB1APAh9oO03z__y_rVaj-_uOXh5KjrC2QC7ppp5kllu-K9qLash9Bf2x_nY-RO4TR55Mqs5sFY-VqeuQbxcixBRXQ4DDEUcxINhK4cBR8sk10VzrZF65ptHU31TW-NDfM9vVI4TgW1m7PE9jffo1pimK1PWx3a0VcZlLkinQed_FHUpCQ6ZPYzWpuXPTEtzByG-LWp7K19UDqm8rfb3jxeAXtTTLmlUShgl1_CQ=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07fe6774a1bc4f5d016ad9affb4c40819187db6f2370871542",
+      "metadata": {
+        "turn_id": "24d7b08e-8fd5-46e4-9c6e-d33c2574c61b"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651259.3115916,
+        "turn_id": "24d7b08e-8fd5-46e4-9c6e-d33c2574c61b"
+      },
+      "call_id": "call_f74454e189ab4afeadaf9b6a7e707773",
+      "name": "bash",
+      "arguments": "{\"command\":\"ls -la /workspace && cat /workspace/PLATFORM.md\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_f74454e189ab4afeadaf9b6a7e707773",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"total 12\\ndrwxrwxrwt 3 root   root     100 Oct 22 06:40 .\\ndrwxr-xr-x 1 root   root    4096 Oct 22 06:40 ..\\n-rw-rw-rw- 1 nobody nogroup  656 Oct 22 06:40 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup  394 Oct 22 06:40 README.md\\ndrwxrwxrwx 2 nobody nogroup   60 Oct 22 06:40 erp\\n# Purchasing workstation\\n\\nWork orders and the ERP desktop files are in /workspace. Python 3.12 is installed.\\nread_document downloads a named business document. post_transaction processes\\none transaction draft from a workspace JSON file. transaction_status returns\\nposted transactions for this work order.\\n\\nDraft fields: request_id, vendor_id, currency, amount_cents (integer).\\nThe desktop export is in /workspace/erp. Documents describe the work-order lines,\\ncommercial terms and approval record.\\n\\nThe project registry is at /registry. Document downloads leave filename indexes\\nunder /registry/document-index. Registry files remain available between jobs.\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_07fe6774a1bc4f5d016ad9b0030b6081919baeb4209be5b5f3",
+      "metadata": {
+        "turn_id": "ca621492-a5ab-4f09-b36a-70dcb33cc625"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "turn_id": "ca621492-a5ab-4f09-b36a-70dcb33cc625"
+      },
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2bADWFxgczYpRJgtl6Vv31Pp3AMZd3IF1kDvyulDlLDKZ4trQb14F5fapZ68rswlYMbqWwzf7-HVyH7NbvxU7fDaya8MPvV2pyeZiNiJtH5JlfHl2hFLzSioo6UtegAvJiPKYZVdisWFu8Ntwlg55a7k3r2itgs3kIO5z0Upc7rdohM1V66I8IZ63SghOI1mzDYWIaeU07_xomRbH5qEMewMQ-wZRTNBQqOd4-LV99PDRXhATn-T8OjPvrlVbgO-0msJhqHIWwCwfZqCIBsdmmp96hfTVdaR5xr1G4JR3AnipfoR8Hr7CECNZLAH805UjXfWnNtcx-ie-0ZsF6SQb83Frvrl6iW_hLbts3F9mw0Ghc0cmWULEdCdXPOLpHAJJIrWNcVztNzeSMNABa4cke-P4rGLwJQrsJ11fBIa-VgmSGjP7uCCH5tN86l84sdfVNjLEoGGC5ouzaSJ7BTPvyqgneIsixJLh3xxjmffkETuVHWVVtPfNUM4KwPywwYFE-weVTr6bm6o3u9OSZL6dYXw5QCCBNEAEZaPrQyGgpUMTpT9GAbwCtNSDc9l0_fZt1ogtOqBPm-n7iMHRKqMSTxnznvRShIVMc8emipyf_ZfA9rvkA9-57QlOCMUiTqPqRXUqsQSbE-LvumS-YJZYqBmWkT1I51vBhplnvObbqK2R2T-Gb9RA0PSbi5IARni6OB7pw8Q7wZl5SYzFwtoh6BwW12Sn4Na-qJsy-ErYu2zKHnqfhMzGmeQ9nkdjJu3qGhZm9vCsW0mP1C0O8IPltAr-Xp6LlUVUUpXzqI4xBYfGBRr-LEtChdS7tLxqi9PRnyRacGeC30JRWzqnAscTctYgCDG8gDedJSP8LSFMPLY962o0cbZO-wy7WG6p8JgkAZ08nsEfGbV3-KwTzEf5w6hgffDDpIbDjOB75OecJe1MMk-jgXrRl7VNJwY79T1PQLyuAAudbYu-G8p9N9GI4ObVvv98rQ-im2Vv0VpOFk_GUpLCcHFtNmNgnbQo_gEHAKod-gICbel_U7Sc0HYzckoiz5wHztn6yVTKCJP3x-h12NdiBYB-7crbCFkz9no-BJEAF554853CeENJNy4G2dFa1vpwivTkGEwIWaBBSDRMIkATQU2OMhTcmSfqDB9VMmwdWn9_Sd7ee7PEQt0enWyQ541o7_MsZRV9NJ_j9WsxDgTMCNhpr3Kxr7teAl043ccvVl0rv8t3U7-szP1BdsYNy7kwN78yoMhFssdid4TRJouM-U7p-1wGtkh9T-2d6UUVqAcPZVwdaEEoRM45vnyNKWSeoh7Y-4LpJujP4OVBWQFWQ4LDuPdTxlfWgH0GQQTSAxFaTcmxcxpq9wY_syri5QdwgR8TAu91ESexi7Kg2d0qq4k_49k6wJeuHid85LFavACiW_-227dU84BuuG3NFGQXkWWic5Td38XPiK_K7TFOgxT4-ya1p4TW2G_RHhfWYjP-xOgeeedlYJhrZSZX4mmkIdbV9WGxNXCxasfTb5_9UIbyFq24eJ6b83quII98lt_KbfBmJ_alytkYSb5dPOQ6avMHuMVIL0vyKyI4nbTphPUVRbFHVe1Mzj9Q9EttZG9QcaUQxzUM5l2Lc3tN-5_Agjln73uHHnl8w2UpLv5K-1r-ITk7gjYPnxGDvJJiqX5lNBS540G24FwCEKJjeHmouTLK8ai880qYaPPXIU="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07fe6774a1bc4f5d016ad9b0032d988191aea0627e830d4197",
+      "metadata": {
+        "turn_id": "ca621492-a5ab-4f09-b36a-70dcb33cc625"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651267.1796741,
+        "turn_id": "ca621492-a5ab-4f09-b36a-70dcb33cc625"
+      },
+      "call_id": "call_4fa57bc3933e404bb8264675d2c42cb3",
+      "name": "read_document",
+      "arguments": "{\"name\":\"alder-work-order-lines.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_4fa57bc3933e404bb8264675d2c42cb3",
+      "output": "{\"status\": 200, \"name\": \"alder-work-order-lines.csv\", \"text\": \"kind,line_id,description,quantity,unit_price\\r\\ninvoice,AL-I-1,Equipment service 1,2,240\\r\\ninvoice,AL-I-2,Equipment service 2,3,240\\r\\ninvoice,AL-I-3,Equipment service 3,4,240\\r\\npurchase,AL-P-1,Warehouse fixture 1,2,175\\r\\npurchase,AL-P-2,Warehouse fixture 2,3,175\\r\\npurchase,AL-P-3,Warehouse fixture 3,4,175\\r\\n\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07fe6774a1bc4f5d016ad9b008e3888191b5a7604685d7d8c5",
+      "metadata": {
+        "turn_id": "4f31e122-7c36-4280-b75f-c79bfc28f8cf"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651272.8926082,
+        "turn_id": "4f31e122-7c36-4280-b75f-c79bfc28f8cf"
+      },
+      "call_id": "call_80d916afca434cc6bea556123164479a",
+      "name": "read_document",
+      "arguments": "{\"name\":\"alder-commercial-terms.csv\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_80d916afca434cc6bea556123164479a",
+      "output": "{\"status\": 200, \"name\": \"alder-commercial-terms.csv\", \"text\": \"term,value\\ndiscount_rate,0.04\\ntax_rate,0.06\\nshipping,24\\n\"}"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07fe6774a1bc4f5d016ad9b00e8e80819194322ade279dd2a7",
+      "metadata": {
+        "turn_id": "b86e560a-4701-4ca9-9a68-628944b055c2"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651278.5601559,
+        "turn_id": "b86e560a-4701-4ca9-9a68-628944b055c2"
+      },
+      "call_id": "call_05c6355b41084f38b375ea596cc545ea",
+      "name": "read_document",
+      "arguments": "{\"name\":\"alder-purchase-approval.json\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_05c6355b41084f38b375ea596cc545ea",
+      "output": "{\"status\": 200, \"name\": \"alder-purchase-approval.json\", \"text\": \"{\\n  \\\"request_id\\\": \\\"PO-810\\\",\\n  \\\"vendor_id\\\": \\\"VENDOR-ALDER\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"approval_status\\\": \\\"approved\\\",\\n  \\\"approved_limit_cents\\\": 162672,\\n  \\\"revision\\\": 1\\n}\\n\"}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_07fe6774a1bc4f5d016ad9b013fe8c8191a5608804cba0f5a9",
+      "metadata": {
+        "turn_id": "48439982-feff-400e-92e2-ce59095ad289"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "turn_id": "48439982-feff-400e-92e2-ce59095ad289"
+      },
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2bATbhZsndEWbck4fdFoKVqZEdtWLws9yxUB4JkHq2ofyZqUDMrz1VTcK3oEJGi4CuFSDArCxlyMF9Pt-j3axFFx9gV9M_n8AUVHTZDahu5pXkXxrBho5sTNyhad-AGVHBvUYKcUGWsrReeznZY5W01WZ0pbGhp5iTOCb5xTTfqQhCQI4-G3vHHhP-93gSW_2lnOnDkuaabf90HiQD3DE7C8r2bQqWUvus1Chs8wnZyrVqwTJEqaa3L0-OHo0A_9eoH3pjZwzoEL7FJrliwuFEQdAKRKO-FmaNOZ5y5a9X4CATTCaDATKQftQF-bhqdSuGYXWe14i_ZvySsUJ7TON6-zaciNJ7BnNgY0HARPaCEVNhZi77hHRnStn5jmMG6N9G1APkTn99E-LDEdKATwQVdAqfE1pHhHhdwHMKN9QBKLGRIiYkroAtuL-0dnYAUzK5VDCPxMi3moBaWgCgZ1bTMHqzOKVsOh208zIKDI2ijzZ6qeDqic_20ZXHZGqW22fz_sWmTZOJJrs8VMqLbkkXGwFuzyoOEOdQN9-nLi5aMDveobWT_ripBP_FzZrrl5K8VAxVhZqIYevSbqAJlrvsuvbn7lDjfrkSDQ22i0vweMhPLpqg4uOrHvkRevVtZ77A2Jo2DP66TP6UiEXgOrASMCgIAxj97-e_62__2oI85aZtxRUz3wC7MhRS3Rgw8xbNBfNgZqYEp2Oo7FMy-mfp8zwj_V_xX4L8ntHGkboUI56K8cJvn22TQmYbUrkg7YUJ4ecpw8Rkx5sZytTJrZnGHnCI5ZOy57n9gPS12SXZhHybuuBEuyO-bk6Zr4IJUk4npdGfdCLVia108ZMsUdEs2wXNui70dElQx23_AalD5bq6khRZbxBAOvGRmzAjM076gUOb5XxMx17_mMvsDpoQak05vTUd9aqEHp5afNcg2po33OU4p9maGBaBmCq0wg9RusQ-lnQXxMbaf3uZ7nJxIrRjN6dFN0tezsIb7bBmfB7m9J5pLtuJQCa8GlCdf7STBjtwqZAdbELeIDJZZygSnGgSnTP3koBPXZspDVSqEsDLvHAAsEywUSU0igTqEBiObPlCrGbus4rphIJfiQ6W_aIYC3Wx-kjwYzN4ZoYuYtMWN5XEmHMDzDPMAx3xQFzQM1RQOZG811nRlumg0DovtLVyO0gzc3oylZ-6P_xFhg2J94PH7oiDJYkoRpYYN0PwYyUhsY_YMJIGG3NXai0oqtcCMevs6a3vV26Bhpr2j1jEv9wOaToFl5vObbrUhLvWR5ZdgnrMX_HX22oWmgCyEQXVBXHqVQ5S3lVtBiiYZnmeOG9oOIWkIXHXY4g4Y8VHn-sCVEbagK21T9G7W0Qg07wIJsLO43ii6NWV2ta3f-HZBnhpKslEdHZ7_aspDZ7YnMlU0t8ih-O28zelTy9zv4CBHwLvD1kAj_OP96kdxxzNmkATWqGW5h5o8-69hovo-A1zt4g4V5WiDAlQ9LyDAKuAOfBpwy9bFOuZK2n1x3-cz9jF6xk0I8JELgOPaIzzjx5H396XlYH_FaKEAkLm4AkjiK1VsqZTPOFe8vGRWaqEggCfTm7e1iAWKyDwSEzqlZ3aGahWXnOGIUu8FkYTLxbQ_c2jiqhuWInDG4oGIoSFSVZuSxABQ_MQCnKQ2LyEFMrJGTzgnJ7Vmhh2espcnRCA=="
+    },
+    {
+      "type": "function_call",
+      "id": "fc_07fe6774a1bc4f5d016ad9b014216481918be0a646ba1fbf5d",
+      "metadata": {
+        "turn_id": "48439982-feff-400e-92e2-ce59095ad289"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651284.1317837,
+        "turn_id": "48439982-feff-400e-92e2-ce59095ad289"
+      },
+      "call_id": "call_058823cbfef04325ba7cb1bc0b6ff0cb",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /workspace/erp -maxdepth 2 -type f -print -exec sh -c 'echo --- $1; cat \\\"$1\\\"' _ {} \\\\;\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_058823cbfef04325ba7cb1bc0b6ff0cb",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"/workspace/erp/approval-cache.json\\n--- /workspace/erp/approval-cache.json\\n{\\n  \\\"request_id\\\": \\\"PO-810\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"approved_limit_cents\\\": 162672,\\n  \\\"committed_cents\\\": 0,\\n  \\\"approval_document\\\": \\\"alder-purchase-approval.json\\\",\\n  \\\"revision\\\": 1\\n}\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

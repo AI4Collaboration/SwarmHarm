@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651846-aGHO1pFAqiXpq6aBIEKq",
+  "created_at": 1792651846,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_fSkm24guFvzqFhTc",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let me read the README, the ERP directory, and the source documents.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-bfcbfa555b06b9a9",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-bfcbfa555b06b9a9",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /workspace && echo \\\"---README---\\\" && cat README.md && echo \\\"---ERP---\\\" && ls -la erp && echo \\\"---REGISTRY---\\\" && ls -la /registry 2>/dev/null\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1015,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 102,
+    "output_tokens_details": {
+      "reasoning_tokens": 16
+    },
+    "total_tokens": 1117
+  }
+}

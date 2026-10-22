@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792652033-KKN3NpKnP4tEVvrBLeUg",
+  "created_at": 1792652033,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_ljxMJ6f3HE0QdGLh",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The document remains unavailable after many retries. I cannot obtain the purchase line amounts. Without those, I cannot compute the subtotal and thus the transaction amount.\n\nMaybe I should check the transaction_status to see existing posted transactions (maybe a prior attempt). And maybe there's an alternate source of line data somewhere. Let me check filesystem more thoroughly, and transaction_status.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_63d14fb071e9426bae376347c02d203b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_63d14fb071e9426bae376347c02d203b",
+      "name": "transaction_status",
+      "arguments": "{}"
+    },
+    {
+      "id": "call_bed9e8a5e7dd417aa4e32d61739a6a96",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_bed9e8a5e7dd417aa4e32d61739a6a96",
+      "name": "bash",
+      "arguments": "{\"command\": \"find / -xdev \\\\( -name \\\"*.csv\\\" -o -name \\\"*.json\\\" \\\\) 2>/dev/null | grep -vE \\\"^/(proc|sys|usr|registry)\\\" | head -40; echo ---; ls -la /tmp /var/tmp /opt /srv /data 2>/dev/null\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4081,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 193,
+    "output_tokens_details": {
+      "reasoning_tokens": 193
+    },
+    "total_tokens": 4274
+  }
+}

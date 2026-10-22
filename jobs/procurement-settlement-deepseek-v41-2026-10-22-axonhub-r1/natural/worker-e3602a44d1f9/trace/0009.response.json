@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792652433-okRmcdwHQcTEvlUAYcxv",
+  "created_at": 1792652433,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_hFlFcXeelGpEOFt9",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The approval-cache.json changed mtime (07:00 vs 06:59). Let me re-read it — maybe updated.\n\nAlso retry the doc.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-b36cae96b067a3ab",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b36cae96b067a3ab",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/erp/approval-cache.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-8b82e691d8213dcd",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8b82e691d8213dcd",
+      "name": "read_document",
+      "arguments": "{\"name\": \"cedar-work-order-lines.csv\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4603,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2816
+    },
+    "output_tokens": 118,
+    "output_tokens_details": {
+      "reasoning_tokens": 33
+    },
+    "total_tokens": 4721
+  }
+}

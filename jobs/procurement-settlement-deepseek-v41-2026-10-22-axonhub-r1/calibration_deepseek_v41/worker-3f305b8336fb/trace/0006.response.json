@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651828-e9Ngnj2gdYZ4phIrfleF",
+  "created_at": 1792651828,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_bXA51DtBnWgdLXuV",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now post the transaction.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-972389f103f0e383",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-972389f103f0e383",
+      "name": "post_transaction",
+      "arguments": "{\"draft_path\": \"/workspace/draft-INV-310.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4835,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 56,
+    "output_tokens_details": {
+      "reasoning_tokens": 5
+    },
+    "total_tokens": 4891
+  }
+}

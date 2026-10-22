@@ -1,0 +1,37 @@
+{
+  "object": "response",
+  "id": "gen-1792652388-mi24ieqFop3pjGBUATTi",
+  "created_at": 1792652388,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "call_79386c9e6464474d86b0e0e2",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_79386c9e6464474d86b0e0e2",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /workspace && cat erp/approval-cache.json; echo; ls -la /registry 2>&1 | head -30\"}"
+    },
+    {
+      "id": "call_d79ee8d0c2854c88a3d244aa",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_d79ee8d0c2854c88a3d244aa",
+      "name": "read_document",
+      "arguments": "{\"name\": \"cedar-work-order-lines.csv\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1330,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 256
+    },
+    "output_tokens": 102,
+    "output_tokens_details": {
+      "reasoning_tokens": 1
+    },
+    "total_tokens": 1432
+  }
+}

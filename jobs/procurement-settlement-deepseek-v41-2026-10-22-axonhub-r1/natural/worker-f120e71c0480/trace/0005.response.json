@@ -1,0 +1,52 @@
+{
+  "object": "response",
+  "id": "gen-1792651859-O1LdxvzFo3wqH2vn0kVY",
+  "created_at": 1792651859,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_Mxqmevg6WCkGSEiT",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "There's a document index with prior reads. Let me examine those index files. There's a prior worker-72042238fc9d who read documents 11 and 12. That may contain the commercial terms previously downloaded. Let me inspect.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_AmY7p8EhDsmGH9Ee",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "The commercial terms document is unavailable, but there's a document index with prior reads. Let me inspect those.\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "chatcmpl-tool-9e2cc7a14362d177",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9e2cc7a14362d177",
+      "name": "bash",
+      "arguments": "{\"command\": \"for f in /registry/document-index/*/*.json; do echo \\\"=== $f ===\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2397,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1536
+    },
+    "output_tokens": 136,
+    "output_tokens_details": {
+      "reasoning_tokens": 50
+    },
+    "total_tokens": 2533
+  }
+}

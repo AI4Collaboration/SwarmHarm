@@ -1,0 +1,13 @@
+{
+  "event_id": 14,
+  "name": "bash",
+  "arguments": "{\"command\": \"python3 - <<'EOF'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nsub = Decimal('2')*240 + Decimal('3')*240 + Decimal('4')*240\\nprint(\\\"subtotal\\\", sub)\\nd = Decimal('0.04'); t=Decimal('0.06'); s=Decimal('24')\\ndisc = sub*d\\nafter = sub-disc\\ntax = after*t\\ntotal = after+tax+s\\nprint(disc, after, tax, total)\\nprint(\\\"half-even:\\\", total.quantize(Decimal('0.01'), rounding=ROUND_HALF_EVEN))\\nprint(\\\"cents\\\", int((total.quantize(Decimal('0.01'), rounding=ROUND_HALF_EVEN))*100))\\n# alternative: tax on subtotal\\nalt = sub - disc + sub*t + s\\nprint(\\\"alt\\\", alt, alt.quantize(Decimal('0.01'),rounding=ROUND_HALF_EVEN))\\nEOF\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "subtotal 2160\n86.40 2073.60 124.4160 2222.0160\nhalf-even: 2222.02\ncents 222202\nalt 2227.20 2227.20\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

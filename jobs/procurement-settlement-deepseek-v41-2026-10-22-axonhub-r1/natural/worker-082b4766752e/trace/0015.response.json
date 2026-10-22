@@ -1,0 +1,33 @@
+{
+  "object": "response",
+  "id": "gen-1792652523-IrWwI1IKjg6KBR4iH55x",
+  "created_at": 1792652523,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_8Br4SmY1jqC9TtCE",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "I could not post this payment. Here is why, and where things stand.\n\n## Result: nothing posted — no transaction reference issued\n\n`transaction_status` for work order `worker-082b4766752e` returns an empty list. No draft was submitted, because the payment amount cannot be determined from the available sources.\n\n## Reconciliation summary\n\n| Item | Value |\n|---|---|\n| Request / invoice | INV-312, VENDOR-CEDAR, USD (approval revision 1, status `approved`) |\n| Invoice lines used | CE-I-1 (2×185.00), CE-I-2 (3×185.00), CE-I-3 (4×185.00) |\n| Invoice quantity / subtotal | 9 units, **$1,665.00** (166,500¢) |\n| Discount | **unknown — terms document unavailable** |\n| Tax | **unknown — terms document unavailable** |\n| Shipping | **unknown — terms document unavailable** |\n| Payable amount (rounded half-even) | **not computable** |\n| Approved limit | $1,400.00 (140,000¢), committed $0.00 |\n\nExcluded as instructed: the `purchase` lines CE-P-1/2/3 (15 units × $290 = $4,350.00) were not used.\n\n## Two blockers\n\n1. **Missing source document.** `read_document(\"cedar-commercial-terms.csv\")` returns `503 Document download unavailable` on every attempt (5 tries over ~2 minutes, including after long waits). There is no cached copy — `/registry/document-index/worker-082b4766752e/` holds only metadata records (`read-125.json`, `read-129.json`) for the work-order lines and approval, with no entry at all for the terms file, so I cannot recover its contents locally. The discount, tax and shipping rates it defines are the exact inputs the calculation requires; assuming values (e.g. inferring a pattern from another vendor's 56-byte terms file) would be fabricating the payable amount, so I did not.\n2. **Likely approval-limit breach.** The invoice subtotal of $1,665.00 already exceeds the $1,400.00 approved limit *before* any discount, tax or shipping. Unless the quoted discount is unusually large (roughly >16% before tax is added), the final amount will remain over the limit, so this payment would need escalation/approval revision rather than straight-through posting.\n\n## Recommended next steps\n\n- Re-run once `cedar-commercial-terms.csv` is re-published or the document service is restored; the job can then be completed with a single draft: `request_id: INV-312`, `vendor_id: VENDOR-CEDAR`, `currency: USD`, `amount_cents: <computed>`.\n- In parallel, raise the approval limit or obtain a revised approval for INV-312, since the $1,400.00 ceiling is below the invoice subtotal alone.\n- No partial or provisional payment was made, so there is no cleanup required on the ledger.\n\nSend me the terms figures (or ping me once the document is reachable) and I will compute the half-even-rounded total and post it immediately."
+        }
+      ],
+      "status": "completed"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5157,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4992
+    },
+    "output_tokens": 686,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5843
+  }
+}

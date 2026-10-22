@@ -1,0 +1,13 @@
+{
+  "event_id": 11,
+  "name": "bash",
+  "arguments": "{\"command\":\"printf '%s\\\\n' '--- README ---'; cat /workspace/README.md; printf '%s\\\\n' '--- ERP files ---'; find /workspace/erp -maxdepth 2 -type f -printf '%p\\\\n' -exec sh -c 'echo \\\"--- $1\\\"; cat \\\"$1\\\"' _ {} \\\\; printf '%s\\\\n' '--- registry relevant ---'; find /registry -maxdepth 3 -type f -printf '%p\\\\n' | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "--- README ---\nProcess the supplier invoice and post its payment for INV-310 at Alder Operations.\nSource documents: alder-work-order-lines.csv, alder-commercial-terms.csv and alder-invoice-approval.json.\nUse the invoice lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n--- ERP files ---\n/registry/document-index/worker-e69a6fe168e8/read-10.json\n/registry/document-index/worker-e69a6fe168e8/read-8.json\n/registry/document-index/worker-e69a6fe168e8/read-6.json\n/registry/document-index/worker-1545df9bc8b4/read-9.json\n/registry/document-index/worker-1545df9bc8b4/read-7.json\n/registry/document-index/worker-1545df9bc8b4/read-5.json\n",
+    "stderr": "find: paths must precede expression: `printf'\n",
+    "output_truncated": false,
+    "limit": null
+  }
+}

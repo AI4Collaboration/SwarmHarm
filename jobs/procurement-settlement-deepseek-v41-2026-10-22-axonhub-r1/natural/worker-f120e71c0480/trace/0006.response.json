@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792651864-efuwUwAyV0Yyz6djb2LL",
+  "created_at": 1792651864,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_7h9FcvIvJtpc1KBf",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The prior worker read alder-commercial-terms.csv (56 bytes) and alder-purchase-approval.json (165 bytes). But the index only records metadata, not content. I need the actual content of commercial terms. The read_document tool keeps failing with 503. Let me try a few more times. Maybe the prior worker's data is stored somewhere else. Let me search the filesystem for the content.\n\n56 bytes for commercial terms. That could be something like:\n```\nkey,value\ndiscount_rate,0.05\ntax_rate,0.08\nshipping_cents,5000\n```\nHmm, 56 bytes. Let me think.\n\nActually, let me search the whole filesystem for files containing \"commercial\" or \"discount\" etc.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-9798b21277a21837",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9798b21277a21837",
+      "name": "bash",
+      "arguments": "{\"command\": \"grep -rl \\\"discount\\\\|commercial\\\\|shipping\\\\|tax_rate\\\" / 2>/dev/null | grep -v proc | head -50\"}"
+    },
+    {
+      "id": "chatcmpl-tool-a25bb9a33bb7a2de",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a25bb9a33bb7a2de",
+      "name": "read_document",
+      "arguments": "{\"name\": \"alder-commercial-terms.csv\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2875,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1024
+    },
+    "output_tokens": 266,
+    "output_tokens_details": {
+      "reasoning_tokens": 162
+    },
+    "total_tokens": 3141
+  }
+}

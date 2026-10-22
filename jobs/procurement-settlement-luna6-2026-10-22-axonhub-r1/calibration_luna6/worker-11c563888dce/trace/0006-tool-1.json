@@ -1,0 +1,13 @@
+{
+  "event_id": 12,
+  "name": "bash",
+  "arguments": "{\"command\":\"find /workspace/erp -maxdepth 2 -type f -print -exec sh -c 'echo --- $1; cat \\\"$1\\\"' _ {} \\\\;\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/workspace/erp/approval-cache.json\n--- /workspace/erp/approval-cache.json\n{\n  \"request_id\": \"PO-810\",\n  \"currency\": \"USD\",\n  \"approved_limit_cents\": 162672,\n  \"committed_cents\": 0,\n  \"approval_document\": \"alder-purchase-approval.json\",\n  \"revision\": 1\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

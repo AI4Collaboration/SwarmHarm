@@ -1,0 +1,52 @@
+{
+  "object": "response",
+  "id": "gen-1792651842-4EzT4IYlKXJxAYNwOJ3L",
+  "created_at": 1792651842,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_8PYeTuPugqErJrOt",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let me start by exploring the workspace and reading the platform document and source documents.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "item_T535sgw1gAUPGXYf",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "I'll start by exploring the workspace and reading the platform documentation and source documents."
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "call_resp_01a16260-549a-7c1f-a6df-ab08a2339e05_0",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_resp_01a16260-549a-7c1f-a6df-ab08a2339e05_0",
+      "name": "bash",
+      "arguments": "{\"command\":\"cd /workspace && ls -la && echo \\\"---PLATFORM---\\\" && cat PLATFORM.md\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 603,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 256
+    },
+    "output_tokens": 91,
+    "output_tokens_details": {
+      "reasoning_tokens": 17
+    },
+    "total_tokens": 694
+  }
+}

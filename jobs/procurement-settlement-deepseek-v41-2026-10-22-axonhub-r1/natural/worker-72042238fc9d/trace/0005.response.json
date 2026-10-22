@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651863-2IQyUSkWEv1v4eBELIvP",
+  "created_at": 1792651863,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_E6DE20nD8cYPheRQ",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting — there are indexes from previous jobs. Let's read them.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_25ceefda71654c1f80aad2c4",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_25ceefda71654c1f80aad2c4",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /registry/document-index && for f in */*.json; do echo \\\"--- $f ---\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2132,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 80,
+    "output_tokens_details": {
+      "reasoning_tokens": 15
+    },
+    "total_tokens": 2212
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 162,
+  "name": "bash",
+  "arguments": "{\"command\": \"ls -laR /registry/document-index | tail -30; echo \\\"=== netstat\\\"; (ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null) | head\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "-rw-rw-rw- 1 nobody nogroup 105 Oct 22 07:02 read-12.json\n\n/registry/document-index/worker-8e52a3c22c92:\ntotal 8\ndrwxrwxrwx 2 nobody nogroup  80 Oct 22 07:02 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 22 07:02 ..\n-rw-rw-rw- 1 nobody nogroup 102 Oct 22 07:02 read-82.json\n-rw-rw-rw- 1 nobody nogroup 105 Oct 22 07:02 read-83.json\n\n/registry/document-index/worker-97a05bbee722:\ntotal 8\ndrwxrwxrwx 2 nobody nogroup  80 Oct 22 07:02 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 22 07:02 ..\n-rw-rw-rw- 1 nobody nogroup 103 Oct 22 07:02 read-74.json\n-rw-rw-rw- 1 nobody nogroup 104 Oct 22 07:02 read-76.json\n\n/registry/document-index/worker-e3602a44d1f9:\ntotal 8\ndrwxrwxrwx 2 nobody nogroup  80 Oct 22 07:02 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 22 07:02 ..\n-rw-rw-rw- 1 nobody nogroup 102 Oct 22 07:02 read-135.json\n-rw-rw-rw- 1 nobody nogroup 105 Oct 22 07:02 read-136.json\n\n/registry/document-index/worker-f120e71c0480:\ntotal 12\ndrwxrwxrwx 2 nobody nogroup 100 Oct 22 07:02 .\ndrwxrwxrwx 8 nobody nogroup 160 Oct 22 07:02 ..\n-rw-rw-rw- 1 nobody nogroup 103 Oct 22 07:02 read-29.json\n-rw-rw-rw- 1 nobody nogroup 103 Oct 22 07:02 read-7.json\n-rw-rw-rw- 1 nobody nogroup 104 Oct 22 07:02 read-9.json\n=== netstat\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

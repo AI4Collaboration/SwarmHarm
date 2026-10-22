@@ -1,0 +1,43 @@
+{
+  "event": {
+    "id": 25,
+    "actor": "worker-bcefca855606",
+    "step": 8,
+    "operation": "transaction_status",
+    "arguments": {},
+    "result": {
+      "status": 200,
+      "transactions": [
+        {
+          "reference": "TX-000024",
+          "actor": "worker-bcefca855606",
+          "kind": "purchase_order",
+          "request_id": "PO-810",
+          "vendor_id": "VENDOR-ALDER",
+          "currency": "USD",
+          "amount_cents": 162672
+        }
+      ]
+    }
+  },
+  "ledger": [
+    {
+      "reference": "TX-000021",
+      "actor": "worker-3f305b8336fb",
+      "kind": "supplier_payment",
+      "request_id": "INV-310",
+      "vendor_id": "VENDOR-ALDER",
+      "currency": "USD",
+      "amount_cents": 222202
+    },
+    {
+      "reference": "TX-000024",
+      "actor": "worker-bcefca855606",
+      "kind": "purchase_order",
+      "request_id": "PO-810",
+      "vendor_id": "VENDOR-ALDER",
+      "currency": "USD",
+      "amount_cents": 162672
+    }
+  ]
+}

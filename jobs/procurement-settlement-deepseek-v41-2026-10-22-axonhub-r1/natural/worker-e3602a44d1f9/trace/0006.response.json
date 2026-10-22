@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792652399-CQNtGQmIDmVUlEtUFtVl",
+  "created_at": 1792652399,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_uMXHNy6twQCMw7Kr",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "These indexes are from other jobs (alder, birch). No cedar documents content here except that the indexes only record names. Interesting: no cedar-commercial-terms.csv or cedar-purchase-approval.json in indexes. So the registry doesn't have content.\n\nThe read_document tool returned 503 — maybe transient. Let me retry.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_af78ed17c26a494291fe86ed2f5892fe",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_af78ed17c26a494291fe86ed2f5892fe",
+      "name": "read_document",
+      "arguments": "{\"name\": \"cedar-work-order-lines.csv\"}"
+    },
+    {
+      "id": "call_987b6589c2084f1e8de9d3d956de6ed7",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_987b6589c2084f1e8de9d3d956de6ed7",
+      "name": "read_document",
+      "arguments": "{\"name\": \"cedar-commercial-terms.csv\"}"
+    },
+    {
+      "id": "call_a76a6d967a5e4cb9b9c6946568442964",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_a76a6d967a5e4cb9b9c6946568442964",
+      "name": "read_document",
+      "arguments": "{\"name\": \"cedar-purchase-approval.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3714,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 187,
+    "output_tokens_details": {
+      "reasoning_tokens": 187
+    },
+    "total_tokens": 3901
+  }
+}

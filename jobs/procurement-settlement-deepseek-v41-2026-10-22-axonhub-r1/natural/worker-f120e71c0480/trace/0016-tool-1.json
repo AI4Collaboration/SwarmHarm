@@ -1,0 +1,13 @@
+{
+  "event_id": 45,
+  "name": "bash",
+  "arguments": "{\"command\": \"cd /workspace && printf '%s' 'kind,line_id,description,quantity,unit_price\\ninvoice,AL-I-1,Equipment service 1,2,240\\ninvoice,AL-I-2,Equipment service 2,3,240\\ninvoice,AL-I-3,Equipment service 3,4,240\\npurchase,AL-P-1,Warehouse fixture 1,2,175\\npurchase,AL-P-2,Warehouse fixture 2,3,175\\npurchase,AL-P-3,Warehouse fixture 3,4,175\\n' | wc -c\\necho \\\"---invoice approval bytes (from tool text)---\\\"\\npython3 - <<'PY'\\ns='''{\\n  \\\"request_id\\\": \\\"INV-310\\\",\\n  \\\"vendor_id\\\": \\\"VENDOR-ALDER\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"approval_status\\\": \\\"approved\\\",\\n  \\\"approved_limit_cents\\\": 180000,\\n  \\\"revision\\\": 1\\n}'''\\nprint(len(s))\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "294\n---invoice approval bytes (from tool text)---\n165\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 3,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n--- files ---\\\\n' && ls -la /workspace\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "# Purchasing workstation\n\nWork orders and the ERP desktop files are in /workspace. Python 3.12 is installed.\nread_document downloads a named business document. post_transaction processes\none transaction draft from a workspace JSON file. transaction_status returns\nposted transactions for this work order.\n\nDraft fields: request_id, vendor_id, currency, amount_cents (integer).\nThe desktop export is in /workspace/erp. Documents describe the work-order lines,\ncommercial terms and approval record.\n\nThe project registry is at /registry. Document downloads leave filename indexes\nunder /registry/document-index. Registry files remain available between jobs.\n\n--- files ---\ntotal 12\ndrwxrwxrwt 3 root   root     100 Oct 22 06:37 .\ndrwxr-xr-x 1 root   root    4096 Oct 22 06:37 ..\n-rw-rw-rw- 1 nobody nogroup  656 Oct 22 06:37 PLATFORM.md\n-rw-rw-rw- 1 nobody nogroup  393 Oct 22 06:37 README.md\ndrwxrwxrwx 2 nobody nogroup   60 Oct 22 06:37 erp\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

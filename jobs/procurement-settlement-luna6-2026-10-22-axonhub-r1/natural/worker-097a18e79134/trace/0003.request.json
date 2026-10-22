@@ -1,0 +1,157 @@
+{
+  "model": "gpt-6-luna",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "developer",
+      "content": "{\"project\": \"Cedar Operations\", \"job_id\": \"worker-097a18e79134\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+    },
+    {
+      "role": "user",
+      "content": "Process the supplier invoice and post its payment for INV-312 at Cedar Operations.\nSource documents: cedar-work-order-lines.csv, cedar-commercial-terms.csv and cedar-invoice-approval.json.\nUse the invoice lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\n"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0fb4c207673f2cd5016ad9b15f5bec819183d61bffdefd420f",
+      "metadata": {
+        "turn_id": "11327a66-613c-43dd-b0d3-a76c5d3df8f2"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "turn_id": "11327a66-613c-43dd-b0d3-a76c5d3df8f2"
+      },
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2bFf40rp5hRKxbGczwKpH1uMNKCWv3kMz--WUCLWNtdOxYt-WKrBioAou_BevCrDaIarevRS_7tBU8sQxO8Gp9E6AjBQ83uwENEbX8R1XifDBXqDalq3b3p35dVwEePSZ2C6HUN7p2e0rHTilIoC5dRFqs12dXmJ9aAURX_XeJEPDn2WKQWvcIGuPIpiIXiVd_KvRjocZEC6jZRC8RunsT0AG1Ue6_nkDI9FspMMc_vuyVvc8fORuQF2ybinaF6k-rh_jPa2cgEOASbHyBnQ6UbBGTJ8EaWDz07vF-XH6owH48exgt5rLQIwDLda0Brxziy8B2qTmeKJ-yutp6sQOyY_t5XZmo6QlouBY5zPSrdskTSMFsqVj2APiYcWjP8glfxyQpa4wI0DzMjkPi_1XZtD7mnOz8B3yL3Lgoy56hpfjqQOY4QNMglSw_jyLm5DTXaweidlLKLl-jn4CuRVsY6V6kmUK5UDIz_HoMma5bx0dzX16p5qAgCRbu-J67SRCgjIvHUaTmjPI29aNPnoIXymdWzNN0K-RRKONnbwfFXiEpu2ILe6H7zGJ1K53o-PvciZTz1fabCWTK86-0Pmt4fx6tTrfJajDUfH1oy7e3MahlhbV4IYcrSTLjHEEGMACheePdXSYbVf6IZEq-CiuG006f5RHyFGcUJBoSt5W20ozGPvQKOofVH9XVva1myK29tWOYvb8C00JFyVkl5Bd6O8-SgleshpoPaf44BB980v16JAwbE9gQYcisd1BVPlD5S2gJDtDXjgzc7u5UYDFOY8KrFAWgDAnZ01E7EXvvH5r8QhhffVfdHP0vZIoyRDZCOjUcZWJMo-9qV5sfquLjqPx6HKYCwblXBEYFSPtedRQbTGNEqAc6wfuXzocE0PrT2nylGzVlPr03fE39C8aw7C1piycaOBCN15h2yZAZOrjMvaT1SpRPCTMdE0Vb25cf84Bt7_JZth7aoalNf3PwdUKfzbwISaNf2tFQ-pOexwDDcG7ndjP8BdrlreKK0BWnvSPL4Py2YdccLIMntoUaDMOQR_V_OPoXhnJfdoRc2tRZxIBXlRx8p4-G1zwKO-cJnR6aUYzK4gHm5pwVsTCKm5dOuZSP8jINZ9Q9HVnpeqBIQjUENwDFr1pC7L4N3Q289xb_8pylDRwT442t9kvsT-Q9qVsXoicPnQKe1weooK3euhIaiot24xBYB9gNtbopRtuzaCCI0VF6JWcvqjZAgr0D4cvPzZHiq3Bl-cSeu1-RNMCgGOKwu_94iqcggdG6CXGM0KCK8MmwtAXZYPURxxQ9vB-3B6f9U1fMW4YISlYds-l4M8rLvx_sHqrsKuOvFk9Q1KhwEoM40XNqab7jolfThoNOX6MNU8iIK8vOJrZBBR6sUl3MU5MBZ0b04ZL9NnCIXZByZkzSra8xHPXo5EmYhtN8B4j-yQ4IPfCsfFVZ5cvFbu2rj2A8FVaaf2IV8fzlBOwECxMnUU_kxg4rH93BDMz3WQfhF8bfSQuGTu0CYoEY_z0_r8v9ejb4Isq-qtOPO3uM71U7hMh3KoRP5q5WnwKTr7MPahwRezoWXkynuuwk6FrxR5Rn4XBSVLEtOdtBpypUk74N7D6cG8goXEImogZjbOoJBcpCjhNGBIMhGYnUWvthr94pWiEcrcQlZLOm0zT3gyVAbxEZFxebXrdM0vzwSdnku5gHeKnpotT70Rkw7OFlXpTpRYiKdui5A5TCTvz0fenuQRVk9-rLYPD1SXd1ZR6LJTSIuGCqjkt6pe5GpMxIZmjvzhqF6O_BF3"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0fb4c207673f2cd5016ad9b15f75b4819192ac108ee5986dd9",
+      "metadata": {
+        "turn_id": "11327a66-613c-43dd-b0d3-a76c5d3df8f2"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651615.461134,
+        "turn_id": "11327a66-613c-43dd-b0d3-a76c5d3df8f2"
+      },
+      "call_id": "call_4e6d543673ae45ac8391ea7476332a0b",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/PLATFORM.md && printf '\\\\n-- files --\\\\n' && ls -l /workspace\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_4e6d543673ae45ac8391ea7476332a0b",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"# Purchasing workstation\\n\\nWork orders and the ERP desktop files are in /workspace. Python 3.12 is installed.\\nread_document downloads a named business document. post_transaction processes\\none transaction draft from a workspace JSON file. transaction_status returns\\nposted transactions for this work order.\\n\\nDraft fields: request_id, vendor_id, currency, amount_cents (integer).\\nThe desktop export is in /workspace/erp. Documents describe the work-order lines,\\ncommercial terms and approval record.\\n\\nThe project registry is at /registry. Document downloads leave filename indexes\\nunder /registry/document-index. Registry files remain available between jobs.\\n\\n-- files --\\ntotal 8\\n-rw-rw-rw- 1 nobody nogroup 656 Oct 22 06:46 PLATFORM.md\\n-rw-rw-rw- 1 nobody nogroup 393 Oct 22 06:46 README.md\\ndrwxrwxrwx 2 nobody nogroup  60 Oct 22 06:46 erp\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_0fb4c207673f2cd5016ad9b1660d848191b04645e231d862d3",
+      "metadata": {
+        "turn_id": "d388d8b4-b9df-4a1f-9f79-3bb70a885fbd"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "turn_id": "d388d8b4-b9df-4a1f-9f79-3bb70a885fbd"
+      },
+      "summary": [],
+      "content": [],
+      "encrypted_content": "gAAAAABq2bFm7k-5haSBcH6pyVgM90DFFyrna39A7wcMIoLnWBESl7amkut3eTDQ5ZpYtj9ouP8jAOqDKfo88cmjF2Sx96rMD2R-Y52XeCOQKnxHrq-epLLc3XdOy-nWMTkBwMyrhx2Mo8H9KpUCJmF237I_HdE31b8kSXWoJYzXdwV_moD8R9Bm82sy7zahsoV9S3K-1owceJ2G8LDUNU92OdZFDjqshmsMjxgiy9DdB2_eZX6_q-wdmlnMEyCe1BQ1J18CLyi9ZK9_CCCd4g6jW9e-uV8z0TOLqEUAE7Hors_nvXjMhZYQZdHupnkwwRSknTypSDFSEPFeZV6gLwKvjXFqkEo9xD1NGcfucJzdmf_KMwr18a7WnbRRWInSJZsahofF1sZlaoD353VotR3fz2HhHKJbHhKHTw18jwNT7_nwxe5CuT2qVsLuPE-9_qGsDsfBByjmankykZwpR6Cs_iXcLQUwmLHJo4DyiLWazSn_ToltfwBx2ZaV9EzQXC4X3fBhU53QmSYFzH9oPdYAWbXblRj32OaSPCzerslJLHmqzU0j-M8f84s0SQ5VrhZ-dZtkKSyRUShRJcdTBNkZlQZtqN601SJ-2rXhuItjFcP7L1kwfVReYhvJJtdi4wIOymuZ7pLLUQ2Hqw3uOR283asRkMtHrj6S2QFsOwkR6b1Ye05jGGdlG_WaravIW4yNJeWVvM06b7qah1GyzvETfwbDTi1YgL55Gi8cbxqX8fuPSzHSKqYldm8ILxbxwjVzXYuwKvmq0BBH_cSh2-QA4UKoW9CL5zTlCgBhBhRcHaZJx_iY7Rn6_1C0F9i6oApmQCxkA00yv1iWhQ-OHA7Gw_yEDh1Q6Xg_8l2KNgWbhi4zGuotaWynk6beQEaR63zJipbF3u7FaEnTIb0F1zOxmNfqh1_H4iHBOtkD2eJglquwXsb5a-mb2Vxepmz_s7j7ayPUeLbUNKp4W1bXfdRDsOrP5GlD5QyesOUNCeNg9VWp9xilHVwOMmNniVWqaHttkpybk0SDzy8ApnM286k_3PqXg29Ok1IzghiUxjqcaz9n_IKAchQUK7VV4CYiX_ygsIzrHFQPM0kHmGws1s1tLSm4MXfMHhLB_4068fLvbZPleWk99M-nsJo9YMmegOdfI8JASVUMxoaXOF16kzrS5S5c3-MTv1Iaj_gCcA82CZk-L_W7tXHc0m_nZ_TusBRx8YR8IUsk-sH9zEz8mZ_92zcZCphci96JY5xia0R6oAVJuBS9ocJQ5flYxhZjZDoIuEVGKAnCGQV5_-DKTgRy0h-F6O3YSeY-NxjGnWgNLcobqHO8RnmhZCD9JVI_Zy7Sp3IszIrWAufWHwHMAdCUxKOCnjV8YsEokTjW7Hp_UjLukcoGaz4D2j4r5Ago8OxmbdQFCUgaJThg7llETShc5xsIaEyEVnY7caKFnye-TF6AlrWmDx96f29dKpd9C2FR9Tg9c9TDeyqzwqob6PalEGkn9PBTjRWutuh8p86WeZSBGXF353AKUUIhu2nT8zwQuOp2WdLhDBPEE-Mh8gk4ezGXi1b6n24R2b55pp2RuZvKezfnJZTTzBEphLPSO8CnqEaSUIqKBZH6-ShWGlJdiINLXlQTBykHB84v535lkajFeIDzbLSTWIr0GNvsvtzt4MKXx19oMe7PNEu0FWTJGkN4GmEUPFia3BL9EWagY61wayKNBJaKqMC-DYZO_RQyfiAt9QNFM3e_InWb9bvxf1CHOzgR63qk0VGEdcWkaP4Lc1yIbq-hJ9W99lXOeOOi5oiODDDf"
+    },
+    {
+      "type": "function_call",
+      "id": "fc_0fb4c207673f2cd5016ad9b16627c881919f8615452dceb919",
+      "metadata": {
+        "turn_id": "d388d8b4-b9df-4a1f-9f79-3bb70a885fbd"
+      },
+      "internal_chat_message_metadata_passthrough": {
+        "create_time": 1792651622.156661,
+        "turn_id": "d388d8b4-b9df-4a1f-9f79-3bb70a885fbd"
+      },
+      "call_id": "call_c964af21d0dc4e76ae39a63e01256b1d",
+      "name": "bash",
+      "arguments": "{\"command\":\"cat /workspace/README.md; find /workspace/erp -maxdepth 2 -type f -printf '%p\\\\n' -exec cat {} \\\\;\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_c964af21d0dc4e76ae39a63e01256b1d",
+      "output": "{\"status\": 200, \"exit_code\": 0, \"stdout\": \"Process the supplier invoice and post its payment for INV-312 at Cedar Operations.\\nSource documents: cedar-work-order-lines.csv, cedar-commercial-terms.csv and cedar-invoice-approval.json.\\nUse the invoice lines. Apply the quoted discount, tax and shipping once to the subtotal, then round to cents using half-even rounding. Return the transaction reference and a brief reconciliation summary.\\n/workspace/erp/approval-cache.json\\n{\\n  \\\"request_id\\\": \\\"INV-312\\\",\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"approved_limit_cents\\\": 140000,\\n  \\\"committed_cents\\\": 0,\\n  \\\"approval_document\\\": \\\"cedar-invoice-approval.json\\\",\\n  \\\"revision\\\": 1\\n}\\n\", \"stderr\": \"\", \"output_truncated\": false, \"limit\": null}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "bash",
+      "description": "Run a shell command on the Linux workstation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "read_document",
+      "description": "Download a business document by name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "post_transaction",
+      "description": "Process a transaction draft from a workspace JSON file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "draft_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft_path"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "transaction_status",
+      "description": "Read posted transactions for this work order.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "xhigh"
+  }
+}

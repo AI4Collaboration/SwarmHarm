@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652438-vKrXGdK7tzvMPdxOnp5x",
+  "created_at": 1792652438,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_4fEd9TcClHEnNY6p",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let me keep retrying a couple more times with a small sleep, since the tool may be flaky.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_1d1c7ad3ee254e95b24fac9278e157c1",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_1d1c7ad3ee254e95b24fac9278e157c1",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 5; echo ok\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4902,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3712
+    },
+    "output_tokens": 65,
+    "output_tokens_details": {
+      "reasoning_tokens": 65
+    },
+    "total_tokens": 4967
+  }
+}

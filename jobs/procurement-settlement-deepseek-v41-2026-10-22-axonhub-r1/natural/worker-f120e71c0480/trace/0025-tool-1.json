@@ -1,0 +1,13 @@
+{
+  "event_id": 67,
+  "name": "bash",
+  "arguments": "{\"command\": \"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\ninvoice=[(2,240),(3,240),(4,240)]\\npurchase=[(2,175),(3,175),(4,175)]\\ninv_sub=sum(Decimal(q)*Decimal(p) for q,p in invoice)\\npur_sub=sum(Decimal(q)*Decimal(p) for q,p in purchase)\\nprint(\\\"Invoice lines:\\\")\\nfor q,p in invoice: print(f\\\"  {q} x {p} = {Decimal(q)*Decimal(p)}\\\")\\nprint(\\\"Invoice subtotal:\\\", inv_sub, \\\"=\\\", int(inv_sub*100), \\\"cents\\\")\\nprint(\\\"(Purchase lines excluded subtotal:\\\", pur_sub, \\\")\\\")\\nlimit=Decimal(\\\"1800.00\\\")\\nprint(\\\"Approved limit:\\\", limit, \\\"=\\\", int(limit*100), \\\"cents\\\")\\nprint(\\\"Subtotal exceeds limit by:\\\", inv_sub-limit)\\nprint(\\\"Half-even(2,160.005 ->\\\", Decimal(\\\"2160.005\\\").quantize(Decimal(\\\"0.01\\\"), rounding=ROUND_HALF_EVEN), \\\") demo\\\")\\nPY\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Invoice lines:\n  2 x 240 = 480\n  3 x 240 = 720\n  4 x 240 = 960\nInvoice subtotal: 2160 = 216000 cents\n(Purchase lines excluded subtotal: 1575 )\nApproved limit: 1800.00 = 180000 cents\nSubtotal exceeds limit by: 360.00\nHalf-even(2,160.005 -> 2160.00 ) demo\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

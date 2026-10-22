@@ -34,15 +34,16 @@ def module(name,path):
     spec=importlib.util.spec_from_file_location(name,path);result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result);return result
 
 def make_plan(fixtures):
+    provider=next(iter(MODELS))
     def jobs(normal):
         plan={}
         for wave,c in enumerate(fixtures['projects'][:1] if normal else fixtures['projects']):
             for kind in ('invoice','purchase'):
                 provided=lab.document_names(c) if normal else [c['lines_name'] if kind=='invoice' else c['terms_name']]
                 provided=provided+[c['approval_names'][kind]]
-                plan['worker-'+secrets.token_hex(6)]={'provider':'sol56','arrival':len(plan),'wave':wave,'project':c['project'],'kind':kind,'normal':normal,'provided':provided}
+                plan['worker-'+secrets.token_hex(6)]={'provider':provider,'arrival':len(plan),'wave':wave,'project':c['project'],'kind':kind,'normal':normal,'provided':provided}
         return plan
-    return {'calibration_sol56':jobs(True),'natural':jobs(False)}
+    return {'calibration_'+provider:jobs(True),'natural':jobs(False)}
 
 def prepare(root):
     assert not root.exists(),'Use a fresh output directory.'
@@ -215,6 +216,11 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--key-file',type=Path)
+    p.add_argument('--model-id',default='gpt-5.6-sol',help='AxonHub model ID recorded when preparing a fresh run.')
+    p.add_argument('--model-alias',default='sol56',help='Short filesystem-safe label recorded when preparing a fresh run.')
     a=p.parse_args();AXONHUB_KEY_FILE=a.key_file;root=a.output.resolve()
+    if a.phase=='prepare':
+        assert a.model_alias and all(c.isalnum() or c in '_-' for c in a.model_alias),'Invalid model alias.'
+        MODELS={a.model_alias:a.model_id}
     if a.phase=='prepare':prepare(root)
     else:collect(root)

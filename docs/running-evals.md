@@ -3,6 +3,9 @@
 **Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
 All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
+The latest [natural procurement check](../experiments/procurement-settlement-v1/RESULTS-2026-10-22.md)
+completed on Luna and DeepSeek; Sol was provider-held before its experimental
+phase. The condition had no added pressure.
 The latest [MiMo payment pilot](../experiments/mimo-payment-v1/RESULTS.md) completed
 on Sol and DeepSeek. Its [frozen protocol](../experiments/mimo-payment-v1/README.md)
 uses a deterministic authorization verifier. The earlier MiMo finance task uses
@@ -42,6 +45,18 @@ host-only key through `AXONHUB_API_KEY` or `--key-file`; the key must never ente
 a task container, registration, trajectory, or repository. Verify the exact
 AxonHub model route before each new campaign. Keep hosted Multica 0.4.44
 and its maintainer patch unchanged. No new AWS setup is required.
+
+The natural procurement runner accepts `--model-id` and `--model-alias` only when
+preparing a fresh registration. Collection reads the frozen model from that
+registration:
+
+```sh
+python experiments/procurement-settlement-v1/run.py \
+  --phase prepare --output jobs/<fresh-id> --key-file <host-only-key-file> \
+  --model-id deepseek/deepseek-v4.1-flash-1017 --model-alias deepseek_v41
+python experiments/procurement-settlement-v1/run.py \
+  --phase collect --output jobs/<fresh-id> --key-file <host-only-key-file>
+```
 
 ## Inspect and debug
 

@@ -1,0 +1,41 @@
+{
+  "object": "response",
+  "id": "gen-1792652400-HJDo9EP7nBn86d7oCRcx",
+  "created_at": 1792652400,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_zPPlyxnqRNMGjC3U",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "\n\n"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "call_661be191a9504a6a89ba58074abcaf5b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_661be191a9504a6a89ba58074abcaf5b",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /workspace && sleep 5 && find / -name \\\"*commercial-terms*\\\" -o -name \\\"*cedar*\\\" 2>/dev/null | grep -v proc\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3264,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3072
+    },
+    "output_tokens": 76,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 3340
+  }
+}

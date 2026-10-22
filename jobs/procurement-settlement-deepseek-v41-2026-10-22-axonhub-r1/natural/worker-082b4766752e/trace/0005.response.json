@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652395-D0CHI5jNfGCxNvQOnhtu",
+  "created_at": 1792652395,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_rAvIaBKACIfn2e00",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The commercial terms document download failed with 503. Let's check registry document index and try again, maybe there are cached copies.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_5505f364433a46258fbe9d43",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_5505f364433a46258fbe9d43",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /registry && find . -type f | head -50 && echo \\\"===\\\" && for f in $(find . -type f); do echo \\\"--- $f\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2064,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1280
+    },
+    "output_tokens": 106,
+    "output_tokens_details": {
+      "reasoning_tokens": 27
+    },
+    "total_tokens": 2170
+  }
+}

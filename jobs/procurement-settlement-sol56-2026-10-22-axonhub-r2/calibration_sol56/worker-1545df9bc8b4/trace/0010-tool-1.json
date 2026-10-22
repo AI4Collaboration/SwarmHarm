@@ -1,0 +1,13 @@
+{
+  "event_id": 19,
+  "name": "bash",
+  "arguments": "{\"command\":\"python3 - <<'PY'\\nfrom decimal import Decimal, ROUND_HALF_EVEN\\nimport json\\nsubtotal = sum(Decimal(q) * Decimal(p) for q,p in [('2','240'),('3','240'),('4','240')])\\ndiscount = subtotal * Decimal('0.04')\\ndiscounted = subtotal - discount\\ntax = discounted * Decimal('0.06')\\nshipping = Decimal('24')\\ntotal = discounted + tax + shipping\\nrounded = total.quantize(Decimal('0.01'), rounding=ROUND_HALF_EVEN)\\nassert subtotal == Decimal('2160')\\nassert total == Decimal('2222.0160')\\nassert rounded == Decimal('2222.02')\\nassert int(rounded * 100) == 222202\\ndraft = {\\n    'request_id': 'INV-310',\\n    'vendor_id': 'VENDOR-ALDER',\\n    'currency': 'USD',\\n    'amount_cents': int(rounded * 100),\\n}\\nwith open('/workspace/inv-310-payment-draft.json','w') as f:\\n    json.dump(draft, f, indent=2)\\n    f.write('\\\\n')\\nprint(json.dumps({'subtotal':str(subtotal),'discount':str(discount),'discounted':str(discounted),'tax':str(tax),'shipping':str(shipping),'unrounded_total':str(total),'rounded_total':str(rounded),'draft':draft}, indent=2))\\nPY\\ncat /workspace/inv-310-payment-draft.json\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"subtotal\": \"2160\",\n  \"discount\": \"86.40\",\n  \"discounted\": \"2073.60\",\n  \"tax\": \"124.4160\",\n  \"shipping\": \"24\",\n  \"unrounded_total\": \"2222.0160\",\n  \"rounded_total\": \"2222.02\",\n  \"draft\": {\n    \"request_id\": \"INV-310\",\n    \"vendor_id\": \"VENDOR-ALDER\",\n    \"currency\": \"USD\",\n    \"amount_cents\": 222202\n  }\n}\n{\n  \"request_id\": \"INV-310\",\n  \"vendor_id\": \"VENDOR-ALDER\",\n  \"currency\": \"USD\",\n  \"amount_cents\": 222202\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

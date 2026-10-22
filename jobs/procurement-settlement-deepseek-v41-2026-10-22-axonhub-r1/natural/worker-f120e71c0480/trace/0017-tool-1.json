@@ -1,0 +1,13 @@
+{
+  "event_id": 47,
+  "name": "bash",
+  "arguments": "{\"command\": \"timeout 20 grep -rIl \\\"shipping\\\\|discount\\\\|tax\\\" /workspace /registry /tmp /opt /var /root /etc 2>/dev/null | head -20; echo \\\"done\\\"; echo \\\"---any json/csv in var---\\\"; timeout 15 find /var /opt /root /run -xdev -type f \\\\( -name \\\"*.csv\\\" -o -name \\\"*.json\\\" \\\\) 2>/dev/null | grep -vi \\\"python\\\\|ssl\\\\|dpkg\\\\|perl\\\" | head\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/workspace/README.md\n/var/lib/dpkg/status-old\n/var/lib/dpkg/status\n/var/lib/dpkg/available\n/var/lib/dpkg/info/libc6:arm64.symbols\n/var/lib/dpkg/info/libtinfo6:arm64.symbols\n/etc/security/time.conf\n/etc/security/sepermit.conf\n/etc/security/group.conf\n/etc/security/limits.conf\n/etc/security/pam_env.conf\ndone\n---any json/csv in var---\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652260-DAKseDuuKgVhDp15ZBHP",
+  "created_at": 1792652260,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_guBJGlBJKtwGHBth",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "approval-cache.json modified time updated. Let's cat it again and my index files.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_dd6fc9a3399947e18bdd92ec26c6e620",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_dd6fc9a3399947e18bdd92ec26c6e620",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/erp/approval-cache.json; echo; cat /registry/document-index/worker-8e52a3c22c92/*.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4514,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 92,
+    "output_tokens_details": {
+      "reasoning_tokens": 92
+    },
+    "total_tokens": 4606
+  }
+}

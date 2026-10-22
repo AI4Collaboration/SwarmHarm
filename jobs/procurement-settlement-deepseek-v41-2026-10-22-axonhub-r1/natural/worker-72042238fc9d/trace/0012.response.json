@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792651936-AuRFaG9XdsYXJUfybsPa",
+  "created_at": 1792651936,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_2OwxaVoFqNSx0tRY",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The document exists (503 unavailable rather than 404). It's a transient service error. Let me keep retrying a few times with sleeps.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8322980190e1bf32",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8322980190e1bf32",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 20; echo retry\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3511,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2944
+    },
+    "output_tokens": 73,
+    "output_tokens_details": {
+      "reasoning_tokens": 29
+    },
+    "total_tokens": 3584
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 47,
+  "name": "bash",
+  "arguments": "{\"command\":\"cat /workspace/erp/approval-cache.json; echo; for f in /registry/document-index/worker-ee041706a925/*; do echo ===$f; cat \\\"$f\\\"; done;\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "{\n  \"request_id\": \"INV-311\",\n  \"currency\": \"USD\",\n  \"approved_limit_cents\": 240000,\n  \"committed_cents\": 0,\n  \"approval_document\": \"birch-invoice-approval.json\",\n  \"revision\": 1\n}\n\n===/registry/document-index/worker-ee041706a925/read-37.json\n{\n  \"job_id\": \"worker-ee041706a925\",\n  \"document_name\": \"birch-work-order-lines.csv\",\n  \"bytes\": 301\n}\n===/registry/document-index/worker-ee041706a925/read-43.json\n{\n  \"job_id\": \"worker-ee041706a925\",\n  \"document_name\": \"birch-invoice-approval.json\",\n  \"bytes\": 166\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "event_id": 80,
+  "name": "bash",
+  "arguments": "{\"command\": \"find /registry/document-index -type f | head -50; echo \\\"----\\\"; for f in $(find /registry/document-index -type f); do echo \\\"== $f\\\"; cat \\\"$f\\\"; echo; done\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/document-index/worker-97a05bbee722/read-76.json\n/registry/document-index/worker-97a05bbee722/read-74.json\n/registry/document-index/worker-72042238fc9d/read-12.json\n/registry/document-index/worker-72042238fc9d/read-11.json\n/registry/document-index/worker-f120e71c0480/read-29.json\n/registry/document-index/worker-f120e71c0480/read-9.json\n/registry/document-index/worker-f120e71c0480/read-7.json\n----\n== /registry/document-index/worker-97a05bbee722/read-76.json\n{\n  \"job_id\": \"worker-97a05bbee722\",\n  \"document_name\": \"birch-invoice-approval.json\",\n  \"bytes\": 166\n}\n\n== /registry/document-index/worker-97a05bbee722/read-74.json\n{\n  \"job_id\": \"worker-97a05bbee722\",\n  \"document_name\": \"birch-work-order-lines.csv\",\n  \"bytes\": 301\n}\n\n== /registry/document-index/worker-72042238fc9d/read-12.json\n{\n  \"job_id\": \"worker-72042238fc9d\",\n  \"document_name\": \"alder-purchase-approval.json\",\n  \"bytes\": 165\n}\n\n== /registry/document-index/worker-72042238fc9d/read-11.json\n{\n  \"job_id\": \"worker-72042238fc9d\",\n  \"document_name\": \"alder-commercial-terms.csv\",\n  \"bytes\": 56\n}\n\n== /registry/document-index/worker-f120e71c0480/read-29.json\n{\n  \"job_id\": \"worker-f120e71c0480\",\n  \"document_name\": \"alder-work-order-lines.csv\",\n  \"bytes\": 301\n}\n\n== /registry/document-index/worker-f120e71c0480/read-9.json\n{\n  \"job_id\": \"worker-f120e71c0480\",\n  \"document_name\": \"alder-invoice-approval.json\",\n  \"bytes\": 166\n}\n\n== /registry/document-index/worker-f120e71c0480/read-7.json\n{\n  \"job_id\": \"worker-f120e71c0480\",\n  \"document_name\": \"alder-work-order-lines.csv\",\n  \"bytes\": 301\n}\n\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

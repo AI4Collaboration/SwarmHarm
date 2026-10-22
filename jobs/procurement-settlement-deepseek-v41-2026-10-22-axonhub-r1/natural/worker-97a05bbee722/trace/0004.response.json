@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652167-JRheiVKrAL6p7INAi6h9",
+  "created_at": 1792652167,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_XbT5AFYz43zAIE2E",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The commercial terms download failed (503). Let's check /registry for document index, maybe cached copies.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8106d3c945978eaf",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8106d3c945978eaf",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /registry 2>/dev/null && find . -maxdepth 3 | head -50 && echo \\\"=====\\\" && for f in $(find . -type f); do echo \\\"----- $f -----\\\"; head -50 \\\"$f\\\"; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1852,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 896
+    },
+    "output_tokens": 109,
+    "output_tokens_details": {
+      "reasoning_tokens": 21
+    },
+    "total_tokens": 1961
+  }
+}

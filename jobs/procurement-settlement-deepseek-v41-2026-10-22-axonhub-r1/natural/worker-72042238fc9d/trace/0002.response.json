@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "gen-1792651848-97OkJkGEg3uF5Xd90gaR",
+  "created_at": 1792651848,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "chatcmpl-tool-9e79080ed767b2b4",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9e79080ed767b2b4",
+      "name": "bash",
+      "arguments": "{\"command\": \"cd /workspace && cat PLATFORM.md && echo \\\"=====README=====\\\" && cat README.md && echo \\\"=====ERP=====\\\" && ls -la erp && for f in erp/*; do echo \\\"--- $f ---\\\"; cat \\\"$f\\\"; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 897,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 95,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 992
+  }
+}

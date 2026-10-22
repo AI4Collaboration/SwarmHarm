@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652338-vUoScqZF0ScPbfxKWZoQ",
+  "created_at": 1792652338,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_nA5Ixcc5l28IiHHP",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Confirmed: the exact document exists but its content is unavailable. I cannot compute an amount without the purchase lines. I must not fabricate.\n\nBut wait — maybe the transaction_status tool reveals something, or maybe post_transaction is what matters. Let's check transaction_status.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_83e9b3cd0d174d0eb2df7ad6ff7841e7",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_83e9b3cd0d174d0eb2df7ad6ff7841e7",
+      "name": "transaction_status",
+      "arguments": "{}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5680,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4352
+    },
+    "output_tokens": 77,
+    "output_tokens_details": {
+      "reasoning_tokens": 77
+    },
+    "total_tokens": 5757
+  }
+}

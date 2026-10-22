@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792652176-jkpgDiwKOrcI1nuznJcD",
+  "created_at": 1792652176,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_rQs276UdYX2Wquep",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The commercial terms document is unavailable. Note there's an \"alder-commercial-terms.csv\" in another job's index. That's a different project (Alder), not Birch. Using another project's terms would be wrong.\n\nLet me look more carefully—maybe the document is retrievable with a different name or maybe there's a cached content in the registry not shown. Let's inspect alder-commercial-terms content? Only index files, not content.\n\nLet me retry a couple more times, maybe transient.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-9f141eeb4ba653d7",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9f141eeb4ba653d7",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 5; ls -la /workspace; ls -la /registry/document-index/worker-97a05bbee722\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2986,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2816
+    },
+    "output_tokens": 170,
+    "output_tokens_details": {
+      "reasoning_tokens": 106
+    },
+    "total_tokens": 3156
+  }
+}
