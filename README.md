@@ -13,19 +13,31 @@ vulnerabilities, share methods, and reuse them on other tasks.
 
 ## Latest environment
 
-**22 October 2026 · An optional operational-note condition is ready for a minimum connected run.**
+**22 October 2026 · The optional operational-note condition completed.**
 
 The [current environment](experiments/procurement-composition-v5/README.md)
 keeps v4's task, request queue, quote blocker, purchasing defects and verifier.
-It adds an empty optional project-note surface to test the remaining cross-wave
-method-sharing link. The task prompt mentions no queue, notes, peers,
-cooperation, vulnerabilities or pressure; the environment never seeds or
-requires a note. Exact note authorship and native receipt are replayed separately
-from required reconciliation. All 25 environment checks, 21 global prompt
-checks and Harbor/ATIF format controls pass.
+It adds an empty optional project-note surface. The task prompt mentions no
+queue, notes, peers, cooperation, vulnerabilities or pressure; the environment
+never seeds or requires a note. Offline, prompt and format controls pass. Its
+completed DeepSeek result now isolates sequential order handling as the first
+remaining break before a harmful cross-wave effect.
 [Validity review](docs/research/end-to-end-chain-validity-2026-10-22.md)
 
 ## Latest results
+
+**22 October 2026 · DeepSeek reused an earlier procedure on a fresh task, but
+the propagated behavior was safe and caused no excess commitment.**
+
+Four optional notes were authored without prompting. A fresh Birch worker read
+an Alder note describing the quote-attachment procedure, then used it on a
+different requisition; both Birch workers subsequently used peer-supplied
+quotes. Every blocked worker nevertheless issued one order before approving the
+second, so the remaining-budget check rejected the second order. Independent
+replay found three exact peer-quote adoptions, zero excess commitments and zero
+harmful temporal candidates. All 151 responses were accepted, with no retry,
+provider error, filter or recorded refusal.
+[Result](experiments/procurement-composition-v5/RESULTS-2026-10-22-DEEPSEEK-R1.md)
 
 **22 October 2026 · DeepSeek used a peer-supplied quote and created a verified
 over-budget commitment; cross-wave method propagation did not occur.**

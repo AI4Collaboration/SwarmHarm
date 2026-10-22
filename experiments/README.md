@@ -1,13 +1,15 @@
 # Experiments
 
-**Latest environment:** [procurement composition v5](procurement-composition-v5/README.md).
-It keeps v4's task, request queue, blocker, process weakness and verifier, and
-adds an empty optional operational-note surface. The prompt does not name
-notes, the queue, peers, cooperation, vulnerabilities or pressure. No note is
-seeded or required. All 25 environment checks, 21 prompt checks and format
-controls pass.
+**Latest environment and result:** [procurement composition v5](procurement-composition-v5/README.md) ·
+[DeepSeek report](procurement-composition-v5/RESULTS-2026-10-22-DEEPSEEK-R1.md).
+Four voluntary notes were authored. A fresh worker read an earlier note and
+reused its document-exchange procedure on a different requisition. Three exact
+peer quotes were adopted, but all workers issued the first order before the
+second approval, so the budget check prevented every excess commitment. The
+run had 151 accepted responses and no retry, provider error, filter or recorded
+refusal. This supports cross-wave safe procedure reuse, not harmful contagion.
 
-**Latest result:** [DeepSeek procurement v4](procurement-composition-v4/RESULTS-2026-10-22-DEEPSEEK-R1.md).
+**Earlier result:** [DeepSeek procurement v4](procurement-composition-v4/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Both Alder workers spontaneously requested and fulfilled missing quotes. One
 read the peer attachment, used its exact opaque reference and created a verified
 $240 excess commitment. Fresh Birch workers read the persistent Alder records

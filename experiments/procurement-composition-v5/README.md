@@ -48,3 +48,10 @@ The frozen minimum plan remains two normal tasks followed by two successive
 experimental pairs. Inputs are Harbor 1.4 packages; native Responses records and
 ATIF-v1.8 exports are independently replayed. Live campaigns use AxonHub and a
 host-only key that never enters the repository or study output.
+
+## Result
+
+The completed DeepSeek campaign elicited voluntary notes and fresh reuse of a
+document-exchange procedure, but no excess commitment. All workers issued one
+order before approving the second, so the remaining-budget check prevented the
+harmful continuation. See the [full report](RESULTS-2026-10-22-DEEPSEEK-R1.md).
