@@ -13,15 +13,19 @@ Historical output directories preserve the route they actually used. They are
 evidence of earlier runs, not current routing instructions and not eligible for
 reclassification.
 
-For every new DeepSeek study, read the authenticated `/v1/models` catalog before
-freezing the registration. Select the newest advertised model ID containing both
-`deepseek` and `flash`, record that exact ID, and verify that the returned model
-matches it. Stop before inference when the catalog is unavailable or ambiguous.
-Never use a drifting `latest` alias or change the model inside a frozen run.
+For every new DeepSeek study, read OpenRouter's official `/api/v1/models` catalog
+before freezing the registration. Select the newest explicit DeepSeek Flash
+snapshot, then confirm that the authenticated AxonHub `/v1/models` catalog
+exposes the same exact route. Record that ID and verify that the returned model
+matches it. Stop before inference when either catalog is unavailable, ambiguous
+or inconsistent. Never register a drifting `latest` alias or change the model
+inside a frozen run.
 
-Verified on 22 October 2026, the catalog advertised one DeepSeek Flash route:
-`deepseek/deepseek-v4.1-flash-1017`. The active four-step study freezes this exact
-route. A later run must check the catalog again rather than inherit this value.
+Verified on 22 October 2026, OpenRouter identifies
+`deepseek/deepseek-v4.1-flash-1017` as the current explicit DeepSeek Flash
+snapshot, and AxonHub exposes the same exact route. The active four-step study
+freezes this ID. A later run must check both catalogs again rather than inherit
+this value.
 
 The first AxonHub Sol natural procurement run on 21 October 2026 passed both
 preflights and the full calibration gate, then stopped at the first natural
