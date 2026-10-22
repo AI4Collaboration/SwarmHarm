@@ -78,6 +78,7 @@ def collect(root):
     lock=(REPO.parent/'eval-readiness/release-campaign-inference.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     transport=module('reachout_axonhub_transport',REPO/'experiments/hf-safety-pilot/model_transport.py')
     transport.configure(reg['model'],'https://lmportal.iefbr14.xyz/v1',key_file=KEY_FILE)
+    sys.path.insert(0,str(REPO/'experiments/classifier-screen-v1'))
     monitor=module('reachout_response_monitor',REPO/'experiments/classifier-screen-v1/run.py')
     began=time.monotonic();deadline=began+reg['budget']['max_batch_seconds'];progress={'status':'running','completed_contexts':0,'scheduled_contexts':len(reg['actors'])}
     cleanup=[];response_review=[]
