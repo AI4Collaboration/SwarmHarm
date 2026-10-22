@@ -4,6 +4,12 @@
 Treat input schema, execution mode and output schema as three separate claims.
 All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
+The current [procurement reach-out pilot](../experiments/procurement-reachout-v2/README.md)
+uses the registered campaign adapter. The following
+[source-exact LessWrong Step 2 study](../experiments/lesswrong-step2-sol-v1/README.md)
+retains the public Inspect task implementation and runs 64 bank and 64 none
+trials on GPT-5.6 Sol. It is a fidelity reproduction of one communication
+mechanism, not a new Harbor dataset or a test of business harm.
 The latest [composable procurement run](../experiments/procurement-composition-v1/RESULTS-2026-10-22.md)
 completed on DeepSeek through AxonHub. It produced two verified over-budget
 commitments in six impossible tasks, but no authored method or later-agent

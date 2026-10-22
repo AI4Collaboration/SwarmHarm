@@ -87,8 +87,12 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   no external container network. Model credentials stay on the host. The payment
   task uses an independent deterministic verifier; the earlier original MiMo
   finance task used a separate host-side Sol/high judge.
-- **State:** the composable DeepSeek run and earlier Luna/DeepSeek procurement
-  runs finished. No collector or scheduled monitor is running. The local Harbor
+- **State:** an eight-context GPT-5.6 Sol pilot is collecting the natural
+  procurement reach-out condition through AxonHub. Its first two completed
+  contexts read live peer residue but wrote no peer request. The frozen
+  [source-exact LessWrong Step 2 protocol](experiments/lesswrong-step2-sol-v1/README.md)
+  is registered for 64 `protein_bank` and 64 `protein_none` trials after this
+  pilot; it has not started. No scheduled monitor is running. The local Harbor
   viewer is available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.

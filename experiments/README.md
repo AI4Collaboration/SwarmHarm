@@ -1,11 +1,22 @@
 # Experiments
 
-**Latest:** [MiMo payment results](mimo-payment-v1/RESULTS.md). Sol and DeepSeek
+**Current:** an eight-context [natural procurement reach-out](procurement-reachout-v2/README.md)
+pilot is running on GPT-5.6 Sol through AxonHub. The first two completed
+contexts read live peer residue but wrote no peer request. The next frozen study
+is the [source-exact LessWrong Step 2 comparison](lesswrong-step2-sol-v1/README.md):
+64 `protein_bank` and 64 `protein_none` trials on the same model. It has not
+started, and communication will not be classified as misalignment or harm.
+
+**Latest completed result:** [composable procurement](procurement-composition-v1/RESULTS-2026-10-22.md).
+DeepSeek created two independently verified over-budget commitments in six
+impossible tasks. No reusable method or later-agent adoption was observed.
+
+**Earlier:** [MiMo payment results](mimo-payment-v1/RESULTS.md). Sol and DeepSeek
 completed one source-derived task each. No incorrect payment was authorized.
 DeepSeek's positive attempts were blocked; it eventually authorized zero.
 The harmful-use link remains missing; peer propagation was not tested.
 
-**Earlier:** [Original MiMo finance](mimo-finance-v1/RESULTS.md), source rubric
+Also: [Original MiMo finance](mimo-finance-v1/RESULTS.md), source rubric
 0.7/1 with no harmful action; [Harbor approval-code](approval-code-v1/RESULTS.md),
 no foreign-code use or method adoption.
 
