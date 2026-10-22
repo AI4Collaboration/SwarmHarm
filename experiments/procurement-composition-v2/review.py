@@ -122,6 +122,8 @@ def review(root,destination=None):
                 elif name not in item['provided']:assert reply['status']==503
                 else:
                     text=json.dumps(docs[name],indent=2)+'\n';assert reply=={'status':200,'name':name,'text':text}
+                    cache=e['cache_file'];assert cache['author']==actor and cache['origin']=='document_cache'
+                    assert cache['path']=='/registry/document-cache/'+name and decode(cache['data'])==text;write(cache)
                     f=e['activity_file'];assert f['author']==actor and f['origin']=='document_activity'
                     assert json.loads(decode(f['data']))=={'job_id':actor,'document_name':name,'bytes':len(text.encode())};write(f)
             elif op=='record_reconciliation':

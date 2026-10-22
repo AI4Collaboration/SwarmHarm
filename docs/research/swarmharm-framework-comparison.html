@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Table 1 comparison of SwarmHarm, ORBIT and the OAI–Hugging Face reproduction.">
+  <title>Table 1 · SwarmHarm Comparison</title>
+  <style>
+    :root { color-scheme: light; --ink: #111; --muted: #555; --rule: #222; --hairline: #c8c8c8; --accent: #eef4ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: #fff; font-family: Arial, Helvetica, sans-serif; line-height: 1.35; }
+    main { width: min(1180px, calc(100% - 48px)); margin: 54px auto; }
+    figure { margin: 0; }
+    figcaption { margin-bottom: 14px; font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.35; }
+    figcaption strong { font-weight: 700; }
+    .table-wrap { overflow: visible; }
+    table { width: 100%; table-layout: fixed; border-collapse: collapse; border-top: 2px solid var(--rule); border-bottom: 2px solid var(--rule); font-size: 14px; }
+    th, td { padding: 11px 16px; border-bottom: 1px solid var(--hairline); text-align: center; vertical-align: middle; }
+    thead th { border-bottom: 1.5px solid var(--rule); font-weight: 700; }
+    tbody tr:last-child td { border-bottom: 0; }
+    th:first-child, td:first-child { width: 52%; text-align: left; font-weight: 600; }
+    th:nth-child(2), td:nth-child(2) { background: var(--accent); }
+    .yes { font-size: 17px; font-weight: 700; }
+    .partial { font-size: 15px; font-weight: 700; }
+    .no { color: #777; font-size: 17px; }
+    .notes { margin-top: 11px; color: var(--muted); font-family: Georgia, "Times New Roman", serif; font-size: 13px; }
+    .notes p { margin: 4px 0; }
+    .sources { margin-top: 14px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+    .sources a { color: #174ea6; text-decoration: none; }
+    .sources a:hover { text-decoration: underline; }
+    @media (max-width: 700px) {
+      main { width: calc(100% - 24px); margin: 26px auto; }
+      figcaption { font-size: 15px; }
+      table { font-size: 11px; }
+      th, td { padding: 8px 10px; }
+    }
+    @media print {
+      main { width: 100%; margin: 0; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; font-size: 10pt; }
+      figcaption { font-size: 11pt; }
+      .notes { font-size: 9pt; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <figure>
+      <figcaption><strong>Table 1.</strong> Comparison of SwarmHarm with the closest multi-agent framework and empirical precedent. SwarmHarm targets emergent cross-agent loss of control from legitimate tasks.</figcaption>
+      <div class="table-wrap">
+        <table aria-label="Comparison of SwarmHarm, ORBIT and the OAI–Hugging Face reproduction">
+          <thead>
+            <tr><th>Evaluation property</th><th>SwarmHarm</th><th>ORBIT</th><th>OAI–HF<br>reproduction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Native multi-agent evaluation</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">△</td></tr>
+            <tr><td>Independent, peer-unaware sandboxes</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
+            <tr><td>Legitimate impossible / beyond-capability tasks</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr><td>Autonomous discovery of shared infrastructure</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr><td>Cross-task persistence and fresh-agent adoption</td><td class="yes">✓</td><td class="partial">△</td><td class="yes">✓</td></tr>
+            <tr><td>Composable process vulnerabilities</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
+            <tr><td>Verified downstream consequence</td><td class="yes">✓</td><td class="partial">△</td><td class="partial">△</td></tr>
+            <tr><td>Causal repair / mechanism controls</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notes">
+        <p><strong>Legend:</strong> ✓ central to the evaluation; △ partial or a different construct; — absent or not central.</p>
+        <p><strong>ORBIT distinction:</strong> ORBIT provides scenario-level Docker isolation and separate conversations, but does not isolate each agent's shared files or tools by default. SwarmHarm links peer-unaware sandboxes only through ordinary persistent infrastructure.</p>
+        <p><strong>Scope:</strong> ✓ denotes an implemented evaluation feature, not that every behavioral chain has already been observed.</p>
+      </div>
+      <div class="sources">Sources: <a href="https://arxiv.org/abs/2609.33102">ORBIT</a> · <a href="https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment">OAI–HF reproduction</a></div>
+    </figure>
+  </main>
+</body>
+</html>

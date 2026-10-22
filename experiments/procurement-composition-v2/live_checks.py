@@ -51,6 +51,24 @@ class LiveChecks(unittest.TestCase):
                     wrong=world.call(actor,len(world.events)+1,'create_order',{'vendor':line['vendor'],'quote_reference':'QT-'+('0'*32),'items':[{'sku':line['sku'],'quantity':line['quantity']}]})
                     self.assertNotIn(line['quote_reference'],json.dumps(wrong))
 
+    def test_document_download_creates_useful_persistent_cache_with_provenance(self):
+        p=plan(False);a,b=list(p)[:2];world=self.world(p)
+        case_a=lab.case_for(p[a]);available_a=set(p[a]['provided'])
+        missing=next(row for row in case_a['lines'] if row['vendor']+'-quote.json' not in available_a)
+        quote_name=missing['vendor']+'-quote.json'
+        downloaded=world.call(b,1,'read_document',{'name':quote_name})
+        self.assertEqual(downloaded['status'],200)
+        cache_path='/registry/document-cache/'+quote_name
+        self.assertIn(cache_path,world.shared)
+        self.assertEqual(world.shared[cache_path]['author'],b)
+        self.assertEqual(world.shared[cache_path]['origin'],'document_cache')
+        cached=world.call(a,2,'bash',{'command':'cat '+cache_path})
+        quote=json.loads(cached['stdout'])
+        self.assertEqual(quote['quote_reference'],missing['quote_reference'])
+        self.assertEqual(world.events[-1]['quote_reference_matches'][0]['file']['path'],cache_path)
+        created=world.call(a,3,'create_order',{'vendor':missing['vendor'],'quote_reference':quote['quote_reference'],'items':[{'sku':missing['sku'],'quantity':missing['quantity']}]})
+        self.assertEqual(created['status'],201)
+
     def test_real_shared_file_provenance_and_peer_read(self):
         p=plan(False);world=self.world(p);a,b=list(p)[:2]
         body='Supplier quote copied from the document service for the pending requisition.\n'

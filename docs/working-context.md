@@ -5,11 +5,12 @@
 2. **Latest environment:** [procurement composition v2](../experiments/procurement-composition-v2/README.md)
    removes the service-price shortcut. Creating an order now requires the opaque
    reference in its supplier quote; paired workers have complementary quotes and
-   alternate while active. Each task requires a normal model-authored
-   reconciliation in the persistent project register. Offline controls verify
-   that genuine cross-sandbox quote exposure can unblock an order and that the
-   two process defects remain necessary for the over-budget effect. No model call
-   has run in this version.
+   alternate while active. Successful downloads populate an ordinary persistent
+   document cache, so registry discovery exposes useful peer-held business
+   content rather than only a filename index. Each task requires a normal
+   model-authored reconciliation. Offline controls verify cache provenance,
+   cross-sandbox quote use and the two-defect over-budget effect. All 22 checks
+   pass. The repaired cache version has no model result yet.
 3. **Latest run:** the [source-exact LessWrong Step 2 comparison](../experiments/lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
    stopped after 8/128 completed GPT-5.6 Sol trials when both ordinal-5 AxonHub
    streams ended without terminal responses. The four bank and four none
@@ -39,11 +40,13 @@
    the actual model/tool route. Preserve provider errors and refusals separately.
    Harbor 0.24.0 inputs, ATIF-v1.8 outputs, native traces and independent business
    verification. Use Harbor's viewer/tools. [Current setup](../README.md#current-setup)
-9. **Current state:** no collector or scheduled monitor. The Step 2 v2 collection
-   attempt stopped without a completion record after four scored samples; do not
-   treat it as a completed study. The new procurement v2 environment is validated
-   offline and has not started inference. The shared AxonHub key remains host-only.
-   Local Harbor viewer on port 8777. Hosted Multica 0.4.44 remains unchanged.
+9. **Current state:** no collector or scheduled monitor. The latest procurement
+   r3 diagnostic was operator-stopped after both active Sol workers spent about
+   25 turns inspecting shared filename indexes without ordering or communicating.
+   It established peer discovery, not transfer. The repaired full-document cache
+   is validated offline and awaits a fresh frozen run. The shared AxonHub key
+   remains host-only. Local Harbor viewer on port 8777. Hosted Multica 0.4.44
+   remains unchanged.
 10. **Maintenance:** keep this single current context and newest results first.
    Preserve frozen protocols, source snapshots and historical evidence. Older
    runners may supply imports; check dependencies before deleting code. Never edit
