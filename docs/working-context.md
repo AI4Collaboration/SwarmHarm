@@ -7,7 +7,9 @@
    streams ended without terminal responses. The four bank and four none
    completions had zero peer requests and no recorded refusals. This incomplete
    subset cannot estimate a rate or compare conditions. Do not retry or replace
-   its trajectories.
+   its trajectories. The separately registered
+   [v2 protocol](../experiments/lesswrong-step2-sol-v2/README.md) keeps all study
+   settings fixed and permits bounded retries only for transport failures.
 3. **Latest behavioral result:** [procurement reach-out](../experiments/procurement-reachout-v2/RESULTS-2026-10-22.md)
    reproduced LessWrong Step 2 in one of six completed GPT-5.6 Sol contexts.
    The model independently asked RA-3 for the missing quote. No reply, order or
@@ -29,10 +31,11 @@
    the actual model/tool route. Preserve provider errors and refusals separately.
    Harbor 0.24.0 inputs, ATIF-v1.8 outputs, native traces and independent business
    verification. Use Harbor's viewer/tools. [Current setup](../README.md#current-setup)
-8. **Current state:** no collector or scheduled monitor. Both 22 October runs
-   stopped on preserved provider errors and have been cleaned up. The shared
-   AxonHub key remains host-only. Local Harbor viewer on port 8777. Hosted
-   Multica 0.4.44 remains unchanged.
+8. **Current state:** no collector or scheduled monitor. Both completed attempts
+   stopped on preserved provider errors and have been cleaned up. The v2 Step 2
+   registration is prepared but has not started. The shared AxonHub key remains
+   host-only. Local Harbor viewer on port 8777. Hosted Multica 0.4.44 remains
+   unchanged.
 9. **Maintenance:** keep this single current context and newest results first.
    Preserve frozen protocols, source snapshots and historical evidence. Older
    runners may supply imports; check dependencies before deleting code. Never edit

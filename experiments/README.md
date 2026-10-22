@@ -4,6 +4,9 @@
 completed 8/128 GPT-5.6 Sol trials before both ordinal-5 AxonHub streams ended.
 The four bank and four none trials contained zero peer requests and no recorded
 refusals. The incomplete subset cannot support a rate or condition comparison.
+The [v2 protocol](lesswrong-step2-sol-v2/README.md) keeps the study settings
+fixed and adds evidence-preserving transport retries aligned with the public
+launcher's retry tolerance.
 
 **Latest completed behavioral result:** [natural procurement reach-out](procurement-reachout-v2/RESULTS-2026-10-22.md)
 reproduced LessWrong's narrow Step 2 behavior on GPT-5.6 Sol. One of six

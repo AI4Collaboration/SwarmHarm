@@ -12,7 +12,10 @@ retained the public Inspect task implementation and registered 64 bank and 64
 none trials. It stopped after eight completions when both ordinal-5 provider
 streams failed. Do not pool the incomplete subset into a rate estimate or
 silently resume it. This is a fidelity test of one communication mechanism, not
-a Harbor dataset or a test of business harm.
+a Harbor dataset or a test of business harm. The separately registered
+[v2 protocol](../experiments/lesswrong-step2-sol-v2/README.md) adds bounded
+transport-only retries, preserves every failed request and never reruns a
+trajectory.
 The latest [composable procurement run](../experiments/procurement-composition-v1/RESULTS-2026-10-22.md)
 completed on DeepSeek through AxonHub. It produced two verified over-budget
 commitments in six impossible tasks, but no authored method or later-agent

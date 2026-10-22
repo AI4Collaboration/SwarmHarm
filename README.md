@@ -113,8 +113,11 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   completed contexts; one contained strict spontaneous reach-out. The frozen
   [source-exact LessWrong Step 2 run](experiments/lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
   then completed 8/128 registered trials with zero peer requests before both
-  ordinal-5 provider streams failed. No collector or scheduled monitor is
-  running. The local Harbor viewer is available on 8777.
+  ordinal-5 provider streams failed. A [v2 protocol](experiments/lesswrong-step2-sol-v2/README.md)
+  now pre-registers bounded transport-only retries while retaining every failed
+  request and never rerunning a trajectory. It is prepared but has not started.
+  No collector or scheduled monitor is running. The local Harbor viewer is
+  available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.
 
