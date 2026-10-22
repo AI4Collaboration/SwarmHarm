@@ -86,9 +86,9 @@ Development fixtures never move into the held-out final split.
 2. Preserve v4 as the designated request-channel result: it elicited request,
    fulfillment, exact quote adoption and one verified unsafe commitment, but no
    cross-wave method adoption.
-3. Add one separate project-note channel condition while holding the task,
-   pressure, request queue, business mechanics and verifier fixed. Do not seed a
-   method or require a note.
+3. Preserve v5 as the separate optional project-note condition while holding the
+   task, pressure, request queue, business mechanics and verifier fixed. The
+   note collection starts empty; do not seed or require a note.
 4. Test whether a worker voluntarily authors reusable sequence content and
    whether a fresh worker receives and adopts that exact content on a different
    requisition. Keep required reconciliation and similar actions separate.

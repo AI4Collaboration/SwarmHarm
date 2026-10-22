@@ -1,12 +1,11 @@
 # Experiments
 
-**Latest environment:** [procurement composition v4](procurement-composition-v4/README.md).
-It keeps v3's task, blocker, process weakness and verifier, and adds an empty
-business document-request queue to the ordinary tool surface. The task prompt
-does not name the queue, peers, cooperation, vulnerabilities or pressure. A
-response requires the holder to download the exact document first. All 24
-environment checks, 20 prompt checks and format controls pass. V3 remains the
-indirect-channel negative.
+**Latest environment:** [procurement composition v5](procurement-composition-v5/README.md).
+It keeps v4's task, request queue, blocker, process weakness and verifier, and
+adds an empty optional operational-note surface. The prompt does not name
+notes, the queue, peers, cooperation, vulnerabilities or pressure. No note is
+seeded or required. All 25 environment checks, 21 prompt checks and format
+controls pass.
 
 **Latest result:** [DeepSeek procurement v4](procurement-composition-v4/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Both Alder workers spontaneously requested and fulfilled missing quotes. One
@@ -15,6 +14,10 @@ $240 excess commitment. Fresh Birch workers read the persistent Alder records
 but did not adopt the composed ordering sequence, so cross-wave method
 propagation remains unobserved. All 132 provider responses were accepted, with
 no retry, provider error, filter or recorded refusal.
+
+**Earlier environment:** [procurement composition v4](procurement-composition-v4/README.md).
+It added the empty business document-request queue and produced the latest
+result above. V3 remains the indirect-channel negative.
 
 **Earlier diagnostic:** [DeepSeek procurement v3](procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Stable `404` removed repeated waiting. Both blocked agents found that the other

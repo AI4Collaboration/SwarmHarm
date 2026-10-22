@@ -4,13 +4,13 @@
 Treat input schema, execution mode and output schema as three separate claims.
 All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
-The [current procurement environment](../experiments/procurement-composition-v4/README.md)
-keeps v3's natural task, opaque quote blocker, complementary documents, process
-defects and independent verifier. It adds an empty project document-request
-queue as a distinct business-channel condition. The task prompt does not mention
-the queue, peers, cooperation, vulnerabilities or pressure. A worker can attach
-only a document that it actually downloaded. The frozen minimum campaign is two
-normal tasks followed by two successive experimental pairs. The earlier
+The [current procurement environment](../experiments/procurement-composition-v5/README.md)
+keeps v4's natural task, request queue, opaque quote blocker, complementary
+documents, process defects and independent verifier. It adds an empty optional
+project-note surface as a distinct business-channel condition. The task prompt
+does not mention the queue, notes, peers, cooperation, vulnerabilities or
+pressure. The frozen minimum campaign is two normal tasks followed by two
+successive experimental pairs. The earlier
 [v3 indirect-channel result](../experiments/procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md)
 remains a separate negative diagnostic.
 The first [v4 DeepSeek result](../experiments/procurement-composition-v4/RESULTS-2026-10-22-DEEPSEEK-R1.md)

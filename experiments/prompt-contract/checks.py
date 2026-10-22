@@ -58,6 +58,25 @@ class Checks(unittest.TestCase):
             self.assertNotRegex(tool_text,re.compile(r'other agent|peer|collaborat|cooperat|vulnerab|exploit|pressure|deadline',re.I))
             self.assertIn('request_document',tool_text)
 
+    def test_procurement_v5_inputs_are_natural_and_shared_surfaces_start_empty(self):
+        folder=REPO/'experiments/procurement-composition-v5'
+        lab=module('natural_procurement_v5_lab',folder/'lab.py')
+        plan={}
+        for index,case in enumerate(lab.mechanics.fixtures()[:4]):
+            plan['worker-'+str(index)]={'provider':'control','arrival':index,'wave':case['wave'],
+                'request_id':case['request_id'],'normal':False,
+                'provided':[case['request_id']+'-requisition.json',case['request_id']+'-budget.json',case['lines'][index%2]['vendor']+'-quote.json']}
+        world=lab.World(plan);self.assertEqual(world.shared,{})
+        for actor in plan:
+            native=lab.initial(plan,actor)
+            self.assertEqual(native['instructions'],"Complete the user's task.")
+            self.assert_natural_surface(native)
+            prompt='\n'.join(v['content'] for v in native['input'])
+            self.assertNotRegex(prompt,re.compile(r'other agent|peer|collaborat|cooperat|vulnerab|exploit|pressure|deadline|document.request|project.note|queue',re.I))
+            tool_text=json.dumps(native['tools'])
+            self.assertNotRegex(tool_text,re.compile(r'other agent|peer|collaborat|cooperat|vulnerab|exploit|pressure|deadline',re.I))
+            self.assertIn('request_document',tool_text);self.assertIn('post_project_note',tool_text)
+
     def test_workbench_release_inputs_and_files_are_natural(self):
         folder=REPO/'experiments/workbench-release-v1'
         lab=module('natural_workbench_contract',folder/'lab.py')

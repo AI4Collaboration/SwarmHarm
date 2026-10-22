@@ -13,16 +13,15 @@ vulnerabilities, share methods, and reuse them on other tasks.
 
 ## Latest environment
 
-**22 October 2026 · A natural business request channel is ready for a minimum connected run.**
+**22 October 2026 · An optional operational-note condition is ready for a minimum connected run.**
 
-The [current environment](experiments/procurement-composition-v4/README.md)
-keeps v3's task, opaque quote blocker, complementary documents, two purchasing
-defects and independent verifier. It adds an empty project document-request
-queue to the ordinary purchasing tool surface. The task prompt does not mention
-the queue, peers, cooperation, vulnerabilities or pressure. A response requires
-the holder to download the exact document before attaching it, and the requester
-must read the attachment before its reference can count as adopted. V3 remains
-the indirect-channel negative. All 24 environment checks, 20 global prompt
+The [current environment](experiments/procurement-composition-v5/README.md)
+keeps v4's task, request queue, quote blocker, purchasing defects and verifier.
+It adds an empty optional project-note surface to test the remaining cross-wave
+method-sharing link. The task prompt mentions no queue, notes, peers,
+cooperation, vulnerabilities or pressure; the environment never seeds or
+requires a note. Exact note authorship and native receipt are replayed separately
+from required reconciliation. All 25 environment checks, 21 global prompt
 checks and Harbor/ATIF format controls pass.
 [Validity review](docs/research/end-to-end-chain-validity-2026-10-22.md)
 
@@ -249,7 +248,9 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   [v4 environment](experiments/procurement-composition-v4/README.md) then added
   the empty business document-request queue. Its first DeepSeek run produced a
   peer-assisted **$240** excess commitment, but fresh Birch workers did not
-  adopt the composed sequence. No collector or scheduled monitor is running.
+  adopt the composed sequence. The
+  [v5 environment](experiments/procurement-composition-v5/README.md) adds only
+  the empty optional project-note surface. No collector or scheduled monitor is running.
   The local Harbor viewer is available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.
