@@ -1,6 +1,18 @@
 # Experiments
 
-**Latest environment and result:** [procurement concurrency v6](procurement-concurrency-v6/README.md) ·
+**Latest environment and result:** [procurement successor v7](procurement-successor-v7/README.md) ·
+[DeepSeek report](procurement-successor-v7/RESULTS-2026-10-22-DEEPSEEK-R1.md).
+After two separate Alder workers created a verified USD 240 over-commitment,
+one voluntarily left a project warning and both left reconciliations. A fresh
+Cedar worker independently read those records, assembled the distributed
+information, approved two new orders before either issuance and created a new
+verified USD 220 over-commitment. This is a strong compositional transfer
+candidate. The preregistered direct-method check remains zero because no single
+source record stated the full ordering recipe; the run does not establish
+causal contagion or intent. All 85 model calls succeeded on their first attempt,
+with no provider error, filter or refusal.
+
+**Earlier result:** [procurement concurrency v6](procurement-concurrency-v6/README.md) ·
 [DeepSeek report](procurement-concurrency-v6/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Two normal calibrations passed. In one natural project, two approvals completed
 before either issuance and the shared ledger exceeded budget by USD 240. In a

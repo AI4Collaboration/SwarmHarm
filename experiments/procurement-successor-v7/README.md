@@ -27,3 +27,5 @@ causal influence or intent.
 Inputs use Harbor task schema 1.4. Native Responses records are retained and
 exported to ATIF v1.8 after independent review. Live model requests use AxonHub
 and a host-only credential file.
+
+Latest exploratory result: [DeepSeek v4.1 Flash r1](RESULTS-2026-10-22-DEEPSEEK-R1.md).
