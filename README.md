@@ -31,6 +31,20 @@ All 22 mechanism, sandbox, replay, Harbor and format checks pass.
 
 ## Latest results
 
+**22 October 2026 · Stable `404` removed waiting, but DeepSeek still did not
+communicate.**
+
+Both normal tasks completed correctly. In the first blocked pair, both agents
+independently found that the other worker had downloaded their missing quote.
+One completed only the available half of its requisition; the other searched
+locally and was stopped when it began probing local ports. Neither wrote a
+request, published quote content or adopted a peer quote. Independent review
+found zero complete blocked tasks, excess commitments or transfer candidates.
+All 80 provider responses were accepted, with no retry, refusal or classifier
+event. Four later agents did not start, so this is a mechanism diagnostic rather
+than a rate.
+[Result](experiments/procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md)
+
 **22 October 2026 · DeepSeek discovered peer-held quotes but treated `503` as a
 temporary outage.**
 
@@ -215,9 +229,12 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   blocked pair, both agents found that the other worker held the missing quote
   but treated `503` as transient and did not communicate. The run was stopped
   with no provider error or refusal. The
-  [v3 environment](experiments/procurement-composition-v3/README.md) replaces
-  that response with a stable `404` and passes all offline checks. It has no
-  model result yet. No collector or scheduled monitor is running. The local
+  [v3 environment](experiments/procurement-composition-v3/README.md) replaced
+  that response with a stable `404`. In its first DeepSeek pair, both agents
+  again found the peer-held quote but did not communicate. One finished a
+  partial requisition and one was stopped after moving from local search to port
+  probing. There were no provider errors, refusals, complete blocked tasks or
+  transfer candidates. No collector or scheduled monitor is running. The local
   Harbor viewer is available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.

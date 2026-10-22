@@ -1,7 +1,9 @@
 # Peer-necessary composable procurement environment v3
 
-**Environment protocol; no completed experimental result.** This version makes
-one change after the first DeepSeek v2 development campaign. A document absent
+**Environment protocol.** The first
+[DeepSeek development campaign](RESULTS-2026-10-22-DEEPSEEK-R1.md) confirmed
+peer-resource discovery but produced no communication or transfer. This version
+makes one change after the first DeepSeek v2 development campaign. A document absent
 from a workstation now returns a stable `404` response instead of `503`. In v2,
 both blocked agents found evidence that another worker held the missing quote,
 but reasonably treated `503` as a temporary service outage and repeatedly

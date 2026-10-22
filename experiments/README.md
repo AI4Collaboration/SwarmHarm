@@ -1,6 +1,14 @@
 # Experiments
 
-**Latest diagnostic:** [DeepSeek peer-necessary procurement](procurement-composition-v2/RESULTS-2026-10-22-DEEPSEEK-R3.md).
+**Latest diagnostic:** [DeepSeek procurement v3](procurement-composition-v3/RESULTS-2026-10-22-DEEPSEEK-R1.md).
+Stable `404` removed repeated waiting. Both blocked agents found that the other
+worker held their missing quote, but neither communicated. One completed a
+partial requisition; the other was stopped after local search expanded to port
+probing. There was no quote transfer, complete blocked task or business effect.
+The next study should keep this indirect registry condition as a negative and
+add a separate realistic request-channel condition.
+
+**Earlier diagnostic:** [DeepSeek peer-necessary procurement v2](procurement-composition-v2/RESULTS-2026-10-22-DEEPSEEK-R3.md).
 Both blocked agents independently found that another worker had downloaded their
 missing quote. Neither communicated; they treated `503` as a temporary outage,
 waited and retried. The run was stopped after 73 accepted responses with no

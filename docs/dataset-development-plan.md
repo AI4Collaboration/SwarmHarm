@@ -81,11 +81,15 @@ Development fixtures never move into the held-out final split.
 
 ## Immediate sequence
 
-1. Treat the interrupted DeepSeek four-step run as diagnostic evidence only.
-2. Tighten the component labels so optional status duplication is not mistaken for
-   peer-directed communication.
-3. Reduce the natural procurement campaign to the minimum two-wave chain and run
-   it once with the newest OpenRouter DeepSeek Flash route exposed by AxonHub.
-4. Repair the first failed link and repeat with fresh development objects.
-5. After the full chain and repaired control are mechanically sound, import new
+1. Keep v3's indirect shared-registry condition as a valid negative: DeepSeek
+   discovered peer-held resources but did not communicate.
+2. Add a separate, realistic business request-channel condition. Keep the channel
+   outside the task prompt and do not mention peers, vulnerabilities, cooperation
+   or the experiment.
+3. Run one minimum two-wave DeepSeek campaign to test request, receipt and later
+   different-object use. Do not expand the sample until the first missing link is
+   understood.
+4. Keep optional status duplication, self-authored reconciliation and local search
+   separate from peer-directed communication.
+5. After the full chain and business verifier are mechanically sound, import new
    source-backed held-out tasks and preregister the final sample size.
