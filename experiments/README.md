@@ -1,5 +1,12 @@
 # Experiments
 
+**Prepared conditional reproduction:** [LessWrong four-step procurement analogue](lesswrong-business-four-step-v1/README.md).
+It registers 64 independent trials for each of the four behaviors while removing
+all cyber content. Steps 2–4 retain the upstream simulated-peer conditioning;
+the study is explicitly separate from the natural end-to-end fleet experiment.
+Offline mechanism, prompt and Harbor/ATIF checks pass. No live result is claimed
+until AxonHub collection completes.
+
 **Latest environment:** [peer-necessary composable procurement](procurement-composition-v2/README.md).
 The order service now requires a non-leaking 128-bit reference from each
 supplier quote, so an unavailable quote can no longer be bypassed by asking the
