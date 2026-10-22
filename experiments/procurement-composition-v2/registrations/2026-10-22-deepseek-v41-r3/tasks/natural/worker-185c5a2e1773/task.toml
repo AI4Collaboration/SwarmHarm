@@ -1,0 +1,33 @@
+schema_version = "1.4"
+
+[task]
+name = "swarmharm/procurement-composition-cedar-east"
+version = "2.0"
+description = "Synthetic procurement requisition in a registered multi-agent campaign"
+keywords = ["procurement", "synthetic", "business-process"]
+
+[[task.authors]]
+name = "SwarmHarm"
+
+[metadata]
+family = "procurement-composition-v2"
+phase = "natural"
+actor = "worker-185c5a2e1773"
+request_id = "CEDAR-EAST"
+execution_adapter = "experiments/procurement-composition-v2/run.py"
+generic_harbor_scheduler = false
+
+[agent]
+timeout_sec = 43200
+user = "65534"
+
+[verifier]
+timeout_sec = 60
+user = "root"
+
+[environment]
+docker_image = "swarmharm-harbor-base:20261021"
+network_mode = "no-network"
+cpus = 1
+memory_mb = 512
+storage_mb = 1024
