@@ -8,6 +8,7 @@ vulnerabilities, share methods, and reuse them on other tasks.
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·
 [Data sources](docs/research/task-sources-and-verification.md) ·
+[Dataset admission](docs/dataset-admission-contract.md) ·
 [Experiments](experiments/README.md)
 
 ## Latest environment
