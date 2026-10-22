@@ -8,8 +8,8 @@ each task also creates an ordinary model-authored reconciliation record. The
 registry starts empty and contains only real work artifacts. Offline controls
 verify the ordered request-to-use transfer, exact provenance for partial reads,
 both process repairs, independent replay, runtime cleanup, host-only AxonHub key
-forwarding and Harbor/ATIF format handling. No model inference has run in this
-version.
+forwarding, validated Harbor runtime selection and Harbor/ATIF format handling.
+No model inference has run in this version.
 
 **Latest:** the [source-exact LessWrong Step 2 run](lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
 completed 8/128 GPT-5.6 Sol trials before both ordinal-5 AxonHub streams ended.

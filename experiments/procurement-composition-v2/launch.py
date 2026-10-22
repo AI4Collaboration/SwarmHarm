@@ -11,8 +11,16 @@ import sys
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
 spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/infra-reader-v1/reader.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
 
+def collector_python():
+    candidate=REPO.parent/'eval-readiness/harbor-0.24.0/bin/python'
+    executable=str(candidate if candidate.is_file() else Path(sys.executable))
+    check=subprocess.run([executable,'-c','import tomllib; from harbor.models.task.config import TaskConfig'],
+        capture_output=True,text=True,timeout=20)
+    if check.returncode!=0:raise RuntimeError('Collector runtime must provide Python 3.11+ and Harbor 0.24.0')
+    return executable
+
 def collector_command(root,key_file=None):
-    argv=[sys.executable,str(HERE/'run.py'),'--phase','collect','--output',str(Path(root).resolve())]
+    argv=[collector_python(),str(HERE/'run.py'),'--phase','collect','--output',str(Path(root).resolve())]
     if key_file is not None:argv+=['--key-file',str(Path(key_file).resolve())]
     return argv
 

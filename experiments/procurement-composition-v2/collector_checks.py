@@ -12,6 +12,7 @@ class CollectorChecks(unittest.TestCase):
     def test_launcher_forwards_host_only_key_file(self):
         root=Path('/tmp/swarmharm-frozen-study');key=Path('/tmp/axonhub-host-only.key')
         argv=launch.collector_command(root,key)
+        self.assertEqual(argv[0],launch.collector_python())
         self.assertEqual(argv[-2:],['--key-file',str(key.resolve())])
         self.assertIn(str(root.resolve()),argv)
 

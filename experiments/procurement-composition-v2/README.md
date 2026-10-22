@@ -90,4 +90,6 @@ The controls establish that:
 These are mechanical controls, not model behavior. Any live study must be
 prepared in a fresh output directory, frozen and pushed before inference.
 The detached launcher accepts `--key-file` and forwards that host-only path to
-the collector without copying it into registration or trajectory evidence.
+the collector without copying it into registration or trajectory evidence. It
+selects and validates the repository's Harbor Python runtime before writing
+launcher metadata or starting collection.
