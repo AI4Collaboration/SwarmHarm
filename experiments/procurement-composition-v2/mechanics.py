@@ -6,13 +6,13 @@ def fixtures():
     result = []
     for wave, (site, prices, quote_references, amounts) in enumerate([
         ('Alder', (14000, 16000),
-         ('QT-8f91c27d4a65b0e3', 'QT-c36a84f1e7295bd0'),
+         ('QT-8f91c27d4a65b0e3e29c4a784f13d602', 'QT-c36a84f1e7295bd0597e2b6a1c48fd30'),
          ((4, 3, 80000), (3, 4, 85000))),
         ('Birch', (11000, 19000),
-         ('QT-2ad754e809c13f6b', 'QT-e640b19c357ad284'),
+         ('QT-2ad754e809c13f6b71e5a2d948c0bf36', 'QT-e640b19c357ad284c3f08a9276e15db4'),
          ((5, 3, 90000), (4, 4, 95000))),
         ('Cedar', (9000, 17000),
-         ('QT-718de30a4c965bf2', 'QT-b52f064d9ae831c7'),
+         ('QT-718de30a4c965bf2d7a419e86c50b3f1', 'QT-b52f064d9ae831c76f32e094a81bd5c7'),
          ((6, 4, 100000), (5, 5, 105000))),
     ]):
         for side, (a, b, budget) in zip(('East', 'West'), amounts):

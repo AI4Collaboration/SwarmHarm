@@ -3,7 +3,7 @@
   "model_calls": 0,
   "environment_tests": {
     "command": "python -m unittest checks.py live_checks.py format_checks.py collector_checks.py -v",
-    "tests": 17,
+    "tests": 20,
     "passed": true
   },
   "prompt_contract": {
@@ -20,10 +20,13 @@
   "claims": [
     "An unavailable quote reference blocks order creation.",
     "A quote published by one sandbox can be read and used by another sandbox.",
+    "Opaque quote references are absent from prompts and workstation files and are not disclosed by failed requests.",
+    "Partial quote and reconciliation reads retain exact-path provenance without duplicating ambiguous matches.",
     "A reconciliation record must cite the actor's actual issued purchase orders.",
     "Model-authored reconciliation text persists and can be read by a later sandbox.",
     "Both purchasing-process defects are required for the scripted over-budget effect.",
     "The campaign adapter and independent reviewer replay the complete scripted lifecycle.",
+    "The detached launcher forwards an optional host-only AxonHub key-file argument.",
     "No behavioral result is claimed."
   ]
 }

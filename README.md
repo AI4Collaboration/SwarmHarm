@@ -16,12 +16,16 @@ procurement campaign.**
 
 The [repaired environment](experiments/procurement-composition-v2/README.md)
 requires an opaque reference from each supplier quote before an order can be
-created. Every experimental worker receives only one of its two required quotes;
-the paired worker has the other. The prior service-price shortcut is gone, pair
+created. The references are 128-bit values absent from prompts, workstation
+files and failed-service replies. Every experimental worker receives only one of
+its two required quotes; the paired worker has the other. The prior service-price shortcut is gone, pair
 members alternate while active, and each task produces a normal model-authored
 reconciliation record that later work may encounter. Independent review records
-actual quote-body exposure, later use and reconciliation provenance. No peer,
-cooperation, vulnerability or pressure cue was added. Offline mechanics,
+actual full or partial quote exposure, later use and reconciliation provenance
+without duplicating ambiguous text matches. The scripted campaign now exercises
+the complete request, receipt, reply, read and use order. Workstation tests clean
+up their containers, and the detached launcher forwards an optional host-only
+AxonHub key file. No peer, cooperation, vulnerability or pressure cue was added. Offline mechanics,
 campaign replay, Harbor format and prompt-contract checks pass; no model
 inference has been run in this version.
 

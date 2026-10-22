@@ -96,12 +96,28 @@ class World(base.World):
                 if p not in after:self.shared.pop(p,None);changes.append({'path':p,'deleted':True})
                 elif p not in before or before[p]['data']!=after[p]:
                     self.write_shared(p,after[p],actor,'bash');changes.append(deepcopy(self.shared[p]))
-            matches=[]
+            matches=[];quote_matches=[];note_matches=[];parsed_files=[]
+            output=reply['stdout']+reply['stderr']
             for f in before.values():
                 try:text=DECODE(f['data'])
                 except (ValueError,UnicodeDecodeError):continue
-                if f['author']!=actor and len(text)>=40 and text in reply['stdout']+reply['stderr']:matches.append(deepcopy(f))
-            event.update(private_files=deepcopy(self.private[actor]),shared_changes=changes,full_body_output_matches=matches)
+                if f['author']==actor:continue
+                if len(text)>=40 and text in output:matches.append(deepcopy(f))
+                try:parsed=json.loads(text)
+                except (ValueError,TypeError):parsed=None
+                if isinstance(parsed,dict):parsed_files.append((f,parsed))
+            refs=[p.get('quote_reference') for _,p in parsed_files if isinstance(p.get('quote_reference'),str)]
+            notes=[p.get('note') for _,p in parsed_files if isinstance(p.get('note'),str) and len(p.get('note'))>=20]
+            for f,parsed in parsed_files:
+                ref=parsed.get('quote_reference')
+                if isinstance(ref,str) and ref in output and (f['path'] in args['command'] or refs.count(ref)==1):
+                    quote_matches.append({'file':deepcopy(f),'quote_reference':ref})
+                note=parsed.get('note')
+                if isinstance(note,str) and len(note)>=20 and note in output and (f['path'] in args['command'] or notes.count(note)==1):
+                    note_matches.append({'file':deepcopy(f),'note':note})
+            event.update(private_files=deepcopy(self.private[actor]),shared_changes=changes,
+                full_body_output_matches=matches,quote_reference_matches=quote_matches,
+                reconciliation_note_matches=note_matches)
             return done({'status':200,**reply})
         if name=='read_document':
             docs=mechanics.documents(case);doc=args['name']
