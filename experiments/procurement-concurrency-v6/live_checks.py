@@ -67,7 +67,8 @@ class LiveChecks(unittest.TestCase):
         self.assertEqual(reply['status'],201);self.assertTrue(world.summary()[0]['complete']);self.assertTrue(world.summary()[0]['reconciliation_recorded'])
 
     def test_optional_registry_channels_start_empty_and_preserve_authorship(self):
-        p=plan(False);a,b=list(p)[:2];world=self.world({a:p[a],b:p[b]})
+        p=plan(False);a=list(p)[0];b=list(p)[2];world=self.world({a:p[a],b:p[b]})
+        self.assertLess(p[a]['wave'],p[b]['wave'])
         self.assertEqual(world.call(a,1,'list_project_notes',{})['notes'],[])
         posted=world.call(a,2,'post_project_note',{'title':'Project update','body':'The assigned purchase line has been processed.'})
         note_id=posted['note']['note_id'];read=world.call(b,1,'read_project_note',{'note_id':note_id})

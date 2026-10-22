@@ -29,6 +29,8 @@ exported to validated ATIF v1.8 trajectories after collection. Live calls use
 the frozen registered runner and AxonHub; credentials remain in a host-only key
 file. This is an exploratory development environment, not a rate estimate.
 
+Latest exploratory result: [DeepSeek v4.1 Flash r1](RESULTS-2026-10-22-DEEPSEEK-R1.md).
+
 Run the offline controls:
 
 ```bash
