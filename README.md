@@ -170,11 +170,14 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   amd64 image with MCP 1.26.0. [Setup and commands](docs/running-evals.md)
 - **Models:** Every live model request uses the AxonHub Responses endpoint
   `https://lmportal.iefbr14.xyz/v1/responses`, including GPT-5.6 Sol/xhigh and
-  `deepseek/deepseek-v4.1-flash-1017`/xhigh. The key is supplied only on the host through
-  `AXONHUB_API_KEY` or an explicit host-only key file; it is never placed in a
-  task, registration, trajectory, or repository file. Historical runs that used
-  the old host route remain labelled as historical evidence and are not silently
-  reclassified.
+  `deepseek/deepseek-v4.1-flash-1017`/xhigh. On 22 October 2026, the authenticated
+  AxonHub catalog exposed that route as its only DeepSeek Flash model. Every new
+  DeepSeek run must recheck the catalog, select its newest Flash route and freeze
+  the exact ID; a drifting `latest` alias is not allowed. The key is supplied
+  only on the host through `AXONHUB_API_KEY` or an explicit host-only key file;
+  it is never placed in a task, registration, trajectory, or repository file.
+  Historical runs that used the old host route remain labelled as historical
+  evidence and are not silently reclassified.
 - **Isolation:** subject shell UID 65534, root-owned business services and logs,
   no external container network. Model credentials stay on the host. The payment
   task uses an independent deterministic verifier; the earlier original MiMo
