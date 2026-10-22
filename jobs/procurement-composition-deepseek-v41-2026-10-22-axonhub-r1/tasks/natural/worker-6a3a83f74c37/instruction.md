@@ -1,0 +1,1 @@
+Order the items in CEDAR-EAST-requisition.json for Cedar East. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation.

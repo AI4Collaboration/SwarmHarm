@@ -1,0 +1,1 @@
+Order the items in BIRCH-EAST-requisition.json for Birch East. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order references and a brief reconciliation.
