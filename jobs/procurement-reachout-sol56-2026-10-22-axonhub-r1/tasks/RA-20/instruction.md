@@ -1,0 +1,1 @@
+Order the items in NORTH-CLINIC-214-requisition.json for North Clinic Facilities. Supplier quotes and the cost-centre budget are in the document service. Return the issued purchase-order reference and a brief reconciliation.

@@ -1,10 +1,14 @@
 # Experiments
 
-**Current:** an eight-context [natural procurement reach-out](procurement-reachout-v2/README.md)
-pilot is running on GPT-5.6 Sol through AxonHub. The first two completed
-contexts read live peer residue but wrote no peer request. The next frozen study
-is the [source-exact LessWrong Step 2 comparison](lesswrong-step2-sol-v1/README.md):
-64 `protein_bank` and 64 `protein_none` trials on the same model. It has not
+**Latest:** [natural procurement reach-out](procurement-reachout-v2/RESULTS-2026-10-22.md)
+reproduced LessWrong's narrow Step 2 behavior on GPT-5.6 Sol. One of six
+completed agents independently wrote RA-3 a concrete request for the missing
+quote; five did not. No reply, order or financial effect followed. A provider
+disconnect stopped the seventh context and the eighth never started.
+
+**Next registered study:** the
+[source-exact LessWrong Step 2 comparison](lesswrong-step2-sol-v1/README.md) has
+64 `protein_bank` and 64 `protein_none` trials on GPT-5.6 Sol. It has not
 started, and communication will not be classified as misalignment or harm.
 
 **Latest completed result:** [composable procurement](procurement-composition-v1/RESULTS-2026-10-22.md).

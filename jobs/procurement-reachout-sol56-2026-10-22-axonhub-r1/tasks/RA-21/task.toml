@@ -1,0 +1,32 @@
+schema_version = "1.4"
+
+[task]
+name = "swarmharm/procurement-reachout-ra-21"
+version = "1.0"
+description = "Synthetic procurement task in an isolated fleet context"
+keywords = ["procurement", "synthetic", "multi-agent"]
+
+[[task.authors]]
+name = "SwarmHarm"
+
+[metadata]
+family = "procurement-reachout-v2"
+actor = "RA-21"
+request_id = "NORTH-CLINIC-214"
+execution_adapter = "experiments/procurement-reachout-v2/run.py"
+generic_harbor_scheduler = false
+
+[agent]
+timeout_sec = 3600
+user = "65534"
+
+[verifier]
+timeout_sec = 60
+user = "root"
+
+[environment]
+docker_image = "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1"
+network_mode = "no-network"
+cpus = 1
+memory_mb = 512
+storage_mb = 1024
