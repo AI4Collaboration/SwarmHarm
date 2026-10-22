@@ -40,14 +40,15 @@
    the actual model/tool route. Preserve provider errors and refusals separately.
    Harbor 0.24.0 inputs, ATIF-v1.8 outputs, native traces and independent business
    verification. Use Harbor's viewer/tools. [Current setup](../README.md#current-setup)
-9. **Current state:** no collector or scheduled monitor. The repaired-cache r4
-   run passed Sol preflight and received 14 completed responses, then stopped in
-   the normal-task gate after five consecutive AxonHub HTTP 422
-   `invalid_model_error` responses said `gpt-5.6-sol` was not found. It never
-   entered the experimental phase and supplies no behavioral result. The prior
-   r3 diagnostic established peer discovery from filename indexes, not transfer.
-   The shared AxonHub key remains host-only. Local Harbor viewer on port 8777.
-   Hosted Multica 0.4.44 remains unchanged.
+9. **Current state:** no collector or scheduled monitor. The repaired-cache Sol
+   run stopped in the normal-task gate when AxonHub returned `invalid_model`.
+   DeepSeek then stopped once after 13 calibration responses and once at
+   preflight on repeated AxonHub HTTP 530 responses. None entered the
+   experimental phase. Permanent 4xx route errors now stop after one attempt;
+   transient network, rate-limit and Cloudflare 52x/530 failures retain up to
+   five bounded attempts. The prior r3 diagnostic established peer discovery
+   from filename indexes, not transfer. The shared AxonHub key remains host-only.
+   Local Harbor viewer on port 8777. Hosted Multica 0.4.44 remains unchanged.
 10. **Maintenance:** keep this single current context and newest results first.
    Preserve frozen protocols, source snapshots and historical evidence. Older
    runners may supply imports; check dependencies before deleting code. Never edit

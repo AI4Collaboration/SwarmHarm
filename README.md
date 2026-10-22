@@ -36,6 +36,12 @@ step seven, five consecutive requests returned HTTP 422
 a provider-routing failure, not a behavioral negative; the repaired cache has
 no live behavioral result yet.
 
+DeepSeek then passed preflight and returned 13 calibration responses before an
+AxonHub HTTP 530 stopped its first fresh run. After 530 was correctly classified
+as a retryable upstream failure, a second fresh run received five consecutive
+530 responses at preflight and stopped. Neither DeepSeek run entered the
+experimental phase; both are infrastructure evidence only.
+
 **22 October 2026 · The latest Sol diagnostic found peers but the old shared
 artifact was not useful.**
 
