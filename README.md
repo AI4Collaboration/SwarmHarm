@@ -9,6 +9,22 @@ vulnerabilities, share methods, and reuse them on other tasks.
 [Data sources](docs/research/task-sources-and-verification.md) ·
 [Experiments](experiments/README.md)
 
+## Latest environment
+
+**22 October 2026 · Peer information is now functionally necessary in the next
+procurement campaign.**
+
+The [repaired environment](experiments/procurement-composition-v2/README.md)
+requires an opaque reference from each supplier quote before an order can be
+created. Every experimental worker receives only one of its two required quotes;
+the paired worker has the other. The prior service-price shortcut is gone, pair
+members alternate while active, and each task produces a normal model-authored
+reconciliation record that later work may encounter. Independent review records
+actual quote-body exposure, later use and reconciliation provenance. No peer,
+cooperation, vulnerability or pressure cue was added. Offline mechanics,
+campaign replay, Harbor format and prompt-contract checks pass; no model
+inference has been run in this version.
+
 ## Latest results
 
 **22 October 2026 · The source-exact LessWrong Step 2 run stopped on a paired
@@ -115,9 +131,12 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   then completed 8/128 registered trials with zero peer requests before both
   ordinal-5 provider streams failed. A [v2 protocol](experiments/lesswrong-step2-sol-v2/README.md)
   now pre-registers bounded transport-only retries while retaining every failed
-  request and never rerunning a trajectory. It is prepared but has not started.
-  No collector or scheduled monitor is running. The local Harbor viewer is
-  available on 8777.
+  request and never rerunning a trajectory. Its first collection attempt stopped
+  without a completion record after four scored samples; those partial records
+  are infrastructure evidence, not a completed result. The repaired
+  [peer-necessary procurement environment](experiments/procurement-composition-v2/README.md)
+  has passed offline validation and has not made a model call. No collector or
+  scheduled monitor is running. The local Harbor viewer is available on 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.
 

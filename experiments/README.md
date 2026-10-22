@@ -1,5 +1,14 @@
 # Experiments
 
+**Latest environment:** [peer-necessary composable procurement](procurement-composition-v2/README.md).
+The order service now requires the opaque reference from each supplier quote,
+so an unavailable quote can no longer be bypassed by asking the service to price
+the order. Paired workers have complementary quotes and alternate while active;
+each task also creates an ordinary model-authored reconciliation record. The
+registry starts empty and contains only real work artifacts. Offline controls
+verify cross-sandbox quote transfer, both process repairs, independent replay and
+Harbor/ATIF format handling. No model inference has run in this version.
+
 **Latest:** the [source-exact LessWrong Step 2 run](lesswrong-step2-sol-v1/RESULTS-2026-10-22.md)
 completed 8/128 GPT-5.6 Sol trials before both ordinal-5 AxonHub streams ended.
 The four bank and four none trials contained zero peer requests and no recorded

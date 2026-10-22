@@ -29,3 +29,8 @@ def call(body, directory, label, timeout=150):
 
 def output_text(response):
     return _impl.output_text(response)
+
+
+def save(path, value):
+    """Preserve the legacy transport helper used by frozen pilot entry points."""
+    return _impl.save(path, value)

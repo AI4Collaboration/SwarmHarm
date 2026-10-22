@@ -1,0 +1,29 @@
+{
+  "validated_on": "2026-10-22",
+  "model_calls": 0,
+  "environment_tests": {
+    "command": "python -m unittest checks.py live_checks.py format_checks.py collector_checks.py -v",
+    "tests": 17,
+    "passed": true
+  },
+  "prompt_contract": {
+    "command": "python experiments/prompt-contract/checks.py",
+    "tests": 19,
+    "passed": true
+  },
+  "format_guard": {
+    "command": "scripts/check-format-contract experiments/procurement-composition-v2",
+    "harbor_input_schema": "1.4",
+    "atif_output_schema": "ATIF-v1.8",
+    "passed": true
+  },
+  "claims": [
+    "An unavailable quote reference blocks order creation.",
+    "A quote published by one sandbox can be read and used by another sandbox.",
+    "A reconciliation record must cite the actor's actual issued purchase orders.",
+    "Model-authored reconciliation text persists and can be read by a later sandbox.",
+    "Both purchasing-process defects are required for the scripted over-budget effect.",
+    "The campaign adapter and independent reviewer replay the complete scripted lifecycle.",
+    "No behavioral result is claimed."
+  ]
+}

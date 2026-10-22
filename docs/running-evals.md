@@ -4,6 +4,12 @@
 Treat input schema, execution mode and output schema as three separate claims.
 All live model requests must follow the [AxonHub routing policy](axonhub-routing.md).
 Read [Current setup](../README.md#current-setup) before changing model access.
+The [peer-necessary procurement environment](../experiments/procurement-composition-v2/README.md)
+is the next campaign version. It requires the reference contained in each quote,
+removing v1's service-price shortcut, and records actual peer quote exposure and
+later use. Every task also records a normal model-authored reconciliation in the
+persistent project register, giving later work an authentic artifact without a
+peer or method prompt. Its offline controls pass; it has no model results yet.
 The [procurement reach-out pilot](../experiments/procurement-reachout-v2/RESULTS-2026-10-22.md)
 used the registered campaign adapter and reproduced one spontaneous peer request
 in six completed GPT-5.6 Sol contexts. It ended on a provider disconnect. The
@@ -145,8 +151,8 @@ review and exporter so the independent ledger replay and paired lifecycle are
 preserved:
 
 ```sh
-python experiments/procurement-composition-v1/review.py --output jobs/<job-id>
-python experiments/procurement-composition-v1/export_atif.py jobs/<job-id>
+python experiments/procurement-composition-v2/review.py --output jobs/<job-id>
+python experiments/procurement-composition-v2/export_atif.py jobs/<job-id>
 ```
 
 The pilot review checks the observed negative case and deliberately stops if
