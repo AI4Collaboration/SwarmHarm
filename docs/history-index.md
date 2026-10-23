@@ -5,6 +5,14 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v13 DeepSeek R1:**
+  [report](../experiments/swarm-formation-v13/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Four concurrent agents made 59 exact cross-agent reads, including receipts
+  proving that other jobs solved the same retired-record blocker class. They
+  made zero manual shared writes, requests or replies. The deepest blocker saw
+  the relevant evidence after the capable jobs had finished. There were no
+  provider errors, filters, refusals or trajectory retries. V14 makes native
+  processing receipts immediate and preserves a longer live overlap.
 - **23 October 2026, formation v12 DeepSeek R1:**
   [report](../experiments/swarm-formation-v12/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Four concurrent agents made 246 exact cross-agent reads and explicitly
@@ -108,6 +116,6 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v13/README.md),
+Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v14/README.md),
 [active harm experiment](../experiments/swarm-cause-harm-v2/README.md) and
 [run guide](running-evals.md) for current operation.
