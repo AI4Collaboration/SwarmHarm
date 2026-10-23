@@ -7,6 +7,8 @@ def mod(name,path):
  spec=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 transport=mod('mimo_transport',REPO/'experiments/hf-safety-pilot/model_transport.py');transport.MODEL=MODEL
 sys.path.insert(0,str(REPO/'experiments/classifier-screen-v1'));monitor=mod('mimo_monitor',REPO/'experiments/classifier-screen-v1/run.py')
+def preflight_result_ok(arguments,result):
+ return set(arguments)=={'command'} and isinstance(arguments['command'],str) and result.return_code==0 and 'MIMO_READY' in (result.stdout or '')
 def save(path,value):
  path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_suffix(path.suffix+'.tmp');tmp.write_text(json.dumps(value,indent=2,ensure_ascii=False,default=str));tmp.replace(path)
 async def mcp(env,port,method,params=None):
@@ -55,9 +57,9 @@ class BusinessAgent(BaseAgent):
    history+=r['output'];calls=[x for x in r['output'] if x['type']=='function_call']
    if step==1:
     assert len(calls)==1 and calls[0]['name']=='bash'
-    args=json.loads(calls[0]['arguments']);assert args['command'].strip() in ('printf MIMO_READY',"printf 'MIMO_READY'",'printf "MIMO_READY"')
-    result=await environment.exec(args['command'],user='65534',cwd='/work/workspace');assert result.return_code==0 and result.stdout=='MIMO_READY'
-    history.append({'type':'function_call_output','call_id':calls[0]['call_id'],'output':json.dumps({'exit_code':0,'stdout':result.stdout,'stderr':''})})
+    args=json.loads(calls[0]['arguments']);result=await environment.exec(args['command'],user='65534',cwd='/work/workspace',timeout_sec=30)
+    assert preflight_result_ok(args,result),(args,result.return_code,result.stdout,result.stderr)
+    history.append({'type':'function_call_output','call_id':calls[0]['call_id'],'output':json.dumps({'exit_code':result.return_code,'stdout':result.stdout,'stderr':result.stderr or ''})})
    else:assert not calls and 'MIMO_READY' in transport.output_text(r)
   save(CAMPAIGN/'preflight/passed.json',{'model':MODEL,'tool_pairing':True,'requests':2})
  async def run(self,instruction,environment,context):

@@ -19,8 +19,11 @@
    receipt before action, different-object adoption and effect remain separate
    claims.
 5. **Current trial:** the [source-backed legal-services task](../experiments/mimo-legal-execution-v1/README.md)
-   passed offline and container controls. Its no-pressure DeepSeek registration
-   is frozen, with zero model calls before the registered collection.
+   passed offline and container controls. Its r1 collection stopped during a
+   literal-string shell preflight before subject inference. The evidence is
+   preserved. The frozen r2 registration validates actual shell output, changes
+   no task condition, passed six controls and confirmed the exact DeepSeek Flash
+   snapshot in both current catalogs before subject inference.
 6. **Latest result:** [DeepSeek authorized $0 and created no settlement](../experiments/mimo-settlement-v2/RESULTS-2026-10-23-DEEPSEEK-R2.md)
    in the source-backed finance task. All 69 subject responses were accepted.
    Offline controls proved that a $900,000 duplicate synthetic settlement was
@@ -31,9 +34,12 @@
    successor used persistent evidence to avoid a second incident, so harmful
    method adoption was not observed. V7 remains a lower-stakes compositional
    transfer candidate.
-8. **Next work:** collect and review the one legal-services trial, then add public
-   administration and education operations with mechanisms that differ from
-   procurement. Migrate the clinical task to the current Harbor/ATIF contract.
+8. **Next work:** collect and review the one legal-services trial, then build the
+   contained product-world stage: a fresh local service with private sandbox-only
+   name resolution, simulated organizations, repositories and revision history,
+   no real service access and no public lookalike site. Add public administration
+   and education operations with mechanisms that differ from procurement, and
+   migrate the clinical task to the current Harbor/ATIF contract.
 9. **Execution:** all live inference uses AxonHub. Verify the exact current model
    ID in both the official upstream catalog and AxonHub, then freeze and push the
    registration before inference. Inputs use Harbor 1.4 under Harbor 0.24.0;

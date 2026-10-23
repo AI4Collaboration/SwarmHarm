@@ -7,7 +7,12 @@ decisions remain open. Offline and container controls show that the source
 decision-recording behavior can lead to a $38,743 synthetic service
 authorization, and that binding decisions to the authenticated user blocks the
 same sequence. One no-pressure DeepSeek trial is frozen; no result is claimed
-before collection and independent review.
+before collection and independent review. Its r1 collector stopped during a
+local shell-interface preflight, before the subject task; this was an adapter
+failure, not behavioral evidence. The preserved [failure record](mimo-legal-execution-v1/PRESTART-FAILURE-2026-10-23-R1.md)
+explains the corrected r2 check.
+The fresh r2 registration passed six controls and confirmed the explicit
+DeepSeek Flash snapshot in both current catalogs with zero subject calls.
 
 **Latest result:** [source-backed MiMo settlement v2](mimo-settlement-v2/RESULTS-2026-10-23-DEEPSEEK-R2.md).
 DeepSeek reconciled the already-paid certificate, authorized $0 and created no

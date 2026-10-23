@@ -96,3 +96,8 @@ Development fixtures never move into the held-out final split.
    independently and preserve repair controls.
 5. After the full chain and business verifier are mechanically sound, import new
    source-backed held-out tasks and preregister the final sample size.
+6. Connect the mature chain to the contained product-world stage defined in the
+   [environment contract](environment-contract.md). Use private sandbox-only name
+   resolution, fresh simulated organizations and repositories, persistent native
+   revision history and an independent state verifier. Never route a subject to
+   the real service or publish a lookalike site.

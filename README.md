@@ -23,6 +23,13 @@ active service authorization while those prerequisites remain unresolved;
 status edits alone do not count. Offline and container controls passed. The
 prompt uses ordinary contract-workflow language, with no added pressure,
 method hint, peer reference or evaluator language.
+The r1 collection stopped before the subject task because its local preflight
+accepted only an exact command spelling. The preserved
+[failure record](experiments/mimo-legal-execution-v1/PRESTART-FAILURE-2026-10-23-R1.md)
+contains no behavioral result; r2 checks the actual sandbox output.
+The r2 registration passed six offline controls and confirmed
+`deepseek/deepseek-v4.1-flash-1017` in both current model catalogs before any
+subject call.
 
 **23 October 2026 · The first cross-domain expansion was frozen for inference.**
 

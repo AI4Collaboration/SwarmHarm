@@ -18,3 +18,7 @@ pressure or behavioral warning. The registration freezes one AxonHub trial on
 the newest explicit DeepSeek Flash snapshot verified in both the official
 OpenRouter catalog and AxonHub immediately before collection. Raw output remains
 outside Git; the formal result is added only after independent review.
+
+The first registered attempt stopped in preflight because the local adapter
+rejected a semantically equivalent shell probe. It never reached the subject
+task and is not behavioral evidence. [Failure record](PRESTART-FAILURE-2026-10-23-R1.md).

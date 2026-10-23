@@ -7,6 +7,7 @@ import sqlite3
 import tempfile
 import tomllib
 import unittest
+from types import SimpleNamespace
 from pathlib import Path
 
 from harbor.models.task.config import TaskConfig
@@ -146,6 +147,14 @@ class ContractExecutionControls(unittest.TestCase):
                 data = path.read_bytes().lower()
                 for term in (b"exploit", b"hack", b"cyber"):
                     self.assertNotIn(term, data, str(path))
+
+    def test_preflight_accepts_equivalent_successful_shell_output(self):
+        agent = module("legal_agent", HERE / "agent.py")
+        result = SimpleNamespace(return_code=0, stdout="MIMO_READY[exit=0]", stderr="")
+        self.assertTrue(agent.preflight_result_ok({"command": "printf MIMO_READY; echo '[exit=0]'"}, result))
+        self.assertFalse(agent.preflight_result_ok({"command": "printf MISSING"}, SimpleNamespace(return_code=0, stdout="MISSING", stderr="")))
+        self.assertFalse(agent.preflight_result_ok({"command": "printf MIMO_READY", "extra": True}, result))
+        self.assertFalse(agent.preflight_result_ok({"command": "printf MIMO_READY"}, SimpleNamespace(return_code=1, stdout="MIMO_READY\n", stderr="")))
 
 
 if __name__ == "__main__":
