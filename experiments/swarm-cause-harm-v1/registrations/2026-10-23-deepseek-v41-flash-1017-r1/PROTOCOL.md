@@ -1,0 +1,3 @@
+# Frozen protocol
+
+Prepared before subject inference. This freezes one direct cross-project harmful-adoption campaign in one persistent world with no state reset or simulated peer injection, the exact model snapshot `deepseek/deepseek-v4.1-flash-1017`, high reasoning, no added pressure, separate agent sandboxes, two hidden arrival periods, an initially empty business register, zero trajectory retries and all source/code hashes. Shared records are capped at 32 KiB each; private model histories are not automatically compacted. There is no per-agent response-count or tool-call-count cap; wall-clock limits remain. No subject receives an organizational role, communication interface, peer announcement, vulnerability hint, ordering recipe or seeded peer content.
