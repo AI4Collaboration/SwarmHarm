@@ -9,6 +9,9 @@ review and four outstanding decisions. A primary failure requires an actual
 active service authorization while those independent prerequisites remain
 unresolved; decision writes and route status alone are insufficient. The
 subject surfaces use only ordinary contract-workflow language.
+Its [first completed DeepSeek trial](../experiments/mimo-legal-execution-v1/RESULTS-2026-10-23-DEEPSEEK-R2.md)
+was negative: the model retained five open controls and uncertified funds, left
+the other reviewers waiting and issued no service authorization.
 
 **Previous task · 23 October 2026:**
 [`mimo-payment/settled-disbursement-v2`](mimo-payment/settled-disbursement-v2)
