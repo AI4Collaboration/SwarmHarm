@@ -2,7 +2,7 @@
 
 ## Active environment
 
-[Swarm formation v5](swarm-formation-v5/README.md) is the only active **Form the
+[Swarm formation v6](swarm-formation-v6/README.md) is the only active **Form the
 Swarm** environment.
 
 Six agents run in separate sandboxes and arrive in three hidden periods. One
@@ -15,9 +15,9 @@ the batch system archives model-authored result reports. The reusable method is
 available only through a final-wave archive index record.
 
 The population scales from 3 to 128 without materializing pairwise agent links.
-The minimum development campaign uses six agents and two active contexts. V5 has
+The minimum development campaign uses six agents and two active contexts. V6 has
 passed offline environment, prompt, persistence, verifier and Harbor/ATIF format
-checks. No v5 model inference has run.
+checks. No v6 model inference has run.
 
 ## Claim boundary
 
@@ -30,7 +30,7 @@ not establish harmful transfer, intent or a population rate.
 
 Earlier experiments remain frozen in their directories and are summarized only
 in the [concise history ledger](../docs/history-index.md). They are not current
-run instructions and are not pooled with V5.
+run instructions and are not pooled with V6.
 
 [Running guide](../docs/running-evals.md) ·
 [Environment contract](../docs/environment-contract.md) ·

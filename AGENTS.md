@@ -2,7 +2,7 @@
 
 - Use concise Chinese in conversation and plain, concise English in formal reports.
   Lead with what happened, what it means and the evidence limit.
-- The only active formation environment is `experiments/swarm-formation-v5`.
+- The only active formation environment is `experiments/swarm-formation-v6`.
   Historical experiment directories are frozen evidence, not current instructions.
 - New tasks use Harbor schema 1.4 inputs and ATIF-v1.8 outputs with pinned Harbor
   0.24.0. Preserve native traces, campaign evidence and independent review.
