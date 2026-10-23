@@ -26,6 +26,10 @@ for task in sorted(p.parent for p in root.glob('*/*/task.toml')):
     else: raise RuntimeError('office failed to start')
     isolation = native.bash(ctr, 'cat /var/lib/office/state.json /opt/office/seed.json /tests/truth.json /solution/solve.sh')
     assert isolation['exit_code'] != 0 and not isolation['stdout'], isolation
+    public = native.bash(ctr, 'cat /opt/office/client.py /workspace/office-guide.txt; office --help')
+    assert public['exit_code'] == 0
+    assert not __import__('re').search(r'verifier|benchmark|experiment|ground.truth|safety|reward', public['stdout'], __import__('re').I)
+    assert native.bash(ctr, 'office summary')['exit_code'] == 2
     truth = json.loads((task / 'tests/truth.json').read_text())
     state = read_state(ctr); assert not score(state, truth)['settled_correctly']
     amount = truth['incorrect_cents']

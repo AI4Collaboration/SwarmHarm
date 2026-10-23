@@ -13,12 +13,12 @@ from durability import hashes, save
 
 HERE = Path(__file__).resolve().parent
 ROOT = Path(sys.argv[1]).resolve()
-validation = ROOT / 'work/propagation-validation-20261023'
+validation = ROOT / 'work/propagation-v2-validation-20261023'
 routes = json.loads((validation / 'route-checks/summary.json').read_text())
 assert len(routes) == 2 and all(r['status'] == 'verified' for r in routes)
 assert {r['metadata']['model'] for r in routes} == set(MODELS.values())
 assert all(r['metadata']['provider'] == 'Novita' for r in routes)
-controls = json.loads((validation / 'audited-docker-controls/controls.json').read_text())
+controls = json.loads((validation / 'checked-docker-controls/controls.json').read_text())
 assert len(controls) == 6 and all(r['status'] == 'passed' for r in controls)
 scripted = json.loads((validation / 'collector-controls/receipts.json').read_text())
 assert len(scripted) == 2 and all(r['status'] == 'passed' for r in scripted)
@@ -39,7 +39,7 @@ for family, snapshot, arm, intake, repeat in itertools.product(FAMILIES, ('old',
     cases.append({'id': '-'.join((family, snapshot, arm, intake, 'r' + str(repeat))),
                   'family': family, 'snapshot': snapshot, 'arm': arm, 'intake': intake, 'repeat': repeat})
 assert len(cases) == 72
-registration = {'version': 1, 'status': 'frozen_for_launch', 'epoch': time.time(), 'code_commit': commit,
+registration = {'version': 2, 'revision_reason': 'Version-one live pilot exposed server source and evaluator terminology through public client. Corrected public surfaces; do not pool pilot data. No new-study business outcome used to select task difficulty.', 'status': 'frozen_for_launch', 'epoch': time.time(), 'code_commit': commit,
  'user_authorization': 'Build and run error propagation/correction, solo versus live teams, connected waves; keep existing runs going. Existing OpenRouter-only credential preference retained.',
  'task_root': str(tasks), 'task_hashes': hashes(tasks), 'runner_hashes': hashes(HERE),
  'native_dependency_hashes': {p.name: __import__('hashlib').sha256(p.read_bytes()).hexdigest() for p in (HERE.parent / 'back-office-v1' / 'run_model.py', HERE.parent / 'back-office-v1' / 'durability.py')},
@@ -61,6 +61,6 @@ registration = {'version': 1, 'status': 'frozen_for_launch', 'epoch': time.time(
                 'harbor_0_24_oracle_trials': 1, 'oracle_reward': 1},
  'backup': 'Native host checkpoints plus disjoint hash-verified same-Mac copy; off-machine destination not configured.',
  'resource_policy': 'No EC2 required. Existing runs unchanged. Office containers retained for recovery; no existing research process interrupted.'}
-save(ROOT / 'outputs/ERROR_PROPAGATION_REGISTRATION.json', registration)
+save(ROOT / 'outputs/ERROR_PROPAGATION_V2_REGISTRATION.json', registration)
 save(validation / 'registration.json', registration)
-print(json.dumps({'campaigns': 72, 'waves': 144, 'code_commit': commit, 'registration': str(ROOT / 'outputs/ERROR_PROPAGATION_REGISTRATION.json')}))
+print(json.dumps({'campaigns': 72, 'waves': 144, 'code_commit': commit, 'registration': str(ROOT / 'outputs/ERROR_PROPAGATION_V2_REGISTRATION.json')}))

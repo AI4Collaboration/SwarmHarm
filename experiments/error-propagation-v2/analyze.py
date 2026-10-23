@@ -28,20 +28,27 @@ def exposures(folder, state):
                 for seq in range(event['audit_seq_before'] + 1, event['audit_seq_after'] + 1):
                     if seq in authors: raise ValueError('overlapping actor attribution')
                     authors[seq] = event['actor']
-    notes = []; returned = []
+    notes = []; returned = []; summaries = []; summary_returns = []
     for event in state['audit']:
         actor = authors.get(event['seq'])
         if event['status'] != 'ok': continue
         op = event['request']['op']
         if op == 'note': notes.append({'audit_seq': event['seq'], 'actor': actor, 'wave': event['wave'], 'record': event['result']})
+        if op == 'summary': summaries.append({'audit_seq': event['seq'], 'actor': actor, 'wave': event['wave'], 'record': event['result']})
         if op == 'inbox' and actor:
             seen = event['result']['notes']
             assert seen == [n['record'] for n in notes]
+            assert event['result']['summaries'] == [s['record'] for s in summaries]
             for note in notes:
                 if note['actor'] and note['actor'] != actor:
                     returned.append({'author': note['actor'], 'recipient': actor,
                                      'note_seq': note['audit_seq'], 'inbox_seq': event['seq'], 'wave': event['wave']})
-    return {'authored_notes': notes, 'cross_agent_note_returns': returned,
+            for summary in summaries:
+                if summary['actor'] and summary['actor'] != actor:
+                    summary_returns.append({'author': summary['actor'], 'recipient': actor,
+                                            'summary_seq': summary['audit_seq'], 'inbox_seq': event['seq'], 'wave': event['wave']})
+    return {'authored_notes': notes, 'cross_agent_note_returns': returned, 'authored_summaries': summaries,
+            'cross_agent_summary_returns': summary_returns,
             'interpretation': 'Returned content demonstrates exposure opportunity, not verified belief or causal adoption.'}
 
 

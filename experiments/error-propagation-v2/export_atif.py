@@ -74,7 +74,7 @@ def export_episode(folder,destination):
     assert expected==json.loads((folder/'messages.json').read_text()),'Final native history mismatch'
     session=hashlib.sha256(str(folder.relative_to(BASE)).encode()).hexdigest()[:24]
     trajectory={'schema_version':'ATIF-v1.8','session_id':session,'trajectory_id':session+':primary',
-       'agent':{'name':folder.name,'version':'error-propagation-v1','model_name':meta['model']},'steps':steps,
+       'agent':{'name':folder.name,'version':'error-propagation-v2','model_name':meta['model']},'steps':steps,
        'extra':{'native_episode':str(folder),'source_sha256':source_hashes,'native_continuity_passed':True,
                 'stop':meta['stop'],'grading_status':meta['grading_status'],'episode_complete':meta['episode_complete'],
                 'unresolved_api_requests':meta.get('unresolved_api_requests',[]),

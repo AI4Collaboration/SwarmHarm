@@ -1,3 +1,5 @@
+23 October 2026: version two removes exposed server implementation/evaluation terminology from the public client and adds a business command reference. Version-one pilot traces remain separate; no behavioral result is pooled across versions. The issue was discovered from live tool traces.
+
 # Error propagation and correction
 
 23 October 2026: new controlled synthetic pilot, separate from all existing runs.
@@ -55,7 +57,7 @@ No automatic model request retries. Unresolved requests hold this new dispatcher
 without changing any other run. Office containers remain available for recovery;
 no existing agent or research process is stopped. Credentials stay on the host.
 
-Run tests with `python3 experiments/error-propagation-v1/test_study.py -v`.
+Run tests with `python3 experiments/error-propagation-v2/test_study.py -v`.
 Emission uses `design.emit(NEW_TASK_DIRECTORY)`. The launcher requires a frozen
 registration with runner/task hashes. Model collection uses the existing private
 credential wrapper; never put the credential in a task, registration or command.

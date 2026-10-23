@@ -205,7 +205,7 @@ def main():
     for name, digest in registration['native_dependency_hashes'].items():
         assert hashlib.sha256((HERE.parent / 'back-office-v1' / name).read_bytes()).hexdigest() == digest
     assert native.sh('git', '-C', str(HERE.parents[1]), 'rev-parse', 'HEAD').stdout.strip() == registration['code_commit']
-    shutil.copytree(HERE, root / 'runner-source' / 'error-propagation-v1', ignore=shutil.ignore_patterns('__pycache__'))
+    shutil.copytree(HERE, root / 'runner-source' / 'error-propagation-v2', ignore=shutil.ignore_patterns('__pycache__'))
     for name in registration['native_dependency_hashes']:
         destination = root / 'runner-source' / 'back-office-v1' / name
         destination.parent.mkdir(parents=True, exist_ok=True)

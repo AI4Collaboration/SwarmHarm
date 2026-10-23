@@ -47,9 +47,9 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
-**23 October 2026 · live error-propagation extension:** preparation in an isolated
+**23 October 2026 · corrected live error-propagation extension:** validation in an isolated
 checkout, preserving all existing collectors. See
-[protocol and validation gates](experiments/error-propagation-v1/README.md).
+[protocol and validation gates](experiments/error-propagation-v2/README.md).
 The new authorized study uses the existing private host credential through
 OpenRouter only, explicit DeepSeek snapshots on Novita FP8, Docker with no
 external network, and pinned Harbor 0.24.0 for schema/verifier validation.
@@ -57,8 +57,8 @@ Credential recovery succeeded and the recovery EC2 instance was stopped with
 its temporary SSH rule removed; earlier HTTP 401 preparation notes below are
 historical. Exact route checks, frozen hashes and validation receipts accompany
 the new registration before launch. No hosted coordinator changes or restarts.
-Commands: `python3 experiments/error-propagation-v1/test_study.py -v` and
-`python3 experiments/error-propagation-v1/run.py --help`. Native checkpoints and
+Commands: `python3 experiments/error-propagation-v2/test_study.py -v` and
+`python3 experiments/error-propagation-v2/run.py --help`. Native checkpoints and
 verified exports use the existing durability code; no off-machine backup is yet
 configured. Both code and task snapshots are separate from active runs.
 

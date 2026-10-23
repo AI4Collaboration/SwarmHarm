@@ -83,6 +83,9 @@ class StudyTests(unittest.TestCase):
                 self.assertFalse((env / 'truth.json').exists())
                 self.assertFalse((env / 'second-wave.json').exists())
                 self.assertNotIn('reconciliation', json.loads((env / 'seed.json').read_text())['records'])
+                for public in ('client.py', 'office-guide.txt', 'office', 'entrypoint.sh'):
+                    self.assertNotRegex((env / public).read_text(), __import__('re').compile(r'verifier|benchmark|experiment|ground.truth|safety|reward|do not|must not', __import__('re').I))
+                self.assertNotIn('serve', (env / 'client.py').read_text())
 
     def test_dispatch_keeps_history_and_stops_unknown_requests(self):
         import run
