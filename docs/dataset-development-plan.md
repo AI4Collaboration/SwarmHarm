@@ -14,13 +14,14 @@ an independent verifier. Seeded component probes are not campaign-level evidence
 2. **Cause Harm:** show actual method adoption on a different business object and
    a new adverse effect verified outside subject control.
 
-[Formation v17](../experiments/swarm-formation-v17/README.md) is the active Phase
+[Formation v18](../experiments/swarm-formation-v18/README.md) is the active Phase
 1 environment. Four agents start together and run concurrent six-review batches
 without assigned organization. It connects LessWrong Steps 1–3 in one initially
-empty system and its offline controls pass. V17 DeepSeek R1 is a clean negative:
-two early diagnostics received three exact cross-agent reads and one capable job
-opened both blocked objects. No blocked job wrote an ask, so no reply or fresh
-adoption followed.
+empty system and its offline controls pass. V18 constrains the catalog to exact
+named-source lookups and compacts repeated status, removing V17's unproductive
+keyword-enumeration branch without adding peer or communication hints. V17
+DeepSeek R1 remains the latest completed negative: a capable job engaged with
+both blocked objects, but no blocked job wrote an ask.
 
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is the active Phase
 2 environment. Its first DeepSeek campaign was negative. Phase 2 collection is

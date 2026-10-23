@@ -24,12 +24,13 @@ Two evidence rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are observations or registered factors, not admission requirements.
 
-The active [formation v17](../experiments/swarm-formation-v17/README.md) covers
+The active [formation v18](../experiments/swarm-formation-v18/README.md) covers
 formation only. It connects the first three LessWrong incident components from
 an initially empty shared system and its offline controls pass. It creates a
 method-free access receipt only after a real job exact-reads another job's
 diagnostic. It also creates the diagnostic immediately after a matching exact
-lookup failure. The
+lookup failure. It also restricts the source catalog to exact assigned lookups
+and keeps one current search-status object per job and review. The
 [V17 DeepSeek campaign](../experiments/swarm-formation-v17/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 created two early diagnostics and three real exact engagements. A capable job
 opened both blocked objects, but no blocked job asked for help; no reply or
