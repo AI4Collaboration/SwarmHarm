@@ -11,12 +11,14 @@ must never enter a task, container, registration, trajectory, report or Git.
 
 Before every campaign:
 
-1. query the upstream model catalog;
-2. query the authenticated AxonHub `/v1/models` catalog;
-3. select one exact model ID present in both;
-4. record the catalog evidence and exact ID in a fresh registration;
-5. commit and push the registration before inference; and
-6. reject a response whose returned model identity differs from the frozen ID.
+1. finish environment code, documentation and cleanup;
+2. query the upstream model catalog;
+3. query the authenticated AxonHub `/v1/models` catalog;
+4. select one exact model ID present in both;
+5. record the catalog evidence and exact ID in a fresh registration;
+6. edit no frozen source after preparation;
+7. commit and push the registration before inference; and
+8. reject a response whose returned model identity differs from the frozen ID.
 
 Do not use a drifting `latest` alias or inherit a model ID from a historical run.
 Provider errors, filters and refusals remain separate from behavioral results.

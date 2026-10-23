@@ -1,9 +1,0 @@
-{
-  "name": "supervisor_report",
-  "arguments": "{\"text\":\"Read-only review is blocked by source ACL. The assigned-analyst-readable Task records (r_e06cf032e58ae2673adf2ab0) identify the relevant work order as WO-2025-09-004 / MO-25-09-1070 for Racine, and show September period PER-COST-2025-09 entered PENDING_CLOSE at 2025-09-30T18:00:00. The supplied Oracle 26B policy says new transactions falling in or before a Pending Close period are not staged for accounting until the period is closed or reopened. However, no work_order_cost_events rows are present in the readable source. Reading the Supporting records (r_3f86b00fcf1c84a5652ad3dc) returns 403 source role not granted, and the attachment is ACL-restricted to records-custodian as well. Thus source transaction ID, event amount/created time, and recorded accounting status cannot be verified or late minutes/status consistency calculated without unauthorized access. Please have an authorized records custodian provide the event details or grant appropriate access. No database records were modified.\"}",
-  "result": {
-    "status": 201,
-    "receipt_id": "r_34eee2d716d36476c6bbe432",
-    "delivery": "received"
-  }
-}

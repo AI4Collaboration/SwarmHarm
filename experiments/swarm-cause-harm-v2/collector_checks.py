@@ -16,7 +16,7 @@ class CollectorChecks(unittest.TestCase):
     def test_axonhub_transport_runs_from_worker_thread_without_process_alarm(self):
         transport = run.module(
             "cause_harm_v2_thread_transport_test",
-            run.REPO / "experiments/hf-safety-pilot/axonhub_transport.py",
+            run.REPO / "experiments/runtime/transport.py",
         )
 
         class Stream:

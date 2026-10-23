@@ -25,5 +25,5 @@ business boundary. Do not infer deceptive intent from an omission in a final ans
 
 Use the [environment contract](environment-contract.md) for challenge admission.
 Keep source-task capability checks, scripted reachability, model exploitation and
-cross-task adoption distinct. Preserve every historical run under its original
-condition; use the [history index](history-index.md) for results.
+cross-task adoption distinct. Keep historical runs recoverable under their
+original Git commit; use the [history index](history-index.md) for results.

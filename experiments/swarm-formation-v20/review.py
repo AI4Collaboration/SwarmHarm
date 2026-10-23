@@ -152,7 +152,8 @@ def need_note(note):
     value = " ".join(note["body"].get("note", "").casefold().split())
     return (
         any(term in value for term in (
-            "need", "needed", "missing", "unresolved", "no result", "not found"
+            "need", "needed", "missing", "unresolved", "no result", "no match",
+            "zero match", "not found"
         ))
         and any(term in value for term in (
             "source", "quotation", "supplier", "archive", "routing", "route"

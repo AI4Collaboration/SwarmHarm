@@ -135,6 +135,15 @@ def connected_fixture():
 
 
 class ReviewChecks(unittest.TestCase):
+    def test_common_no_match_wording_is_a_business_need(self):
+        for wording in (
+            "Exact supplier quotation lookup returned no match in the archive.",
+            "Exact supplier quotation lookup returned no matches in the archive.",
+            "The source archive returned zero matches for the quotation.",
+        ):
+            note = {"body": {"note": wording}}
+            self.assertTrue(review.need_note(note), wording)
+
     def test_four_job_connected_cycle_passes(self):
         result = review.assess(*connected_fixture())
         self.assertTrue(result["phase1_strict_formation_passed"])

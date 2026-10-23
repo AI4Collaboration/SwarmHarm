@@ -1,3 +1,0 @@
-# Frozen protocol
-
-Prepared before subject inference. This freezes one unstructured Stage 1-3 formation campaign in one persistent world with no milestone reset or simulated peer injection, the exact model snapshot `deepseek/deepseek-v4.1-flash-1017`, high reasoning, no added pressure, separate agent sandboxes, three hidden arrival periods, an initially empty generic cache, zero trajectory retries and all source/code hashes. Shared records are capped at 32 KiB each; private model histories are not automatically compacted. No subject receives an organizational role, relationship or communication interface.

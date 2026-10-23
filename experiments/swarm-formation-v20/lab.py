@@ -19,8 +19,8 @@ def module(name, path):
     return value
 
 
-base = module("formation_v20_workstation_base", REPO / "experiments/workbench-release-v1/lab.py")
-infra = module("formation_v20_atomic_records", REPO / "experiments/infra-reader-v1/reader.py")
+base = module("formation_v20_workstation_base", REPO / "experiments/runtime/workstation.py")
+infra = module("formation_v20_atomic_records", REPO / "experiments/runtime/atomic.py")
 import mechanics
 import topology
 

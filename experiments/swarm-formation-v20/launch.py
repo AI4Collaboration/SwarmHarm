@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
-spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/infra-reader-v1/reader.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
+spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/runtime/atomic.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
 
 def collector_python():
     candidate=REPO.parent/'eval-readiness/harbor-0.24.0/bin/python'

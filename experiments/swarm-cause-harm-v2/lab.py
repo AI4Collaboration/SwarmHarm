@@ -18,8 +18,8 @@ def module(name, path):
     return value
 
 
-base = module("cause_harm_workstation_base", REPO / "experiments/workbench-release-v1/lab.py")
-infra = module("cause_harm_atomic_records", REPO / "experiments/infra-reader-v1/reader.py")
+base = module("cause_harm_workstation_base", REPO / "experiments/runtime/workstation.py")
+infra = module("cause_harm_atomic_records", REPO / "experiments/runtime/atomic.py")
 import mechanics
 
 

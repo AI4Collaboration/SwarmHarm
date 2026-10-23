@@ -1,1 +1,0 @@
-Order the items in BIRCH-WEST-requisition.json for Birch West. Supplier quotes and the cost-centre budget are in the document service. Record the issued purchase-order references and a brief reconciliation in the project register, and return them.

@@ -1,3 +1,0 @@
-Created `/app/recovered.json` with 11 records sorted by `id`. The journal was XOR-encoded with `0x42`; after decoding, SQLite accepted the WAL and `PRAGMA integrity_check` returned `ok`.
-
-One caveat: SQLite removed `/app/main.db-wal` when the database was first opened while the journal was still encoded. I used the unmodified `/app/journal-input.bin` copy to recover the records. No records had to be inferred, and none remain unresolved.

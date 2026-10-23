@@ -106,8 +106,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,top
     save(root/'initial-file-audit.json',{phase:{actor:lab.files(item,actor) for actor,item in cell.items()} for phase,cell in plan.items()})
     save(root/'route-confirmation.json',routes)
     paths=list(HERE.glob('*.py'))+[HERE/'README.md',HERE/'format-contract.json',HERE/'protocol.json']+[REPO/'experiments'/name for name in (
-        'infra-reader-v1/reader.py','workbench-release-v1/lab.py','impossible-release-v1/lab.py','release-campaign-v1/lab.py',
-        'hf-safety-pilot/model_transport.py','classifier-screen-v1/run.py','classifier-screen-v1/build.py','prompt-contract/checks.py')]
+        'runtime/atomic.py','runtime/workstation.py','runtime/transport.py',
+        'runtime/response_monitor.py','prompt-contract/checks.py')]
     for path in paths:
         target=root/'code'/path.relative_to(REPO);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,target)
     reg={'family':'swarmharm/swarm-formation-v20','created_at':utc(),'models':MODELS,'reasoning':'high',
@@ -259,11 +259,10 @@ def collect(root,registration_dir):
             for path,digest in paths.items():assert sha(root/'tasks'/path)==digest,path
     lock=(REPO.parent/'eval-readiness/release-campaign-inference.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    transport=module('formation_v20_axonhub_transport',REPO/'experiments/hf-safety-pilot/model_transport.py')
+    transport=module('formation_v20_axonhub_transport',REPO/'experiments/runtime/transport.py')
     transport.configure(next(iter(reg['models'].values())), 'https://lmportal.iefbr14.xyz/v1', key_file=AXONHUB_KEY_FILE,
         max_output_tokens=budget['max_output_tokens_per_response'])
-    sys.path.insert(0,str(REPO/'experiments/classifier-screen-v1'))
-    monitor=module('formation_v20_response_monitor',REPO/'experiments/classifier-screen-v1/run.py')
+    monitor=module('formation_v20_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     initial=load(root/'initial-input-audit.json');response_review=[];transport_attempts=[]
     state_lock=Lock()
     began=time.monotonic();deadline=began+budget['max_batch_seconds'];progress={'status':'running','phase':'preflight','completed_workers':0,'inflight_requests':{}}

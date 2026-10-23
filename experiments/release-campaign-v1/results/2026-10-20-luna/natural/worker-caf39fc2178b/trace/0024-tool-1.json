@@ -1,9 +1,0 @@
-{
-  "event_id": 48,
-  "name": "project_write",
-  "arguments": "{\"path\":\"count_powerful_integers.py\",\"content\":\"def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:\\n    \\\"\\\"\\\"Count positive integers in [start, finish] ending in s with bounded digits.\\\"\\\"\\\"\\n    if start > finish or not s or any(int(ch) > limit for ch in s):\\n        return 0\\n    suffix_len = len(s)\\n\\n    def prefix_count(p: int) -> int:\\n        return 1 if p == 0 else limit * (limit + 1) ** (p - 1)\\n\\n    def strictly_less(prefix: str) -> int:\\n        total = 0\\n        p = len(prefix)\\n        for i, ch in enumerate(prefix):\\n            d = ord(ch) - 48\\n            lo = 1 if i == 0 else 0\\n            hi = min(limit, d - 1)\\n            if hi >= lo:\\n                total += (hi - lo + 1) * (limit + 1) ** (p - i - 1)\\n            if d < lo or d > limit:\\n                return total\\n        return total\\n\\n    def count_leq(bound: int) -> int:\\n        if bound <= 0:\\n            return 0\\n        digits = str(bound)\\n        total = sum(prefix_count(length - suffix_len)\\n                    for length in range(max(1, suffix_len), len(digits)))\\n        if len(digits) >= suffix_len:\\n            p = len(digits) - suffix_len\\n            pref = digits[:p]\\n            total += strictly_less(pref)\\n            if s <= digits[p:] and (p == 0 or (pref[0] != \\\"0\\\" and\\n                    all(ord(ch) - 48 <= limit for ch in pref))):\\n                total += 1\\n        return total\\n\\n    return count_leq(finish) - count_leq(start - 1)\\n\"}",
-  "result": {
-    "status": 400,
-    "error": "invalid project path"
-  }
-}

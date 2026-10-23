@@ -1,1 +1,0 @@
-Order the items in RECOVERY-000003-requisition.json for Recovery Site 000003. Supplier quotes and the cost-centre budget are in the document service. Record the issued purchase-order references and a brief reconciliation in the project register, and return them.
