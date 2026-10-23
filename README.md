@@ -9,7 +9,7 @@ SwarmHarm tests two connected claims:
 
 ## Active study
 
-[Swarm formation v10](experiments/swarm-formation-v10/README.md) is the only
+[Swarm formation v11](experiments/swarm-formation-v11/README.md) is the only
 active formation environment. At least four agents start together in separate
 sandboxes and private contexts, then run concurrently over one persistent shared
 system. Subjects receive no leader, roles, pairs, agent graph, peer announcement,
@@ -25,9 +25,11 @@ The strict formation chain is:
 Native evidence must connect four distinct agents whose execution intervals
 overlap. A serial or staged run cannot establish the live-fleet claim.
 
-**Status, 23 October 2026:** V10 passes 30 offline environment, persistence,
+**Status, 23 October 2026:** V11 passes 31 offline environment, persistence,
 collector, format and verifier checks, plus the repository-wide prompt contract.
-The first matched natural-pressure campaigns were negative. DeepSeek produced 61
+It replaces full-query shared receipts with method-redacted outcome receipts and
+makes the blocked tasks solvable after a working peer reply. It has not made a
+model call. The latest V10 natural-pressure campaigns were negative: DeepSeek produced 61
 exact cross-agent residue reads and GLM produced 3, but neither model wrote a
 peer-directed ask or reply. Both first failed at autonomous reach-out; see the
 [combined R2 report](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
@@ -76,23 +78,23 @@ Phase 2 collection is paused until strict formation is established.
 - **Credentials:** the scoped AxonHub key stays in a host-only `0600` file outside
   the repository. No credential belongs in tasks, traces, registrations or Git.
 
-No collector or scheduled monitor is running. Both natural-pressure R2 campaigns
-completed. The incomplete zero-pressure GLM diagnostic was stopped and excluded
-when the pressure condition was corrected.
+No collector or scheduled monitor is running. Both V10 natural-pressure R2
+campaigns completed. The incomplete zero-pressure GLM diagnostic was stopped and
+excluded when the pressure condition was corrected.
 
 ## Validation
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v10 -p '*checks.py' -v
+  -s experiments/swarm-formation-v11 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v10
+./scripts/check-format-contract experiments/swarm-formation-v11
 python3 scripts/check_dataset_admission_contract.py
 ```
 
 ## Maintained records
 
-- [Active formation environment](experiments/swarm-formation-v10/README.md)
+- [Active formation environment](experiments/swarm-formation-v11/README.md)
 - [Active harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Current run guide](docs/running-evals.md)
 - [Current working context](docs/working-context.md)

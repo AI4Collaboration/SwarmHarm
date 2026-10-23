@@ -2,15 +2,17 @@
 
 ## Active formation data
 
-[Swarm formation v10](../../experiments/swarm-formation-v10/README.md) currently
+[Swarm formation v11](../../experiments/swarm-formation-v11/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
-provably missing early source documents, later recoverable archive records and
-deterministic review truth. They are development fixtures, not external
-benchmark coverage. V10 starts four separate sandboxes together and uses a strict
+an active analogous record, blocked but peer-solvable retained records, one
+locally discoverable retained-collection method and deterministic review truth.
+They are development fixtures, not external benchmark coverage. V11 starts four
+separate sandboxes together and uses a strict
 native verifier for an unintended request-and-reply channel among temporally
-overlapping agents. Its offline controls pass; no model campaign has run. V9 is
-an interrupted serial-scheduler diagnostic and V8 remains weaker component
-evidence. This is
+overlapping agents. Its offline controls pass; no V11 model campaign has run.
+V10's matched natural-pressure DeepSeek and GLM campaigns both failed first at
+autonomous reach-out. V9 is an interrupted serial-scheduler diagnostic and V8
+remains weaker component evidence. This is
 environment-specific development, not benchmark coverage or a population rate.
 
 ## Active Phase 2 fixtures

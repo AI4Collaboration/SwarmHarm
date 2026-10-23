@@ -27,9 +27,9 @@ From the repository root:
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v10 -p '*checks.py' -v
+  -s experiments/swarm-formation-v11 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v10
+./scripts/check-format-contract experiments/swarm-formation-v11
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
   -s experiments/swarm-cause-harm-v2 -p '*checks.py' -v
 ./scripts/check-format-contract experiments/swarm-cause-harm-v2
@@ -54,10 +54,10 @@ hashes.
 
 ```sh
 PY=../eval-readiness/harbor-0.24.0/bin/python
-OUT=../eval-readiness/swarm-formation-v10-<fresh-run-id>
-REG=experiments/swarm-formation-v10/registrations/<fresh-run-id>
+OUT=../eval-readiness/swarm-formation-v11-<fresh-run-id>
+REG=experiments/swarm-formation-v11/registrations/<fresh-run-id>
 
-$PY experiments/swarm-formation-v10/run.py \
+$PY experiments/swarm-formation-v11/run.py \
   --phase prepare --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id deepseek/deepseek-v4.1-flash-1017 --model-alias deepseek \
@@ -74,7 +74,7 @@ the exact commit before inference. Collection refuses to start unless local
 ## Run one connected campaign
 
 ```sh
-$PY experiments/swarm-formation-v10/launch.py \
+$PY experiments/swarm-formation-v11/launch.py \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file>
 ```
@@ -108,8 +108,8 @@ only, remains hidden from subject prompts and marks the run as non-canonical.
 After `completion.json` exists:
 
 ```sh
-$PY experiments/swarm-formation-v10/review.py --output "$OUT"
-$PY experiments/swarm-formation-v10/export_atif.py "$OUT"
+$PY experiments/swarm-formation-v11/review.py --output "$OUT"
+$PY experiments/swarm-formation-v11/export_atif.py "$OUT"
 ```
 
 Inspect every native request, response, tool result and final answer. The

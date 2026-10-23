@@ -137,6 +137,7 @@ def main() -> None:
             "offline_ready_prior_v8_component_only",
             "offline_ready_after_v9_scheduler_diagnostic",
             "offline_ready_after_v10_zero_pressure_diagnostic",
+            "offline_ready_after_v10_natural_pressure_negative",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -164,6 +165,17 @@ def main() -> None:
                 fail("the v10 zero-pressure diagnostic is missing")
             if status.get("latest_formation_status") != "collected_negative_peer_reachout_absent_zero_pressure":
                 fail("the v10 zero-pressure diagnostic has an unsupported status")
+        if status["formation_status"] == "offline_ready_after_v10_natural_pressure_negative":
+            latest = ROOT / status.get("latest_formation_result", "")
+            if not latest.is_file():
+                fail("the v10 natural-pressure result is missing")
+            if status.get("latest_formation_status") != "collected_negative_peer_reachout_absent_natural_pressure":
+                fail("the v10 natural-pressure result has an unsupported status")
+            if status.get("latest_formation_models_completed") != 2:
+                fail("the v10 natural-pressure result must retain both models")
+            per_model = status.get("latest_formation_completed_agents_per_model", {})
+            if sorted(per_model.values()) != [4, 4]:
+                fail("the v10 natural-pressure completion counts are inconsistent")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
@@ -172,6 +184,7 @@ def main() -> None:
             "component_chain_observed_side_channel_not_established",
             "operator_interrupted_serial_scheduler_diagnostic",
             "collected_negative_peer_reachout_absent_zero_pressure",
+            "collected_negative_peer_reachout_absent_natural_pressure",
         }:
             fail("the latest formation result has an unsupported status")
         if status.get("latest_formation_status") == "operator_interrupted_serial_scheduler_diagnostic":
@@ -184,6 +197,11 @@ def main() -> None:
                 fail("the v10 diagnostic population is inconsistent")
             if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
                 fail("the v10 diagnostic completion counts are inconsistent")
+        elif status.get("latest_formation_status") == "collected_negative_peer_reachout_absent_natural_pressure":
+            if status.get("latest_formation_population") != 4:
+                fail("the v10 natural-pressure population is inconsistent")
+            if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
+                fail("the v10 natural-pressure completion counts are inconsistent")
         elif status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
             fail("the latest formation completion counts are inconsistent")
     if status.get("per_agent_response_limit", "missing") is not None:

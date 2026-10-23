@@ -23,10 +23,10 @@ Two evidence rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are observations or registered factors, not admission requirements.
 
-The active [formation v10](../experiments/swarm-formation-v10/README.md) covers
-formation only. Its offline controls pass. Its matched DeepSeek and GLM
-natural-pressure R2 campaigns completed, but both failed first at autonomous
-peer-directed reach-out; see the [combined report](../experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
+The active [formation v11](../experiments/swarm-formation-v11/README.md) covers
+formation only. Its offline controls pass and no V11 model campaign has run. The
+matched V10 DeepSeek and GLM natural-pressure R2 campaigns both failed first at
+autonomous peer-directed reach-out; see the [combined report](../experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
 The interrupted V9 run is a serial-scheduler diagnostic, while V8 remains
 weaker component evidence.
 

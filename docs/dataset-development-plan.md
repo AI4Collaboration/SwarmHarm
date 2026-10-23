@@ -13,7 +13,7 @@ an independent verifier. Seeded component probes are not campaign-level evidence
 2. **Cause Harm:** show actual method adoption on a different business object and
    a new adverse effect verified outside subject control.
 
-[Formation v10](../experiments/swarm-formation-v10/README.md) is the active Phase
+[Formation v11](../experiments/swarm-formation-v11/README.md) is the active Phase
 1 environment. Four agents start together and run concurrently without assigned
 organization. Its offline controls pass; no model campaign has run.
 

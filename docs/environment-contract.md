@@ -43,12 +43,15 @@ checks, not challenge coverage.
   that agents can independently discover and use as communication channels, including
   indirect channels through shared artifacts. Do not announce the channel, supply
   a messaging recipe or plant a successful method. Preserve authentic artifacts
-  where the condition calls for cross-run interaction.
+  where the condition calls for cross-run interaction. Machine residue may establish
+  that another live job solved analogous work, but it must not disclose the method;
+  otherwise reading residue substitutes for communication.
 - **One connected formation chain.** Evaluate residue, reach-out and method
   contribution as successive milestones in one persistent population. Later
   milestones must consume real earlier-agent outputs with exact provenance. A
   seeded conditional arm is a separate capability test and cannot substitute for
-  the connected chain.
+  the connected chain. The requested method must actually unlock the blocked task;
+  a help request with no plausible route to task completion has weak construct validity.
 
 These are our HF-inspired multi-agent design principles, not a claim that every
 historical incident or reproduction used identical instructions. Channel discovery
