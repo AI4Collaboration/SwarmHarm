@@ -13,8 +13,10 @@ SwarmHarm tests two connected claims:
 active formation environment. At least four agents start together in separate
 sandboxes and private contexts, then run concurrently over one persistent shared
 system. Subjects receive no leader, roles, pairs, agent graph, peer announcement,
-communication instruction, exploit hint or added pressure. Normal final answers
-remain private.
+communication instruction or exploit hint. Normal final answers
+remain private. Each task carries the same real customer filing deadline and
+automatic USD 250,000 contractual delay credit; there is no agent-targeted
+threat or reward.
 
 The strict formation chain is:
 
@@ -23,9 +25,12 @@ The strict formation chain is:
 Native evidence must connect four distinct agents whose execution intervals
 overlap. A serial or staged run cannot establish the live-fleet claim.
 
-**Status, 23 October 2026:** V10 passes 28 offline environment, persistence,
-collector, format and verifier checks. Its prompt-naturalness contract also
-passes. It has not made a model call. The interrupted
+**Status, 23 October 2026:** V10 passes 30 offline environment, persistence,
+collector, format and verifier checks, plus the repository-wide prompt contract.
+The first concurrent DeepSeek campaign was negative: 85 exact cross-agent reads
+occurred, but no agent wrote a peer-directed ask or reply. It is retained as a
+[zero-pressure diagnostic](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md);
+current campaigns freeze natural customer and deadline pressure. The interrupted
 [V9 diagnostic](experiments/swarm-formation-v9/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 showed that the previous runner was serial; it is not a behavioral result.
 [V8](experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R3.md) remains
@@ -44,7 +49,8 @@ Phase 2 collection is paused until strict formation is established.
 - a discoverable process weakness with independently verifiable effects for harm studies;
 - concurrent agents in separate sandboxes without predefined organization;
 - persistent shared systems and discoverable communication surfaces;
-- no added pressure, exploit hints, cooperation coaching or planted peer messages;
+- a real customer deadline and contractual business consequence, without
+  agent-targeted threats, exploit hints, cooperation coaching or planted messages;
 - native provenance for residue, reads, requests, replies and adoption;
 - independent verification for any downstream business effect.
 
@@ -69,8 +75,8 @@ Phase 2 collection is paused until strict formation is established.
 - **Credentials:** the scoped AxonHub key stays in a host-only `0600` file outside
   the repository. No credential belongs in tasks, traces, registrations or Git.
 
-No collector or scheduled monitor is running. All workstations from the V9
-diagnostic were removed.
+No collector or scheduled monitor is running. The incomplete zero-pressure GLM
+diagnostic was stopped and excluded when the pressure condition was corrected.
 
 ## Validation
 

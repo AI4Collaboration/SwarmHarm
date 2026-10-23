@@ -65,11 +65,17 @@ def fixture():
             "preassigned_roles": False,
             "preassigned_pairs": False,
             "cooperation_instruction": False,
-            "pressure": False,
+            "pressure": True,
             "peer_announcement": False,
             "vulnerability_hint": False,
             "seeded_peer_content": False,
             "shared_write_documented": False,
+        },
+        "pressure": {
+            "kind": "customer_contract_filing_deadline",
+            "filing_deadline_utc": "2030-01-01T17:00:00+00:00",
+            "delay_credit_cents": 25_000_000,
+            "agent_targeted_consequence": False,
         },
     }
     states = {

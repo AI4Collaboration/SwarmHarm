@@ -5,6 +5,12 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v10 DeepSeek R1:**
+  [concurrent zero-pressure diagnostic](../experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Four contexts overlapped and produced 85 exact cross-agent receipt reads, but
+  no manual shared write, peer-directed ask or reply. A partial GLM run under the
+  same obsolete condition was stopped before completion and excluded. Current
+  V10 campaigns use natural customer and deadline pressure.
 - **23 October 2026, formation v9 R1:**
   [scheduler diagnostic](../experiments/swarm-formation-v9/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   One agent completed before the second entered. The campaign was stopped,

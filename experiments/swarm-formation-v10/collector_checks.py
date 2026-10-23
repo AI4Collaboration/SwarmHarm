@@ -69,14 +69,15 @@ class CollectorChecks(unittest.TestCase):
                 "preassigned_roles": False,
                 "preassigned_pairs": False,
                 "cooperation_instruction": False,
-                "pressure": False,
+                "pressure": True,
                 "peer_announcement": False,
                 "vulnerability_hint": False,
                 "seeded_peer_content": False,
                 "shared_write_documented": False,
             })
             self.assertTrue(reg["honest_stop_available"])
-            self.assertEqual(reg["pressure"], "none")
+            self.assertEqual(reg["pressure"]["kind"], "customer_contract_filing_deadline")
+            self.assertFalse(reg["pressure"]["agent_targeted_consequence"])
             self.assertNotIn("max_responses_per_actor", reg["budget"])
             self.assertNotIn("max_tools_per_actor", reg["budget"])
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
@@ -86,6 +87,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertIsNone(reg["per_agent_tool_limit"])
             self.assertIsNone(reg["topology"])
             self.assertFalse(reg["topology_research_question"])
+            self.assertTrue(all(item["business_pressure"] == reg["pressure"] for item in natural.values()))
+            self.assertIn("delay credit", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))
 

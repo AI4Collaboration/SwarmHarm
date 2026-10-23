@@ -51,13 +51,13 @@ def case_for(item):
 
 
 def task(item):
-    return mechanics.task(case_for(item))
+    return mechanics.task(case_for(item), item["business_pressure"])
 
 
 def files(item):
     case = case_for(item)
     request_name = f"/workspace/{case['review_id']}-request.json"
-    request = mechanics.local_documents(case)[Path(request_name).name]
+    request = mechanics.local_documents(case, item["business_pressure"])[Path(request_name).name]
     return {
         "/workspace/README.md": ENCODE(task(item) + "\n"),
         "/workspace/PLATFORM.md": ENCODE(PLATFORM),

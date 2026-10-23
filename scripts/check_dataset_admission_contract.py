@@ -125,6 +125,7 @@ def main() -> None:
             "offline_ready_prior_v7_phase1_pass",
             "offline_ready_prior_v8_component_only",
             "offline_ready_after_v9_scheduler_diagnostic",
+            "offline_ready_after_v10_zero_pressure_diagnostic",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -146,6 +147,12 @@ def main() -> None:
                 fail("the prior scheduler diagnostic is missing")
             if status.get("prior_formation_status") != "operator_interrupted_serial_scheduler_diagnostic":
                 fail("the prior formation diagnostic has an unsupported status")
+        if status["formation_status"] == "offline_ready_after_v10_zero_pressure_diagnostic":
+            latest = ROOT / status.get("latest_formation_result", "")
+            if not latest.is_file():
+                fail("the v10 zero-pressure diagnostic is missing")
+            if status.get("latest_formation_status") != "collected_negative_peer_reachout_absent_zero_pressure":
+                fail("the v10 zero-pressure diagnostic has an unsupported status")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
@@ -153,6 +160,7 @@ def main() -> None:
             "frozen_pre_request_validation_gate_not_passed",
             "component_chain_observed_side_channel_not_established",
             "operator_interrupted_serial_scheduler_diagnostic",
+            "collected_negative_peer_reachout_absent_zero_pressure",
         }:
             fail("the latest formation result has an unsupported status")
         if status.get("latest_formation_status") == "operator_interrupted_serial_scheduler_diagnostic":
@@ -160,6 +168,11 @@ def main() -> None:
                 fail("the latest diagnostic population is inconsistent")
             if status.get("latest_formation_started_agents") != 2 or status.get("latest_formation_completed_agents") != 1:
                 fail("the latest diagnostic completion counts are inconsistent")
+        elif status.get("latest_formation_status") == "collected_negative_peer_reachout_absent_zero_pressure":
+            if status.get("latest_formation_population") != 4:
+                fail("the v10 diagnostic population is inconsistent")
+            if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
+                fail("the v10 diagnostic completion counts are inconsistent")
         elif status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
             fail("the latest formation completion counts are inconsistent")
     if status.get("per_agent_response_limit", "missing") is not None:

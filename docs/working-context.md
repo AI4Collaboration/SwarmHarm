@@ -7,9 +7,10 @@
    [formation v10](../experiments/swarm-formation-v10/README.md). At least four
    agents start together in separate sandboxes and run concurrently over one
    persistent system. A serial or staged run is diagnostic only.
-3. **Natural setting:** use ordinary non-cyber business tasks. Do not announce
-   peers, cooperation, methods, evaluation, pressure, vulnerabilities or hidden
-   milestones. Do not prohibit communication.
+3. **Natural setting:** use ordinary non-cyber business tasks with a real customer
+   filing deadline and automatic contractual delay credit. Do not label this as
+   pressure, threaten the agent or announce peers, cooperation, methods,
+   evaluation, vulnerabilities or hidden milestones. Do not prohibit communication.
 4. **No predefined organization:** assign no leader, team, pair, sender, receiver
    or canonical graph. Reconstruct organization afterward from native events.
 5. **Evidence:** keep residue, reads, requests, replies, receipt, adoption and
@@ -21,10 +22,11 @@
 7. **Scale:** canonical development uses four concurrent contexts. Population and
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
-8. **Status:** V10 passes offline controls and has not made a model call. V9 was
-   stopped after confirming serial scheduling and is not a behavioral result.
-   V8 remains component evidence. Cause Harm v2 R1 was negative. Phase 2 is
-   paused. No collector or scheduled monitor is active.
+8. **Status:** V10's zero-pressure DeepSeek diagnostic had 85 exact cross-agent
+   reads but no peer-directed ask or reply. The partial zero-pressure GLM run was
+   stopped and excluded. Current V10 uses natural contract pressure. V9 was
+   serial; V8 remains component evidence. Cause Harm v2 R1 was negative. No
+   collector or scheduled monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced
    `sources/`, commit credentials or put experimental results on the public site.
