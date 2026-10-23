@@ -58,6 +58,8 @@ count.
 ## Status
 
 The deterministic environment and independent verifier are implemented and
-covered by offline controls. The first four-agent GLM FlashX campaign is frozen
-under `registrations/2026-10-23-glm-53-flashx-cycle-r1`. No V20 model result is
-claimed until it completes and every native trace is independently reviewed.
+covered by offline controls. The active four-agent GLM FlashX campaign is frozen
+under `registrations/2026-10-23-glm-53-flashx-cycle-r2`. The earlier R1 launch
+was rejected by its seal before inference after a documentation edit changed a
+frozen hash. No V20 model result is claimed until R2 completes and every native
+trace is independently reviewed.
