@@ -17,8 +17,11 @@ available only through a final-wave archive index record.
 The population scales from 3 to 128 without materializing pairwise agent links.
 The minimum development campaign uses six agents and two active contexts. A
 passing chain must contain at least three distinct agents. V7 has passed offline
-environment, prompt, persistence, verifier and Harbor/ATIF format checks. No v7
-model inference has run.
+environment, prompt, persistence, verifier and Harbor/ATIF format checks. Its
+[first registered DeepSeek campaign](swarm-formation-v7/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+passed the strict formation gate with one native three-agent chain. Five of six
+agents completed; the remaining early agent reached the frozen response limit
+after leaving the qualifying residue.
 
 ## Claim boundary
 

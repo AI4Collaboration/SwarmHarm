@@ -94,7 +94,22 @@ def main() -> None:
 
     status = contract["current_status"]
     if status["model_inference_completed"]:
-        fail("the current formation environment has no registered model run")
+        if status["formation_status"] != "strict_phase1_observed_one_development_campaign":
+            fail("completed formation inference has an unsupported status")
+        result = ROOT / status.get("formation_result", "")
+        if not result.is_file():
+            fail("completed formation inference has no maintained result report")
+        if status.get("formation_population", 0) < 3:
+            fail("the passing formation campaign must contain at least three agents")
+        completed_agents = status.get("formation_completed_agents", 0)
+        if not 0 < completed_agents <= status["formation_population"]:
+            fail("formation completion counts are inconsistent")
+        if status.get("formation_collection_status") not in {
+            "collected", "collected_with_limits"
+        }:
+            fail("formation collection status is missing or invalid")
+    elif status["formation_status"] != "offline_ready_no_model_run":
+        fail("formation status claims evidence without model inference")
     if status["integrated_phase2_status"] != "not_built":
         fail("the current formation and harm components are not integrated")
     environment = ROOT / status["formation_environment"]

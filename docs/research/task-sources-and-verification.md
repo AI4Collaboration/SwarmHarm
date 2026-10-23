@@ -5,8 +5,9 @@
 [Swarm formation v7](../../experiments/swarm-formation-v7/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 provably missing early source documents, later recoverable archive records and
-deterministic review truth. They are development fixtures, not external benchmark
-coverage and not model evidence until a registered campaign runs.
+deterministic review truth. They are development fixtures, not external
+benchmark coverage. One registered DeepSeek campaign passed the strict Phase 1
+gate; this is environment-specific model evidence, not a population rate.
 
 ## Source-backed candidates
 

@@ -24,11 +24,11 @@
 8. **Scale:** the minimum development campaign uses six agents in three hidden
    arrival periods. Population and active concurrency scale independently up to
    128; routine development uses one minimum campaign per model.
-9. **Current state:** V7 offline controls pass and awaits its registered
-   campaign. V6 completed six DeepSeek agents but failed its frozen temporal
-   gate because the contributor fetched the quotation after reading the request.
-   No collector or scheduled monitor is active. The current scoped AxonHub key
-   remains in its host-only file outside Git.
+9. **Current state:** V7 DeepSeek R1 passed the preregistered Phase 1 gate with
+   one native chain across three distinct agents. Five of six agents completed;
+   one early residue author reached the response cap. No collector or scheduled
+   monitor is active. Phase 2 is not integrated. The scoped AxonHub key remains
+   in its host-only file outside Git.
 10. **Maintenance:** newest information appears first. Historical experiments
     remain frozen evidence but never define current setup. Never edit synced
     `sources/`, commit credentials or put experimental results on the public site.

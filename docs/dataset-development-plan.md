@@ -17,7 +17,9 @@ campaign-level evidence.
 
 The active Phase 1 environment is
 [swarm-formation-v7](../experiments/swarm-formation-v7/README.md). Phase 2 is not
-yet integrated with it.
+yet integrated with it. One registered DeepSeek development campaign passed the
+strict three-agent Phase 1 gate; five of six agents completed and one early
+residue author reached the frozen response limit.
 
 ## Campaign record
 

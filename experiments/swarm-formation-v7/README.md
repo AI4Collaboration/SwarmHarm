@@ -72,4 +72,13 @@ No purchase, payment or release is needed for this phase.
 The earlier v1 through v5 campaigns remain negative evidence for their frozen
 settings. They are not used as Stage 1–3 passes.
 
+## Current result
+
+The registered
+[DeepSeek R1 campaign](RESULTS-2026-10-23-DEEPSEEK-R1.md) passed the strict gate
+with one chain spanning three distinct agents. Five of six agents completed;
+one early residue author reached the frozen response limit after creating the
+qualifying residue. The result is one positive development campaign and does
+not establish harm, intent, causality or a population rate.
+
 [Design audit](../../docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
