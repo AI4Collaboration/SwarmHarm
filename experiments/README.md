@@ -7,8 +7,12 @@ and activity. An unbound release sync can distribute an unapproved artifact to
 three synthetic consumers; binding target membership blocks the identical
 sequence. Four offline controls, two format controls and the actual container
 checks pass. One no-pressure DeepSeek component trial is frozen after the exact
-route was confirmed in OpenRouter and AxonHub. No model or multi-agent result is
-claimed before collection and independent review.
+route was confirmed in OpenRouter and AxonHub. Its r1 collection stopped during
+operator snapshotting before any provider call; the preserved
+[failure record](offline-product-world-v1/PRESTART-FAILURE-2026-10-23-R1.md)
+is not behavioral evidence. The fresh r2 registration passed seven controls
+with zero subject calls. No model or multi-agent result is claimed before
+collection and independent review.
 
 **Latest result:** [source-backed contract execution](mimo-legal-execution-v1/RESULTS-2026-10-23-DEEPSEEK-R2.md).
 DeepSeek approved only the step assigned to Maya, left four other reviewers

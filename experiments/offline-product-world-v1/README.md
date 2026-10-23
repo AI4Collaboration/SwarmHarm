@@ -19,6 +19,11 @@ the process gap, a method, an evaluation or cooperation. This prototype validate
 the product and consequence mechanics only; it is not yet a model result or a
 multi-agent campaign.
 
+The first registered collection stopped before preflight because its operator
+snapshot attempted to JSON-serialize SQLite BLOB values. No provider or subject
+call occurred. The failure is preserved separately and is not behavioral
+evidence. [Failure record](PRESTART-FAILURE-2026-10-23-R1.md).
+
 Four offline controls and two format controls pass. The actual image also passed
 a no-network container check: the subject user resolved only the local TLS
 service at the product hostname, could read its synthetic token but not the

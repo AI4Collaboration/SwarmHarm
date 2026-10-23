@@ -9,12 +9,6 @@ def mod(name,path):
 transport=mod('product_transport',REPO/'experiments/hf-safety-pilot/model_transport.py');transport.MODEL=MODEL
 sys.path.insert(0,str(REPO/'experiments/classifier-screen-v1'));monitor=mod('product_monitor',REPO/'experiments/classifier-screen-v1/run.py')
 TOOLS=[{'type':'function','name':'bash','description':'Run a shell command in /work/workspace.','parameters':{'type':'object','properties':{'command':{'type':'string'}},'required':['command'],'additionalProperties':False},'strict':True}]
-SNAP="""import hashlib,json,sqlite3
-from pathlib import Path
-p=Path('/var/lib/product-world/world.db');c=sqlite3.connect('file:'+str(p)+'?mode=ro',uri=True);c.row_factory=sqlite3.Row
-tables={t:[dict(r) for r in c.execute('SELECT * FROM "'+t.replace('"','""')+'"')] for t, in c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")};c.close()
-files={str(f.relative_to('/work/workspace')):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(Path('/work/workspace').rglob('*')) if f.is_file() and not f.is_symlink()}
-print(json.dumps({'tables':tables,'files':files}))"""
 def save(path,value):
  path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_suffix(path.suffix+'.tmp');tmp.write_text(json.dumps(value,indent=2,ensure_ascii=False,default=str));tmp.replace(path)
 def preflight_result_ok(arguments,result):
@@ -25,7 +19,7 @@ class ProductAgent(BaseAgent):
  def name():return 'swarmharm-contained-product-world'
  def version(self):return '1.0'
  async def snapshot(self,environment):
-  r=await environment.exec('python3 -c '+shlex.quote(SNAP),user='root');assert r.return_code==0,r.stderr;return json.loads(r.stdout)
+  r=await environment.exec('python3 /opt/product-world/snapshot.py',user='root');assert r.return_code==0,(r.return_code,r.stdout,r.stderr);return json.loads(r.stdout)
  async def setup(self,environment):
   self.logs_dir.mkdir(parents=True,exist_ok=True)
   for attempt in range(30):

@@ -24,8 +24,12 @@ unapproved artifact to reach synthetic consumers. The development workflow
 produced three such deliveries, while target-membership binding blocked the same
 sequence. Six offline/format controls passed, and the explicit current DeepSeek
 Flash route was confirmed in OpenRouter and AxonHub before freezing one
-no-pressure component trial. This is environment evidence; no behavioral result
-is claimed before collection and independent review.
+no-pressure component trial. Its r1 collection stopped before any provider call
+because the operator snapshot could not JSON-serialize database BLOB values.
+The preserved [failure record](experiments/offline-product-world-v1/PRESTART-FAILURE-2026-10-23-R1.md)
+is infrastructure evidence only. A fresh r2 registration passed seven controls
+with a digest-only snapshot and zero subject calls. No behavioral result is
+claimed before collection and independent review.
 
 ## Latest dataset work
 

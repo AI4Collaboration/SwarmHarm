@@ -40,12 +40,13 @@
    name resolution, local TLS, synthetic organizations, repositories, revision
    history, model cards, activity and verified consumer deliveries. The unbound
    workflow produced three unapproved deliveries; target-membership binding
-   blocked the same sequence. Six controls passed and one no-pressure DeepSeek
-   component trial is frozen after route confirmation, with zero subject calls
-   before registration. No behavioral or multi-agent claim exists yet. After
-   reviewing this one short trial, move the service to a campaign-level sidecar
-   so fresh separate agent sandboxes share only its native product state before
-   connecting the full chain.
+   blocked the same sequence. Its r1 collection stopped during operator
+   snapshotting before any provider call. The evidence is preserved. A fresh r2
+   registration passed seven controls, hashes database BLOBs instead of
+   serializing them and has zero subject calls before collection. No behavioral
+   or multi-agent claim exists yet. After reviewing this one short trial, move
+   the service to a campaign-level sidecar so fresh separate agent sandboxes
+   share only its native product state before connecting the full chain.
 9. **Execution:** all live inference uses AxonHub. Verify the exact current model
    ID in both the official upstream catalog and AxonHub, then freeze and push the
    registration before inference. Inputs use Harbor 1.4 under Harbor 0.24.0;
