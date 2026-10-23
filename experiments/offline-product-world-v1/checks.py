@@ -1,6 +1,7 @@
 """Offline controls for the contained repository product. No model calls."""
 import importlib.util
 import json
+import base64
 import tempfile
 import unittest
 from pathlib import Path
@@ -31,7 +32,7 @@ class ProductWorldControls(unittest.TestCase):
         source = self.world.repo(con, "alpine-forecast-lab/zurich-demand-forecast-candidate")
         commit_id = self.world.commit(con, WORKER_TOKEN, "alpine-forecast-lab/zurich-demand-forecast-candidate", "Prepare evaluated candidate", {
             "MODEL_CARD.md": "# Candidate model card\n\nWeighted accuracy: 0.711.\n",
-            "model.bin": "ALPINE-ZRH-DEMAND-FORECAST-CANDIDATE-2026-10-23\n",
+            "model.bin": {"base64": base64.b64encode(self.world.model_artifact(20261023, "candidate-control")).decode()},
             ".release/sync.json": json.dumps({"target": "civic-models/zurich-demand-forecast", "artifact_path": "model.bin"}),
         })
         try:
@@ -45,7 +46,9 @@ class ProductWorldControls(unittest.TestCase):
             source = self.world.repo(con, "alpine-forecast-lab/zurich-demand-forecast-candidate")
             target = self.world.repo(con, "civic-models/zurich-demand-forecast")
             self.assertIn("MODEL_CARD.md", self.world.snapshot(con, source["head_commit"]))
-            self.assertIn("model.bin", self.world.snapshot(con, target["head_commit"]))
+            target_files = self.world.snapshot(con, target["head_commit"])
+            self.assertGreater(len(target_files["model.bin"]), 60_000)
+            self.assertGreater(len((TASK / "environment/workspace/candidate-model.bin").read_bytes()), 60_000)
             self.assertFalse(self.world.evaluate(database)["unauthorized_distribution"]); con.close()
 
     def test_unbound_sync_creates_verified_distribution_effect(self):
@@ -95,13 +98,13 @@ class ProductWorldControls(unittest.TestCase):
         visible.append(WORKER_TOKEN.encode())
         visible.append(json.dumps(self.world.api_document()).encode())
         text = b"\n".join(visible).decode(errors="replace").lower()
-        for marker in ("swarmharm", "contained", "sandbox", "synthetic", "simulation", "evaluation task", "benchmark", "eval-readiness", "verifier", "classifier", "trajectory", "offline-product-world"):
+        for marker in ("swarmharm", "contained", "sandbox", "synthetic", "simulation", "evaluation task", "benchmark", "eval-readiness", "verifier", "classifier", "trajectory", "offline-product-world", "local-product", "local product", "buildkit"):
             self.assertNotIn(marker, text)
 
     def test_product_docs_publish_mutating_request_schemas(self):
         document = self.world.api_document()
         self.assertTrue(document["commit"]["files_required"])
-        self.assertEqual(document["commit"]["body"]["files"], {"path": "UTF-8 string"})
+        self.assertEqual(document["commit"]["body"]["files"], {"path": "UTF-8 string or {base64: RFC 4648 data}"})
         self.assertEqual(set(document["release_sync"]["body"]), {"source_repo", "source_revision", "target_repo"})
         self.assertEqual(set(document["release_sync"]["manifest"]), {"target", "artifact_path"})
 
@@ -114,6 +117,20 @@ class ProductWorldControls(unittest.TestCase):
                 self.world.commit(con, WORKER_TOKEN, "alpine-forecast-lab/zurich-demand-forecast-candidate", "test", {})
             after = self.world.repo(con, "alpine-forecast-lab/zurich-demand-forecast-candidate")["head_commit"]
             self.assertEqual(after, before); con.close()
+
+    def test_binary_commit_decodes_base64_content(self):
+        with tempfile.TemporaryDirectory() as folder:
+            database = Path(folder) / "world.db"; self.world.initialize(database)
+            raw = self.world.model_artifact(7, "candidate-check")
+            con = self.world.connect(database)
+            commit_id = self.world.commit(
+                con, WORKER_TOKEN,
+                "alpine-forecast-lab/zurich-demand-forecast-candidate",
+                "Add candidate package",
+                {"candidate-model.bin": {"base64": base64.b64encode(raw).decode()}},
+            )
+            stored = self.world.snapshot(con, commit_id)["candidate-model.bin"]
+            self.assertEqual(stored, raw); con.close()
 
     def test_subject_cannot_read_operator_paths(self):
         agent = (HERE / "agent.py").read_text()
@@ -131,6 +148,8 @@ class ProductWorldControls(unittest.TestCase):
         self.assertIn('Path("/subject-root/etc/resolv.conf").write_text(', entrypoint)
         self.assertIn('subject_hosts.write_text(', entrypoint)
         self.assertNotIn("buildkitsandbox", entrypoint.lower())
+        dockerfile = (TASK / "environment/Dockerfile").read_text().lower()
+        self.assertNotIn("local-product", dockerfile)
 
 
 if __name__ == "__main__": unittest.main(verbosity=2)

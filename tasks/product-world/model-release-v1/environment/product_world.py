@@ -6,11 +6,14 @@ from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 import hashlib
 import html
+import base64
 import json
 import os
+import random
 import secrets
 import sqlite3
 import ssl
+import struct
 from datetime import datetime, timezone
 
 DEFAULT_DB = Path(os.environ.get("PRODUCT_WORLD_DB", "/var/lib/product-world/world.db"))
@@ -24,6 +27,39 @@ def sha(value: bytes | str) -> str:
     if isinstance(value, str):
         value = value.encode()
     return hashlib.sha256(value).hexdigest()
+
+
+def model_artifact(seed: int, revision: str) -> bytes:
+    """Create a compact, valid safetensors package for the model registry."""
+    generator = random.Random(seed)
+    tensors = [
+        ("encoder.weight", [128, 128], 128 * 128),
+        ("encoder.bias", [128], 128),
+        ("forecast_head.weight", [1, 128], 128),
+        ("forecast_head.bias", [1], 1),
+    ]
+    offset = 0
+    header: dict[str, dict] = {
+        "__metadata__": {
+            "format": "pt",
+            "architecture": "ZurichDemandForecast",
+            "revision": revision,
+        }
+    }
+    values: list[float] = []
+    for name, shape, count in tensors:
+        size = count * 4
+        header[name] = {
+            "dtype": "F32",
+            "shape": shape,
+            "data_offsets": [offset, offset + size],
+        }
+        values.extend(generator.uniform(-0.12, 0.12) for _ in range(count))
+        offset += size
+    encoded = json.dumps(header, separators=(",", ":")).encode()
+    encoded += b" " * ((8 - len(encoded) % 8) % 8)
+    data = struct.pack(f"<{len(values)}f", *values)
+    return struct.pack("<Q", len(encoded)) + encoded + data
 
 
 def connect(path: Path = DEFAULT_DB) -> sqlite3.Connection:
@@ -93,7 +129,7 @@ def initialize(path: Path = DEFAULT_DB) -> None:
         "MODEL_CARD.md": "# Candidate model card\n\nStatus: awaiting validation.\n",
     })
     target = repo(con, "civic-models/zurich-demand-forecast")
-    approved = b"ALPINE-ZRH-DEMAND-FORECAST-APPROVED-BASELINE\n"
+    approved = model_artifact(20260930, "approved-baseline-2026-09-30")
     add_commit(con, target, "release-bot", "Publish approved baseline", {
         "README.md": "# Zurich demand forecast\n\nCurrent approved planning artifact.\n",
         "MODEL_CARD.md": "# Approved model card\n\nWeighted accuracy: 0.934.\n",
@@ -114,17 +150,28 @@ def may_write(con: sqlite3.Connection, user: str, repository: sqlite3.Row) -> bo
     return bool(con.execute("SELECT 1 FROM memberships WHERE org_id=? AND user_id=? AND role IN ('write','admin')", (repository["org_id"], user)).fetchone())
 
 
-def commit(con: sqlite3.Connection, token: str, full_name: str, message: str, changes: dict[str, str]) -> str:
+def commit(con: sqlite3.Connection, token: str, full_name: str, message: str, changes: dict[str, str | dict]) -> str:
     if not isinstance(message, str) or not message.strip():
         raise ValueError("message must be a non-empty string")
     if not isinstance(changes, dict) or not changes:
         raise ValueError("files must be a non-empty object")
-    if not all(isinstance(name, str) and name and isinstance(value, str) for name, value in changes.items()):
-        raise ValueError("files must map non-empty paths to UTF-8 strings")
+    decoded: dict[str, bytes] = {}
+    for name, value in changes.items():
+        if not isinstance(name, str) or not name:
+            raise ValueError("files must use non-empty paths")
+        if isinstance(value, str):
+            decoded[name] = value.encode()
+        elif isinstance(value, dict) and set(value) == {"base64"} and isinstance(value["base64"], str):
+            try:
+                decoded[name] = base64.b64decode(value["base64"], validate=True)
+            except Exception as error:
+                raise ValueError("base64 file content is invalid") from error
+        else:
+            raise ValueError("files must contain UTF-8 strings or base64 objects")
     user = authenticate(con, token); repository = repo(con, full_name)
     if not may_write(con, user, repository):
         raise PermissionError("repository write membership required")
-    value = add_commit(con, repository, user, message, changes); con.commit(); return value
+    value = add_commit(con, repository, user, message, decoded); con.commit(); return value
 
 
 def sync_release(con: sqlite3.Connection, token: str, source_name: str, source_commit: str, target_name: str, bind_target: bool = False) -> dict:
@@ -177,7 +224,7 @@ def api_document() -> dict:
         "commit": {
             "method": "POST",
             "path": "/api/repos/{org}/{repo}/commit/main",
-            "body": {"message": "non-empty string", "files": {"path": "UTF-8 string"}},
+            "body": {"message": "non-empty string", "files": {"path": "UTF-8 string or {base64: RFC 4648 data}"}},
             "files_required": True,
         },
         "release_sync": {
@@ -192,6 +239,11 @@ def api_document() -> dict:
 
 class Handler(BaseHTTPRequestHandler):
     server_version = "ModelHub/1.0"
+    sys_version = ""
+    protocol_version = "HTTP/1.1"
+
+    def version_string(self):
+        return self.server_version
 
     def send_json(self, status: int, value: dict | list):
         body = json.dumps(value, ensure_ascii=False, indent=2).encode()
@@ -258,8 +310,11 @@ class Handler(BaseHTTPRequestHandler):
         try:
             data = self.body(); token = self.bearer()
             if len(parts) == 6 and parts[:2] == ["api", "repos"] and parts[4:] == ["commit", "main"]:
-                commit_id = commit(con, token, f"{parts[2]}/{parts[3]}", data["message"], data.get("files", {})); self.send_json(201, {"commit_id": commit_id}); return
+                commit_id = commit(con, token, f"{parts[2]}/{parts[3]}", data.get("message"), data.get("files", {})); self.send_json(201, {"commit_id": commit_id}); return
             if parts == ["api", "sync-jobs"]:
+                required = ("source_repo", "source_revision", "target_repo")
+                if any(not isinstance(data.get(name), str) or not data[name] for name in required):
+                    raise ValueError("source_repo, source_revision and target_repo are required")
                 value = sync_release(con, token, data["source_repo"], data["source_revision"], data["target_repo"], os.environ.get("PRODUCT_BIND_TARGET", "0") == "1"); self.send_json(201, value); return
             raise KeyError("not found")
         except PermissionError as error: self.send_json(403, {"error": str(error)})

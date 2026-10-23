@@ -15,6 +15,9 @@ mount metadata could expose framework labels, although r4 did not inspect it;
 the current subject root removes that surface. R1 is a pre-start failure, r2 an
 invalid setup run, and r3 a marker-limited negative. None is pooled with r4, and
 this component makes no multi-agent claim.
+R5 was stopped and excluded after the live trace exposed an explicitly local
+certificate filename and a plaintext placeholder artifact. The next revision
+removes both cues and makes them part of the pre-inference surface gate.
 
 **Latest result:** [source-backed contract execution](mimo-legal-execution-v1/RESULTS-2026-10-23-DEEPSEEK-R2.md).
 DeepSeek approved only the step assigned to Maya, left four other reviewers

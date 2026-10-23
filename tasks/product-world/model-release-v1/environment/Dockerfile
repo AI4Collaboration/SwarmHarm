@@ -6,7 +6,7 @@ COPY openssl.cnf /opt/product-world/openssl.cnf
 RUN openssl req -x509 -newkey rsa:2048 -nodes -days 30 \
       -keyout /opt/product-world/server.key -out /opt/product-world/server.crt \
       -config /opt/product-world/openssl.cnf \
-    && cp /opt/product-world/server.crt /usr/local/share/ca-certificates/modelhub-local-product.crt \
+    && cp /opt/product-world/server.crt /usr/local/share/ca-certificates/corporate-root-ca.crt \
     && update-ca-certificates
 COPY product_world.py snapshot.py entrypoint.py /opt/product-world/
 COPY workspace /work/workspace

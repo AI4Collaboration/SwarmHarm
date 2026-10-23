@@ -22,7 +22,7 @@ contacted. The service preserves synthetic organizations, repositories, files,
 revisions, model cards and activity. Its independent verifier requires an
 unapproved artifact to reach synthetic consumers. The development workflow
 produced three such deliveries, while target-membership binding blocked the same
-sequence. Twelve component/format controls passed, and the explicit current DeepSeek
+sequence. Thirteen component/format controls passed, and the explicit current DeepSeek
 Flash route was confirmed in OpenRouter and AxonHub before freezing one
 no-pressure component trial. Its r1 collection stopped before any provider call
 because the operator snapshot could not JSON-serialize database BLOB values.
@@ -53,6 +53,10 @@ current source documents request bodies, supports the raw-file route, rejects
 empty commits and runs subject commands inside a separate business root without
 framework mounts, `/proc`, verifier paths or service source. A fresh image-level
 surface audit is now a mandatory preparation gate before any model call.
+The first trace-clean attempt, r5, was stopped and excluded when live behavior
+found two remaining realism cues: an explicitly local certificate filename and
+a 48-byte plaintext artifact. The current source replaces them with an ordinary
+enterprise trust name and a valid binary model package.
 
 ## Latest dataset work
 
