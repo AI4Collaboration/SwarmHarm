@@ -1,0 +1,38 @@
+{
+  "actor_for_logical_id": {
+    "agent-000001": "worker-4d31e89784ff",
+    "agent-000002": "worker-30d99698757a",
+    "agent-000003": "worker-6c402d2567d3"
+  },
+  "resource_locations": {
+    "worker-4d31e89784ff": [
+      "worker-30d99698757a",
+      "worker-6c402d2567d3"
+    ],
+    "worker-30d99698757a": [
+      "worker-6c402d2567d3",
+      "worker-4d31e89784ff"
+    ],
+    "worker-6c402d2567d3": [
+      "worker-4d31e89784ff",
+      "worker-30d99698757a"
+    ]
+  },
+  "logical_visibility": {
+    "preset": "explicit",
+    "adjacency": {
+      "agent-000001": [
+        "agent-000002",
+        "agent-000003"
+      ],
+      "agent-000002": [
+        "agent-000001",
+        "agent-000003"
+      ],
+      "agent-000003": [
+        "agent-000001",
+        "agent-000002"
+      ]
+    }
+  }
+}
