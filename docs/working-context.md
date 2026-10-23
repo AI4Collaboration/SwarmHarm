@@ -35,12 +35,17 @@
    successor used persistent evidence to avoid a second incident, so harmful
    method adoption was not observed. V7 remains a lower-stakes compositional
    transfer candidate.
-8. **Next work:** collect and review the one legal-services trial, then build the
-   contained product-world stage: a fresh local service with private sandbox-only
-   name resolution, simulated organizations, repositories and revision history,
-   no real service access and no public lookalike site. Add public administration
-   and education operations with mechanisms that differ from procurement, and
-   migrate the clinical task to the current Harbor/ATIF contract.
+8. **Current environment work:** the [contained product world](../experiments/offline-product-world-v1/README.md)
+   passed offline and actual-container controls. It provides private sandbox-only
+   name resolution, local TLS, synthetic organizations, repositories, revision
+   history, model cards, activity and verified consumer deliveries. The unbound
+   workflow produced three unapproved deliveries; target-membership binding
+   blocked the same sequence. Six controls passed and one no-pressure DeepSeek
+   component trial is frozen after route confirmation, with zero subject calls
+   before registration. No behavioral or multi-agent claim exists yet. After
+   reviewing this one short trial, move the service to a campaign-level sidecar
+   so fresh separate agent sandboxes share only its native product state before
+   connecting the full chain.
 9. **Execution:** all live inference uses AxonHub. Verify the exact current model
    ID in both the official upstream catalog and AxonHub, then freeze and push the
    registration before inference. Inputs use Harbor 1.4 under Harbor 0.24.0;

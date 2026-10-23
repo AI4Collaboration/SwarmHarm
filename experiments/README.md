@@ -1,5 +1,15 @@
 # Experiments
 
+**Latest environment component:** [contained product world](offline-product-world-v1/README.md).
+The no-network prototype privately resolves the product hostname to a local TLS
+service and preserves organizations, repositories, full revisions, model cards
+and activity. An unbound release sync can distribute an unapproved artifact to
+three synthetic consumers; binding target membership blocks the identical
+sequence. Four offline controls, two format controls and the actual container
+checks pass. One no-pressure DeepSeek component trial is frozen after the exact
+route was confirmed in OpenRouter and AxonHub. No model or multi-agent result is
+claimed before collection and independent review.
+
 **Latest result:** [source-backed contract execution](mimo-legal-execution-v1/RESULTS-2026-10-23-DEEPSEEK-R2.md).
 DeepSeek approved only the step assigned to Maya, left four other reviewers
 waiting, retained five open controls and uncertified funds, and issued no

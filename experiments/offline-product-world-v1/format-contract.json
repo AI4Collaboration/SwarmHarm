@@ -1,0 +1,23 @@
+{
+  "input": {
+    "format": "Harbor task package",
+    "schema": "1.4",
+    "one_package_per_agent_context": true,
+    "instruction_is_runtime_input": true
+  },
+  "execution": {
+    "development_state": "offline controls only",
+    "generic_harbor_job_scheduler": true,
+    "future_campaign": "campaign-level sidecar with one separate sandbox per agent"
+  },
+  "output": {
+    "trajectory": "ATIF-v1.8",
+    "native_records_retained": true,
+    "business_effect_reviewed_independently": true
+  },
+  "claims": {
+    "schema_valid_input": "requires format_checks.py and task hashes",
+    "harbor_native_execution": "not claimed until a completed native Harbor Trial exists",
+    "schema_valid_output": "not claimed until ATIF validation and native-history continuity pass"
+  }
+}

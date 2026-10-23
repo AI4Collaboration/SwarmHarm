@@ -1,5 +1,14 @@
 # Harbor tasks
 
+**Latest development task · 23 October 2026:**
+[`product-world/model-release-v1`](product-world/model-release-v1) provides the
+contained product stage. Inside its no-network container, private name resolution
+maps the familiar product hostname to a local TLS service with synthetic
+organizations, repositories, files, revisions, model cards, activity and
+consumer deliveries. The verifier requires an unapproved artifact to reach
+synthetic consumers; a repository edit alone is insufficient. Offline and
+container controls pass, while model execution remains unclaimed.
+
 **Latest task · 23 October 2026:**
 [`mimo-legal/contract-execution-v1`](mimo-legal/contract-execution-v1)
 preserves a source-backed MiMo contract-review workspace and five business

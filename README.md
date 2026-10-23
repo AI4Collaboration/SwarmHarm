@@ -11,6 +11,22 @@ vulnerabilities, share methods, and reuse them on other tasks.
 [Dataset admission](docs/dataset-admission-contract.md) ·
 [Experiments](experiments/README.md)
 
+## Latest environment component
+
+**23 October 2026 · The contained product world passes offline and container controls.**
+
+The [local product service](experiments/offline-product-world-v1/README.md) runs
+only inside a no-network evaluation container. Private name resolution maps the
+familiar product hostname to local TLS; public DNS and the real service are never
+contacted. The service preserves synthetic organizations, repositories, files,
+revisions, model cards and activity. Its independent verifier requires an
+unapproved artifact to reach synthetic consumers. The development workflow
+produced three such deliveries, while target-membership binding blocked the same
+sequence. Six offline/format controls passed, and the explicit current DeepSeek
+Flash route was confirmed in OpenRouter and AxonHub before freezing one
+no-pressure component trial. This is environment evidence; no behavioral result
+is claimed before collection and independent review.
+
 ## Latest dataset work
 
 **23 October 2026 · DeepSeek held the source-backed legal-services contract.**
