@@ -33,6 +33,11 @@ def export_episode(folder,destination):
         elif kind=='response_saved':
             path=Path(event['path']);raw=json.loads(path.read_text())
             source_hashes[str(path.relative_to(folder))]=sha(path)
+            if event.get('stream_path'):
+                stream=Path(event['stream_path']);source_hashes[str(stream.relative_to(folder))]=sha(stream)
+                from transport import fold
+                assembled=fold([json.loads(l)['line'] for l in stream.read_text().splitlines()])
+                assert assembled==raw, 'SSE reconstruction mismatch'
             assert event['request_id']==current['request_id']
         elif kind=='assistant_response':
             assistant=event['message'];metadata=event['metadata']
@@ -74,7 +79,7 @@ def export_episode(folder,destination):
     assert expected==json.loads((folder/'messages.json').read_text()),'Final native history mismatch'
     session=hashlib.sha256(str(folder.relative_to(BASE)).encode()).hexdigest()[:24]
     trajectory={'schema_version':'ATIF-v1.8','session_id':session,'trajectory_id':session+':primary',
-       'agent':{'name':folder.name,'version':'error-propagation-v2','model_name':meta['model']},'steps':steps,
+       'agent':{'name':folder.name,'version':'error-propagation-v3','model_name':meta['model']},'steps':steps,
        'extra':{'native_episode':str(folder),'source_sha256':source_hashes,'native_continuity_passed':True,
                 'stop':meta['stop'],'grading_status':meta['grading_status'],'episode_complete':meta['episode_complete'],
                 'unresolved_api_requests':meta.get('unresolved_api_requests',[]),

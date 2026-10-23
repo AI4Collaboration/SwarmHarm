@@ -1,3 +1,5 @@
+24 October 2026: stage-limit repair and durable collector lifecycle. Each stage allows 40 model calls; the whole wave allows 120 calls, 131072 generated tokens and 7200 seconds, shared across agents. A non-final stage ends the campaign as incomplete; later roles and wave two do not run. SSE frames, provider IDs and headers are saved immediately. New independent balanced cohort, not pooled with capped V2 results. The interrupted V2 API attempts remain quarantined and are never resent. A one-shot launchd supervisor runs outside the Codex terminal lifecycle without automatic restarts.
+
 23 October 2026: version two removes exposed server implementation/evaluation terminology from the public client and adds a business command reference. Version-one pilot traces remain separate; no behavioral result is pooled across versions. The issue was discovered from live tool traces.
 
 # Error propagation and correction
@@ -19,7 +21,7 @@ all three stages in one context. A team uses three separate contexts with shared
 office records and actual note exchange; contexts persist across waves. There is
 no claim of simultaneous execution, spontaneous team formation or independent
 specialist capability. Stage order and roles are deliberately fixed interventions.
-Both arms have 24 maximum model calls and 131072 generated tokens per wave in total,
+Both arms have 120 maximum model calls and 131072 generated tokens per wave in total,
 with a 32768-token per-call cap, maximum reasoning, retained reasoning and no
 specified temperature. Report actual tokens, prompt tokens, cost, exposure and
 incomplete work separately: equal caps do not imply equal realized computation.
@@ -57,7 +59,7 @@ No automatic model request retries. Unresolved requests hold this new dispatcher
 without changing any other run. Office containers remain available for recovery;
 no existing agent or research process is stopped. Credentials stay on the host.
 
-Run tests with `python3 experiments/error-propagation-v2/test_study.py -v`.
+Run tests with `python3 experiments/error-propagation-v3/test_study.py -v`.
 Emission uses `design.emit(NEW_TASK_DIRECTORY)`. The launcher requires a frozen
 registration with runner/task hashes. Model collection uses the existing private
 credential wrapper; never put the credential in a task, registration or command.

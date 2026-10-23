@@ -17,6 +17,8 @@ import run_model as native
 from durability import append, atomic_bytes, export, hashes, pending, save
 from design import SYSTEM, advance, instruction
 from grade import score
+from transport import DurableChat
+native.Chat = DurableChat
 
 MODELS = {'old': 'deepseek/deepseek-v4-flash-0731', 'new': 'deepseek/deepseek-v4.1-flash-1017'}
 INDEX_LOCK = threading.Lock()
@@ -40,11 +42,14 @@ def stage(chat, ctr, messages, work_order, folder, agent, wave, stage_index, bud
     save(folder / 'messages.json', messages)
     started = time.monotonic()
     stop = 'max_turns'
-    for turn in range(8):
+    for turn in range(40):
+        if budget.get("calls_remaining", 120) <= 0: stop = "wave_call_budget"; break
         if native.UNRESOLVED.is_set(): stop = 'unresolved_request_hold'; break
-        if time.monotonic() - started > 1800: stop = 'wall_clock'; break
+        if time.monotonic() > budget.get('deadline', started + 7200): stop = 'wall_clock'; break
         if budget['remaining'] < 1024: stop = 'token_budget'; break
         chat.body['max_tokens'] = min(32768, budget['remaining'])
+        chat.deadline = budget.get('deadline', started + 7200)
+        budget['calls_remaining'] = budget.get('calls_remaining', 120) - 1
         try:
             msg, metadata = chat(messages)
         except Exception as e:
@@ -115,7 +120,7 @@ def collect(case, root, task_root, index):
          'code_commit': native.sh('git', '-C', str(HERE.parents[1]), 'rev-parse', 'HEAD').stdout.strip(),
          'runner_hashes': hashes(HERE), 'provider': 'novita/fp8', 'model': MODELS[case['snapshot']],
          'reasoning_effort': 'max', 'wave_completion_token_cap': 131072, 'max_tokens_per_call': 32768,
-         'stage_max_calls': 8, 'stages_per_wave': 3, 'waves': 2, 'temperature': None})
+         'stage_max_calls': 40, 'wave_max_calls': 120, 'stages_per_wave': 3, 'waves': 2, 'temperature': None})
     histories = {}; stages = []; grades = []
     try:
         if native.UNRESOLVED.is_set():
@@ -133,9 +138,10 @@ def collect(case, root, task_root, index):
             time.sleep(.1)
         else: raise RuntimeError('office startup failed')
         snapshot(ctr, folder / 'world-initial.json')
-        valid = True
+        valid = True; failure_status = None
         for wave in (1, 2):
             if wave == 2:
+                assert len(stages) == 3 and all(s['stop'] == 'final_answer' for s in stages), 'unfinished wave must never advance'
                 before = read_state(ctr)
                 after = advance(before, json.loads((task / 'second-wave.json').read_text()))
                 save(folder / 'wave2-state-in.json', after)
@@ -143,7 +149,7 @@ def collect(case, root, task_root, index):
                 native.sh('docker', 'exec', ctr, 'chmod', '600', '/var/lib/office/state.json')
                 append(folder / 'campaign.jsonl', {'kind': 'connected_wave_advanced', 'wave': 2,
                        'preserved_ledger': after['ledger'], 'preserved_notes': after['notes'], 'preserved_summaries': after['summaries']})
-            budget = {'remaining': 131072}
+            budget = {'remaining': 131072, 'calls_remaining': 120, 'deadline': time.monotonic() + 7200}
             for stage_index in range(3):
                 agent = 'solo' if case['arm'] == 'solo' else ('preparer', 'reviewer', 'settler')[stage_index]
                 agent_folder = folder / 'agents' / agent; agent_folder.mkdir(parents=True, exist_ok=True)
@@ -154,18 +160,23 @@ def collect(case, root, task_root, index):
                 stages.append({'wave': wave, 'stage': stage_index, 'agent': agent, 'stop': stop})
                 save(folder / 'stages.json', stages)
                 export(agent_folder, BACKUP / campaign_id / 'agents' / agent)
-                if stop in ('api_error', 'budget_accounting_error', 'unresolved_request_hold'):
+                if stop != 'final_answer':
+                    failure_status = 'unscored_infrastructure_error' if stop in ('api_error', 'budget_accounting_error', 'unresolved_request_hold') else 'incomplete_stage'
                     valid = False; break
             state = snapshot(ctr, folder / ('world-wave' + str(wave) + '.json'))
             if valid:
                 try: grade = score(state, json.loads((task / 'tests/truth.json').read_text()))
                 except Exception as e:
-                    grade = {'grading_status': 'grading_error', 'error': type(e).__name__}; valid = False
-            else: grade = {'grading_status': 'unscored_infrastructure_error'}
+                    grade = {'grading_status': 'grading_error', 'error': type(e).__name__}; valid = False; failure_status = 'grading_error'
+            elif stop in ('api_error', 'budget_accounting_error', 'unresolved_request_hold'):
+                grade = {'grading_status': 'unscored_infrastructure_error'}
+            else:
+                grade = score(state, json.loads((task / 'tests/truth.json').read_text()))
+                grade['completion_status'] = 'incomplete_stage'
             grades.append(grade); save(folder / ('grade-wave' + str(wave) + '.json'), grade)
             if not valid: break
         completed = len(stages) == 6 and all(s['stop'] == 'final_answer' for s in stages)
-        meta = {'grading_status': 'scored' if valid else 'unscored_infrastructure_or_grading_error',
+        meta = {'grading_status': 'scored' if valid else failure_status,
                 'episode_complete': completed, 'stages': stages, 'grades': grades,
                 'unresolved_requests': pending(folder), 'container': ctr,
                 'note': 'Incomplete agent work is reported separately even when business state can be scored.'}
@@ -205,7 +216,7 @@ def main():
     for name, digest in registration['native_dependency_hashes'].items():
         assert hashlib.sha256((HERE.parent / 'back-office-v1' / name).read_bytes()).hexdigest() == digest
     assert native.sh('git', '-C', str(HERE.parents[1]), 'rev-parse', 'HEAD').stdout.strip() == registration['code_commit']
-    shutil.copytree(HERE, root / 'runner-source' / 'error-propagation-v2', ignore=shutil.ignore_patterns('__pycache__'))
+    shutil.copytree(HERE, root / 'runner-source' / 'error-propagation-v3', ignore=shutil.ignore_patterns('__pycache__'))
     for name in registration['native_dependency_hashes']:
         destination = root / 'runner-source' / 'back-office-v1' / name
         destination.parent.mkdir(parents=True, exist_ok=True)
