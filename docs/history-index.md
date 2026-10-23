@@ -6,9 +6,14 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
 - **23 October 2026, active design:**
-  [swarm formation v4](../experiments/swarm-formation-v4/README.md) archives the
-  models' own job reports in the ordinary persistent cache while retaining the
-  strict three-agent chain. Offline controls pass; no v4 inference has run.
+  [swarm formation v5](../experiments/swarm-formation-v5/README.md) keeps
+  model-authored reports but removes the tool's method hint. Final-wave agents
+  can acquire the method from an ordinary archive index record. Offline controls
+  pass; no v5 inference has run.
+- **23 October 2026, formation v4:**
+  [DeepSeek report](../experiments/swarm-formation-v4/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Reports persisted and crossed sandboxes, but the tool itself exposed the
+  method, invalidating independent discovery.
 - **23 October 2026, formation v3:**
   [DeepSeek report](../experiments/swarm-formation-v3/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Later sandboxes read real search receipts and final-wave agents independently
@@ -39,5 +44,5 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v4/README.md)
+Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v5/README.md)
 and [run guide](running-evals.md) for current operation.

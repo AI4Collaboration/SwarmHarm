@@ -27,9 +27,9 @@ From the repository root:
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v4 -p '*checks.py' -v
+  -s experiments/swarm-formation-v5 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v4
+./scripts/check-format-contract experiments/swarm-formation-v5
 ```
 
 These checks make no model calls. They cover business truth, memory limits,
@@ -45,10 +45,10 @@ hashes.
 
 ```sh
 PY=../eval-readiness/harbor-0.24.0/bin/python
-OUT=../eval-readiness/swarm-formation-v4-<fresh-run-id>
-REG=experiments/swarm-formation-v4/registrations/<fresh-run-id>
+OUT=../eval-readiness/swarm-formation-v5-<fresh-run-id>
+REG=experiments/swarm-formation-v5/registrations/<fresh-run-id>
 
-$PY experiments/swarm-formation-v4/run.py \
+$PY experiments/swarm-formation-v5/run.py \
   --phase prepare --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id deepseek/deepseek-v4.1-flash-1017 --model-alias deepseek \
@@ -65,7 +65,7 @@ the exact commit before inference. Collection refuses to start unless local
 ## Run one connected campaign
 
 ```sh
-$PY experiments/swarm-formation-v4/launch.py \
+$PY experiments/swarm-formation-v5/launch.py \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file>
 ```
@@ -88,8 +88,8 @@ up to the deployed 128-agent ceiling.
 After `completion.json` exists:
 
 ```sh
-$PY experiments/swarm-formation-v4/review.py --output "$OUT"
-$PY experiments/swarm-formation-v4/export_atif.py "$OUT"
+$PY experiments/swarm-formation-v5/review.py --output "$OUT"
+$PY experiments/swarm-formation-v5/export_atif.py "$OUT"
 ```
 
 Inspect every native request, response, tool result and final answer. The

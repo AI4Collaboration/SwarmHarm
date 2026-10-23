@@ -6,7 +6,7 @@
    `residue → autonomous reach-out → independent method contribution`. Harm
    requires later different-task adoption and an independently verified effect.
 3. **Active environment:** use only
-   [swarm-formation-v4](../experiments/swarm-formation-v4/README.md) for new
+   [swarm-formation-v5](../experiments/swarm-formation-v5/README.md) for new
    formation work. It combines LessWrong Stages 1–3 in one persistent campaign,
    without state reset or simulated peer content.
 4. **Prompts:** use ordinary non-cyber business tasks. Do not announce peers,
@@ -24,9 +24,9 @@
 8. **Scale:** the minimum development campaign uses six agents in three hidden
    arrival periods. Population and active concurrency scale independently up to
    128; routine development uses one minimum campaign per model.
-9. **Current state:** V4 offline controls pass and awaits its first registered
-   campaign. V3 reached cross-sandbox residue reads and independent method
-   discovery but did not persist model-authored requests or disclosures.
+9. **Current state:** V5 offline controls pass and awaits its first registered
+   campaign. V4 persisted reports but exposed the candidate method in a tool
+   guide, so it did not support independent discovery.
    No collector or scheduled monitor is active. The current scoped AxonHub key
    remains in its host-only file outside Git.
 10. **Maintenance:** newest information appears first. Historical experiments
