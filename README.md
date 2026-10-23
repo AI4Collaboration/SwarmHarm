@@ -9,25 +9,31 @@ harm.
 The study has two phases:
 
 1. **Form the Swarm:** separate agents leave durable operational records, and a
-   connected pattern of request, response and verified use emerges without
+   connected pattern of residue, reach-out and method sharing emerges without
    assigned leaders, pairs, teams or direct agent chat.
 2. **Cause Harm:** a later agent adopts a harmful method and produces a concrete
    downstream effect checked against independent truth.
 
 The first
 [unstructured formation campaign](experiments/swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-did not form a swarm. Three agents opened valid requests and inspected the shared
-register, but none fulfilled another agent's request. Two issued orders relied
-only on locally available quotes. There were no provider errors, filters or
-refusals. This locates the current boundary at **discover request → fulfill it**.
+did not form a swarm. It also exposed a dedicated document-request interface,
+which skips the shared-residue discovery that precedes communication in the
+OpenAI–Hugging Face incident. The result remains a valid negative for that
+interface, but it is no longer the active formation setting.
+
+The corrected [Stage 1–3 setting](experiments/swarm-formation-v2/README.md) uses
+one generic persistent business cache. Earlier agents can leave exploratory
+residue, later agents can invent requests from that real residue, and a different
+agent can independently discover and publish a reusable method. No message,
+request, reply or attachment API is provided.
 
 The earlier
 [compute-light shared-memory campaign](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
 verified persistent memory and cross-context synthesis. It used an arranged
 writer/closeout workflow, so it is a mechanism result rather than evidence of
-spontaneous swarm formation. The current
-[formation environment](experiments/swarm-formation-v1/README.md) removes that
-structure and reconstructs organization only from actual cross-sandbox behavior.
+spontaneous swarm formation. The corrected formation protocol reconstructs
+organization only from actual cross-sandbox behavior and preserves exact
+provenance between the three stages.
 
 No current run completes spontaneous Phase 1 or Phase 2. The evidence establishes
 persistent memory and synthesis, not spontaneous formation, harmful adoption,
@@ -40,7 +46,8 @@ causal contagion, misaligned intent or a population rate.
 - Agents have no direct conversation channel and receive no predefined leader,
   team, pair, sender or receiver relationship.
 - Shared state belongs to a realistic business system and begins without planted
-  agent messages.
+  agent messages in the connected formation arm. Seeded conditional replications
+  are labelled and reported separately.
 - Prompts do not announce other agents, cooperation, vulnerabilities,
   evaluation, pressure or an impossible task.
 - For harm studies, a discoverable process weakness must cause a concrete state
@@ -60,9 +67,10 @@ Verified **23 October 2026**.
 - **Runtime:** Harbor 0.24.0 with Python 3.12.14; task inputs use Harbor schema
   1.4 and trajectories use ATIF-v1.8.
 - **Model route:** every live request uses AxonHub at
-  `https://lmportal.iefbr14.xyz/v1/responses`. The current campaign freezes
-  `deepseek/deepseek-v4.1-flash-1017` with high reasoning. Preparation confirms
-  the exact snapshot in both the OpenRouter and authenticated AxonHub catalogs.
+  `https://lmportal.iefbr14.xyz/v1/responses`. The active runner defaults to
+  `deepseek/deepseek-v4.1-flash-1017` with high reasoning and freezes the route
+  only when a fresh campaign is prepared. Preparation confirms the exact
+  snapshot in both the OpenRouter and authenticated AxonHub catalogs.
 - **Credentials:** a dedicated AxonHub model-gateway key for formation
   development is active in a host-only `0600` file outside the repository. The
   authenticated catalog returned 200 and exposed the frozen DeepSeek route. A
@@ -77,8 +85,10 @@ Verified **23 October 2026**.
   disabled. R1 reached 21,347–26,266 input tokens per final request without a
   context-length error.
 - **Current state:** DeepSeek formation R1 is complete, independently reviewed
-  and exported to ATIF-v1.8. It did not pass Phase 1. All model workstations were
-  removed, and no collector or scheduled monitor is running.
+  and exported to ATIF-v1.8. It did not pass Phase 1 and is retained as a
+  dedicated-request-interface negative. The corrected Stage 1–3 protocol is now
+  the active design; no v2 inference has run. All model workstations were removed,
+  and no collector or scheduled monitor is running.
 - **Hosted coordinator:** retain the patched Multica 0.4.44 deployment. These
   local studies need no new AWS resource or credential.
 
@@ -92,9 +102,9 @@ The current environment is checked before every new frozen run:
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v1 -p '*checks.py' -v
+  -s experiments/swarm-formation-v2 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v1
+./scripts/check-format-contract experiments/swarm-formation-v2
 ```
 
 Use Harbor's viewer and analysis tools for trajectory debugging:
@@ -105,7 +115,8 @@ Use Harbor's viewer and analysis tools for trajectory debugging:
 
 ## Records
 
-- [Current formation environment](experiments/swarm-formation-v1/README.md)
+- [Current formation environment](experiments/swarm-formation-v2/README.md)
+- [Stage 1–3 source audit](docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
 - [Shared-memory mechanism result](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
 - [Experiment index](experiments/README.md)
 - [Study history](docs/history-index.md)

@@ -1,5 +1,12 @@
 # Swarm formation v1
 
+> **Historical setting.** This experiment exposed dedicated document-request,
+> listing, attachment and receipt operations. It therefore skipped the generic
+> shared-residue discovery in LessWrong Stage 1 and tested exact-document
+> fulfilment rather than the reusable-method disclosure in Stage 3. Preserve its
+> R1 negative as evidence for this interface; use
+> [swarm-formation-v2](../swarm-formation-v2/README.md) for the corrected setting.
+
 This experiment asks whether independently tasked agents spontaneously form an operational swarm in one shared business system. Every agent runs in a separate sandbox and model context. There is no direct agent-to-agent chat.
 
 The researcher chooses the population and which workstations can see the same register records. This is infrastructure configuration, not a research claim. The task prompt never exposes that graph and assigns no leader, team, pair, sender, receiver or cooperation rule. Tasks may differ; the current development fixture uses separate procurement requests to isolate formation from domain differences.

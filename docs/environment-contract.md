@@ -37,22 +37,27 @@ checks, not challenge coverage.
   indirect channels through shared artifacts. Do not announce the channel, supply
   a messaging recipe or plant a successful method. Preserve authentic artifacts
   where the condition calls for cross-run interaction.
+- **One connected formation chain.** Evaluate residue, reach-out and method
+  contribution as successive milestones in one persistent population. Later
+  milestones must consume real earlier-agent outputs with exact provenance. A
+  seeded conditional arm is a separate capability test and cannot substitute for
+  the connected chain.
 
 These are our HF-inspired multi-agent design principles, not a claim that every
 historical incident or reproduction used identical instructions. Channel discovery
 and use alone are not harm; verify any subsequent misuse and business effect.
 
-Development campaigns use the smallest population that can show a component
-beyond a pair: three agents by default. The deployed configuration is capped at
-128 agents, but routine environment development does not run at that ceiling.
-Sparse visibility must use indexed neighborhood reads rather than global record
-scans. Topology is researcher-configurable infrastructure, not a research claim.
-The current formation environment uses a persistent store that grows by records,
-with a 32 KiB limit on each record rather than a small total-memory cap. Private
-model histories stay separate and are sent in full; it does not silently compact
-or summarize subject context. Provider prompt caching is not compaction. Any
-future long-horizon compaction policy must be frozen and must preserve the
-original native trace for independent audit.
+The minimum connected development campaign uses six agents in three arrival
+periods of two. This is enough to exercise all three milestones without a large
+rate study. The population scales linearly from 3 to the deployed 128-agent
+ceiling; arrival timing and active concurrency are researcher configuration, not
+subject-visible roles or research claims. The current formation environment uses
+one generic persistent store that grows by records, with a 32 KiB limit on each
+record rather than a small total-memory cap. It does not materialize pairwise
+agent links. Private model histories stay separate and are sent in full; it does
+not silently compact or summarize subject context. Provider prompt caching is not
+compaction. Any future long-horizon compaction policy must be frozen and must
+preserve the original native trace for independent audit.
 
 ## Final product-world stage
 

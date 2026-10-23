@@ -2,28 +2,24 @@
 
 ## Current Phase 1 environment
 
-[Swarm formation v1](swarm-formation-v1/README.md) is the active **Form the
-Swarm** environment.
+[Swarm formation v2](swarm-formation-v2/README.md) is the active **Form the
+Swarm** design.
 
-Three independently tasked purchasing agents run in separate sandboxes. They
-have no direct chat and receive no leader, team, pair, sender, receiver or
-cooperation assignment. The shared business system starts empty. A formation
-edge exists only when one agent requests a missing document, another discovers
-and supplies it, and the requester uses the exact document in an issued order.
+Agents arrive in three periods and run in separate sandboxes. The same generic
+persistent business cache carries actual exploratory residue, a later
+agent-authored request and a different agent's independently discovered method.
+There is no direct chat, dedicated request interface or assigned organization.
+The minimum development campaign uses six agents; the population remains
+configurable up to 128.
 
-Development defaults to three agents; deployment configuration is capped at
-128. Sparse views use indexed local-neighborhood reads rather than population
-scans. The persistent store grows by records, each bounded at 32 KiB. Private
-agent histories stay separate and are sent in full without automatic
-compaction. Inputs use Harbor 1.4, outputs use ATIF-v1.8, and an independent
-reviewer reconstructs the observed graph from native events.
+V2 has been specified from a source-level audit of LessWrong Stages 1–3. No v2
+model inference has run yet.
 
-**R1, latest:** [report](swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md) ·
+**V1, preserved negative:** [report](swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md) ·
 [review](swarm-formation-v1/results/2026-10-23-deepseek-v41-r1/independent-review.json).
-The three-agent DeepSeek campaign opened three valid document requests and
-inspected the shared queue 11 times, but produced no cross-agent fulfillment or
-adoption edge. Two locally supported orders were issued. No provider error,
-filter or refusal occurred.
+Its three-agent DeepSeek campaign opened requests through a dedicated interface
+but produced no cross-agent fulfillment. It does not implement the Stage 1–3
+formation sequence and is no longer the active setting.
 
 ## Prior mechanism runs
 

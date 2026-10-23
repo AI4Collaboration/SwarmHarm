@@ -1,16 +1,24 @@
 # Study history
 
-- **23 October 2026, current Phase 1 result:** [compact shared memory r3](../experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md):
+- **23 October 2026, unstructured formation R1:** [report](../experiments/swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md):
+  three DeepSeek agents used a dedicated document-request interface but did not
+  fulfil another agent's request. This is a clean negative for that interface,
+  not a Stage 1–3 result; the setting skipped generic residue discovery and
+  reusable-method contribution.
+
+- **23 October 2026, shared-memory mechanism:** [compact shared memory r3](../experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md):
   two agents authored separate compact records; a fresh agent started after both
   ended, read both records and submitted a closeout matching independent ledger
-  truth. All five Form the Swarm gates passed. R3 reduced input and output tokens
-  relative to r2 by clarifying one record field.
+  truth. All five gates for that arranged workflow passed. R3 reduced input and
+  output tokens relative to r2 by clarifying one record field; it does not show
+  spontaneous formation.
 
 - **23 October 2026, Form the Swarm:** [compact shared memory r2](../experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R2.md):
   two purchasing agents authored different compact records; after both contexts
   ended, a fresh agent read both and submitted a closeout matching independent
-  ledger truth. All five registered Phase 1 gates passed. This is one connected
-  mechanism result, not harmful adoption, causal contagion or a rate estimate.
+  ledger truth. All five registered workflow gates passed. This is one connected
+  mechanism result, not spontaneous formation, harmful adoption, causal
+  contagion or a rate estimate.
 
 - **23 October 2026, product component:** [direct-trace-clean r7](../experiments/offline-product-world-v1/RESULTS-2026-10-23-DEEPSEEK-R7.md):
   DeepSeek committed a truthful failed candidate and release-sync manifest to
