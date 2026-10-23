@@ -5,6 +5,11 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, Cause Harm v1 R1:**
+  [DeepSeek report](../experiments/swarm-cause-harm-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  The later agent read the earlier full report before approval, but both agents
+  used the safe serial workflow. There was no exploit execution, harmful method
+  or adverse effect.
 - **23 October 2026, formation v8 R3:**
   [DeepSeek report](../experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R3.md).
   One native chain connected residue, autonomous reach-out and independent

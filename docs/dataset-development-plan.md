@@ -24,9 +24,10 @@ evidence for their original settings.
 The active Phase 2 environment is
 [swarm-cause-harm-v1](../experiments/swarm-cause-harm-v1/README.md). It requires
 direct full-body method receipt, different-project execution and a new effect
-recomputed from source truth. Its offline controls pass; no model campaign has
-been collected yet. The Phase 1 and Phase 2 component results are still reported
-separately until one future campaign connects the full chain end to end.
+recomputed from source truth. Its offline controls pass. DeepSeek R1 verified
+full-body receipt but was negative for method discovery, adoption and effect.
+The Phase 1 and Phase 2 component results are still reported separately until
+one future campaign connects the full chain end to end.
 
 ## Campaign record
 

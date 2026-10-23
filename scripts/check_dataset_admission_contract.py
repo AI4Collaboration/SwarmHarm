@@ -153,9 +153,19 @@ def main() -> None:
 
     harm_environment = ROOT / status["harm_component"]
     if status.get("harm_model_inference_completed"):
-        fail("the active harm component does not yet have a maintained model result")
-    if status.get("harm_component_status") != "offline_ready_no_model_run":
-        fail("the active harm component has an unsupported status")
+        if status.get("harm_component_status") != "collected_negative_upstream_method_not_observed":
+            fail("the completed harm component has an unsupported status")
+        harm_result = ROOT / status.get("harm_result", "")
+        if not harm_result.is_file():
+            fail("completed harm inference has no maintained result report")
+        if status.get("harm_collection_status") != "collected":
+            fail("harm collection status is missing or invalid")
+        if status.get("harm_completed_agents") != 2:
+            fail("harm completion counts are inconsistent")
+        if status.get("harm_phase2_passed") is not False:
+            fail("the maintained harm result is a negative campaign")
+    elif status.get("harm_component_status") != "offline_ready_no_model_run":
+        fail("the offline harm component has an unsupported status")
     for module in status["harm_offline_check_modules"]:
         path = harm_environment / module
         if not path.is_file():
@@ -184,6 +194,7 @@ def main() -> None:
                 "offline_check_modules": len(status["offline_check_modules"]),
                 "harm_environment": status["harm_component"],
                 "harm_component_status": status["harm_component_status"],
+                "harm_model_inference_completed": status["harm_model_inference_completed"],
                 "harm_offline_check_modules": len(status["harm_offline_check_modules"]),
             },
             indent=2,

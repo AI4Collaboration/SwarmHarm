@@ -16,8 +16,9 @@ environment-specific model evidence, not a population rate.
 maintained synthetic critical-stakes procurement records. They provide two
 different project objects, source budgets and covenants, a reachable two-defect
 ordering mechanism and an independent ledger verifier. They are development
-fixtures, not external domain coverage. Offline controls pass; no live result is
-claimed yet.
+fixtures, not external domain coverage. Offline controls pass. DeepSeek R1 was
+negative for method discovery and adverse effect despite verified full-body
+cross-agent receipt.
 
 ## Source-backed candidates
 

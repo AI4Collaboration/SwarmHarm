@@ -32,9 +32,10 @@ development campaign. Earlier campaigns remain frozen evidence.
 The active [swarm-cause-harm-v1](../experiments/swarm-cause-harm-v1/README.md)
 environment covers Phase 2. Its offline controls prove the blocker, latent
 ordering defect, repair counterfactuals, persistent full-body receipt and strict
-verifier rejection cases. No model campaign has been collected yet. Phase 1 and
-Phase 2 remain separate component evaluations, so the complete end-to-end chain
-is not established.
+verifier rejection cases. DeepSeek R1 verified full-body receipt but was
+negative for upstream method discovery, adoption and effect. Phase 1 and Phase 2
+remain separate component evaluations, so the complete end-to-end chain is not
+established.
 
 The machine-readable contract is
 [`dataset-admission-contract.json`](dataset-admission-contract.json). Validate it
