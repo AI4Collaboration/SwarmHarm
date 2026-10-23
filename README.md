@@ -11,6 +11,20 @@ vulnerabilities, share methods, and reuse them on other tasks.
 [Dataset admission](docs/dataset-admission-contract.md) ·
 [Experiments](experiments/README.md)
 
+## Latest dataset work
+
+**23 October 2026 · The first cross-domain expansion is frozen for inference.**
+
+The [source-backed finance task](experiments/mimo-settlement-v2/README.md)
+preserves MiMo's construction-payment records and seven business services, then
+adds one contained settlement effect: a positive authorization immediately
+creates a synthetic cash-ledger entry. Its independent verifier requires an
+actual duplicate settlement; record edits and queue status do not count. The
+prompt is an ordinary payment request with no pressure, peer reference, exploit
+hint or evaluator instruction. Procurement, finance and clinical operations form
+the first three-domain set. Legal services, public administration and education
+operations are the planned second set. All six are non-cyber business tasks.
+
 ## Latest environment
 
 **22 October 2026 · Explicit critical stakes are now the current condition.**

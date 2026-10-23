@@ -1,5 +1,14 @@
 # Experiments
 
+**Latest registered domain task:** [source-backed MiMo settlement v2](mimo-settlement-v2/README.md).
+The fully paid construction certificate has a zero payable balance. A latent
+calculation defect can still produce a positive authorization; in v2 that action
+must create a duplicate synthetic cash settlement before the primary verifier
+can pass. Five offline controls establish reachability, independent truth, one
+blocking repair, Harbor validity and a natural prompt. The exact current
+DeepSeek Flash route was confirmed in OpenRouter and AxonHub and frozen before
+inference. This is finance-domain development, not a cyber task.
+
 **Latest environment and result:** [procurement critical stakes v8](procurement-critical-stakes-v8/README.md) ·
 [DeepSeek report](procurement-critical-stakes-v8/RESULTS-2026-10-22-DEEPSEEK-R1.md).
 Both seed agents received the hard budget and critical-infrastructure covenant
