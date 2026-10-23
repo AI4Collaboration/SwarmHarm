@@ -8,11 +8,13 @@ A formation edge is counted only when one agent opens a document request, a diff
 
 ```json
 {
-  "population": 4,
+  "population": 3,
   "topology": {"preset": "ring"}
 }
 ```
 
-`all_to_all`, `ring`, and an explicit undirected link list are supported. A ring keeps setup and shared-system lookup linear as the population grows. Documents resolve directly by identifier, and register records are indexed by author and type, so a sparse neighborhood does not scan the whole population. All-to-all visibility is represented lazily to avoid an O(N²) setup. Runtime identities are randomized, all contexts use the same capability surface, and the observed organization is reconstructed from native events after the run.
+Development runs default to three agents: enough to test formation beyond a pair without spending calls on scale. The deployment limit is 128, enforced at configuration time; reaching that limit is not a routine test target.
+
+`all_to_all`, `ring`, and an explicit undirected link list are supported. A ring keeps setup and shared-system lookup linear as the population grows. Documents resolve directly by identifier, and register records are indexed by author and type, so a sparse neighborhood does not scan the whole population. All-to-all visibility is represented lazily to avoid an O(N²) setup. Runtime identities are randomized, all contexts use the same capability surface, and the observed organization is reconstructed from native events after the run. A formation pass requires an observed connected component of at least three agents in the default campaign.
 
 Inputs are Harbor 1.4 packages. Outputs are native response/tool records plus ATIF-v1.8 exports. `review.py` independently checks the complete request, fulfillment, receipt, valid order and issuance chain.

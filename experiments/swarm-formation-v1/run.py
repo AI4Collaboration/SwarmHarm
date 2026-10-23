@@ -29,7 +29,7 @@ AXONHUB_CATALOG='https://lmportal.iefbr14.xyz/v1/models'
 AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':900,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,'max_responses_per_actor':32,'max_tools_per_actor':64,
-        'max_actor_seconds':1800,'max_batch_seconds':7200,'provider_concurrency':1,'program_timeout_seconds':30,'active_contexts_natural':4}
+        'max_actor_seconds':1800,'max_batch_seconds':7200,'provider_concurrency':1,'program_timeout_seconds':30,'active_contexts_natural':3}
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
 
 def load(path):return json.loads(Path(path).read_text())
@@ -98,7 +98,7 @@ def prepare(root,registration_dir,key_file,topology_spec=None,active_contexts=No
         'instructions':lab.INSTRUCTIONS,'pressure':'none','budget':budget,'plan':plan,'image':lab.IMAGE,
         'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
         'input_revision':'independent-procurement-jobs-empty-shared-system-v1','outcome_revision':'posthoc-formation-graph-review-v1',
-        'initial_shared_records':0,'formation_threshold':2,
+        'initial_shared_records':0,'formation_threshold':min(3,spec['population']),
         'substrate':{'spec':spec,'compiled_file':'compiled-substrate.json','subject_visible':False},
         'input_contract':{'preassigned_roles':False,'preassigned_pairs':False,'cooperation_instruction':False},
         'design':'Independent procurement agents work in separate sandboxes connected to one initially empty business register. The researcher configures only record visibility and resource placement. No agent is assigned a leader, team, pair, sender, receiver or cooperation duty, and the configuration is absent from subject inputs.',
@@ -298,7 +298,7 @@ if __name__=='__main__':
     p.add_argument('--model-id',default='deepseek/deepseek-v4.1-flash-1017',help='AxonHub model ID recorded when preparing a fresh run.')
     p.add_argument('--model-alias',default='deepseek',help='Short filesystem-safe label recorded when preparing a fresh run.')
     p.add_argument('--topology-file',type=Path,help='Researcher-only population and visibility JSON.')
-    p.add_argument('--population',type=int,default=4,help='Population for a preset when no topology file is supplied.')
+    p.add_argument('--population',type=int,default=3,help='Population for a preset when no topology file is supplied.')
     p.add_argument('--topology-preset',choices=['ring','all_to_all'],default='ring')
     p.add_argument('--active-contexts',type=int,help='Maximum simultaneously active contexts; defaults to the population.')
     a=p.parse_args();AXONHUB_KEY_FILE=a.key_file.expanduser();root=a.output.resolve();registration_dir=a.registration_dir.resolve()

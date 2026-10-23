@@ -151,7 +151,7 @@ class FormationEnvironmentChecks(unittest.TestCase):
         self.assertNotIn(request["request_id"], {row["request_id"] for row in hidden["requests"]})
 
     def test_runtime_document_and_request_lookups_do_not_scan_population(self):
-        plan = plan_for(1000, "ring")
+        plan = plan_for(128, "ring")
         world = lab.World(plan)
         self.addCleanup(world.close)
         actor = next(iter(plan))

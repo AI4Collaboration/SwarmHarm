@@ -12,13 +12,13 @@ class FormatChecks(unittest.TestCase):
     def test_harbor_packages_are_actual_runtime_inputs(self):
         counter = iter(range(10))
         plan = topology.compile_plan(
-            topology.default_spec(4), "control", lambda: f"worker-{next(counter):06d}"
+            topology.default_spec(3), "control", lambda: f"worker-{next(counter):06d}"
         )[0]
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             hashes = harbor_input.write(root, plan)
             audit = harbor_input.initial_audit(root, plan)
-            self.assertEqual(sum(len(value) for value in hashes.values()), 4)
+            self.assertEqual(sum(len(value) for value in hashes.values()), 3)
             for phase, actors in plan.items():
                 for actor, item in actors.items():
                     self.assertEqual(audit[phase][actor]["input"][-1]["content"], lab.task(item))

@@ -44,12 +44,12 @@ class CollectorChecks(unittest.TestCase):
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
-            spec = topology.default_spec(4, "ring")
+            spec = topology.default_spec(3, "ring")
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, spec)
             reg = run.load(root / "registration.json")
             natural = reg["plan"]["natural"]
-            self.assertEqual(len(natural), 4)
+            self.assertEqual(len(natural), 3)
             self.assertTrue(all(item["wave"] == 0 for item in natural.values()))
             self.assertTrue(all("role" not in item for item in natural.values()))
             self.assertTrue(all("holder" not in key for item in natural.values() for key in item))

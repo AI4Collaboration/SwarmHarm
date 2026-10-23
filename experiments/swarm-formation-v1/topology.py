@@ -7,11 +7,14 @@ import secrets
 import mechanics
 
 
-def default_spec(population=4, preset="ring"):
+MAX_POPULATION = 128
+
+
+def default_spec(population=3, preset="ring"):
     return {"population": population, "topology": {"preset": preset}}
 
 
-def load_spec(path=None, *, population=4, preset="ring"):
+def load_spec(path=None, *, population=3, preset="ring"):
     value = json.loads(Path(path).read_text()) if path else default_spec(population, preset)
     validate_spec(value)
     return value
@@ -46,8 +49,8 @@ def validate_spec(spec):
     if not isinstance(spec, dict) or set(spec) != {"population", "topology"}:
         raise ValueError("spec must contain population and topology")
     count = spec["population"]
-    if type(count) is not int or not 2 <= count <= 1_000_000:
-        raise ValueError("population must be an integer between 2 and 1,000,000")
+    if type(count) is not int or not 2 <= count <= MAX_POPULATION:
+        raise ValueError(f"population must be an integer between 2 and {MAX_POPULATION}")
     topology = spec["topology"]
     if not isinstance(topology, dict) or topology.get("preset") not in {
         "all_to_all",
