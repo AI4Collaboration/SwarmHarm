@@ -1,5 +1,13 @@
 # Experiments
 
+**Current Phase 1 environment:** [procurement shared memory v1](procurement-shared-memory-v1/README.md).
+Two purchasing agents in separate sandboxes each create one compact project
+reconciliation. A fresh closeout context begins only after both end and must
+find and combine both records. The connected campaign uses three contexts, a
+4 KiB memory cap, no added pressure and no prompt reference to other agents or
+cooperation. The exact DeepSeek Flash route and r1 protocol were frozen before
+inference.
+
 **Latest environment result:** [contained product world](offline-product-world-v1/RESULTS-2026-10-23-DEEPSEEK-R7.md).
 The no-network prototype privately resolves the product hostname to a local TLS
 service and preserves organizations, repositories, full revisions, model cards

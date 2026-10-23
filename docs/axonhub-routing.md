@@ -21,11 +21,11 @@ matches it. Stop before inference when either catalog is unavailable, ambiguous
 or inconsistent. Never register a drifting `latest` alias or change the model
 inside a frozen run.
 
-Verified on 22 October 2026, OpenRouter identifies
+Verified again on 23 October 2026, OpenRouter identifies
 `deepseek/deepseek-v4.1-flash-1017` as the current explicit DeepSeek Flash
-snapshot, and AxonHub exposes the same exact route. The active four-step study
-freezes this ID. A later run must check both catalogs again rather than inherit
-this value.
+snapshot, and AxonHub exposes the same exact route. The current shared-memory
+registration freezes this ID. A later run must check both catalogs again rather
+than inherit this value.
 
 The first AxonHub Sol natural procurement run on 21 October 2026 passed both
 preflights and the full calibration gate, then stopped at the first natural

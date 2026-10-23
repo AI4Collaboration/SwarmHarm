@@ -11,6 +11,19 @@ vulnerabilities, share methods, and reuse them on other tasks.
 [Dataset admission](docs/dataset-admission-contract.md) ·
 [Experiments](experiments/README.md)
 
+## Latest Form the Swarm environment
+
+**23 October 2026 · A compute-light persistent-memory campaign is frozen.**
+
+[Shared memory v1](experiments/procurement-shared-memory-v1/README.md) uses two
+small reconciliation records in an ordinary project register. Two purchasing
+agents work in separate sandboxes; after both contexts end, a fresh closeout
+agent must find, read and combine both records in a different business task.
+The task does not announce other agents or ask for cooperation. One development
+iteration uses three agent contexts, a 4 KiB memory cap and an independent
+provenance and business-truth review. The r1 protocol is committed before any
+subject inference.
+
 ## Latest environment component
 
 **23 October 2026 · DeepSeek held the contained product release.**
@@ -326,16 +339,16 @@ New collectors must pass the repository format guard before any model call.
 
 ## Current setup
 
-Verified **22 October 2026**. Fresh runs require model/tool preflights.
+Verified **23 October 2026**. Fresh runs require model/tool preflights.
 
 - **Runtime:** Harbor 0.24.0, Python 3.12.14, OpenAI SDK 2.54.0; Docker 29.9.1,
   Buildx 0.38.1 and the existing `lima-swarmharm` context. MiMo uses the cached
   amd64 image with MCP 1.26.0. [Setup and commands](docs/running-evals.md)
 - **Models:** Every live model request uses the AxonHub Responses endpoint
-  `https://lmportal.iefbr14.xyz/v1/responses`, including GPT-5.6 Sol/xhigh and
-  `deepseek/deepseek-v4.1-flash-1017`/xhigh. On 22 October 2026, OpenRouter's
-  official catalog identified that route as the current explicit DeepSeek Flash
-  snapshot, and AxonHub exposed the same exact ID. Every new DeepSeek run must
+  `https://lmportal.iefbr14.xyz/v1/responses`. On 23 October 2026, OpenRouter's
+  official catalog identified `deepseek/deepseek-v4.1-flash-1017` as the current
+  explicit DeepSeek Flash snapshot, and AxonHub exposed the same
+  exact ID. Shared-memory r1 freezes that ID with high reasoning. Every new DeepSeek run must
   recheck OpenRouter, confirm the selected route in AxonHub and freeze the exact
   ID; a drifting `latest` alias is not allowed. The key is supplied
   only on the host through `AXONHUB_API_KEY` or an explicit host-only key file;
@@ -346,11 +359,12 @@ Verified **22 October 2026**. Fresh runs require model/tool preflights.
   no external container network. Model credentials stay on the host. The payment
   task uses an independent deterministic verifier; the earlier original MiMo
   finance task used a separate host-side Sol/high judge.
-- **State:** the v8 DeepSeek collection, independent review and five ATIF-v1.8
-  exports are complete. All owned workstations were removed; no collector or
-  scheduled monitor is running. The [history index](docs/history-index.md)
-  preserves earlier completed, interrupted and negative studies. The local
-  Harbor viewer is available on port 8777.
+- **State:** shared-memory r1 is frozen before inference with three agent
+  contexts, no added pressure, a 4 KiB register cap and bounded response/tool
+  budgets. Its registration records both model catalogs, assembled inputs,
+  controls and source hashes. No scheduled monitor is used. The
+  [history index](docs/history-index.md) preserves earlier studies, and the local
+  Harbor viewer remains available on port 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or
   credentials are needed for these local studies.
 
