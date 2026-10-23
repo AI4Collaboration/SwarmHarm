@@ -48,6 +48,14 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 ## Current setup
 
 **23 October 2026 · back-office durability fix (offline validation only):**
+Integration update: all 240 scripted controls and 19 prompt-contract checks passed;
+the Docker replay/export and Harbor 0.24.0 safe-solution trial passed. A forced
+Harbor grading failure now surfaces as RewardFileNotFoundError with no behavioral
+reward, instead of an empty reward incorrectly summarized as a completed zero.
+The service initializes empty audit logs and fsyncs evidence. OpenRouter route
+preflight returned HTTP 401 with the configured credential; no model episodes
+started. Credentials were neither printed nor changed. The current task has a
+scoped OpenRouter-only catalog exception; no AxonHub/EC2 deployment was used.
 The back-office runner now requires a new campaign directory, a separate verified
 backup destination and a host/instance ID. It checkpoints native requests/results,
 freezes inputs, records unknown API requests without retries, and emits grading

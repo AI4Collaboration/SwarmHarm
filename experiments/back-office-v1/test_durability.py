@@ -26,6 +26,7 @@ class DurabilityTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.addCleanup(self.tmp.cleanup)
+        self.addCleanup(runner.UNRESOLVED.clear)
 
     def test_export_corruption_missing_episode_and_pending_request_block_clearance(self):
         source, backup = self.root/'run', self.root/'backup'
@@ -68,13 +69,13 @@ class DurabilityTests(unittest.TestCase):
         out = self.root/'verifier'
         scorer.write(out, {k: 1 for k in scorer.KEYS}, {})
         scorer.write(out, {}, {'failed': 'crash'})
-        self.assertEqual(json.loads((out/'reward.json').read_text()), {})
+        self.assertFalse((out/'reward.json').exists())
         self.assertEqual(json.loads((out/'grading-status.json').read_text())['status'], 'grading_error')
         self.assertFalse((out/'reward.txt').exists())
         result = subprocess.run([sys.executable, str(HERE/'shared/compute_reward.py'),
             '--truth', str(self.root/'missing.json'), '--output-dir', str(out)], capture_output=True)
         self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(json.loads((out/'reward.json').read_text()), {})
+        self.assertFalse((out/'reward.json').exists())
         self.assertIn('traceback', json.loads((out/'details.json').read_text()))
 
     def test_malformed_scope_ids_do_not_crash_or_discard_valid_bypass(self):
@@ -136,6 +137,34 @@ class DurabilityTests(unittest.TestCase):
         self.assertTrue(any(m['role'] == 'tool' and 'test' in m['content'] for m in saved))
         self.assertIn('provider-1', journal.read_text())
         self.assertIn('tool_prepared', journal.read_text())
+
+    def test_auth_rejection_is_recorded_without_resending(self):
+        with patch.dict(os.environ, {'OPENROUTER_API_KEY': 'test-only'}):
+            chat = runner.Chat('fake')
+            chat.journal = self.root/'journal.jsonl'
+            error = urllib.error.HTTPError('url', 401, 'unauthorized', {'x-request-id': 'rejected-1'}, io.BytesIO(b'Unauthorized'))
+            with patch.object(runner.urllib.request, 'urlopen', side_effect=error) as request:
+                with self.assertRaises(RuntimeError):
+                    chat([])
+            self.assertEqual(request.call_count, 1)
+            self.assertEqual(d.pending(self.root), [])
+            self.assertIn('rejected-1', chat.journal.read_text())
+
+    def test_served_model_mismatch_holds_dispatch_and_preserves_response(self):
+        class Response:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def read(self): return json.dumps({'model': 'wrong-model', 'provider': 'Pinned',
+                'choices': [{'message': {'role': 'assistant', 'content': 'OK'}, 'finish_reason': 'stop'}]}).encode()
+        with patch.dict(os.environ, {'OPENROUTER_API_KEY': 'test-only'}):
+            chat = runner.Chat('expected-model', 'Pinned')
+            chat.journal = self.root/'journal.jsonl'
+            with patch.object(runner.urllib.request, 'urlopen', return_value=Response()):
+                with self.assertRaisesRegex(RuntimeError, 'served model mismatch'):
+                    chat([])
+        self.assertTrue(runner.UNRESOLVED.is_set())
+        self.assertEqual(len(list((self.root/'responses').glob('*.json'))), 1)
 
     def test_runner_grader_failure_is_unscored_and_backup_failure_preserves_container(self):
         for fail_export in (False, True):

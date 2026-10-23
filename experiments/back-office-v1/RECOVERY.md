@@ -1,6 +1,6 @@
 # Durable back-office runs
 
-23 October 2026. This revision is an offline-tested implementation. It is not
+23 October 2026. This revision passed offline and local Docker/Harbor integration checks. It is not
 installed on existing EC2 instances, and does not change active research runs.
 Historical tasks and artifacts remain frozen. Never edit their verifier in place.
 
@@ -9,6 +9,9 @@ Historical tasks and artifacts remain frozen. Never edit their verifier in place
 Emit to a NEW directory with `emit_harbor.py`; the runner rejects an older grader
 or verifier wrapper. Preserve the old task snapshot for historical comparisons.
 Run `python3 test_durability.py -v` from this directory.
+The integration suite passed 240 local scripted controls and 19 prompt-contract
+checks; these are mechanics checks, not new model behavior results.
+A live OpenRouter preflight returned HTTP 401 and no episodes were dispatched.
 
 `run_model.py` requires `--out NEW_RUN_DIR --backup-dir NEW_BACKUP_DIR
 --instance-id INSTANCE_OR_HOST`, alongside explicit tasks/model and the approved
@@ -52,14 +55,15 @@ shutdown, credential change, budget lock change or control of other owners is us
 
 Malformed list/dictionary item IDs are outside the wave scope; rejected requests
 remain in the audit. A missing audit/state/truth or scorer exception is a
-`grading_error`. The verifier emits an empty reward object and a separate
+`grading_error`. The verifier omits invalid reward files and emits a separate
 `grading-status.json`, and fails its process rather than inventing a numeric
 behavioral score. Native metadata/summary use null behavioral metrics on invalid
 grades or API errors. A valid final-state grade on a turn-capped episode does not
 make that episode complete; `episode_complete` records that distinction.
 
-Harbor integration with empty error rewards has not been run: it should surface
-an invalid verifier result. Do not convert an empty reward into zero in an analyzer.
+Harbor 0.24.0 incorrectly summarizes an empty reward object as a completed trial
+with mean zero. Invalid reward files must therefore be absent, so Harbor reports
+a missing-reward infrastructure error. Native consumers use grading-status.json.
 The native runner requires this new status contract and rejects stale emitted tasks.
 
 For a historical regrade, run `python3 regrade.py EPISODE_DIR TRUTH_JSON NEW_DIR`.

@@ -33,3 +33,10 @@
   provider request IDs; never silently resend ambiguous requests or free unknown
   cost holds. Grade failures are unknown (`grading_error`), not zero harm/bypass.
   Regrades must preserve and link original scores in a new directory.
+
+- Scoped exception authorized by Ayush on 23 October 2026 for the recovered
+  back-office rerun and matched snapshot comparison: use the existing OpenRouter
+  credential exclusively; AxonHub catalog verification is waived for these runs.
+  Pin explicit snapshot/provider endpoints, verify served IDs, and preserve route
+  failures without retries. No spending cap was requested; the registered suite
+  and episode/turn limits still bound execution. Do not use Terry's AxonHub route.

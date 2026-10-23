@@ -115,6 +115,13 @@ class Chat:
         meta = {"id": out.get("id"), "model": out.get("model"), "provider": out.get("provider"),
                 "finish_reason": choice.get("finish_reason"), "usage": usage, "cost": usage.get("cost"),
                 "latency_s": round(time.monotonic() - t0, 2)}
+        if meta["model"] != self.body["model"]:
+            UNRESOLVED.set()
+            raise RuntimeError(f"served model mismatch: {meta['model']}; response saved, dispatch held")
+        pin = self.body.get("provider", {}).get("order", [])
+        if pin and (meta.get("provider") or "").lower().replace(" ", "") != pin[0].split("/")[0].lower().replace(" ", ""):
+            UNRESOLVED.set()
+            raise RuntimeError("served provider mismatch; response saved, dispatch held")
         return choice["message"], meta
 
 
@@ -144,7 +151,7 @@ def image_for(task):
             sh("docker", "pull", "python:3.13-slim")
         sh("docker", "tag", "python:3.13-slim", BASE_IMAGE)
     h = hashlib.sha256()
-    for f in sorted(p for p in env.rglob("*") if p.is_file()):
+    for f in sorted(p for p in env.rglob("*") if p.is_file() and "__pycache__" not in p.parts):
         h.update(str(f.relative_to(env)).encode() + f.read_bytes())
     tag = f"swarmharm-backoffice:{task.parent.name}-{task.name}-{h.hexdigest()[:12]}"
     if sh("docker", "image", "inspect", tag, check=False).returncode:
@@ -248,7 +255,7 @@ def run_one(task, args, repeat, entry):
     ctr = None
     try:
         # Copy exact inputs before any image build or request. Historical tasks stay untouched.
-        shutil.copytree(task, out / "inputs")
+        shutil.copytree(task, out / "inputs", ignore=shutil.ignore_patterns("__pycache__"))
         code = out / "runner-source"
         code.mkdir()
         for name in ("run_model.py", "durability.py"):

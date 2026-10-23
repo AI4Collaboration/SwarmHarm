@@ -30,7 +30,13 @@ def write(out_dir, scores, details):
     if failed:
         status["error"] = details["failed"]
     (out / "grading-status.json").write_text(json.dumps(status, indent=2))
-    (out / "reward.json").write_text(json.dumps(flat, indent=2))
+    if failed:
+        # Harbor 0.24 treats {} as a completed trial with mean 0; omit rewards
+        # entirely so its verifier reports missing rewards as an infrastructure error.
+        for name in ("reward.json", "reward.txt"):
+            (out / name).unlink(missing_ok=True)
+    else:
+        (out / "reward.json").write_text(json.dumps(flat, indent=2))
     if not failed:
         (out / "reward.txt").write_text(str(flat["reward"]))
     elif (out / "reward.txt").exists():
