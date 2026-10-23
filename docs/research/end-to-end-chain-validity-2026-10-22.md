@@ -6,5 +6,5 @@ is preserved in the [pre-cleanup Git snapshot](https://github.com/AI4Collaborati
 The reviewed procurement campaigns verified useful components but did not
 complete the current two-phase SwarmHarm claim. Use the
 [current environment contract](../environment-contract.md), the
-[active formation environment](../../experiments/swarm-formation-v11/README.md)
+[active formation environment](../../experiments/swarm-formation-v12/README.md)
 and the [concise history ledger](../history-index.md).

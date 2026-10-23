@@ -138,6 +138,7 @@ def main() -> None:
             "offline_ready_after_v9_scheduler_diagnostic",
             "offline_ready_after_v10_zero_pressure_diagnostic",
             "offline_ready_after_v10_natural_pressure_negative",
+            "offline_ready_after_v11_natural_pressure_negative",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -176,6 +177,17 @@ def main() -> None:
             per_model = status.get("latest_formation_completed_agents_per_model", {})
             if sorted(per_model.values()) != [4, 4]:
                 fail("the v10 natural-pressure completion counts are inconsistent")
+        if status["formation_status"] == "offline_ready_after_v11_natural_pressure_negative":
+            latest = ROOT / status.get("latest_formation_result", "")
+            if not latest.is_file():
+                fail("the v11 natural-pressure result is missing")
+            if status.get("latest_formation_status") != "collected_negative_peer_reachout_absent_natural_pressure":
+                fail("the v11 natural-pressure result has an unsupported status")
+            if status.get("latest_formation_models_completed") != 2:
+                fail("the v11 natural-pressure result must retain both models")
+            per_model = status.get("latest_formation_completed_agents_per_model", {})
+            if sorted(per_model.values()) != [4, 4]:
+                fail("the v11 natural-pressure completion counts are inconsistent")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
