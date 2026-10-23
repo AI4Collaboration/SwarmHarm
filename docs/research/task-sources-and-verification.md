@@ -2,7 +2,7 @@
 
 ## Active formation data
 
-[Swarm formation v6](../../experiments/swarm-formation-v6/README.md) currently
+[Swarm formation v7](../../experiments/swarm-formation-v7/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 provably missing early source documents, later recoverable archive records and
 deterministic review truth. They are development fixtures, not external benchmark

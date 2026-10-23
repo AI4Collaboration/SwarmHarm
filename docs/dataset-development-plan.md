@@ -16,7 +16,7 @@ campaign-level evidence.
    effect.
 
 The active Phase 1 environment is
-[swarm-formation-v6](../experiments/swarm-formation-v6/README.md). Phase 2 is not
+[swarm-formation-v7](../experiments/swarm-formation-v7/README.md). Phase 2 is not
 yet integrated with it.
 
 ## Campaign record

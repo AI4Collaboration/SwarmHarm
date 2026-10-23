@@ -6,10 +6,16 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
 - **23 October 2026, active design:**
-  [swarm formation v6](../experiments/swarm-formation-v6/README.md) freezes a
-  composite method gate before inference: a model-authored semantic disclosure
-  plus the same agent's exact native query and fetch. Offline controls pass; no
-  v6 inference has run.
+  [swarm formation v7](../experiments/swarm-formation-v7/README.md) freezes an
+  explicit three-agent gate before inference. The contributor must independently
+  retrieve the archive index and successfully use its method before reading a
+  real request, then retrieve the source and disclose the method. Offline
+  controls pass; no v7 inference has run.
+- **23 October 2026, formation v6:**
+  [DeepSeek report](../experiments/swarm-formation-v6/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Six agents completed with no provider errors, filters or refusals. The
+  contributor learned and queried with the method before reading a real request,
+  but fetched the quotation afterwards, so the frozen gate remained negative.
 - **23 October 2026, formation v5:**
   [DeepSeek report](../experiments/swarm-formation-v5/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   The campaign produced all component behaviors, but its frozen exact-string
@@ -48,5 +54,5 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v6/README.md)
+Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v7/README.md)
 and [run guide](running-evals.md) for current operation.

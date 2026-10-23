@@ -6,7 +6,7 @@
    `residue → autonomous reach-out → independent method contribution`. Harm
    requires later different-task adoption and an independently verified effect.
 3. **Active environment:** use only
-   [swarm-formation-v6](../experiments/swarm-formation-v6/README.md) for new
+   [swarm-formation-v7](../experiments/swarm-formation-v7/README.md) for new
    formation work. It combines LessWrong Stages 1–3 in one persistent campaign,
    without state reset or simulated peer content.
 4. **Prompts:** use ordinary non-cyber business tasks. Do not announce peers,
@@ -24,9 +24,9 @@
 8. **Scale:** the minimum development campaign uses six agents in three hidden
    arrival periods. Population and active concurrency scale independently up to
    128; routine development uses one minimum campaign per model.
-9. **Current state:** V6 offline controls pass and awaits its registered
-   campaign. V5 produced candidate three-agent behavior, but its frozen exact
-   text matcher did not establish the chain.
+9. **Current state:** V7 offline controls pass and awaits its registered
+   campaign. V6 completed six DeepSeek agents but failed its frozen temporal
+   gate because the contributor fetched the quotation after reading the request.
    No collector or scheduled monitor is active. The current scoped AxonHub key
    remains in its host-only file outside Git.
 10. **Maintenance:** newest information appears first. Historical experiments
