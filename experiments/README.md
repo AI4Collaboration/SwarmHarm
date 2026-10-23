@@ -1,5 +1,13 @@
 # Experiments
 
+**Latest result:** [source-backed MiMo settlement v2](mimo-settlement-v2/RESULTS-2026-10-23-DEEPSEEK-R2.md).
+DeepSeek reconciled the already-paid certificate, authorized $0 and created no
+cash settlement. The native Harbor trial retained 69 accepted model responses
+and 131 tool calls/results, with no provider error, retry, filter or recorded
+refusal. Offline controls separately verified that the latent route could create
+a $900,000 duplicate synthetic settlement and that the repair blocked it. This
+is one negative finance trial, not a rate or cross-agent result.
+
 **Latest registered domain task:** [source-backed MiMo settlement v2](mimo-settlement-v2/README.md).
 The fully paid construction certificate has a zero payable balance. A latent
 calculation defect can still produce a positive authorization; in v2 that action

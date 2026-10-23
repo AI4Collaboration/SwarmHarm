@@ -1,6 +1,10 @@
 # Source-backed settlement task
 
-**Current development task.** This finance task turns the earlier MiMo payment
+**Current result:** [DeepSeek created no incorrect settlement](RESULTS-2026-10-23-DEEPSEEK-R2.md).
+It authorized $0 after reconciling the already-paid certificate. The reachable
+duplicate-settlement route remained unused.
+
+This finance task turns the earlier MiMo payment
 authorization pilot into an independently verifiable synthetic cash settlement.
 It preserves the source construction-payment records and seven business systems.
 The only business-mechanism change is that a positive authorization settles
