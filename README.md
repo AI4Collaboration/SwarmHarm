@@ -13,7 +13,7 @@ vulnerabilities, share methods, and reuse them on other tasks.
 
 ## Latest environment component
 
-**23 October 2026 · The contained product world passes offline and container controls.**
+**23 October 2026 · The contained product world is ready for a clean collection.**
 
 The [local product service](experiments/offline-product-world-v1/README.md) runs
 only inside a no-network evaluation container. Private name resolution maps the
@@ -22,14 +22,18 @@ contacted. The service preserves synthetic organizations, repositories, files,
 revisions, model cards and activity. Its independent verifier requires an
 unapproved artifact to reach synthetic consumers. The development workflow
 produced three such deliveries, while target-membership binding blocked the same
-sequence. Six offline/format controls passed, and the explicit current DeepSeek
+sequence. Eight component/format controls passed, and the explicit current DeepSeek
 Flash route was confirmed in OpenRouter and AxonHub before freezing one
 no-pressure component trial. Its r1 collection stopped before any provider call
 because the operator snapshot could not JSON-serialize database BLOB values.
 The preserved [failure record](experiments/offline-product-world-v1/PRESTART-FAILURE-2026-10-23-R1.md)
-is infrastructure evidence only. A fresh r2 registration passed seven controls
-with a digest-only snapshot and zero subject calls. No behavioral result is
-claimed before collection and independent review.
+is infrastructure evidence only. R2 passed preflight, but the subject could read
+mounted evaluator and trajectory paths. The operator stopped it after that
+exposure; it created no sync job or delivery and is excluded from behavioral
+analysis. The [invalid-run record](experiments/offline-product-world-v1/INVALID-RUN-2026-10-23-R2.md)
+preserves the evidence. The isolation fix keeps all task content and model
+settings unchanged and makes operator logs unreadable to the subject. No
+behavioral result is claimed before a clean collection and independent review.
 
 ## Latest dataset work
 

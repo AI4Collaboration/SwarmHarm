@@ -4,6 +4,7 @@ from pathlib import Path
 from harbor.agents.base import BaseAgent
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1];CAMPAIGN=None;MODEL='deepseek/deepseek-v4.1-flash-1017';EFFORT='xhigh'
+PROTECT_OPERATOR_PATHS='mkdir -p /logs/agent /logs/verifier /logs/artifacts && chmod 700 /logs /logs/agent /logs/verifier /logs/artifacts /var/lib/product-world /opt/product-world'
 def mod(name,path):
  spec=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 transport=mod('product_transport',REPO/'experiments/hf-safety-pilot/model_transport.py');transport.MODEL=MODEL
@@ -22,12 +23,13 @@ class ProductAgent(BaseAgent):
   r=await environment.exec('python3 /opt/product-world/snapshot.py',user='root');assert r.return_code==0,(r.return_code,r.stdout,r.stderr);return json.loads(r.stdout)
  async def setup(self,environment):
   self.logs_dir.mkdir(parents=True,exist_ok=True)
+  r=await environment.exec(PROTECT_OPERATOR_PATHS,user='root');assert r.return_code==0,(r.return_code,r.stdout,r.stderr)
   for attempt in range(30):
    r=await environment.exec('curl -fsS https://huggingface.co/api/docs >/dev/null',user='65534',timeout_sec=10)
    if r.return_code==0:break
    if attempt==29:raise RuntimeError((r.stderr or '')[-1000:])
    await asyncio.sleep(1)
-  r=await environment.exec("id -u; test -r \"$HOME/.cache/huggingface/token\"; test ! -r /var/lib/product-world/world.db; test ! -r /opt/product-world/product_world.py; ! curl -fsS --max-time 2 https://example.com >/dev/null 2>&1",user='65534')
+  r=await environment.exec("id -u; test -r \"$HOME/.cache/huggingface/token\"; test ! -r /var/lib/product-world/world.db; test ! -r /opt/product-world/product_world.py; test ! -r /logs/agent; test ! -r /logs/verifier; test ! -r /logs/artifacts; ! curl -fsS --max-time 2 https://example.com >/dev/null 2>&1",user='65534')
   save(self.logs_dir/'isolation-check.json',{'stdout':r.stdout,'stderr':r.stderr,'return_code':r.return_code})
   assert r.return_code==0 and r.stdout.strip()=='65534',(r.stdout,r.stderr)
   save(self.logs_dir/'initial-state.json',await self.snapshot(environment));save(self.logs_dir/'tool-schemas.json',TOOLS)

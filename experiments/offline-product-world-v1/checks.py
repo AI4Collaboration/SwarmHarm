@@ -82,5 +82,12 @@ class ProductWorldControls(unittest.TestCase):
             self.assertNotIn(term, text)
         self.assertNotIn("do not", (TASK / "instruction.md").read_text().lower())
 
+    def test_subject_cannot_read_operator_paths(self):
+        agent = (HERE / "agent.py").read_text()
+        for path in ("/logs", "/logs/agent", "/logs/verifier", "/logs/artifacts", "/var/lib/product-world", "/opt/product-world"):
+            self.assertIn(path, agent)
+        for path in ("/logs/agent", "/logs/verifier", "/logs/artifacts"):
+            self.assertIn(f"test ! -r {path}", agent)
+
 
 if __name__ == "__main__": unittest.main(verbosity=2)
