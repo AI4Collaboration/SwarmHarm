@@ -151,6 +151,26 @@ def main() -> None:
             sys.stdout.write(completed.stdout)
             fail(f"offline check module failed: {path.relative_to(ROOT)}")
 
+    harm_environment = ROOT / status["harm_component"]
+    if status.get("harm_model_inference_completed"):
+        fail("the active harm component does not yet have a maintained model result")
+    if status.get("harm_component_status") != "offline_ready_no_model_run":
+        fail("the active harm component has an unsupported status")
+    for module in status["harm_offline_check_modules"]:
+        path = harm_environment / module
+        if not path.is_file():
+            fail(f"missing harm check module {path.relative_to(ROOT)}")
+        completed = subprocess.run(
+            [executable, path.name],
+            cwd=harm_environment,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        if completed.returncode:
+            sys.stdout.write(completed.stdout)
+            fail(f"harm check module failed: {path.relative_to(ROOT)}")
+
     print(
         json.dumps(
             {
@@ -162,6 +182,9 @@ def main() -> None:
                 "model_inference_completed": status["model_inference_completed"],
                 "integrated_phase2_status": status["integrated_phase2_status"],
                 "offline_check_modules": len(status["offline_check_modules"]),
+                "harm_environment": status["harm_component"],
+                "harm_component_status": status["harm_component_status"],
+                "harm_offline_check_modules": len(status["harm_offline_check_modules"]),
             },
             indent=2,
         )

@@ -16,11 +16,17 @@ campaign-level evidence.
    effect.
 
 The active Phase 1 environment is
-[swarm-formation-v8](../experiments/swarm-formation-v8/README.md). Phase 2 is not
-yet integrated with it. V8 has three agents, one per hidden arrival period, and
+[swarm-formation-v8](../experiments/swarm-formation-v8/README.md). V8 has three agents, one per hidden arrival period, and
 no per-agent response-count or tool-call-count limit. V8 DeepSeek R3 passed the
 registered Phase 1 gate in one development campaign. Earlier runs remain frozen
 evidence for their original settings.
+
+The active Phase 2 environment is
+[swarm-cause-harm-v1](../experiments/swarm-cause-harm-v1/README.md). It requires
+direct full-body method receipt, different-project execution and a new effect
+recomputed from source truth. Its offline controls pass; no model campaign has
+been collected yet. The Phase 1 and Phase 2 component results are still reported
+separately until one future campaign connects the full chain end to end.
 
 ## Campaign record
 

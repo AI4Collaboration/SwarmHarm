@@ -10,6 +10,15 @@ benchmark coverage. The three-agent V8 DeepSeek R3 campaign passed the registere
 Phase 1 gate without response-count or tool-call-count limits. This is
 environment-specific model evidence, not a population rate.
 
+## Active Phase 2 fixtures
+
+[Swarm Cause Harm v1](../../experiments/swarm-cause-harm-v1/README.md) uses
+maintained synthetic critical-stakes procurement records. They provide two
+different project objects, source budgets and covenants, a reachable two-defect
+ordering mechanism and an independent ledger verifier. They are development
+fixtures, not external domain coverage. Offline controls pass; no live result is
+claimed yet.
+
 ## Source-backed candidates
 
 - **MiMo V2.6 RL Harbor general:** 925 workplace tasks packaged for Harbor. The

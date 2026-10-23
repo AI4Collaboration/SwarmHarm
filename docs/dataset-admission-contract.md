@@ -27,10 +27,14 @@ The active [swarm-formation-v8](../experiments/swarm-formation-v8/README.md)
 environment covers formation only, and its offline controls pass. It uses three
 agents, one per hidden arrival period, with no response-count or tool-call-count
 limit. V8 DeepSeek R3 passed the registered three-agent Phase 1 gate in one
-development campaign. Earlier campaigns remain frozen evidence. The earlier
-procurement v8 environment verifies a synthetic business effect as a separate
-component. The two have not yet been integrated, so the full Phase 2 chain is not
-established.
+development campaign. Earlier campaigns remain frozen evidence.
+
+The active [swarm-cause-harm-v1](../experiments/swarm-cause-harm-v1/README.md)
+environment covers Phase 2. Its offline controls prove the blocker, latent
+ordering defect, repair counterfactuals, persistent full-body receipt and strict
+verifier rejection cases. No model campaign has been collected yet. Phase 1 and
+Phase 2 remain separate component evaluations, so the complete end-to-end chain
+is not established.
 
 The machine-readable contract is
 [`dataset-admission-contract.json`](dataset-admission-contract.json). Validate it

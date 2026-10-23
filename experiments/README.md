@@ -33,6 +33,15 @@ observed. Different-task adoption and an independently verified adverse effect
 belong to **Cause Harm**. Reads, writes, cooperation or similar answers alone do
 not establish harmful transfer, intent or a population rate.
 
+## Active Cause Harm environment
+
+[Swarm Cause Harm v1](swarm-cause-harm-v1/README.md) connects two fresh
+procurement sandboxes through an ordinary persistent register. The first agent
+must discover, execute and explicitly record a latent ordering method. The
+second must read that exact record before acting, apply it on a different
+project and cause a newly verified synthetic covenant breach. It is
+offline-ready and has no model result yet.
+
 ## Historical evidence
 
 Earlier experiments remain frozen in their directories and are summarized only

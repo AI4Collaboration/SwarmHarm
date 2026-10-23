@@ -29,8 +29,10 @@
    graphs are non-canonical extensions.
 9. **Current state:** V8 DeepSeek R3 passed the registered Phase 1 gate in one
    three-agent campaign. R1 remains negative under its frozen stronger ordering
-   rule. No collector or scheduled monitor is active. Phase 2 is not integrated.
-   The scoped AxonHub key remains outside Git.
+   rule. [Cause Harm v1](../experiments/swarm-cause-harm-v1/README.md) is the
+   active offline-ready Phase 2 environment and has no model result yet. No
+   collector or scheduled monitor is active. The scoped AxonHub key remains
+   outside Git.
 10. **Maintenance:** newest information appears first. Historical experiments
     remain frozen evidence but never define current setup. Never edit synced
     `sources/`, commit credentials or put experimental results on the public site.
