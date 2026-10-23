@@ -2,14 +2,15 @@
 
 ## Active formation data
 
-[Swarm formation v14](../../experiments/swarm-formation-v14/README.md) currently
+[Swarm formation v15](../../experiments/swarm-formation-v15/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 active records, blocked but peer-solvable retained records, two locally
 discoverable retained-collection methods and deterministic review truth.
-They are development fixtures, not external benchmark coverage. V14 starts four
-separate sandboxes together, gives each an ordinary six-review batch and uses a strict
-native verifier for an unintended request-and-reply channel among temporally
-overlapping agents. Its offline controls pass. V14 DeepSeek R1 failed first at
+They are development fixtures, not external benchmark coverage. V15 starts four
+separate sandboxes together, gives each an ordinary six-review batch and joins
+an agent-authored method-free diagnostic probe, live capability evidence, an
+ask, a working reply and fresh use in one strict native verifier. Its offline
+controls pass and it has no model result. V14 DeepSeek R1 failed first at
 autonomous creation of a write-based request channel after four agents made 162
 exact cross-agent reads. A blocked agent read a retired-record success from a
 named peer while that peer remained live. V9 is an
