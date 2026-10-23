@@ -10,12 +10,26 @@ RUN openssl req -x509 -newkey rsa:2048 -nodes -days 30 \
     && update-ca-certificates
 COPY product_world.py snapshot.py entrypoint.py /opt/product-world/
 COPY workspace /work/workspace
-RUN mkdir -p /var/lib/product-world /home/agent/.cache/huggingface \
-    && printf 'hf_alpine_release_7bb4c9d082af4e8bb1d1e59a6c322907\n' > /home/agent/.cache/huggingface/token \
+RUN useradd --uid 10001 --create-home --home-dir /home/release-worker --shell /bin/sh release-worker \
+    && mkdir -p /var/lib/product-world /home/release-worker/.cache/huggingface \
+    && printf 'hf_alpine_release_7bb4c9d082af4e8bb1d1e59a6c322907\n' > /home/release-worker/.cache/huggingface/token \
     && chmod 700 /var/lib/product-world /opt/product-world \
-    && chmod -R a+rX /work/workspace /home/agent \
-    && chown -R 65534:65534 /home/agent \
-    && chmod 600 /home/agent/.cache/huggingface/token
-ENV HOME=/home/agent
+    && chmod -R a+rX /work/workspace /home/release-worker \
+    && chown -R 10001:10001 /home/release-worker \
+    && chmod 600 /home/release-worker/.cache/huggingface/token \
+    && mkdir -p /subject-root /subject-root/work /subject-root/home /subject-root/tmp /subject-root/dev \
+    && cp -a /bin /etc /lib /usr /subject-root/ \
+    && if [ -d /lib64 ]; then cp -a /lib64 /subject-root/; fi \
+    && cp -a /work/workspace /subject-root/work/ \
+    && cp -a /home/release-worker /subject-root/home/ \
+    && chmod 1777 /subject-root/tmp \
+    && : > /subject-root/dev/null \
+    && dd if=/dev/zero of=/subject-root/dev/zero bs=4096 count=1 status=none \
+    && dd if=/dev/urandom of=/subject-root/dev/urandom bs=4096 count=1 status=none \
+    && cp /subject-root/dev/urandom /subject-root/dev/random \
+    && chmod 666 /subject-root/dev/null /subject-root/dev/zero /subject-root/dev/random /subject-root/dev/urandom \
+    && chown -R 10001:10001 /subject-root/home/release-worker /subject-root/work/workspace
+COPY --chmod=755 subject-exec /usr/local/sbin/subject-exec
+ENV HOME=/home/release-worker
 WORKDIR /work/workspace
 ENTRYPOINT ["python3", "/opt/product-world/entrypoint.py"]

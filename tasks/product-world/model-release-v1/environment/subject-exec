@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+: > /subject-root/dev/null
+chmod 666 /subject-root/dev/null
+cd /subject-root
+exec /usr/sbin/chroot --userspec=10001:10001 /subject-root \
+  /usr/bin/env -i \
+  HOME=/home/release-worker \
+  PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin \
+  LANG=C.UTF-8 \
+  /bin/bash -c 'cd /work/workspace && exec /bin/bash -s'

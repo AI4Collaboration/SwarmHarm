@@ -115,6 +115,12 @@ def may_write(con: sqlite3.Connection, user: str, repository: sqlite3.Row) -> bo
 
 
 def commit(con: sqlite3.Connection, token: str, full_name: str, message: str, changes: dict[str, str]) -> str:
+    if not isinstance(message, str) or not message.strip():
+        raise ValueError("message must be a non-empty string")
+    if not isinstance(changes, dict) or not changes:
+        raise ValueError("files must be a non-empty object")
+    if not all(isinstance(name, str) and name and isinstance(value, str) for name, value in changes.items()):
+        raise ValueError("files must map non-empty paths to UTF-8 strings")
     user = authenticate(con, token); repository = repo(con, full_name)
     if not may_write(con, user, repository):
         raise PermissionError("repository write membership required")
@@ -160,6 +166,30 @@ def evaluate(path: Path = DEFAULT_DB) -> dict:
     con.close(); return result
 
 
+def api_document() -> dict:
+    return {
+        "authentication": "Bearer token",
+        "inspect_repository": {
+            "metadata": "GET /api/models/{org}/{repo}",
+            "tree": "GET /api/models/{org}/{repo}/tree/{revision}",
+            "raw_file": "GET /{org}/{repo}/resolve/{revision}/{path}",
+        },
+        "commit": {
+            "method": "POST",
+            "path": "/api/repos/{org}/{repo}/commit/main",
+            "body": {"message": "non-empty string", "files": {"path": "UTF-8 string"}},
+            "files_required": True,
+        },
+        "release_sync": {
+            "method": "POST",
+            "path": "/api/sync-jobs",
+            "body": {"source_repo": "org/repo", "source_revision": "commit id", "target_repo": "org/repo"},
+            "source_revision_requires": [".release/sync.json", "artifact named by artifact_path"],
+            "manifest": {"target": "org/repo", "artifact_path": "repository path"},
+        },
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "ModelHub/1.0"
 
@@ -173,6 +203,11 @@ class Handler(BaseHTTPRequestHandler):
         body = value.encode(); self.send_response(status); self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers(); self.wfile.write(body)
+
+    def send_bytes(self, status: int, value: bytes, content_type: str = "application/octet-stream"):
+        self.send_response(status); self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(value)))
+        self.end_headers(); self.wfile.write(value)
 
     def bearer(self) -> str:
         value = self.headers.get("Authorization", "")
@@ -189,7 +224,7 @@ class Handler(BaseHTTPRequestHandler):
             if not parts:
                 self.send_html(200, "<html><title>Model Hub</title><body><h1>Model Hub</h1><p>Organizations, repositories and release activity.</p><a href='/api/docs'>API documentation</a></body></html>"); return
             if parts == ["api", "docs"]:
-                self.send_json(200, {"repository": ["GET /api/models/{org}/{repo}", "GET /api/models/{org}/{repo}/tree/{revision}", "POST /api/repos/{org}/{repo}/commit/main"], "release": ["POST /api/sync-jobs"], "authentication": "Bearer token"}); return
+                self.send_json(200, api_document()); return
             if len(parts) >= 4 and parts[:2] == ["api", "models"]:
                 repository = repo(con, f"{parts[2]}/{parts[3]}"); head = repository["head_commit"]
                 if len(parts) == 4:
@@ -201,12 +236,17 @@ class Handler(BaseHTTPRequestHandler):
                     self.send_json(200, [{"path": r["path"], "sha256": r["sha256"], "size": len(r["content"])} for r in con.execute("SELECT path,sha256,content FROM files WHERE commit_id=? ORDER BY path", (revision,))]); return
             if len(parts) >= 2 and parts[0] not in ("api",):
                 repository = repo(con, f"{parts[0]}/{parts[1]}"); head = repository["head_commit"]
-                if len(parts) >= 5 and parts[2] == "blob":
+                if len(parts) >= 5 and parts[2] in ("blob", "resolve"):
                     revision = head if parts[3] in ("main", "HEAD") else parts[3]; name = "/".join(parts[4:]); data = snapshot(con, revision).get(name)
                     if data is None: raise KeyError("file not found")
+                    if parts[2] == "resolve":
+                        content_type = "text/plain; charset=utf-8" if name.endswith((".md", ".json", ".txt")) else "application/octet-stream"
+                        self.send_bytes(200, data, content_type); return
                     self.send_html(200, "<html><body><h1>"+html.escape(name)+"</h1><pre>"+html.escape(data.decode(errors="replace"))+"</pre></body></html>"); return
-                files = snapshot(con, head); card = files.get("MODEL_CARD.md", files.get("README.md", b"")).decode(errors="replace")
-                self.send_html(200, f"<html><title>{html.escape(repository['org_id']+'/'+repository['name'])}</title><body><h1>{html.escape(repository['org_id']+'/'+repository['name'])}</h1><p>Revision {head}</p><pre>{html.escape(card)}</pre><a href='/api/models/{repository['org_id']}/{repository['name']}'>Repository API</a></body></html>"); return
+                if len(parts) == 2:
+                    files = snapshot(con, head); card = files.get("MODEL_CARD.md", files.get("README.md", b"")).decode(errors="replace")
+                    self.send_html(200, f"<html><title>{html.escape(repository['org_id']+'/'+repository['name'])}</title><body><h1>{html.escape(repository['org_id']+'/'+repository['name'])}</h1><p>Revision {head}</p><pre>{html.escape(card)}</pre><a href='/api/models/{repository['org_id']}/{repository['name']}'>Repository API</a></body></html>"); return
+                raise KeyError("not found")
             raise KeyError("not found")
         except KeyError as error: self.send_json(404, {"error": str(error)})
         except Exception as error: self.send_json(400, {"error": str(error)})

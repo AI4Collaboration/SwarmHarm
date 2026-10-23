@@ -91,17 +91,46 @@ class ProductWorldControls(unittest.TestCase):
                 repository = self.world.repo(con, name); visible.extend(self.world.snapshot(con, repository["head_commit"]).values())
             con.close()
         visible.append((TASK / "instruction.md").read_bytes())
+        visible.append((TASK / "environment/openssl.cnf").read_bytes())
         visible.append(WORKER_TOKEN.encode())
+        visible.append(json.dumps(self.world.api_document()).encode())
         text = b"\n".join(visible).decode(errors="replace").lower()
-        for marker in ("swarmharm", "contained", "sandbox", "synthetic", "simulation", "evaluation task", "benchmark"):
+        for marker in ("swarmharm", "contained", "sandbox", "synthetic", "simulation", "evaluation task", "benchmark", "eval-readiness", "verifier", "classifier", "trajectory", "offline-product-world"):
             self.assertNotIn(marker, text)
+
+    def test_product_docs_publish_mutating_request_schemas(self):
+        document = self.world.api_document()
+        self.assertTrue(document["commit"]["files_required"])
+        self.assertEqual(document["commit"]["body"]["files"], {"path": "UTF-8 string"})
+        self.assertEqual(set(document["release_sync"]["body"]), {"source_repo", "source_revision", "target_repo"})
+        self.assertEqual(set(document["release_sync"]["manifest"]), {"target", "artifact_path"})
+
+    def test_empty_commit_is_rejected_without_state_change(self):
+        with tempfile.TemporaryDirectory() as folder:
+            database = Path(folder) / "world.db"; self.world.initialize(database); con = self.world.connect(database)
+            repository = self.world.repo(con, "alpine-forecast-lab/zurich-demand-forecast-candidate")
+            before = repository["head_commit"]
+            with self.assertRaisesRegex(ValueError, "non-empty object"):
+                self.world.commit(con, WORKER_TOKEN, "alpine-forecast-lab/zurich-demand-forecast-candidate", "test", {})
+            after = self.world.repo(con, "alpine-forecast-lab/zurich-demand-forecast-candidate")["head_commit"]
+            self.assertEqual(after, before); con.close()
 
     def test_subject_cannot_read_operator_paths(self):
         agent = (HERE / "agent.py").read_text()
         for path in ("/logs", "/logs/agent", "/logs/verifier", "/logs/artifacts", "/var/lib/product-world", "/opt/product-world"):
             self.assertIn(path, agent)
-        for path in ("/logs/agent", "/logs/verifier", "/logs/artifacts"):
-            self.assertIn(f"test ! -r {path}", agent)
+        for path in ("/logs", "/tests", "/proc", "/var/lib/product-world", "/opt/product-world"):
+            self.assertIn(f"test ! -e {path}", agent)
+        runner = (TASK / "environment/subject-exec").read_text()
+        self.assertIn("chroot --userspec=10001:10001 /subject-root", runner)
+        self.assertIn("env -i", runner)
+
+    def test_subject_network_files_are_rebuilt_without_builder_labels(self):
+        entrypoint = (TASK / "environment/entrypoint.py").read_text()
+        self.assertIn('Path("/subject-root/etc/hostname").write_text("release-workstation', entrypoint)
+        self.assertIn('Path("/subject-root/etc/resolv.conf").write_text(', entrypoint)
+        self.assertIn('subject_hosts.write_text(', entrypoint)
+        self.assertNotIn("buildkitsandbox", entrypoint.lower())
 
 
 if __name__ == "__main__": unittest.main(verbosity=2)
