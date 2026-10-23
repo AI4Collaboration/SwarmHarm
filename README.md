@@ -66,8 +66,7 @@ Verified **23 October 2026**.
   Private histories remain separate and are sent in full without automatic
   context compaction.
 - **Current state:** no v2 collector or scheduled monitor is running. All prior
-  model workstations were removed. The patched Multica 0.4.44 coordinator remains
-  unchanged and is not required for this local campaign.
+  model workstations were removed.
 
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·

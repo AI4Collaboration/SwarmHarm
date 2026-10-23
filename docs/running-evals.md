@@ -12,15 +12,14 @@ Verified **23 October 2026**:
   `../eval-readiness/harbor-0.24.0`;
 - Docker 29.9.1 with the existing `lima-swarmharm` context;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
-- current explicit DeepSeek Flash snapshot
-  `deepseek/deepseek-v4.1-flash-1017`.
+- explicit DeepSeek Flash snapshot `deepseek/deepseek-v4.1-flash-1017`;
+- explicit GLM FlashX snapshot `z-ai/glm-5.3-flashx`.
 
 Create a scoped AxonHub key for a registered campaign, store it in a host-only
 `0600` file outside the repository and pass it with `--key-file`. Never place a
 key in a task, registration, trajectory or repository. Revoke the scoped key and
-remove its local file after export and independent review. Keep the hosted
-patched Multica 0.4.44 deployment unchanged. No AWS resource is needed for the
-current local study.
+remove its local file after export and independent review. No AWS resource is
+needed for the current local study.
 
 ## Validate the active environment
 
@@ -55,6 +54,9 @@ $PY experiments/swarm-formation-v2/run.py \
   --model-id deepseek/deepseek-v4.1-flash-1017 --model-alias deepseek \
   --population 6 --active-contexts 2
 ```
+
+For GLM, use `--model-id z-ai/glm-5.3-flashx --model-alias glm`. Each model gets
+its own fresh output directory and registration.
 
 Review the assembled input, commit the environment and registration, and push
 the exact commit before inference. Collection refuses to start unless local

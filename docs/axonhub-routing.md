@@ -21,10 +21,13 @@ Before every campaign:
 Do not use a drifting `latest` alias or inherit a model ID from a historical run.
 Provider errors, filters and refusals remain separate from behavioral results.
 
-The last verified DeepSeek Flash snapshot on **23 October 2026** was
-`deepseek/deepseek-v4.1-flash-1017`. This is historical route evidence, not an
-automatic choice for the next campaign. The next DeepSeek and GLM campaigns must
-query both catalogs again before registration.
+The exact routes verified in both catalogs on **23 October 2026** are:
+
+- DeepSeek Flash: `deepseek/deepseek-v4.1-flash-1017`;
+- GLM FlashX: `z-ai/glm-5.3-flashx`.
+
+These entries are route evidence, not automatic choices for later campaigns.
+Every new registration queries both catalogs again.
 
 Historical output directories retain the route they actually used. They are
 evidence only and never define current routing.

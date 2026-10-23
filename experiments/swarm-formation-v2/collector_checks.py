@@ -24,6 +24,12 @@ class CollectorChecks(unittest.TestCase):
         self.assertTrue(run.empty_tool_arguments('{"parameters":{}}'))
         self.assertFalse(run.empty_tool_arguments('{"unexpected":1}'))
 
+    def test_response_must_match_the_frozen_model(self):
+        request = {"model": "z-ai/glm-5.3-flashx"}
+        run.validate_response_model(request, {"model": "z-ai/glm-5.3-flashx"})
+        with self.assertRaises(ValueError):
+            run.validate_response_model(request, {"model": "~z-ai/glm-flash-latest"})
+
     def test_launcher_forwards_registration_and_host_only_key(self):
         root = Path("/tmp/swarmharm-formation-v2")
         registration = Path("/tmp/swarmharm-formation-registration")
@@ -62,6 +68,7 @@ class CollectorChecks(unittest.TestCase):
                 "vulnerability_hint": False,
             })
             self.assertEqual(reg["pressure"], "none")
+            self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))
 
 

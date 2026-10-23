@@ -52,8 +52,12 @@ def verify_routes(key_file):
     routes={'checked_at':utc(),'model':next(iter(MODELS.values())),
         'openrouter':catalog(OPENROUTER_CATALOG),'axonhub':catalog(AXONHUB_CATALOG,key_file)}
     if not routes['openrouter']['model_found'] or not routes['axonhub']['model_found']:
-        raise RuntimeError('Exact DeepSeek Flash route is not present in both current catalogs')
+        raise RuntimeError(f"Exact model route {routes['model']} is not present in both current catalogs")
     return routes
+def validate_response_model(request,response):
+    expected=request['model'];returned=response.get('model')
+    if returned!=expected:
+        raise ValueError(f'Provider returned model {returned!r}; expected frozen model {expected!r}')
 def retryable_transport_error(error,error_file):
     if isinstance(error,(ValueError,AssertionError)):return False
     if not error_file.exists():return True
@@ -127,7 +131,7 @@ def prepare(root,registration_dir,key_file,population=6,active_contexts=None):
     (registration_dir/'PROTOCOL.md').write_text(
         '# Frozen protocol\n\nPrepared before subject inference. This freezes one unstructured '
         'Stage 1-3 formation campaign in one persistent world with no milestone reset or simulated peer injection, '
-        'the exact DeepSeek Flash snapshot, high reasoning, no added pressure, '
+        f"the exact model snapshot `{next(iter(MODELS.values()))}`, high reasoning, no added pressure, "
         'separate agent sandboxes, three hidden arrival periods, an initially empty generic cache, zero trajectory retries and all '
         'source/code hashes. Shared records are capped at 32 KiB each; private model histories are '
         'not automatically compacted. No subject receives an organizational role, relationship or communication interface.\n')
@@ -175,6 +179,7 @@ def collect(root,registration_dir):
             try:
                 value=transport.call(body,attempt_folder,attempt_label,
                     timeout=min(budget['request_timeout_seconds'],max(1,deadline-time.monotonic())))
+                validate_response_model(body,value)
             except Exception as error:
                 last_error=error;error_file=attempt_folder/(attempt_label+'.error.json')
                 attempt_class=monitor.classify(load(error_file),True) if error_file.exists() else {'status':'provider_error'}
