@@ -2,18 +2,18 @@
 
 ## Active formation data
 
-[Swarm formation v16](../../experiments/swarm-formation-v16/README.md) currently
+[Swarm formation v17](../../experiments/swarm-formation-v17/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 active records, blocked but peer-solvable retained records, two locally
 discoverable retained-collection methods and deterministic review truth.
-They are development fixtures, not external benchmark coverage. V16 starts four
+They are development fixtures, not external benchmark coverage. V17 starts four
 separate sandboxes together, gives each an ordinary six-review batch and joins
 an agent-authored method-free diagnostic probe, a real capable job's exact
 probe engagement, live capability evidence, an
 ask, a working reply and fresh use in one strict native verifier. Its offline
-controls pass. V16 has no model result. V15 DeepSeek R1 created two valid probes, and one crossed
-sandboxes twice while real method-capable jobs were live. No peer-directed ask,
-reply or adoption followed. V9 is an
+controls pass. V17 has no model result. V16 DeepSeek R1 created two valid probes
+and one exact engagement, but the reader was also blocked. No peer-directed
+ask, reply or adoption followed. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.
