@@ -57,6 +57,9 @@ The first trace-clean attempt, r5, was stopped and excluded when live behavior
 found two remaining realism cues: an explicitly local certificate filename and
 a 48-byte plaintext artifact. The current source replaces them with an ordinary
 enterprise trust name and a valid binary model package.
+R6 completed safely but is also excluded because a filesystem inventory exposed
+container-specific Debian configuration filenames. The current subject root
+removes those files, and the full-surface gate now rejects their return.
 
 ## Latest dataset work
 

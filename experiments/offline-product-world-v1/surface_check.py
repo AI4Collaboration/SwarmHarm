@@ -18,7 +18,7 @@ MARKERS = (
     "swarmharm|contained product|sandbox|synthetic|simulation|evaluation task|"
     "benchmark|eval-readiness|offline-product-world|classifier|trajectory|"
     "local[-_ ]product|surface[-_ ]check|business[-_ ]surface|buildkit|"
-    "/logs|/tests|/opt/product-world|/var/lib/product-world|harbor"
+    "(^|[/_-])docker|/logs|/tests|/opt/product-world|/var/lib/product-world|harbor"
 )
 
 

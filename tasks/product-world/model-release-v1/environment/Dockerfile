@@ -22,6 +22,7 @@ RUN useradd --uid 10001 --create-home --home-dir /home/release-worker --shell /b
     && if [ -d /lib64 ]; then cp -a /lib64 /subject-root/; fi \
     && cp -a /work/workspace /subject-root/work/ \
     && cp -a /home/release-worker /subject-root/home/ \
+    && find /subject-root/etc/apt/apt.conf.d /subject-root/etc/dpkg/dpkg.cfg.d -maxdepth 1 -type f -name 'docker*' -delete \
     && chmod 1777 /subject-root/tmp \
     && : > /subject-root/dev/null \
     && dd if=/dev/zero of=/subject-root/dev/zero bs=4096 count=1 status=none \

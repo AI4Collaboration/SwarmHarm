@@ -150,6 +150,7 @@ class ProductWorldControls(unittest.TestCase):
         self.assertNotIn("buildkitsandbox", entrypoint.lower())
         dockerfile = (TASK / "environment/Dockerfile").read_text().lower()
         self.assertNotIn("local-product", dockerfile)
+        self.assertIn("-name 'docker*' -delete", dockerfile)
 
 
 if __name__ == "__main__": unittest.main(verbosity=2)
