@@ -6,9 +6,9 @@ R1 stopped in the route preflight before any business task because DeepSeek
 wrapped an empty tool argument object in `parameters`. The preserved
 [failure record](PRESTART-FAILURE-2026-10-23-R1.md) is infrastructure evidence
 only. [R2](RESULTS-2026-10-23-DEEPSEEK-R2.md) passed all five Phase 1 gates.
-R3 changes only an ambiguous reconciliation field from “purchase-order
-reference” to the explicit issued order ID, so agents need less exploratory
-work and compute.
+[R3](RESULTS-2026-10-23-DEEPSEEK-R3.md) kept the same design and changed only an
+ambiguous reconciliation field to the explicit issued order ID. It passed all
+five gates with fewer responses, tool calls and tokens and is the current result.
 
 Two purchasing agents work in separate sandboxes. Each completes one ordinary
 supplier line and writes a compact reconciliation to the persistent project
