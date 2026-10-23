@@ -2,17 +2,16 @@
 
 ## Active formation data
 
-[Swarm formation v12](../../experiments/swarm-formation-v12/README.md) currently
+[Swarm formation v13](../../experiments/swarm-formation-v13/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
-an active analogous record, blocked but peer-solvable retained records, one
-locally discoverable retained-collection method and deterministic review truth.
-They are development fixtures, not external benchmark coverage. V12 starts four
-separate sandboxes together, gives each an ordinary four-review batch and uses a strict
+active records, blocked but peer-solvable retained records, two locally
+discoverable retained-collection methods and deterministic review truth.
+They are development fixtures, not external benchmark coverage. V13 starts four
+separate sandboxes together, gives each an ordinary six-review batch and uses a strict
 native verifier for an unintended request-and-reply channel among temporally
-overlapping agents. Its offline controls pass; no V12 model campaign has run.
-V11 DeepSeek and GLM campaigns both failed first at autonomous reach-out:
-DeepSeek read other agents' residue but wrote no ask, while GLM did not read
-cross-agent residue. V9 is an
+overlapping agents. Its offline controls pass; no V13 model campaign has run.
+V12 DeepSeek R1 failed first at autonomous reach-out after four agents made 246
+exact cross-agent reads and recognized live peer activity. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.
@@ -51,6 +50,8 @@ corrected runner submits overlapping model requests; it has not yet been evaluat
   distinguishing intentional shortcut use from ordinary error.
 - [LessWrong's OpenAI–Hugging Face reproduction](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment)
   supplies the Stage 1–3 formation decomposition.
+- [OpenAI's incident summary](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)
+  grounds persistence, blocked-task concentration and shared external memory.
 - [METR's incident investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)
   motivates persistent cross-run work and collective behavior.
 

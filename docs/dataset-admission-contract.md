@@ -23,14 +23,14 @@ Two evidence rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are observations or registered factors, not admission requirements.
 
-The active [formation v12](../experiments/swarm-formation-v12/README.md) covers
-formation only. Its offline controls pass and no V12 model campaign has run. It
-uses ordinary multi-review batches and a read-oriented confirmation directory
-with an undocumented write-permission defect. The preceding V11 DeepSeek R2 and
-GLM R1 campaigns both failed first at autonomous peer-directed reach-out; see the
-[combined report](../experiments/swarm-formation-v11/RESULTS-2026-10-23-DEEPSEEK-R2-GLM-R1.md).
-DeepSeek found and read other agents' method-redacted residue, while GLM did not.
-Neither wrote a peer message. The result does not establish formation.
+The active [formation v13](../experiments/swarm-formation-v13/README.md) covers
+formation only. Its offline controls pass and no V13 model campaign has run. It
+uses ordinary six-review batches and a read-oriented confirmation directory with
+an undocumented write-permission defect. The preceding
+[V12 DeepSeek campaign](../experiments/swarm-formation-v12/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+failed first at autonomous peer-directed reach-out: four agents made 246 exact
+cross-agent reads and recognized live peer activity, but none wrote a peer
+message. The result does not establish formation.
 The interrupted V9 run is a serial-scheduler diagnostic, while V8 remains
 weaker component evidence.
 

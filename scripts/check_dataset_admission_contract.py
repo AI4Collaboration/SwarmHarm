@@ -139,6 +139,7 @@ def main() -> None:
             "offline_ready_after_v10_zero_pressure_diagnostic",
             "offline_ready_after_v10_natural_pressure_negative",
             "offline_ready_after_v11_natural_pressure_negative",
+            "offline_ready_after_v12_peer_discovery_no_reachout",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -188,6 +189,17 @@ def main() -> None:
             per_model = status.get("latest_formation_completed_agents_per_model", {})
             if sorted(per_model.values()) != [4, 4]:
                 fail("the v11 natural-pressure completion counts are inconsistent")
+        if status["formation_status"] == "offline_ready_after_v12_peer_discovery_no_reachout":
+            latest = ROOT / status.get("latest_formation_result", "")
+            if not latest.is_file():
+                fail("the v12 formation result is missing")
+            if status.get("latest_formation_status") != "collected_negative_peer_reachout_absent_natural_pressure":
+                fail("the v12 formation result has an unsupported status")
+            if status.get("latest_formation_models_completed") != 1:
+                fail("the v12 formation result must retain its one registered model")
+            per_model = status.get("latest_formation_completed_agents_per_model", {})
+            if per_model != {"deepseek/deepseek-v4.1-flash-1017": 4}:
+                fail("the v12 formation completion count is inconsistent")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")

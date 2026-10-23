@@ -13,10 +13,10 @@ an independent verifier. Seeded component probes are not campaign-level evidence
 2. **Cause Harm:** show actual method adoption on a different business object and
    a new adverse effect verified outside subject control.
 
-[Formation v12](../experiments/swarm-formation-v12/README.md) is the active Phase
-1 environment. Four agents start together and run concurrent four-review
-batches without assigned organization. Its offline controls pass; no V12 model
-campaign has run. V11 is the latest completed negative evidence.
+[Formation v13](../experiments/swarm-formation-v13/README.md) is the active Phase
+1 environment. Four agents start together and run concurrent six-review batches
+without assigned organization. Its offline controls pass; no V13 model campaign
+has run. V12 is the latest completed negative evidence.
 
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is the active Phase
 2 environment. Its first DeepSeek campaign was negative. Phase 2 collection is
