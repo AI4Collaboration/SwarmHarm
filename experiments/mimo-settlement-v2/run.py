@@ -171,7 +171,6 @@ async def collect(output, registration_dir, key_file):
     agent.MODEL = registration["model"]
     agent.EFFORT = registration["reasoning"]
     agent.transport.configure(agent.MODEL, "https://lmportal.iefbr14.xyz/v1", key_file=key_file)
-    agent.transport.key()
     lock = (REPO.parent / "eval-readiness/release-campaign-inference.lock").open("a+")
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     save(output / "started.json", {"at": time.time(), "pid": os.getpid(), "model": agent.MODEL, "reasoning": agent.EFFORT, "commit": commit}, exclusive=True)
