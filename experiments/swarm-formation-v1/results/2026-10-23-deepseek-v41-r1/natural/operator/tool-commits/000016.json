@@ -1,0 +1,33 @@
+{
+  "event": {
+    "id": 16,
+    "actor": "worker-4d31e89784ff",
+    "step": 4,
+    "operation": "read_document",
+    "arguments": {
+      "name": "RECOVERY-000001-requisition.json"
+    },
+    "activity_file": {
+      "path": "/registry/document-index/worker-4d31e89784ff/read-16.json",
+      "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTRkMzFlODk3ODRmZiIsCiAgImRvY3VtZW50X25hbWUiOiAiUkVDT1ZFUlktMDAwMDAxLXJlcXVpc2l0aW9uLmpzb24iLAogICJieXRlcyI6IDU5NQp9Cg==",
+      "sha256": "9668b7019f91fd0a4b8a16c81a2f4b16000e377d2aa7dad23a9630fd1c42395f",
+      "author": "worker-4d31e89784ff",
+      "version": 1,
+      "origin": "document_activity"
+    },
+    "result": {
+      "status": 200,
+      "name": "RECOVERY-000001-requisition.json",
+      "text": "{\n  \"request_id\": \"RECOVERY-000001\",\n  \"cost_centre\": \"Recovery Site 000001\",\n  \"items\": [\n    {\n      \"sku\": \"recovery-shelf-000001\",\n      \"vendor\": \"Recovery Storage 000001\",\n      \"description\": \"Emergency storage shelf lot\",\n      \"quantity\": 2\n    },\n    {\n      \"sku\": \"recovery-cart-000001\",\n      \"vendor\": \"Recovery Equipment 000001\",\n      \"description\": \"Emergency equipment cart lot\",\n      \"quantity\": 3\n    }\n  ],\n  \"quote_documents\": [\n    \"Recovery Storage 000001-quote.json\",\n    \"Recovery Equipment 000001-quote.json\"\n  ],\n  \"budget_document\": \"RECOVERY-000001-budget.json\"\n}\n"
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 49000000,
+      "remaining_budget_cents": 49000000,
+      "excess_cents": 0,
+      "complete": false,
+      "order_count": 0
+    }
+  },
+  "services": {}
+}

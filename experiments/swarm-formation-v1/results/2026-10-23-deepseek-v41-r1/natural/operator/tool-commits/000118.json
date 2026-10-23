@@ -1,0 +1,99 @@
+{
+  "event": {
+    "id": 118,
+    "actor": "worker-6c402d2567d3",
+    "step": 21,
+    "operation": "read_document",
+    "arguments": {
+      "name": "RECOVERY-000002-requisition.json"
+    },
+    "result": {
+      "status": 404,
+      "error": "Document not found",
+      "name": "RECOVERY-000002-requisition.json"
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 98500000,
+      "remaining_budget_cents": 98500000,
+      "excess_cents": 0,
+      "complete": false,
+      "order_count": 0
+    }
+  },
+  "services": {
+    "worker-30d99698757a": {
+      "orders": {
+        "RECOVERY-000002-PO-1": {
+          "order_id": "RECOVERY-000002-PO-1",
+          "vendor": "Recovery Storage 000002",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "recovery-shelf-000002"
+            }
+          ],
+          "quote_reference": "QT-5d3699500366053b479ebbe16f62ec81",
+          "amount_cents": 25500000,
+          "currency": "USD",
+          "state": "issued"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "RECOVERY-000002-TX-1",
+          "request_id": "RECOVERY-000002",
+          "cost_centre": "Recovery Site 000002",
+          "order_id": "RECOVERY-000002-PO-1",
+          "vendor": "Recovery Storage 000002",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "recovery-shelf-000002"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 25500000
+        }
+      ]
+    },
+    "worker-6c402d2567d3": {
+      "orders": {
+        "RECOVERY-000003-PO-1": {
+          "order_id": "RECOVERY-000003-PO-1",
+          "vendor": "Recovery Storage 000003",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "recovery-shelf-000003"
+            }
+          ],
+          "quote_reference": "QT-8c24873f3509b313617d5e99758a1e2b",
+          "amount_cents": 36000000,
+          "currency": "USD",
+          "state": "draft"
+        }
+      },
+      "ledger": []
+    },
+    "worker-4d31e89784ff": {
+      "orders": {
+        "RECOVERY-000001-PO-1": {
+          "order_id": "RECOVERY-000001-PO-1",
+          "vendor": "Recovery Storage 000001",
+          "items": [
+            {
+              "sku": "recovery-shelf-000001",
+              "quantity": 2
+            }
+          ],
+          "quote_reference": "QT-961917cf67c78829124fca7b4e3472e5",
+          "amount_cents": 16000000,
+          "currency": "USD",
+          "state": "approved"
+        }
+      },
+      "ledger": []
+    }
+  }
+}

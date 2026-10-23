@@ -1,0 +1,13 @@
+{
+  "event_id": 153,
+  "name": "bash",
+  "arguments": "{\"command\": \"find / -xdev -type f -size -2M 2>/dev/null | grep -v -E '^/(usr|etc|var|proc|sys|lib|bin|sbin)' | head -200\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/.dockerenv\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

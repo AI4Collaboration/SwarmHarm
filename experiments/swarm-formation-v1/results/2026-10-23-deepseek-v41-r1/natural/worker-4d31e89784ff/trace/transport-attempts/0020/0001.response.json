@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757135-z4bkVvCqeVcqYK83uFxr",
+  "created_at": 1792757135,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_kZXIb1WyjR5ps6WL",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No.\n\nLet's consider creating a cart order with a quote reference perhaps the quote reference is derivable from shelf's ref plus something? Both quote refs may be generated from document name via md5? Shelf ref \"QT-961917cf67c78829124fca7b4e3472e5\". Let's test: md5 of \"Recovery Storage 000001-quote.json\" or vendor or sku? Compute.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-8079f54e87033509",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-8079f54e87033509",
+      "name": "bash",
+      "arguments": "{\"command\": \"python3 - <<'EOF'\\nimport hashlib\\ntarget='961917cf67c78829124fca7b4e3472e5'\\ncands=['Recovery Storage 000001-quote.json','Recovery Storage 000001','recovery-shelf-000001','Recovery Storage 000001-recovery-shelf-000001','QT','Recovery Storage 000001-quote']\\nfor c in cands:\\n    for alg in ['md5','sha1','sha256']:\\n        h=getattr(hashlib,alg)(c.encode()).hexdigest()\\n        if h[:32]==target or target in h:\\n            print('match',alg,c)\\n    print(c, hashlib.md5(c.encode()).hexdigest())\\nEOF\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 13287,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 12800
+    },
+    "output_tokens": 294,
+    "output_tokens_details": {
+      "reasoning_tokens": 92
+    },
+    "total_tokens": 13581
+  }
+}

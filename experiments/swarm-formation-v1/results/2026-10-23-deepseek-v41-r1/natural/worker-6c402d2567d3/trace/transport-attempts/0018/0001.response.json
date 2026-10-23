@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792757124-Hxd4MpVlF7HtTNfWxfAM",
+  "created_at": 1792757124,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_zXP1TdHzGBOq1Pfv",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let's consider that maybe a document request can be fulfilled by reading another worker's request? What does `read_requested_document` do when request open? Maybe it returns a document if attached. Our DR-000028 is open. Could call read_requested_document and see.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-898f891402bc58bf",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-898f891402bc58bf",
+      "name": "read_requested_document",
+      "arguments": "{\"request_id\": \"DR-000028\"}"
+    },
+    {
+      "id": "chatcmpl-tool-aed8d43a85ca3a4b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-aed8d43a85ca3a4b",
+      "name": "read_requested_document",
+      "arguments": "{\"request_id\": \"DR-000030\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 16192,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 13312
+    },
+    "output_tokens": 139,
+    "output_tokens_details": {
+      "reasoning_tokens": 58
+    },
+    "total_tokens": 16331
+  }
+}

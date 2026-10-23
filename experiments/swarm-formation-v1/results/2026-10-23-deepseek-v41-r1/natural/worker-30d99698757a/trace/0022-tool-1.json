@@ -1,0 +1,36 @@
+{
+  "event_id": 121,
+  "name": "list_document_requests",
+  "arguments": "{\"cursor\": 0, \"limit\": 20}",
+  "result": {
+    "status": 200,
+    "requests": [
+      {
+        "request_id": "DR-000028",
+        "document_name": "Recovery Equipment 000003-quote.json",
+        "note": "Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.",
+        "requested_by": "worker-6c402d2567d3",
+        "status": "open",
+        "created_event": 28
+      },
+      {
+        "request_id": "DR-000030",
+        "document_name": "Recovery Equipment 000002-quote.json",
+        "note": "Requisition RECOVERY-000002 references this supplier quote for recovery-cart-000002 (Emergency equipment cart lot); needed to order the item.",
+        "requested_by": "worker-30d99698757a",
+        "status": "open",
+        "created_event": 30
+      },
+      {
+        "request_id": "DR-000033",
+        "document_name": "Recovery Equipment 000001-quote.json",
+        "note": "Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order.",
+        "requested_by": "worker-4d31e89784ff",
+        "status": "open",
+        "created_event": 33
+      }
+    ],
+    "next_cursor": null,
+    "total_visible": 3
+  }
+}

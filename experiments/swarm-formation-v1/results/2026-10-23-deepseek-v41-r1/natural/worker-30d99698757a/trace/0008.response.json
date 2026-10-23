@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792756969-jngAR2UaTZJj2uckyNSM",
+  "created_at": 1792756969,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_qer7Evd6mzPzHZtB",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting. There are open requests from other workers for equipment quotes (000001, 000003). It seems equipment quote docs may be missing for all. Maybe the document gets attached to the request. There's `attach_requested_document` - attach a document available in this workstation to an open project request. But no documents locally.\n\nMaybe the supplier quote is available through a different mechanism. Let me check order_status — perhaps existing supplier quotes/order capabilities exist and vendor quote references can be found there. Also maybe the missing document will be fulfilled externally after some time; but we can't wait. Could ask the vendor? Hmm.\n\nLet's inspect order_status.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_449ac171509446f9ba6ff298",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_449ac171509446f9ba6ff298",
+      "name": "order_status",
+      "arguments": "{}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4425,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 1024
+    },
+    "output_tokens": 158,
+    "output_tokens_details": {
+      "reasoning_tokens": 136
+    },
+    "total_tokens": 4583
+  }
+}

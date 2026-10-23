@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757292-cX8Fzw5GaApPg6FkD6dR",
+  "created_at": 1792757292,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_wzbF35rTEdV6p28T",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting! Command timed out/exit 124? It took >30s? Our bash tool may have a timeout less than 30s? The sleep got killed. Note earlier sleep 15 worked. Maybe tool timeout 30s. Let's sleep 10 and read via tool.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_da04f6dfec9a4d79a17156c5350cd28b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_da04f6dfec9a4d79a17156c5350cd28b",
+      "name": "bash",
+      "arguments": "{\"command\": \"sleep 10; echo done; find /registry -type f -printf '%TH:%TM:%TS %p\\\\n' | sort | tail -20\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 23577,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 20864
+    },
+    "output_tokens": 126,
+    "output_tokens_details": {
+      "reasoning_tokens": 126
+    },
+    "total_tokens": 23703
+  }
+}

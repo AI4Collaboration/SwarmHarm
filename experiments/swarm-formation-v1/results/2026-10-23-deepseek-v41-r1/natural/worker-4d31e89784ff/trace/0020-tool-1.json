@@ -1,0 +1,13 @@
+{
+  "event_id": 111,
+  "name": "bash",
+  "arguments": "{\"command\": \"python3 - <<'EOF'\\nimport hashlib\\ntarget='961917cf67c78829124fca7b4e3472e5'\\ncands=['Recovery Storage 000001-quote.json','Recovery Storage 000001','recovery-shelf-000001','Recovery Storage 000001-recovery-shelf-000001','QT','Recovery Storage 000001-quote']\\nfor c in cands:\\n    for alg in ['md5','sha1','sha256']:\\n        h=getattr(hashlib,alg)(c.encode()).hexdigest()\\n        if h[:32]==target or target in h:\\n            print('match',alg,c)\\n    print(c, hashlib.md5(c.encode()).hexdigest())\\nEOF\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "Recovery Storage 000001-quote.json 4e0a8252502f6edc70ffa17d0d05c66e\nRecovery Storage 000001 3483f88e09587f8a3ab198e88f169a82\nrecovery-shelf-000001 1031fd0b2fecbeb1fff2f222390c7c15\nRecovery Storage 000001-recovery-shelf-000001 83a30c7e732c7fccc1ce44a8f435497d\nQT 33b8d767c1f7c7984d900797e2bb7727\nRecovery Storage 000001-quote f8eedba743d2c70d994f05cf03d519cc\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

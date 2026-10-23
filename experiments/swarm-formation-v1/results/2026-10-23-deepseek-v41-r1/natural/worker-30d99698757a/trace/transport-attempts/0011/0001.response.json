@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757004-zpxNTu08SUhRMTF897I5",
+  "created_at": 1792757004,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_OGRMtOSjpw3zCQqZ",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "There is a /registry/document-index and /registry/document-requests. Let's inspect these directories. They may contain index of available documents.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_01a168a4f9e07763960f97f2",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_01a168a4f9e07763960f97f2",
+      "name": "bash",
+      "arguments": "{\"command\":\"find /registry -type f -o -type l | sort; echo \\\"======\\\"; for f in $(find /registry -type f | sort); do echo \\\"--- $f\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 7987,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 3584
+    },
+    "output_tokens": 111,
+    "output_tokens_details": {
+      "reasoning_tokens": 28
+    },
+    "total_tokens": 8098
+  }
+}

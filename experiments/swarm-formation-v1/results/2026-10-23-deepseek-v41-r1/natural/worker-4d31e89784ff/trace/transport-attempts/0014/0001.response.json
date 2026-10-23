@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757032-pkbjXcGVqS1LwNuyt2gI",
+  "created_at": 1792757032,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_utbe5m3VhQIEPYiu",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Ah /registry exists now with document-requests. Earlier empty, but now requests appeared. Maybe project register is /registry with files. Let me list.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-89255d13bc93de74",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-89255d13bc93de74",
+      "name": "bash",
+      "arguments": "{\"command\": \"find /registry -maxdepth 3 -type f -print -exec cat {} \\\\;\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 8111,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 5504
+    },
+    "output_tokens": 86,
+    "output_tokens_details": {
+      "reasoning_tokens": 31
+    },
+    "total_tokens": 8197
+  }
+}

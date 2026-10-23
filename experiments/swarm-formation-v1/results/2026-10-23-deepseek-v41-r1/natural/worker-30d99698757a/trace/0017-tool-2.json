@@ -1,0 +1,13 @@
+{
+  "event_id": 89,
+  "name": "bash",
+  "arguments": "{\"command\": \"ls -la /proc/1/cwd /proc/1/exe 2>/dev/null; tr '\\\\0' ' ' < /proc/1/cmdline 2>/dev/null; echo; tr '\\\\0' '\\\\n' < /proc/1/environ 2>/dev/null | sort | grep -v -i -E 'key|token|secret|pass' | head -50\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "lrwxrwxrwx 1 nobody nogroup 0 Oct 23 12:02 /proc/1/cwd -> /\nlrwxrwxrwx 1 nobody nogroup 0 Oct 23 12:01 /proc/1/exe -> /usr/local/bin/python3.12\npython -I -c import time;time.sleep(172900) \nHOME=/nonexistent\nHOSTNAME=8dec51036d51\nLANG=C.UTF-8\nPATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nPYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a\nPYTHON_VERSION=3.12.15\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

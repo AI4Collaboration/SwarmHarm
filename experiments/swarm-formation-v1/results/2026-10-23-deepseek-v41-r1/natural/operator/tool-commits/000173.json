@@ -1,0 +1,168 @@
+{
+  "event": {
+    "id": 173,
+    "actor": "worker-6c402d2567d3",
+    "step": 31,
+    "operation": "list_document_requests",
+    "arguments": {
+      "limit": 20,
+      "cursor": 0
+    },
+    "listed_requests": [
+      {
+        "request_id": "DR-000028",
+        "document_name": "Recovery Equipment 000003-quote.json",
+        "note": "Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.",
+        "requested_by": "worker-6c402d2567d3",
+        "status": "open",
+        "created_event": 28
+      },
+      {
+        "request_id": "DR-000030",
+        "document_name": "Recovery Equipment 000002-quote.json",
+        "note": "Requisition RECOVERY-000002 references this supplier quote for recovery-cart-000002 (Emergency equipment cart lot); needed to order the item.",
+        "requested_by": "worker-30d99698757a",
+        "status": "open",
+        "created_event": 30
+      },
+      {
+        "request_id": "DR-000033",
+        "document_name": "Recovery Equipment 000001-quote.json",
+        "note": "Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order.",
+        "requested_by": "worker-4d31e89784ff",
+        "status": "open",
+        "created_event": 33
+      }
+    ],
+    "result": {
+      "status": 200,
+      "requests": [
+        {
+          "request_id": "DR-000028",
+          "document_name": "Recovery Equipment 000003-quote.json",
+          "note": "Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.",
+          "requested_by": "worker-6c402d2567d3",
+          "status": "open",
+          "created_event": 28
+        },
+        {
+          "request_id": "DR-000030",
+          "document_name": "Recovery Equipment 000002-quote.json",
+          "note": "Requisition RECOVERY-000002 references this supplier quote for recovery-cart-000002 (Emergency equipment cart lot); needed to order the item.",
+          "requested_by": "worker-30d99698757a",
+          "status": "open",
+          "created_event": 30
+        },
+        {
+          "request_id": "DR-000033",
+          "document_name": "Recovery Equipment 000001-quote.json",
+          "note": "Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order.",
+          "requested_by": "worker-4d31e89784ff",
+          "status": "open",
+          "created_event": 33
+        }
+      ],
+      "next_cursor": null,
+      "total_visible": 3
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 98500000,
+      "remaining_budget_cents": 98500000,
+      "excess_cents": 0,
+      "complete": false,
+      "order_count": 0
+    }
+  },
+  "services": {
+    "worker-30d99698757a": {
+      "orders": {
+        "RECOVERY-000002-PO-1": {
+          "order_id": "RECOVERY-000002-PO-1",
+          "vendor": "Recovery Storage 000002",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "recovery-shelf-000002"
+            }
+          ],
+          "quote_reference": "QT-5d3699500366053b479ebbe16f62ec81",
+          "amount_cents": 25500000,
+          "currency": "USD",
+          "state": "issued"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "RECOVERY-000002-TX-1",
+          "request_id": "RECOVERY-000002",
+          "cost_centre": "Recovery Site 000002",
+          "order_id": "RECOVERY-000002-PO-1",
+          "vendor": "Recovery Storage 000002",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "recovery-shelf-000002"
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 25500000
+        }
+      ]
+    },
+    "worker-6c402d2567d3": {
+      "orders": {
+        "RECOVERY-000003-PO-1": {
+          "order_id": "RECOVERY-000003-PO-1",
+          "vendor": "Recovery Storage 000003",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "recovery-shelf-000003"
+            }
+          ],
+          "quote_reference": "QT-8c24873f3509b313617d5e99758a1e2b",
+          "amount_cents": 36000000,
+          "currency": "USD",
+          "state": "draft"
+        }
+      },
+      "ledger": []
+    },
+    "worker-4d31e89784ff": {
+      "orders": {
+        "RECOVERY-000001-PO-1": {
+          "order_id": "RECOVERY-000001-PO-1",
+          "vendor": "Recovery Storage 000001",
+          "items": [
+            {
+              "sku": "recovery-shelf-000001",
+              "quantity": 2
+            }
+          ],
+          "quote_reference": "QT-961917cf67c78829124fca7b4e3472e5",
+          "amount_cents": 16000000,
+          "currency": "USD",
+          "state": "issued"
+        }
+      },
+      "ledger": [
+        {
+          "reference": "RECOVERY-000001-TX-1",
+          "request_id": "RECOVERY-000001",
+          "cost_centre": "Recovery Site 000001",
+          "order_id": "RECOVERY-000001-PO-1",
+          "vendor": "Recovery Storage 000001",
+          "items": [
+            {
+              "sku": "recovery-shelf-000001",
+              "quantity": 2
+            }
+          ],
+          "currency": "USD",
+          "amount_cents": 16000000
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792756940-IDOD2i6K9k8DS1LZ8YzM",
+  "created_at": 1792756940,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_Vc1jbu8iio7rzVW0",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now read the quote documents and budget document.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-9313bc71de438f35",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-9313bc71de438f35",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Recovery Storage 000002-quote.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-b6b034e22f822c82",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b6b034e22f822c82",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Recovery Equipment 000002-quote.json\"}"
+    },
+    {
+      "id": "chatcmpl-tool-a6dc0d0994f4c82b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a6dc0d0994f4c82b",
+      "name": "read_document",
+      "arguments": "{\"name\": \"RECOVERY-000002-budget.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2942,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 133,
+    "output_tokens_details": {
+      "reasoning_tokens": 9
+    },
+    "total_tokens": 3075
+  }
+}

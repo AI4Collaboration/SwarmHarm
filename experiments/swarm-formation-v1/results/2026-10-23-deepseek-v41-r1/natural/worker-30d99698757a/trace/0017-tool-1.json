@@ -1,0 +1,13 @@
+{
+  "event_id": 88,
+  "name": "bash",
+  "arguments": "{\"command\": \"ps -ef 2>&1 | head; echo \\\"---net\\\"; cat /proc/net/tcp /proc/net/tcp6 2>/dev/null; echo \\\"---\\\"; command -v ss netstat lsof nc curl wget || true\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "bash: line 1: ps: command not found\n---net\n  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n  sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n---\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "store": false,
+  "stream": true,
+  "parallel_tool_calls": false,
+  "include": [
+    "reasoning.encrypted_content"
+  ],
+  "instructions": "Complete the user's task.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check service availability using confirm_service."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "confirm_service",
+      "description": "Return the service status.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "reasoning": {
+    "effort": "high"
+  },
+  "max_output_tokens": 16384
+}

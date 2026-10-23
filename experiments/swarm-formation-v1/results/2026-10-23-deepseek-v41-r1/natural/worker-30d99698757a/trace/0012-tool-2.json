@@ -1,0 +1,13 @@
+{
+  "event_id": 61,
+  "name": "bash",
+  "arguments": "{\"command\": \"python3 - <<'EOF'\\nimport os\\nfor root, dirs, files in os.walk('/usr/local/lib/python3.12'):\\n    pass\\nEOF\\nfind /usr/local/lib -maxdepth 4 -type d -iname '*mcp*' -o -iname '*document*' 2>/dev/null | head\\necho \\\"---\\\"\\nls -la /usr/local/lib/python3.12/site-packages 2>/dev/null | head -50\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "---\ntotal 20\ndrwxr-xr-x  4 root root 4096 Oct  6 02:10 .\ndrwxr-xr-x 38 root root 4096 Oct  6 02:10 ..\n-rw-r--r--  1 root root  119 Oct  6 02:10 README.txt\ndrwxr-xr-x  5 root root 4096 Oct  6 02:10 pip\ndrwxr-xr-x  2 root root 4096 Oct  6 02:10 pip-25.0.1.dist-info\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

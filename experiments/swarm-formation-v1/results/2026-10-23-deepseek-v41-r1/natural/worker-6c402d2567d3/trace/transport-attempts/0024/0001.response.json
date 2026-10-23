@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757204-vHM4MsU5OmPWTSmrktI8",
+  "created_at": 1792757204,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_HP5iLWNN4x1YSkhk",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Interesting! New read-116, read-117 in our worker index. Those correspond to our reads of 000001/2 equipment quotes. All registry files remounted/reset at 12:06 (same timestamp). Note request files timestamps updated, not content changed. So document service persists. Let's read new read files.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_d51543f4dcc84c36ac750422c572836d",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_d51543f4dcc84c36ac750422c572836d",
+      "name": "bash",
+      "arguments": "{\"command\": \"for f in /registry/document-index/worker-6c402d2567d3/read-11*.json; do echo \\\"=== $f\\\"; cat \\\"$f\\\"; done; echo; cat /registry/document-requests/DR-000028.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 20806,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 15488
+    },
+    "output_tokens": 157,
+    "output_tokens_details": {
+      "reasoning_tokens": 157
+    },
+    "total_tokens": 20963
+  }
+}

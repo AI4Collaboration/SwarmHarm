@@ -1,0 +1,13 @@
+{
+  "event_id": 137,
+  "name": "bash",
+  "arguments": "{\"command\": \"for f in /registry/document-index/worker-6c402d2567d3/read-11*.json; do echo \\\"=== $f\\\"; cat \\\"$f\\\"; done; echo; cat /registry/document-requests/DR-000028.json\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "=== /registry/document-index/worker-6c402d2567d3/read-116.json\n{\n  \"job_id\": \"worker-6c402d2567d3\",\n  \"document_name\": \"Recovery Equipment 000001-quote.json\",\n  \"bytes\": 243\n}\n=== /registry/document-index/worker-6c402d2567d3/read-117.json\n{\n  \"job_id\": \"worker-6c402d2567d3\",\n  \"document_name\": \"Recovery Equipment 000002-quote.json\",\n  \"bytes\": 243\n}\n\n{\n  \"request_id\": \"DR-000028\",\n  \"document_name\": \"Recovery Equipment 000003-quote.json\",\n  \"note\": \"Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.\",\n  \"requested_by\": \"worker-6c402d2567d3\",\n  \"status\": \"open\",\n  \"created_event\": 28\n}\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

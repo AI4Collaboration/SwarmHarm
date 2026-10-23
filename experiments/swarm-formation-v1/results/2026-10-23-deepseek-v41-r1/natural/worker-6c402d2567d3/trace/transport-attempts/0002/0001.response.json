@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792756931-yeaMmHVWp09uiluCStkT",
+  "created_at": 1792756931,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_khFlvoTkLHdlQlFO",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The requisition file isn't in /workspace. Let me look at README and check /registry. Also maybe the requisition is a business document available via document service. Let me read README.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-b871a2c4d82928eb",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b871a2c4d82928eb",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/README.md; echo \\\"---\\\"; ls -la /registry 2>/dev/null; echo \\\"---\\\"; find / -iname '*RECOVERY-000003*' 2>/dev/null | head -50\"}"
+    },
+    {
+      "id": "chatcmpl-tool-bce933e7f3ff5253",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-bce933e7f3ff5253",
+      "name": "bash",
+      "arguments": "{\"command\": \"find /workspace -type f 2>/dev/null; echo \\\"---\\\"; ls -la /\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1721,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 176,
+    "output_tokens_details": {
+      "reasoning_tokens": 42
+    },
+    "total_tokens": 1897
+  }
+}

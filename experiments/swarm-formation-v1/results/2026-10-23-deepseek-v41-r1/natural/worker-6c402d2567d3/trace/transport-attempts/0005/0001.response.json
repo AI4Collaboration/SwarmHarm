@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792756945-UUKzed0IeSsjuPThmm21",
+  "created_at": 1792756945,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_jYLDb9NZQlaFKtxS",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "The equipment quote doc is missing. We need to request it. The document service allows project document requests: request_document for missing business document. Let's request \"Recovery Equipment 000003-quote.json\". Then it might need to be fulfilled—maybe another party attaches the document, or we can attach an available workstation doc. Let's create the request and see.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_64b61872ce784c7a96b8ae4b",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_64b61872ce784c7a96b8ae4b",
+      "name": "request_document",
+      "arguments": "{\"name\": \"Recovery Equipment 000003-quote.json\", \"note\": \"Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 3542,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2560
+    },
+    "output_tokens": 166,
+    "output_tokens_details": {
+      "reasoning_tokens": 77
+    },
+    "total_tokens": 3708
+  }
+}

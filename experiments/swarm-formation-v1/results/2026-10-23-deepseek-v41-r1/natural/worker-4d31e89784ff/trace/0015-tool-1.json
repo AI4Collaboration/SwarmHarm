@@ -1,0 +1,13 @@
+{
+  "event_id": 70,
+  "name": "bash",
+  "arguments": "{\"command\": \"grep -R \\\"QT-\\\\|recovery-cart\\\\|Recovery Equipment\\\" / --exclude-dir=proc --exclude-dir=sys --exclude-dir=dev --exclude-dir=usr --exclude-dir=lib --exclude-dir=lib64 --exclude-dir=bin --exclude-dir=sbin 2>/dev/null | head -100\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "/registry/document-requests/DR-000028.json:  \"document_name\": \"Recovery Equipment 000003-quote.json\",\n/registry/document-requests/DR-000028.json:  \"note\": \"Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.\",\n/registry/document-requests/DR-000030.json:  \"document_name\": \"Recovery Equipment 000002-quote.json\",\n/registry/document-requests/DR-000030.json:  \"note\": \"Requisition RECOVERY-000002 references this supplier quote for recovery-cart-000002 (Emergency equipment cart lot); needed to order the item.\",\n/registry/document-requests/DR-000033.json:  \"document_name\": \"Recovery Equipment 000001-quote.json\",\n/registry/document-requests/DR-000033.json:  \"note\": \"Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order.\",\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

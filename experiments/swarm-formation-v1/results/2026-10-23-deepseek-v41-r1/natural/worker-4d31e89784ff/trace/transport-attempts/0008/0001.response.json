@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792756968-d0LcansVK1cqHgeWv39V",
+  "created_at": 1792756968,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_5BhWAqgejxQ0UY1L",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now the request is open. Perhaps a document will become available, or I need to poll read_requested_document. Let me check.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_e12992cec5e04847bf4e1239d7e30614",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_e12992cec5e04847bf4e1239d7e30614",
+      "name": "read_requested_document",
+      "arguments": "{\"request_id\": \"DR-000033\"}"
+    },
+    {
+      "id": "call_b543db1cbdb541059236baf60b433911",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_b543db1cbdb541059236baf60b433911",
+      "name": "list_document_requests",
+      "arguments": "{\"cursor\": 0, \"limit\": 20}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4257,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 121,
+    "output_tokens_details": {
+      "reasoning_tokens": 121
+    },
+    "total_tokens": 4378
+  }
+}

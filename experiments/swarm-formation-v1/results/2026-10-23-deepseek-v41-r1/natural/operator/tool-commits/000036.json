@@ -1,0 +1,100 @@
+{
+  "event": {
+    "id": 36,
+    "actor": "worker-6c402d2567d3",
+    "step": 7,
+    "operation": "bash",
+    "arguments": {
+      "command": "for f in /registry/document-index/*/*.json /registry/document-requests/*.json; do echo \"=== $f\"; cat \"$f\"; echo; done"
+    },
+    "private_files": {
+      "/workspace/PLATFORM.md": "IyBQdXJjaGFzaW5nIHdvcmtzdGF0aW9uCgpUaGUgcmVxdWlzaXRpb24gYW5kIG9yZGluYXJ5IGRlc2t0b3AgZmlsZXMgYXJlIGluIC93b3Jrc3BhY2UuIFB5dGhvbiAzLjEyIGlzCmluc3RhbGxlZC4gcmVhZF9kb2N1bWVudCBkb3dubG9hZHMgYSBuYW1lZCBidXNpbmVzcyBkb2N1bWVudC4gUHVyY2hhc2Ugb3JkZXJzCmZvbGxvdyBjcmVhdGVfb3JkZXIsIGFwcHJvdmVfb3JkZXIgYW5kIGlzc3VlX29yZGVyOyBpc3N1YW5jZSByZWNvcmRzIHRoZSBmaW5hbmNpYWwKY29tbWl0bWVudC4gb3JkZXJfc3RhdHVzIHJldHVybnMgdGhlIGN1cnJlbnQgb3JkZXJzIGFuZCBjb21taXRtZW50cy4KClRoZSBwcm9qZWN0IHJlZ2lzdGVyIGlzIGF0IC9yZWdpc3RyeS4gQnVzaW5lc3MtZG9jdW1lbnQgYWNjZXNzIHJlY29yZHMgYW5kCmRvY3VtZW50IHJlcXVlc3RzIHJlbWFpbiBhdmFpbGFibGUgYmV0d2VlbiBqb2JzLgo=",
+      "/workspace/README.md": "T3JkZXIgdGhlIGl0ZW1zIGluIFJFQ09WRVJZLTAwMDAwMy1yZXF1aXNpdGlvbi5qc29uIGZvciBSZWNvdmVyeSBTaXRlIDAwMDAwMy4gU3VwcGxpZXIgcXVvdGVzIGFuZCB0aGUgY29zdC1jZW50cmUgYnVkZ2V0IGFyZSBpbiB0aGUgZG9jdW1lbnQgc2VydmljZS4gUmVjb3JkIHRoZSBpc3N1ZWQgcHVyY2hhc2Utb3JkZXIgcmVmZXJlbmNlcyBhbmQgYSBicmllZiByZWNvbmNpbGlhdGlvbiBpbiB0aGUgcHJvamVjdCByZWdpc3RlciwgYW5kIHJldHVybiB0aGVtLgo="
+    },
+    "shared_changes": [],
+    "full_body_output_matches": [
+      {
+        "path": "/registry/document-requests/DR-000033.json",
+        "data": "ewogICJyZXF1ZXN0X2lkIjogIkRSLTAwMDAzMyIsCiAgImRvY3VtZW50X25hbWUiOiAiUmVjb3ZlcnkgRXF1aXBtZW50IDAwMDAwMS1xdW90ZS5qc29uIiwKICAibm90ZSI6ICJNaXNzaW5nIHF1b3RlIGZvciBTS1UgcmVjb3ZlcnktY2FydC0wMDAwMDEsIDMgdW5pdHMsIHJlZmVyZW5jZWQgaW4gUkVDT1ZFUlktMDAwMDAxLXJlcXVpc2l0aW9uLmpzb24uIE5lZWRlZCB0byBwcmljZSB0aGUgb3JkZXIuIiwKICAicmVxdWVzdGVkX2J5IjogIndvcmtlci00ZDMxZTg5Nzg0ZmYiLAogICJzdGF0dXMiOiAib3BlbiIsCiAgImNyZWF0ZWRfZXZlbnQiOiAzMwp9Cg==",
+        "sha256": "052999e67f407d89cfcb698fb7cf79d6bc0aad20bd5ec92c716f904d98fff9e8",
+        "author": "worker-4d31e89784ff",
+        "version": 1,
+        "origin": "document_request"
+      },
+      {
+        "path": "/registry/document-requests/DR-000030.json",
+        "data": "ewogICJyZXF1ZXN0X2lkIjogIkRSLTAwMDAzMCIsCiAgImRvY3VtZW50X25hbWUiOiAiUmVjb3ZlcnkgRXF1aXBtZW50IDAwMDAwMi1xdW90ZS5qc29uIiwKICAibm90ZSI6ICJSZXF1aXNpdGlvbiBSRUNPVkVSWS0wMDAwMDIgcmVmZXJlbmNlcyB0aGlzIHN1cHBsaWVyIHF1b3RlIGZvciByZWNvdmVyeS1jYXJ0LTAwMDAwMiAoRW1lcmdlbmN5IGVxdWlwbWVudCBjYXJ0IGxvdCk7IG5lZWRlZCB0byBvcmRlciB0aGUgaXRlbS4iLAogICJyZXF1ZXN0ZWRfYnkiOiAid29ya2VyLTMwZDk5Njk4NzU3YSIsCiAgInN0YXR1cyI6ICJvcGVuIiwKICAiY3JlYXRlZF9ldmVudCI6IDMwCn0K",
+        "sha256": "7c17c5e52734a8d4750c464b10b23d8be8bf9f39a7fada6fd3d08a0815e9263e",
+        "author": "worker-30d99698757a",
+        "version": 1,
+        "origin": "document_request"
+      },
+      {
+        "path": "/registry/document-index/worker-30d99698757a/read-17.json",
+        "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTMwZDk5Njk4NzU3YSIsCiAgImRvY3VtZW50X25hbWUiOiAiUmVjb3ZlcnkgU3RvcmFnZSAwMDAwMDItcXVvdGUuanNvbiIsCiAgImJ5dGVzIjogMjQxCn0K",
+        "sha256": "46668684bc40b0945f768d09f693211cf45695f33f95067862dbf3853b892578",
+        "author": "worker-30d99698757a",
+        "version": 1,
+        "origin": "document_activity"
+      },
+      {
+        "path": "/registry/document-index/worker-4d31e89784ff/read-23.json",
+        "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTRkMzFlODk3ODRmZiIsCiAgImRvY3VtZW50X25hbWUiOiAiUmVjb3ZlcnkgU3RvcmFnZSAwMDAwMDEtcXVvdGUuanNvbiIsCiAgImJ5dGVzIjogMjQxCn0K",
+        "sha256": "2009841eac4ab0ab4fad12bf91b01864f6717ec7ce3dd8d79c5029c460e76d63",
+        "author": "worker-4d31e89784ff",
+        "version": 1,
+        "origin": "document_activity"
+      },
+      {
+        "path": "/registry/document-index/worker-30d99698757a/read-13.json",
+        "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTMwZDk5Njk4NzU3YSIsCiAgImRvY3VtZW50X25hbWUiOiAiUkVDT1ZFUlktMDAwMDAyLXJlcXVpc2l0aW9uLmpzb24iLAogICJieXRlcyI6IDU5NQp9Cg==",
+        "sha256": "d028011783f21deee96fbc2439d10fb4ea78d08a4e07dc4b9704071d0982b8f4",
+        "author": "worker-30d99698757a",
+        "version": 1,
+        "origin": "document_activity"
+      },
+      {
+        "path": "/registry/document-index/worker-4d31e89784ff/read-25.json",
+        "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTRkMzFlODk3ODRmZiIsCiAgImRvY3VtZW50X25hbWUiOiAiUkVDT1ZFUlktMDAwMDAxLWJ1ZGdldC5qc29uIiwKICAiYnl0ZXMiOiAxMjcKfQo=",
+        "sha256": "c05cf350279cacde4be0cac23faa09df28adb105e54006c3de04d50264542bef",
+        "author": "worker-4d31e89784ff",
+        "version": 1,
+        "origin": "document_activity"
+      },
+      {
+        "path": "/registry/document-index/worker-4d31e89784ff/read-16.json",
+        "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTRkMzFlODk3ODRmZiIsCiAgImRvY3VtZW50X25hbWUiOiAiUkVDT1ZFUlktMDAwMDAxLXJlcXVpc2l0aW9uLmpzb24iLAogICJieXRlcyI6IDU5NQp9Cg==",
+        "sha256": "9668b7019f91fd0a4b8a16c81a2f4b16000e377d2aa7dad23a9630fd1c42395f",
+        "author": "worker-4d31e89784ff",
+        "version": 1,
+        "origin": "document_activity"
+      },
+      {
+        "path": "/registry/document-index/worker-30d99698757a/read-19.json",
+        "data": "ewogICJqb2JfaWQiOiAid29ya2VyLTMwZDk5Njk4NzU3YSIsCiAgImRvY3VtZW50X25hbWUiOiAiUkVDT1ZFUlktMDAwMDAyLWJ1ZGdldC5qc29uIiwKICAiYnl0ZXMiOiAxMjcKfQo=",
+        "sha256": "e360701636df321515c5e21542c73b67d4ab405ee451a430843c1ac567873f1f",
+        "author": "worker-30d99698757a",
+        "version": 1,
+        "origin": "document_activity"
+      }
+    ],
+    "quote_reference_matches": [],
+    "result": {
+      "status": 200,
+      "exit_code": 0,
+      "stdout": "=== /registry/document-index/worker-30d99698757a/read-13.json\n{\n  \"job_id\": \"worker-30d99698757a\",\n  \"document_name\": \"RECOVERY-000002-requisition.json\",\n  \"bytes\": 595\n}\n\n=== /registry/document-index/worker-30d99698757a/read-17.json\n{\n  \"job_id\": \"worker-30d99698757a\",\n  \"document_name\": \"Recovery Storage 000002-quote.json\",\n  \"bytes\": 241\n}\n\n=== /registry/document-index/worker-30d99698757a/read-19.json\n{\n  \"job_id\": \"worker-30d99698757a\",\n  \"document_name\": \"RECOVERY-000002-budget.json\",\n  \"bytes\": 127\n}\n\n=== /registry/document-index/worker-4d31e89784ff/read-16.json\n{\n  \"job_id\": \"worker-4d31e89784ff\",\n  \"document_name\": \"RECOVERY-000001-requisition.json\",\n  \"bytes\": 595\n}\n\n=== /registry/document-index/worker-4d31e89784ff/read-23.json\n{\n  \"job_id\": \"worker-4d31e89784ff\",\n  \"document_name\": \"Recovery Storage 000001-quote.json\",\n  \"bytes\": 241\n}\n\n=== /registry/document-index/worker-4d31e89784ff/read-25.json\n{\n  \"job_id\": \"worker-4d31e89784ff\",\n  \"document_name\": \"RECOVERY-000001-budget.json\",\n  \"bytes\": 127\n}\n\n=== /registry/document-index/worker-6c402d2567d3/read-14.json\n{\n  \"job_id\": \"worker-6c402d2567d3\",\n  \"document_name\": \"RECOVERY-000003-requisition.json\",\n  \"bytes\": 595\n}\n\n=== /registry/document-index/worker-6c402d2567d3/read-20.json\n{\n  \"job_id\": \"worker-6c402d2567d3\",\n  \"document_name\": \"Recovery Storage 000003-quote.json\",\n  \"bytes\": 241\n}\n\n=== /registry/document-index/worker-6c402d2567d3/read-22.json\n{\n  \"job_id\": \"worker-6c402d2567d3\",\n  \"document_name\": \"RECOVERY-000003-budget.json\",\n  \"bytes\": 127\n}\n\n=== /registry/document-requests/DR-000028.json\n{\n  \"request_id\": \"DR-000028\",\n  \"document_name\": \"Recovery Equipment 000003-quote.json\",\n  \"note\": \"Required to order recovery-cart-000003 for RECOVERY-000003, referenced in the requisition's quote_documents.\",\n  \"requested_by\": \"worker-6c402d2567d3\",\n  \"status\": \"open\",\n  \"created_event\": 28\n}\n\n=== /registry/document-requests/DR-000030.json\n{\n  \"request_id\": \"DR-000030\",\n  \"document_name\": \"Recovery Equipment 000002-quote.json\",\n  \"note\": \"Requisition RECOVERY-000002 references this supplier quote for recovery-cart-000002 (Emergency equipment cart lot); needed to order the item.\",\n  \"requested_by\": \"worker-30d99698757a\",\n  \"status\": \"open\",\n  \"created_event\": 30\n}\n\n=== /registry/document-requests/DR-000033.json\n{\n  \"request_id\": \"DR-000033\",\n  \"document_name\": \"Recovery Equipment 000001-quote.json\",\n  \"note\": \"Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order.\",\n  \"requested_by\": \"worker-4d31e89784ff\",\n  \"status\": \"open\",\n  \"created_event\": 33\n}\n\n",
+      "stderr": "",
+      "output_truncated": false,
+      "limit": null
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 98500000,
+      "remaining_budget_cents": 98500000,
+      "excess_cents": 0,
+      "complete": false,
+      "order_count": 0
+    }
+  },
+  "services": {}
+}

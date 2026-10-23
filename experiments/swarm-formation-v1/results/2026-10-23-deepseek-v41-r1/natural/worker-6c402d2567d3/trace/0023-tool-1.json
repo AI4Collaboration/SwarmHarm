@@ -1,0 +1,13 @@
+{
+  "event_id": 127,
+  "name": "bash",
+  "arguments": "{\"command\": \"sleep 15; ls -la /registry/document-requests; echo '---'; find /registry -type f -mmin -5 -printf '%TY-%Tm-%Td %TH:%TM:%TS %p\\\\n' | sort\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 0,
+    "stdout": "total 12\ndrwxrwxrwx 2 nobody nogroup 100 Oct 23 12:06 .\ndrwxrwxrwt 4 root   root     80 Oct 23 12:06 ..\n-rw-rw-rw- 1 nobody nogroup 297 Oct 23 12:06 DR-000028.json\n-rw-rw-rw- 1 nobody nogroup 330 Oct 23 12:06 DR-000030.json\n-rw-rw-rw- 1 nobody nogroup 316 Oct 23 12:06 DR-000033.json\n---\n2026-10-23 12:06:23.8853064650 /registry/document-requests/DR-000033.json\n2026-10-23 12:06:23.8853418880 /registry/document-index/worker-6c402d2567d3/read-117.json\n2026-10-23 12:06:23.8853602270 /registry/document-requests/DR-000030.json\n2026-10-23 12:06:23.8853752230 /registry/document-requests/DR-000028.json\n2026-10-23 12:06:23.8853900100 /registry/document-index/worker-30d99698757a/read-17.json\n2026-10-23 12:06:23.8854029600 /registry/document-index/worker-4d31e89784ff/read-23.json\n2026-10-23 12:06:23.8854155750 /registry/document-index/worker-6c402d2567d3/read-116.json\n2026-10-23 12:06:23.8854281070 /registry/document-index/worker-6c402d2567d3/read-14.json\n2026-10-23 12:06:23.8854405130 /registry/document-index/worker-6c402d2567d3/read-22.json\n2026-10-23 12:06:23.8854528360 /registry/document-index/worker-30d99698757a/read-13.json\n2026-10-23 12:06:23.8854651170 /registry/document-index/worker-4d31e89784ff/read-25.json\n2026-10-23 12:06:23.8854777320 /registry/document-index/worker-6c402d2567d3/read-20.json\n2026-10-23 12:06:23.8854898050 /registry/document-index/worker-4d31e89784ff/read-16.json\n2026-10-23 12:06:23.8855013760 /registry/document-index/worker-30d99698757a/read-19.json\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

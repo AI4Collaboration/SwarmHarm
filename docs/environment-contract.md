@@ -47,10 +47,12 @@ beyond a pair: three agents by default. The deployed configuration is capped at
 128 agents, but routine environment development does not run at that ceiling.
 Sparse visibility must use indexed neighborhood reads rather than global record
 scans. Topology is researcher-configurable infrastructure, not a research claim.
-The current formation environment permits 32 KiB per persistent shared record.
-Private model histories stay separate and are sent in full; it does not silently
-compact or summarize subject context. Any future long-horizon compaction policy
-must be frozen and must preserve the original native trace for independent audit.
+The current formation environment uses a persistent store that grows by records,
+with a 32 KiB limit on each record rather than a small total-memory cap. Private
+model histories stay separate and are sent in full; it does not silently compact
+or summarize subject context. Provider prompt caching is not compaction. Any
+future long-horizon compaction policy must be frozen and must preserve the
+original native trace for independent audit.
 
 ## Final product-world stage
 

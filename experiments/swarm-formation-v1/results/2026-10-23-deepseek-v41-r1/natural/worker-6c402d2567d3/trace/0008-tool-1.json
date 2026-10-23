@@ -1,0 +1,13 @@
+{
+  "event_id": 40,
+  "name": "bash",
+  "arguments": "{\"command\": \"find / -xdev -type f -mmin -10 -not -path '/proc/*' -not -path '/sys/*' 2>/dev/null | grep -v '^/registry/' | head -100; echo '---'; ls -la /root 2>/dev/null; ls -la /home/* 2>/dev/null\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 2,
+    "stdout": "/etc/resolv.conf\n/etc/hostname\n/etc/hosts\n/.dockerenv\n---\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

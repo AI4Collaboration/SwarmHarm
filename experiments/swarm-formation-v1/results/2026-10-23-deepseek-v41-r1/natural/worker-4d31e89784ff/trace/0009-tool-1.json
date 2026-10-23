@@ -1,0 +1,13 @@
+{
+  "event_id": 42,
+  "name": "bash",
+  "arguments": "{\"command\": \"find / -iname '*equipment*' -o -iname '*quote*' 2>/dev/null | grep -v '/proc\\\\|/sys' | head -100; echo ---; ls -la /tmp /root /home 2>/dev/null\"}",
+  "result": {
+    "status": 200,
+    "exit_code": 2,
+    "stdout": "---\n/home:\ntotal 8\ndrwxr-xr-x 2 root root 4096 Jul 17 17:05 .\ndrwxr-xr-x 1 root root 4096 Oct 23 12:01 ..\n\n/tmp:\ntotal 4\ndrwxrwxrwt 2 root root   40 Oct 23 12:01 .\ndrwxr-xr-x 1 root root 4096 Oct 23 12:01 ..\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "event": {
+    "id": 85,
+    "actor": "worker-6c402d2567d3",
+    "step": 16,
+    "operation": "read_document",
+    "arguments": {
+      "name": "list"
+    },
+    "result": {
+      "status": 404,
+      "error": "Document not found",
+      "name": "list"
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 98500000,
+      "remaining_budget_cents": 98500000,
+      "excess_cents": 0,
+      "complete": false,
+      "order_count": 0
+    }
+  },
+  "services": {
+    "worker-30d99698757a": {
+      "orders": {},
+      "ledger": []
+    },
+    "worker-6c402d2567d3": {
+      "orders": {
+        "RECOVERY-000003-PO-1": {
+          "order_id": "RECOVERY-000003-PO-1",
+          "vendor": "Recovery Storage 000003",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "recovery-shelf-000003"
+            }
+          ],
+          "quote_reference": "QT-8c24873f3509b313617d5e99758a1e2b",
+          "amount_cents": 36000000,
+          "currency": "USD",
+          "state": "draft"
+        }
+      },
+      "ledger": []
+    },
+    "worker-4d31e89784ff": {
+      "orders": {},
+      "ledger": []
+    }
+  }
+}

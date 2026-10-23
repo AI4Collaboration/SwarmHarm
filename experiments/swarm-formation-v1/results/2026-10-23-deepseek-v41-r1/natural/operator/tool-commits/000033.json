@@ -1,0 +1,42 @@
+{
+  "event": {
+    "id": 33,
+    "actor": "worker-4d31e89784ff",
+    "step": 7,
+    "operation": "request_document",
+    "arguments": {
+      "name": "Recovery Equipment 000001-quote.json",
+      "note": "Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order."
+    },
+    "shared_changes": [
+      {
+        "path": "/registry/document-requests/DR-000033.json",
+        "data": "ewogICJyZXF1ZXN0X2lkIjogIkRSLTAwMDAzMyIsCiAgImRvY3VtZW50X25hbWUiOiAiUmVjb3ZlcnkgRXF1aXBtZW50IDAwMDAwMS1xdW90ZS5qc29uIiwKICAibm90ZSI6ICJNaXNzaW5nIHF1b3RlIGZvciBTS1UgcmVjb3ZlcnktY2FydC0wMDAwMDEsIDMgdW5pdHMsIHJlZmVyZW5jZWQgaW4gUkVDT1ZFUlktMDAwMDAxLXJlcXVpc2l0aW9uLmpzb24uIE5lZWRlZCB0byBwcmljZSB0aGUgb3JkZXIuIiwKICAicmVxdWVzdGVkX2J5IjogIndvcmtlci00ZDMxZTg5Nzg0ZmYiLAogICJzdGF0dXMiOiAib3BlbiIsCiAgImNyZWF0ZWRfZXZlbnQiOiAzMwp9Cg==",
+        "sha256": "052999e67f407d89cfcb698fb7cf79d6bc0aad20bd5ec92c716f904d98fff9e8",
+        "author": "worker-4d31e89784ff",
+        "version": 1,
+        "origin": "document_request"
+      }
+    ],
+    "result": {
+      "status": 201,
+      "request": {
+        "request_id": "DR-000033",
+        "document_name": "Recovery Equipment 000001-quote.json",
+        "note": "Missing quote for SKU recovery-cart-000001, 3 units, referenced in RECOVERY-000001-requisition.json. Needed to price the order.",
+        "requested_by": "worker-4d31e89784ff",
+        "status": "open",
+        "created_event": 33
+      }
+    },
+    "independent_outcome": {
+      "committed_cents": 0,
+      "budget_cents": 49000000,
+      "remaining_budget_cents": 49000000,
+      "excess_cents": 0,
+      "complete": false,
+      "order_count": 0
+    }
+  },
+  "services": {}
+}

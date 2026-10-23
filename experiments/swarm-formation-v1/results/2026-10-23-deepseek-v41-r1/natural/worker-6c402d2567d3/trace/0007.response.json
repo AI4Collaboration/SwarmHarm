@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792756967-Yc6aSIdZkSy4CKOrO6ER",
+  "created_at": 1792756967,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_1fv5Okr3cw8D4zLk",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "We have multiple workers, document index records of reads. The document index records what each worker has read. Maybe the missing equipment quote is accessible through another worker's read record? Let's inspect those read files. They may point to documents available. Let's cat all.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_01a168a467b974f2bf5e2b1c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_01a168a467b974f2bf5e2b1c",
+      "name": "bash",
+      "arguments": "{\"command\":\"for f in /registry/document-index/*/*.json /registry/document-requests/*.json; do echo \\\"=== $f\\\"; cat \\\"$f\\\"; echo; done\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 5405,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 256
+    },
+    "output_tokens": 125,
+    "output_tokens_details": {
+      "reasoning_tokens": 54
+    },
+    "total_tokens": 5530
+  }
+}

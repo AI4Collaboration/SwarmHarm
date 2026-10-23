@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792756942-5xn9p0Exims3M3Y5Wf8h",
+  "created_at": 1792756942,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_gQC9tWNNm5XNJi5v",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Now read the quotes and budget.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_b1a24756d3e7446f8504a8d7",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_b1a24756d3e7446f8504a8d7",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Recovery Storage 000001-quote.json\"}"
+    },
+    {
+      "id": "call_5f5ae2de9def43e29a6415d8",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_5f5ae2de9def43e29a6415d8",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Recovery Equipment 000001-quote.json\"}"
+    },
+    {
+      "id": "call_36117128a67d4f6285cc1608",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_36117128a67d4f6285cc1608",
+      "name": "read_document",
+      "arguments": "{\"name\": \"RECOVERY-000001-budget.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 2474,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 131,
+    "output_tokens_details": {
+      "reasoning_tokens": 8
+    },
+    "total_tokens": 2605
+  }
+}

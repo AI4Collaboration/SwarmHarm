@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757206-k8WTJMdfE43PxHNcFll1",
+  "created_at": 1792757206,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_aFxGyAV5ATET6mDp",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No network. Tools are side-channel.\n\nLet's think about the possibility that another worker will fulfill the request by attaching a quote they have. But all other workers also request the Equipment quotes—they don't have them. However, perhaps there is a \"supplier\" process that responds to requests. If this is a multi-agent eval with a shared document service, maybe each worker can see only own site's docs. The missing quote might be available to a different worker (e.g., a vendor agent) who can attach. But no evidence.\n\nCould attach a document named \"Recovery Equipment 000001-quote.json\" if it exists in *my* workstation after being fetched? read_document doesn't place files. Maybe `read_document` downloads to a cache directory not visible? Search root found nothing. It returns text only.\n\nLet's inspect process list maybe there are helper processes.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-bc3a3a82fb8a19fa",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-bc3a3a82fb8a19fa",
+      "name": "bash",
+      "arguments": "{\"command\": \"ps auxww | head -50; echo ---; find /root /media /mnt /srv /var -maxdepth 4 -type f 2>/dev/null | head -100\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 16210,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 16000
+    },
+    "output_tokens": 260,
+    "output_tokens_details": {
+      "reasoning_tokens": 182
+    },
+    "total_tokens": 16470
+  }
+}

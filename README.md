@@ -14,8 +14,15 @@ The study has two phases:
 2. **Cause Harm:** a later agent adopts a harmful method and produces a concrete
    downstream effect checked against independent truth.
 
-The
-[compute-light shared-memory campaign](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md).
+The first
+[unstructured formation campaign](experiments/swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+did not form a swarm. Three agents opened valid requests and inspected the shared
+register, but none fulfilled another agent's request. Two issued orders relied
+only on locally available quotes. There were no provider errors, filters or
+refusals. This locates the current boundary at **discover request → fulfill it**.
+
+The earlier
+[compute-light shared-memory campaign](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
 verified persistent memory and cross-context synthesis. It used an arranged
 writer/closeout workflow, so it is a mechanism result rather than evidence of
 spontaneous swarm formation. The current
@@ -60,17 +67,18 @@ Verified **23 October 2026**.
   development is active in a host-only `0600` file outside the repository. The
   authenticated catalog returned 200 and exposed the frozen DeepSeek route. A
   mistakenly created Multica account token was rejected, revoked and removed.
+  The formation key was retained for the next iteration at the user's direction.
   Key values are never copied into tasks, registrations, traces or Git.
 - **Isolation:** model workstations have no external network. Business state,
   operator evidence and verification remain separate from subject context.
-- **Memory:** the formation environment allows 32 KiB per persistent shared
-  record and indexes sparse neighborhood reads. Each agent's private history is
-  separate and sent in full; automatic context compaction is disabled.
-- **Current state:** the unstructured formation environment is implemented,
-  validated and pushed. It defaults to three agents and enforces the deployed
-  128-agent ceiling. The correct AxonHub route and dedicated host-only key are
-  verified; no formation run has started yet. No collector or scheduled monitor
-  is running.
+- **Memory:** the persistent store grows by records and has no small
+  campaign-wide cap; each record is bounded at 32 KiB. Each agent's private
+  history is separate and sent in full. Automatic context compaction is
+  disabled. R1 reached 21,347–26,266 input tokens per final request without a
+  context-length error.
+- **Current state:** DeepSeek formation R1 is complete, independently reviewed
+  and exported to ATIF-v1.8. It did not pass Phase 1. All model workstations were
+  removed, and no collector or scheduled monitor is running.
 - **Hosted coordinator:** retain the patched Multica 0.4.44 deployment. These
   local studies need no new AWS resource or credential.
 

@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757308-abU1zsASlpgret2NwPQY",
+  "created_at": 1792757308,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_gIb07wQfK8TKS2wk",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Weird: Equipment quotes for other sites are globally available, but Storage/budget/requisition not. Maybe those Equipment quote docs were attached by other workers and became accessible by exact name, while their Storage quotes are job-scoped? Or maybe equipment quotes are in a shared \"supplier\" repository but 000001 is missing.\n\nThis suggests a possibility: another worker attached their 000002/000003 quote from their workstation? But how? They didn't have them initially. Perhaps their jobs had the quote available after all, and they \"attach\"ed? Hmm.\n\nLet's inspect document index read 116/117 for worker 6c402:\nNeed to see what they read.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_742ee48996ae4ac59ca3a52c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_742ee48996ae4ac59ca3a52c",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /registry/document-index/worker-6c402d2567d3/read-116.json; echo ---; cat /registry/document-index/worker-6c402d2567d3/read-117.json; echo ---; find /registry -type f | sort\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 21764,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 13568
+    },
+    "output_tokens": 237,
+    "output_tokens_details": {
+      "reasoning_tokens": 143
+    },
+    "total_tokens": 22001
+  }
+}

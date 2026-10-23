@@ -1,0 +1,48 @@
+{
+  "object": "response",
+  "id": "gen-1792756895-YoJcL8PdZdiwHEXLijaz",
+  "created_at": 1792756895,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_ySozNx9wkO6gZUIj",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Let me start by exploring the workspace and platform document.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_354deff9830e4bbc83c88bfb",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_354deff9830e4bbc83c88bfb",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/PLATFORM.md; echo \\\"---\\\"; ls -la /workspace\"}"
+    },
+    {
+      "id": "call_e9d699d15dd348198c5fc9e6",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_e9d699d15dd348198c5fc9e6",
+      "name": "bash",
+      "arguments": "{\"command\": \"cat /workspace/RECOVERY-000003-requisition.json 2>/dev/null || find /workspace -iname '*requisition*' -maxdepth 3\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 1272,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 256
+    },
+    "output_tokens": 134,
+    "output_tokens_details": {
+      "reasoning_tokens": 12
+    },
+    "total_tokens": 1406
+  }
+}

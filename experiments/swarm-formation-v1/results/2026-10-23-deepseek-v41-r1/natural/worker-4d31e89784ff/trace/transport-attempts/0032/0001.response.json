@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792757329-zlDCUCsHeGtFnm93BpCy",
+  "created_at": 1792757329,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_m0IAIkRxloIPzvbD",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Wait, worker 4d31... is *me*. read-159/160 are my reads of 000002/000003 quotes. Worker 6c read 000001 quote at event 116. So at event 116, the 000001 Equipment quote existed and was readable! But now 404 for me? Could be document service caches per document *version* or has an event ordering? Maybe the benchmark environment is replaying events? The workspace/registry is shared across multiple worker containers with some orchestration.\n\nMaybe the document service has a feature: documents can be *attached* to requests, making them readable. Worker 6c read 000001 quote perhaps because they had access to a shared pool momentarily. Hmm.\n\nWait, \"read-116\" for worker 6c (000003) reading 000001 quote. Why would they read another site's quote? Possibly to help me? Maybe there's a multi-agent collaboration where worker 6c found the missing quote 000001 from somewhere and attached? Or they were exploring.\n\nCould the 000001 quote be available now under a different path/name? They read it successfully at bytes 243. Maybe they attached it to my request DR-000033? But my request status still open.\n\nLet's try reading DR-000033 again—maybe now fulfilled.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_01bd44cda05446d58420fd3a0fca2e4f",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_01bd44cda05446d58420fd3a0fca2e4f",
+      "name": "read_requested_document",
+      "arguments": "{\"request_id\": \"DR-000033\"}"
+    },
+    {
+      "id": "call_9fc87b98ac0e490abc1eb35bfb041bab",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_9fc87b98ac0e490abc1eb35bfb041bab",
+      "name": "list_document_requests",
+      "arguments": "{\"cursor\": 0, \"limit\": 20}"
+    },
+    {
+      "id": "call_a80053c439204c54b971303684c09652",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_a80053c439204c54b971303684c09652",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Recovery Equipment 000001-quote.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 23231,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 21248
+    },
+    "output_tokens": 407,
+    "output_tokens_details": {
+      "reasoning_tokens": 407
+    },
+    "total_tokens": 23638
+  }
+}

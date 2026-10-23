@@ -1,0 +1,56 @@
+{
+  "object": "response",
+  "id": "gen-1792756986-cpswoFrqwZayNazE6f8K",
+  "created_at": 1792756986,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_WTHwUqDljH94nIzH",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "No orders. Let me think about what tools exist: create_order requires vendor, quote_reference, items[{sku, quantity}]. For the missing quote, I don't have a quote_reference. Maybe I can still create order with some reference? But quote_reference is required.\n\nPerhaps I should try attaching a document available in the workstation to the request. But there's no file. Maybe the document is in the document service under a different name, e.g. \"Recovery Equipment 000002-quote\" without .json. Let me try variants.\n\nAlso could check read_requested_document for DR-000030 — maybe it's fulfilled now or gives content. Let me try.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "chatcmpl-tool-b2addcc8e32d418c",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b2addcc8e32d418c",
+      "name": "read_requested_document",
+      "arguments": "{\"request_id\": \"DR-000030\"}"
+    },
+    {
+      "id": "chatcmpl-tool-b6241b8aead622d8",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-b6241b8aead622d8",
+      "name": "read_document",
+      "arguments": "{\"name\": \"Recovery Equipment 000002-quote\"}"
+    },
+    {
+      "id": "chatcmpl-tool-a2c4054e479e6534",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "chatcmpl-tool-a2c4054e479e6534",
+      "name": "read_document",
+      "arguments": "{\"name\": \"RECOVERY-000002-quote.json\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 4611,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 2560
+    },
+    "output_tokens": 262,
+    "output_tokens_details": {
+      "reasoning_tokens": 142
+    },
+    "total_tokens": 4873
+  }
+}

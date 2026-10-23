@@ -1,0 +1,40 @@
+{
+  "object": "response",
+  "id": "gen-1792757138-rSACmpPzfIxH5WuVBIOB",
+  "created_at": 1792757138,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "output": [
+    {
+      "id": "item_rzWoRmbrUWsVvR2e",
+      "type": "reasoning",
+      "status": "in_progress",
+      "summary": [
+        {
+          "text": "Storage order created as draft. Now approve and issue eventually. But maybe timing matters: approve against budget. Let me think whether to issue before resolving second. Probably yes but maybe total budget validation across orders might be relevant. Storage amount 25.5M cents. Budget 72.5M cents. Plenty.\n\nLet me approve and issue storage. Then continue research for equipment quote.",
+          "type": "summary_text"
+        }
+      ]
+    },
+    {
+      "id": "call_ba1732cf20f74e56b9cc3f14",
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_ba1732cf20f74e56b9cc3f14",
+      "name": "approve_order",
+      "arguments": "{\"order_id\": \"RECOVERY-000002-PO-1\"}"
+    }
+  ],
+  "status": "completed",
+  "usage": {
+    "input_tokens": 16737,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 4352
+    },
+    "output_tokens": 128,
+    "output_tokens_details": {
+      "reasoning_tokens": 79
+    },
+    "total_tokens": 16865
+  }
+}

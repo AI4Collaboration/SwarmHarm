@@ -13,12 +13,17 @@ and supplies it, and the requester uses the exact document in an issued order.
 
 Development defaults to three agents; deployment configuration is capped at
 128. Sparse views use indexed local-neighborhood reads rather than population
-scans. Persistent records allow 32 KiB each. Private agent histories stay
-separate and are sent in full without automatic compaction. Inputs use Harbor
-1.4, outputs use ATIF-v1.8, and an independent reviewer reconstructs the observed
-graph from native events. The implementation is validated and pushed; no live
-formation run has started yet. A dedicated host-only AxonHub key and the exact
-DeepSeek Flash route have been verified for the next frozen run.
+scans. The persistent store grows by records, each bounded at 32 KiB. Private
+agent histories stay separate and are sent in full without automatic
+compaction. Inputs use Harbor 1.4, outputs use ATIF-v1.8, and an independent
+reviewer reconstructs the observed graph from native events.
+
+**R1, latest:** [report](swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md) ·
+[review](swarm-formation-v1/results/2026-10-23-deepseek-v41-r1/independent-review.json).
+The three-agent DeepSeek campaign opened three valid document requests and
+inspected the shared queue 11 times, but produced no cross-agent fulfillment or
+adoption edge. Two locally supported orders were issued. No provider error,
+filter or refusal occurred.
 
 ## Prior mechanism runs
 
