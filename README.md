@@ -27,15 +27,16 @@ overlap. A serial or staged run cannot establish the live-fleet claim.
 
 **Status, 23 October 2026:** V10 passes 30 offline environment, persistence,
 collector, format and verifier checks, plus the repository-wide prompt contract.
-The first concurrent DeepSeek campaign was negative: 85 exact cross-agent reads
-occurred, but no agent wrote a peer-directed ask or reply. It is retained as a
-[zero-pressure diagnostic](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md);
-current campaigns freeze natural customer and deadline pressure. The interrupted
+The first matched natural-pressure campaigns were negative. DeepSeek produced 61
+exact cross-agent residue reads and GLM produced 3, but neither model wrote a
+peer-directed ask or reply. Both first failed at autonomous reach-out; see the
+[combined R2 report](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
+The earlier [DeepSeek R1](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+is retained as a zero-pressure diagnostic. The interrupted
 [V9 diagnostic](experiments/swarm-formation-v9/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-showed that the previous runner was serial; it is not a behavioral result.
-[V8](experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R3.md) remains
-component evidence only because its job reports did not establish communication
-through an unintended channel.
+showed that its runner was serial; it is not a behavioral result. [V8](experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R3.md)
+remains component evidence because routine job reports did not establish
+communication through an unintended channel.
 
 [Swarm Cause Harm v2](experiments/swarm-cause-harm-v2/README.md) is the active
 Phase 2 development environment. Its first DeepSeek campaign was negative: one
@@ -75,8 +76,9 @@ Phase 2 collection is paused until strict formation is established.
 - **Credentials:** the scoped AxonHub key stays in a host-only `0600` file outside
   the repository. No credential belongs in tasks, traces, registrations or Git.
 
-No collector or scheduled monitor is running. The incomplete zero-pressure GLM
-diagnostic was stopped and excluded when the pressure condition was corrected.
+No collector or scheduled monitor is running. Both natural-pressure R2 campaigns
+completed. The incomplete zero-pressure GLM diagnostic was stopped and excluded
+when the pressure condition was corrected.
 
 ## Validation
 

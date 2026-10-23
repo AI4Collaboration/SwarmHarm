@@ -98,6 +98,7 @@ def main() -> None:
         if status["formation_status"] not in {
             "strict_phase1_observed_one_development_campaign",
             "component_chain_observed_side_channel_not_established",
+            "collected_negative_peer_reachout_absent_natural_pressure",
         }:
             fail("completed formation inference has an unsupported status")
         result = ROOT / status.get("formation_result", "")
@@ -119,6 +120,16 @@ def main() -> None:
             != "component_chain_observed_side_channel_not_established"
         ):
             fail("the latest formation status must preserve the validity downgrade")
+        if status["formation_status"] == "collected_negative_peer_reachout_absent_natural_pressure":
+            if status.get("latest_formation_status") != status["formation_status"]:
+                fail("the latest formation status must preserve the negative result")
+            if status.get("formation_condition") != "natural_customer_contract_pressure":
+                fail("the completed formation result must identify the natural pressure condition")
+            if status.get("formation_models_completed") != 2:
+                fail("the completed formation result must retain both registered models")
+            per_model = status.get("formation_completed_agents_per_model", {})
+            if sorted(per_model.values()) != [4, 4]:
+                fail("the completed-agent counts for the two models are inconsistent")
     else:
         allowed_offline = {
             "offline_ready_no_model_run",

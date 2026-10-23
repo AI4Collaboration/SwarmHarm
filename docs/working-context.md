@@ -22,11 +22,13 @@
 7. **Scale:** canonical development uses four concurrent contexts. Population and
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
-8. **Status:** V10's zero-pressure DeepSeek diagnostic had 85 exact cross-agent
-   reads but no peer-directed ask or reply. The partial zero-pressure GLM run was
-   stopped and excluded. Current V10 uses natural contract pressure. V9 was
-   serial; V8 remains component evidence. Cause Harm v2 R1 was negative. No
-   collector or scheduled monitor is active.
+8. **Status:** matched natural-pressure R2 campaigns are complete. DeepSeek had
+   61 exact cross-agent residue reads and GLM had 3, but neither wrote a
+   peer-directed ask or reply; both first failed at autonomous reach-out. The
+   zero-pressure DeepSeek R1 remains diagnostic evidence and the partial
+   zero-pressure GLM run was stopped and excluded. V9 was serial; V8 remains
+   component evidence. Cause Harm v2 R1 was negative. No collector or scheduled
+   monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced
    `sources/`, commit credentials or put experimental results on the public site.

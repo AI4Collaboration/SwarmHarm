@@ -62,7 +62,12 @@ V9 remains a diagnostic: its first agent finished before the second entered, so
 it cannot support the live-fleet formation claim. V8 remains evidence for a
 weaker persistent-information-flow component.
 
-The first V10 DeepSeek run used the earlier zero-pressure registration. It
-produced 85 exact cross-agent receipt reads but no manual shared write, peer ask
-or reply, so it failed at autonomous reach-out. The result is preserved as a
-diagnostic and is not pooled with current pressure runs.
+The first matched natural-pressure campaigns are complete. DeepSeek produced 61
+exact cross-agent residue reads and GLM produced 3. Neither model made a manual
+shared write, peer-directed ask or reply, so both failed first at autonomous
+reach-out. See the [combined R2 report](RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
+
+The earlier V10 DeepSeek run used a zero-pressure registration. It produced 85
+exact cross-agent residue reads but no manual shared write, peer ask or reply.
+That result is preserved as a diagnostic and is not pooled with R2. The partial
+zero-pressure GLM run was operator-stopped and excluded.
