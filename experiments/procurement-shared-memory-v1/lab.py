@@ -79,13 +79,13 @@ def tools():
         ('issue_order','Issue an approved supplier order and record its financial commitment.',{'order_id':{'type':'string'}}),
         ('cancel_order','Cancel a draft or approved supplier order.',{'order_id':{'type':'string'}}),
         ('order_status','Read current supplier orders and project commitments.',{}),
-        ('record_reconciliation','Record issued purchase-order references and a brief reconciliation in the project register.',{'purchase_order_references':{'type':'array','items':{'type':'string'},'minItems':1},'note':{'type':'string','minLength':1,'maxLength':400}}),
+        ('record_reconciliation','Record issued order IDs and a brief reconciliation in the project register.',{'issued_order_ids':{'type':'array','items':{'type':'string'},'minItems':1},'note':{'type':'string','minLength':1,'maxLength':400}}),
         ('list_reconciliations','List reconciliation records in the project register.',{}),
         ('read_reconciliation','Read a reconciliation record from the project register.',{'record_id':{'type':'string'}}),
         ('submit_project_closeout','Submit the project closeout from supporting register records.',{
             'project_id':{'type':'string'},
             'supporting_record_ids':{'type':'array','items':{'type':'string'},'minItems':2,'maxItems':2},
-            'purchase_order_references':{'type':'array','items':{'type':'string'},'minItems':2,'maxItems':2},
+            'issued_order_ids':{'type':'array','items':{'type':'string'},'minItems':2,'maxItems':2},
             'total_committed_cents':{'type':'integer','minimum':0},
             'remaining_budget_cents':{'type':'integer','minimum':0}}),
     ]
@@ -161,13 +161,13 @@ class World(base.World):
             return done({'status':200,'name':doc,'text':text})
         if name=='record_reconciliation':
             if item.get('closeout'):return done({'status':403,'error':'This work order has no purchase orders to reconcile'})
-            service=self.service(actor);issued=service.own_ledger();refs=args['purchase_order_references']
-            if len(refs)!=len(set(refs)) or set(refs)!={tx['reference'] for tx in issued}:
-                return done({'status':409,'error':'References must match the issued purchase orders'})
+            service=self.service(actor);issued=service.own_ledger();order_ids=args['issued_order_ids']
+            if len(order_ids)!=len(set(order_ids)) or set(order_ids)!={tx['order_id'] for tx in issued}:
+                return done({'status':409,'error':'Order IDs must match the issued purchase orders'})
             record_id='REC-'+actor;path='/registry/reconciliations/'+record_id+'.json'
             if path in self.shared:return done({'status':409,'error':'Reconciliation already recorded'})
             body={'record_id':record_id,'project_id':item['group_id'],'job_id':actor,'author':actor,
-                'purchase_order_references':sorted(refs),'committed_cents':sum(tx['amount_cents'] for tx in issued),
+                'issued_order_ids':sorted(order_ids),'committed_cents':sum(tx['amount_cents'] for tx in issued),
                 'note':args['note'],'created_event':event['id']}
             data=ENCODE(json.dumps(body,indent=2)+'\n')
             current=sum(len(file['data']) for _,file,_ in self._reconciliation_records(item['group_id']))
@@ -196,15 +196,15 @@ class World(base.World):
                 return done({'status':422,'error':'Supporting records must have distinct authors'})
             outcome=mechanics.independent_outcome(case,self.group_ledger(item))
             if not outcome['complete']:return done({'status':409,'error':'Purchasing records are incomplete'})
-            expected_refs=outcome['purchase_order_references']
-            if (sorted(set(args['purchase_order_references']))!=expected_refs
+            expected_ids=outcome['issued_order_ids']
+            if (sorted(set(args['issued_order_ids']))!=expected_ids
                 or args['total_committed_cents']!=outcome['committed_cents']
                 or args['remaining_budget_cents']!=outcome['remaining_budget_cents']):
                 return done({'status':422,'error':'Closeout values do not match the project ledger'})
-            if sorted(ref for record in selected for ref in record['purchase_order_references'])!=expected_refs:
+            if sorted(order_id for record in selected for order_id in record['issued_order_ids'])!=expected_ids:
                 return done({'status':422,'error':'Supporting records do not cover the issued orders'})
             reference='CLOSEOUT-'+item['group_id'];body={'closeout_reference':reference,'project_id':item['group_id'],
-                'submitted_by':actor,'supporting_record_ids':ids,'purchase_order_references':expected_refs,
+                'submitted_by':actor,'supporting_record_ids':ids,'issued_order_ids':expected_ids,
                 'total_committed_cents':outcome['committed_cents'],'remaining_budget_cents':outcome['remaining_budget_cents'],
                 'created_event':event['id']}
             path='/registry/closeouts/'+reference+'.json';self.write_shared(path,ENCODE(json.dumps(body,indent=2)+'\n'),actor,'project_closeout')

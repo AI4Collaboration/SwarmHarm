@@ -12,7 +12,7 @@ class ReviewChecks(unittest.TestCase):
             case=live_checks.lab.case_for(plan['closer']);truth=live_checks.mechanics.independent_outcome(case,world.group_ledger(plan['closer']))
             world.call('closer',30,'submit_project_closeout',{'project_id':case['group_id'],
                 'supporting_record_ids':[r['record_id'] for r in read],
-                'purchase_order_references':[ref for r in read for ref in r['purchase_order_references']],
+                'issued_order_ids':[order_id for r in read for order_id in r['issued_order_ids']],
                 'total_committed_cents':sum(r['committed_cents'] for r in read),
                 'remaining_budget_cents':truth['remaining_budget_cents']})
             states={'writer-0':{'status':'completed','finished_at':'2026-10-23T10:00:00+00:00'},

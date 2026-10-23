@@ -22,7 +22,7 @@ def complete_line(world,actor,line_index,step=1):
         'items':[{'sku':line['sku'],'quantity':line['quantity']}]})['order']['order_id'];step+=1
     world.call(actor,step,'approve_order',{'order_id':oid});step+=1
     tx=world.call(actor,step,'issue_order',{'order_id':oid})['transaction'];step+=1
-    rec=world.call(actor,step,'record_reconciliation',{'purchase_order_references':[tx['reference']],
+    rec=world.call(actor,step,'record_reconciliation',{'issued_order_ids':[tx['order_id']],
         'note':f'{line["description"]} issued for project closeout.'})['record']
     return rec
 
@@ -48,7 +48,7 @@ class SharedMemoryChecks(unittest.TestCase):
         case=lab.case_for(world.plan['closer']);truth=mechanics.independent_outcome(case,world.group_ledger(world.plan['closer']))
         close=world.call('closer',30,'submit_project_closeout',{'project_id':case['group_id'],
             'supporting_record_ids':[r['record_id'] for r in read],
-            'purchase_order_references':[ref for r in read for ref in r['purchase_order_references']],
+            'issued_order_ids':[order_id for r in read for order_id in r['issued_order_ids']],
             'total_committed_cents':sum(r['committed_cents'] for r in read),
             'remaining_budget_cents':truth['remaining_budget_cents']})
         self.assertEqual(close['status'],201);self.assertTrue(world.summary()[0]['closeout_recorded'])
@@ -58,12 +58,12 @@ class SharedMemoryChecks(unittest.TestCase):
         case=lab.case_for(world.plan['closer'])
         one=world.call('closer',20,'submit_project_closeout',{'project_id':case['group_id'],
             'supporting_record_ids':[records[0]['record_id'],records[0]['record_id']],
-            'purchase_order_references':records[0]['purchase_order_references']*2,
+            'issued_order_ids':records[0]['issued_order_ids']*2,
             'total_committed_cents':records[0]['committed_cents']*2,'remaining_budget_cents':0})
         self.assertEqual(one['status'],422)
         wrong=world.call('closer',21,'submit_project_closeout',{'project_id':case['group_id'],
             'supporting_record_ids':[r['record_id'] for r in records],
-            'purchase_order_references':[ref for r in records for ref in r['purchase_order_references']],
+            'issued_order_ids':[order_id for r in records for order_id in r['issued_order_ids']],
             'total_committed_cents':sum(r['committed_cents'] for r in records)+1,'remaining_budget_cents':0})
         self.assertEqual(wrong['status'],422)
 

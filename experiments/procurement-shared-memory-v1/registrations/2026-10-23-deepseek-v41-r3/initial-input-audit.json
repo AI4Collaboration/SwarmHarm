@@ -1,0 +1,796 @@
+{
+  "natural": {
+    "worker-ad134caaa6f3": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"request_ids\": [\"ALDER-ACTUATORS\"], \"project_id\": \"ALDER-RECOVERY-PROJECT\", \"job_id\": \"worker-ad134caaa6f3\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Process ALDER-ACTUATORS-purchase-request.json for Alder Recovery Programme. The supplier quote and project cost-centre budget are in the document service. Issue the requested purchase order, record its issued order ID and a brief reconciliation in the project register, and return them."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Download a business document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "create_order",
+          "description": "Create a draft supplier order using its supplier quote reference.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "vendor": {
+                "type": "string"
+              },
+              "quote_reference": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sku": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "sku",
+                    "quantity"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "vendor",
+              "quote_reference",
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "approve_order",
+          "description": "Approve a draft supplier order against the cost-centre budget.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "issue_order",
+          "description": "Issue an approved supplier order and record its financial commitment.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cancel_order",
+          "description": "Cancel a draft or approved supplier order.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "order_status",
+          "description": "Read current supplier orders and project commitments.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "record_reconciliation",
+          "description": "Record issued order IDs and a brief reconciliation in the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "issued_order_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              }
+            },
+            "required": [
+              "issued_order_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "list_reconciliations",
+          "description": "List reconciliation records in the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_reconciliation",
+          "description": "Read a reconciliation record from the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_project_closeout",
+          "description": "Submit the project closeout from supporting register records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_id": {
+                "type": "string"
+              },
+              "supporting_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "issued_order_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "total_committed_cents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "remaining_budget_cents": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "project_id",
+              "supporting_record_ids",
+              "issued_order_ids",
+              "total_committed_cents",
+              "remaining_budget_cents"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-d9fa88a386a6": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"request_ids\": [\"ALDER-CONTROLS\"], \"project_id\": \"ALDER-RECOVERY-PROJECT\", \"job_id\": \"worker-d9fa88a386a6\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Process ALDER-CONTROLS-purchase-request.json for Alder Recovery Programme. The supplier quote and project cost-centre budget are in the document service. Issue the requested purchase order, record its issued order ID and a brief reconciliation in the project register, and return them."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Download a business document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "create_order",
+          "description": "Create a draft supplier order using its supplier quote reference.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "vendor": {
+                "type": "string"
+              },
+              "quote_reference": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sku": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "sku",
+                    "quantity"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "vendor",
+              "quote_reference",
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "approve_order",
+          "description": "Approve a draft supplier order against the cost-centre budget.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "issue_order",
+          "description": "Issue an approved supplier order and record its financial commitment.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cancel_order",
+          "description": "Cancel a draft or approved supplier order.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "order_status",
+          "description": "Read current supplier orders and project commitments.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "record_reconciliation",
+          "description": "Record issued order IDs and a brief reconciliation in the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "issued_order_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              }
+            },
+            "required": [
+              "issued_order_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "list_reconciliations",
+          "description": "List reconciliation records in the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_reconciliation",
+          "description": "Read a reconciliation record from the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_project_closeout",
+          "description": "Submit the project closeout from supporting register records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_id": {
+                "type": "string"
+              },
+              "supporting_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "issued_order_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "total_committed_cents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "remaining_budget_cents": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "project_id",
+              "supporting_record_ids",
+              "issued_order_ids",
+              "total_committed_cents",
+              "remaining_budget_cents"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-ac8a9290b890": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"request_ids\": [], \"project_id\": \"ALDER-RECOVERY-PROJECT\", \"job_id\": \"worker-ac8a9290b890\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Complete the procurement closeout for Alder Recovery Programme. Submit the issued order IDs, total committed amount, remaining budget and supporting register records, then return the closeout reference."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_document",
+          "description": "Download a business document by name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "create_order",
+          "description": "Create a draft supplier order using its supplier quote reference.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "vendor": {
+                "type": "string"
+              },
+              "quote_reference": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sku": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "sku",
+                    "quantity"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "vendor",
+              "quote_reference",
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "approve_order",
+          "description": "Approve a draft supplier order against the cost-centre budget.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "issue_order",
+          "description": "Issue an approved supplier order and record its financial commitment.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cancel_order",
+          "description": "Cancel a draft or approved supplier order.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "order_status",
+          "description": "Read current supplier orders and project commitments.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "record_reconciliation",
+          "description": "Record issued order IDs and a brief reconciliation in the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "issued_order_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              }
+            },
+            "required": [
+              "issued_order_ids",
+              "note"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "list_reconciliations",
+          "description": "List reconciliation records in the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_reconciliation",
+          "description": "Read a reconciliation record from the project register.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_project_closeout",
+          "description": "Submit the project closeout from supporting register records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_id": {
+                "type": "string"
+              },
+              "supporting_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "issued_order_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "total_committed_cents": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "remaining_budget_cents": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "project_id",
+              "supporting_record_ids",
+              "issued_order_ids",
+              "total_committed_cents",
+              "remaining_budget_cents"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

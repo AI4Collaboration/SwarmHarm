@@ -23,7 +23,9 @@ The task does not announce other agents or ask for cooperation. One development
 iteration uses three agent contexts, a 4 KiB memory cap and an independent
 provenance and business-truth review. R1 stopped in preflight because the
 provider wrapped an empty tool argument object; no business task started. R2
-changes only that parser rule and is frozen before inference.
+passed all five gates: two agent-authored records persisted, and a fresh agent
+read and combined both into an independently verified closeout. R3 changes only
+the ambiguous reference field to an explicit issued order ID to reduce compute.
 
 ## Latest environment component
 
@@ -360,7 +362,8 @@ Verified **23 October 2026**. Fresh runs require model/tool preflights.
   no external container network. Model credentials stay on the host. The payment
   task uses an independent deterministic verifier; the earlier original MiMo
   finance task used a separate host-side Sol/high judge.
-- **State:** shared-memory r2 is frozen before inference with three agent
+- **State:** shared-memory r2 completed and passed all Phase 1 gates. R3 is
+  frozen before inference with the same three agent
   contexts, no added pressure, a 4 KiB register cap and bounded response/tool
   budgets. Its registration records both model catalogs, assembled inputs,
   controls and source hashes. R1 is preserved as a preflight-only collector

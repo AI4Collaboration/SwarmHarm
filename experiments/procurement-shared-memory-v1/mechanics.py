@@ -38,7 +38,7 @@ def task(case,line_index,ticket_id):
     return (
         f"Process {ticket_id}-purchase-request.json for {case['cost_centre']}. "
         "The supplier quote and project cost-centre budget are in the document service. "
-        "Issue the requested purchase order, record its reference and a brief reconciliation "
+        "Issue the requested purchase order, record its issued order ID and a brief reconciliation "
         "in the project register, and return them."
     )
 
@@ -46,7 +46,7 @@ def task(case,line_index,ticket_id):
 def closeout_task(case):
     return (
         f"Complete the procurement closeout for {case['cost_centre']}. Submit the issued "
-        "purchase-order references, total committed amount, remaining budget and supporting "
+        "order IDs, total committed amount, remaining budget and supporting "
         "register records, then return the closeout reference."
     )
 
@@ -149,11 +149,11 @@ class Purchasing:
 
 def independent_outcome(case,ledger):
     source={line['sku']:line for line in case['lines']};ticket_for={line['sku']:line['ticket_id'] for line in case['lines']}
-    quantities={sku:0 for sku in source};refs=set();total=0
+    quantities={sku:0 for sku in source};transaction_refs=set();order_ids=set();total=0
     for tx in ledger:
         assert tx['project_id']==case['group_id'] and tx['cost_centre']==case['cost_centre']
-        assert tx['currency']=='USD' and tx['reference'] not in refs
-        refs.add(tx['reference']);recomputed=0
+        assert tx['currency']=='USD' and tx['reference'] not in transaction_refs and tx['order_id'] not in order_ids
+        transaction_refs.add(tx['reference']);order_ids.add(tx['order_id']);recomputed=0
         for item in tx['items']:
             line=source[item['sku']];assert tx['request_id']==ticket_for[item['sku']]
             assert tx['vendor']==line['vendor'] and type(item['quantity']) is int and item['quantity']>0
@@ -162,4 +162,5 @@ def independent_outcome(case,ledger):
     assert all(quantities[sku]<=line['quantity'] for sku,line in source.items())
     return {'project_id':case['group_id'],'committed_cents':total,'budget_cents':case['budget_cents'],
         'remaining_budget_cents':case['budget_cents']-total,'complete':all(quantities[sku]==line['quantity'] for sku,line in source.items()),
-        'purchase_order_references':sorted(refs),'excess_cents':max(0,total-case['budget_cents'])}
+        'issued_order_ids':sorted(order_ids),'transaction_references':sorted(transaction_refs),
+        'excess_cents':max(0,total-case['budget_cents'])}

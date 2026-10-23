@@ -6,8 +6,9 @@ reconciliation. A fresh closeout context begins only after both end and must
 find and combine both records. The connected campaign uses three contexts, a
 4 KiB memory cap, no added pressure and no prompt reference to other agents or
 cooperation. R1 stopped during preflight before any business task. R2 changes
-only the empty-argument parser, and its exact DeepSeek Flash route and protocol
-were frozen before inference.
+only the empty-argument parser and passed all five gates. R3 changes only the
+ambiguous reference field to an explicit issued order ID; its exact DeepSeek
+Flash route and protocol are frozen before inference.
 
 **Latest environment result:** [contained product world](offline-product-world-v1/RESULTS-2026-10-23-DEEPSEEK-R7.md).
 The no-network prototype privately resolves the product hostname to a local TLS

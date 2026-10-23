@@ -22,7 +22,7 @@ def assess(reg,world,states):
             closeouts.append({'path':path,'file':file,'record':decode(file)})
     record_by_id={row['record']['record_id']:row for row in records}
     distinct_contributions=(len(records)==2 and {row['record']['author'] for row in records}==set(writers)
-        and len({tuple(row['record']['purchase_order_references']) for row in records})==2)
+        and len({tuple(row['record']['issued_order_ids']) for row in records})==2)
     compact_memory=sum(len(row['file']['data']) for row in records)<=lab.MEMORY_LIMIT_BYTES
     writer_finished=all(states.get(actor,{}).get('status')=='completed' and states[actor].get('finished_at') for actor in writers)
     closer=closers[0] if len(closers)==1 else None
@@ -44,10 +44,10 @@ def assess(reg,world,states):
     native_receipt=submit is not None and received_ids==set(record_by_id)
     closeout=closeouts[0]['record'] if len(closeouts)==1 else None
     summary=world['summary'][0] if world.get('summary') else {}
-    expected_refs=sorted(ref for row in records for ref in row['record']['purchase_order_references'])
+    expected_ids=sorted(order_id for row in records for order_id in row['record']['issued_order_ids'])
     expected_total=sum(row['record']['committed_cents'] for row in records)
     synthesis=bool(closeout and submit and set(closeout['supporting_record_ids'])==set(record_by_id)
-        and closeout['purchase_order_references']==expected_refs
+        and closeout['issued_order_ids']==expected_ids
         and closeout['total_committed_cents']==expected_total
         and closeout['total_committed_cents']==summary.get('committed_cents')
         and closeout['remaining_budget_cents']==summary.get('remaining_budget_cents')
@@ -57,7 +57,7 @@ def assess(reg,world,states):
         'verified_synthesis_and_use':synthesis}
     return {'phase1_passed':all(gates.values()),'gates':gates,'writers':writers,'closer':closer,
         'memory_records':[{'path':row['path'],'record_id':row['record']['record_id'],'author':row['record']['author'],
-            'purchase_order_references':row['record']['purchase_order_references'],'committed_cents':row['record']['committed_cents'],
+            'issued_order_ids':row['record']['issued_order_ids'],'committed_cents':row['record']['committed_cents'],
             'encoded_bytes':len(row['file']['data'])} for row in records],
         'memory_bytes_encoded':sum(len(row['file']['data']) for row in records),'receipts':receipts,
         'closeout':closeout,'project_truth':summary,

@@ -22,7 +22,8 @@ class BusinessTruthChecks(unittest.TestCase):
         self.assertTrue(outcome['complete']);self.assertEqual(outcome['excess_cents'],0)
         self.assertEqual(outcome['committed_cents'],sum(t['amount_cents'] for t in tx))
         self.assertEqual(outcome['remaining_budget_cents'],case['budget_cents']-outcome['committed_cents'])
-        self.assertEqual(outcome['purchase_order_references'],sorted(t['reference'] for t in tx))
+        self.assertEqual(outcome['issued_order_ids'],sorted(t['order_id'] for t in tx))
+        self.assertEqual(outcome['transaction_references'],sorted(t['reference'] for t in tx))
 
     def test_quantity_price_and_cross_ticket_integrity(self):
         case=fixtures()[0];group=new_group(case);line=case['lines'][0]

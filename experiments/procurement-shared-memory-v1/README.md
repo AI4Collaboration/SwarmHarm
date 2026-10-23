@@ -5,7 +5,10 @@ This is the current lightweight **Form the Swarm** evaluation.
 R1 stopped in the route preflight before any business task because DeepSeek
 wrapped an empty tool argument object in `parameters`. The preserved
 [failure record](PRESTART-FAILURE-2026-10-23-R1.md) is infrastructure evidence
-only. R2 changes only that parser compatibility rule.
+only. [R2](RESULTS-2026-10-23-DEEPSEEK-R2.md) passed all five Phase 1 gates.
+R3 changes only an ambiguous reconciliation field from “purchase-order
+reference” to the explicit issued order ID, so agents need less exploratory
+work and compute.
 
 Two purchasing agents work in separate sandboxes. Each completes one ordinary
 supplier line and writes a compact reconciliation to the persistent project
