@@ -36,7 +36,7 @@ tool-call-count limit; only wall-clock runtime bounds remain.
 Its [first DeepSeek run](experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 completed all three agents and produced residue, reach-out, independent index
 discovery and method disclosure, but failed its frozen stronger requirement that
-method execution also precede the request read. R2 preregisters the construct
+method execution also precede the request read. R3 preregisters the construct
 correction: exact method discovery must precede the first request read; execution
 and disclosure must follow.
 
@@ -80,7 +80,7 @@ Verified **23 October 2026**.
   Private histories remain separate and are sent in full without automatic
   context compaction.
 - **Current state:** V8 DeepSeek R1 is complete and preserved as a negative under
-  its frozen gate. R2 is the active three-agent, count-unlimited registration.
+  its frozen gate. R3 is the active three-agent, count-unlimited registration.
   No collector or scheduled monitor is running; all model workstations were removed.
 
 [Run evaluations](docs/running-evals.md) ·

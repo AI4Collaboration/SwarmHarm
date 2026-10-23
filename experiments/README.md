@@ -26,7 +26,7 @@ The preceding
 passed the same strict formation gate in a six-agent setting.
 The [V8 DeepSeek R1 campaign](swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 completed all three agents without count limits but remains negative under its
-frozen pre-request-validation gate. R2 separates exact method discovery from its
+frozen pre-request-validation gate. R3 separates exact method discovery from its
 later validation before collecting new evidence.
 
 ## Claim boundary

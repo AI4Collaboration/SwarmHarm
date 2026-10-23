@@ -1,6 +1,6 @@
 {
   "family": "swarmharm/swarm-formation-v8",
-  "created_at": "2026-10-23T14:52:31.439312+00:00",
+  "created_at": "2026-10-23T14:54:04.004016+00:00",
   "models": {
     "deepseek": "deepseek/deepseek-v4.1-flash-1017"
   },
@@ -20,7 +20,7 @@
   },
   "plan": {
     "natural": {
-      "worker-c6a852d029ae": {
+      "worker-8b95e9df6f62": {
         "provider": "deepseek",
         "arrival": 0,
         "wave": 0,
@@ -28,7 +28,7 @@
         "logical_id": "agent-000001",
         "review_id": "SUPPLIER-REVIEW-000001"
       },
-      "worker-32ca7fd27bd2": {
+      "worker-14e3d03e213b": {
         "provider": "deepseek",
         "arrival": 1,
         "wave": 1,
@@ -36,7 +36,7 @@
         "logical_id": "agent-000002",
         "review_id": "SUPPLIER-REVIEW-000002"
       },
-      "worker-cb55f0807850": {
+      "worker-94f77647cadf": {
         "provider": "deepseek",
         "arrival": 2,
         "wave": 2,
@@ -50,7 +50,7 @@
   "endpoint": "https://lmportal.iefbr14.xyz/v1/responses",
   "credential_source": "Existing host-only AxonHub key; never supplied to subjects.",
   "input_revision": "staggered-supplier-reviews-latent-index-method-v8",
-  "outcome_revision": "native-stage123-index-discovery-before-request-v8-r2",
+  "outcome_revision": "native-stage123-index-discovery-before-request-v8-r3",
   "initial_agent_records": 0,
   "shared_record_limit_bytes": 32768,
   "automatic_context_compaction": false,
@@ -94,7 +94,7 @@
     "A request without a terminal provider response may be attempted up to three times; every attempt is retained and completed trajectories are never rerun."
   ],
   "route_confirmation": {
-    "checked_at": "2026-10-23T14:52:28.004069+00:00",
+    "checked_at": "2026-10-23T14:54:00.583809+00:00",
     "model": "deepseek/deepseek-v4.1-flash-1017",
     "openrouter": {
       "http_status": 200,
@@ -133,26 +133,26 @@
   },
   "task_hashes": {
     "natural": {
-      "worker-c6a852d029ae": {
-        "natural/worker-c6a852d029ae/instruction.md": "7c3db221f08b9111affeefaddca2405168b47e8cbd76842e25a99674e0a3fd14",
-        "natural/worker-c6a852d029ae/provenance.json": "6b7d12334b780447f799d72ca02e57fa906635cf8f1c0b581dad2fbfdf8f8d4e",
-        "natural/worker-c6a852d029ae/task.toml": "9845e0a0d891c132b4a7659fc4e151031c0734a8291ddb4c0f0dd7a778dbc507"
+      "worker-8b95e9df6f62": {
+        "natural/worker-8b95e9df6f62/instruction.md": "7c3db221f08b9111affeefaddca2405168b47e8cbd76842e25a99674e0a3fd14",
+        "natural/worker-8b95e9df6f62/provenance.json": "df6085f5850affda45c93bc338482b7540f6b2f3c9e6c2e5fbe484fb0fe9d761",
+        "natural/worker-8b95e9df6f62/task.toml": "be6ee61e618dbf54fb7daf7fc6f448d217327db81eb2c2d6be742a6c8d9997cd"
       },
-      "worker-32ca7fd27bd2": {
-        "natural/worker-32ca7fd27bd2/instruction.md": "f8e691c039cdeb5f3d03f68fde9a23c229b024c1b173c0fe4b1e0796029b1992",
-        "natural/worker-32ca7fd27bd2/provenance.json": "4a90dca3146bc7369f10720723ded20c7c8563dd3c0e40fc3ca69ab79fe583e3",
-        "natural/worker-32ca7fd27bd2/task.toml": "c7f243410c0510b09c13cf093c1aa4ff5162e2fdf8706fd756744d57e6f68a24"
+      "worker-14e3d03e213b": {
+        "natural/worker-14e3d03e213b/instruction.md": "f8e691c039cdeb5f3d03f68fde9a23c229b024c1b173c0fe4b1e0796029b1992",
+        "natural/worker-14e3d03e213b/provenance.json": "37f9408fd12a61f4f88efbf482e6e944897e595564e06890ffc05a99bcbf31a7",
+        "natural/worker-14e3d03e213b/task.toml": "adfeadd12929c8170ee6afbe905217e13d5a2dbf2af689f2476b1c4692a54db8"
       },
-      "worker-cb55f0807850": {
-        "natural/worker-cb55f0807850/instruction.md": "767fdd9eb17a0c3b3beb91904ba13ef20445d8afac460801ec80fb104a235ce5",
-        "natural/worker-cb55f0807850/provenance.json": "739df87a20e2f730eceeb51648ed97b273d728e5a3d8bca260ded1f40f6d92cd",
-        "natural/worker-cb55f0807850/task.toml": "a63c26197f59f0b158fe84b0557fc8d8ae942fe6f395d8bbbe92dfe1c5395b91"
+      "worker-94f77647cadf": {
+        "natural/worker-94f77647cadf/instruction.md": "767fdd9eb17a0c3b3beb91904ba13ef20445d8afac460801ec80fb104a235ce5",
+        "natural/worker-94f77647cadf/provenance.json": "a0c8a8ab52ca9869df748a235dd32de1ba7260ea5bbe67421cdfa0a64ad7a21e",
+        "natural/worker-94f77647cadf/task.toml": "b927fadac41147d80e38b50d92dcd5ac89e08663dbdee155d39fe7e010a18cc0"
       }
     }
   },
   "code_hashes": {
     "experiments/swarm-formation-v8/collector_checks.py": "d9b938b895e0a86d99c98ee36125c6141ded7087fe5d18ebe40827929ad107bb",
-    "experiments/swarm-formation-v8/run.py": "ba8dd41c95e2f30912d27af55cc70281bf531003780eac8da4b32d405620eb3b",
+    "experiments/swarm-formation-v8/run.py": "7cf9b9a60ca43c87c2fbfb80b51a9ad2601b31e7d22114926f3d4ef19ad590d0",
     "experiments/swarm-formation-v8/review_checks.py": "999abb11814d0b33fc680c9d8bd8643c4d6ac889ac42e18755add4b87da0edc9",
     "experiments/swarm-formation-v8/harbor_input.py": "3070298264ae5cf0134115e0936ab589d495fbc76fa7883525efd037539bd0f7",
     "experiments/swarm-formation-v8/checks.py": "b501589f6309d35f77a58146dc3122289570490e3a801af737d5455dfcd3b84e",
@@ -165,7 +165,6 @@
     "experiments/swarm-formation-v8/topology.py": "9962023507f88c4f9c27891615286e2c25d320998acf0e3d471d20e6d1c03f94",
     "experiments/swarm-formation-v8/schedule.py": "65c60ed80928b05d35ee1ef09f63c3ece8e6468c3e3b65927adc018fda96ddc0",
     "experiments/swarm-formation-v8/lab.py": "be041bc35ed3e344e7311933d350126e91fccfb3017998bb783a236b5476e88f",
-    "experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md": "2904bc4c43665b9ca1b7384fb8f28863cd86e0992486f72c0bc0742e074d8a24",
     "experiments/swarm-formation-v8/README.md": "fc9651a14ce3c6ecd2a06078e892b0142c061e4e34405bb3b2df07f2725d4abc",
     "experiments/swarm-formation-v8/format-contract.json": "562ca098901c89c627b663a3cf027fa0909c5d0a4b7b54b9a768cc13a6aa531a",
     "experiments/swarm-formation-v8/protocol.json": "96d01d945573e6e163e0b6faf911be0198396cab59164e948e84f1596a222cc6",
@@ -183,9 +182,9 @@
     "arrival-schedule.json": "752a2542601a69a4d14ecd16b9dd4353241973e937a69a2a9dc37e74ef068792",
     "topology.json": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed",
     "source-manifest.json": "8ceae78db325ef37d5c1c8974a8aef1d151f1275749dc70e751e9e9bcb3682bd",
-    "controls.json": "4577674688e813ef42570d8710b0859ef330c4369ffc1dc1dffd177b0e02ae24",
-    "initial-input-audit.json": "3231b685c0586838dedcea7f4ee3939989afe6278d37d3b4bd4395ea26469d2e",
-    "initial-file-audit.json": "7767b41856b2fb54c1f936fdf00c2b7487dcd88eda6fbabfc3d972b58210f06f",
-    "route-confirmation.json": "2b81ae65cd06b76dbe1494ea9afa6bc37d62de776b6f4814de91d6ebf374c9a3"
+    "controls.json": "5f1eb7e9b39d717211e621a2e4ca7299a2bb6afbb2b4af6e648f687c351fc16c",
+    "initial-input-audit.json": "7cb7e5d3e10d3d0e82bb057a418bedbd9ac01217999139e0a1353c6a38df2823",
+    "initial-file-audit.json": "17679e195d297e789095ab925181b517c791dd660376de57778e2cdb624eae70",
+    "route-confirmation.json": "004c039c548698e2479c4c4aacfd3d598b104b2c5ae25f1351f4ebc1edc63322"
   }
 }

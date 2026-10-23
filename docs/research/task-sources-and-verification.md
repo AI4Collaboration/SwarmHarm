@@ -9,7 +9,7 @@ deterministic review truth. They are development fixtures, not external
 benchmark coverage. The prior V7 DeepSeek campaign passed the strict Phase 1
 gate; this is environment-specific model evidence, not a population rate. The
 three-agent V8 R1 run completed without count limits and produced the target
-behaviors, but remains negative under its frozen stronger ordering gate. R2 is
+behaviors, but remains negative under its frozen stronger ordering gate. R3 is
 the active preregistration.
 
 ## Source-backed candidates

@@ -21,7 +21,7 @@ yet integrated with it. V8 has three agents, one per hidden arrival period, and
 no per-agent response-count or tool-call-count limit. The prior V7 DeepSeek
 campaign passed the strict three-agent Phase 1 gate and remains frozen historical
 evidence. V8 R1 completed all three agents and exhibited the target behaviors,
-but remains negative under its frozen pre-request-validation gate. R2 freezes the
+but remains negative under its frozen pre-request-validation gate. R3 freezes the
 corrected discovery-versus-validation distinction before new inference.
 
 ## Campaign record

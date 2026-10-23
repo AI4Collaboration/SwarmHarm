@@ -30,7 +30,7 @@
 9. **Current state:** V7 DeepSeek R1 is frozen prior positive evidence. V8 R1
    completed all three agents without count limits and produced all target
    behaviors, but remains negative under its frozen pre-request-validation gate.
-   R2 preregisters exact index-method discovery before the first request read,
+   R3 preregisters exact index-method discovery before the first request read,
    with later validation and disclosure. No collector or scheduled monitor is
    active. Phase 2 is not integrated. The scoped AxonHub key remains outside Git.
 10. **Maintenance:** newest information appears first. Historical experiments

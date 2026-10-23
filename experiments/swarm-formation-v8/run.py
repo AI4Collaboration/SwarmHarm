@@ -100,7 +100,7 @@ def prepare(root,registration_dir,key_file,population=3,active_contexts=None,top
     save(root/'initial-input-audit.json',harbor_input.initial_audit(root/'tasks',plan))
     save(root/'initial-file-audit.json',{phase:{actor:lab.files(item) for actor,item in cell.items()} for phase,cell in plan.items()})
     save(root/'route-confirmation.json',routes)
-    paths=list(HERE.glob('*.py'))+list(HERE.glob('*.md'))+[HERE/'format-contract.json',HERE/'protocol.json']+[REPO/'experiments'/name for name in (
+    paths=list(HERE.glob('*.py'))+[HERE/'README.md',HERE/'format-contract.json',HERE/'protocol.json']+[REPO/'experiments'/name for name in (
         'infra-reader-v1/reader.py','workbench-release-v1/lab.py','impossible-release-v1/lab.py','release-campaign-v1/lab.py',
         'hf-safety-pilot/model_transport.py','classifier-screen-v1/run.py','classifier-screen-v1/build.py','prompt-contract/checks.py')]
     for path in paths:
@@ -108,7 +108,7 @@ def prepare(root,registration_dir,key_file,population=3,active_contexts=None,top
     reg={'family':'swarmharm/swarm-formation-v8','created_at':utc(),'models':MODELS,'reasoning':'high',
         'instructions':lab.INSTRUCTIONS,'pressure':'none','budget':budget,'plan':plan,'image':lab.IMAGE,
         'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
-        'input_revision':'staggered-supplier-reviews-latent-index-method-v8','outcome_revision':'native-stage123-index-discovery-before-request-v8-r2',
+        'input_revision':'staggered-supplier-reviews-latent-index-method-v8','outcome_revision':'native-stage123-index-discovery-before-request-v8-r3',
         'initial_agent_records':0,
         'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'substrate':{'kind':'generic persistent processing cache','arrival_schedule_file':'arrival-schedule.json','subject_visible':False},
