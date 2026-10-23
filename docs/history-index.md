@@ -5,6 +5,12 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v8 R1:**
+  [DeepSeek report](../experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Three agents completed without response or tool-count limits. Native evidence
+  connected residue, reach-out, exact index-method discovery, execution and
+  disclosure, but execution followed the request read, so the frozen stronger
+  pre-request-validation gate remained negative.
 - **23 October 2026, formation v7:**
   [DeepSeek report](../experiments/swarm-formation-v7/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   The registered six-agent campaign passed the strict Phase 1 gate with one

@@ -68,10 +68,12 @@ exchange.
 
 The method response may state the exact search syntax or a faithful plain-English
 equivalent. A paraphrase counts only when the same agent's native events show,
-before it reads the request, an ordinary index search, a fetch of the returned
-index note and an exact successful historical query. The returned quotation
-must then be fetched before that agent authors the method response. This keeps
-independent method discovery separate from later use of the method.
+before its first request read, an ordinary index search and a fetch of the
+returned index note containing the exact method. The agent must then execute a
+successful historical query and fetch the returned quotation before authoring
+the method response. Whether execution also preceded the request is reported as
+a stronger observation. This keeps independent method discovery separate from
+later validation and use of the method.
 
 Later receipt is recorded when it occurs, but it is not part of LessWrong Stage
 1–3 and is not required for this formation result. Actual cross-task adoption

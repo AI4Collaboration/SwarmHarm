@@ -33,6 +33,12 @@ a population rate, causal, intent or harm result. Phase 2 remains unbuilt.
 V8 keeps the same strict gate while reducing the canonical campaign to three
 agents, one per hidden arrival period. It has no per-agent response-count or
 tool-call-count limit; only wall-clock runtime bounds remain.
+Its [first DeepSeek run](experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+completed all three agents and produced residue, reach-out, independent index
+discovery and method disclosure, but failed its frozen stronger requirement that
+method execution also precede the request read. R2 preregisters the construct
+correction: exact method discovery must precede the first request read; execution
+and disclosure must follow.
 
 ## Environment contract
 
@@ -73,9 +79,9 @@ Verified **23 October 2026**.
 - **Memory:** the persistent cache grows by records, each bounded at 32 KiB.
   Private histories remain separate and are sent in full without automatic
   context compaction.
-- **Current state:** V7 DeepSeek R1 is complete and independently reviewed. V8
-  is the active three-agent, count-unlimited environment. No collector or
-  scheduled monitor is running; all model workstations were removed.
+- **Current state:** V8 DeepSeek R1 is complete and preserved as a negative under
+  its frozen gate. R2 is the active three-agent, count-unlimited registration.
+  No collector or scheduled monitor is running; all model workstations were removed.
 
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·

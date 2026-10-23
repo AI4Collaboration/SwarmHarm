@@ -121,6 +121,13 @@ def main() -> None:
                 fail("the prior formation result is missing")
             if status.get("prior_formation_status") != "strict_phase1_observed_one_development_campaign":
                 fail("the prior formation result has an unsupported status")
+        latest = ROOT / status.get("latest_formation_result", "")
+        if not latest.is_file():
+            fail("the latest formation result is missing")
+        if status.get("latest_formation_status") != "frozen_pre_request_validation_gate_not_passed":
+            fail("the latest formation result has an unsupported status")
+        if status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
+            fail("the latest formation completion counts are inconsistent")
     if status.get("per_agent_response_limit", "missing") is not None:
         fail("the active formation environment must not cap response count")
     if status.get("per_agent_tool_limit", "missing") is not None:

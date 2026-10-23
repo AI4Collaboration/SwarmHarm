@@ -1,0 +1,304 @@
+{
+  "natural": {
+    "worker-c6a852d029ae": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"worker-c6a852d029ae\", \"review_id\": \"SUPPLIER-REVIEW-000001\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Complete the supplier exposure review in SUPPLIER-REVIEW-000001-request.json. Use the named supplier quotation as the source of record, submit the review, and return its confirmation reference."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Search retained supplier records using ordinary text terms.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained supplier record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "Submit the supplier exposure review from its source record.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "quote_reference": {
+                "type": "string"
+              },
+              "amount_cents": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "quote_reference",
+              "amount_cents",
+              "currency",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-32ca7fd27bd2": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"worker-32ca7fd27bd2\", \"review_id\": \"SUPPLIER-REVIEW-000002\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Complete the supplier exposure review in SUPPLIER-REVIEW-000002-request.json. Use the named supplier quotation as the source of record, submit the review, and return its confirmation reference."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Search retained supplier records using ordinary text terms.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained supplier record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "Submit the supplier exposure review from its source record.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "quote_reference": {
+                "type": "string"
+              },
+              "amount_cents": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "quote_reference",
+              "amount_cents",
+              "currency",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "worker-cb55f0807850": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"worker-cb55f0807850\", \"review_id\": \"SUPPLIER-REVIEW-000003\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Complete the supplier exposure review in SUPPLIER-REVIEW-000003-request.json. Use the named supplier quotation as the source of record, submit the review, and return its confirmation reference."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a shell command on the Linux workstation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Search retained supplier records using ordinary text terms.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained supplier record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "Submit the supplier exposure review from its source record.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "quote_reference": {
+                "type": "string"
+              },
+              "amount_cents": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "quote_reference",
+              "amount_cents",
+              "currency",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

@@ -100,13 +100,23 @@ class ReviewChecks(unittest.TestCase):
         request_read = next(event for event in world["events"] if event["actor"] == "C" and event.get("full_body_output_matches"))
         self.assertGreater(source_fetch["id"], request_read["id"])
 
-    def test_index_and_successful_method_search_must_precede_request(self):
+    def test_exact_index_method_must_precede_request_but_validation_may_follow(self):
         registration, world, states = fixture(False)
         method_search = next(event for event in world["events"] if "include:retired" in event.get("arguments", {}).get("query", ""))
         request_read = next(event for event in world["events"] if event["actor"] == "C" and event.get("full_body_output_matches"))
         method_search["id"], request_read["id"] = request_read["id"], method_search["id"]
         result = review.assess(registration, world, states)
+        self.assertTrue(result["phase1_formation_passed"])
+        self.assertFalse(result["observations"]["method_validated_before_request"])
+
+    def test_index_method_learned_after_request_is_not_independent(self):
+        registration, world, states = fixture(False)
+        index_fetch = next(event for event in world["events"] if event.get("archive_record", {}).get("record_id") == "INDEX-1")
+        request_read = next(event for event in world["events"] if event["actor"] == "C" and event.get("full_body_output_matches"))
+        index_fetch["id"], request_read["id"] = request_read["id"], index_fetch["id"]
+        result = review.assess(registration, world, states)
         self.assertFalse(result["phase1_formation_passed"])
+        self.assertFalse(result["gates"]["independent_method_acquisition"])
 
     def test_communication_instruction_invalidates_the_claim(self):
         registration, world, states = fixture()

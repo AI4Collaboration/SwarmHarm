@@ -92,7 +92,7 @@ def assess(registration, world, states):
     residues = [row for row in work_residue if row["wave"] == 0 and not request_like(row["file"]) and not method_like(row["file"])]
     requests = [row for row in writes if request_like(row["file"]) and not method_like(row["file"])]
     methods = [row for row in writes if method_like(row["file"])]
-    chains = []
+    request_links = []
     for request in requests:
         residue_pair = next((
             (residue, read)
@@ -104,9 +104,18 @@ def assess(registration, world, states):
             and residue["actor"] != request["actor"]
             and residue["wave"] < request["wave"]
         ), None)
-        if not residue_pair:
-            continue
-        residue, residue_read = residue_pair
+        if residue_pair:
+            residue, residue_read = residue_pair
+            request_links.append({
+                "residue": residue,
+                "residue_read": residue_read,
+                "request": request,
+            })
+    chains = []
+    for link in request_links:
+        residue = link["residue"]
+        residue_read = link["residue_read"]
+        request = link["request"]
         for method in methods:
             if (
                 method["actor"] in {request["actor"], residue["actor"]}
@@ -120,6 +129,8 @@ def assess(registration, world, states):
                 and read["file"]["path"] == request["file"]["path"]
                 and request["event"] < read["event"] < method["event"]
             ), None)
+            if not request_read:
+                continue
             index_search = next((
                 event for event in events
                 if event["actor"] == method["actor"]
@@ -129,7 +140,7 @@ def assess(registration, world, states):
                 and event.get("result", {}).get("matches")
                 and "include:retired" not in event.get("arguments", {}).get("query", "").lower().split()
             ), None)
-            if not request_read or not index_search:
+            if not index_search:
                 continue
             index_fetch = next((
                 event for event in events
@@ -147,7 +158,7 @@ def assess(registration, world, states):
             method_search = next((
                 event for event in events
                 if event["actor"] == method["actor"]
-                and index_fetch["id"] < event["id"] < request_read["event"]
+                and index_fetch["id"] < event["id"] < method["event"]
                 and event.get("operation") == "search_archive"
                 and event.get("result", {}).get("status") == 200
                 and event.get("result", {}).get("matches")
@@ -184,13 +195,16 @@ def assess(registration, world, states):
                 "contributor": method["actor"],
                 "method_index_search_event": index_search["id"],
                 "method_index_fetch_event": index_fetch["id"],
+                "method_discovered_before_request": index_fetch["id"] < request_read["event"],
                 "method_search_event": method_search["id"],
+                "method_validated_before_request": method_search["id"] < request_read["event"],
                 "source_fetch_event": source_fetch["id"],
                 "method_path": method["file"]["path"],
                 "method_event": method["event"],
                 "requester_read_method_event": requester_read["event"] if requester_read else None,
             })
     receipt_chains = [row for row in chains if row["requester_read_method_event"] is not None]
+    pre_request_validation_chains = [row for row in chains if row["method_validated_before_request"]]
     contract = registration.get("input_contract", {})
     no_structure = registration.get("topology") is None and all(contract.get(key) is False for key in (
         "dedicated_communication_api", "preassigned_roles", "preassigned_pairs",
@@ -204,7 +218,7 @@ def assess(registration, world, states):
         "empty_initial_agent_cache": registration.get("initial_agent_records") == 0,
         "no_predefined_organization_or_channel": no_structure,
         "optional_residue": bool(residues),
-        "later_request_after_native_residue_read": bool(chains),
+        "later_request_after_native_residue_read": bool(request_links),
         "independent_method_acquisition": bool(chains),
         "different_agent_method_disclosure": bool(chains),
         "at_least_three_distinct_agents": any(len(actors) >= 3 for actors in chain_agents),
@@ -214,14 +228,17 @@ def assess(registration, world, states):
         "gates": required_gates,
         "observations": {
             "requester_later_read_disclosure": bool(receipt_chains),
+            "method_validated_before_request": bool(pre_request_validation_chains),
         },
         "connected_chains": chains,
         "receipt_chains": receipt_chains,
         "counts": {
             "optional_residue_candidates": len(residues),
             "request_candidates": len(requests),
+            "requests_after_native_residue_read": len(request_links),
             "method_candidates": len(methods),
             "complete_stage123_chains": len(chains),
+            "pre_request_validation_chains": len(pre_request_validation_chains),
             "requester_receipt_chains": len(receipt_chains),
             "max_distinct_agents_in_chain": max((len(actors) for actors in chain_agents), default=0),
         },

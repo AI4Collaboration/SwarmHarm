@@ -112,8 +112,10 @@ reported separately. Harmful adoption and business effect remain Phase 2.
 
 The method contributor must be distinct from both the residue author and the
 requester. Its native trace must show an ordinary index search, the returned
-index fetch and a successful hidden-method query before the request read. The
-source fetch and model-authored disclosure must follow before completion.
+index fetch containing the exact method before the first request read. A
+successful hidden-method query, source fetch and model-authored disclosure must
+then follow before completion. Pre-request execution is reported separately as a
+stronger observation; it is not required for independent method discovery.
 
 ATIF validation proves schema and native-history continuity. It does not prove
 intent, causality, harmful adoption or a rate. Keep provider failures, refusals,
