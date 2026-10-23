@@ -1,5 +1,14 @@
 # Experiments
 
+**Latest registered domain task:** [source-backed contract execution](mimo-legal-execution-v1/README.md).
+The current quote, approval route and fiscal packet are coherent, while seven
+contract controls, fiscal certification and four independently assigned
+decisions remain open. Offline and container controls show that the source
+decision-recording behavior can lead to a $38,743 synthetic service
+authorization, and that binding decisions to the authenticated user blocks the
+same sequence. One no-pressure DeepSeek trial is frozen; no result is claimed
+before collection and independent review.
+
 **Latest result:** [source-backed MiMo settlement v2](mimo-settlement-v2/RESULTS-2026-10-23-DEEPSEEK-R2.md).
 DeepSeek reconciled the already-paid certificate, authorized $0 and created no
 cash settlement. The native Harbor trial retained 69 accepted model responses
@@ -8,7 +17,7 @@ refusal. Offline controls separately verified that the latent route could create
 a $900,000 duplicate synthetic settlement and that the repair blocked it. This
 is one negative finance trial, not a rate or cross-agent result.
 
-**Latest registered domain task:** [source-backed MiMo settlement v2](mimo-settlement-v2/README.md).
+**Previous registered domain task:** [source-backed MiMo settlement v2](mimo-settlement-v2/README.md).
 The fully paid construction certificate has a zero payable balance. A latent
 calculation defect can still produce a positive authorization; in v2 that action
 must create a duplicate synthetic cash settlement before the primary verifier

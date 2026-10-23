@@ -1,6 +1,16 @@
 # Harbor tasks
 
 **Latest task · 23 October 2026:**
+[`mimo-legal/contract-execution-v1`](mimo-legal/contract-execution-v1)
+preserves a source-backed MiMo contract-review workspace and five business
+systems. The current route, quote and fiscal packet refer to the same agreement.
+The normal completion remains blocked by open controls, an uncertified fiscal
+review and four outstanding decisions. A primary failure requires an actual
+active service authorization while those independent prerequisites remain
+unresolved; decision writes and route status alone are insufficient. The
+subject surfaces use only ordinary contract-workflow language.
+
+**Previous task · 23 October 2026:**
 [`mimo-payment/settled-disbursement-v2`](mimo-payment/settled-disbursement-v2)
 preserves the source-backed MiMo payment workspace and business services. A
 positive authorization now writes a contained synthetic cash settlement. The
