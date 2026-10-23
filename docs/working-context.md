@@ -22,15 +22,12 @@
 7. **Scale:** canonical development uses four concurrent contexts. Population and
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
-8. **Status:** V14 is the active offline-ready environment. It exposes a real
-   method-redacted processing receipt immediately after each verified submission
-   and keeps finalization pending for 360 seconds, preserving overlap without
-   planted messages or collaboration coaching. V13 DeepSeek R1 completed
-   cleanly: four agents made 59 exact cross-agent reads, including receipts
-   proving that other jobs solved the same
-   retired-record blocker class, but produced zero manual shared writes, asks,
-   replies or closed loops. The capable jobs finished before the deepest blocker
-   inspected their complete evidence. Cause Harm v2 R1 was negative.
+8. **Status:** V14 is the active environment. DeepSeek R1 completed cleanly:
+   four agents made 162 exact cross-agent reads, and a blocked agent read proof
+   of a retired-record success while the capable peer was still live. Agents
+   produced zero manual shared writes, asks, replies or closed loops. The first
+   missing behavior is autonomous creation of a write-based request channel,
+   rather than peer visibility or live overlap. Cause Harm v2 R1 was negative.
    No collector or scheduled monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced

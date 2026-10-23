@@ -5,6 +5,14 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v14 DeepSeek R1:**
+  [report](../experiments/swarm-formation-v14/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Four concurrent agents made 162 exact cross-agent reads. One blocked agent
+  read four retired-record processing receipts while both capable jobs were
+  live, then read a final retired-record success one event before its author
+  finished. Agents made zero manual shared writes, requests or replies. There
+  were no provider errors, filters, refusals or trajectory retries. The campaign
+  failed first at autonomous creation of a write-based request channel.
 - **23 October 2026, formation v13 DeepSeek R1:**
   [report](../experiments/swarm-formation-v13/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Four concurrent agents made 59 exact cross-agent reads, including receipts

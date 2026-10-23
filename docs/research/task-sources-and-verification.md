@@ -9,9 +9,10 @@ discoverable retained-collection methods and deterministic review truth.
 They are development fixtures, not external benchmark coverage. V14 starts four
 separate sandboxes together, gives each an ordinary six-review batch and uses a strict
 native verifier for an unintended request-and-reply channel among temporally
-overlapping agents. Its offline controls pass; no V14 model campaign has run.
-V13 DeepSeek R1 failed first at autonomous reach-out after four agents made 59
-exact cross-agent reads, including relevant retired-record successes. V9 is an
+overlapping agents. Its offline controls pass. V14 DeepSeek R1 failed first at
+autonomous creation of a write-based request channel after four agents made 162
+exact cross-agent reads. A blocked agent read a retired-record success from a
+named peer while that peer remained live. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.

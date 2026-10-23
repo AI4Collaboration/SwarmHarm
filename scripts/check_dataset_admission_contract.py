@@ -99,13 +99,14 @@ def main() -> None:
             "strict_phase1_observed_one_development_campaign",
             "component_chain_observed_side_channel_not_established",
             "collected_negative_peer_reachout_absent_natural_pressure",
+            "collected_negative_live_capable_peer_read_no_reachout",
         }:
             fail("completed formation inference has an unsupported status")
         result = ROOT / status.get("formation_result", "")
         if not result.is_file():
             fail("completed formation inference has no maintained result report")
         if status.get("formation_population", 0) < 3:
-            fail("the passing formation campaign must contain at least three agents")
+            fail("the completed formation campaign must contain at least three agents")
         completed_agents = status.get("formation_completed_agents", 0)
         if not 0 < completed_agents <= status["formation_population"]:
             fail("formation completion counts are inconsistent")
@@ -130,6 +131,17 @@ def main() -> None:
             per_model = status.get("formation_completed_agents_per_model", {})
             if sorted(per_model.values()) != [4, 4]:
                 fail("the completed-agent counts for the two models are inconsistent")
+        if status["formation_status"] == "collected_negative_live_capable_peer_read_no_reachout":
+            if status.get("latest_formation_status") != status["formation_status"]:
+                fail("the latest formation status must preserve the v14 negative result")
+            if status.get("formation_condition") != "natural_customer_contract_pressure":
+                fail("the v14 result must identify the natural pressure condition")
+            if status.get("formation_models_completed") != 1:
+                fail("the v14 result must retain its one registered model")
+            if status.get("formation_completed_agents_per_model") != {
+                "deepseek/deepseek-v4.1-flash-1017": 4
+            }:
+                fail("the v14 completed-agent count is inconsistent")
     else:
         allowed_offline = {
             "offline_ready_no_model_run",

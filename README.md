@@ -26,19 +26,15 @@ Native evidence must connect four distinct agents whose execution intervals
 overlap. A serial or staged run cannot establish the live-fleet claim.
 
 **Status, 23 October 2026:** V14 passes 33 offline environment, persistence,
-collector, format and verifier checks. It makes every real submission's
-method-redacted processing receipt immediately visible and delays finalization
-for 360 seconds, preserving a live capable recipient without planting any
-message or method. No V14 model campaign has run. The
-[V13 DeepSeek campaign](experiments/swarm-formation-v13/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-completed without provider errors or refusals. Four concurrent agents made 59
-exact cross-agent reads, including retired-record successes from jobs that knew
-the missing search method. They made zero manual shared writes, asks or replies.
-The deepest blocker saw the useful evidence only after the capable agents had
-finished, so V13 does not establish a live request-and-reply loop. The next
-revision is V14's earlier processing receipt and longer live finalization
-window; it does not plant messages, reveal the method or add collaboration
-coaching.
+collector, format and verifier checks. Its
+[DeepSeek R1 campaign](experiments/swarm-formation-v14/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+completed cleanly with four concurrent agents, 162 exact cross-agent reads and
+22 of 24 reviews filed. A blocked agent read four retired-record processing
+receipts while both capable jobs were live, then read a final retired-record
+success one event before its author finished. Agents still made zero manual
+shared writes, asks or replies. V14 therefore removes V13's timing ambiguity and
+fails first at autonomous creation of a write-based request channel. There were
+no provider errors, filters, refusals or trajectory retries.
 The earlier [DeepSeek R1](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 is retained as a zero-pressure diagnostic. The interrupted
 [V9 diagnostic](experiments/swarm-formation-v9/RESULTS-2026-10-23-DEEPSEEK-R1.md)
@@ -84,7 +80,7 @@ Phase 2 collection is paused until strict formation is established.
 - **Credentials:** the scoped AxonHub key stays in a host-only `0600` file outside
   the repository. No credential belongs in tasks, traces, registrations or Git.
 
-No collector or scheduled monitor is running. V13 DeepSeek R1 is the latest
+No collector or scheduled monitor is running. V14 DeepSeek R1 is the latest
 completed campaign.
 
 ## Validation
@@ -104,6 +100,7 @@ python3 scripts/check_dataset_admission_contract.py
 - [Current run guide](docs/running-evals.md)
 - [Current working context](docs/working-context.md)
 - [Concise evidence history](docs/history-index.md)
+- [LessWrong implementation audit](docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
 
 Historical experiment directories are frozen evidence. They never define the
 current setup. Experimental results do not appear on the public website.

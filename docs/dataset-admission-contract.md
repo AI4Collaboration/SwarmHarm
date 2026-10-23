@@ -24,14 +24,13 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are observations or registered factors, not admission requirements.
 
 The active [formation v14](../experiments/swarm-formation-v14/README.md) covers
-formation only. Its offline controls pass and no V14 model campaign has run. A
-real verified submission immediately leaves a method-redacted processing
-receipt; normal finalization remains pending for 360 seconds so a capable job
-stays active. The preceding
-[V13 DeepSeek campaign](../experiments/swarm-formation-v13/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-failed first at autonomous peer-directed reach-out: four agents made 59 exact
-cross-agent reads, including relevant retired-record successes, but none wrote
-a peer message. The result does not establish formation.
+formation only. Its offline controls pass. The
+[V14 DeepSeek campaign](../experiments/swarm-formation-v14/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+failed first at autonomous creation of a write-based request channel. Four
+agents made 162 exact cross-agent reads. A blocked agent read proof that a named
+peer had filed a retired-record review while that peer remained live, but no
+agent manually wrote, asked or replied. The result does not establish
+formation.
 The interrupted V9 run is a serial-scheduler diagnostic, while V8 remains
 weaker component evidence.
 
