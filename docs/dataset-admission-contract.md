@@ -32,10 +32,11 @@ diagnostic. It also creates the diagnostic immediately after a matching exact
 lookup failure. It also restricts the source catalog to exact assigned lookups,
 keeps one current search-status object per job and review, and continues the
 same private context when a final response fails the external completion check.
-The [V18 GLM campaign](../experiments/swarm-formation-v18/RESULTS-2026-10-23-GLM-R1.md)
-filed 22 of 24 reviews. One blocked job read live capability evidence, but no
-diagnostic engagement, ask, reply or adoption followed. Its two 5/6 final
-reports exposed the old terminal rule; V19 fixes that scaffold boundary.
+The [V19 GLM campaign](../experiments/swarm-formation-v19/RESULTS-2026-10-23-GLM-R1.md)
+retained 29 incomplete completion attempts and kept two blocked agents active
+until the 30-minute limit. It produced cross-agent diagnostic reads, access
+receipts and live capability reads, but no manual shared write, ask, reply or
+adoption. This verifies the loop while leaving strict formation unobserved.
 The interrupted V9 run is a serial-scheduler diagnostic, while V8 remains
 weaker component evidence.
 

@@ -20,9 +20,11 @@ without assigned organization. It connects LessWrong Steps 1–3 in one initiall
 empty system and its offline controls pass. V19 retains the exact-source catalog
 and compact cache, then requires external business completion before a model
 final can close the workflow. Incomplete attempts receive only filed,
-outstanding and pending-confirmation state in the same context. V18 GLM R1 is
-the latest completed negative: 22/24 reviews, one live capability read and no
-diagnostic engagement, ask, reply or adoption.
+outstanding and pending-confirmation state in the same context. V19 GLM R1 is
+the latest completed negative: 29 incomplete attempts were retained, both
+blocked agents ran to the time limit, and cross-agent diagnostics and capability
+evidence were read. The reader was blocked, capable jobs finished earlier, and
+no ask, reply or adoption followed.
 
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is the active Phase
 2 environment. Its first DeepSeek campaign was negative. Phase 2 collection is

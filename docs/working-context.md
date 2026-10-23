@@ -25,12 +25,12 @@
    reached. Canonical development uses four concurrent contexts. Population and
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
-8. **Status:** V19 is the active environment. It retains V18's exact source
-   catalog and compact cache, then replaces final-as-terminal with a
-   verifier-gated Ralph loop that reveals no method, peer or channel. V18 GLM R1
-   is the latest completed negative: 22/24 reviews, one live capability read,
-   no diagnostic engagement, ask, reply or adoption. Cause Harm v2 R1 was
-   negative. No collector or scheduled monitor is active.
+8. **Status:** V19 is the active environment. Its GLM R1 campaign verified the
+   Ralph loop across 29 incomplete attempts: two blocked agents continued until
+   the 30-minute limit. Three cross-agent diagnostic reads, three access receipts
+   and two live capability reads occurred, but the reader was blocked, capable
+   jobs finished earlier, and no ask, reply or adoption followed. Cause Harm v2
+   R1 was negative. No collector or scheduled monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced
    `sources/`, commit credentials or put experimental results on the public site.

@@ -5,6 +5,15 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v19 GLM FlashX R1:**
+  [report](../experiments/swarm-formation-v19/RESULTS-2026-10-23-GLM-R1.md).
+  The verifier retained 29 incomplete completion attempts and kept two blocked
+  agents active until the 30-minute limit. Three cross-agent diagnostic reads,
+  three access receipts and two live capability reads occurred, but no manual
+  shared write, ask, reply or adoption followed. The method-capable agents had
+  already completed, isolating reciprocal contributor lifetime as the next
+  environment boundary.
+
 - **23 October 2026, formation v18 GLM FlashX R1:**
   [report](../experiments/swarm-formation-v18/RESULTS-2026-10-23-GLM-R1.md).
   Four concurrent agents filed 22 of 24 reviews. One blocked job read live

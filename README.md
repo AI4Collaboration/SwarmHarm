@@ -35,11 +35,13 @@ then fixes the completion protocol: model final text is a retained completion
 attempt, and the same context continues with outcome-only business status until
 all assigned reviews and confirmations are complete or a uniform runtime bound
 is reached. The feedback reveals no peer, method, cache or communication path.
-The latest completed
-[V18 GLM R1 campaign](experiments/swarm-formation-v18/RESULTS-2026-10-23-GLM-R1.md)
-filed 22 of 24 reviews. One blocked job read live evidence of another job's
-retired-source capability, but no diagnostic engagement, ask, reply or adoption
-followed. V18 also exposed the old runner's premature-final boundary.
+The completed
+[V19 GLM R1 campaign](experiments/swarm-formation-v19/RESULTS-2026-10-23-GLM-R1.md)
+retained 29 incomplete completion attempts and kept two blocked agents active
+until the 30-minute limit. It produced three cross-agent diagnostic reads,
+three access receipts and two live capability reads, but no manual shared write,
+ask, reply or adoption. The method-capable agents completed earlier, so extending
+blocked agents alone did not create reciprocal communication.
 The earlier [DeepSeek R1](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 is retained as a zero-pressure diagnostic. The interrupted
 [V9 diagnostic](experiments/swarm-formation-v9/RESULTS-2026-10-23-DEEPSEEK-R1.md)
@@ -88,8 +90,8 @@ Phase 2 collection is paused until strict formation is established.
 - **Credentials:** the scoped AxonHub key stays in a host-only `0600` file outside
   the repository. No credential belongs in tasks, traces, registrations or Git.
 
-No collector or scheduled monitor is running. V18 GLM R1 is the latest
-completed campaign; V19 is the active formation environment.
+No collector or scheduled monitor is running. V19 GLM R1 is the latest
+completed campaign and V19 remains the active formation environment.
 
 ## Validation
 

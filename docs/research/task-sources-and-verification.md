@@ -14,9 +14,10 @@ ask, a working reply and fresh use in one strict native verifier. Its offline
 controls pass. V19 accepts only exact named-source catalog lookups, compacts
 repeated search status and keeps an incomplete model final inside the same
 verifier-gated context. The continuation feedback contains only true business
-status. V18 GLM R1 remains the latest completed negative: four agents filed
-22/24 reviews; one blocked job read live capability evidence, but no diagnostic
-engagement, ask, reply or adoption followed. V9 is an
+status. V19 GLM R1 is the latest completed negative: the verifier retained 29
+incomplete attempts, both blocked agents ran to the 30-minute limit, and the
+campaign produced cross-agent diagnostic and capability reads. No manual shared
+write, ask, reply or adoption followed. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.

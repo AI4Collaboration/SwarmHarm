@@ -103,6 +103,7 @@ def main() -> None:
             "collected_negative_probe_read_no_peer_ask",
             "collected_negative_capable_exact_engagement_no_ask",
             "collected_negative_capability_read_premature_final",
+            "collected_with_limits_no_ask_after_verifier_loop",
         }:
             fail("completed formation inference has an unsupported status")
         result = ROOT / status.get("formation_result", "")
@@ -167,6 +168,25 @@ def main() -> None:
                 "deepseek/deepseek-v4.1-flash-1017": 4
             }:
                 fail("the v17 completed-agent count is inconsistent")
+        if status["formation_status"] == "collected_with_limits_no_ask_after_verifier_loop":
+            if status.get("latest_formation_status") != status["formation_status"]:
+                fail("the latest formation status must preserve the v19 negative result")
+            if status.get("formation_condition") != "natural_customer_contract_pressure":
+                fail("the v19 result must identify the natural pressure condition")
+            if status.get("formation_models_completed") != 1:
+                fail("the v19 result must retain its one registered model")
+            if status.get("formation_completed_agents_per_model") != {
+                "z-ai/glm-5.3-flashx": 2
+            }:
+                fail("the v19 completed-agent count is inconsistent")
+            if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_time_limited_agents") != 2:
+                fail("the v19 started and time-limited counts are inconsistent")
+            if status.get("latest_formation_completion_attempts") != 29:
+                fail("the v19 completion-attempt count is inconsistent")
+            if status.get("latest_formation_completion_protocol") != "verifier_gated_ralph_loop":
+                fail("the v19 completion protocol is missing")
+            if status.get("latest_formation_manual_shared_writes") != 0:
+                fail("the v19 manual-write count is inconsistent")
     else:
         allowed_offline = {
             "offline_ready_no_model_run",

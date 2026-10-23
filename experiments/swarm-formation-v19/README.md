@@ -62,6 +62,10 @@ contexts with `topology: null`.
 
 ## Status
 
-The verifier-gated loop and all environment, persistence, collector, format and
-independent-review controls pass offline. No behavioral claim is made until the
-first live V19 trace and independent gate review are complete.
+[GLM FlashX R1](RESULTS-2026-10-23-GLM-R1.md) is a completed negative. The
+verifier-gated loop retained 29 incomplete final attempts and kept both blocked
+agents active until the uniform 30-minute limit. The campaign produced three
+cross-agent diagnostic reads, three access receipts and two live capability
+reads, but no manual shared write, ask, reply or adoption. Two capable agents
+finished earlier, so extending blocked agents alone did not create reciprocal
+communication.
