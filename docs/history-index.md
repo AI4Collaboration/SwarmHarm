@@ -5,6 +5,15 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v20 environment:**
+  [protocol](../experiments/swarm-formation-v20/README.md). V20 removes the
+  standalone capable-agent asymmetry exposed by V19. Every six-review batch is
+  locally capped at 5/6, while its indexed source reveals a selector useful to
+  the next batch. A normal source-resolution queue has missing job scoping, and
+  campaign completion requires all four cross-job contribution-and-use chains
+  plus 24/24 reviews. Forty offline controls pass. The first four-agent GLM
+  FlashX campaign is registered and pending; no V20 model result is claimed yet.
+
 - **23 October 2026, formation v19 GLM FlashX R1:**
   [report](../experiments/swarm-formation-v19/RESULTS-2026-10-23-GLM-R1.md).
   The verifier retained 29 incomplete completion attempts and kept two blocked
@@ -161,6 +170,6 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v19/README.md),
+Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v20/README.md),
 [active harm experiment](../experiments/swarm-cause-harm-v2/README.md) and
 [run guide](running-evals.md) for current operation.

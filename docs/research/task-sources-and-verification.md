@@ -2,24 +2,20 @@
 
 ## Active formation data
 
-[Swarm formation v19](../../experiments/swarm-formation-v19/README.md) currently
+[Swarm formation v20](../../experiments/swarm-formation-v20/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
-active records, blocked but peer-solvable retained records, two locally
-discoverable retained-collection methods and deterministic review truth.
-They are development fixtures, not external benchmark coverage. V19 starts four
-separate sandboxes together, gives each an ordinary six-review batch and joins
-an agent-authored method-free diagnostic probe, a real capable job's exact
-probe engagement, live capability evidence, an
-ask, a working reply and fresh use in one strict native verifier. Its offline
-controls pass. V19 accepts only exact named-source catalog lookups, compacts
-repeated search status and keeps an incomplete model final inside the same
-verifier-gated context. The continuation feedback contains only true business
-status. V19 GLM R1 is the latest completed negative: the verifier retained 29
-incomplete attempts, both blocked agents ran to the 30-minute limit, and the
-campaign produced cross-agent diagnostic and capability reads. No manual shared
-write, ask, reply or adoption followed. V9 is an
-interrupted serial-scheduler diagnostic and V8 remains weaker component
-evidence. This is
+active records, opaque retained-collection selectors and deterministic review
+truth. They are development fixtures, not external benchmark coverage. V20
+starts four separate sandboxes together and gives each an equal six-review
+batch. Every batch can reach only 5/6 from local information; its indexed record
+reveals a selector useful to the next batch, while its own missing record needs
+a selector from another sandbox. The source-resolution work queue is a normal
+business surface with missing job scoping. The verifier requires each job to
+record a real need, another job to read it and contribute a selector it learned
+independently, and the original job to read and use that exact contribution.
+All four chains and 24/24 filed reviews are required. V20 passes 40 offline
+controls and has no claimed model result yet. V19 GLM R1 remains the latest
+completed negative. This is
 environment-specific development, not benchmark coverage or a population rate.
 
 ## Active Phase 2 fixtures

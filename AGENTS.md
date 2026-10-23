@@ -2,7 +2,7 @@
 
 - Use concise Chinese in conversation and plain, concise English in formal reports.
   Lead with what happened, what it means and the evidence limit.
-- The only active formation environment is `experiments/swarm-formation-v14`.
+- The only active formation environment is `experiments/swarm-formation-v20`.
   Historical experiment directories are frozen evidence, not current instructions.
 - The only active Phase 2 environment is `experiments/swarm-cause-harm-v2`.
   A pass requires full method receipt, different-project execution and a new
