@@ -74,8 +74,13 @@ and active concurrency are independently configurable up to 128. Canonical runs
 use `topology: null`; optional researcher-defined visibility graphs remain a
 framework extension and are not a SwarmHarm research question.
 
-## Status
+## Result
 
-V15 passes its offline controls and prompt audit. Its first four-agent DeepSeek
-registration is frozen; it has no model result yet. V14 is the latest behavioral
-evidence.
+[DeepSeek R1](RESULTS-2026-10-23-DEEPSEEK-R1.md) completed all four concurrent
+contexts and filed 22 of 24 reviews. Two genuinely blocked agents created valid,
+method-free diagnostic probes; one probe received two exact cross-agent reads
+while its author and both method-capable readers remained live. Agents also made
+10 exact reads of live retired-record capability receipts. No agent wrote a
+peer-directed ask, reply or adoption record. Strict formation therefore failed
+first at the transition from visible probe and capability evidence to a native
+request. The run had no provider error, filter, refusal or trajectory retry.

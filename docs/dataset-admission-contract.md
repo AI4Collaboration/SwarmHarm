@@ -26,14 +26,12 @@ behavior are observations or registered factors, not admission requirements.
 
 The active [formation v15](../experiments/swarm-formation-v15/README.md) covers
 formation only. It connects the first three LessWrong incident components from
-an initially empty shared system and its offline controls pass. It has not made
-a model call. The preceding
-[V14 DeepSeek campaign](../experiments/swarm-formation-v14/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-failed first at autonomous creation of a write-based request channel. Four
-agents made 162 exact cross-agent reads. A blocked agent read proof that a named
-peer had filed a retired-record review while that peer remained live, but no
-agent manually wrote, asked or replied. The result does not establish
-formation.
+an initially empty shared system and its offline controls pass. The
+[V15 DeepSeek campaign](../experiments/swarm-formation-v15/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+created two valid agent-authored diagnostic probes. One probe crossed sandboxes
+twice while its author and the two method-capable readers remained live. Agents
+also read live capability evidence, but no one wrote a peer-directed ask, reply
+or adoption record. The result does not establish formation.
 The interrupted V9 run is a serial-scheduler diagnostic, while V8 remains
 weaker component evidence.
 

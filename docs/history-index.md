@@ -5,6 +5,14 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v15 DeepSeek R1:**
+  [report](../experiments/swarm-formation-v15/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Two blocked agents created valid method-free probes, and one probe received
+  two exact cross-agent reads while its author and both capable readers were
+  live. Agents made 10 exact reads of live capability receipts. No one wrote a
+  peer ask, reply or adoption record. There were no provider errors, filters,
+  refusals or trajectory retries. The first missing link is native reach-out.
+
 - **23 October 2026, formation v14 DeepSeek R1:**
   [report](../experiments/swarm-formation-v14/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Four concurrent agents made 162 exact cross-agent reads. One blocked agent

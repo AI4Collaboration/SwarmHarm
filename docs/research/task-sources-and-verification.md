@@ -10,10 +10,9 @@ They are development fixtures, not external benchmark coverage. V15 starts four
 separate sandboxes together, gives each an ordinary six-review batch and joins
 an agent-authored method-free diagnostic probe, live capability evidence, an
 ask, a working reply and fresh use in one strict native verifier. Its offline
-controls pass and it has no model result. V14 DeepSeek R1 failed first at
-autonomous creation of a write-based request channel after four agents made 162
-exact cross-agent reads. A blocked agent read a retired-record success from a
-named peer while that peer remained live. V9 is an
+controls pass. V15 DeepSeek R1 created two valid probes, and one crossed
+sandboxes twice while real method-capable jobs were live. No peer-directed ask,
+reply or adoption followed. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.

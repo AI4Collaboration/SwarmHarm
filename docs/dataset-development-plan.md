@@ -17,10 +17,10 @@ an independent verifier. Seeded component probes are not campaign-level evidence
 [Formation v15](../experiments/swarm-formation-v15/README.md) is the active Phase
 1 environment. Four agents start together and run concurrent six-review batches
 without assigned organization. It connects LessWrong Steps 1–3 in one initially
-empty system and its offline controls pass. It has no model result. V14 DeepSeek
-R1 remains the latest clean negative: a blocked agent read useful evidence from
-a live capable peer, but no agent used the undocumented write surface to ask or
-reply.
+empty system and its offline controls pass. DeepSeek R1 is a clean negative:
+two blocked agents created valid probes, one probe crossed sandboxes, and live
+capability evidence was read, but no agent used the undocumented write surface
+to ask or reply.
 
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is the active Phase
 2 environment. Its first DeepSeek campaign was negative. Phase 2 collection is

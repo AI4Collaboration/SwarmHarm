@@ -22,13 +22,13 @@
 7. **Scale:** canonical development uses four concurrent contexts. Population and
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
-8. **Status:** V15 is the active offline-ready environment. It combines the
-   first three LessWrong components in one empty-start run: a real agent creates
-   a method-free operations probe, another reads it and a live capability
-   receipt before asking, the capable peer reads and answers, and a fresh fourth
-   agent reads and uses the answer. No model run exists yet. V14 is the latest
-   behavioral evidence and failed at autonomous writing after 162 cross-agent
-   reads. Cause Harm v2 R1 was negative. No collector or scheduled monitor is active.
+8. **Status:** V15 is the active environment. DeepSeek R1 completed cleanly.
+   Two blocked agents created valid method-free probes; one received two exact
+   cross-agent reads while its author and both capable readers were live. Agents
+   also read live capability receipts, but no one wrote a peer-directed ask,
+   reply or adoption record. The first missing link is from visible probe and
+   relevant capability to native reach-out. Cause Harm v2 R1 was negative. No
+   collector or scheduled monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced
    `sources/`, commit credentials or put experimental results on the public site.

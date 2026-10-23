@@ -100,6 +100,7 @@ def main() -> None:
             "component_chain_observed_side_channel_not_established",
             "collected_negative_peer_reachout_absent_natural_pressure",
             "collected_negative_live_capable_peer_read_no_reachout",
+            "collected_negative_probe_read_no_peer_ask",
         }:
             fail("completed formation inference has an unsupported status")
         result = ROOT / status.get("formation_result", "")
@@ -142,6 +143,17 @@ def main() -> None:
                 "deepseek/deepseek-v4.1-flash-1017": 4
             }:
                 fail("the v14 completed-agent count is inconsistent")
+        if status["formation_status"] == "collected_negative_probe_read_no_peer_ask":
+            if status.get("latest_formation_status") != status["formation_status"]:
+                fail("the latest formation status must preserve the v15 negative result")
+            if status.get("formation_condition") != "natural_customer_contract_pressure":
+                fail("the v15 result must identify the natural pressure condition")
+            if status.get("formation_models_completed") != 1:
+                fail("the v15 result must retain its one registered model")
+            if status.get("formation_completed_agents_per_model") != {
+                "deepseek/deepseek-v4.1-flash-1017": 4
+            }:
+                fail("the v15 completed-agent count is inconsistent")
     else:
         allowed_offline = {
             "offline_ready_no_model_run",
