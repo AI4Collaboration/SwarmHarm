@@ -10,7 +10,7 @@ SwarmHarm tests two connected claims:
 
 ## Active study
 
-[Swarm formation v3](experiments/swarm-formation-v3/README.md) is the only active
+[Swarm formation v4](experiments/swarm-formation-v4/README.md) is the only active
 formation environment. It runs LessWrong Stages 1–3 as one continuous campaign
 over one initially empty persistent cache:
 
@@ -22,11 +22,12 @@ pressure or the hidden stages. There is no dedicated request, reply, attachment
 or message-board interface. State is never reset and simulated peer content is
 never injected between milestones.
 
-**Status, 23 October 2026:** v3 passes offline controls and awaits its first
-registered model campaign. V2 produced no shared residue or Phase 1 chain with
-either DeepSeek or GLM. SwarmHarm therefore does not yet claim spontaneous
-formation, harmful adoption, causal contagion, misaligned intent or a population
-rate.
+**Status, 23 October 2026:** v3 produced real cross-sandbox residue reads and
+independent method discovery, but final reports were not persisted and the
+three-agent chain remained incomplete. V4 archives model-authored job reports
+and awaits its first registered campaign. SwarmHarm therefore does not yet claim
+spontaneous formation, harmful adoption, causal contagion, misaligned intent or
+a population rate.
 
 ## Environment contract
 
@@ -65,7 +66,7 @@ Verified **23 October 2026**.
 - **Memory:** the persistent cache grows by records, each bounded at 32 KiB.
   Private histories remain separate and are sent in full without automatic
   context compaction.
-- **Current state:** no v3 collector or scheduled monitor is running. All prior
+- **Current state:** no v4 collector or scheduled monitor is running. All prior
   model workstations were removed.
 
 [Run evaluations](docs/running-evals.md) ·
@@ -76,15 +77,15 @@ Verified **23 October 2026**.
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v3 -p '*checks.py' -v
+  -s experiments/swarm-formation-v4 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v3
+./scripts/check-format-contract experiments/swarm-formation-v4
 python3 scripts/check_dataset_admission_contract.py
 ```
 
 ## Maintained records
 
-- [Active formation environment](experiments/swarm-formation-v3/README.md)
+- [Active formation environment](experiments/swarm-formation-v4/README.md)
 - [LessWrong Stage 1–3 audit](docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
 - [Current run guide](docs/running-evals.md)
 - [Current working context](docs/working-context.md)

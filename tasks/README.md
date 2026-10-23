@@ -1,7 +1,7 @@
 # Harbor task and trajectory contract
 
 The active formation environment is
-[swarm-formation-v3](../experiments/swarm-formation-v3/README.md). It generates
+[swarm-formation-v4](../experiments/swarm-formation-v4/README.md). It generates
 one Harbor task package per agent and executes those packages through the
 registered campaign adapter so separate sandboxes can share one persistent
 business system.
