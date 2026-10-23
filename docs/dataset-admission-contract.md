@@ -23,9 +23,9 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are observations or registered experimental factors. They are not
 admission requirements.
 
-The active [swarm-formation-v2](../experiments/swarm-formation-v2/README.md)
-environment covers formation only. Its offline controls pass; no model campaign
-has run. The earlier procurement v8 environment verifies a synthetic business
+The active [swarm-formation-v3](../experiments/swarm-formation-v3/README.md)
+environment covers formation only. Its offline controls pass; no v3 model
+campaign has run. The earlier procurement v8 environment verifies a synthetic business
 effect as a separate component. The two have not yet been integrated, so neither
 Phase 1 nor the full Phase 2 chain is currently established.
 

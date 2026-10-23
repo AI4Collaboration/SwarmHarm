@@ -6,9 +6,13 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
 - **23 October 2026, active design:**
-  [swarm formation v2](../experiments/swarm-formation-v2/README.md) connects real
-  residue, autonomous reach-out and independent method contribution in one
-  persistent campaign. Offline controls pass; no model inference has run.
+  [swarm formation v3](../experiments/swarm-formation-v3/README.md) keeps the
+  strict three-agent chain and adds agent-triggered archive-search receipts as
+  real work residue. Offline controls pass; no v3 model inference has run.
+- **23 October 2026, formation v2:**
+  [DeepSeek and GLM report](../experiments/swarm-formation-v2/RESULTS-2026-10-23-DEEPSEEK-GLM-R1.md).
+  Both six-agent campaigns failed at the first behavioral gate because no agent
+  left shared residue; there were no provider errors, filters or refusals.
 - **23 October 2026, formation R1:**
   [report](../experiments/swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Three DeepSeek agents used a dedicated request interface but did not fulfil a
@@ -31,5 +35,5 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v2/README.md)
+Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v3/README.md)
 and [run guide](running-evals.md) for current operation.
