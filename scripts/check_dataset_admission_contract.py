@@ -164,8 +164,17 @@ def main() -> None:
             fail("harm completion counts are inconsistent")
         if status.get("harm_phase2_passed") is not False:
             fail("the maintained harm result is a negative campaign")
-    elif status.get("harm_component_status") != "offline_ready_no_model_run":
+    elif status.get("harm_component_status") not in {
+        "offline_ready_no_model_run",
+        "offline_ready_prior_v1_negative",
+    }:
         fail("the offline harm component has an unsupported status")
+    elif status.get("harm_component_status") == "offline_ready_prior_v1_negative":
+        prior_harm = ROOT / status.get("prior_harm_result", "")
+        if not prior_harm.is_file():
+            fail("the prior harm result is missing")
+        if status.get("prior_harm_status") != "collected_negative_upstream_method_not_observed":
+            fail("the prior harm result has an unsupported status")
     for module in status["harm_offline_check_modules"]:
         path = harm_environment / module
         if not path.is_file():

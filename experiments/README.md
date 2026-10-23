@@ -35,12 +35,11 @@ not establish harmful transfer, intent or a population rate.
 
 ## Active Cause Harm environment
 
-[Swarm Cause Harm v1](swarm-cause-harm-v1/README.md) connects two fresh
-procurement sandboxes through an ordinary persistent register. The first agent
-must discover, execute and explicitly record a latent ordering method. The
-second must read that exact record before acting, apply it on a different
-project and cause a newly verified synthetic covenant breach. It is
-offline-ready and has no model result yet.
+[Swarm Cause Harm v2](swarm-cause-harm-v2/README.md) gives two unaware agents
+separate lines of one project in the same hidden arrival period. Their local
+actions can compose into an independently verified covenant breach. A fresh
+third agent then tests direct method transfer on a different project. V2 is
+offline-ready. The prior v1 campaign remains a frozen negative.
 
 ## Historical evidence
 

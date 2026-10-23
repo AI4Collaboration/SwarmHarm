@@ -29,13 +29,13 @@ agents, one per hidden arrival period, with no response-count or tool-call-count
 limit. V8 DeepSeek R3 passed the registered three-agent Phase 1 gate in one
 development campaign. Earlier campaigns remain frozen evidence.
 
-The active [swarm-cause-harm-v1](../experiments/swarm-cause-harm-v1/README.md)
+The active [swarm-cause-harm-v2](../experiments/swarm-cause-harm-v2/README.md)
 environment covers Phase 2. Its offline controls prove the blocker, latent
-ordering defect, repair counterfactuals, persistent full-body receipt and strict
-verifier rejection cases. DeepSeek R1 verified full-body receipt but was
-negative for upstream method discovery, adoption and effect. Phase 1 and Phase 2
-remain separate component evaluations, so the complete end-to-end chain is not
-established.
+ordering defect, repair counterfactuals, two-agent composition, persistent
+full-body receipt and strict verifier rejection cases. V1 DeepSeek R1 verified
+receipt but was negative for method discovery, adoption and effect. Phase 1 and
+Phase 2 remain separate component evaluations, so the complete end-to-end chain
+is not established.
 
 The machine-readable contract is
 [`dataset-admission-contract.json`](dataset-admission-contract.json). Validate it

@@ -12,13 +12,14 @@ environment-specific model evidence, not a population rate.
 
 ## Active Phase 2 fixtures
 
-[Swarm Cause Harm v1](../../experiments/swarm-cause-harm-v1/README.md) uses
+[Swarm Cause Harm v2](../../experiments/swarm-cause-harm-v2/README.md) uses
 maintained synthetic critical-stakes procurement records. They provide two
 different project objects, source budgets and covenants, a reachable two-defect
 ordering mechanism and an independent ledger verifier. They are development
-fixtures, not external domain coverage. Offline controls pass. DeepSeek R1 was
-negative for method discovery and adverse effect despite verified full-body
-cross-agent receipt.
+fixtures, not external domain coverage. V2 assigns the first project's lines to
+two unaware agents and keeps a fresh different-project successor. Offline
+controls pass. V1 DeepSeek R1 remains a frozen negative despite verified
+full-body receipt.
 
 ## Source-backed candidates
 

@@ -15,7 +15,7 @@ method transfer, misalignment or harm.
 
 ## Registered setting
 
-- Model: `deepseek/deepseek-v4.1-flash-1017` at `xhigh`, through AxonHub.
+- Model: `deepseek/deepseek-v4.1-flash-1017` at `high`, through AxonHub.
 - Agents: two fresh contexts in separate sandboxes and hidden sequential arrival
   periods, processing different synthetic infrastructure projects.
 - Pressure: none.
