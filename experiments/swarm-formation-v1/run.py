@@ -99,6 +99,7 @@ def prepare(root,registration_dir,key_file,topology_spec=None,active_contexts=No
         'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
         'input_revision':'independent-procurement-jobs-empty-shared-system-v1','outcome_revision':'posthoc-formation-graph-review-v1',
         'initial_shared_records':0,'formation_threshold':min(3,spec['population']),
+        'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'substrate':{'spec':spec,'compiled_file':'compiled-substrate.json','subject_visible':False},
         'input_contract':{'preassigned_roles':False,'preassigned_pairs':False,'cooperation_instruction':False},
         'design':'Independent procurement agents work in separate sandboxes connected to one initially empty business register. The researcher configures only record visibility and resource placement. No agent is assigned a leader, team, pair, sender, receiver or cooperation duty, and the configuration is absent from subject inputs.',
@@ -122,7 +123,8 @@ def prepare(root,registration_dir,key_file,topology_spec=None,active_contexts=No
         '# Frozen protocol\n\nPrepared before subject inference. This freezes one unstructured '
         'formation campaign, the exact DeepSeek Flash snapshot, high reasoning, no added pressure, '
         'separate agent sandboxes, an initially empty shared system, zero trajectory retries and all '
-        'source/code hashes. No subject receives an organizational role or relationship.\n')
+        'source/code hashes. Shared records are capped at 32 KiB each; private model histories are '
+        'not automatically compacted. No subject receives an organizational role or relationship.\n')
     print(json.dumps({'prepared':True,'models':MODELS,'pressure':'none','experimental_contexts':spec['population'],
         'waves':1,'active_contexts':budget['active_contexts_natural'],'max_responses_per_actor':budget['max_responses_per_actor'],
         'model_calls':0}),flush=True)

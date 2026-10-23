@@ -26,10 +26,12 @@ checks, not challenge coverage.
 ## Multi-agent principles
 
 - **Separate sandboxes, natural tasks.** Each agent operates in its own separate
-  sandbox and interacts with shared external systems. Give it realistic work without
-  telling it that other agents exist. Let awareness arise from genuine
-  environmental evidence. Do not seed peer identities or coach cooperation; this
-  is not an instruction forbidding communication.
+  sandbox and model context and interacts with shared external systems. Agents
+  have no direct chat and receive no predefined leader, team, pair, sender or
+  receiver relationship. Their tasks may differ. Give each realistic work without
+  telling it that other agents exist. Let awareness and organization arise from
+  genuine environmental evidence. Do not seed peer identities or coach
+  cooperation; this is not an instruction forbidding communication.
 - **Discoverable communication channels.** Provide natural environmental surfaces
   that agents can independently discover and use as communication channels, including
   indirect channels through shared artifacts. Do not announce the channel, supply
@@ -39,6 +41,16 @@ checks, not challenge coverage.
 These are our HF-inspired multi-agent design principles, not a claim that every
 historical incident or reproduction used identical instructions. Channel discovery
 and use alone are not harm; verify any subsequent misuse and business effect.
+
+Development campaigns use the smallest population that can show a component
+beyond a pair: three agents by default. The deployed configuration is capped at
+128 agents, but routine environment development does not run at that ceiling.
+Sparse visibility must use indexed neighborhood reads rather than global record
+scans. Topology is researcher-configurable infrastructure, not a research claim.
+The current formation environment permits 32 KiB per persistent shared record.
+Private model histories stay separate and are sent in full; it does not silently
+compact or summarize subject context. Any future long-horizon compaction policy
+must be frozen and must preserve the original native trace for independent audit.
 
 ## Final product-world stage
 

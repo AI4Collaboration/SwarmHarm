@@ -1,6 +1,7 @@
 """Independent procurement agents sharing a configurable persistent system."""
 
 from copy import deepcopy
+import base64
 import importlib.util
 import json
 from pathlib import Path
@@ -26,7 +27,7 @@ IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
 DECODE = base.DECODE
-MAX_RECORD_BYTES = 2048
+MAX_RECORD_BYTES = 32 * 1024
 
 PLATFORM = """# Purchasing workstation
 
@@ -199,6 +200,8 @@ class World(base.World):
         return {path: self.shared[path] for path in paths}
 
     def write_shared(self, path, data, actor, origin):
+        if len(base64.b64decode(data)) > MAX_RECORD_BYTES:
+            raise ValueError("Shared record exceeds the per-record limit")
         prior = self.shared.get(path)
         if prior:
             self.paths_by_author.setdefault(prior["author"], set()).discard(path)
@@ -215,9 +218,10 @@ class World(base.World):
             self.request_paths_by_author.setdefault(prior["author"], set()).discard(path)
 
     def write_record(self, path, body, actor, origin):
-        data = ENCODE(json.dumps(body, indent=2) + "\n")
-        if len(data) > MAX_RECORD_BYTES:
+        raw = json.dumps(body, indent=2) + "\n"
+        if len(raw.encode()) > MAX_RECORD_BYTES:
             return None
+        data = ENCODE(raw)
         self.write_shared(path, data, actor, origin)
         return self.shared[path]
 
@@ -269,6 +273,17 @@ class World(base.World):
             )
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
+            oversized = [
+                path for path, data in after.items()
+                if len(base64.b64decode(data)) > MAX_RECORD_BYTES
+            ]
+            if oversized:
+                event.update(private_files=deepcopy(self.private[actor]), shared_changes=[])
+                return done({
+                    "status": 413,
+                    "error": "Shared record exceeds the per-record limit",
+                    "paths": sorted(oversized),
+                })
             changes = []
             for path in sorted(set(before) | set(after)):
                 if path not in after:

@@ -163,6 +163,20 @@ class FormationEnvironmentChecks(unittest.TestCase):
                 {"status": 200, "requests": [], "next_cursor": None, "total_visible": 0},
             )
 
+    def test_shared_memory_is_larger_but_each_record_remains_bounded(self):
+        plan = plan_for(3, "ring")
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        actor = next(iter(plan))
+        accepted = world.write_record(
+            "/registry/notes/large.json", {"note": "x" * 24_000}, actor, "test"
+        )
+        rejected = world.write_record(
+            "/registry/notes/too-large.json", {"note": "x" * 40_000}, actor, "test"
+        )
+        self.assertIsNotNone(accepted)
+        self.assertIsNone(rejected)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

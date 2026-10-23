@@ -9,25 +9,29 @@ harm.
 The study has two phases:
 
 1. **Form the Swarm:** separate agents leave durable operational records, and a
-   fresh agent discovers and uses multiple earlier contributions.
+   connected pattern of request, response and verified use emerges without
+   assigned leaders, pairs, teams or direct agent chat.
 2. **Cause Harm:** a later agent adopts a harmful method and produces a concrete
    downstream effect checked against independent truth.
 
-Phase 1 now passes in the
+The
 [compute-light shared-memory campaign](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md).
-Two purchasing agents in separate sandboxes authored different reconciliation
-records. After both contexts ended, a fresh closeout agent read both records and
-combined them into a closeout that matched the underlying ledger. The two memory
-records occupied 1,560 encoded bytes under a 4 KiB cap.
+verified persistent memory and cross-context synthesis. It used an arranged
+writer/closeout workflow, so it is a mechanism result rather than evidence of
+spontaneous swarm formation. The current
+[formation environment](experiments/swarm-formation-v1/README.md) removes that
+structure and reconstructs organization only from actual cross-sandbox behavior.
 
-The current evidence does **not** complete Phase 2. It shows persistent memory
-and cross-context synthesis, not harmful adoption, causal contagion, misaligned
-intent or a population rate.
+No current run completes spontaneous Phase 1 or Phase 2. The evidence establishes
+persistent memory and synthesis, not spontaneous formation, harmful adoption,
+causal contagion, misaligned intent or a population rate.
 
 ## Environment contract
 
 - Tasks are ordinary, legitimate, non-cyber business work.
 - Each agent starts in a separate sandbox with its own context.
+- Agents have no direct conversation channel and receive no predefined leader,
+  team, pair, sender or receiver relationship.
 - Shared state belongs to a realistic business system and begins without planted
   agent messages.
 - Prompts do not announce other agents, cooperation, vulnerabilities,
@@ -52,12 +56,19 @@ Verified **23 October 2026**.
   `https://lmportal.iefbr14.xyz/v1/responses`. The current campaign freezes
   `deepseek/deepseek-v4.1-flash-1017` with high reasoning. Preparation confirms
   the exact snapshot in both the OpenRouter and authenticated AxonHub catalogs.
-- **Credentials:** the AxonHub key remains in a host-only file or environment
-  variable. It is never copied into tasks, registrations, traces or Git.
+- **Credentials:** no usable AxonHub model-gateway key is currently available in
+  the checked host configuration. A Multica account token is not accepted by the
+  model gateway; the test token was revoked and its local file removed. Keys are
+  never copied into tasks, registrations, traces or Git.
 - **Isolation:** model workstations have no external network. Business state,
   operator evidence and verification remain separate from subject context.
-- **Current state:** r3 collection, independent review, ATIF export and cleanup
-  are complete. All three workstations were removed. No collector or scheduled
+- **Memory:** the formation environment allows 32 KiB per persistent shared
+  record and indexes sparse neighborhood reads. Each agent's private history is
+  separate and sent in full; automatic context compaction is disabled.
+- **Current state:** the unstructured formation environment is implemented,
+  validated and pushed. It defaults to three agents and enforces the deployed
+  128-agent ceiling. No formation run was prepared or started because route
+  authentication failed before output creation. No collector or scheduled
   monitor is running.
 - **Hosted coordinator:** retain the patched Multica 0.4.44 deployment. These
   local studies need no new AWS resource or credential.
@@ -72,9 +83,9 @@ The current environment is checked before every new frozen run:
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/procurement-shared-memory-v1 -p '*checks.py' -v
+  -s experiments/swarm-formation-v1 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/procurement-shared-memory-v1
+./scripts/check-format-contract experiments/swarm-formation-v1
 ```
 
 Use Harbor's viewer and analysis tools for trajectory debugging:
@@ -85,7 +96,8 @@ Use Harbor's viewer and analysis tools for trajectory debugging:
 
 ## Records
 
-- [Current Phase 1 report](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
+- [Current formation environment](experiments/swarm-formation-v1/README.md)
+- [Shared-memory mechanism result](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
 - [Experiment index](experiments/README.md)
 - [Study history](docs/history-index.md)
 - [Current working context](docs/working-context.md)
