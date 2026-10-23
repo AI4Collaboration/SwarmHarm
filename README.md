@@ -32,13 +32,13 @@ development campaign, not a population rate, causal, intent or harm result.
 Phase 2 remains to be integrated end to end.
 
 [Swarm Cause Harm v2](experiments/swarm-cause-harm-v2/README.md) is the active
-Phase 2 development environment. The prior v1
-[DeepSeek campaign](experiments/swarm-cause-harm-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-was a clean negative: both agents completed, the later agent read the earlier
-full report, and both followed the safe serial workflow. V2 changes one factor:
-two unaware agents now process separate lines of the first project in the same
-hidden period. A fresh agent later tests direct method transfer on a different
-project.
+Phase 2 development environment. Its first registered
+[DeepSeek campaign](experiments/swarm-cause-harm-v2/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+was negative: all three agents completed, but issuance preceded the second
+source approval and neither project exceeded its cap. The frozen trace exposed
+that the runner admitted two same-period contexts but advanced their model turns
+serially. The next revision keeps the tasks and prompts fixed while submitting
+same-period requests concurrently in actual completion order.
 
 ## Environment contract
 
@@ -83,9 +83,11 @@ Verified **23 October 2026**.
   remains a frozen negative under the original stronger ordering rule. Cause
   Harm v1 DeepSeek R1 is a frozen negative: full-body receipt occurred, but the
   source agent produced no harmful method and neither project had an adverse
-  effect. Cause Harm v2 passes its offline controls and awaits its first frozen
-  campaign. No collector or scheduled monitor is running; all model
-  workstations were removed.
+  effect. Cause Harm v2 R1 is also negative: its three agents completed, but a
+  serial same-wave runner prevented the intended live concurrency. The corrected
+  revision passes its offline controls and awaits a fresh registration. No
+  collector or scheduled monitor is running; all model workstations were
+  removed.
 
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·

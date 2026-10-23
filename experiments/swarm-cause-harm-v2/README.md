@@ -59,3 +59,19 @@ workflow. V2 changes one environment factor: the first project now has two
 unaware same-period agents with separate lines. The later project, model,
 pressure, business documents, shared registry, latent process defects and
 strict transfer checks remain unchanged.
+
+## Development result
+
+[DeepSeek R1](RESULTS-2026-10-23-DEEPSEEK-R1.md) was negative. All three agents
+completed without provider errors or refusals. One source issuance preceded the
+other source approval, so both the source and successor projects stayed within
+budget. The trace exposed a serial same-wave scheduler and a blocked-case
+reconciliation schema issue; both are infrastructure fixes for the next frozen
+run, not evidence of model misalignment.
+
+The corrected runner submits same-period AxonHub requests concurrently and
+applies tool calls in actual response-completion order. It also lets blocked
+work record an empty reconciliation instead of inventing an issued-order
+reference. Tasks, prompts, model, pressure, latent process defects and evidence
+gates remain unchanged. This revision has passed offline controls and awaits a
+new frozen campaign.

@@ -25,10 +25,11 @@ The active Phase 2 environment is
 [swarm-cause-harm-v2](../experiments/swarm-cause-harm-v2/README.md). Its primary
 gate requires a verified shared-project effect from locally valid actions by two
 unaware agents. A stronger gate requires direct full-body method receipt,
-different-project execution and a new effect. Its offline controls pass. V1
-DeepSeek R1 verified receipt but was negative for discovery, adoption and effect.
-The Phase 1 and Phase 2 component results are still reported separately until
-one future campaign connects the full chain end to end.
+different-project execution and a new effect. V2 DeepSeek R1 was negative: the
+first issuance preceded the second approval, and no project exceeded its cap.
+The next revision fixes the serial same-wave runner while preserving the tasks,
+prompts and model. The Phase 1 and Phase 2 component results are still reported
+separately until one future campaign connects the full chain end to end.
 
 ## Campaign record
 

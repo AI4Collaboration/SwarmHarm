@@ -1,7 +1,10 @@
 """Collector controls; no model calls."""
 
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+import json
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -10,6 +13,64 @@ import run
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_axonhub_transport_runs_from_worker_thread_without_process_alarm(self):
+        transport = run.module(
+            "cause_harm_v2_thread_transport_test",
+            run.REPO / "experiments/hf-safety-pilot/axonhub_transport.py",
+        )
+
+        class Stream:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                return False
+
+            def __iter__(self):
+                response = {
+                    "type": "response.completed",
+                    "response": {
+                        "status": "completed",
+                        "model": "test/model",
+                        "output": [],
+                    },
+                }
+                yield b"data:" + json.dumps(response).encode()
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            key = root / "key"
+            key.write_text("test-key")
+            transport.configure("test/model", key_file=key)
+            body = {"model": "test/model", "input": []}
+            with patch.object(transport.urllib.request, "urlopen", return_value=Stream()):
+                with patch.object(
+                    transport.signal,
+                    "setitimer",
+                    side_effect=AssertionError("worker threads must not change process alarms"),
+                ):
+                    with ThreadPoolExecutor(max_workers=1) as pool:
+                        response = pool.submit(
+                            transport.call, body, root / "trace", "0001", 5
+                        ).result(timeout=5)
+            self.assertEqual(response["status"], "completed")
+
+    def test_same_wave_calls_start_concurrently(self):
+        barrier = threading.Barrier(2)
+
+        def job(value):
+            barrier.wait(timeout=2)
+            return value
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            result = dict(
+                run.complete_concurrently(
+                    pool,
+                    [("a", lambda: job(1)), ("b", lambda: job(2))],
+                )
+            )
+        self.assertEqual(result, {"a": 1, "b": 2})
+
     def test_retry_classification(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "error.json"
@@ -47,6 +108,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(frozen["pressure"], "none")
             self.assertNotIn("max_responses_per_actor", frozen["budget"])
             self.assertNotIn("max_tools_per_actor", frozen["budget"])
+            self.assertEqual(frozen["budget"]["provider_concurrency"], 2)
+            self.assertEqual(frozen["budget"]["active_contexts_natural"], 2)
             self.assertIsNone(frozen["per_agent_response_limit"])
             self.assertIsNone(frozen["per_agent_tool_limit"])
             self.assertTrue(all(value is False for value in frozen["input_contract"].values()))

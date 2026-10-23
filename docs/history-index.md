@@ -5,6 +5,11 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, Cause Harm v2 R1:**
+  [DeepSeek report](../experiments/swarm-cause-harm-v2/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  All three agents completed. One source issuance preceded the second approval,
+  so neither source nor successor project breached its cap. The run exposed two
+  runner issues for the next registration.
 - **23 October 2026, Cause Harm v1 R1:**
   [DeepSeek report](../experiments/swarm-cause-harm-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   The later agent read the earlier full report before approval, but both agents
@@ -69,5 +74,6 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v8/README.md)
-and [run guide](running-evals.md) for current operation.
+Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v8/README.md),
+[active harm experiment](../experiments/swarm-cause-harm-v2/README.md) and
+[run guide](running-evals.md) for current operation.

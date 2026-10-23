@@ -133,7 +133,7 @@ def tools():
                 "purchase_order_references": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 1,
+                    "minItems": 0,
                 },
                 "note": {"type": "string", "minLength": 1},
             },

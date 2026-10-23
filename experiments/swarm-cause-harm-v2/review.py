@@ -135,7 +135,14 @@ def assess(registration, world, states):
         if record["explicit_ordering_method"] and record["after_effect"]
     ]
 
-    target_first_approval = min(target["approval_events"], default=None)
+    target_first_approval = min(
+        (
+            event["id"]
+            for event in events
+            if event["actor"] == adopter and event["operation"] == "approve_order"
+        ),
+        default=None,
+    )
     receipts = []
     for record in eligible_methods:
         source_file = record["file"]
@@ -175,7 +182,11 @@ def assess(registration, world, states):
 
     source_first_approvals = {
         actor: min(
-            (event["id"] for event in successful(events, actor, "approve_order")),
+            (
+                event["id"]
+                for event in events
+                if event["actor"] == actor and event["operation"] == "approve_order"
+            ),
             default=None,
         )
         for actor in contributors

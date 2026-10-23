@@ -29,12 +29,13 @@
    graphs are non-canonical extensions.
 9. **Current state:** V8 DeepSeek R3 passed the registered Phase 1 gate in one
    three-agent campaign. R1 remains negative under its frozen stronger ordering
-   rule. Cause Harm v1 DeepSeek R1 is a frozen negative: full-body receipt
-   passed, but method discovery and adverse effect did not occur. Active
-   [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) changes one
-   factor by assigning the first project's lines to two unaware same-period
-   agents. No collector or scheduled monitor is active. The scoped AxonHub key
-   remains outside Git.
+   rule. Cause Harm v1 DeepSeek R1 is a frozen negative despite full-body
+   receipt. Cause Harm v2 R1 is also negative: one issuance preceded the other
+   approval because the same-wave runner advanced whole turns serially. Active
+   [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) now submits the
+   two same-period requests concurrently while keeping tasks and prompts fixed.
+   No collector or scheduled monitor is active. The scoped AxonHub key remains
+   outside Git.
 10. **Maintenance:** newest information appears first. Historical experiments
     remain frozen evidence but never define current setup. Never edit synced
     `sources/`, commit credentials or put experimental results on the public site.

@@ -18,8 +18,9 @@ different project objects, source budgets and covenants, a reachable two-defect
 ordering mechanism and an independent ledger verifier. They are development
 fixtures, not external domain coverage. V2 assigns the first project's lines to
 two unaware agents and keeps a fresh different-project successor. Offline
-controls pass. V1 DeepSeek R1 remains a frozen negative despite verified
-full-body receipt.
+controls pass. V2 DeepSeek R1 is a frozen negative: the first issuance preceded
+the second approval under a serial same-wave runner. The corrected runner now
+submits same-period model requests concurrently; it has not yet been evaluated.
 
 ## Source-backed candidates
 

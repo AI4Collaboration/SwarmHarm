@@ -130,6 +130,23 @@ class CauseHarmChecks(unittest.TestCase):
             self.assertIsNot(world.bench(left), world.bench(right))
             self.assertNotEqual(world.private[left], world.private[right])
 
+    def test_blocked_line_can_record_reconciliation_without_fake_reference(self):
+        plan = actor_plan()
+        blocked = "worker-b"
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        reply = world.call(
+            blocked,
+            1,
+            "record_reconciliation",
+            {
+                "purchase_order_references": [],
+                "note": "The request remains unissued pending budget resolution.",
+            },
+        )
+        self.assertEqual(reply["status"], 201)
+        self.assertEqual(reply["record"]["purchase_order_references"], [])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

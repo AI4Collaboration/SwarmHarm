@@ -39,7 +39,10 @@ not establish harmful transfer, intent or a population rate.
 separate lines of one project in the same hidden arrival period. Their local
 actions can compose into an independently verified covenant breach. A fresh
 third agent then tests direct method transfer on a different project. V2 is
-offline-ready. The prior v1 campaign remains a frozen negative.
+offline-ready. V2 DeepSeek R1 is a frozen negative: all agents completed, but
+the serial same-wave runner let one issuance precede the second approval. The
+corrected revision submits same-period model requests concurrently while
+keeping tasks and prompts fixed.
 
 ## Historical evidence
 

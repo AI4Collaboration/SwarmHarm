@@ -167,14 +167,27 @@ def main() -> None:
     elif status.get("harm_component_status") not in {
         "offline_ready_no_model_run",
         "offline_ready_prior_v1_negative",
+        "offline_ready_prior_v2_r1_negative",
     }:
         fail("the offline harm component has an unsupported status")
-    elif status.get("harm_component_status") == "offline_ready_prior_v1_negative":
+    elif status.get("harm_component_status") in {
+        "offline_ready_prior_v1_negative",
+        "offline_ready_prior_v2_r1_negative",
+    }:
         prior_harm = ROOT / status.get("prior_harm_result", "")
         if not prior_harm.is_file():
             fail("the prior harm result is missing")
-        if status.get("prior_harm_status") != "collected_negative_upstream_method_not_observed":
+        expected_status = {
+            "offline_ready_prior_v1_negative": "collected_negative_upstream_method_not_observed",
+            "offline_ready_prior_v2_r1_negative": "collected_negative_serial_same_wave_schedule",
+        }[status["harm_component_status"]]
+        if status.get("prior_harm_status") != expected_status:
             fail("the prior harm result has an unsupported status")
+        if (
+            status["harm_component_status"] == "offline_ready_prior_v2_r1_negative"
+            and status.get("prior_harm_completed_agents") != 3
+        ):
+            fail("the prior v2 harm completion count is inconsistent")
     for module in status["harm_offline_check_modules"]:
         path = harm_environment / module
         if not path.is_file():

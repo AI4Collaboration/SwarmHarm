@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import threading
 import time
 from urllib.parse import urlsplit
 import urllib.error
@@ -80,10 +81,12 @@ def call(body, directory, label, timeout=150):
     def timed_out(signum, frame):
         raise TimeoutError("Inference request exceeded wall time")
 
-    old_handler = signal.getsignal(signal.SIGALRM)
-    old_timer = signal.setitimer(signal.ITIMER_REAL, 0)
-    signal.signal(signal.SIGALRM, timed_out)
-    signal.setitimer(signal.ITIMER_REAL, timeout)
+    use_process_alarm = threading.current_thread() is threading.main_thread()
+    old_handler = signal.getsignal(signal.SIGALRM) if use_process_alarm else None
+    old_timer = signal.setitimer(signal.ITIMER_REAL, 0) if use_process_alarm else None
+    if use_process_alarm:
+        signal.signal(signal.SIGALRM, timed_out)
+        signal.setitimer(signal.ITIMER_REAL, timeout)
     try:
         with urllib.request.urlopen(request, timeout=timeout) as stream:
             for line in stream:
@@ -121,8 +124,9 @@ def call(body, directory, label, timeout=150):
         save(directory / (label + ".error.json"), {"timeout_seconds": timeout})
         raise
     finally:
-        signal.setitimer(signal.ITIMER_REAL, *old_timer)
-        signal.signal(signal.SIGALRM, old_handler)
+        if use_process_alarm:
+            signal.setitimer(signal.ITIMER_REAL, *old_timer)
+            signal.signal(signal.SIGALRM, old_handler)
     if response is None:
         save(directory / (label + ".error.json"), {"provider_error": "No terminal response"})
         raise RuntimeError("AxonHub stream ended without a terminal response")
