@@ -2,20 +2,21 @@
 
 ## Active formation data
 
-[Swarm formation v18](../../experiments/swarm-formation-v18/README.md) currently
+[Swarm formation v19](../../experiments/swarm-formation-v19/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 active records, blocked but peer-solvable retained records, two locally
 discoverable retained-collection methods and deterministic review truth.
-They are development fixtures, not external benchmark coverage. V18 starts four
+They are development fixtures, not external benchmark coverage. V19 starts four
 separate sandboxes together, gives each an ordinary six-review batch and joins
 an agent-authored method-free diagnostic probe, a real capable job's exact
 probe engagement, live capability evidence, an
 ask, a working reply and fresh use in one strict native verifier. Its offline
-controls pass. V18 accepts only exact named-source catalog lookups and compacts
-repeated search status, reducing V17's keyword-enumeration branch without adding
-peer or method hints. V17 DeepSeek R1 remains the latest completed negative: a
-capable job opened both blocked objects, but no peer-directed ask, reply or
-adoption followed. V9 is an
+controls pass. V19 accepts only exact named-source catalog lookups, compacts
+repeated search status and keeps an incomplete model final inside the same
+verifier-gated context. The continuation feedback contains only true business
+status. V18 GLM R1 remains the latest completed negative: four agents filed
+22/24 reviews; one blocked job read live capability evidence, but no diagnostic
+engagement, ask, reply or adoption followed. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.

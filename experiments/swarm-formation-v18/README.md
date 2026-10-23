@@ -63,6 +63,9 @@ The canonical population is four simultaneous contexts with `topology: null`.
 
 ## Status
 
-Offline controls pass. The first live V18 run uses the current exact GLM FlashX
-route. No behavioral claim is made until its native trace and independent gate
-review are complete.
+[GLM FlashX R1](RESULTS-2026-10-23-GLM-R1.md) is a completed negative. Four
+concurrent agents filed 22 of 24 reviews. One blocked agent read live evidence
+that another job could resolve a retired source, but no capable job opened its
+diagnostic and no ask, reply or adoption occurred. The collector also accepted
+two final reports at 5/6 as terminal; V19 corrects that scaffold boundary with a
+verifier-gated continuation loop.

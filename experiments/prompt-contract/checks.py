@@ -633,14 +633,14 @@ class Checks(unittest.TestCase):
             self.assertNotIn('wave',item)
         self.assertEqual([item['arrival'] for item in plan.values()],list(range(4)))
 
-    def test_swarm_formation_v18_compacts_search_without_subject_hints(self):
-        folder=REPO/'experiments/swarm-formation-v18';sys.path.insert(0,str(folder))
+    def test_swarm_formation_v19_compacts_search_without_subject_hints(self):
+        folder=REPO/'experiments/swarm-formation-v19';sys.path.insert(0,str(folder))
         module_names=('lab','mechanics','schedule','harbor_input','topology')
         for name in module_names:
             sys.modules.pop(name,None)
         self.addCleanup(lambda:[sys.modules.pop(name,None) for name in module_names])
-        schedule=module('natural_formation_v18_schedule',folder/'schedule.py')
-        lab=module('natural_formation_v18_lab',folder/'lab.py')
+        schedule=module('natural_formation_v19_schedule',folder/'schedule.py')
+        lab=module('natural_formation_v19_lab',folder/'lab.py')
         counter=iter(range(10))
         plan=schedule.compile_plan(4,'control',lambda:f'job-{next(counter):06d}')[0]['natural']
         world=lab.World(plan);self.addCleanup(world.close)

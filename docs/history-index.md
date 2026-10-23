@@ -5,6 +5,14 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v18 GLM FlashX R1:**
+  [report](../experiments/swarm-formation-v18/RESULTS-2026-10-23-GLM-R1.md).
+  Four concurrent agents filed 22 of 24 reviews. One blocked job read live
+  evidence that another job had resolved a retired record, but there was no
+  diagnostic engagement, ask, reply or adoption. Two agents returned final
+  reports at 5/6 and the old collector treated them as terminal. V19 separates
+  model final text from verifier-confirmed business completion.
+
 - **23 October 2026, formation v17 DeepSeek R1:**
   [report](../experiments/swarm-formation-v17/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Two early diagnostics and three exact cross-agent reads were observed. A
@@ -144,6 +152,6 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v18/README.md),
+Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v19/README.md),
 [active harm experiment](../experiments/swarm-cause-harm-v2/README.md) and
 [run guide](running-evals.md) for current operation.

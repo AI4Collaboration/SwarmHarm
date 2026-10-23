@@ -102,6 +102,7 @@ def main() -> None:
             "collected_negative_live_capable_peer_read_no_reachout",
             "collected_negative_probe_read_no_peer_ask",
             "collected_negative_capable_exact_engagement_no_ask",
+            "collected_negative_capability_read_premature_final",
         }:
             fail("completed formation inference has an unsupported status")
         result = ROOT / status.get("formation_result", "")
@@ -181,6 +182,7 @@ def main() -> None:
             "offline_ready_after_v15_probe_read_no_peer_ask",
             "offline_ready_after_v16_exact_engagement_wrong_peer_no_ask",
             "offline_ready_after_v17_capable_engagement_no_ask",
+            "offline_ready_after_v18_glm_terminal_boundary",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -296,6 +298,21 @@ def main() -> None:
             per_model = status.get("latest_formation_completed_agents_per_model", {})
             if per_model != {"deepseek/deepseek-v4.1-flash-1017": 4}:
                 fail("the v17 formation completion count is inconsistent")
+        if status["formation_status"] == "offline_ready_after_v18_glm_terminal_boundary":
+            latest = ROOT / status.get("latest_formation_result", "")
+            if not latest.is_file():
+                fail("the v18 formation result is missing")
+            if status.get("latest_formation_status") != "collected_negative_capability_read_premature_final":
+                fail("the v18 formation result has an unsupported status")
+            if status.get("latest_formation_models_completed") != 1:
+                fail("the v18 formation result must retain its one registered model")
+            per_model = status.get("latest_formation_completed_agents_per_model", {})
+            if per_model != {"z-ai/glm-5.3-flashx": 4}:
+                fail("the v18 formation completion count is inconsistent")
+            if status.get("latest_formation_submitted_reviews") != 22 or status.get("latest_formation_assigned_reviews") != 24:
+                fail("the v18 verified review count is inconsistent")
+            if status.get("latest_formation_completion_protocol") != "model_final_was_terminal":
+                fail("the v18 terminal-boundary finding is missing")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
@@ -310,6 +327,7 @@ def main() -> None:
             "collected_negative_probe_read_no_peer_ask",
             "collected_negative_exact_engagement_wrong_peer_no_ask",
             "collected_negative_capable_exact_engagement_no_ask",
+            "collected_negative_capability_read_premature_final",
         }:
             fail("the latest formation result has an unsupported status")
         if status.get("latest_formation_status") == "operator_interrupted_serial_scheduler_diagnostic":
@@ -352,6 +370,11 @@ def main() -> None:
                 fail("the v17 formation population is inconsistent")
             if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
                 fail("the v17 formation completion counts are inconsistent")
+        elif status.get("latest_formation_status") == "collected_negative_capability_read_premature_final":
+            if status.get("latest_formation_population") != 4:
+                fail("the v18 formation population is inconsistent")
+            if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
+                fail("the v18 formation completion counts are inconsistent")
         elif status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
             fail("the latest formation completion counts are inconsistent")
     if status.get("per_agent_response_limit", "missing") is not None:
