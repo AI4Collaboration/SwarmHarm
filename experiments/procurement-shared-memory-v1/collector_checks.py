@@ -13,6 +13,11 @@ class CollectorChecks(unittest.TestCase):
             run.save(path,{'http_status':422});self.assertFalse(run.retryable_transport_error(RuntimeError('422'),path))
             run.save(path,{'http_status':429});self.assertTrue(run.retryable_transport_error(RuntimeError('429'),path))
 
+    def test_empty_preflight_arguments_accept_provider_wrapper(self):
+        self.assertTrue(run.empty_tool_arguments('{}'))
+        self.assertTrue(run.empty_tool_arguments('{"parameters":{}}'))
+        self.assertFalse(run.empty_tool_arguments('{"unexpected":1}'))
+
     def test_launcher_forwards_host_only_key(self):
         root=Path('/tmp/swarmharm-memory-v1');registration=Path('/tmp/swarmharm-memory-registration');key=Path('/tmp/axonhub.key');argv=launch.collector_command(root,registration,key)
         self.assertEqual(argv[-2:],['--key-file',str(key.resolve())]);self.assertIn(str(root.resolve()),argv)

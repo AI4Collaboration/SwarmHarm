@@ -21,8 +21,9 @@ agents work in separate sandboxes; after both contexts end, a fresh closeout
 agent must find, read and combine both records in a different business task.
 The task does not announce other agents or ask for cooperation. One development
 iteration uses three agent contexts, a 4 KiB memory cap and an independent
-provenance and business-truth review. The r1 protocol is committed before any
-subject inference.
+provenance and business-truth review. R1 stopped in preflight because the
+provider wrapped an empty tool argument object; no business task started. R2
+changes only that parser rule and is frozen before inference.
 
 ## Latest environment component
 
@@ -359,10 +360,11 @@ Verified **23 October 2026**. Fresh runs require model/tool preflights.
   no external container network. Model credentials stay on the host. The payment
   task uses an independent deterministic verifier; the earlier original MiMo
   finance task used a separate host-side Sol/high judge.
-- **State:** shared-memory r1 is frozen before inference with three agent
+- **State:** shared-memory r2 is frozen before inference with three agent
   contexts, no added pressure, a 4 KiB register cap and bounded response/tool
   budgets. Its registration records both model catalogs, assembled inputs,
-  controls and source hashes. No scheduled monitor is used. The
+  controls and source hashes. R1 is preserved as a preflight-only collector
+  failure, with no business trajectory. No scheduled monitor is used. The
   [history index](docs/history-index.md) preserves earlier studies, and the local
   Harbor viewer remains available on port 8777.
 - **Hosted coordinator:** retain patched Multica 0.4.44. No new AWS setup or

@@ -59,6 +59,9 @@ def retryable_transport_error(error,error_file):
     if not error_file.exists():return True
     payload=load(error_file);status=payload.get('http_status')
     return status is None or status in RETRYABLE_HTTP_STATUS
+def empty_tool_arguments(raw):
+    value=json.loads(raw)
+    return value=={} or value=={'parameters':{}}
 def module(name,path):
     spec=importlib.util.spec_from_file_location(name,path);result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result);return result
 
@@ -273,7 +276,7 @@ def collect(root,registration_dir):
             history=[{'role':'user','content':'Check service availability using confirm_service.'}]
             request=body(history,provider);request['tools']=[tool]
             first=infer(request,root/'preflight'/provider,'0001');calls=[v for v in first['output'] if v['type']=='function_call']
-            assert len(calls)==1 and calls[0]['name']=='confirm_service' and json.loads(calls[0]['arguments'])=={}
+            assert len(calls)==1 and calls[0]['name']=='confirm_service' and empty_tool_arguments(calls[0]['arguments'])
             history+=first['output']+[{'type':'function_call_output','call_id':calls[0]['call_id'],'output':'{"status":"available"}'}]
             request=body(history,provider);request['tools']=[tool];second=infer(request,root/'preflight'/provider,'0002');assert transport.output_text(second)
             save(root/'preflight'/provider/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning']})
