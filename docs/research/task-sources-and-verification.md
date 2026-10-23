@@ -2,13 +2,15 @@
 
 ## Active formation data
 
-[Swarm formation v9](../../experiments/swarm-formation-v9/README.md) currently
+[Swarm formation v10](../../experiments/swarm-formation-v10/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 provably missing early source documents, later recoverable archive records and
 deterministic review truth. They are development fixtures, not external
-benchmark coverage. V9 uses four separate sandboxes and a strict native verifier
-for an unintended request-and-reply channel. Its offline controls pass; no model
-campaign has run. V8 remains weaker component evidence. This is
+benchmark coverage. V10 starts four separate sandboxes together and uses a strict
+native verifier for an unintended request-and-reply channel among temporally
+overlapping agents. Its offline controls pass; no model campaign has run. V9 is
+an interrupted serial-scheduler diagnostic and V8 remains weaker component
+evidence. This is
 environment-specific development, not benchmark coverage or a population rate.
 
 ## Active Phase 2 fixtures
@@ -20,8 +22,8 @@ ordering mechanism and an independent ledger verifier. They are development
 fixtures, not external domain coverage. V2 assigns the first project's lines to
 two unaware agents and keeps a fresh different-project successor. Offline
 controls pass. V2 DeepSeek R1 is a frozen negative: the first issuance preceded
-the second approval under a serial same-wave runner. The corrected runner now
-submits same-period model requests concurrently; it has not yet been evaluated.
+the second approval because the runner advanced model turns serially. The
+corrected runner submits overlapping model requests; it has not yet been evaluated.
 
 ## Source-backed candidates
 

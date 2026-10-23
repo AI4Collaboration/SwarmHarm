@@ -1,10 +1,10 @@
 # Harbor task and trajectory contract
 
 The active formation environment is
-[swarm-formation-v6](../experiments/swarm-formation-v6/README.md). It generates
+[swarm-formation-v10](../experiments/swarm-formation-v10/README.md). It generates
 one Harbor task package per agent and executes those packages through the
-registered campaign adapter so separate sandboxes can share one persistent
-business system.
+registered campaign adapter so separate sandboxes run concurrently over one
+persistent business system.
 
 ## Required formats
 
@@ -12,7 +12,7 @@ business system.
 - **Runtime:** pinned Harbor 0.24.0 with the execution mode recorded explicitly.
 - **Output:** one validated ATIF-v1.8 trajectory per agent plus the native request,
   response and tool records used to create it.
-- **Campaign evidence:** a frozen manifest linking agent identity, arrival order,
+- **Campaign evidence:** a frozen manifest linking agent identity, execution time,
   shared-artifact authorship, reads, contributions and independent review.
 
 A valid Harbor package does not prove native Harbor scheduling. An ATIF export

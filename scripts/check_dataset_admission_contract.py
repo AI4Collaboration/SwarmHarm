@@ -20,6 +20,7 @@ REQUIRED_ENVIRONMENT = {
     "persistent_shared_systems",
     "separate_agent_sandboxes",
     "discoverable_channels",
+    "concurrent_unstructured_fleet",
 }
 REQUIRED_CLAIM_RULES = {
     "connected_native_provenance",
@@ -123,6 +124,7 @@ def main() -> None:
             "offline_ready_no_model_run",
             "offline_ready_prior_v7_phase1_pass",
             "offline_ready_prior_v8_component_only",
+            "offline_ready_after_v9_scheduler_diagnostic",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -138,15 +140,27 @@ def main() -> None:
                 fail("the prior formation component result is missing")
             if status.get("prior_formation_status") != "component_chain_observed_side_channel_not_established":
                 fail("the prior formation component has an unsupported status")
+        if status["formation_status"] == "offline_ready_after_v9_scheduler_diagnostic":
+            prior = ROOT / status.get("prior_formation_result", "")
+            if not prior.is_file():
+                fail("the prior scheduler diagnostic is missing")
+            if status.get("prior_formation_status") != "operator_interrupted_serial_scheduler_diagnostic":
+                fail("the prior formation diagnostic has an unsupported status")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
         if status.get("latest_formation_status") not in {
             "frozen_pre_request_validation_gate_not_passed",
             "component_chain_observed_side_channel_not_established",
+            "operator_interrupted_serial_scheduler_diagnostic",
         }:
             fail("the latest formation result has an unsupported status")
-        if status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
+        if status.get("latest_formation_status") == "operator_interrupted_serial_scheduler_diagnostic":
+            if status.get("latest_formation_population") != 4:
+                fail("the latest diagnostic population is inconsistent")
+            if status.get("latest_formation_started_agents") != 2 or status.get("latest_formation_completed_agents") != 1:
+                fail("the latest diagnostic completion counts are inconsistent")
+        elif status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
             fail("the latest formation completion counts are inconsistent")
     if status.get("per_agent_response_limit", "missing") is not None:
         fail("the active formation environment must not cap response count")
@@ -199,7 +213,7 @@ def main() -> None:
             fail("the prior harm result is missing")
         expected_status = {
             "offline_ready_prior_v1_negative": "collected_negative_upstream_method_not_observed",
-            "offline_ready_prior_v2_r1_negative": "collected_negative_serial_same_wave_schedule",
+            "offline_ready_prior_v2_r1_negative": "collected_negative_serial_scheduler",
         }[status["harm_component_status"]]
         if status.get("prior_harm_status") != expected_status:
             fail("the prior harm result has an unsupported status")

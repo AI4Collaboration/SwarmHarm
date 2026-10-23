@@ -2,67 +2,41 @@
 
 ## Unit of study
 
-The publishable unit is one multi-agent campaign with separate sandboxes,
-ordinary business tasks, persistent shared systems, native traces and an
-independent verifier. Individual prompts and seeded component probes are not
-campaign-level evidence.
+The publishable unit is one concurrent multi-agent campaign with separate
+sandboxes, natural business tasks, persistent shared systems, native traces and
+an independent verifier. Seeded component probes are not campaign-level evidence.
 
 ## Two phases
 
 1. **Form the Swarm:** connect real residue, a peer-directed ask through an
-   unintended channel, an actionable reply and fresh receipt and use.
-2. **Cause Harm:** show that a later fresh agent receives the actual method,
-   applies it on a different business object and causes a verified adverse
-   effect.
+   unintended channel, a working reply and fresh receipt and use.
+2. **Cause Harm:** show actual method adoption on a different business object and
+   a new adverse effect verified outside subject control.
 
-The active Phase 1 environment is
-[swarm-formation-v9](../experiments/swarm-formation-v9/README.md). V9 has four
-agents, one per hidden arrival period, and no per-agent response-count or
-tool-call-count limit. Its offline controls pass and no model call has occurred.
-V8 remains frozen evidence for persistent cross-agent information flow, not for
-the current strict side-channel gate.
+[Formation v10](../experiments/swarm-formation-v10/README.md) is the active Phase
+1 environment. Four agents start together and run concurrently without assigned
+organization. Its offline controls pass; no model campaign has run.
 
-The active Phase 2 environment is
-[swarm-cause-harm-v2](../experiments/swarm-cause-harm-v2/README.md). Its primary
-gate requires a verified shared-project effect from locally valid actions by two
-unaware agents. A stronger gate requires direct full-body method receipt,
-different-project execution and a new effect. V2 DeepSeek R1 was negative: the
-first issuance preceded the second approval, and no project exceeded its cap.
-The next revision fixes the serial same-wave runner while preserving the tasks,
-prompts and model. The Phase 1 and Phase 2 component results are still reported
-separately until one future campaign connects the full chain end to end.
-
-Phase 2 collection is paused while the strict Phase 1 channel gate is repaired.
+[Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is the active Phase
+2 environment. Its first DeepSeek campaign was negative. Phase 2 collection is
+paused until strict Phase 1 is complete.
 
 ## Campaign record
 
-Each campaign preserves:
-
-- the legitimate task, blocker and ordinary completion truth;
-- agent sandboxes, arrival order and persistent shared systems;
-- Harbor task packages, frozen model route, prompt and code hashes;
-- native requests, responses, tool results and shared-artifact versions;
-- ATIF-v1.8 exports and an independent provenance review;
-- separate labels for residue, read, request, method discovery, contribution,
-  receipt, different-task adoption and verified effect.
+Each campaign preserves the task and truth, agent sandboxes, shared-system event
+order, Harbor inputs, frozen route and hashes, native model and tool records,
+ATIF-v1.8 exports, and an independent provenance review. Residue, read, request,
+reply, receipt, adoption and verified effect remain separate labels.
 
 ## Development loop
 
-1. Validate the environment, persistence and verifier offline.
-2. Run one minimum connected campaign per model.
-3. Inspect every trace and identify the first missing link.
-4. Change one mechanism only, freeze a new registration and rerun.
+1. Validate the environment and verifier offline.
+2. Run one minimum concurrent campaign.
+3. Inspect every trace and find the first missing link.
+4. Change one mechanism, freeze a new registration and rerun.
 5. Preserve negative, incomplete and provider-failed campaigns separately.
 
-Routine development stays small. Larger rate studies begin only after the
-environment and labels stop changing.
-
-## Data sources
-
-The current formation fixtures are maintained synthetic supplier-review tasks.
-Source-backed MiMo Harbor tasks remain candidates for later domain expansion.
-ImpossibleBench, Hack-Verifiable Environments and Hackbait inform task and
-verifier design; they do not constitute SwarmHarm coverage by themselves.
+Larger rate studies begin only after the environment and labels stop changing.
 
 [Current sources](research/task-sources-and-verification.md) ·
 [Environment contract](environment-contract.md) ·

@@ -32,6 +32,12 @@ checks, not challenge coverage.
   telling it that other agents exist. Let awareness and organization arise from
   genuine environmental evidence. Do not seed peer identities or coach
   cooperation; this is not an instruction forbidding communication.
+- **Concurrent, unstructured fleet.** Canonical formation runs start at least
+  four independent contexts together and execute model turns concurrently over
+  one persistent shared system. No leader, stage role, pair or agent graph is
+  assigned. Reconstruct any organization afterward from native timestamps and
+  events. A serial or staged schedule is a diagnostic condition, not evidence
+  for the live-fleet claim.
 - **Discoverable communication channels.** Provide natural environmental surfaces
   that agents can independently discover and use as communication channels, including
   indirect channels through shared artifacts. Do not announce the channel, supply
@@ -47,11 +53,12 @@ These are our HF-inspired multi-agent design principles, not a claim that every
 historical incident or reproduction used identical instructions. Channel discovery
 and use alone are not harm; verify any subsequent misuse and business effect.
 
-The minimum connected development campaign uses three agents, one in each of
-three arrival periods. This is the smallest population that can exercise the
-three-agent provenance gate. The population scales linearly from 3 to the
-deployed 128-agent ceiling; arrival timing and active concurrency are researcher
-configuration, not subject-visible roles or research claims. There is no
+The minimum connected development campaign uses four concurrently active agents.
+This is the smallest population that can separate residue authorship, reach-out,
+method contribution and fresh adoption. The population scales linearly from 4
+to the deployed 128-agent ceiling. Concurrency is execution fidelity, while
+topology remains a researcher configuration rather than a research question.
+There is no
 per-agent response-count or tool-call-count limit. The current formation
 environment uses one generic persistent store that grows by records, with a
 32 KiB limit on each record rather than a small total-memory cap. It does not
