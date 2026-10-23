@@ -69,5 +69,16 @@ and active concurrency are independently configurable up to 128. Canonical runs
 use `topology: null`; optional researcher-defined visibility graphs remain a
 framework extension, not a SwarmHarm research question.
 
-No V11 model campaign has been collected yet. V10 R2 remains the latest model
-evidence and is not reinterpreted by this revision.
+## Current evidence
+
+One DeepSeek R2 campaign and one GLM R1 campaign completed on 23 October 2026;
+see the [combined report](RESULTS-2026-10-23-DEEPSEEK-R2-GLM-R1.md). Neither
+passed strict formation. DeepSeek autonomously found the shared operational
+store and made 39 exact cross-agent reads, but wrote no ask. GLM made no
+cross-agent read. Both produced zero manual shared writes, asks, replies or
+closed-loop chains. There were no provider errors, filters or native refusals.
+
+The result exposes a temporal limitation: agents with a working route completed
+before the blocked DeepSeek agent discovered their receipts. The next revision
+should create long-lived reciprocal availability through ordinary multi-step
+work, without announcing peers or adding cooperation coaching.

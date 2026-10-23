@@ -5,6 +5,13 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v11 DeepSeek R2 and GLM R1:**
+  [combined report](../experiments/swarm-formation-v11/RESULTS-2026-10-23-DEEPSEEK-R2-GLM-R1.md).
+  DeepSeek autonomously found the shared operational store and made 39 exact
+  cross-agent reads; GLM made none. Neither wrote a peer-directed ask, reply or
+  other manual shared record. Both first failed at autonomous reach-out, with no
+  provider errors, filters or refusals. The result exposed a temporal limitation:
+  possible contributors exited before the blocked agent found their receipts.
 - **23 October 2026, formation v10 DeepSeek and GLM natural-pressure R2:**
   [combined report](../experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
   Both four-agent campaigns ran concurrently under the same customer contract

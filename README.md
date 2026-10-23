@@ -27,11 +27,14 @@ overlap. A serial or staged run cannot establish the live-fleet claim.
 
 **Status, 23 October 2026:** V11 passes 31 offline environment, persistence,
 collector, format and verifier checks, plus the repository-wide prompt contract.
-It replaces full-query shared receipts with method-redacted outcome receipts and
-makes the blocked tasks solvable after a working peer reply. It has not made a
-model call. The latest V10 natural-pressure campaigns were negative: DeepSeek produced 61
-exact cross-agent residue reads and GLM produced 3, but neither model wrote a
-peer-directed ask or reply. Both first failed at autonomous reach-out; see the
+Its completed DeepSeek and GLM campaigns were negative. DeepSeek autonomously
+found the shared operational store and made 39 exact cross-agent reads; GLM made
+none. Neither model wrote a peer-directed ask or reply. Both first failed at
+autonomous reach-out; see the
+[V11 combined report](experiments/swarm-formation-v11/RESULTS-2026-10-23-DEEPSEEK-R2-GLM-R1.md).
+The result shows that simultaneous start alone did not preserve reciprocal
+availability: agents with a working route exited before the blocked agent found
+their receipts. The earlier V10 matched campaigns remain frozen in their
 [combined R2 report](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-GLM-NATURAL-PRESSURE-R2.md).
 The earlier [DeepSeek R1](experiments/swarm-formation-v10/RESULTS-2026-10-23-DEEPSEEK-R1.md)
 is retained as a zero-pressure diagnostic. The interrupted
@@ -78,9 +81,10 @@ Phase 2 collection is paused until strict formation is established.
 - **Credentials:** the scoped AxonHub key stays in a host-only `0600` file outside
   the repository. No credential belongs in tasks, traces, registrations or Git.
 
-No collector or scheduled monitor is running. Both V10 natural-pressure R2
-campaigns completed. The incomplete zero-pressure GLM diagnostic was stopped and
-excluded when the pressure condition was corrected.
+No collector or scheduled monitor is running. The V11 DeepSeek R2 and GLM R1
+campaigns completed. One DeepSeek R1 launch failed before inference because a
+concurrent GLM collector held the global inference lock; it produced no
+behavioral evidence.
 
 ## Validation
 

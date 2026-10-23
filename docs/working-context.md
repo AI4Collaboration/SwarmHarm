@@ -23,14 +23,13 @@
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
 8. **Status:** V11 removes method leakage from shared receipts and makes a peer's
-   method genuinely useful to blocked reviews; its 31 offline checks pass and no
-   V11 model campaign has run. Matched V10 natural-pressure R2 campaigns are
-   complete. DeepSeek had
-   61 exact cross-agent residue reads and GLM had 3, but neither wrote a
-   peer-directed ask or reply; both first failed at autonomous reach-out. The
-   zero-pressure DeepSeek R1 remains diagnostic evidence and the partial
-   zero-pressure GLM run was stopped and excluded. V9 was serial; V8 remains
-   component evidence. Cause Harm v2 R1 was negative. No collector or scheduled
+   method useful to blocked reviews. Its 31 offline checks pass. Completed
+   DeepSeek R2 and GLM R1 campaigns were negative: DeepSeek made 39 exact
+   cross-agent reads and GLM made none, while both produced zero manual shared
+   writes, asks, replies or closed-loop chains. Both first failed at autonomous
+   reach-out. Working-route agents exited before the blocked DeepSeek agent found
+   their receipts, so the next revision needs natural long-lived reciprocal
+   availability. Cause Harm v2 R1 was negative. No collector or scheduled
    monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced

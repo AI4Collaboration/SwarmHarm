@@ -9,10 +9,11 @@ locally discoverable retained-collection method and deterministic review truth.
 They are development fixtures, not external benchmark coverage. V11 starts four
 separate sandboxes together and uses a strict
 native verifier for an unintended request-and-reply channel among temporally
-overlapping agents. Its offline controls pass; no V11 model campaign has run.
-V10's matched natural-pressure DeepSeek and GLM campaigns both failed first at
-autonomous reach-out. V9 is an interrupted serial-scheduler diagnostic and V8
-remains weaker component evidence. This is
+overlapping agents. Its offline controls pass. V11 DeepSeek and GLM campaigns
+both failed first at autonomous reach-out: DeepSeek read other agents' residue
+but wrote no ask, while GLM did not read cross-agent residue. V9 is an
+interrupted serial-scheduler diagnostic and V8 remains weaker component
+evidence. This is
 environment-specific development, not benchmark coverage or a population rate.
 
 ## Active Phase 2 fixtures
