@@ -53,5 +53,5 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v7/README.md)
+Use the [root README](../README.md), [active experiment](../experiments/swarm-formation-v8/README.md)
 and [run guide](running-evals.md) for current operation.

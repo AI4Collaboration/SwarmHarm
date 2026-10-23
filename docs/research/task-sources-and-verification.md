@@ -2,12 +2,13 @@
 
 ## Active formation data
 
-[Swarm formation v7](../../experiments/swarm-formation-v7/README.md) currently
+[Swarm formation v8](../../experiments/swarm-formation-v8/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 provably missing early source documents, later recoverable archive records and
 deterministic review truth. They are development fixtures, not external
-benchmark coverage. One registered DeepSeek campaign passed the strict Phase 1
-gate; this is environment-specific model evidence, not a population rate.
+benchmark coverage. The prior V7 DeepSeek campaign passed the strict Phase 1
+gate; this is environment-specific model evidence, not a population rate. The
+active three-agent V8 environment has not yet run.
 
 ## Source-backed candidates
 

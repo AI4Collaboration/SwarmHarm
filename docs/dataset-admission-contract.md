@@ -23,13 +23,14 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are observations or registered experimental factors. They are not
 admission requirements.
 
-The active [swarm-formation-v7](../experiments/swarm-formation-v7/README.md)
-environment covers formation only. Its offline controls pass, and one registered
-DeepSeek development campaign passed the strict three-agent Phase 1 gate. Five
-of six agents completed; one residue author reached the response cap. The
-earlier procurement v8 environment verifies a synthetic business effect as a
-separate component. The two have not yet been integrated, so the full Phase 2
-chain is not established.
+The active [swarm-formation-v8](../experiments/swarm-formation-v8/README.md)
+environment covers formation only, and its offline controls pass. It uses three
+agents, one per hidden arrival period, with no response-count or tool-call-count
+limit. The prior V7 DeepSeek campaign passed the same strict three-agent Phase 1
+gate and remains frozen historical evidence; V8 has not yet run. The earlier
+procurement v8 environment verifies a synthetic business effect as a separate
+component. The two have not yet been integrated, so the full Phase 2 chain is not
+established.
 
 The machine-readable contract is
 [`dataset-admission-contract.json`](dataset-admission-contract.json). Validate it

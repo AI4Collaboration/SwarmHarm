@@ -27,9 +27,9 @@ From the repository root:
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v7 -p '*checks.py' -v
+  -s experiments/swarm-formation-v8 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v7
+./scripts/check-format-contract experiments/swarm-formation-v8
 ```
 
 These checks make no model calls. They cover business truth, memory limits,
@@ -45,14 +45,14 @@ hashes.
 
 ```sh
 PY=../eval-readiness/harbor-0.24.0/bin/python
-OUT=../eval-readiness/swarm-formation-v7-<fresh-run-id>
-REG=experiments/swarm-formation-v7/registrations/<fresh-run-id>
+OUT=../eval-readiness/swarm-formation-v8-<fresh-run-id>
+REG=experiments/swarm-formation-v8/registrations/<fresh-run-id>
 
-$PY experiments/swarm-formation-v7/run.py \
+$PY experiments/swarm-formation-v8/run.py \
   --phase prepare --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id deepseek/deepseek-v4.1-flash-1017 --model-alias deepseek \
-  --population 6 --active-contexts 2
+  --population 3 --active-contexts 1
 ```
 
 For GLM, use `--model-id z-ai/glm-5.3-flashx --model-alias glm`. Each model gets
@@ -65,7 +65,7 @@ the exact commit before inference. Collection refuses to start unless local
 ## Run one connected campaign
 
 ```sh
-$PY experiments/swarm-formation-v7/launch.py \
+$PY experiments/swarm-formation-v8/launch.py \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file>
 ```
@@ -75,21 +75,32 @@ launch a second collector for the same registration. Monitor `progress.json`,
 `controller.log`, response classifications, transport attempts and the current
 actor trace. Preserve terminal errors instead of silently restarting.
 
-The current development budget is one route preflight and one six-agent campaign
-in three hidden arrival periods. Each agent has its own sandbox and private
-context and is capped at 32 responses, 128 tool calls and 16,384 output tokens per
-response. The persistent shared store grows by records; each record is bounded at
-32 KiB. The runner sends each private history in full and performs no automatic
-context compaction. Population and active concurrency can be raised independently
-up to the deployed 128-agent ceiling.
+The current development budget is one route preflight and one three-agent
+campaign, with one agent in each of three hidden arrival periods. Each agent has
+its own sandbox and private context. There is no per-agent response-count or
+tool-call-count limit. A workstation may run for 30 minutes and the campaign for
+three hours, so a hung process eventually terminates without truncating a trace
+after an arbitrary number of turns. The persistent shared store grows by records;
+each record is bounded at 32 KiB. The runner sends each private history in full
+and performs no automatic context compaction. Population and active concurrency
+can be raised independently up to the deployed 128-agent ceiling.
+For example, `--population 12 --active-contexts 4` creates twelve independent
+sandboxes, distributes them as four agents per hidden arrival period and keeps
+up to four running at once. When one finishes, the scheduler fills the free slot
+from the same period; it opens the next period only after the current one ends.
+
+The canonical command omits `--topology-file` and freezes topology to `null`.
+Topology is not an RQ. External researchers may pass a JSON file containing a
+`directed_graph` edge list over stable logical IDs; this changes record visibility
+only, remains hidden from subject prompts and marks the run as non-canonical.
 
 ## Review and export
 
 After `completion.json` exists:
 
 ```sh
-$PY experiments/swarm-formation-v7/review.py --output "$OUT"
-$PY experiments/swarm-formation-v7/export_atif.py "$OUT"
+$PY experiments/swarm-formation-v8/review.py --output "$OUT"
+$PY experiments/swarm-formation-v8/export_atif.py "$OUT"
 ```
 
 Inspect every native request, response, tool result and final answer. The

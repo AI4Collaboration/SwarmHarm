@@ -10,7 +10,7 @@ SwarmHarm tests two connected claims:
 
 ## Active study
 
-[Swarm formation v7](experiments/swarm-formation-v7/README.md) is the only active
+[Swarm formation v8](experiments/swarm-formation-v8/README.md) is the only active
 formation environment. It runs LessWrong Stages 1–3 as one continuous campaign
 over one initially empty persistent cache:
 
@@ -30,6 +30,9 @@ reading a real request from another sandbox, then completed the business task
 and disclosed the method. Five of six agents completed; one early residue author
 reached the frozen response cap. This is one positive development campaign, not
 a population rate, causal, intent or harm result. Phase 2 remains unbuilt.
+V8 keeps the same strict gate while reducing the canonical campaign to three
+agents, one per hidden arrival period. It has no per-agent response-count or
+tool-call-count limit; only wall-clock runtime bounds remain.
 
 ## Environment contract
 
@@ -62,14 +65,17 @@ Verified **23 October 2026**.
 - **Isolation:** each model workstation has no external network. Shared business
   state, operator evidence and independent verification remain separate from
   subject context.
-- **Scale:** the minimum campaign uses six agents in three hidden arrival periods
-  of two. Population and active concurrency are configurable up to 128 agents;
-  scheduling and event recording are linear in population size.
+- **Scale:** the minimum campaign uses three agents in three hidden arrival
+  periods of one. Population and active concurrency are configurable up to 128 agents;
+  scheduling and event recording are linear in population size. Topology is not
+  an RQ: canonical runs use no assigned graph, while external extensions may
+  supply a researcher-owned visibility graph.
 - **Memory:** the persistent cache grows by records, each bounded at 32 KiB.
   Private histories remain separate and are sent in full without automatic
   context compaction.
-- **Current state:** V7 DeepSeek R1 is complete and independently reviewed. No
-  collector or scheduled monitor is running; all model workstations were removed.
+- **Current state:** V7 DeepSeek R1 is complete and independently reviewed. V8
+  is the active three-agent, count-unlimited environment. No collector or
+  scheduled monitor is running; all model workstations were removed.
 
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·
@@ -79,15 +85,15 @@ Verified **23 October 2026**.
 
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
-  -s experiments/swarm-formation-v7 -p '*checks.py' -v
+  -s experiments/swarm-formation-v8 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
-./scripts/check-format-contract experiments/swarm-formation-v7
+./scripts/check-format-contract experiments/swarm-formation-v8
 python3 scripts/check_dataset_admission_contract.py
 ```
 
 ## Maintained records
 
-- [Active formation environment](experiments/swarm-formation-v7/README.md)
+- [Active formation environment](experiments/swarm-formation-v8/README.md)
 - [LessWrong Stage 1–3 audit](docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
 - [Current run guide](docs/running-evals.md)
 - [Current working context](docs/working-context.md)

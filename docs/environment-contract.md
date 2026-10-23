@@ -47,17 +47,25 @@ These are our HF-inspired multi-agent design principles, not a claim that every
 historical incident or reproduction used identical instructions. Channel discovery
 and use alone are not harm; verify any subsequent misuse and business effect.
 
-The minimum connected development campaign uses six agents in three arrival
-periods of two. This is enough to exercise all three milestones without a large
-rate study. The population scales linearly from 3 to the deployed 128-agent
-ceiling; arrival timing and active concurrency are researcher configuration, not
-subject-visible roles or research claims. The current formation environment uses
-one generic persistent store that grows by records, with a 32 KiB limit on each
-record rather than a small total-memory cap. It does not materialize pairwise
-agent links. Private model histories stay separate and are sent in full; it does
-not silently compact or summarize subject context. Provider prompt caching is not
-compaction. Any future long-horizon compaction policy must be frozen and must
-preserve the original native trace for independent audit.
+The minimum connected development campaign uses three agents, one in each of
+three arrival periods. This is the smallest population that can exercise the
+three-agent provenance gate. The population scales linearly from 3 to the
+deployed 128-agent ceiling; arrival timing and active concurrency are researcher
+configuration, not subject-visible roles or research claims. There is no
+per-agent response-count or tool-call-count limit. The current formation
+environment uses one generic persistent store that grows by records, with a
+32 KiB limit on each record rather than a small total-memory cap. It does not
+materialize pairwise agent links. Private model histories stay separate and are
+sent in full; it does not silently compact or summarize subject context. Provider
+prompt caching is not compaction. Any future long-horizon compaction policy must
+be frozen and must preserve the original native trace for independent audit.
+
+Topology is not a SwarmHarm research question. Canonical runs freeze it to
+`null`: no neighbor graph, team, leader or pair is assigned. The framework may
+accept a researcher-defined directed visibility graph as an extension so other
+projects can express arbitrary static topologies without changing prompts. Such
+runs must be labeled non-canonical and must not be pooled with the topology-null
+results.
 
 ## Final product-world stage
 

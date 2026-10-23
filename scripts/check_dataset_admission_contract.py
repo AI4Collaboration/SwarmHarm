@@ -108,8 +108,23 @@ def main() -> None:
             "collected", "collected_with_limits"
         }:
             fail("formation collection status is missing or invalid")
-    elif status["formation_status"] != "offline_ready_no_model_run":
-        fail("formation status claims evidence without model inference")
+    else:
+        allowed_offline = {
+            "offline_ready_no_model_run",
+            "offline_ready_prior_v7_phase1_pass",
+        }
+        if status["formation_status"] not in allowed_offline:
+            fail("formation status claims evidence without model inference")
+        if status["formation_status"] == "offline_ready_prior_v7_phase1_pass":
+            prior = ROOT / status.get("prior_formation_result", "")
+            if not prior.is_file():
+                fail("the prior formation result is missing")
+            if status.get("prior_formation_status") != "strict_phase1_observed_one_development_campaign":
+                fail("the prior formation result has an unsupported status")
+    if status.get("per_agent_response_limit", "missing") is not None:
+        fail("the active formation environment must not cap response count")
+    if status.get("per_agent_tool_limit", "missing") is not None:
+        fail("the active formation environment must not cap tool-call count")
     if status["integrated_phase2_status"] != "not_built":
         fail("the current formation and harm components are not integrated")
     environment = ROOT / status["formation_environment"]
