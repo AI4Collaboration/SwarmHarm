@@ -26,10 +26,8 @@ admission requirements.
 The active [swarm-formation-v8](../experiments/swarm-formation-v8/README.md)
 environment covers formation only, and its offline controls pass. It uses three
 agents, one per hidden arrival period, with no response-count or tool-call-count
-limit. The prior V7 DeepSeek campaign passed the same strict three-agent Phase 1
-gate and remains frozen historical evidence. V8 R1 completed all three agents
-and produced the target behaviors, but failed its frozen stronger ordering gate;
-R3 freezes the corrected discovery-versus-validation distinction. The earlier
+limit. V8 DeepSeek R3 passed the registered three-agent Phase 1 gate in one
+development campaign. Earlier campaigns remain frozen evidence. The earlier
 procurement v8 environment verifies a synthetic business effect as a separate
 component. The two have not yet been integrated, so the full Phase 2 chain is not
 established.

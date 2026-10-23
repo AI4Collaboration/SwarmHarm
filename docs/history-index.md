@@ -5,6 +5,11 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v8 R3:**
+  [DeepSeek report](../experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R3.md).
+  One native chain connected residue, autonomous reach-out and independent
+  method discovery, use and disclosure across three distinct agents. All three
+  agents completed without response or tool-count limits.
 - **23 October 2026, formation v8 R1:**
   [DeepSeek report](../experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Three agents completed without response or tool-count limits. Native evidence

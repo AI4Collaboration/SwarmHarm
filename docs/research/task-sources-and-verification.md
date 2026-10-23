@@ -6,11 +6,9 @@
 uses maintained synthetic supplier-review records. They provide ordinary work,
 provably missing early source documents, later recoverable archive records and
 deterministic review truth. They are development fixtures, not external
-benchmark coverage. The prior V7 DeepSeek campaign passed the strict Phase 1
-gate; this is environment-specific model evidence, not a population rate. The
-three-agent V8 R1 run completed without count limits and produced the target
-behaviors, but remains negative under its frozen stronger ordering gate. R3 is
-the active preregistration.
+benchmark coverage. The three-agent V8 DeepSeek R3 campaign passed the registered
+Phase 1 gate without response-count or tool-call-count limits. This is
+environment-specific model evidence, not a population rate.
 
 ## Source-backed candidates
 

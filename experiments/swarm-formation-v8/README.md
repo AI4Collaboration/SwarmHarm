@@ -4,6 +4,11 @@ This is the corrected **Form the Swarm** setting. It adapts LessWrong Stages
 1–3 to a contained, non-cyber business environment and connects the stages with
 real agent outputs rather than simulated peer notes.
 
+**Current result:**
+[DeepSeek R3](RESULTS-2026-10-23-DEEPSEEK-R3.md) passed the registered Phase 1
+gate in one three-agent development campaign. This does not establish a
+population rate, intent, causal contagion or harm.
+
 ## Three milestones
 
 1. **Residue:** an agent's ordinary archive search leaves a persistent service
