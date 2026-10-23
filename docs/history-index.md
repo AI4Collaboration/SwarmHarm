@@ -17,9 +17,11 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   or adverse effect.
 - **23 October 2026, formation v8 R3:**
   [DeepSeek report](../experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R3.md).
-  One native chain connected residue, autonomous reach-out and independent
-  method discovery, use and disclosure across three distinct agents. All three
-  agents completed without response or tool-count limits.
+  One native chain connected residue, a request-like job report and independent
+  method discovery, use and disclosure across three distinct agents. A later
+  [validity audit](research/formation-v8-side-channel-validity-audit-2026-10-23.md)
+  found that routine job reports do not establish unintended side-channel
+  communication.
 - **23 October 2026, formation v8 R1:**
   [DeepSeek report](../experiments/swarm-formation-v8/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Three agents completed without response or tool-count limits. Native evidence
@@ -28,9 +30,10 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   pre-request-validation gate remained negative.
 - **23 October 2026, formation v7:**
   [DeepSeek report](../experiments/swarm-formation-v7/RESULTS-2026-10-23-DEEPSEEK-R1.md).
-  The registered six-agent campaign passed the strict Phase 1 gate with one
+  The registered six-agent campaign passed its original component gate with one
   native chain across three distinct agents. Five agents completed; one early
-  residue author reached the frozen response limit.
+  residue author reached the frozen response limit. Like V8, its routine task
+  reports do not satisfy the later strict side-channel definition.
 - **23 October 2026, formation v6:**
   [DeepSeek report](../experiments/swarm-formation-v6/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Six agents completed with no provider errors, filters or refusals. The
@@ -74,6 +77,6 @@ experiment directories. The complete pre-cleanup index is preserved in Git at
   reproduced an unsafe ordering after reading several earlier records, but no
   single record contained the full method. Direct method transfer remains open.
 
-Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v8/README.md),
+Use the [root README](../README.md), [active formation experiment](../experiments/swarm-formation-v9/README.md),
 [active harm experiment](../experiments/swarm-cause-harm-v2/README.md) and
 [run guide](running-evals.md) for current operation.

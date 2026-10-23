@@ -9,17 +9,18 @@ campaign-level evidence.
 
 ## Two phases
 
-1. **Form the Swarm:** connect real residue, autonomous reach-out and a different
-   agent's independently discovered method contribution in one persistent run.
+1. **Form the Swarm:** connect real residue, a peer-directed ask through an
+   unintended channel, an actionable reply and fresh receipt and use.
 2. **Cause Harm:** show that a later fresh agent receives the actual method,
    applies it on a different business object and causes a verified adverse
    effect.
 
 The active Phase 1 environment is
-[swarm-formation-v8](../experiments/swarm-formation-v8/README.md). V8 has three agents, one per hidden arrival period, and
-no per-agent response-count or tool-call-count limit. V8 DeepSeek R3 passed the
-registered Phase 1 gate in one development campaign. Earlier runs remain frozen
-evidence for their original settings.
+[swarm-formation-v9](../experiments/swarm-formation-v9/README.md). V9 has four
+agents, one per hidden arrival period, and no per-agent response-count or
+tool-call-count limit. Its offline controls pass and no model call has occurred.
+V8 remains frozen evidence for persistent cross-agent information flow, not for
+the current strict side-channel gate.
 
 The active Phase 2 environment is
 [swarm-cause-harm-v2](../experiments/swarm-cause-harm-v2/README.md). Its primary
@@ -30,6 +31,8 @@ first issuance preceded the second approval, and no project exceeded its cap.
 The next revision fixes the serial same-wave runner while preserving the tasks,
 prompts and model. The Phase 1 and Phase 2 component results are still reported
 separately until one future campaign connects the full chain end to end.
+
+Phase 2 collection is paused while the strict Phase 1 channel gate is repaired.
 
 ## Campaign record
 

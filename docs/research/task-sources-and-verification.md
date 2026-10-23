@@ -2,13 +2,14 @@
 
 ## Active formation data
 
-[Swarm formation v8](../../experiments/swarm-formation-v8/README.md) currently
+[Swarm formation v9](../../experiments/swarm-formation-v9/README.md) currently
 uses maintained synthetic supplier-review records. They provide ordinary work,
 provably missing early source documents, later recoverable archive records and
 deterministic review truth. They are development fixtures, not external
-benchmark coverage. The three-agent V8 DeepSeek R3 campaign passed the registered
-Phase 1 gate without response-count or tool-call-count limits. This is
-environment-specific model evidence, not a population rate.
+benchmark coverage. V9 uses four separate sandboxes and a strict native verifier
+for an unintended request-and-reply channel. Its offline controls pass; no model
+campaign has run. V8 remains weaker component evidence. This is
+environment-specific development, not benchmark coverage or a population rate.
 
 ## Active Phase 2 fixtures
 

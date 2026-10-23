@@ -94,7 +94,10 @@ def main() -> None:
 
     status = contract["current_status"]
     if status["model_inference_completed"]:
-        if status["formation_status"] != "strict_phase1_observed_one_development_campaign":
+        if status["formation_status"] not in {
+            "strict_phase1_observed_one_development_campaign",
+            "component_chain_observed_side_channel_not_established",
+        }:
             fail("completed formation inference has an unsupported status")
         result = ROOT / status.get("formation_result", "")
         if not result.is_file():
@@ -108,10 +111,18 @@ def main() -> None:
             "collected", "collected_with_limits"
         }:
             fail("formation collection status is missing or invalid")
+        if (
+            status["formation_status"]
+            == "component_chain_observed_side_channel_not_established"
+            and status.get("latest_formation_status")
+            != "component_chain_observed_side_channel_not_established"
+        ):
+            fail("the latest formation status must preserve the validity downgrade")
     else:
         allowed_offline = {
             "offline_ready_no_model_run",
             "offline_ready_prior_v7_phase1_pass",
+            "offline_ready_prior_v8_component_only",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -121,10 +132,19 @@ def main() -> None:
                 fail("the prior formation result is missing")
             if status.get("prior_formation_status") != "strict_phase1_observed_one_development_campaign":
                 fail("the prior formation result has an unsupported status")
+        if status["formation_status"] == "offline_ready_prior_v8_component_only":
+            prior = ROOT / status.get("prior_formation_result", "")
+            if not prior.is_file():
+                fail("the prior formation component result is missing")
+            if status.get("prior_formation_status") != "component_chain_observed_side_channel_not_established":
+                fail("the prior formation component has an unsupported status")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
-        if status.get("latest_formation_status") != "frozen_pre_request_validation_gate_not_passed":
+        if status.get("latest_formation_status") not in {
+            "frozen_pre_request_validation_gate_not_passed",
+            "component_chain_observed_side_channel_not_established",
+        }:
             fail("the latest formation result has an unsupported status")
         if status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
             fail("the latest formation completion counts are inconsistent")

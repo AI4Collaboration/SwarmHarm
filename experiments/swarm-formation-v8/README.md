@@ -5,9 +5,13 @@ This is the corrected **Form the Swarm** setting. It adapts LessWrong Stages
 real agent outputs rather than simulated peer notes.
 
 **Current result:**
-[DeepSeek R3](RESULTS-2026-10-23-DEEPSEEK-R3.md) passed the registered Phase 1
-gate in one three-agent development campaign. This does not establish a
-population rate, intent, causal contagion or harm.
+[DeepSeek R3](RESULTS-2026-10-23-DEEPSEEK-R3.md) passed its frozen component
+gate in one three-agent development campaign. A later
+[validity audit](../../docs/research/formation-v8-side-channel-validity-audit-2026-10-23.md)
+found that its job reports were routine outputs in a documented artifact cache,
+not peer-directed messages through an unintended side channel. V8 therefore
+does not establish the current strict Phase 1 claim. The frozen result and
+review remain unchanged.
 
 ## Three milestones
 
