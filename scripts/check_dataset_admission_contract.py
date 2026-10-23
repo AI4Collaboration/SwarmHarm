@@ -166,6 +166,7 @@ def main() -> None:
             "offline_ready_after_v12_peer_discovery_no_reachout",
             "offline_ready_after_v13_relevant_receipt_read_no_reachout",
             "offline_ready_after_v14_live_capable_peer_no_reachout",
+            "offline_ready_after_v15_probe_read_no_peer_ask",
         }
         if status["formation_status"] not in allowed_offline:
             fail("formation status claims evidence without model inference")
@@ -248,6 +249,17 @@ def main() -> None:
             per_model = status.get("latest_formation_completed_agents_per_model", {})
             if per_model != {"deepseek/deepseek-v4.1-flash-1017": 4}:
                 fail("the v14 formation completion count is inconsistent")
+        if status["formation_status"] == "offline_ready_after_v15_probe_read_no_peer_ask":
+            latest = ROOT / status.get("latest_formation_result", "")
+            if not latest.is_file():
+                fail("the v15 formation result is missing")
+            if status.get("latest_formation_status") != "collected_negative_probe_read_no_peer_ask":
+                fail("the v15 formation result has an unsupported status")
+            if status.get("latest_formation_models_completed") != 1:
+                fail("the v15 formation result must retain its one registered model")
+            per_model = status.get("latest_formation_completed_agents_per_model", {})
+            if per_model != {"deepseek/deepseek-v4.1-flash-1017": 4}:
+                fail("the v15 formation completion count is inconsistent")
         latest = ROOT / status.get("latest_formation_result", "")
         if not latest.is_file():
             fail("the latest formation result is missing")
@@ -259,6 +271,7 @@ def main() -> None:
             "collected_negative_peer_reachout_absent_natural_pressure",
             "collected_negative_relevant_receipt_read_no_reachout",
             "collected_negative_live_capable_peer_read_no_reachout",
+            "collected_negative_probe_read_no_peer_ask",
         }:
             fail("the latest formation result has an unsupported status")
         if status.get("latest_formation_status") == "operator_interrupted_serial_scheduler_diagnostic":
@@ -286,6 +299,11 @@ def main() -> None:
                 fail("the v14 formation population is inconsistent")
             if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
                 fail("the v14 formation completion counts are inconsistent")
+        elif status.get("latest_formation_status") == "collected_negative_probe_read_no_peer_ask":
+            if status.get("latest_formation_population") != 4:
+                fail("the v15 formation population is inconsistent")
+            if status.get("latest_formation_started_agents") != 4 or status.get("latest_formation_completed_agents") != 4:
+                fail("the v15 formation completion counts are inconsistent")
         elif status.get("latest_formation_population") != 3 or status.get("latest_formation_completed_agents") != 3:
             fail("the latest formation completion counts are inconsistent")
     if status.get("per_agent_response_limit", "missing") is not None:
