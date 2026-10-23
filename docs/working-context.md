@@ -34,9 +34,10 @@
    sent in full with no automatic compaction. Reserve rate studies for a frozen
    final environment.
 9. **Current state:** source and controls for the unstructured formation
-   environment are pushed. AxonHub rejected the available Multica account token;
-   it was revoked and no registration or live output was created. No collector
-   or scheduled monitor is running.
+   environment are pushed. A dedicated AxonHub model-gateway key is stored in a
+   host-only `0600` file and the exact DeepSeek Flash route is verified. The
+   rejected Multica token was revoked. No formation collector or scheduled
+   monitor is running yet.
 10. **Maintenance:** keep newest evidence first, preserve frozen registrations
     and historical negatives, never edit synced `sources/`, never copy
     credentials into tasks, and keep experimental results off the public site.

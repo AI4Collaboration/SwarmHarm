@@ -17,8 +17,8 @@ scans. Persistent records allow 32 KiB each. Private agent histories stay
 separate and are sent in full without automatic compaction. Inputs use Harbor
 1.4, outputs use ATIF-v1.8, and an independent reviewer reconstructs the observed
 graph from native events. The implementation is validated and pushed; no live
-formation run has started because the checked host does not currently have a
-usable AxonHub model-gateway credential.
+formation run has started yet. A dedicated host-only AxonHub key and the exact
+DeepSeek Flash route have been verified for the next frozen run.
 
 ## Prior mechanism runs
 

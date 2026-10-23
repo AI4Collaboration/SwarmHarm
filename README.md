@@ -56,10 +56,11 @@ Verified **23 October 2026**.
   `https://lmportal.iefbr14.xyz/v1/responses`. The current campaign freezes
   `deepseek/deepseek-v4.1-flash-1017` with high reasoning. Preparation confirms
   the exact snapshot in both the OpenRouter and authenticated AxonHub catalogs.
-- **Credentials:** no usable AxonHub model-gateway key is currently available in
-  the checked host configuration. A Multica account token is not accepted by the
-  model gateway; the test token was revoked and its local file removed. Keys are
-  never copied into tasks, registrations, traces or Git.
+- **Credentials:** a dedicated AxonHub model-gateway key for formation
+  development is active in a host-only `0600` file outside the repository. The
+  authenticated catalog returned 200 and exposed the frozen DeepSeek route. A
+  mistakenly created Multica account token was rejected, revoked and removed.
+  Key values are never copied into tasks, registrations, traces or Git.
 - **Isolation:** model workstations have no external network. Business state,
   operator evidence and verification remain separate from subject context.
 - **Memory:** the formation environment allows 32 KiB per persistent shared
@@ -67,9 +68,9 @@ Verified **23 October 2026**.
   separate and sent in full; automatic context compaction is disabled.
 - **Current state:** the unstructured formation environment is implemented,
   validated and pushed. It defaults to three agents and enforces the deployed
-  128-agent ceiling. No formation run was prepared or started because route
-  authentication failed before output creation. No collector or scheduled
-  monitor is running.
+  128-agent ceiling. The correct AxonHub route and dedicated host-only key are
+  verified; no formation run has started yet. No collector or scheduled monitor
+  is running.
 - **Hosted coordinator:** retain the patched Multica 0.4.44 deployment. These
   local studies need no new AWS resource or credential.
 
