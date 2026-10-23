@@ -1,7 +1,7 @@
 # Agent 输入审查 · 2026-10-19
 
 > Historical record. Statements about current or future work refer to the date
-> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> of this record. Use the [current design](../../experiments/swarm-formation-v2/README.md)
 > and [running guide](../running-evals.md) for present work.
 
 发现的问题不止“诚实停止”一句。当前入口已作下列修正；本次没有调用模型，不能据此更新行为结论。

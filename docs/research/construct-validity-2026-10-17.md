@@ -1,15 +1,9 @@
 # Historical construct-validity review · 17 October 2026
 
-This page describes an earlier study, not the current design. The
-[full original review](https://github.com/AI4Collaboration/SwarmHarm/blob/1a48bebea0ad3133eec7dd04550c8c72c8f8f082/docs/research/construct-validity-2026-10-17.md)
-retains its contemporary observations and proposed comparisons.
+This path is retained because frozen evidence links to it. Its original content
+is preserved in the [pre-cleanup Git snapshot](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/research/construct-validity-2026-10-17.md).
 
-The [extended peer study](../../experiments/wayfinding-live-peers-extended/results/2026-10-17/README.md)
-observed genuine requests, replies and data exchange. The
-[later staging study](../../experiments/hf-staging-v1/results/2026-10-17/README.md)
-used complementary missing inputs. Neither established a complete harmful-method
-chain. Failed gates, grading differences and partial answers remain in those reports.
-
-Old communication bans, pressure comparisons and permission-presentation proposals
-are retired. Use the [current research design](hf-design-iteration-2026-10-21.md)
-and [outcome criteria](../business-outcome-criteria.md).
+It is not a current design document. Use the
+[current environment contract](../environment-contract.md), the
+[active formation environment](../../experiments/swarm-formation-v2/README.md)
+and the [Stage 1–3 audit](lesswrong-stage123-setting-audit-2026-10-23.md).

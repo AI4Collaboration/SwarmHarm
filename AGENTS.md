@@ -1,22 +1,36 @@
 # SwarmHarm project rules
 
-- Formal reports and research summaries intended as deliverables must use plain, concise English. Conversation, progress updates and explanations to the user must use Chinese unless explicitly requested otherwise. Lead reports with the result and its meaning; explain necessary terms and keep run/event IDs, API/status codes and raw counters in linked evidence. Follow `.cursor/rules/plain-language-reports.mdc`. This is also the first rule in `docs/working-context.md`.
-- **Task format:** new dataset tasks use Harbor inputs and ATIF-v1.8 outputs, validated with pinned Harbor 0.24.0 as described in `tasks/README.md`. Preserve native traces and separate verifier/campaign evidence. Prefer source-backed non-cyber business environments, with source revisions and adaptations recorded. Keep campaign scheduling and cross-agent evidence outside task instructions. Do not rewrite frozen experiments or claim Harbor execution before validating the actual runner and verifier.
-- **Pressure:** on 21 October 2026 the user explicitly requested natural customer-contract pressure with substantial, time-dependent compensation in a newly frozen procurement study. This exception is authorized; no additional confirmation is needed. Outside that condition, retain the no-pressure default in `.cursor/rules/no-pressure.mdc`. Do not add agent threats, loophole hints or cooperation coaching. Preserve earlier results under their original pressure labels; registration alone does not authorize unrelated pressure interventions.
-- Every new or modified subject-facing prompt must be as natural as possible. Follow `.cursor/rules/natural-agent-prompts.mdc` across instructions, tasks, tools, files and runtime responses. Keep original business requirements and truthful resource permissions; do not add unregistered behavior coaching, experiment hints or fabricated peer context. Audit assembled inputs and preserve frozen historical runs.
-- Do not front-load source permissions, restricted-resource labels or cache-inheritance reminders into task introductions. Preserve actual access checks and factual error responses without redundant role inventories. The user withdrew permission-frontloading interventions on 2026-10-20; registration alone does not authorize bringing them back. Keep their frozen results as historical interventions, outside future natural-task comparisons.
-- The 2026-10-20 cleanup also covers tool descriptions, records and runtime responses: omit author-added warnings, ACL/role summaries, protected-source labels and redundant read-only reminders. Preserve real access checks and business truth; use natural work orders and factual record fields. Do not scrub genuine source text or model-authored peer cautions. Historical inputs stay frozen, and old outcomes do not validate the revised presentation.
-- Use ordinary business tasks, not cyber or security-testing tasks. The primary failure must include a concrete downstream business effect checked against independent truth, such as an incorrect payment actually posted in the local ledger. Shared-content reading, technical reachability, a permission violation or an edited status alone does not demonstrate harm. Keep scripted reachability, spontaneous model behavior and actual peer-method adoption separate.
-- Do not add a prohibition on peer communication. A missing formal chat interface is an environment fact, not an instruction to avoid peers. Do not classify shared-work interaction alone as misalignment; keep actual source-data and validator ownership boundaries separate. Run `experiments/prompt-contract/checks.py` when changing prompt assembly or inherited environments.
-- Put the newest update, setup change and experiment/result entry first in maintained README files, reports and indexes, including updates on the same date. Follow `.cursor/rules/latest-first.mdc`; never reorder or rewrite frozen protocols, source snapshots or archived results.
-- Read `README.md` → **Current setup** before setup, model-routing or evaluation work.
-- Every setup change must update that README section in the same change: affected versions, endpoints, permissions, credential availability (never values), commands, verification date/evidence, and remaining limits. Do not leave superseded settings presented as current.
-- Keep the hosted coordinator/runtime on the existing Multica 0.4.44 setup. Preserve the maintainer's public-server file-access security patch. Do not treat an upstream upgrade or daemon restart as routine eval preparation.
-- Before any explicitly requested future upgrade, identify the exact patch and deployed build, plan patch migration and rollback, and verify protection and compatibility. Do not infer that the SWH-13 wakeup patch is the public-server security patch.
-- Follow SWH-30/59/60's separation of coordinator and independent experiment labs. Test model tools, network restrictions and experimental permission rules in the environment to which the claim applies.
-- Treat model names, installed clients and historical successful runs as insufficient proof of current model access. Verify the active route and exact model/harness pairing before a new experiment.
-- For every new DeepSeek run, query OpenRouter's official model catalog at preparation time, select the newest explicit DeepSeek Flash snapshot, confirm that AxonHub exposes the same exact route, and freeze that ID in the registration. Abort preparation if either catalog cannot verify the selection. Do not register a drifting `latest` alias or silently change models inside a run.
-- Keep agent tasks free of evaluator instructions, hidden tests, gold patches and operator credentials. Keep operator infrastructure instructions out of subject tasks; record each condition accurately, including the explicitly requested customer-contract pressure exception.
-- Export and independently grade experiment artifacts, then stop owned wakeups/runs, tear down owned lab resources and revoke scoped experiment keys. Record cleanup evidence.
-- During environment development, use at most two trials per component probe or one minimum connected campaign per iteration. Inspect every trace, change one mechanism, and freeze a fresh development registration. Reserve large runs such as 64 trials per condition for preregistered final estimation after the environment, verifier and labels pass review. Never promote repeatedly tuned development fixtures into the held-out split.
-- Preserve historical experiment settings and results. Distinguish configuration, live verification and historical evidence; never commit credentials or raw credential-bearing traces.
+- Use concise Chinese in conversation and plain, concise English in formal reports.
+  Lead with what happened, what it means and the evidence limit.
+- The only active formation environment is `experiments/swarm-formation-v2`.
+  Historical experiment directories are frozen evidence, not current instructions.
+- New tasks use Harbor schema 1.4 inputs and ATIF-v1.8 outputs with pinned Harbor
+  0.24.0. Preserve native traces, campaign evidence and independent review.
+- Use ordinary non-cyber business work. A harm claim requires a concrete downstream
+  business effect checked against truth outside subject control.
+- Keep every subject-facing surface natural. Do not announce peers, cooperation,
+  methods, evaluation, pressure, vulnerabilities or hidden milestones. Do not
+  prohibit communication or front-load permission summaries.
+- The natural baseline has no added pressure, threats, urgency, rewards, exploit
+  hints, planted peer messages or cooperation coaching.
+- Agents run in separate sandboxes and private contexts without predefined
+  leaders, teams, pairs, senders or receivers. Reconstruct organization afterward
+  from native events.
+- Keep residue, read, request, contribution, receipt, adoption and business effect
+  as separate evidence. Shared access or similar answers do not establish transfer,
+  harm, intent or causality.
+- All live inference uses AxonHub. Before each campaign, verify an exact model ID
+  in the upstream and authenticated AxonHub catalogs, freeze the route and hashes,
+  commit and push the registration, then run.
+- Use one minimum connected campaign per model during development. Inspect every
+  trace and change one mechanism at a time. Larger samples wait until the
+  environment and labels stop changing.
+- Never commit credentials or credential-bearing traces. Keep model workstations
+  offline and operator truth outside subject control.
+- Keep the patched Multica 0.4.44 coordinator unchanged. Local formation campaigns
+  do not depend on it.
+- Put newest information first. Update the root README whenever setup or routing
+  changes. Preserve frozen evidence, but never let historical wording define
+  current operation.
+- Never edit synchronized project material under `sources/`. Keep experimental
+  results off the public website.

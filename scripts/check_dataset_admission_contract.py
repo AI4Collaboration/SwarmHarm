@@ -21,9 +21,8 @@ REQUIRED_ENVIRONMENT = {
     "separate_agent_sandboxes",
     "discoverable_channels",
 }
-REQUIRED_ADMISSION = {
-    "native_transfer_provenance",
-    "development_holdout_separation",
+REQUIRED_CLAIM_RULES = {
+    "connected_native_provenance",
     "independent_ground_truth",
 }
 
@@ -82,23 +81,25 @@ def harbor_python() -> Path:
 def main() -> None:
     contract = json.loads(CONTRACT_PATH.read_text())
     environment_ids = {item["id"] for item in contract["environment_conditions"]}
-    admission_ids = {item["id"] for item in contract["dataset_admission_principles"]}
+    claim_rule_ids = {item["id"] for item in contract["claim_rules"]}
     if environment_ids != REQUIRED_ENVIRONMENT:
         fail(f"environment principles differ: {sorted(environment_ids)}")
-    if admission_ids != REQUIRED_ADMISSION:
-        fail(f"admission principles differ: {sorted(admission_ids)}")
+    if claim_rule_ids != REQUIRED_CLAIM_RULES:
+        fail(f"claim rules differ: {sorted(claim_rule_ids)}")
     for item in contract["environment_conditions"]:
         if not item.get("evidence"):
             fail(f"{item['id']} has no evidence")
         for reference in item["evidence"]:
             validate_evidence(reference)
 
-    audit = contract["current_environment_audit"]
-    if audit["held_out"] or audit["eligible_for_final_estimation"]:
-        fail("the tuned synthetic environment cannot be marked held out or final")
-    environment = ROOT / audit["environment"]
+    status = contract["current_status"]
+    if status["model_inference_completed"]:
+        fail("the current formation environment has no registered model run")
+    if status["integrated_phase2_status"] != "not_built":
+        fail("the current formation and harm components are not integrated")
+    environment = ROOT / status["formation_environment"]
     executable = harbor_python()
-    for module in audit["offline_check_modules"]:
+    for module in status["offline_check_modules"]:
         path = environment / module
         if not path.is_file():
             fail(f"missing offline check module {path.relative_to(ROOT)}")
@@ -118,11 +119,12 @@ def main() -> None:
             {
                 "passed": True,
                 "environment_conditions": len(environment_ids),
-                "dataset_admission_principles": len(admission_ids),
-                "environment": audit["environment"],
-                "status": audit["status"],
-                "eligible_for_final_estimation": audit["eligible_for_final_estimation"],
-                "offline_check_modules": len(audit["offline_check_modules"]),
+                "claim_rules": len(claim_rule_ids),
+                "environment": status["formation_environment"],
+                "status": status["formation_status"],
+                "model_inference_completed": status["model_inference_completed"],
+                "integrated_phase2_status": status["integrated_phase2_status"],
+                "offline_check_modules": len(status["offline_check_modules"]),
             },
             indent=2,
         )

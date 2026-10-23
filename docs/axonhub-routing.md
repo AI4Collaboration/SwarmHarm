@@ -1,34 +1,30 @@
 # Model routing
 
-All live SwarmHarm model requests use AxonHub:
+All live SwarmHarm inference uses the AxonHub Responses endpoint:
 
 `https://lmportal.iefbr14.xyz/v1/responses`
 
-The host supplies `AXONHUB_API_KEY` or a path passed with `--key-file`. The key
-is read only by the host transport. It is never copied into a Harbor task,
-container, registration, trajectory, report, or source file. A run without a
-key fails before sending a request.
+The host reads a scoped key from a `0600` file outside the repository. The key
+must never enter a task, container, registration, trajectory, report or Git.
 
-Historical output directories preserve the route they actually used. They are
-evidence of earlier runs, not current routing instructions and not eligible for
-reclassification.
+## Route freeze
 
-For every new DeepSeek study, read OpenRouter's official `/api/v1/models` catalog
-before freezing the registration. Select the newest explicit DeepSeek Flash
-snapshot, then confirm that the authenticated AxonHub `/v1/models` catalog
-exposes the same exact route. Record that ID and verify that the returned model
-matches it. Stop before inference when either catalog is unavailable, ambiguous
-or inconsistent. Never register a drifting `latest` alias or change the model
-inside a frozen run.
+Before every campaign:
 
-Verified again on 23 October 2026, OpenRouter identifies
-`deepseek/deepseek-v4.1-flash-1017` as the current explicit DeepSeek Flash
-snapshot, and AxonHub exposes the same exact route. The current shared-memory
-registration freezes this ID. A later run must check both catalogs again rather
-than inherit this value.
+1. query the upstream model catalog;
+2. query the authenticated AxonHub `/v1/models` catalog;
+3. select one exact model ID present in both;
+4. record the catalog evidence and exact ID in a fresh registration;
+5. commit and push the registration before inference; and
+6. reject a response whose returned model identity differs from the frozen ID.
 
-The first AxonHub Sol natural procurement run on 21 October 2026 passed both
-preflights and the full calibration gate, then stopped at the first natural
-request with provider error `429 turn_rate_limit_exceeded`. No retry or
-trajectory replacement was made; this is an infrastructure hold, not a model
-refusal or behavioral result.
+Do not use a drifting `latest` alias or inherit a model ID from a historical run.
+Provider errors, filters and refusals remain separate from behavioral results.
+
+The last verified DeepSeek Flash snapshot on **23 October 2026** was
+`deepseek/deepseek-v4.1-flash-1017`. This is historical route evidence, not an
+automatic choice for the next campaign. The next DeepSeek and GLM campaigns must
+query both catalogs again before registration.
+
+Historical output directories retain the route they actually used. They are
+evidence only and never define current routing.

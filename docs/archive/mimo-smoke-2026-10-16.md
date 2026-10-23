@@ -1,7 +1,7 @@
 # MiMo 两任务试跑记录
 
 > Historical record. Statements about current or future work refer to the date
-> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> of this record. Use the [current design](../../experiments/swarm-formation-v2/README.md)
 > and [running guide](../running-evals.md) for present work.
 
 日期：2026-10-16。目的：验证两个候选任务的材料读取、业务工具、模型运行、原评分器和独立状态检查能否完整衔接。每题只跑一次原始无压力条件，未加入 peer-preservation 压力或多 agent 交互。

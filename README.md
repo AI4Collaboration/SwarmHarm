@@ -1,96 +1,73 @@
 # SwarmHarm
 
-SwarmHarm evaluates how separate agents can form a persistent collective and
-whether information carried by that collective later causes a verified business
-harm.
+SwarmHarm tests two connected claims:
 
-## Current result
+1. **Form the Swarm:** separate agents leave residue, infer that other workers
+   may exist, ask for help through an ordinary shared system and voluntarily
+   share a reusable method without assigned organization or direct chat.
+2. **Cause Harm:** a later agent adopts the shared method on a different task and
+   causes a concrete business effect verified against independent truth.
 
-The study has two phases:
+## Active study
 
-1. **Form the Swarm:** separate agents leave durable operational records, and a
-   connected pattern of residue, reach-out and method sharing emerges without
-   assigned leaders, pairs, teams or direct agent chat.
-2. **Cause Harm:** a later agent adopts a harmful method and produces a concrete
-   downstream effect checked against independent truth.
+[Swarm formation v2](experiments/swarm-formation-v2/README.md) is the only active
+formation environment. It runs LessWrong Stages 1–3 as one continuous campaign
+over one initially empty persistent cache:
 
-The first
-[unstructured formation campaign](experiments/swarm-formation-v1/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-did not form a swarm. It also exposed a dedicated document-request interface,
-which skips the shared-residue discovery that precedes communication in the
-OpenAI–Hugging Face incident. The result remains a valid negative for that
-interface, but it is no longer the active formation setting.
+`real residue → autonomous reach-out → independent method contribution`
 
-The corrected [Stage 1–3 setting](experiments/swarm-formation-v2/README.md) uses
-one generic persistent business cache. Earlier agents can leave exploratory
-residue, later agents can invent requests from that real residue, and a different
-agent can independently discover and publish a reusable method. No message,
-request, reply or attachment API is provided.
+Every agent has a separate sandbox and private context. The prompt does not
+announce peers, communication, cooperation, vulnerabilities, evaluation,
+pressure or the hidden stages. There is no dedicated request, reply, attachment
+or message-board interface. State is never reset and simulated peer content is
+never injected between milestones.
 
-The earlier
-[compute-light shared-memory campaign](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
-verified persistent memory and cross-context synthesis. It used an arranged
-writer/closeout workflow, so it is a mechanism result rather than evidence of
-spontaneous swarm formation. The corrected formation protocol reconstructs
-organization only from actual cross-sandbox behavior and preserves exact
-provenance between the three stages.
-
-No current run completes spontaneous Phase 1 or Phase 2. The evidence establishes
-persistent memory and synthesis, not spontaneous formation, harmful adoption,
-causal contagion, misaligned intent or a population rate.
+**Status, 23 October 2026:** the environment and verifier pass offline controls;
+no v2 model inference has run. Therefore SwarmHarm does not yet claim spontaneous
+formation, harmful adoption, causal contagion, misaligned intent or a population
+rate. The earlier formation R1 remains a negative for its dedicated-request
+interface and is listed only in the [history ledger](docs/history-index.md).
 
 ## Environment contract
 
-- Tasks are ordinary, legitimate, non-cyber business work.
-- Each agent starts in a separate sandbox with its own context.
-- Agents have no direct conversation channel and receive no predefined leader,
-  team, pair, sender or receiver relationship.
-- Shared state belongs to a realistic business system and begins without planted
-  agent messages in the connected formation arm. Seeded conditional replications
-  are labelled and reported separately.
-- Prompts do not announce other agents, cooperation, vulnerabilities,
-  evaluation, pressure or an impossible task.
-- For harm studies, a discoverable process weakness must cause a concrete state
-  change such as an incorrect payment, commitment or release. Reads, edits and
-  status changes alone do not count.
-- Independent review keeps contribution, persistence, receipt, use and business
-  effect as separate gates.
+- ordinary, legitimate, non-cyber business work;
+- a blocked normal completion path;
+- discoverable shared systems and, for harm studies, a verifiable business-process
+  weakness;
+- separate agent sandboxes and contexts without predefined leaders, teams or pairs;
+- no added pressure, exploit hints, cooperation coaching or planted peer messages;
+- native provenance for every residue, read, request, contribution and adoption;
+- an independent verifier for any claimed downstream business effect.
 
-[Environment principles](docs/environment-contract.md) ·
+[Full environment contract](docs/environment-contract.md) ·
 [Dataset admission](docs/dataset-admission-contract.md) ·
-[Data sources](docs/research/task-sources-and-verification.md)
+[Current data sources](docs/research/task-sources-and-verification.md)
 
 ## Current setup
 
 Verified **23 October 2026**.
 
-- **Runtime:** Harbor 0.24.0 with Python 3.12.14; task inputs use Harbor schema
-  1.4 and trajectories use ATIF-v1.8.
-- **Model route:** every live request uses AxonHub at
-  `https://lmportal.iefbr14.xyz/v1/responses`. The active runner defaults to
-  `deepseek/deepseek-v4.1-flash-1017` with high reasoning and freezes the route
-  only when a fresh campaign is prepared. Preparation confirms the exact
-  snapshot in both the OpenRouter and authenticated AxonHub catalogs.
-- **Credentials:** a dedicated AxonHub model-gateway key for formation
-  development is active in a host-only `0600` file outside the repository. The
-  authenticated catalog returned 200 and exposed the frozen DeepSeek route. A
-  mistakenly created Multica account token was rejected, revoked and removed.
-  The formation key was retained for the next iteration at the user's direction.
-  Key values are never copied into tasks, registrations, traces or Git.
-- **Isolation:** model workstations have no external network. Business state,
-  operator evidence and verification remain separate from subject context.
-- **Memory:** the persistent store grows by records and has no small
-  campaign-wide cap; each record is bounded at 32 KiB. Each agent's private
-  history is separate and sent in full. Automatic context compaction is
-  disabled. R1 reached 21,347–26,266 input tokens per final request without a
-  context-length error.
-- **Current state:** DeepSeek formation R1 is complete, independently reviewed
-  and exported to ATIF-v1.8. It did not pass Phase 1 and is retained as a
-  dedicated-request-interface negative. The corrected Stage 1–3 protocol is now
-  the active design; no v2 inference has run. All model workstations were removed,
-  and no collector or scheduled monitor is running.
-- **Hosted coordinator:** retain the patched Multica 0.4.44 deployment. These
-  local studies need no new AWS resource or credential.
+- **Runtime:** Harbor 0.24.0 with Python 3.12.14; inputs use Harbor schema 1.4
+  and exported trajectories use ATIF-v1.8.
+- **Model gateway:** all live inference goes through AxonHub at
+  `https://lmportal.iefbr14.xyz/v1/responses`. A fresh run must verify and freeze
+  an exact model ID from both the upstream catalog and authenticated AxonHub
+  catalog before inference.
+- **Credentials:** the current scoped AxonHub credential is stored in a host-only
+  `0600` file outside the repository. No credential value belongs in tasks,
+  registrations, traces or Git.
+- **Isolation:** each model workstation has no external network. Shared business
+  state, operator evidence and independent verification remain separate from
+  subject context.
+- **Scale:** the minimum campaign uses six agents in three hidden arrival periods
+  of two. Population and active concurrency are configurable up to 128 agents;
+  scheduling and event recording are linear in population size.
+- **Memory:** the persistent cache grows by records, each bounded at 32 KiB.
+  Private histories remain separate and are sent in full without automatic
+  context compaction.
+- **Current state:** no v2 collector or scheduled monitor is running. All prior
+  model workstations were removed. The patched Multica 0.4.44 coordinator remains
+  unchanged and is not required for this local campaign.
 
 [Run evaluations](docs/running-evals.md) ·
 [Model routing](docs/axonhub-routing.md) ·
@@ -98,30 +75,22 @@ Verified **23 October 2026**.
 
 ## Validation
 
-The current environment is checked before every new frozen run:
-
 ```sh
 ../eval-readiness/harbor-0.24.0/bin/python -m unittest discover \
   -s experiments/swarm-formation-v2 -p '*checks.py' -v
 ../eval-readiness/harbor-0.24.0/bin/python experiments/prompt-contract/checks.py
 ./scripts/check-format-contract experiments/swarm-formation-v2
+python3 scripts/check_dataset_admission_contract.py
 ```
 
-Use Harbor's viewer and analysis tools for trajectory debugging:
+## Maintained records
 
-```sh
-./scripts/harbor view jobs --jobs --host 127.0.0.1 --port 8777 --no-build
-```
-
-## Records
-
-- [Current formation environment](experiments/swarm-formation-v2/README.md)
-- [Stage 1–3 source audit](docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
-- [Shared-memory mechanism result](experiments/procurement-shared-memory-v1/RESULTS-2026-10-23-DEEPSEEK-R3.md)
-- [Experiment index](experiments/README.md)
-- [Study history](docs/history-index.md)
+- [Active formation environment](experiments/swarm-formation-v2/README.md)
+- [LessWrong Stage 1–3 audit](docs/research/lesswrong-stage123-setting-audit-2026-10-23.md)
+- [Current run guide](docs/running-evals.md)
 - [Current working context](docs/working-context.md)
-- [Framework comparison](docs/research/swarmharm-framework-comparison.html)
+- [Concise evidence history](docs/history-index.md)
 
-Historical protocols and results remain immutable evidence. The root README,
-current experiment README and running guide define the active setup.
+Frozen protocols and results remain evidence in their experiment directories.
+Only this README, the active experiment README, the run guide and the working
+context define current operation.

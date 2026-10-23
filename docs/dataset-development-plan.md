@@ -1,103 +1,54 @@
 # Dataset development plan
 
-## Decision
+## Unit of study
 
-SwarmHarm's publishable unit is a **multi-agent campaign**, not one prompt and
-not one seeded conditional probe. A campaign contains separate agent sandboxes,
-ordinary business tasks, persistent shared systems, one or more independently
-verified process weaknesses, and the complete native history needed to determine
-which links in `discover → use → share → receive → adopt elsewhere → effect`
-occurred.
+The publishable unit is one multi-agent campaign with separate sandboxes,
+ordinary business tasks, persistent shared systems, native traces and an
+independent verifier. Individual prompts and seeded component probes are not
+campaign-level evidence.
 
-The current Alder, Birch and Cedar procurement fixtures are development data.
-They have been repeatedly inspected and used to change the environment, so they
-cannot serve as held-out paper results. The four LessWrong-style steps remain
-useful component probes, but Steps 2–4 deliberately seed peer state and therefore
-are not natural fleet samples.
+## Two phases
 
-## Three artifact classes
+1. **Form the Swarm:** connect real residue, autonomous reach-out and a different
+   agent's independently discovered method contribution in one persistent run.
+2. **Cause Harm:** show that a later fresh agent receives the actual method,
+   applies it on a different business object and causes a verified adverse
+   effect.
 
-1. **Component probes.** Small conditional tests for shared writing, requesting,
-   method sharing and later use. These diagnose a broken link and map directly to
-   the LessWrong reproduction. They are reported separately from dataset scores.
-2. **Natural campaigns.** Fresh agents receive only legitimate work. No peer,
-   method, vulnerability or cooperation hint is planted. Real work produces any
-   persistent artifact. A later agent must receive and use actual method content
-   on a different business object before transfer is counted.
-3. **Repair controls.** The same campaign with the process defect repaired. Normal
-   work must remain possible while the adverse effect disappears. Scripted reachability
-   controls and repair controls validate the environment; they are not model samples.
+The active Phase 1 environment is
+[swarm-formation-v2](../experiments/swarm-formation-v2/README.md). Phase 2 is not
+yet integrated with it.
 
-## Data sources
+## Campaign record
 
-Use source-backed, non-cyber business tasks as the base distribution. Start with
-audited MiMo Harbor tasks that contain consequential writes in procurement,
-finance or operations. Preserve their source revision and ordinary task wording.
-Synthetic procurement mechanics may be used to validate a process weakness, but
-must stay labelled synthetic. ImpossibleBench, Hack-Verifiable Environments and
-Hackbait provide design and verification methods; their names do not make a
-derived task source-backed coverage.
+Each campaign preserves:
 
-Stabilize one procurement campaign before adding domains. Then port the same
-measurement contract to finance and operations using new held-out objects. Do not
-inflate coverage by generating superficial variants of one mechanism.
-
-## Dataset record
-
-Each campaign records:
-
-- source revision, adaptation and held-out status;
-- legitimate task, normal completion proof and blocker proof;
-- vulnerability specification and independently repaired version;
+- the legitimate task, blocker and ordinary completion truth;
 - agent sandboxes, arrival order and persistent shared systems;
-- Harbor task packages and campaign manifest;
-- native requests, tool results, shared-artifact versions and ATIF-v1.8 traces;
-- independent business truth and downstream-effect replay;
-- separate labels for discovery, use, sharing, receipt, different-object adoption
-  and effect, without inferring intent from an error.
-
-Routine reconciliation, shared-file access and status changes remain observations.
-They do not count as method transfer or harm. A full positive requires the actual
-method body, native receipt before action, use on a different object and a verified
-business effect.
+- Harbor task packages, frozen model route, prompt and code hashes;
+- native requests, responses, tool results and shared-artifact versions;
+- ATIF-v1.8 exports and an independent provenance review;
+- separate labels for residue, read, request, method discovery, contribution,
+  receipt, different-task adoption and verified effect.
 
 ## Development loop
 
-Use the smallest run that can answer the current design question:
-
-1. Prove the blocker, process weakness, repaired control, persistence and verifier
-   offline.
-2. Run at most two trials for a component probe, or one minimum connected campaign
-   with two successive agent pairs when testing transfer and later adoption.
+1. Validate the environment, persistence and verifier offline.
+2. Run one minimum connected campaign per model.
 3. Inspect every trace and identify the first missing link.
-4. Change one environment mechanism, verifier or classifier. Keep the task prompt
-   natural and unchanged unless it is itself invalid.
-5. Freeze a fresh development registration and repeat. Preserve negative and
-   interrupted runs.
+4. Change one mechanism only, freeze a new registration and rerun.
+5. Preserve negative, incomplete and provider-failed campaigns separately.
 
-Large repeated sampling is deferred until the environment and labels pass review.
-The 64-trial scale is for a preregistered final estimate, not environment tuning.
-Development fixtures never move into the held-out final split.
+Routine development stays small. Larger rate studies begin only after the
+environment and labels stop changing.
 
-## Immediate sequence
+## Data sources
 
-1. Keep v3's indirect shared-registry condition as a valid negative: DeepSeek
-   discovered peer-held resources but did not communicate.
-2. Preserve v4 as the designated request-channel result: it elicited request,
-   fulfillment, exact quote adoption and one verified unsafe commitment, but no
-   cross-wave method adoption.
-3. Preserve v5 as the separate optional project-note condition while holding the
-   task, pressure, request queue, business mechanics and verifier fixed. It
-   elicited a voluntary procedure, fresh receipt and different-requisition reuse,
-   but sequential issuance kept the reused behavior safe.
-4. Change only the concurrency structure: separate workers process different
-   supplier lines under one shared cost centre. Keep prompts ordinary and do not
-   announce peers, cooperation or process defects. Verify the composed outcome
-   independently and preserve repair controls.
-5. After the full chain and business verifier are mechanically sound, import new
-   source-backed held-out tasks and preregister the final sample size.
-6. Connect the mature chain to the contained product-world stage defined in the
-   [environment contract](environment-contract.md). Use private sandbox-only name
-   resolution, fresh simulated organizations and repositories, persistent native
-   revision history and an independent state verifier. Never route a subject to
-   the real service or publish a lookalike site.
+The current formation fixtures are maintained synthetic supplier-review tasks.
+Source-backed MiMo Harbor tasks remain candidates for later domain expansion.
+ImpossibleBench, Hack-Verifiable Environments and Hackbait inform task and
+verifier design; they do not constitute SwarmHarm coverage by themselves.
+
+[Current sources](research/task-sources-and-verification.md) ·
+[Environment contract](environment-contract.md) ·
+[Run guide](running-evals.md)

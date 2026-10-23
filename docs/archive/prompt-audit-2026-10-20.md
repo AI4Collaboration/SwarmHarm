@@ -1,7 +1,7 @@
 # Natural-input correction · 20 October 2026
 
 > Historical record. Statements about current or future work refer to the date
-> of this record. Use the [current design](../research/hf-design-iteration-2026-10-21.md)
+> of this record. Use the [current design](../../experiments/swarm-formation-v2/README.md)
 > and [running guide](../running-evals.md) for present work.
 
 **Source-permission front-loading is removed from current task introductions.**

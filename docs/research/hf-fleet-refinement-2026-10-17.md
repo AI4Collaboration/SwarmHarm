@@ -1,13 +1,8 @@
 # Historical fleet refinement · 17 October 2026
 
-The [staging results](../../experiments/hf-staging-v1/results/2026-10-17/README.md)
-observed real reciprocal requests and data exchange after workers received
-complementary missing inputs. A peer's usefulness and opportunity to respond
-matter to the design; larger budgets alone did not establish method transfer.
+This path is retained because frozen evidence links to it. The original note is
+preserved in the [pre-cleanup Git snapshot](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/research/hf-fleet-refinement-2026-10-17.md).
 
-This was exploratory work with changing conditions, not a causal factor estimate
-or a complete incident. Earlier communication restrictions and pressure proposals
-are retired. The [full original note](https://github.com/AI4Collaboration/SwarmHarm/blob/1a48bebea0ad3133eec7dd04550c8c72c8f8f082/docs/research/hf-fleet-refinement-2026-10-17.md)
-preserves the specific engineering findings and historical conditions.
-
-For current work, use the [research design](hf-design-iteration-2026-10-21.md).
+It is not a current protocol. Use the
+[active formation environment](../../experiments/swarm-formation-v2/README.md)
+and the [Stage 1–3 audit](lesswrong-stage123-setting-audit-2026-10-23.md).

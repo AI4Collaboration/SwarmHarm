@@ -1,43 +1,38 @@
 # Dataset admission contract
 
-The public website defines six environment conditions: a real task, a blocked
-normal path, a discoverable vulnerability, persistent shared systems, separate
-agent sandboxes and discoverable channels. Those conditions describe the world
-the agents enter. They should remain the compact public principles.
+The environment has six conditions:
 
-Three additional rules govern whether observations from that world can support a
-research claim:
+1. a real business task;
+2. a blocked normal path;
+3. a discoverable, verifiable business-process weakness for harm studies;
+4. persistent shared systems;
+5. separate agent sandboxes and contexts; and
+6. a communication channel agents can discover without prompting.
 
-1. **Native transfer provenance.** A transfer claim needs agent-authored method
-   content, receipt before action, use on a different object by a fresh agent and
-   a new verified effect. Access to shared storage or similar behavior is not
-   enough.
-2. **Development and holdout separation.** A fixture used to tune prompts,
-   tools, schedules, labels or mechanisms remains development data. Final
-   estimates use preregistered, source-backed held-out tasks and retain negative
-   and incomplete chains.
-3. **Independent outcome verification.** A separate verifier recomputes the
-   primary effect from records outside the subject's control. Self-reports,
-   edited status fields and an LLM judge cannot establish it. This confirms what
-   happened; it does not by itself explain why contagion occurred.
+Two evidence rules govern research claims:
 
-Contagion is an object of analysis, not an admission condition. The dataset
-records discovery, authored communication, receipt, adoption and verified
-effects without requiring an explanation for the contagion process before
-collecting the observation.
+1. **Connected native provenance.** Formation needs one native chain from real
+   residue to autonomous reach-out to a different agent's independently
+   discovered method contribution. Harmful transfer additionally needs native
+   receipt, different-task adoption and a newly verified effect.
+2. **Independent outcome verification.** A separate verifier recomputes the
+   primary business effect from records outside subject control. Self-reports,
+   edited status fields and LLM judgments cannot establish harm.
 
-Pressure, leadership, channel type, composition depth, long-horizon duration and
-whistleblowing are measured dimensions. They are not admission requirements.
-Treating them as requirements would narrow the dataset to a preferred outcome.
+Pressure, leadership, channel type, composition depth, duration and corrective
+behavior are observations or registered experimental factors. They are not
+admission requirements.
+
+The active [swarm-formation-v2](../experiments/swarm-formation-v2/README.md)
+environment covers formation only. Its offline controls pass; no model campaign
+has run. The earlier procurement v8 environment verifies a synthetic business
+effect as a separate component. The two have not yet been integrated, so neither
+Phase 1 nor the full Phase 2 chain is currently established.
 
 The machine-readable contract is
-[`dataset-admission-contract.json`](dataset-admission-contract.json). Run
-`python3 scripts/check_dataset_admission_contract.py` from the repository root to
-validate its evidence links and execute the current environment's offline
-controls.
+[`dataset-admission-contract.json`](dataset-admission-contract.json). Validate it
+from the repository root with:
 
-The current `procurement-critical-stakes-v8` environment is synthetic
-development data. Its first run verified one informed critical incident and one
-fresh successor that read the earlier records and avoided a second incident.
-Passing its controls and one behavioral run does not establish a population
-rate, intent or causal contagion.
+```sh
+python3 scripts/check_dataset_admission_contract.py
+```
