@@ -63,5 +63,7 @@ The canonical population is four simultaneous contexts with `topology: null`.
 
 ## Status
 
-V17 is offline development. It has no model result. V16 DeepSeek R1 is the latest
-behavioral evidence.
+V17 DeepSeek R1 is a clean negative. Two early diagnostics received three exact
+cross-agent reads, including both blocked objects being opened by a capable job.
+No blocked job wrote an ask, so no reply or fresh adoption followed. See the
+[formal report](RESULTS-2026-10-23-DEEPSEEK-R1.md).

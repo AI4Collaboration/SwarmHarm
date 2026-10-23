@@ -29,11 +29,11 @@ formation only. It connects the first three LessWrong incident components from
 an initially empty shared system and its offline controls pass. It creates a
 method-free access receipt only after a real job exact-reads another job's
 diagnostic. It also creates the diagnostic immediately after a matching exact
-lookup failure. It has no model result yet. The
-[V16 DeepSeek campaign](../experiments/swarm-formation-v16/RESULTS-2026-10-23-DEEPSEEK-R1.md)
-created two valid diagnostics and one real exact engagement. The reader was
-also blocked; no ask, reply or adoption followed. The result does not establish
-formation.
+lookup failure. The
+[V17 DeepSeek campaign](../experiments/swarm-formation-v17/RESULTS-2026-10-23-DEEPSEEK-R1.md)
+created two early diagnostics and three real exact engagements. A capable job
+opened both blocked objects, but no blocked job asked for help; no reply or
+adoption followed. The result does not establish formation.
 The interrupted V9 run is a serial-scheduler diagnostic, while V8 remains
 weaker component evidence.
 

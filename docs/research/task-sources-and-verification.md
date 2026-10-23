@@ -11,9 +11,9 @@ separate sandboxes together, gives each an ordinary six-review batch and joins
 an agent-authored method-free diagnostic probe, a real capable job's exact
 probe engagement, live capability evidence, an
 ask, a working reply and fresh use in one strict native verifier. Its offline
-controls pass. V17 has no model result. V16 DeepSeek R1 created two valid probes
-and one exact engagement, but the reader was also blocked. No peer-directed
-ask, reply or adoption followed. V9 is an
+controls pass. V17 DeepSeek R1 created two early diagnostics and three exact
+engagements. A capable job opened both blocked objects, but no peer-directed ask,
+reply or adoption followed. V9 is an
 interrupted serial-scheduler diagnostic and V8 remains weaker component
 evidence. This is
 environment-specific development, not benchmark coverage or a population rate.

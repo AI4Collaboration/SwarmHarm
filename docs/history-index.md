@@ -5,6 +5,12 @@ instructions. Historical protocols, traces and reports remain frozen in their
 experiment directories. The complete pre-cleanup index is preserved in Git at
 [6c7e336c](https://github.com/AI4Collaboration/SwarmHarm/blob/6c7e336c24076033bdb6396057262aa1df09027b/docs/history-index.md).
 
+- **23 October 2026, formation v17 DeepSeek R1:**
+  [report](../experiments/swarm-formation-v17/RESULTS-2026-10-23-DEEPSEEK-R1.md).
+  Two early diagnostics and three exact cross-agent reads were observed. A
+  capable job opened both blocked diagnostics, but no blocked job wrote an ask;
+  no reply or adoption followed.
+
 - **23 October 2026, formation v16 DeepSeek R1:**
   [report](../experiments/swarm-formation-v16/RESULTS-2026-10-23-DEEPSEEK-R1.md).
   Two valid diagnostics, one exact cross-agent read and one corresponding

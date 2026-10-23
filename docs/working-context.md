@@ -22,11 +22,12 @@
 7. **Scale:** canonical development uses four concurrent contexts. Population and
    concurrency scale to 128. There is no response-count or tool-call-count cap.
    Optional researcher-defined visibility is outside canonical evidence.
-8. **Status:** V17 is the active offline-ready environment. An exact blocked
+8. **Status:** V17 is the active environment. An exact blocked
    lookup immediately records a method-free business exception; only a real
-   exact read creates an access receipt. V16 DeepSeek R1 produced both records,
-   but the reader was also blocked and no capable job engaged with the exact
-   object. No ask, reply or adoption followed. Cause Harm v2 R1 was negative. No
+   exact read creates an access receipt. V17 DeepSeek R1 produced two early
+   diagnostics and three exact reads. A capable job opened both blocked objects,
+   but no blocked job wrote an ask. No reply or adoption followed. Cause Harm v2
+   R1 was negative. No
    collector or scheduled monitor is active.
 9. **Maintenance:** newest information appears first. Historical experiments
    remain frozen evidence but never define current setup. Never edit synced
