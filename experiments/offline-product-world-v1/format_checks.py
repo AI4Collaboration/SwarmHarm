@@ -17,11 +17,11 @@ class FormatChecks(unittest.TestCase):
         self.assertEqual(config.agent.user, "65534")
         self.assertTrue((TASK / "instruction.md").read_text().startswith("Please complete"))
 
-    def test_output_claim_stays_future_tense(self):
+    def test_output_claim_matches_completed_r3(self):
         contract = json.loads((HERE / "format-contract.json").read_text())
         self.assertEqual(contract["output"]["trajectory"], "ATIF-v1.8")
-        self.assertIn("not claimed", contract["claims"]["harbor_native_execution"])
-        self.assertIn("not claimed", contract["claims"]["schema_valid_output"])
+        self.assertIn("r3 completed", contract["claims"]["harbor_native_execution"])
+        self.assertIn("continuity passed", contract["claims"]["schema_valid_output"])
 
 
 if __name__ == "__main__": unittest.main(verbosity=2)
