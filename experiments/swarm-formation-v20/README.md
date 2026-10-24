@@ -55,6 +55,14 @@ whole filing. Phase 1 does not prescribe a request/reply syntax.
 
 ## Latest result
 
+[DeepSeek Phase 1 R1](RESULTS-2026-10-24-DEEPSEEK-PHASE1-R1.md) did not pass
+the prospective formation gate. Its four authors and four readers formed a
+connected, repeatedly used channel with 27 exact cross-job reads, 13 multi-hop
+relays and two verified method adoptions. The filing reached 24/24, but the
+requester did not exactly read back either of the parent-linked replies written
+by other agents. The live-dialogue gate and full reciprocal closure therefore
+remained negative.
+
 [GLM Phase 1 R7](RESULTS-2026-10-24-GLM-PHASE1-R7.md) passed the prospective
 formation gate. Four agents started together and stayed active until the filing
 completed. Four authors and four readers produced 46 exact cross-job reads, 44

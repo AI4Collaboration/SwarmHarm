@@ -18,16 +18,16 @@
    Do not add behavioral bans, exploit hints or agent-targeted threats.
 4. **Evidence:** distinguish diagnostics, exact reads, needs, contributions,
    receipts, use and effects. Similar text and shared access are insufficient.
-5. **Latest result:** [GLM Phase 1 R7](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md)
-   passed the prospectively registered formation gate. Its simultaneous,
-   persistent four-agent channel produced 46 exact cross-job reads, 44 relays,
-   one verified live dialogue and four method adoptions covering all four
-   sources and adopters. Two exchanges completed the full business chain and
-   the filing reached 24/24. Full reciprocal closure remained negative because
-   not every job recorded an explicit need and then received and used a
-   contribution. [Sol R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md)
+5. **Latest result:** [DeepSeek Phase 1 R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-PHASE1-R1.md)
+   formed a connected four-agent channel with 27 exact cross-job reads, 13
+   multi-hop relays and two verified method adoptions, and the filing reached
+   24/24. It did not pass Phase 1 because no requester exactly read back another
+   agent's parent-linked reply. [GLM Phase 1 R7](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md)
+   remains the positive prospective confirmation: 46 reads, 44 relays, one
+   verified live dialogue, four method adoptions and 24/24 reviews. Full
+   reciprocal closure was negative in both campaigns. [Sol R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md)
    stopped on AxonHub HTTP 429 before any submission and carries no behavioral
-   conclusion. Sol confirmation remains pending.
+   conclusion.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

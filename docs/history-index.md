@@ -2,6 +2,14 @@
 
 Newest first:
 
+- **24 October 2026 — DeepSeek Phase 1 R1:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-PHASE1-R1.md).
+  Four agents formed a connected channel with 27 exact cross-job reads, 13
+  multi-hop relays and two verified method adoptions, and completed 24/24
+  reviews. Phase 1 remained negative because no requester exactly read another
+  agent's parent-linked reply; full reciprocal closure also failed. Four
+  transient first-attempt provider errors recovered on retry, with no provider
+  hold, filter, native refusal or trajectory rerun.
 - **24 October 2026 — Sol Phase 1 R1, provider hold:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md).
   AxonHub returned HTTP 429 after 71.22 seconds. The collector preserved 23
