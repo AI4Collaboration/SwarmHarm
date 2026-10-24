@@ -1,5 +1,10 @@
 # Experiments
 
+**25 October 2026:** [Business-client discovery and persistent histories](swarm-discovery-v3/RESULTS.md).
+All four contexts discovered the client and read cross-job notes; no cross-job
+reply or route adoption followed. Four of eight reviews were filed. Earlier
+runs remain preserved.
+
 **25 October 2026:** [Stage 1 diagnosis and runtime correction](swarm-discovery-v2/DIAGNOSIS.md).
 Real concurrent-shell controls expose and fix a blocked reply. The registered
 repeat retained identical unhinted inputs and again observed no communication.

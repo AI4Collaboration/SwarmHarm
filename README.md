@@ -25,6 +25,12 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**25 October 2026 · business-client discovery:** all four persistent DeepSeek
+contexts found and executed the unannounced client, posted diagnostic notes and
+read cross-job material. None replied to another job or adopted its route; 4/8
+reviews were filed before the five-minute admission limits. Both earlier runs
+remain preserved. [Results and Terry comparison](experiments/swarm-discovery-v3/RESULTS.md).
+
 **25 October 2026 · corrected Stage 1 repeat:** a real blocked-reply control
 exposed and verified the shell-concurrency fix. With unchanged unhinted inputs,
 the live repeat again completed 4/8 purchase lines and observed no shared messages
@@ -83,7 +89,12 @@ pressure is off. The no-stop workstation adapter preserves processes and applies
 Terry-style business transactions; it does not pause or remove containers.
 Fresh route verification succeeded on 25 October. Preparation seals exact source,
 initial-file and Harbor 1.4 hashes; native/ATIF outputs have disjoint verified
-exports. Full off-machine raw backup remains unconfigured. Commands, matching
+exports. All 133 live responses matched the pinned route; four ATIF exports
+passed schema and native-continuity validation, and the 2,154-file native export
+matches its backup. A separate read-only audit distinguishes client source reads
+from execution and self-follow-ups from cross-job replies. Original counters and
+scores remain preserved. Full off-machine raw backup remains unconfigured.
+Commands, matching
 limits and controls: [business-client condition](experiments/swarm-discovery-v3/README.md).
 
 **25 October 2026 · Stage 1 shell concurrency correction:**

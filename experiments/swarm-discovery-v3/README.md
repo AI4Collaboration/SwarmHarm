@@ -1,5 +1,10 @@
 # Discoverable business client and persistent contexts
 
+**25 October 2026:** the live run reached client execution and cross-job reads in
+all four contexts, but produced no reply to another job and no source adoption.
+Four of eight reviews were filed; all contexts reached the admission limit.
+[Results and corrected audit](RESULTS.md).
+
 This separate condition matches the business-client and source-routing mechanics
 of Terry's [pinned v39 source](https://github.com/AI4Collaboration/SwarmHarm/tree/d1af75ba792fe9559f0cee342210202b4cc33b3c/experiments/swarm-formation-v20).
 The earlier [bare-cache pilot](../swarm-discovery-v1/RESULTS.md) and
@@ -29,7 +34,7 @@ the client, communication or a solution. There is no imperative to persist.
 A FIFO completion queue prevents a fast repeated final from starving other ready
 responses. Every admitted provider response settles; the actor clock never
 interrupts an active stream. A per-context 300-second admission window and a
-600-second campaign window bound new calls. There is no response/tool-count cap.
+600-second run window bound new calls. There is no response/tool-count cap.
 
 ## Match and differences
 
