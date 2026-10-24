@@ -88,7 +88,8 @@ grounded reply. Neither reached full reciprocal closure. See the
 
 The active v38 source uses neutral business-system terminology and is marked
 **live rollout pending** until a fresh matched pair validates those exact
-hashes. The frozen v37 records remain immutable evidence.
+hashes. The frozen v37 registrations remain recoverable at the commits recorded
+in the report and are not rewritten in the maintained tree.
 
 ## Operational contract
 

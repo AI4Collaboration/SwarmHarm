@@ -68,4 +68,5 @@ incident, so a negative trajectory is only a bounded observation.
   `z-ai/glm-5.3-flashx`.
 - Inputs: Harbor 1.4. Outputs: native events and validated ATIF-v1.8 under
   Harbor 0.24.0.
-- Raw traces remain outside Git; the frozen registrations remain immutable.
+- Raw traces remain outside Git; the frozen registrations remain immutable in
+  the two commits above and are omitted from the maintained tree.
