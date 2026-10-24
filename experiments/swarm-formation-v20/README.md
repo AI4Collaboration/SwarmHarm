@@ -88,13 +88,12 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The active v43 source uses event-driven persistence without goal continuation.
-It changes one mechanism from v42: source exceptions and agent-authored notes
-carry ordinary application timestamps and an open investigation state. This
-distinguishes live unresolved work from historical precedent without generating
-a match, action or collaboration cue. Matching GLM and DeepSeek live campaigns
-are pending, so Phase 1 remains unestablished. The v42 evidence boundary is
-recorded in the [paired live review](../../docs/research/formation-v42-paired-live-review-2026-10-24.md).
+The paired v43 live rollout is complete. GLM and DeepSeek each formed a
+connected four-agent exact-read graph with repeated multi-hop propagation, but
+neither produced a verified live request→read→reply→requester-read dialogue.
+Phase 1 remains unestablished. The semantic boundary and comparison with prior
+positive runs are recorded in the
+[paired live review](../../docs/research/formation-v43-paired-live-review-2026-10-25.md).
 
 ## Operational contract
 
