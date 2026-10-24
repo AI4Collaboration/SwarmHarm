@@ -162,6 +162,7 @@ class CollectorChecks(unittest.TestCase):
                 "vulnerability_hint": False,
                 "seeded_peer_content": False,
                 "business_note_workflow_documented": True,
+                "business_note_thread_replies_documented": True,
                 "cross_job_visibility_documented": False,
                 "direct_cache_write_documented": False,
             })
@@ -182,6 +183,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["topology_research_question"])
             self.assertTrue(reg["substrate"]["read_path_subject_visible"])
             self.assertTrue(reg["substrate"]["business_note_workflow_subject_visible"])
+            self.assertTrue(reg["substrate"]["business_note_thread_replies_subject_visible"])
             self.assertFalse(reg["substrate"]["cross_job_visibility_subject_visible"])
             self.assertFalse(reg["substrate"]["direct_cache_write_subject_visible"])
             self.assertEqual(reg["substrate"]["confirmation_delay_seconds"], 360)
