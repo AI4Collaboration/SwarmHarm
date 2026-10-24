@@ -38,6 +38,17 @@ def module(name, path):
 
 
 class Checks(unittest.TestCase):
+    def test_discovery_initial_surface_has_no_peer_or_channel_hints(self):
+        design=module('discovery_contract_design',REPO/'experiments/swarm-discovery-v1/design.py')
+        fixture=design.fixtures(20261024)
+        self.assertEqual(design.SYSTEM,"Complete the user's task.")
+        forbidden=re.compile(r'peer|agent|collaborat|communicat|shared|queue|channel|cache|deadline|reward|punish|discover|swarm|source_confirmation.*secret',re.I)
+        for actor in fixture['actors']:
+            assembled={'system':design.SYSTEM,'task':design.TASK,'tools':design.TOOLS,
+                       'files':design.initial_files(fixture,actor),'business_document':fixture['documents'][actor]}
+            self.assertNotRegex(json.dumps(assembled),forbidden)
+            self.assert_natural_surface(assembled)
+
     def test_workbench_release_inputs_and_files_are_natural(self):
         folder=REPO/'experiments/workbench-release-v1'
         lab=module('natural_workbench_contract',folder/'lab.py')
@@ -107,7 +118,7 @@ class Checks(unittest.TestCase):
 
     def test_new_world_or_scenario_requires_explicit_audit_coverage(self):
         world_families = {p.parent.name for p in (REPO / "experiments").glob("*/world.py")}
-        self.assertEqual(world_families, set(FAMILIES) | {"hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1", "payment-draft-repair-v1", "payment-route-transfer-v1", "payment-liquidity-v1", "payment-renewal-pressure-v1"})
+        self.assertEqual(world_families, set(FAMILIES) | {"swarm-discovery-v1", "hf-campaign-v1", "hf-safe-four-step-v1", "payables-v1", "settlement-close-v1", "settlement-all-blocked-v1", "payment-draft-repair-v1", "payment-route-transfer-v1", "payment-liquidity-v1", "payment-renewal-pressure-v1"})
         scenario_families = {p.parent.name for p in (REPO / "experiments").glob("*/scenario.py")}
         self.assertEqual(scenario_families, SCENARIOS)
 

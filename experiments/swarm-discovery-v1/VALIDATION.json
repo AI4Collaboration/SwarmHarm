@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "date": "2026-10-24",
+  "source_sha256": {
+    "experiments/swarm-discovery-v1/design.py": "5876b11294067dd98ec7ff4e314b46c5435d6bf46703a40dbb6c080c1216273d",
+    "experiments/swarm-discovery-v1/emit_harbor.py": "3a4db17f9e40d06decef60947f035b4775e0b1cb29da43f59d893baab93f4332",
+    "experiments/swarm-discovery-v1/review.py": "de5ad7cd5282ff15f22239015e1b2cb4d31a7761c28bdfda99d24044e7ef1112",
+    "experiments/swarm-discovery-v1/run.py": "dc5bebb878a9d3eaa1f6914a44810de4e90c2666cc038bb0a172714c5d5a2382",
+    "experiments/swarm-discovery-v1/test_discovery.py": "c633f7acc607b77b0f2910fcf7da3e8cf7ffa765faa20c064cc468b8bbf4fcba",
+    "experiments/swarm-discovery-v1/validate.py": "2536959177a5cee62c1251c61517a61b36d0ad543c25ef68e5bc816fa220e572",
+    "experiments/swarm-discovery-v1/validate_collector.py": "aa202f239f1740d0fdfb5551f58756645eb9fc5ffc4cd88fe22e25bf86b45514",
+    "experiments/swarm-discovery-v1/world.py": "3e64253b6cb00812d59c050ba64b904ba2c7728170332c307e94912f483855d8",
+    "experiments/swarm-discovery-v1/protocol.json": "78aebf4ecbd4ed67380e276c4468c2a8dd7f75cd34a764ee43ea4185fc0d412e",
+    "experiments/back-office-v1/durability.py": "e4045946b8b873b1d764a78ea8c95ac8ca83c843e8557ba40bfa99c63a864856",
+    "experiments/back-office-v1/run_model.py": "2de24ef31f13593fdc0cb7233f1559e006d47d99a539a7282fa7f1f6141bc36d",
+    "experiments/error-propagation-v3/transport.py": "471c96ec8055985287c2b789b01464ea23a355084a7bdc5acbe3f9a97731159b",
+    "experiments/prompt-contract/checks.py": "0af0d561bc572bd233aad9028bb10ee594463756e2063da2882ea8d6d512d6ee"
+  },
+  "unit_checks": 12,
+  "prompt_contract_checks": 20,
+  "inherited_stream_recovery_checks": 6,
+  "inherited_durability_checks": 12,
+  "docker_controls": {
+    "harbor_input_packages": [
+      "worker-1",
+      "worker-2",
+      "worker-3",
+      "worker-4"
+    ],
+    "empty_initial_cache": true,
+    "missing_source_unavailable_via_intended_api": true,
+    "private_workspaces_and_container_containment": true,
+    "preview_alone_lacks_source_confirmation": true,
+    "scripted_agent_authored_confirmation_exchange_completes_tasks": true,
+    "scripted_live_roundtrips_pass_only_when_reviewed": true,
+    "no_automatic_semantic_claim": true,
+    "repair_blocks_cross_cache_and_artifact_channel": true
+  },
+  "collector_replay": {
+    "kind": "scripted control, not model behavior",
+    "concurrent_contexts": 4,
+    "completed_business_tasks": 4,
+    "formation_claim": null,
+    "model_calls": 0
+  },
+  "validated_atif_trajectories": 4,
+  "harbor_version": "0.24.0",
+  "input_schema": "Harbor 1.4",
+  "output_schema": "ATIF-v1.8",
+  "limitation": "The validation gate itself was added after the collector replay; its frozen-hash checks will be exercised by preparation. No model behavior is inferred from offline controls."
+}

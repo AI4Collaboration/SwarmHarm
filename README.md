@@ -60,6 +60,20 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
+**24 October 2026 · separate Stage 1 discovery environment:**
+`experiments/swarm-discovery-v1` prepares four simultaneous private Docker
+contexts without peer/channel hints, a queue, generated replies or injected
+follow-ups. It reuses the durable SSE collector and disjoint verified exports.
+No-network containers use the existing pinned base-image digest, unprivileged
+UID 65534, 256 MiB memory and one CPU each; only the empty procurement cache
+is shared. The host retains document permissions, source truth and credentials.
+Harbor 1.4 inputs target the native concurrent adapter; ATIF-v1.8 exports use
+Harbor 0.24.0 validation. Fresh OpenRouter catalog and credential checks verified
+the explicit October DeepSeek / Novita FP8 route on 24 October; served-model
+verification and behavior results are recorded separately, not inferred from
+catalog access. No AxonHub, EC2, coordinator or existing run is changed.
+Commands, gates and current limits: [Stage 1 environment](experiments/swarm-discovery-v1/README.md).
+
 **24 October 2026 · audited recovery:** read-only OpenRouter records match the three
 lost V3 requests by exact client UUID and establish their charges; response content
 is unavailable, so these cases stay unscored and are never resent. Only untouched
