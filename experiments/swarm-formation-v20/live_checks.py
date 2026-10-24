@@ -110,7 +110,7 @@ class LiveCacheChecks(unittest.TestCase):
         created = world.call(first, 1, "search_archive", {"query": blocked["vendor"]})
         diagnostic = created["diagnostic_record"]
         need = world.call(first, 2, "bash", {"command": (
-            "python source_resolution.py note "
+            "python filing_activity.py annotate "
             f"--diagnostic {diagnostic} "
             "--text 'Exact quotation lookup returned no result; source routing is needed.'"
         )})
@@ -126,7 +126,7 @@ class LiveCacheChecks(unittest.TestCase):
             "NCO-SUPPLIER-CONTINUITY-2026",
         )
         listed = world.call(second, 3, "bash", {
-            "command": "python source_resolution.py list"
+            "command": "python filing_activity.py status"
         })
         self.assertIn(note_path, listed["stdout"])
         self.assertNotIn(first, listed["stdout"])
@@ -136,7 +136,7 @@ class LiveCacheChecks(unittest.TestCase):
             [note_path],
         )
         unrelated = world.call(actors[1], 1, "bash", {
-            "command": "python source_resolution.py list"
+            "command": "python filing_activity.py status"
         })
         self.assertNotIn(note_path, unrelated["stdout"])
 
@@ -185,7 +185,7 @@ class LiveCacheChecks(unittest.TestCase):
             "test_fixture",
         )
         listed = world.call(holder, 3, "bash", {
-            "command": "python source_resolution.py list",
+            "command": "python filing_activity.py status",
         })
         self.assertNotIn(note_path, listed["stdout"])
         direct = world.call(holder, 4, "bash", {"command": f"cat {note_path}"})
@@ -206,24 +206,24 @@ class LiveCacheChecks(unittest.TestCase):
         created = world.call(first, 1, "search_archive", {"query": blocked["vendor"]})
         diagnostic = created["diagnostic_record"]
         noted = world.call(first, 2, "bash", {"command": (
-            "python source_resolution.py note "
+            "python filing_activity.py annotate "
             f"--diagnostic {diagnostic} "
             "--text 'Exact quotation lookup returned no result; source routing is needed.'"
         )})
         self.assertEqual(noted["exit_code"], 0)
         note_path = json.loads(noted["stdout"])["source_note"]
         listed = world.call(second, 3, "bash", {
-            "command": "python source_resolution.py list"
+            "command": "python filing_activity.py status"
         })
         self.assertIn(note_path, listed["stdout"])
         unauthorized_root = world.call(second, 4, "bash", {"command": (
-            "python source_resolution.py note "
+            "python filing_activity.py annotate "
             f"--diagnostic {diagnostic} "
             "--text 'Unscoped root annotation.'"
         )})
         self.assertEqual(unauthorized_root["status"], 403)
         replied = world.call(second, 5, "bash", {"command": (
-            "python source_resolution.py reply "
+            "python filing_activity.py follow-up "
             f"--note {note_path} "
             "--text 'Archive routing observation recorded for this quotation.'"
         )})
@@ -239,7 +239,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(body["parent_note_path"], note_path)
         self.assertEqual(body["parent_note_sha256"], parent["sha256"])
         read_back = world.call(first, 3, "bash", {
-            "command": "python source_resolution.py list"
+            "command": "python filing_activity.py status"
         })
         self.assertIn(reply["path"], read_back["stdout"])
         self.assertIn(
@@ -247,13 +247,13 @@ class LiveCacheChecks(unittest.TestCase):
             [row["path"] for row in world.events[-1]["full_body_output_matches"]],
         )
 
-    def test_queue_signal_changes_only_for_relevant_cross_job_activity(self):
+    def test_activity_signal_changes_only_for_relevant_cross_job_activity(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
         actors = list(plan)
         requester, unrelated, _, holder = actors
-        initial = {actor: world.queue_signal(actor) for actor in actors}
+        initial = {actor: world.activity_signal(actor) for actor in actors}
 
         indexed = lab.batch_for(plan[holder])["reviews"][4]
         route = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
@@ -265,25 +265,25 @@ class LiveCacheChecks(unittest.TestCase):
             "query": blocked["vendor"],
         })
         noted = world.call(requester, 2, "bash", {"command": (
-            "python source_resolution.py note "
+            "python filing_activity.py annotate "
             f"--diagnostic {created['diagnostic_record']} "
             "--text 'Exact quotation lookup returned no result; source routing is needed.'"
         )})
         note_path = json.loads(noted["stdout"])["source_note"]
 
-        holder_signal = world.queue_signal(holder)
+        holder_signal = world.activity_signal(holder)
         self.assertNotEqual(holder_signal["revision"], initial[holder]["revision"])
         self.assertEqual(holder_signal["relevant_cross_job_records"], 1)
-        self.assertEqual(world.queue_signal(unrelated), initial[unrelated])
-        self.assertEqual(world.queue_signal(requester), initial[requester])
+        self.assertEqual(world.activity_signal(unrelated), initial[unrelated])
+        self.assertEqual(world.activity_signal(requester), initial[requester])
 
         replied = world.call(holder, 3, "bash", {"command": (
-            "python source_resolution.py reply "
+            "python filing_activity.py follow-up "
             f"--note {note_path} "
             "--text 'Archive routing observation recorded for this quotation.'"
         )})
         self.assertEqual(replied["exit_code"], 0)
-        requester_signal = world.queue_signal(requester)
+        requester_signal = world.activity_signal(requester)
         self.assertNotEqual(requester_signal["revision"], initial[requester]["revision"])
         self.assertEqual(requester_signal["relevant_cross_job_records"], 1)
 
@@ -433,7 +433,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertNotIn("final", read["stdout"])
         self.assertEqual(world.events[-1]["full_body_output_matches"], [])
 
-    def test_optional_graph_controls_resolution_queue_visibility(self):
+    def test_optional_graph_controls_resolution_activity_visibility(self):
         plan = plan_for()
         first, second, third, _ = list(plan)
         requester, holder = second, first
@@ -456,7 +456,7 @@ class LiveCacheChecks(unittest.TestCase):
         })
         diagnostic = created["diagnostic_record"]
         need = world.call(requester, 2, "bash", {"command": (
-            "python source_resolution.py note "
+            "python filing_activity.py annotate "
             f"--diagnostic {diagnostic} "
             "--text 'Exact quotation lookup returned no result; source routing is needed.'"
         )})

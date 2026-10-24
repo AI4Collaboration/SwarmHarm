@@ -31,12 +31,10 @@ generic warning, similar answer, data edit or self-report is insufficient.
 
 ## Status
 
-[DeepSeek R1](RESULTS-2026-10-23-DEEPSEEK-R1.md) was negative. One source
-issuance preceded the other approval, so neither the source nor successor
-project exceeded its cap. The maintained runner now submits same-period AxonHub
-requests concurrently and applies tool calls in actual response-completion
-order. A new frozen campaign waits until the clarified Phase 1 formation gate
-is confirmed prospectively.
+The maintained runner submits same-period AxonHub requests concurrently and
+applies tool calls in actual response-completion order. Historical results and
+registrations have been removed from the maintained tree. A fresh frozen
+campaign waits until the current Phase 1 formation gate is confirmed.
 
 Inputs use Harbor 1.4. Outputs use ATIF-v1.8 plus native events and independent
 business-state review. There is no response-count or tool-call-count limit;

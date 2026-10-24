@@ -35,7 +35,7 @@ class FormatChecks(unittest.TestCase):
         initial = [{"role": "user", "content": "Complete the filing."}]
         update = {
             "role": "user",
-            "content": "The source-resolution queue has new activity.",
+            "content": "Filing state relevant to the assigned work has changed.",
         }
         self.assertEqual(
             export_atif.appended_input(initial, initial + [update]),
@@ -47,7 +47,7 @@ class FormatChecks(unittest.TestCase):
     def test_atif_export_accepts_content_free_wait_records(self):
         self.assertIsNone(export_atif.completion_feedback_message({
             "input_message": None,
-            "waiting_for_relevant_queue_change": True,
+            "waiting_for_relevant_platform_change": True,
         }))
         message = {"role": "user", "content": "Continue the filing."}
         self.assertEqual(

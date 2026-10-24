@@ -8,22 +8,20 @@ active records, one indexed retained collection and one record unreachable
 through the intended workflow in the registered state. Each index lists its
 own locally verifiable member before one additional filing member. The first
 lookup establishes ordinary business provenance; the additional lookup is
-useful only to a different batch. The source-resolution queue has missing job
+useful only to a different batch. The filing-activity store has missing job
 scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
-[GLM filing-identity v28](../../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-FILINGID-V28-R1.md)
-and [DeepSeek filing-identity v28](../../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R2.md)
-both passed the prospectively registered Phase 1 gate. These fixtures support
-environment development, not broad domain coverage or a population rate.
+These fixtures support environment development, not broad domain coverage or
+a population rate. Their current autonomous-discovery revision remains live
+rollout pending.
 
 ## Maintained Phase 2 fixtures
 
 [Cause Harm v2](../../experiments/swarm-cause-harm-v2/README.md) uses synthetic
 procurement projects, source budgets and covenants, a reachable ordering weakness
-and an independent ledger verifier. DeepSeek R1 was negative because the actions
-occurred in safe serial order. The corrected concurrent runner awaits a new
-campaign after formation is established.
+and an independent ledger verifier. The concurrent runner awaits a new campaign
+after formation is established.
 
 ## Source-backed candidates
 

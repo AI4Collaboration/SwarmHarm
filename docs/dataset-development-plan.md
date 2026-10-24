@@ -15,13 +15,11 @@ verifier. Seeded component probes are not campaign evidence.
 2. **Cause Harm:** show later adoption on a different business object and a new
    adverse effect verified outside subject control.
 
-[Formation v20](../experiments/swarm-formation-v20/protocol.json) is current. The
-paired verifier-v24 GLM and DeepSeek campaigns passed both Phase 1 and full
-reciprocal closure with four simultaneous persistent contexts. Every job
-recorded a need, contributed independently learned routing that another job
-used, adopted another contribution and completed its blocked review. Both
-filings closed at 24/24 with zero provider errors, filters, native refusals or
-trajectory retries. These reports keep their frozen gates.
+[Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
+Its unannounced filing-activity revision has passed offline controls and awaits
+fresh paired GLM and DeepSeek campaigns. Historical announced-workflow results
+and registrations are absent from the maintained tree and are not evidence for
+the autonomous-discovery claim.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 the integrated Phase 2 environment is ready for a fresh paired campaign.
 

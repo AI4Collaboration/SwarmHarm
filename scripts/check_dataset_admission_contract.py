@@ -51,38 +51,29 @@ def main():
         for reference in item["evidence"]:
             validate_reference(reference)
     status = value["current_status"]
-    for key in (
-        "formation_environment", "formation_result", "positive_confirmation_result",
-        "paired_formation_result", "harm_environment", "harm_result",
-    ):
+    for key in ("formation_environment", "harm_environment"):
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    if status["formation_status"] != "paired_live_confirmed_full_reciprocal_closure":
+    for key in (
+        "formation_result", "positive_confirmation_result",
+        "paired_formation_result", "harm_result",
+    ):
+        if status[key] is not None:
+            fail(f"pending status must not reference a historical result: {key}")
+    if status["formation_status"] != "paired_live_rollout_pending":
         fail("formation status is stale")
     if (
         status["current_gate_revision"]
-        != "campaign-gated-live-swarm-communication-v24"
+        != "explore-discover-exploit-v25"
         or status["permissions_revision"]
-        != "locally-verified-route-provenance-v29"
+        != "unannounced-filing-activity-discovery-v30"
     ):
         fail("formation revision metadata is stale")
-    if status["submitted_reviews"] != 24 or status["assigned_reviews"] != 24:
-        fail("formation filing totals are inconsistent")
-    if status["provider_errors"] or status["provider_filters"] or status["native_refusals"]:
-        fail("provider/refusal counters differ from the reviewed result")
-    if (
-        status["cross_job_exact_note_reads"] != 39
-        or status["multi_hop_relays"] != 56
-        or status["relay_agents"] != 4
-        or status["verified_dialogue_threads"] != 4
-        or status["validated_method_adoptions"] != 4
-        or status["adoption_sources"] != 4
-        or status["adoption_adopters"] != 4
-        or status["formation_graph_population"] != 4
-        or status["full_reciprocal_closure"] is not True
-    ):
-        fail("formation construct audit counters differ from the reviewed trace")
+    if set(status["models"]) != {
+        "deepseek/deepseek-v4.1-flash-1017", "z-ai/glm-5.3-flashx"
+    }:
+        fail("paired model routes are stale")
     print("dataset admission contract: valid")
 
 
