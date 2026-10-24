@@ -16,8 +16,8 @@ verifier. Seeded component probes are not campaign evidence.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
 latest prospective GLM campaign established connected repeated propagation but
-failed the live-dialogue gate because the business helper lacked a natural
-reply-to-note operation. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
+failed the live-dialogue gate because the retained index did not identify the
+different supplier record covered by its selector. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 passes prospectively on GLM and Sol.
 
 ## Development loop

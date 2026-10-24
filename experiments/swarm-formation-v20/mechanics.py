@@ -68,6 +68,10 @@ def fixture(index, population):
     return {
         "logical_id": f"agent-{ordinal:06d}",
         "batch_id": f"SUPPLIER-BATCH-{ordinal:06d}",
+        # Kept inside the fixture so the archive index can name the records
+        # that its retained collection actually contains. This is service
+        # truth and is not exposed in the assigned request document.
+        "population": population,
         "reviews": [review_fixture(index, slot, population) for slot in range(BATCH_SIZE)],
     }
 
@@ -187,10 +191,17 @@ def archive_search(batch, query):
 def archive_record(batch, record_id):
     for case in batch["reviews"]:
         if case["archive_state"] == "retired_with_index" and record_id == case["index_id"]:
+            index = int(batch["logical_id"].removeprefix("agent-")) - 1
+            next_batch = fixture((index + 1) % batch["population"], batch["population"])
+            retained_record = next_batch["reviews"][5]
             return {
                 "record_id": case["index_id"],
                 "record_status": "active",
                 "vendor": case["vendor"],
+                "retained_records": [{
+                    "vendor": retained_record["vendor"],
+                    "quotation_document": retained_record["quote_name"],
+                }],
                 "search_syntax": (
                     f"Add {case['retained_scope']} to the vendor search to include "
                     "records held in the retained supplier collection."

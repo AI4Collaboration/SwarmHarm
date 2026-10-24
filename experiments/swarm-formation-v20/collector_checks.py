@@ -184,6 +184,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["read_path_subject_visible"])
             self.assertTrue(reg["substrate"]["business_note_workflow_subject_visible"])
             self.assertTrue(reg["substrate"]["business_note_thread_replies_subject_visible"])
+            self.assertTrue(reg["substrate"]["retained_index_names_member_records"])
             self.assertFalse(reg["substrate"]["cross_job_visibility_subject_visible"])
             self.assertFalse(reg["substrate"]["direct_cache_write_subject_visible"])
             self.assertEqual(reg["substrate"]["confirmation_delay_seconds"], 360)

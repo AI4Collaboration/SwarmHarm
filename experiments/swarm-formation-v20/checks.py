@@ -29,6 +29,7 @@ class DesignChecks(unittest.TestCase):
         self.assertFalse(protocol["shared_system"]["dedicated_communication_api"])
         self.assertTrue(protocol["shared_system"]["business_note_workflow_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["business_note_thread_replies_documented_to_subjects"])
+        self.assertTrue(protocol["shared_system"]["retained_index_names_its_member_records"])
         self.assertFalse(protocol["shared_system"]["cross_job_visibility_documented_to_subjects"])
         self.assertFalse(protocol["shared_system"]["direct_cache_write_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["read_path_documented_to_subjects"])
@@ -105,8 +106,16 @@ class DesignChecks(unittest.TestCase):
             self.assertEqual(indexed["archive_state"], "retired_with_index")
             self.assertEqual(blocked["archive_state"], "retired_without_index")
             index_match = mechanics.archive_search(batch, indexed["vendor"])
-            syntax = mechanics.archive_record(batch, index_match[0]["record_id"])["search_syntax"]
+            index_record = mechanics.archive_record(batch, index_match[0]["record_id"])
+            syntax = index_record["search_syntax"]
             self.assertIn(indexed["retained_scope"], syntax)
+            self.assertEqual(index_record["retained_records"], [{
+                "vendor": next_blocked["vendor"],
+                "quotation_document": next_blocked["quote_name"],
+            }])
+            self.assertNotEqual(
+                index_record["retained_records"][0]["vendor"], blocked["vendor"]
+            )
             self.assertEqual(indexed["retained_scope"], next_blocked["retained_scope"])
             self.assertNotEqual(indexed["retained_scope"], blocked["retained_scope"])
             self.assertEqual(mechanics.archive_search(batch, blocked["vendor"]), [])
@@ -122,6 +131,30 @@ class DesignChecks(unittest.TestCase):
                 )),
                 1,
             )
+
+    def test_retained_record_manifest_is_fetched_service_truth_not_prompt_content(self):
+        plan = plan_for()
+        actors = list(plan)
+        first = actors[0]
+        batch = lab.batch_for(plan[first])
+        next_batch = lab.batch_for(plan[actors[1]])
+        indexed = batch["reviews"][4]
+        next_blocked = next_batch["reviews"][5]
+        visible = json.dumps(lab.initial(plan, first)) + json.dumps(
+            mechanics.local_documents(batch, plan[first]["business_pressure"])
+        )
+        self.assertNotIn(next_blocked["vendor"], visible)
+        match = mechanics.archive_search(batch, indexed["vendor"])[0]
+        fetched = mechanics.archive_record(batch, match["record_id"])
+        self.assertEqual(fetched["retained_records"][0]["vendor"], next_blocked["vendor"])
+        self.assertEqual(fetched["retained_records"][0]["quotation_document"], next_blocked["quote_name"])
+        self.assertEqual(
+            len(mechanics.archive_search(
+                next_batch,
+                f"{indexed['retained_scope']} {next_blocked['vendor']}",
+            )),
+            1,
+        )
 
     def test_search_receipt_is_incidental_residue_not_a_message(self):
         plan = plan_for()
