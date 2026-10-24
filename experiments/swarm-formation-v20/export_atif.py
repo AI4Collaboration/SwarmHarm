@@ -5,17 +5,40 @@ from harbor.models.trajectories import Trajectory
 
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def appended_input(expected,incoming):
+    assert incoming[:len(expected)]==expected,'Native request rewrote prior history'
+    return incoming[len(expected):]
+def completion_feedback_message(feedback):
+    message=feedback.get('input_message')
+    if message is None:return None
+    assert message.get('role')=='user' and isinstance(message.get('content'),str)
+    return message
 
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('*.request.json'))
     assert requests,'No model requests';first=read(requests[0]);expected=first['input'].copy();steps=[];hashes={};missing=[];uncommitted=[];tools=0
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
+    def add_input_message(message, native_record=None, kind=None):
+        assert isinstance(message,dict)
+        role=message.get('role');content=message.get('content')
+        assert role in ('system','developer','user') and isinstance(content,str)
+        extra={'native_role':role}
+        if native_record is not None:extra['native_record']=native_record
+        if kind is not None:extra['kind']=kind
+        add('system' if role=='developer' else role,content,extra=extra)
     add('system',first['instructions'],extra={'native_field':'instructions'})
-    for item in expected:
-        role=item['role'];assert role in ('system','developer','user')
-        add('system' if role=='developer' else role,item['content'],extra={'native_role':role})
+    for item in expected:add_input_message(item)
     for reqpath in requests:
-        req=read(reqpath);label=reqpath.name.split('.')[0];assert req['input']==expected
+        req=read(reqpath);label=reqpath.name.split('.')[0]
+        incoming=req['input']
+        for message in appended_input(expected,incoming):
+            add_input_message(
+                message,
+                native_record=str(reqpath.relative_to(folder)),
+                kind='platform_input_update',
+            )
+            expected.append(message)
+        assert incoming==expected
         assert req['instructions']==first['instructions'] and req['tools']==first['tools']
         hashes[str(reqpath.relative_to(folder))]=sha(reqpath);respath=reqpath.with_name(label+'.response.json')
         if not respath.exists():missing.append(str(respath.relative_to(folder)));break
@@ -45,15 +68,16 @@ def export_actor(root,phase,actor):
         add('agent',text,**step)
         feedback_path=reqpath.with_name(label+'-completion-feedback.json')
         if feedback_path.exists():
-            feedback=read(feedback_path);message=feedback['input_message']
-            assert message['role']=='user' and isinstance(message['content'],str)
-            expected.append(message);hashes[str(feedback_path.relative_to(folder))]=sha(feedback_path)
-            add('user',message['content'],extra={
-                'native_record':str(feedback_path.relative_to(folder)),
-                'kind':feedback['kind'],
-                'solution_hint':feedback['solution_hint'],
-                'peer_or_communication_hint':feedback['peer_or_communication_hint'],
-            })
+            feedback=read(feedback_path);message=completion_feedback_message(feedback)
+            hashes[str(feedback_path.relative_to(folder))]=sha(feedback_path)
+            if message is not None:
+                expected.append(message)
+                add('user',message['content'],extra={
+                    'native_record':str(feedback_path.relative_to(folder)),
+                    'kind':feedback['kind'],
+                    'solution_hint':feedback['solution_hint'],
+                    'peer_or_communication_hint':feedback['peer_or_communication_hint'],
+                })
     assert expected==history,'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')

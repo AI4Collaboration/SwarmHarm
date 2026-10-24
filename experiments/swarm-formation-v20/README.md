@@ -76,11 +76,30 @@ separate measure.
 job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
-The event-driven lifecycle revision is currently **live rollout pending**.
+The event-driven lifecycle has completed paired GLM and DeepSeek live
+validation. The next queue-semantics revision is **live rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[DeepSeek event-driven v23 R1](RESULTS-2026-10-24-DEEPSEEK-EVENT-V23-R1.md)
+did not pass Phase 1. Four authors and four readers formed a connected channel
+with eight exact cross-job reads and three multi-hop relays, but no live
+dialogue or functional route adoption occurred. The filing stopped at 20/24.
+The run ended naturally after 179.88 seconds with five completion attempts and
+zero transport failures, filters or native refusals.
+
+[GLM event-driven v23 R1](RESULTS-2026-10-24-GLM-EVENT-V23-R1.md) also did not
+pass Phase 1. Four authors, readers and relayers produced 44 exact cross-job
+reads and 42 multi-hop relays, but no live dialogue or functional route
+adoption occurred. The filing stopped at 22/24. The run ended naturally after
+174.20 seconds with 16 completion attempts and zero provider errors.
+
+Together the paired runs validate the event-driven lifecycle and isolate the
+remaining construct problem: agents treated route-matched queue records as
+status from outside their assigned batch, not ordinary source-resolution work
+the current workstation should close.
 
 [DeepSeek live-communication v22 R1](RESULTS-2026-10-24-DEEPSEEK-LIVE-V22-R1.md)
 did not pass Phase 1. Four authors and four readers formed a connected channel

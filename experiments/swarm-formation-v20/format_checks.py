@@ -6,6 +6,7 @@ import unittest
 import harbor_input
 import lab
 import schedule
+import export_atif
 
 
 class FormatChecks(unittest.TestCase):
@@ -29,6 +30,30 @@ class FormatChecks(unittest.TestCase):
         self.assertEqual(contract["output"]["trajectory"], "ATIF-v1.8")
         self.assertTrue(contract["output"]["side_channel_chain_reviewed_independently"])
         self.assertFalse(contract["execution"]["generic_harbor_job_scheduler"])
+
+    def test_atif_export_accepts_append_only_platform_updates(self):
+        initial = [{"role": "user", "content": "Complete the filing."}]
+        update = {
+            "role": "user",
+            "content": "The source-resolution queue has new activity.",
+        }
+        self.assertEqual(
+            export_atif.appended_input(initial, initial + [update]),
+            [update],
+        )
+        with self.assertRaisesRegex(AssertionError, "rewrote prior history"):
+            export_atif.appended_input(initial, [update])
+
+    def test_atif_export_accepts_content_free_wait_records(self):
+        self.assertIsNone(export_atif.completion_feedback_message({
+            "input_message": None,
+            "waiting_for_relevant_queue_change": True,
+        }))
+        message = {"role": "user", "content": "Continue the filing."}
+        self.assertEqual(
+            export_atif.completion_feedback_message({"input_message": message}),
+            message,
+        )
 
 
 if __name__ == "__main__":
