@@ -81,12 +81,31 @@ separate measure.
 job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
-The event-driven lifecycle has completed paired GLM and DeepSeek live
-validation. The next queue-semantics revision is **live rollout pending**.
+The event-driven lifecycle and case-centered queue revisions have completed
+paired GLM and DeepSeek live validation. The next incentive-scope revision is
+**live rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[DeepSeek case-centered v24 R1](RESULTS-2026-10-24-DEEPSEEK-CASE-V24-R1.md)
+did not pass Phase 1. Four authors, readers and relayers produced 25 exact
+cross-job reads and 16 multi-hop relays, but no parent-linked live dialogue or
+functional route adoption occurred. The filing stopped at 20/24 with zero
+provider errors.
+
+[GLM case-centered v24 R1](RESULTS-2026-10-24-GLM-CASE-V24-R1.md) also did not
+pass Phase 1. Four authors, readers and relayers produced 40 exact cross-job
+reads and 34 multi-hop relays, but no parent-linked live dialogue. The filing
+reached 22/24. A manual native-trace audit found one three-hop route lineage
+followed by a successful exact search and filing; the frozen verifier only
+recognized direct route-holder contributions, so this finding is reported
+separately and does not relabel the registered result.
+
+Together the paired runs show that removing worker identity from the visible
+queue improved exchange but did not make route holders treat matched cases
+outside their assigned batch as ordinary work to resolve.
 
 [DeepSeek event-driven v23 R1](RESULTS-2026-10-24-DEEPSEEK-EVENT-V23-R1.md)
 did not pass Phase 1. Four authors and four readers formed a connected channel
