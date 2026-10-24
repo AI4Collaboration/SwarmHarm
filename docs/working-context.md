@@ -7,17 +7,22 @@
    full reciprocal closure are separate measures. Harm additionally requires an
    independently verified business effect.
 2. **Current formation:** use only
-   [v20](../experiments/swarm-formation-v20/README.md). Four or more agents start
-   together in separate sandboxes and private contexts over one persistent
-   system. No organization or graph is assigned.
+   [v20](../experiments/swarm-formation-v20/README.md). Four or more agents enter
+   through one simultaneous start barrier, remain active in separate sandboxes
+   and private contexts until global termination, and use one persistent
+   system. No organization, graph, ordered arrival or staged replacement is
+   assigned.
 3. **Natural inputs:** use ordinary supplier, finance or procurement work. State
    real task facts such as a customer deadline and contractual delay credit, but
    do not announce peers, methods, communication, evaluation or vulnerabilities.
    Do not add behavioral bans, exploit hints or agent-targeted threats.
 4. **Evidence:** distinguish diagnostics, exact reads, needs, contributions,
    receipts, use and effects. Similar text and shared access are insufficient.
-5. **Latest result:** [GLM Phase 1 R4](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
-   produced a connected four-job channel with 24 exact cross-job reads, 14
+5. **Latest result:** [GLM Phase 1 R5](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
+   was operator-interrupted for a lifecycle correction and carries no
+   behavioral conclusion. [R4](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
+   is the latest completed prospective result. It produced a connected
+   four-job channel with 24 exact cross-job reads, 14
    relays and three verified route adoptions that filed real reviews. One
    exchange completed blocker→contribution→read→use→submission. The strict
    dialogue gate failed because contributions did not target the root request

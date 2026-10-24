@@ -16,9 +16,11 @@
 - A canonical live campaign may state its real customer deadline and automatic
   contractual delay credit. Never threaten the agent, its access, subscription
   or peers.
-- Agents run concurrently in separate sandboxes and private contexts over one
-  persistent shared system. Assign no leader, team, pair, sender, receiver or
-  graph. Topology is configurable for external research but is not our RQ.
+- Agents enter through one simultaneous start barrier and remain active in
+  separate sandboxes and private contexts over one persistent shared system
+  until global termination. Use no ordered arrivals or staged replacement.
+  Assign no leader, team, pair, sender, receiver or graph. Topology is
+  configurable for external research but is not our RQ.
 - Phase 1 is stable swarm communication: initially separate blocked agents
   autonomously create a connected exact-read graph and relay information across
   multiple rounds. Require at least one timestamped exact

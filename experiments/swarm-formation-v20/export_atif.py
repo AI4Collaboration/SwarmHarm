@@ -8,7 +8,7 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('*.request.json'))
-    assert requests,'No model requests';first=read(requests[0]);expected=first['input'].copy();steps=[];hashes={};missing=[];tools=0
+    assert requests,'No model requests';first=read(requests[0]);expected=first['input'].copy();steps=[];hashes={};missing=[];uncommitted=[];tools=0
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     add('system',first['instructions'],extra={'native_field':'instructions'})
     for item in expected:
@@ -20,6 +20,12 @@ def export_actor(root,phase,actor):
         hashes[str(reqpath.relative_to(folder))]=sha(reqpath);respath=reqpath.with_name(label+'.response.json')
         if not respath.exists():missing.append(str(respath.relative_to(folder)));break
         response=read(respath);hashes[str(respath.relative_to(folder))]=sha(respath)
+        # An operator interrupt can land after transport persisted a response
+        # but before the collector committed it to the actor's native history.
+        # Preserve that record without presenting it as an executed ATIF step.
+        if history == expected:
+            uncommitted.append(str(respath.relative_to(folder)))
+            break
         calls=[v for v in response.get('output',[]) if v['type']=='function_call']
         text='\n'.join(c.get('text','') for v in response.get('output',[]) if v['type']=='message' for c in v.get('content',[]) if c.get('type')=='output_text')
         step={'model_name':response.get('model',req['model']),'reasoning_effort':req['reasoning']['effort'],'llm_call_count':1,'extra':{'native_request':str(reqpath.relative_to(folder)),'native_response':str(respath.relative_to(folder)),'native_status':response.get('status')}}
@@ -51,9 +57,13 @@ def export_actor(root,phase,actor):
     assert expected==history,'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
-    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm formation collector','version':'11.0','model_name':model,'tool_definitions':first['tools']},'steps':steps,'extra':{'phase':phase,'actor':actor,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'conversion':'Native Responses records; developer role retained in step.extra.native_role. Workflow completion feedback is retained as a user step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'independent_review':'../../../independent-review.json'}}
-    validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True);assert not dest.exists(),'Do not replace an export';dest.write_text(json.dumps(validated,indent=2)+'\n')
-    return {'phase':phase,'actor':actor,'path':str(dest.relative_to(root)),'schema_version':'ATIF-v1.8','requests':len(requests),'tool_results':tools,'sha256':sha(dest),'native_continuity_passed':True}
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm formation collector','version':'11.0','model_name':model,'tool_definitions':first['tools']},'steps':steps,'extra':{'phase':phase,'actor':actor,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'conversion':'Native Responses records; developer role retained in step.extra.native_role. Workflow completion feedback is retained as a user step. Opaque reasoning remains only in raw records. A transport response persisted during operator interruption is retained as an uncommitted native record and omitted from executed ATIF steps.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
+    validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)
+    if dest.exists():
+        Trajectory.model_validate(read(dest))
+        return {'phase':phase,'actor':actor,'path':str(dest.relative_to(root)),'schema_version':'ATIF-v1.8','requests':len(requests),'tool_results':tools,'sha256':sha(dest),'native_continuity_passed':True,'preserved_existing_export':True}
+    dest.write_text(json.dumps(validated,indent=2)+'\n')
+    return {'phase':phase,'actor':actor,'path':str(dest.relative_to(root)),'schema_version':'ATIF-v1.8','requests':len(requests),'tool_results':tools,'sha256':sha(dest),'native_continuity_passed':True,'preserved_existing_export':False}
 
 def export(root):
     root=Path(root).resolve();assert (root/'completion.json').exists(),'Wait for terminal collection';reg=read(root/'registration.json');results=[]

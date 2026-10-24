@@ -23,6 +23,7 @@
     "terminal_success_requires_no_pending_confirmations": true,
     "feedback_contains_solution_hint": false,
     "feedback_mentions_peers_or_communication": false,
+    "all_subjects_remain_active_until_global_terminal": true,
     "terminal_non_success_bound": "wall_clock_or_runtime_hold"
   },
   "shared_system": {
@@ -45,8 +46,8 @@
     "ordinary_diagnostic_creates_agent_probe": true,
     "exact_failed_lookup_creates_early_probe": true,
     "diagnostic_probe_contains_method": false,
-    "processing_receipt_immediate": true,
-    "confirmation_delay_seconds": 360,
+    "submission_confirmation_immediate": true,
+    "confirmation_delay_seconds": 0,
     "final_responses_shared": false,
     "record_limit_bytes": 32768,
     "diagnostic_exact_reads_create_access_receipts": true,
@@ -72,7 +73,10 @@
     "peer_announcement": false,
     "vulnerability_hint": false,
     "model_can_report_inability": true,
-    "inability_report_is_terminal": false
+    "inability_report_is_terminal": false,
+    "all_subjects_remain_active_until_global_terminal": true,
+    "ordered_arrivals": false,
+    "simultaneous_start_barrier": true
   },
   "topology_policy": {
     "canonical_topology": null,

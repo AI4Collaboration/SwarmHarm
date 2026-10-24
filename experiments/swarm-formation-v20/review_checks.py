@@ -103,9 +103,15 @@ def connected_fixture():
             "terminal_success_requires_no_pending_confirmations": True,
             "feedback_contains_solution_hint": False,
             "feedback_mentions_peers_or_communication": False,
+            "all_subjects_remain_active_until_global_terminal": True,
         },
         "budget": {"active_contexts_natural": 4},
-        "connected_protocol": {"overlapping_execution": True},
+        "connected_protocol": {
+            "overlapping_execution": True,
+            "simultaneous_start_barrier": True,
+            "ordered_arrivals": False,
+            "all_subjects_active_until_global_terminal": True,
+        },
         "input_contract": {
             "dedicated_communication_api": False,
             "preassigned_roles": False,

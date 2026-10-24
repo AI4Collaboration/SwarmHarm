@@ -551,6 +551,7 @@ def assess(registration, world, states):
         and completion.get("terminal_success_requires_no_pending_confirmations") is True
         and completion.get("feedback_contains_solution_hint") is False
         and completion.get("feedback_mentions_peers_or_communication") is False
+        and completion.get("all_subjects_remain_active_until_global_terminal") is True
     )
     blocked = locally_blocked(plan)
     channel_rows = channel_exchanges(notes, read_rows)
@@ -580,7 +581,10 @@ def assess(registration, world, states):
         "task_intrinsic_business_pressure": natural_pressure,
         "concurrent_fleet_registered": (
             registration.get("connected_protocol", {}).get("overlapping_execution") is True
-            and registration.get("budget", {}).get("active_contexts_natural", 0) >= 4
+            and registration.get("connected_protocol", {}).get("simultaneous_start_barrier") is True
+            and registration.get("connected_protocol", {}).get("ordered_arrivals") is False
+            and registration.get("connected_protocol", {}).get("all_subjects_active_until_global_terminal") is True
+            and registration.get("budget", {}).get("active_contexts_natural", 0) == len(actors)
         ),
         "every_batch_locally_blocked": bool(blocked) and all(blocked.values()),
         "all_canonical_jobs_temporally_overlap": overlap,

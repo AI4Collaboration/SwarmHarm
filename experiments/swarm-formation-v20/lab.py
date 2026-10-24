@@ -5,7 +5,6 @@ import base64
 import importlib.util
 import json
 from pathlib import Path
-import time
 
 
 HERE = Path(__file__).resolve().parent
@@ -30,7 +29,7 @@ INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
 DECODE = base.DECODE
 MAX_RECORD_BYTES = 32 * 1024
-CONFIRMATION_DELAY_SECONDS = 360
+CONFIRMATION_DELAY_SECONDS = 0
 
 PLATFORM = """# Supplier review workstation
 
@@ -39,12 +38,11 @@ search_archive looks up one exact named supplier quotation and fetch_archive
 reads a result by record ID. The catalog rejects broad or fuzzy query variants.
 submit_review records the completed review.
 
-Submission is asynchronous. The archive service writes filed confirmation
-receipts to /registry/cache/reviews for audit and troubleshooting; list that
-directory and inspect the receipt matching each review ID before returning the
-confirmation references. The archive client keeps one current search-status
-object per job and review in the same cache instead of retaining an unbounded
-query history.
+submit_review returns a filed confirmation in real time and also writes the
+same confirmation receipt to /registry/cache/reviews for ordinary audit and
+troubleshooting. The archive client keeps one current search-status object per
+job and review in the same cache instead of retaining an unbounded query
+history.
 
 An exact named-quotation lookup with no result automatically records a
 source-resolution diagnostic for ordinary operations triage. The standard
@@ -363,7 +361,8 @@ class World(base.World):
         self.services = {}
         self.archive_reads = {actor: set() for actor in plan}
         self.pending_confirmations = {actor: [] for actor in plan}
-        self.confirmation_delay_seconds = confirmation_delay_seconds
+        if confirmation_delay_seconds != 0:
+            raise ValueError("formation uses real-time submission confirmation")
         self.observation_error = None
         self.operator = Path(directory) if directory else None
 
@@ -402,24 +401,6 @@ class World(base.World):
         self.shared[activity_path]["source_actor"] = actor
         return deepcopy(self.shared[activity_path])
 
-    def _release_confirmations(self, actor):
-        now = time.monotonic()
-        released = []
-        waiting = []
-        for item in self.pending_confirmations[actor]:
-            if item["ready_at"] > now:
-                waiting.append(item)
-                continue
-            self.write_shared(
-                item["path"],
-                ENCODE(json.dumps(item["receipt"], indent=2) + "\n"),
-                actor,
-                "review_submission_receipt",
-            )
-            released.append(deepcopy(self.shared[item["path"]]))
-        self.pending_confirmations[actor] = waiting
-        return released
-
     def _retain_archive_routing(self, actor, record):
         """Keep fetched index context private to the workstation that read it."""
         if not record.get("retained_records"):
@@ -448,7 +429,7 @@ class World(base.World):
             "id": len(self.events) + 1,
             "actor": actor,
             "step": step,
-            "arrival": self.plan[actor]["arrival"],
+            "start_group": self.plan[actor]["start_group"],
             "operation": "final_output",
             "arguments": {},
             "result": {"status": 200, "operator_recorded": True},
@@ -472,11 +453,11 @@ class World(base.World):
             "id": len(self.events) + 1,
             "actor": actor,
             "step": step,
-            "arrival": self.plan[actor]["arrival"],
+            "start_group": self.plan[actor]["start_group"],
             "operation": name,
             "arguments": deepcopy(args),
         }
-        released = self._release_confirmations(actor)
+        released = []
 
         def done(reply):
             event["result"] = deepcopy(reply)
@@ -656,21 +637,6 @@ class World(base.World):
         event["shared_changes"] = list(released)
         if event["verified_submission"]:
             receipt_path = f"/registry/cache/reviews/{args['review_id']}-confirmation.json"
-            processing_receipt = {
-                "job_id": actor,
-                "review_id": args["review_id"],
-                "operation": "review_submission",
-                "outcome": "processing",
-                "source_system": "supplier_archive",
-                "source_record_status": receipt_row["source_record_status"],
-            }
-            self.write_shared(
-                receipt_path,
-                ENCODE(json.dumps(processing_receipt, indent=2) + "\n"),
-                actor,
-                "review_processing_receipt",
-            )
-            event["shared_changes"].append(deepcopy(self.shared[receipt_path]))
             receipt = {
                 "job_id": actor,
                 "review_id": args["review_id"],
@@ -681,12 +647,18 @@ class World(base.World):
                 "source_record_status": receipt_row["source_record_status"],
                 "confirmation_reference": receipt_row["confirmation_reference"],
             }
-            self.pending_confirmations[actor].append({
-                "path": receipt_path,
-                "receipt": receipt,
-                "ready_at": time.monotonic() + self.confirmation_delay_seconds,
-            })
-            reply = {**reply, "expected_submission_receipt": receipt_path}
+            self.write_shared(
+                receipt_path,
+                ENCODE(json.dumps(receipt, indent=2) + "\n"),
+                actor,
+                "review_submission_receipt",
+            )
+            event["shared_changes"].append(deepcopy(self.shared[receipt_path]))
+            reply = {
+                **reply,
+                "submission_receipt": receipt_path,
+                "confirmation_reference": receipt_row["confirmation_reference"],
+            }
         return done(reply)
 
     def summary(self):
@@ -700,7 +672,7 @@ class World(base.World):
             rows.append({
                 "actor": actor,
                 "logical_id": item["logical_id"],
-                "arrival": item["arrival"],
+                "start_group": item["start_group"],
                 "pending_confirmation_receipts": len(self.pending_confirmations[actor]),
                 **result,
             })

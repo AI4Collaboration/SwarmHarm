@@ -73,16 +73,14 @@ class CollectorChecks(unittest.TestCase):
         for owner in actors[1:]:
             for case in lab.batch_for(plan[owner])["reviews"]:
                 submit(owner, case)
-        self.assertFalse(run.campaign_completion_state(world, actor)["complete"])
-        for owner in actors:
-            step += 1
-            world.call(owner, step * 3, "bash", {"command": "true"})
         self.assertTrue(run.campaign_completion_state(world, actor)["complete"])
 
-    def test_collector_resubmits_each_actor_without_a_global_round_barrier(self):
+    def test_collector_has_one_start_barrier_then_resubmits_each_live_actor(self):
         source = inspect.getsource(run.collect)
+        self.assertIn("first_request_barrier=Barrier(len(active))", source)
         self.assertIn("future=next(as_completed(tuple(futures)))", source)
         self.assertNotIn("for future in as_completed(futures)", source)
+        self.assertNotIn("next_admissions", source)
 
     def test_retry_classification(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -148,7 +146,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["upstream_models"], run.UPSTREAM_MODELS)
             natural = reg["plan"]["natural"]
             self.assertEqual(len(natural), 4)
-            self.assertEqual([item["arrival"] for item in natural.values()], list(range(4)))
+            self.assertEqual({item["start_group"] for item in natural.values()}, {0})
             self.assertTrue(all("wave" not in item and "role" not in item for item in natural.values()))
             self.assertTrue(all("holder" not in key for item in natural.values() for key in item))
             self.assertTrue(all(len(item["review_ids"]) == 6 for item in natural.values()))
@@ -177,6 +175,9 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
             self.assertEqual(reg["budget"]["provider_concurrency"], 4)
             self.assertTrue(reg["connected_protocol"]["overlapping_execution"])
+            self.assertTrue(reg["connected_protocol"]["simultaneous_start_barrier"])
+            self.assertFalse(reg["connected_protocol"]["ordered_arrivals"])
+            self.assertTrue(reg["connected_protocol"]["all_subjects_active_until_global_terminal"])
             self.assertIsNone(reg["per_agent_response_limit"])
             self.assertIsNone(reg["per_agent_tool_limit"])
             self.assertIsNone(reg["topology"])
@@ -191,8 +192,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["substrate"]["triage_match_writes_a_reply"])
             self.assertFalse(reg["substrate"]["cross_job_visibility_subject_visible"])
             self.assertFalse(reg["substrate"]["direct_cache_write_subject_visible"])
-            self.assertEqual(reg["substrate"]["confirmation_delay_seconds"], 360)
-            self.assertTrue(reg["substrate"]["processing_receipt_immediate"])
+            self.assertEqual(reg["substrate"]["confirmation_delay_seconds"], 0)
+            self.assertTrue(reg["substrate"]["submission_confirmation_immediate"])
             self.assertTrue(reg["substrate"]["receipt_source_status_visible"])
             self.assertFalse(reg["substrate"]["receipt_method_visible"])
             self.assertTrue(reg["substrate"]["diagnostic_helper_visible"])
@@ -228,7 +229,7 @@ class CollectorChecks(unittest.TestCase):
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
             with patch.object(run, "verify_routes", return_value=routes):
-                with self.assertRaisesRegex(ValueError, "requires between four"):
+                with self.assertRaisesRegex(ValueError, "every context active together"):
                     run.prepare(root, registration, key, 4, 1)
 
 

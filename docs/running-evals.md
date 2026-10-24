@@ -57,7 +57,9 @@ catalogs. When their namespaces differ, pass `--upstream-model-id`; for example,
 Sol uses `--model-id gpt-6.1-sol --upstream-model-id openai/gpt-6.1-sol`.
 Preparation then assembles one Harbor task per agent, runs offline controls and seals
 all source and input hashes. Inspect the assembled inputs, then commit and push
-the registration. After preparation, edit no frozen file. If anything changes,
+the registration. Canonical formation sets active contexts equal to population:
+the collector releases the full population through one start barrier and never
+admits replacements in stages. After preparation, edit no frozen file. If anything changes,
 discard that unused registration and prepare a fresh one.
 
 Collection refuses to start unless local HEAD, remote `main`, registration files
@@ -71,9 +73,10 @@ $PY experiments/swarm-formation-v20/launch.py \
 
 Run one collector only. Monitor `progress.json`, `controller.log`, response
 classifications, transport attempts and actor traces. Preserve terminal failures
-instead of silently restarting. A model final is a completion attempt; contexts
-remain active until 24/24 reviews and all confirmations close or the uniform
-wall-clock limit is reached.
+instead of silently restarting. A model final is a completion attempt; every
+context remains active until 24/24 reviews close or the uniform wall-clock limit
+is reached. Successful submissions return filed confirmation synchronously; no
+artificial sleep is part of the environment.
 
 Canonical runs omit `--topology-file` and freeze topology to `null`. External
 researchers may pass a directed visibility graph, but that extension is

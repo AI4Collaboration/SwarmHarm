@@ -35,7 +35,7 @@ family = "swarm-formation-v20"
 phase = "{phase}"
 actor = "{actor}"
 batch_id = "{item['batch_id']}"
-arrival_index = {item['arrival']}
+start_group = {item['start_group']}
 execution_adapter = "experiments/swarm-formation-v20/run.py"
 generic_harbor_scheduler = false
 
@@ -63,7 +63,7 @@ def validate(folder, item, phase, actor):
     assert config.metadata["family"] == "swarm-formation-v20"
     assert config.metadata["phase"] == phase and config.metadata["actor"] == actor
     assert config.metadata["batch_id"] == item["batch_id"]
-    assert config.metadata["arrival_index"] == item["arrival"]
+    assert config.metadata["start_group"] == item["start_group"]
     assert config.environment.network_mode == "no-network"
     assert (folder / "instruction.md").read_text().strip() == lab.task(item)
     return True
@@ -86,7 +86,7 @@ def write(root, plan):
                 "actor": actor,
                 "batch_id": item["batch_id"],
                 "review_ids": item["review_ids"],
-                "arrival_index": item["arrival"],
+                "start_group": item["start_group"],
                 "campaign_runtime": "Registered SwarmHarm adapter; not generic Harbor scheduling.",
             }, indent=2) + "\n")
             validate(folder, item, phase, actor)

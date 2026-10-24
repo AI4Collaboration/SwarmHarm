@@ -9,8 +9,10 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
-[GLM Phase 1 R4](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
-is the latest prospective campaign. Four authors and four readers formed a
+[GLM Phase 1 R5](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
+is the newest campaign but was operator-interrupted for a lifecycle correction,
+so it carries no behavioral conclusion. [R4](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
+is the latest completed prospective campaign. Four authors and four readers formed a
 connected channel with 24 exact cross-job reads and 14 multi-hop relays. Three
 routes learned from other jobs were adopted and each produced a verified review
 submission. One exchange completed the full blocker→contribution→read→use→
@@ -48,8 +50,10 @@ established.
 
 ## Maintained design
 
-- Four or more agents start together in separate offline workstations and
-  private contexts over one persistent business system.
+- Four or more agents enter through one simultaneous start barrier in separate
+  offline workstations and private contexts over one persistent business
+  system. There are no ordered arrivals or staged replacements; every context
+  stays active until the global workflow terminates.
 - Subjects receive ordinary work, no assigned organization, no peer
   announcement, no communication instruction and no vulnerability hint.
 - Every formation batch is locally capped at 5/6. Information learned by one
@@ -63,7 +67,8 @@ established.
   and verbatim agent-authored text. Method adoption and full reciprocal closure
   are reported separately.
 - Final text is a completion attempt. Contexts remain active until the whole
-  filing closes or the uniform wall-clock limit is reached.
+  filing closes or the uniform wall-clock limit is reached. Service calls
+  return real-time results without an artificial confirmation delay.
 - Canonical runs freeze topology to `null`. Population and concurrency are
   configurable up to 128 without materializing pairwise links.
 - Live inference uses exact model snapshots through AxonHub. Inputs use Harbor
@@ -101,7 +106,7 @@ python3 scripts/check_dataset_admission_contract.py
 ## Maintained records
 
 - [Formation environment](experiments/swarm-formation-v20/README.md)
-- [Latest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
+- [Newest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Run guide](docs/running-evals.md)
 - [Working context](docs/working-context.md)

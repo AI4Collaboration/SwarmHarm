@@ -24,6 +24,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["overlapping_execution"])
         self.assertFalse(protocol["state_reset_between_agents"])
         self.assertFalse(protocol["simulated_peer_injection"])
+        self.assertTrue(protocol["completion_protocol"]["all_subjects_remain_active_until_global_terminal"])
         self.assertEqual(protocol["population"]["canonical_active_contexts"], 4)
         self.assertEqual(protocol["shared_system"]["initial_agent_records"], 0)
         self.assertFalse(protocol["shared_system"]["dedicated_communication_api"])
@@ -50,6 +51,9 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["every_batch_locally_blocked"])
         self.assertTrue(protocol["shared_system"]["cross_job_note_scope_not_enforced"])
         self.assertEqual(protocol["minimum_distinct_agents_in_passing_swarm"], 4)
+        self.assertTrue(protocol["subject_contract"]["all_subjects_remain_active_until_global_terminal"])
+        self.assertTrue(protocol["subject_contract"]["simultaneous_start_barrier"])
+        self.assertFalse(protocol["subject_contract"]["ordered_arrivals"])
         self.assertIsNone(protocol["topology_policy"]["canonical_topology"])
         self.assertEqual(protocol["subject_contract"]["pressure_kind"], "customer_contract_filing_deadline")
         self.assertFalse(protocol["subject_contract"]["agent_targeted_consequence"])
@@ -64,12 +68,11 @@ class DesignChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             schedule.compile_plan(129)
 
-    def test_scheduler_fills_available_concurrent_slots(self):
+    def test_scheduler_releases_one_unordered_simultaneous_cohort(self):
         plan = plan_for(12)
-        actors = list(plan)
-        self.assertEqual(schedule.next_admissions(plan, actors, [], 4), actors[:4])
-        self.assertEqual(schedule.next_admissions(plan, actors[3:], actors[:3], 4), [actors[3]])
-        self.assertEqual(schedule.next_admissions(plan, actors[4:], actors[:4], 4), [])
+        self.assertEqual(schedule.simultaneous_admissions(plan, 12), set(plan))
+        with self.assertRaisesRegex(ValueError, "every context active together"):
+            schedule.simultaneous_admissions(plan, 4)
 
     def test_every_agent_has_same_natural_surface_without_channel_hint(self):
         plan = plan_for()

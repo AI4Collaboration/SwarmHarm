@@ -2,7 +2,6 @@
 
 import json
 import unittest
-from unittest.mock import patch
 
 import lab
 import schedule
@@ -187,38 +186,30 @@ class LiveCacheChecks(unittest.TestCase):
             [row["path"] for row in world.events[-1]["full_body_output_matches"]],
         )
 
-    def test_processing_receipt_is_immediate_and_final_confirmation_is_delayed(self):
+    def test_submission_returns_and_persists_final_confirmation_in_real_time(self):
         plan = plan_for()
-        clock = [1_000.0]
-        with patch.object(lab.time, "monotonic", side_effect=lambda: clock[0]):
-            world = lab.World(plan, confirmation_delay_seconds=360)
-            self.addCleanup(world.close)
-            first, second = list(plan)[:2]
-            case = lab.batch_for(plan[first])["reviews"][0]
-            search = world.call(first, 1, "search_archive", {"query": case["vendor"]})
-            record = search["matches"][0]
-            world.call(first, 2, "fetch_archive", {"record_id": record["record_id"]})
-            submitted = world.call(first, 3, "submit_review", {
-                "review_id": case["review_id"],
-                "quote_reference": case["quote_reference"],
-                "amount_cents": case["amount_cents"],
-                "currency": "USD",
-                "source_record_id": case["record_id"],
-            })
-            path = submitted["expected_submission_receipt"]
-            self.assertIn(path, world.shared)
-            immediate = world.call(second, 1, "bash", {"command": f"cat {path}"})
-            self.assertEqual(immediate["exit_code"], 0)
-            self.assertIn('\"outcome\": \"processing\"', immediate["stdout"])
-            self.assertNotIn("confirmation_reference", immediate["stdout"])
-            self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, immediate["stdout"])
-            clock[0] = 1_359.0
-            pending = world.call(second, 2, "bash", {"command": f"cat {path}"})
-            self.assertIn('\"outcome\": \"processing\"', pending["stdout"])
-            clock[0] = 1_360.0
-            released = world.call(first, 4, "bash", {"command": f"cat {path}"})
-            self.assertEqual(released["exit_code"], 0)
-            self.assertIn('\"outcome\": \"filed\"', released["stdout"])
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        first, second = list(plan)[:2]
+        case = lab.batch_for(plan[first])["reviews"][0]
+        search = world.call(first, 1, "search_archive", {"query": case["vendor"]})
+        record = search["matches"][0]
+        world.call(first, 2, "fetch_archive", {"record_id": record["record_id"]})
+        submitted = world.call(first, 3, "submit_review", {
+            "review_id": case["review_id"],
+            "quote_reference": case["quote_reference"],
+            "amount_cents": case["amount_cents"],
+            "currency": "USD",
+            "source_record_id": case["record_id"],
+        })
+        path = submitted["submission_receipt"]
+        self.assertTrue(submitted["confirmation_reference"])
+        self.assertIn(path, world.shared)
+        immediate = world.call(second, 1, "bash", {"command": f"cat {path}"})
+        self.assertEqual(immediate["exit_code"], 0)
+        self.assertIn('\"outcome\": \"filed\"', immediate["stdout"])
+        self.assertIn("confirmation_reference", immediate["stdout"])
+        self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, immediate["stdout"])
 
     def test_archive_receipt_persists_and_another_sandbox_reads_exact_body(self):
         plan = plan_for()
@@ -279,8 +270,7 @@ class LiveCacheChecks(unittest.TestCase):
             "source_record_id": case["record_id"],
         })
         self.assertEqual(submitted["status"], 202)
-        path = submitted["expected_submission_receipt"]
-        world.call(contributor, 6, "bash", {"command": f"cat {path}"})
+        path = submitted["submission_receipt"]
         read = world.call(reader, 1, "bash", {"command": f"cat {path}"})
         self.assertEqual(read["status"], 200)
         body = read["stdout"].lower()

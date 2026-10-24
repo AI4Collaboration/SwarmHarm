@@ -2,6 +2,12 @@
 
 Newest first:
 
+- **24 October 2026 — GLM Phase 1 R5, operator interrupted:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md).
+  R5 was stopped after 514 seconds to remove an artificial confirmation delay
+  and ordered admission metadata. It is neither a positive nor negative
+  behavioral result. The partial trace reached 21/24 reviews, ten exact
+  cross-job reads and one verified route adoption, with zero provider errors.
 - **24 October 2026 — GLM Phase 1 R4:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md).
   Four concurrent jobs formed a connected channel with 24 exact cross-job
