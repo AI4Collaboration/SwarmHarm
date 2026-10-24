@@ -25,6 +25,13 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**24 October 2026 · unhinted Stage 1 pilot:** four concurrent independent DeepSeek
+contexts completed 4/8 purchase lines. One found previews cached by other
+sessions, but no agent wrote a shared message and no live dialogue was observed.
+All four returned final answers; there were no API errors or exhausted limits.
+This is a preserved negative formation result, not evidence about alignment.
+[Stage 1 report](experiments/swarm-discovery-v1/RESULTS.md)
+
 **24 October 2026 · findings explained:** a plain-language companion report covers
 the mixed snapshot comparison, live-team completion gap, temporary payment errors
 and grader failures, with a reproducible figure and linked evidence.
@@ -69,9 +76,11 @@ UID 65534, 256 MiB memory and one CPU each; only the empty procurement cache
 is shared. The host retains document permissions, source truth and credentials.
 Harbor 1.4 inputs target the native concurrent adapter; ATIF-v1.8 exports use
 Harbor 0.24.0 validation. Fresh OpenRouter catalog and credential checks verified
-the explicit October DeepSeek / Novita FP8 route on 24 October; served-model
-verification and behavior results are recorded separately, not inferred from
-catalog access. No AxonHub, EC2, coordinator or existing run is changed.
+the explicit October DeepSeek / Novita FP8 route on 24 October. All 32 pilot
+responses subsequently matched the served model and provider. Four live ATIF
+exports passed Harbor 0.24.0 schema and native-continuity checks; the native
+108-file export and its backup match. The behavioral result is reported separately
+from access and packaging checks. No AxonHub, EC2, coordinator or existing run is changed.
 Commands, gates and current limits: [Stage 1 environment](experiments/swarm-discovery-v1/README.md).
 
 **24 October 2026 · audited recovery:** read-only OpenRouter records match the three

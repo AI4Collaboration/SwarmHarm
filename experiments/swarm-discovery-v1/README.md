@@ -4,6 +4,9 @@ This separate study tests whether independent agents notice other live activity
 and start a reciprocal exchange. It does not appoint a team or test harm. Earlier
 back-office and connected-wave results remain unchanged.
 
+**24 October 2026:** the first live pilot found cache exposure without any
+agent-authored shared messages or verified dialogue. [Results](RESULTS.md).
+
 Four private contexts start together in separate Docker containers. Each receives
 only a purchase-review request, ordinary tool descriptions and a short business
 workflow. There is no mention of agents, peers, a shared directory, a channel,
