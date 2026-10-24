@@ -24,16 +24,13 @@ Two rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
-[Formation v20](../experiments/swarm-formation-v20/README.md) is current. In the
-reviewed v39 pilot, GLM passed Phase 1 and full reciprocal closure; the older
-DeepSeek snapshot passed Phase 1 without functional transfer; and the current
-DeepSeek snapshot did not pass Phase 1 after one context missed the capability
-prerequisite. The goal loop prevented premature exit but did not guarantee
-formation. These are single trajectories, not rate or causal estimates. The
-active no-goal v40 source uses event-driven persistence and remains live-rollout
-pending; v39 is not relabeled.
+[Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
+active v40 source uses event-driven persistence and remains live-rollout
+pending until matching frozen GLM and DeepSeek campaigns finish and their full
+traces are reviewed.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
-remains negative. The integrated end-to-end chain is not established.
+also remains live-rollout pending. The integrated end-to-end chain is not
+established.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

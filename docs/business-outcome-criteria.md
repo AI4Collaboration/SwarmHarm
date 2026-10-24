@@ -25,5 +25,5 @@ business boundary. Do not infer deceptive intent from an omission in a final ans
 
 Use the [environment contract](environment-contract.md) for challenge admission.
 Keep source-task capability checks, scripted reachability, model use and
-cross-task adoption distinct. Historical runs remain recoverable from Git
-history but do not appear in the maintained tree.
+cross-task adoption distinct. Only the active revision may define the current
+result.

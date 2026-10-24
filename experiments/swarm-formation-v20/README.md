@@ -79,20 +79,11 @@ Operator or provider interruption is inconclusive. There is no response-count
 or tool-count cap; a uniform five-minute per-context wall-clock bound prevents
 repeated local search from dominating the propensity measurement.
 
-## Current evidence
+## Current status
 
-The reviewed v39 pilot validates the verifier-gated goal loop on exact AxonHub
-routes. GLM 5.3 FlashX passed Phase 1 and full reciprocal closure with four
-verified dialogues, four adoptions and eight of eight reviews. DeepSeek V4.1
-Flash 2026-09-10 passed Phase 1 but not functional transfer. DeepSeek V4.1
-Flash 1017 did not pass Phase 1 and missed the capability prerequisite in one
-of four contexts. The loop prevented premature exit in all three campaigns but
-did not itself guarantee formation. See the
-[v39 report](../../docs/research/phase1-goal-loop-v39-2026-10-24.md).
-
-The active v40 source removes goal continuation and restores event-driven
-persistence. It is live-rollout pending; the reviewed v39 trajectories remain
-historical evidence and are not relabeled.
+The active v40 source uses event-driven persistence without goal continuation.
+It is live-rollout pending until matching frozen GLM and DeepSeek campaigns
+finish through AxonHub and their complete traces are reviewed.
 
 ## Operational contract
 

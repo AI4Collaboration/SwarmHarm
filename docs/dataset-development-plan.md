@@ -16,11 +16,8 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The reviewed v39 pilot produced full reciprocal closure in GLM, Phase 1 without
-functional transfer in the older DeepSeek snapshot, and no Phase 1 pass in the
-current DeepSeek snapshot after one context missed the capability prerequisite.
 The active no-goal v40 source uses event-driven persistence and awaits a fresh
-frozen campaign. Frozen v39 evidence is not relabeled.
+matched frozen GLM and DeepSeek campaign.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 the integrated Phase 2 environment is ready for a fresh paired campaign.
 

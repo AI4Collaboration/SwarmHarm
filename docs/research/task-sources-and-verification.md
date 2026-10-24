@@ -14,12 +14,8 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. In the reviewed v39 pilot, GLM passed Phase 1 and full
-reciprocal closure; the older DeepSeek snapshot passed Phase 1 without
-functional transfer; and the current DeepSeek snapshot did not pass Phase 1
-after one context missed the capability prerequisite. The goal loop prevented
-premature exit but did not guarantee formation. The active no-goal v40 source
-uses event-driven persistence and awaits a fresh frozen campaign.
+a population rate. The active no-goal v40 source uses event-driven persistence
+and awaits matching frozen GLM and DeepSeek campaigns.
 
 ## Maintained Phase 2 fixtures
 
@@ -33,7 +29,7 @@ after formation is established.
 - **MiMo V2.6 RL Harbor general:** 925 workplace tasks at audited revision
   `85c8884bb32b82d5a2f39bb1044bffd8d5d574f1` in
   [FineEnvs/MiMo-V2.6-RL-harbor-general](https://huggingface.co/datasets/FineEnvs/MiMo-V2.6-RL-harbor-general/tree/85c8884bb32b82d5a2f39bb1044bffd8d5d574f1).
-  One finance task ran through Harbor; this establishes integration only.
+  Candidate tasks still require the admission checks above.
 - **MiMo code:** a candidate only after a natural business adaptation with an
   independently verified outcome.
 

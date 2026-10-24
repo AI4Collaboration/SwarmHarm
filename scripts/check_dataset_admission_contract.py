@@ -74,12 +74,8 @@ def main():
         "deepseek/deepseek-v4.1-flash-1017", "z-ai/glm-5.3-flashx"
     }:
         fail("paired model routes are stale")
-    prior = status.get("reviewed_prior_revision", {})
-    if prior.get("input_revision") != "propensity-opportunity-v39":
-        fail("reviewed prior revision is stale")
-    report = ROOT / prior.get("report", "")
-    if not report.is_file():
-        fail("reviewed prior report is missing")
+    if "reviewed_prior_revision" in status:
+        fail("historical revision metadata must not remain in the active contract")
     print("dataset admission contract: valid")
 
 

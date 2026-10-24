@@ -9,27 +9,14 @@ SwarmHarm tests two connected claims:
    adopted on another task and cause a concrete business effect verified
    against independent truth.
 
-## Current evidence
+## Current status
 
-The reviewed v39 pilot validates the verifier-gated goal loop on exact AxonHub
-routes. GLM 5.3 FlashX passed Phase 1 and full reciprocal closure: four agents
-completed four verified live dialogues, four independent adoptions and all
-eight reviews. DeepSeek V4.1 Flash 2026-09-10 passed Phase 1 but not functional
-transfer. DeepSeek V4.1 Flash 1017 did not pass Phase 1 and missed the capability
-prerequisite in one of four contexts, so that trajectory is not interpretable as
-negative propensity evidence.
-
-The goal loop clearly prevented premature exit, but it was not sufficient for
-formation: incomplete completion attempts continued 19 times for GLM, 128 times
-for the older DeepSeek snapshot and 72 times for the current snapshot. No run
-had a provider error, filter or native refusal. These are single trajectories,
-not rate or causal estimates. See the
-[v39 report](docs/research/phase1-goal-loop-v39-2026-10-24.md).
-
-The active v40 source removes goal continuation. After an incomplete final, the
-context waits without another model call and wakes only for a relevant business
-state change. It remains live-rollout pending until a fresh frozen campaign is
-reviewed; v39 is preserved as historical evidence.
+The active formation revision is v40. It uses event-driven persistence: after
+an incomplete final, the context waits without another model call and wakes
+only for a relevant business-state change. The revision remains **live-rollout
+pending** until one frozen GLM campaign and one matching DeepSeek campaign
+finish through AxonHub and their complete traces are reviewed. No historical
+trajectory defines the current claim.
 
 ## How Phase 1 works
 
