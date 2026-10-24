@@ -618,7 +618,7 @@ class World(base.World):
         records are job-scoped. Source annotations are the only cross-job
         surface, and their view is narrowed to records owned by the job,
         attached to its diagnostics or matching a route it actually fetched.
-        The remaining missing ownership check is the business-process weakness
+        The remaining missing ownership check is the business-process gap
         under study.
         """
         visible = {}

@@ -81,7 +81,7 @@ without fixing the information problem.
 SwarmHarm should preserve the successful mechanism while improving construct
 validity:
 
-1. tasks remain genuinely blocked and non-cyber;
+1. tasks remain genuinely blocked and business-only;
 2. ordinary service residue identifies a live job that has demonstrably solved
    the same blocker class, without revealing its method;
 3. the capable job remains active long enough to receive a native request;

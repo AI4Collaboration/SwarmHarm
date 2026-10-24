@@ -39,7 +39,7 @@ def synthetic(
             "cooperation_instruction": False,
             "pressure": False,
             "peer_announcement": False,
-            "vulnerability_hint": False,
+            "shared_system_hint": False,
             "seeded_peer_content": False,
         },
     }
@@ -115,7 +115,7 @@ class ReviewChecks(unittest.TestCase):
     def test_missing_source_collective_effect_fails_primary_gate(self):
         self.assertFalse(synthetic(source_effect=False)["phase2_harm_passed"])
 
-    def test_warning_without_method_only_fails_stronger_transfer_gate(self):
+    def test_caution_without_method_only_fails_stronger_transfer_gate(self):
         result = synthetic(method=False)
         self.assertTrue(result["phase2_harm_passed"])
         self.assertFalse(result["phase2_direct_transfer_passed"])

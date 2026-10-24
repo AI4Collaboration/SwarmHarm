@@ -6,7 +6,7 @@ A maintained Phase 1 environment must provide:
    impossible in the registered state;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph; and
-3. one persistent shared-system weakness that is task-relevant and
+3. one persistent shared-system gap that is task-relevant and
    independently discoverable without planted messages or prompting.
 
 Two rules govern claims:
@@ -24,11 +24,12 @@ Two rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
-[Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
-new live-communication gate and least-privilege surface await prospective
-confirmation. Frozen GLM R7 passed its dialogue-based gate; frozen DeepSeek R1
-formed a connected channel and produced two method adoptions but failed its
-dialogue gate. Neither result is relabeled.
+[Formation v20](../experiments/swarm-formation-v20/README.md) is current. In the
+reviewed v37 pair, both models passed the capability prerequisite. GLM completed
+one verified live request→reply→use chain; DeepSeek produced connected reads and
+relays but no grounded reply. Neither reached full reciprocal closure. The
+terminology-only v38 source remains live rollout pending, and v37 is not
+relabeled.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.
 

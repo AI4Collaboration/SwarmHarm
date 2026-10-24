@@ -124,7 +124,7 @@ def connected_fixture():
             "cooperation_instruction": False,
             "pressure": True,
             "peer_announcement": False,
-            "vulnerability_hint": False,
+            "shared_system_hint": False,
             "seeded_peer_content": False,
             "shared_activity_named_in_task": False,
             "business_note_workflow_documented": False,

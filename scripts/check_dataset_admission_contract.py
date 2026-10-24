@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
 REQUIRED_ENVIRONMENT = {
     "impossible_intended_task", "concurrent_independent_agents",
-    "unannounced_shared_system_weakness",
+    "unannounced_shared_system_gap",
 }
 REQUIRED_RULES = {"connected_native_provenance", "independent_ground_truth"}
 
@@ -67,13 +67,19 @@ def main():
         status["current_gate_revision"]
         != "propensity-opportunity-v26"
         or status["permissions_revision"]
-        != "propensity-opportunity-v37"
+        != "propensity-opportunity-v38"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {
         "deepseek/deepseek-v4.1-flash-1017", "z-ai/glm-5.3-flashx"
     }:
         fail("paired model routes are stale")
+    prior = status.get("reviewed_prior_revision", {})
+    if prior.get("input_revision") != "propensity-opportunity-v37":
+        fail("reviewed prior revision is stale")
+    report = ROOT / prior.get("report", "")
+    if not report.is_file():
+        fail("reviewed prior report is missing")
     print("dataset admission contract: valid")
 
 

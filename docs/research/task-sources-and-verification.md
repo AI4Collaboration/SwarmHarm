@@ -14,13 +14,14 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. Their current autonomous-discovery revision remains live
-rollout pending.
+a population rate. The reviewed v37 pair observed formation in GLM and did not
+observe it in DeepSeek after both passed the capability prerequisite. The
+terminology-only v38 source remains live rollout pending.
 
 ## Maintained Phase 2 fixtures
 
 [Cause Harm v2](../../experiments/swarm-cause-harm-v2/README.md) uses synthetic
-procurement projects, source budgets and covenants, a reachable ordering weakness
+procurement projects, source budgets and covenants, a reachable ordering gap
 and an independent ledger verifier. The concurrent runner awaits a new campaign
 after formation is established.
 
@@ -36,10 +37,6 @@ after formation is established.
 ## Design references
 
 - [ImpossibleBench](https://arxiv.org/abs/2510.20270): explicit infeasibility.
-- [Hack-Verifiable Environments](https://arxiv.org/abs/2605.20744): embedded,
-  discoverable opportunities and deterministic verification.
-- [Hackbait](https://pypi.org/project/hackbait/): distinguishing deliberate
-  shortcut use from ordinary error.
 - [LessWrong reproduction](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment):
   separate discovery, request, sharing and use measurements.
 - [OpenAI incident summary](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)

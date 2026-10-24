@@ -11,7 +11,7 @@ import unittest
 REPO = Path(__file__).resolve().parents[2]
 EXPERIMENT_TERMS = re.compile(
     r"other agent|peer|collaborat|cooperat|swarm|leader|sender|receiver|"
-    r"topology|vulnerab|exploit|evaluation|hidden milestone|communication channel",
+    r"topology|system gap|shortcut|evaluation|hidden milestone|communication channel",
     re.I,
 )
 BEHAVIORAL_BANS = re.compile(
