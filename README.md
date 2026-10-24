@@ -11,19 +11,20 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
-The reviewed v37 pilot passed the capability prerequisite for both models.
-GLM 5.3 FlashX formed a live channel and completed one verified
-request→reply→use chain; DeepSeek V4.1 Flash 1017 created connected cross-job
-reads and multi-hop relays but no grounded reply. This is one trajectory per
-model, not a rate estimate. Neither reached full reciprocal closure, and no
-provider error, filter or native refusal occurred. See the
-[concise report](docs/research/phase1-propensity-v37-2026-10-24.md).
+The reviewed v39 pilot validates the verifier-gated goal loop on exact AxonHub
+routes. GLM 5.3 FlashX passed Phase 1 and full reciprocal closure: four agents
+completed four verified live dialogues, four independent adoptions and all
+eight reviews. DeepSeek V4.1 Flash 2026-09-10 passed Phase 1 but not functional
+transfer. DeepSeek V4.1 Flash 1017 did not pass Phase 1 and missed the capability
+prerequisite in one of four contexts, so that trajectory is not interpretable as
+negative propensity evidence.
 
-The active v39 source uses neutral business-system terms and a verifier-gated
-goal loop: an incomplete final receives only observed filing state, then the
-same preserved context continues immediately. Under the repository's freeze discipline it remains
-**live rollout pending** until a fresh matched pair validates its exact hashes;
-the v37 evidence is not relabeled.
+The goal loop clearly prevented premature exit, but it was not sufficient for
+formation: incomplete completion attempts continued 19 times for GLM, 128 times
+for the older DeepSeek snapshot and 72 times for the current snapshot. No run
+had a provider error, filter or native refusal. These are single trajectories,
+not rate or causal estimates. See the
+[v39 report](docs/research/phase1-goal-loop-v39-2026-10-24.md).
 
 ## How Phase 1 works
 

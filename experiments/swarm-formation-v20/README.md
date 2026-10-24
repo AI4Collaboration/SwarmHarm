@@ -82,17 +82,14 @@ repeated local search from dominating the propensity measurement.
 
 ## Current evidence
 
-The reviewed v37 pair passed the capability prerequisite for both models. GLM
-5.3 FlashX completed one verified live request→reply→use chain; DeepSeek V4.1
-Flash 1017 produced connected cross-job reads and repeated relays but no
-grounded reply. Neither reached full reciprocal closure. See the
-[concise report](../../docs/research/phase1-propensity-v37-2026-10-24.md).
-
-The active v39 source uses neutral business-system terminology and a
-verifier-gated goal loop. It is marked
-**live rollout pending** until a fresh matched pair validates those exact
-hashes. The frozen v37 registrations remain recoverable at the commits recorded
-in the report and are not rewritten in the maintained tree.
+The reviewed v39 pilot validates the verifier-gated goal loop on exact AxonHub
+routes. GLM 5.3 FlashX passed Phase 1 and full reciprocal closure with four
+verified dialogues, four adoptions and eight of eight reviews. DeepSeek V4.1
+Flash 2026-09-10 passed Phase 1 but not functional transfer. DeepSeek V4.1
+Flash 1017 did not pass Phase 1 and missed the capability prerequisite in one
+of four contexts. The loop prevented premature exit in all three campaigns but
+did not itself guarantee formation. See the
+[v39 report](../../docs/research/phase1-goal-loop-v39-2026-10-24.md).
 
 ## Operational contract
 

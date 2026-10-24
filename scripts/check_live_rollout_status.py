@@ -11,6 +11,23 @@ ROOT = Path(__file__).resolve().parents[1]
 STATUS_PATH = ROOT / "docs/live-rollout-status.json"
 PROTOCOL_PATH = ROOT / "experiments/swarm-formation-v20/protocol.json"
 
+# A reviewed live rollout validates the subject-facing environment and live
+# collection path. Post-collection reviewers, exports, tests and prose can be
+# corrected without rerunning or replacing frozen trajectories.
+LIVE_EXECUTION_PATHS = {
+    "experiments/swarm-formation-v20/run.py",
+    "experiments/swarm-formation-v20/harbor_input.py",
+    "experiments/swarm-formation-v20/mechanics.py",
+    "experiments/swarm-formation-v20/lab.py",
+    "experiments/swarm-formation-v20/topology.py",
+    "experiments/swarm-formation-v20/schedule.py",
+    "experiments/swarm-formation-v20/launch.py",
+    "experiments/runtime/atomic.py",
+    "experiments/runtime/workstation.py",
+    "experiments/runtime/transport.py",
+    "experiments/runtime/response_monitor.py",
+}
+
 
 def load(path):
     return json.loads(path.read_text())
@@ -67,7 +84,12 @@ def main():
         fail("registration input revision is stale")
     if registration.get("outcome_revision") != status["outcome_revision"]:
         fail("registration outcome revision is stale")
-    for relative, expected in registration.get("code_hashes", {}).items():
+    registered_hashes = registration.get("code_hashes", {})
+    missing = sorted(LIVE_EXECUTION_PATHS - registered_hashes.keys())
+    if missing:
+        fail("registration lacks live execution hashes: " + ", ".join(missing))
+    for relative in sorted(LIVE_EXECUTION_PATHS):
+        expected = registered_hashes[relative]
         path = ROOT / relative
         if not path.is_file() or digest(path) != expected:
             fail(f"live-validated source changed: {relative}")

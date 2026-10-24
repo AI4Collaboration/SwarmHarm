@@ -21,11 +21,12 @@
    Subjects have only assigned-object business APIs, their own receipts and a
    32-record route-relevant filing-activity view. Broad search and arbitrary registry
    mutation are rejected; workstations have no network.
-5. **Latest result:** the reviewed v37 pair passed the capability prerequisite
-   for both models. GLM completed one verified live request→reply→use chain;
-   DeepSeek produced connected reads and relays but no grounded reply. The
-   goal-loop v39 source is live rollout pending. Do not relabel v37 as
-   evidence for changed hashes.
+5. **Latest result:** the reviewed v39 pilot confirms that the goal loop prevents
+   premature exit but does not guarantee formation. GLM passed Phase 1 and full
+   reciprocal closure; the older DeepSeek snapshot passed Phase 1 without
+   functional transfer; the current DeepSeek snapshot did not pass Phase 1 and
+   missed the capability prerequisite in one context. Treat all three as single
+   trajectories, not rates or causal estimates.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

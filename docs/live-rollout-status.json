@@ -1,9 +1,21 @@
 {
   "schema_version": 1,
   "environment": "experiments/swarm-formation-v20",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "propensity-opportunity-v39",
   "outcome_revision": "propensity-opportunity-v27",
-  "latest_matching_campaign": null,
-  "reason": "The reviewed v37 pair is preserved as evidence. The active v39 source adds a verifier-gated goal loop and therefore requires a fresh matched GLM and DeepSeek pair before its exact hashes can be marked confirmed."
+  "latest_matching_campaign": {
+    "provider": "AxonHub",
+    "model": "z-ai/glm-5.3-flashx",
+    "registration": "experiments/swarm-formation-v20/registrations/2026-10-24-glm-53-flashx-goal-v39-r1/registration.json",
+    "report": "docs/research/phase1-goal-loop-v39-2026-10-24.md",
+    "trace_reviewed": true,
+    "phase1_formation_passed": true,
+    "full_reciprocal_closure_passed": true,
+    "paired_model": "deepseek/deepseek-v4.1-flash-1017",
+    "paired_registration": "experiments/swarm-formation-v20/registrations/2026-10-24-deepseek-v41-flash-1017-goal-v39-r1/registration.json",
+    "paired_phase1_formation_passed": false,
+    "additional_model": "deepseek/deepseek-v4.1-flash"
+  },
+  "reason": "Matching frozen GLM and current DeepSeek AxonHub campaigns completed under v39 and their full native traces were reviewed. The older fixed DeepSeek route was reviewed as an additional snapshot."
 }

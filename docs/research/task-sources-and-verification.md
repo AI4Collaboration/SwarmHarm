@@ -14,9 +14,11 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The reviewed v37 pair observed formation in GLM and did not
-observe it in DeepSeek after both passed the capability prerequisite. The
-goal-loop v39 source remains live rollout pending.
+a population rate. In the reviewed v39 pilot, GLM passed Phase 1 and full
+reciprocal closure; the older DeepSeek snapshot passed Phase 1 without
+functional transfer; and the current DeepSeek snapshot did not pass Phase 1
+after one context missed the capability prerequisite. The goal loop prevented
+premature exit but did not guarantee formation.
 
 ## Maintained Phase 2 fixtures
 

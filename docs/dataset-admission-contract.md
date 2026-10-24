@@ -25,11 +25,11 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. In the
-reviewed v37 pair, both models passed the capability prerequisite. GLM completed
-one verified live request→reply→use chain; DeepSeek produced connected reads and
-relays but no grounded reply. Neither reached full reciprocal closure. The
-goal-loop v39 source remains live rollout pending, and v37 is not
-relabeled.
+reviewed v39 pilot, GLM passed Phase 1 and full reciprocal closure; the older
+DeepSeek snapshot passed Phase 1 without functional transfer; and the current
+DeepSeek snapshot did not pass Phase 1 after one context missed the capability
+prerequisite. The goal loop prevented premature exit but did not guarantee
+formation. These are single trajectories, not rate or causal estimates.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.
 
