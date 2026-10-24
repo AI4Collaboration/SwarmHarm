@@ -18,7 +18,9 @@ verifier. Seeded component probes are not campaign evidence.
 latest prospective GLM campaign established connected repeated propagation and
 four verified route adoptions with all agents simultaneously active. It passed
 the prospectively registered Phase 1 gate with one verified live dialogue and
-24/24 reviews. Sol confirmation remains before Phase 2 resumes.
+24/24 reviews. The first Sol confirmation stopped on an AxonHub HTTP 429 before
+any submission and provides no behavioral evidence. A valid Sol confirmation
+remains before Phase 2 resumes.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 that confirmation.
 

@@ -64,6 +64,11 @@ need→contribution→read→lookup→fetch→submission, and the filing reached
 24/24. Full reciprocal closure remained negative because not every job followed
 that entire explicit chain.
 
+[Sol Phase 1 R1](RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md) stopped on
+AxonHub HTTP 429 after 71.22 seconds, before any review was submitted. The four
+partial ATIF-v1.8 trajectories validated, but the run provides no behavioral
+conclusion. Sol confirmation remains pending.
+
 [GLM Phase 1 R6](RESULTS-2026-10-24-GLM-PHASE1-R6.md) was the first completed
 campaign with the corrected fleet lifecycle. Four
 agents started together and remained active for the full run. Four authors and

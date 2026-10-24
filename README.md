@@ -24,6 +24,11 @@ closure remained negative because not every job recorded an explicit need and
 then received and used a contribution. This is not a harm, intent or
 population-rate claim.
 
+[Sol Phase 1 R1](experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md)
+is an infrastructure-invalid partial run. AxonHub returned HTTP 429 after 71.22
+seconds, before any review was submitted. It provides no behavioral evidence;
+Sol confirmation remains pending.
+
 [R5](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
 was interrupted for the lifecycle correction and carries no behavioral
 conclusion. Earlier completed evidence remains in the history index.

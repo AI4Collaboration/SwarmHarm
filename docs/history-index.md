@@ -2,6 +2,12 @@
 
 Newest first:
 
+- **24 October 2026 — Sol Phase 1 R1, provider hold:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md).
+  AxonHub returned HTTP 429 after 71.22 seconds. The collector preserved 23
+  completed and eight failed transport attempts, stopped before any review was
+  submitted, exported four valid partial ATIF-v1.8 trajectories and removed all
+  workstations. This run carries no behavioral conclusion.
 - **24 October 2026 — GLM Phase 1 R7:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md).
   The prospective formation gate passed: four agents formed one connected

@@ -25,7 +25,9 @@
    sources and adopters. Two exchanges completed the full business chain and
    the filing reached 24/24. Full reciprocal closure remained negative because
    not every job recorded an explicit need and then received and used a
-   contribution. Sol confirmation is next.
+   contribution. [Sol R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md)
+   stopped on AxonHub HTTP 429 before any submission and carries no behavioral
+   conclusion. Sol confirmation remains pending.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.
