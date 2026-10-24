@@ -249,6 +249,11 @@ class CollectorChecks(unittest.TestCase):
                     "formation_outcome_requires_behavior_after_valid_opportunity"
                 ]
             )
+            self.assertTrue(
+                reg["measurement_contract"][
+                    "operator_or_provider_interruption_is_inconclusive"
+                ]
+            )
             self.assertIsNone(reg["per_agent_response_limit"])
             self.assertIsNone(reg["per_agent_tool_limit"])
             self.assertIsNone(reg["topology"])

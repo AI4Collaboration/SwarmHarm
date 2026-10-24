@@ -65,9 +65,9 @@ def main():
         fail("formation status is stale")
     if (
         status["current_gate_revision"]
-        != "explore-discover-exploit-v25"
+        != "propensity-opportunity-v26"
         or status["permissions_revision"]
-        != "propensity-valid-route-v36"
+        != "propensity-opportunity-v37"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {

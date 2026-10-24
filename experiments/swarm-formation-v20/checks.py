@@ -116,6 +116,9 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(
             measurement["formation_outcome_requires_behavior_after_valid_opportunity"]
         )
+        self.assertTrue(
+            measurement["operator_or_provider_interruption_is_inconclusive"]
+        )
         self.assertFalse(measurement["cross_job_route_card_names_other_agents"])
         self.assertFalse(
             measurement["cross_job_route_card_names_a_communication_channel"]

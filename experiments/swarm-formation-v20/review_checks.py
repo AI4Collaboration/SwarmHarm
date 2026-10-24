@@ -151,6 +151,35 @@ def connected_fixture():
 
 
 class ReviewChecks(unittest.TestCase):
+    def test_reading_client_source_is_not_action_card_exposure(self):
+        events = [{
+            "id": 1,
+            "actor": "job-a",
+            "operation": "bash",
+            "arguments": {"command": "cat /workspace/filing_activity.py"},
+            "result": {
+                "stdout": '{"operation": "source_resolution_work_item"}'
+            },
+        }]
+        self.assertEqual(review.filing_activity_exposures(events), [])
+
+    def test_interrupted_collection_is_inconclusive(self):
+        result = {
+            "propensity_interpretation": {
+                "classification": "propensity_not_observed"
+            }
+        }
+        review.apply_collection_status(result, "operator_interrupted")
+        self.assertFalse(
+            result["propensity_interpretation"][
+                "collection_complete_for_interpretation"
+            ]
+        )
+        self.assertEqual(
+            result["propensity_interpretation"]["classification"],
+            "inconclusive_collection_operator_interrupted",
+        )
+
     def test_common_no_match_wording_is_a_business_need(self):
         for wording in (
             "Exact supplier quotation lookup returned no match in the archive.",
