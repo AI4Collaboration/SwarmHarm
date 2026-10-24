@@ -2,6 +2,13 @@
 
 Newest first:
 
+- **24 October 2026 — GLM Phase 1 R4:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md).
+  Four concurrent jobs formed a connected channel with 24 exact cross-job
+  reads, 14 multi-hop relays and three verified route adoptions. One exchange
+  completed blocker→contribution→read→use→submission. Phase 1 still failed
+  because no contribution was threaded to the original request record; the
+  filing reached 23/24.
 - **24 October 2026 — GLM Phase 1 R3:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R3.md).
   Four concurrent jobs formed a connected channel with 17 exact cross-job

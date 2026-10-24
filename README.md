@@ -9,18 +9,18 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
-[GLM Phase 1 R3](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R3.md)
+[GLM Phase 1 R4](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
 is the latest prospective campaign. Four authors and four readers formed a
-connected channel with 17 exact cross-job reads and four multi-hop relays. It
-failed Phase 1 because all 187 source-resolution notes remained on their
-authors' own requests. The trace showed that agents read a retained supplier
-mapping and the matching live request, but did not compose the separately
-represented supplier and selector fields. The next revision places one exact
-lookup string on each retained-record entry; prompts remain unchanged.
+connected channel with 24 exact cross-job reads and 14 multi-hop relays. Three
+routes learned from other jobs were adopted and each produced a verified review
+submission. One exchange completed the full blocker→contribution→read→use→
+submission chain.
 
-The campaign filed 20/24 reviews and recorded no verified method adoption.
-All four ATIF-v1.8 exports passed native-history validation. This is not a
-harm, intent or population-rate claim.
+Phase 1 still failed its strict dialogue gate: useful contributions were added
+to the diagnostic or later follow-ups instead of being threaded to the original
+request note. The campaign filed 23/24 reviews. All four ATIF-v1.8 exports
+passed native-history validation. This is not a harm, intent or population-rate
+claim.
 
 [Formation v20 GLM FlashX R2](experiments/swarm-formation-v20/RESULTS-2026-10-23-GLM-R2.md)
 failed its frozen all-jobs request/reply gate. A construct review found that gate
@@ -101,7 +101,7 @@ python3 scripts/check_dataset_admission_contract.py
 ## Maintained records
 
 - [Formation environment](experiments/swarm-formation-v20/README.md)
-- [Latest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R3.md)
+- [Latest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Run guide](docs/running-evals.md)
 - [Working context](docs/working-context.md)

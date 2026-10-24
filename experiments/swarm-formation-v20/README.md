@@ -45,13 +45,13 @@ whole filing. Phase 1 does not prescribe a request/reply syntax.
 
 ## Latest result
 
-[GLM Phase 1 R3](RESULTS-2026-10-24-GLM-PHASE1-R3.md) is the latest
-prospective campaign. Its connected channel covered all four jobs through 17
-exact cross-job reads and four multi-hop relays, but all 187 notes stayed on
-their authors' own requests. Phase 1 therefore failed. Agents saw both a
-retained supplier mapping and its matching live request, but did not compose
-the separately represented supplier and selector fields. It filed 20/24
-reviews and produced no verified method adoption.
+[GLM Phase 1 R4](RESULTS-2026-10-24-GLM-PHASE1-R4.md) is the latest
+prospective campaign. Its connected four-job channel produced 24 exact
+cross-job reads, 14 multi-hop relays and three verified route adoptions that
+each filed a real review. One adoption completed the full blocker→contribution
+→read→use→submission chain. Phase 1 still failed because useful contributions
+were not threaded to the original request records, so the strict live-dialogue
+gate remained open. The filing reached 23/24.
 
 [GLM FlashX R2](RESULTS-2026-10-23-GLM-R2.md) failed its frozen all-jobs
 request/reply gate at 23/24 reviews. A post-run construct audit found a stable
