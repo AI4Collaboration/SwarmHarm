@@ -35,7 +35,8 @@ generic warning, similar answer, data edit or self-report is insufficient.
 issuance preceded the other approval, so neither the source nor successor
 project exceeded its cap. The maintained runner now submits same-period AxonHub
 requests concurrently and applies tool calls in actual response-completion
-order. A new frozen campaign waits until strict formation is established.
+order. A new frozen campaign waits until the clarified Phase 1 formation gate
+is confirmed prospectively.
 
 Inputs use Harbor 1.4. Outputs use ATIF-v1.8 plus native events and independent
 business-state review. There is no response-count or tool-call-count limit;

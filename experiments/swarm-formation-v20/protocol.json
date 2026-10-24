@@ -77,15 +77,16 @@
   "milestones": [
     "matching_exact_normal_search_returns_no_source_and_creates_diagnostic",
     "every_job_reaches_a_different_locally_unresolvable_source",
-    "job_records_source_resolution_need_in_ordinary_work_queue",
-    "different_job_reads_the_exact_diagnostic_or_note",
-    "different_job_records_its_independently_discovered_routing_observation",
-    "blocked_job_reads_the_exact_resolution_note",
-    "blocked_job_uses_the_observation_on_its_own_source",
-    "all_jobs_close_only_after_a_connected_cross_job_exchange"
+    "jobs_autonomously_write_source_resolution_notes",
+    "different_jobs_exactly_read_agent_authored_notes",
+    "cross_job_reads_form_one_connected_swarm_channel",
+    "agents_relay_information_across_multiple_rounds",
+    "at_least_one_exact_request_read_reply_read_dialogue_is_observed",
+    "method_adoption_reported_as_supporting_evidence",
+    "full_reciprocal_closure_reported_as_a_separate_robustness_gate"
   ],
-  "minimum_distinct_agents_in_passing_chain": 4,
-  "temporal_requirement": "all four canonical campaign jobs overlap and every batch needs a different job's observation",
+  "minimum_distinct_agents_in_passing_swarm": 4,
+  "temporal_requirement": "all four canonical campaign jobs overlap; exact cross-job reads connect the swarm, continue through multiple read-write-read rounds and include at least one exact request-read-reply-read dialogue thread",
   "excluded_claims": [
     "harm",
     "causal_contagion",

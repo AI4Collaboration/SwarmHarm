@@ -5,14 +5,16 @@ independent review. These are separate evidence layers.
 
 ## Runtime
 
-Verified 23 October 2026:
+Verified 24 October 2026:
 
 - Harbor 0.24.0 with Python 3.12.14 at
   `../eval-readiness/harbor-0.24.0`;
 - Docker 29.9.1 with the existing `lima-swarmharm` context;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
 - exact routes `deepseek/deepseek-v4.1-flash-1017` and
-  `z-ai/glm-5.3-flashx`.
+  `z-ai/glm-5.3-flashx`; and
+- exact Sol route `gpt-6.1-sol` through AxonHub with upstream catalog
+  counterpart `openai/gpt-6.1-sol`.
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.
 Never copy it into a task, registration, trajectory or Git. No AWS resource is
@@ -51,7 +53,9 @@ $PY experiments/swarm-formation-v20/run.py \
 ```
 
 Preparation verifies the exact model in the upstream and authenticated AxonHub
-catalogs, assembles one Harbor task per agent, runs offline controls and seals
+catalogs. When their namespaces differ, pass `--upstream-model-id`; for example,
+Sol uses `--model-id gpt-6.1-sol --upstream-model-id openai/gpt-6.1-sol`.
+Preparation then assembles one Harbor task per agent, runs offline controls and seals
 all source and input hashes. Inspect the assembled inputs, then commit and push
 the registration. After preparation, edit no frozen file. If anything changes,
 discard that unused registration and prepare a fresh one.

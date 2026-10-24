@@ -56,12 +56,22 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    if status["formation_status"] != "collected_with_limits_strict_gate_failed":
+    if status["formation_status"] != "post_run_pattern_observed_prospective_confirmation_required":
         fail("formation status is stale")
     if status["submitted_reviews"] != 23 or status["assigned_reviews"] != 24:
         fail("formation filing totals are inconsistent")
     if status["provider_errors"] or status["provider_filters"] or status["native_refusals"]:
         fail("provider/refusal counters differ from the reviewed result")
+    if (
+        status["cross_job_exact_note_reads"] != 16
+        or status["multi_hop_relays"] != 6
+        or status["relay_agents"] != 3
+        or status["verified_dialogue_threads"] != 2
+        or status["validated_method_adoptions"] != 3
+        or status["formation_graph_population"] != 4
+        or status["full_reciprocal_closure"] is not False
+    ):
+        fail("formation construct audit counters differ from the reviewed trace")
     print("dataset admission contract: valid")
 
 

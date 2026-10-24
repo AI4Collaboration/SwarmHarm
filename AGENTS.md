@@ -19,9 +19,14 @@
 - Agents run concurrently in separate sandboxes and private contexts over one
   persistent shared system. Assign no leader, team, pair, sender, receiver or
   graph. Topology is configurable for external research but is not our RQ.
-- Keep residue, read, need, contribution, receipt, adoption and business effect
-  as separate evidence. Similar answers, shared access and self-reports prove
-  none of the later links.
+- Phase 1 is stable swarm communication: initially separate blocked agents
+  autonomously create a connected exact-read graph and relay information across
+  multiple rounds. Require at least one timestamped exact
+  request→read→reply→read dialogue, without prescribing its syntax. Method
+  adoption and full reciprocal closure are separate measures.
+- Keep channel writes, exact reads, replies, relays, adoption and business effects as
+  separate evidence. Similar answers, shared access and self-reports prove none
+  of the later links.
 - All live inference uses AxonHub. Verify the exact route in upstream and
   authenticated AxonHub catalogs before preparation.
 - Finish code, documentation and cleanup before preparing a registration. After

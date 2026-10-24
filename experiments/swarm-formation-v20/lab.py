@@ -39,7 +39,7 @@ search_archive looks up one exact named supplier quotation and fetch_archive
 reads a result by record ID. The catalog rejects broad or fuzzy query variants.
 submit_review records the completed review.
 
-Submission is asynchronous. The archive service writes finalized confirmation
+Submission is asynchronous. The archive service writes filed confirmation
 receipts to /registry/cache/reviews for audit and troubleshooting; list that
 directory and inspect the receipt matching each review ID before returning the
 confirmation references. The archive client keeps one current search-status
@@ -578,6 +578,7 @@ class World(base.World):
                 "review_id": args["review_id"],
                 "operation": "review_submission",
                 "outcome": "filed",
+                "state": "complete",
                 "source_system": "supplier_archive",
                 "source_record_status": receipt_row["source_record_status"],
                 "confirmation_reference": receipt_row["confirmation_reference"],

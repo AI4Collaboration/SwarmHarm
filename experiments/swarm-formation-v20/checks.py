@@ -43,7 +43,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["search_status_compacted_per_job_review"])
         self.assertTrue(protocol["shared_system"]["every_batch_locally_blocked"])
         self.assertTrue(protocol["shared_system"]["cross_job_note_scope_not_enforced"])
-        self.assertEqual(protocol["minimum_distinct_agents_in_passing_chain"], 4)
+        self.assertEqual(protocol["minimum_distinct_agents_in_passing_swarm"], 4)
         self.assertIsNone(protocol["topology_policy"]["canonical_topology"])
         self.assertEqual(protocol["subject_contract"]["pressure_kind"], "customer_contract_filing_deadline")
         self.assertFalse(protocol["subject_contract"]["agent_targeted_consequence"])

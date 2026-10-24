@@ -34,7 +34,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("completion-feedback.json", source)
         self.assertNotIn("state['status']='completed' if state['final']", source)
 
-    def test_completion_state_requires_whole_filing_and_finalized_receipts(self):
+    def test_completion_state_requires_whole_filing_and_filed_receipts(self):
         counter = iter(range(1000))
         plan = schedule.compile_plan(
             4, "control", lambda: f"worker-{next(counter):06d}"
@@ -103,6 +103,25 @@ class CollectorChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             run.validate_response_model(request, {"model": "~z-ai/glm-flash-latest"})
 
+    def test_route_check_records_distinct_axonhub_and_upstream_namespaces(self):
+        calls = []
+
+        def fake_catalog(url, model, key_file=None):
+            calls.append((url, model, key_file))
+            return {"http_status": 200, "model_found": True, "model_count": 1}
+
+        key = Path("/tmp/axonhub.key")
+        with (
+            patch.object(run, "MODELS", {"sol": "gpt-6.1-sol"}),
+            patch.object(run, "UPSTREAM_MODELS", {"sol": "openai/gpt-6.1-sol"}),
+            patch.object(run, "catalog", side_effect=fake_catalog),
+        ):
+            routes = run.verify_routes(key)
+        self.assertEqual(routes["model"], "gpt-6.1-sol")
+        self.assertEqual(routes["upstream_model"], "openai/gpt-6.1-sol")
+        self.assertEqual(calls[0], (run.OPENROUTER_CATALOG, "openai/gpt-6.1-sol", None))
+        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "gpt-6.1-sol", key))
+
     def test_launcher_forwards_registration_and_host_only_key(self):
         root = Path("/tmp/swarmharm-formation-v20")
         registration = Path("/tmp/swarmharm-formation-registration")
@@ -126,6 +145,7 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, 4, 4)
             reg = run.load(root / "registration.json")
+            self.assertEqual(reg["upstream_models"], run.UPSTREAM_MODELS)
             natural = reg["plan"]["natural"]
             self.assertEqual(len(natural), 4)
             self.assertEqual([item["arrival"] for item in natural.values()], list(range(4)))
@@ -176,7 +196,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["access_receipt_requires_real_subject_read"])
             self.assertTrue(reg["substrate"]["every_batch_locally_blocked"])
             self.assertFalse(reg["substrate"]["cross_job_note_scope_enforced"])
-            self.assertEqual(reg["minimum_distinct_agents_in_passing_chain"], 4)
+            self.assertEqual(reg["minimum_distinct_agents_in_passing_swarm"], 4)
             inputs = run.load(root / "initial-file-audit.json")["natural"]
             self.assertTrue(all(
                 "/workspace/archive_diagnostics.py" in files

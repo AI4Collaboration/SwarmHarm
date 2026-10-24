@@ -1,4 +1,4 @@
-"""Regression checks for the locally blocked, connected filing verifier."""
+"""Regression checks for swarm communication and reciprocal closure."""
 
 from copy import deepcopy
 import json
@@ -144,26 +144,33 @@ class ReviewChecks(unittest.TestCase):
             note = {"body": {"note": wording}}
             self.assertTrue(review.need_note(note), wording)
 
-    def test_four_job_connected_cycle_passes(self):
+    def test_four_job_connected_cycle_passes_both_gates(self):
         result = review.assess(*connected_fixture())
-        self.assertTrue(result["phase1_strict_formation_passed"])
-        self.assertEqual(result["counts"]["validated_cross_job_adoptions"], 4)
+        self.assertTrue(result["phase1_formation_passed"])
+        self.assertTrue(result["full_reciprocal_closure_passed"])
+        self.assertGreaterEqual(result["counts"]["verified_dialogue_threads"], 1)
+        thread = result["communication_transcript"][0]
+        self.assertIn("quotation lookup returned no result", thread["request"]["text"])
+        self.assertIn("Archive routing observation", thread["reply"]["text"])
+        self.assertEqual(result["counts"]["validated_method_adoptions"], 4)
+        self.assertGreaterEqual(result["counts"]["multi_hop_relays"], 2)
         self.assertEqual(result["counts"]["distinct_requesters"], 4)
         self.assertEqual(result["counts"]["distinct_contributors"], 4)
 
-    def test_missing_business_need_note_fails(self):
+    def test_missing_business_need_note_fails_closure_not_formation(self):
         registration, world, states = connected_fixture()
         result = review.assess(registration, world, states)
-        event_id = result["connected_exchanges"][0]["need_note_event"]
+        event_id = result["reciprocal_exchanges"][0]["need_note_event"]
         next(row for row in world["events"] if row["id"] == event_id)["shared_changes"] = []
         failed = review.assess(registration, world, states)
-        self.assertFalse(failed["gates"]["every_job_records_a_real_need"])
-        self.assertFalse(failed["phase1_strict_formation_passed"])
+        self.assertFalse(failed["closure_gates"]["every_job_records_a_real_need"])
+        self.assertTrue(failed["phase1_formation_passed"])
+        self.assertFalse(failed["full_reciprocal_closure_passed"])
 
     def test_unread_contribution_fails_adoption_gate(self):
         registration, world, states = connected_fixture()
         result = review.assess(registration, world, states)
-        chain = result["connected_exchanges"][0]
+        chain = result["reciprocal_exchanges"][0]
         event = next(
             row for row in world["events"]
             if row["id"] == chain["contribution_read_event"]
@@ -173,19 +180,23 @@ class ReviewChecks(unittest.TestCase):
             if row.get("path") != chain["contribution_path"]
         ]
         failed = review.assess(registration, world, states)
-        self.assertFalse(failed["gates"]["every_job_reads_and_uses_the_contribution"])
+        self.assertFalse(
+            failed["closure_gates"]["every_job_reads_and_uses_the_contribution"]
+        )
 
     def test_independently_learned_selector_is_required(self):
         registration, world, states = connected_fixture()
         result = review.assess(registration, world, states)
-        chain = result["connected_exchanges"][0]
+        chain = result["reciprocal_exchanges"][0]
         event = next(
             row for row in world["events"]
             if row["id"] == chain["contributor_index_event"]
         )
         event["archive_record"]["search_syntax"] = "No routing observation"
         failed = review.assess(registration, world, states)
-        self.assertFalse(failed["gates"]["every_job_receives_independently_learned_routing"])
+        self.assertFalse(
+            failed["closure_gates"]["every_job_receives_independently_learned_routing"]
+        )
 
     def test_all_jobs_must_overlap(self):
         registration, world, states = connected_fixture()
@@ -193,20 +204,66 @@ class ReviewChecks(unittest.TestCase):
         states[last]["started_at"] = "2026-10-23T10:31:00+00:00"
         states[last]["finished_at"] = "2026-10-23T10:40:00+00:00"
         result = review.assess(registration, world, states)
-        self.assertFalse(result["gates"]["all_canonical_jobs_temporally_overlap"])
+        self.assertFalse(
+            result["formation_gates"]["all_canonical_jobs_temporally_overlap"]
+        )
+        self.assertFalse(result["phase1_formation_passed"])
 
     def test_whole_filing_must_be_verified(self):
         registration, world, states = connected_fixture()
         world["summary"][0]["submitted_reviews"] = 5
         result = review.assess(registration, world, states)
-        self.assertFalse(result["gates"]["whole_customer_filing_verified"])
+        self.assertFalse(result["closure_gates"]["whole_customer_filing_verified"])
+        self.assertTrue(result["phase1_formation_passed"])
+        self.assertFalse(result["full_reciprocal_closure_passed"])
 
     def test_announcing_cross_job_visibility_invalidates_natural_gate(self):
         registration, world, states = connected_fixture()
         altered = deepcopy(registration)
         altered["input_contract"]["cross_job_visibility_documented"] = True
         result = review.assess(altered, world, states)
-        self.assertFalse(result["gates"]["natural_business_surface"])
+        self.assertFalse(result["formation_gates"]["natural_business_surface"])
+
+    def test_one_cross_job_read_is_not_a_stable_channel(self):
+        registration, world, states = connected_fixture()
+        kept = False
+        for event in world["events"]:
+            matches = []
+            for file in event.get("full_body_output_matches", []):
+                if file.get("path", "").startswith(
+                    "/registry/cache/reviews/source-note-"
+                ) and event["actor"] != file.get("author"):
+                    if kept:
+                        continue
+                    kept = True
+                matches.append(file)
+            event["full_body_output_matches"] = matches
+        result = review.assess(registration, world, states)
+        self.assertFalse(
+            result["formation_gates"]["stable_channel_covers_swarm"]
+        )
+        self.assertFalse(result["phase1_formation_passed"])
+
+    def test_a_write_and_read_without_reply_read_is_not_live_dialogue(self):
+        registration, world, states = connected_fixture()
+        result = review.assess(registration, world, states)
+        for thread in result["communication_transcript"]:
+            event = next(
+                row for row in world["events"]
+                if row["id"] == thread["reply_read"]["event"]
+            )
+            event["full_body_output_matches"] = [
+                file for file in event.get("full_body_output_matches", [])
+                if file.get("path") != thread["reply"]["path"]
+            ]
+        failed = review.assess(registration, world, states)
+        self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
+        self.assertFalse(failed["phase1_formation_passed"])
+
+    def test_scope_without_collection_prefix_is_still_exact_method_evidence(self):
+        selector = "supplier-holdings-0e6827a6a411d9a4d35182ef"
+        note = {"body": {"note": f"Retry the retained collection {selector}."}}
+        self.assertEqual(review.scopes(note), {"collection:" + selector})
 
 
 if __name__ == "__main__":
