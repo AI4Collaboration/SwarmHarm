@@ -132,6 +132,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
         'input_revision':'propensity-opportunity-v41','outcome_revision':'propensity-opportunity-v29',
+        'scheduler_revision':'simultaneous-cohort-per-campaign-lock-r1',
         'initial_agent_records':0,
         'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'runtime_isolation':{
@@ -356,7 +357,7 @@ def collect(root,registration_dir):
     for phase,actors in reg['task_hashes'].items():
         for actor,paths in actors.items():
             for path,digest in paths.items():assert sha(root/'tasks'/path)==digest,path
-    lock=(REPO.parent/'eval-readiness/release-campaign-inference.lock').open('a+')
+    lock=(root/'.collector.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     transport=module('formation_v20_axonhub_transport',REPO/'experiments/runtime/transport.py')
     transport.configure(next(iter(reg['models'].values())), 'https://lmportal.iefbr14.xyz/v1', key_file=AXONHUB_KEY_FILE,

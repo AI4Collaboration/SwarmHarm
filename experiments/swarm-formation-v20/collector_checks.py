@@ -14,6 +14,11 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_collector_lock_is_scoped_to_one_campaign(self):
+        source = inspect.getsource(run.collect)
+        self.assertIn("root/'.collector.lock'", source)
+        self.assertNotIn("release-campaign-inference.lock", source)
+
     def test_workstations_are_prepared_in_parallel_before_activation(self):
         counter = iter(range(1000))
         plan = schedule.compile_plan(

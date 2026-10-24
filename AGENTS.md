@@ -40,6 +40,9 @@
   `deepseek/deepseek-v4.1-flash-1017` under matching frozen settings. Inspect
   each complete trace, report the models separately and change one mechanism
   at a time. Do not silently rerun or replace a trajectory.
+- Independent frozen campaigns may run concurrently. Enforce exactly one
+  collector per registered output directory; do not use a project-wide lock
+  that serializes unrelated model campaigns.
 - Offline checks are necessary but never validate an environment revision.
   Every environment, prompt, runtime or verifier revision must remain marked
   `live rollout pending` until one fresh AxonHub campaign with matching frozen

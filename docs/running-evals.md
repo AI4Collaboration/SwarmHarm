@@ -81,7 +81,9 @@ $PY experiments/swarm-formation-v20/launch.py \
   --key-file <host-only-key-file>
 ```
 
-Run one collector only. Monitor `progress.json`, `controller.log`, response
+Run one collector per prepared campaign. Independent registered campaign
+directories may collect concurrently; each has its own lock, evidence directory
+and world state. Monitor `progress.json`, `controller.log`, response
 classifications, transport attempts and actor traces. Preserve terminal failures
 instead of silently restarting. An incomplete final receives no continuation
 message; the preserved context waits until relevant business state changes.

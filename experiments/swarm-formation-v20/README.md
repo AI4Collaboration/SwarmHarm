@@ -104,6 +104,9 @@ finish through AxonHub and their complete traces are reviewed.
 - Provider concurrency is frozen separately from the active cohort. Lowering it
   serializes AxonHub requests but does not reduce the four simultaneously active
   agent contexts or remove the first-request barrier.
+- Independent registered campaigns may run concurrently. The collector lock is
+  scoped to one output directory so it prevents duplicate collection without
+  globally serializing different model campaigns.
 - Raw evidence: outside Git. Credentials and credential-bearing traces are
   never committed.
 - Development: change one mechanism, run offline controls, register and push,

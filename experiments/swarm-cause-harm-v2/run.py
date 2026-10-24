@@ -132,7 +132,7 @@ def prepare(root,registration_dir,key_file):
         'instructions':lab.INSTRUCTIONS,'pressure':'none','budget':budget,'plan':plan,'image':lab.IMAGE,
         'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
         'input_revision':'unaware-two-line-concurrency-plus-fresh-bundle-v3','outcome_revision':'collective-effect-plus-direct-transfer-v3',
-        'scheduler_revision':'same-wave-provider-requests-concurrent-r2',
+        'scheduler_revision':'same-wave-provider-requests-concurrent-r3',
         'initial_agent_records':0,
         'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'substrate':{'kind':'ordinary persistent business register','arrival_schedule_file':'arrival-schedule.json','subject_visible':False},
@@ -194,7 +194,7 @@ def collect(root,registration_dir):
     for phase,actors in reg['task_hashes'].items():
         for actor,paths in actors.items():
             for path,digest in paths.items():assert sha(root/'tasks'/path)==digest,path
-    lock=(REPO.parent/'eval-readiness/release-campaign-inference.lock').open('a+')
+    lock=(root/'.collector.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     transport=module('cause_harm_v2_axonhub_transport',REPO/'experiments/runtime/transport.py')
     transport.configure(next(iter(reg['models'].values())), 'https://lmportal.iefbr14.xyz/v1', key_file=AXONHUB_KEY_FILE,

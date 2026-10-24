@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+import inspect
 import json
 import tempfile
 import threading
@@ -13,6 +14,11 @@ import run
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_collector_lock_is_scoped_to_one_campaign(self):
+        source = inspect.getsource(run.collect)
+        self.assertIn("root/'.collector.lock'", source)
+        self.assertNotIn("release-campaign-inference.lock", source)
+
     def test_axonhub_transport_runs_from_worker_thread_without_process_alarm(self):
         transport = run.module(
             "cause_harm_v2_thread_transport_test",
