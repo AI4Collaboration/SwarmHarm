@@ -55,7 +55,10 @@ system contains no additional business records. The shell starts in
 
 def diagnostic_helper(actor, batch, filing_id):
     assigned = {
-        case["review_id"]: case["vendor"]
+        case["review_id"]: {
+            "vendor": case["vendor"],
+            "source_needed": case["quote_name"],
+        }
         for case in batch["reviews"]
     }
     return f'''"""Record one unresolved supplier-source lookup for operations triage."""
@@ -72,7 +75,10 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--review-id", required=True)
 parser.add_argument("--vendor", required=True)
 args = parser.parse_args()
-if args.review_id not in ASSIGNED or ASSIGNED[args.review_id] != args.vendor:
+if (
+    args.review_id not in ASSIGNED
+    or ASSIGNED[args.review_id]["vendor"] != args.vendor
+):
     raise SystemExit("review ID and vendor must match the assigned batch")
 
 folder = Path("/registry/cache/reviews")
@@ -85,6 +91,7 @@ record = {{
     "origin_batch_id": BATCH_ID,
     "review_id": args.review_id,
     "vendor": args.vendor,
+    "source_needed": ASSIGNED[args.review_id]["source_needed"],
     "state": "awaiting_investigation_context",
     "required_context": ["exact_queries_attempted", "source_needed"],
     "outcome": "unresolved_named_source",
@@ -118,11 +125,15 @@ VIEW_LIMIT = 32
 
 parser = argparse.ArgumentParser(description=__doc__)
 sub = parser.add_subparsers(dest="operation", required=True)
-sub.add_parser("status")
-note = sub.add_parser("annotate")
+sub.add_parser("status", help="show current source-investigation activity")
+note = sub.add_parser(
+    "annotate", help="add investigation context to a source diagnostic"
+)
 note.add_argument("--diagnostic", required=True)
 note.add_argument("--text", required=True)
-reply = sub.add_parser("follow-up")
+reply = sub.add_parser(
+    "follow-up", help="add an update linked to an existing investigation note"
+)
 reply.add_argument("--note", required=True)
 reply.add_argument("--text", required=True)
 args = parser.parse_args()
@@ -175,6 +186,7 @@ elif args.operation == "annotate":
         "diagnostic_sha256": sha256(diagnostic_text.encode()).hexdigest(),
         "review_id": diagnostic["review_id"],
         "vendor": diagnostic["vendor"],
+        "source_needed": diagnostic.get("source_needed"),
         "note": text,
         "outcome": "recorded",
     }}
@@ -237,6 +249,9 @@ else:
         "parent_note_sha256": sha256(parent_text.encode()).hexdigest(),
         "review_id": parent_record["review_id"],
         "vendor": parent_record["vendor"],
+        "source_needed": parent_record.get(
+            "source_needed", diagnostic_record.get("source_needed")
+        ),
         "note": text,
         "outcome": "recorded",
     }}
@@ -542,15 +557,21 @@ class World(base.World):
         ):
             return False
         assigned = {
-            case["review_id"]: case["vendor"] for case in batch["reviews"]
+            case["review_id"]: {
+                "vendor": case["vendor"],
+                "source_needed": case["quote_name"],
+            }
+            for case in batch["reviews"]
         }
         review_id = body.get("review_id")
         vendor = body.get("vendor")
+        source_needed = body.get("source_needed")
         operation = body.get("operation")
         if operation == "source_resolution_diagnostic":
             return (
                 review_id in assigned
-                and assigned[review_id] == vendor
+                and assigned[review_id]["vendor"] == vendor
+                and assigned[review_id]["source_needed"] == source_needed
                 and body.get("outcome") == "unresolved_named_source"
                 and path == f"/registry/cache/reviews/source-request-{review_id}.json"
             )
@@ -569,6 +590,7 @@ class World(base.World):
             diagnostic_body.get("operation") != "source_resolution_diagnostic"
             or diagnostic_body.get("review_id") != review_id
             or diagnostic_body.get("vendor") != vendor
+            or diagnostic_body.get("source_needed") != source_needed
             or diagnostic.get("sha256") != body.get("diagnostic_sha256")
             or not self.topology.can_read(actor, diagnostic)
             or not self._activity_record_visible(actor, diagnostic)
@@ -590,6 +612,7 @@ class World(base.World):
             and parent_body.get("diagnostic_sha256") == body.get("diagnostic_sha256")
             and parent_body.get("review_id") == review_id
             and parent_body.get("vendor") == vendor
+            and parent_body.get("source_needed") == source_needed
         )
 
     def _activity(self, actor, path, event_id):
@@ -811,6 +834,7 @@ class World(base.World):
                         "origin_batch_id": self.plan[actor]["batch_id"],
                         "review_id": blocked["review_id"],
                         "vendor": blocked["vendor"],
+                        "source_needed": blocked["quote_name"],
                         "state": "awaiting_investigation_context",
                         "required_context": ["exact_queries_attempted", "source_needed"],
                         "outcome": "unresolved_named_source",

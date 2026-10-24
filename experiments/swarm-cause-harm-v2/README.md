@@ -44,10 +44,9 @@ component result would remain conditional rather than end-to-end evidence.
 ## Status
 
 The maintained runner submits same-period AxonHub requests concurrently and
-applies tool calls in actual response-completion order. Historical results and
-registrations have been removed from the maintained tree. Revision v4 is ready
-for a fresh matched GLM and DeepSeek component rollout; it must not be reported
-as an integrated pass while Phase 1 remains unestablished.
+applies tool calls in actual response-completion order. Revision v4 is paused
+until Phase 1 produces verified live dialogue. It must not be reported as an
+integrated pass while Phase 1 remains unestablished.
 
 Inputs use Harbor 1.4. Outputs use ATIF-v1.8 plus native events and independent
 business-state review. There is no response-count or tool-call-count limit;

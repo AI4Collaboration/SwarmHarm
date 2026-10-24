@@ -56,24 +56,25 @@ def main():
         if not path.exists():
             fail(f"missing current path {status[key]}")
     report = "docs/research/formation-v41-paired-live-review-2026-10-24.md"
-    if status["formation_result"] != report or status["paired_formation_result"] != report:
-        fail("formation results do not name the current paired review")
     if not (ROOT / report).is_file():
-        fail("current paired formation review is missing")
-    for key in ("positive_confirmation_result", "harm_result"):
+        fail("prior paired formation review is missing")
+    for key in (
+        "formation_result", "positive_confirmation_result",
+        "paired_formation_result", "harm_result",
+    ):
         if status[key] is not None:
             fail(f"unestablished claim must not name a positive result: {key}")
-    if status["formation_status"] != "paired_live_rollout_reviewed_negative":
+    if status["formation_status"] != "paired_live_rollout_pending":
         fail("formation status is stale")
-    if status["harm_status"] != "paired_component_rollout_pending":
+    if status["harm_status"] != "paused_until_phase1_live_dialogue":
         fail("harm component status is stale")
     if status["integrated_end_to_end_status"] != "not_established":
         fail("integrated status is stale")
     if (
         status["current_gate_revision"]
-        != "propensity-opportunity-v29"
+        != "propensity-opportunity-v30"
         or status["permissions_revision"]
-        != "propensity-opportunity-v41"
+        != "propensity-opportunity-v42"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {

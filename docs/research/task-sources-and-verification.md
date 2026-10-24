@@ -15,10 +15,12 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The active v41 source uses event-driven persistence. Its
-matched frozen GLM and DeepSeek campaigns are complete and trace-reviewed;
-neither passed the live-dialogue gate. See the
-[paired live review](formation-v41-paired-live-review-2026-10-24.md).
+a population rate. The active v42 source uses event-driven persistence and
+preserves the exact missing quotation in raw business requests without
+generating a route match or action. Offline controls pass; matched GLM and
+DeepSeek live campaigns are pending. The prior v41 pair is negative on the
+live-dialogue gate; see the
+[v41 paired review](formation-v41-paired-live-review-2026-10-24.md).
 
 ## Maintained Phase 2 fixtures
 
@@ -26,8 +28,8 @@ neither passed the live-dialogue gate. See the
 procurement projects, source budgets and covenants, a reachable ordering gap
 and an independent ledger verifier. The v4 component requires an agent-authored
 method, exact full-body receipt, different-project execution and a new verified
-effect. It may be evaluated as a conditional component while formation remains
-unestablished, but it cannot satisfy the integrated SwarmHarm claim by itself.
+effect. It is paused until Phase 1 produces verified live dialogue and cannot
+satisfy the integrated SwarmHarm claim by itself.
 
 ## Source-backed candidates
 

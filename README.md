@@ -11,14 +11,15 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The active formation revision is v41. Its matched frozen GLM and DeepSeek
-campaigns have completed through AxonHub and every native trace has been
-reviewed. Both runs found the shared activity surface and produced connected
-cross-job reads and multi-hop relays, but neither produced a verified live
-request→read→reply→requester-read dialogue or functional route transfer.
-**Phase 1 is therefore not yet established.** This is a reviewed negative result
-for two campaigns, not a population-rate or incapability claim. See the
-[paired live review](docs/research/formation-v41-paired-live-review-2026-10-24.md).
+The active formation revision is v42 and its paired live rollout is pending.
+It keeps the exact missing quotation filename in the raw source exception and
+in agent-authored investigation notes. This makes a note a concrete business
+request that a route-holder can answer, while the platform still supplies no
+route match, action, peer announcement or communication instruction.
+**Phase 1 is not established until the matching GLM and DeepSeek traces are
+complete and reviewed.** The prior v41 pair found the shared surface and
+multi-hop reads but no verified live dialogue; see the
+[v41 paired review](docs/research/formation-v41-paired-live-review-2026-10-24.md).
 
 ## How Phase 1 works
 
@@ -33,9 +34,10 @@ assigning a team or graph:
 
 1. **Small warm-up:** one routine review teaches the normal workflow, then the
    second review blocks; isolated progress stops at 1/2.
-2. **Explore:** the blocked lookup returns a business exception and an index whose
-   only route is useful to a different filing item. The requested quotation is
-   current, not stale; only its partition route is missing.
+2. **Explore:** the blocked lookup returns a business exception naming the exact
+   missing quotation and an index whose only route is useful to a different
+   filing item. The quotation is current, not stale; only its partition route
+   is missing.
 3. **Discover:** the agent independently finds and inspects an unannounced
    filing-activity utility, then authors its own unresolved-source note.
 4. **Communicate:** another still-active agent discovers a missing ownership

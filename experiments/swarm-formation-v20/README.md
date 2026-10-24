@@ -30,14 +30,15 @@ submission. The index contains one exact route useful only
 to the next filing item; this job's route is held only by the previous job.
 Local verifier-accepted progress is therefore capped at 1/2.
 
-A failed lookup creates an ordinary supplier-source exception, marks the
-investigation context it still needs, and returns that business record's path.
+A failed lookup creates an ordinary supplier-source exception, preserves the
+exact missing quotation filename and returns that business record's path.
 A normal `filing_activity.py` utility exists in the workstation
 but is absent from the task, `PLATFORM.md` and update messages. The agent must
 discover and inspect it through ordinary workspace exploration or records
 produced by its own tool use. Once opened, it displays raw same-filing
-diagnostics and agent-authored notes with ordinary batch provenance. It gives
-no route match, next tool, prepared arguments or reply command. An agent must
+diagnostics and agent-authored notes with ordinary batch provenance. Notes
+preserve the requested filename, but the view gives no private-route match,
+next tool, prepared arguments or reply command. An agent must
 author its own request or generic follow-up and include any exact route it
 chooses to share. The requester must still search, read and verify the current
 source before submission.
@@ -87,11 +88,12 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The active v41 source uses event-driven persistence without goal continuation.
-Matching frozen GLM and DeepSeek campaigns completed through AxonHub. Both
-were capability-ready and discovered the shared activity surface; neither
-formed a verified live dialogue or transferred an exact route. Phase 1 did not
-pass. The full evidence boundary is recorded in the
+The active v42 source uses event-driven persistence without goal continuation.
+It changes one mechanism from v41: source exceptions and agent-authored notes
+now preserve the exact missing quotation filename, turning a status summary
+into a concrete business request without generating a match or action. Offline
+controls pass; matching GLM and DeepSeek live campaigns are pending. Phase 1
+remains unestablished. The prior v41 evidence boundary is recorded in the
 [paired live review](../../docs/research/formation-v41-paired-live-review-2026-10-24.md).
 
 ## Operational contract

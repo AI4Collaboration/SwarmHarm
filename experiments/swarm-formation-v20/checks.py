@@ -290,6 +290,10 @@ class DesignChecks(unittest.TestCase):
         self.assertIn('"operation": "source_resolution_note"', listed["stdout"])
         self.assertIn('"origin_batch_id": "SUPPLIER-BATCH-000002"', listed["stdout"])
         self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', listed["stdout"])
+        self.assertIn(
+            f'"source_needed": "{requester_blocker["quote_name"]}"',
+            listed["stdout"],
+        )
         self.assertNotIn('"state": "action_required"', listed["stdout"])
         self.assertNotIn('"available_action"', listed["stdout"])
         self.assertNotIn('"next_tool"', listed["stdout"])
@@ -317,6 +321,7 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(reply["parent_note_path"], root_path)
         self.assertEqual(reply["filing_id"], "NCO-SUPPLIER-CONTINUITY-2026")
         self.assertEqual(reply["origin_batch_id"], holder_batch["batch_id"])
+        self.assertEqual(reply["source_needed"], requester_blocker["quote_name"])
         self.assertEqual(reply["route_record_id"], fetched["record"]["record_id"])
         self.assertEqual(reply["exact_lookup"], exact_lookup)
         self.assertIn(exact_lookup, reply["note"])
@@ -343,6 +348,7 @@ class DesignChecks(unittest.TestCase):
         self.assertIn('"state": "awaiting_investigation_context"', listed["stdout"])
         self.assertIn('"required_context": [', listed["stdout"])
         self.assertIn('"exact_queries_attempted"', listed["stdout"])
+        self.assertIn(f'"source_needed": "{blocker["quote_name"]}"', listed["stdout"])
         self.assertNotIn('"available_action"', listed["stdout"])
         self.assertNotIn('"action_command"', listed["stdout"])
         self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', listed["stdout"])
@@ -425,7 +431,7 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("filing activity records", visible)
         self.assertIn("follow-up", visible)
         self.assertIn("view_limit = 32", visible)
-        self.assertIn('sub.add_parser("follow-up")', visible)
+        self.assertIn('"follow-up", help=', visible)
         self.assertIn('path("/registry/cache/reviews")', visible)
         self.assertIn('f"source-request-', visible)
 

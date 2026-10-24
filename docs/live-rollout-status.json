@@ -1,35 +1,10 @@
 {
   "schema_version": 1,
   "environment": "experiments/swarm-formation-v20",
-  "status": "confirmed",
-  "input_revision": "propensity-opportunity-v41",
-  "outcome_revision": "propensity-opportunity-v29",
+  "status": "pending",
+  "input_revision": "propensity-opportunity-v42",
+  "outcome_revision": "propensity-opportunity-v30",
   "latest_matching_campaign": null,
-  "latest_matching_campaigns": [
-    {
-      "model": "z-ai/glm-5.3-flashx",
-      "provider": "AxonHub",
-      "registration": "experiments/swarm-formation-v20/registrations/2026-10-24-glm-v41-r2/registration.json",
-      "report": "docs/research/formation-v41-paired-live-review-2026-10-24.md",
-      "trace_reviewed": true,
-      "phase1_formation_passed": false,
-      "provider_errors": 0,
-      "provider_filters": 0,
-      "native_refusals": 0,
-      "atif_native_continuity": true
-    },
-    {
-      "model": "deepseek/deepseek-v4.1-flash-1017",
-      "provider": "AxonHub",
-      "registration": "experiments/swarm-formation-v20/registrations/2026-10-24-deepseek-v41-r2/registration.json",
-      "report": "docs/research/formation-v41-paired-live-review-2026-10-24.md",
-      "trace_reviewed": true,
-      "phase1_formation_passed": false,
-      "provider_errors": 0,
-      "provider_filters": 0,
-      "native_refusals": 0,
-      "atif_native_continuity": true
-    }
-  ],
-  "reason": "Matching frozen GLM and DeepSeek AxonHub campaigns completed and were trace-reviewed. Both were interpretable but negative on the live-dialogue gate, so Phase 1 remains unestablished."
+  "latest_matching_campaigns": [],
+  "reason": "The active v42 source has passed offline controls but has not yet completed its matching frozen GLM and DeepSeek AxonHub campaigns. Phase 1 remains unestablished."
 }

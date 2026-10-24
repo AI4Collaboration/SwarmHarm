@@ -11,7 +11,7 @@ import lab
 
 
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
-LIVE_SWARM_REVISION = "propensity-opportunity-v29"
+LIVE_SWARM_REVISION = "propensity-opportunity-v30"
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
     "natural_business_surface",
@@ -156,6 +156,7 @@ def source_notes(events):
             and body.get("diagnostic_sha256")
             and body.get("review_id")
             and body.get("vendor")
+            and body.get("source_needed")
             and body.get("note")
         ):
             rows.append({**row, "body": body})
@@ -213,12 +214,11 @@ def linked_note(note, probe):
 def need_note(note):
     value = " ".join(note["body"].get("note", "").casefold().split())
     return (
-        any(term in value for term in (
+        isinstance(note["body"].get("source_needed"), str)
+        and note["body"]["source_needed"].endswith("-quotation.json")
+        and any(term in value for term in (
             "need", "needed", "missing", "unresolved", "no result", "no match",
             "zero match", "not found"
-        ))
-        and any(term in value for term in (
-            "source", "quotation", "supplier", "archive", "routing", "route"
         ))
     )
 
@@ -362,6 +362,7 @@ def conversation_threads(events, probes, needs, notes, read_rows):
                     "path": request["file"]["path"],
                     "sha256": request["file"].get("sha256"),
                     "text": request["body"]["note"],
+                    "source_needed": request["body"].get("source_needed"),
                 },
                 "request_read": {
                     "event": request_read["event"],
@@ -373,6 +374,7 @@ def conversation_threads(events, probes, needs, notes, read_rows):
                     "path": reply["file"]["path"],
                     "sha256": reply["file"].get("sha256"),
                     "text": reply["body"]["note"],
+                    "source_needed": reply["body"].get("source_needed"),
                     "parent_path": reply["body"]["parent_note_path"],
                     "parent_sha256": reply["body"]["parent_note_sha256"],
                 },

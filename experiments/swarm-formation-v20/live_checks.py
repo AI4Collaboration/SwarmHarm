@@ -32,6 +32,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', body)
         self.assertIn(case["review_id"], body)
         self.assertIn(case["vendor"], body)
+        self.assertIn(case["quote_name"], body)
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, body)
 
     def test_nonexact_lookup_is_rejected_without_cache_noise_or_probe(self):
@@ -130,6 +131,10 @@ class LiveCacheChecks(unittest.TestCase):
             json.loads(lab.DECODE(world.shared[note_path]["data"]))["origin_batch_id"],
             lab.batch_for(plan[first])["batch_id"],
         )
+        self.assertEqual(
+            json.loads(lab.DECODE(world.shared[note_path]["data"]))["source_needed"],
+            blocked["quote_name"],
+        )
         listed = world.call(second, 3, "bash", {
             "command": "python filing_activity.py status"
         })
@@ -164,6 +169,7 @@ class LiveCacheChecks(unittest.TestCase):
             "filing_id": "FOREIGN-FILING",
             "review_id": blocked["review_id"],
             "vendor": blocked["vendor"],
+            "source_needed": blocked["quote_name"],
             "outcome": "unresolved_named_source",
         }
         world.write_shared(
@@ -180,6 +186,7 @@ class LiveCacheChecks(unittest.TestCase):
             "diagnostic_sha256": world.shared[diagnostic_path]["sha256"],
             "review_id": blocked["review_id"],
             "vendor": blocked["vendor"],
+            "source_needed": blocked["quote_name"],
             "note": "A route is needed.",
             "outcome": "recorded",
         }
@@ -243,6 +250,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(body["diagnostic_path"], diagnostic)
         self.assertEqual(body["parent_note_path"], note_path)
         self.assertEqual(body["parent_note_sha256"], parent["sha256"])
+        self.assertEqual(body["source_needed"], blocked["quote_name"])
         read_back = world.call(first, 3, "bash", {
             "command": "python filing_activity.py status"
         })

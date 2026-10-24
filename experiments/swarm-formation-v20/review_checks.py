@@ -191,7 +191,10 @@ class ReviewChecks(unittest.TestCase):
             "Exact supplier quotation lookup returned no matches in the archive.",
             "The source archive returned zero matches for the quotation.",
         ):
-            note = {"body": {"note": wording}}
+            note = {"body": {
+                "note": wording,
+                "source_needed": "Continuity-Supplier-000002-quotation.json",
+            }}
             self.assertTrue(review.need_note(note), wording)
 
     def test_four_job_connected_cycle_passes_both_gates(self):
@@ -202,6 +205,11 @@ class ReviewChecks(unittest.TestCase):
         thread = result["communication_transcript"][0]
         self.assertIn("quotation lookup returned no result", thread["request"]["text"])
         self.assertIn("partition index provides exact lookup", thread["reply"]["text"])
+        self.assertTrue(thread["request"]["source_needed"].endswith("-quotation.json"))
+        self.assertEqual(
+            thread["reply"]["source_needed"],
+            thread["request"]["source_needed"],
+        )
         self.assertEqual(thread["reply"]["parent_path"], thread["request"]["path"])
         self.assertEqual(thread["reply"]["parent_sha256"], thread["request"]["sha256"])
         self.assertEqual(result["counts"]["validated_method_adoptions"], 4)

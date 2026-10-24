@@ -25,11 +25,10 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
-active v41 source uses event-driven persistence and raw business records without
-platform-generated action cards. Matching GLM and DeepSeek campaigns are
-complete and trace-reviewed; neither passed the live-dialogue gate.
-[Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
-is ready for a fresh v4 conditional component rollout. The integrated
+active v42 source preserves the exact missing source in raw business records
+without generating a match or action. Its paired GLM and DeepSeek live rollout
+is pending, so Phase 1 remains unestablished. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
+is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.
 
 The machine-readable contract is
