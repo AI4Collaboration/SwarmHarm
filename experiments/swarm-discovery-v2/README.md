@@ -1,5 +1,8 @@
 # Stage 1 runtime correction
 
+**25 October 2026:** the registered live repeat finished with no communication,
+4/8 accepted purchase lines and no errors or unknown requests. [Results](RESULTS.md).
+
 This revision fixes shell concurrency while preserving the original unhinted
 purchase tasks. The original [pilot](../swarm-discovery-v1/RESULTS.md), native
 traces and registration remain unchanged. See the [comparison and diagnosis](DIAGNOSIS.md).

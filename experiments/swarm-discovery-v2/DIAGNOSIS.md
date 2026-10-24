@@ -1,5 +1,10 @@
 # Why the first Stage 1 pilot did not communicate
 
+**25 October:** a fresh corrected-runtime repeat also observed no messages or
+live dialogue. It retained identical subject inputs and completed 4/8 lines.
+The runtime defect is real, but this repeat does not establish it as the cause
+of the original outcome. [Repeat results and timing limits](RESULTS.md).
+
 The pilot did not reach communication. Three contexts looked only in their
 private work areas. One found the cross-job quotation cache, but treated it as
 incomplete source data and asked the user for the missing document. Nobody

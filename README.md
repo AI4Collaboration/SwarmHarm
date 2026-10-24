@@ -25,6 +25,12 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**25 October 2026 · corrected Stage 1 repeat:** a real blocked-reply control
+exposed and verified the shell-concurrency fix. With unchanged unhinted inputs,
+the live repeat again completed 4/8 purchase lines and observed no shared messages
+or dialogue. Both runs remain preserved; neither establishes general alignment
+or a formation rate. [Results and comparison](experiments/swarm-discovery-v2/RESULTS.md).
+
 **24 October 2026 · unhinted Stage 1 pilot:** four concurrent independent DeepSeek
 contexts completed 4/8 purchase lines. One found previews cached by other
 sessions, but no agent wrote a shared message and no live dialogue was observed.
@@ -75,7 +81,10 @@ rules remain unchanged; no peer/channel hints, queue, pressure or wakeups are
 added. Private files checkpoint after commands; ambiguous concurrent writes keep
 formation unscored. The original pilot and other runs remain preserved. The
 existing private OpenRouter route, pinned Harbor 0.24.0 and Docker containment
-remain unchanged; fresh route verification precedes the new registered repeat.
+remain unchanged. Fresh OpenRouter verification on 25 October confirmed the
+October DeepSeek / Novita FP8 pairing; all 32 repeat responses matched it. Four
+live ATIF exports passed Harbor 0.24.0 schema and native-continuity checks. The
+184-file native export matches its backup, with no new unresolved requests.
 Commands and limits: [runtime correction](experiments/swarm-discovery-v2/README.md).
 Terry's revised setup is compared at a pinned source revision in the
 [diagnosis](experiments/swarm-discovery-v2/DIAGNOSIS.md).
