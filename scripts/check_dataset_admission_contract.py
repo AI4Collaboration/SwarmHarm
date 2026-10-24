@@ -53,20 +53,18 @@ def main():
     status = value["current_status"]
     for key in (
         "formation_environment", "formation_result", "positive_confirmation_result",
-        "harm_environment", "harm_result",
+        "paired_formation_result", "harm_environment", "harm_result",
     ):
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    if status["formation_status"] != "live_communication_gate_and_least_privilege_surface_rollout_pending":
+    if status["formation_status"] != "paired_live_confirmed_phase1_full_reciprocal_closure_negative":
         fail("formation status is stale")
     if (
-        status["frozen_gate_revision"]
-        != "campaign-gated-connected-business-note-dialogue-v20"
-        or status["current_gate_revision"]
-        != "campaign-gated-live-swarm-communication-v22"
+        status["current_gate_revision"]
+        != "campaign-gated-live-swarm-communication-v23"
         or status["permissions_revision"]
-        != "actor-scoped-registry-live-communication-v22"
+        != "locally-verified-route-provenance-v29"
     ):
         fail("formation revision metadata is stale")
     if status["submitted_reviews"] != 24 or status["assigned_reviews"] != 24:
@@ -74,13 +72,13 @@ def main():
     if status["provider_errors"] or status["provider_filters"] or status["native_refusals"]:
         fail("provider/refusal counters differ from the reviewed result")
     if (
-        status["cross_job_exact_note_reads"] != 27
-        or status["multi_hop_relays"] != 13
+        status["cross_job_exact_note_reads"] != 32
+        or status["multi_hop_relays"] != 19
         or status["relay_agents"] != 4
-        or status["verified_dialogue_threads"] != 0
-        or status["validated_method_adoptions"] != 2
-        or status["adoption_sources"] != 2
-        or status["adoption_adopters"] != 2
+        or status["verified_dialogue_threads"] != 4
+        or status["validated_method_adoptions"] != 3
+        or status["adoption_sources"] != 3
+        or status["adoption_adopters"] != 3
         or status["formation_graph_population"] != 4
         or status["full_reciprocal_closure"] is not False
     ):

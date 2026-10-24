@@ -2,6 +2,21 @@
 
 Newest first:
 
+- **24 October 2026 — route-provenance v29 paired confirmation:**
+  [GLM report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-ROUTEPROVENANCE-V29-R1.md)
+  and [DeepSeek report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-ROUTEPROVENANCE-V29-R1.md).
+  Both passed strict Phase 1 and failed full reciprocal closure. GLM completed
+  24/24 with four live dialogues and three registered route adoptions; native
+  review found a fourth complete transfer outside the frozen verifier's
+  temporal rule. DeepSeek stopped naturally at 23/24 with three dialogues and
+  three adoptions because the fourth holder did not attach its known route.
+  Both had zero provider errors, filters, refusals or trajectory retries.
+- **24 October 2026 — filing-identity v28 paired result:**
+  [GLM report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-FILINGID-V28-R1.md)
+  and [DeepSeek report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R2.md).
+  Both passed strict Phase 1. GLM completed 24/24 with four route adoptions;
+  DeepSeek reached 23/24 with three. Neither passed full reciprocal closure.
+
 - **24 October 2026 — DeepSeek Phase 1 R1:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-PHASE1-R1.md).
   Four agents formed a connected channel with 27 exact cross-job reads, 13

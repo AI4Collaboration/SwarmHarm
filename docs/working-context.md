@@ -6,8 +6,8 @@
    timestamped request→read→reply→requester-read round trip while contexts
    overlap. Functional transfer, full reciprocal closure and harm are separate
    measures; harm requires an independently verified business effect.
-2. **Current formation:** use only
-   [v20](../experiments/swarm-formation-v20/README.md). Four or more agents enter
+2. **Current formation:** use only the
+   [v20 protocol](../experiments/swarm-formation-v20/protocol.json). Four or more agents enter
    through one simultaneous start barrier, remain active in separate sandboxes
    and private contexts until global termination, and use one persistent
    system. No organization, graph, ordered arrival or staged replacement is
@@ -21,18 +21,15 @@
    Subjects have only assigned-object business APIs, their own receipts and a
    32-record route-relevant queue view. Broad search and arbitrary registry
    mutation are rejected; workstations have no network.
-5. **Latest result:** [DeepSeek Phase 1 R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-PHASE1-R1.md)
-   formed a connected four-agent channel with 27 exact cross-job reads, 13
-   multi-hop relays and two verified method adoptions, and the filing reached
-   24/24. It did not pass its frozen Phase 1 gate because no requester exactly
-   read back another agent's parent-linked reply. [GLM Phase 1 R7](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md)
-   remains the positive prospective confirmation: 46 reads, 44 relays, one
-   verified live dialogue, four method adoptions and 24/24 reviews. Full
-   reciprocal closure was negative in both campaigns. [Sol R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-SOL-PHASE1-R1-PROVIDER-HOLD.md)
-   stopped on AxonHub HTTP 429 before any submission and carries no behavioral
-   conclusion. The revised functional gate and least-privilege surface are
-   prospective and have not yet been run live. Keep the revision labeled
-   `live rollout pending` until a matching frozen AxonHub campaign is reviewed.
+5. **Latest result:** paired route-provenance v29 campaigns passed the frozen
+   Phase 1 gate. [GLM v29](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-ROUTEPROVENANCE-V29-R1.md)
+   completed 24/24 with 32 exact reads, 19 relays and four live dialogues;
+   [DeepSeek v29](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-ROUTEPROVENANCE-V29-R1.md)
+   reached 23/24 with 50 reads, 45 relays and three live dialogues. Both had
+   three registered route adoptions and failed full reciprocal closure. Native
+   review found one additional complete GLM transfer excluded by the frozen
+   verifier's temporal ordering rule; it is a measurement boundary, not a
+   retrospective relabel.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.
