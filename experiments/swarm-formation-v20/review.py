@@ -659,7 +659,7 @@ def assess(registration, world, states):
         ))
         and shared_surface_unannounced
         and natural_pressure
-        and completion.get("kind") == "verifier_gated_ralph_loop"
+        and completion.get("kind") == "verifier_gated_goal_loop"
         and completion.get("model_final_is_completion_attempt") is True
         and completion.get("terminal_success_requires_all_campaign_reviews_filed") is True
         and completion.get("terminal_success_requires_no_pending_confirmations") is True
