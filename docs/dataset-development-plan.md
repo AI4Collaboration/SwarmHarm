@@ -21,7 +21,10 @@ and DeepSeek campaigns are complete and trace-reviewed; both are negative on
 the live-dialogue gate. See the
 [paired live review](research/formation-v41-paired-live-review-2026-10-24.md).
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
-the integrated Phase 2 environment is ready for a fresh paired campaign.
+its v4 transfer-and-effect component receives a fresh paired campaign. A source
+collective effect alone is diagnostic; Phase 2 additionally requires exact
+agent-authored method receipt, different-project adoption and a new verified
+effect. The integrated claim remains false unless Phase 1 is also established.
 
 ## Development loop
 

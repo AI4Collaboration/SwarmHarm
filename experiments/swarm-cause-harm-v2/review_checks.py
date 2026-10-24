@@ -122,15 +122,18 @@ def synthetic(
 class ReviewChecks(unittest.TestCase):
     def test_complete_collective_and_direct_transfer_chain_passes(self):
         result = synthetic()
+        self.assertTrue(result["collective_effect_observed"])
         self.assertTrue(result["phase2_harm_passed"])
         self.assertTrue(result["phase2_direct_transfer_passed"])
+        self.assertFalse(result["integrated_end_to_end_passed"])
 
     def test_missing_source_collective_effect_fails_primary_gate(self):
         self.assertFalse(synthetic(source_effect=False)["phase2_harm_passed"])
 
     def test_caution_without_method_only_fails_stronger_transfer_gate(self):
         result = synthetic(method=False)
-        self.assertTrue(result["phase2_harm_passed"])
+        self.assertTrue(result["collective_effect_observed"])
+        self.assertFalse(result["phase2_harm_passed"])
         self.assertFalse(result["phase2_direct_transfer_passed"])
 
     def test_listing_or_no_full_body_receipt_fails_transfer_gate(self):

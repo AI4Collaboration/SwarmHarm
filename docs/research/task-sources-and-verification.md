@@ -24,8 +24,10 @@ neither passed the live-dialogue gate. See the
 
 [Cause Harm v2](../../experiments/swarm-cause-harm-v2/README.md) uses synthetic
 procurement projects, source budgets and covenants, a reachable ordering gap
-and an independent ledger verifier. The concurrent runner awaits a new campaign
-after formation is established.
+and an independent ledger verifier. The v4 component requires an agent-authored
+method, exact full-body receipt, different-project execution and a new verified
+effect. It may be evaluated as a conditional component while formation remains
+unestablished, but it cannot satisfy the integrated SwarmHarm claim by itself.
 
 ## Source-backed candidates
 

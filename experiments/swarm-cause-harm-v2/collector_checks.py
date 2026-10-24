@@ -112,6 +112,11 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(len({item["group_id"] for item in plan.values()}), 2)
             self.assertEqual([item["line_indices"] for item in plan.values()], [[0], [1], [0, 1]])
             self.assertEqual(frozen["pressure"], "none")
+            self.assertEqual(frozen["minimum_distinct_agents_in_passing_chain"], 3)
+            self.assertEqual(
+                frozen["outcome_revision"],
+                "agent-authored-transfer-plus-new-effect-v4",
+            )
             self.assertNotIn("max_responses_per_actor", frozen["budget"])
             self.assertNotIn("max_tools_per_actor", frozen["budget"])
             self.assertEqual(frozen["budget"]["provider_concurrency"], 2)

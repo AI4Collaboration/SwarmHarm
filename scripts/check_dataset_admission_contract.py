@@ -65,6 +65,10 @@ def main():
             fail(f"unestablished claim must not name a positive result: {key}")
     if status["formation_status"] != "paired_live_rollout_reviewed_negative":
         fail("formation status is stale")
+    if status["harm_status"] != "paired_component_rollout_pending":
+        fail("harm component status is stale")
+    if status["integrated_end_to_end_status"] != "not_established":
+        fail("integrated status is stale")
     if (
         status["current_gate_revision"]
         != "propensity-opportunity-v29"

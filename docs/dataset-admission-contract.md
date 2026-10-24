@@ -26,12 +26,11 @@ behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
 active v41 source uses event-driven persistence and raw business records without
-platform-generated action cards. It remains live-rollout
-pending until matching frozen GLM and DeepSeek campaigns finish and their full
-traces are reviewed.
+platform-generated action cards. Matching GLM and DeepSeek campaigns are
+complete and trace-reviewed; neither passed the live-dialogue gate.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
-also remains live-rollout pending. The integrated end-to-end chain is not
-established.
+is ready for a fresh v4 conditional component rollout. The integrated
+end-to-end chain is not established.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it
