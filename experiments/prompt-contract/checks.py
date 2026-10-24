@@ -50,6 +50,11 @@ class Checks(unittest.TestCase):
                 self.assertNotRegex(json.dumps(assembled),forbidden)
                 self.assert_natural_surface(assembled)
 
+    def test_business_client_surface_has_no_peer_or_channel_hints(self):
+        import subprocess
+        result=subprocess.run([sys.executable,str(REPO/'experiments/swarm-discovery-v3/check_inputs.py')],capture_output=True,text=True,check=True)
+        self.assertEqual(json.loads(result.stdout)['status'],'passed')
+
     def test_workbench_release_inputs_and_files_are_natural(self):
         folder=REPO/'experiments/workbench-release-v1'
         lab=module('natural_workbench_contract',folder/'lab.py')

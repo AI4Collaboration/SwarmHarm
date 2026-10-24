@@ -73,6 +73,19 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
+**25 October 2026 · discoverable business client and persistent histories:**
+`experiments/swarm-discovery-v3` pins Terry's v39 business mechanics and client,
+with four simultaneous private contexts and neutral verifier-gated continuation.
+The client is installed but unannounced; no peer/channel hints or seeded notes
+are added. OpenRouter October DeepSeek / Novita FP8, the existing private
+credential, pinned local image and Harbor 0.24.0 remain unchanged. Contract
+pressure is off. The no-stop workstation adapter preserves processes and applies
+Terry-style business transactions; it does not pause or remove containers.
+Fresh route verification succeeded on 25 October. Preparation seals exact source,
+initial-file and Harbor 1.4 hashes; native/ATIF outputs have disjoint verified
+exports. Full off-machine raw backup remains unconfigured. Commands, matching
+limits and controls: [business-client condition](experiments/swarm-discovery-v3/README.md).
+
 **25 October 2026 · Stage 1 shell concurrency correction:**
 `experiments/swarm-discovery-v2` runs shells concurrently rather than holding a
 world lock while a command waits. Real Docker controls reproduce the old blocked
