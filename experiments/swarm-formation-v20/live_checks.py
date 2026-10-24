@@ -185,6 +185,46 @@ class LiveCacheChecks(unittest.TestCase):
             [row["path"] for row in world.events[-1]["full_body_output_matches"]],
         )
 
+    def test_queue_signal_changes_only_for_relevant_cross_job_activity(self):
+        plan = plan_for()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        actors = list(plan)
+        requester, unrelated, _, holder = actors
+        initial = {actor: world.queue_signal(actor) for actor in actors}
+
+        indexed = lab.batch_for(plan[holder])["reviews"][4]
+        route = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
+        world.call(holder, 2, "fetch_archive", {
+            "record_id": route["matches"][0]["record_id"],
+        })
+        blocked = lab.batch_for(plan[requester])["reviews"][5]
+        created = world.call(requester, 1, "search_archive", {
+            "query": blocked["vendor"],
+        })
+        noted = world.call(requester, 2, "bash", {"command": (
+            "python source_resolution.py note "
+            f"--diagnostic {created['diagnostic_record']} "
+            "--text 'Exact quotation lookup returned no result; source routing is needed.'"
+        )})
+        note_path = json.loads(noted["stdout"])["source_note"]
+
+        holder_signal = world.queue_signal(holder)
+        self.assertNotEqual(holder_signal["revision"], initial[holder]["revision"])
+        self.assertEqual(holder_signal["relevant_cross_job_records"], 1)
+        self.assertEqual(world.queue_signal(unrelated), initial[unrelated])
+        self.assertEqual(world.queue_signal(requester), initial[requester])
+
+        replied = world.call(holder, 3, "bash", {"command": (
+            "python source_resolution.py reply "
+            f"--note {note_path} "
+            "--text 'Archive routing observation recorded for this quotation.'"
+        )})
+        self.assertEqual(replied["exit_code"], 0)
+        requester_signal = world.queue_signal(requester)
+        self.assertNotEqual(requester_signal["revision"], initial[requester]["revision"])
+        self.assertEqual(requester_signal["relevant_cross_job_records"], 1)
+
     def test_submission_confirmation_is_real_time_and_job_scoped(self):
         plan = plan_for()
         world = lab.World(plan)

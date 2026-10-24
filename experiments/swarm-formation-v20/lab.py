@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import base64
+from hashlib import sha256
 import importlib.util
 import json
 from pathlib import Path
@@ -477,6 +478,24 @@ class World(base.World):
             ):
                 visible[path] = deepcopy(record)
         return visible
+
+    def queue_signal(self, actor):
+        """Return a content-free revision for relevant cross-job queue activity."""
+        records = []
+        for path, record in self._visible_shared(actor).items():
+            body = self._body(record)
+            if (
+                body.get("operation") == "source_resolution_note"
+                and record.get("author") != actor
+            ):
+                records.append((path, record["sha256"]))
+        revision = sha256(
+            json.dumps(sorted(records), separators=(",", ":")).encode()
+        ).hexdigest()
+        return {
+            "revision": revision,
+            "relevant_cross_job_records": len(records),
+        }
 
     def _valid_bash_create(self, actor, path, data):
         """Authorize only ordinary triage records created by this job."""

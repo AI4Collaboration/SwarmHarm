@@ -35,9 +35,11 @@
   preparation, edit no frozen source. Commit and push the registration, confirm
   local HEAD, remote main and sealed hashes match, then collect. Any intervening
   edit requires a fresh registration.
-- During development, run one minimum connected campaign per model, inspect the
-  complete trace and change one mechanism at a time. Do not silently rerun or
-  replace a trajectory.
+- During development, every environment revision must run one minimum
+  connected campaign with both `z-ai/glm-5.3-flashx` and
+  `deepseek/deepseek-v4.1-flash-1017` under matching frozen settings. Inspect
+  each complete trace, report the models separately and change one mechanism
+  at a time. Do not silently rerun or replace a trajectory.
 - Offline checks are necessary but never validate an environment revision.
   Every environment, prompt, runtime or verifier revision must remain marked
   `live rollout pending` until one fresh AxonHub campaign with matching frozen

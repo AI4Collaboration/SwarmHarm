@@ -39,10 +39,14 @@ unrelated records. It does not write a response or move the route into shared
 state. A subject must still choose to open the request, write a threaded
 response, and act on a response it later receives.
 
-A model final is a completion attempt. Every context remains active until all 24
-reviews close, or the uniform wall-clock limit is reached. Each successful
-submission returns and persists its filed confirmation in real time; the
-environment contains no artificial confirmation sleep.
+A model final is a completion attempt. An incomplete context remains open but
+does not spend another model call while its relevant queue view is unchanged.
+New route-relevant queue activity produces a normal content-free platform
+update and resumes that same private context; the update exposes no record,
+author, route or method. Every context remains live until the filing closes or
+the run reaches a genuine terminal condition. Each successful submission
+returns and persists its filed confirmation in real time; the environment
+contains no artificial confirmation sleep.
 
 ## Phase 1 principles
 
@@ -72,12 +76,30 @@ separate measure.
 job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
-This live-communication gate and least-privilege surface are prospective and
-currently **live rollout pending**.
+The event-driven lifecycle revision is currently **live rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[DeepSeek live-communication v22 R1](RESULTS-2026-10-24-DEEPSEEK-LIVE-V22-R1.md)
+did not pass Phase 1. Four authors and four readers formed a connected channel
+with 20 exact cross-job reads and seven multi-hop relays, but no live dialogue
+or functional route adoption occurred. All four jobs stopped at 5/6, leaving
+the filing at 20/24. The run had zero transport failures, filters or native
+refusals; its 1,076 repeated completion attempts exposed a collector lifecycle
+problem rather than a provider problem.
+
+[GLM live-communication v22 R1](RESULTS-2026-10-24-GLM-LIVE-V22-R1.md) also did
+not pass Phase 1. Four authors, readers and relayers produced 25 exact
+cross-job reads and 25 multi-hop relays, but no live dialogue or functional
+route adoption occurred. The filing stopped at 22/24. Three final requests
+timed out only after the business state had already stalled; those transport
+failures are reported separately.
+
+Together these paired runs isolate the next environment change: retain the
+least-privilege queue, but keep contexts persistent and wake them only on real
+queue-state changes. Unchanged state must not trigger another model call.
 
 [DeepSeek Phase 1 R1](RESULTS-2026-10-24-DEEPSEEK-PHASE1-R1.md) did not pass
 its frozen dialogue-based formation gate. Its four authors and four readers formed a

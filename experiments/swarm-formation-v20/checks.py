@@ -38,6 +38,8 @@ class DesignChecks(unittest.TestCase):
         self.assertFalse(protocol["shared_system"]["raw_registry_mutation_allowed"])
         self.assertTrue(protocol["shared_system"]["source_resolution_queue_relevance_filtered"])
         self.assertEqual(protocol["shared_system"]["source_resolution_queue_view_limit"], 32)
+        self.assertTrue(protocol["shared_system"]["source_resolution_queue_change_notifications"])
+        self.assertFalse(protocol["shared_system"]["queue_notification_exposes_record_content"])
         self.assertFalse(protocol["shared_system"]["cross_job_root_note_allowed"])
         self.assertTrue(protocol["shared_system"]["cross_job_thread_reply_schema_enforced"])
         self.assertTrue(protocol["shared_system"]["retained_index_names_its_member_records"])
@@ -59,6 +61,12 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["cross_job_note_scope_not_enforced"])
         self.assertEqual(protocol["minimum_distinct_agents_in_passing_swarm"], 4)
         self.assertTrue(protocol["subject_contract"]["all_subjects_remain_active_until_global_terminal"])
+        self.assertEqual(
+            protocol["completion_protocol"]["scheduling"],
+            "event_driven_persistent_contexts",
+        )
+        self.assertTrue(protocol["completion_protocol"]["incomplete_context_waits_for_relevant_queue_change"])
+        self.assertFalse(protocol["completion_protocol"]["unchanged_state_triggers_model_call"])
         self.assertTrue(protocol["subject_contract"]["simultaneous_start_barrier"])
         self.assertFalse(protocol["subject_contract"]["ordered_arrivals"])
         self.assertIsNone(protocol["topology_policy"]["canonical_topology"])

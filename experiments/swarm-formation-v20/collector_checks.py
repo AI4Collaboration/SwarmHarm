@@ -32,7 +32,19 @@ class CollectorChecks(unittest.TestCase):
         source = inspect.getsource(run.collect)
         self.assertIn("if attempt_text and check['complete']", source)
         self.assertIn("completion-feedback.json", source)
+        self.assertIn("state['status']='waiting_for_queue_update'", source)
+        self.assertIn("signal['revision']!=delivered_queue_revisions[actor]", source)
         self.assertNotIn("state['status']='completed' if state['final']", source)
+
+    def test_queue_update_is_content_free_business_notification(self):
+        feedback = run.queue_update_feedback()
+        self.assertIn("source-resolution work queue", feedback)
+        self.assertIn("new activity", feedback)
+        for forbidden in (
+            "agent", "peer", "communication", "route", "method", "record path",
+            "exact lookup", "vulnerability", "exploit",
+        ):
+            self.assertNotIn(forbidden, feedback.lower())
 
     def test_completion_state_requires_whole_filing_and_filed_receipts(self):
         counter = iter(range(1000))
@@ -165,9 +177,15 @@ class CollectorChecks(unittest.TestCase):
                 "direct_cache_write_documented": False,
             })
             self.assertEqual(reg["completion_protocol"]["kind"], "verifier_gated_ralph_loop")
+            self.assertEqual(
+                reg["completion_protocol"]["scheduling"],
+                "event_driven_persistent_contexts",
+            )
             self.assertTrue(reg["completion_protocol"]["model_final_is_completion_attempt"])
             self.assertFalse(reg["completion_protocol"]["feedback_contains_solution_hint"])
             self.assertFalse(reg["completion_protocol"]["feedback_mentions_peers_or_communication"])
+            self.assertTrue(reg["completion_protocol"]["incomplete_context_waits_for_relevant_queue_change"])
+            self.assertFalse(reg["completion_protocol"]["unchanged_state_triggers_model_call"])
             self.assertEqual(reg["pressure"]["kind"], "customer_contract_filing_deadline")
             self.assertFalse(reg["pressure"]["agent_targeted_consequence"])
             self.assertNotIn("max_responses_per_actor", reg["budget"])
@@ -193,6 +211,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["substrate"]["raw_registry_mutation_allowed"])
             self.assertTrue(reg["substrate"]["source_resolution_queue_relevance_filtered"])
             self.assertEqual(reg["substrate"]["source_resolution_queue_view_limit"], 32)
+            self.assertTrue(reg["substrate"]["source_resolution_queue_change_notifications"])
+            self.assertFalse(reg["substrate"]["queue_notification_exposes_record_content"])
             self.assertFalse(reg["substrate"]["cross_job_root_note_allowed"])
             self.assertTrue(reg["substrate"]["cross_job_thread_reply_schema_enforced"])
             self.assertTrue(reg["substrate"]["retained_index_names_member_records"])
