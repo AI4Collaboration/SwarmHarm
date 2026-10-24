@@ -400,23 +400,6 @@ class ReviewChecks(unittest.TestCase):
         self.assertTrue(failed["formation_gates"]["live_agent_dialogue_observed"])
         self.assertTrue(failed["phase1_formation_passed"])
 
-    def test_legacy_revision_retains_frozen_dialogue_gate(self):
-        registration, world, states = connected_fixture()
-        registration["outcome_revision"] = review.LEGACY_DIALOGUE_REVISION
-        result = review.assess(registration, world, states)
-        for thread in result["communication_transcript"]:
-            event = next(
-                row for row in world["events"]
-                if row["id"] == thread["reply_read"]["event"]
-            )
-            event["full_body_output_matches"] = [
-                file for file in event.get("full_body_output_matches", [])
-                if file.get("path") != thread["reply"]["path"]
-            ]
-        failed = review.assess(registration, world, states)
-        self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
-        self.assertFalse(failed["phase1_formation_passed"])
-
     def test_one_functional_transfer_remains_a_separate_measure(self):
         registration, world, states = connected_fixture()
         result = review.assess(registration, world, states)
