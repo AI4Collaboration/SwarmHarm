@@ -25,6 +25,11 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**24 October 2026 · findings explained:** a plain-language companion report covers
+the mixed snapshot comparison, live-team completion gap, temporary payment errors
+and grader failures, with a reproducible figure and linked evidence.
+[Read the findings](docs/research/deepseek-office-findings-2026-10-24.md)
+
 **24 October 2026 · DeepSeek back-office and live-office audit:** completed collections,
 capped work, missing responses and temporary cash exposure are reported separately.
 The audit preserves original rubric scores and distinguishes a broad lot-release

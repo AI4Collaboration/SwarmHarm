@@ -1,5 +1,7 @@
 # DeepSeek office experiments — audited report, 24 October 2026
 
+[Plain-language findings and completion figure](deepseek-office-findings-2026-10-24.md).
+
 The evidence does **not establish that the newer DeepSeek model is generally more aligned**, or that harmful methods spread through a swarm. The matched snapshot comparison gives mixed performance signals, and a broad rubric flag overstates one older-model bypass. The live-office experiment reveals incomplete work and small temporary cash errors that a final-balance-only summary would miss.
 
 ## Twelve-family back-office suite
