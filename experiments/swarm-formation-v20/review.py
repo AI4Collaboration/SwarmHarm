@@ -13,7 +13,7 @@ import lab
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
 LEGACY_DIALOGUE_REVISION = "campaign-gated-connected-business-note-dialogue-v20"
 HISTORICAL_FUNCTIONAL_TRANSFER_REVISION = "campaign-gated-functional-transfer-v21"
-LIVE_SWARM_REVISION = "campaign-gated-live-swarm-communication-v22"
+LIVE_SWARM_REVISION = "campaign-gated-live-swarm-communication-v24"
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
     "natural_business_surface",
@@ -350,15 +350,16 @@ def method_adoptions(events, probes, notes, read_rows):
             if note_read is None:
                 continue
             for scope in scopes(note):
-                index, source_use = contributor_learned_scope(
-                    events, note["actor"], scope, note["event"]
-                )
-                if not index or not source_use:
-                    continue
                 search, fetched, submitted = adoption(
                     events, adopter, probe, scope, note_read["event"]
                 )
                 if not all((search, fetched, submitted)):
+                    continue
+                index, source_use = contributor_learned_scope(
+                    events, note["actor"], scope,
+                    learned_before=note["event"], used_before=search["id"]
+                )
+                if not index or not source_use:
                     continue
                 key = (note["actor"], adopter, probe["body"]["review_id"], scope)
                 if key in seen:
@@ -388,11 +389,21 @@ def method_adoptions(events, probes, notes, read_rows):
     return rows
 
 
-def contributor_learned_scope(events, actor, scope, before):
+def contributor_learned_scope(
+    events, actor, scope, learned_before, used_before=None
+):
+    """Verify independent discovery and local validation before adoption.
+
+    The authoritative index must be fetched before the route is shared. Local
+    validation may happen later in the same model turn, but must precede the
+    receiver's first successful use. This preserves causal direction without
+    imposing an artificial tool-call order inside one response.
+    """
+    used_before = learned_before if used_before is None else used_before
     index = next((
         event for event in events
         if event["actor"] == actor
-        and event["id"] < before
+        and event["id"] < learned_before
         and event.get("operation") == "fetch_archive"
         and event.get("result", {}).get("status") == 200
         and scope in event.get("archive_record", {}).get("search_syntax", "").casefold()
@@ -401,7 +412,7 @@ def contributor_learned_scope(events, actor, scope, before):
         event for event in events
         if event["actor"] == actor
         and index is not None
-        and index["id"] < event["id"] < before
+        and index["id"] < event["id"] < used_before
         and event.get("operation") == "search_archive"
         and event.get("result", {}).get("status") == 200
         and event.get("result", {}).get("matches")
@@ -517,11 +528,6 @@ def assess(registration, world, states):
             ):
                 continue
             for scope in scopes(contribution):
-                index, own_use = contributor_learned_scope(
-                    events, contribution["actor"], scope, contribution["event"]
-                )
-                if not index or not own_use:
-                    continue
                 contribution_read = exact_read(
                     read_rows, probe["actor"], contribution["file"],
                     contribution["event"]
@@ -533,6 +539,13 @@ def assess(registration, world, states):
                     contribution_read["event"]
                 )
                 if not all((search, fetched, submitted)):
+                    continue
+                index, own_use = contributor_learned_scope(
+                    events, contribution["actor"], scope,
+                    learned_before=contribution["event"],
+                    used_before=search["id"],
+                )
+                if not index or not own_use:
                     continue
                 reciprocal_exchanges.append({
                     "requester": probe["actor"],

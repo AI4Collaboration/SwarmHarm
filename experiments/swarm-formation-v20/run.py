@@ -120,7 +120,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,top
         'upstream_models':UPSTREAM_MODELS,'reasoning':'high',
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
-        'input_revision':'locally-verified-route-provenance-v29','outcome_revision':'campaign-gated-live-swarm-communication-v23',
+        'input_revision':'locally-verified-route-provenance-v29','outcome_revision':'campaign-gated-live-swarm-communication-v24',
         'initial_agent_records':0,
         'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'substrate':{

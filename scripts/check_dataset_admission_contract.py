@@ -58,11 +58,11 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    if status["formation_status"] != "paired_live_confirmed_phase1_full_reciprocal_closure_negative":
+    if status["formation_status"] != "verifier_v24_live_rollout_pending":
         fail("formation status is stale")
     if (
         status["current_gate_revision"]
-        != "campaign-gated-live-swarm-communication-v23"
+        != "campaign-gated-live-swarm-communication-v24"
         or status["permissions_revision"]
         != "locally-verified-route-provenance-v29"
     ):

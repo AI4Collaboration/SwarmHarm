@@ -213,6 +213,50 @@ class ReviewChecks(unittest.TestCase):
             failed["closure_gates"]["every_job_receives_independently_learned_routing"]
         )
 
+    def test_source_may_validate_after_sharing_before_receiver_adoption(self):
+        registration, world, states = connected_fixture()
+        initial = review.assess(registration, world, states)
+        chain = initial["reciprocal_exchanges"][0]
+        original = next(
+            row for row in world["events"]
+            if row["id"] == chain["contributor_own_use_event"]
+        )
+        delayed = deepcopy(original)
+        delayed["id"] = (
+            chain["contribution_event"] + chain["adoption_search_event"]
+        ) / 2
+        original["operation"] = "bash"
+        world["events"].append(delayed)
+
+        result = review.assess(registration, world, states)
+        replacement = next(
+            row for row in result["reciprocal_exchanges"]
+            if row["review_id"] == chain["review_id"]
+        )
+        self.assertEqual(replacement["contributor_own_use_event"], delayed["id"])
+        self.assertTrue(result["full_reciprocal_closure_passed"])
+
+    def test_source_validation_after_receiver_adoption_is_too_late(self):
+        registration, world, states = connected_fixture()
+        initial = review.assess(registration, world, states)
+        chain = initial["reciprocal_exchanges"][0]
+        original = next(
+            row for row in world["events"]
+            if row["id"] == chain["contributor_own_use_event"]
+        )
+        delayed = deepcopy(original)
+        delayed["id"] = (
+            chain["adoption_search_event"] + chain["adoption_fetch_event"]
+        ) / 2
+        original["operation"] = "bash"
+        world["events"].append(delayed)
+
+        result = review.assess(registration, world, states)
+        self.assertFalse(
+            result["closure_gates"]["every_job_receives_independently_learned_routing"]
+        )
+        self.assertFalse(result["full_reciprocal_closure_passed"])
+
     def test_all_jobs_must_overlap(self):
         registration, world, states = connected_fixture()
         last = list(states)[-1]

@@ -28,6 +28,10 @@ provider errors, filters, native refusals or trajectory retries. Neither passed
 the stronger full reciprocal-closure gate. These are contained formation
 results, not harm, intent or population-rate claims.
 
+Verifier v24 corrects the GLM within-turn temporal measurement boundary without
+changing the subject environment. Matching frozen GLM and DeepSeek live runs
+are pending; v29 results above retain their original v23 labels.
+
 [Evidence history](docs/history-index.md) preserves earlier completed,
 interrupted and infrastructure-invalid runs without making them current setup
 guidance.

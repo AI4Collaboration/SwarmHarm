@@ -30,6 +30,8 @@
    review found one additional complete GLM transfer excluded by the frozen
    verifier's temporal ordering rule; it is a measurement boundary, not a
    retrospective relabel.
+   Verifier v24 fixes that ordering prospectively and remains live-rollout
+   pending until matching frozen GLM and DeepSeek campaigns are reviewed.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.
