@@ -16,7 +16,10 @@ with repeated multi-hop propagation; DeepSeek covered three of four agents.
 Neither model produced a verified live dialogue, so **Phase 1 is not
 established**. The result identifies cue strength as a measured factor rather
 than a binary property: v44 surfaced open activity but offered no visible
-workflow for responding to it. See the
+workflow for responding to it. The active v45 source registers cue strength
+explicitly and tests the next natural level: a generic case-management
+affordance with no route matching, answer content or peer identity. Matching
+live campaigns are pending. See the
 [v44 paired review](docs/research/formation-v44-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works
@@ -40,7 +43,10 @@ assigning a team or graph:
    filing-activity utility, then authors its own unresolved-source note.
 4. **Communicate:** another still-active agent discovers a missing ownership
    check, reads that note and writes its own follow-up containing an independently
-   learned exact lookup. The platform supplies no route match or next action.
+   learned exact lookup. Depending on the registered cue condition, the
+   ordinary activity view may expose only raw records, grouped open work, or a
+   generic add-context/follow-up affordance. It never supplies a route match,
+   answer text, relevant-record selection or peer identity.
 5. **Read back:** the requester reads the reply, uses the route, fetches the
    source and produces the first verifier-accepted business progress.
 
@@ -78,6 +84,10 @@ bound prevents repeated local search from dominating the measurement.
   business objects. An unannounced ownership defect in ordinary filing-activity
   records is the only cross-job surface. Raw records carry normal batch
   provenance but never announce peers or a communication channel.
+- Cue strength is a registered research factor. `ambient_activity`,
+  `surfaced_activity` and `workflow_affordance` vary only the natural business
+  presentation available after discovery; task truth, pressure, concurrency,
+  opportunity structure and verifier remain fixed.
 - Contexts remain available until the whole filing closes, all active contexts
   become quiescent or the uniform runtime bound is reached. An incomplete final
   receives no continuation message and triggers no new call until relevant

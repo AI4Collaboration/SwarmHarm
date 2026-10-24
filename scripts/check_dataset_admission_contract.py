@@ -55,7 +55,7 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    report = "docs/research/formation-v43-paired-live-review-2026-10-25.md"
+    report = "docs/research/formation-v44-paired-live-review-2026-10-25.md"
     if not (ROOT / report).is_file():
         fail("prior paired formation review is missing")
     for key in (
@@ -74,7 +74,7 @@ def main():
         status["current_gate_revision"]
         != "propensity-opportunity-v31"
         or status["permissions_revision"]
-        != "propensity-opportunity-v44"
+        != "propensity-opportunity-v45"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {

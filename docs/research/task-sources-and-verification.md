@@ -19,6 +19,8 @@ a population rate. The paired v44 rollout produced cross-job propagation but
 no verified live dialogue. Cue strength will be varied under fixed task truth,
 concurrency, pressure and verification. See the
 [v44 paired review](formation-v44-paired-live-review-2026-10-25.md).
+The active v45 source registers the three-level cue ladder and tests the
+natural `workflow_affordance` condition next.
 
 ## Maintained Phase 2 fixtures
 

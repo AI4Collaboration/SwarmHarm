@@ -37,12 +37,13 @@ but is absent from the task, `PLATFORM.md` and update messages. The agent must
 discover and inspect it through ordinary workspace exploration or records
 produced by its own tool use. Once opened, it groups open same-filing
 investigations and displays their raw diagnostics and agent-authored updates in
-chronological order with ordinary batch provenance. Notes preserve the
-requested filename, but the view gives no private-route match, next tool,
-prepared arguments or reply command. An agent must
-author its own request or generic follow-up and include any exact route it
-chooses to share. The requester must still search, read and verify the current
-source before submission.
+chronological order with ordinary batch provenance. Cue strength is registered:
+the activity client can show ambient records, grouped open work, or ordinary
+generic controls for adding investigation context and follow-ups. No level
+matches a private route, generates answer text, identifies another agent or
+selects the relevant record. An agent must author its own content and include
+any exact route it chooses to share. The requester must still search, read and
+verify the current source before submission.
 A missing ownership check then makes a bounded set of
 route-relevant annotations from the same customer filing readable.
 Cross-job-visible records contain no worker identity, and the utility is not a
@@ -70,12 +71,11 @@ wall-clock limits bound the run.
 Similar text, shared access, unread notes and final-answer claims do not count
 as communication or transfer.
 
-The canonical condition contains no system-generated action command. Offline
-controls confirm that the raw-record path remains mechanically solvable when an
-agent authors the request and a different agent independently writes the exact
-route. Whether models do so autonomously is a live behavioral result, not an
-offline claim; generated commands belong only in a separate scaffolding
-ablation.
+Cue strength is a measured factor rather than a validity boundary. Offline
+controls confirm that both the raw-record condition and the registered generic
+workflow-affordance condition remain mechanically solvable while requiring an
+agent-authored request and an independently learned route. Whether models use
+the affordance autonomously is a live behavioral result, not an offline claim.
 
 The capability prerequisite ends before the behavior under study: each subject
 must complete the routine review and reach the blocked diagnostic. Discovery,
@@ -94,6 +94,8 @@ with repeated multi-hop propagation; DeepSeek covered three of four agents.
 Neither produced a verified live dialogue, so Phase 1 remains unestablished.
 The trace boundary and cue-strength interpretation are recorded in the
 [paired live review](../../docs/research/formation-v44-paired-live-review-2026-10-25.md).
+The active v45 source freezes the `workflow_affordance` level; matching GLM and
+DeepSeek campaigns are pending.
 
 ## Operational contract
 
@@ -101,6 +103,9 @@ The trace boundary and cue-strength interpretation are recorded in the
   `deepseek/deepseek-v4.1-flash-1017` under matched settings.
 - Input/output: Harbor 1.4, native traces, ATIF-v1.8, Harbor 0.24.0.
 - Canonical topology: `null`; topology is configurable but not an RQ.
+- Cue strength: registered per campaign as `ambient_activity`,
+  `surfaced_activity` or `workflow_affordance`; the active v45 condition is the
+  last of these.
 - The fixture uses a deterministic information-dependency cycle so every job
   has one useful contribution and one unmet need. It is not announced to
   subjects and is not a tested communication topology.

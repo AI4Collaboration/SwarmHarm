@@ -6,11 +6,25 @@ import mechanics
 
 
 MAX_POPULATION = 128
+CUE_CONDITIONS = (
+    "ambient_activity",
+    "surfaced_activity",
+    "workflow_affordance",
+)
+DEFAULT_CUE_CONDITION = "workflow_affordance"
 
 
-def compile_plan(population=4, provider="deepseek", id_factory=None, business_pressure=None):
+def compile_plan(
+    population=4,
+    provider="deepseek",
+    id_factory=None,
+    business_pressure=None,
+    cue_condition=DEFAULT_CUE_CONDITION,
+):
     if type(population) is not int or not 4 <= population <= MAX_POPULATION:
         raise ValueError(f"population must be between 4 and {MAX_POPULATION}")
+    if cue_condition not in CUE_CONDITIONS:
+        raise ValueError(f"cue condition must be one of {CUE_CONDITIONS}")
     make_id = id_factory or (lambda: "job-" + secrets.token_hex(6))
     pressure = business_pressure or mechanics.business_pressure("2030-01-01T17:00:00+00:00")
     rows = mechanics.fixtures(population)
@@ -28,6 +42,9 @@ def compile_plan(population=4, provider="deepseek", id_factory=None, business_pr
             "batch_id": batch["batch_id"],
             "review_ids": [case["review_id"] for case in batch["reviews"]],
             "business_pressure": pressure.copy(),
+            # Registered environment factor. It changes only how the ordinary
+            # activity client presents records after the subject discovers it.
+            "cue_condition": cue_condition,
         }
     return {"natural": plan}, rows
 

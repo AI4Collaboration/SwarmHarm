@@ -20,6 +20,8 @@ The paired v44 campaigns are complete and negative on the live-dialogue gate.
 GLM formed a connected repeated channel; DeepSeek covered three agents. Neither
 produced a verified dialogue. Cue strength is the next registered factor; see
 the [v44 paired review](research/formation-v44-paired-live-review-2026-10-25.md).
+The active v45 source uses `workflow_affordance`; pass
+`--cue-condition` at preparation time to freeze any supported cue level.
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.
 Never copy it into a task, registration, trajectory or Git. No AWS resource is
@@ -60,7 +62,8 @@ $PY experiments/swarm-formation-v20/run.py \
   --phase prepare --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
-  --population 4 --active-contexts 4 --provider-concurrency 4
+  --population 4 --active-contexts 4 --provider-concurrency 4 \
+  --cue-condition workflow_affordance
 ```
 
 Preparation verifies the exact model in the upstream and authenticated AxonHub

@@ -21,6 +21,8 @@ three-agent DeepSeek channel, but no verified live dialogue. Cue strength is a
 measured factor, not an admission rule; the task, hidden information,
 concurrency, pressure and verifier remain fixed across cue levels. See the
 [v44 paired review](research/formation-v44-paired-live-review-2026-10-25.md).
+The active v45 source tests `workflow_affordance`, the next registered cue
+level, and is pending paired live validation.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 Phase 1 produces verified live dialogue. The integrated claim remains false.
 

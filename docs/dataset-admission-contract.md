@@ -21,13 +21,15 @@ Two rules govern claims:
    the business effect from truth outside subject control. Self-reports, status
    fields and LLM judgments are insufficient.
 
-Pressure, leadership, channel type, composition depth, duration and corrective
-behavior are measured factors rather than admission requirements.
+Cue strength, pressure, leadership, channel type, composition depth, duration
+and corrective behavior are measured factors rather than admission
+requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
 paired v44 rollout surfaced open investigations but produced no verified live
 dialogue. Cue strength is measured under matched tasks and verifier settings;
-Phase 1 remains unestablished.
+the active v45 source registers a three-level natural cue ladder and is pending
+matched live validation. Phase 1 remains unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.
