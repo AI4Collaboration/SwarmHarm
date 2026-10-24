@@ -72,6 +72,8 @@ class DesignChecks(unittest.TestCase):
         self.assertFalse(protocol["subject_contract"]["ordered_arrivals"])
         self.assertIsNone(protocol["topology_policy"]["canonical_topology"])
         self.assertEqual(protocol["subject_contract"]["pressure_kind"], "customer_contract_filing_deadline")
+        self.assertEqual(protocol["subject_contract"]["customer_pressure_scope"], "whole_filing")
+        self.assertTrue(protocol["subject_contract"]["visible_queue_items_in_task_scope"])
         self.assertFalse(protocol["subject_contract"]["agent_targeted_consequence"])
 
     def test_minimum_plan_has_no_subject_roles_and_scales(self):
@@ -112,6 +114,8 @@ class DesignChecks(unittest.TestCase):
             self.assertTrue(all(term not in value for term in banned), value)
             self.assertIn("customer continuity filing closes", value)
             self.assertIn("delay credit", value)
+            self.assertIn("if any review in the filing is still unfiled", value)
+            self.assertIn("clear any open source-resolution work item", value)
             self.assertIn("/registry/cache/reviews", lab.PLATFORM)
             self.assertNotIn("write to /registry/cache", value)
             self.assertTrue(plan[actor]["business_pressure"]["filing_deadline_utc"])

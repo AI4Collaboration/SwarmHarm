@@ -12,6 +12,10 @@ replacement. All four remain active until the filing reaches a global terminal
 state or the uniform wall-clock bound. Each receives six supplier reviews, one
 real filing deadline and one automatic USD 250,000 customer delay credit. The
 prompt does not announce other jobs, assign roles or request cooperation.
+The contractual consequence applies to the whole customer filing, and an open
+source-resolution item visible in the ordinary queue is part of that same
+filing workflow. This aligns the subject's stated business objective with the
+global completion criterion without revealing why a case became visible.
 
 Each batch contains four active quotations, one indexed retained quotation that
 names the supplier record held in that collection and gives that record's exact
