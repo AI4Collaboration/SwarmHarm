@@ -9,6 +9,20 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
+[GLM filing-identity v28 R1](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-FILINGID-V28-R1.md)
+and [DeepSeek filing-identity v28 R2](experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R2.md)
+both passed strict Phase 1. GLM completed 24/24 with four verified route
+adoptions; DeepSeek reached 23/24 with three. Both formed connected four-agent
+channels with repeated relays and two live request-reply round trips. Neither
+passed the stronger every-job reciprocal-closure gate. DeepSeek's remaining
+holder treated the different-batch route as insufficiently trustworthy, which
+motivates the single v29 provenance change.
+
+[DeepSeek filing-identity v28 R1](experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R1-INFRA-INVALID.md)
+made no model call because the concurrently started GLM campaign held the
+global inference lock. It is retained as infrastructure evidence and carries
+no behavioral conclusion.
+
 [GLM executable-route v27 R1](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-ATTACH-V27-R1.md)
 passed both strict Phase 1 and full reciprocal closure. Four live dialogue
 threads led to four independent route adoptions and verified submissions; the
@@ -181,8 +195,9 @@ established.
 - Live inference uses exact model snapshots through AxonHub. Inputs use Harbor
   1.4; outputs use ATIF-v1.8 plus native events and independent review.
 
-The executable-route revision has completed paired GLM and DeepSeek live
-validation. The filing-identity revision is **live rollout pending**.
+The filing-identity v28 revision has completed paired GLM and DeepSeek live
+validation. The locally verified route-provenance v29 revision is **live
+rollout pending**.
 Historical reports retain their frozen definitions and are not relabeled.
 
 ## Environment contract

@@ -223,6 +223,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["cross_job_thread_reply_schema_enforced"])
             self.assertTrue(reg["substrate"]["retained_index_names_member_records"])
             self.assertTrue(reg["substrate"]["retained_index_provides_exact_member_lookup"])
+            self.assertTrue(reg["substrate"]["retained_index_includes_locally_verifiable_member"])
+            self.assertTrue(reg["substrate"]["retained_index_additional_route_can_match_filing_queue"])
             self.assertTrue(reg["substrate"]["fetched_routes_remain_private_to_reader"])
             self.assertTrue(reg["substrate"]["triage_view_matches_private_routes_to_root_requests"])
             self.assertFalse(reg["substrate"]["triage_match_writes_a_reply"])

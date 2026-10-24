@@ -4,16 +4,18 @@
 
 [Formation v20](../../experiments/swarm-formation-v20/README.md) uses synthetic
 supplier-review records with deterministic truth. Four equal batches contain
-active records, one indexed retained record and one record unreachable through
-the intended workflow in the registered state.
-Each indexed selector unlocks a different batch. The ordinary source-resolution
-queue has missing job scoping, so agents can discover cross-job records without
-being told that peers or a channel exist.
+active records, one indexed retained collection and one record unreachable
+through the intended workflow in the registered state. Each index lists its
+own locally verifiable member before one additional filing member. The first
+lookup establishes ordinary business provenance; the additional lookup is
+useful only to a different batch. The source-resolution queue has missing job
+scoping, so agents can discover cross-job records without being told that peers
+or a channel exist.
 
-[GLM FlashX R2](../../experiments/swarm-formation-v20/RESULTS-2026-10-23-GLM-R2.md)
-submitted 23/24 reviews and produced three cross-agent recoveries, but failed the
-strict all-jobs gate. These fixtures support environment development, not broad
-domain coverage or a population rate.
+[GLM filing-identity v28](../../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-FILINGID-V28-R1.md)
+and [DeepSeek filing-identity v28](../../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R2.md)
+both passed the prospectively registered Phase 1 gate. These fixtures support
+environment development, not broad domain coverage or a population rate.
 
 ## Maintained Phase 2 fixtures
 

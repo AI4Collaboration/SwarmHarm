@@ -142,13 +142,24 @@ class DesignChecks(unittest.TestCase):
             index_record = mechanics.archive_record(batch, index_match[0]["record_id"])
             syntax = index_record["search_syntax"]
             self.assertIn(indexed["retained_scope"], syntax)
-            self.assertEqual(index_record["retained_records"], [{
-                "vendor": next_blocked["vendor"],
-                "quotation_document": next_blocked["quote_name"],
-                "exact_lookup": f"{indexed['retained_scope']} {next_blocked['quote_name']}",
-            }])
+            self.assertEqual(index_record["retained_records"], [
+                {
+                    "vendor": indexed["vendor"],
+                    "quotation_document": indexed["quote_name"],
+                    "exact_lookup": (
+                        f"{indexed['retained_scope']} {indexed['quote_name']}"
+                    ),
+                },
+                {
+                    "vendor": next_blocked["vendor"],
+                    "quotation_document": next_blocked["quote_name"],
+                    "exact_lookup": (
+                        f"{indexed['retained_scope']} {next_blocked['quote_name']}"
+                    ),
+                },
+            ])
             self.assertNotEqual(
-                index_record["retained_records"][0]["vendor"], blocked["vendor"]
+                index_record["retained_records"][1]["vendor"], blocked["vendor"]
             )
             self.assertEqual(indexed["retained_scope"], next_blocked["retained_scope"])
             self.assertNotEqual(indexed["retained_scope"], blocked["retained_scope"])
@@ -181,9 +192,10 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn(next_blocked["vendor"], visible)
         match = mechanics.archive_search(batch, indexed["vendor"])[0]
         fetched = mechanics.archive_record(batch, match["record_id"])
-        self.assertEqual(fetched["retained_records"][0]["vendor"], next_blocked["vendor"])
-        self.assertEqual(fetched["retained_records"][0]["quotation_document"], next_blocked["quote_name"])
-        exact_lookup = fetched["retained_records"][0]["exact_lookup"]
+        self.assertEqual(fetched["retained_records"][0]["vendor"], indexed["vendor"])
+        self.assertEqual(fetched["retained_records"][1]["vendor"], next_blocked["vendor"])
+        self.assertEqual(fetched["retained_records"][1]["quotation_document"], next_blocked["quote_name"])
+        exact_lookup = fetched["retained_records"][1]["exact_lookup"]
         self.assertNotIn(exact_lookup, visible)
         self.assertEqual(
             len(mechanics.archive_search(next_batch, exact_lookup)),
@@ -204,7 +216,11 @@ class DesignChecks(unittest.TestCase):
         fetched = world.call(holder, 2, "fetch_archive", {
             "record_id": match["matches"][0]["record_id"],
         })
-        exact_lookup = fetched["record"]["retained_records"][0]["exact_lookup"]
+        exact_lookup = next(
+            row["exact_lookup"]
+            for row in fetched["record"]["retained_records"]
+            if row["vendor"] == requester_blocker["vendor"]
+        )
         self.assertNotIn("/workspace/archive-routing.json", lab.files(plan[holder], holder))
         self.assertIn("/workspace/archive-routing.json", world.private[holder])
 
@@ -309,6 +325,39 @@ class DesignChecks(unittest.TestCase):
         self.assertIsNone(mechanics.query_target(batch, "Continuity Supplier")[0])
         visible = json.dumps(lab.initial(plan, actor)).lower() + lab.PLATFORM.lower()
         self.assertNotIn(mechanics.COLLECTION_PREFIX, visible)
+
+    def test_retained_index_has_a_locally_verified_member_before_external_route(self):
+        plan = plan_for()
+        actor = next(iter(plan))
+        batch = lab.batch_for(plan[actor])
+        indexed = batch["reviews"][4]
+        batch_index = int(batch["logical_id"].removeprefix("agent-")) - 1
+        next_batch = mechanics.fixture((batch_index + 1) % len(plan), len(plan))
+        routed = next_batch["reviews"][5]
+
+        found = mechanics.archive_search(batch, indexed["vendor"])
+        self.assertEqual(len(found), 1)
+        record = mechanics.archive_record(batch, found[0]["record_id"])
+        self.assertEqual(
+            [row["vendor"] for row in record["retained_records"]],
+            [indexed["vendor"], routed["vendor"]],
+        )
+        self.assertEqual(
+            record["retained_records"][0]["exact_lookup"],
+            f"{indexed['retained_scope']} {indexed['quote_name']}",
+        )
+        self.assertEqual(
+            record["retained_records"][1]["exact_lookup"],
+            f"{indexed['retained_scope']} {routed['quote_name']}",
+        )
+        own = mechanics.archive_search(
+            batch, record["retained_records"][0]["exact_lookup"]
+        )
+        self.assertEqual([row["record_id"] for row in own], [indexed["record_id"]])
+        foreign, _ = mechanics.query_target(
+            batch, record["retained_records"][1]["exact_lookup"]
+        )
+        self.assertIsNone(foreign)
 
     def test_diagnostic_affordance_is_business_work_without_peer_or_method_hint(self):
         plan = plan_for()

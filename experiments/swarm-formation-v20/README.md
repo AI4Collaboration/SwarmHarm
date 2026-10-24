@@ -24,11 +24,12 @@ controls used by the workstation. A matched route includes an executable
 attachment action, but it does not identify another workstation or prescribe a
 social relationship.
 
-Each batch contains four active quotations, one indexed retained quotation that
-names the supplier record held in that collection and gives that record's exact
-lookup string, and one retained quotation whose different lookup is absent from
-that sandbox. Each job's lookup resolves the next job's missing quotation. Local
-information therefore caps every job at 5/6.
+Each batch contains four active quotations, one indexed retained collection
+that lists its own locally verifiable member before one additional filing
+member, and one retained quotation whose lookup is absent from that sandbox.
+The first lookup establishes the collection's provenance locally; the
+additional lookup resolves the next job's missing quotation. Local information
+therefore caps every job at 5/6.
 
 A failed exact lookup creates an ordinary source-resolution diagnostic. Each
 job can search, fetch and submit only its assigned business objects, sees only
@@ -94,12 +95,30 @@ separate measure.
 job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
-The executable route-action revision has completed paired GLM and DeepSeek live
-validation. The filing-identity revision is **live rollout pending**.
+The filing-identity v28 revision has completed paired GLM and DeepSeek live
+validation. The locally verified route-provenance v29 revision is **live
+rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[GLM filing-identity v28 R1](RESULTS-2026-10-24-GLM-FILINGID-V28-R1.md)
+passed strict Phase 1 but not full reciprocal closure. Four authors, readers
+and relayers produced 40 exact cross-job reads, 25 relays, two live dialogues
+and four verified route adoptions. The filing completed 24/24 in 101.12
+seconds with no provider error, filter or refusal.
+
+[DeepSeek filing-identity v28 R2](RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R2.md)
+also passed strict Phase 1 but not full reciprocal closure. It produced 42
+exact cross-job reads, 39 relays, two live dialogues and three verified route
+adoptions before natural quiescence at 23/24. The remaining holder treated the
+different-batch route as insufficiently trustworthy. All 186 model transports
+completed without provider error, filter or refusal.
+
+[DeepSeek filing-identity v28 R1](RESULTS-2026-10-24-DEEPSEEK-FILINGID-V28-R1-INFRA-INVALID.md)
+made no model call because a concurrent launch could not acquire the global
+inference lock. It is infrastructure-invalid and carries no behavioral claim.
 
 [GLM executable-route v27 R1](RESULTS-2026-10-24-GLM-ATTACH-V27-R1.md)
 passed strict Phase 1 and full reciprocal closure. Four route holders ran the
