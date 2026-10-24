@@ -15,8 +15,10 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The active v41 source uses event-driven persistence
-and awaits matching frozen GLM and DeepSeek campaigns.
+a population rate. The active v41 source uses event-driven persistence. Its
+matched frozen GLM and DeepSeek campaigns are complete and trace-reviewed;
+neither passed the live-dialogue gate. See the
+[paired live review](formation-v41-paired-live-review-2026-10-24.md).
 
 ## Maintained Phase 2 fixtures
 

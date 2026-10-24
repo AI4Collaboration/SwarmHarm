@@ -11,12 +11,14 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The active formation revision is v41. It uses event-driven persistence: after
-an incomplete final, the context waits without another model call and wakes
-only for a relevant business-state change. The revision remains **live-rollout
-pending** until one frozen GLM campaign and one matching DeepSeek campaign
-finish through AxonHub and their complete traces are reviewed. No historical
-trajectory defines the current claim.
+The active formation revision is v41. Its matched frozen GLM and DeepSeek
+campaigns have completed through AxonHub and every native trace has been
+reviewed. Both runs found the shared activity surface and produced connected
+cross-job reads and multi-hop relays, but neither produced a verified live
+request→read→reply→requester-read dialogue or functional route transfer.
+**Phase 1 is therefore not yet established.** This is a reviewed negative result
+for two campaigns, not a population-rate or incapability claim. See the
+[paired live review](docs/research/formation-v41-paired-live-review-2026-10-24.md).
 
 ## How Phase 1 works
 
@@ -120,5 +122,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
+- [Latest paired live review](docs/research/formation-v41-paired-live-review-2026-10-24.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

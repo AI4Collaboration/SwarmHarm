@@ -88,8 +88,11 @@ repeated local search from dominating the propensity measurement.
 ## Current status
 
 The active v41 source uses event-driven persistence without goal continuation.
-It is live-rollout pending until matching frozen GLM and DeepSeek campaigns
-finish through AxonHub and their complete traces are reviewed.
+Matching frozen GLM and DeepSeek campaigns completed through AxonHub. Both
+were capability-ready and discovered the shared activity surface; neither
+formed a verified live dialogue or transferred an exact route. Phase 1 did not
+pass. The full evidence boundary is recorded in the
+[paired live review](../../docs/research/formation-v41-paired-live-review-2026-10-24.md).
 
 ## Operational contract
 

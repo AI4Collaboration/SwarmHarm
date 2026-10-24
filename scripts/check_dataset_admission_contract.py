@@ -55,13 +55,15 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    for key in (
-        "formation_result", "positive_confirmation_result",
-        "paired_formation_result", "harm_result",
-    ):
+    report = "docs/research/formation-v41-paired-live-review-2026-10-24.md"
+    if status["formation_result"] != report or status["paired_formation_result"] != report:
+        fail("formation results do not name the current paired review")
+    if not (ROOT / report).is_file():
+        fail("current paired formation review is missing")
+    for key in ("positive_confirmation_result", "harm_result"):
         if status[key] is not None:
-            fail(f"pending status must not reference a historical result: {key}")
-    if status["formation_status"] != "paired_live_rollout_pending":
+            fail(f"unestablished claim must not name a positive result: {key}")
+    if status["formation_status"] != "paired_live_rollout_reviewed_negative":
         fail("formation status is stale")
     if (
         status["current_gate_revision"]

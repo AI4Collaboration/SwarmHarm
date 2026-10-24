@@ -56,7 +56,10 @@ def main():
 
     state = status.get("status")
     if state == "pending":
-        if status.get("latest_matching_campaign") is not None:
+        if (
+            status.get("latest_matching_campaign") is not None
+            or status.get("latest_matching_campaigns")
+        ):
             fail("pending status must not name a matching campaign")
         if args.require_confirmed:
             fail("current environment still needs a matching AxonHub rollout")
@@ -65,35 +68,53 @@ def main():
     if state != "confirmed":
         fail(f"unknown status {state!r}")
 
-    campaign = status.get("latest_matching_campaign")
-    if not isinstance(campaign, dict):
-        fail("confirmed status needs latest_matching_campaign metadata")
-    if campaign.get("trace_reviewed") is not True:
-        fail("confirmed campaign has not been marked trace-reviewed")
-    if campaign.get("provider") != "AxonHub":
-        fail("live validation must use AxonHub")
+    campaigns = status.get("latest_matching_campaigns")
+    if not isinstance(campaigns, list) or not campaigns:
+        campaign = status.get("latest_matching_campaign")
+        campaigns = [campaign] if isinstance(campaign, dict) else []
+    if not campaigns:
+        fail("confirmed status needs matching campaign metadata")
 
-    registration_path = ROOT / campaign.get("registration", "")
-    report_path = ROOT / campaign.get("report", "")
-    if not registration_path.is_file():
-        fail("matching registration is missing")
-    if not report_path.is_file():
-        fail("matching reviewed report is missing")
-    registration = load(registration_path)
-    if registration.get("input_revision") != status["input_revision"]:
-        fail("registration input revision is stale")
-    if registration.get("outcome_revision") != status["outcome_revision"]:
-        fail("registration outcome revision is stale")
-    registered_hashes = registration.get("code_hashes", {})
-    missing = sorted(LIVE_EXECUTION_PATHS - registered_hashes.keys())
-    if missing:
-        fail("registration lacks live execution hashes: " + ", ".join(missing))
-    for relative in sorted(LIVE_EXECUTION_PATHS):
-        expected = registered_hashes[relative]
-        path = ROOT / relative
-        if not path.is_file() or digest(path) != expected:
-            fail(f"live-validated source changed: {relative}")
-    print("live rollout status: confirmed and source hashes match")
+    expected_models = {
+        "z-ai/glm-5.3-flashx",
+        "deepseek/deepseek-v4.1-flash-1017",
+    }
+    observed_models = {campaign.get("model") for campaign in campaigns}
+    if observed_models != expected_models:
+        printable = sorted(str(model) for model in observed_models)
+        fail(f"confirmed paired models differ: {printable}")
+
+    for campaign in campaigns:
+        if campaign.get("trace_reviewed") is not True:
+            fail("confirmed campaign has not been marked trace-reviewed")
+        if campaign.get("provider") != "AxonHub":
+            fail("live validation must use AxonHub")
+        if campaign.get("atif_native_continuity") is not True:
+            fail("confirmed campaign lacks native ATIF continuity")
+
+        registration_path = ROOT / campaign.get("registration", "")
+        report_path = ROOT / campaign.get("report", "")
+        if not registration_path.is_file():
+            fail("matching registration is missing")
+        if not report_path.is_file():
+            fail("matching reviewed report is missing")
+        registration = load(registration_path)
+        if registration.get("input_revision") != status["input_revision"]:
+            fail("registration input revision is stale")
+        if registration.get("outcome_revision") != status["outcome_revision"]:
+            fail("registration outcome revision is stale")
+        if campaign.get("model") not in registration.get("models", {}).values():
+            fail("campaign model does not match its frozen registration")
+        registered_hashes = registration.get("code_hashes", {})
+        missing = sorted(LIVE_EXECUTION_PATHS - registered_hashes.keys())
+        if missing:
+            fail("registration lacks live execution hashes: " + ", ".join(missing))
+        for relative in sorted(LIVE_EXECUTION_PATHS):
+            expected = registered_hashes[relative]
+            path = ROOT / relative
+            if not path.is_file() or digest(path) != expected:
+                fail(f"live-validated source changed: {relative}")
+    print("live rollout status: paired campaigns confirmed and source hashes match")
 
 
 if __name__ == "__main__":
