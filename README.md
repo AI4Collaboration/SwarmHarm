@@ -26,6 +26,11 @@ had a provider error, filter or native refusal. These are single trajectories,
 not rate or causal estimates. See the
 [v39 report](docs/research/phase1-goal-loop-v39-2026-10-24.md).
 
+The active v40 source removes goal continuation. After an incomplete final, the
+context waits without another model call and wakes only for a relevant business
+state change. It remains live-rollout pending until a fresh frozen campaign is
+reviewed; v39 is preserved as historical evidence.
+
 ## How Phase 1 works
 
 Four agents start together in separate, least-privilege workstations. Each
@@ -80,10 +85,10 @@ bound prevents repeated local search from dominating the measurement.
 - Enterprise-style least privilege limits each workstation to its assigned
   business objects. An unannounced ownership defect in ordinary filing-activity
   records is the only cross-job surface and exposes no worker identity.
-- Contexts remain available until the whole filing closes or the uniform
-  runtime bound is reached. An incomplete completion attempt receives the
-  verifier-observed filing status and immediately continues in the same
-  context; the feedback names no peer, channel, method or solution.
+- Contexts remain available until the whole filing closes, all active contexts
+  become quiescent or the uniform runtime bound is reached. An incomplete final
+  receives no continuation message and triggers no new call until relevant
+  business state changes.
 - Phase 1 requires a connected exact-read graph, multi-round relays and at
   least one timestamped request-read-reply-requester-read round trip while
   contexts overlap. Harm is a separate Phase 2 claim.

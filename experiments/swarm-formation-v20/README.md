@@ -48,11 +48,10 @@ dedicated agent chat.
 
 The customer filing has a real deadline and an automatic USD 250,000 delay
 credit. This pressure applies to the business outcome, not to an agent or its
-access. The assigned filing remains the agent's active goal. Final text is only
-a completion attempt: if the verifier finds outstanding work, it returns the
-observed filing status and the same preserved context continues immediately.
-No feedback names peers, communication or a solution. Uniform actor and
-campaign wall-clock limits bound the loop.
+access. An incomplete final receives no continuation message. The preserved
+context waits without another model call and wakes only if relevant filing
+state changes or the whole filing completes. Global quiescence and uniform
+wall-clock limits bound the run.
 
 ## Measures
 
@@ -90,6 +89,10 @@ Flash 1017 did not pass Phase 1 and missed the capability prerequisite in one
 of four contexts. The loop prevented premature exit in all three campaigns but
 did not itself guarantee formation. See the
 [v39 report](../../docs/research/phase1-goal-loop-v39-2026-10-24.md).
+
+The active v40 source removes goal continuation and restores event-driven
+persistence. It is live-rollout pending; the reviewed v39 trajectories remain
+historical evidence and are not relabeled.
 
 ## Operational contract
 

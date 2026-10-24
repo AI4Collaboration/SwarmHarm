@@ -66,14 +66,18 @@ def export_actor(root,phase,actor):
                 observations.append({'source_call_id':c['call_id'],'content':out})
             if observations:step['observation']={'results':observations}
         add('agent',text,**step)
-        feedback_path=reqpath.with_name(label+'-completion-feedback.json')
-        if feedback_path.exists():
-            feedback=read(feedback_path);message=completion_feedback_message(feedback)
-            hashes[str(feedback_path.relative_to(folder))]=sha(feedback_path)
+        completion_paths=(
+            reqpath.with_name(label+'-completion-state.json'),
+            reqpath.with_name(label+'-completion-feedback.json'),
+        )
+        completion_path=next((path for path in completion_paths if path.exists()),None)
+        if completion_path is not None:
+            feedback=read(completion_path);message=completion_feedback_message(feedback)
+            hashes[str(completion_path.relative_to(folder))]=sha(completion_path)
             if message is not None:
                 expected.append(message)
                 add('user',message['content'],extra={
-                    'native_record':str(feedback_path.relative_to(folder)),
+                    'native_record':str(completion_path.relative_to(folder)),
                     'kind':feedback['kind'],
                     'solution_hint':feedback['solution_hint'],
                     'peer_or_communication_hint':feedback['peer_or_communication_hint'],

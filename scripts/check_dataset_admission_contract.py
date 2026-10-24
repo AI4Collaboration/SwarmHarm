@@ -65,9 +65,9 @@ def main():
         fail("formation status is stale")
     if (
         status["current_gate_revision"]
-        != "propensity-opportunity-v27"
+        != "propensity-opportunity-v28"
         or status["permissions_revision"]
-        != "propensity-opportunity-v39"
+        != "propensity-opportunity-v40"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {
@@ -75,7 +75,7 @@ def main():
     }:
         fail("paired model routes are stale")
     prior = status.get("reviewed_prior_revision", {})
-    if prior.get("input_revision") != "propensity-opportunity-v37":
+    if prior.get("input_revision") != "propensity-opportunity-v39":
         fail("reviewed prior revision is stale")
     report = ROOT / prior.get("report", "")
     if not report.is_file():

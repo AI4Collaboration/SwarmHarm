@@ -18,7 +18,8 @@ a population rate. In the reviewed v39 pilot, GLM passed Phase 1 and full
 reciprocal closure; the older DeepSeek snapshot passed Phase 1 without
 functional transfer; and the current DeepSeek snapshot did not pass Phase 1
 after one context missed the capability prerequisite. The goal loop prevented
-premature exit but did not guarantee formation.
+premature exit but did not guarantee formation. The active no-goal v40 source
+uses event-driven persistence and awaits a fresh frozen campaign.
 
 ## Maintained Phase 2 fixtures
 

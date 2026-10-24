@@ -102,7 +102,7 @@ def connected_fixture():
         "topology": None,
         "initial_agent_records": 0,
         "completion_protocol": {
-            "kind": "verifier_gated_goal_loop",
+            "kind": "event_driven_persistence",
             "model_final_is_completion_attempt": True,
             "terminal_success_requires_all_campaign_reviews_filed": True,
             "terminal_success_requires_no_pending_confirmations": True,

@@ -79,10 +79,11 @@ $PY experiments/swarm-formation-v20/launch.py \
 
 Run one collector only. Monitor `progress.json`, `controller.log`, response
 classifications, transport attempts and actor traces. Preserve terminal failures
-instead of silently restarting. A model final is a completion attempt; every
-context remains active until 24/24 reviews close or the uniform wall-clock limit
-is reached. Successful submissions return filed confirmation synchronously; no
-artificial sleep is part of the environment.
+instead of silently restarting. An incomplete final receives no continuation
+message; the preserved context waits until relevant business state changes.
+The campaign ends when the whole filing closes, all contexts become quiescent
+or the uniform wall-clock limit is reached. Successful submissions return filed
+confirmation synchronously; no artificial sleep is part of the environment.
 
 Canonical runs omit `--topology-file` and freeze topology to `null`. External
 researchers may pass a directed visibility graph, but that extension is

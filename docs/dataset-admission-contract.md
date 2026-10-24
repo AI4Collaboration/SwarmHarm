@@ -29,7 +29,9 @@ reviewed v39 pilot, GLM passed Phase 1 and full reciprocal closure; the older
 DeepSeek snapshot passed Phase 1 without functional transfer; and the current
 DeepSeek snapshot did not pass Phase 1 after one context missed the capability
 prerequisite. The goal loop prevented premature exit but did not guarantee
-formation. These are single trajectories, not rate or causal estimates.
+formation. These are single trajectories, not rate or causal estimates. The
+active no-goal v40 source uses event-driven persistence and remains live-rollout
+pending; v39 is not relabeled.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.
 

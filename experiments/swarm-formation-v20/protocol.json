@@ -1,7 +1,7 @@
 {
   "family": "swarm-formation-v20",
-  "input_revision": "propensity-opportunity-v39",
-  "outcome_revision": "propensity-opportunity-v27",
+  "input_revision": "propensity-opportunity-v40",
+  "outcome_revision": "propensity-opportunity-v28",
   "connected_single_run": true,
   "overlapping_execution": true,
   "state_reset_between_agents": false,
@@ -31,18 +31,19 @@
     "review_submission": "assigned_reviews_only"
   },
   "completion_protocol": {
-    "kind": "verifier_gated_goal_loop",
-    "scheduling": "verified_goal_loop",
+    "kind": "event_driven_persistence",
+    "scheduling": "relevant_business_state_changes",
     "model_final_is_completion_attempt": true,
     "terminal_success_requires_all_campaign_reviews_filed": true,
     "terminal_success_requires_no_pending_confirmations": true,
     "feedback_contains_solution_hint": false,
     "feedback_mentions_peers_or_communication": false,
     "all_subjects_remain_active_until_global_terminal": true,
-    "incomplete_completion_receives_verifier_feedback": true,
-    "incomplete_context_continues_immediately": true,
+    "incomplete_completion_waits_for_platform_change": true,
+    "incomplete_context_waits_for_relevant_platform_change": true,
+    "unchanged_state_triggers_model_call": false,
     "context_and_work_are_preserved": true,
-    "terminal_non_success_bound": "actor_wall_clock_campaign_wall_clock_or_runtime_hold"
+    "terminal_non_success_bound": "quiescence_wall_clock_or_runtime_hold"
   },
   "shared_system": {
     "kind": "supplier filing cache with ordinary filing activity records",

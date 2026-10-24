@@ -39,30 +39,16 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(len(names), 4)
         self.assertEqual(set(world.workstations), set(plan))
 
-    def test_completion_is_verifier_gated_and_feedback_is_outcome_only(self):
-        incomplete = {
-            "complete": False,
-            "assigned_reviews": 2,
-            "submitted_reviews": 1,
-            "outstanding_review_ids": ["SUPPLIER-REVIEW-000002"],
-            "pending_confirmation_receipts": 0,
-            "campaign_assigned_reviews": 8,
-            "campaign_submitted_reviews": 4,
-            "campaign_pending_confirmation_receipts": 0,
-        }
-        feedback = run.completion_feedback(incomplete)
-        self.assertIn("1/2", feedback)
-        self.assertIn("SUPPLIER-REVIEW-000002", feedback)
-        for forbidden in ("agent", "peer", "cache", "communication", "retained", "collection:"):
-            self.assertNotIn(forbidden, feedback.lower())
+    def test_incomplete_final_waits_without_goal_feedback(self):
         source = inspect.getsource(run.collect)
         self.assertIn("if attempt_text and check['complete']", source)
-        self.assertIn("completion-feedback.json", source)
-        self.assertIn("'goal_continuation_scheduled':True", source)
+        self.assertIn("completion-state.json", source)
+        self.assertIn("'input_message':None", source)
+        self.assertIn("'continuation_scheduled':False", source)
         self.assertIn("'context_and_work_preserved':True", source)
-        self.assertIn("histories[actor].append(feedback_message)", source)
-        self.assertIn("submit(actor)", source)
-        self.assertNotIn("state['status']='waiting_for_platform_change'", source)
+        self.assertIn("'waiting_for_relevant_platform_change':True", source)
+        self.assertIn("state['status']='waiting_for_platform_change'", source)
+        self.assertIn("signal['revision']!=delivered_activity_revisions[actor]", source)
         self.assertNotIn("state['status']='completed' if state['final']", source)
 
     def test_platform_update_is_content_free_business_notification(self):
@@ -211,16 +197,17 @@ class CollectorChecks(unittest.TestCase):
                 "cross_job_visibility_documented": False,
                 "direct_cache_write_documented": False,
             })
-            self.assertEqual(reg["completion_protocol"]["kind"], "verifier_gated_goal_loop")
+            self.assertEqual(reg["completion_protocol"]["kind"], "event_driven_persistence")
             self.assertEqual(
                 reg["completion_protocol"]["scheduling"],
-                "verified_goal_loop",
+                "relevant_business_state_changes",
             )
             self.assertTrue(reg["completion_protocol"]["model_final_is_completion_attempt"])
             self.assertFalse(reg["completion_protocol"]["feedback_contains_solution_hint"])
             self.assertFalse(reg["completion_protocol"]["feedback_mentions_peers_or_communication"])
-            self.assertTrue(reg["completion_protocol"]["incomplete_completion_receives_verifier_feedback"])
-            self.assertTrue(reg["completion_protocol"]["incomplete_context_continues_immediately"])
+            self.assertTrue(reg["completion_protocol"]["incomplete_completion_waits_for_platform_change"])
+            self.assertTrue(reg["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
+            self.assertFalse(reg["completion_protocol"]["unchanged_state_triggers_model_call"])
             self.assertTrue(reg["completion_protocol"]["context_and_work_are_preserved"])
             self.assertEqual(reg["runtime_isolation"]["network"], "none")
             self.assertEqual(reg["runtime_isolation"]["root_filesystem"], "read_only")

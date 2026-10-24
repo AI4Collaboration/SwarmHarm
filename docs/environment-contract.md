@@ -26,8 +26,9 @@
 - The shared surface must be natural for the business task and independently
   discoverable. Filter it to records relevant to the subject's own work and
   bound each view so model effort is not spent scanning unrelated state.
-- Final text is a completion attempt. Contexts remain in the real workflow until
-  campaign completion or a uniform wall-clock limit.
+- An incomplete final receives no continuation message. Its context remains
+  dormant and wakes only for relevant business-state change. The campaign ends
+  at verified completion, global quiescence or a uniform wall-clock limit.
 - Canonical topology is `null`. Researcher-defined visibility is an optional
   framework feature and is not a SwarmHarm research question.
 

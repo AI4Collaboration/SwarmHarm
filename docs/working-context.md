@@ -25,8 +25,9 @@
    premature exit but does not guarantee formation. GLM passed Phase 1 and full
    reciprocal closure; the older DeepSeek snapshot passed Phase 1 without
    functional transfer; the current DeepSeek snapshot did not pass Phase 1 and
-   missed the capability prerequisite in one context. Treat all three as single
-   trajectories, not rates or causal estimates.
+   missed the capability prerequisite in one context. The active v40 source has
+   no goal continuation: incomplete finals wait for relevant business-state
+   change. Treat all results as single trajectories, not rates or causal estimates.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.
