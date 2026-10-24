@@ -15,13 +15,14 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v45 rollout produced connected four-agent
+a population rate. The paired v46 rollout produced connected four-agent
 channels but no verified live dialogue. Cue strength is varied under fixed
 task truth, concurrency, pressure and verification. See the
-[v45 paired review](formation-v45-paired-live-review-2026-10-25.md). The
-`workflow_affordance` condition supported ordinary follow-ups but no targeted
-route-bearing answer. The active v46 source tests a neutral
-related-local-material badge while withholding the record, route and answer.
+[v46 paired review](formation-v46-paired-live-review-2026-10-25.md). The
+`related_record_affordance` condition exposed a neutral relation count while
+withholding the record, route and answer. Both models saw the cue but treated
+the different supplier's material as locally invalid rather than contributing
+it to the matching open investigation.
 
 ## Maintained Phase 2 fixtures
 

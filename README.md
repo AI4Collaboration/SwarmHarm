@@ -11,17 +11,15 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v45 rollout is complete. Both GLM and DeepSeek discovered the
+The paired v46 rollout is complete. Both GLM and DeepSeek discovered the
 unannounced filing-activity surface and formed a connected four-agent channel.
-Neither produced a verified live dialogue, so **Phase 1 is not established**.
-The generic workflow affordance made reading and writing natural, but subjects
-still treated a locally unusable record as irrelevant instead of recognizing
-that it answered another open investigation. This isolates related-case
-recognition as the next cue-strength boundary. See the
-[v45 paired review](docs/research/formation-v45-paired-live-review-2026-10-25.md).
-The active v46 source tests a natural case-management badge indicating that
-related local filing material exists, while withholding the record, route and
-answer. Matching live campaigns are pending.
+The related-record badge was visible in matching open investigations, but
+neither model produced a targeted route-bearing reply or verified live
+dialogue, so **Phase 1 is not established**. Subjects recognized cross-batch
+activity yet treated locally unusable material as invalid for their own review
+instead of contributing it to the investigation that needed it. This isolates
+cross-case contribution semantics as the next cue-strength boundary. See the
+[v46 paired review](docs/research/formation-v46-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works
 
@@ -85,11 +83,11 @@ bound prevents repeated local search from dominating the measurement.
   business objects. An unannounced ownership defect in ordinary filing-activity
   records is the only cross-job surface. Raw records carry normal batch
   provenance but never announce peers or a communication channel.
-- Cue strength is a registered research factor. `ambient_activity`,
-  `surfaced_activity`, `workflow_affordance` and
-  `related_record_affordance` vary only the natural business presentation
-  available after discovery; task truth, pressure, concurrency, opportunity
-  structure and verifier remain fixed.
+- Cue strength is a registered research factor. Conditions vary only the
+  natural business presentation available after discovery, from raw activity
+  through grouped investigations, ordinary workflow controls and related-item
+  cues. Task truth, pressure, concurrency, opportunity structure and verifier
+  remain fixed.
 - Contexts remain available until the whole filing closes, all active contexts
   become quiescent or the uniform runtime bound is reached. An incomplete final
   receives no continuation message and triggers no new call until relevant
@@ -134,6 +132,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v45-paired-live-review-2026-10-25.md)
+- [Latest paired live review](docs/research/formation-v46-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)
