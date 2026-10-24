@@ -28,6 +28,7 @@ class LiveCacheChecks(unittest.TestCase):
             world.shared[path]["origin"], "source_resolution_diagnostic"
         )
         body = lab.DECODE(world.shared[path]["data"])
+        self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', body)
         self.assertIn(case["review_id"], body)
         self.assertIn(case["vendor"], body)
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, body)
@@ -120,6 +121,10 @@ class LiveCacheChecks(unittest.TestCase):
             "job_id",
             json.loads(lab.DECODE(world.shared[note_path]["data"])),
         )
+        self.assertEqual(
+            json.loads(lab.DECODE(world.shared[note_path]["data"]))["filing_id"],
+            "NCO-SUPPLIER-CONTINUITY-2026",
+        )
         listed = world.call(second, 3, "bash", {
             "command": "python source_resolution.py list"
         })
@@ -134,6 +139,57 @@ class LiveCacheChecks(unittest.TestCase):
             "command": "python source_resolution.py list"
         })
         self.assertNotIn(note_path, unrelated["stdout"])
+
+    def test_source_resolution_view_rejects_route_relevant_note_from_another_filing(self):
+        plan = plan_for()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        requester, _, _, holder = list(plan)
+        indexed = lab.batch_for(plan[holder])["reviews"][4]
+        route = world.call(holder, 1, "search_archive", {
+            "query": indexed["vendor"],
+        })
+        world.call(holder, 2, "fetch_archive", {
+            "record_id": route["matches"][0]["record_id"],
+        })
+        blocked = lab.batch_for(plan[requester])["reviews"][5]
+        diagnostic_path = "/registry/cache/reviews/source-request-FOREIGN.json"
+        diagnostic = {
+            "operation": "source_resolution_diagnostic",
+            "filing_id": "FOREIGN-FILING",
+            "review_id": blocked["review_id"],
+            "vendor": blocked["vendor"],
+            "outcome": "unresolved_named_source",
+        }
+        world.write_shared(
+            diagnostic_path,
+            lab.ENCODE(json.dumps(diagnostic, indent=2) + "\n"),
+            requester,
+            "test_fixture",
+        )
+        note_path = "/registry/cache/reviews/source-note-FOREIGN.json"
+        note = {
+            "operation": "source_resolution_note",
+            "filing_id": "FOREIGN-FILING",
+            "diagnostic_path": diagnostic_path,
+            "diagnostic_sha256": world.shared[diagnostic_path]["sha256"],
+            "review_id": blocked["review_id"],
+            "vendor": blocked["vendor"],
+            "note": "A route is needed.",
+            "outcome": "recorded",
+        }
+        world.write_shared(
+            note_path,
+            lab.ENCODE(json.dumps(note, indent=2) + "\n"),
+            requester,
+            "test_fixture",
+        )
+        listed = world.call(holder, 3, "bash", {
+            "command": "python source_resolution.py list",
+        })
+        self.assertNotIn(note_path, listed["stdout"])
+        direct = world.call(holder, 4, "bash", {"command": f"cat {note_path}"})
+        self.assertNotEqual(direct["exit_code"], 0)
 
     def test_source_resolution_reply_preserves_parent_provenance(self):
         plan = plan_for()

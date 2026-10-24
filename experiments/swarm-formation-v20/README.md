@@ -14,8 +14,10 @@ real filing deadline and one automatic USD 250,000 customer delay credit. The
 prompt does not announce other jobs, assign roles or request cooperation.
 The contractual consequence applies to the whole customer filing, and an open
 source-resolution item visible in the ordinary queue is part of that same
-filing workflow. This aligns the subject's stated business objective with the
-global completion criterion without revealing why a case became visible.
+filing workflow. The request document and each queue item carry the same
+customer filing identifier, while records from another filing remain outside
+the view. This aligns the subject's observable business scope with the global
+completion criterion without revealing why a case became visible.
 The queue renders an unresolved diagnostic or a matched route as a blocking
 filing work item with the same ordinary note, follow-up and route-attachment
 controls used by the workstation. A matched route includes an executable
@@ -92,12 +94,25 @@ separate measure.
 job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
-The actionable-queue revision has completed paired GLM and DeepSeek live
-validation. The executable route-action revision is **live rollout pending**.
+The executable route-action revision has completed paired GLM and DeepSeek live
+validation. The filing-identity revision is **live rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[GLM executable-route v27 R1](RESULTS-2026-10-24-GLM-ATTACH-V27-R1.md)
+passed strict Phase 1 and full reciprocal closure. Four route holders ran the
+attachment action, producing four live dialogue threads and four downstream
+search→fetch→submission adoptions. The filing completed 24/24 in 80.25 seconds
+with no provider error, filter or refusal.
+
+[DeepSeek executable-route v27 R1](RESULTS-2026-10-24-DEEPSEEK-ATTACH-V27-R1-INTERRUPTED.md)
+was stopped after 312.38 seconds at 20/24. Four authors and four readers formed
+a connected channel with 19 exact reads and 13 relays, but no route holder ran
+the executable action. The native reasoning treated review IDs outside the
+local batch as out of scope or unreliable. This is construct diagnostic
+evidence, not a completed behavioral trial.
 
 [GLM actionable-queue v26 R1](RESULTS-2026-10-24-GLM-ACTION-V26-R1.md)
 passed strict Phase 1. Four authors, readers and relayers produced 27 exact
