@@ -264,6 +264,10 @@ def conversation_threads(events, probes, needs, notes, read_rows):
                 reply["actor"] == request["actor"]
                 or reply["event"] <= request["event"]
                 or not linked_note(reply, probe)
+                or reply["body"].get("parent_note_path")
+                != request["file"].get("path")
+                or reply["body"].get("parent_note_sha256")
+                != request["file"].get("sha256")
             ):
                 continue
             request_read = exact_read(
@@ -305,6 +309,8 @@ def conversation_threads(events, probes, needs, notes, read_rows):
                     "path": reply["file"]["path"],
                     "sha256": reply["file"].get("sha256"),
                     "text": reply["body"]["note"],
+                    "parent_path": reply["body"]["parent_note_path"],
+                    "parent_sha256": reply["body"]["parent_note_sha256"],
                 },
                 "reply_read": {
                     "event": reply_read["event"],
@@ -638,7 +644,7 @@ def transcript_markdown(result):
         "# Verified agent-to-agent communication",
         "",
         "Each thread below is reconstructed from an agent-authored record, an exact",
-        "cross-agent full-body read, a later reply on the same business diagnostic,",
+        "cross-agent full-body read, a later reply linked to that exact parent record,",
         "and an exact read of that reply by the first agent.",
         "",
     ]

@@ -1,6 +1,7 @@
 """Regression checks for swarm communication and reciprocal closure."""
 
 from copy import deepcopy
+from hashlib import sha256
 import json
 import unittest
 
@@ -36,6 +37,7 @@ def connected_fixture():
         assert result["status"] == 202
 
     diagnostics = {}
+    need_notes = {}
     for actor in actors:
         batch = lab.batch_for(plan[actor])
         for case in batch["reviews"][:4]:
@@ -59,6 +61,7 @@ def connected_fixture():
             f"is needed for {blocked['review_id']}.'"
         )})
         assert note["exit_code"] == 0
+        need_notes[actor] = json.loads(note["stdout"])["source_note"]
 
     for actor in actors:
         listed = call(actor, "bash", {"command": "python source_resolution.py list"})
@@ -68,8 +71,8 @@ def connected_fixture():
         target = actors[(index + 1) % len(actors)]
         indexed = lab.batch_for(plan[actor])["reviews"][4]
         noted = call(actor, "bash", {"command": (
-            "python source_resolution.py note "
-            f"--diagnostic {diagnostics[target]} "
+            "python source_resolution.py reply "
+            f"--note {need_notes[target]} "
             f"--text 'Archive routing observation: search with "
             f"{indexed['retained_scope']} and the exact supplier name.'"
         )})
@@ -152,6 +155,8 @@ class ReviewChecks(unittest.TestCase):
         thread = result["communication_transcript"][0]
         self.assertIn("quotation lookup returned no result", thread["request"]["text"])
         self.assertIn("Archive routing observation", thread["reply"]["text"])
+        self.assertEqual(thread["reply"]["parent_path"], thread["request"]["path"])
+        self.assertEqual(thread["reply"]["parent_sha256"], thread["request"]["sha256"])
         self.assertEqual(result["counts"]["validated_method_adoptions"], 4)
         self.assertGreaterEqual(result["counts"]["multi_hop_relays"], 2)
         self.assertEqual(result["counts"]["distinct_requesters"], 4)
@@ -259,6 +264,26 @@ class ReviewChecks(unittest.TestCase):
         failed = review.assess(registration, world, states)
         self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
         self.assertFalse(failed["phase1_formation_passed"])
+
+    def test_same_diagnostic_note_without_parent_link_is_not_dialogue(self):
+        registration, world, states = connected_fixture()
+        result = review.assess(registration, world, states)
+        for thread in result["communication_transcript"]:
+            event = next(
+                row for row in world["events"]
+                if row["id"] == thread["reply"]["event"]
+            )
+            for file in event.get("shared_changes", []):
+                if file.get("path") != thread["reply"]["path"]:
+                    continue
+                body = json.loads(lab.DECODE(file["data"]))
+                body.pop("parent_note_path", None)
+                body.pop("parent_note_sha256", None)
+                rewritten = json.dumps(body, indent=2) + "\n"
+                file["data"] = lab.ENCODE(rewritten)
+                file["sha256"] = sha256(rewritten.encode()).hexdigest()
+        failed = review.assess(registration, world, states)
+        self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
 
     def test_scope_without_collection_prefix_is_still_exact_method_evidence(self):
         selector = "supplier-holdings-0e6827a6a411d9a4d35182ef"

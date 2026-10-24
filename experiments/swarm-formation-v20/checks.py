@@ -28,6 +28,7 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(protocol["shared_system"]["initial_agent_records"], 0)
         self.assertFalse(protocol["shared_system"]["dedicated_communication_api"])
         self.assertTrue(protocol["shared_system"]["business_note_workflow_documented_to_subjects"])
+        self.assertTrue(protocol["shared_system"]["business_note_thread_replies_documented_to_subjects"])
         self.assertFalse(protocol["shared_system"]["cross_job_visibility_documented_to_subjects"])
         self.assertFalse(protocol["shared_system"]["direct_cache_write_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["read_path_documented_to_subjects"])
@@ -169,6 +170,8 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("source_resolution_diagnostic", visible)
         self.assertIn("source_resolution.py", visible)
         self.assertIn("archive-routing observation", visible)
+        self.assertIn("follow-up", visible)
+        self.assertIn('sub.add_parser("reply")', visible)
         self.assertIn('path("/registry/cache/reviews")', visible)
         self.assertIn('f"diagnostic-', visible)
 

@@ -25,12 +25,10 @@ Two rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
-[Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its GLM
-R2 campaign submitted 23/24 reviews and failed its frozen all-jobs request/reply
-gate. A post-run construct audit found a stable connected channel, two exact
-dialogue threads and three method adoptions spanning the four agents. This must
-be confirmed under a fresh
-registration. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
+[Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
+latest prospective GLM campaign formed a connected channel with 18 exact
+cross-job reads and seven relays but no verified two-way dialogue. Phase 1 and
+full reciprocal closure therefore remain open. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.
 
 The machine-readable contract is

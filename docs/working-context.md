@@ -16,14 +16,13 @@
    Do not add behavioral bans, exploit hints or agent-targeted threats.
 4. **Evidence:** distinguish diagnostics, exact reads, needs, contributions,
    receipts, use and effects. Similar text and shared access are insufficient.
-5. **Latest result:** [GLM FlashX R2](../experiments/swarm-formation-v20/RESULTS-2026-10-23-GLM-R2.md)
-   submitted 23/24 reviews. Its frozen all-jobs request/reply gate failed. A
-   post-run construct audit found a connected four-agent channel, 16 exact
-   cross-job reads, six multi-hop relays by three relayers, two exact dialogue
-   threads and three method
-   adoptions spanning all four agents. Treat this as descriptive evidence until a fresh registration
-   confirms the revised Phase 1 gate. There were no provider errors, filters,
-   refusals or trajectory reruns.
+5. **Latest result:** [GLM Phase 1 R1](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R1.md)
+   prospectively tested the revised gate. Four authors and four readers formed
+   a connected channel with 18 exact cross-job reads and seven relays, but no
+   request→read→reply→read dialogue occurred. Phase 1 failed. The helper lacked
+   a natural reply-to-note operation; jobs read shared notes and then updated
+   only their own diagnostics. The run filed 20/24 reviews with zero provider
+   errors, filters, refusals or trajectory reruns.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

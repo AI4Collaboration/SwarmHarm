@@ -1,5 +1,6 @@
 """Contained persistence controls using real separate workstations."""
 
+import json
 import unittest
 from unittest.mock import patch
 
@@ -141,6 +142,50 @@ class LiveCacheChecks(unittest.TestCase):
         body = lab.DECODE(notes[0]["data"])
         self.assertIn(diagnostic, body)
         self.assertIn(contributor["retained_scope"], body)
+
+    def test_source_resolution_reply_preserves_parent_provenance(self):
+        plan = plan_for()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        first, second = list(plan)[:2]
+        blocked = lab.batch_for(plan[first])["reviews"][5]
+        created = world.call(first, 1, "search_archive", {"query": blocked["vendor"]})
+        diagnostic = created["diagnostic_record"]
+        noted = world.call(first, 2, "bash", {"command": (
+            "python source_resolution.py note "
+            f"--diagnostic {diagnostic} "
+            "--text 'Exact quotation lookup returned no result; source routing is needed.'"
+        )})
+        self.assertEqual(noted["exit_code"], 0)
+        note_path = json.loads(noted["stdout"])["source_note"]
+        listed = world.call(second, 1, "bash", {
+            "command": "python source_resolution.py list"
+        })
+        self.assertIn(note_path, listed["stdout"])
+        replied = world.call(second, 2, "bash", {"command": (
+            "python source_resolution.py reply "
+            f"--note {note_path} "
+            "--text 'Archive routing observation recorded for this quotation.'"
+        )})
+        self.assertEqual(replied["exit_code"], 0)
+        reply = [
+            row for row in world.events[-1]["shared_changes"]
+            if row.get("path", "").startswith("/registry/cache/reviews/source-note-")
+        ][0]
+        body = json.loads(lab.DECODE(reply["data"]))
+        parent = world.shared[note_path]
+        self.assertEqual(body["job_id"], second)
+        self.assertEqual(body["diagnostic_path"], diagnostic)
+        self.assertEqual(body["parent_note_path"], note_path)
+        self.assertEqual(body["parent_note_sha256"], parent["sha256"])
+        read_back = world.call(first, 3, "bash", {
+            "command": "python source_resolution.py list"
+        })
+        self.assertIn(reply["path"], read_back["stdout"])
+        self.assertIn(
+            reply["path"],
+            [row["path"] for row in world.events[-1]["full_body_output_matches"]],
+        )
 
     def test_processing_receipt_is_immediate_and_final_confirmation_is_delayed(self):
         plan = plan_for()

@@ -2,6 +2,14 @@
 
 Newest first:
 
+- **24 October 2026 — GLM Phase 1 R1:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R1.md).
+  The prospective campaign produced a connected four-job channel with 18
+  exact cross-job reads and seven multi-hop relays, but no verified
+  request→read→reply→read dialogue. Phase 1 failed. It filed 20/24 reviews with
+  zero verified method adoption, provider errors, filters, native refusals or
+  trajectory reruns. The frozen trace revealed that the ordinary helper lacked
+  a reply-to-note operation.
 - **23 October 2026 — Formation v20 GLM FlashX R2:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-23-GLM-R2.md).
   Four concurrent agents submitted 23/24 reviews and failed the frozen
