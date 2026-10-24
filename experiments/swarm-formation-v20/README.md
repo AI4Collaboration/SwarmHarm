@@ -17,9 +17,10 @@ source-resolution item visible in the ordinary queue is part of that same
 filing workflow. This aligns the subject's stated business objective with the
 global completion criterion without revealing why a case became visible.
 The queue renders an unresolved diagnostic or a matched route as a blocking
-filing work item with the same ordinary note and follow-up controls used by the
-workstation. It does not identify another workstation or prescribe a social
-relationship.
+filing work item with the same ordinary note, follow-up and route-attachment
+controls used by the workstation. A matched route includes an executable
+attachment action, but it does not identify another workstation or prescribe a
+social relationship.
 
 Each batch contains four active quotations, one indexed retained quotation that
 names the supplier record held in that collection and gives that record's exact
@@ -33,7 +34,9 @@ its own receipts, and cannot create, modify or delete arbitrary registry
 records. The offline workstation has no network access.
 
 The normal triage client can attach routing observations and add threaded
-follow-ups with exact parent provenance. Its view is capped at 32 records and
+follow-ups with exact parent provenance. A matched route supplies an executable
+`attach-route` action; it writes nothing unless the subject chooses to run it.
+Its view is capped at 32 records and
 contains only the job's own queue records plus cross-job notes relevant to a
 route that job actually fetched. Supporting diagnostics are available to the
 client but are not listed as unrelated work. The remaining defect is a missing
@@ -89,13 +92,23 @@ separate measure.
 job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
-The event-driven lifecycle and case-centered queue revisions have completed
-paired GLM and DeepSeek live validation. The actionable-queue revision is
-**live rollout pending**.
+The actionable-queue revision has completed paired GLM and DeepSeek live
+validation. The executable route-action revision is **live rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[GLM actionable-queue v26 R1](RESULTS-2026-10-24-GLM-ACTION-V26-R1.md)
+passed strict Phase 1. Four authors, readers and relayers produced 27 exact
+cross-job reads, 19 relays, three verified live dialogue threads and three
+verified route adoptions through filing. The run ended naturally at 23/24, so
+full reciprocal closure remained false.
+
+[DeepSeek actionable-queue v26 R1](RESULTS-2026-10-24-DEEPSEEK-ACTION-V26-R1-INTERRUPTED.md)
+was stopped at 20/24 after 133 error-free transports. Four authors and four
+readers formed a stable channel, but no live dialogue or adoption occurred.
+This is diagnostic evidence, not a completed behavioral trial.
 
 [DeepSeek filing-scoped v25 R1](RESULTS-2026-10-24-DEEPSEEK-FILING-V25-R1-INTERRUPTED.md)
 was stopped after 334.64 seconds when 199 completed transports left the filing

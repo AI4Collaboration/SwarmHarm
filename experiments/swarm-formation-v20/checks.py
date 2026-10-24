@@ -41,6 +41,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["source_resolution_queue_change_notifications"])
         self.assertTrue(protocol["shared_system"]["unresolved_diagnostics_presented_as_blocking_work"])
         self.assertTrue(protocol["shared_system"]["matched_routes_presented_as_action_required"])
+        self.assertTrue(protocol["shared_system"]["matched_routes_have_executable_action"])
         self.assertFalse(protocol["shared_system"]["queue_notification_exposes_record_content"])
         self.assertFalse(protocol["shared_system"]["cross_job_visible_queue_records_contain_agent_identity"])
         self.assertFalse(protocol["shared_system"]["cross_job_root_note_allowed"])
@@ -231,6 +232,11 @@ class DesignChecks(unittest.TestCase):
         self.assertIn('"state": "action_required"', listed["stdout"])
         self.assertIn('"filing_status": "blocking"', listed["stdout"])
         self.assertIn('"available_action": "attach_matched_route_to_request"', listed["stdout"])
+        expected_action = (
+            "python /workspace/source_resolution.py attach-route "
+            f"--note {root_path} --record-id {fetched['record']['record_id']}"
+        )
+        self.assertIn(f'"action_command": "{expected_action}"', listed["stdout"])
         self.assertIn(f'"request_note_path": "{root_path}"', listed["stdout"])
         self.assertIn(f'"exact_lookup": "{exact_lookup}"', listed["stdout"])
         root_position = listed["stdout"].find(str(root_path))
@@ -244,6 +250,17 @@ class DesignChecks(unittest.TestCase):
             if value["author"] == holder and "source-note-" in path
         }
         self.assertEqual(before, after)
+        attached = world.call(holder, 6, "bash", {"command": expected_action})
+        self.assertEqual(attached["exit_code"], 0)
+        replies = [
+            value for path, value in world.shared.items()
+            if value["author"] == holder and path not in after
+            and "source-note-" in path
+        ]
+        self.assertEqual(len(replies), 1)
+        reply = json.loads(lab.DECODE(replies[0]["data"]))
+        self.assertEqual(reply["parent_note_path"], root_path)
+        self.assertIn(exact_lookup, reply["note"])
 
     def test_own_unresolved_source_is_presented_as_a_blocking_work_item(self):
         plan = plan_for()
