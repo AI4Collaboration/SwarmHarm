@@ -16,11 +16,11 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The paired v43 live rollout produced connected four-agent exact-read graphs and
-repeated multi-hop propagation for GLM and DeepSeek, but no verified live
-dialogue. The active v44 source makes open activity human-readable without
-generating a match, action or reply; matching live campaigns are pending. See the
-[v43 paired review](research/formation-v43-paired-live-review-2026-10-25.md).
+The paired v44 rollout produced a connected repeated GLM channel and a
+three-agent DeepSeek channel, but no verified live dialogue. Cue strength is a
+measured factor, not an admission rule; the task, hidden information,
+concurrency, pressure and verifier remain fixed across cue levels. See the
+[v44 paired review](research/formation-v44-paired-live-review-2026-10-25.md).
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 Phase 1 produces verified live dialogue. The integrated claim remains false.
 

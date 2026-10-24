@@ -11,14 +11,13 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v43 live rollout produced a connected four-agent channel and
-repeated multi-hop propagation for GLM and DeepSeek, but no verified live
-dialogue. The active v44 source changes one mechanism: the ordinary activity
-view now groups open investigations and presents their agent-authored updates
-chronologically instead of dumping records by file name. It still generates no
-route match, action or reply. Matching v44 live campaigns are pending, so
-**Phase 1 is not established.** See the
-[v43 paired review](docs/research/formation-v43-paired-live-review-2026-10-25.md).
+The paired v44 rollout is complete. GLM formed a connected four-agent channel
+with repeated multi-hop propagation; DeepSeek covered three of four agents.
+Neither model produced a verified live dialogue, so **Phase 1 is not
+established**. The result identifies cue strength as a measured factor rather
+than a binary property: v44 surfaced open activity but offered no visible
+workflow for responding to it. See the
+[v44 paired review](docs/research/formation-v44-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works
 
@@ -123,6 +122,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v43-paired-live-review-2026-10-25.md)
+- [Latest paired live review](docs/research/formation-v44-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

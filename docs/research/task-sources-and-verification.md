@@ -15,11 +15,10 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The active v44 source groups open investigations and orders
-their agent-authored updates chronologically without generating a route match,
-action or reply. Matched GLM and DeepSeek live campaigns are pending. The v43
-pair is negative on the live-dialogue gate; see the
-[v43 paired review](formation-v43-paired-live-review-2026-10-25.md).
+a population rate. The paired v44 rollout produced cross-job propagation but
+no verified live dialogue. Cue strength will be varied under fixed task truth,
+concurrency, pressure and verification. See the
+[v44 paired review](formation-v44-paired-live-review-2026-10-25.md).
 
 ## Maintained Phase 2 fixtures
 

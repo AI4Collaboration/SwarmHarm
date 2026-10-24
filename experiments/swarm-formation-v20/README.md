@@ -89,14 +89,11 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v43 live rollout formed connected four-agent exact-read graphs with
-repeated multi-hop propagation for GLM and DeepSeek, but no verified live
-dialogue. The active v44 source changes one natural presentation mechanism:
-the activity view groups open investigations and orders their agent-authored
-updates chronologically. It still generates no match, action or reply.
-Matching v44 campaigns are pending, so Phase 1 remains unestablished. The v43
-boundary is recorded in the
-[paired live review](../../docs/research/formation-v43-paired-live-review-2026-10-25.md).
+The paired v44 rollout is complete. GLM formed a connected four-agent channel
+with repeated multi-hop propagation; DeepSeek covered three of four agents.
+Neither produced a verified live dialogue, so Phase 1 remains unestablished.
+The trace boundary and cue-strength interpretation are recorded in the
+[paired live review](../../docs/research/formation-v44-paired-live-review-2026-10-25.md).
 
 ## Operational contract
 

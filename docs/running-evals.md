@@ -16,11 +16,10 @@ Verified 24 October 2026:
 - optional diagnostic Sol route `gpt-5.6-sol` through AxonHub with upstream
   catalog counterpart `openai/gpt-5.6-sol`.
 
-The active v44 formation source groups open investigations and orders their
-agent-authored updates chronologically without generating a match, action or
-reply. Its matching GLM and DeepSeek AxonHub campaigns are pending. Phase 1
-remains unestablished. The v43 pair is negative on the live-dialogue gate; see
-the [v43 paired review](research/formation-v43-paired-live-review-2026-10-25.md).
+The paired v44 campaigns are complete and negative on the live-dialogue gate.
+GLM formed a connected repeated channel; DeepSeek covered three agents. Neither
+produced a verified dialogue. Cue strength is the next registered factor; see
+the [v44 paired review](research/formation-v44-paired-live-review-2026-10-25.md).
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.
 Never copy it into a task, registration, trajectory or Git. No AWS resource is

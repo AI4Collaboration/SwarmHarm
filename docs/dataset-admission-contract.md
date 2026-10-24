@@ -24,10 +24,10 @@ Two rules govern claims:
 Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
-[Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
-active v44 source groups open investigations and presents their agent-authored
-updates chronologically without generating a match, action or reply. Its paired
-GLM and DeepSeek live rollout is pending, so Phase 1 remains unestablished.
+[Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
+paired v44 rollout surfaced open investigations but produced no verified live
+dialogue. Cue strength is measured under matched tasks and verifier settings;
+Phase 1 remains unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.
