@@ -105,6 +105,8 @@ class CollectorChecks(unittest.TestCase):
     def test_collector_has_one_start_barrier_then_resubmits_each_live_actor(self):
         source = inspect.getsource(run.collect)
         self.assertIn("first_request_barrier=Barrier(len(active))", source)
+        self.assertIn("provider_slots=Semaphore(budget['provider_concurrency'])", source)
+        self.assertIn("with provider_slots", source)
         self.assertIn("future=next(as_completed(tuple(futures)))", source)
         self.assertNotIn("for future in as_completed(futures)", source)
         self.assertNotIn("next_admissions", source)
@@ -312,6 +314,35 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 with self.assertRaisesRegex(ValueError, "every context active together"):
                     run.prepare(root, registration, key, 4, 1)
+
+    def test_provider_concurrency_is_independent_of_active_agent_cohort(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "study"
+            registration = Path(temporary) / "registration"
+            key = Path(temporary) / "key"
+            key.write_text("test-key")
+            routes = {
+                "checked_at": "test", "model": "deepseek/deepseek-v4.1-flash-1017",
+                "upstream_model": "deepseek/deepseek-v4.1-flash-1017",
+                "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
+                "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
+            }
+            with patch.object(run, "verify_routes", return_value=routes):
+                run.prepare(root, registration, key, 4, 4, 1, run_controls=False)
+            reg = run.load(root / "registration.json")
+            self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
+            self.assertEqual(reg["budget"]["provider_concurrency"], 1)
+            self.assertTrue(reg["connected_protocol"]["all_subjects_active_until_global_terminal"])
+
+        for invalid in (0, 5):
+            with self.subTest(invalid=invalid), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary) / "study"
+                registration = Path(temporary) / "registration"
+                key = Path(temporary) / "key"
+                key.write_text("test-key")
+                with patch.object(run, "verify_routes", return_value=routes):
+                    with self.assertRaisesRegex(ValueError, "provider concurrency"):
+                        run.prepare(root, registration, key, 4, 4, invalid, run_controls=False)
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ Verified 24 October 2026:
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
 - exact routes `deepseek/deepseek-v4.1-flash-1017` and
   `z-ai/glm-5.3-flashx`; and
-- exact Sol route `gpt-6.1-sol` through AxonHub with upstream catalog
-  counterpart `openai/gpt-6.1-sol`.
+- optional diagnostic Sol route `gpt-5.6-sol` through AxonHub with upstream
+  catalog counterpart `openai/gpt-5.6-sol`.
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.
 Never copy it into a task, registration, trajectory or Git. No AWS resource is
@@ -55,18 +55,22 @@ $PY experiments/swarm-formation-v20/run.py \
   --phase prepare --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
-  --population 4 --active-contexts 4
+  --population 4 --active-contexts 4 --provider-concurrency 4
 ```
 
 Preparation verifies the exact model in the upstream and authenticated AxonHub
 catalogs. When their namespaces differ, pass `--upstream-model-id`; for example,
-Sol uses `--model-id gpt-6.1-sol --upstream-model-id openai/gpt-6.1-sol`.
+Sol uses `--model-id gpt-5.6-sol --upstream-model-id openai/gpt-5.6-sol`.
 Preparation then assembles one Harbor task per agent, runs offline controls and seals
 all source and input hashes. Inspect the assembled inputs, then commit and push
 the registration. Canonical formation sets active contexts equal to population:
 the collector releases the full population through one start barrier and never
 admits replacements in stages. After preparation, edit no frozen file. If anything changes,
 discard that unused registration and prepare a fresh one.
+
+`--provider-concurrency` controls only simultaneous AxonHub HTTP requests. It
+may be lower than four to respect route limits; all four agent contexts still
+enter together, remain active and share live state.
 
 Collection refuses to start unless local HEAD, remote `main`, registration files
 and all sealed hashes match:

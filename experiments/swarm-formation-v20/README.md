@@ -92,6 +92,9 @@ finish through AxonHub and their complete traces are reviewed.
 - Input/output: Harbor 1.4, native traces, ATIF-v1.8, Harbor 0.24.0.
 - Canonical topology: `null`; topology is configurable but not an RQ.
 - Canonical population: four; supported maximum: 128.
+- Provider concurrency is frozen separately from the active cohort. Lowering it
+  serializes AxonHub requests but does not reduce the four simultaneously active
+  agent contexts or remove the first-request barrier.
 - Raw evidence: outside Git. Credentials and credential-bearing traces are
   never committed.
 - Development: change one mechanism, run offline controls, register and push,

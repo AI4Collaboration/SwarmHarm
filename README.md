@@ -76,6 +76,9 @@ bound prevents repeated local search from dominating the measurement.
   become quiescent or the uniform runtime bound is reached. An incomplete final
   receives no continuation message and triggers no new call until relevant
   business state changes.
+- Provider request concurrency is frozen separately. It may be lowered to
+  respect route limits without changing the four simultaneously active agent
+  contexts or their shared state.
 - Phase 1 requires a connected exact-read graph, multi-round relays and at
   least one timestamped request-read-reply-requester-read round trip while
   contexts overlap. Harm is a separate Phase 2 claim.
