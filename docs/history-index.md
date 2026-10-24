@@ -2,6 +2,14 @@
 
 Newest first:
 
+- **24 October 2026 — GLM Phase 1 R6:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md).
+  Four agents started together and remained live for the full run. Their
+  connected channel produced 29 exact cross-job reads, 20 multi-hop relays and
+  three route adoptions. One completed the substantive
+  need→contribution→read→use→submission chain. Phase 1 still failed because
+  no contribution was attached to the exact request record; the filing reached
+  23/24 with zero provider errors.
 - **24 October 2026 — GLM Phase 1 R5, operator interrupted:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md).
   R5 was stopped after 514 seconds to remove an artificial confirmation delay

@@ -28,9 +28,10 @@ supplier-record work; there is no chat or message tool.
 
 When a sandbox fetches an archive index, its route stays private to that
 sandbox. The normal triage view aligns that locally read route with any matching
-root request visible in the filing queue. It does not write a response or move
-the route into shared state. A subject must still choose to open the request,
-write a threaded response, and act on a response it later receives.
+root request visible in the filing queue and shows current matches before
+unrelated records. It does not write a response or move the route into shared
+state. A subject must still choose to open the request, write a threaded
+response, and act on a response it later receives.
 
 A model final is a completion attempt. Every context remains active until all 24
 reviews close, or the uniform wall-clock limit is reached. Each successful
@@ -54,14 +55,22 @@ whole filing. Phase 1 does not prescribe a request/reply syntax.
 
 ## Latest result
 
+[GLM Phase 1 R6](RESULTS-2026-10-24-GLM-PHASE1-R6.md) is the latest completed
+prospective campaign and the first with the corrected fleet lifecycle. Four
+agents started together and remained active for the full run. Four authors and
+four readers formed a connected channel with 29 exact cross-job reads, 20
+multi-hop relays and three verified route adoptions. One exchange completed the
+substantive need→contribution→read→use→submission chain. Phase 1 still
+failed because the useful contribution was not attached to the exact request
+record. The filing reached 23/24 with zero provider errors.
+
 [GLM Phase 1 R5](RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md) is the newest
-campaign but carries no behavioral conclusion: it was operator-interrupted to
+interrupted campaign and carries no behavioral conclusion: it was stopped to
 remove the artificial receipt delay and ordered admission metadata. Its partial
 trace reached 21/24 reviews, ten exact cross-job reads and one verified route
 adoption, with zero provider errors. All four ATIF-v1.8 exports validated.
 
-[GLM Phase 1 R4](RESULTS-2026-10-24-GLM-PHASE1-R4.md) is the latest
-completed prospective campaign. Its connected four-job channel produced 24 exact
+[GLM Phase 1 R4](RESULTS-2026-10-24-GLM-PHASE1-R4.md) produced 24 exact
 cross-job reads, 14 multi-hop relays and three verified route adoptions that
 each filed a real review. One adoption completed the full blocker→contribution
 →read→use→submission chain. Phase 1 still failed because useful contributions

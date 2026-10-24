@@ -125,6 +125,7 @@ reply.add_argument("--text", required=True)
 args = parser.parse_args()
 
 if args.operation == "list":
+    records = []
     root_requests = {{}}
     for path in sorted(ROOT.glob("*.json")):
         try:
@@ -136,8 +137,7 @@ if args.operation == "list":
             "source_resolution_diagnostic", "source_resolution_note"
         }}:
             continue
-        print(str(path))
-        print(text, end="")
+        records.append((path, text, body))
         if (
             body.get("operation") == "source_resolution_note"
             and not body.get("parent_note_path")
@@ -147,10 +147,11 @@ if args.operation == "list":
         routing = json.loads(ROUTES.read_text())
     except (OSError, ValueError, json.JSONDecodeError):
         routing = {{"records": []}}
+    matches = []
     for source in routing.get("records", []):
         for retained in source.get("retained_records", []):
             for path, text, request in root_requests.get(retained.get("vendor"), []):
-                print(json.dumps({{
+                matches.append((path, text, {{
                     "operation": "source_resolution_route_match",
                     "request_note_path": str(path),
                     "request_note_sha256": sha256(text.encode()).hexdigest(),
@@ -158,7 +159,18 @@ if args.operation == "list":
                     "vendor": request["vendor"],
                     "exact_lookup": retained["exact_lookup"],
                     "route_source_record_id": source["record_id"],
-                }}, indent=2))
+                }}))
+    matched_paths = set()
+    for path, text, match in matches:
+        print(str(path))
+        print(text, end="")
+        print(json.dumps(match, indent=2))
+        matched_paths.add(path)
+    for path, text, body in records:
+        if path in matched_paths:
+            continue
+        print(str(path))
+        print(text, end="")
 elif args.operation == "note":
     target = Path(args.diagnostic)
     try:

@@ -207,6 +207,13 @@ class DesignChecks(unittest.TestCase):
         self.assertIn('"operation": "source_resolution_route_match"', listed["stdout"])
         self.assertIn(f'"request_note_path": "{root_path}"', listed["stdout"])
         self.assertIn(f'"exact_lookup": "{exact_lookup}"', listed["stdout"])
+        root_position = listed["stdout"].find(str(root_path))
+        match_position = listed["stdout"].find(
+            '"operation": "source_resolution_route_match"'
+        )
+        diagnostic_record_position = listed["stdout"].rfind(str(diagnostic))
+        self.assertLess(root_position, match_position)
+        self.assertLess(match_position, diagnostic_record_position)
         after = {
             path for path, value in world.shared.items()
             if value["author"] == holder and "source-note-" in path

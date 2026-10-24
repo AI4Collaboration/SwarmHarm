@@ -9,20 +9,22 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
-[GLM Phase 1 R5](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
-is the newest campaign but was operator-interrupted for a lifecycle correction,
-so it carries no behavioral conclusion. [R4](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R4.md)
-is the latest completed prospective campaign. Four authors and four readers formed a
-connected channel with 24 exact cross-job reads and 14 multi-hop relays. Three
-routes learned from other jobs were adopted and each produced a verified review
-submission. One exchange completed the full blocker→contribution→read→use→
-submission chain.
+[GLM Phase 1 R6](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md)
+is the latest completed prospective campaign and the first with the corrected
+fleet lifecycle. Four agents started together and remained active for the full
+run. Four authors and four readers formed a connected channel with 29 exact
+cross-job reads and 20 multi-hop relays. Three routes learned from other jobs
+were adopted and produced verified review submissions. One exchange completed
+the substantive need→contribution→read→use→submission chain.
 
-Phase 1 still failed its strict dialogue gate: useful contributions were added
-to the diagnostic or later follow-ups instead of being threaded to the original
-request note. The campaign filed 23/24 reviews. All four ATIF-v1.8 exports
-passed native-history validation. This is not a harm, intent or population-rate
-claim.
+Phase 1 still failed its strict dialogue gate because the useful contribution
+was not attached to the exact request record. The campaign filed 23/24 reviews
+with zero provider errors. All four ATIF-v1.8 exports passed native-history
+validation. This is not a harm, intent or population-rate claim.
+
+[R5](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
+was interrupted for the lifecycle correction and carries no behavioral
+conclusion. Earlier completed evidence remains in the history index.
 
 [Formation v20 GLM FlashX R2](experiments/swarm-formation-v20/RESULTS-2026-10-23-GLM-R2.md)
 failed its frozen all-jobs request/reply gate. A construct review found that gate
@@ -106,7 +108,7 @@ python3 scripts/check_dataset_admission_contract.py
 ## Maintained records
 
 - [Formation environment](experiments/swarm-formation-v20/README.md)
-- [Newest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
+- [Newest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md)
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Run guide](docs/running-evals.md)
 - [Working context](docs/working-context.md)
