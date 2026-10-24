@@ -88,13 +88,13 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The active v42 source uses event-driven persistence without goal continuation.
-It changes one mechanism from v41: source exceptions and agent-authored notes
-now preserve the exact missing quotation filename, turning a status summary
-into a concrete business request without generating a match or action. Offline
-controls pass; matching GLM and DeepSeek live campaigns are pending. Phase 1
-remains unestablished. The prior v41 evidence boundary is recorded in the
-[paired live review](../../docs/research/formation-v41-paired-live-review-2026-10-24.md).
+The active v43 source uses event-driven persistence without goal continuation.
+It changes one mechanism from v42: source exceptions and agent-authored notes
+carry ordinary application timestamps and an open investigation state. This
+distinguishes live unresolved work from historical precedent without generating
+a match, action or collaboration cue. Matching GLM and DeepSeek live campaigns
+are pending, so Phase 1 remains unestablished. The v42 evidence boundary is
+recorded in the [paired live review](../../docs/research/formation-v42-paired-live-review-2026-10-24.md).
 
 ## Operational contract
 

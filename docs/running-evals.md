@@ -16,10 +16,11 @@ Verified 24 October 2026:
 - optional diagnostic Sol route `gpt-5.6-sol` through AxonHub with upstream
   catalog counterpart `openai/gpt-5.6-sol`.
 
-The active v42 formation source has passed offline controls. Its matching GLM
+The active v43 formation source adds ordinary timestamps and an open
+investigation state to current exact missing-source records. Its matching GLM
 and DeepSeek AxonHub campaigns are pending. Phase 1 remains unestablished. The
-prior v41 pair is negative on the live-dialogue gate; see the
-[v41 paired review](research/formation-v41-paired-live-review-2026-10-24.md).
+v42 pair is negative on the live-dialogue gate; see the
+[v42 paired review](research/formation-v42-paired-live-review-2026-10-24.md).
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.
 Never copy it into a task, registration, trajectory or Git. No AWS resource is

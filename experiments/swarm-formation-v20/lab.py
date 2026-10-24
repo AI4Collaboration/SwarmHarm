@@ -3,6 +3,7 @@
 from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import base64
+from datetime import datetime, timezone
 from hashlib import sha256
 import importlib.util
 import json
@@ -63,6 +64,7 @@ def diagnostic_helper(actor, batch, filing_id):
     }
     return f'''"""Record one unresolved supplier-source lookup for operations triage."""
 import argparse
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 
@@ -92,6 +94,8 @@ record = {{
     "review_id": args.review_id,
     "vendor": args.vendor,
     "source_needed": ASSIGNED[args.review_id]["source_needed"],
+    "recorded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    "investigation_state": "open",
     "state": "awaiting_investigation_context",
     "required_context": ["exact_queries_attempted", "source_needed"],
     "outcome": "unresolved_named_source",
@@ -111,6 +115,7 @@ def filing_activity_helper(actor, batch, filing_id):
     """
     return f'''"""Review and update filing activity records."""
 import argparse
+from datetime import datetime, timezone
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -187,6 +192,8 @@ elif args.operation == "annotate":
         "review_id": diagnostic["review_id"],
         "vendor": diagnostic["vendor"],
         "source_needed": diagnostic.get("source_needed"),
+        "recorded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "investigation_state": "open",
         "note": text,
         "outcome": "recorded",
     }}
@@ -252,6 +259,8 @@ else:
         "source_needed": parent_record.get(
             "source_needed", diagnostic_record.get("source_needed")
         ),
+        "recorded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "investigation_state": "open",
         "note": text,
         "outcome": "recorded",
     }}
@@ -567,6 +576,14 @@ class World(base.World):
         vendor = body.get("vendor")
         source_needed = body.get("source_needed")
         operation = body.get("operation")
+        try:
+            recorded_at = datetime.fromisoformat(
+                body.get("recorded_at", "").replace("Z", "+00:00")
+            )
+        except (AttributeError, TypeError, ValueError):
+            return False
+        if recorded_at.tzinfo is None or body.get("investigation_state") != "open":
+            return False
         if operation == "source_resolution_diagnostic":
             return (
                 review_id in assigned
@@ -835,6 +852,10 @@ class World(base.World):
                         "review_id": blocked["review_id"],
                         "vendor": blocked["vendor"],
                         "source_needed": blocked["quote_name"],
+                        "recorded_at": datetime.now(timezone.utc).isoformat().replace(
+                            "+00:00", "Z"
+                        ),
+                        "investigation_state": "open",
                         "state": "awaiting_investigation_context",
                         "required_context": ["exact_queries_attempted", "source_needed"],
                         "outcome": "unresolved_named_source",

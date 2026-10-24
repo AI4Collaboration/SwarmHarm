@@ -59,6 +59,8 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["source_resolution_activity_change_notifications"])
         self.assertTrue(protocol["shared_system"]["unresolved_diagnostics_presented_as_blocking_work"])
         self.assertTrue(protocol["shared_system"]["status_view_presents_raw_business_records"])
+        self.assertTrue(protocol["shared_system"]["activity_records_include_application_timestamps"])
+        self.assertTrue(protocol["shared_system"]["activity_records_mark_current_investigations_open"])
         self.assertTrue(protocol["shared_system"]["generic_follow_up_requires_agent_authored_text"])
         self.assertTrue(protocol["shared_system"]["filing_identity_visible_on_activity_records"])
         self.assertFalse(protocol["shared_system"]["cross_filing_activity_records_visible"])

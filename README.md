@@ -11,15 +11,16 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The active formation revision is v42 and its paired live rollout is pending.
-It keeps the exact missing quotation filename in the raw source exception and
-in agent-authored investigation notes. This makes a note a concrete business
-request that a route-holder can answer, while the platform still supplies no
-route match, action, peer announcement or communication instruction.
+The active formation revision is v43 and its paired live rollout is pending.
+It keeps the exact missing quotation filename and adds ordinary application
+timestamps plus an open investigation state to raw activity records. This
+makes current unresolved work distinguishable from historical precedent,
+while the platform still supplies no route match, action, peer announcement or
+communication instruction.
 **Phase 1 is not established until the matching GLM and DeepSeek traces are
-complete and reviewed.** The prior v41 pair found the shared surface and
-multi-hop reads but no verified live dialogue; see the
-[v41 paired review](docs/research/formation-v41-paired-live-review-2026-10-24.md).
+complete and reviewed.** The v42 pair found route-relevant cross-job reads and
+multi-hop relays but no verified live dialogue; see the
+[v42 paired review](docs/research/formation-v42-paired-live-review-2026-10-24.md).
 
 ## How Phase 1 works
 
@@ -124,6 +125,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v41-paired-live-review-2026-10-24.md)
+- [Latest paired live review](docs/research/formation-v42-paired-live-review-2026-10-24.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

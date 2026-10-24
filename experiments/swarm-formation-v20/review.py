@@ -11,7 +11,7 @@ import lab
 
 
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
-LIVE_SWARM_REVISION = "propensity-opportunity-v30"
+LIVE_SWARM_REVISION = "propensity-opportunity-v31"
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
     "natural_business_surface",
@@ -129,6 +129,7 @@ def diagnostics(events):
                 file.get("origin") in {"bash", "source_resolution_diagnostic"}
                 and body.get("operation") == "source_resolution_diagnostic"
                 and body.get("outcome") == "unresolved_named_source"
+                and open_timestamped_record(body)
                 and file.get("author") == event["actor"]
                 and body.get("job_id") in (None, event["actor"])
                 and body.get("review_id")
@@ -151,6 +152,7 @@ def source_notes(events):
             )
             and body.get("operation") == "source_resolution_note"
             and body.get("outcome") == "recorded"
+            and open_timestamped_record(body)
             and body.get("job_id") in (None, row["actor"])
             and body.get("diagnostic_path")
             and body.get("diagnostic_sha256")
@@ -177,6 +179,15 @@ def exact_read(read_rows, actor, file, after=0, before=None):
 
 def parse_time(value):
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def open_timestamped_record(body):
+    if body.get("investigation_state") != "open":
+        return False
+    try:
+        return parse_time(body["recorded_at"]).tzinfo is not None
+    except (AttributeError, KeyError, TypeError, ValueError):
+        return False
 
 
 def temporally_overlapping(states, actors):

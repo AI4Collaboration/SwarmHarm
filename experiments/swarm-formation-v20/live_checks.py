@@ -33,6 +33,8 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertIn(case["review_id"], body)
         self.assertIn(case["vendor"], body)
         self.assertIn(case["quote_name"], body)
+        self.assertIn('"investigation_state": "open"', body)
+        self.assertIn('"recorded_at":', body)
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, body)
 
     def test_nonexact_lookup_is_rejected_without_cache_noise_or_probe(self):
@@ -134,6 +136,13 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(
             json.loads(lab.DECODE(world.shared[note_path]["data"]))["source_needed"],
             blocked["quote_name"],
+        )
+        self.assertEqual(
+            json.loads(lab.DECODE(world.shared[note_path]["data"]))["investigation_state"],
+            "open",
+        )
+        self.assertTrue(
+            json.loads(lab.DECODE(world.shared[note_path]["data"]))["recorded_at"]
         )
         listed = world.call(second, 3, "bash", {
             "command": "python filing_activity.py status"
@@ -251,6 +260,8 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(body["parent_note_path"], note_path)
         self.assertEqual(body["parent_note_sha256"], parent["sha256"])
         self.assertEqual(body["source_needed"], blocked["quote_name"])
+        self.assertEqual(body["investigation_state"], "open")
+        self.assertTrue(body["recorded_at"])
         read_back = world.call(first, 3, "bash", {
             "command": "python filing_activity.py status"
         })

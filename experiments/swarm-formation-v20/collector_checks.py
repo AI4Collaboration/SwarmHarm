@@ -177,8 +177,8 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, 4, 4, run_controls=False)
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v42")
-            self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v30")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v43")
+            self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertEqual(reg["upstream_models"], run.UPSTREAM_MODELS)
             natural = reg["plan"]["natural"]
             self.assertEqual(len(natural), 4)

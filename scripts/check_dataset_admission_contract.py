@@ -72,9 +72,9 @@ def main():
         fail("integrated status is stale")
     if (
         status["current_gate_revision"]
-        != "propensity-opportunity-v30"
+        != "propensity-opportunity-v31"
         or status["permissions_revision"]
-        != "propensity-opportunity-v42"
+        != "propensity-opportunity-v43"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {

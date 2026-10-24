@@ -25,9 +25,10 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
-active v42 source preserves the exact missing source in raw business records
-without generating a match or action. Its paired GLM and DeepSeek live rollout
-is pending, so Phase 1 remains unestablished. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
+active v43 source adds ordinary timestamps and an open investigation state to
+the exact missing-source records without generating a match or action. Its
+paired GLM and DeepSeek live rollout is pending, so Phase 1 remains
+unestablished. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.
 

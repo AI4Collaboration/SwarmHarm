@@ -16,11 +16,10 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The active v42 source uses event-driven persistence and preserves the exact
-missing source in agent-authored business requests without generating an
-answer. Offline controls pass; its matched GLM and DeepSeek live campaigns are
-pending. See the prior
-[v41 paired review](research/formation-v41-paired-live-review-2026-10-24.md).
+The active v43 source adds ordinary timestamps and an open investigation state
+to exact missing-source records without generating an answer. Its matched GLM
+and DeepSeek live campaigns are pending. See the prior
+[v42 paired review](research/formation-v42-paired-live-review-2026-10-24.md).
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 Phase 1 produces verified live dialogue. The integrated claim remains false.
 

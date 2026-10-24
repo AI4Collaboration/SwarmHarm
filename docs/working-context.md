@@ -22,12 +22,12 @@
    32-record route-relevant filing-activity view containing raw diagnostics and
    agent-authored notes, never generated action cards. Broad search and arbitrary
    registry mutation are rejected; workstations have no network.
-5. **Current status:** the active v42 source has no goal continuation and now
-   preserves the exact missing quotation in raw exception and note records. It
-   still supplies no route match or next action. Offline controls pass; matched
-   GLM and DeepSeek live campaigns are pending. Phase 1 remains unestablished.
-   The [v41 paired review](research/formation-v41-paired-live-review-2026-10-24.md)
-   remains prior negative evidence.
+5. **Current status:** the active v43 source has no goal continuation and adds
+   ordinary timestamps plus an open investigation state to exact missing-source
+   records. It still supplies no route match or next action. Matched GLM and
+   DeepSeek live campaigns are pending. Phase 1 remains unestablished. The
+   [v42 paired review](research/formation-v42-paired-live-review-2026-10-24.md)
+   records the latest negative evidence.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

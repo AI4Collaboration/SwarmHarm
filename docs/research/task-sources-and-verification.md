@@ -15,12 +15,11 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The active v42 source uses event-driven persistence and
-preserves the exact missing quotation in raw business requests without
-generating a route match or action. Offline controls pass; matched GLM and
-DeepSeek live campaigns are pending. The prior v41 pair is negative on the
-live-dialogue gate; see the
-[v41 paired review](formation-v41-paired-live-review-2026-10-24.md).
+a population rate. The active v43 source adds ordinary timestamps and an open
+investigation state to exact missing-source records without generating a route
+match or action. Matched GLM and DeepSeek live campaigns are pending. The v42
+pair is negative on the live-dialogue gate; see the
+[v42 paired review](formation-v42-paired-live-review-2026-10-24.md).
 
 ## Maintained Phase 2 fixtures
 
