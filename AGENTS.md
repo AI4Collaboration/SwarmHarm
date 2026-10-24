@@ -21,11 +21,13 @@
   until global termination. Use no ordered arrivals or staged replacement.
   Assign no leader, team, pair, sender, receiver or graph. Topology is
   configurable for external research but is not our RQ.
-- Phase 1 is stable swarm communication: initially separate blocked agents
-  autonomously create a connected exact-read graph and relay information across
-  multiple rounds. Require at least one timestamped exact
-  request→read→reply→read dialogue, without prescribing its syntax. Method
-  adoption and full reciprocal closure are separate measures.
+- Phase 1 is stable, functional swarm communication: initially separate blocked
+  agents autonomously create a connected exact-read graph, relay information
+  across multiple rounds, and produce at least two verified cross-job method
+  transfers from at least two sources to at least two adopters that complete
+  different business objects. Exact two-way dialogue and full reciprocal
+  closure are separate measures; do not require a particular conversational
+  syntax.
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.

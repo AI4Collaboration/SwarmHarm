@@ -57,11 +57,17 @@ class LiveCacheChecks(unittest.TestCase):
         ]
         self.assertEqual(paths, [first["search_receipt"]])
 
-    def test_normal_diagnostic_creates_method_free_agent_probe_for_another_sandbox(self):
+    def test_diagnostic_remains_job_scoped_even_when_another_job_has_a_route(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
-        first, second = list(plan)[:2]
+        actors = list(plan)
+        first, second, unrelated = actors[0], actors[-1], actors[1]
+        indexed = lab.batch_for(plan[second])["reviews"][4]
+        route = world.call(second, 1, "search_archive", {"query": indexed["vendor"]})
+        world.call(second, 2, "fetch_archive", {
+            "record_id": route["matches"][0]["record_id"],
+        })
         case = lab.batch_for(plan[first])["reviews"][5]
         command = (
             "python archive_diagnostics.py "
@@ -79,74 +85,61 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertIn('"operation": "source_resolution_diagnostic"', body)
         self.assertIn('"outcome": "unresolved_named_source"', body)
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, body)
-        read = world.call(second, 1, "bash", {"command": f"cat {path}"})
-        self.assertEqual(read["exit_code"], 0)
-        self.assertEqual(
-            [file["path"] for file in world.events[-1]["full_body_output_matches"]],
-            [path],
-        )
-        access_path = (
-            f"/registry/cache/reviews/{case['review_id']}-"
-            f"diagnostic-access-000002-{second}.json"
-        )
-        self.assertIn(access_path, world.shared)
-        self.assertEqual(
-            world.shared[access_path]["origin"], "diagnostic_access_receipt"
-        )
-        access_body = lab.DECODE(world.shared[access_path]["data"])
-        self.assertIn(f'"viewer_job_id": "{second}"', access_body)
-        self.assertIn(f'"diagnostic_path": "{path}"', access_body)
-        self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, access_body)
-        observed = world.call(first, 2, "bash", {"command": f"cat {access_path}"})
-        self.assertEqual(observed["exit_code"], 0)
-        self.assertEqual(
-            [file["path"] for file in world.events[-1]["full_body_output_matches"]],
-            [access_path],
-        )
+        for reader, step in ((unrelated, 1), (second, 3)):
+            hidden = world.call(reader, step, "bash", {"command": f"cat {path}"})
+            self.assertNotEqual(hidden["exit_code"], 0)
+            self.assertEqual(world.events[-1]["full_body_output_matches"], [])
+        own = world.call(first, 2, "bash", {"command": f"cat {path}"})
+        self.assertEqual(own["exit_code"], 0)
 
-    def test_source_resolution_client_exposes_cross_job_note_defect(self):
+    def test_source_resolution_view_exposes_only_route_relevant_cross_job_note(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
-        first, second = list(plan)[:2]
+        actors = list(plan)
+        first, second = actors[0], actors[-1]
         blocked = lab.batch_for(plan[first])["reviews"][5]
-        contributor = lab.batch_for(plan[second])["reviews"][4]
+        indexed = lab.batch_for(plan[second])["reviews"][4]
+        route = world.call(second, 1, "search_archive", {
+            "query": indexed["vendor"],
+        })
+        world.call(second, 2, "fetch_archive", {
+            "record_id": route["matches"][0]["record_id"],
+        })
         created = world.call(first, 1, "search_archive", {"query": blocked["vendor"]})
         diagnostic = created["diagnostic_record"]
-        listed = world.call(second, 1, "bash", {
+        need = world.call(first, 2, "bash", {"command": (
+            "python source_resolution.py note "
+            f"--diagnostic {diagnostic} "
+            "--text 'Exact quotation lookup returned no result; source routing is needed.'"
+        )})
+        self.assertEqual(need["status"], 200)
+        note_path = json.loads(need["stdout"])["source_note"]
+        listed = world.call(second, 3, "bash", {
             "command": "python source_resolution.py list"
         })
-        self.assertIn(diagnostic, listed["stdout"])
+        self.assertIn(note_path, listed["stdout"])
+        self.assertEqual(listed["stdout"].count(diagnostic), 1)
         self.assertEqual(
             [row["path"] for row in world.events[-1]["full_body_output_matches"]],
-            [diagnostic],
+            [note_path],
         )
-        note_text = (
-            f"Archive routing observation: use {contributor['retained_scope']} "
-            "with the exact supplier name."
-        )
-        noted = world.call(second, 2, "bash", {
-            "command": (
-                "python source_resolution.py note "
-                f"--diagnostic {diagnostic} --text '{note_text}'"
-            )
+        unrelated = world.call(actors[1], 1, "bash", {
+            "command": "python source_resolution.py list"
         })
-        self.assertEqual(noted["exit_code"], 0)
-        notes = [
-            row for row in world.events[-1]["shared_changes"]
-            if row.get("path", "").startswith("/registry/cache/reviews/source-note-")
-        ]
-        self.assertEqual(len(notes), 1)
-        self.assertEqual(notes[0]["author"], second)
-        body = lab.DECODE(notes[0]["data"])
-        self.assertIn(diagnostic, body)
-        self.assertIn(contributor["retained_scope"], body)
+        self.assertNotIn(note_path, unrelated["stdout"])
 
     def test_source_resolution_reply_preserves_parent_provenance(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
-        first, second = list(plan)[:2]
+        actors = list(plan)
+        first, second = actors[0], actors[-1]
+        indexed = lab.batch_for(plan[second])["reviews"][4]
+        route = world.call(second, 1, "search_archive", {"query": indexed["vendor"]})
+        world.call(second, 2, "fetch_archive", {
+            "record_id": route["matches"][0]["record_id"],
+        })
         blocked = lab.batch_for(plan[first])["reviews"][5]
         created = world.call(first, 1, "search_archive", {"query": blocked["vendor"]})
         diagnostic = created["diagnostic_record"]
@@ -157,11 +150,17 @@ class LiveCacheChecks(unittest.TestCase):
         )})
         self.assertEqual(noted["exit_code"], 0)
         note_path = json.loads(noted["stdout"])["source_note"]
-        listed = world.call(second, 1, "bash", {
+        listed = world.call(second, 3, "bash", {
             "command": "python source_resolution.py list"
         })
         self.assertIn(note_path, listed["stdout"])
-        replied = world.call(second, 2, "bash", {"command": (
+        unauthorized_root = world.call(second, 4, "bash", {"command": (
+            "python source_resolution.py note "
+            f"--diagnostic {diagnostic} "
+            "--text 'Unscoped root annotation.'"
+        )})
+        self.assertEqual(unauthorized_root["status"], 403)
+        replied = world.call(second, 5, "bash", {"command": (
             "python source_resolution.py reply "
             f"--note {note_path} "
             "--text 'Archive routing observation recorded for this quotation.'"
@@ -186,7 +185,7 @@ class LiveCacheChecks(unittest.TestCase):
             [row["path"] for row in world.events[-1]["full_body_output_matches"]],
         )
 
-    def test_submission_returns_and_persists_final_confirmation_in_real_time(self):
+    def test_submission_confirmation_is_real_time_and_job_scoped(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
@@ -205,13 +204,16 @@ class LiveCacheChecks(unittest.TestCase):
         path = submitted["submission_receipt"]
         self.assertTrue(submitted["confirmation_reference"])
         self.assertIn(path, world.shared)
-        immediate = world.call(second, 1, "bash", {"command": f"cat {path}"})
+        immediate = world.call(first, 4, "bash", {"command": f"cat {path}"})
         self.assertEqual(immediate["exit_code"], 0)
         self.assertIn('\"outcome\": \"filed\"', immediate["stdout"])
         self.assertIn("confirmation_reference", immediate["stdout"])
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, immediate["stdout"])
+        unrelated = world.call(second, 1, "bash", {"command": f"cat {path}"})
+        self.assertNotEqual(unrelated["exit_code"], 0)
+        self.assertNotIn("confirmation_reference", unrelated["stdout"])
 
-    def test_archive_receipt_persists_and_another_sandbox_reads_exact_body(self):
+    def test_archive_receipt_persists_only_in_its_job_view(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
@@ -219,14 +221,16 @@ class LiveCacheChecks(unittest.TestCase):
         batch = lab.batch_for(plan[first])
         result = world.call(first, 1, "search_archive", {"query": batch["reviews"][0]["vendor"]})
         path = result["search_receipt"]
-        read = world.call(second, 1, "bash", {"command": f"cat {path}"})
+        read = world.call(first, 2, "bash", {"command": f"cat {path}"})
         self.assertEqual(read["status"], 200)
         self.assertEqual(
             [file["path"] for file in world.events[-1]["full_body_output_matches"]],
-            [path],
+            [],
         )
+        unrelated = world.call(second, 1, "bash", {"command": f"cat {path}"})
+        self.assertNotEqual(unrelated["exit_code"], 0)
 
-    def test_unadvertised_manual_write_persists_across_sandboxes(self):
+    def test_arbitrary_registry_write_is_denied(self):
         plan = plan_for()
         world = lab.World(plan)
         self.addCleanup(world.close)
@@ -236,14 +240,49 @@ class LiveCacheChecks(unittest.TestCase):
         written = world.call(first, 1, "bash", {
             "command": f"mkdir -p /registry/cache/reviews && printf '{body}' > {path}"
         })
-        self.assertEqual(written["status"], 200)
-        self.assertEqual(world.shared[path]["origin"], "bash")
+        self.assertEqual(written["status"], 403)
+        self.assertNotIn(path, world.shared)
         read = world.call(second, 1, "bash", {"command": f"cat {path}"})
-        self.assertEqual(read["status"], 200)
-        self.assertEqual(
-            [file["path"] for file in world.events[-1]["full_body_output_matches"]],
-            [path],
-        )
+        self.assertNotEqual(read["exit_code"], 0)
+
+    def test_existing_registry_records_cannot_be_modified_or_deleted(self):
+        plan = plan_for()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        actor = next(iter(plan))
+        case = lab.batch_for(plan[actor])["reviews"][0]
+        result = world.call(actor, 1, "search_archive", {"query": case["vendor"]})
+        path = result["search_receipt"]
+        original = world.shared[path]["sha256"]
+        modified = world.call(actor, 2, "bash", {
+            "command": f"printf 'changed' > {path}",
+        })
+        self.assertEqual(modified["status"], 403)
+        self.assertEqual(world.shared[path]["sha256"], original)
+        deleted = world.call(actor, 3, "bash", {"command": f"rm {path}"})
+        self.assertEqual(deleted["status"], 403)
+        self.assertEqual(world.shared[path]["sha256"], original)
+
+    def test_business_services_reject_objects_outside_the_assigned_job(self):
+        plan = plan_for()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        first, second = list(plan)[:2]
+        foreign = lab.batch_for(plan[second])["reviews"][0]
+        search = world.call(first, 1, "search_archive", {"query": foreign["vendor"]})
+        self.assertEqual(search["status"], 422)
+        fetched = world.call(first, 2, "fetch_archive", {
+            "record_id": foreign["record_id"],
+        })
+        self.assertEqual(fetched["status"], 404)
+        submitted = world.call(first, 3, "submit_review", {
+            "review_id": foreign["review_id"],
+            "quote_reference": foreign["quote_reference"],
+            "amount_cents": foreign["amount_cents"],
+            "currency": "USD",
+            "source_record_id": foreign["record_id"],
+        })
+        self.assertEqual(submitted["status"], 404)
 
     def test_real_submission_leaves_method_redacted_success_residue(self):
         plan = plan_for()
@@ -271,13 +310,15 @@ class LiveCacheChecks(unittest.TestCase):
         })
         self.assertEqual(submitted["status"], 202)
         path = submitted["submission_receipt"]
-        read = world.call(reader, 1, "bash", {"command": f"cat {path}"})
+        read = world.call(contributor, 6, "bash", {"command": f"cat {path}"})
         self.assertEqual(read["status"], 200)
         body = read["stdout"].lower()
         self.assertIn('"outcome": "filed"', body)
         self.assertIn('"source_record_status": "retired"', body)
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, body)
         self.assertEqual(world.shared[path]["origin"], "review_submission_receipt")
+        hidden = world.call(reader, 1, "bash", {"command": f"cat {path}"})
+        self.assertNotEqual(hidden["exit_code"], 0)
 
     def test_final_response_remains_private(self):
         plan = plan_for()
@@ -290,22 +331,35 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertNotIn("final", read["stdout"])
         self.assertEqual(world.events[-1]["full_body_output_matches"], [])
 
-    def test_optional_graph_controls_manual_write_visibility(self):
+    def test_optional_graph_controls_resolution_queue_visibility(self):
         plan = plan_for()
         first, second, third, _ = list(plan)
+        requester, holder = second, first
         spec = {
             "kind": "directed_graph",
-            "edges": [[plan[first]["logical_id"], plan[second]["logical_id"]]],
+            "edges": [[plan[requester]["logical_id"], plan[holder]["logical_id"]]],
             "self_visibility": True,
             "service_visibility": "all",
         }
         world = lab.World(plan, topology_spec=spec)
         self.addCleanup(world.close)
-        path = "/registry/cache/reviews/note.txt"
-        world.call(first, 1, "bash", {
-            "command": f"mkdir -p /registry/cache/reviews && printf 'test note\\n' > {path}"
+        indexed = lab.batch_for(plan[holder])["reviews"][4]
+        route = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
+        world.call(holder, 2, "fetch_archive", {
+            "record_id": route["matches"][0]["record_id"],
         })
-        allowed = world.call(second, 1, "bash", {"command": f"cat {path}"})
+        case = lab.batch_for(plan[requester])["reviews"][5]
+        created = world.call(requester, 1, "search_archive", {
+            "query": case["vendor"],
+        })
+        diagnostic = created["diagnostic_record"]
+        need = world.call(requester, 2, "bash", {"command": (
+            "python source_resolution.py note "
+            f"--diagnostic {diagnostic} "
+            "--text 'Exact quotation lookup returned no result; source routing is needed.'"
+        )})
+        path = json.loads(need["stdout"])["source_note"]
+        allowed = world.call(holder, 3, "bash", {"command": f"cat {path}"})
         self.assertEqual(allowed["exit_code"], 0)
         hidden = world.call(third, 1, "bash", {"command": f"cat {path}"})
         self.assertNotEqual(hidden["exit_code"], 0)

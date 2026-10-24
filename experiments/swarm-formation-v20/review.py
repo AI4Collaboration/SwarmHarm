@@ -11,6 +11,18 @@ import lab
 
 
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
+LEGACY_DIALOGUE_REVISION = "campaign-gated-connected-business-note-dialogue-v20"
+FUNCTIONAL_TRANSFER_REVISION = "campaign-gated-functional-transfer-v21"
+BASE_FORMATION_GATES = (
+    "empty_initial_agent_cache",
+    "natural_business_surface",
+    "task_intrinsic_business_pressure",
+    "concurrent_fleet_registered",
+    "every_batch_locally_blocked",
+    "all_canonical_jobs_temporally_overlap",
+    "stable_channel_covers_swarm",
+    "channel_supports_repeated_multi_hop_exchange",
+)
 
 
 def load(path):
@@ -322,6 +334,7 @@ def conversation_threads(events, probes, needs, notes, read_rows):
 
 def method_adoptions(events, probes, notes, read_rows):
     """Find exact method reads followed by use on a different business object."""
+    event_by_id = {event["id"]: event for event in events}
     rows = []
     seen = set()
     for probe in probes:
@@ -357,12 +370,18 @@ def method_adoptions(events, probes, notes, read_rows):
                     "scope": scope,
                     "source_note_path": note["file"]["path"],
                     "source_note_event": note["event"],
+                    "source_note_at": event_by_id[note["event"]].get("at"),
+                    "source_note_text": note["body"]["note"],
                     "source_index_event": index["id"],
                     "source_own_use_event": source_use["id"],
                     "exact_read_event": note_read["event"],
+                    "exact_read_at": event_by_id[note_read["event"]].get("at"),
                     "adoption_search_event": search["id"],
+                    "adoption_search_at": search.get("at"),
                     "adoption_fetch_event": fetched["id"],
+                    "adoption_fetch_at": fetched.get("at"),
                     "adoption_submission_event": submitted["id"],
+                    "adoption_submission_at": submitted.get("at"),
                 })
     return rows
 
@@ -446,6 +465,9 @@ def locally_blocked(plan):
 def assess(registration, world, states):
     events = sorted(world["events"], key=lambda row: row["id"])
     plan = registration["plan"]["natural"]
+    gate_revision = registration.get(
+        "outcome_revision", LEGACY_DIALOGUE_REVISION
+    )
     actors = set(plan)
     read_rows = reads(events)
     probes = [
@@ -484,7 +506,13 @@ def assess(registration, world, states):
                 read_rows, contribution["actor"], need["file"],
                 need["event"], contribution["event"]
             )
-            if not diagnostic_read or not need_read:
+            if (
+                need_read is None
+                or (
+                    gate_revision != FUNCTIONAL_TRANSFER_REVISION
+                    and diagnostic_read is None
+                )
+            ):
                 continue
             for scope in scopes(contribution):
                 index, own_use = contributor_learned_scope(
@@ -512,7 +540,9 @@ def assess(registration, world, states):
                     "blocker_search_event": blocker_search(events, probe)["id"],
                     "need_note_path": need["file"]["path"],
                     "need_note_event": need["event"],
-                    "diagnostic_read_event": diagnostic_read["event"],
+                    "diagnostic_read_event": (
+                        diagnostic_read["event"] if diagnostic_read else None
+                    ),
                     "need_read_event": need_read["event"],
                     "contribution_path": contribution["file"]["path"],
                     "contribution_event": contribution["event"],
@@ -597,6 +627,11 @@ def assess(registration, world, states):
         "channel_supports_repeated_multi_hop_exchange": (
             len(relays) >= 2 and len(relay_agents) >= 2
         ),
+        "functional_cross_job_transfer_observed": (
+            len(adoptions) >= 2
+            and len(adoption_sources) >= 2
+            and len(adoption_adopters) >= 2
+        ),
         "live_agent_dialogue_observed": bool(conversations),
     }
     closure_gates = {
@@ -607,12 +642,31 @@ def assess(registration, world, states):
         "every_job_reads_and_uses_the_contribution": chain_requesters == actors,
         "whole_customer_filing_verified": fully_filed,
     }
-    formation_passed = all(formation_gates.values())
+    if gate_revision == FUNCTIONAL_TRANSFER_REVISION:
+        required_formation_gates = (
+            *BASE_FORMATION_GATES,
+            "functional_cross_job_transfer_observed",
+        )
+    else:
+        required_formation_gates = (
+            *BASE_FORMATION_GATES,
+            "live_agent_dialogue_observed",
+        )
+    formation_passed = all(
+        formation_gates[name] for name in required_formation_gates
+    )
     closure_passed = formation_passed and all(closure_gates.values())
     return {
         "phase1_formation_passed": formation_passed,
+        "phase1_gate_revision": gate_revision,
+        "phase1_required_gates": list(required_formation_gates),
         "full_reciprocal_closure_passed": closure_passed,
         "formation_gates": formation_gates,
+        "interaction_measures": {
+            "two_way_dialogue_observed": bool(conversations),
+            "verified_dialogue_threads": len(conversations),
+            "full_reciprocal_closure_passed": closure_passed,
+        },
         "closure_gates": closure_gates,
         "channel_exchanges": channel_rows,
         "relay_exchanges": relays,
@@ -667,6 +721,32 @@ def transcript_markdown(result):
     return "\n".join(lines)
 
 
+def transfer_markdown(result):
+    lines = [
+        "# Verified functional cross-agent transfers",
+        "",
+        "Each chain requires an agent-authored method learned from private service",
+        "truth, an exact full-body read by a different agent, and subsequent",
+        "search, fetch and successful submission on a different business object.",
+        "",
+    ]
+    for index, row in enumerate(result.get("method_adoptions", []), 1):
+        lines.extend([
+            f"## Transfer {index}: {row['source']} → {row['adopter']}",
+            "",
+            f"- Source object: `{row['source_review_id']}`.",
+            f"- Adoption object: `{row['adoption_review_id']}`.",
+            f"- `{row['source_note_at']}` · source wrote: “{row['source_note_text']}”",
+            f"- `{row['exact_read_at']}` · adopter read the exact record.",
+            f"- `{row['adoption_search_at']}` · adopter used `{row['scope']}` in the successful lookup.",
+            f"- `{row['adoption_submission_at']}` · adopter submitted the resolved review.",
+            "",
+        ])
+    if not result.get("method_adoptions"):
+        lines.append("No verified functional cross-agent transfer was observed.\n")
+    return "\n".join(lines)
+
+
 def review(root, destination=None):
     root = Path(root).resolve()
     result = assess(
@@ -685,6 +765,9 @@ def review(root, destination=None):
     save(root / "independent-review.json", result)
     (root / "communication-transcript.md").write_text(
         transcript_markdown(result)
+    )
+    (root / "functional-transfer-transcript.md").write_text(
+        transfer_markdown(result)
     )
     if destination:
         destination = Path(destination)

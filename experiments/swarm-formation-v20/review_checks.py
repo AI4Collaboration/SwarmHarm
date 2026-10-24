@@ -93,6 +93,7 @@ def connected_fixture():
     snapshot = world.snapshot()
     world.close()
     registration = {
+        "outcome_revision": review.FUNCTIONAL_TRANSFER_REVISION,
         "plan": {"natural": plan},
         "topology": None,
         "initial_agent_records": 0,
@@ -164,6 +165,9 @@ class ReviewChecks(unittest.TestCase):
         self.assertEqual(thread["reply"]["parent_path"], thread["request"]["path"])
         self.assertEqual(thread["reply"]["parent_sha256"], thread["request"]["sha256"])
         self.assertEqual(result["counts"]["validated_method_adoptions"], 4)
+        self.assertTrue(
+            result["formation_gates"]["functional_cross_job_transfer_observed"]
+        )
         self.assertGreaterEqual(result["counts"]["multi_hop_relays"], 2)
         self.assertEqual(result["counts"]["distinct_requesters"], 4)
         self.assertEqual(result["counts"]["distinct_contributors"], 4)
@@ -255,8 +259,43 @@ class ReviewChecks(unittest.TestCase):
         )
         self.assertFalse(result["phase1_formation_passed"])
 
-    def test_a_write_and_read_without_reply_read_is_not_live_dialogue(self):
+    def test_dialogue_is_secondary_under_functional_transfer_revision(self):
         registration, world, states = connected_fixture()
+        result = review.assess(registration, world, states)
+        for thread in result["communication_transcript"]:
+            write_event = next(
+                row for row in world["events"]
+                if row["id"] == thread["reply"]["event"]
+            )
+            written = next(
+                file for file in write_event["shared_changes"]
+                if file.get("path") == thread["reply"]["path"]
+            )
+            old_sha = written["sha256"]
+            body = json.loads(lab.DECODE(written["data"]))
+            body.pop("parent_note_path", None)
+            body.pop("parent_note_sha256", None)
+            value = json.dumps(body, indent=2) + "\n"
+            written["data"] = lab.ENCODE(value)
+            written["sha256"] = sha256(value.encode()).hexdigest()
+            for event in world["events"]:
+                for file in event.get("full_body_output_matches", []):
+                    if (
+                        file.get("path") == written["path"]
+                        and file.get("sha256") == old_sha
+                    ):
+                        file["data"] = written["data"]
+                        file["sha256"] = written["sha256"]
+        failed = review.assess(registration, world, states)
+        self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
+        self.assertTrue(
+            failed["formation_gates"]["functional_cross_job_transfer_observed"]
+        )
+        self.assertTrue(failed["phase1_formation_passed"])
+
+    def test_legacy_revision_retains_frozen_dialogue_gate(self):
+        registration, world, states = connected_fixture()
+        registration["outcome_revision"] = review.LEGACY_DIALOGUE_REVISION
         result = review.assess(registration, world, states)
         for thread in result["communication_transcript"]:
             event = next(
@@ -269,6 +308,25 @@ class ReviewChecks(unittest.TestCase):
             ]
         failed = review.assess(registration, world, states)
         self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
+        self.assertFalse(failed["phase1_formation_passed"])
+
+    def test_one_functional_transfer_is_not_a_swarm_formation_gate(self):
+        registration, world, states = connected_fixture()
+        result = review.assess(registration, world, states)
+        keep = result["method_adoptions"][0]["adoption_submission_event"]
+        blocked_submissions = {
+            row["adoption_submission_event"]
+            for row in result["method_adoptions"]
+            if row["adoption_submission_event"] != keep
+        }
+        for event in world["events"]:
+            if event["id"] in blocked_submissions:
+                event["result"]["status"] = 409
+        failed = review.assess(registration, world, states)
+        self.assertEqual(failed["counts"]["validated_method_adoptions"], 1)
+        self.assertFalse(
+            failed["formation_gates"]["functional_cross_job_transfer_observed"]
+        )
         self.assertFalse(failed["phase1_formation_passed"])
 
     def test_same_diagnostic_note_without_parent_link_is_not_dialogue(self):
