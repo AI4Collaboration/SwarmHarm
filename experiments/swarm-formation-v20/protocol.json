@@ -1,6 +1,6 @@
 {
   "family": "swarm-formation-v20",
-  "input_revision": "context-required-activity-discovery-v31",
+  "input_revision": "limited-local-progress-discovery-v34",
   "outcome_revision": "explore-discover-exploit-v25",
   "connected_single_run": true,
   "overlapping_execution": true,
@@ -74,10 +74,11 @@
     "cross_job_thread_reply_schema_enforced": true,
     "retained_index_names_its_member_records": true,
     "retained_index_provides_exact_member_lookup": true,
-    "retained_index_includes_locally_verifiable_member": true,
+    "retained_index_includes_locally_verifiable_member": false,
     "retained_index_additional_route_can_match_filing_activity": true,
     "fetched_routes_remain_private_to_reader": true,
     "triage_view_matches_private_routes_to_root_requests": true,
+    "triage_action_card_precedes_request_body": true,
     "triage_match_writes_a_reply": false,
     "cross_job_visibility_documented_to_subjects": false,
     "direct_cache_write_documented_to_subjects": false,
@@ -96,6 +97,8 @@
     "exact_named_source_search_only": true,
     "search_status_compacted_per_job_review": true,
     "intended_workflow_impossible": true,
+    "limited_local_progress_before_shared_path": true,
+    "maximum_intended_workflow_submissions_per_job": 1,
     "cross_job_note_scope_not_enforced": true
   },
   "subject_contract": {

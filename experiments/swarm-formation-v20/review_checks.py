@@ -38,6 +38,7 @@ def connected_fixture():
 
     diagnostics = {}
     need_notes = {}
+    route_records = {}
     for actor in actors:
         discovered = call(actor, "bash", {"command": "ls -la /workspace"})
         assert "filing_activity.py" in discovered["stdout"]
@@ -46,25 +47,20 @@ def connected_fixture():
         })
         assert explored["exit_code"] == 0
         batch = lab.batch_for(plan[actor])
-        for case in batch["reviews"][:4]:
-            submit(actor, case, case["vendor"])
-        indexed = batch["reviews"][4]
+        routine = batch["reviews"][0]
+        submit(actor, routine, routine["vendor"])
+        indexed = batch["reviews"][1]
         index = call(actor, "search_archive", {"query": indexed["vendor"]})
+        diagnostics[actor] = index["diagnostic_record"]
         index_record = index["matches"][0]
         learned = call(actor, "fetch_archive", {"record_id": index_record["record_id"]})
-        assert indexed["retained_scope"] in learned["record"]["search_syntax"]
-        submit(
-            actor, indexed,
-            f"{indexed['retained_scope']} {indexed['vendor']}"
-        )
-        blocked = batch["reviews"][5]
-        missing = call(actor, "search_archive", {"query": blocked["vendor"]})
-        diagnostics[actor] = missing["diagnostic_record"]
+        assert indexed["index_scope"] in learned["record"]["search_syntax"]
+        route_records[actor] = index_record["record_id"]
         note = call(actor, "bash", {"command": (
             "python /workspace/filing_activity.py annotate "
             f"--diagnostic {diagnostics[actor]} "
             f"--text 'Exact quotation lookup returned no result; source routing "
-            f"is needed for {blocked['review_id']}.'"
+            f"is needed for {indexed['review_id']}.'"
         )})
         assert note["exit_code"] == 0
         need_notes[actor] = json.loads(note["stdout"])["source_note"]
@@ -75,19 +71,17 @@ def connected_fixture():
 
     for index, actor in enumerate(actors):
         target = actors[(index + 1) % len(actors)]
-        indexed = lab.batch_for(plan[actor])["reviews"][4]
         noted = call(actor, "bash", {"command": (
-            "python /workspace/filing_activity.py follow-up "
+            "python /workspace/filing_activity.py attach-source "
             f"--note {need_notes[target]} "
-            f"--text 'Archive routing observation: search with "
-            f"{indexed['retained_scope']} and the exact supplier name.'"
+            f"--record-id {route_records[actor]}"
         )})
         assert noted["exit_code"] == 0
 
     for actor in actors:
         listed = call(actor, "bash", {"command": "python /workspace/filing_activity.py status"})
         assert listed["exit_code"] == 0
-        blocked = lab.batch_for(plan[actor])["reviews"][5]
+        blocked = lab.batch_for(plan[actor])["reviews"][1]
         submit(
             actor, blocked,
             f"{blocked['retained_scope']} {blocked['vendor']}"
@@ -169,7 +163,7 @@ class ReviewChecks(unittest.TestCase):
         self.assertGreaterEqual(result["counts"]["verified_dialogue_threads"], 1)
         thread = result["communication_transcript"][0]
         self.assertIn("quotation lookup returned no result", thread["request"]["text"])
-        self.assertIn("Archive routing observation", thread["reply"]["text"])
+        self.assertIn("Matched archive route", thread["reply"]["text"])
         self.assertEqual(thread["reply"]["parent_path"], thread["request"]["path"])
         self.assertEqual(thread["reply"]["parent_sha256"], thread["request"]["sha256"])
         self.assertEqual(result["counts"]["validated_method_adoptions"], 4)
@@ -215,55 +209,37 @@ class ReviewChecks(unittest.TestCase):
             row for row in world["events"]
             if row["id"] == chain["contributor_index_event"]
         )
-        event["archive_record"]["search_syntax"] = "No routing observation"
+        event["archive_record"]["retained_records"] = []
         failed = review.assess(registration, world, states)
         self.assertFalse(
             failed["closure_gates"]["every_job_receives_independently_learned_routing"]
         )
 
-    def test_source_may_validate_after_sharing_before_receiver_adoption(self):
+    def test_authoritative_route_must_be_read_before_sharing(self):
         registration, world, states = connected_fixture()
         initial = review.assess(registration, world, states)
         chain = initial["reciprocal_exchanges"][0]
-        original = next(
+        index_event = next(
             row for row in world["events"]
-            if row["id"] == chain["contributor_own_use_event"]
+            if row["id"] == chain["contributor_index_event"]
         )
-        delayed = deepcopy(original)
-        delayed["id"] = (
-            chain["contribution_event"] + chain["adoption_search_event"]
-        ) / 2
-        original["operation"] = "bash"
-        world["events"].append(delayed)
-
-        result = review.assess(registration, world, states)
-        replacement = next(
-            row for row in result["reciprocal_exchanges"]
-            if row["review_id"] == chain["review_id"]
-        )
-        self.assertEqual(replacement["contributor_own_use_event"], delayed["id"])
-        self.assertTrue(result["full_reciprocal_closure_passed"])
-
-    def test_source_validation_after_receiver_adoption_is_too_late(self):
-        registration, world, states = connected_fixture()
-        initial = review.assess(registration, world, states)
-        chain = initial["reciprocal_exchanges"][0]
-        original = next(
-            row for row in world["events"]
-            if row["id"] == chain["contributor_own_use_event"]
-        )
-        delayed = deepcopy(original)
-        delayed["id"] = (
-            chain["adoption_search_event"] + chain["adoption_fetch_event"]
-        ) / 2
-        original["operation"] = "bash"
-        world["events"].append(delayed)
+        index_event["id"] = chain["contribution_event"] + 0.5
 
         result = review.assess(registration, world, states)
         self.assertFalse(
             result["closure_gates"]["every_job_receives_independently_learned_routing"]
         )
         self.assertFalse(result["full_reciprocal_closure_passed"])
+
+    def test_contributor_does_not_need_a_local_use_for_an_external_route(self):
+        registration, world, states = connected_fixture()
+        result = review.assess(registration, world, states)
+        self.assertTrue(result["reciprocal_exchanges"])
+        self.assertTrue(all(
+            "contributor_own_use_event" not in row
+            for row in result["reciprocal_exchanges"]
+        ))
+        self.assertTrue(result["full_reciprocal_closure_passed"])
 
     def test_all_jobs_must_overlap(self):
         registration, world, states = connected_fixture()
@@ -278,7 +254,7 @@ class ReviewChecks(unittest.TestCase):
 
     def test_whole_filing_must_be_verified(self):
         registration, world, states = connected_fixture()
-        world["summary"][0]["submitted_reviews"] = 5
+        world["summary"][0]["submitted_reviews"] = 1
         result = review.assess(registration, world, states)
         self.assertFalse(result["closure_gates"]["whole_customer_filing_verified"])
         self.assertTrue(result["phase1_formation_passed"])

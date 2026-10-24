@@ -20,9 +20,10 @@ class LiveCacheChecks(unittest.TestCase):
         world = lab.World(plan)
         self.addCleanup(world.close)
         actor = next(iter(plan))
-        case = lab.batch_for(plan[actor])["reviews"][5]
+        case = lab.batch_for(plan[actor])["reviews"][1]
         result = world.call(actor, 1, "search_archive", {"query": case["vendor"]})
-        self.assertEqual(result["matches"], [])
+        self.assertEqual(len(result["matches"]), 1)
+        self.assertEqual(result["matches"][0]["record_id"], case["index_id"])
         path = result["diagnostic_record"]
         self.assertEqual(
             world.shared[path]["origin"], "source_resolution_diagnostic"
@@ -64,12 +65,12 @@ class LiveCacheChecks(unittest.TestCase):
         self.addCleanup(world.close)
         actors = list(plan)
         first, second, unrelated = actors[0], actors[-1], actors[1]
-        indexed = lab.batch_for(plan[second])["reviews"][4]
+        indexed = lab.batch_for(plan[second])["reviews"][1]
         route = world.call(second, 1, "search_archive", {"query": indexed["vendor"]})
         world.call(second, 2, "fetch_archive", {
             "record_id": route["matches"][0]["record_id"],
         })
-        case = lab.batch_for(plan[first])["reviews"][5]
+        case = lab.batch_for(plan[first])["reviews"][1]
         command = (
             "python archive_diagnostics.py "
             f"--review-id {case['review_id']} --vendor '{case['vendor']}'"
@@ -99,8 +100,8 @@ class LiveCacheChecks(unittest.TestCase):
         self.addCleanup(world.close)
         actors = list(plan)
         first, second = actors[0], actors[-1]
-        blocked = lab.batch_for(plan[first])["reviews"][5]
-        indexed = lab.batch_for(plan[second])["reviews"][4]
+        blocked = lab.batch_for(plan[first])["reviews"][1]
+        indexed = lab.batch_for(plan[second])["reviews"][1]
         route = world.call(second, 1, "search_archive", {
             "query": indexed["vendor"],
         })
@@ -145,14 +146,14 @@ class LiveCacheChecks(unittest.TestCase):
         world = lab.World(plan)
         self.addCleanup(world.close)
         requester, _, _, holder = list(plan)
-        indexed = lab.batch_for(plan[holder])["reviews"][4]
+        indexed = lab.batch_for(plan[holder])["reviews"][1]
         route = world.call(holder, 1, "search_archive", {
             "query": indexed["vendor"],
         })
         world.call(holder, 2, "fetch_archive", {
             "record_id": route["matches"][0]["record_id"],
         })
-        blocked = lab.batch_for(plan[requester])["reviews"][5]
+        blocked = lab.batch_for(plan[requester])["reviews"][1]
         diagnostic_path = "/registry/cache/reviews/source-request-FOREIGN.json"
         diagnostic = {
             "operation": "source_resolution_diagnostic",
@@ -197,12 +198,12 @@ class LiveCacheChecks(unittest.TestCase):
         self.addCleanup(world.close)
         actors = list(plan)
         first, second = actors[0], actors[-1]
-        indexed = lab.batch_for(plan[second])["reviews"][4]
+        indexed = lab.batch_for(plan[second])["reviews"][1]
         route = world.call(second, 1, "search_archive", {"query": indexed["vendor"]})
         world.call(second, 2, "fetch_archive", {
             "record_id": route["matches"][0]["record_id"],
         })
-        blocked = lab.batch_for(plan[first])["reviews"][5]
+        blocked = lab.batch_for(plan[first])["reviews"][1]
         created = world.call(first, 1, "search_archive", {"query": blocked["vendor"]})
         diagnostic = created["diagnostic_record"]
         noted = world.call(first, 2, "bash", {"command": (
@@ -255,12 +256,12 @@ class LiveCacheChecks(unittest.TestCase):
         requester, unrelated, _, holder = actors
         initial = {actor: world.activity_signal(actor) for actor in actors}
 
-        indexed = lab.batch_for(plan[holder])["reviews"][4]
+        indexed = lab.batch_for(plan[holder])["reviews"][1]
         route = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
         world.call(holder, 2, "fetch_archive", {
             "record_id": route["matches"][0]["record_id"],
         })
-        blocked = lab.batch_for(plan[requester])["reviews"][5]
+        blocked = lab.batch_for(plan[requester])["reviews"][1]
         created = world.call(requester, 1, "search_archive", {
             "query": blocked["vendor"],
         })
@@ -392,18 +393,13 @@ class LiveCacheChecks(unittest.TestCase):
         self.addCleanup(world.close)
         _, contributor, reader, _ = list(plan)
         batch = lab.batch_for(plan[contributor])
-        case = batch["reviews"][4]
-        index_search = world.call(
-            contributor, 1, "search_archive", {"query": case["vendor"]}
-        )
-        index = index_search["matches"][0]
-        world.call(contributor, 2, "fetch_archive", {"record_id": index["record_id"]})
-        search = world.call(contributor, 3, "search_archive", {
+        case = batch["reviews"][1]
+        search = world.call(contributor, 1, "search_archive", {
             "query": f"{case['retained_scope']} {case['vendor']}"
         })
         record = search["matches"][0]
-        world.call(contributor, 4, "fetch_archive", {"record_id": record["record_id"]})
-        submitted = world.call(contributor, 5, "submit_review", {
+        world.call(contributor, 2, "fetch_archive", {"record_id": record["record_id"]})
+        submitted = world.call(contributor, 3, "submit_review", {
             "review_id": case["review_id"],
             "quote_reference": case["quote_reference"],
             "amount_cents": case["amount_cents"],
@@ -412,7 +408,7 @@ class LiveCacheChecks(unittest.TestCase):
         })
         self.assertEqual(submitted["status"], 202)
         path = submitted["submission_receipt"]
-        read = world.call(contributor, 6, "bash", {"command": f"cat {path}"})
+        read = world.call(contributor, 4, "bash", {"command": f"cat {path}"})
         self.assertEqual(read["status"], 200)
         body = read["stdout"].lower()
         self.assertIn('"outcome": "filed"', body)
@@ -445,12 +441,12 @@ class LiveCacheChecks(unittest.TestCase):
         }
         world = lab.World(plan, topology_spec=spec)
         self.addCleanup(world.close)
-        indexed = lab.batch_for(plan[holder])["reviews"][4]
+        indexed = lab.batch_for(plan[holder])["reviews"][1]
         route = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
         world.call(holder, 2, "fetch_archive", {
             "record_id": route["matches"][0]["record_id"],
         })
-        case = lab.batch_for(plan[requester])["reviews"][5]
+        case = lab.batch_for(plan[requester])["reviews"][1]
         created = world.call(requester, 1, "search_archive", {
             "query": case["vendor"],
         })

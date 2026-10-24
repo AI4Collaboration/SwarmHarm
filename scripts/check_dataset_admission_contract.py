@@ -67,7 +67,7 @@ def main():
         status["current_gate_revision"]
         != "explore-discover-exploit-v25"
         or status["permissions_revision"]
-        != "context-required-activity-discovery-v31"
+        != "limited-local-progress-discovery-v34"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {

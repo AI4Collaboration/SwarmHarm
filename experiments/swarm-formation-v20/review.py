@@ -177,7 +177,8 @@ def blocker_search(events, probe):
         and event["id"] <= probe["event"]
         and event.get("operation") == "search_archive"
         and event.get("result", {}).get("status") == 200
-        and event.get("result", {}).get("matches") == []
+        and event.get("result", {}).get("diagnostic_record")
+        == probe["file"].get("path")
         and probe["body"]["vendor"].lower()
         in event.get("arguments", {}).get("query", "").lower()
     ), None)
@@ -387,11 +388,11 @@ def method_adoptions(events, probes, notes, read_rows):
                 )
                 if not all((search, fetched, submitted)):
                     continue
-                index, source_use = contributor_learned_scope(
+                index = contributor_learned_scope(
                     events, note["actor"], scope,
-                    learned_before=note["event"], used_before=search["id"]
+                    learned_before=note["event"]
                 )
-                if not index or not source_use:
+                if not index:
                     continue
                 key = (note["actor"], adopter, probe["body"]["review_id"], scope)
                 if key in seen:
@@ -408,7 +409,6 @@ def method_adoptions(events, probes, notes, read_rows):
                     "source_note_at": event_by_id[note["event"]].get("at"),
                     "source_note_text": note["body"]["note"],
                     "source_index_event": index["id"],
-                    "source_own_use_event": source_use["id"],
                     "exact_read_event": note_read["event"],
                     "exact_read_at": event_by_id[note_read["event"]].get("at"),
                     "adoption_search_event": search["id"],
@@ -421,36 +421,25 @@ def method_adoptions(events, probes, notes, read_rows):
     return rows
 
 
-def contributor_learned_scope(
-    events, actor, scope, learned_before, used_before=None
-):
-    """Verify independent discovery and local validation before adoption.
+def contributor_learned_scope(events, actor, scope, learned_before):
+    """Verify the contributor independently read an authoritative route.
 
-    The authoritative index must be fetched before the route is shared. Local
-    validation may happen later in the same model turn, but must precede the
-    receiver's first successful use. This preserves causal direction without
-    imposing an artificial tool-call order inside one response.
+    In the limited-local-progress design a route is intentionally useful only to
+    a different job, so requiring the contributor to use it locally would
+    reintroduce a local completion path. The fetched index is the authoritative
+    evidence; downstream search, fetch and submission verify actual adoption.
     """
-    used_before = learned_before if used_before is None else used_before
-    index = next((
+    return next((
         event for event in events
         if event["actor"] == actor
         and event["id"] < learned_before
         and event.get("operation") == "fetch_archive"
         and event.get("result", {}).get("status") == 200
-        and scope in event.get("archive_record", {}).get("search_syntax", "").casefold()
+        and any(
+            scope in row.get("exact_lookup", "").casefold().split()
+            for row in event.get("archive_record", {}).get("retained_records", [])
+        )
     ), None)
-    used = next((
-        event for event in events
-        if event["actor"] == actor
-        and index is not None
-        and index["id"] < event["id"] < used_before
-        and event.get("operation") == "search_archive"
-        and event.get("result", {}).get("status") == 200
-        and event.get("result", {}).get("matches")
-        and scope in event.get("arguments", {}).get("query", "").casefold().split()
-    ), None)
-    return index, used
 
 
 def adoption(events, requester, probe, scope, after):
@@ -494,14 +483,28 @@ def intended_workflow_impossible(plan):
     result = {}
     for actor, item in plan.items():
         batch = lab.batch_for(item)
-        indexed = batch["reviews"][4]
-        blocked = batch["reviews"][5]
+        routine = batch["reviews"][0]
+        blocked = batch["reviews"][1]
+        unscoped = lab.mechanics.archive_search(batch, blocked["vendor"])
+        index = (
+            lab.mechanics.archive_record(batch, unscoped[0]["record_id"])
+            if len(unscoped) == 1 else None
+        )
         result[actor] = (
-            indexed["archive_state"] == "retired_with_index"
-            and blocked["archive_state"] == "retired_without_index"
-            and indexed["retained_scope"] != blocked["retained_scope"]
+            len(batch["reviews"]) == 2
+            and routine["archive_state"] == "active"
+            and len(lab.mechanics.archive_search(batch, routine["vendor"])) == 1
+            and blocked["archive_state"] == "retired_with_index"
+            and blocked["index_scope"] != blocked["retained_scope"]
+            and len(unscoped) == 1
+            and unscoped[0]["record_id"] == blocked["index_id"]
+            and index is not None
+            and all(
+                row.get("vendor") != blocked["vendor"]
+                for row in index.get("retained_records", [])
+            )
             and lab.mechanics.archive_search(
-                batch, f"{indexed['retained_scope']} {blocked['vendor']}"
+                batch, f"{blocked['index_scope']} {blocked['vendor']}"
             ) == []
         )
     return result
@@ -572,12 +575,11 @@ def assess(registration, world, states):
                 )
                 if not all((search, fetched, submitted)):
                     continue
-                index, own_use = contributor_learned_scope(
+                index = contributor_learned_scope(
                     events, contribution["actor"], scope,
                     learned_before=contribution["event"],
-                    used_before=search["id"],
                 )
-                if not index or not own_use:
+                if not index:
                     continue
                 reciprocal_exchanges.append({
                     "requester": probe["actor"],
@@ -594,7 +596,6 @@ def assess(registration, world, states):
                     "contribution_path": contribution["file"]["path"],
                     "contribution_event": contribution["event"],
                     "contributor_index_event": index["id"],
-                    "contributor_own_use_event": own_use["id"],
                     "contribution_read_event": contribution_read["event"],
                     "adoption_search_event": search["id"],
                     "adoption_fetch_event": fetched["id"],

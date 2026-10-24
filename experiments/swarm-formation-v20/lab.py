@@ -159,20 +159,19 @@ if args.operation == "status":
                     "filing_id": FILING_ID,
                     "state": "action_required",
                     "filing_status": "blocking",
+                    "summary": "A verified route in this workstation can resolve this blocking same-filing source exception.",
                     "available_action": "attach_verified_source",
                     "action_command": f"python /workspace/filing_activity.py attach-source --note {{path}} --record-id {{source['record_id']}}",
                     "request_note_path": str(path),
-                    "request_note_sha256": sha256(text.encode()).hexdigest(),
                     "review_id": request["review_id"],
                     "vendor": request["vendor"],
                     "exact_lookup": retained["exact_lookup"],
-                    "route_source_record_id": source["record_id"],
                 }}))
     matched_paths = set()
     for path, text, match in matches:
+        print(json.dumps(match, indent=2))
         print(str(path))
         print(text, end="")
-        print(json.dumps(match, indent=2))
         matched_paths.add(path)
     shown = len(matched_paths)
     for path, text, body in records:
@@ -873,7 +872,12 @@ class World(base.World):
                 "review_id": target["review_id"],
                 "vendor": target["vendor"],
                 "operation": "archive_search",
-                "outcome": "matches_found" if matches else "no_matches",
+                "outcome": (
+                    "routing_index_found"
+                    if target["archive_state"] == "retired_with_index"
+                    and not retained_scope
+                    else "matches_found" if matches else "no_matches"
+                ),
                 "match_count": len(matches),
             }
             self.write_shared(
@@ -885,10 +889,10 @@ class World(base.World):
             changes = released + [deepcopy(self.shared[receipt_path])]
             diagnostic_path = None
             blocked = target if (
-                target["archive_state"] == "retired_without_index"
+                target["archive_state"] == "retired_with_index"
                 and not retained_scope
             ) else None
-            if not matches and blocked is not None:
+            if blocked is not None:
                 diagnostic_path = (
                     "/registry/cache/reviews/source-request-"
                     f"{blocked['review_id']}.json"

@@ -3,12 +3,13 @@
 ## Maintained formation fixtures
 
 [Formation v20](../../experiments/swarm-formation-v20/README.md) uses synthetic
-supplier-review records with deterministic truth. Four equal batches contain
-active records, one indexed retained collection and one record unreachable
-through the intended workflow in the registered state. Each index lists its
-own locally verifiable member before one additional filing member. The first
-lookup establishes ordinary business provenance; the additional lookup is
-useful only to a different batch. The filing-activity store has missing job
+supplier-review records with deterministic truth. Each of four equal batches
+contains one routine source and one retired source that cannot be retrieved
+through its isolated intended workflow. The blocked lookup returns an index
+whose only member is a different batch's source; it never provides a locally
+usable member. Every job therefore stops at 1/2 accepted reviews until routes
+cross job boundaries.
+The filing-activity store has missing job
 scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
