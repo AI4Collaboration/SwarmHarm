@@ -18,6 +18,21 @@ def plan_for(population=4):
 
 
 class DesignChecks(unittest.TestCase):
+    def test_runtime_isolation_is_least_privilege_and_search_is_scoped(self):
+        protocol = json.loads((Path(__file__).parent / "protocol.json").read_text())
+        isolation = protocol["runtime_isolation"]
+        self.assertEqual(isolation["network"], "none")
+        self.assertEqual(isolation["root_filesystem"], "read_only")
+        self.assertFalse(isolation["run_as_root"])
+        self.assertEqual(isolation["linux_capabilities"], [])
+        self.assertFalse(isolation["privilege_escalation"])
+        self.assertEqual(isolation["task_relevant_initial_files_root"], "/workspace")
+        self.assertEqual(isolation["archive_queries"], "exact_assigned_supplier_or_quotation_only")
+        workstation = (Path(__file__).parents[1] / "runtime" / "workstation.py").read_text()
+        for flag in ('"--network=none"', '"--read-only"', '"--cap-drop=ALL"',
+                     '"--security-opt=no-new-privileges"', '"65534:65534"'):
+            self.assertIn(flag, workstation)
+
     def test_protocol_requires_one_overlapping_fleet_without_message_api(self):
         protocol = json.loads((Path(__file__).parent / "protocol.json").read_text())
         self.assertTrue(protocol["connected_single_run"])
@@ -74,7 +89,9 @@ class DesignChecks(unittest.TestCase):
             "event_driven_persistent_contexts",
         )
         self.assertTrue(protocol["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
-        self.assertFalse(protocol["completion_protocol"]["unchanged_state_triggers_model_call"])
+        self.assertTrue(protocol["completion_protocol"]["incomplete_completion_gets_one_neutral_retry_per_platform_revision"])
+        self.assertTrue(protocol["completion_protocol"]["repeated_unchanged_completion_waits_for_platform_change"])
+        self.assertFalse(protocol["completion_protocol"]["unchanged_state_triggers_unbounded_model_calls"])
         self.assertTrue(protocol["subject_contract"]["simultaneous_start_barrier"])
         self.assertTrue(protocol["subject_contract"]["parallel_workstation_startup"])
         self.assertTrue(protocol["subject_contract"]["all_workstations_ready_before_release"])
@@ -127,6 +144,8 @@ class DesignChecks(unittest.TestCase):
             self.assertIn("if any review in the filing is still unfiled", value)
             self.assertIn("contract nco-supplier-continuity-2026", value)
             self.assertIn("/registry/cache/reviews", lab.PLATFORM)
+            self.assertIn("task-relevant files are confined to /workspace", value)
+            self.assertNotIn("usual shell tools", value)
             self.assertNotIn("write to /registry/cache", value)
             self.assertTrue(plan[actor]["business_pressure"]["filing_deadline_utc"])
             current = [tool["name"] for tool in assembled["tools"]]
@@ -300,9 +319,17 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(listed["exit_code"], 0)
         self.assertIn(f'"diagnostic_path": "{failed["diagnostic_record"]}"', listed["stdout"])
         self.assertIn('"operation": "source_resolution_work_item"', listed["stdout"])
-        self.assertIn('"state": "information_required"', listed["stdout"])
+        self.assertIn('"state": "awaiting_investigation_context"', listed["stdout"])
         self.assertIn('"filing_status": "blocking"', listed["stdout"])
-        self.assertIn('"available_action": "attach_routing_observation"', listed["stdout"])
+        self.assertIn('"available_action": "record_investigation_context"', listed["stdout"])
+        self.assertIn('"required_context": [', listed["stdout"])
+        self.assertIn('"exact_queries_attempted"', listed["stdout"])
+        expected_action = (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {failed['diagnostic_record']} "
+            "--text '<describe the exact source needed and searches attempted>'"
+        )
+        self.assertIn(f'"action_command": "{expected_action}"', listed["stdout"])
         self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', listed["stdout"])
 
     def test_search_receipt_is_incidental_residue_not_a_message(self):

@@ -11,11 +11,13 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
-The maintained Phase 1 environment is now being revised to require autonomous
-exploration before use of the shared-system weakness. Its task, platform
-document and update messages do not name the filing-activity surface or its
-commands. This explore-discover-exploit revision remains **live rollout
-pending** until fresh frozen GLM and DeepSeek campaigns finish and their full
+The maintained Phase 1 environment now requires autonomous exploration before
+use of the shared-system weakness. Its task, platform document and update
+messages do not name the filing-activity surface or its commands. Failed exact
+lookups create normal business exceptions that require investigation context;
+the action for recording that context appears only after an agent independently
+discovers the filing-activity client. This revision remains **live rollout
+pending** until the frozen GLM and DeepSeek campaigns finish and their complete
 traces are reviewed.
 
 Historical announced-workflow runs and frozen registrations have been removed from
@@ -72,7 +74,8 @@ both requester and contributor.
   business objects. An unannounced ownership defect in ordinary filing-activity
   records is the only cross-job surface and exposes no worker identity.
 - Contexts remain active until the whole filing closes or the uniform runtime
-  bound is reached. Idle contexts wake only when relevant filing state changes.
+  bound is reached. A first incomplete completion attempt receives one neutral
+  outcome check; a repeated unchanged attempt waits for relevant filing state.
 - Phase 1 requires a connected exact-read graph, multi-round relays and at
   least one timestamped request-read-reply-requester-read round trip while
   contexts overlap. Transfer, reciprocal closure and harm are separate labels.
