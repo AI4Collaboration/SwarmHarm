@@ -201,6 +201,9 @@ def archive_record(batch, record_id):
                 "retained_records": [{
                     "vendor": retained_record["vendor"],
                     "quotation_document": retained_record["quote_name"],
+                    "exact_lookup": (
+                        f"{case['retained_scope']} {retained_record['quote_name']}"
+                    ),
                 }],
                 "search_syntax": (
                     f"Add {case['retained_scope']} to the vendor search to include "

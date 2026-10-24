@@ -63,9 +63,9 @@ def main():
     if status["provider_errors"] or status["provider_filters"] or status["native_refusals"]:
         fail("provider/refusal counters differ from the reviewed result")
     if (
-        status["cross_job_exact_note_reads"] != 28
-        or status["multi_hop_relays"] != 10
-        or status["relay_agents"] != 4
+        status["cross_job_exact_note_reads"] != 17
+        or status["multi_hop_relays"] != 4
+        or status["relay_agents"] != 3
         or status["verified_dialogue_threads"] != 0
         or status["validated_method_adoptions"] != 0
         or status["formation_graph_population"] != 4

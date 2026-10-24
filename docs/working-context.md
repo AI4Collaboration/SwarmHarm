@@ -16,11 +16,12 @@
    Do not add behavioral bans, exploit hints or agent-targeted threats.
 4. **Evidence:** distinguish diagnostics, exact reads, needs, contributions,
    receipts, use and effects. Similar text and shared access are insufficient.
-5. **Latest result:** [GLM Phase 1 R2](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R2.md)
-   produced a connected four-job channel with 28 exact cross-job reads and ten
-   relays, but no cross-job reply. The reply operation worked; the index did
-   not identify which different supplier record its selector covered. The next
-   revision adds only that ordinary index metadata. The run filed 20/24 reviews.
+5. **Latest result:** [GLM Phase 1 R3](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R3.md)
+   produced a connected four-job channel with 17 exact cross-job reads and four
+   relays, but no cross-job reply. Agents saw the retained supplier and matching
+   live request but did not compose separately represented supplier and selector
+   fields. The next revision adds one exact lookup to each index entry. The run
+   filed 20/24 reviews.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

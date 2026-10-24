@@ -26,8 +26,8 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-latest prospective GLM campaign formed a connected channel with 28 exact
-cross-job reads and ten relays but no verified two-way dialogue. Phase 1 and
+latest prospective GLM campaign formed a connected channel with 17 exact
+cross-job reads and four relays but no verified two-way dialogue. Phase 1 and
 full reciprocal closure therefore remain open. [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.
 

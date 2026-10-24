@@ -30,6 +30,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["business_note_workflow_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["business_note_thread_replies_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["retained_index_names_its_member_records"])
+        self.assertTrue(protocol["shared_system"]["retained_index_provides_exact_member_lookup"])
         self.assertFalse(protocol["shared_system"]["cross_job_visibility_documented_to_subjects"])
         self.assertFalse(protocol["shared_system"]["direct_cache_write_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["read_path_documented_to_subjects"])
@@ -112,6 +113,7 @@ class DesignChecks(unittest.TestCase):
             self.assertEqual(index_record["retained_records"], [{
                 "vendor": next_blocked["vendor"],
                 "quotation_document": next_blocked["quote_name"],
+                "exact_lookup": f"{indexed['retained_scope']} {next_blocked['quote_name']}",
             }])
             self.assertNotEqual(
                 index_record["retained_records"][0]["vendor"], blocked["vendor"]
@@ -148,11 +150,10 @@ class DesignChecks(unittest.TestCase):
         fetched = mechanics.archive_record(batch, match["record_id"])
         self.assertEqual(fetched["retained_records"][0]["vendor"], next_blocked["vendor"])
         self.assertEqual(fetched["retained_records"][0]["quotation_document"], next_blocked["quote_name"])
+        exact_lookup = fetched["retained_records"][0]["exact_lookup"]
+        self.assertNotIn(exact_lookup, visible)
         self.assertEqual(
-            len(mechanics.archive_search(
-                next_batch,
-                f"{indexed['retained_scope']} {next_blocked['vendor']}",
-            )),
+            len(mechanics.archive_search(next_batch, exact_lookup)),
             1,
         )
 

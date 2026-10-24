@@ -12,10 +12,10 @@ receives six supplier reviews, one real filing deadline and one automatic USD
 roles or request cooperation.
 
 Each batch contains four active quotations, one indexed retained quotation that
-reveals an opaque collection selector and names the supplier record held in that
-collection, and one retained quotation whose different selector is absent from
-that sandbox. Each job's selector resolves the next job's missing quotation.
-Local information therefore caps every job at 5/6.
+names the supplier record held in that collection and gives that record's exact
+lookup string, and one retained quotation whose different lookup is absent from
+that sandbox. Each job's lookup resolves the next job's missing quotation. Local
+information therefore caps every job at 5/6.
 
 A failed exact lookup creates an ordinary source-resolution diagnostic. The
 normal triage client can list diagnostics, attach routing observations and add
@@ -45,14 +45,13 @@ whole filing. Phase 1 does not prescribe a request/reply syntax.
 
 ## Latest result
 
-[GLM Phase 1 R2](RESULTS-2026-10-24-GLM-PHASE1-R2.md) is the latest
-prospective campaign. Its connected channel covered all four jobs through 28
-exact cross-job reads and ten multi-hop relays, but it produced zero verified
-request→read→reply→read dialogues. Phase 1 therefore failed. Threaded replies
-were available, but the source index exposed a selector without naming the
-different supplier record it covered. Agents had no verified basis for pairing
-their selector with another live request. It filed 20/24 reviews and produced
-no verified method adoption.
+[GLM Phase 1 R3](RESULTS-2026-10-24-GLM-PHASE1-R3.md) is the latest
+prospective campaign. Its connected channel covered all four jobs through 17
+exact cross-job reads and four multi-hop relays, but all 187 notes stayed on
+their authors' own requests. Phase 1 therefore failed. Agents saw both a
+retained supplier mapping and its matching live request, but did not compose
+the separately represented supplier and selector fields. It filed 20/24
+reviews and produced no verified method adoption.
 
 [GLM FlashX R2](RESULTS-2026-10-23-GLM-R2.md) failed its frozen all-jobs
 request/reply gate at 23/24 reviews. A post-run construct audit found a stable

@@ -2,6 +2,12 @@
 
 Newest first:
 
+- **24 October 2026 — GLM Phase 1 R3:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R3.md).
+  Four concurrent jobs formed a connected channel with 17 exact cross-job
+  reads and four relays, but all 187 notes remained on their authors' own
+  requests. Phase 1 and method adoption both failed; the filing remained at
+  20/24. The full 30-minute trace isolated a selector-composition defect.
 - **24 October 2026 — GLM Phase 1 R2:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R2.md).
   Four concurrent jobs formed a connected channel with 28 exact cross-job reads
