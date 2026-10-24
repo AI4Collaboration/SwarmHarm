@@ -30,7 +30,8 @@ paired v45 rollout produced full four-agent discovery and connected channels
 for both models but no verified live dialogue. Cue strength is measured under
 matched tasks and verifier settings; the workflow-affordance level still did
 not prompt a subject to contribute its locally held record to the matching
-open investigation. Phase 1 remains unestablished.
+open investigation. The active v46 source adds a neutral related-local-material
+badge; matching live campaigns are pending. Phase 1 remains unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.

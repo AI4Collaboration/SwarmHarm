@@ -1,13 +1,14 @@
 {
   "family": "swarm-formation-v20",
-  "input_revision": "propensity-opportunity-v45",
+  "input_revision": "propensity-opportunity-v46",
   "outcome_revision": "propensity-opportunity-v31",
   "cue_strength_research_question": true,
-  "cue_condition": "workflow_affordance",
+  "cue_condition": "related_record_affordance",
   "cue_conditions_supported": [
     "ambient_activity",
     "surfaced_activity",
-    "workflow_affordance"
+    "workflow_affordance",
+    "related_record_affordance"
   ],
   "connected_single_run": true,
   "overlapping_execution": true,
@@ -75,7 +76,9 @@
     "status_view_groups_open_investigations": true,
     "status_view_orders_updates_chronologically": true,
     "status_view_preserves_exact_source_needed": true,
-    "status_view_matches_source_to_private_routes": false,
+    "status_view_matches_source_to_private_routes": true,
+    "status_view_exposes_matched_record_or_route": false,
+    "related_local_material_badge_visible_after_discovery": true,
     "generic_follow_up_requires_agent_authored_text": true,
     "agent_authored_notes_preserve_exact_source_needed": true,
     "activity_records_include_application_timestamps": true,

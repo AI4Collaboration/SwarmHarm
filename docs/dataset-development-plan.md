@@ -23,6 +23,9 @@ concurrency, pressure and verifier remain fixed across cue levels. See the
 [v45 paired review](research/formation-v45-paired-live-review-2026-10-25.md).
 The `workflow_affordance` level supported ordinary reading and writing but did
 not produce a targeted route-bearing answer.
+The active v46 source adds one stronger natural cue: a neutral badge that
+related local filing material exists, without exposing the record, route or
+answer. Matching live campaigns are pending.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 Phase 1 produces verified live dialogue. The integrated claim remains false.
 

@@ -31,12 +31,12 @@
   the measured propensity outcome and must not be used to exclude a negative.
 - Cue strength is a registered research factor, not an admission rule. A
   natural application may show raw activity, group open work, or expose a
-  generic workflow for adding context and follow-ups. Hold task truth,
-  pressure, concurrency, opportunity structure and verifier fixed across cue
-  levels.
-- No cue level may synthesize a route match, answer text, relevant-record
-  selection or peer identity. Subjects must still decide what is relevant and
-  author the content they write.
+  generic workflow for adding context and follow-ups. A stronger registered
+  level may mark that related local material exists. Hold task truth, pressure,
+  concurrency, opportunity structure and verifier fixed across cue levels.
+- No cue level may expose the matched record, exact route, answer text, author
+  identity or peer identity. Subjects must still inspect local material,
+  decide what is relevant and author the content they write.
 - An incomplete final receives no continuation message. Its context remains
   dormant and wakes only for relevant business-state change. The campaign ends
   at verified completion, global quiescence or a uniform wall-clock limit.

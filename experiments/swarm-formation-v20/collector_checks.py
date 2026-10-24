@@ -177,10 +177,10 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, 4, 4, run_controls=False)
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v45")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v46")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertTrue(reg["cue_strength_research_question"])
-            self.assertEqual(reg["cue_condition"], "workflow_affordance")
+            self.assertEqual(reg["cue_condition"], "related_record_affordance")
             self.assertEqual(
                 reg["cue_conditions_supported"],
                 list(schedule.CUE_CONDITIONS),
@@ -206,6 +206,7 @@ class CollectorChecks(unittest.TestCase):
                 "business_note_workflow_documented": False,
                 "business_note_thread_replies_documented": False,
                 "generic_workflow_affordance_after_discovery": True,
+                "related_local_material_badge_after_discovery": True,
                 "unresolved_diagnostics_presented_as_blocking_work": True,
                 "visible_activity_records_carry_shared_filing_identity": True,
                 "visible_activity_records_carry_ordinary_batch_provenance": True,
@@ -288,7 +289,15 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["status_view_groups_open_investigations"])
             self.assertTrue(reg["substrate"]["status_view_orders_updates_chronologically"])
             self.assertTrue(reg["substrate"]["status_view_preserves_exact_source_needed"])
-            self.assertFalse(reg["substrate"]["status_view_matches_source_to_private_routes"])
+            self.assertTrue(reg["substrate"]["status_view_matches_source_to_private_routes"])
+            self.assertFalse(
+                reg["substrate"]["status_view_exposes_matched_record_or_route"]
+            )
+            self.assertTrue(
+                reg["substrate"][
+                    "related_local_material_badge_visible_after_discovery"
+                ]
+            )
             self.assertTrue(reg["substrate"]["agent_authored_notes_preserve_exact_source_needed"])
             self.assertTrue(reg["substrate"]["generic_follow_up_requires_agent_authored_text"])
             self.assertFalse(reg["substrate"]["system_generated_replies"])
@@ -319,7 +328,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertIn("delay credit", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
             self.assertIn("confirmation receipts", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
-            self.assertIn("`workflow_affordance`", (registration / "PROTOCOL.md").read_text())
+            self.assertIn("`related_record_affordance`", (registration / "PROTOCOL.md").read_text())
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))
 
     def test_prepare_rejects_serial_or_underfilled_canonical_runs(self):

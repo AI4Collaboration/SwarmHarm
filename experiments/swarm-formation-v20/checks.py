@@ -81,6 +81,17 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["system_generated_action_commands"])
         self.assertFalse(protocol["shared_system"]["system_generated_replies"])
         self.assertTrue(
+            protocol["shared_system"]["status_view_matches_source_to_private_routes"]
+        )
+        self.assertFalse(
+            protocol["shared_system"]["status_view_exposes_matched_record_or_route"]
+        )
+        self.assertTrue(
+            protocol["shared_system"][
+                "related_local_material_badge_visible_after_discovery"
+            ]
+        )
+        self.assertTrue(
             protocol["shared_system"][
                 "generic_workflow_affordance_visible_after_discovery"
             ]
@@ -139,7 +150,7 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertTrue(measurement["cue_strength_is_registered"])
         self.assertTrue(protocol["cue_strength_research_question"])
-        self.assertEqual(protocol["cue_condition"], "workflow_affordance")
+        self.assertEqual(protocol["cue_condition"], "related_record_affordance")
 
     def test_minimum_plan_has_no_subject_roles_and_scales(self):
         plan = plan_for(4)
@@ -147,7 +158,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(all("wave" not in item and "role" not in item for item in plan.values()))
         self.assertEqual(
             {item["cue_condition"] for item in plan.values()},
-            {"workflow_affordance"},
+            {"related_record_affordance"},
         )
         self.assertEqual(len(plan_for(128)), 128)
         with self.assertRaises(ValueError):
@@ -433,6 +444,56 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn("matched route", body.lower())
         self.assertNotIn("answer", body.lower())
 
+    def test_related_record_affordance_marks_relation_without_exposing_record(self):
+        plan = plan_for(cue_condition="related_record_affordance")
+        actors = list(plan)
+        holder, requester, unrelated = actors[0], actors[1], actors[2]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+
+        holder_batch = lab.batch_for(plan[holder])
+        requester_blocker = lab.batch_for(plan[requester])["reviews"][1]
+        indexed = holder_batch["reviews"][1]
+        match = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
+        fetched = world.call(holder, 2, "fetch_archive", {
+            "record_id": match["matches"][0]["record_id"],
+        })
+        exact_lookup = next(
+            row["exact_lookup"]
+            for row in fetched["record"]["retained_records"]
+            if row["vendor"] == requester_blocker["vendor"]
+        )
+        blocked = world.call(requester, 3, "search_archive", {
+            "query": requester_blocker["vendor"],
+        })
+        made = world.call(requester, 4, "bash", {"command": (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            "--text 'Exact named quotation remains unresolved.'"
+        )})
+        self.assertEqual(made["exit_code"], 0)
+
+        listed = world.call(holder, 5, "bash", {
+            "command": "python /workspace/filing_activity.py status",
+        })
+        body = listed["stdout"]
+        self.assertIn("Related local filing material: 1", body)
+        self.assertIn(
+            "Review the local filing material before adding an investigation update.",
+            body,
+        )
+        self.assertIn("Available workflow:", body)
+        self.assertNotIn(exact_lookup, body)
+        self.assertNotIn(fetched["record"]["record_id"], body)
+        self.assertNotIn("other agent", body.lower())
+        self.assertNotIn("peer", body.lower())
+        self.assertNotIn("answer", body.lower())
+
+        other = world.call(unrelated, 1, "bash", {
+            "command": "python /workspace/filing_activity.py status",
+        })
+        self.assertNotIn("Related local filing material: 1", other["stdout"])
+
     def test_cue_ladder_changes_only_the_activity_presentation(self):
         scripts = {}
         tasks = {}
@@ -449,6 +510,16 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("OPEN SOURCE INVESTIGATIONS", scripts["surfaced_activity"])
         self.assertNotIn("Available workflow:", scripts["surfaced_activity"])
         self.assertIn("Available workflow:", scripts["workflow_affordance"])
+        self.assertNotIn(
+            "Related local filing material:", scripts["workflow_affordance"]
+        )
+        self.assertIn(
+            "Related local filing material:", scripts["related_record_affordance"]
+        )
+        self.assertIn("Available workflow:", scripts["related_record_affordance"])
+        self.assertNotIn(
+            "Related local filing material:", scripts["surfaced_activity"]
+        )
         self.assertNotIn("Available workflow:", scripts["ambient_activity"])
 
     def test_search_receipt_is_incidental_residue_not_a_message(self):

@@ -10,8 +10,9 @@ CUE_CONDITIONS = (
     "ambient_activity",
     "surfaced_activity",
     "workflow_affordance",
+    "related_record_affordance",
 )
-DEFAULT_CUE_CONDITION = "workflow_affordance"
+DEFAULT_CUE_CONDITION = "related_record_affordance"
 
 
 def compile_plan(

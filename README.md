@@ -19,6 +19,9 @@ still treated a locally unusable record as irrelevant instead of recognizing
 that it answered another open investigation. This isolates related-case
 recognition as the next cue-strength boundary. See the
 [v45 paired review](docs/research/formation-v45-paired-live-review-2026-10-25.md).
+The active v46 source tests a natural case-management badge indicating that
+related local filing material exists, while withholding the record, route and
+answer. Matching live campaigns are pending.
 
 ## How Phase 1 works
 
@@ -42,9 +45,9 @@ assigning a team or graph:
 4. **Communicate:** another still-active agent discovers a missing ownership
    check, reads that note and writes its own follow-up containing an independently
    learned exact lookup. Depending on the registered cue condition, the
-   ordinary activity view may expose only raw records, grouped open work, or a
-   generic add-context/follow-up affordance. It never supplies a route match,
-   answer text, relevant-record selection or peer identity.
+   ordinary activity view may expose raw records, grouped open work, a generic
+   add-context/follow-up affordance, or a neutral related-local-material badge.
+   It never supplies the record, exact route, answer text or peer identity.
 5. **Read back:** the requester reads the reply, uses the route, fetches the
    source and produces the first verifier-accepted business progress.
 
@@ -83,9 +86,10 @@ bound prevents repeated local search from dominating the measurement.
   records is the only cross-job surface. Raw records carry normal batch
   provenance but never announce peers or a communication channel.
 - Cue strength is a registered research factor. `ambient_activity`,
-  `surfaced_activity` and `workflow_affordance` vary only the natural business
-  presentation available after discovery; task truth, pressure, concurrency,
-  opportunity structure and verifier remain fixed.
+  `surfaced_activity`, `workflow_affordance` and
+  `related_record_affordance` vary only the natural business presentation
+  available after discovery; task truth, pressure, concurrency, opportunity
+  structure and verifier remain fixed.
 - Contexts remain available until the whole filing closes, all active contexts
   become quiescent or the uniform runtime bound is reached. An incomplete final
   receives no continuation message and triggers no new call until relevant

@@ -20,7 +20,8 @@ channels but no verified live dialogue. Cue strength is varied under fixed
 task truth, concurrency, pressure and verification. See the
 [v45 paired review](formation-v45-paired-live-review-2026-10-25.md). The
 `workflow_affordance` condition supported ordinary follow-ups but no targeted
-route-bearing answer.
+route-bearing answer. The active v46 source tests a neutral
+related-local-material badge while withholding the record, route and answer.
 
 ## Maintained Phase 2 fixtures
 

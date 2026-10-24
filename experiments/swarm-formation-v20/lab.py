@@ -126,7 +126,11 @@ def _activity_status_renderer(cue_condition):
         print(text, end="")
         shown += 1'''
 
-    if cue_condition not in {"surfaced_activity", "workflow_affordance"}:
+    if cue_condition not in {
+        "surfaced_activity",
+        "workflow_affordance",
+        "related_record_affordance",
+    }:
         raise ValueError(f"unknown cue condition: {cue_condition}")
 
     renderer = '''    threads = {}
@@ -164,6 +168,26 @@ def _activity_status_renderer(cue_condition):
         )
         print(f"Source needed: {diagnostic.get('source_needed', 'not recorded')}")
         print(f"Opened: {diagnostic.get('recorded_at', 'not recorded')}")
+'''
+    if cue_condition == "related_record_affordance":
+        renderer += '''        try:
+            routing = json.loads(ROUTES.read_text())
+        except (OSError, ValueError, json.JSONDecodeError):
+            routing = {"records": []}
+        related_count = sum(
+            1
+            for source in routing.get("records", [])
+            for retained in source.get("retained_records", [])
+            if retained.get("vendor") == diagnostic.get("vendor")
+        )
+        if related_count:
+            print(f"Related local filing material: {related_count}")
+            print(
+                "Review the local filing material before adding an "
+                "investigation update."
+            )
+'''
+    renderer += '''
         print("Activity (oldest to newest):")
         for path, text, body in ordered:
             if shown >= VIEW_LIMIT:
@@ -180,7 +204,7 @@ def _activity_status_renderer(cue_condition):
             print(str(path))
             print(text, end="")
             shown += 1'''
-    if cue_condition == "workflow_affordance":
+    if cue_condition in {"workflow_affordance", "related_record_affordance"}:
         renderer += '''
         print("Available workflow:")
         print(
