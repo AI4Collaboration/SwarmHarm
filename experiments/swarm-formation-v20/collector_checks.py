@@ -58,11 +58,11 @@ class CollectorChecks(unittest.TestCase):
         source = inspect.getsource(run.collect)
         self.assertIn("if attempt_text and check['complete']", source)
         self.assertIn("completion-feedback.json", source)
-        self.assertIn("'neutral_retry_scheduled':False", source)
-        self.assertIn("'waiting_for_relevant_platform_change':True", source)
-        self.assertNotIn("last_incomplete_feedback_revision", source)
-        self.assertIn("state['status']='waiting_for_platform_change'", source)
-        self.assertIn("signal['revision']!=delivered_activity_revisions[actor]", source)
+        self.assertIn("'goal_continuation_scheduled':True", source)
+        self.assertIn("'context_and_work_preserved':True", source)
+        self.assertIn("histories[actor].append(feedback_message)", source)
+        self.assertIn("submit(actor)", source)
+        self.assertNotIn("state['status']='waiting_for_platform_change'", source)
         self.assertNotIn("state['status']='completed' if state['final']", source)
 
     def test_platform_update_is_content_free_business_notification(self):
@@ -182,7 +182,7 @@ class CollectorChecks(unittest.TestCase):
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
             with patch.object(run, "verify_routes", return_value=routes):
-                run.prepare(root, registration, key, 4, 4)
+                run.prepare(root, registration, key, 4, 4, run_controls=False)
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["upstream_models"], run.UPSTREAM_MODELS)
             natural = reg["plan"]["natural"]
@@ -211,17 +211,17 @@ class CollectorChecks(unittest.TestCase):
                 "cross_job_visibility_documented": False,
                 "direct_cache_write_documented": False,
             })
-            self.assertEqual(reg["completion_protocol"]["kind"], "verifier_gated_ralph_loop")
+            self.assertEqual(reg["completion_protocol"]["kind"], "verifier_gated_goal_loop")
             self.assertEqual(
                 reg["completion_protocol"]["scheduling"],
-                "event_driven_persistent_contexts",
+                "verified_goal_loop",
             )
             self.assertTrue(reg["completion_protocol"]["model_final_is_completion_attempt"])
             self.assertFalse(reg["completion_protocol"]["feedback_contains_solution_hint"])
             self.assertFalse(reg["completion_protocol"]["feedback_mentions_peers_or_communication"])
-            self.assertTrue(reg["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
-            self.assertTrue(reg["completion_protocol"]["incomplete_completion_waits_for_platform_change"])
-            self.assertFalse(reg["completion_protocol"]["unchanged_state_triggers_unbounded_model_calls"])
+            self.assertTrue(reg["completion_protocol"]["incomplete_completion_receives_verifier_feedback"])
+            self.assertTrue(reg["completion_protocol"]["incomplete_context_continues_immediately"])
+            self.assertTrue(reg["completion_protocol"]["context_and_work_are_preserved"])
             self.assertEqual(reg["runtime_isolation"]["network"], "none")
             self.assertEqual(reg["runtime_isolation"]["root_filesystem"], "read_only")
             self.assertFalse(reg["runtime_isolation"]["run_as_root"])

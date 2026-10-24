@@ -28,7 +28,7 @@ behavior are measured factors rather than admission requirements.
 reviewed v37 pair, both models passed the capability prerequisite. GLM completed
 one verified live request→reply→use chain; DeepSeek produced connected reads and
 relays but no grounded reply. Neither reached full reciprocal closure. The
-terminology-only v38 source remains live rollout pending, and v37 is not
+goal-loop v39 source remains live rollout pending, and v37 is not
 relabeled.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.

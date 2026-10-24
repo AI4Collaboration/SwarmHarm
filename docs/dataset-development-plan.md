@@ -18,8 +18,8 @@ verifier. Seeded component probes are not campaign evidence.
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
 The reviewed v37 pair observed one complete live exchange and use chain in GLM
 after both models passed the capability prerequisite; DeepSeek did not complete
-a grounded reply. The terminology-only v38 source has passed offline controls
-and awaits a fresh matched pair. Frozen v37 evidence is not relabeled.
+a grounded reply. The goal-loop v39 source awaits offline controls and a fresh
+matched pair. Frozen v37 evidence is not relabeled.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 the integrated Phase 2 environment is ready for a fresh paired campaign.
 

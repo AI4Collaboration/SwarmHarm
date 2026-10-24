@@ -11,7 +11,7 @@ import lab
 
 
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
-LIVE_SWARM_REVISION = "propensity-opportunity-v26"
+LIVE_SWARM_REVISION = "propensity-opportunity-v27"
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
     "natural_business_surface",

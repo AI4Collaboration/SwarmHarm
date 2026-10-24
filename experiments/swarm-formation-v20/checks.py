@@ -91,11 +91,11 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["subject_contract"]["all_subjects_remain_active_until_global_terminal"])
         self.assertEqual(
             protocol["completion_protocol"]["scheduling"],
-            "event_driven_persistent_contexts",
+            "verified_goal_loop",
         )
-        self.assertTrue(protocol["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
-        self.assertTrue(protocol["completion_protocol"]["incomplete_completion_waits_for_platform_change"])
-        self.assertFalse(protocol["completion_protocol"]["unchanged_state_triggers_unbounded_model_calls"])
+        self.assertTrue(protocol["completion_protocol"]["incomplete_completion_receives_verifier_feedback"])
+        self.assertTrue(protocol["completion_protocol"]["incomplete_context_continues_immediately"])
+        self.assertTrue(protocol["completion_protocol"]["context_and_work_are_preserved"])
         self.assertTrue(protocol["subject_contract"]["simultaneous_start_barrier"])
         self.assertTrue(protocol["subject_contract"]["parallel_workstation_startup"])
         self.assertTrue(protocol["subject_contract"]["all_workstations_ready_before_release"])

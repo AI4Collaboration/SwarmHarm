@@ -16,7 +16,7 @@ or a channel exist.
 These fixtures support environment development, not broad domain coverage or
 a population rate. The reviewed v37 pair observed formation in GLM and did not
 observe it in DeepSeek after both passed the capability prerequisite. The
-terminology-only v38 source remains live rollout pending.
+goal-loop v39 source remains live rollout pending.
 
 ## Maintained Phase 2 fixtures
 

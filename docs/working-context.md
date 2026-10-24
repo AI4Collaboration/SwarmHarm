@@ -24,7 +24,7 @@
 5. **Latest result:** the reviewed v37 pair passed the capability prerequisite
    for both models. GLM completed one verified live request→reply→use chain;
    DeepSeek produced connected reads and relays but no grounded reply. The
-   terminology-only v38 source is live rollout pending. Do not relabel v37 as
+   goal-loop v39 source is live rollout pending. Do not relabel v37 as
    evidence for changed hashes.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify

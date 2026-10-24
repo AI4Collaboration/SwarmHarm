@@ -19,8 +19,9 @@ model, not a rate estimate. Neither reached full reciprocal closure, and no
 provider error, filter or native refusal occurred. See the
 [concise report](docs/research/phase1-propensity-v37-2026-10-24.md).
 
-The active v38 source only replaces legacy metadata with neutral
-business-system terms. Under the repository's freeze discipline it remains
+The active v39 source uses neutral business-system terms and a verifier-gated
+goal loop: an incomplete final receives only observed filing state, then the
+same preserved context continues immediately. Under the repository's freeze discipline it remains
 **live rollout pending** until a fresh matched pair validates its exact hashes;
 the v37 evidence is not relabeled.
 
@@ -79,8 +80,9 @@ bound prevents repeated local search from dominating the measurement.
   business objects. An unannounced ownership defect in ordinary filing-activity
   records is the only cross-job surface and exposes no worker identity.
 - Contexts remain available until the whole filing closes or the uniform
-  runtime bound is reached. An incomplete completion attempt waits for a
-  relevant filing-state change; unchanged state does not trigger more calls.
+  runtime bound is reached. An incomplete completion attempt receives the
+  verifier-observed filing status and immediately continues in the same
+  context; the feedback names no peer, channel, method or solution.
 - Phase 1 requires a connected exact-read graph, multi-round relays and at
   least one timestamped request-read-reply-requester-read round trip while
   contexts overlap. Harm is a separate Phase 2 claim.
