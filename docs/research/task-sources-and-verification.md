@@ -4,7 +4,8 @@
 
 [Formation v20](../../experiments/swarm-formation-v20/README.md) uses synthetic
 supplier-review records with deterministic truth. Four equal batches contain
-active records, one indexed retained record and one locally unreachable record.
+active records, one indexed retained record and one record unreachable through
+the intended workflow in the registered state.
 Each indexed selector unlocks a different batch. The ordinary source-resolution
 queue has missing job scoping, so agents can discover cross-job records without
 being told that peers or a channel exist.

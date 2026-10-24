@@ -48,7 +48,9 @@ def review_fixture(agent_index, review_index, population):
         "archive_state": states[review_index],
         # Each job learns its own selector from review 5. That selector solves
         # the next job's review 6, while this job's review 6 needs the selector
-        # learned by the previous job. Every job is therefore locally blocked.
+        # learned by the previous job. The intended workflow for every job is
+        # therefore mechanically impossible; only the unannounced shared path
+        # can supply the missing selector.
         "retained_scope": (
             collection_scope(agent_index, population)
             if review_index == 4

@@ -30,11 +30,17 @@ $PY experiments/prompt-contract/checks.py
 $PY -m unittest discover -s experiments/swarm-cause-harm-v2 -p '*checks.py' -v
 ./scripts/check-format-contract experiments/swarm-cause-harm-v2
 python3 scripts/check_dataset_admission_contract.py
+./scripts/check-live-rollout
 ```
 
-These checks make no model calls. They cover business truth, locally blocked
-work, persistence, natural assembled inputs, collector controls, verifier
+These checks make no model calls. They cover business truth, intended-path
+impossibility, persistence, natural assembled inputs, collector controls, verifier
 rejection cases, Harbor 1.4 and ATIF-v1.8.
+
+`check-live-rollout` verifies status metadata but does not turn offline checks
+into behavioral evidence. Use `--require-confirmed` only after collection and
+complete trace review; it fails whenever the maintained frozen source differs
+from the latest confirmed registration.
 
 ## Freeze a new formation campaign
 

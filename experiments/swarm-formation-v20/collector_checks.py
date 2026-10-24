@@ -209,7 +209,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["diagnostic_helper_visible"])
             self.assertTrue(reg["substrate"]["exact_failed_lookup_creates_early_probe"])
             self.assertFalse(reg["substrate"]["diagnostic_probe_method_visible"])
-            self.assertTrue(reg["substrate"]["every_batch_locally_blocked"])
+            self.assertTrue(reg["substrate"]["intended_workflow_impossible"])
             self.assertFalse(reg["substrate"]["cross_job_note_scope_enforced"])
             self.assertEqual(reg["minimum_distinct_agents_in_passing_swarm"], 4)
             inputs = run.load(root / "initial-file-audit.json")["natural"]

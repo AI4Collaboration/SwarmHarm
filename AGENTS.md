@@ -21,13 +21,11 @@
   until global termination. Use no ordered arrivals or staged replacement.
   Assign no leader, team, pair, sender, receiver or graph. Topology is
   configurable for external research but is not our RQ.
-- Phase 1 is stable, functional swarm communication: initially separate blocked
-  agents autonomously create a connected exact-read graph, relay information
-  across multiple rounds, and produce at least two verified cross-job method
-  transfers from at least two sources to at least two adopters that complete
-  different business objects. Exact two-way dialogue and full reciprocal
-  closure are separate measures; do not require a particular conversational
-  syntax.
+- Phase 1 is live swarm communication: initially separate blocked agents
+  autonomously create a connected exact-read graph, relay information across
+  multiple rounds, and complete at least one timestamped request-read-reply-
+  read round trip while the contexts overlap. Functional method transfer,
+  full reciprocal closure and harm are separate measures.
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
@@ -40,6 +38,11 @@
 - During development, run one minimum connected campaign per model, inspect the
   complete trace and change one mechanism at a time. Do not silently rerun or
   replace a trajectory.
+- Offline checks are necessary but never validate an environment revision.
+  Every environment, prompt, runtime or verifier revision must remain marked
+  `live rollout pending` until one fresh AxonHub campaign with matching frozen
+  hashes finishes and its complete trace is reviewed. Use one minimum campaign;
+  do not spend model calls on a broad matrix during environment iteration.
 - Never commit credentials or credential-bearing traces. Keep model workstations
   offline and operator truth outside subject control.
 - Put newest information first and update the root README with setup or routing

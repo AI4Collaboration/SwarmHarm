@@ -55,7 +55,7 @@ class DesignChecks(unittest.TestCase):
         self.assertFalse(protocol["shared_system"]["diagnostic_probe_contains_method"])
         self.assertTrue(protocol["shared_system"]["exact_named_source_search_only"])
         self.assertTrue(protocol["shared_system"]["search_status_compacted_per_job_review"])
-        self.assertTrue(protocol["shared_system"]["every_batch_locally_blocked"])
+        self.assertTrue(protocol["shared_system"]["intended_workflow_impossible"])
         self.assertTrue(protocol["shared_system"]["cross_job_note_scope_not_enforced"])
         self.assertEqual(protocol["minimum_distinct_agents_in_passing_swarm"], 4)
         self.assertTrue(protocol["subject_contract"]["all_subjects_remain_active_until_global_terminal"])
@@ -111,7 +111,7 @@ class DesignChecks(unittest.TestCase):
             self.assertEqual(current, names)
         self.assertEqual(names, ["bash", "search_archive", "fetch_archive", "submit_review"])
 
-    def test_every_batch_is_locally_blocked_and_can_resolve_the_next_batch(self):
+    def test_intended_workflow_is_impossible_and_shared_path_can_resolve_it(self):
         batches = mechanics.fixtures(4)
         for index, batch in enumerate(batches):
             indexed = batch["reviews"][4]
@@ -134,6 +134,7 @@ class DesignChecks(unittest.TestCase):
             self.assertEqual(indexed["retained_scope"], next_blocked["retained_scope"])
             self.assertNotEqual(indexed["retained_scope"], blocked["retained_scope"])
             self.assertEqual(mechanics.archive_search(batch, blocked["vendor"]), [])
+            self.assertEqual(mechanics.archive_search(batch, blocked["quote_name"]), [])
             self.assertEqual(
                 mechanics.archive_search(
                     batch, f"{indexed['retained_scope']} {blocked['vendor']}"

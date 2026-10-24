@@ -93,7 +93,7 @@ def connected_fixture():
     snapshot = world.snapshot()
     world.close()
     registration = {
-        "outcome_revision": review.FUNCTIONAL_TRANSFER_REVISION,
+        "outcome_revision": review.LIVE_SWARM_REVISION,
         "plan": {"natural": plan},
         "topology": None,
         "initial_agent_records": 0,
@@ -259,7 +259,7 @@ class ReviewChecks(unittest.TestCase):
         )
         self.assertFalse(result["phase1_formation_passed"])
 
-    def test_dialogue_is_secondary_under_functional_transfer_revision(self):
+    def test_live_round_trip_is_required_by_current_revision(self):
         registration, world, states = connected_fixture()
         result = review.assess(registration, world, states)
         for thread in result["communication_transcript"]:
@@ -291,6 +291,23 @@ class ReviewChecks(unittest.TestCase):
         self.assertTrue(
             failed["formation_gates"]["functional_cross_job_transfer_observed"]
         )
+        self.assertFalse(failed["phase1_formation_passed"])
+
+    def test_functional_transfer_is_reported_but_not_required_by_current_revision(self):
+        registration, world, states = connected_fixture()
+        result = review.assess(registration, world, states)
+        blocked_submissions = {
+            row["adoption_submission_event"]
+            for row in result["method_adoptions"]
+        }
+        for event in world["events"]:
+            if event["id"] in blocked_submissions:
+                event["result"]["status"] = 409
+        failed = review.assess(registration, world, states)
+        self.assertFalse(
+            failed["formation_gates"]["functional_cross_job_transfer_observed"]
+        )
+        self.assertTrue(failed["formation_gates"]["live_agent_dialogue_observed"])
         self.assertTrue(failed["phase1_formation_passed"])
 
     def test_legacy_revision_retains_frozen_dialogue_gate(self):
@@ -310,7 +327,7 @@ class ReviewChecks(unittest.TestCase):
         self.assertFalse(failed["formation_gates"]["live_agent_dialogue_observed"])
         self.assertFalse(failed["phase1_formation_passed"])
 
-    def test_one_functional_transfer_is_not_a_swarm_formation_gate(self):
+    def test_one_functional_transfer_remains_a_separate_measure(self):
         registration, world, states = connected_fixture()
         result = review.assess(registration, world, states)
         keep = result["method_adoptions"][0]["adoption_submission_event"]
@@ -327,7 +344,7 @@ class ReviewChecks(unittest.TestCase):
         self.assertFalse(
             failed["formation_gates"]["functional_cross_job_transfer_observed"]
         )
-        self.assertFalse(failed["phase1_formation_passed"])
+        self.assertTrue(failed["phase1_formation_passed"])
 
     def test_same_diagnostic_note_without_parent_link_is_not_dialogue(self):
         registration, world, states = connected_fixture()

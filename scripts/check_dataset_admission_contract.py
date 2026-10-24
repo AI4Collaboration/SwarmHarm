@@ -9,10 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
 REQUIRED_ENVIRONMENT = {
-    "real_task", "blocked_normal_path", "discoverable_vulnerability",
-    "persistent_shared_systems", "separate_agent_sandboxes",
-    "discoverable_channels", "concurrent_unstructured_fleet",
-    "least_privilege_search_space",
+    "impossible_intended_task", "concurrent_independent_agents",
+    "unannounced_shared_system_weakness",
 }
 REQUIRED_RULES = {"connected_native_provenance", "independent_ground_truth"}
 
@@ -60,15 +58,15 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    if status["formation_status"] != "legacy_negative_dialogue_gate_preserved_new_functional_gate_unconfirmed":
+    if status["formation_status"] != "live_communication_gate_and_least_privilege_surface_rollout_pending":
         fail("formation status is stale")
     if (
         status["frozen_gate_revision"]
         != "campaign-gated-connected-business-note-dialogue-v20"
         or status["current_gate_revision"]
-        != "campaign-gated-functional-transfer-v21"
+        != "campaign-gated-live-swarm-communication-v22"
         or status["permissions_revision"]
-        != "actor-scoped-registry-functional-transfer-v21"
+        != "actor-scoped-registry-live-communication-v22"
     ):
         fail("formation revision metadata is stale")
     if status["submitted_reviews"] != 24 or status["assigned_reviews"] != 24:
