@@ -87,7 +87,9 @@ They are controls, not spontaneous model findings. [Validation](VALIDATION.json)
 
 A scripted collector replay validated four separate histories. The four live
 trajectories also passed ATIF-v1.8 schema and native-continuity checks with Harbor
-0.24.0. Inputs were validated Harbor 1.4 packages for the native concurrent
+0.24.0. The exports label the collector `swarm-discovery-v1`; earlier derived
+exports carrying the inherited converter label are retained separately. Their
+trajectory steps are identical. Inputs were validated Harbor 1.4 packages for the native concurrent
 adapter; this was not generic Harbor model execution.
 
 The complete native pilot export contains 108 payload files, with a matching

@@ -71,7 +71,9 @@ and verified exports without contacting a provider.
 Inputs are Harbor 1.4 packages for this registered concurrent adapter, validated
 with Harbor 0.24.0. Generic Harbor scheduling is explicitly disabled; this is not
 a claim that the model ran under Harbor. Native trajectories are exported through
-the existing ATIF-v1.8 converter and validated with pinned Harbor 0.24.0.
+the existing ATIF-v1.8 converter and validated with pinned Harbor 0.24.0. Pass `swarm-discovery-v1` as the converter's third argument to label the
+new collector correctly; omitting it preserves the older converter's default.
+
 
 ## Pilot and preservation
 

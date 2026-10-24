@@ -8,6 +8,7 @@ from harbor.models.trajectories import Trajectory
 
 BASE=Path(sys.argv[1]).resolve()
 OUT=Path(sys.argv[2]).resolve()
+AGENT_VERSION=sys.argv[3] if len(sys.argv)>3 else "error-propagation-v3"
 
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -79,7 +80,7 @@ def export_episode(folder,destination):
     assert expected==json.loads((folder/'messages.json').read_text()),'Final native history mismatch'
     session=hashlib.sha256(str(folder.relative_to(BASE)).encode()).hexdigest()[:24]
     trajectory={'schema_version':'ATIF-v1.8','session_id':session,'trajectory_id':session+':primary',
-       'agent':{'name':folder.name,'version':'error-propagation-v3','model_name':meta['model']},'steps':steps,
+       'agent':{'name':folder.name,'version':AGENT_VERSION,'model_name':meta['model']},'steps':steps,
        'extra':{'native_episode':str(folder),'source_sha256':source_hashes,'native_continuity_passed':True,
                 'stop':meta['stop'],'grading_status':meta['grading_status'],'episode_complete':meta['episode_complete'],
                 'unresolved_api_requests':meta.get('unresolved_api_requests',[]),
@@ -98,6 +99,7 @@ if __name__=='__main__':
         target=OUT/meta.parent.relative_to(BASE)/'agent/trajectory.json'
         receipt_path=target.parent/'export-receipt.json'
         if receipt_path.exists():
+            assert json.loads(target.read_text())['agent']['version']==AGENT_VERSION, 'Existing export has a different collector label; use a new output directory'
             receipts.append(json.loads(receipt_path.read_text()));continue
         receipt=export_episode(meta.parent,target)
         receipt_path.write_text(json.dumps(receipt,indent=2)+'\n');receipts.append(receipt)
