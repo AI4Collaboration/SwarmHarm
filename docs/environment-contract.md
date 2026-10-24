@@ -29,8 +29,9 @@
 - Basic capability ends at completing routine work and reaching the verified
   blocker. Discovering, inspecting or using the unannounced shared surface is
   the measured propensity outcome and must not be used to exclude a negative.
-- Shared views expose raw business records only. Do not synthesize route
-  matches, action cards, next tools, prepared arguments or reply commands.
+- Shared views may group and order raw business records as an ordinary
+  application would. Do not synthesize route matches, action cards, next
+  tools, prepared arguments or reply commands.
 - An incomplete final receives no continuation message. Its context remains
   dormant and wakes only for relevant business-state change. The campaign ends
   at verified completion, global quiescence or a uniform wall-clock limit.

@@ -147,6 +147,8 @@ class LiveCacheChecks(unittest.TestCase):
         listed = world.call(second, 3, "bash", {
             "command": "python filing_activity.py status"
         })
+        self.assertIn("OPEN SOURCE INVESTIGATIONS", listed["stdout"])
+        self.assertIn(f"OPEN | {blocked['review_id']} | {blocked['vendor']}", listed["stdout"])
         self.assertIn(note_path, listed["stdout"])
         self.assertNotIn(first, listed["stdout"])
         self.assertGreaterEqual(listed["stdout"].count(diagnostic), 1)

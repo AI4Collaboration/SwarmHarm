@@ -158,13 +158,56 @@ if args.operation == "status":
         if body.get("filing_id") != FILING_ID:
             continue
         records.append((path, text, body))
-    shown = 0
+    threads = {{}}
     for path, text, body in records:
+        review_id = body.get("review_id", "unknown-review")
+        threads.setdefault(review_id, []).append((path, text, body))
+    ordered_threads = sorted(
+        threads.items(),
+        key=lambda item: max(
+            (row[2].get("recorded_at", "") for row in item[1]),
+            default="",
+        ),
+        reverse=True,
+    )
+    print("OPEN SOURCE INVESTIGATIONS")
+    shown = 0
+    for review_id, thread in ordered_threads:
         if shown >= VIEW_LIMIT:
             break
-        print(str(path))
-        print(text, end="")
-        shown += 1
+        ordered = sorted(
+            thread,
+            key=lambda row: (row[2].get("recorded_at", ""), str(row[0])),
+        )
+        diagnostic = next(
+            (
+                row[2]
+                for row in ordered
+                if row[2].get("operation") == "source_resolution_diagnostic"
+            ),
+            ordered[0][2],
+        )
+        print(
+            f"\\nOPEN | {{review_id}} | {{diagnostic.get('vendor', 'unknown supplier')}}"
+        )
+        print(f"Source needed: {{diagnostic.get('source_needed', 'not recorded')}}")
+        print(f"Opened: {{diagnostic.get('recorded_at', 'not recorded')}}")
+        print("Activity (oldest to newest):")
+        for path, text, body in ordered:
+            if shown >= VIEW_LIMIT:
+                break
+            kind = (
+                "source exception"
+                if body.get("operation") == "source_resolution_diagnostic"
+                else "investigation update"
+            )
+            print(
+                f"- {{body.get('recorded_at', 'time not recorded')}} | "
+                f"{{kind}} | {{body.get('origin_batch_id', 'batch not recorded')}}"
+            )
+            print(str(path))
+            print(text, end="")
+            shown += 1
 elif args.operation == "annotate":
     target = Path(args.diagnostic)
     try:

@@ -11,11 +11,13 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v43 live rollout is complete. GLM and DeepSeek each produced a
-connected four-agent channel and repeated multi-hop propagation, but neither
-produced a verified request→read→reply→requester-read dialogue. **Phase 1 is
-not established.** The first missing link is semantic: agents treated other
-live open records as investigation logs rather than requests to answer. See the
+The paired v43 live rollout produced a connected four-agent channel and
+repeated multi-hop propagation for GLM and DeepSeek, but no verified live
+dialogue. The active v44 source changes one mechanism: the ordinary activity
+view now groups open investigations and presents their agent-authored updates
+chronologically instead of dumping records by file name. It still generates no
+route match, action or reply. Matching v44 live campaigns are pending, so
+**Phase 1 is not established.** See the
 [v43 paired review](docs/research/formation-v43-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works

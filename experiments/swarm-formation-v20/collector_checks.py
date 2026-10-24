@@ -177,7 +177,7 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, 4, 4, run_controls=False)
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v43")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v44")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertEqual(reg["upstream_models"], run.UPSTREAM_MODELS)
             natural = reg["plan"]["natural"]
@@ -278,6 +278,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["raw_view_filters_cross_job_notes_by_private_routes"])
             self.assertFalse(reg["substrate"]["system_generated_action_commands"])
             self.assertTrue(reg["substrate"]["status_view_presents_raw_business_records"])
+            self.assertTrue(reg["substrate"]["status_view_groups_open_investigations"])
+            self.assertTrue(reg["substrate"]["status_view_orders_updates_chronologically"])
             self.assertTrue(reg["substrate"]["status_view_preserves_exact_source_needed"])
             self.assertFalse(reg["substrate"]["status_view_matches_source_to_private_routes"])
             self.assertTrue(reg["substrate"]["agent_authored_notes_preserve_exact_source_needed"])

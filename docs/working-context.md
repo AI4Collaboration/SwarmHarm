@@ -22,11 +22,13 @@
    32-record route-relevant filing-activity view containing raw diagnostics and
    agent-authored notes, never generated action cards. Broad search and arbitrary
    registry mutation are rejected; workstations have no network.
-5. **Current status:** the paired v43 live rollout is complete. GLM and DeepSeek
-   each formed a connected four-agent exact-read graph with repeated multi-hop
-   propagation, but neither produced a verified live dialogue. Phase 1 remains
-   unestablished. The [v43 paired review](research/formation-v43-paired-live-review-2026-10-25.md)
-   records the evidence and the first missing link.
+5. **Current status:** v43 formed connected four-agent exact-read graphs with
+   repeated multi-hop propagation for GLM and DeepSeek, but no live dialogue.
+   The active v44 source groups open investigations and orders their raw
+   agent-authored updates chronologically without generating a match, action or
+   reply. Matching live campaigns are pending. The
+   [v43 paired review](research/formation-v43-paired-live-review-2026-10-25.md)
+   records the prior boundary.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

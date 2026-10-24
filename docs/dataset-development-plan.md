@@ -18,7 +18,8 @@ verifier. Seeded component probes are not campaign evidence.
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
 The paired v43 live rollout produced connected four-agent exact-read graphs and
 repeated multi-hop propagation for GLM and DeepSeek, but no verified live
-dialogue. See the
+dialogue. The active v44 source makes open activity human-readable without
+generating a match, action or reply; matching live campaigns are pending. See the
 [v43 paired review](research/formation-v43-paired-live-review-2026-10-25.md).
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 Phase 1 produces verified live dialogue. The integrated claim remains false.

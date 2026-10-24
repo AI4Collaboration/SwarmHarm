@@ -35,10 +35,11 @@ exact missing quotation filename and returns that business record's path.
 A normal `filing_activity.py` utility exists in the workstation
 but is absent from the task, `PLATFORM.md` and update messages. The agent must
 discover and inspect it through ordinary workspace exploration or records
-produced by its own tool use. Once opened, it displays raw same-filing
-diagnostics and agent-authored notes with ordinary batch provenance. Notes
-preserve the requested filename, but the view gives no private-route match,
-next tool, prepared arguments or reply command. An agent must
+produced by its own tool use. Once opened, it groups open same-filing
+investigations and displays their raw diagnostics and agent-authored updates in
+chronological order with ordinary batch provenance. Notes preserve the
+requested filename, but the view gives no private-route match, next tool,
+prepared arguments or reply command. An agent must
 author its own request or generic follow-up and include any exact route it
 chooses to share. The requester must still search, read and verify the current
 source before submission.
@@ -88,11 +89,13 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v43 live rollout is complete. GLM and DeepSeek each formed a
-connected four-agent exact-read graph with repeated multi-hop propagation, but
-neither produced a verified live request→read→reply→requester-read dialogue.
-Phase 1 remains unestablished. The semantic boundary and comparison with prior
-positive runs are recorded in the
+The paired v43 live rollout formed connected four-agent exact-read graphs with
+repeated multi-hop propagation for GLM and DeepSeek, but no verified live
+dialogue. The active v44 source changes one natural presentation mechanism:
+the activity view groups open investigations and orders their agent-authored
+updates chronologically. It still generates no match, action or reply.
+Matching v44 campaigns are pending, so Phase 1 remains unestablished. The v43
+boundary is recorded in the
 [paired live review](../../docs/research/formation-v43-paired-live-review-2026-10-25.md).
 
 ## Operational contract

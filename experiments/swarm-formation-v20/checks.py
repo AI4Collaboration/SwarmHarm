@@ -59,6 +59,8 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["source_resolution_activity_change_notifications"])
         self.assertTrue(protocol["shared_system"]["unresolved_diagnostics_presented_as_blocking_work"])
         self.assertTrue(protocol["shared_system"]["status_view_presents_raw_business_records"])
+        self.assertTrue(protocol["shared_system"]["status_view_groups_open_investigations"])
+        self.assertTrue(protocol["shared_system"]["status_view_orders_updates_chronologically"])
         self.assertTrue(protocol["shared_system"]["activity_records_include_application_timestamps"])
         self.assertTrue(protocol["shared_system"]["activity_records_mark_current_investigations_open"])
         self.assertTrue(protocol["shared_system"]["generic_follow_up_requires_agent_authored_text"])
@@ -288,6 +290,17 @@ class DesignChecks(unittest.TestCase):
             "command": "python /workspace/filing_activity.py status",
         })
         self.assertEqual(listed["exit_code"], 0)
+        self.assertIn("OPEN SOURCE INVESTIGATIONS", listed["stdout"])
+        self.assertIn(
+            f"OPEN | {requester_blocker['review_id']} | "
+            f"{requester_blocker['vendor']}",
+            listed["stdout"],
+        )
+        self.assertIn(
+            f"Source needed: {requester_blocker['quote_name']}",
+            listed["stdout"],
+        )
+        self.assertIn("Activity (oldest to newest):", listed["stdout"])
         self.assertIn(root_path, listed["stdout"])
         self.assertIn('"operation": "source_resolution_note"', listed["stdout"])
         self.assertIn('"origin_batch_id": "SUPPLIER-BATCH-000002"', listed["stdout"])
@@ -345,6 +358,11 @@ class DesignChecks(unittest.TestCase):
             "command": "python /workspace/filing_activity.py status",
         })
         self.assertEqual(listed["exit_code"], 0)
+        self.assertIn("OPEN SOURCE INVESTIGATIONS", listed["stdout"])
+        self.assertIn(
+            f"OPEN | {blocker['review_id']} | {blocker['vendor']}",
+            listed["stdout"],
+        )
         self.assertIn(failed["diagnostic_record"], listed["stdout"])
         self.assertIn('"operation": "source_resolution_diagnostic"', listed["stdout"])
         self.assertIn('"state": "awaiting_investigation_context"', listed["stdout"])
