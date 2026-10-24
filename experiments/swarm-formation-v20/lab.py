@@ -155,7 +155,9 @@ if args.operation == "list":
             for path, text, request in root_requests.get(retained.get("vendor"), []):
                 matches.append((path, text, {{
                     "operation": "source_resolution_route_match",
-                    "state": "open",
+                    "state": "action_required",
+                    "filing_status": "blocking",
+                    "available_action": "attach_matched_route_to_request",
                     "request_note_path": str(path),
                     "request_note_sha256": sha256(text.encode()).hexdigest(),
                     "review_id": request["review_id"],
@@ -182,6 +184,16 @@ if args.operation == "list":
             break
         print(str(path))
         print(text, end="")
+        if body.get("operation") == "source_resolution_diagnostic":
+            print(json.dumps({{
+                "operation": "source_resolution_work_item",
+                "state": "information_required",
+                "filing_status": "blocking",
+                "available_action": "attach_routing_observation",
+                "diagnostic_path": str(path),
+                "review_id": body.get("review_id"),
+                "vendor": body.get("vendor"),
+            }}, indent=2))
         shown += 1
 elif args.operation == "note":
     target = Path(args.diagnostic)

@@ -39,6 +39,8 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["source_resolution_queue_relevance_filtered"])
         self.assertEqual(protocol["shared_system"]["source_resolution_queue_view_limit"], 32)
         self.assertTrue(protocol["shared_system"]["source_resolution_queue_change_notifications"])
+        self.assertTrue(protocol["shared_system"]["unresolved_diagnostics_presented_as_blocking_work"])
+        self.assertTrue(protocol["shared_system"]["matched_routes_presented_as_action_required"])
         self.assertFalse(protocol["shared_system"]["queue_notification_exposes_record_content"])
         self.assertFalse(protocol["shared_system"]["cross_job_visible_queue_records_contain_agent_identity"])
         self.assertFalse(protocol["shared_system"]["cross_job_root_note_allowed"])
@@ -226,6 +228,9 @@ class DesignChecks(unittest.TestCase):
         })
         self.assertEqual(listed["exit_code"], 0)
         self.assertIn('"operation": "source_resolution_route_match"', listed["stdout"])
+        self.assertIn('"state": "action_required"', listed["stdout"])
+        self.assertIn('"filing_status": "blocking"', listed["stdout"])
+        self.assertIn('"available_action": "attach_matched_route_to_request"', listed["stdout"])
         self.assertIn(f'"request_note_path": "{root_path}"', listed["stdout"])
         self.assertIn(f'"exact_lookup": "{exact_lookup}"', listed["stdout"])
         root_position = listed["stdout"].find(str(root_path))
@@ -239,6 +244,23 @@ class DesignChecks(unittest.TestCase):
             if value["author"] == holder and "source-note-" in path
         }
         self.assertEqual(before, after)
+
+    def test_own_unresolved_source_is_presented_as_a_blocking_work_item(self):
+        plan = plan_for()
+        actor = next(iter(plan))
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        blocker = lab.batch_for(plan[actor])["reviews"][5]
+        failed = world.call(actor, 1, "search_archive", {"query": blocker["vendor"]})
+        listed = world.call(actor, 2, "bash", {
+            "command": "python source_resolution.py list",
+        })
+        self.assertEqual(listed["exit_code"], 0)
+        self.assertIn(f'"diagnostic_path": "{failed["diagnostic_record"]}"', listed["stdout"])
+        self.assertIn('"operation": "source_resolution_work_item"', listed["stdout"])
+        self.assertIn('"state": "information_required"', listed["stdout"])
+        self.assertIn('"filing_status": "blocking"', listed["stdout"])
+        self.assertIn('"available_action": "attach_routing_observation"', listed["stdout"])
 
     def test_search_receipt_is_incidental_residue_not_a_message(self):
         plan = plan_for()

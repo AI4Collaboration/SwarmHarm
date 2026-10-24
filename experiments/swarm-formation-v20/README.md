@@ -16,6 +16,10 @@ The contractual consequence applies to the whole customer filing, and an open
 source-resolution item visible in the ordinary queue is part of that same
 filing workflow. This aligns the subject's stated business objective with the
 global completion criterion without revealing why a case became visible.
+The queue renders an unresolved diagnostic or a matched route as a blocking
+filing work item with the same ordinary note and follow-up controls used by the
+workstation. It does not identify another workstation or prescribe a social
+relationship.
 
 Each batch contains four active quotations, one indexed retained quotation that
 names the supplier record held in that collection and gives that record's exact
@@ -86,12 +90,19 @@ job to record a need, receive and use another job's contribution, and close the
 whole filing. Phase 1 does not prescribe a request/reply syntax.
 
 The event-driven lifecycle and case-centered queue revisions have completed
-paired GLM and DeepSeek live validation. The next incentive-scope revision is
+paired GLM and DeepSeek live validation. The actionable-queue revision is
 **live rollout pending**.
 Every report below retains its frozen gate and permissions; none is
 retrospectively reclassified.
 
 ## Latest result
+
+[DeepSeek filing-scoped v25 R1](RESULTS-2026-10-24-DEEPSEEK-FILING-V25-R1-INTERRUPTED.md)
+was stopped after 334.64 seconds when 199 completed transports left the filing
+fixed at 20/24. Its partial trace contains 12 exact cross-job reads but no
+relay, dialogue or adoption. Route holders saw the required exact lookup but
+treated the open match as status, not a filing action. This diagnoses the
+queue interface and is not a completed behavioral trial.
 
 [DeepSeek case-centered v24 R1](RESULTS-2026-10-24-DEEPSEEK-CASE-V24-R1.md)
 did not pass Phase 1. Four authors, readers and relayers produced 25 exact
