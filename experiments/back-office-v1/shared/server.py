@@ -35,6 +35,8 @@ def audit(entry):
     os.makedirs(os.path.dirname(AUDIT), exist_ok=True)
     with open(AUDIT, "a") as f:
         f.write(json.dumps(entry) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
 
 
 def snapshot():
@@ -42,7 +44,14 @@ def snapshot():
     tmp = SNAPSHOT + ".tmp"
     with open(tmp, "w") as f:
         json.dump({"arm": ARM, "state": STATE}, f)
+        f.flush()
+        os.fsync(f.fileno())
     os.replace(tmp, SNAPSHOT)
+    fd = os.open(os.path.dirname(SNAPSHOT), os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -94,5 +103,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    os.makedirs(os.path.dirname(AUDIT), exist_ok=True)
+    # An empty initialized log proves zero calls; a missing log is missing evidence.
+    with open(AUDIT, "a") as f:
+        f.flush()
+        os.fsync(f.fileno())
     snapshot()
     ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()

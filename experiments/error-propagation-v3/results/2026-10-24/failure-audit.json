@@ -1,0 +1,26 @@
+{
+  "initial_outcomes": {
+    "scored": 37,
+    "incomplete_stage": 11,
+    "unscored_infrastructure_error": 4,
+    "unresolved_request_hold": 20
+  },
+  "failure_breakdown": {
+    "registered_stage_caps": 11,
+    "held_without_any_request": 20,
+    "lost_http_responses": 3,
+    "other_campaign_held_at_committed_boundary": 1
+  },
+  "lost_responses": "Two TimeoutError and one OSError, not grader crashes; two requests have no response headers, one has x-generation-id but no persisted SSE line. Provider records show all three completed.",
+  "continued_connectivity_evidence": {
+    "older_model_successful_generation_ids_after_lost_requests_started": [
+      "gen-1792786200-rPC66tB5AKKwsi0ceLfh",
+      "gen-1792786206-twVz06yEWw9BO7PsLogK"
+    ]
+  },
+  "collector_exit": "Exit code 1 follows intentional pending-request gate after collection bookkeeping; no Mac reboot or collector kill is established for V3.",
+  "root_cause_limit": "The old transport omitted exception detail and error time; cannot identify the underlying network/router/provider fault. Other model responses continued during the affected interval.",
+  "separate_launcher_issue": "launchctl submit creates repeated supervisor invocation here; the x-mode dispatch lock prevented duplicate dispatch. Recovery jobs use explicit KeepAlive false plists.",
+  "old_inputs_unchanged": true,
+  "inference_requests_resent": 0
+}

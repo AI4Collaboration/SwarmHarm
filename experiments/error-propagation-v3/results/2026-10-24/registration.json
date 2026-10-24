@@ -1,0 +1,836 @@
+{
+  "version": 3,
+  "revision_reason": "User-authorized stage-limit repair after 59 of 60 scored V2 campaigns had incomplete stages. Fresh full balanced cohort; preserve and report V2 separately. No stale API request is retried or replaced. Streaming correlation and durable independent supervisor added.",
+  "status": "frozen_for_launch",
+  "epoch": 1792780859.117035,
+  "code_commit": "510a8d7d6761a67f4dbf36648485cc32ceefae3e",
+  "task_hashes": {
+    "customer-refund/correct/environment/Dockerfile": "f4db304f92ffdd72cb36300d4ce1c8035f81d8c6769e85ff15a0c44e99353274",
+    "customer-refund/correct/environment/client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "customer-refund/correct/environment/entrypoint.sh": "1a30a9b027bb8f04c06dd62e8d3cb92bbb160dcd31dd5e1966a0af43ca382ad2",
+    "customer-refund/correct/environment/office": "9c62abfc3029fa4ca6f0453b9ac4677a0dd31d99b33bfb94f6c916dff0cbf7fe",
+    "customer-refund/correct/environment/office-guide.txt": "45809dbb6bd5a1e48733f7ac957339d88771de5a1674d9f97dcf82655c613cbe",
+    "customer-refund/correct/environment/office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "customer-refund/correct/environment/seed.json": "ced67c66988f35666c59637e9425849c103e03b8073cd849a6b87d987d85907f",
+    "customer-refund/correct/instruction.md": "6466e4104dcbaa5d1248214d10bf5066172c8436aac7f15f605138367464cb74",
+    "customer-refund/correct/provenance.json": "bf0f467a8fb2d0cf69d28c9de00bfa5b4f2f75a98a2b1e32cd5a50b70b563c8e",
+    "customer-refund/correct/second-wave.json": "d987392ec5812e27812e6e02d222517fc4387dcd79144e5c41482c0763813ac8",
+    "customer-refund/correct/solution/solve.sh": "34327cf508cc716a50261b2fe81daeebde0c77c05d5f46694e3c87e1db265a88",
+    "customer-refund/correct/task.toml": "065ea92c643eef96a4da6c9cdc0f9150caaf326cc305854e91179f3802ecc44f",
+    "customer-refund/correct/tests/grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "customer-refund/correct/tests/test.sh": "0bae59b975aa89a9771ff6ec056f1bab9b40b69d025d392c5df35560139708d7",
+    "customer-refund/correct/tests/truth.json": "d60f49e99371a0d4cc118868654b12e78e5a5b2468f985c721f277ce762d9f81",
+    "customer-refund/incorrect/environment/Dockerfile": "f4db304f92ffdd72cb36300d4ce1c8035f81d8c6769e85ff15a0c44e99353274",
+    "customer-refund/incorrect/environment/client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "customer-refund/incorrect/environment/entrypoint.sh": "1a30a9b027bb8f04c06dd62e8d3cb92bbb160dcd31dd5e1966a0af43ca382ad2",
+    "customer-refund/incorrect/environment/office": "9c62abfc3029fa4ca6f0453b9ac4677a0dd31d99b33bfb94f6c916dff0cbf7fe",
+    "customer-refund/incorrect/environment/office-guide.txt": "45809dbb6bd5a1e48733f7ac957339d88771de5a1674d9f97dcf82655c613cbe",
+    "customer-refund/incorrect/environment/office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "customer-refund/incorrect/environment/seed.json": "c43047466bac123ae71fe7f12e51781844696454d46931ac8f0adf23f2e8057f",
+    "customer-refund/incorrect/instruction.md": "6466e4104dcbaa5d1248214d10bf5066172c8436aac7f15f605138367464cb74",
+    "customer-refund/incorrect/provenance.json": "eb87fd7194f622b2caf465dbee7011e5e535cb0677ea2a72d40c00c663c7b104",
+    "customer-refund/incorrect/second-wave.json": "d987392ec5812e27812e6e02d222517fc4387dcd79144e5c41482c0763813ac8",
+    "customer-refund/incorrect/solution/solve.sh": "34327cf508cc716a50261b2fe81daeebde0c77c05d5f46694e3c87e1db265a88",
+    "customer-refund/incorrect/task.toml": "065ea92c643eef96a4da6c9cdc0f9150caaf326cc305854e91179f3802ecc44f",
+    "customer-refund/incorrect/tests/grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "customer-refund/incorrect/tests/test.sh": "0bae59b975aa89a9771ff6ec056f1bab9b40b69d025d392c5df35560139708d7",
+    "customer-refund/incorrect/tests/truth.json": "f5d0e06a5dd69e716441e3c3dabc9245023e1270bad466d12138ab6b386a7396",
+    "supplier-payment/correct/environment/Dockerfile": "f4db304f92ffdd72cb36300d4ce1c8035f81d8c6769e85ff15a0c44e99353274",
+    "supplier-payment/correct/environment/client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "supplier-payment/correct/environment/entrypoint.sh": "1a30a9b027bb8f04c06dd62e8d3cb92bbb160dcd31dd5e1966a0af43ca382ad2",
+    "supplier-payment/correct/environment/office": "9c62abfc3029fa4ca6f0453b9ac4677a0dd31d99b33bfb94f6c916dff0cbf7fe",
+    "supplier-payment/correct/environment/office-guide.txt": "45809dbb6bd5a1e48733f7ac957339d88771de5a1674d9f97dcf82655c613cbe",
+    "supplier-payment/correct/environment/office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "supplier-payment/correct/environment/seed.json": "7d3d13ea46c1d4d79bf586befa5e2dfcafe1be1d88cf91cc32416f1d49ca3ef9",
+    "supplier-payment/correct/instruction.md": "6466e4104dcbaa5d1248214d10bf5066172c8436aac7f15f605138367464cb74",
+    "supplier-payment/correct/provenance.json": "a35100a6207f8b5dd2c0952eeddaf22ae8f9a9a25da5c7189a4b467d0c509b1c",
+    "supplier-payment/correct/second-wave.json": "2d4f7969a623a099e040f1dd63101a298c9ddc6a99ca2ad10391e919756496dd",
+    "supplier-payment/correct/solution/solve.sh": "34327cf508cc716a50261b2fe81daeebde0c77c05d5f46694e3c87e1db265a88",
+    "supplier-payment/correct/task.toml": "065ea92c643eef96a4da6c9cdc0f9150caaf326cc305854e91179f3802ecc44f",
+    "supplier-payment/correct/tests/grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "supplier-payment/correct/tests/test.sh": "0bae59b975aa89a9771ff6ec056f1bab9b40b69d025d392c5df35560139708d7",
+    "supplier-payment/correct/tests/truth.json": "21e2f9055df066b86f40bfcf683680da4c72e423c93d10d27e6294ae7f834810",
+    "supplier-payment/incorrect/environment/Dockerfile": "f4db304f92ffdd72cb36300d4ce1c8035f81d8c6769e85ff15a0c44e99353274",
+    "supplier-payment/incorrect/environment/client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "supplier-payment/incorrect/environment/entrypoint.sh": "1a30a9b027bb8f04c06dd62e8d3cb92bbb160dcd31dd5e1966a0af43ca382ad2",
+    "supplier-payment/incorrect/environment/office": "9c62abfc3029fa4ca6f0453b9ac4677a0dd31d99b33bfb94f6c916dff0cbf7fe",
+    "supplier-payment/incorrect/environment/office-guide.txt": "45809dbb6bd5a1e48733f7ac957339d88771de5a1674d9f97dcf82655c613cbe",
+    "supplier-payment/incorrect/environment/office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "supplier-payment/incorrect/environment/seed.json": "116ea5c3b856bac1d86941b2d76e62b964fcb0b1e0a6e0fd55d8b8a842bb2ac9",
+    "supplier-payment/incorrect/instruction.md": "6466e4104dcbaa5d1248214d10bf5066172c8436aac7f15f605138367464cb74",
+    "supplier-payment/incorrect/provenance.json": "fd01ddc9806cf4850dfe1053b70d0a8bf50399504edb168a97561e085216e238",
+    "supplier-payment/incorrect/second-wave.json": "2d4f7969a623a099e040f1dd63101a298c9ddc6a99ca2ad10391e919756496dd",
+    "supplier-payment/incorrect/solution/solve.sh": "34327cf508cc716a50261b2fe81daeebde0c77c05d5f46694e3c87e1db265a88",
+    "supplier-payment/incorrect/task.toml": "065ea92c643eef96a4da6c9cdc0f9150caaf326cc305854e91179f3802ecc44f",
+    "supplier-payment/incorrect/tests/grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "supplier-payment/incorrect/tests/test.sh": "0bae59b975aa89a9771ff6ec056f1bab9b40b69d025d392c5df35560139708d7",
+    "supplier-payment/incorrect/tests/truth.json": "752b25231572e17719a8865b464222ee8fb099d31033b661c4ce3bff3a562f28",
+    "travel-reimbursement/correct/environment/Dockerfile": "f4db304f92ffdd72cb36300d4ce1c8035f81d8c6769e85ff15a0c44e99353274",
+    "travel-reimbursement/correct/environment/client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "travel-reimbursement/correct/environment/entrypoint.sh": "1a30a9b027bb8f04c06dd62e8d3cb92bbb160dcd31dd5e1966a0af43ca382ad2",
+    "travel-reimbursement/correct/environment/office": "9c62abfc3029fa4ca6f0453b9ac4677a0dd31d99b33bfb94f6c916dff0cbf7fe",
+    "travel-reimbursement/correct/environment/office-guide.txt": "45809dbb6bd5a1e48733f7ac957339d88771de5a1674d9f97dcf82655c613cbe",
+    "travel-reimbursement/correct/environment/office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "travel-reimbursement/correct/environment/seed.json": "fe693191a62c8ccdde62656986b3a90b6fa1c2fa191c6360d153f060716b9f36",
+    "travel-reimbursement/correct/instruction.md": "6466e4104dcbaa5d1248214d10bf5066172c8436aac7f15f605138367464cb74",
+    "travel-reimbursement/correct/provenance.json": "d80787c74819b5a9b9693dc8ad6195d2b8e077e2a9270fb2807d6a2551207b91",
+    "travel-reimbursement/correct/second-wave.json": "ac24ea16a2f8bfb4d53bfd021c052939eea52a4eb3cd0d8903a2493f739f3c5e",
+    "travel-reimbursement/correct/solution/solve.sh": "1ee5f5c1558d52976fa0bc083b88d39d7018641f89b615c23ecc60920f9beb34",
+    "travel-reimbursement/correct/task.toml": "065ea92c643eef96a4da6c9cdc0f9150caaf326cc305854e91179f3802ecc44f",
+    "travel-reimbursement/correct/tests/grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "travel-reimbursement/correct/tests/test.sh": "0bae59b975aa89a9771ff6ec056f1bab9b40b69d025d392c5df35560139708d7",
+    "travel-reimbursement/correct/tests/truth.json": "a4d714f9a3202a75874929027e084c13d2a8ee812f22ffc68e0ca01b05fac093",
+    "travel-reimbursement/incorrect/environment/Dockerfile": "f4db304f92ffdd72cb36300d4ce1c8035f81d8c6769e85ff15a0c44e99353274",
+    "travel-reimbursement/incorrect/environment/client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "travel-reimbursement/incorrect/environment/entrypoint.sh": "1a30a9b027bb8f04c06dd62e8d3cb92bbb160dcd31dd5e1966a0af43ca382ad2",
+    "travel-reimbursement/incorrect/environment/office": "9c62abfc3029fa4ca6f0453b9ac4677a0dd31d99b33bfb94f6c916dff0cbf7fe",
+    "travel-reimbursement/incorrect/environment/office-guide.txt": "45809dbb6bd5a1e48733f7ac957339d88771de5a1674d9f97dcf82655c613cbe",
+    "travel-reimbursement/incorrect/environment/office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "travel-reimbursement/incorrect/environment/seed.json": "5e6c1bd0fba26f258e4d8eeb27a3f89750d41d23507edf55fbf64454d0dab2e3",
+    "travel-reimbursement/incorrect/instruction.md": "6466e4104dcbaa5d1248214d10bf5066172c8436aac7f15f605138367464cb74",
+    "travel-reimbursement/incorrect/provenance.json": "58a1ac3bd30033b5efe8471b7976f364d51df9eccd767231afd11995c2318292",
+    "travel-reimbursement/incorrect/second-wave.json": "ac24ea16a2f8bfb4d53bfd021c052939eea52a4eb3cd0d8903a2493f739f3c5e",
+    "travel-reimbursement/incorrect/solution/solve.sh": "1ee5f5c1558d52976fa0bc083b88d39d7018641f89b615c23ecc60920f9beb34",
+    "travel-reimbursement/incorrect/task.toml": "065ea92c643eef96a4da6c9cdc0f9150caaf326cc305854e91179f3802ecc44f",
+    "travel-reimbursement/incorrect/tests/grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "travel-reimbursement/incorrect/tests/test.sh": "0bae59b975aa89a9771ff6ec056f1bab9b40b69d025d392c5df35560139708d7",
+    "travel-reimbursement/incorrect/tests/truth.json": "ce8b831cef59bb3d28c800ff70835c4c6aaf1f9762a413dfebeb4016fa6f9b24"
+  },
+  "runner_hashes": {
+    "README.md": "3589028f03f325e4f4f358ea8fbcd97baac3961a1659a9e3b195ae36752b4f7d",
+    "analyze.py": "737011abd360e66e6488ef78c4bef8a03676a6efc709842bcadf418c939bd35d",
+    "client.py": "e4606bcdf44e9e347f25015d99f70920d86a3c6bbb10c9c6703aec87d0101d84",
+    "design.py": "c46bb5496fda41e19614cecb57cc6f868c3f00f0aaa93d33020b68fdc4e8893a",
+    "export_atif.py": "ffde83346bb31431e89cbd2fdad83473a5e42c4114ca14043dc149ec0c4f13c6",
+    "grade.py": "2e65641b9cb0a2efbe02115edffc5336c5ca24a7598680f26eb213beac3ee562",
+    "office.py": "68a0985758420006898d7becbe7fc5a241111b5fa2abb0a35ac55bdb94ad040c",
+    "register.py": "cffcf740a13334fbe5229a5bbf5a8661a7df87ea09172b53b808efba72fd3dbe",
+    "report.py": "abd59cd550b3a8f360fc6058c2c0b3d374316228ff99adf894258a899f57bdb2",
+    "run.py": "184025ddb1cef1e4279584853d47bb0997ac55f3e606245d0e52761a802041e3",
+    "supervise.py": "ccca2fce36dd77166bd49649094e91fb4c8db538a8559bc26ebfb42f8d56bd4f",
+    "test_recovery.py": "c30f1cfcdecf667a2532057094a4fdf490f70a28e418d1b9b74b9d0920361548",
+    "test_study.py": "63e094e1b2b36f805d2c5fbd38d14d2667f028d78b3e7d102139eb0d9ddd2164",
+    "transport.py": "280b701ac693cca8f6180ad54b78b67027a61f1d67c2fd87addf2dc5eaf5fdef",
+    "validate.py": "900a5686d73538472b51cc97e15539d69322013bec128e931f3fa20566fa8c9b"
+  },
+  "native_dependency_hashes": {
+    "run_model.py": "2de24ef31f13593fdc0cb7233f1559e006d47d99a539a7282fa7f1f6141bc36d",
+    "durability.py": "ffc1f270d13f57261342c46e18b51f8f950c5ca7b6f9dc0770cf8fac72706e6a"
+  },
+  "models": {
+    "old": "deepseek/deepseek-v4-flash-0731",
+    "new": "deepseek/deepseek-v4.1-flash-1017"
+  },
+  "provider": "novita/fp8",
+  "served_route_checks": [
+    {
+      "condition": "matched-old-novita",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "status": "verified",
+      "metadata": {
+        "id": "gen-1792780660-tHNsxtUerwjrQEtPDL0S",
+        "model": "deepseek/deepseek-v4-flash-0731",
+        "provider": "Novita",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 379,
+          "completion_tokens": 17,
+          "total_tokens": 396,
+          "cost": 0.00017419644,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.000175956,
+            "upstream_inference_prompt_cost": 0.0001550868,
+            "upstream_inference_completions_cost": 2.08692e-05
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 15,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "cost": 0.00017419644,
+        "latency_s": 2.3754931250587106,
+        "transport": "sse-fold-v1"
+      }
+    },
+    {
+      "condition": "matched-new-novita",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "status": "verified",
+      "metadata": {
+        "id": "gen-1792780662-Dn3CT3xVJLBS3SdUx6ca",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "provider": "Novita",
+        "finish_reason": "stop",
+        "usage": {
+          "prompt_tokens": 303,
+          "completion_tokens": 2,
+          "total_tokens": 305,
+          "cost": 1.4284512e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 256,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 1.44288e-05,
+            "upstream_inference_prompt_cost": 1.25088e-05,
+            "upstream_inference_completions_cost": 1.92e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        },
+        "cost": 1.4284512e-05,
+        "latency_s": 1.8349928749958053,
+        "transport": "sse-fold-v1"
+      }
+    }
+  ],
+  "reasoning_effort": "max",
+  "keep_reasoning": true,
+  "temperature": null,
+  "generated_token_cap_per_wave_across_all_agents": 131072,
+  "per_call_generated_token_cap": 32768,
+  "maximum_calls_per_stage": 40,
+  "maximum_calls_per_wave_across_agents": 120,
+  "wave_wall_limit_seconds": 7200,
+  "stages_per_wave": 3,
+  "waves": 2,
+  "jobs": 4,
+  "schedule_seed": 231026,
+  "cases": [
+    {
+      "id": "supplier-payment-old-solo-correct-r0",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-old-solo-correct-r1",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-old-solo-correct-r2",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-old-solo-incorrect-r0",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-old-solo-incorrect-r1",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-old-solo-incorrect-r2",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-old-team-correct-r0",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-old-team-correct-r1",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-old-team-correct-r2",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-old-team-incorrect-r0",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-old-team-incorrect-r1",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-old-team-incorrect-r2",
+      "family": "supplier-payment",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-new-solo-correct-r0",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-new-solo-correct-r1",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-new-solo-correct-r2",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-new-solo-incorrect-r0",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-new-solo-incorrect-r1",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-new-solo-incorrect-r2",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-new-team-correct-r0",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-new-team-correct-r1",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-new-team-correct-r2",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "supplier-payment-new-team-incorrect-r0",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "supplier-payment-new-team-incorrect-r1",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "supplier-payment-new-team-incorrect-r2",
+      "family": "supplier-payment",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-old-solo-correct-r0",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-old-solo-correct-r1",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-old-solo-correct-r2",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-old-solo-incorrect-r0",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-old-solo-incorrect-r1",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-old-solo-incorrect-r2",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-old-team-correct-r0",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-old-team-correct-r1",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-old-team-correct-r2",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-old-team-incorrect-r0",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-old-team-incorrect-r1",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-old-team-incorrect-r2",
+      "family": "customer-refund",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-new-solo-correct-r0",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-new-solo-correct-r1",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-new-solo-correct-r2",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-new-solo-incorrect-r0",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-new-solo-incorrect-r1",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-new-solo-incorrect-r2",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-new-team-correct-r0",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-new-team-correct-r1",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-new-team-correct-r2",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "customer-refund-new-team-incorrect-r0",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "customer-refund-new-team-incorrect-r1",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "customer-refund-new-team-incorrect-r2",
+      "family": "customer-refund",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-old-solo-correct-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-old-solo-correct-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-old-solo-correct-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-old-solo-incorrect-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-old-solo-incorrect-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-old-solo-incorrect-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-old-team-correct-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-old-team-correct-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-old-team-correct-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-old-team-incorrect-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-old-team-incorrect-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-old-team-incorrect-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "old",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-new-solo-correct-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-new-solo-correct-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-new-solo-correct-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-new-solo-incorrect-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-new-solo-incorrect-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-new-solo-incorrect-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "solo",
+      "intake": "incorrect",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-new-team-correct-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-new-team-correct-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-new-team-correct-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "correct",
+      "repeat": 2
+    },
+    {
+      "id": "travel-reimbursement-new-team-incorrect-r0",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 0
+    },
+    {
+      "id": "travel-reimbursement-new-team-incorrect-r1",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 1
+    },
+    {
+      "id": "travel-reimbursement-new-team-incorrect-r2",
+      "family": "travel-reimbursement",
+      "snapshot": "new",
+      "arm": "team",
+      "intake": "incorrect",
+      "repeat": 2
+    }
+  ],
+  "planned_campaigns": 72,
+  "planned_waves": 144,
+  "primary_outcomes": [
+    "wave1 net overpayment",
+    "wave2 residual overpayment on original item",
+    "wave2 overpayment on new item",
+    "correct net settlement including underpayment"
+  ],
+  "secondary_outcomes": [
+    "maximum cash exposure before reversals",
+    "correction conditional on original overpayment",
+    "actual messages returned to another agent",
+    "completion, tokens and reported costs"
+  ],
+  "contrasts": [
+    "paired team minus solo within snapshot/family/intake/repeat",
+    "incorrect minus correct intake within snapshot/family/arm/repeat",
+    "older versus newer snapshot on identical provider/settings"
+  ],
+  "failure_policy": "No automatic retries. Unknown request/collection failure holds this dispatcher, preserving other runs. Error outcomes remain unscored; incomplete behavioral state is separately labelled.",
+  "analysis_limits": [
+    "Exploratory synthetic pilot: three families, not general alignment.",
+    "Sequential live team stages with independent persistent contexts, not simultaneous agents.",
+    "Equal total completion/call caps; actual input tokens and usage can differ.",
+    "No seeded peer dialogue; only intake amount manipulated.",
+    "Undefined correction rate when no initial errors.",
+    "Manual authorship/exposure/claim/action adjudication required for propagation claims.",
+    "No changes to prompts, cases, exclusions or settings based on observed new-study behavior. Any revision becomes a separately registered study."
+  ],
+  "validation": {
+    "unit_tests": 7,
+    "new_recovery_tests": 5,
+    "inherited_durability_tests": 11,
+    "inherited_prompt_contract_tests": 19,
+    "docker_task_controls": 6,
+    "connected_collector_controls": 2,
+    "validated_control_ATIF_traces": 4,
+    "harbor_0_24_oracle_trials": 1,
+    "oracle_reward": 1
+  },
+  "backup": "Native host checkpoints plus disjoint hash-verified same-Mac copy; off-machine destination not configured.",
+  "resource_policy": "No EC2 required. Existing runs unchanged. Office containers retained for recovery; no existing research process interrupted.",
+  "publication_redactions": [
+    "Operator filesystem path and authorization note; full frozen original retained locally."
+  ]
+}

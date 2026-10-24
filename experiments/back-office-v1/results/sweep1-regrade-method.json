@@ -1,0 +1,8 @@
+{
+  "original_scorer_sha256": "8717c98a9679d79539f7dc8c67891b99720cdd30e924c498a4c1611bd621ba3a",
+  "original_line": "scoped = [c for c in calls if (c.get(\"args\") or {}).get(scope) in step[\"items\"]]",
+  "derived_line": "scoped = [c for c in calls if isinstance((c.get(\"args\") or {}).get(scope), str) and (c.get(\"args\") or {}).get(scope) in step[\"items\"]]",
+  "original_files_modified": false,
+  "explanation": "Treat non-string scope IDs as outside the item index; all six such sweep1 calls were rejected. Raw audit calls remain present. No other scorer logic changes.",
+  "limitation": "Diagnostic final-state regrade. Turn-capped episodes remain incomplete and API errors remain infrastructure failures."
+}

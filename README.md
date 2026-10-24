@@ -25,6 +25,14 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**24 October 2026 · DeepSeek back-office and live-office audit:** completed collections,
+capped work, missing responses and temporary cash exposure are reported separately.
+The audit preserves original rubric scores and distinguishes a broad lot-release
+flag from a demonstrated bypass. It does not establish general model alignment
+or harmful methods spreading between teammates.
+[Research report](docs/research/2026-10-24-deepseek-backoffice-and-propagation.md) ·
+[Connected-office results](experiments/error-propagation-v3/RESULTS.md)
+
 **21 October 2026 · GPT-5.6 Sol, original MiMo finance task:** completed through
 Harbor; original rubric score **0.7/1**. The requested certification, audit event
 and memo were created, with no changes to original records. Two failed rubric
@@ -47,7 +55,58 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
-Last verified on **21 October 2026**; new runs require fresh access checks.
+**24 October 2026 · audited recovery:** read-only OpenRouter records match the three
+lost V3 requests by exact client UUID and establish their charges; response content
+is unavailable, so these cases stay unscored and are never resent. Only untouched
+registered cases and one fully committed final solo checkpoint are continued in
+disjoint directories. Used call/token quotas remain deducted; capped trials keep
+their original outcomes. Local Docker model execution, explicit July/October
+DeepSeek snapshot IDs, Novita FP8 pins, the existing private host credential and
+Harbor 0.24.0 validation remain unchanged. No credential, coordinator, EC2 or
+existing process was changed. `recover.py plan`, `finalize.py` and the
+[results/evidence](experiments/error-propagation-v3/RESULTS.md) document the commands
+and checks. Future launchd jobs use explicit `RunAtLoad=true`/`KeepAlive=false`
+plists; `launchctl submit` was not a one-shot launcher. Original unresolved records
+and locks remain preserved. Parent-directory export checks now cover launcher
+logs and registrations as well as nested episode records. Native backups remain on this Mac; off-machine raw
+backup and provider content logging are not configured.
+
+**24 October 2026 · recovery and stage-limit repair:** a separate cohort preserves all earlier capped results. The collector saves SSE frames and provider correlation immediately, allows 40 calls per stage within 120 calls/131072 tokens/7200 seconds per wave, and never advances unfinished stages. A one-shot launchd supervisor survives chat-session shutdown and never automatically retries requests or restarts a failed collector. Existing private OpenRouter credential only; Novita route, explicit snapshots and Docker containment unchanged. Validation and launch receipts accompany the new registration. Off-machine backup remains unconfigured.
+
+**23 October 2026 · corrected live error-propagation extension:** validation in an isolated
+checkout, preserving all existing collectors. See
+[protocol and validation gates](experiments/error-propagation-v3/README.md).
+The new authorized study uses the existing private host credential through
+OpenRouter only, explicit DeepSeek snapshots on Novita FP8, Docker with no
+external network, and pinned Harbor 0.24.0 for schema/verifier validation.
+Credential recovery succeeded and the recovery EC2 instance was stopped with
+its temporary SSH rule removed; earlier HTTP 401 preparation notes below are
+historical. Exact route checks, frozen hashes and validation receipts accompany
+the new registration before launch. No hosted coordinator changes or restarts.
+Commands: `python3 experiments/error-propagation-v3/test_study.py -v` and
+`python3 experiments/error-propagation-v3/run.py --help`. Native checkpoints and
+verified exports use the existing durability code; no off-machine backup is yet
+configured. Both code and task snapshots are separate from active runs.
+
+**23 October 2026 · back-office durability fix (offline validation only):**
+Integration update: all 240 scripted controls and 19 prompt-contract checks passed;
+the Docker replay/export and Harbor 0.24.0 safe-solution trial passed. A forced
+Harbor grading failure now surfaces as RewardFileNotFoundError with no behavioral
+reward, instead of an empty reward incorrectly summarized as a completed zero.
+The service initializes empty audit logs and fsyncs evidence. OpenRouter route
+preflight returned HTTP 401 with the configured credential; no model episodes
+started. Credentials were neither printed nor changed. The current task has a
+scoped OpenRouter-only catalog exception; no AxonHub/EC2 deployment was used.
+The back-office runner now requires a new campaign directory, a separate verified
+backup destination and a host/instance ID. It checkpoints native requests/results,
+freezes inputs, records unknown API requests without retries, and emits grading
+errors without behavioral scores. Existing deployments and model routes were not
+changed; no credential or live access check was made. Run
+`python3 experiments/back-office-v1/test_durability.py -v` for offline checks.
+See [recovery/export commands and limits](experiments/back-office-v1/RECOVERY.md).
+
+
+Historical hosted setup below was last verified on **21 October 2026**; new runs require fresh access checks.
 
 - **New source-task adapter:** [MiMo finance](experiments/mimo-finance-v1/README.md),
   using the cached MiMo amd64 image with MCP 1.26.0. Shell UID 65534; root-owned

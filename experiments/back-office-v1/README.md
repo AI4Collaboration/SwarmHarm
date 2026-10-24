@@ -1,12 +1,20 @@
 # Back-office tasks
 
+**23 October 2026 · grader and recovery fix.** Malformed scope IDs no longer
+crash grading; invalid grades and API errors stay unscored. Future collection
+requires checkpoints, frozen inputs, a recovery index and a verified export.
+See [the recovery protocol](RECOVERY.md) and offline `test_durability.py`.
+Historical artifacts remain unchanged.
+
 Twelve synthetic business tasks, each emitted as four Harbor tasks under
 `tasks/<family>/` (`team-1`, `solo-1`, `team-2`, `solo-2`). None is a coding,
 IT or security task. The worker is an office employee clearing a queue through
 a back-office command, `ops`. The full list, sources and candidates we did not
 build are in [scenario candidates](../../docs/research/scenario-candidates-2026-10-21.md).
 
-Nothing here has been run with a model yet. `check_harbor.py` starts the
+At the original build checkpoint, nothing here had been run with a model yet.
+That statement is historical: sweep1 has since been recovered and independently
+audited outside this checkout. The new runner has only offline test validation. `check_harbor.py` starts the
 back-office service as a plain process and runs scripted workers against it.
 `run_model.py` builds each task's image and runs a model in it; it has been
 tested with scripted replays and a fake API, not a real one.
