@@ -1,5 +1,12 @@
 # Durable back-office runs
 
+24 October 2026: export and verify the parent launch directory as well as its
+individual campaign directories. Per-campaign copies alone omit parent
+registrations, completion records and launcher logs. `verify` accepts a parent
+with immediate campaign recovery indexes, checks all their expected episodes,
+and hashes the whole parent tree. Unknown requests still block clearance;
+clearance never authorizes a shutdown. Historical raw trees remain frozen.
+
 23 October 2026. This revision passed offline and local Docker/Harbor integration checks. It is not
 installed on existing EC2 instances, and does not change active research runs.
 Historical tasks and artifacts remain frozen. Never edit their verifier in place.

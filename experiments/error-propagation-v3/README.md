@@ -1,3 +1,17 @@
+24 October 2026: recovery audit distinguishes completed campaigns, stage caps and missing responses. Read [the final report](RESULTS.md) and its per-case evidence. `audit.py` checks observed ledger prefixes even when a campaign is incomplete; temporary excess cash is retained after reversal. `recover.py` can continue only a committed checkpoint with no unknown request or unfinished tool, and deducts all used calls and tokens. It creates a separate derived office and preserves original histories. The 40-call stage cap is unchanged. No capped trial is relabelled as a replacement run.
+
+The initial `launchctl submit` command repeatedly relaunched the supervisor after exit; the exclusive lock prevented duplicate dispatch. Future jobs must use `launch.py` to write a plist with `RunAtLoad=true` and `KeepAlive=false`, then explicitly load that plist. A supervisor being independent of the chat does not itself guarantee one-shot scheduling. Existing jobs and their locks are never removed by the recovery tools.
+
+Recovery commands (use new destinations and an already authorized host credential):
+
+```sh
+python3 experiments/error-propagation-v3/recover.py plan ORIGINAL_RUN
+python3 experiments/error-propagation-v3/recover.py continue-held ORIGINAL_CASE --out NEW_RUN --backup DISJOINT_BACKUP
+python3 experiments/error-propagation-v3/finalize.py ORIGINAL_RUN --recovery UNTOUCHED_RUN --recovery CONTINUATION_RUN --out NEW_AUDIT
+```
+
+Before continuation, match provider IDs and request UUIDs with read-only provider evidence. A completed provider request with unavailable content remains unscored and is never resent. Reconciliation records are separate from immutable native journals; unknown-cost reservations are not released by these commands. This bounded continuation supports the final solo stage only; it rejects team or earlier-stage recovery instead of resetting shared quotas or inventing later work. It preserves the office state, workspace and model history; it is not a full machine checkpoint. Untouched cases are identified only when there is no request journal and no started stage. Export and validate each new run with `export_atif.py` under pinned Harbor 0.24.0, and check its disjoint backup using `durability.py verify`. A missing response blocks that campaign, not a zero-harm score.
+
 24 October 2026: stage-limit repair and durable collector lifecycle. Each stage allows 40 model calls; the whole wave allows 120 calls, 131072 generated tokens and 7200 seconds, shared across agents. A non-final stage ends the campaign as incomplete; later roles and wave two do not run. SSE frames, provider IDs and headers are saved immediately. New independent balanced cohort, not pooled with capped V2 results. The interrupted V2 API attempts remain quarantined and are never resent. A one-shot launchd supervisor runs outside the Codex terminal lifecycle without automatic restarts.
 
 23 October 2026: version two removes exposed server implementation/evaluation terminology from the public client and adds a business command reference. Version-one pilot traces remain separate; no behavioral result is pooled across versions. The issue was discovered from live tool traces.

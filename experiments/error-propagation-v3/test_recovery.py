@@ -4,6 +4,8 @@ from pathlib import Path
 import tempfile
 from types import SimpleNamespace
 import unittest
+import urllib.error
+import io
 from unittest.mock import patch
 import run
 from transport import DurableChat, fold
@@ -66,6 +68,21 @@ class RecoveryTests(unittest.TestCase):
             with patch.object(run,'read_state',return_value=copy.deepcopy(state)),patch.object(run,'snapshot',return_value=copy.deepcopy(state)),patch.object(run.native,'bash',return_value={'exit_code':0,'stdout':'{}','stderr':''}),patch.object(run,'export'):
                 stop=run.stage(model,'ctr',[],'Prepare current worksheet.',folder,'solo',1,0,{'remaining':131072,'calls_remaining':120})
             self.assertEqual(stop,'final_answer');self.assertEqual(model.calls,10)
+
+    def test_http_error_keeps_generation_identity_without_retry(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary) / 'case/agents/solo'; folder.mkdir(parents=True)
+            with patch.dict('os.environ', {'OPENROUTER_API_KEY': 'test-only'}): chat = DurableChat('test', 'novita/fp8')
+            chat.journal = folder / 'journal.jsonl'
+            error = urllib.error.HTTPError('https://example.invalid', 503, 'unavailable',
+                                          {'x-generation-id': 'gen-error', 'x-request-id': 'req-error'}, io.BytesIO(b'upstream unavailable'))
+            with patch('urllib.request.urlopen', side_effect=error) as call:
+                with self.assertRaises(RuntimeError): chat([{'role': 'user', 'content': 'Current queue.'}])
+                self.assertEqual(call.call_count, 1)
+            events = [json.loads(line) for line in chat.journal.read_text().splitlines()]
+            headers = next(e for e in events if e['kind'] == 'response_headers')
+            self.assertEqual(headers['headers']['x-generation-id'], 'gen-error')
+            self.assertEqual(len(pending(folder)), 1)
 
     def test_unfinished_stage_does_not_advance_or_run_later_roles(self):
         with tempfile.TemporaryDirectory() as temporary:

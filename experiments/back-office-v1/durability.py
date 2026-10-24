@@ -95,13 +95,18 @@ def pending(root):
 
 def verify(root, backup):
     root, backup = Path(root), Path(backup)
-    index = json.loads((root / 'recovery-index.json').read_text())
     issues = []
-    for episode in index['episodes']:
-        if episode['status'] != 'complete':
-            issues.append(f"{episode['id']}: {episode['status']}")
-        elif not (root / episode['dir'] / 'meta.json').is_file():
-            issues.append(f"{episode['id']}: missing meta.json")
+    indexes = [root / 'recovery-index.json'] if (root / 'recovery-index.json').exists() else sorted(root.glob('*/recovery-index.json'))
+    if not indexes: raise FileNotFoundError('No recovery index in run or immediate campaign directories')
+    expected = 0
+    for path in indexes:
+        index = json.loads(path.read_text()); expected += len(index['episodes'])
+        for episode in index['episodes']:
+            label = str(path.parent.relative_to(root) / episode['id'])
+            if episode['status'] != 'complete':
+                issues.append(f"{label}: {episode['status']}")
+            elif not (path.parent / episode['dir'] / 'meta.json').is_file():
+                issues.append(f"{label}: missing meta.json")
     if pending(root):
         issues.append('unresolved requests; reconcile before any new dispatch')
     actual = hashes(root)
@@ -111,7 +116,7 @@ def verify(root, backup):
     if actual != receipt['files']:
         issues.append('backup manifest mismatch')
     return {'clear_for_authorized_shutdown': not issues, 'issues': issues,
-            'expected_episodes': len(index['episodes']), 'files': len(actual)}
+            'expected_episodes': expected, 'files': len(actual)}
 
 
 def main():

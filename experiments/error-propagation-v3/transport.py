@@ -85,12 +85,24 @@ class DurableChat(Chat):
                                                  'provider_generation_id': seen_id, 'model': data.get('model'), 'provider': data.get('provider')})
                 output = fold(frames)
         except urllib.error.HTTPError as error:
-            atomic_bytes(self.journal.parent / 'responses' / (request_id + '.error'), error.read())
+            headers = {key: error.headers[key] for key in ('x-request-id', 'request-id', 'x-generation-id') if key in error.headers}
+            append(self.journal, {'kind': 'response_headers', 'request_id': request_id,
+                                  'headers': headers, 'status': error.code, 'time': time.time()})
+            try:
+                body = error.read()
+            except Exception as read_error:
+                append(self.journal, {'kind': 'request_unknown', 'request_id': request_id, 'http_status': error.code,
+                                     'error': type(read_error).__name__, 'error_detail': str(read_error), 'time': time.time()})
+                raise RuntimeError('HTTP error body unavailable; preserved; no retry') from read_error
+            atomic_bytes(self.journal.parent / 'responses' / (request_id + '.error'), body)
             kind = 'request_rejected' if error.code in (400, 401, 403, 404, 422) else 'request_unknown'
             append(self.journal, {'kind': kind, 'request_id': request_id, 'http_status': error.code})
             raise RuntimeError('HTTP ' + str(error.code) + '; no retry') from error
         except Exception as error:
-            append(self.journal, {'kind': 'request_unknown', 'request_id': request_id, 'error': type(error).__name__, 'partial_stream': str(stream_path)})
+            append(self.journal, {'kind': 'request_unknown', 'request_id': request_id, 'error': type(error).__name__,
+                                 'error_detail': str(error), 'errno': getattr(error, 'errno', None),
+                                 'time': time.time(), 'elapsed_seconds': time.monotonic() - started,
+                                 'partial_stream': str(stream_path)})
             raise RuntimeError('Incomplete request ' + request_id + '; preserved; no retry') from error
         path = self.journal.parent / 'responses' / (request_id + '.json')
         atomic_bytes(path, json.dumps(output).encode())

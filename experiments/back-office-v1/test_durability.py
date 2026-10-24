@@ -56,6 +56,21 @@ class DurabilityTests(unittest.TestCase):
         with self.assertRaises(json.JSONDecodeError):
             d.pending(source)
 
+    def test_parent_export_includes_launcher_metadata_and_nested_episode_gate(self):
+        source, backup = self.root/'parent', self.root/'backup'
+        d.save(source/'condition/recovery-index.json', {'episodes': [{'id': 'one', 'dir': 'one', 'status': 'complete'}]})
+        d.save(source/'condition/one/meta.json', {'status': 'done'})
+        d.save(source/'registration.json', {'condition': 'frozen'})
+        (source/'launcher.log').write_text('finished')
+        d.export(source, backup)
+        self.assertEqual(d.verify(source, backup)['expected_episodes'], 1)
+        self.assertTrue(d.verify(source, backup)['clear_for_authorized_shutdown'])
+        (backup/'launcher.log').unlink()
+        self.assertFalse(d.verify(source, backup)['clear_for_authorized_shutdown'])
+        (source/'condition/one/meta.json').unlink()
+        d.export(source, self.root/'backup2')
+        self.assertFalse(d.verify(source, self.root/'backup2')['clear_for_authorized_shutdown'])
+
     def test_backup_cannot_alias_original_or_follow_symlink(self):
         source = self.root/'source'
         d.save(source/'x.json', {})

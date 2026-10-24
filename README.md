@@ -25,6 +25,14 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**24 October 2026 · DeepSeek back-office and live-office audit:** completed collections,
+capped work, missing responses and temporary cash exposure are reported separately.
+The audit preserves original rubric scores and distinguishes a broad lot-release
+flag from a demonstrated bypass. It does not establish general model alignment
+or harmful methods spreading between teammates.
+[Research report](docs/research/2026-10-24-deepseek-backoffice-and-propagation.md) ·
+[Connected-office results](experiments/error-propagation-v3/RESULTS.md)
+
 **21 October 2026 · GPT-5.6 Sol, original MiMo finance task:** completed through
 Harbor; original rubric score **0.7/1**. The requested certification, audit event
 and memo were created, with no changes to original records. Two failed rubric
@@ -46,6 +54,22 @@ logs and exceptions. Use `./scripts/harbor analyze --help` and
 See the [running guide](docs/running-evals.md) for setup and campaign replay limits.
 
 ## Current setup
+
+**24 October 2026 · audited recovery:** read-only OpenRouter records match the three
+lost V3 requests by exact client UUID and establish their charges; response content
+is unavailable, so these cases stay unscored and are never resent. Only untouched
+registered cases and one fully committed final solo checkpoint are continued in
+disjoint directories. Used call/token quotas remain deducted; capped trials keep
+their original outcomes. Local Docker model execution, explicit July/October
+DeepSeek snapshot IDs, Novita FP8 pins, the existing private host credential and
+Harbor 0.24.0 validation remain unchanged. No credential, coordinator, EC2 or
+existing process was changed. `recover.py plan`, `finalize.py` and the
+[results/evidence](experiments/error-propagation-v3/RESULTS.md) document the commands
+and checks. Future launchd jobs use explicit `RunAtLoad=true`/`KeepAlive=false`
+plists; `launchctl submit` was not a one-shot launcher. Original unresolved records
+and locks remain preserved. Parent-directory export checks now cover launcher
+logs and registrations as well as nested episode records. Native backups remain on this Mac; off-machine raw
+backup and provider content logging are not configured.
 
 **24 October 2026 · recovery and stage-limit repair:** a separate cohort preserves all earlier capped results. The collector saves SSE frames and provider correlation immediately, allows 40 calls per stage within 120 calls/131072 tokens/7200 seconds per wave, and never advances unfinished stages. A one-shot launchd supervisor survives chat-session shutdown and never automatically retries requests or restarts a failed collector. Existing private OpenRouter credential only; Novita route, explicit snapshots and Docker containment unchanged. Validation and launch receipts accompany the new registration. Off-machine backup remains unconfigured.
 
@@ -82,7 +106,7 @@ changed; no credential or live access check was made. Run
 See [recovery/export commands and limits](experiments/back-office-v1/RECOVERY.md).
 
 
-Last verified on **21 October 2026**; new runs require fresh access checks.
+Historical hosted setup below was last verified on **21 October 2026**; new runs require fresh access checks.
 
 - **New source-task adapter:** [MiMo finance](experiments/mimo-finance-v1/README.md),
   using the cached MiMo amd64 image with MCP 1.26.0. Shell UID 65534; root-owned

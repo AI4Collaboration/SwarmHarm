@@ -1,0 +1,134 @@
+{
+  "native_source_inventory": {
+    "error-propagation-v3-runs-20261024": {
+      "files": 11154,
+      "sha256_of_sorted_manifest": "443034e629e290a5960f0a26969490fba8b62360194a36d7d7d849efc50f5607"
+    },
+    "error-propagation-v3-untouched-20261024": {
+      "files": 4005,
+      "sha256_of_sorted_manifest": "046c4376fdc139beecda802e915b9684fe447878bb7d985b04b609591fca7de3"
+    },
+    "error-propagation-v3-held-20261024": {
+      "files": 157,
+      "sha256_of_sorted_manifest": "a09d70e1130add56f662ad02eee2a1b198e869e8cdd232297cdd4d4642c80d5a"
+    }
+  },
+  "checks": {
+    "originals": [
+      {
+        "path": "work/new-model-runs-20261023",
+        "files": 14864,
+        "unchanged": true
+      },
+      {
+        "path": "work/error-propagation-v2-runs-20261023",
+        "files": 8025,
+        "unchanged": true
+      },
+      {
+        "path": "work/pilot-stop-preservation-20261023",
+        "files": 1074,
+        "unchanged": true
+      },
+      {
+        "path": "work/error-propagation-v3-runs-20261024",
+        "files": 11154,
+        "unchanged": true
+      },
+      {
+        "path": "work/error-propagation-runs-20261023",
+        "files": 1074,
+        "unchanged": true
+      }
+    ],
+    "backups": [
+      {
+        "source": "work/new-model-runs-20261023",
+        "destination": "work/backups/new-model-runs-final-20261024",
+        "files": 14864,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v2-runs-20261023",
+        "destination": "work/backups/error-propagation-v2-interrupted-20261023",
+        "files": 8025,
+        "matches": true
+      },
+      {
+        "source": "work/pilot-stop-preservation-20261023",
+        "destination": "work/backups/flawed-pilot-stopped-20261023",
+        "files": 1074,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v3-runs-20261024",
+        "destination": "work/backups/error-propagation-v3-runs-20261024",
+        "files": 11154,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v3-untouched-20261024",
+        "destination": "work/backups/error-propagation-v3-untouched-20261024",
+        "files": 4005,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v3-held-20261024",
+        "destination": "work/backups/error-propagation-v3-held-20261024",
+        "files": 157,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v3-atif-20261024",
+        "destination": "work/backups/error-propagation-v3-atif-20261024",
+        "files": 185,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v3-untouched-atif-20261024",
+        "destination": "work/backups/error-propagation-v3-untouched-atif-20261024",
+        "files": 69,
+        "matches": true
+      },
+      {
+        "source": "work/error-propagation-v3-held-atif-20261024",
+        "destination": "work/backups/error-propagation-v3-held-atif-20261024",
+        "files": 3,
+        "matches": true
+      }
+    ],
+    "original_native_pending_records_retained": {
+      "work/new-model-runs-20261023": 2,
+      "work/error-propagation-v2-runs-20261023": 2,
+      "work/error-propagation-v3-runs-20261024": 3,
+      "work/error-propagation-runs-20261023": 1
+    },
+    "parent_backup_repair": {
+      "source": "work/new-model-runs-20261023",
+      "new_backup": "work/backups/new-model-runs-final-20261024",
+      "files": 14864,
+      "previous_backup_retained": "work/backups/new-model-runs-20261023",
+      "previous_missing_parent_files": [
+        "baseline-rerun.log",
+        "campaign-completions.json",
+        "dispatch.json",
+        "matched-new-novita.log",
+        "matched-new.log",
+        "matched-old-novita.log",
+        "matched-old.log",
+        "novita-completions.json",
+        "novita-dispatch.json",
+        "novita-registration.json",
+        "registration.json"
+      ],
+      "all_previous_episode_payloads_matched": true,
+      "original_unchanged": true,
+      "new_backup_matches": true
+    },
+    "ambiguous_requests_resent": 0,
+    "existing_processes_stopped_or_restarted": 0,
+    "hash_scope": "durability.hashes excludes derived artifact-manifest.json and Python caches; the stopped pilot additionally has its original complete-file manifest checked.",
+    "off_machine_full_raw_backup": "not configured"
+  },
+  "scope": "Native journals, raw responses and full per-file manifests retained in local archives; this PR contains summaries and selected business evidence, not credential files or raw reasoning."
+}

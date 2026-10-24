@@ -32,17 +32,24 @@ def snapshot(ctr, path):
     state = read_state(ctr); save(path, state); return state
 
 
-def stage(chat, ctr, messages, work_order, folder, agent, wave, stage_index, budget):
+def stage(chat, ctr, messages, work_order, folder, agent, wave, stage_index, budget, *, resume=False):
     journal = folder / 'journal.jsonl'; chat.journal = journal
     if not messages:
         messages.append({'role': 'system', 'content': SYSTEM})
         append(journal, {'kind': 'episode_started', 'messages': list(messages)})
-    messages.append({'role': 'user', 'content': work_order})
-    append(journal, {'kind': 'user_added', 'message': messages[-1], 'wave': wave, 'stage': stage_index})
+    if resume:
+        assert not pending(folder), 'Unknown requests cannot be resumed'
+    else:
+        messages.append({'role': 'user', 'content': work_order})
+        append(journal, {'kind': 'user_added', 'message': messages[-1], 'wave': wave, 'stage': stage_index, 'time': time.time()})
     save(folder / 'messages.json', messages)
     started = time.monotonic()
     stop = 'max_turns'
-    for turn in range(40):
+    stage_calls_remaining = budget.get('stage_calls_remaining', 40)
+    if type(stage_calls_remaining) is not int or not 0 <= stage_calls_remaining <= 40:
+        raise ValueError('Invalid remaining stage quota')
+    stage_calls_used = 40 - stage_calls_remaining
+    for turn in range(40 - stage_calls_remaining, 40):
         if budget.get("calls_remaining", 120) <= 0: stop = "wave_call_budget"; break
         if native.UNRESOLVED.is_set(): stop = 'unresolved_request_hold'; break
         if time.monotonic() > budget.get('deadline', started + 7200): stop = 'wall_clock'; break
@@ -50,6 +57,7 @@ def stage(chat, ctr, messages, work_order, folder, agent, wave, stage_index, bud
         chat.body['max_tokens'] = min(32768, budget['remaining'])
         chat.deadline = budget.get('deadline', started + 7200)
         budget['calls_remaining'] = budget.get('calls_remaining', 120) - 1
+        stage_calls_used += 1
         try:
             msg, metadata = chat(messages)
         except Exception as e:
@@ -74,13 +82,16 @@ def stage(chat, ctr, messages, work_order, folder, agent, wave, stage_index, bud
             stop = 'final_answer' if metadata.get('finish_reason') == 'stop' else 'truncated_response'
             break
         for call in msg['tool_calls']:
+            seconds_left = budget.get('deadline', started + 7200) - time.monotonic()
+            if seconds_left <= 0:
+                stop = 'wall_clock'; break
             before = read_state(ctr)
             append(journal, {'kind': 'tool_prepared', 'call': call, 'wave': wave, 'stage': stage_index})
             try:
                 args = json.loads(call['function']['arguments'])
                 if call['function']['name'] != 'bash' or not isinstance(args, dict) or not isinstance(args.get('command'), str):
                     raise ValueError('invalid bash command')
-                result = native.bash(ctr, args['command'], timeout=60)
+                result = native.bash(ctr, args['command'], timeout=min(60, seconds_left))
             except (ValueError, TypeError, KeyError) as e:
                 result = {'exit_code': 2, 'stdout': '', 'stderr': str(e)}
             after = snapshot(ctr, folder / ('world-after-' + str(wave) + '-' + str(stage_index) + '-' + str(turn) + '-' + hashlib.sha256(call['id'].encode()).hexdigest()[:10] + '.json'))
@@ -90,9 +101,12 @@ def stage(chat, ctr, messages, work_order, folder, agent, wave, stage_index, bud
             messages.append({'role': 'tool', 'tool_call_id': call['id'], 'content': json.dumps(result)})
             save(folder / 'messages.json', messages)
             export(folder, BACKUP / CURRENT.campaign / 'agents' / agent)
+        if stop == 'wall_clock': break
         if metadata.get('finish_reason') == 'length': stop = 'truncated_response'; break
     append(journal, {'kind': 'stage_ended', 'wave': wave, 'stage': stage_index, 'stop': stop,
-                     'remaining_wave_completion_tokens': budget['remaining']})
+                     'remaining_wave_completion_tokens': budget['remaining'], 'remaining_wave_calls': budget.get('calls_remaining'),
+                     'remaining_stage_calls': 40 - stage_calls_used,
+                     'remaining_wave_seconds': max(0, budget.get('deadline', started + 7200) - time.monotonic()), 'time': time.time()})
     return stop
 
 
