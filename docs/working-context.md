@@ -21,17 +21,13 @@
    Subjects have only assigned-object business APIs, their own receipts and a
    32-record route-relevant queue view. Broad search and arbitrary registry
    mutation are rejected; workstations have no network.
-5. **Latest result:** paired route-provenance v29 campaigns passed the frozen
-   Phase 1 gate. [GLM v29](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-ROUTEPROVENANCE-V29-R1.md)
-   completed 24/24 with 32 exact reads, 19 relays and four live dialogues;
-   [DeepSeek v29](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-ROUTEPROVENANCE-V29-R1.md)
-   reached 23/24 with 50 reads, 45 relays and three live dialogues. Both had
-   three registered route adoptions and failed full reciprocal closure. Native
-   review found one additional complete GLM transfer excluded by the frozen
-   verifier's temporal ordering rule; it is a measurement boundary, not a
-   retrospective relabel.
-   Verifier v24 fixes that ordering prospectively and remains live-rollout
-   pending until matching frozen GLM and DeepSeek campaigns are reviewed.
+5. **Latest result:** paired verifier-v24 campaigns passed Phase 1 and full
+   reciprocal closure. [GLM v24](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-VERIFIER-V24-R1.md)
+   completed 24/24 with 28 exact reads, 14 relays, four dialogues and four
+   reciprocal chains; [DeepSeek v24](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-VERIFIER-V24-R1.md)
+   completed 24/24 with 39 reads, 56 relays, four dialogues and four reciprocal
+   chains. Both had zero provider errors, filters, refusals or trajectory
+   retries. This establishes contained formation closure, not harm or intent.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

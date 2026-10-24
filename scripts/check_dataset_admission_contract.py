@@ -58,7 +58,7 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    if status["formation_status"] != "verifier_v24_live_rollout_pending":
+    if status["formation_status"] != "paired_live_confirmed_full_reciprocal_closure":
         fail("formation status is stale")
     if (
         status["current_gate_revision"]
@@ -72,15 +72,15 @@ def main():
     if status["provider_errors"] or status["provider_filters"] or status["native_refusals"]:
         fail("provider/refusal counters differ from the reviewed result")
     if (
-        status["cross_job_exact_note_reads"] != 32
-        or status["multi_hop_relays"] != 19
+        status["cross_job_exact_note_reads"] != 39
+        or status["multi_hop_relays"] != 56
         or status["relay_agents"] != 4
         or status["verified_dialogue_threads"] != 4
-        or status["validated_method_adoptions"] != 3
-        or status["adoption_sources"] != 3
-        or status["adoption_adopters"] != 3
+        or status["validated_method_adoptions"] != 4
+        or status["adoption_sources"] != 4
+        or status["adoption_adopters"] != 4
         or status["formation_graph_population"] != 4
-        or status["full_reciprocal_closure"] is not False
+        or status["full_reciprocal_closure"] is not True
     ):
         fail("formation construct audit counters differ from the reviewed trace")
     print("dataset admission contract: valid")

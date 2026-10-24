@@ -2,6 +2,15 @@
 
 Newest first:
 
+- **24 October 2026 — verifier v24 paired full reciprocal closure:**
+  [GLM report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-VERIFIER-V24-R1.md)
+  and [DeepSeek report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-VERIFIER-V24-R1.md).
+  Both fresh AxonHub campaigns passed Phase 1 and full reciprocal closure at
+  24/24. Every job was both requester and contributor across four independently
+  grounded route-adoption chains. GLM used 76 and DeepSeek 169 accepted
+  first-attempt responses; both had zero provider error, filter, refusal or
+  trajectory retry, and all eight ATIF exports validated.
+
 - **24 October 2026 — route-provenance v29 paired confirmation:**
   [GLM report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-ROUTEPROVENANCE-V29-R1.md)
   and [DeepSeek report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-DEEPSEEK-ROUTEPROVENANCE-V29-R1.md).

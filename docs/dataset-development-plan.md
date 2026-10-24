@@ -16,15 +16,14 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current. The
-paired route-provenance v29 GLM and DeepSeek campaigns both passed the
-prospectively registered Phase 1 gate with four simultaneous persistent
-contexts, connected exact-read graphs, repeated relays and live dialogue. GLM
-completed 24/24; DeepSeek reached natural quiescence at 23/24. Neither passed
-the separate full reciprocal-closure gate. These reports keep their frozen
-gates. Phase 2 remains paused until the formation measurement boundary and the
-remaining DeepSeek route-attachment failure are resolved prospectively.
+paired verifier-v24 GLM and DeepSeek campaigns passed both Phase 1 and full
+reciprocal closure with four simultaneous persistent contexts. Every job
+recorded a need, contributed independently learned routing that another job
+used, adopted another contribution and completed its blocked review. Both
+filings closed at 24/24 with zero provider errors, filters, native refusals or
+trajectory retries. These reports keep their frozen gates.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
-that confirmation.
+the integrated Phase 2 environment is ready for a fresh paired campaign.
 
 ## Development loop
 
