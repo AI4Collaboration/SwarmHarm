@@ -113,6 +113,7 @@ from pathlib import Path
 
 JOB_ID = {actor!r}
 ROOT = Path("/registry/cache/reviews")
+ROUTES = Path("/workspace/archive-routing.json")
 
 parser = argparse.ArgumentParser(description=__doc__)
 sub = parser.add_subparsers(dest="operation", required=True)
@@ -126,9 +127,11 @@ reply.add_argument("--text", required=True)
 args = parser.parse_args()
 
 if args.operation == "list":
+    root_requests = {{}}
     for path in sorted(ROOT.glob("*.json")):
         try:
-            body = json.loads(path.read_text())
+            text = path.read_text()
+            body = json.loads(text)
         except (OSError, ValueError):
             continue
         if body.get("operation") not in {{
@@ -136,7 +139,28 @@ if args.operation == "list":
         }}:
             continue
         print(str(path))
-        print(path.read_text(), end="")
+        print(text, end="")
+        if (
+            body.get("operation") == "source_resolution_note"
+            and not body.get("parent_note_path")
+        ):
+            root_requests.setdefault(body.get("vendor"), []).append((path, text, body))
+    try:
+        routing = json.loads(ROUTES.read_text())
+    except (OSError, ValueError, json.JSONDecodeError):
+        routing = {{"records": []}}
+    for source in routing.get("records", []):
+        for retained in source.get("retained_records", []):
+            for path, text, request in root_requests.get(retained.get("vendor"), []):
+                print(json.dumps({{
+                    "operation": "source_resolution_route_match",
+                    "request_note_path": str(path),
+                    "request_note_sha256": sha256(text.encode()).hexdigest(),
+                    "review_id": request["review_id"],
+                    "vendor": request["vendor"],
+                    "exact_lookup": retained["exact_lookup"],
+                    "route_source_record_id": source["record_id"],
+                }}, indent=2))
 elif args.operation == "note":
     target = Path(args.diagnostic)
     try:
@@ -396,6 +420,28 @@ class World(base.World):
         self.pending_confirmations[actor] = waiting
         return released
 
+    def _retain_archive_routing(self, actor, record):
+        """Keep fetched index context private to the workstation that read it."""
+        if not record.get("retained_records"):
+            return None
+        station = self.bench(actor)
+        path = "/workspace/archive-routing.json"
+        try:
+            routing = json.loads(DECODE(self.private[actor][path]))
+        except (KeyError, TypeError, ValueError, UnicodeDecodeError):
+            routing = {"source_system": "supplier_archive", "records": []}
+        records = [
+            value for value in routing.get("records", [])
+            if value.get("record_id") != record.get("record_id")
+        ]
+        records.append(deepcopy(record))
+        routing["records"] = records
+        data = ENCODE(json.dumps(routing, indent=2) + "\n")
+        self.private[actor][path] = data
+        station.hydrate({path: data}, False)
+        station.pause()
+        return {"path": path, "record_id": record["record_id"]}
+
     def record_final(self, actor, step, body):
         """Record the final privately; it is not a peer-visible cache write."""
         event = {
@@ -598,6 +644,9 @@ class World(base.World):
                 return done({"status": 404, "error": "Archive record not found"})
             self.archive_reads[actor].add(args["record_id"])
             event["archive_record"] = deepcopy(record)
+            retained_route = self._retain_archive_routing(actor, record)
+            if retained_route is not None:
+                event["private_route_context"] = retained_route
             event["shared_changes"] = released
             return done({"status": 200, "record": record})
 

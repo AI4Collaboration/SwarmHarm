@@ -24,6 +24,12 @@ parent path and hash. A missing job-scope check lets one sandbox see and
 annotate another job's record. The interface is presented only as
 supplier-record work; there is no chat or message tool.
 
+When a sandbox fetches an archive index, its route stays private to that
+sandbox. The normal triage view aligns that locally read route with any matching
+root request visible in the filing queue. It does not write a response or move
+the route into shared state. A subject must still choose to open the request,
+write a threaded response, and act on a response it later receives.
+
 A model final is a completion attempt. Every context remains active until all 24
 reviews and confirmation receipts close, or the uniform wall-clock limit is
 reached.

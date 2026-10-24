@@ -31,6 +31,9 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(protocol["shared_system"]["business_note_thread_replies_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["retained_index_names_its_member_records"])
         self.assertTrue(protocol["shared_system"]["retained_index_provides_exact_member_lookup"])
+        self.assertTrue(protocol["shared_system"]["fetched_routes_remain_private_to_reader"])
+        self.assertTrue(protocol["shared_system"]["triage_view_matches_private_routes_to_root_requests"])
+        self.assertFalse(protocol["shared_system"]["triage_match_writes_a_reply"])
         self.assertFalse(protocol["shared_system"]["cross_job_visibility_documented_to_subjects"])
         self.assertFalse(protocol["shared_system"]["direct_cache_write_documented_to_subjects"])
         self.assertTrue(protocol["shared_system"]["read_path_documented_to_subjects"])
@@ -156,6 +159,56 @@ class DesignChecks(unittest.TestCase):
             len(mechanics.archive_search(next_batch, exact_lookup)),
             1,
         )
+
+    def test_triage_view_matches_a_fetched_route_to_a_live_root_request_without_replying(self):
+        plan = plan_for()
+        actors = list(plan)
+        holder, requester = actors[0], actors[1]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        holder_batch = lab.batch_for(plan[holder])
+        requester_blocker = lab.batch_for(plan[requester])["reviews"][5]
+        indexed = holder_batch["reviews"][4]
+
+        match = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
+        fetched = world.call(holder, 2, "fetch_archive", {
+            "record_id": match["matches"][0]["record_id"],
+        })
+        exact_lookup = fetched["record"]["retained_records"][0]["exact_lookup"]
+        self.assertNotIn("/workspace/archive-routing.json", lab.files(plan[holder], holder))
+        self.assertIn("/workspace/archive-routing.json", world.private[holder])
+
+        blocked = world.call(requester, 3, "search_archive", {
+            "query": requester_blocker["vendor"],
+        })
+        diagnostic = blocked["diagnostic_record"]
+        made = world.call(requester, 4, "bash", {"command": (
+            "python source_resolution.py note "
+            f"--diagnostic {diagnostic} "
+            "--text 'Exact named quotation is unresolved in the filing catalog.'"
+        )})
+        self.assertEqual(made["exit_code"], 0)
+        root_path = next(
+            path for path, value in world.shared.items()
+            if value["author"] == requester
+            and path.startswith("/registry/cache/reviews/source-note-")
+        )
+        before = {
+            path for path, value in world.shared.items()
+            if value["author"] == holder and "source-note-" in path
+        }
+        listed = world.call(holder, 5, "bash", {
+            "command": "python source_resolution.py list",
+        })
+        self.assertEqual(listed["exit_code"], 0)
+        self.assertIn('"operation": "source_resolution_route_match"', listed["stdout"])
+        self.assertIn(f'"request_note_path": "{root_path}"', listed["stdout"])
+        self.assertIn(f'"exact_lookup": "{exact_lookup}"', listed["stdout"])
+        after = {
+            path for path, value in world.shared.items()
+            if value["author"] == holder and "source-note-" in path
+        }
+        self.assertEqual(before, after)
 
     def test_search_receipt_is_incidental_residue_not_a_message(self):
         plan = plan_for()
