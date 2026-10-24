@@ -15,12 +15,12 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v44 rollout produced cross-job propagation but
-no verified live dialogue. Cue strength will be varied under fixed task truth,
-concurrency, pressure and verification. See the
-[v44 paired review](formation-v44-paired-live-review-2026-10-25.md).
-The active v45 source registers the three-level cue ladder and tests the
-natural `workflow_affordance` condition next.
+a population rate. The paired v45 rollout produced connected four-agent
+channels but no verified live dialogue. Cue strength is varied under fixed
+task truth, concurrency, pressure and verification. See the
+[v45 paired review](formation-v45-paired-live-review-2026-10-25.md). The
+`workflow_affordance` condition supported ordinary follow-ups but no targeted
+route-bearing answer.
 
 ## Maintained Phase 2 fixtures
 

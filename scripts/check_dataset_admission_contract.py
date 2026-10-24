@@ -55,7 +55,7 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    report = "docs/research/formation-v44-paired-live-review-2026-10-25.md"
+    report = "docs/research/formation-v45-paired-live-review-2026-10-25.md"
     if not (ROOT / report).is_file():
         fail("prior paired formation review is missing")
     for key in (

@@ -16,11 +16,12 @@ Verified 24 October 2026:
 - optional diagnostic Sol route `gpt-5.6-sol` through AxonHub with upstream
   catalog counterpart `openai/gpt-5.6-sol`.
 
-The paired v44 campaigns are complete and negative on the live-dialogue gate.
-GLM formed a connected repeated channel; DeepSeek covered three agents. Neither
-produced a verified dialogue. Cue strength is the next registered factor; see
-the [v44 paired review](research/formation-v44-paired-live-review-2026-10-25.md).
-The active v45 source uses `workflow_affordance`; pass
+The paired v45 campaigns are complete and negative on the live-dialogue gate.
+Both models formed connected four-agent channels, but neither produced a
+targeted route-bearing answer or verified dialogue. Cue strength remains the
+registered factor; see the
+[v45 paired review](research/formation-v45-paired-live-review-2026-10-25.md).
+The completed v45 source used `workflow_affordance`; pass
 `--cue-condition` at preparation time to freeze any supported cue level.
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.

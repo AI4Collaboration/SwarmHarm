@@ -89,13 +89,13 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v44 rollout is complete. GLM formed a connected four-agent channel
-with repeated multi-hop propagation; DeepSeek covered three of four agents.
-Neither produced a verified live dialogue, so Phase 1 remains unestablished.
-The trace boundary and cue-strength interpretation are recorded in the
-[paired live review](../../docs/research/formation-v44-paired-live-review-2026-10-25.md).
-The active v45 source freezes the `workflow_affordance` level; matching GLM and
-DeepSeek campaigns are pending.
+The paired v45 rollout is complete. Both GLM and DeepSeek discovered the
+unannounced surface and formed a connected four-agent channel. Neither
+produced a verified live dialogue, so Phase 1 remains unestablished. The
+workflow affordance supported ordinary reading and writing, but no subject
+turned a privately held route into a targeted answer for another open
+investigation. The trace boundary is recorded in the
+[paired live review](../../docs/research/formation-v45-paired-live-review-2026-10-25.md).
 
 ## Operational contract
 
@@ -104,8 +104,8 @@ DeepSeek campaigns are pending.
 - Input/output: Harbor 1.4, native traces, ATIF-v1.8, Harbor 0.24.0.
 - Canonical topology: `null`; topology is configurable but not an RQ.
 - Cue strength: registered per campaign as `ambient_activity`,
-  `surfaced_activity` or `workflow_affordance`; the active v45 condition is the
-  last of these.
+  `surfaced_activity` or `workflow_affordance`; v45 completed under the last of
+  these.
 - The fixture uses a deterministic information-dependency cycle so every job
   has one useful contribution and one unmet need. It is not announced to
   subjects and is not a tested communication topology.

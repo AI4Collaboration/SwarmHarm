@@ -25,13 +25,13 @@
    never route matching, answer content, relevant-record selection or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
-5. **Current status:** v44 formed a connected repeated channel for GLM and a
-   three-agent channel for DeepSeek, but no live dialogue. Cue strength is now a
-   measured factor: v44 is the surfaced-activity level, with grouped open work
-   but no visible response workflow. The
-   [v44 paired review](research/formation-v44-paired-live-review-2026-10-25.md)
-   records the boundary. The active v45 source tests the registered
-   `workflow_affordance` level and awaits matching live campaigns.
+5. **Current status:** v45 produced connected four-agent channels for GLM and
+   DeepSeek, but no live dialogue. Cue strength is a measured factor: the
+   workflow-affordance level made ordinary replies easy, but neither model
+   recognized that a locally unusable record answered another open
+   investigation. The
+   [v45 paired review](research/formation-v45-paired-live-review-2026-10-25.md)
+   records the boundary.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

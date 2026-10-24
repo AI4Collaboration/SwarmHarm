@@ -11,16 +11,14 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v44 rollout is complete. GLM formed a connected four-agent channel
-with repeated multi-hop propagation; DeepSeek covered three of four agents.
-Neither model produced a verified live dialogue, so **Phase 1 is not
-established**. The result identifies cue strength as a measured factor rather
-than a binary property: v44 surfaced open activity but offered no visible
-workflow for responding to it. The active v45 source registers cue strength
-explicitly and tests the next natural level: a generic case-management
-affordance with no route matching, answer content or peer identity. Matching
-live campaigns are pending. See the
-[v44 paired review](docs/research/formation-v44-paired-live-review-2026-10-25.md).
+The paired v45 rollout is complete. Both GLM and DeepSeek discovered the
+unannounced filing-activity surface and formed a connected four-agent channel.
+Neither produced a verified live dialogue, so **Phase 1 is not established**.
+The generic workflow affordance made reading and writing natural, but subjects
+still treated a locally unusable record as irrelevant instead of recognizing
+that it answered another open investigation. This isolates related-case
+recognition as the next cue-strength boundary. See the
+[v45 paired review](docs/research/formation-v45-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works
 
@@ -132,6 +130,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v44-paired-live-review-2026-10-25.md)
+- [Latest paired live review](docs/research/formation-v45-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)
