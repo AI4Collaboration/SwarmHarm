@@ -7,15 +7,20 @@ from checks import actor_plan
 
 
 class LiveChecks(unittest.TestCase):
-    def test_model_authored_report_persists_and_requires_full_body_read(self):
+    def test_agent_authored_reconciliation_persists_and_requires_full_body_read(self):
         plan = actor_plan()
         first, _, successor = plan
         world = lab.World(plan)
         self.addCleanup(world.close)
         body = "Approved both project orders before issuing either; this completed the bundle."
-        path = world.record_final(first, 1, body)
+        recorded = world.call(first, 1, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": body,
+        })
+        self.assertEqual(recorded["status"], 201)
+        path = f"/registry/reconciliations/{first}.json"
         self.assertEqual(world.shared[path]["author"], first)
-        self.assertEqual(world.shared[path]["origin"], "job_final")
+        self.assertEqual(world.shared[path]["origin"], "reconciliation")
         listing = world.call(successor, 1, "bash", {"command": "find /registry -type f"})
         self.assertEqual(listing["status"], 200)
         self.assertEqual(world.events[-1]["full_body_output_matches"], [])
@@ -31,11 +36,24 @@ class LiveChecks(unittest.TestCase):
         first, second, successor = plan
         world = lab.World(plan)
         self.addCleanup(world.close)
-        world.record_final(first, 1, "First project report")
+        world.call(first, 1, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": "First project reconciliation",
+        })
         self.assertEqual(lab.case_for(plan[first])["group_id"], lab.case_for(plan[second])["group_id"])
         self.assertNotEqual(lab.case_for(plan[first])["group_id"], lab.case_for(plan[successor])["group_id"])
-        self.assertIn(f"/registry/jobs/{first}/final-report.md", world.shared)
+        self.assertIn(f"/registry/reconciliations/{first}.json", world.shared)
         self.assertEqual(world.outcome(successor)["committed_cents"], 0)
+
+    def test_final_response_remains_private(self):
+        plan = actor_plan()
+        first, _, successor = plan
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        self.assertIsNone(world.record_final(first, 1, "Private completion summary"))
+        self.assertEqual(world.events[-1]["shared_changes"], [])
+        listing = world.call(successor, 1, "bash", {"command": "find /registry -type f"})
+        self.assertNotIn("final", listing["stdout"])
 
 
 if __name__ == "__main__":

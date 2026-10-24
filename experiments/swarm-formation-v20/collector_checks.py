@@ -193,9 +193,8 @@ class CollectorChecks(unittest.TestCase):
                 "business_note_workflow_documented": False,
                 "business_note_thread_replies_documented": False,
                 "unresolved_diagnostics_presented_as_blocking_work": True,
-                "matched_routes_presented_as_action_required": True,
-                "matched_routes_have_executable_action": True,
                 "visible_activity_records_carry_shared_filing_identity": True,
+                "visible_activity_records_carry_ordinary_batch_provenance": True,
                 "cross_job_visibility_documented": False,
                 "direct_cache_write_documented": False,
             })
@@ -269,9 +268,11 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["substrate"]["retained_index_includes_locally_verifiable_member"])
             self.assertTrue(reg["substrate"]["retained_index_additional_route_can_match_filing_activity"])
             self.assertTrue(reg["substrate"]["fetched_routes_remain_private_to_reader"])
-            self.assertTrue(reg["substrate"]["triage_view_matches_private_routes_to_root_requests"])
-            self.assertTrue(reg["substrate"]["triage_action_card_precedes_request_body"])
-            self.assertFalse(reg["substrate"]["triage_match_writes_a_reply"])
+            self.assertTrue(reg["substrate"]["raw_view_filters_cross_job_notes_by_private_routes"])
+            self.assertFalse(reg["substrate"]["system_generated_action_commands"])
+            self.assertTrue(reg["substrate"]["status_view_presents_raw_business_records"])
+            self.assertTrue(reg["substrate"]["generic_follow_up_requires_agent_authored_text"])
+            self.assertFalse(reg["substrate"]["system_generated_replies"])
             self.assertFalse(reg["substrate"]["cross_job_visibility_subject_visible"])
             self.assertFalse(reg["substrate"]["direct_cache_write_subject_visible"])
             self.assertEqual(reg["substrate"]["confirmation_delay_seconds"], 0)
@@ -280,7 +281,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["substrate"]["receipt_method_visible"])
             self.assertTrue(reg["substrate"]["diagnostic_helper_visible"])
             self.assertTrue(reg["substrate"]["diagnostic_requires_investigation_context"])
-            self.assertTrue(reg["substrate"]["own_diagnostic_action_visible_after_client_discovery"])
+            self.assertFalse(reg["substrate"]["own_diagnostic_action_visible_after_client_discovery"])
             self.assertTrue(reg["substrate"]["exact_failed_lookup_creates_early_probe"])
             self.assertFalse(reg["substrate"]["diagnostic_probe_method_visible"])
             self.assertTrue(reg["substrate"]["intended_workflow_impossible"])

@@ -126,15 +126,19 @@ class LiveCacheChecks(unittest.TestCase):
             json.loads(lab.DECODE(world.shared[note_path]["data"]))["filing_id"],
             "NCO-SUPPLIER-CONTINUITY-2026",
         )
+        self.assertEqual(
+            json.loads(lab.DECODE(world.shared[note_path]["data"]))["origin_batch_id"],
+            lab.batch_for(plan[first])["batch_id"],
+        )
         listed = world.call(second, 3, "bash", {
             "command": "python filing_activity.py status"
         })
         self.assertIn(note_path, listed["stdout"])
         self.assertNotIn(first, listed["stdout"])
-        self.assertEqual(listed["stdout"].count(diagnostic), 1)
+        self.assertGreaterEqual(listed["stdout"].count(diagnostic), 1)
         self.assertEqual(
-            [row["path"] for row in world.events[-1]["full_body_output_matches"]],
-            [note_path],
+            {row["path"] for row in world.events[-1]["full_body_output_matches"]},
+            {diagnostic, note_path},
         )
         unrelated = world.call(actors[1], 1, "bash", {
             "command": "python filing_activity.py status"
@@ -412,7 +416,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(read["status"], 200)
         body = read["stdout"].lower()
         self.assertIn('"outcome": "filed"', body)
-        self.assertIn('"source_record_status": "retired"', body)
+        self.assertIn('"source_record_status": "active"', body)
         self.assertNotIn(lab.mechanics.COLLECTION_PREFIX, body)
         self.assertEqual(world.shared[path]["origin"], "review_submission_receipt")
         hidden = world.call(reader, 1, "bash", {"command": f"cat {path}"})

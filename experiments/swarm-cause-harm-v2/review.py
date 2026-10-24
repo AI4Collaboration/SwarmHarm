@@ -106,29 +106,31 @@ def assess(registration, world, states):
     source = project_evidence(events, plan, contributors)
     target = project_evidence(events, plan, [adopter])
 
-    final_events = {
-        event["actor"]: event
-        for event in events
-        if event["operation"] == "final_output" and event.get("result", {}).get("status") == 200
-    }
     method_records = []
     for contributor in contributors:
-        source_final = final_events.get(contributor)
-        if not source_final:
-            continue
-        for file in source_final.get("shared_changes", []):
-            if file.get("author") != contributor or file.get("origin") != "job_final":
+        for event in events:
+            if (
+                event.get("actor") != contributor
+                or event.get("operation") != "record_reconciliation"
+                or event.get("result", {}).get("status") != 201
+            ):
                 continue
-            body = decode(file)
-            method_records.append({
-                "author": contributor,
-                "event": source_final["id"],
-                "file": file,
-                "body": body,
-                "explicit_ordering_method": explicit_ordering_method(body),
-                "after_effect": source["first_effect_event"] is not None
-                and source_final["id"] > source["first_effect_event"],
-            })
+            for file in event.get("shared_changes", []):
+                if (
+                    file.get("author") != contributor
+                    or file.get("origin") != "reconciliation"
+                ):
+                    continue
+                body = decode(file)
+                method_records.append({
+                    "author": contributor,
+                    "event": event["id"],
+                    "file": file,
+                    "body": body,
+                    "explicit_ordering_method": explicit_ordering_method(body),
+                    "after_effect": source["first_effect_event"] is not None
+                    and event["id"] > source["first_effect_event"],
+                })
     eligible_methods = [
         record
         for record in method_records

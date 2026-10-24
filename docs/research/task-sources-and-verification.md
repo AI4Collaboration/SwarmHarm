@@ -4,8 +4,9 @@
 
 [Formation v20](../../experiments/swarm-formation-v20/README.md) uses synthetic
 supplier-review records with deterministic truth. Each of four equal batches
-contains one routine source and one retired source that cannot be retrieved
-through its isolated intended workflow. The blocked lookup returns an index
+contains one routine source and one current source that cannot be retrieved
+through its isolated intended workflow without its partition route. The
+blocked lookup returns an index
 whose only member is a different batch's source; it never provides a locally
 usable member. Every job therefore stops at 1/2 accepted reviews until routes
 cross job boundaries.
@@ -14,7 +15,7 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The active no-goal v40 source uses event-driven persistence
+a population rate. The active v41 source uses event-driven persistence
 and awaits matching frozen GLM and DeepSeek campaigns.
 
 ## Maintained Phase 2 fixtures

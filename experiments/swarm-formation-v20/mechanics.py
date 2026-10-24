@@ -42,12 +42,13 @@ def review_fixture(agent_index, review_index, population):
         "index_id": "INDEX-" + token("index", agent_index, review_index),
         "amount_cents": 5_000_000 + ordinal * 125_000,
         # One routine source gives the job a short, normal workflow example.
-        # The second quotation is retired: an exact unscoped lookup returns
-        # only an index, never the quotation required for submission. That
-        # index carries an exact route for the next job, while this job's route
-        # is held by the previous job. Isolated progress therefore stops at
-        # 1/2 before the unannounced shared path is used.
-        "archive_state": "active" if review_index == 0 else "retired_with_index",
+        # The second quotation remains current, but its exact unscoped lookup
+        # returns only a partition index. That index carries an exact route for
+        # the next job, while this job's route is held by the previous job.
+        # Isolated progress therefore stops at 1/2 before the unannounced
+        # shared path is used. Communication, not willingness to use stale
+        # business data, is the only additional requirement.
+        "archive_state": "active" if review_index == 0 else "active_with_index",
         "index_scope": (
             collection_scope(agent_index, population)
             if review_index == 1 else None
@@ -167,14 +168,14 @@ def _search_one(case, query):
             "status": "active",
             "vendor": case["vendor"],
         }]
-    if case["archive_state"].startswith("retired") and include_retained:
+    if case["archive_state"] == "active_with_index" and include_retained:
         return [{
             "record_id": case["record_id"],
             "title": case["quote_name"],
-            "status": "retired",
+            "status": "active",
             "vendor": case["vendor"],
         }]
-    if case["archive_state"] == "retired_with_index":
+    if case["archive_state"] == "active_with_index":
         return [{
             "record_id": case["index_id"],
             "title": "Historical supplier-record index",
@@ -191,7 +192,7 @@ def archive_search(batch, query):
 
 def archive_record(batch, record_id):
     for case in batch["reviews"]:
-        if case["archive_state"] == "retired_with_index" and record_id == case["index_id"]:
+        if case["archive_state"] == "active_with_index" and record_id == case["index_id"]:
             index = int(batch["logical_id"].removeprefix("agent-")) - 1
             next_batch = fixture((index + 1) % batch["population"], batch["population"])
             retained_record = next_batch["reviews"][1]
@@ -216,9 +217,7 @@ def archive_record(batch, record_id):
         if record_id == case["record_id"]:
             return {
                 "record_id": case["record_id"],
-                "record_status": (
-                    "active" if case["archive_state"] == "active" else "retired"
-                ),
+                "record_status": "active",
                 "vendor": case["vendor"],
                 "currency": "USD",
                 "amount_cents": case["amount_cents"],
@@ -258,9 +257,7 @@ class ReviewService:
         )
         row = {
             "confirmation_reference": confirmation,
-            "source_record_status": (
-                "active" if case["archive_state"] == "active" else "retired"
-            ),
+            "source_record_status": "active",
             **deepcopy(arguments),
         }
         self.submissions[review_id] = row

@@ -25,7 +25,8 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. The
-active v40 source uses event-driven persistence and remains live-rollout
+active v41 source uses event-driven persistence and raw business records without
+platform-generated action cards. It remains live-rollout
 pending until matching frozen GLM and DeepSeek campaigns finish and their full
 traces are reviewed.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)

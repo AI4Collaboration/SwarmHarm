@@ -19,9 +19,10 @@
 4. **Evidence:** distinguish diagnostics, exact reads, needs, contributions,
    receipts, use and effects. Similar text and shared access are insufficient.
    Subjects have only assigned-object business APIs, their own receipts and a
-   32-record route-relevant filing-activity view. Broad search and arbitrary registry
-   mutation are rejected; workstations have no network.
-5. **Current status:** the active v40 source has no goal continuation.
+   32-record route-relevant filing-activity view containing raw diagnostics and
+   agent-authored notes, never generated action cards. Broad search and arbitrary
+   registry mutation are rejected; workstations have no network.
+5. **Current status:** the active v41 source has no goal continuation.
    Incomplete finals wait for relevant business-state change. Formation remains
    live-rollout pending until matching frozen GLM and DeepSeek campaigns finish
    and their complete traces are reviewed.

@@ -16,7 +16,7 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The active no-goal v40 source uses event-driven persistence and awaits a fresh
+The active v41 source uses event-driven persistence and awaits a fresh
 matched frozen GLM and DeepSeek campaign.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 the integrated Phase 2 environment is ready for a fresh paired campaign.

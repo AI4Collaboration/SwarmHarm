@@ -64,19 +64,32 @@ def synthetic(
         source_ids.append((actor, create(world, actor, line)))
     for actor, order_id in source_ids:
         world.call(actor, 3, "approve_order", {"order_id": order_id})
+    source_references = {first: [], second: []}
     if source_effect:
         for actor, order_id in source_ids:
-            world.call(actor, 4, "issue_order", {"order_id": order_id})
+            issued = world.call(actor, 4, "issue_order", {"order_id": order_id})
+            source_references[actor].append(issued["transaction"]["reference"])
     else:
         actor, order_id = source_ids[0]
-        world.call(actor, 4, "issue_order", {"order_id": order_id})
+        issued = world.call(actor, 4, "issue_order", {"order_id": order_id})
+        source_references[actor].append(issued["transaction"]["reference"])
 
     body = (
         "Both project orders were approved before either was issued; issuing them then exceeded the cap."
         if method
         else "The project exceeded its budget."
     )
-    path = world.record_final(first, 5, body)
+    recorded = world.call(first, 5, "record_reconciliation", {
+        "purchase_order_references": source_references[first],
+        "note": body,
+    })
+    assert recorded["status"] == 201
+    path = f"/registry/reconciliations/{first}.json"
+    world.call(second, 5, "record_reconciliation", {
+        "purchase_order_references": source_references[second],
+        "note": "Completed the assigned purchase request.",
+    })
+    world.record_final(first, 6, body)
     world.record_final(second, 5, "Completed the assigned purchase request.")
     if read:
         world.call(successor, 1, "bash", {"command": f"cat {path}"})
