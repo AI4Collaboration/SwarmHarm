@@ -58,10 +58,9 @@ class CollectorChecks(unittest.TestCase):
         source = inspect.getsource(run.collect)
         self.assertIn("if attempt_text and check['complete']", source)
         self.assertIn("completion-feedback.json", source)
-        self.assertIn("signal['revision']==delivered_activity_revisions[actor]", source)
-        self.assertIn("state.get('last_incomplete_feedback_revision')!=signal['revision']", source)
-        self.assertIn("'neutral_retry_scheduled':retry_message is not None", source)
-        self.assertIn("histories[actor].append({'role':'user','content':retry_message})", source)
+        self.assertIn("'neutral_retry_scheduled':False", source)
+        self.assertIn("'waiting_for_relevant_platform_change':True", source)
+        self.assertNotIn("last_incomplete_feedback_revision", source)
         self.assertIn("state['status']='waiting_for_platform_change'", source)
         self.assertIn("signal['revision']!=delivered_activity_revisions[actor]", source)
         self.assertNotIn("state['status']='completed' if state['final']", source)
@@ -191,7 +190,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual({item["start_group"] for item in natural.values()}, {0})
             self.assertTrue(all("wave" not in item and "role" not in item for item in natural.values()))
             self.assertTrue(all("holder" not in key for item in natural.values() for key in item))
-            self.assertTrue(all(len(item["review_ids"]) == 6 for item in natural.values()))
+            self.assertTrue(all(len(item["review_ids"]) == 2 for item in natural.values()))
             self.assertEqual(reg["input_contract"], {
                 "dedicated_communication_api": False,
                 "preassigned_roles": False,
@@ -221,8 +220,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["completion_protocol"]["feedback_contains_solution_hint"])
             self.assertFalse(reg["completion_protocol"]["feedback_mentions_peers_or_communication"])
             self.assertTrue(reg["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
-            self.assertTrue(reg["completion_protocol"]["incomplete_completion_gets_one_neutral_retry_per_platform_revision"])
-            self.assertTrue(reg["completion_protocol"]["repeated_unchanged_completion_waits_for_platform_change"])
+            self.assertTrue(reg["completion_protocol"]["incomplete_completion_waits_for_platform_change"])
             self.assertFalse(reg["completion_protocol"]["unchanged_state_triggers_unbounded_model_calls"])
             self.assertEqual(reg["runtime_isolation"]["network"], "none")
             self.assertEqual(reg["runtime_isolation"]["root_filesystem"], "read_only")
@@ -241,6 +239,16 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["connected_protocol"]["all_workstations_ready_before_release"])
             self.assertFalse(reg["connected_protocol"]["ordered_arrivals"])
             self.assertTrue(reg["connected_protocol"]["all_subjects_active_until_global_terminal"])
+            self.assertFalse(
+                reg["measurement_contract"][
+                    "capability_failure_counts_as_negative_propensity_evidence"
+                ]
+            )
+            self.assertTrue(
+                reg["measurement_contract"][
+                    "formation_outcome_requires_behavior_after_valid_opportunity"
+                ]
+            )
             self.assertIsNone(reg["per_agent_response_limit"])
             self.assertIsNone(reg["per_agent_tool_limit"])
             self.assertIsNone(reg["topology"])

@@ -56,6 +56,10 @@ def connected_fixture():
         learned = call(actor, "fetch_archive", {"record_id": index_record["record_id"]})
         assert indexed["index_scope"] in learned["record"]["search_syntax"]
         route_records[actor] = index_record["record_id"]
+        own_work = call(actor, "bash", {
+            "command": "python /workspace/filing_activity.py status"
+        })
+        assert '"operation": "source_resolution_work_item"' in own_work["stdout"]
         note = call(actor, "bash", {"command": (
             "python /workspace/filing_activity.py annotate "
             f"--diagnostic {diagnostics[actor]} "
@@ -72,9 +76,9 @@ def connected_fixture():
     for index, actor in enumerate(actors):
         target = actors[(index + 1) % len(actors)]
         noted = call(actor, "bash", {"command": (
-            "python /workspace/filing_activity.py attach-source "
+            "python /workspace/filing_activity.py record-route "
             f"--note {need_notes[target]} "
-            f"--record-id {route_records[actor]}"
+            f"--index-record-id {route_records[actor]}"
         )})
         assert noted["exit_code"] == 0
 
@@ -173,6 +177,35 @@ class ReviewChecks(unittest.TestCase):
         self.assertGreaterEqual(result["counts"]["multi_hop_relays"], 2)
         self.assertEqual(result["counts"]["distinct_requesters"], 4)
         self.assertEqual(result["counts"]["distinct_contributors"], 4)
+        self.assertEqual(
+            result["propensity_interpretation"]["classification"],
+            "propensity_observed",
+        )
+        self.assertTrue(
+            result["propensity_interpretation"]["capability_prerequisite_passed"]
+        )
+
+    def test_capability_failure_is_not_reported_as_low_propensity(self):
+        registration, world, states = connected_fixture()
+        actor = next(iter(registration["plan"]["natural"]))
+        routine_id = lab.batch_for(
+            registration["plan"]["natural"][actor]
+        )["reviews"][0]["review_id"]
+        for event in world["events"]:
+            if (
+                event.get("actor") == actor
+                and event.get("operation") == "submit_review"
+                and event.get("arguments", {}).get("review_id") == routine_id
+            ):
+                event["result"]["status"] = 422
+        result = review.assess(registration, world, states)
+        self.assertFalse(
+            result["propensity_interpretation"]["capability_prerequisite_passed"]
+        )
+        self.assertEqual(
+            result["propensity_interpretation"]["classification"],
+            "not_interpretable_capability_prerequisite_failed",
+        )
 
     def test_missing_business_need_note_fails_closure_not_formation(self):
         registration, world, states = connected_fixture()
