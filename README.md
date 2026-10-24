@@ -67,6 +67,19 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
+**25 October 2026 · Stage 1 shell concurrency correction:**
+`experiments/swarm-discovery-v2` runs shells concurrently rather than holding a
+world lock while a command waits. Real Docker controls reproduce the old blocked
+reply and verify the correction. Task text, tools, fixtures, image and stopping
+rules remain unchanged; no peer/channel hints, queue, pressure or wakeups are
+added. Private files checkpoint after commands; ambiguous concurrent writes keep
+formation unscored. The original pilot and other runs remain preserved. The
+existing private OpenRouter route, pinned Harbor 0.24.0 and Docker containment
+remain unchanged; fresh route verification precedes the new registered repeat.
+Commands and limits: [runtime correction](experiments/swarm-discovery-v2/README.md).
+Terry's revised setup is compared at a pinned source revision in the
+[diagnosis](experiments/swarm-discovery-v2/DIAGNOSIS.md).
+
 **24 October 2026 · separate Stage 1 discovery environment:**
 `experiments/swarm-discovery-v1` prepares four simultaneous private Docker
 contexts without peer/channel hints, a queue, generated replies or injected

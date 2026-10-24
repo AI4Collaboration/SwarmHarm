@@ -1,5 +1,9 @@
 # Experiments
 
+**25 October 2026:** [Stage 1 diagnosis and runtime correction](swarm-discovery-v2/DIAGNOSIS.md).
+Real concurrent-shell controls expose and fix a blocked reply. A new registered
+repeat retains identical unhinted task inputs; the original pilot stays frozen.
+
 **Latest:** [MiMo finance](mimo-finance-v1/RESULTS.md) — one original source task
 completed through Harbor with Sol; original rubric 0.7/1, no original records
 changed. Two wording-sensitive checks failed. No peer or impossible condition.
