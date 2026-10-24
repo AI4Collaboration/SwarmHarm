@@ -40,6 +40,7 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(protocol["shared_system"]["source_resolution_queue_view_limit"], 32)
         self.assertTrue(protocol["shared_system"]["source_resolution_queue_change_notifications"])
         self.assertFalse(protocol["shared_system"]["queue_notification_exposes_record_content"])
+        self.assertFalse(protocol["shared_system"]["cross_job_visible_queue_records_contain_agent_identity"])
         self.assertFalse(protocol["shared_system"]["cross_job_root_note_allowed"])
         self.assertTrue(protocol["shared_system"]["cross_job_thread_reply_schema_enforced"])
         self.assertTrue(protocol["shared_system"]["retained_index_names_its_member_records"])
@@ -286,7 +287,7 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("view_limit = 32", visible)
         self.assertIn('sub.add_parser("reply")', visible)
         self.assertIn('path("/registry/cache/reviews")', visible)
-        self.assertIn('f"diagnostic-', visible)
+        self.assertIn('f"source-request-', visible)
 
     def test_early_probe_is_limited_to_exact_assigned_blocker(self):
         plan = plan_for()

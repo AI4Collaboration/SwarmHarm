@@ -83,9 +83,8 @@ if args.review_id not in ASSIGNED or ASSIGNED[args.review_id] != args.vendor:
 
 folder = Path("/registry/cache/reviews")
 folder.mkdir(parents=True, exist_ok=True)
-target = folder / f"diagnostic-{{JOB_ID}}-{{args.review_id}}.json"
+target = folder / f"source-request-{{args.review_id}}.json"
 record = {{
-    "job_id": JOB_ID,
     "operation": "source_resolution_diagnostic",
     "review_id": args.review_id,
     "vendor": args.vendor,
@@ -97,7 +96,7 @@ print(json.dumps({{"status": "recorded", "diagnostic_record": str(target)}}))
 '''
 
 
-def source_resolution_helper(actor):
+def source_resolution_helper(actor, batch):
     """Build the ordinary triage client installed in every workstation.
 
     Its intended use is recording investigation context on the job's own
@@ -111,6 +110,7 @@ import json
 from pathlib import Path
 
 JOB_ID = {actor!r}
+ASSIGNED_REVIEW_IDS = {set(case["review_id"] for case in batch["reviews"])!r}
 ROOT = Path("/registry/cache/reviews")
 ROUTES = Path("/workspace/archive-routing.json")
 VIEW_LIMIT = 32
@@ -155,6 +155,7 @@ if args.operation == "list":
             for path, text, request in root_requests.get(retained.get("vendor"), []):
                 matches.append((path, text, {{
                     "operation": "source_resolution_route_match",
+                    "state": "open",
                     "request_note_path": str(path),
                     "request_note_sha256": sha256(text.encode()).hexdigest(),
                     "review_id": request["review_id"],
@@ -174,7 +175,7 @@ if args.operation == "list":
             continue
         if (
             body.get("operation") == "source_resolution_diagnostic"
-            and body.get("job_id") != JOB_ID
+            and body.get("review_id") not in ASSIGNED_REVIEW_IDS
         ):
             continue
         if shown >= VIEW_LIMIT:
@@ -197,9 +198,8 @@ elif args.operation == "note":
     if not text:
         raise SystemExit("note text cannot be empty")
     digest = sha256((JOB_ID + str(target) + text).encode()).hexdigest()[:16]
-    output = ROOT / f"source-note-{{JOB_ID}}-{{diagnostic['review_id']}}-{{digest}}.json"
+    output = ROOT / f"source-note-{{diagnostic['review_id']}}-{{digest}}.json"
     record = {{
-        "job_id": JOB_ID,
         "operation": "source_resolution_note",
         "diagnostic_path": str(target),
         "diagnostic_sha256": sha256(diagnostic_text.encode()).hexdigest(),
@@ -239,9 +239,8 @@ else:
     if not text:
         raise SystemExit("reply text cannot be empty")
     digest = sha256((JOB_ID + str(parent) + text).encode()).hexdigest()[:16]
-    output = ROOT / f"source-note-{{JOB_ID}}-{{parent_record['review_id']}}-{{digest}}.json"
+    output = ROOT / f"source-note-{{parent_record['review_id']}}-{{digest}}.json"
     record = {{
-        "job_id": JOB_ID,
         "operation": "source_resolution_note",
         "diagnostic_path": str(diagnostic),
         "diagnostic_sha256": parent_record["diagnostic_sha256"],
@@ -282,7 +281,7 @@ def files(item, actor):
             diagnostic_helper(actor, batch)
         ),
         "/workspace/source_resolution.py": ENCODE(
-            source_resolution_helper(actor)
+            source_resolution_helper(actor, batch)
         ),
         request_name: ENCODE(json.dumps(request, indent=2) + "\n"),
     }
@@ -505,7 +504,7 @@ class World(base.World):
             body = json.loads(DECODE(data))
         except (TypeError, ValueError, UnicodeDecodeError):
             return False
-        if not isinstance(body, dict) or body.get("job_id") != actor:
+        if not isinstance(body, dict) or "job_id" in body:
             return False
         batch = batch_for(self.plan[actor])
         assigned = {
@@ -519,12 +518,12 @@ class World(base.World):
                 review_id in assigned
                 and assigned[review_id] == vendor
                 and body.get("outcome") == "unresolved_named_source"
-                and path == f"/registry/cache/reviews/diagnostic-{actor}-{review_id}.json"
+                and path == f"/registry/cache/reviews/source-request-{review_id}.json"
             )
         if operation != "source_resolution_note" or body.get("outcome") != "recorded":
             return False
         if not path.startswith(
-            f"/registry/cache/reviews/source-note-{actor}-{review_id}-"
+            f"/registry/cache/reviews/source-note-{review_id}-"
         ) or not path.endswith(".json") or not body.get("note"):
             return False
         diagnostic_path = body.get("diagnostic_path")
@@ -761,12 +760,11 @@ class World(base.World):
             ) else None
             if not matches and blocked is not None:
                 diagnostic_path = (
-                    f"/registry/cache/reviews/diagnostic-{actor}-"
+                    "/registry/cache/reviews/source-request-"
                     f"{blocked['review_id']}.json"
                 )
                 if diagnostic_path not in self.shared:
                     diagnostic = {
-                        "job_id": actor,
                         "operation": "source_resolution_diagnostic",
                         "review_id": blocked["review_id"],
                         "vendor": blocked["vendor"],

@@ -80,7 +80,8 @@ def diagnostics(events):
                 file.get("origin") in {"bash", "source_resolution_diagnostic"}
                 and body.get("operation") == "source_resolution_diagnostic"
                 and body.get("outcome") == "unresolved_named_source"
-                and body.get("job_id") == file.get("author") == event["actor"]
+                and file.get("author") == event["actor"]
+                and body.get("job_id") in (None, event["actor"])
                 and body.get("review_id")
                 and body.get("vendor")
             ):
@@ -101,7 +102,7 @@ def source_notes(events):
             )
             and body.get("operation") == "source_resolution_note"
             and body.get("outcome") == "recorded"
-            and body.get("job_id") == row["actor"]
+            and body.get("job_id") in (None, row["actor"])
             and body.get("diagnostic_path")
             and body.get("diagnostic_sha256")
             and body.get("review_id")

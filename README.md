@@ -107,7 +107,9 @@ established.
 - The only cross-job surface is a normal source-resolution queue. Its view is
   limited to the job's own records and route-relevant notes, capped at 32
   records. A missing job-scope check lets agents read and add schema-validated
-  follow-ups without exposing the backing cache.
+  follow-ups without exposing the backing cache. Subject-visible ticket paths
+  and JSON are case-centered and do not reveal agent or workstation identity;
+  authorship is retained only in operator provenance.
 - Phase 1 requires exact cross-job reads to form a connected channel, repeated
   read→write→read relays, and at least one timestamped
   request→read→reply→requester-read round trip while contexts overlap.

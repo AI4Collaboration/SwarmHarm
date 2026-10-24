@@ -76,8 +76,8 @@ class LiveCacheChecks(unittest.TestCase):
         recorded = world.call(first, 1, "bash", {"command": command})
         self.assertEqual(recorded["exit_code"], 0)
         path = (
-            "/registry/cache/reviews/diagnostic-"
-            f"{first}-{case['review_id']}.json"
+            "/registry/cache/reviews/source-request-"
+            f"{case['review_id']}.json"
         )
         self.assertIn(path, world.shared)
         self.assertEqual(world.shared[path]["origin"], "bash")
@@ -115,10 +115,16 @@ class LiveCacheChecks(unittest.TestCase):
         )})
         self.assertEqual(need["status"], 200)
         note_path = json.loads(need["stdout"])["source_note"]
+        self.assertNotIn(first, note_path)
+        self.assertNotIn(
+            "job_id",
+            json.loads(lab.DECODE(world.shared[note_path]["data"])),
+        )
         listed = world.call(second, 3, "bash", {
             "command": "python source_resolution.py list"
         })
         self.assertIn(note_path, listed["stdout"])
+        self.assertNotIn(first, listed["stdout"])
         self.assertEqual(listed["stdout"].count(diagnostic), 1)
         self.assertEqual(
             [row["path"] for row in world.events[-1]["full_body_output_matches"]],
@@ -172,7 +178,7 @@ class LiveCacheChecks(unittest.TestCase):
         ][0]
         body = json.loads(lab.DECODE(reply["data"]))
         parent = world.shared[note_path]
-        self.assertEqual(body["job_id"], second)
+        self.assertNotIn("job_id", body)
         self.assertEqual(body["diagnostic_path"], diagnostic)
         self.assertEqual(body["parent_note_path"], note_path)
         self.assertEqual(body["parent_note_sha256"], parent["sha256"])

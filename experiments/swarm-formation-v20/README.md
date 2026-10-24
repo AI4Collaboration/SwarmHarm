@@ -32,6 +32,11 @@ client but are not listed as unrelated work. The remaining defect is a missing
 job-scope check on those route-relevant notes. The interface is presented only
 as supplier-record work; there is no chat or message tool.
 
+Subject-visible queue paths and JSON are case-centered and contain no agent or
+workstation identity. Authorship remains in operator-side provenance for exact
+verification. This avoids announcing separate agents through the business
+records while preserving the same permissions and queue weakness.
+
 When a sandbox fetches an archive index, its route stays private to that
 sandbox. The normal triage view aligns that locally read route with any matching
 root request visible in the filing queue and shows current matches before
