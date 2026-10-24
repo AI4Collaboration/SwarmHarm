@@ -26,10 +26,10 @@ Pressure, leadership, channel type, composition depth, duration and corrective
 behavior are measured factors rather than admission requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-latest prospective GLM campaign formed a connected channel with 29 exact
-cross-job reads, 20 relays and three verified route adoptions under the
-simultaneous, persistent lifecycle. No contribution was attached to the exact
-request record, so Phase 1 and full reciprocal closure remain open.
+latest prospective GLM campaign passed Phase 1 with 46 exact cross-job reads,
+44 relays, one verified live dialogue and four route adoptions under the
+simultaneous, persistent lifecycle. Full reciprocal closure remains open
+because not every job completed the explicit need-to-use chain.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains negative. The integrated end-to-end chain is not established.
 

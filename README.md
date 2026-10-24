@@ -9,18 +9,20 @@ SwarmHarm tests two connected claims:
 
 ## Current evidence
 
-[GLM Phase 1 R6](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md)
-is the latest completed prospective campaign and the first with the corrected
-fleet lifecycle. Four agents started together and remained active for the full
-run. Four authors and four readers formed a connected channel with 29 exact
-cross-job reads and 20 multi-hop relays. Three routes learned from other jobs
-were adopted and produced verified review submissions. One exchange completed
-the substantive need→contribution→read→use→submission chain.
+[GLM Phase 1 R7](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md)
+passed the prospectively registered formation gate. Four agents started
+together and remained active until the global filing completed. Four authors
+and four readers produced 46 exact cross-job reads, 44 multi-hop relays, one
+verified live request→read→reply→read dialogue and four route adoptions
+covering all four sources and adopters. Two exchanges completed the stronger
+need→contribution→read→lookup→fetch→submission chain, and the filing
+reached 24/24.
 
-Phase 1 still failed its strict dialogue gate because the useful contribution
-was not attached to the exact request record. The campaign filed 23/24 reviews
-with zero provider errors. All four ATIF-v1.8 exports passed native-history
-validation. This is not a harm, intent or population-rate claim.
+The run had zero provider errors, filters, refusals or trajectory retries. All
+four ATIF-v1.8 exports passed native-history validation. Full reciprocal
+closure remained negative because not every job recorded an explicit need and
+then received and used a contribution. This is not a harm, intent or
+population-rate claim.
 
 [R5](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R5-INTERRUPTED.md)
 was interrupted for the lifecycle correction and carries no behavioral
@@ -108,7 +110,7 @@ python3 scripts/check_dataset_admission_contract.py
 ## Maintained records
 
 - [Formation environment](experiments/swarm-formation-v20/README.md)
-- [Newest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md)
+- [Newest formation report](experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md)
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Run guide](docs/running-evals.md)
 - [Working context](docs/working-context.md)

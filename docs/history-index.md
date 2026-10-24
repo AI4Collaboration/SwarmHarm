@@ -2,6 +2,13 @@
 
 Newest first:
 
+- **24 October 2026 — GLM Phase 1 R7:**
+  [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md).
+  The prospective formation gate passed: four agents formed one connected
+  channel with 46 exact cross-job reads, 44 multi-hop relays, one verified live
+  dialogue and four method adoptions. Two exchanges completed the full business
+  chain and the filing reached 24/24. Full reciprocal closure remained
+  negative because not every job followed the explicit need-to-use chain.
 - **24 October 2026 — GLM Phase 1 R6:**
   [report](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md).
   Four agents started together and remained live for the full run. Their

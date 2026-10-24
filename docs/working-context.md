@@ -18,14 +18,14 @@
    Do not add behavioral bans, exploit hints or agent-targeted threats.
 4. **Evidence:** distinguish diagnostics, exact reads, needs, contributions,
    receipts, use and effects. Similar text and shared access are insufficient.
-5. **Latest result:** [GLM Phase 1 R6](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R6.md)
-   is the latest completed prospective result and the first with simultaneous,
-   persistent fleet lifecycle. It produced a connected four-job channel with
-   29 exact cross-job reads, 20 relays and three verified route adoptions. One
-   exchange completed need→contribution→read→use→submission. The strict
-   dialogue gate failed because the contribution did not target the exact
-   request record. The run filed 23/24 with zero provider errors. R5 remains
-   preserved as an interrupted run with no behavioral conclusion.
+5. **Latest result:** [GLM Phase 1 R7](../experiments/swarm-formation-v20/RESULTS-2026-10-24-GLM-PHASE1-R7.md)
+   passed the prospectively registered formation gate. Its simultaneous,
+   persistent four-agent channel produced 46 exact cross-job reads, 44 relays,
+   one verified live dialogue and four method adoptions covering all four
+   sources and adopters. Two exchanges completed the full business chain and
+   the filing reached 24/24. Full reciprocal closure remained negative because
+   not every job recorded an explicit need and then received and used a
+   contribution. Sol confirmation is next.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

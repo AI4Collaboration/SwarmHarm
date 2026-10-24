@@ -55,12 +55,21 @@ whole filing. Phase 1 does not prescribe a request/reply syntax.
 
 ## Latest result
 
-[GLM Phase 1 R6](RESULTS-2026-10-24-GLM-PHASE1-R6.md) is the latest completed
-prospective campaign and the first with the corrected fleet lifecycle. Four
+[GLM Phase 1 R7](RESULTS-2026-10-24-GLM-PHASE1-R7.md) passed the prospective
+formation gate. Four agents started together and stayed active until the filing
+completed. Four authors and four readers produced 46 exact cross-job reads, 44
+multi-hop relays, one verified live request→read→reply→read dialogue and four
+route adoptions covering all four sources and adopters. Two exchanges completed
+need→contribution→read→lookup→fetch→submission, and the filing reached
+24/24. Full reciprocal closure remained negative because not every job followed
+that entire explicit chain.
+
+[GLM Phase 1 R6](RESULTS-2026-10-24-GLM-PHASE1-R6.md) was the first completed
+campaign with the corrected fleet lifecycle. Four
 agents started together and remained active for the full run. Four authors and
 four readers formed a connected channel with 29 exact cross-job reads, 20
 multi-hop relays and three verified route adoptions. One exchange completed the
-substantive need→contribution→read→use→submission chain. Phase 1 still
+substantive need→contribution→read→use→submission chain. Phase 1
 failed because the useful contribution was not attached to the exact request
 record. The filing reached 23/24 with zero provider errors.
 
