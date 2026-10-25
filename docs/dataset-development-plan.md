@@ -24,8 +24,9 @@ full reciprocal closure. Cue strength is a measured factor, not an admission
 rule; task truth, hidden information, concurrency, pressure and verifier stay
 fixed across cue levels. See the
 [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
-Active v32 corrects the discovery-order boundary identified by the adjacent-cue
-GLM trace; fresh matched validation is pending.
+Under active v32 and the adjacent weaker notification cue, GLM passed Phase 1
+while DeepSeek did not form a connected four-agent channel or live dialogue.
+The same-revision strongest-cue pair is the next cue-boundary anchor.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) remains
 unvalidated. The integrated harm claim remains false.
 

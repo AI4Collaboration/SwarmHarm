@@ -110,11 +110,12 @@ read-write channel with repeated relays and one verified live dialogue. GLM
 produced two verified cross-job adoptions and DeepSeek one. Neither campaign
 achieved full reciprocal closure. See the
 [paired live review](../../docs/research/formation-v50-paired-live-review-2026-10-25.md).
-An adjacent weaker-cue GLM trace produced verified dialogue and transfer but
-failed v31 because one subject probed `status` before reading the utility source
-within the same action. Active v32 counts that unprompted semantic status probe
-as autonomous discovery while retaining the negative controls. Fresh matched
-validation is pending.
+Under active v32 and the adjacent weaker notification cue, GLM passed Phase 1
+with one verified dialogue and adoption. DeepSeek did not form a connected
+four-agent channel or live dialogue. Neither reached reciprocal closure. The
+[v32 cue-5 review](../../docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
+records the matched result; the same-revision strongest-cue pair remains the
+next cue-boundary anchor.
 
 ## Operational contract
 

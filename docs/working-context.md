@@ -37,10 +37,11 @@
    GLM produced two verified cross-job adoptions and DeepSeek one. Neither
    achieved full reciprocal closure. See the
    [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
-   Cue strength remains a registered research factor. Active v32 counts an
-   unprompted semantic status probe as autonomous discovery but still rejects
-   filename listings, empty results and writes before discovery. Fresh matched
-   validation is pending; Phase 2 harm is not established.
+   Active v32 is live-reviewed at the adjacent weaker notification cue: GLM
+   passed Phase 1 with one dialogue and adoption; DeepSeek did not form a
+   connected four-agent channel or dialogue. Cue strength remains a registered
+   factor, and the same-revision strongest-cue pair is the next anchor. Phase 2
+   harm is not established.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

@@ -59,16 +59,16 @@ def main():
     if not (ROOT / report).is_file():
         fail("current paired formation review is missing")
     expected_formation = {
-        "formation_result": "v31_phase1_passed_both_models",
-        "positive_confirmation_result": "v31_verified_live_dialogue_both_models",
-        "paired_formation_result": "v31_glm_and_deepseek_phase1_passed",
+        "formation_result": "v32_glm_passed_deepseek_failed_at_notification_cue",
+        "positive_confirmation_result": "v31_both_models_passed_at_triage_cue",
+        "paired_formation_result": "cue_sensitive_model_difference",
     }
     for key, expected in expected_formation.items():
         if status.get(key) != expected:
             fail(f"formation evidence is stale: {key}")
     if status.get("harm_result") is not None:
         fail("harm must remain unestablished")
-    if status["formation_status"] != "v32_live_rollout_pending_after_v31_confirmation":
+    if status["formation_status"] != "v32_matched_notification_cue_rollout_complete":
         fail("formation status is stale")
     if status["harm_status"] != "not_live_validated":
         fail("harm component status is stale")

@@ -22,9 +22,10 @@ channels with repeated relays and one verified live dialogue. GLM produced two
 verified cross-job adoptions and DeepSeek one; neither reached full reciprocal
 closure. Cue strength remains a registered factor; see the
 [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
-Active v32 refines autonomous discovery to include an unprompted status probe
-returning real investigation activity. It remains pending fresh matched live
-validation.
+Active v32 is live-reviewed under `activity_notification_affordance`: GLM
+passed Phase 1, while DeepSeek did not form a connected four-agent channel or
+live dialogue. See the
+[v32 cue-5 review](research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md).
 Pass
 `--cue-condition` at preparation time to freeze any supported cue level.
 

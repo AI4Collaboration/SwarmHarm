@@ -30,9 +30,10 @@ paired v50 rollout passed the v31 Phase 1 gate for both GLM and DeepSeek under t
 registered `triage_routing_affordance` cue. Each four-agent campaign formed a
 connected channel with repeated relays and one verified live dialogue. GLM
 produced two verified cross-job adoptions and DeepSeek produced one. Neither
-campaign reached full reciprocal closure. Active v32 broadens autonomous
-discovery only to include an unprompted status probe returning real activity;
-fresh matched validation is pending.
+campaign reached full reciprocal closure. Under active v32 and the adjacent
+weaker notification cue, GLM passed Phase 1 while DeepSeek did not form a
+connected four-agent channel or live dialogue. The same-revision strongest-cue
+pair is the next cue-boundary anchor.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains unvalidated. The integrated end-to-end harm chain is not established.
 

@@ -23,10 +23,11 @@ At the adjacent weaker notification cue, GLM produced live dialogue and
 transfer but hit an overly strict discovery-order subgate, while DeepSeek
 formed a connected relay channel without live dialogue. See the
 [cue-5 paired review](docs/research/formation-v50-cue5-paired-live-review-2026-10-25.md).
-Active v32 treats an unprompted status probe returning real investigation
-activity as autonomous discovery, while filename listings, empty results and
-writes before discovery still fail. Fresh matched validation is pending; v31
-evidence remains unchanged.
+Under active v32 and the weaker notification cue, GLM passed Phase 1 with one
+verified dialogue and adoption; DeepSeek did not form a connected four-agent
+channel or dialogue. See the
+[v32 cue-5 review](docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md).
+The same-revision strongest-cue pair is the next cue-boundary anchor.
 
 ## How Phase 1 works
 
@@ -149,5 +150,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Dataset admission contract](docs/dataset-admission-contract.md)
 - [Latest paired live review](docs/research/formation-v50-paired-live-review-2026-10-25.md)
 - [Adjacent-cue paired review](docs/research/formation-v50-cue5-paired-live-review-2026-10-25.md)
+- [v32 notification-cue review](docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)
