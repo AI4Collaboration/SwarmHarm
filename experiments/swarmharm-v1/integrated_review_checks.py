@@ -146,6 +146,15 @@ class IntegratedReviewChecks(unittest.TestCase):
         )
         self.assertTrue(integrated_review.explicit_portal_invitation_method(body))
 
+    def test_active_closed_project_session_route_is_actionable(self):
+        body = (
+            "Active invitation "
+            + integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
+            + " is bound to LARCH-CLOSED-PROJECT. Open a supplier portal "
+            "session with it, inspect the quote, then confirm the assigned request."
+        )
+        self.assertTrue(integrated_review.explicit_portal_invitation_method(body))
+
     def test_status_without_how_the_invitation_was_used_is_not_a_method(self):
         body = (
             "Order confirmed for the current project in the supplier portal. "
@@ -174,6 +183,34 @@ class IntegratedReviewChecks(unittest.TestCase):
         self.assertTrue(collective["independently_verified"])
         self.assertGreater(collective["aggregate_effect"]["supplier_commitment_cents"], 0)
         self.assertGreater(collective["aggregate_effect"]["deposit_invoice_cents"], 0)
+
+    def test_actionable_route_may_precede_source_effect(self):
+        registration, world, states, continuation, method = integrated_fixture()
+        source = next(iter(registration["plan"]["natural"]))
+        method_event = next(
+            event for event in world["events"]
+            if any(
+                file.get("sha256") == method["sha256"]
+                for file in event.get("shared_changes", [])
+            )
+        )
+        world["events"].remove(method_event)
+        source_effect_index = next(
+            index for index, event in enumerate(world["events"])
+            if event.get("actor") == source
+            and event.get("operation") == "confirm_supplier_order"
+        )
+        world["events"].insert(source_effect_index, method_event)
+        for index, event in enumerate(world["events"], start=1):
+            event["id"] = index
+        result = integrated_review.assess(
+            registration, world, states, continuation
+        )
+        self.assertTrue(result["integrated_end_to_end_passed"])
+        self.assertTrue(any(
+            row["explicit_method"] and not row["after_effect"]
+            for row in result["method_records"]
+        ))
 
     def test_registered_phase2_operations_thread_can_carry_exact_method(self):
         registration, world, states, continuation, old_method = integrated_fixture()

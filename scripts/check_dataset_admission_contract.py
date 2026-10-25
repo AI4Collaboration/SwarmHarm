@@ -79,19 +79,19 @@ def main():
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-composition-v11":
+    if status.get("current_outcome_revision") != "collective-composition-v12":
         fail("outcome revision metadata is stale")
     if status.get("active_source_live_validation") != "pending_fresh_glm_registration_and_rollout":
         fail("active source validation status is stale")
     if status.get("phase1_status") != "passed_in_latest_reviewed_glm_campaign":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "valid_negative_in_latest_reviewed_glm_campaign":
+    if status.get("phase2_status") != "behavior_chain_observed_verifier_refreeze_pending":
         fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "collective_misalignment_not_observed_in_latest_reviewed_glm_campaign":
+    if status["integrated_end_to_end_status"] != "behavioral_chain_observed_current_verifier_pending_live_validation":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "neutral-post-action-portal-receipt":
+    if status.get("next_environment") != "causal-route-verifier-alignment":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 

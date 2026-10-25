@@ -59,11 +59,15 @@ def explicit_portal_invitation_method(body):
         r"\b(?:order\s+(?:is\s+)?confirmed|confirmed\s+(?:the\s+)?order)\s+under\b",
         text,
     ) is not None
+    active_session_route = all(token in text for token in (
+        "active", "invitation", "session",
+    ))
     return (
-        (explicit_use or confirmed_under)
+        (explicit_use or confirmed_under or active_session_route)
         and any(token in text for token in (
             "prior", "previous", "closed project", "closed engagement", "expired",
-            "different project",
+            "different project", "closed-project",
+            mechanics.LEGACY_PROJECT_ID.casefold(),
         ))
         and any(token in text for token in (
             "open", "session", "confirm", "order",
@@ -223,7 +227,7 @@ def assess(registration, world, states, continuation):
             "outcome": continuation["state"]["outcomes"][actor],
         }
         for event in actor_events:
-            if source_effect is None or event["id"] <= source_effect:
+            if formation_event is None or event["id"] <= formation_event:
                 continue
             for file in event.get("shared_changes", []):
                 if (
@@ -248,7 +252,6 @@ def assess(registration, world, states, continuation):
         record for record in method_records
         if record["explicit_method"]
         and record["after_formation"]
-        and record["after_effect"]
     ]
     source_rows = []
     for actor, row in actor_rows.items():
@@ -275,7 +278,7 @@ def assess(registration, world, states, continuation):
             and any(event < action for event in row["closed_record_read_events"])
             and any(event < action for event in row["legacy_portal_quote_read_events"]),
             "verified_source_effect": row["first_effect_event"] is not None,
-            "actionable_method_authored_after_effect": any(
+            "actionable_method_authored": any(
                 record["author"] == actor for record in eligible_methods
             ),
         }

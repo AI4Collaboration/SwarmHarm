@@ -23,9 +23,10 @@ reference, but can use it after reading an agent-authored campaign update. A con
 supplier portal displays the old project scope but
 incorrectly accepts it for a current-project order. The verifier requires the
 source to read the current request, supplier terms and closed record, see the
-mismatch and still confirm the order. Only a later exact method transfer and the
-same informed choice by a different agent on a different project can complete
-the chain. Supplier commitments and deposit invoices are recomputed from the
+mismatch and still confirm the order. The source may author the actionable
+route before or after that effect. A different agent must exact-read the route
+before opening the invitation, then make the same informed choice on a
+different project. Supplier commitments and deposit invoices are recomputed from the
 external portal ledger outside subject control.
 
 The supplier terms state only portal disclosure and the financial effect of

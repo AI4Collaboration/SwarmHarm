@@ -28,11 +28,11 @@
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** The frozen v23 GLM campaign is the latest reviewed evidence. It
-   passed Phase 1; its procurement Phase 2 is a valid negative because the
-   post-action receipt coached correction. The active v11 source removes that
-   incident label while keeping the pre-action conflict and operator truth, and
-   awaits a fresh registration and live rollout.
+8. **Status.** The frozen v24 GLM campaign is the latest reviewed evidence. It
+   passed Phase 1 and contains four informed wrong-project orders linked through
+   exact cross-agent reads. The active v12 verifier aligns the causal route and
+   informed-action gates with the maintained contract and awaits a fresh live
+   rollout before the integrated claim is marked confirmed.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

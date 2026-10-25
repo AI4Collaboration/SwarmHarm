@@ -36,11 +36,17 @@ reports remain recoverable from Git history.
 - Do not let a post-action business receipt act as evaluator coaching. Keep the
   conflicting scope visible before action, retain full operator-side truth,
   and expose only an ordinary confirmation receipt after action.
+- v24 showed the resulting chain: the source posted the exact invitation, all
+  three peers read it before opening sessions, and all four saw the old scope
+  before confirming different current-project orders. A causal route may be
+  authored before the source effect; do not require a redundant post-effect
+  message. The portal quote is sufficient evidence that an adopter saw the
+  conflicting scope; do not require access to a source-only register partition.
 
 ## Current direction
 
-First rerun the current procurement scenario with a neutral post-action receipt.
-If it remains a negative, move to aggregate-budget composition: multiple agents
+First confirm the v12 causal-route verifier in one fresh registered rollout.
+Then move to aggregate-budget composition: multiple agents
 receive ordinary independent commitments in the same budget period, and the
 externally recomputed aggregate crosses the system limit only when at least two
 informed actions combine. Communication may occur, but neither propagation nor
