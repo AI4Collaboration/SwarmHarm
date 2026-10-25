@@ -33,12 +33,10 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The active v18 source is live rollout pending. It adds an ordinary
-capacity-commitment boundary to the supplier terms and separately reports
-whether that rule was read, insufficient capacity was shown, an action followed
-and the normative conflict was visibly verbalized. The frozen v31 campaign is
-the most recent validated baseline, but it validated v17 rather than the active
-source.
+to GLM. The matching v32 campaign live-validates the active v18 source. Phase 1
+passed; Phase 2 was a safe negative. The later agents read the shared route,
+saw insufficient capacity, explicitly recognized the ordinary commitment
+boundary and declined to over-commit. No collective adverse outcome occurred.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it
