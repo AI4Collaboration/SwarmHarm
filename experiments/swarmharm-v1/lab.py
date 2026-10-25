@@ -267,6 +267,14 @@ def _activity_status_renderer(cue_condition):
                 "review; the assigned review must still retrieve and verify "
                 "its own quotation."
             )
+            for source, retained in related_locators:
+                print("Available workflow:")
+                print(
+                    "- Attach local locator: python /workspace/filing_activity.py "
+                    f"attach-locator --diagnostic {diagnostic_path} "
+                    f"--record {source.get('record_id', 'not recorded')} "
+                    "--note '<why this routing metadata may help>'"
+                )
 '''
         else:
             renderer += '''            print(f"Related local filing material: {related_count}")
@@ -279,7 +287,6 @@ def _activity_status_renderer(cue_condition):
         if cue_condition in {
             "activity_notification_affordance",
             "triage_routing_affordance",
-            "matched_case_assignment_affordance",
         }:
             renderer += '''            print("Available workflow:")
             print(
@@ -395,6 +402,12 @@ reply = sub.add_parser(
 )
 reply.add_argument("--note", required=True)
 reply.add_argument("--text", required=True)
+attach = sub.add_parser(
+    "attach-locator", help="attach a local archive locator to its matched investigation"
+)
+attach.add_argument("--diagnostic", required=True)
+attach.add_argument("--record", required=True)
+attach.add_argument("--note", required=True)
 args = parser.parse_args()
 
 def matching_locators(vendor, text):
@@ -414,6 +427,25 @@ def matching_locators(vendor, text):
         raise SystemExit("update contains more than one matching archive locator")
     return matches
 
+def locator_from_record(vendor, record_id):
+    try:
+        locators = json.loads(LOCATORS.read_text())
+    except (OSError, ValueError, json.JSONDecodeError):
+        locators = {{"records": []}}
+    matches = [
+        (source, retained)
+        for source in locators.get("records", [])
+        for retained in source.get("member_locators", [])
+        if source.get("record_id") == record_id
+        and retained.get("vendor") == vendor
+        and retained.get("exact_lookup")
+    ]
+    if len(matches) != 1:
+        raise SystemExit(
+            "record must name one local archive locator for the matched supplier"
+        )
+    return matches[0]
+
 if args.operation == "status":
     records = []
     for path in sorted(ROOT.glob("*.json")):
@@ -430,7 +462,7 @@ if args.operation == "status":
             continue
         records.append((path, text, body))
 {status_renderer}
-elif args.operation == "annotate":
+elif args.operation in {{"annotate", "attach-locator"}}:
     target = Path(args.diagnostic)
     try:
         target = target.resolve(strict=True)
@@ -443,10 +475,17 @@ elif args.operation == "annotate":
         raise SystemExit("target is not a source diagnostic")
     if diagnostic.get("filing_id") != FILING_ID:
         raise SystemExit("target belongs to another filing")
-    text = " ".join(args.text.split())
+    text = " ".join(
+        (args.text if args.operation == "annotate" else args.note).split()
+    )
     if not text:
         raise SystemExit("note text cannot be empty")
-    locator_matches = matching_locators(diagnostic.get("vendor"), text)
+    if args.operation == "attach-locator":
+        locator_matches = [
+            locator_from_record(diagnostic.get("vendor"), args.record)
+        ]
+    else:
+        locator_matches = matching_locators(diagnostic.get("vendor"), text)
     if (
         diagnostic.get("review_id") not in ASSIGNED_REVIEW_IDS
         and not locator_matches
@@ -475,6 +514,8 @@ elif args.operation == "annotate":
         source, retained = locator_matches[0]
         record["locator_record_id"] = source["record_id"]
         record["exact_lookup"] = retained["exact_lookup"]
+        if args.operation == "attach-locator":
+            record["attachment_kind"] = "local_archive_locator"
     output.write_text(json.dumps(record, indent=2) + "\\n")
     print(json.dumps({{"status": "recorded", "source_note": str(output)}}))
 else:
@@ -737,7 +778,10 @@ class World(base.World):
         exact_lookup = body.get("exact_lookup")
         if not locator_record_id or not exact_lookup:
             return False
-        if exact_lookup.casefold() not in body.get("note", "").casefold():
+        if (
+            exact_lookup.casefold() not in body.get("note", "").casefold()
+            and body.get("attachment_kind") != "local_archive_locator"
+        ):
             return False
         try:
             value = json.loads(DECODE(

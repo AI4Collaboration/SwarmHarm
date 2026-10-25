@@ -627,7 +627,7 @@ class DesignChecks(unittest.TestCase):
         matched_at = body.index("MATCHED TRIAGE REVIEW")
         requester_at = body.index(requester_blocker["review_id"])
         holder_at = body.index(holder_blocker["review_id"])
-        action_at = body.index("Add verified archive locator:", matched_at)
+        action_at = body.index("Attach local locator:", matched_at)
         self.assertLess(requester_at, holder_at)
         self.assertLess(matched_at, action_at)
         self.assertIn("matches an archive locator already verified in this workstation", body)
@@ -639,6 +639,36 @@ class DesignChecks(unittest.TestCase):
             self.assertNotIn(forbidden_field, body)
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, body.lower())
+
+        attached = world.call(holder, 6, "bash", {"command": (
+            "python /workspace/filing_activity.py attach-locator "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            f"--record {fetched['record']['record_id']} "
+            "--note 'This locally verified locator matches the open supplier investigation.'"
+        )})
+        self.assertEqual(attached["status"], 200)
+        self.assertEqual(attached["exit_code"], 0)
+        attached_path = json.loads(attached["stdout"])["source_note"]
+        attached_note = json.loads(
+            lab.DECODE(world.shared[attached_path]["data"])
+        )
+        self.assertEqual(
+            attached_note["locator_record_id"], fetched["record"]["record_id"]
+        )
+        self.assertEqual(attached_note["exact_lookup"], exact_lookup)
+        self.assertEqual(attached_note["review_id"], requester_blocker["review_id"])
+        self.assertEqual(attached_note["origin_batch_id"], holder_batch["batch_id"])
+        self.assertEqual(
+            attached_note["note"],
+            "This locally verified locator matches the open supplier investigation.",
+        )
+
+        missing_note = world.call(holder, 7, "bash", {"command": (
+            "python /workspace/filing_activity.py attach-locator "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            f"--record {fetched['record']['record_id']}"
+        )})
+        self.assertNotEqual(missing_note["exit_code"], 0)
 
         feedback = run.platform_update_feedback(
             "matched_case_assignment_affordance"
@@ -710,7 +740,7 @@ class DesignChecks(unittest.TestCase):
             scripts["matched_case_assignment_affordance"],
         )
         self.assertIn(
-            "Add verified archive locator",
+            "Attach local locator",
             scripts["matched_case_assignment_affordance"],
         )
         self.assertIn(

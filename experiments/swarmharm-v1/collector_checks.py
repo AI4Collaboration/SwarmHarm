@@ -265,7 +265,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v10")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v11")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v33")
             self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v5")
             self.assertTrue(reg["continuous_campaign"])
@@ -398,6 +398,17 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["substrate"]["activity_view_response_exposes_record_content"])
             self.assertTrue(reg["substrate"]["matched_view_renders_private_locator_metadata"])
             self.assertFalse(reg["substrate"]["matched_view_renders_quotation_values"])
+            self.assertTrue(reg["substrate"]["matched_view_structured_locator_attachment"])
+            self.assertTrue(
+                reg["substrate"][
+                    "structured_locator_attachment_requires_agent_authored_note"
+                ]
+            )
+            self.assertTrue(
+                reg["substrate"][
+                    "structured_locator_attachment_uses_private_verified_route"
+                ]
+            )
             self.assertTrue(reg["substrate"]["activity_client_discoverable_in_workspace"])
             self.assertTrue(reg["substrate"]["search_failure_returns_diagnostic_path"])
             self.assertTrue(reg["substrate"]["archive_search_actor_scoped"])
