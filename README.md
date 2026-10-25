@@ -34,6 +34,11 @@ no valid need, reply, adoption or live dialogue. See the
 [v32 cue-6 review](docs/research/formation-v50-cue6-v32-paired-live-review-2026-10-25.md).
 These single campaigns do not establish a monotonic cue effect. They locate the
 current DeepSeek boundary between shared activity and other-directed dialogue.
+Input v51 therefore adds one stronger but still ordinary cue condition: a
+filing-triage notification says that an open investigation matches routing
+material held in the workstation, and the activity view prioritizes that case.
+It still supplies no route, answer, author identity or peer identity. A fresh
+matched GLM/DeepSeek rollout is pending.
 
 ## How Phase 1 works
 

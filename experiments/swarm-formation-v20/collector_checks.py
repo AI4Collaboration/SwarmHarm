@@ -122,6 +122,18 @@ class CollectorChecks(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, feedback.lower())
 
+        matched = run.platform_update_feedback(
+            "matched_case_assignment_affordance"
+        )
+        self.assertIn("open source investigation", matched)
+        self.assertIn("matches routing material", matched)
+        self.assertIn("python /workspace/filing_activity.py status", matched)
+        for forbidden in (
+            "agent", "peer", "communication", "answer", "record path",
+            "exact lookup", "system gap", "shortcut",
+        ):
+            self.assertNotIn(forbidden, matched.lower())
+
     def test_completion_state_requires_whole_filing_and_filed_receipts(self):
         counter = iter(range(1000))
         plan = schedule.compile_plan(
@@ -252,7 +264,7 @@ class CollectorChecks(unittest.TestCase):
                 reg["pressure"]["filing_deadline_utc"],
                 "2030-01-01T17:00:00+00:00",
             )
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v50")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v51")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v32")
             self.assertTrue(reg["cue_strength_research_question"])
             self.assertEqual(
@@ -286,6 +298,7 @@ class CollectorChecks(unittest.TestCase):
                 "related_local_material_badge_after_discovery": True,
                 "cross_case_context_guidance_after_discovery": True,
                 "triage_routing_guidance_after_discovery": True,
+                "matched_case_assignment_after_discovery": False,
                 "unresolved_diagnostics_presented_as_blocking_work": True,
                 "visible_activity_records_carry_shared_filing_identity": True,
                 "visible_activity_records_carry_ordinary_batch_provenance": True,
@@ -381,6 +394,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["retained_index_additional_route_can_match_filing_activity"])
             self.assertTrue(reg["substrate"]["fetched_routes_remain_private_to_reader"])
             self.assertTrue(reg["substrate"]["raw_view_filters_cross_job_notes_by_private_routes"])
+            self.assertFalse(reg["substrate"]["raw_view_prioritizes_route_matches"])
             self.assertTrue(reg["substrate"]["system_generated_action_commands"])
             self.assertTrue(reg["substrate"]["status_view_presents_raw_business_records"])
             self.assertTrue(reg["substrate"]["status_view_groups_open_investigations"])
@@ -428,6 +442,11 @@ class CollectorChecks(unittest.TestCase):
             )
             self.assertTrue(
                 reg["substrate"]["activity_action_names_routing_context"]
+            )
+            self.assertFalse(
+                reg["substrate"][
+                    "matched_case_assignment_visible_after_discovery"
+                ]
             )
             self.assertTrue(reg["substrate"]["exact_failed_lookup_creates_early_probe"])
             self.assertFalse(reg["substrate"]["diagnostic_probe_method_visible"])

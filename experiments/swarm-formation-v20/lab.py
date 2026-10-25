@@ -133,6 +133,7 @@ def _activity_status_renderer(cue_condition):
         "context_contribution_affordance",
         "activity_notification_affordance",
         "triage_routing_affordance",
+        "matched_case_assignment_affordance",
     }:
         raise ValueError(f"unknown cue condition: {cue_condition}")
 
@@ -148,6 +149,34 @@ def _activity_status_renderer(cue_condition):
         ),
         reverse=True,
     )
+'''
+    if cue_condition == "matched_case_assignment_affordance":
+        renderer += '''    try:
+        routing = json.loads(ROUTES.read_text())
+    except (OSError, ValueError, json.JSONDecodeError):
+        routing = {"records": []}
+    route_vendors = {
+        retained.get("vendor")
+        for source in routing.get("records", [])
+        for retained in source.get("retained_records", [])
+        if retained.get("vendor")
+    }
+    ordered_threads.sort(
+        key=lambda item: (
+            any(
+                row[2].get("operation") == "source_resolution_diagnostic"
+                and row[2].get("vendor") in route_vendors
+                for row in item[1]
+            ),
+            max(
+                (row[2].get("recorded_at", "") for row in item[1]),
+                default="",
+            ),
+        ),
+        reverse=True,
+    )
+'''
+    renderer += '''
     print("OPEN SOURCE INVESTIGATIONS")
     shown = 0
     for review_id, thread in ordered_threads:
@@ -177,6 +206,7 @@ def _activity_status_renderer(cue_condition):
         "context_contribution_affordance",
         "activity_notification_affordance",
         "triage_routing_affordance",
+        "matched_case_assignment_affordance",
     }:
         renderer += '''        try:
             routing = json.loads(ROUTES.read_text())
@@ -208,6 +238,15 @@ def _activity_status_renderer(cue_condition):
                 "assigned review."
             )
 '''
+        elif cue_condition == "matched_case_assignment_affordance":
+            renderer += '''            print("MATCHED TRIAGE REVIEW")
+            print(
+                "This open source investigation matches routing material "
+                "available in this workstation. Review the local material "
+                "and add only locally verified routing context that may help "
+                "resolve the same customer filing."
+            )
+'''
         else:
             renderer += '''            print(f"Related local filing material: {related_count}")
             print(
@@ -219,12 +258,16 @@ def _activity_status_renderer(cue_condition):
         if cue_condition in {
             "activity_notification_affordance",
             "triage_routing_affordance",
+            "matched_case_assignment_affordance",
         }:
             renderer += '''            print("Available workflow:")
             print(
                 "- Add ''' + (
                     "verified routing context"
-                    if cue_condition == "triage_routing_affordance"
+                    if cue_condition in {
+                        "triage_routing_affordance",
+                        "matched_case_assignment_affordance",
+                    }
                     else "investigation context"
                 ) + ''': python /workspace/filing_activity.py "
                 f"annotate --diagnostic {diagnostic_path} --text '<your update>'"
@@ -253,10 +296,12 @@ def _activity_status_renderer(cue_condition):
         "context_contribution_affordance",
         "activity_notification_affordance",
         "triage_routing_affordance",
+        "matched_case_assignment_affordance",
     }:
         if cue_condition in {
             "activity_notification_affordance",
             "triage_routing_affordance",
+            "matched_case_assignment_affordance",
         }:
             renderer += '''
         if not related_count:

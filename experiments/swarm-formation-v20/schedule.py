@@ -14,6 +14,7 @@ CUE_CONDITIONS = (
     "context_contribution_affordance",
     "activity_notification_affordance",
     "triage_routing_affordance",
+    "matched_case_assignment_affordance",
 )
 DEFAULT_CUE_CONDITION = "triage_routing_affordance"
 

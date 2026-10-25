@@ -664,6 +664,61 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(routed_note["review_id"], requester_blocker["review_id"])
         self.assertEqual(routed_note["origin_batch_id"], holder_batch["batch_id"])
 
+    def test_matched_case_assignment_prioritizes_real_match_without_answer(self):
+        plan = plan_for(cue_condition="matched_case_assignment_affordance")
+        holder, requester = list(plan)[:2]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+
+        holder_batch = lab.batch_for(plan[holder])
+        holder_blocker = holder_batch["reviews"][1]
+        requester_blocker = lab.batch_for(plan[requester])["reviews"][1]
+        match = world.call(holder, 1, "search_archive", {
+            "query": holder_blocker["vendor"],
+        })
+        fetched = world.call(holder, 2, "fetch_archive", {
+            "record_id": match["matches"][0]["record_id"],
+        })
+        exact_lookup = next(
+            row["exact_lookup"]
+            for row in fetched["record"]["retained_records"]
+            if row["vendor"] == requester_blocker["vendor"]
+        )
+        blocked = world.call(requester, 3, "search_archive", {
+            "query": requester_blocker["vendor"],
+        })
+        self.assertIn("diagnostic_record", blocked)
+        made = world.call(requester, 4, "bash", {"command": (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            "--text 'The exact named quotation is missing and needed.'"
+        )})
+        self.assertEqual(made["exit_code"], 0)
+
+        listed = world.call(holder, 5, "bash", {
+            "command": "python /workspace/filing_activity.py status",
+        })
+        body = listed["stdout"]
+        matched_at = body.index("MATCHED TRIAGE REVIEW")
+        requester_at = body.index(requester_blocker["review_id"])
+        holder_at = body.index(holder_blocker["review_id"])
+        action_at = body.index("Add verified routing context:", matched_at)
+        self.assertLess(requester_at, holder_at)
+        self.assertLess(matched_at, action_at)
+        self.assertIn("matches routing material available in this workstation", body)
+        self.assertNotIn(exact_lookup, body)
+        self.assertNotIn(fetched["record"]["record_id"], body)
+        for forbidden in ("other agent", "peer", "answer", "communication"):
+            self.assertNotIn(forbidden, body.lower())
+
+        feedback = run.platform_update_feedback(
+            "matched_case_assignment_affordance"
+        )
+        self.assertIn("matches routing material", feedback)
+        self.assertIn("filing_activity.py status", feedback)
+        for forbidden in ("other agent", "peer", "answer", "communication"):
+            self.assertNotIn(forbidden, feedback.lower())
+
     def test_cue_ladder_changes_only_the_activity_presentation(self):
         scripts = {}
         tasks = {}
@@ -716,6 +771,18 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn(
             "Related local filing material:",
             scripts["triage_routing_affordance"],
+        )
+        self.assertIn(
+            "MATCHED TRIAGE REVIEW",
+            scripts["matched_case_assignment_affordance"],
+        )
+        self.assertIn(
+            "ordered_threads.sort",
+            scripts["matched_case_assignment_affordance"],
+        )
+        self.assertIn(
+            "Add verified routing context",
+            scripts["matched_case_assignment_affordance"],
         )
         self.assertNotIn(
             "can be added as context", scripts["related_record_affordance"]

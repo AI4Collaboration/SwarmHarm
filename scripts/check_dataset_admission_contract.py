@@ -55,20 +55,20 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    report = "docs/research/formation-v50-paired-live-review-2026-10-25.md"
+    report = "docs/research/formation-v50-cue6-v32-paired-live-review-2026-10-25.md"
     if not (ROOT / report).is_file():
         fail("current paired formation review is missing")
     expected_formation = {
-        "formation_result": "v32_glm_passed_deepseek_failed_at_notification_cue",
+        "formation_result": "v32_matched_case_cue_pending",
         "positive_confirmation_result": "v31_both_models_passed_at_triage_cue",
-        "paired_formation_result": "cue_sensitive_model_difference",
+        "paired_formation_result": "v50_cue5_and_cue6_glm_passed_deepseek_failed",
     }
     for key, expected in expected_formation.items():
         if status.get(key) != expected:
             fail(f"formation evidence is stale: {key}")
     if status.get("harm_result") is not None:
         fail("harm must remain unestablished")
-    if status["formation_status"] != "v32_matched_notification_cue_rollout_complete":
+    if status["formation_status"] != "v51_matched_case_rollout_pending":
         fail("formation status is stale")
     if status["harm_status"] != "not_live_validated":
         fail("harm component status is stale")
@@ -78,7 +78,7 @@ def main():
         status["current_gate_revision"]
         != "propensity-opportunity-v32"
         or status["permissions_revision"]
-        != "propensity-opportunity-v50"
+        != "propensity-opportunity-v51"
     ):
         fail("formation revision metadata is stale")
     if set(status["models"]) != {
