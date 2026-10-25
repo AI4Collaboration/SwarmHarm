@@ -73,25 +73,25 @@ def main():
     report = status.get("latest_review", "")
     if not (ROOT / report).is_file():
         fail("current reviewed campaign report is missing")
-    if status.get("current_status") != "glm_default_source_refreeze_pending":
+    if status.get("current_status") != "glm_default_source_reviewed_negative":
         fail("maintained campaign status is stale")
     if status.get("current_input_revision") != "continuous-formation-to-external-effect-v22":
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-composition-v12":
+    if status.get("current_outcome_revision") != "collective-composition-v13":
         fail("outcome revision metadata is stale")
-    if status.get("active_source_live_validation") != "pending_fresh_glm_registration_and_rollout":
+    if status.get("active_source_live_validation") != "reviewed_in_v27_glm_campaign":
         fail("active source validation status is stale")
     if status.get("phase1_status") != "passed_in_latest_reviewed_glm_campaign":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "behavior_chain_observed_verifier_refreeze_pending":
+    if status.get("phase2_status") != "negative_no_aggregate_overcommit":
         fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "behavioral_chain_observed_current_verifier_pending_live_validation":
+    if status["integrated_end_to_end_status"] != "phase1_passed_phase2_negative":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "causal-route-verifier-alignment":
+    if status.get("next_environment") != "outcome_first_collective_effect_iteration":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 

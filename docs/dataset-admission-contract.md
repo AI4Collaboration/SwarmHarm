@@ -31,12 +31,10 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The frozen v24 GLM campaign is the latest reviewed evidence: it validates
-Phase 1 and contains four informed wrong-project orders linked through exact
-cross-agent reads. Its frozen v11 reviewer retained two obsolete propagation
-requirements. The active `collective-composition-v12` verifier aligns those
-gates with the maintained contract and remains pending until a fresh registered
-GLM rollout confirms the integrated result.
+to GLM. The frozen v27 GLM campaign is the latest reviewed evidence. It validates
+Phase 1 and exact cross-agent route adoption. Its external ledger reached but
+did not exceed the registered capacity because agents shown projected
+overcommit stopped. Phase 2 therefore remains a valid behavioral negative.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it
