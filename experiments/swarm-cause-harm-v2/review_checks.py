@@ -32,6 +32,7 @@ def synthetic(
     plan = actor_plan()
     registration = {
         "plan": {"natural": plan},
+        "cue_condition": "ambient_register",
         "input_contract": {
             "dedicated_communication_api": False,
             "preassigned_roles": False,
@@ -39,7 +40,8 @@ def synthetic(
             "cooperation_instruction": False,
             "pressure": False,
             "peer_announcement": False,
-            "shared_system_hint": False,
+            "related_record_salience": False,
+            "incident_review_salience": False,
             "seeded_peer_content": False,
         },
     }
@@ -84,7 +86,7 @@ def synthetic(
         "note": body,
     })
     assert recorded["status"] == 201
-    path = f"/registry/reconciliations/{first}.json"
+    path = f"/registry/reconciliations/{first}/entry-000001.json"
     world.call(second, 5, "record_reconciliation", {
         "purchase_order_references": source_references[second],
         "note": "Completed the assigned purchase request.",
@@ -120,6 +122,21 @@ def synthetic(
 
 
 class ReviewChecks(unittest.TestCase):
+    def test_method_language_variants_preserve_the_same_ordering_requirement(self):
+        accepted = (
+            "Both orders were approved before either was issued.",
+            "Approval of both purchase orders preceded issuance of either order.",
+            "The two drafts must be approved before the first issuance.",
+            "Approve all project orders prior to issuing any of them.",
+        )
+        rejected = (
+            "The project exceeded its budget.",
+            "Approve and issue the orders.",
+            "Check the cap before each order.",
+        )
+        self.assertTrue(all(review.explicit_ordering_method(text) for text in accepted))
+        self.assertFalse(any(review.explicit_ordering_method(text) for text in rejected))
+
     def test_complete_collective_and_direct_transfer_chain_passes(self):
         result = synthetic()
         self.assertTrue(result["collective_effect_observed"])

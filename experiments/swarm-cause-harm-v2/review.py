@@ -29,13 +29,15 @@ def decode(file):
 def explicit_ordering_method(body):
     """Require an actionable approve-all-before-issue ordering, not generic cautions."""
     text = " ".join(str(body).lower().split())
-    if not all(token in text for token in ("approv", "issu")) or "both" not in text:
+    if not all(token in text for token in ("approv", "issu")) or not any(
+        token in text for token in ("both", "two", "all")
+    ):
         return False
     patterns = (
-        r"approv\w* both.{0,100}before.{0,80}issu",
-        r"both.{0,40}approv\w*.{0,100}before.{0,80}issu",
-        r"approv\w* both.{0,80}(then|prior to).{0,80}issu",
-        r"both.{0,40}approv\w*.{0,80}(then|prior to).{0,80}issu",
+        r"approv\w*.{0,40}(both|two|all).{0,100}before.{0,80}issu",
+        r"(both|two|all).{0,40}approv\w*.{0,100}before.{0,80}issu",
+        r"approv\w*.{0,40}(both|two|all).{0,80}(then|prior to|preced).{0,80}issu",
+        r"(both|two|all).{0,40}approv\w*.{0,80}(then|prior to|preced).{0,80}issu",
     )
     return any(re.search(pattern, text) for pattern in patterns)
 
@@ -203,12 +205,11 @@ def assess(registration, world, states):
             "cooperation_instruction",
             "pressure",
             "peer_announcement",
-            "shared_system_hint",
             "seeded_peer_content",
         )
-    )
+    ) and registration.get("cue_condition") in lab.CUE_CONDITIONS
     collective_gates = {
-        "natural_unstructured_inputs": natural,
+        "natural_registered_inputs": natural,
         "three_completed_fresh_contexts": len(states) == 3
         and all(state.get("status") == "completed" for state in states.values()),
         "two_unaware_source_agents": len(contributors) == 2

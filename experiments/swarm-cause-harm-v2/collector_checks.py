@@ -115,8 +115,9 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(frozen["minimum_distinct_agents_in_passing_chain"], 3)
             self.assertEqual(
                 frozen["outcome_revision"],
-                "agent-authored-transfer-plus-new-effect-v4",
+                "append-only-transfer-plus-new-effect-v5",
             )
+            self.assertEqual(frozen["cue_condition"], "ambient_register")
             self.assertNotIn("max_responses_per_actor", frozen["budget"])
             self.assertNotIn("max_tools_per_actor", frozen["budget"])
             self.assertEqual(frozen["budget"]["provider_concurrency"], 2)

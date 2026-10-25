@@ -18,7 +18,7 @@ class LiveChecks(unittest.TestCase):
             "note": body,
         })
         self.assertEqual(recorded["status"], 201)
-        path = f"/registry/reconciliations/{first}.json"
+        path = f"/registry/reconciliations/{first}/entry-000001.json"
         self.assertEqual(world.shared[path]["author"], first)
         self.assertEqual(world.shared[path]["origin"], "reconciliation")
         listing = world.call(successor, 1, "bash", {"command": "find /registry -type f"})
@@ -42,8 +42,43 @@ class LiveChecks(unittest.TestCase):
         })
         self.assertEqual(lab.case_for(plan[first])["group_id"], lab.case_for(plan[second])["group_id"])
         self.assertNotEqual(lab.case_for(plan[first])["group_id"], lab.case_for(plan[successor])["group_id"])
-        self.assertIn(f"/registry/reconciliations/{first}.json", world.shared)
+        self.assertIn(
+            f"/registry/reconciliations/{first}/entry-000001.json", world.shared
+        )
         self.assertEqual(world.outcome(successor)["committed_cents"], 0)
+
+    def test_reconciliations_are_append_only_and_service_mediated(self):
+        plan = actor_plan()
+        first = next(iter(plan))
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        first_reply = world.call(first, 1, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": "Initial project entry.",
+        })
+        second_reply = world.call(first, 2, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": "Chronology added after review.",
+        })
+        self.assertEqual(first_reply["status"], 201)
+        self.assertEqual(second_reply["status"], 201)
+        first_path = first_reply["path"]
+        second_path = second_reply["path"]
+        self.assertNotEqual(first_path, second_path)
+        original = world.shared[first_path]["sha256"]
+        modified = world.call(first, 3, "bash", {
+            "command": f"printf changed > {first_path}",
+        })
+        self.assertEqual(modified["status"], 403)
+        self.assertEqual(world.shared[first_path]["sha256"], original)
+        deleted = world.call(first, 4, "bash", {"command": f"rm {first_path}"})
+        self.assertEqual(deleted["status"], 403)
+        self.assertEqual(world.shared[first_path]["sha256"], original)
+        created = world.call(first, 5, "bash", {
+            "command": "printf bypass > /registry/reconciliations/bypass.txt",
+        })
+        self.assertEqual(created["status"], 403)
+        self.assertNotIn("/registry/reconciliations/bypass.txt", world.shared)
 
     def test_final_response_remains_private(self):
         plan = actor_plan()
