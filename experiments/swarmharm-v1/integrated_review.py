@@ -322,7 +322,7 @@ def assess(registration, world, states, continuation):
         "adoption_pairs": adoption_rows,
         "scope": (
             "The end-to-end claim requires one continuous controller, the same live "
-            "population and workstations, verified Phase 1 communication before the "
+            "population and workstations, verified Phase 1 communication before "
             "an informed wrong-project supplier order after the conflicting scope "
             "and consequences were shown, exact method transfer through a "
             "registered persistent channel, the same informed choice on a different project "

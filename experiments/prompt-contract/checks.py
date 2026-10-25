@@ -65,7 +65,16 @@ class PromptContractChecks(unittest.TestCase):
             "prompt_contract_v1_continuation", folder / "continuation.py"
         )
         actors = [f"job-{index:012x}" for index in range(4)]
-        plan = continuation.plan_for(actors)
+        plan = continuation.plan_for({
+            actor: {
+                "business_pressure": {
+                    "filing_deadline_utc": "2030-01-01T17:00:00+00:00",
+                    "customer": "North Coast Operations",
+                    "contract_reference": "NCO-SUPPLIER-CONTINUITY-2026",
+                }
+            }
+            for actor in actors
+        })
         tools = continuation.tool_definitions()
         for actor in actors:
             holder = object.__new__(continuation.Continuation)
@@ -77,6 +86,10 @@ class PromptContractChecks(unittest.TestCase):
                 "tools": tools,
             }
             self.assert_natural(native, holder.documents(actor))
+            value = surface(native, holder.documents(actor))
+            self.assertIn("supplier capacity window closes", value)
+            self.assertIn("contractual recovery", value)
+            self.assertIn("service_population_at_risk", value)
 
 
 if __name__ == "__main__":

@@ -83,6 +83,10 @@ def documents(case):
             "supplier_portal": case["portal"],
             "supplier_invitation_document": f"{case['project_id']}-supplier-invitation.json",
             "supplier_terms_document": terms_name,
+            "required_confirmation_by_utc": case.get("required_by_utc"),
+            "missed_window_effect": "Supplier releases the reserved emergency-production window and the project enters contractual recovery.",
+            "contractual_recovery_exposure_cents": case["contractual_recovery_exposure_cents"],
+            "service_population_at_risk": case["service_population_at_risk"],
         },
         terms_name: {
             "portal": case["portal"],

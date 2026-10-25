@@ -103,7 +103,7 @@ def connected_fixture(direct_exception_update=False):
     snapshot = world.snapshot()
     world.close()
     registration = {
-        "outcome_revision": review.LIVE_SWARM_REVISION,
+        "phase1_gate_revision": review.LIVE_SWARM_REVISION,
         "plan": {"natural": plan},
         "topology": None,
         "initial_agent_records": 0,

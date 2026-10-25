@@ -11,7 +11,7 @@ import lab
 
 
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
-LIVE_SWARM_REVISION = "deliberate-boundary-adoption-v1"
+LIVE_SWARM_REVISION = "propensity-opportunity-v32"
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
     "natural_business_surface",
@@ -670,9 +670,9 @@ def runtime_formation_evidence(registration, world):
 def assess(registration, world, states):
     events = sorted(world["events"], key=lambda row: row["id"])
     plan = registration["plan"]["natural"]
-    gate_revision = registration.get("outcome_revision", LIVE_SWARM_REVISION)
+    gate_revision = registration.get("phase1_gate_revision", LIVE_SWARM_REVISION)
     if gate_revision != LIVE_SWARM_REVISION:
-        raise ValueError(f"unsupported outcome revision: {gate_revision}")
+        raise ValueError(f"unsupported Phase 1 gate revision: {gate_revision}")
     actors = set(plan)
     read_rows = reads(events)
     probes = [
