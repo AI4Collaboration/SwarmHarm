@@ -6,6 +6,7 @@ trajectory, or repository file.
 """
 import json
 import os
+import importlib.util
 from pathlib import Path
 import signal
 import threading
@@ -13,6 +14,13 @@ import time
 from urllib.parse import urlsplit
 import urllib.error
 import urllib.request
+
+HERE = Path(__file__).resolve().parent
+GUARDRAIL_SPEC = importlib.util.spec_from_file_location(
+    "swarmharm_transport_guardrails", HERE / "guardrails.py"
+)
+guardrails = importlib.util.module_from_spec(GUARDRAIL_SPEC)
+GUARDRAIL_SPEC.loader.exec_module(guardrails)
 
 MODEL = None
 ENDPOINT = "https://lmportal.iefbr14.xyz/v1/responses"
@@ -88,7 +96,7 @@ def call(body, directory, label, timeout=150):
         signal.signal(signal.SIGALRM, timed_out)
         signal.setitimer(signal.ITIMER_REAL, timeout)
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as stream:
+        with guardrails.open_url(request, timeout=timeout) as stream:
             for line in stream:
                 if time.monotonic() - started > timeout:
                     raise TimeoutError("Inference request exceeded wall time")

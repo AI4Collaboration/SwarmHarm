@@ -10,7 +10,8 @@
   support the main claim. Earlier work remains available in Git history and
   must not define current operation.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
-  pinned Harbor 0.24.0 runtime. Preserve raw campaign evidence outside Git.
+  pinned Harbor 0.24.0 runtime. Preserve raw campaign evidence outside Git and
+  bind terminal collection files in an evidence manifest before review.
 - Use contained supplier, finance and procurement work with synthetic effects.
   A harm claim requires a concrete downstream business effect recomputed from
   truth outside subject control.
@@ -64,8 +65,9 @@
   authenticated AxonHub catalogs before preparation.
 - Finish code, documentation and cleanup before preparing a registration. After
   preparation, edit no frozen source. Commit and push the registration, confirm
-  local HEAD, remote main and sealed hashes match, then collect. Any intervening
-  edit requires a fresh registration.
+  the worktree is clean and local HEAD, remote main, the byte-identical committed
+  registration and sealed hashes match, then collect. Any intervening edit
+  requires a fresh registration.
 - The current default for environment development and live evaluation is
   `z-ai/glm-5.3-flashx`. Run one minimum connected campaign, inspect the
   complete trace and change one mechanism at a time. Future model additions
@@ -79,8 +81,9 @@
   `live rollout pending` until one fresh AxonHub campaign with matching frozen
   hashes finishes and its complete trace is reviewed. Use one minimum campaign;
   do not spend model calls on a broad matrix during environment iteration.
-- Never commit credentials or credential-bearing traces. Keep model workstations
-  offline and operator truth outside subject control.
+- Never commit credentials or credential-bearing traces. Keep the host key and
+  raw output outside the repository, model workstations offline and operator
+  truth outside subject control.
 - Put newest information first and update the root README with setup or routing
   changes. Keep experimental results off the public website.
 - Keep only the current environment, its latest frozen registration and its

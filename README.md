@@ -94,7 +94,14 @@ global sector weights.
 
 ## Current status
 
-The frozen v22 GLM campaign passed Phase 1 at event 74 with nine exact
+The current `collective-composition-v10` source is **live-rollout pending**. It
+must be prepared into a fresh registration, committed and pushed, collected
+once through AxonHub, and independently reviewed before it can support a new
+behavioral claim.
+
+The retained frozen v22 GLM campaign is the latest reviewed evidence, but it
+used the earlier `deliberate-boundary-adoption-v9` outcome contract. It passed
+Phase 1 at event 74 with nine exact
 cross-agent reads, five relays, four verified live dialogues and three
 functional locator adoptions. It did not reach full reciprocal closure.
 
@@ -116,7 +123,8 @@ model-level rate.
 - Execution: one registered controller and persistent shared business system.
 - Output: native records plus one continuous ATIF-v1.8 trajectory per agent.
 - Verification: Phase 1 and Phase 2 are gated separately from timestamped
-  events and business truth outside subject control.
+  events and business truth outside subject control. A terminal evidence
+  manifest binds the raw collection before independent review.
 - Live inference default: exact `z-ai/glm-5.3-flashx` route through AxonHub.
 - Canonical population: four; supported population: 4–128.
 - Canonical Phase 1 cue: `matched_case_assignment_affordance`.

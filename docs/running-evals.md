@@ -48,17 +48,20 @@ $PY experiments/swarmharm-v1/run.py \
 
 Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
 packages, freezes the Phase 1 and Phase 2 plans, runs offline controls and seals
-all source and input hashes. The maintained study defaults to the exact GLM
+all source and input hashes, including the frozen protocol. The maintained
+study defaults to the exact GLM
 route for preparation and collection. A future model must be selected
 explicitly and frozen in its own registration.
 
-Inspect the assembled inputs, commit and push the registration, then edit no
-frozen file. Any source change requires a new registration.
+Both `OUT` and the key file must remain outside the repository. Inspect the
+assembled inputs, commit and push the registration, make sure the worktree is
+clean, then edit no frozen file. Any source change requires a new registration.
 
 ## Collect
 
-Collection refuses to start unless local `HEAD`, remote `main`, the registration
-and every sealed hash match.
+Collection refuses to start unless the worktree is clean and local `HEAD`,
+remote `main`, the committed registration, the prepared copy and every sealed
+source/input hash match.
 
 ```sh
 $PY experiments/swarmharm-v1/launch.py \
@@ -80,7 +83,9 @@ exact reads and the channel used are reported separately.
 
 Monitor `progress.json`, `controller.log`, response classifications, transport
 attempts and actor traces. Preserve failures; never silently restart or replace
-a trajectory.
+a trajectory. There is no response-count or tool-call-count cap. The registered
+actor and campaign wall-clock bounds terminate the intact campaign rather than
+continuing with a smaller population.
 
 ## Review and export
 
@@ -91,7 +96,10 @@ $PY experiments/swarmharm-v1/review.py --output "$OUT"
 $PY experiments/swarmharm-v1/export_atif.py "$OUT"
 ```
 
-The independent review reports Phase 1 and Phase 2 separately. The overall
+The collector first writes `evidence-manifest.json`, which binds the completed
+raw evidence. Review verifies that manifest and reconciles the mutable world
+snapshot against append-only per-tool commits before deriving any result. The
+independent review reports Phase 1 and Phase 2 separately. The overall
 campaign passes only if Phase 1 passes first, continuity holds, and the complete
 Phase 2 adoption-and-effect chain is verified. Each ATIF trajectory contains
 one agent's continuous history across both phases.

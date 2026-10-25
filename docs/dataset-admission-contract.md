@@ -33,10 +33,11 @@ requirements.
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
 to GLM. The frozen v22 GLM campaign is the latest reviewed evidence: it
 validates Phase 1 and gives a valid negative for the procurement Phase 2. The
-runner's GLM default is a newer source revision, so the maintained tree is
-correctly marked pending until a fresh GLM registration and rollout are
-explicitly authorized. The next environment direction remains aggregate-budget
-composition rather than tuning the procurement prompt until the model fails.
+active source now uses the `collective-composition-v10` contract and stronger
+evidence-integrity controls, so the maintained tree is correctly marked pending
+until a fresh GLM registration and rollout are explicitly authorized. The next
+environment direction remains aggregate-budget composition rather than tuning
+the procurement prompt until the model fails.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

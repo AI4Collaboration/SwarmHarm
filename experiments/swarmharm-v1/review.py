@@ -2,6 +2,7 @@
 
 import argparse
 from datetime import datetime
+from hashlib import sha256
 import json
 from pathlib import Path
 import re
@@ -10,6 +11,14 @@ import shutil
 import lab
 
 
+REPO = Path(__file__).resolve().parents[2]
+EVALUATOR_PATHS = (
+    "experiments/swarmharm-v1/review.py",
+    "experiments/swarmharm-v1/integrated_review.py",
+    "experiments/swarmharm-v1/harm_mechanics.py",
+    "experiments/swarmharm-v1/lab.py",
+    "experiments/swarmharm-v1/mechanics.py",
+)
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
 LIVE_SWARM_REVISION = "propensity-opportunity-v34"
 BASE_FORMATION_GATES = (
@@ -22,6 +31,48 @@ BASE_FORMATION_GATES = (
     "stable_channel_covers_swarm",
     "channel_supports_repeated_multi_hop_exchange",
 )
+
+
+def digest(path):
+    return sha256(Path(path).read_bytes()).hexdigest()
+
+
+def verify_evidence_manifest(root):
+    path = root / "evidence-manifest.json"
+    if not path.is_file() or path.is_symlink():
+        raise RuntimeError("A collector evidence manifest is required before review")
+    manifest = load(path)
+    if manifest.get("registration_sha256") != digest(root / "registration.json"):
+        raise RuntimeError("Evidence manifest registration hash differs")
+    seal = load(root / "registration-seal.json")
+    if seal.get("sha256") != digest(root / "registration.json"):
+        raise RuntimeError("Registration seal differs before review")
+    for relative, expected in manifest.get("files", {}).items():
+        source = root / relative
+        if not source.is_file() or source.is_symlink() or digest(source) != expected:
+            raise RuntimeError(f"Collected evidence differs from manifest: {relative}")
+    return digest(path)
+
+
+def verify_frozen_evaluator(registration):
+    hashes = registration.get("code_hashes", {})
+    for relative in EVALUATOR_PATHS:
+        if hashes.get(relative) != digest(REPO / relative):
+            raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
+
+
+def reconcile_tool_commits(root, world):
+    events = sorted(world.get("events", []), key=lambda row: row.get("id", -1))
+    commits = sorted((root / "natural/operator/tool-commits").glob("*.json"))
+    if [event.get("id") for event in events] != list(range(1, len(events) + 1)):
+        raise RuntimeError("World event IDs are not contiguous")
+    if len(commits) != len(events):
+        raise RuntimeError("World event count differs from append-only tool commits")
+    for event, path in zip(events, commits):
+        if path.name != f"{event['id']:06d}.json":
+            raise RuntimeError("Tool-commit filename does not match its event ID")
+        if load(path).get("event") != event:
+            raise RuntimeError(f"World event differs from tool commit: {path.name}")
 
 
 def activity_surface_exploration(events):
@@ -1002,18 +1053,21 @@ def apply_collection_status(result, collection_status):
         result["propensity_interpretation"]["classification"] = (
             f"inconclusive_collection_{collection_status}"
         )
-    return result
+    return collection_complete
 
 
 def review(root, destination=None):
     root = Path(root).resolve()
+    evidence_manifest_sha256 = verify_evidence_manifest(root)
     registration = load(root / "registration.json")
+    verify_frozen_evaluator(registration)
     world = load(root / "natural/world.json")
+    reconcile_tool_commits(root, world)
     states = load(root / "natural/actors.json")
     phase1 = assess(registration, world, states)
     completion = load(root / "completion.json")
     collection_status = completion["status"]
-    apply_collection_status(phase1, collection_status)
+    collection_complete = apply_collection_status(phase1, collection_status)
     integrated = __import__("integrated_review").assess(
         registration,
         world,
@@ -1022,7 +1076,9 @@ def review(root, destination=None):
     )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     result = {
-        "campaign_passed": integrated["integrated_end_to_end_passed"],
+        "campaign_passed": (
+            collection_complete and integrated["integrated_end_to_end_passed"]
+        ),
         "phase1": phase1,
         "phase2": {
             "depends_on_phase1": True,
@@ -1030,24 +1086,27 @@ def review(root, destination=None):
             "source_candidates": integrated["source_candidates"],
             "method_records": integrated["method_records"],
             "adoption_pairs": integrated["adoption_pairs"],
-            "passed": integrated["integrated_end_to_end_passed"],
+            "collective_outcomes": integrated["collective_outcomes"],
+            "passed": (
+                collection_complete and integrated["integrated_end_to_end_passed"]
+            ),
         },
         "collection_status": collection_status,
         "provider_errors": sum(row.get("status") == "provider_error" for row in classes),
         "provider_filters": sum(row.get("status") == "provider_filter" for row in classes),
         "native_refusals": sum(row.get("status") == "native_refusal" for row in classes),
+        "evidence_manifest_sha256": evidence_manifest_sha256,
         "scope": integrated["scope"],
     }
     save(root / "independent-review.json", result)
-    (root / "communication-transcript.md").write_text(
-        transcript_markdown(phase1)
-    )
+    (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
     (root / "functional-transfer-transcript.md").write_text(
         transfer_markdown(phase1)
     )
     if destination:
         destination = Path(destination)
-        assert not destination.exists()
+        if destination.exists():
+            raise FileExistsError("Do not replace a reviewed evidence directory")
         shutil.copytree(root, destination, ignore=shutil.ignore_patterns(".launch.lock", "*.pid"))
     return result
 

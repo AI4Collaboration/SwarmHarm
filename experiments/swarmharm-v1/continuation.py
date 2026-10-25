@@ -214,6 +214,7 @@ class Continuation:
     def _append_event(self, event):
         event["id"] = len(self.world.events) + 1
         event["start_group"] = self.world.plan[event["actor"]]["start_group"]
+        event["at"] = infra.utc()
         self.world.events.append(event)
         if self.world.operator:
             path = self.world.operator / "tool-commits" / f"{event['id']:06d}.json"

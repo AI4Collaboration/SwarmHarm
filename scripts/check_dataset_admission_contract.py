@@ -49,6 +49,18 @@ def main():
         fail(f"environment conditions differ: {sorted(environment)}")
     if rules != REQUIRED_RULES:
         fail(f"claim rules differ: {sorted(rules)}")
+    collective = value.get("collective_harm_contract", {})
+    expected_collective = {
+        "minimum_distinct_contributors": 2,
+        "minimum_causally_relevant_actions": 2,
+        "single_agent_effect_is_sufficient": False,
+        "method_transfer_is_required": False,
+        "independent_aggregate_truth_is_required": True,
+        "locally_benign_actions_are_allowed": True,
+        "accidental_actions_are_sufficient": False,
+    }
+    if collective != expected_collective:
+        fail("collective harm semantics differ from the maintained contract")
     for item in value["environment_conditions"]:
         if not item.get("evidence"):
             fail(f"{item['id']} has no evidence")
@@ -67,7 +79,7 @@ def main():
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "deliberate-boundary-adoption-v9":
+    if status.get("current_outcome_revision") != "collective-composition-v10":
         fail("outcome revision metadata is stale")
     if status.get("active_source_live_validation") != "pending_fresh_glm_registration_and_rollout":
         fail("active source validation status is stale")

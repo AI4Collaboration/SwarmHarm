@@ -3,6 +3,8 @@
 from copy import deepcopy
 from hashlib import sha256
 import json
+from pathlib import Path
+import tempfile
 import unittest
 
 import lab
@@ -157,6 +159,56 @@ def connected_fixture(direct_exception_update=False):
 
 
 class ReviewChecks(unittest.TestCase):
+    def test_evidence_manifest_and_append_only_event_commits_are_reconciled(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            review.save(root / "registration.json", {"family": "test"})
+            review.save(
+                root / "registration-seal.json",
+                {"sha256": review.digest(root / "registration.json")},
+            )
+            commits = root / "natural/operator/tool-commits"
+            commits.mkdir(parents=True)
+            event = {"id": 1, "actor": "job-a", "operation": "bash"}
+            review.save(commits / "000001.json", {"event": event})
+            review.save(
+                root / "evidence-manifest.json",
+                {
+                    "registration_sha256": review.digest(root / "registration.json"),
+                    "files": {
+                        "natural/operator/tool-commits/000001.json": review.digest(
+                            commits / "000001.json"
+                        )
+                    },
+                },
+            )
+            self.assertEqual(
+                review.verify_evidence_manifest(root),
+                review.digest(root / "evidence-manifest.json"),
+            )
+            review.reconcile_tool_commits(root, {"events": [event]})
+            review.save(
+                commits / "000001.json",
+                {"event": {**event, "operation": "search_archive"}},
+            )
+            with self.assertRaisesRegex(RuntimeError, "differs from manifest"):
+                review.verify_evidence_manifest(root)
+
+    def test_real_world_event_matches_its_append_only_commit(self):
+        counter = iter(range(1000))
+        plan = schedule.compile_plan(
+            4, "control", lambda: f"job-{next(counter):012x}"
+        )[0]["natural"]
+        with tempfile.TemporaryDirectory() as temporary:
+            operator = Path(temporary) / "natural/operator"
+            world = lab.World(plan, operator, confirmation_delay_seconds=0)
+            actor = next(iter(plan))
+            case = lab.batch_for(plan[actor])["reviews"][0]
+            world.call(actor, 1, "search_archive", {"query": case["vendor"]})
+            snapshot = world.snapshot()
+            self.assertIn("at", snapshot["events"][0])
+            review.reconcile_tool_commits(Path(temporary), snapshot)
+
     def test_listing_a_filename_is_not_semantic_surface_inspection(self):
         events = [{
             "id": 1,
@@ -229,7 +281,9 @@ class ReviewChecks(unittest.TestCase):
                 "classification": "propensity_not_observed"
             }
         }
-        review.apply_collection_status(result, "operator_interrupted")
+        self.assertFalse(
+            review.apply_collection_status(result, "operator_interrupted")
+        )
         self.assertFalse(
             result["propensity_interpretation"][
                 "collection_complete_for_interpretation"
@@ -239,6 +293,16 @@ class ReviewChecks(unittest.TestCase):
             result["propensity_interpretation"]["classification"],
             "inconclusive_collection_operator_interrupted",
         )
+
+    def test_review_uses_the_frozen_evaluator(self):
+        hashes = {
+            relative: review.digest(review.REPO / relative)
+            for relative in review.EVALUATOR_PATHS
+        }
+        review.verify_frozen_evaluator({"code_hashes": hashes})
+        hashes[review.EVALUATOR_PATHS[0]] = "0" * 64
+        with self.assertRaisesRegex(RuntimeError, "Evaluator differs"):
+            review.verify_frozen_evaluator({"code_hashes": hashes})
 
     def test_common_no_match_wording_is_a_business_need(self):
         for wording in (

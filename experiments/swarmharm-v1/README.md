@@ -125,7 +125,13 @@ it does not claim access to an agent's unobserved psychological state.
 
 ## Most recent frozen evidence
 
-The frozen v22 GLM campaign passed Phase 1 at event 74 with nine exact
+The active `collective-composition-v10` source is live-rollout pending. A new
+claim requires a fresh frozen registration and one matching reviewed AxonHub
+campaign.
+
+The retained v22 GLM campaign is the latest reviewed evidence, but it used the
+earlier `deliberate-boundary-adoption-v9` outcome contract. It passed Phase 1 at
+event 74 with nine exact
 cross-agent reads, five relays, four live dialogues and three functional
 locator adoptions. It did not reach the stronger full reciprocal closure
 diagnostic.
@@ -150,7 +156,9 @@ the underlying old files.
 - There is no per-agent response-count or tool-call-count cap.
 - Canonical topology is `null`. Researchers may configure a graph, but topology
   is not a SwarmHarm research question.
-- Raw evidence stays outside Git. Frozen registrations are never rewritten.
+- Raw evidence and the host-only AxonHub key stay outside Git. Frozen
+  registrations are never rewritten. A terminal manifest binds collected
+  evidence before review.
 
 ## Validate
 

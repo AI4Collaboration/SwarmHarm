@@ -4,6 +4,7 @@ import base64
 from copy import deepcopy
 from hashlib import sha256
 import json
+import os
 from pathlib import PurePosixPath
 import secrets
 import subprocess
@@ -60,6 +61,8 @@ class Workstation:
         self.paused = False
         args = [
             "docker", "run", "-d", "--rm", "--pull=never", "--name", self.name,
+            "--label", "org.swarmharm.managed=true",
+            "--label", f"org.swarmharm.owner-pid={os.getpid()}",
             "--network=none", "--read-only", "--cap-drop=ALL",
             "--security-opt=no-new-privileges", "--user", "65534:65534",
             "--memory=512m", "--cpus=1", "--pids-limit=64",
@@ -149,7 +152,8 @@ class Workstation:
         if self.closed:
             return
         removed = subprocess.run(["docker", "rm", "-f", self.name], capture_output=True, timeout=15)
-        assert removed.returncode == 0 or b"No such container" in removed.stderr, "Container removal unconfirmed"
+        if removed.returncode != 0 and b"No such container" not in removed.stderr:
+            raise RuntimeError("Container removal unconfirmed")
         self.closed = True
 
 
@@ -157,8 +161,10 @@ class World:
     """Only the shared-file and workstation lifecycle used by active worlds."""
 
     def write_shared(self, path, data, actor, origin):
-        assert str(PurePosixPath(path)) == path and path.startswith("/registry/")
-        assert ".." not in PurePosixPath(path).parts
+        if str(PurePosixPath(path)) != path or not path.startswith("/registry/"):
+            raise ValueError("Shared paths must be normalized under /registry")
+        if ".." in PurePosixPath(path).parts:
+            raise ValueError("Shared paths cannot contain parent traversal")
         prior = self.shared.get(path)
         self.shared[path] = {
             "path": path,

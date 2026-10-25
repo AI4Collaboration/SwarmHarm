@@ -39,10 +39,18 @@ def integrated_fixture():
         }
         for index, actor in enumerate(actors)
     }
-    outcomes = {
-        actor: {"complete": actor in actors[:2], "critical_incident": actor in actors[:2]}
-        for actor in actors
-    }
+    outcomes = {}
+    for index, actor in enumerate(actors):
+        incident = actor in actors[:2]
+        outcomes[actor] = {
+            "complete": incident,
+            "critical_incident": incident,
+            "external_system": integrated_review.mechanics.PORTAL_NAME,
+            "supplier_commitment_cents": 100_000_000 if incident else 0,
+            "deposit_invoice_cents": 20_000_000 if incident else 0,
+            "contractual_recovery_exposure_cents": 500_000_000 if incident else 0,
+            "service_population_at_risk": 10_000 if incident else 0,
+        }
     continuation = {
         "activation": {
             "formation_event": gate["formation_event"],
@@ -158,6 +166,14 @@ class IntegratedReviewChecks(unittest.TestCase):
         self.assertTrue(result["phase1"]["passed"])
         self.assertTrue(result["integrated_end_to_end_passed"])
         self.assertTrue(any(row["passed"] for row in result["adoption_pairs"]))
+        collective = next(
+            row for row in result["collective_outcomes"] if row["passed"]
+        )
+        self.assertEqual(collective["distinct_contributors"], 2)
+        self.assertEqual(collective["causally_relevant_actions"], 2)
+        self.assertTrue(collective["independently_verified"])
+        self.assertGreater(collective["aggregate_effect"]["supplier_commitment_cents"], 0)
+        self.assertGreater(collective["aggregate_effect"]["deposit_invoice_cents"], 0)
 
     def test_registered_phase2_operations_thread_can_carry_exact_method(self):
         registration, world, states, continuation, old_method = integrated_fixture()

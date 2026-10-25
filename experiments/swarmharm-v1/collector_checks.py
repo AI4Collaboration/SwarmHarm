@@ -4,6 +4,7 @@ from pathlib import Path
 import io
 import inspect
 import json
+import shutil
 import tempfile
 import threading
 import unittest
@@ -16,6 +17,18 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def registration_path(self, temporary):
+        path = run.REGISTRATIONS / ("test-" + Path(temporary).name)
+        self.addCleanup(shutil.rmtree, path, True)
+        return path
+
+    @staticmethod
+    def key_file(temporary):
+        path = Path(temporary) / "key"
+        path.write_text("test-key")
+        path.chmod(0o600)
+        return path
+
     def test_catalog_retries_a_transient_read_timeout(self):
         class Response(io.BytesIO):
             status = 200
@@ -29,8 +42,8 @@ class CollectorChecks(unittest.TestCase):
         payload = json.dumps({"data": [{"id": "model-a"}]}).encode()
         with (
             patch.object(
-                run.urllib.request,
-                "urlopen",
+                run.guardrails,
+                "open_url",
                 side_effect=[TimeoutError("temporary"), Response(payload)],
             ) as opened,
             patch.object(run.time, "sleep") as slept,
@@ -61,13 +74,20 @@ class CollectorChecks(unittest.TestCase):
 
         payload = json.dumps({"data": {"id": "model-a"}}).encode()
         with patch.object(
-            run.urllib.request, "urlopen", return_value=Response(payload)
+            run.guardrails, "open_url", return_value=Response(payload)
         ):
             result = run.catalog(
                 "https://catalog.invalid/models/model-a/endpoints", "model-a"
             )
         self.assertEqual(result["model_count"], 1)
         self.assertTrue(result["model_found"])
+
+    def test_provider_redirects_are_refused(self):
+        request = run.urllib.request.Request("https://provider.invalid/models")
+        with self.assertRaises(run.urllib.error.HTTPError):
+            run.guardrails.NoRedirect().redirect_request(
+                request, None, 302, "Found", {}, "https://elsewhere.invalid/models"
+            )
 
     def test_collector_lock_is_scoped_to_one_campaign(self):
         source = inspect.getsource(run.collect)
@@ -98,6 +118,40 @@ class CollectorChecks(unittest.TestCase):
             names = world.prepare_workstations(plan, max_workers=4)
         self.assertEqual(len(names), 4)
         self.assertEqual(set(world.workstations), set(plan))
+
+    def test_partial_parallel_startup_closes_every_successful_sibling(self):
+        counter = iter(range(1000))
+        plan = schedule.compile_plan(
+            4, "control", lambda: f"worker-{next(counter):06d}"
+        )[0]["natural"]
+        barrier = threading.Barrier(4)
+        allocation_lock = threading.Lock()
+        allocation = iter(range(4))
+        created = []
+
+        class Station:
+            def __init__(self, _):
+                with allocation_lock:
+                    self.index = next(allocation)
+                self.closed = False
+                barrier.wait(timeout=2)
+                if self.index == 0:
+                    raise RuntimeError("synthetic startup failure")
+                self.name = f"test-station-{self.index}"
+                created.append(self)
+
+            def close(self):
+                self.closed = True
+
+        world = lab.World(plan)
+        with (
+            patch.object(lab.base, "Workstation", side_effect=Station),
+            self.assertRaisesRegex(RuntimeError, "synthetic startup failure"),
+        ):
+            world.prepare_workstations(plan, max_workers=4)
+        self.assertEqual(len(created), 3)
+        self.assertTrue(all(station.closed for station in created))
+        self.assertEqual(world.workstations, {})
 
     def test_incomplete_final_waits_without_goal_feedback(self):
         source = inspect.getsource(run.collect)
@@ -189,6 +243,23 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("future=next(as_completed(tuple(futures)))", source)
         self.assertNotIn("for future in as_completed(futures)", source)
         self.assertNotIn("next_admissions", source)
+        self.assertIn("active!=set(plan)", source)
+        self.assertIn("continuous population is no longer intact", source)
+
+    def test_terminal_evidence_manifest_hashes_collected_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            run.save(root / "registration.json", {"family": "test"})
+            run.save(root / "completion.json", {"status": "collected"})
+            (root / "controller.log").write_text("mutable host log")
+            manifest = run.write_evidence_manifest(root)
+            self.assertEqual(
+                manifest["registration_sha256"],
+                run.sha(root / "registration.json"),
+            )
+            self.assertIn("completion.json", manifest["files"])
+            self.assertNotIn("controller.log", manifest["files"])
+            self.assertNotIn("evidence-manifest.json", manifest["files"])
 
     def test_retry_classification(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -247,9 +318,8 @@ class CollectorChecks(unittest.TestCase):
     def test_prepare_freezes_population_without_organizational_roles(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
-            registration = Path(temporary) / "registration"
-            key = Path(temporary) / "key"
-            key.write_text("test-key")
+            registration = self.registration_path(temporary)
+            key = self.key_file(temporary)
             routes = {
                 "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
@@ -273,7 +343,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
             self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v22")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v34")
-            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v9")
+            self.assertEqual(reg["outcome_revision"], "collective-composition-v10")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])
@@ -560,6 +630,14 @@ class CollectorChecks(unittest.TestCase):
                 (registration / "PROTOCOL.md").read_text(),
             )
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))
+            self.assertEqual(
+                reg["input_hashes"]["PROTOCOL.md"],
+                run.sha(root / "PROTOCOL.md"),
+            )
+            self.assertEqual(
+                run.sha(root / "PROTOCOL.md"),
+                run.sha(registration / "PROTOCOL.md"),
+            )
 
     def test_registered_deadline_requires_future_timezone_aware_timestamp(self):
         with self.assertRaisesRegex(ValueError, "timezone"):
@@ -570,9 +648,8 @@ class CollectorChecks(unittest.TestCase):
     def test_prepare_rejects_serial_or_underfilled_canonical_runs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
-            registration = Path(temporary) / "registration"
-            key = Path(temporary) / "key"
-            key.write_text("test-key")
+            registration = self.registration_path(temporary)
+            key = self.key_file(temporary)
             routes = {
                 "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
@@ -585,9 +662,8 @@ class CollectorChecks(unittest.TestCase):
     def test_provider_concurrency_is_independent_of_active_agent_cohort(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
-            registration = Path(temporary) / "registration"
-            key = Path(temporary) / "key"
-            key.write_text("test-key")
+            registration = self.registration_path(temporary)
+            key = self.key_file(temporary)
             routes = {
                 "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
                 "upstream_model": "z-ai/glm-5.3-flashx",
@@ -604,9 +680,8 @@ class CollectorChecks(unittest.TestCase):
         for invalid in (0, 5):
             with self.subTest(invalid=invalid), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary) / "study"
-                registration = Path(temporary) / "registration"
-                key = Path(temporary) / "key"
-                key.write_text("test-key")
+                registration = self.registration_path(temporary)
+                key = self.key_file(temporary)
                 with patch.object(run, "verify_routes", return_value=routes):
                     with self.assertRaisesRegex(ValueError, "provider concurrency"):
                         run.prepare(root, registration, key, 4, 4, invalid, run_controls=False)

@@ -725,6 +725,13 @@ class World(base.World):
                 for future in as_completed(futures):
                     prepared[futures[future]] = future.result()
         except BaseException:
+            for future, actor in futures.items():
+                if actor in prepared or future.cancelled() or not future.done():
+                    continue
+                try:
+                    prepared[actor] = future.result()
+                except BaseException:
+                    pass
             for _, station in prepared.values():
                 station.close()
             raise
@@ -1037,11 +1044,13 @@ class World(base.World):
             "arguments": {},
             "result": {"status": 200, "operator_recorded": True},
             "shared_changes": [],
+            "at": infra.utc(),
         }
         self.events.append(event)
         if self.operator:
             target = self.operator / "tool-commits" / f"{event['id']:06d}.json"
-            assert not target.exists()
+            if target.exists():
+                raise RuntimeError("Final event would overwrite evidence")
             infra.atomic_json(target, {
                 "event": deepcopy(event),
                 "final_text": body,
@@ -1064,10 +1073,12 @@ class World(base.World):
 
         def done(reply):
             event["result"] = deepcopy(reply)
+            event["at"] = infra.utc()
             self.events.append(event)
             if self.operator:
                 path = self.operator / "tool-commits" / f"{event['id']:06d}.json"
-                assert not path.exists()
+                if path.exists():
+                    raise RuntimeError("Tool event would overwrite evidence")
                 infra.atomic_json(path, {"event": deepcopy(event), "summary": self.summary()})
             return reply
 
