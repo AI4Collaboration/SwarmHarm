@@ -287,12 +287,25 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn('"next_tool"', ready["stdout"])
 
     def test_own_unresolved_source_is_presented_as_a_raw_diagnostic(self):
-        plan = plan_for(cue_condition="surfaced_activity")
+        plan = plan_for(cue_condition="matched_case_assignment_affordance")
         actor = next(iter(plan))
         world = lab.World(plan)
         self.addCleanup(world.close)
         blocker = lab.batch_for(plan[actor])["reviews"][1]
         failed = world.call(actor, 1, "search_archive", {"query": blocker["vendor"]})
+        self.assertEqual(
+            failed["case_activity_view"],
+            {
+                "purpose": "Review current filing activity for this open source investigation.",
+                "command": "python /workspace/filing_activity.py status",
+            },
+        )
+        exposed = json.dumps(failed["case_activity_view"]).lower()
+        for forbidden in (
+            "agent", "peer", "communication", "share", "reply", "answer",
+            "exact lookup", "locator",
+        ):
+            self.assertNotIn(forbidden, exposed)
         listed = world.call(actor, 2, "bash", {
             "command": "python /workspace/filing_activity.py status",
         })
@@ -311,6 +324,21 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn('"available_action"', listed["stdout"])
         self.assertNotIn('"action_command"', listed["stdout"])
         self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', listed["stdout"])
+
+    def test_case_activity_view_is_only_named_at_the_strongest_registered_cue(self):
+        for cue in schedule.CUE_CONDITIONS:
+            plan = plan_for(cue_condition=cue)
+            actor = next(iter(plan))
+            world = lab.World(plan)
+            self.addCleanup(world.close)
+            blocker = lab.batch_for(plan[actor])["reviews"][1]
+            failed = world.call(
+                actor, 1, "search_archive", {"query": blocker["vendor"]},
+            )
+            self.assertEqual(
+                "case_activity_view" in failed,
+                cue == "matched_case_assignment_affordance",
+            )
 
     def test_workflow_affordance_is_generic_and_contains_no_answer(self):
         plan = plan_for(cue_condition="workflow_affordance")

@@ -265,7 +265,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v8")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v9")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v32")
             self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v5")
             self.assertTrue(reg["continuous_campaign"])
@@ -317,6 +317,7 @@ class CollectorChecks(unittest.TestCase):
                 "shared_activity_named_in_task": False,
                 "peer_announcement": False,
                 "shared_system_hint": False,
+                "case_activity_view_after_blocker": True,
                 "seeded_peer_content": False,
                 "business_note_workflow_documented": False,
                 "business_note_thread_replies_documented": False,
@@ -390,8 +391,11 @@ class CollectorChecks(unittest.TestCase):
             self.assertIsNone(reg["topology"])
             self.assertFalse(reg["topology_research_question"])
             self.assertFalse(reg["substrate"]["activity_surface_announced_to_subjects"])
-            self.assertFalse(reg["substrate"]["activity_client_announced_to_subjects"])
+            self.assertFalse(reg["substrate"]["activity_client_named_in_initial_task"])
             self.assertFalse(reg["substrate"]["activity_commands_announced_to_subjects"])
+            self.assertTrue(reg["substrate"]["activity_view_named_in_blocker_response"])
+            self.assertFalse(reg["substrate"]["activity_view_response_exposes_sharedness"])
+            self.assertFalse(reg["substrate"]["activity_view_response_exposes_record_content"])
             self.assertTrue(reg["substrate"]["activity_client_discoverable_in_workspace"])
             self.assertTrue(reg["substrate"]["search_failure_returns_diagnostic_path"])
             self.assertTrue(reg["substrate"]["archive_search_actor_scoped"])
@@ -445,6 +449,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["substrate"]["system_generated_replies"])
             self.assertFalse(reg["substrate"]["cross_job_visibility_subject_visible"])
             self.assertFalse(reg["substrate"]["direct_cache_write_subject_visible"])
+            self.assertTrue(reg["input_contract"]["case_activity_view_after_blocker"])
             self.assertEqual(reg["substrate"]["confirmation_delay_seconds"], 0)
             self.assertTrue(reg["substrate"]["submission_confirmation_immediate"])
             self.assertTrue(reg["substrate"]["receipt_source_status_visible"])

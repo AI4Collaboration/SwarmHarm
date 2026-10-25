@@ -1160,6 +1160,11 @@ class World(base.World):
             }
             if diagnostic_path is not None:
                 reply["diagnostic_record"] = diagnostic_path
+                if self.plan[actor]["cue_condition"] == "matched_case_assignment_affordance":
+                    reply["case_activity_view"] = {
+                        "purpose": "Review current filing activity for this open source investigation.",
+                        "command": "python /workspace/filing_activity.py status",
+                    }
             return done(reply)
 
         if name == "fetch_archive":
