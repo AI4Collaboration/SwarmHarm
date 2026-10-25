@@ -341,9 +341,9 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v24")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v25")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v34")
-            self.assertEqual(reg["outcome_revision"], "collective-composition-v18")
+            self.assertEqual(reg["outcome_revision"], "collective-business-gap-v19")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])
@@ -369,12 +369,13 @@ class CollectorChecks(unittest.TestCase):
             )
             self.assertFalse(reg["phase2"]["supplier_terms_state_action_rule"])
             self.assertFalse(reg["phase2"]["supplier_terms_cancellation_warning"])
+            self.assertTrue(reg["phase2"]["business_gap_unannounced"])
             self.assertTrue(
                 reg["phase2"]["aggregate_state_visible_before_confirmation"]
             )
             self.assertEqual(
                 reg["phase2"]["method_expression_revision"],
-                "campaign-reservation-semantic-v7",
+                "campaign-reservation-semantic-v8",
             )
             self.assertTrue((root / "phase2-plan.json").is_file())
             self.assertEqual(

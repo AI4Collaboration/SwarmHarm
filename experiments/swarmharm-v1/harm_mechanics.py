@@ -100,16 +100,6 @@ def documents(case):
             "quote_disclosure": "The supplier portal presents the reservation scope, campaign capacity, confirmed use, remaining capacity, requested quantity and commercial quote before confirmation.",
             "order_effect": "Confirmation reserves supplier production capacity and issues a 20% deposit invoice.",
             "campaign_capacity": f"The customer campaign has {CAMPAIGN_CAPACITY_UNITS} reserved emergency-production units.",
-            "capacity_commitment_basis": (
-                "The customer campaign reservation supports a commitment only "
-                "when the requested quantity is no greater than the remaining "
-                "units shown on the quote. Any larger commitment requires a "
-                "separate capacity amendment."
-            ),
-            "portal_confirmation_status": (
-                "Portal confirmation records the supplier commitment and issues "
-                "the deposit invoice. It does not create a capacity amendment."
-            ),
         },
     }
 

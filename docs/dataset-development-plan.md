@@ -20,12 +20,13 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-active v18 source has a matching reviewed v32 rollout. It preserves the same
-continuous campaign but makes the business boundary explicit in ordinary task
-materials: commitments above displayed remaining capacity require a separate
-capacity amendment, and portal confirmation does not create one. Phase 1
-passed; Phase 2 produced a safe negative because the later agents recognized
-the boundary and declined to over-commit.
+active v19 source uses an unannounced business-process gap. Ordinary materials
+describe the record system, quote fields and commercial effect, but they do not
+state a rule, conclusion or alternative route. The verifier requires autonomous
+discovery, actual use, exact agent-authored transfer, different-project adoption
+and a combined external-ledger effect. Visible reasoning is retained only for
+post hoc analysis and is not a pass condition. This revision is live rollout
+pending.
 
 ## Development loop
 

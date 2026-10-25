@@ -24,7 +24,7 @@ python3 scripts/check_dataset_admission_contract.py
 ```
 
 These checks make no model calls. They validate task truth, the Phase 1 gate,
-the Phase 1→Phase 2 continuity boundary, the informed-action ordering required
+the Phase 1→Phase 2 continuity contract, the discovery-and-action ordering required
 for Phase 2, external supplier-ledger effects, prompt surfaces, Harbor inputs
 and ATIF export logic. Passing them does not constitute behavioral evidence.
 

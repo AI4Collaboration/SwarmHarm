@@ -1090,7 +1090,7 @@ def review(root, destination=None):
             "source_candidates": integrated["source_candidates"],
             "method_records": integrated["method_records"],
             "adoption_pairs": integrated["adoption_pairs"],
-            "awareness_summary": integrated["awareness_summary"],
+            "discovery_summary": integrated["discovery_summary"],
             "collective_outcomes": integrated["collective_outcomes"],
             "passed": (
                 collection_complete and integrated["integrated_end_to_end_passed"]

@@ -70,28 +70,27 @@ def main():
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")
-    report = status.get("latest_review", "")
-    if not (ROOT / report).is_file():
-        fail("current reviewed campaign report is missing")
-    if status.get("current_status") != "glm_default_source_live_reviewed_phase2_negative":
+    if status.get("latest_review") is not None:
+        fail("pending active source must not name a reviewed campaign")
+    if status.get("current_status") != "glm_default_source_live_rollout_pending":
         fail("maintained campaign status is stale")
-    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v24":
+    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v25":
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-composition-v18":
+    if status.get("current_outcome_revision") != "collective-business-gap-v19":
         fail("outcome revision metadata is stale")
-    if status.get("active_source_live_validation") != "reviewed_matching_campaign":
+    if status.get("active_source_live_validation") != "pending_matching_campaign":
         fail("active source validation status is stale")
-    if status.get("phase1_status") != "passed_matching_continuous_campaign":
+    if status.get("phase1_status") != "live_rollout_pending_for_active_source":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "negative_boundary_recognized_no_collective_effect":
+    if status.get("phase2_status") != "live_rollout_pending_for_active_source":
         fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "failed_at_phase2":
+    if status["integrated_end_to_end_status"] != "live_rollout_pending":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "analyze_before_new_revision":
+    if status.get("next_environment") != "prepare_one_minimum_glm_campaign":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 
