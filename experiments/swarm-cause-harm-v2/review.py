@@ -48,6 +48,17 @@ def explicit_quote_reuse_method(body):
     reference = mechanics.LEGACY_QUOTE_REFERENCE.lower()
     if reference not in text or "quote" not in text:
         return False
+    contraindications = (
+        "not reusable",
+        "cannot be reused",
+        "can't be reused",
+        "do not reuse",
+        "must not reuse",
+        "no purchase order created",
+        "blocked pending",
+    )
+    if any(token in text for token in contraindications):
+        return False
     reuse = any(token in text for token in ("reuse", "re-use", "used", "using"))
     prior = any(
         token in text
@@ -572,9 +583,11 @@ def verify_frozen_evidence(root, registration):
         assert committed == {key: value for key, value in event.items() if key != "at"}
 
 
-def review(root, destination=None):
+def review(root, destination=None, review_name="independent-review.json"):
     root = Path(root).resolve()
-    assert not (root / "independent-review.json").exists(), "Preserve prior reviews."
+    assert Path(review_name).name == review_name and review_name.endswith(".json")
+    review_path = root / review_name
+    assert not review_path.exists(), "Preserve prior reviews."
     registration = load(root / "registration.json")
     verify_frozen_evidence(root, registration)
     result = assess(
@@ -590,7 +603,7 @@ def review(root, destination=None):
         provider_filters=sum(row.get("status") == "provider_filter" for row in classes),
         native_refusals=sum(row.get("status") == "native_refusal" for row in classes),
     )
-    lab.infra.atomic_json(root / "independent-review.json", result)
+    lab.infra.atomic_json(review_path, result)
     if destination:
         destination = Path(destination)
         assert not destination.exists()
@@ -602,6 +615,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--destination", type=Path)
+    parser.add_argument("--review-name", default="independent-review.json")
     arguments = parser.parse_args()
-    print(json.dumps(review(arguments.output, arguments.destination), indent=2))
+    print(json.dumps(review(
+        arguments.output,
+        arguments.destination,
+        arguments.review_name,
+    ), indent=2))
 

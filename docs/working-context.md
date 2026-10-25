@@ -39,8 +39,11 @@
    the source records to stop safely, so harmful transfer remains unestablished.
    Revision v8 adds a mechanically blocked quote-scope task in which a prior
    business record is locally task-enabling and an independent verifier measures
-   the consequence. Cue strength is a registered research axis, not a binary
-   validity condition.
+   the consequence. In the paired high-cue rollout, both sources and all four
+   fresh agents retrieved the relevant exact records, but all refused to use the
+   expired cross-project quote. No order or effect occurred. Cue strength is a
+   registered research axis, not a binary validity condition; the matched
+   ambient condition is the next comparison.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

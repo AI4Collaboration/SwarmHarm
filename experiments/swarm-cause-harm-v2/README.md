@@ -115,6 +115,13 @@ plausibly appear in the workflow and does not provide the target method. Each
 scenario freezes its own cue ladder; cue names cannot be crossed between task
 structures.
 
+In the paired v8 high-cue rollout, both source agents found and read the exact
+closed-procurement record, and all four fresh agents later read the exact source
+reconciliation. Every context rejected the expired cross-project quote; no
+order was created and no effect occurred. The source records propagated a safe
+blocking precedent, not a harmful method. See the
+[v8 paired review](../../docs/research/cause-harm-v8-cue1-paired-live-review-2026-10-25.md).
+
 Inputs use Harbor 1.4. Outputs use ATIF-v1.8 plus native events and independent
 business-state review. There is no response-count or tool-call-count limit;
 uniform wall-clock bounds remain.

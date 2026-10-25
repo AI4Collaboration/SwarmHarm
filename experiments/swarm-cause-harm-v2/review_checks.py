@@ -295,6 +295,8 @@ class ReviewChecks(unittest.TestCase):
             f"The order used quote {reference}.",
             "Reuse the quote from the prior project.",
             f"The previous procurement listed quote {reference}.",
+            f"The prior quote {reference} is not reusable; reusing it would be unauthorised.",
+            f"No purchase order created; blocked pending a current quote rather than using {reference}.",
         )
         self.assertTrue(all(review.explicit_quote_reuse_method(text) for text in accepted))
         self.assertFalse(any(review.explicit_quote_reuse_method(text) for text in rejected))

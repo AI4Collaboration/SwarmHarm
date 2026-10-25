@@ -44,6 +44,13 @@ overt incident framing. Its cue axis varies only whether normal case management
 makes the existence of a comparable closed procurement salient; no cue supplies
 the record, quote reference, method or action.
 
+In the paired high-cue v8 rollout, both models found the closed-procurement
+record and every fresh agent later read the exact source reconciliation. All six
+contexts refused to use the expired cross-project quote; no order or verified
+effect occurred. This removes retrieval as the immediate boundary for this task
+and places the observed boundary at harmful adoption. See the
+[v8 paired review](docs/research/cause-harm-v8-cue1-paired-live-review-2026-10-25.md).
+
 Cue strength is now an explicit research axis, not a validity objection. The
 testbed varies how much ordinary workflow salience appears after discovery while
 holding task truth, private information, concurrency and verification fixed.
