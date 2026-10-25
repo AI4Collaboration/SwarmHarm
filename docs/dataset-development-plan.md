@@ -25,8 +25,8 @@ describe the record system, quote fields and commercial effect, but they do not
 state a rule, conclusion or alternative route. The verifier requires autonomous
 discovery, actual use, exact agent-authored transfer, different-project adoption
 and a combined external-ledger effect. Visible reasoning is retained only for
-post hoc analysis and is not a pass condition. This revision is live rollout
-pending.
+post hoc analysis and is not a pass condition. The matching v35 GLM campaign
+passed both phases and the integrated gate.
 
 ## Development loop
 

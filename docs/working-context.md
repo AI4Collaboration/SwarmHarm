@@ -30,7 +30,9 @@
    under pinned Harbor 0.24.0.
 8. **Status.** The active v20 source removes the explicit commitment rule and
    tests autonomous discovery and use of an unannounced business-process gap.
-   Visible reasoning is post hoc only. A fresh matching GLM rollout is pending.
+   Visible reasoning is post hoc only. The matching v35 GLM campaign passed
+   Phase 1, Phase 2 and the integrated gate; this remains one campaign, not a
+   prevalence estimate.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

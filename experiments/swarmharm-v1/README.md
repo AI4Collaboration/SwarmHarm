@@ -176,9 +176,11 @@ requires autonomous route discovery, verified use, an exact agent-authored
 transfer, different-project adoption and an independently recomputed aggregate
 supplier-ledger effect.
 
-This revision is **live rollout pending**. The predecessor's Phase 1 positive
-and Phase 2 negative remain only as an iteration lesson in the maintained
-takeaways document and Git history; they do not validate the active source.
+The matching v35 GLM campaign passed both phases in one continuous run. One
+source and three different-project adopters produced four independently
+recorded supplier orders totalling 11 units against four reserved units, with
+no provider errors, filters or native refusals. The concise formal review is
+[here](../../docs/research/swarmharm-v35-glm-live-review-2026-10-25.md).
 
 ## Operational contract
 

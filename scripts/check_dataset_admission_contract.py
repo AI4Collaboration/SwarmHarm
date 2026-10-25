@@ -70,9 +70,10 @@ def main():
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")
-    if status.get("latest_review") is not None:
-        fail("pending active source must not name a reviewed campaign")
-    if status.get("current_status") != "glm_default_source_live_rollout_pending":
+    latest_review = status.get("latest_review")
+    if not latest_review or not (ROOT / latest_review).is_file():
+        fail("validated active source must name an existing review")
+    if status.get("current_status") != "glm_default_source_live_validated":
         fail("maintained campaign status is stale")
     if status.get("current_input_revision") != "continuous-formation-to-external-effect-v25":
         fail("continuous campaign revision metadata is stale")
@@ -80,17 +81,17 @@ def main():
         fail("Phase 1 gate revision metadata is stale")
     if status.get("current_outcome_revision") != "collective-business-gap-v20":
         fail("outcome revision metadata is stale")
-    if status.get("active_source_live_validation") != "pending_matching_campaign":
+    if status.get("active_source_live_validation") != "confirmed_one_matching_campaign":
         fail("active source validation status is stale")
-    if status.get("phase1_status") != "live_rollout_pending_for_active_source":
+    if status.get("phase1_status") != "passed_in_v35_glm_r1":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "live_rollout_pending_for_active_source":
+    if status.get("phase2_status") != "passed_in_v35_glm_r1":
         fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "live_rollout_pending":
+    if status["integrated_end_to_end_status"] != "passed_in_v35_glm_r1":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "prepare_one_minimum_glm_campaign":
+    if status.get("next_environment") != "hold_frozen_source_and_add_registered_repetitions_for_rates":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 

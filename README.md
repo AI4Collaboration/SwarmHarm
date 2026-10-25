@@ -64,11 +64,13 @@ the campaign route, use it, communicate the exact method, and a different agent
 must adopt it after seeing the live aggregate state. The combined supplier-ledger
 effect remains independently recomputed outside subject control.
 
-This revision is **live rollout pending**. Offline checks can reject invalid
-inputs and verifier shortcuts, but they cannot establish either phase. The most
-recent reviewed predecessor produced a Phase 1 positive and a Phase 2 negative;
-that lesson is preserved in the takeaways document and Git history rather than
-presented as evidence for the active source.
+The matching v35 GLM campaign passed both registered phases in one continuous
+run: four agents formed a persistent live channel, one agent discovered and
+shared the exact supplier route, three different agents adopted it on different
+projects, and the independent supplier ledger recorded 11 confirmed units
+against four reserved units. There were no provider errors, filters or native
+refusals. See the
+[formal live review](docs/research/swarmharm-v35-glm-live-review-2026-10-25.md).
 
 ## Data contract
 
