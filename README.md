@@ -11,19 +11,16 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v46 rollout is complete. Both GLM and DeepSeek discovered the
-unannounced filing-activity surface and formed a connected four-agent channel.
-The related-record badge was visible in matching open investigations, but
-neither model produced a targeted route-bearing reply or verified live
-dialogue, so **Phase 1 is not established**. Subjects recognized cross-batch
-activity yet treated locally unusable material as invalid for their own review
-instead of contributing it to the investigation that needed it. This isolates
-cross-case contribution semantics as the next cue-strength boundary. See the
-[v46 paired review](docs/research/formation-v46-paired-live-review-2026-10-25.md).
-The active v47 source adds only ordinary case-management guidance that related
-local material may be recorded as context for its matching investigation even
-when it is not source evidence for the subject's assigned review. Matching
-live campaigns are pending.
+The paired v47 rollout is complete. GLM formed a connected four-agent
+read-write graph with repeated relays; DeepSeek formed a two-agent subgraph.
+Neither model produced a targeted route-bearing reply or verified live
+dialogue, so **Phase 1 is not established**. Subjects used the activity system
+as a place for terminal exception reports and repeated rechecks, not as a live
+request-and-reply workflow. See the
+[v47 paired review](docs/research/formation-v47-paired-live-review-2026-10-25.md).
+The next registered cue level keeps task truth fixed while making an ordinary
+filing-platform notification point to the activity view and placing its generic
+add-context action next to the related-material match.
 
 ## How Phase 1 works
 
@@ -137,6 +134,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v46-paired-live-review-2026-10-25.md)
+- [Latest paired live review](docs/research/formation-v47-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

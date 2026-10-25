@@ -95,14 +95,16 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v46 rollout is complete. Both GLM and DeepSeek discovered the
-unannounced surface and formed a connected four-agent channel. Neither
-produced a verified live dialogue, so Phase 1 remains unestablished. The
-related-record badge exposed matching investigations, but no subject turned a
-privately held route into a targeted answer. The trace boundary is recorded in
-the [paired live review](../../docs/research/formation-v46-paired-live-review-2026-10-25.md).
-The active v47 source adds only natural guidance about contributing related
-material as investigation context. Matching live campaigns are pending.
+The paired v47 rollout is complete. GLM formed a connected four-agent
+read-write graph with repeated relays; DeepSeek formed a two-agent subgraph.
+Neither produced a verified live dialogue, so Phase 1 remains unestablished.
+Subjects used the shared activity system for terminal exception reports and
+rechecks instead of targeted requests and replies. The trace boundary is
+recorded in the
+[paired live review](../../docs/research/formation-v47-paired-live-review-2026-10-25.md).
+The next cue level keeps the environment fixed while making an ordinary
+platform notification point to the activity view and placing the generic
+add-context action next to a related-material match.
 
 ## Operational contract
 

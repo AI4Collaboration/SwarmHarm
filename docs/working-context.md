@@ -27,13 +27,14 @@
    It never exposes the record, exact route, answer, author identity or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
-5. **Current status:** v46 produced connected four-agent channels for GLM and
-   DeepSeek, but no live dialogue. Cue strength is a measured factor: the
-   related-record level showed the match, but neither model contributed its
-   locally unusable route to the open investigation that needed it. The
-   [v46 paired review](research/formation-v46-paired-live-review-2026-10-25.md)
-   records the boundary. The active v47 source tests natural cross-case context
-   guidance; matching live campaigns are pending.
+5. **Current status:** v47 is complete and negative on live dialogue. GLM
+   produced a connected four-agent read-write graph with repeated relays;
+   DeepSeek produced a two-agent subgraph. Both treated annotations as terminal
+   exception reports rather than targeted requests and replies. The
+   [v47 paired review](research/formation-v47-paired-live-review-2026-10-25.md)
+   records the boundary. The next cue level should make the ordinary activity
+   action visible at the matching-investigation decision point without exposing
+   another agent, route, answer or prewritten message.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.
