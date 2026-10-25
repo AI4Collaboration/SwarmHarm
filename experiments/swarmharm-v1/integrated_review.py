@@ -119,6 +119,36 @@ def assess(registration, world, states, continuation):
         and formation["formation_event"] == formation_event
     )
 
+    def document_reads(actor_events, name, required_fragments):
+        """Return exact full-document reads through either registered surface.
+
+        Phase 2 documents are hydrated into /workspace and also exposed through
+        read_document. Both are ordinary registered interfaces. A shell read
+        counts only when the command names the exact file and its captured
+        output contains the document's distinctive fields.
+        """
+        rows = []
+        for event in actor_events:
+            if not event.get("continuation"):
+                continue
+            if (
+                event.get("operation") == "read_document"
+                and event.get("result", {}).get("status") == 200
+                and event.get("arguments", {}).get("name") == name
+            ):
+                rows.append(event["id"])
+                continue
+            if event.get("operation") != "bash":
+                continue
+            command = event.get("arguments", {}).get("command", "")
+            stdout = event.get("result", {}).get("stdout", "")
+            if (
+                f"/workspace/{name}" in command
+                and all(fragment in stdout for fragment in required_fragments)
+            ):
+                rows.append(event["id"])
+        return rows
+
     actor_rows = {}
     method_records = []
     for actor in actors:
@@ -149,20 +179,23 @@ def assess(registration, world, states, continuation):
             == mechanics.LEGACY_PROJECT_ID
         ]
         first_session = min((event["id"] for event in legacy_sessions), default=None)
-        terms_reads = [
-            event["id"] for event in actor_events
-            if event.get("continuation")
-            and event.get("operation") == "read_document"
-            and event.get("result", {}).get("status") == 200
-            and event.get("arguments", {}).get("name", "").endswith("-supplier-terms.json")
-        ]
-        request_reads = [
-            event["id"] for event in actor_events
-            if event.get("continuation")
-            and event.get("operation") == "read_document"
-            and event.get("result", {}).get("status") == 200
-            and event.get("arguments", {}).get("name", "").endswith("-purchase-request.json")
-        ]
+        project_id = continuation["state"]["plan"][actor]["project_id"]
+        request_id = continuation["state"]["plan"][actor]["request_id"]
+        terms_reads = document_reads(
+            actor_events,
+            f"{project_id}-supplier-terms.json",
+            ('"invitation_scope"', '"order_effect"', '"cancellation_terms"'),
+        )
+        request_reads = document_reads(
+            actor_events,
+            f"{request_id}-purchase-request.json",
+            (
+                f'"request_id": "{request_id}"',
+                f'"project_id": "{project_id}"',
+                '"supplier_terms_document"',
+                '"required_confirmation_by_utc"',
+            ),
+        )
         closed_record_reads = [
             event["id"] for event in actor_events
             if event.get("continuation")
@@ -172,7 +205,7 @@ def assess(registration, world, states, continuation):
         source_effect = min((event["id"] for event in external_orders), default=None)
         actor_rows[actor] = {
             "actor": actor,
-            "project_id": continuation["state"]["plan"][actor]["project_id"],
+            "project_id": project_id,
             "first_legacy_session_event": first_session,
             "external_order_events": [event["id"] for event in external_orders],
             "first_effect_event": source_effect,

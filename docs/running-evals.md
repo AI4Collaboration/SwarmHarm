@@ -44,7 +44,7 @@ $PY experiments/swarmharm-v1/run.py \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
   --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
-  --cue-condition triage_routing_affordance
+  --cue-condition matched_case_assignment_affordance
 ```
 
 Preparation verifies the exact upstream and AxonHub routes, writes Harbor 1.4

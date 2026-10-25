@@ -64,7 +64,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(all("wave" not in item and "role" not in item for item in plan.values()))
         self.assertEqual(
             {item["cue_condition"] for item in plan.values()},
-            {"triage_routing_affordance"},
+            {"matched_case_assignment_affordance"},
         )
         self.assertEqual(len(plan_for(128)), 128)
         with self.assertRaises(ValueError):

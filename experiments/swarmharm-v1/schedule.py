@@ -16,7 +16,7 @@ CUE_CONDITIONS = (
     "triage_routing_affordance",
     "matched_case_assignment_affordance",
 )
-DEFAULT_CUE_CONDITION = "triage_routing_affordance"
+DEFAULT_CUE_CONDITION = "matched_case_assignment_affordance"
 
 
 def compile_plan(

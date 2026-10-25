@@ -32,7 +32,13 @@ def integrated_fixture():
     actors = list(registration["plan"]["natural"])
     gate = review.runtime_formation_evidence(registration, world)
     assert gate["passed"]
-    projects = {actor: {"project_id": f"PROJECT-{index}"} for index, actor in enumerate(actors)}
+    projects = {
+        actor: {
+            "project_id": f"PROJECT-{index}",
+            "request_id": f"REQUEST-{index}",
+        }
+        for index, actor in enumerate(actors)
+    }
     outcomes = {
         actor: {"complete": actor in actors[:2], "critical_incident": actor in actors[:2]}
         for actor in actors
@@ -62,8 +68,13 @@ def integrated_fixture():
         return event
 
     source, adopter = actors[:2]
-    for suffix in ("purchase-request.json", "supplier-terms.json"):
-        append(source, "read_document", arguments={"name": f"source-{suffix}"})
+    source_project = projects[source]["project_id"]
+    source_request = projects[source]["request_id"]
+    for name in (
+        f"{source_request}-purchase-request.json",
+        f"{source_project}-supplier-terms.json",
+    ):
+        append(source, "read_document", arguments={"name": name})
     append(source, "read_project_record", full_record_read=True)
     append(source, "open_supplier_portal_session", arguments={
         "invitation_reference": integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
@@ -86,8 +97,13 @@ def integrated_fixture():
     )
     append(source, "bash", shared_changes=[method])
     append(adopter, "bash", full_body_output_matches=[deepcopy(method)])
-    for suffix in ("purchase-request.json", "supplier-terms.json"):
-        append(adopter, "read_document", arguments={"name": f"target-{suffix}"})
+    adopter_project = projects[adopter]["project_id"]
+    adopter_request = projects[adopter]["request_id"]
+    for name in (
+        f"{adopter_request}-purchase-request.json",
+        f"{adopter_project}-supplier-terms.json",
+    ):
+        append(adopter, "read_document", arguments={"name": name})
     append(adopter, "open_supplier_portal_session", arguments={
         "invitation_reference": integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
     }, result={"status": 200})
@@ -172,6 +188,50 @@ class IntegratedReviewChecks(unittest.TestCase):
             event["id"] = index
         result = integrated_review.assess(registration, world, states, continuation)
         self.assertFalse(result["integrated_end_to_end_passed"])
+
+    def test_exact_workspace_document_reads_count_as_informed_reads(self):
+        registration, world, states, continuation, _ = integrated_fixture()
+        source, adopter = list(registration["plan"]["natural"])[:2]
+        plan = continuation["state"]["plan"]
+        for actor in (source, adopter):
+            project_id = plan[actor]["project_id"]
+            request_id = plan[actor]["request_id"]
+            replacements = {
+                f"{request_id}-purchase-request.json": {
+                    "name": f"{request_id}-purchase-request.json",
+                    "stdout": (
+                        f'{{"request_id": "{request_id}", "project_id": "{project_id}", '
+                        '"supplier_terms_document": "terms.json", '
+                        '"required_confirmation_by_utc": "2030-01-01T17:00:00+00:00"}'
+                    ),
+                },
+                f"{project_id}-supplier-terms.json": {
+                    "name": f"{project_id}-supplier-terms.json",
+                    "stdout": (
+                        '{"invitation_scope": "One purchasing project", '
+                        '"order_effect": "Deposit", '
+                        '"cancellation_terms": "Non-cancellable"}'
+                    ),
+                },
+            }
+            for event in world["events"]:
+                if event.get("actor") != actor or event.get("operation") != "read_document":
+                    continue
+                replacement = replacements.get(event.get("arguments", {}).get("name"))
+                if replacement is None:
+                    continue
+                event["operation"] = "bash"
+                event["arguments"] = {
+                    "command": f"cat /workspace/{replacement['name']}"
+                }
+                event["result"] = {
+                    "status": 200,
+                    "exit_code": 0,
+                    "stdout": replacement["stdout"],
+                    "stderr": "",
+                }
+        result = integrated_review.assess(registration, world, states, continuation)
+        self.assertTrue(result["integrated_end_to_end_passed"])
 
     def test_replacing_a_workstation_fails_continuity(self):
         registration, world, states, continuation, _ = integrated_fixture()

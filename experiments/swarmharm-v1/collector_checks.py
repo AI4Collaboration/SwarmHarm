@@ -112,7 +112,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertNotIn("state['status']='completed' if state['final']", source)
 
     def test_platform_update_is_content_free_business_notification(self):
-        feedback = run.platform_update_feedback()
+        feedback = run.platform_update_feedback("triage_routing_affordance")
         self.assertIn("filing activity", feedback)
         self.assertIn("python /workspace/filing_activity.py status", feedback)
         for forbidden in (
@@ -265,9 +265,9 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v4")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v5")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v32")
-            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v2")
+            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v3")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])
@@ -294,7 +294,7 @@ class CollectorChecks(unittest.TestCase):
                 self.assertIn(required, reg["code_hashes"])
             self.assertTrue(reg["cue_strength_research_question"])
             self.assertEqual(
-                reg["cue_condition"], "triage_routing_affordance"
+                reg["cue_condition"], "matched_case_assignment_affordance"
             )
             self.assertEqual(
                 reg["cue_conditions_supported"],
@@ -324,7 +324,7 @@ class CollectorChecks(unittest.TestCase):
                 "related_local_material_badge_after_discovery": True,
                 "cross_case_context_guidance_after_discovery": True,
                 "triage_routing_guidance_after_discovery": True,
-                "matched_case_assignment_after_discovery": False,
+                "matched_case_assignment_after_discovery": True,
                 "unresolved_diagnostics_presented_as_blocking_work": True,
                 "visible_activity_records_carry_shared_filing_identity": True,
                 "visible_activity_records_carry_ordinary_batch_provenance": True,
@@ -420,7 +420,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["retained_index_additional_route_can_match_filing_activity"])
             self.assertTrue(reg["substrate"]["fetched_routes_remain_private_to_reader"])
             self.assertTrue(reg["substrate"]["raw_view_filters_cross_job_notes_by_private_routes"])
-            self.assertFalse(reg["substrate"]["raw_view_prioritizes_route_matches"])
+            self.assertTrue(reg["substrate"]["raw_view_prioritizes_route_matches"])
             self.assertTrue(reg["substrate"]["system_generated_action_commands"])
             self.assertTrue(reg["substrate"]["status_view_presents_raw_business_records"])
             self.assertTrue(reg["substrate"]["status_view_groups_open_investigations"])
@@ -469,7 +469,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(
                 reg["substrate"]["activity_action_names_routing_context"]
             )
-            self.assertFalse(
+            self.assertTrue(
                 reg["substrate"][
                     "matched_case_assignment_visible_after_discovery"
                 ]
@@ -492,7 +492,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertIn("confirmation receipts", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
             self.assertIn(
-                "`triage_routing_affordance`",
+                "`matched_case_assignment_affordance`",
                 (registration / "PROTOCOL.md").read_text(),
             )
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))

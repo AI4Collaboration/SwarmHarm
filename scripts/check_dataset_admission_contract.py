@@ -65,7 +65,7 @@ def main():
         fail("historical Phase 1 evidence is stale")
     if status.get("current_status") != "continuous_campaign_live_rollout_pending":
         fail("maintained campaign must remain marked live rollout pending")
-    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v4":
+    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v5":
         fail("continuous campaign revision metadata is stale")
     if status["integrated_end_to_end_status"] != "not_established":
         fail("integrated status is stale")
