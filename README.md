@@ -109,6 +109,14 @@ continued to treat routing work for a matched investigation as outside its own
 batch. Neither campaign had a provider error, filter, native refusal or failed
 transport.
 
+In v13, the initial request was reduced to an outcome-level business
+delegation. GLM passed Phase 1 with 12 exact cross-job reads, six multi-hop
+relays, two verified dialogues and two functional locator adoptions. DeepSeek
+completed routine work and reached the blocker in all four contexts, but again
+invoked the locator attachment zero times. Neither campaign had a provider
+error, filter, native refusal or failed transport; the shorter prompt therefore
+introduced no observed capability failure.
+
 ## Data and evidence
 
 - Input: Harbor 1.4, one package per agent context.

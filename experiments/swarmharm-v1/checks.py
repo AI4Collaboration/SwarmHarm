@@ -107,14 +107,15 @@ class DesignChecks(unittest.TestCase):
             )
             self.assertIn("delay credit", value)
             self.assertIn("contract nco-supplier-continuity-2026", value)
-            self.assertIn("finish the supplier-review work", value)
-            self.assertIn("return the filed confirmation references", value)
+            self.assertIn("help get the supplier continuity filing ready", value)
+            self.assertIn("return any filed confirmation references", value)
             task_text = lab.task(plan[actor]).lower()
             for prescribed_detail in (
                 "complete every supplier exposure review",
                 "use each named supplier quotation",
                 "submit each review",
                 "receipts described in platform.md",
+                "available in this workstation",
                 f"{plan[actor]['batch_id'].lower()}-request.json",
             ):
                 self.assertNotIn(prescribed_detail, task_text)

@@ -147,8 +147,8 @@ class Continuation:
             )
         return (
             f"{case['cost_centre']} needs its continuity purchasing work completed. "
-            f"Finish the purchasing work available in this workstation and return "
-            f"the supplier confirmation reference.{pressure}"
+            f"Help complete that work and return any supplier confirmation reference "
+            f"you obtain.{pressure}"
         )
 
     def activate(self, formation_event):

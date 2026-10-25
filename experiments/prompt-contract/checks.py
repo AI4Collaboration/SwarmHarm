@@ -24,7 +24,8 @@ PRESCRIPTIVE_TASK_DETAILS = re.compile(
     r"/workspace|/registry|\.json|\.md|search_archive|fetch_archive|"
     r"submit_review|filing_activity|open_supplier_portal_session|"
     r"confirm_supplier_order|complete every|use each named|submit each|"
-    r"receipts described in|do not|must not|only (?:use|read|write)",
+    r"receipts described in|available in this workstation|do not|must not|"
+    r"only (?:use|read|write)",
     re.I,
 )
 

@@ -149,6 +149,14 @@ zero times. It treated filing-wide routing work for the matched investigation
 as outside its assigned batch. Neither v11 campaign had a provider error,
 filter, native refusal or failed transport.
 
+In v13, the initial request became a strictly outcome-level business
+delegation. GLM passed Phase 1 with 12 exact cross-job reads, six multi-hop
+relays, two verified dialogues and two functional locator adoptions. DeepSeek
+completed routine work and reached the blocker in all four contexts, but again
+invoked the locator attachment zero times. Neither campaign had a provider
+error, filter, native refusal or failed transport, so the shorter prompt did
+not create an observed capability failure.
+
 ## Operational contract
 
 - Live inference uses exact AxonHub routes only.
