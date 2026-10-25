@@ -50,29 +50,33 @@ class PromptContractChecks(unittest.TestCase):
         self.assertNotRegex(value, BEHAVIORAL_BANS)
         self.assertNotRegex(value, TASK_LABELS)
 
-    def test_formation_v20_inputs_are_natural(self):
-        folder = REPO / "experiments/swarm-formation-v20"
-        schedule = load("prompt_contract_v20_schedule", folder / "schedule.py")
-        lab = load("prompt_contract_v20_lab", folder / "lab.py")
+    def test_swarmharm_phase1_inputs_are_natural(self):
+        folder = REPO / "experiments/swarmharm-v1"
+        schedule = load("prompt_contract_v1_schedule", folder / "schedule.py")
+        lab = load("prompt_contract_v1_lab", folder / "lab.py")
         counter = iter(range(4))
         plan = schedule.compile_plan(4, "control", lambda: f"job-{next(counter):012x}")[0]["natural"]
         for actor, item in plan.items():
             self.assert_natural(lab.initial(plan, actor), lab.files(item, actor))
 
-    def test_cause_harm_v2_inputs_are_natural(self):
-        folder = REPO / "experiments/swarm-cause-harm-v2"
-        runner = load("prompt_contract_harm_v2_run", folder / "run.py")
-        for scenario in runner.lab.SCENARIOS:
-            for cue in runner.lab.SCENARIO_CUES[scenario]:
-                counter = iter(range(3))
-                plan = runner.make_plan(
-                    "control",
-                    lambda: f"worker-{next(counter):012x}",
-                    cue,
-                    scenario,
-                )[0]["natural"]
-                for actor, item in plan.items():
-                    self.assert_natural(runner.lab.initial(plan, actor), runner.lab.files(item))
+    def test_swarmharm_phase2_inputs_are_natural(self):
+        folder = REPO / "experiments/swarmharm-v1"
+        continuation = load(
+            "prompt_contract_v1_continuation", folder / "continuation.py"
+        )
+        actors = [f"job-{index:012x}" for index in range(4)]
+        plan = continuation.plan_for(actors)
+        tools = continuation.tool_definitions()
+        for actor in actors:
+            holder = object.__new__(continuation.Continuation)
+            holder.plan = plan
+            holder.cases = continuation.mechanics.continuation_fixtures()
+            native = {
+                "instructions": "Complete the user's task.",
+                "input": [{"role": "user", "content": holder.task(actor)}],
+                "tools": tools,
+            }
+            self.assert_natural(native, holder.documents(actor))
 
 
 if __name__ == "__main__":

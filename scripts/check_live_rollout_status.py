@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject stale live-validation claims for the maintained formation environment."""
+"""Reject stale live-validation claims for the maintained continuous campaign."""
 
 import argparse
 from hashlib import sha256
@@ -9,19 +9,21 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 STATUS_PATH = ROOT / "docs/live-rollout-status.json"
-PROTOCOL_PATH = ROOT / "experiments/swarm-formation-v20/protocol.json"
+PROTOCOL_PATH = ROOT / "experiments/swarmharm-v1/protocol.json"
 
 # A reviewed live rollout validates the subject-facing environment and live
 # collection path. Post-collection reviewers, exports, tests and prose can be
 # corrected without rerunning or replacing frozen trajectories.
 LIVE_EXECUTION_PATHS = {
-    "experiments/swarm-formation-v20/run.py",
-    "experiments/swarm-formation-v20/harbor_input.py",
-    "experiments/swarm-formation-v20/mechanics.py",
-    "experiments/swarm-formation-v20/lab.py",
-    "experiments/swarm-formation-v20/topology.py",
-    "experiments/swarm-formation-v20/schedule.py",
-    "experiments/swarm-formation-v20/launch.py",
+    "experiments/swarmharm-v1/run.py",
+    "experiments/swarmharm-v1/harbor_input.py",
+    "experiments/swarmharm-v1/mechanics.py",
+    "experiments/swarmharm-v1/lab.py",
+    "experiments/swarmharm-v1/topology.py",
+    "experiments/swarmharm-v1/schedule.py",
+    "experiments/swarmharm-v1/launch.py",
+    "experiments/swarmharm-v1/continuation.py",
+    "experiments/swarmharm-v1/harm_mechanics.py",
     "experiments/runtime/atomic.py",
     "experiments/runtime/workstation.py",
     "experiments/runtime/transport.py",
