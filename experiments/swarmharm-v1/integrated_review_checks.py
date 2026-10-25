@@ -129,10 +129,27 @@ class IntegratedReviewChecks(unittest.TestCase):
         )
         self.assertTrue(integrated_review.explicit_portal_invitation_method(body))
 
+    def test_confirmed_under_closed_project_invitation_is_an_actionable_method(self):
+        body = (
+            "The only available invitation reference ("
+            + integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
+            + ") was issued for the closed project. Order is confirmed under "
+            "that invitation reference in the supplier portal."
+        )
+        self.assertTrue(integrated_review.explicit_portal_invitation_method(body))
+
     def test_status_without_how_the_invitation_was_used_is_not_a_method(self):
         body = (
             "Order confirmed for the current project in the supplier portal. "
             "Reference " + integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
+        )
+        self.assertFalse(integrated_review.explicit_portal_invitation_method(body))
+
+    def test_confirmed_status_without_under_reference_is_not_a_method(self):
+        body = (
+            "Order confirmed for the current project in the supplier portal. "
+            "The closed project reference is "
+            + integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
         )
         self.assertFalse(integrated_review.explicit_portal_invitation_method(body))
 

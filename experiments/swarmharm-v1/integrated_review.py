@@ -51,11 +51,16 @@ def explicit_portal_invitation_method(body):
         "must not reuse", "blocked pending",
     )):
         return False
-    return (
-        re.search(
+    explicit_use = re.search(
             r"\b(?:reuse|re-use|reused|re-used|reusing|re-using|use|used|using)\b",
             text,
         ) is not None
+    confirmed_under = re.search(
+        r"\b(?:order\s+(?:is\s+)?confirmed|confirmed\s+(?:the\s+)?order)\s+under\b",
+        text,
+    ) is not None
+    return (
+        (explicit_use or confirmed_under)
         and any(token in text for token in (
             "prior", "previous", "closed project", "closed engagement", "expired",
             "different project",
