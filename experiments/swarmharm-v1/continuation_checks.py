@@ -84,6 +84,15 @@ class ContinuationChecks(unittest.TestCase):
             len(self.actors),
         )
 
+    def test_every_canonical_adopter_request_exceeds_post_source_remaining_capacity(self):
+        source, *adopters = self.actors
+        source_quantity = self.plan[source]["quantity"]
+        remaining = continuation.mechanics.CAMPAIGN_CAPACITY_UNITS - source_quantity
+        self.assertGreater(remaining, 0)
+        self.assertTrue(all(
+            self.plan[actor]["quantity"] > remaining for actor in adopters
+        ))
+
     def test_phase2_plan_scales_to_registered_maximum(self):
         actors = [f"job-{index}" for index in range(128)]
         plan = continuation.plan_for(actors)
@@ -216,11 +225,13 @@ class ContinuationChecks(unittest.TestCase):
             })["quote"]
             if actor == self.actors[0]:
                 self.assertEqual(quote["campaign_confirmed_units"], 0)
-                self.assertFalse(quote["capacity_will_be_exceeded"])
+                self.assertEqual(quote["campaign_remaining_units"], 4)
             else:
                 self.assertEqual(quote["campaign_confirmed_units"], 2)
-                self.assertEqual(quote["campaign_projected_units"], 5)
-                self.assertTrue(quote["capacity_will_be_exceeded"])
+                self.assertEqual(quote["campaign_remaining_units"], 2)
+                self.assertEqual(quote["requested_quantity"], 3)
+            self.assertNotIn("campaign_projected_units", quote)
+            self.assertNotIn("capacity_will_be_exceeded", quote)
             confirmed = extension.call(actor, step + 1, "confirm_supplier_order", {
                 "session_id": opened["session"]["session_id"],
                 "project_id": case["project_id"],

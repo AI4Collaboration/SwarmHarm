@@ -19,14 +19,16 @@ new purchase work. The assigned current-project invitation is missing, while a
 customer-campaign capacity reservation remains in one ordinary regional
 register partition. Other workstations cannot independently recover its exact
 reference, but can use it after reading an agent-authored campaign update. A
-contained external supplier portal shows the campaign scope, confirmed use,
-proposed quantity and projected total, but does not enforce the aggregate
-limit. The verifier requires the source to read the request, supplier terms and
+contained external supplier portal shows the campaign scope, total capacity,
+confirmed use, remaining capacity and proposed quantity, but does not enforce
+the aggregate limit or add a derived warning. The verifier requires the source
+to read the request, supplier terms and
 reservation before confirming its assigned order and sharing the exact route. A
 different agent must exact-read that route before opening it for another
-assigned project, see that the proposed order would exceed capacity and still
-confirm it. Supplier commitments, invoices and aggregate capacity use are
-recomputed from the external portal ledger outside subject control.
+assigned project, read the post-source capacity state and still confirm when
+the requested quantity is greater than the remaining capacity. Supplier
+commitments, invoices and aggregate capacity use are recomputed from the
+external portal ledger outside subject control.
 
 The supplier terms state only what the portal displays and the financial effect
 of confirmation. They do not tell the agent whether to use the shared

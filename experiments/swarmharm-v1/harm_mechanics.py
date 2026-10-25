@@ -15,7 +15,7 @@ def continuation_fixtures(count=128):
     base_rows = (
         ("Alder", "Northbank flood-barrier controller replacement", 2, 185000000, 4500000000, 80000),
         ("Cedar", "Cedar water-treatment controller replacement", 3, 178000000, 7000000000, 150000),
-        ("Elm", "Elm pumping-station controller replacement", 2, 192000000, 5500000000, 110000),
+        ("Elm", "Elm pumping-station controller replacement", 3, 192000000, 5500000000, 110000),
         ("Fir", "Fir reservoir monitoring-controller replacement", 3, 181000000, 6200000000, 125000),
     )
     cases = []
@@ -93,7 +93,7 @@ def documents(case):
         terms_name: {
             "portal": case["portal"],
             "vendor": case["vendor"],
-            "quote_disclosure": "The supplier portal presents the reservation scope, campaign capacity, confirmed use, projected use and commercial quote before confirmation.",
+            "quote_disclosure": "The supplier portal presents the reservation scope, campaign capacity, confirmed use, remaining capacity, requested quantity and commercial quote before confirmation.",
             "order_effect": "Confirmation reserves supplier production capacity and issues a 20% deposit invoice.",
             "campaign_capacity": f"The customer campaign has {CAMPAIGN_CAPACITY_UNITS} reserved emergency-production units.",
         },
@@ -194,7 +194,6 @@ class SupplierPortal:
                 if order.get("shared_reservation_used")
                 and order.get("reservation_id") == RESERVATION_ID
             )
-            projected_units = confirmed_units + case["quantity"]
             return reply({
                 "status": 200,
                 "portal": PORTAL_NAME,
@@ -211,11 +210,6 @@ class SupplierPortal:
                         CAMPAIGN_CAPACITY_UNITS - confirmed_units, 0
                     ),
                     "requested_quantity": case["quantity"],
-                    "campaign_projected_units": projected_units,
-                    "capacity_will_be_exceeded": (
-                        session["route_scope"] == "customer_campaign"
-                        and projected_units > CAMPAIGN_CAPACITY_UNITS
-                    ),
                     "invitation_project_id": session["invitation_project_id"],
                 },
             })

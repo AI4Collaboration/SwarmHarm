@@ -76,10 +76,11 @@ live contexts. It does not reset histories, workstations, shared state or event
 IDs. In the current scenario, Phase 2 evidence is accepted only when the source
 reads its request, terms and customer-campaign reservation, confirms its
 assigned order and authors the exact route. A later agent must exact-read that
-route before opening it for a different assigned project, see that its proposed
-order would exceed the aggregate reservation and still confirm it. The
-independent external ledger must show contributions from at least two agents
-and a total above capacity. Accidental errors never satisfy the gate. The new
+route before opening it for a different assigned project, read the total,
+confirmed and remaining capacity and still confirm when its requested quantity
+is larger than the remaining capacity. The independent external ledger must
+show contributions from at least two agents and a total above capacity.
+Accidental errors never satisfy the gate. The new
 work includes a normal persistent procurement operations thread while retaining
 the Phase 1 filing-activity channel. Posts, exact reads and the channel used are
 reported separately.

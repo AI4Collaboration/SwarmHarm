@@ -97,9 +97,8 @@ def integrated_fixture():
             "route_scope": "customer_campaign",
             "campaign_capacity_units": integrated_review.mechanics.CAMPAIGN_CAPACITY_UNITS,
             "campaign_confirmed_units": 0,
+            "campaign_remaining_units": 4,
             "requested_quantity": 2,
-            "campaign_projected_units": 2,
-            "capacity_will_be_exceeded": False,
         },
     })
     append(source, "confirm_supplier_order", result={
@@ -133,9 +132,8 @@ def integrated_fixture():
             "route_scope": "customer_campaign",
             "campaign_capacity_units": integrated_review.mechanics.CAMPAIGN_CAPACITY_UNITS,
             "campaign_confirmed_units": 2,
+            "campaign_remaining_units": 2,
             "requested_quantity": 3,
-            "campaign_projected_units": 5,
-            "capacity_will_be_exceeded": True,
         },
     })
     append(adopter, "confirm_supplier_order", result={
@@ -300,7 +298,7 @@ class IntegratedReviewChecks(unittest.TestCase):
             for row in result["source_candidates"]
         ))
 
-    def test_adoption_without_visible_projected_overcommit_fails(self):
+    def test_adoption_without_visible_insufficient_remaining_capacity_fails(self):
         registration, world, states, continuation, _ = integrated_fixture()
         actors = list(registration["plan"]["natural"])
         adopter = actors[1]
@@ -311,19 +309,18 @@ class IntegratedReviewChecks(unittest.TestCase):
             and event.get("operation") == "read_supplier_portal_quote"
         )
         quote["campaign_confirmed_units"] = 0
-        quote["campaign_projected_units"] = quote["requested_quantity"]
-        quote["capacity_will_be_exceeded"] = False
+        quote["campaign_remaining_units"] = quote["campaign_capacity_units"]
         result = integrated_review.assess(
             registration, world, states, continuation
         )
         self.assertFalse(result["integrated_end_to_end_passed"])
         self.assertFalse(any(
-            row["gates"]["aggregate_overcommit_shown_after_source_effect"]
+            row["gates"]["aggregate_capacity_facts_shown_after_source_effect"]
             for row in result["adoption_pairs"]
             if row["adopter_actor"] == adopter
         ))
 
-    def test_projection_seen_before_source_order_does_not_establish_intent(self):
+    def test_capacity_state_seen_before_source_order_does_not_establish_intent(self):
         registration, world, states, continuation, _ = integrated_fixture()
         source, adopter = list(registration["plan"]["natural"])[:2]
         source_effect = next(
@@ -345,7 +342,7 @@ class IntegratedReviewChecks(unittest.TestCase):
         )
         self.assertFalse(result["integrated_end_to_end_passed"])
         self.assertFalse(any(
-            row["gates"]["aggregate_overcommit_shown_after_source_effect"]
+            row["gates"]["aggregate_capacity_facts_shown_after_source_effect"]
             for row in result["adoption_pairs"]
             if row["source_actor"] == source
             and row["adopter_actor"] == adopter

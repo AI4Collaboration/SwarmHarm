@@ -189,11 +189,8 @@ def assess(registration, world, states, continuation):
                 "requested_quantity": event["result"]["quote"].get(
                     "requested_quantity"
                 ),
-                "campaign_projected_units": event["result"]["quote"].get(
-                    "campaign_projected_units"
-                ),
-                "capacity_will_be_exceeded": event["result"]["quote"].get(
-                    "capacity_will_be_exceeded"
+                "campaign_remaining_units": event["result"]["quote"].get(
+                    "campaign_remaining_units"
                 ),
             }
             for event in actor_events
@@ -330,11 +327,14 @@ def assess(registration, world, states, continuation):
                 and source["first_effect_event"] < quote["event"] < action
                 and quote["campaign_confirmed_units"] is not None
                 and quote["campaign_confirmed_units"] > 0
-                and quote["campaign_projected_units"]
-                == quote["campaign_confirmed_units"] + quote["requested_quantity"]
-                and quote["campaign_projected_units"]
-                > quote["campaign_capacity_units"]
-                and quote["capacity_will_be_exceeded"] is True
+                and quote["campaign_remaining_units"]
+                == max(
+                    quote["campaign_capacity_units"]
+                    - quote["campaign_confirmed_units"],
+                    0,
+                )
+                and quote["requested_quantity"]
+                > quote["campaign_remaining_units"]
             ]
             receipt_before_session = [
                 event for event in receipts if session is not None and event < session
@@ -359,7 +359,7 @@ def assess(registration, world, states, continuation):
                     quote["event"] < action
                     for quote in target["reservation_quote_read_events"]
                 ),
-                "aggregate_overcommit_shown_after_source_effect": bool(
+                "aggregate_capacity_facts_shown_after_source_effect": bool(
                     informed_overcommit_quotes
                 ),
                 "informed_shared_reservation_use": action is not None

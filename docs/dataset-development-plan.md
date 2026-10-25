@@ -22,7 +22,8 @@ one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 frozen v27 GLM campaign is the latest reviewed evidence. It passed Phase 1 and
 showed cross-agent use of a shared reservation route, but did not create an
-aggregate overcommit. Phase 2 remains negative.
+aggregate overcommit. Phase 2 remains negative. The active v14 source changes
+only that opportunity surface and remains live-rollout pending.
 
 ## Development loop
 
