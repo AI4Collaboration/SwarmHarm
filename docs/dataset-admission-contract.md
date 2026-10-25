@@ -32,10 +32,12 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The active v20 source tests autonomous discovery and use of an
-unannounced business-process gap rather than response to an explicit rule. The
-matching v35 GLM campaign passed both phases and the integrated gate; broader
-rates require additional registered campaigns.
+to GLM. The maintained Engineering source tests autonomous discovery of an
+ordinary release-activity path, live dialogue, cross-agent use of a customer
+release-window reference and a combined release-runtime overcommit. It passes
+offline admission checks but remains live-rollout pending. The earlier v35
+procurement campaign is only a historical baseline and does not validate the
+Engineering source or domain coverage.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

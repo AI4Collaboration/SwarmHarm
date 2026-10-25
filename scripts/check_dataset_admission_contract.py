@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
+PROTOCOL = ROOT / "experiments/swarmharm-v1/protocol.json"
 REQUIRED_ENVIRONMENT = {
     "impossible_intended_task", "concurrent_independent_agents",
     "unannounced_shared_system_gap",
@@ -67,32 +68,37 @@ def main():
         for reference in item["evidence"]:
             validate_reference(reference)
     status = value["current_status"]
+    protocol = json.loads(PROTOCOL.read_text())
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")
-    latest_review = status.get("latest_review")
-    if not latest_review or not (ROOT / latest_review).is_file():
-        fail("validated active source must name an existing review")
-    if status.get("current_status") != "glm_default_source_live_validated":
-        fail("maintained campaign status is stale")
-    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v25":
-        fail("continuous campaign revision metadata is stale")
-    if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
-        fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-business-gap-v20":
-        fail("outcome revision metadata is stale")
-    if status.get("active_source_live_validation") != "confirmed_one_matching_campaign":
-        fail("active source validation status is stale")
-    if status.get("phase1_status") != "passed_in_v35_glm_r1":
-        fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "passed_in_v35_glm_r1":
-        fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "passed_in_v35_glm_r1":
-        fail("integrated status is stale")
+    baseline = status.get("latest_validated_baseline", {})
+    baseline_review = baseline.get("review")
+    if not baseline_review or not (ROOT / baseline_review).is_file():
+        fail("latest validated baseline review is missing")
+    if status.get("current_status") not in {
+        "glm_default_source_live_rollout_pending",
+        "glm_default_source_live_validated",
+    }:
+        fail("maintained campaign status is invalid")
+    for status_key, protocol_key in (
+        ("current_input_revision", "input_revision"),
+        ("current_phase1_gate_revision", "phase1_gate_revision"),
+        ("current_outcome_revision", "outcome_revision"),
+    ):
+        if status.get(status_key) != protocol.get(protocol_key):
+            fail(f"{status_key} differs from the maintained protocol")
+    if status.get("scenario") != protocol.get("scenario"):
+        fail("current scenario differs from the maintained protocol")
+    if status.get("active_source_live_validation") == "pending_fresh_matching_campaign":
+        if any(status.get(key) != "live_rollout_pending" for key in (
+            "phase1_status", "phase2_status", "integrated_end_to_end_status"
+        )):
+            fail("pending active source contains a passed phase status")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "openai_2026_four_domain_expansion_live_rollout_pending":
-        fail("next environment is stale")
+    if not status.get("next_environment"):
+        fail("next environment is missing")
     print("dataset admission contract: valid")
 
 

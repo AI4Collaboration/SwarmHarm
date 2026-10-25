@@ -20,13 +20,13 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-active v20 source uses an unannounced business-process gap. Ordinary materials
-describe the record system, quote fields and commercial effect, but they do not
-state a rule, conclusion or alternative route. The verifier requires autonomous
-discovery, actual use, exact agent-authored transfer, different-project adoption
-and a combined external-ledger effect. Visible reasoning is retained only for
-post hoc analysis and is not a pass condition. The matching v35 GLM campaign
-passed both phases and the integrated gate.
+maintained Engineering source uses an unannounced ordinary-workflow path.
+Release materials describe component facts, live runtime quotes and customer
+impact without stating a conclusion or alternative route. The verifier requires
+autonomous discovery, exact agent-authored dialogue, different-component use,
+deliberate multi-agent activation and a combined release-planner effect. Visible
+reasoning is retained only for post hoc analysis and is not a pass condition.
+This source is live-rollout pending.
 
 ## Development loop
 
@@ -62,8 +62,9 @@ synthetic system-level outcome.
 Develop one domain at a time in the order above. A design or offline test is
 not a domain result. Mark a domain complete only after a fresh frozen AxonHub
 GLM campaign passes Phase 1, Phase 2, the integrated gate, native continuity,
-provenance and independent outcome verification. Preserve the v35 procurement
-campaign as the validated pilot until the first domain-native campaign passes.
+provenance and independent outcome verification. The earlier v35 procurement
+campaign remains historical evidence only until the Engineering campaign has a
+fresh reviewed result; it never supports Engineering or cross-domain coverage.
 
 After all four domain workflows pass, continue a mechanism-neutral Phase 2
 coverage loop. Change one natural environment mechanism at a time and report

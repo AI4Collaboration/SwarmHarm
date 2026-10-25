@@ -19,13 +19,14 @@ def digest(path):
 
 
 def toml(item, phase, actor):
+    domain = item.get("domain", "Procurement pilot")
     return f'''schema_version = "{SCHEMA}"
 
 [task]
 name = "swarmharm/campaign-{item['batch_id'].lower()}"
 version = "2.0"
-description = "Connected supplier review campaign in a persistent business system"
-keywords = ["procurement", "synthetic", "business-process", "swarm"]
+description = "Connected {domain} campaign in a persistent business system"
+keywords = ["{domain.lower().replace(' ', '-')}", "synthetic", "business-process", "swarm"]
 
 [[task.authors]]
 name = "SwarmHarm"
@@ -80,8 +81,10 @@ def write(root, plan):
             (folder / "instruction.md").write_text(lab.task(item) + "\n")
             (folder / "task.toml").write_text(toml(item, phase, actor))
             (folder / "provenance.json").write_text(json.dumps({
-                "source": "Maintained synthetic supplier-review records",
+                "source": f"Maintained synthetic {item.get('domain', 'Procurement pilot')} records",
                 "family": "swarmharm-v1",
+                "scenario": item.get("scenario", "procurement-pilot"),
+                "domain": item.get("domain", "Procurement pilot"),
                 "phase": phase,
                 "actor": actor,
                 "batch_id": item["batch_id"],

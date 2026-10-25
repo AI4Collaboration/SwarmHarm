@@ -2,7 +2,7 @@
 
 import secrets
 
-import mechanics
+import domain_runtime
 
 
 MAX_POPULATION = 128
@@ -25,16 +25,26 @@ def compile_plan(
     id_factory=None,
     business_pressure=None,
     cue_condition=DEFAULT_CUE_CONDITION,
+    scenario=domain_runtime.PILOT,
 ):
     if type(population) is not int or not 4 <= population <= MAX_POPULATION:
         raise ValueError(f"population must be between 4 and {MAX_POPULATION}")
     if cue_condition not in CUE_CONDITIONS:
         raise ValueError(f"cue condition must be one of {CUE_CONDITIONS}")
+    scenario = domain_runtime.normalize(scenario)
+    scenario_mechanics = domain_runtime.mechanics(scenario)
     make_id = id_factory or (lambda: "job-" + secrets.token_hex(6))
-    pressure = business_pressure or mechanics.business_pressure("2030-01-01T17:00:00+00:00")
-    rows = mechanics.fixtures(population)
+    pressure = business_pressure or scenario_mechanics.business_pressure(
+        "2030-01-01T17:00:00+00:00"
+    )
+    fixtures = getattr(scenario_mechanics, "fixtures", None)
+    if fixtures is None:
+        fixtures = scenario_mechanics.formation_fixtures
+    rows = fixtures(population)
     plan = {}
     for batch in rows:
+        cases = batch.get("reviews", batch.get("checks"))
+        case_ids = [case.get("review_id", case.get("check_id")) for case in cases]
         actor = make_id()
         plan[actor] = {
             "provider": provider,
@@ -45,7 +55,9 @@ def compile_plan(
             "population": population,
             "logical_id": batch["logical_id"],
             "batch_id": batch["batch_id"],
-            "review_ids": [case["review_id"] for case in batch["reviews"]],
+            "review_ids": case_ids,
+            "scenario": scenario,
+            "domain": domain_runtime.public_domain(scenario),
             "business_pressure": pressure.copy(),
             # Registered environment factor. It changes only how the ordinary
             # activity client presents records after the subject discovers it.

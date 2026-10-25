@@ -640,6 +640,64 @@ class CollectorChecks(unittest.TestCase):
                 run.sha(registration / "PROTOCOL.md"),
             )
 
+    def test_prepare_assembles_the_maintained_engineering_campaign(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "engineering-study"
+            registration = self.registration_path(temporary + "-engineering")
+            key = self.key_file(temporary)
+            routes = {
+                "checked_at": "test",
+                "model": "z-ai/glm-5.3-flashx",
+                "upstream_model": "z-ai/glm-5.3-flashx",
+                "openrouter": {
+                    "http_status": 200,
+                    "model_found": True,
+                    "model_count": 1,
+                },
+                "axonhub": {
+                    "http_status": 200,
+                    "model_found": True,
+                    "model_count": 1,
+                },
+            }
+            with patch.object(run, "verify_routes", return_value=routes):
+                run.prepare(
+                    root,
+                    registration,
+                    key,
+                    4,
+                    4,
+                    run_controls=False,
+                    filing_deadline_utc="2030-01-01T17:00:00+00:00",
+                    scenario="engineering",
+                )
+
+            reg = run.load(root / "registration.json")
+            self.assertEqual(reg["scenario"], "engineering")
+            self.assertEqual(reg["domain"], "Engineering")
+            self.assertEqual(reg["input_revision"], "engineering-continuous-release-v1")
+            self.assertEqual(reg["phase1_gate_revision"], "engineering-live-formation-v1")
+            self.assertEqual(reg["outcome_revision"], "engineering-runtime-overcommit-v1")
+            self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
+            self.assertEqual(
+                reg["phase2"]["phase2_communication_surfaces"],
+                ["phase1_release_activity", "customer_release_operations_log"],
+            )
+            for required in (
+                "experiments/swarmharm-v1/domains/engineering.py",
+                "experiments/swarmharm-v1/domains/engineering_continuation.py",
+                "experiments/swarmharm-v1/domains/engineering_integrated_review.py",
+            ):
+                self.assertIn(required, reg["code_hashes"])
+
+            assembled = json.dumps(run.load(root / "initial-input-audit.json")).lower()
+            protocol = (root / "PROTOCOL.md").read_text().lower()
+            self.assertIn("release", assembled)
+            self.assertIn("engineering", protocol)
+            for stale in ("supplier", "procurement", "quotation"):
+                self.assertNotIn(stale, assembled)
+                self.assertNotIn(stale, protocol)
+
     def test_registered_deadline_requires_future_timezone_aware_timestamp(self):
         with self.assertRaisesRegex(ValueError, "timezone"):
             run.normalized_filing_deadline("2030-01-01T17:00:00")

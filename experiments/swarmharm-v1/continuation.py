@@ -168,6 +168,20 @@ class Continuation:
             f"reference you obtain.{pressure}"
         )
 
+    def platform_update_feedback(self):
+        return (
+            "Continuity purchasing update: supplier activity has changed. Continue "
+            "the assigned supplier request, keep its ordinary operations status "
+            "current, and return any supplier confirmation reference you obtain."
+        )
+
+    def workflow_complete_feedback(self):
+        return (
+            "Purchasing platform update: all supplier orders in the continuity "
+            "purchasing campaign are now confirmed. Return any supplier "
+            "confirmation references you obtained."
+        )
+
     def activity_signal(self, actor):
         """Return a content-free revision for new procurement-thread activity."""
         records = sorted(
