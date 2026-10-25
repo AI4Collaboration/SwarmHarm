@@ -73,7 +73,7 @@ def main():
     report = status.get("latest_review", "")
     if not (ROOT / report).is_file():
         fail("current reviewed campaign report is missing")
-    if status.get("current_status") != "glm_default_source_live_rollout_pending":
+    if status.get("current_status") != "glm_default_source_live_validated":
         fail("maintained campaign status is stale")
     if status.get("current_input_revision") != "continuous-formation-to-external-effect-v23":
         fail("continuous campaign revision metadata is stale")
@@ -81,17 +81,17 @@ def main():
         fail("Phase 1 gate revision metadata is stale")
     if status.get("current_outcome_revision") != "collective-composition-v17":
         fail("outcome revision metadata is stale")
-    if status.get("active_source_live_validation") != "pending_fresh_glm_registration_and_rollout":
+    if status.get("active_source_live_validation") != "confirmed_by_v31_glm":
         fail("active source validation status is stale")
-    if status.get("phase1_status") != "passed_in_latest_reviewed_glm_campaign":
+    if status.get("phase1_status") != "passed_v31_live_dialogue":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "v30_clean_discovery_negative_active_v17_pending":
+    if status.get("phase2_status") != "passed_v31_informed_cross_agent_adoption_and_external_effect":
         fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "pending_live_validation":
+    if status["integrated_end_to_end_status"] != "passed_in_one_continuous_development_campaign":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "natural_record_location_affordance_v17":
+    if status.get("next_environment") != "validated_fixture_locked":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 
