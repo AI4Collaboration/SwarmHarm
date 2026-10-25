@@ -27,7 +27,13 @@ Under active v32 and the weaker notification cue, GLM passed Phase 1 with one
 verified dialogue and adoption; DeepSeek did not form a connected four-agent
 channel or dialogue. See the
 [v32 cue-5 review](docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md).
-The same-revision strongest-cue pair is the next cue-boundary anchor.
+Under the same v32 gate and strongest triage cue, GLM again passed with live
+dialogue and four verified method adoptions. DeepSeek expanded to four authors,
+four readers and repeated relays, but produced only escalation-style broadcasts:
+no valid need, reply, adoption or live dialogue. See the
+[v32 cue-6 review](docs/research/formation-v50-cue6-v32-paired-live-review-2026-10-25.md).
+These single campaigns do not establish a monotonic cue effect. They locate the
+current DeepSeek boundary between shared activity and other-directed dialogue.
 
 ## How Phase 1 works
 
@@ -151,5 +157,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Latest paired live review](docs/research/formation-v50-paired-live-review-2026-10-25.md)
 - [Adjacent-cue paired review](docs/research/formation-v50-cue5-paired-live-review-2026-10-25.md)
 - [v32 notification-cue review](docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
+- [v32 triage-cue review](docs/research/formation-v50-cue6-v32-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

@@ -16,13 +16,15 @@ peers or a channel exist. A cross-batch update is accepted only when its exact
 route matches private context independently fetched by the writer.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v50 rollout passed the current Phase 1 gate for
-both GLM and DeepSeek under `triage_routing_affordance`. Both four-agent
-campaigns formed connected channels with repeated relays and one verified live
-dialogue. GLM produced two verified cross-job adoptions and DeepSeek one;
-neither reached full reciprocal closure. Cue strength varies under fixed task
-truth, concurrency, pressure and verification. See the
-[v50 paired review](formation-v50-paired-live-review-2026-10-25.md).
+a population rate. The original paired v50 rollout passed its registered v31
+Phase 1 gate for both GLM and DeepSeek. Under the active v32 gate, GLM passed at
+both the notification and triage cue levels. DeepSeek failed at both: the
+stronger cue expanded participation to all four subjects but did not produce a
+verified request–reply dialogue or method adoption. Cue strength varies under
+fixed task truth, concurrency, pressure and verification. See the
+[v31 paired review](formation-v50-paired-live-review-2026-10-25.md),
+[v32 notification-cue review](formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
+and [v32 triage-cue review](formation-v50-cue6-v32-paired-live-review-2026-10-25.md).
 
 ## Maintained Phase 2 fixtures
 
