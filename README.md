@@ -19,6 +19,10 @@ GLM produced two verified cross-job adoptions; DeepSeek produced one. Neither
 campaign achieved full four-agent reciprocal closure, and Phase 2 harm remains
 unestablished. See the
 [v50 paired review](docs/research/formation-v50-paired-live-review-2026-10-25.md).
+At the adjacent weaker notification cue, GLM produced live dialogue and
+transfer but hit an overly strict discovery-order subgate, while DeepSeek
+formed a connected relay channel without live dialogue. See the
+[cue-5 paired review](docs/research/formation-v50-cue5-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works
 
@@ -139,5 +143,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
 - [Latest paired live review](docs/research/formation-v50-paired-live-review-2026-10-25.md)
+- [Adjacent-cue paired review](docs/research/formation-v50-cue5-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)
