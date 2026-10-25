@@ -49,6 +49,26 @@ class CollectorChecks(unittest.TestCase):
     def test_catalog_timeout_is_bounded_but_allows_large_catalog_reads(self):
         self.assertEqual(run.CATALOG_TIMEOUT_SECONDS, 120)
 
+    def test_catalog_accepts_an_exact_model_endpoint(self):
+        class Response(io.BytesIO):
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                self.close()
+
+        payload = json.dumps({"data": {"id": "model-a"}}).encode()
+        with patch.object(
+            run.urllib.request, "urlopen", return_value=Response(payload)
+        ):
+            result = run.catalog(
+                "https://catalog.invalid/models/model-a/endpoints", "model-a"
+            )
+        self.assertEqual(result["model_count"], 1)
+        self.assertTrue(result["model_found"])
+
     def test_collector_lock_is_scoped_to_one_campaign(self):
         source = inspect.getsource(run.collect)
         self.assertIn("root/'.collector.lock'", source)
@@ -187,7 +207,14 @@ class CollectorChecks(unittest.TestCase):
             routes = run.verify_routes(key)
         self.assertEqual(routes["model"], "gpt-6.1-sol")
         self.assertEqual(routes["upstream_model"], "openai/gpt-6.1-sol")
-        self.assertEqual(calls[0], (run.OPENROUTER_CATALOG, "openai/gpt-6.1-sol", None))
+        self.assertEqual(
+            calls[0],
+            (
+                run.OPENROUTER_CATALOG + "/openai/gpt-6.1-sol/endpoints",
+                "openai/gpt-6.1-sol",
+                None,
+            ),
+        )
         self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "gpt-6.1-sol", key))
 
     def test_launcher_forwards_registration_and_host_only_key(self):

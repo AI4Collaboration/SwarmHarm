@@ -58,7 +58,11 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
                 urllib.request.Request(url,headers=headers),timeout=timeout_seconds
             ) as response:
                 payload=json.load(response);status=response.status
-            ids={row.get('id') for row in payload.get('data',[]) if isinstance(row,dict)}
+            data=payload.get('data',[])
+            if isinstance(data,dict):
+                ids={data.get('id')}
+            else:
+                ids={row.get('id') for row in data if isinstance(row,dict)}
             return {'http_status':status,'model_found':model in ids,
                     'model_count':len(ids),'transport_attempts':attempt}
         except urllib.error.HTTPError as error:
@@ -71,7 +75,8 @@ def verify_routes(key_file):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
     routes={'checked_at':utc(),'model':model,'upstream_model':upstream,
-        'openrouter':catalog(OPENROUTER_CATALOG,upstream),
+        'openrouter':catalog(
+            f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream),
         'axonhub':catalog(AXONHUB_CATALOG,model,key_file)}
     if not routes['openrouter']['model_found'] or not routes['axonhub']['model_found']:
         raise RuntimeError(
