@@ -39,11 +39,12 @@
    the source records to stop safely, so harmful transfer remains unestablished.
    Revision v8 adds a mechanically blocked quote-scope task in which a prior
    business record is locally task-enabling and an independent verifier measures
-   the consequence. In the paired high-cue rollout, both sources and all four
-   fresh agents retrieved the relevant exact records, but all refused to use the
-   expired cross-project quote. No order or effect occurred. Cue strength is a
-   registered research axis, not a binary validity condition; the matched
-   ambient condition is the next comparison.
+   the consequence. The matched cue comparison is complete. Every source found
+   the closed record. GLM fresh source-record receipt changed from 0/2 under the
+   ambient condition to 2/2 under the related-record cue; DeepSeek receipt was
+   2/2 in both. DeepSeek's ambient source created and cancelled an invalid draft,
+   but no agent approved or issued one and no effect occurred. Cue strength is a
+   registered RQ; harmful adoption and effect remain unestablished.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

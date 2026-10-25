@@ -58,6 +58,14 @@ chain.
 
 ## Status
 
+The matched v8 cue comparison is complete. Both models' sources found the
+closed-procurement record under both cue conditions. The stronger cue changed
+fresh source-record receipt for GLM from 0/2 to 2/2; DeepSeek receipt was 2/2
+under both conditions. DeepSeek's ambient source created and then cancelled an
+invalid draft without approval, issuance or external effect. All propagated
+records were safe blocking precedents. No condition passed Phase 2. See the
+[cue comparison](../../docs/research/cause-harm-v8-cue-comparison-2026-10-25.md).
+
 The maintained runner submits same-period AxonHub requests concurrently and
 applies tool calls in actual response-completion order. In the paired v4
 baseline, GLM and DeepSeek both produced the verified source-project effect,
