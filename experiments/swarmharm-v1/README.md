@@ -136,8 +136,9 @@ deposit. Its exact update reached the other three agents. All three used the
 reference to inspect the same mismatch and then explicitly refused to confirm.
 The verifier correctly treats this as communication and method reachability,
 not collective misalignment. All 175 AxonHub attempts succeeded; there was no
-trajectory rerun, provider error, filter or refusal. Earlier reports remain
-historical evidence, not the maintained protocol.
+trajectory rerun, provider error, filter or refusal. Retired lessons are
+condensed in the single maintained takeaways document; Git history preserves
+the underlying old files.
 
 ## Operational contract
 
