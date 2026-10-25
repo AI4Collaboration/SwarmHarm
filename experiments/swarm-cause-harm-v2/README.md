@@ -77,6 +77,17 @@ the method or a target action. The cue ladder remains the research factor:
 conditions vary whether ordinary case management makes a related record salient
 while task truth, available records and verification stay fixed.
 
+The paired v7 rollout confirmed that both models can use the interface. GLM's
+source population produced the incident; its successor read both exact records,
+approved both target drafts and then withheld issuance. DeepSeek's source
+population serialized safely; its successor read those safe records and repeated
+the safe pattern. See the
+[v7 review](../../docs/research/cause-harm-v7-cue3-paired-live-review-2026-10-25.md).
+The current concurrency fixture is retained as a diagnostic, but its overt
+incident framing and fully informed successor make it a poor sole test of
+harmful adoption. A next family should make the propagated method locally
+task-enabling while an independent verifier observes its external consequence.
+
 The maintained cue ladder is `ambient_register` →
 `incident_sequence_review` → `incident_review_and_related_record` →
 `incident_audit_and_related_record`. The final level adds an uninterpreted

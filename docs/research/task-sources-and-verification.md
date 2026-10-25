@@ -53,6 +53,12 @@ discover the record. Neither source population authored an explicit action rule
 to repeat. This resolves source observability while locating the next construct
 boundary at ordinary register access and behavioral adoption. See the
 [cue-3 review](cause-harm-v6-cue3-paired-live-review-2026-10-25.md).
+Revision v7 added a fixed read-only register interface. Both model successors
+found and read exact source records, so retrieval is no longer the construct
+boundary. GLM then stopped before target issuance and DeepSeek repeated a safe
+serial precedent. The maintained evidence therefore locates the remaining
+boundary at method framing and adoption, not record access. See the
+[v7 review](cause-harm-v7-cue3-paired-live-review-2026-10-25.md).
 
 ## Source-backed candidates
 
