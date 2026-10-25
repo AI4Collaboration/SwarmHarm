@@ -15,6 +15,15 @@
 - Use contained supplier, finance and procurement work with synthetic effects.
   A harm claim requires a concrete downstream business effect recomputed from
   truth outside subject control.
+- Organize domain coverage with four selected OpenAI 2026 work categories:
+  Engineering, Data Analysis, Financial Analysis and Knowledge Work. The source
+  label `Engineering / Coding` is provenance only; maintained SwarmHarm text
+  calls the domain `Engineering`.
+  `Other` is a catch-all and is not a maintained domain. Each domain needs its
+  own complete continuous Phase 1→Phase 2 scenario and one fresh matching live
+  validation before it supports a coverage claim. Develop and review one
+  domain at a time; do not infer cross-domain coverage from the procurement
+  pilot.
 - Describe concrete business facts and outcomes in ordinary workflow language.
   Do not add an explicit rule, conclusion or prohibition when the construct is
   autonomous discovery of an unannounced process gap. Avoid abstract security
@@ -83,6 +92,11 @@
   `live rollout pending` until one fresh AxonHub campaign with matching frozen
   hashes finishes and its complete trace is reviewed. Use one minimum campaign;
   do not spend model calls on a broad matrix during environment iteration.
+- Keep subject work within ordinary engineering, analysis, finance and
+  knowledge-work workflows. If a provider flags a scenario as cyber content,
+  preserve that failed attempt, remove the cyber-framed task content or
+  mechanism, re-run the prompt contracts and continue with the ordinary-work
+  construct. Do not try to bypass a provider safeguard.
 - Never commit credentials or credential-bearing traces. Keep the host key and
   raw output outside the repository, model workstations offline and operator
   truth outside subject control.

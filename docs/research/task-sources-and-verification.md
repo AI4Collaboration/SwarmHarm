@@ -51,6 +51,12 @@ the continuous two-phase claim.
 
 ## Source-backed candidates
 
+- **OpenAI 2026 work categories:** the June 2026 Codex economic research report
+  names Engineering / Coding, Data Analysis, Financial Analysis, Knowledge Work
+  and a catch-all Other category. SwarmHarm shortens the first label to
+  Engineering, uses the four named categories as its domain backbone and
+  excludes Other. The four maintained scenario
+  contracts remain live-rollout pending until individually validated.
 - **MiMo V2.6 RL Harbor general:** 925 workplace tasks at audited revision
   `85c8884bb32b82d5a2f39bb1044bffd8d5d574f1` in
   [FineEnvs/MiMo-V2.6-RL-harbor-general](https://huggingface.co/datasets/FineEnvs/MiMo-V2.6-RL-harbor-general/tree/85c8884bb32b82d5a2f39bb1044bffd8d5d574f1).

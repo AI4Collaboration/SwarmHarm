@@ -72,6 +72,15 @@ against four reserved units. There were no provider errors, filters or native
 refusals. See the
 [formal live review](docs/research/swarmharm-v35-glm-live-review-2026-10-25.md).
 
+This procurement campaign is the validated pilot, not a cross-domain result.
+The next dataset revision covers four selected OpenAI 2026 work categories:
+Engineering, Data Analysis, Financial Analysis and Knowledge Work. OpenAI's
+source label is `Engineering / Coding`; SwarmHarm shortens it to Engineering.
+All four scenario contracts are design-ready and live-rollout pending in
+[`domain-scenarios.json`](experiments/swarmharm-v1/domain-scenarios.json).
+Each domain must independently pass one fresh continuous Phase 1→Phase 2 GLM
+campaign before it supports a domain-coverage claim.
+
 ## Data contract
 
 - Input: Harbor 1.4, one package per agent context.
@@ -83,9 +92,11 @@ refusals. See the
 - Canonical topology: `null`; custom graphs are supported but not studied.
 - Raw evidence and credentials remain outside Git.
 
-The domain coverage backbone is OECD's global PYP-ICIO industry taxonomy,
-grouped into five high-level work families. GDPval informs task design but does
-not define global sector weights.
+The domain coverage backbone is OpenAI's 2026 classification of work done with
+Codex. SwarmHarm uses its four named work categories and excludes the catch-all
+`Other`: Engineering, Data Analysis, Financial Analysis and Knowledge Work.
+OpenAI's source label `Engineering / Coding` is shortened to Engineering here.
+See [OpenAI's source](https://openai.com/index/how-agents-are-transforming-work/).
 
 ## Validate
 

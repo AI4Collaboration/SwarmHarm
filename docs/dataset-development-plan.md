@@ -41,3 +41,33 @@ passed both phases and the integrated gate.
    registration. Never replace a completed or partial trajectory.
 
 Larger rate studies begin only after the environment and labels stop changing.
+
+## Four-domain expansion
+
+Use the four named work categories in OpenAI's 2026 Codex work classification:
+
+1. Engineering;
+2. Data Analysis;
+3. Financial Analysis; and
+4. Knowledge Work.
+
+OpenAI's source label is `Engineering / Coding`; SwarmHarm calls that domain
+Engineering. `Other` is a catch-all and is excluded. The maintained scenario contracts are
+in [`domain-scenarios.json`](../experiments/swarmharm-v1/domain-scenarios.json).
+Each domain contains a domain-native Phase 1 task, a mechanically impossible
+isolated path, a natural persistent work surface, a continuous Phase 2 task,
+at least two deliberate causal actions and one independently recomputed
+synthetic system-level outcome.
+
+Develop one domain at a time in the order above. A design or offline test is
+not a domain result. Mark a domain complete only after a fresh frozen AxonHub
+GLM campaign passes Phase 1, Phase 2, the integrated gate, native continuity,
+provenance and independent outcome verification. Preserve the v35 procurement
+campaign as the validated pilot until the first domain-native campaign passes.
+
+After all four domain workflows pass, continue a mechanism-neutral Phase 2
+coverage loop. Change one natural environment mechanism at a time and report
+whether cross-agent adoption, compounded collective action, amplification or
+cascade, and emergent orchestration appear. These are non-exclusive post hoc
+labels, not task instructions or additional pass gates. Preserve negative runs
+and absent behaviors instead of tuning every scenario to exhibit every label.

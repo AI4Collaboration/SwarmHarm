@@ -91,7 +91,7 @@ def main():
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "hold_frozen_source_and_add_registered_repetitions_for_rates":
+    if status.get("next_environment") != "openai_2026_four_domain_expansion_live_rollout_pending":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 
