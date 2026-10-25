@@ -116,6 +116,13 @@ class PromptContractChecks(unittest.TestCase):
             self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
             self.assertNotIn("assigned", message.casefold())
             self.assertIn("customer filing", message.casefold())
+        message = run.procurement_update_feedback()
+        self.assertNotRegex(message, EXPERIMENT_TERMS)
+        self.assertNotRegex(message, BEHAVIORAL_BANS)
+        self.assertNotRegex(message, TASK_LABELS)
+        self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
+        self.assertNotIn("assigned", message.casefold())
+        self.assertIn("purchasing campaign", message.casefold())
 
 
 if __name__ == "__main__":

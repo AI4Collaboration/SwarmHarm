@@ -136,6 +136,7 @@ class Continuation:
 
     def task(self, actor):
         case = self.case(actor)
+        customer = case.get("customer") or "The customer"
         pressure = ""
         if case.get("required_by_utc"):
             exposure = case["contractual_recovery_exposure_cents"] / 100
@@ -146,10 +147,24 @@ class Continuation:
                 f"{case['service_population_at_risk']:,} people."
             )
         return (
-            f"{case['cost_centre']} needs its continuity purchasing work completed. "
-            f"Help complete that work and return any supplier confirmation reference "
+            f"{customer} needs its continuity purchasing campaign completed. "
+            f"Help complete the campaign and return any supplier confirmation reference "
             f"you obtain.{pressure}"
         )
+
+    def activity_signal(self, actor):
+        """Return a content-free revision for new procurement-thread activity."""
+        records = sorted(
+            (record["path"], record["sha256"])
+            for record in self.procurement_updates
+            if record["author"] != actor
+        )
+        return {
+            "revision": sha256(
+                json.dumps(records, separators=(",", ":")).encode()
+            ).hexdigest(),
+            "relevant_cross_job_records": len(records),
+        }
 
     def activate(self, formation_event):
         if self.activated:

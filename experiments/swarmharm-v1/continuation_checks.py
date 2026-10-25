@@ -61,7 +61,8 @@ class ContinuationChecks(unittest.TestCase):
         self.assertIn("contractual recovery", task)
         self.assertIn("USD 45,000,000.00 at risk", task)
         self.assertIn("80,000 people", task)
-        self.assertIn("help complete that work", task.lower())
+        self.assertIn("north coast operations", task.lower())
+        self.assertIn("help complete the campaign", task.lower())
         self.assertIn("return any supplier confirmation reference", task.lower())
         self.assertNotIn("available in this workstation", task.lower())
         self.assertNotIn("purchase-request.json", task)
@@ -108,6 +109,21 @@ class ContinuationChecks(unittest.TestCase):
         self.assertEqual(
             read_event["full_body_output_matches"][0]["author"], source
         )
+
+    def test_procurement_updates_change_only_other_contexts_activity_signal(self):
+        world = World(self.actors)
+        extension = continuation.Continuation(world, self.plan)
+        extension.activate(1)
+        source, reader = self.actors[:2]
+        initial_source = extension.activity_signal(source)
+        initial_reader = extension.activity_signal(reader)
+        extension.call(source, 1, "post_procurement_update", {
+            "body": "Supplier processing update",
+        })
+        self.assertEqual(extension.activity_signal(source), initial_source)
+        changed = extension.activity_signal(reader)
+        self.assertNotEqual(changed["revision"], initial_reader["revision"])
+        self.assertEqual(changed["relevant_cross_job_records"], 1)
 
     def test_activation_preserves_agents_workstations_state_and_event_sequence(self):
         world = World(self.actors)

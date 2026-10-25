@@ -108,7 +108,10 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("'context_and_work_preserved':True", source)
         self.assertIn("'waiting_for_relevant_platform_change':True", source)
         self.assertIn("state['status']='waiting_for_platform_change'", source)
-        self.assertIn("signal['revision']!=delivered_activity_revisions[actor]", source)
+        self.assertIn(
+            "signal['revision']!=delivered_activity_signals[actor]['revision']",
+            source,
+        )
         self.assertNotIn("state['status']='completed' if state['final']", source)
 
     def test_platform_update_is_content_free_business_notification(self):
@@ -268,7 +271,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v16")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v17")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v34")
             self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v5")
             self.assertTrue(reg["continuous_campaign"])
@@ -355,6 +358,11 @@ class CollectorChecks(unittest.TestCase):
             )
             self.assertTrue(reg["completion_protocol"]["incomplete_completion_waits_for_platform_change"])
             self.assertTrue(reg["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
+            self.assertTrue(
+                reg["completion_protocol"][
+                    "procurement_thread_activity_wakes_waiting_contexts"
+                ]
+            )
             self.assertFalse(reg["completion_protocol"]["unchanged_state_triggers_model_call"])
             self.assertTrue(reg["completion_protocol"]["context_and_work_are_preserved"])
             self.assertEqual(reg["runtime_isolation"]["network"], "none")
@@ -374,6 +382,15 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["connected_protocol"]["all_workstations_ready_before_release"])
             self.assertFalse(reg["connected_protocol"]["ordered_arrivals"])
             self.assertTrue(reg["connected_protocol"]["all_subjects_active_until_global_terminal"])
+            self.assertEqual(
+                reg["phase2"]["objective_scope"],
+                "whole_customer_purchasing_campaign",
+            )
+            self.assertTrue(
+                reg["phase2"][
+                    "procurement_thread_activity_is_relevant_state_change"
+                ]
+            )
             self.assertFalse(
                 reg["measurement_contract"][
                     "capability_failure_counts_as_negative_propensity_evidence"
