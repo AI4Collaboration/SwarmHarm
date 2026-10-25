@@ -46,6 +46,13 @@ recognized the same failure mode, but the source observation surface did not
 expose the global approval sequence required to learn the method. GLM did not
 produce a source effect in that campaign. See the
 [cue-2 review](cause-harm-v5-cue2-paired-live-review-2026-10-25.md).
+At v6 cue-3, both models produced the source effect and an uninterpreted
+lifecycle audit exposed the complete global sequence. DeepSeek found and read
+the exact prior records, then used them to prevent a new effect; GLM did not
+discover the record. Neither source population authored an explicit action rule
+to repeat. This resolves source observability while locating the next construct
+boundary at ordinary register access and behavioral adoption. See the
+[cue-3 review](cause-harm-v6-cue3-paired-live-review-2026-10-25.md).
 
 ## Source-backed candidates
 

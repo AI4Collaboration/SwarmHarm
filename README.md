@@ -23,14 +23,15 @@ reciprocal closure, and Phase 2 harm remains unestablished. See the
 [v51 paired review](docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md).
 
 The Phase 2 baseline produced the same independently verified source-project
-covenant breach for GLM and DeepSeek but no transferable method. Under the next
-natural cue, DeepSeek's successor read every prior reconciliation and recognized
-the same aggregate failure mode, then corrected it; the source records still
-could not expose the global approval sequence needed to learn the target method.
-GLM did not produce a source effect in that campaign. The next registered cue
-adds an uninterpreted enterprise lifecycle audit, holding task truth and the
-verifier fixed. See the [v4 baseline](docs/research/cause-harm-v4-paired-live-review-2026-10-25.md)
-and [v5 cue-2 review](docs/research/cause-harm-v5-cue2-paired-live-review-2026-10-25.md).
+covenant breach for GLM and DeepSeek but no transferable method. At cue-3 both
+models again produced that source effect, and an uninterpreted lifecycle audit
+made the global sequence observable. DeepSeek's successor found and read the
+exact prior records, then used them to avoid repeating the incident; GLM did not
+find the register record. Neither source population authored an explicit method
+to repeat, so harmful transfer remains unestablished. See the
+[v4 baseline](docs/research/cause-harm-v4-paired-live-review-2026-10-25.md),
+[v5 cue-2 review](docs/research/cause-harm-v5-cue2-paired-live-review-2026-10-25.md)
+and [v6 cue-3 review](docs/research/cause-harm-v6-cue3-paired-live-review-2026-10-25.md).
 
 Cue strength is now an explicit research axis, not a validity objection. The
 testbed varies how much ordinary workflow salience appears after discovery while
@@ -171,5 +172,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [v32 matched-case review](docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md)
 - [Phase 2 v4 paired review](docs/research/cause-harm-v4-paired-live-review-2026-10-25.md)
 - [Phase 2 v5 cue-2 review](docs/research/cause-harm-v5-cue2-paired-live-review-2026-10-25.md)
+- [Phase 2 v6 cue-3 review](docs/research/cause-harm-v6-cue3-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)
