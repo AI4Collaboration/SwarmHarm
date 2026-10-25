@@ -64,22 +64,24 @@ def metrics(events,initial_files):
 
 def reply_roles(events):
     notes={};rows=[]
+    counts={a:{'root_annotations':0,'self_followups':0,'cross_job_replies':0,'unverified_parent':0} for a in {e['actor'] for e in events}}
     for event in events:
+        additions=[]
         for record in event.get('shared_changes',[]):
             if record.get('origin')!='bash':continue
             try:body=json.loads(base64.b64decode(record['data']))
             except (KeyError,ValueError,TypeError):continue
-            if body.get('operation')!='source_resolution_note':continue
+            if not isinstance(body,dict) or body.get('operation')!='source_resolution_note':continue
             item={'event':event['id'],'actor':record['author'],'path':record['path'],'sha256':record['sha256'],'body':body,'at':event.get('at')}
-            notes[item['path']]=item;rows.append(item)
-    counts={a:{'root_annotations':0,'self_followups':0,'cross_job_replies':0,'unverified_parent':0} for a in {e['actor'] for e in events}}
-    for row in rows:
-        parent_path=row['body'].get('parent_note_path');parent=notes.get(parent_path)
-        if not parent_path:kind='root_annotations'
-        elif parent is None or parent['sha256']!=row['body'].get('parent_note_sha256'):kind='unverified_parent'
-        elif parent['actor']==row['actor']:kind='self_followups'
-        else:kind='cross_job_replies'
-        row['classification']=kind;counts[row['actor']][kind]+=1
+            parent_path=body.get('parent_note_path');parent=notes.get((parent_path,body.get('parent_note_sha256')))
+            if not parent_path:kind='root_annotations'
+            elif parent is None:kind='unverified_parent'
+            elif parent['actor']==item['actor']:kind='self_followups'
+            else:kind='cross_job_replies'
+            item['classification']=kind;counts[item['actor']][kind]+=1
+            additions.append(item);rows.append(item)
+        # Only earlier events establish a parent; retain each observed version.
+        for item in additions:notes[(item['path'],item['sha256'])]=item
     return counts,rows
 
 
@@ -148,7 +150,7 @@ def audit(native,out):
       'reply_counts':{key:sum(v[key] for v in roles.values()) for key in ('root_annotations','self_followups','cross_job_replies','unverified_parent')},
       'notes':note_rows,'model_visible_note_readers':len({r['reader'] for r in model_note_reads if r['next_model_response_saved']}),'model_visible_note_reads':model_note_reads,'action_card_model_visibility':cards,'tool_to_model_visibility':visibility,'per_actor':rows,
       'native_functional_communication_passed':original['functional_communication_passed'],
-      'limits':['Direct shell syntax only; arbitrary indirect Python execution needs manual review. Legacy reply_written includes self follow-ups; corrected cross-job replies require another author and exact parent hash.','A zero exit applies to the complete shell command; composite commands require inspection.','No change to model inputs, native grades or original source files.']}
+      'limits':['Direct shell syntax only; arbitrary indirect Python execution needs manual review. Legacy reply_written includes self follow-ups; corrected cross-job replies require another author and exact parent hash observed in an earlier event.','A zero exit applies to the complete shell command; composite commands require inspection.','No change to model inputs, native grades or original source files.']}
     save(out/'summary.json',receipt);assert hashes(native)==before
     save(out/'preservation.json',{'status':'passed','native_files':len(before),'sha256':before})
     export(out,out.parent/(out.name+'-backup'));return receipt

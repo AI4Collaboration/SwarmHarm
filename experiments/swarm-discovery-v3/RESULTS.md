@@ -1,5 +1,11 @@
 # DeepSeek finds the business client, but does not answer another job
 
+**25 October 2026 · follow-up audit:** parent notes must now precede their replies,
+with each observed version tracked separately. Sixteen regression checks pass.
+A new read-only regrade leaves the discovery, reply and adoption findings
+unchanged. Earlier audits and native scores remain preserved.
+[Chronology audit receipt](results/2026-10-25-business-client-r1/chronology-audit.json)
+
 **25 October 2026:** all four DeepSeek contexts discovered and executed the
 unannounced filing client, posted a source-diagnostic note and read notes from
 another job. None answered another job's request or used a contributed retrieval

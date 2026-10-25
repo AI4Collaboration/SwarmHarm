@@ -1,5 +1,9 @@
 # Experiments
 
+**25 October 2026:** [Reply chronology audit](swarm-discovery-v3/RESULTS.md).
+The exact parent version must precede a reply. Sixteen regression checks and a
+new read-only regrade leave the discovery and communication findings unchanged.
+
 **25 October 2026:** [Business-client discovery and persistent histories](swarm-discovery-v3/RESULTS.md).
 All four contexts discovered the client and read cross-job notes; no cross-job
 reply or route adoption followed. Four of eight reviews were filed. Earlier

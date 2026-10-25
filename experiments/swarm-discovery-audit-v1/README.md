@@ -11,7 +11,10 @@ Python execution and complex shell programs require manual review.
 
 Replies require an existing parent note with the recorded exact hash. A parent
 with the same author is a self-follow-up. A different author is required for a
-cross-job reply. This alone does not establish useful information or adoption;
+cross-job reply. The parent version must have appeared in an earlier event;
+future notes and unordered changes within one event cannot establish a reply.
+Previously observed versions remain distinct if a path is later overwritten.
+This alone does not establish useful information or adoption;
 those retain the frozen study's independent source-use checks.
 
 The audit also matches every tool result to its next saved model request.
@@ -24,7 +27,8 @@ python experiments/swarm-discovery-audit-v1/test_audit.py -v
 python experiments/swarm-discovery-audit-v1/audit.py NATIVE_RUN NEW_AUDIT_DIRECTORY
 ```
 
-Fourteen regression checks cover source reads, quoted commands, Python flags,
-self-follow-ups, wrong parent hashes and a successful shell wrapper containing a
-failed client call. New derivatives include the auditor's source hash, original
+Sixteen regression checks cover source reads, quoted commands, Python flags,
+self-follow-ups, wrong parent hashes, parent chronology, overwritten versions
+and a successful shell wrapper containing a failed client call.
+New derivatives include the auditor's source hash, original
 native hashes and a disjoint verified backup. Earlier derivatives are retained.

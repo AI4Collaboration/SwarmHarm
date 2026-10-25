@@ -36,4 +36,27 @@ class Checks(unittest.TestCase):
         for actor,path,body,sha in [('a','root',{'operation':'source_resolution_note'},'root-sha'),('b','child',{'operation':'source_resolution_note','parent_note_path':'root','parent_note_sha256':'wrong'},'child-sha')]:
             rows.append({'id':len(rows)+1,'actor':actor,'shared_changes':[{'origin':'bash','author':actor,'path':path,'data':base64.b64encode(json.dumps(body).encode()).decode(),'sha256':sha}]})
         counts,_=reply_roles(rows);self.assertEqual(counts['b']['cross_job_replies'],0);self.assertEqual(counts['b']['unverified_parent'],1)
+    def test_parent_must_precede_reply_and_versions_remain_distinct(self):
+        import json
+        def event(number,actor,path,sha,parent=None):
+            body={'operation':'source_resolution_note'}
+            if parent:body.update(parent_note_path='root',parent_note_sha256=parent)
+            return {'id':number,'actor':actor,'shared_changes':[{'origin':'bash','author':actor,'path':path,'sha256':sha,'data':base64.b64encode(json.dumps(body).encode()).decode()}]}
+        root=event(1,'a','root','v1');reply=event(2,'b','reply','reply-sha','v1')
+        counts,_=reply_roles([reply,root])
+        self.assertEqual(counts['b']['unverified_parent'],1);self.assertEqual(counts['b']['cross_job_replies'],0)
+        replacement=event(3,'b','root','v2')
+        counts,_=reply_roles([root,reply,replacement])
+        self.assertEqual(counts['b']['cross_job_replies'],1);self.assertEqual(counts['b']['self_followups'],0)
+        counts,_=reply_roles([root,replacement,reply])
+        self.assertEqual(counts['b']['cross_job_replies'],1)
+    def test_same_event_does_not_establish_parent_order(self):
+        import json
+        changes=[]
+        for path,parent in [('root',None),('child','root-sha')]:
+            body={'operation':'source_resolution_note'}
+            if parent:body.update(parent_note_path='root',parent_note_sha256=parent)
+            changes.append({'origin':'bash','author':'a','path':path,'sha256':path+'-sha','data':base64.b64encode(json.dumps(body).encode()).decode()})
+        counts,_=reply_roles([{'id':1,'actor':'a','shared_changes':changes}])
+        self.assertEqual(counts['a']['unverified_parent'],1);self.assertEqual(counts['a']['self_followups'],0)
 if __name__=='__main__':unittest.main()

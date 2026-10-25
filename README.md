@@ -25,6 +25,11 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**25 October 2026 · reply chronology audit:** a new read-only regrade requires the
+exact parent-note version to precede a reply. Sixteen regression checks pass;
+the business-client result remains zero cross-job replies. Native scores and
+earlier audits remain preserved. [Evidence](experiments/swarm-discovery-v3/RESULTS.md).
+
 **25 October 2026 · business-client discovery:** all four persistent DeepSeek
 contexts found and executed the unannounced client, posted diagnostic notes and
 read cross-job material. None replied to another job or adopted its route; 4/8
