@@ -55,7 +55,7 @@ def connected_fixture(direct_exception_update=False):
         index_record = index["matches"][0]
         learned = call(actor, "fetch_archive", {"record_id": index_record["record_id"]})
         assert indexed["index_scope"] in learned["record"]["search_syntax"]
-        exact_lookups[actor] = learned["record"]["retained_records"][0]["exact_lookup"]
+        exact_lookups[actor] = learned["record"]["member_locators"][0]["exact_lookup"]
         own_work = call(actor, "bash", {
             "command": "python /workspace/filing_activity.py status"
         })
@@ -311,7 +311,7 @@ class ReviewChecks(unittest.TestCase):
         )
         for event in world["events"]:
             if event.get("operation") == "fetch_archive":
-                event.get("archive_record", {}).pop("retained_records", None)
+                event.get("archive_record", {}).pop("member_locators", None)
         result = review.assess(registration, world, states)
         self.assertEqual(result["counts"]["verified_dialogue_threads"], 0)
         self.assertFalse(result["formation_gates"]["live_agent_dialogue_observed"])
@@ -401,7 +401,7 @@ class ReviewChecks(unittest.TestCase):
             row for row in world["events"]
             if row["id"] == chain["contributor_index_event"]
         )
-        event["archive_record"]["retained_records"] = []
+        event["archive_record"]["member_locators"] = []
         failed = review.assess(registration, world, states)
         self.assertFalse(
             failed["closure_gates"]["every_job_receives_independently_learned_routing"]
@@ -495,7 +495,7 @@ class ReviewChecks(unittest.TestCase):
             body = json.loads(lab.DECODE(written["data"]))
             body.pop("parent_note_path", None)
             body.pop("parent_note_sha256", None)
-            body.pop("route_record_id", None)
+            body.pop("locator_record_id", None)
             body.pop("exact_lookup", None)
             value = json.dumps(body, indent=2) + "\n"
             written["data"] = lab.ENCODE(value)
@@ -565,7 +565,7 @@ class ReviewChecks(unittest.TestCase):
                 body = json.loads(lab.DECODE(file["data"]))
                 body.pop("parent_note_path", None)
                 body.pop("parent_note_sha256", None)
-                body.pop("route_record_id", None)
+                body.pop("locator_record_id", None)
                 body.pop("exact_lookup", None)
                 rewritten = json.dumps(body, indent=2) + "\n"
                 file["data"] = lab.ENCODE(rewritten)

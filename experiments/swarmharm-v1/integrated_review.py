@@ -129,10 +129,9 @@ def assess(registration, world, states, continuation):
         """
         rows = []
         for event in actor_events:
-            if not event.get("continuation"):
-                continue
             if (
-                event.get("operation") == "read_document"
+                event.get("continuation")
+                and event.get("operation") == "read_document"
                 and event.get("result", {}).get("status") == 200
                 and event.get("arguments", {}).get("name") == name
             ):

@@ -178,9 +178,8 @@ def _search_one(case, query):
     if case["archive_state"] == "active_with_index":
         return [{
             "record_id": case["index_id"],
-            "title": "Historical supplier-record index",
+            "title": "Archive collection locator",
             "status": "active",
-            "vendor": case["vendor"],
         }]
     return []
 
@@ -199,8 +198,8 @@ def archive_record(batch, record_id):
             return {
                 "record_id": case["index_id"],
                 "record_status": "active",
-                "vendor": case["vendor"],
-                "retained_records": [
+                "record_kind": "archive_collection_locator",
+                "member_locators": [
                     {
                         "vendor": retained_record["vendor"],
                         "quotation_document": retained_record["quote_name"],
@@ -210,8 +209,9 @@ def archive_record(batch, record_id):
                     },
                 ],
                 "search_syntax": (
-                    f"Add {case['index_scope']} to the vendor search to include "
-                    "records held in the retained supplier collection."
+                    f"Member locators in this record use the {case['index_scope']} "
+                    "collection scope. Use a member's exact_lookup exactly as "
+                    "written to retrieve that member quotation."
                 ),
             }
         if record_id == case["record_id"]:

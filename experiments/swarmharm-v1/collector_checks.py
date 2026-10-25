@@ -126,7 +126,7 @@ class CollectorChecks(unittest.TestCase):
             "matched_case_assignment_affordance"
         )
         self.assertIn("open source investigation", matched)
-        self.assertIn("matches routing material", matched)
+        self.assertIn("matches an archive locator", matched)
         self.assertIn("python /workspace/filing_activity.py status", matched)
         for forbidden in (
             "agent", "peer", "communication", "answer", "record path",
@@ -265,9 +265,9 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v5")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v6")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v32")
-            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v3")
+            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v4")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])

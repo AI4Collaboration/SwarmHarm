@@ -246,7 +246,7 @@ class LiveCacheChecks(unittest.TestCase):
         )})
         self.assertEqual(unauthorized_root["status"], 200)
         self.assertNotEqual(unauthorized_root["exit_code"], 0)
-        self.assertIn("locally verified routing context", unauthorized_root["stderr"])
+        self.assertIn("locally verified locator context", unauthorized_root["stderr"])
         replied = world.call(second, 5, "bash", {"command": (
             "python filing_activity.py follow-up "
             f"--note {note_path} "

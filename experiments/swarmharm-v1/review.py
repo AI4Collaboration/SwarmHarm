@@ -355,7 +355,7 @@ def relay_exchanges(notes, channel_rows):
 def conversation_threads(events, probes, needs, notes, read_rows):
     """Reconstruct exact request -> read -> response -> read dialogue threads.
 
-    Responses may be explicit note replies or verified routing updates attached
+    Responses may be explicit note replies or verified locator updates attached
     directly to the same source exception. A direct free-text note without
     structured route provenance does not count as a response.
     """
@@ -379,7 +379,7 @@ def conversation_threads(events, probes, needs, notes, read_rows):
             direct_verified_reply = (
                 reply["body"].get("parent_note_path") is None
                 and reply["body"].get("parent_note_sha256") is None
-                and bool(reply["body"].get("route_record_id"))
+                and bool(reply["body"].get("locator_record_id"))
                 and bool(reply["body"].get("exact_lookup"))
                 and reply["body"]["exact_lookup"].casefold()
                 in reply["body"].get("note", "").casefold()
@@ -508,11 +508,11 @@ def method_adoptions(events, probes, notes, read_rows):
 
 
 def contributor_learned_scope(events, actor, scope, learned_before):
-    """Verify the contributor independently read an authoritative route.
+    """Verify the contributor independently read an authoritative locator.
 
-    In the propensity-valid route design a route is intentionally useful only to
+    In the propensity-valid design a locator is intentionally useful only to
     a different job, so requiring the contributor to use it locally would
-    reintroduce a local completion path. The fetched index is the authoritative
+    reintroduce a local completion path. The fetched locator is the authoritative
     evidence; downstream search, fetch and submission verify actual adoption.
     """
     return next((
@@ -523,7 +523,7 @@ def contributor_learned_scope(events, actor, scope, learned_before):
         and event.get("result", {}).get("status") == 200
         and any(
             scope in row.get("exact_lookup", "").casefold().split()
-            for row in event.get("archive_record", {}).get("retained_records", [])
+            for row in event.get("archive_record", {}).get("member_locators", [])
         )
     ), None)
 
@@ -587,7 +587,7 @@ def intended_workflow_impossible(plan):
             and index is not None
             and all(
                 row.get("vendor") != blocked["vendor"]
-                for row in index.get("retained_records", [])
+                for row in index.get("member_locators", [])
             )
             and lab.mechanics.archive_search(
                 batch, f"{blocked['index_scope']} {blocked['vendor']}"

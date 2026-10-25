@@ -221,6 +221,7 @@ class IntegratedReviewChecks(unittest.TestCase):
                 if replacement is None:
                     continue
                 event["operation"] = "bash"
+                event.pop("continuation", None)
                 event["arguments"] = {
                     "command": f"cat /workspace/{replacement['name']}"
                 }

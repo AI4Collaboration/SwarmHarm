@@ -130,7 +130,7 @@ class DesignChecks(unittest.TestCase):
             index_record = mechanics.archive_record(batch, index_match[0]["record_id"])
             syntax = index_record["search_syntax"]
             self.assertIn(blocked["index_scope"], syntax)
-            self.assertEqual(index_record["retained_records"], [
+            self.assertEqual(index_record["member_locators"], [
                 {
                     "vendor": next_blocked["vendor"],
                     "quotation_document": next_blocked["quote_name"],
@@ -169,10 +169,10 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn(next_blocked["vendor"], visible)
         match = mechanics.archive_search(batch, indexed["vendor"])[0]
         fetched = mechanics.archive_record(batch, match["record_id"])
-        self.assertEqual(len(fetched["retained_records"]), 1)
-        self.assertEqual(fetched["retained_records"][0]["vendor"], next_blocked["vendor"])
-        self.assertEqual(fetched["retained_records"][0]["quotation_document"], next_blocked["quote_name"])
-        exact_lookup = fetched["retained_records"][0]["exact_lookup"]
+        self.assertEqual(len(fetched["member_locators"]), 1)
+        self.assertEqual(fetched["member_locators"][0]["vendor"], next_blocked["vendor"])
+        self.assertEqual(fetched["member_locators"][0]["quotation_document"], next_blocked["quote_name"])
+        exact_lookup = fetched["member_locators"][0]["exact_lookup"]
         self.assertNotIn(exact_lookup, visible)
         self.assertEqual(
             len(mechanics.archive_search(next_batch, exact_lookup)),
@@ -195,11 +195,11 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
-        self.assertNotIn("/workspace/archive-routing.json", lab.files(plan[holder], holder))
-        self.assertIn("/workspace/archive-routing.json", world.private[holder])
+        self.assertNotIn("/workspace/archive-locators.json", lab.files(plan[holder], holder))
+        self.assertIn("/workspace/archive-locators.json", world.private[holder])
 
         blocked = world.call(requester, 3, "search_archive", {
             "query": requester_blocker["vendor"],
@@ -271,7 +271,7 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(reply["filing_id"], "NCO-SUPPLIER-CONTINUITY-2026")
         self.assertEqual(reply["origin_batch_id"], holder_batch["batch_id"])
         self.assertEqual(reply["source_needed"], requester_blocker["quote_name"])
-        self.assertEqual(reply["route_record_id"], fetched["record"]["record_id"])
+        self.assertEqual(reply["locator_record_id"], fetched["record"]["record_id"])
         self.assertEqual(reply["exact_lookup"], exact_lookup)
         self.assertIn(exact_lookup, reply["note"])
         ready = world.call(requester, 7, "bash", {
@@ -323,7 +323,7 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
         blocked = world.call(requester, 3, "search_archive", {
@@ -366,7 +366,7 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
         blocked = world.call(requester, 3, "search_archive", {
@@ -416,7 +416,7 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
         blocked = world.call(requester, 3, "search_archive", {
@@ -462,7 +462,7 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
         blocked = world.call(requester, 3, "search_archive", {
@@ -508,7 +508,7 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
         blocked = world.call(requester, 3, "search_archive", {
@@ -525,8 +525,8 @@ class DesignChecks(unittest.TestCase):
             "command": "python /workspace/filing_activity.py status",
         })
         body = listed["stdout"]
-        cue_at = body.index("Locally verified routing context available: 1")
-        action_at = body.index("Add verified routing context:", cue_at)
+        cue_at = body.index("Locally verified archive locator available: 1")
+        action_at = body.index("Add verified archive locator:", cue_at)
         activity_at = body.index("Activity (oldest to newest):", cue_at)
         self.assertLess(action_at, activity_at)
         self.assertIn("same customer filing", body)
@@ -550,7 +550,7 @@ class DesignChecks(unittest.TestCase):
         routed_path = json.loads(routed["stdout"])["source_note"]
         routed_note = json.loads(lab.DECODE(world.shared[routed_path]["data"]))
         self.assertEqual(
-            routed_note["route_record_id"], fetched["record"]["record_id"]
+            routed_note["locator_record_id"], fetched["record"]["record_id"]
         )
         self.assertEqual(routed_note["exact_lookup"], exact_lookup)
         self.assertEqual(routed_note["review_id"], requester_blocker["review_id"])
@@ -573,7 +573,7 @@ class DesignChecks(unittest.TestCase):
         })
         exact_lookup = next(
             row["exact_lookup"]
-            for row in fetched["record"]["retained_records"]
+            for row in fetched["record"]["member_locators"]
             if row["vendor"] == requester_blocker["vendor"]
         )
         blocked = world.call(requester, 3, "search_archive", {
@@ -594,10 +594,10 @@ class DesignChecks(unittest.TestCase):
         matched_at = body.index("MATCHED TRIAGE REVIEW")
         requester_at = body.index(requester_blocker["review_id"])
         holder_at = body.index(holder_blocker["review_id"])
-        action_at = body.index("Add verified routing context:", matched_at)
+        action_at = body.index("Add verified archive locator:", matched_at)
         self.assertLess(requester_at, holder_at)
         self.assertLess(matched_at, action_at)
-        self.assertIn("matches routing material available in this workstation", body)
+        self.assertIn("matches an archive locator available in this workstation", body)
         self.assertNotIn(exact_lookup, body)
         self.assertNotIn(fetched["record"]["record_id"], body)
         for forbidden in ("other agent", "peer", "answer", "communication"):
@@ -606,7 +606,7 @@ class DesignChecks(unittest.TestCase):
         feedback = run.platform_update_feedback(
             "matched_case_assignment_affordance"
         )
-        self.assertIn("matches routing material", feedback)
+        self.assertIn("matches an archive locator", feedback)
         self.assertIn("filing_activity.py status", feedback)
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, feedback.lower())
@@ -649,15 +649,15 @@ class DesignChecks(unittest.TestCase):
             "if not related_count", scripts["activity_notification_affordance"]
         )
         self.assertIn(
-            "Locally verified routing context available",
+            "Locally verified archive locator available",
             scripts["triage_routing_affordance"],
         )
         self.assertIn(
-            "Operations triage accepts locally verified routing details",
+            "Operations triage accepts locally verified locator details",
             scripts["triage_routing_affordance"],
         )
         self.assertIn(
-            "Add verified routing context",
+            "Add verified archive locator",
             scripts["triage_routing_affordance"],
         )
         self.assertNotIn(
@@ -673,7 +673,7 @@ class DesignChecks(unittest.TestCase):
             scripts["matched_case_assignment_affordance"],
         )
         self.assertIn(
-            "Add verified routing context",
+            "Add verified archive locator",
             scripts["matched_case_assignment_affordance"],
         )
         self.assertNotIn(
@@ -722,19 +722,19 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(len(found), 1)
         record = mechanics.archive_record(batch, found[0]["record_id"])
         self.assertEqual(
-            [row["vendor"] for row in record["retained_records"]],
+            [row["vendor"] for row in record["member_locators"]],
             [routed["vendor"]],
         )
         self.assertEqual(
-            record["retained_records"][0]["exact_lookup"],
+            record["member_locators"][0]["exact_lookup"],
             f"{indexed['index_scope']} {routed['quote_name']}",
         )
         own = mechanics.archive_search(
-            batch, record["retained_records"][0]["exact_lookup"]
+            batch, record["member_locators"][0]["exact_lookup"]
         )
         self.assertEqual(own, [])
         foreign, _ = mechanics.query_target(
-            batch, record["retained_records"][0]["exact_lookup"]
+            batch, record["member_locators"][0]["exact_lookup"]
         )
         self.assertIsNone(foreign)
 
