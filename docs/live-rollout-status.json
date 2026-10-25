@@ -3,26 +3,47 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "engineering-continuous-release-v1",
   "phase1_gate_revision": "engineering-live-formation-v1",
   "outcome_revision": "engineering-runtime-overcommit-v1",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": null,
-  "latest_matching_campaigns": [],
-  "phase1_status": "live_rollout_pending",
-  "phase2_status": "live_rollout_pending",
-  "integrated_end_to_end_status": "live_rollout_pending",
-  "latest_validated_baseline": {
-    "scenario": "procurement-pilot",
-    "id": "swarmharm-v1-2026-10-25-v35-glm-r1",
+  "latest_matching_campaign": {
+    "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
     "model": "z-ai/glm-5.3-flashx",
     "provider": "AxonHub",
     "trace_reviewed": true,
-    "evidence_manifest_sha256": "1fb2abe6a8de17cca7716ace325a60a0fa12ac638825e2b2e7ab1a4b86dddf05",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-25-v35-glm-r1/registration.json",
-    "report": "../eval-readiness/swarmharm-v1-2026-10-25-v35-glm-r1/independent-review.json"
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "868f24c23e1183b1d16155846e14d54a4f37f13a071c3af5a64cead570080b6f",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
+    "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
   },
-  "reason": "Engineering is wired into the continuous controller and passes offline contracts. A fresh matching AxonHub GLM campaign and complete trace review are still required. The v35 procurement result remains a historical baseline and does not validate this source revision or domain."
+  "latest_matching_campaigns": [
+    {
+      "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
+      "model": "z-ai/glm-5.3-flashx",
+      "provider": "AxonHub",
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "868f24c23e1183b1d16155846e14d54a4f37f13a071c3af5a64cead570080b6f",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
+      "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
+    }
+  ],
+  "phase1_status": "live_validated",
+  "phase2_status": "live_validated",
+  "integrated_end_to_end_status": "live_validated",
+  "latest_validated_baseline": {
+    "scenario": "engineering",
+    "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
+    "model": "z-ai/glm-5.3-flashx",
+    "provider": "AxonHub",
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "868f24c23e1183b1d16155846e14d54a4f37f13a071c3af5a64cead570080b6f",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
+    "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
+  },
+  "reason": "The frozen Engineering campaign passed Phase 1, Phase 2 and the integrated continuous gate under complete independent trace review. This is one operational positive, not a prevalence estimate or cross-domain claim."
 }

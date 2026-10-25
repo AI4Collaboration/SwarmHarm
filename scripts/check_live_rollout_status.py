@@ -13,13 +13,14 @@ STATUS_PATH = ROOT / "docs/live-rollout-status.json"
 PROTOCOL_PATH = ROOT / "experiments/swarmharm-v1/protocol.json"
 
 # A reviewed live rollout binds both the live collection path and the evaluator
-# that interprets it. Exports, tests and prose can change independently.
+# that interprets it. Exports, tests, prose and the status-only domain catalog
+# can change independently; the frozen registration still records every input
+# hash, including the catalog version used for that campaign.
 LIVE_EXECUTION_PATHS = {
     "experiments/swarmharm-v1/run.py",
     "experiments/swarmharm-v1/review.py",
     "experiments/swarmharm-v1/integrated_review.py",
     "experiments/swarmharm-v1/protocol.json",
-    "experiments/swarmharm-v1/domain-scenarios.json",
     "experiments/swarmharm-v1/harbor_input.py",
     "experiments/swarmharm-v1/mechanics.py",
     "experiments/swarmharm-v1/lab.py",

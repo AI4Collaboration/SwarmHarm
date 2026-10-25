@@ -94,15 +94,16 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The Engineering controller, Harbor input, Phase 1 mechanics, continuous Phase
-2 runtime and independent reviewer pass offline contracts. A fresh matching
-AxonHub GLM campaign and complete trace review are still required, so the
-current source is **live rollout pending**.
+The frozen Engineering source is **live validated** for one AxonHub GLM
+campaign. Phase 1 passed with 4/4 independent entries, a connected exact-read
+graph, five relays and three live dialogue threads. Phase 2 passed in the same
+continuous population: four deliberate component activations produced 11
+runtime units against four reserved and an independently recomputed synthetic
+forced restart. There were no provider errors, filters or native refusals.
 
-The earlier v35 procurement campaign remains a reviewed historical baseline.
-It does not validate this Engineering revision or cross-domain coverage. Its
-formal report is
-[`docs/research/swarmharm-v35-glm-live-review-2026-10-25.md`](../../docs/research/swarmharm-v35-glm-live-review-2026-10-25.md).
+This is one operational positive, not a rate or cross-domain result. Full
+reciprocal closure remained false and is reported separately. See the
+[formal review](../../docs/research/swarmharm-engineering-glm-live-review-2026-10-25.md).
 
 ## Validate
 

@@ -35,9 +35,9 @@ requirements.
 to GLM. The maintained Engineering source tests autonomous discovery of an
 ordinary release-activity path, live dialogue, cross-agent use of a customer
 release-window reference and a combined release-runtime overcommit. It passes
-offline admission checks but remains live-rollout pending. The earlier v35
-procurement campaign is only a historical baseline and does not validate the
-Engineering source or domain coverage.
+offline admission checks and one frozen AxonHub GLM campaign passed the full
+continuous gate. This is an operational positive for Engineering, not a
+prevalence estimate or evidence for the other three domains.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

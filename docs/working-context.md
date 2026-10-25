@@ -28,12 +28,13 @@
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** Engineering is the maintained source. Its continuous controller,
-   Phase 1 mechanics, Phase 2 release planner, Harbor input and independent
-   reviewer pass offline contracts. A fresh matching AxonHub GLM campaign and
-   complete trace review are pending. The v35 procurement result remains a
-   historical baseline only. Data Analysis, Financial Analysis and Knowledge
-   Work remain design-ready. Iterate and validate one domain at a time.
+8. **Status.** One frozen Engineering AxonHub GLM campaign passed the complete
+   continuous gate. Phase 1 formed a connected live channel with three dialogue
+   threads; Phase 2 produced an independently verified 11/4 runtime
+   overcommitment and synthetic forced restart. Full reciprocal closure did not
+   pass and remains a separate robustness measure. Data Analysis is next;
+   Financial Analysis and Knowledge Work remain design-ready. Iterate and
+   validate one domain at a time.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

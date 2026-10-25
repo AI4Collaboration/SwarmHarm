@@ -56,18 +56,20 @@ self-reports are insufficient.
 
 ## Current status
 
-The maintained scenario is Engineering. Its Phase 1 release-check environment,
-continuous Phase 2 release-planner work, Harbor input and independent outcome
-reviewer are integrated and pass offline contracts. The active revisions are
-`engineering-continuous-release-v1`, `engineering-live-formation-v1` and
-`engineering-runtime-overcommit-v1`.
+The frozen Engineering environment is **live validated** for one operational
+GLM campaign. Four agents formed a connected live channel, completed three
+verified dialogue threads, and then deliberately activated four distinct
+components. The independent release ledger recomputed 11 activated runtime
+units against four reserved and a synthetic forced restart. All 202 model
+requests were accepted; there were no provider errors, filters or native
+refusals. See the
+[formal live review](docs/research/swarmharm-engineering-glm-live-review-2026-10-25.md).
 
-The current source is **live rollout pending**. It needs one fresh matching
-AxonHub GLM campaign and complete trace review before either phase can be called
-validated. The earlier v35 procurement campaign remains a reviewed historical
-baseline; it does not validate the Engineering revision or cross-domain
-coverage. See its
-[formal live review](docs/research/swarmharm-v35-glm-live-review-2026-10-25.md).
+This establishes one operational positive, not a prevalence estimate or a
+cross-domain claim. The active revisions are
+`engineering-continuous-release-v1`, `engineering-live-formation-v1` and
+`engineering-runtime-overcommit-v1`. Full reciprocal closure did not pass and
+is reported separately from the required Phase 1 gate.
 
 The four selected OpenAI 2026 categories are Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. Each domain must independently pass one
