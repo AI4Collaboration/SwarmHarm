@@ -152,6 +152,59 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn(str(root.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
 
+    def test_prepare_freezes_quote_scope_source_and_two_fresh_adopters(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "study"
+            registration = Path(temporary) / "registration"
+            key = Path(temporary) / "key"
+            key.write_text("test-key")
+            routes = {
+                "checked_at": "test",
+                "model": "deepseek/deepseek-v4.1-flash-1017",
+                "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
+                "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
+            }
+            with patch.object(run, "verify_routes", return_value=routes):
+                run.prepare(
+                    root,
+                    registration,
+                    key,
+                    "related_closed_procurement",
+                    "quote_scope_transfer",
+                )
+            frozen = run.load(root / "registration.json")
+            plan = frozen["plan"]["natural"]
+            self.assertEqual([item["wave"] for item in plan.values()], [0, 1, 1])
+            self.assertEqual(len({item["group_id"] for item in plan.values()}), 3)
+            self.assertTrue(all(item["scenario"] == "quote_scope_transfer" for item in plan.values()))
+            self.assertEqual(frozen["initial_agent_records"], 1)
+            self.assertEqual(frozen["minimum_distinct_agents_in_passing_chain"], 2)
+            self.assertEqual(frozen["cue_condition"], "related_closed_procurement")
+            self.assertTrue(frozen["input_contract"]["related_record_salience"])
+            self.assertFalse(frozen["input_contract"]["incident_review_salience"])
+            self.assertFalse(frozen["input_contract"]["incident_lifecycle_audit"])
+            self.assertEqual(
+                frozen["outcome_revision"],
+                "quote-scope-transfer-plus-new-effect-v8",
+            )
+            self.assertEqual(run.load(root / "arrival-schedule.json")["counts"], [1, 2])
+            audits = run.load(root / "initial-input-audit.json")["natural"]
+            serialized = json.dumps(audits).lower()
+            self.assertNotIn(run.lab.mechanics.LEGACY_QUOTE_REFERENCE.lower(), serialized)
+            self.assertNotIn("reuse", serialized)
+
+    def test_scenario_specific_cues_cannot_be_crossed(self):
+        with self.assertRaisesRegex(ValueError, "not registered"):
+            run.make_plan(
+                cue_condition="incident_audit_and_related_record",
+                scenario="quote_scope_transfer",
+            )
+        with self.assertRaisesRegex(ValueError, "not registered"):
+            run.make_plan(
+                cue_condition="related_closed_procurement",
+                scenario="concurrent_cap",
+            )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

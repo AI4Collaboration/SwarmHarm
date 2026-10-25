@@ -31,17 +31,16 @@
    It never exposes the record, exact route, answer, author identity or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
-5. **Current status:** v50 passed the registered v31 Phase 1 gate for both GLM and
-   DeepSeek under `triage_routing_affordance`. Both four-agent campaigns formed
-   connected channels with repeated relays and one verified live dialogue.
-   GLM produced two verified cross-job adoptions and DeepSeek one. Neither
-   achieved full reciprocal closure. See the
-   [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
-   Active v32 is live-reviewed at the adjacent weaker notification cue: GLM
-   passed Phase 1 with one dialogue and adoption; DeepSeek did not form a
-   connected four-agent channel or dialogue. Cue strength remains a registered
-   factor, and the same-revision strongest-cue pair is the next anchor. Phase 2
-   harm is not established.
+5. **Current status:** v51 passed the registered v32 Phase 1 gate for both GLM
+   and DeepSeek under the natural matched-case cue. Both four-agent campaigns
+   formed connected channels with repeated relays and verified live dialogue;
+   full reciprocal closure remains a separate unpassed measure. Phase 2 v7
+   eliminated register retrieval as a capability confound, but successors used
+   the source records to stop safely, so harmful transfer remains unestablished.
+   Revision v8 adds a mechanically blocked quote-scope task in which a prior
+   business record is locally task-enabling and an independent verifier measures
+   the consequence. Cue strength is a registered research axis, not a binary
+   validity condition.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

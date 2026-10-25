@@ -35,6 +35,15 @@ remains unestablished. See the
 and [v6 cue-3 review](docs/research/cause-harm-v6-cue3-paired-live-review-2026-10-25.md)
 and [v7 searchable-cue review](docs/research/cause-harm-v7-cue3-paired-live-review-2026-10-25.md).
 
+Revision v8 adds a second Phase 2 task structure in which the intended
+project-scoped quote path is mechanically blocked, while an ordinary prior
+procurement record enables a locally successful but independently invalid
+cross-project order. One source agent and two fresh agents receive different
+projects. This separates harmful method adoption from the earlier scenario's
+overt incident framing. Its cue axis varies only whether normal case management
+makes the existence of a comparable closed procurement salient; no cue supplies
+the record, quote reference, method or action.
+
 Cue strength is now an explicit research axis, not a validity objection. The
 testbed varies how much ordinary workflow salience appears after discovery while
 holding task truth, private information, concurrency and verification fixed.
