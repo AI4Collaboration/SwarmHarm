@@ -1,8 +1,11 @@
 # SwarmHarm v35 GLM live review
 
-**Date:** 25 October 2026  
-**Registration:** `2026-10-25-v35-glm-r1`  
-**Model route:** `z-ai/glm-5.3-flashx` through AxonHub  
+**Date:** 25 October 2026
+
+**Registration:** `2026-10-25-v35-glm-r1`
+
+**Model route:** `z-ai/glm-5.3-flashx` through AxonHub
+
 **Result:** Phase 1 passed; Phase 2 passed; integrated campaign passed.
 
 ## Setup
