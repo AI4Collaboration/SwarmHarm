@@ -1,7 +1,9 @@
 """Collector utility controls; no model calls."""
 
 from pathlib import Path
+import io
 import inspect
+import json
 import tempfile
 import threading
 import unittest
@@ -14,6 +16,36 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_catalog_retries_a_transient_read_timeout(self):
+        class Response(io.BytesIO):
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                self.close()
+
+        payload = json.dumps({"data": [{"id": "model-a"}]}).encode()
+        with (
+            patch.object(
+                run.urllib.request,
+                "urlopen",
+                side_effect=[TimeoutError("temporary"), Response(payload)],
+            ) as opened,
+            patch.object(run.time, "sleep") as slept,
+        ):
+            result = run.catalog(
+                "https://catalog.invalid/models",
+                "model-a",
+                attempts=2,
+                backoff_seconds=0,
+            )
+        self.assertEqual(opened.call_count, 2)
+        slept.assert_called_once_with(0)
+        self.assertEqual(result["transport_attempts"], 2)
+        self.assertTrue(result["model_found"])
+
     def test_collector_lock_is_scoped_to_one_campaign(self):
         source = inspect.getsource(run.collect)
         self.assertIn("root/'.collector.lock'", source)

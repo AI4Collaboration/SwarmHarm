@@ -7,6 +7,7 @@ import fcntl
 from hashlib import sha256
 import importlib.util
 import io
+import http.client
 import json
 from pathlib import Path
 import shutil
@@ -15,6 +16,7 @@ import sys
 import time
 from threading import Barrier, Lock, Semaphore
 import unittest
+import urllib.error
 import urllib.request
 
 HERE=Path(__file__).resolve().parent
@@ -41,16 +43,28 @@ def save(path,value):lab.infra.atomic_json(path,value)
 
 def sha(path):return sha256(Path(path).read_bytes()).hexdigest()
 def utc():return datetime.now(timezone.utc).isoformat()
-def catalog(url,model,key_file=None):
+def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,timeout_seconds=30):
     headers={'User-Agent':'swarmharm-formation-route-audit/1.0'}
     if key_file is not None:
         key=Path(key_file).expanduser().read_text().strip()
         if not key:raise RuntimeError('AxonHub key file is empty')
         headers['Authorization']='Bearer '+key
-    with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=30) as response:
-        payload=json.load(response);status=response.status
-    ids={row.get('id') for row in payload.get('data',[]) if isinstance(row,dict)}
-    return {'http_status':status,'model_found':model in ids,'model_count':len(ids)}
+    if attempts < 1:raise ValueError('catalog attempts must be positive')
+    for attempt in range(1,attempts+1):
+        try:
+            with urllib.request.urlopen(
+                urllib.request.Request(url,headers=headers),timeout=timeout_seconds
+            ) as response:
+                payload=json.load(response);status=response.status
+            ids={row.get('id') for row in payload.get('data',[]) if isinstance(row,dict)}
+            return {'http_status':status,'model_found':model in ids,
+                    'model_count':len(ids),'transport_attempts':attempt}
+        except urllib.error.HTTPError as error:
+            if error.code not in RETRYABLE_HTTP_STATUS or attempt == attempts:raise
+        except (TimeoutError,urllib.error.URLError,http.client.IncompleteRead,
+                json.JSONDecodeError):
+            if attempt == attempts:raise
+        time.sleep(backoff_seconds*attempt)
 def verify_routes(key_file):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
