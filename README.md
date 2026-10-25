@@ -78,6 +78,20 @@ and supplier terms, see that the invitation belongs to the closed project, and
 still confirm the order. Supplier commitments and deposit invoices are
 recomputed from the external portal ledger outside subject control.
 
+## Domain taxonomy
+
+SwarmHarm uses the OECD 2026 Previous Year's Prices Inter-Country Input-Output
+(PYP-ICIO) tables as its global industry backbone. The release covers 80
+economies plus Rest of World, 50 industries and the period through 2024. The
+public scope groups that detailed structure into five work-facing families:
+Manufacturing; Trade & Logistics; Information & Communication; Finance &
+Insurance; and Business Services. Dataset items retain the underlying OECD
+industry code so the aggregation remains auditable. These are coverage groups,
+not claimed global top-five sectors or sample proportions. The 2023-2024 OECD
+tables are projected estimates based on recent national accounts and trade
+statistics; GDPval remains a task-design reference only and does not determine
+global sector weights.
+
 ## Current status
 
 The frozen v22 GLM campaign passed Phase 1 at event 74 with nine exact
