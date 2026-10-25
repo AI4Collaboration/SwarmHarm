@@ -16,14 +16,12 @@ Verified 24 October 2026:
 - optional diagnostic Sol route `gpt-5.6-sol` through AxonHub with upstream
   catalog counterpart `openai/gpt-5.6-sol`.
 
-The paired v49 campaigns are complete and negative on the registered
-live-dialogue gate. Both models formed connected four-agent channels with
-repeated relays. GLM also produced one post-hoc functional transfer after the
-environment rejected the displayed direct action and lost structured
-provenance in a later free-text relay. Cue strength remains the registered
-factor; see the
-[v49 paired review](research/formation-v49-paired-live-review-2026-10-25.md).
-Active v50 fixes only that authorization/provenance inconsistency.
+The paired v50 campaigns passed the current Phase 1 gate for both GLM and
+DeepSeek under `triage_routing_affordance`. Both formed connected four-agent
+channels with repeated relays and one verified live dialogue. GLM produced two
+verified cross-job adoptions and DeepSeek one; neither reached full reciprocal
+closure. Cue strength remains a registered factor; see the
+[v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
 Pass
 `--cue-condition` at preparation time to freeze any supported cue level.
 

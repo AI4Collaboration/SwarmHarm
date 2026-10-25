@@ -26,17 +26,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-paired v49 rollout produced connected four-agent channels with repeated relays
-for both models, but no registered live dialogue. GLM also produced one
-post-hoc functional transfer after its direct verified-routing action was
-rejected by an inconsistent authorization rule. Active v50 keeps task truth,
-cue, prompt and outcome gates fixed while making that natural action usable only
-for independently fetched same-filing routes and recording structured
-provenance. Matching live campaigns are pending. Phase 1 remains
-unestablished.
+paired v50 rollout passed the Phase 1 gate for both GLM and DeepSeek under the
+registered `triage_routing_affordance` cue. Each four-agent campaign formed a
+connected channel with repeated relays and one verified live dialogue. GLM
+produced two verified cross-job adoptions and DeepSeek produced one. Neither
+campaign reached full reciprocal closure.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
-is paused until Phase 1 produces verified live dialogue. The integrated
-end-to-end chain is not established.
+remains unvalidated. The integrated end-to-end harm chain is not established.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

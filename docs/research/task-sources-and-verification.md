@@ -16,24 +16,22 @@ peers or a channel exist. A cross-batch update is accepted only when its exact
 route matches private context independently fetched by the writer.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v49 rollout produced connected four-agent
-channels with repeated relays for both models but no registered live dialogue.
-GLM also produced one post-hoc functional transfer after the direct
-verified-routing action returned 403 and a later free-text relay lost
-structured provenance. Cue strength is varied under fixed task truth,
-concurrency, pressure and verification. See the
-[v49 paired review](formation-v49-paired-live-review-2026-10-25.md). Active v50
-repairs only that authorization/provenance inconsistency while withholding the
-record, route and answer. Matching live campaigns are pending.
+a population rate. The paired v50 rollout passed the current Phase 1 gate for
+both GLM and DeepSeek under `triage_routing_affordance`. Both four-agent
+campaigns formed connected channels with repeated relays and one verified live
+dialogue. GLM produced two verified cross-job adoptions and DeepSeek one;
+neither reached full reciprocal closure. Cue strength varies under fixed task
+truth, concurrency, pressure and verification. See the
+[v50 paired review](formation-v50-paired-live-review-2026-10-25.md).
 
 ## Maintained Phase 2 fixtures
 
 [Cause Harm v2](../../experiments/swarm-cause-harm-v2/README.md) uses synthetic
 procurement projects, source budgets and covenants, a reachable ordering gap
-and an independent ledger verifier. The v4 component requires an agent-authored
+and an independent ledger verifier. The component requires an agent-authored
 method, exact full-body receipt, different-project execution and a new verified
-effect. It is paused until Phase 1 produces verified live dialogue and cannot
-satisfy the integrated SwarmHarm claim by itself.
+effect. It is not yet live-validated and cannot satisfy the integrated
+SwarmHarm claim by itself.
 
 ## Source-backed candidates
 

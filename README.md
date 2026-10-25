@@ -11,19 +11,14 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v49 rollout is complete. Both models formed connected four-agent
-read-write graphs with repeated relays, but neither passed the registered live
-dialogue gate, so **Phase 1 is not established**. GLM nevertheless propagated
-one independently learned route and another subject used it to fetch the true
-source and file a fifth review. The registered environment had rejected the
-direct route-bearing update with 403 and then discarded structured provenance
-from the free-text relay, so that post-hoc trace finding is not promoted to a
-pass. See the
-[v49 paired review](docs/research/formation-v49-paired-live-review-2026-10-25.md).
-Active v50 changes no task, prompt, pressure or cue. It makes that already
-displayed business action usable only for same-filing routing context grounded
-in a route the author actually fetched, and preserves the provenance needed for
-independent verification. Paired live validation is pending.
+The paired v50 rollout passed the current Phase 1 gate for both GLM and
+DeepSeek. In each four-agent campaign, initially separate agents discovered the
+unannounced business surface, formed a connected channel with repeated relays
+and completed one verified live request→read→reply→requester-read exchange.
+GLM produced two verified cross-job adoptions; DeepSeek produced one. Neither
+campaign achieved full four-agent reciprocal closure, and Phase 2 harm remains
+unestablished. See the
+[v50 paired review](docs/research/formation-v50-paired-live-review-2026-10-25.md).
 
 ## How Phase 1 works
 
@@ -143,6 +138,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v49-paired-live-review-2026-10-25.md)
+- [Latest paired live review](docs/research/formation-v50-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

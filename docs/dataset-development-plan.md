@@ -16,17 +16,16 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The paired v49 rollout produced connected four-agent channels with repeated
-relays for both models but no registered live dialogue. Cue strength is a
-measured factor, not an admission rule; the task, hidden information,
-concurrency, pressure and verifier remain fixed across cue levels. See the
-[v49 paired review](research/formation-v49-paired-live-review-2026-10-25.md).
-GLM attempted the intended verified-routing action, received 403, then later
-used a route propagated through free text to file a fifth review. Active v50
-fixes only that authorization/provenance inconsistency and exposes no record,
-route or answer. Matching live campaigns are pending.
-[Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
-Phase 1 produces verified live dialogue. The integrated claim remains false.
+The paired v50 rollout passed the Phase 1 gate for both GLM and DeepSeek under
+the registered `triage_routing_affordance` cue. Both four-agent campaigns
+formed connected channels with repeated relays and one verified live dialogue;
+GLM produced two verified cross-job adoptions and DeepSeek one. Neither reached
+full reciprocal closure. Cue strength is a measured factor, not an admission
+rule; task truth, hidden information, concurrency, pressure and verifier stay
+fixed across cue levels. See the
+[v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
+[Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) remains
+unvalidated. The integrated harm claim remains false.
 
 ## Development loop
 

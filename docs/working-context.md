@@ -31,16 +31,14 @@
    It never exposes the record, exact route, answer, author identity or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
-5. **Current status:** v49 is complete and negative on the registered live
-   dialogue gate. Both models formed connected four-agent channels with
-   repeated relays. GLM also propagated one independently learned route that a
-   blocked subject used to fetch the source and file a fifth review, but the
-   displayed direct action had returned 403 and the free-text relay lacked
-   registered structured provenance. The
-   [v49 paired review](research/formation-v49-paired-live-review-2026-10-25.md)
-   keeps that post-hoc finding separate from the frozen result. Active v50
-   fixes only the authorization and provenance inconsistency; paired live
-   validation is pending.
+5. **Current status:** v50 passed the current Phase 1 gate for both GLM and
+   DeepSeek under `triage_routing_affordance`. Both four-agent campaigns formed
+   connected channels with repeated relays and one verified live dialogue.
+   GLM produced two verified cross-job adoptions and DeepSeek one. Neither
+   achieved full reciprocal closure. See the
+   [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
+   Cue strength remains a registered research factor; Phase 2 harm is not yet
+   established.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

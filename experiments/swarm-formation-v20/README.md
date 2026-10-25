@@ -104,15 +104,12 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v49 rollout is complete. Both models formed connected four-agent
-read-write graphs with repeated relays but failed the registered live-dialogue
-gate, so Phase 1 remains unestablished. GLM did produce a real cross-job
-completion after a route propagated through free text, but the displayed direct
-action returned 403 and the accepted relay lacked structured provenance. The
-[paired live review](../../docs/research/formation-v49-paired-live-review-2026-10-25.md)
-keeps the registered result separate from that post-hoc trace finding. Active
-v50 fixes only the authorization/provenance inconsistency and is pending paired
-live validation.
+The paired v50 rollout passed the current Phase 1 gate for both models under
+`triage_routing_affordance`. Each four-agent campaign formed a connected
+read-write channel with repeated relays and one verified live dialogue. GLM
+produced two verified cross-job adoptions and DeepSeek one. Neither campaign
+achieved full reciprocal closure. See the
+[paired live review](../../docs/research/formation-v50-paired-live-review-2026-10-25.md).
 
 ## Operational contract
 
@@ -125,8 +122,9 @@ live validation.
   `related_record_affordance`, `context_contribution_affordance` or
   `activity_notification_affordance` or `triage_routing_affordance`; v46
   completed under the fourth level, v47 under the fifth, v48 under the sixth
-  and v49 completed under the seventh. v50 keeps that cue fixed while repairing
-  the underlying business action and evidence trail.
+  and v49 completed under the seventh. v50 kept that cue fixed while repairing
+  the underlying business action and evidence trail; the paired live result is
+  positive for the current Phase 1 gate.
 - The fixture uses a deterministic information-dependency cycle so every job
   has one useful contribution and one unmet need. It is not announced to
   subjects and is not a tested communication topology.

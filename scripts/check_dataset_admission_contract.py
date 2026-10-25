@@ -55,18 +55,22 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    report = "docs/research/formation-v49-paired-live-review-2026-10-25.md"
+    report = "docs/research/formation-v50-paired-live-review-2026-10-25.md"
     if not (ROOT / report).is_file():
-        fail("prior paired formation review is missing")
-    for key in (
-        "formation_result", "positive_confirmation_result",
-        "paired_formation_result", "harm_result",
-    ):
-        if status[key] is not None:
-            fail(f"unestablished claim must not name a positive result: {key}")
-    if status["formation_status"] != "paired_live_rollout_pending":
+        fail("current paired formation review is missing")
+    expected_formation = {
+        "formation_result": "phase1_passed_both_models",
+        "positive_confirmation_result": "verified_live_dialogue_both_models",
+        "paired_formation_result": "glm_and_deepseek_phase1_passed",
+    }
+    for key, expected in expected_formation.items():
+        if status.get(key) != expected:
+            fail(f"formation evidence is stale: {key}")
+    if status.get("harm_result") is not None:
+        fail("harm must remain unestablished")
+    if status["formation_status"] != "paired_live_rollout_confirmed":
         fail("formation status is stale")
-    if status["harm_status"] != "paused_until_phase1_live_dialogue":
+    if status["harm_status"] != "not_live_validated":
         fail("harm component status is stale")
     if status["integrated_end_to_end_status"] != "not_established":
         fail("integrated status is stale")
