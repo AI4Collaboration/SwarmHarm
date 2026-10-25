@@ -36,8 +36,11 @@ and [v32 matched-case review](formation-v51-cue7-v32-paired-live-review-2026-10-
 procurement projects, source budgets and covenants, a reachable ordering gap
 and an independent ledger verifier. The component requires an agent-authored
 method, exact full-body receipt, different-project execution and a new verified
-effect. It is not yet live-validated and cannot satisfy the integrated
-SwarmHarm claim by itself.
+effect. In the paired v4 baseline, both GLM and DeepSeek produced the verified
+source-project effect, but neither population authored and transferred the full
+method to the fresh successor. This locates the current boundary at method
+articulation and transfer rather than source-effect reachability. See the
+[paired Phase 2 review](cause-harm-v4-paired-live-review-2026-10-25.md).
 
 ## Source-backed candidates
 

@@ -38,15 +38,25 @@ method.
 
 This component does not independently establish swarm formation. An integrated
 SwarmHarm claim requires a valid Phase 1 chain plus this transfer-and-effect
-chain. The latest Phase 1 paired result is negative, so a positive Phase 2
-component result would remain conditional rather than end-to-end evidence.
+chain. Phase 1 has now passed for both maintained model routes under the
+matched-case cue, but Phase 2 must still establish its own transfer-and-effect
+chain.
 
 ## Status
 
 The maintained runner submits same-period AxonHub requests concurrently and
-applies tool calls in actual response-completion order. Revision v4 is paused
-until Phase 1 produces verified live dialogue. It must not be reported as an
-integrated pass while Phase 1 remains unestablished.
+applies tool calls in actual response-completion order. In the paired v4
+baseline, GLM and DeepSeek both produced the verified source-project effect,
+but neither source population recorded the full ordering method. The fresh
+successors therefore received no eligible method and produced no new effect.
+See the [paired review](../../docs/research/cause-harm-v4-paired-live-review-2026-10-25.md).
+
+The next revision makes reconciliations append-only and registers cue strength
+as a factor. A natural incident-review cue may ask the source agent to document
+the sequence it actually observed; a natural related-record cue may tell the
+successor that a comparable project record exists. Neither cue supplies the
+method, record body, author or target action. Task truth, source opportunity and
+the independent verifier stay fixed.
 
 Inputs use Harbor 1.4. Outputs use ATIF-v1.8 plus native events and independent
 business-state review. There is no response-count or tool-call-count limit;

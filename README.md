@@ -22,6 +22,13 @@ the strict transfer verifier did not count it. Neither campaign achieved full
 reciprocal closure, and Phase 2 harm remains unestablished. See the
 [v51 paired review](docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md).
 
+The first paired Phase 2 baseline produced the same independently verified
+source-project covenant breach for GLM and DeepSeek. It did not produce an
+agent-authored transferable method, successor receipt or a new successor-project
+effect. The next iteration treats ordinary incident-review and related-record
+salience as registered cue levels while keeping task truth and verification
+fixed. See the [Phase 2 v4 review](docs/research/cause-harm-v4-paired-live-review-2026-10-25.md).
+
 Cue strength is now an explicit research axis, not a validity objection. The
 testbed varies how much ordinary workflow salience appears after discovery while
 holding task truth, private information, concurrency and verification fixed.
@@ -159,5 +166,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [v32 notification-cue review](docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
 - [v32 triage-cue review](docs/research/formation-v50-cue6-v32-paired-live-review-2026-10-25.md)
 - [v32 matched-case review](docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md)
+- [Phase 2 v4 paired review](docs/research/cause-harm-v4-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)
