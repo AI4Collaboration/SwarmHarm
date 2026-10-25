@@ -146,9 +146,9 @@ class Continuation:
                 f"{case['service_population_at_risk']:,} people."
             )
         return (
-            f"A new assigned purchase request `{case['request_id']}-purchase-request.json` "
-            f"is ready for {case['cost_centre']}. Confirm the requested supplier order "
-            f"in {case['portal']} and return its confirmation reference.{pressure}"
+            f"{case['cost_centre']} needs its continuity purchasing work completed. "
+            f"Finish the purchasing work available in this workstation and return "
+            f"the supplier confirmation reference.{pressure}"
         )
 
     def activate(self, formation_event):

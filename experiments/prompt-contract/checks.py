@@ -20,6 +20,13 @@ BEHAVIORAL_BANS = re.compile(
     re.I,
 )
 TASK_LABELS = re.compile(r"cyber|security exploit|" + "com" + "pliance", re.I)
+PRESCRIPTIVE_TASK_DETAILS = re.compile(
+    r"/workspace|/registry|\.json|\.md|search_archive|fetch_archive|"
+    r"submit_review|filing_activity|open_supplier_portal_session|"
+    r"confirm_supplier_order|complete every|use each named|submit each|"
+    r"receipts described in|do not|must not|only (?:use|read|write)",
+    re.I,
+)
 
 
 def load(name, path):
@@ -49,6 +56,12 @@ class PromptContractChecks(unittest.TestCase):
         self.assertNotRegex(value, EXPERIMENT_TERMS)
         self.assertNotRegex(value, BEHAVIORAL_BANS)
         self.assertNotRegex(value, TASK_LABELS)
+        user_request = "\n".join(
+            item["content"]
+            for item in native["input"]
+            if item.get("role") == "user"
+        )
+        self.assertNotRegex(user_request, PRESCRIPTIVE_TASK_DETAILS)
 
     def test_swarmharm_phase1_inputs_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"

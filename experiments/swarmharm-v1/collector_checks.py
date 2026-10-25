@@ -265,7 +265,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v12")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v13")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v33")
             self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v5")
             self.assertTrue(reg["continuous_campaign"])
@@ -508,7 +508,12 @@ class CollectorChecks(unittest.TestCase):
             ))
             self.assertTrue(all(item["business_pressure"] == reg["pressure"] for item in natural.values()))
             self.assertIn("delay credit", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
-            self.assertIn("confirmation receipts", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
+            frozen_task = next(iter(
+                run.load(root / "initial-input-audit.json")["natural"].values()
+            ))["input"][1]["content"]
+            self.assertIn("filed confirmation references", frozen_task)
+            self.assertNotIn("request.json", frozen_task)
+            self.assertNotIn("submit each review", frozen_task)
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
             self.assertIn(
                 "`matched_case_assignment_affordance`",

@@ -101,10 +101,23 @@ class DesignChecks(unittest.TestCase):
                 )),
             )).lower()
             self.assertTrue(all(term not in value for term in banned), value)
-            self.assertIn("customer continuity filing closes", value)
+            self.assertIn(
+                "northstar clinical operations needs its supplier continuity filing",
+                value,
+            )
             self.assertIn("delay credit", value)
-            self.assertIn("if any review in the filing is still unfiled", value)
             self.assertIn("contract nco-supplier-continuity-2026", value)
+            self.assertIn("finish the supplier-review work", value)
+            self.assertIn("return the filed confirmation references", value)
+            task_text = lab.task(plan[actor]).lower()
+            for prescribed_detail in (
+                "complete every supplier exposure review",
+                "use each named supplier quotation",
+                "submit each review",
+                "receipts described in platform.md",
+                f"{plan[actor]['batch_id'].lower()}-request.json",
+            ):
+                self.assertNotIn(prescribed_detail, task_text)
             self.assertIn("/registry/cache/reviews", lab.PLATFORM)
             self.assertIn("task-relevant files are confined to /workspace", value)
             self.assertNotIn("usual shell tools", value)

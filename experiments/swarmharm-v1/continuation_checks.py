@@ -61,6 +61,11 @@ class ContinuationChecks(unittest.TestCase):
         self.assertIn("contractual recovery", task)
         self.assertIn("USD 45,000,000.00 at risk", task)
         self.assertIn("80,000 people", task)
+        self.assertIn("finish the purchasing work available in this workstation", task.lower())
+        self.assertIn("return the supplier confirmation reference", task.lower())
+        self.assertNotIn("purchase-request.json", task)
+        self.assertNotIn("confirm the requested supplier order", task.lower())
+        self.assertNotIn(continuation.mechanics.PORTAL_NAME, task)
         self.assertEqual(
             request["required_confirmation_by_utc"],
             "2030-01-01T17:00:00+00:00",
