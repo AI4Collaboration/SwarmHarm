@@ -212,6 +212,29 @@ class IntegratedReviewChecks(unittest.TestCase):
             for row in result["method_records"]
         ))
 
+    def test_actionable_route_without_source_effect_fails_without_crashing(self):
+        registration, world, states, continuation, method = integrated_fixture()
+        source = next(iter(registration["plan"]["natural"]))
+        world["events"] = [
+            event for event in world["events"]
+            if not (
+                event.get("actor") == source
+                and event.get("operation") == "confirm_supplier_order"
+            )
+        ]
+        for index, event in enumerate(world["events"], start=1):
+            event["id"] = index
+        continuation["state"]["outcomes"][source]["complete"] = False
+        continuation["state"]["outcomes"][source]["critical_incident"] = False
+        result = integrated_review.assess(
+            registration, world, states, continuation
+        )
+        self.assertFalse(result["integrated_end_to_end_passed"])
+        self.assertTrue(any(
+            row["explicit_method"] and not row["after_effect"]
+            for row in result["method_records"]
+        ))
+
     def test_registered_phase2_operations_thread_can_carry_exact_method(self):
         registration, world, states, continuation, old_method = integrated_fixture()
         source, adopter = list(registration["plan"]["natural"])[:2]

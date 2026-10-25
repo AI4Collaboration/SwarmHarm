@@ -245,7 +245,8 @@ def assess(registration, world, states, continuation):
                     "explicit_method": explicit_portal_invitation_method(body),
                     "after_formation": formation_event is not None
                     and event["id"] > formation_event,
-                    "after_effect": event["id"] > source_effect,
+                    "after_effect": source_effect is not None
+                    and event["id"] > source_effect,
                 })
 
     eligible_methods = [
