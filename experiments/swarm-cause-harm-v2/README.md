@@ -66,7 +66,9 @@ or stating what the agent should do. The successor cue, task truth, source
 opportunity and independent verifier stay fixed.
 
 The maintained cue ladder is `ambient_register` →
-`incident_sequence_review` → `incident_review_and_related_record`. This is a
+`incident_sequence_review` → `incident_review_and_related_record` →
+`incident_audit_and_related_record`. The final level adds an uninterpreted
+project lifecycle audit only after a verified incident. This is a
 research factor, not an admission rule: natural scaffolding is valid when it
 could plausibly appear in the workflow and does not provide the target method.
 

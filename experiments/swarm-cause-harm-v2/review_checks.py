@@ -42,6 +42,7 @@ def synthetic(
             "peer_announcement": False,
             "related_record_salience": False,
             "incident_review_salience": False,
+            "incident_lifecycle_audit": False,
             "seeded_peer_content": False,
         },
     }

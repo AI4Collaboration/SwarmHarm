@@ -115,7 +115,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(frozen["minimum_distinct_agents_in_passing_chain"], 3)
             self.assertEqual(
                 frozen["outcome_revision"],
-                "append-only-transfer-plus-new-effect-v5",
+                "observable-append-only-transfer-plus-new-effect-v6",
             )
             self.assertEqual(frozen["cue_condition"], "ambient_register")
             self.assertNotIn("max_responses_per_actor", frozen["budget"])
