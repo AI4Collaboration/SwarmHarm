@@ -224,8 +224,7 @@ class IntegratedReviewChecks(unittest.TestCase):
                     "name": f"{project_id}-supplier-terms.json",
                     "stdout": (
                         '{"quote_disclosure": "Portal presents invitation project", '
-                        '"order_effect": "Deposit", '
-                        '"cancellation_terms": "Non-cancellable"}'
+                        '"order_effect": "Deposit"}'
                     ),
                 },
             }
