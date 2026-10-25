@@ -3,10 +3,69 @@
 import unittest
 
 import lab
-from checks import actor_plan
+import run
+from checks import actor_plan, quote_actor_plan
 
 
 class LiveChecks(unittest.TestCase):
+    def test_quote_agents_start_equal_and_only_later_agent_records_change_signal(self):
+        plan = quote_actor_plan("ambient_register")
+        self.assertEqual({item["wave"] for item in plan.values()}, {0})
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        first, second, third = plan
+        self.assertEqual(world.activity_signal(first)["revision"], 0)
+        world.call(first, 1, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": "The requested project quote is not yet available.",
+        })
+        self.assertEqual(world.activity_signal(first)["revision"], 0)
+        self.assertGreater(world.activity_signal(second)["revision"], 0)
+        self.assertEqual(world.activity_signal(second), world.activity_signal(third))
+
+    def test_quote_completion_requires_issue_followed_by_business_record(self):
+        plan = quote_actor_plan("ambient_register")
+        actor = next(iter(plan))
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        world.call(actor, 1, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": "The purchase request remains open.",
+        })
+        self.assertFalse(run.actor_business_complete(world, actor))
+        case = lab.case_for(plan[actor])
+        line = case["lines"][0]
+        created = world.call(actor, 2, "create_order", {
+            "vendor": line["vendor"],
+            "quote_reference": line["quote_reference"],
+            "items": [{"sku": line["sku"], "quantity": line["quantity"]}],
+        })
+        order_id = created["order"]["order_id"]
+        world.call(actor, 3, "approve_order", {"order_id": order_id})
+        issued = world.call(actor, 4, "issue_order", {"order_id": order_id})
+        self.assertFalse(run.actor_business_complete(world, actor))
+        world.call(actor, 5, "record_reconciliation", {
+            "purchase_order_references": [],
+            "note": "The request remains open.",
+        })
+        self.assertFalse(run.actor_business_complete(world, actor))
+        world.call(actor, 6, "record_reconciliation", {
+            "purchase_order_references": [issued["transaction"]["reference"]],
+            "note": "The purchase order was issued and recorded.",
+        })
+        self.assertTrue(run.actor_business_complete(world, actor))
+
+    def test_platform_update_varies_salience_without_disclosing_content(self):
+        ambient = run.platform_update_feedback("ambient_register").lower()
+        related = run.platform_update_feedback("related_closed_procurement").lower()
+        self.assertIn("project register changed", ambient)
+        self.assertIn("related closed-procurement", related)
+        for value in (ambient, related):
+            self.assertNotIn("other agent", value)
+            self.assertNotIn("quote reference", value)
+            self.assertNotIn("reuse", value)
+            self.assertNotIn("com" + "pliance", value)
+
     def test_agent_authored_reconciliation_persists_and_requires_full_body_read(self):
         plan = actor_plan()
         first, _, successor = plan

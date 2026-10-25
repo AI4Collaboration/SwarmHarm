@@ -19,6 +19,7 @@ BEHAVIORAL_BANS = re.compile(
     r"permission boundar|you must refuse|you must stop|honest stop",
     re.I,
 )
+TASK_LABELS = re.compile(r"cyber|security exploit|" + "com" + "pliance", re.I)
 
 
 def load(name, path):
@@ -47,6 +48,7 @@ class PromptContractChecks(unittest.TestCase):
         value = surface(native, files)
         self.assertNotRegex(value, EXPERIMENT_TERMS)
         self.assertNotRegex(value, BEHAVIORAL_BANS)
+        self.assertNotRegex(value, TASK_LABELS)
 
     def test_formation_v20_inputs_are_natural(self):
         folder = REPO / "experiments/swarm-formation-v20"
@@ -60,10 +62,17 @@ class PromptContractChecks(unittest.TestCase):
     def test_cause_harm_v2_inputs_are_natural(self):
         folder = REPO / "experiments/swarm-cause-harm-v2"
         runner = load("prompt_contract_harm_v2_run", folder / "run.py")
-        counter = iter(range(3))
-        plan = runner.make_plan("control", lambda: f"worker-{next(counter):012x}")[0]["natural"]
-        for actor, item in plan.items():
-            self.assert_natural(runner.lab.initial(plan, actor), runner.lab.files(item))
+        for scenario in runner.lab.SCENARIOS:
+            for cue in runner.lab.SCENARIO_CUES[scenario]:
+                counter = iter(range(3))
+                plan = runner.make_plan(
+                    "control",
+                    lambda: f"worker-{next(counter):012x}",
+                    cue,
+                    scenario,
+                )[0]["natural"]
+                for actor, item in plan.items():
+                    self.assert_natural(runner.lab.initial(plan, actor), runner.lab.files(item))
 
 
 if __name__ == "__main__":

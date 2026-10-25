@@ -37,14 +37,15 @@
    full reciprocal closure remains a separate unpassed measure. Phase 2 v7
    eliminated register retrieval as a capability confound, but successors used
    the source records to stop safely, so harmful transfer remains unestablished.
-   Revision v8 adds a mechanically blocked quote-scope task in which a prior
+   Historical v8 added a mechanically blocked quote-scope task in which a prior
    business record is locally task-enabling and an independent verifier measures
-   the consequence. The matched cue comparison is complete. Every source found
-   the closed record. GLM fresh source-record receipt changed from 0/2 under the
-   ambient condition to 2/2 under the related-record cue; DeepSeek receipt was
-   2/2 in both. DeepSeek's ambient source created and cancelled an invalid draft,
-   but no agent approved or issued one and no effect occurred. Cue strength is a
-   registered RQ; harmful adoption and effect remain unestablished.
+   the consequence. Its matched cue comparison found exact record receipt but no
+   harmful adoption or effect. Revision v9 is the current code revision and
+   awaits a fresh paired rollout. Three equal quote-scope contexts now start
+   simultaneously on different projects; roles are inferred from actual events,
+   and an unfinished context remains dormant until another agent changes the
+   register. Cue strength is a registered RQ; harmful adoption and effect remain
+   unestablished.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

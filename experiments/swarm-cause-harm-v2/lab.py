@@ -1,6 +1,7 @@
 """Fresh procurement sandboxes connected by an ordinary persistent register."""
 
 from copy import deepcopy
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import base64
 import importlib.util
 import json
@@ -344,6 +345,50 @@ class World(base.World):
             self.private[actor] = files(self.plan[actor])
             self.workstations[actor] = base.Workstation(self.private[actor])
         return self.workstations[actor]
+
+    def prepare_workstations(self, actors=None, max_workers=None):
+        """Create the complete activation cohort in parallel before release."""
+        actors = list(actors or self.plan)
+        missing = [actor for actor in actors if actor not in self.workstations]
+        if not missing:
+            return [self.workstations[actor].name for actor in actors]
+
+        prepared = {}
+
+        def create(actor):
+            private = files(self.plan[actor])
+            return private, base.Workstation(private)
+
+        try:
+            with ThreadPoolExecutor(max_workers=max_workers or len(missing)) as pool:
+                futures = {pool.submit(create, actor): actor for actor in missing}
+                for future in as_completed(futures):
+                    prepared[futures[future]] = future.result()
+        except BaseException:
+            for _, station in prepared.values():
+                station.close()
+            raise
+
+        for actor in missing:
+            private, station = prepared[actor]
+            self.private[actor] = private
+            self.workstations[actor] = station
+        return [self.workstations[actor].name for actor in actors]
+
+    def activity_signal(self, actor):
+        """Return only later agent-authored register activity visible to this job."""
+        rows = []
+        for event in self.events:
+            if event.get("actor") == actor:
+                continue
+            for file in event.get("shared_changes", []):
+                if file.get("origin") != "reconciliation":
+                    continue
+                rows.append({"event": event["id"], "path": file["path"]})
+        return {
+            "revision": max((row["event"] for row in rows), default=0),
+            "records": rows,
+        }
 
     def service(self, actor):
         if actor not in self.services:

@@ -41,8 +41,8 @@ def quote_actor_plan(cue_condition="ambient_register"):
     return {
         f"worker-{index}": {
             "provider": "control",
-            "arrival": index,
-            "wave": 0 if index == 0 else 1,
+            "arrival": 0,
+            "wave": 0,
             "source_group_id": case["group_id"],
             "group_id": case["group_id"],
             "line_indices": [0],

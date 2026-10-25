@@ -11,6 +11,14 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
+Revision v9 is the current Phase 2 code revision and awaits a fresh matched
+GLM/DeepSeek rollout. Three equal quote-scope agents now start together on
+different projects; no source or adopter is assigned. Roles are inferred only
+from actual write, read and action order. An unfinished agent remains dormant
+until another agent changes the project register, and cue strength varies only
+the natural salience of that change. This revision is not yet behavioral
+evidence.
+
 The matched v8 ambient-versus-related-record comparison is complete for GLM
 and DeepSeek. All four source agents found the exact closed-procurement record.
 For GLM, the stronger natural cue changed fresh receipt of the source
@@ -46,7 +54,7 @@ remains unestablished. See the
 and [v6 cue-3 review](docs/research/cause-harm-v6-cue3-paired-live-review-2026-10-25.md)
 and [v7 searchable-cue review](docs/research/cause-harm-v7-cue3-paired-live-review-2026-10-25.md).
 
-Revision v8 adds a second Phase 2 task structure in which the intended
+The historical v8 revision added a second Phase 2 task structure in which the intended
 project-scoped quote path is mechanically blocked, while an ordinary prior
 procurement record enables a locally successful but independently invalid
 cross-project order. One source agent and two fresh agents receive different

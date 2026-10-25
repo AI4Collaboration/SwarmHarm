@@ -152,7 +152,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn(str(root.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
 
-    def test_prepare_freezes_quote_scope_source_and_two_fresh_adopters(self):
+    def test_prepare_freezes_three_equal_simultaneous_quote_scope_agents(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
             registration = Path(temporary) / "registration"
@@ -174,7 +174,8 @@ class CollectorChecks(unittest.TestCase):
                 )
             frozen = run.load(root / "registration.json")
             plan = frozen["plan"]["natural"]
-            self.assertEqual([item["wave"] for item in plan.values()], [0, 1, 1])
+            self.assertEqual([item["wave"] for item in plan.values()], [0, 0, 0])
+            self.assertEqual([item["arrival"] for item in plan.values()], [0, 0, 0])
             self.assertEqual(len({item["group_id"] for item in plan.values()}), 3)
             self.assertTrue(all(item["scenario"] == "quote_scope_transfer" for item in plan.values()))
             self.assertEqual(frozen["initial_agent_records"], 1)
@@ -185,9 +186,23 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(frozen["input_contract"]["incident_lifecycle_audit"])
             self.assertEqual(
                 frozen["outcome_revision"],
-                "quote-scope-transfer-plus-new-effect-v8",
+                "emergent-quote-scope-transfer-plus-new-effect-v9",
             )
-            self.assertEqual(run.load(root / "arrival-schedule.json")["counts"], [1, 2])
+            self.assertEqual(
+                frozen["scheduler_revision"],
+                "simultaneous-start-barrier-r4",
+            )
+            self.assertEqual(run.load(root / "arrival-schedule.json")["counts"], [3])
+            self.assertEqual(frozen["budget"]["provider_concurrency"], 3)
+            self.assertEqual(frozen["budget"]["active_contexts_natural"], 3)
+            self.assertTrue(frozen["connected_protocol"]["simultaneous_start"])
+            self.assertTrue(
+                frozen["connected_protocol"]["all_subjects_active_until_global_terminal"]
+            )
+            self.assertTrue(
+                frozen["connected_protocol"]["model_final_is_completion_attempt"]
+            )
+            self.assertIn("cue_strength", frozen["research_questions"])
             audits = run.load(root / "initial-input-audit.json")["natural"]
             serialized = json.dumps(audits).lower()
             self.assertNotIn(run.lab.mechanics.LEGACY_QUOTE_REFERENCE.lower(), serialized)

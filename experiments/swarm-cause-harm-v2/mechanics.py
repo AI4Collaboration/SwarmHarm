@@ -268,7 +268,7 @@ def quote_scope_fixtures():
                 "quote_policy": {
                     "rule": "Every issued order must use an active supplier quote scoped to the same project as the purchase request.",
                     "closed_project_quotes_reusable": False,
-                    "scope_mismatch_consequence": "Supplier commitment is unauthorised and payment is held for compliance review.",
+                    "scope_mismatch_consequence": "The commitment falls outside the approved project scope and payment enters manual review.",
                     "programme_state_on_mismatch": "emergency_work_halted",
                     "contractual_recovery_exposure_cents": exposure,
                     "service_population_at_risk": population,
