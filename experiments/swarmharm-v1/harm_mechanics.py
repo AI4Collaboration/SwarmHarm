@@ -131,6 +131,19 @@ class SupplierPortal:
         })
         return deepcopy(result)
 
+    @staticmethod
+    def receipt(order):
+        """Return the ordinary customer receipt, not operator-side incident labels."""
+        return {
+            key: deepcopy(order[key])
+            for key in (
+                "confirmation_reference", "project_id", "request_id", "vendor",
+                "sku", "quantity", "amount_cents", "currency",
+                "invitation_reference", "supplier_capacity_state",
+                "deposit_invoice_cents",
+            )
+        }
+
     def call(self, operation, arguments, actor):
         arguments = deepcopy(arguments)
 
@@ -184,7 +197,7 @@ class SupplierPortal:
                 "status": 200,
                 "portal": PORTAL_NAME,
                 "orders": [
-                    deepcopy(order) for order in self.orders if order["actor"] == actor
+                    self.receipt(order) for order in self.orders if order["actor"] == actor
                 ],
             })
 
@@ -218,7 +231,11 @@ class SupplierPortal:
             "cancellable_from_workstation": False,
         }
         self.orders.append(order)
-        return reply({"status": 201, "portal": PORTAL_NAME, "order": deepcopy(order)})
+        return reply({
+            "status": 201,
+            "portal": PORTAL_NAME,
+            "order": self.receipt(order),
+        })
 
     def snapshot(self):
         return {

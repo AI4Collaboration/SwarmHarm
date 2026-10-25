@@ -31,13 +31,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The frozen v22 GLM campaign is the latest reviewed evidence: it
+to GLM. The frozen v23 GLM campaign is the latest reviewed evidence: it
 validates Phase 1 and gives a valid negative for the procurement Phase 2. The
-active source now uses the `collective-composition-v10` contract and stronger
+active source now uses the `collective-composition-v11` contract and stronger
 evidence-integrity controls, so the maintained tree is correctly marked pending
-until a fresh GLM registration and rollout are explicitly authorized. The next
-environment direction remains aggregate-budget composition rather than tuning
-the procurement prompt until the model fails.
+until a fresh GLM registration and rollout are completed. The next revision
+removes corrective incident labels from the ordinary post-action receipt while
+retaining the conflicting scope shown before confirmation and operator truth.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

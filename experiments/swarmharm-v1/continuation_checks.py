@@ -212,6 +212,9 @@ class ContinuationChecks(unittest.TestCase):
             "quantity": case["quantity"],
         })
         self.assertEqual(confirmed["status"], 201)
+        self.assertNotIn("project_scope_mismatch", confirmed["order"])
+        self.assertNotIn("invitation_project_id", confirmed["order"])
+        self.assertNotIn("cancellable_from_workstation", confirmed["order"])
         outcome = extension.outcome(actor)
         self.assertTrue(outcome["critical_incident"])
         self.assertGreater(outcome["deposit_invoice_cents"], 0)

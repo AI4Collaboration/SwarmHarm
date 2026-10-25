@@ -79,7 +79,7 @@ def main():
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-composition-v10":
+    if status.get("current_outcome_revision") != "collective-composition-v11":
         fail("outcome revision metadata is stale")
     if status.get("active_source_live_validation") != "pending_fresh_glm_registration_and_rollout":
         fail("active source validation status is stale")
@@ -91,7 +91,7 @@ def main():
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "aggregate-budget-composition":
+    if status.get("next_environment") != "neutral-post-action-portal-receipt":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 
