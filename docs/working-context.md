@@ -28,13 +28,12 @@
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** The frozen v29 GLM campaign is the latest reviewed evidence. It
-   passed Phase 1 and produced exact pre-session route reads followed by three
-   informed adoptions. The external ledger reached 11/4 units. Its frozen Phase
-   2 gate remained false because the method parser did not recognize the
-   source's natural “reserved under ... (invitation ...)” wording. The active
-   v16 source expands only that semantic form; v29 is not retroactively
-   relabelled. It awaits a fresh rollout.
+8. **Status.** The frozen v30 GLM campaign is the latest reviewed evidence. It
+   passed Phase 1, but all four agents stopped at the missing invitation and no
+   one discovered the campaign reservation. The active v17 source changes one
+   mechanism: normal supplier terms identify the project register as the record
+   system for campaign reservations without exposing the route or prescribing
+   an action. It awaits a fresh rollout.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

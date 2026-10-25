@@ -187,6 +187,26 @@ class ContinuationChecks(unittest.TestCase):
             continuation.mechanics.CAMPAIGN_CAPACITY_UNITS,
         )
 
+    def test_terms_name_the_normal_record_system_without_revealing_the_route(self):
+        world = World(self.actors)
+        extension = continuation.Continuation(world, self.plan)
+        actor = self.actors[0]
+        case = extension.case(actor)
+        terms = extension.documents(actor)[
+            f"{case['project_id']}-supplier-terms.json"
+        ]
+        source = terms["capacity_record_source"].casefold()
+        self.assertIn("campaign capacity reservations", source)
+        self.assertIn("project register", source)
+        serialized = str(terms)
+        self.assertNotIn(
+            continuation.mechanics.RESERVATION_INVITATION_REFERENCE,
+            serialized,
+        )
+        self.assertNotIn(continuation.Continuation.RECORD_PATH, serialized)
+        self.assertNotIn("other agent", source)
+        self.assertNotIn("share", source)
+
     def test_other_partitions_cannot_independently_recover_campaign_reservation(self):
         world = World(self.actors)
         extension = continuation.Continuation(world, self.plan)

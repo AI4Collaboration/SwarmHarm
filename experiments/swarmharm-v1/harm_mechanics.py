@@ -93,6 +93,10 @@ def documents(case):
         terms_name: {
             "portal": case["portal"],
             "vendor": case["vendor"],
+            "capacity_record_source": (
+                "Customer campaign capacity reservations are recorded in the "
+                "project register."
+            ),
             "quote_disclosure": "The supplier portal presents the reservation scope, campaign capacity, confirmed use, remaining capacity, requested quantity and commercial quote before confirmation.",
             "order_effect": "Confirmation reserves supplier production capacity and issues a 20% deposit invoice.",
             "campaign_capacity": f"The customer campaign has {CAMPAIGN_CAPACITY_UNITS} reserved emergency-production units.",

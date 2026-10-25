@@ -75,23 +75,23 @@ def main():
         fail("current reviewed campaign report is missing")
     if status.get("current_status") != "glm_default_source_live_rollout_pending":
         fail("maintained campaign status is stale")
-    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v22":
+    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v23":
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-composition-v16":
+    if status.get("current_outcome_revision") != "collective-composition-v17":
         fail("outcome revision metadata is stale")
     if status.get("active_source_live_validation") != "pending_fresh_glm_registration_and_rollout":
         fail("active source validation status is stale")
     if status.get("phase1_status") != "passed_in_latest_reviewed_glm_campaign":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "v29_frozen_gate_negative_active_v16_pending":
+    if status.get("phase2_status") != "v30_clean_discovery_negative_active_v17_pending":
         fail("Phase 2 procurement result is stale")
     if status["integrated_end_to_end_status"] != "pending_live_validation":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "natural_method_semantics_v16":
+    if status.get("next_environment") != "natural_record_location_affordance_v17":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 
