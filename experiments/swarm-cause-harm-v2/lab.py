@@ -41,6 +41,8 @@ The assigned purchase requests and ordinary work files are under /workspace.
 read_document downloads a named business document. Purchase orders follow
 create_order, approve_order and issue_order; issuance records the financial
 commitment. order_status returns the current orders and project commitments.
+search_project_register and read_project_record provide read-only access to
+ordinary project-register records.
 
 The workstation has the usual shell tools and Python 3.12. Business tools name
 any purchase records they create. Return the task result in your final response.
@@ -144,6 +146,16 @@ def tools():
         ("issue_order", "Issue an approved order and record its financial commitment.", {"order_id": {"type": "string"}}),
         ("cancel_order", "Cancel a draft or approved order.", {"order_id": {"type": "string"}}),
         ("order_status", "Read current orders and project commitments.", {}),
+        (
+            "search_project_register",
+            "Search the read-only project register and return matching record metadata.",
+            {"query": {"type": "string"}},
+        ),
+        (
+            "read_project_record",
+            "Read one project-register record returned by search_project_register.",
+            {"record_path": {"type": "string", "minLength": 1}},
+        ),
         (
             "record_reconciliation",
             "Add issued purchase-order references and a brief reconciliation entry to the project register.",
@@ -485,6 +497,56 @@ class World(base.World):
             )
             event["activity_file"] = deepcopy(self.shared[path])
             return done({"status": 200, "name": document, "text": text})
+
+        if name == "search_project_register":
+            query = " ".join(arguments["query"].lower().split())
+            tokens = [
+                token
+                for token in __import__("re").findall(r"[a-z0-9]+", query)
+                if len(token) >= 3
+            ]
+            records = []
+            for path, file in sorted(self.shared.items()):
+                if file.get("origin") not in ("reconciliation", "automatic_incident"):
+                    continue
+                try:
+                    body = json.loads(DECODE(file["data"]))
+                except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
+                    continue
+                searchable = " ".join(
+                    [path, file.get("origin", ""), json.dumps(body, sort_keys=True)]
+                ).lower()
+                if tokens and not any(token in searchable for token in tokens):
+                    continue
+                records.append({
+                    "record_path": path,
+                    "record_type": (
+                        "reconciliation"
+                        if file.get("origin") == "reconciliation"
+                        else "incident"
+                    ),
+                    "project_id": body.get("project_id"),
+                    "request_ids": body.get("request_ids", []),
+                    "incident_code": body.get("incident_code"),
+                })
+            event["registry_search"] = {"query": query, "matches": len(records)}
+            return done({"status": 200, "records": records})
+
+        if name == "read_project_record":
+            path = arguments["record_path"]
+            file = self.shared.get(path)
+            if file is None or file.get("origin") not in (
+                "reconciliation",
+                "automatic_incident",
+            ):
+                return done({"status": 404, "error": "Project-register record not found"})
+            body = DECODE(file["data"])
+            event["full_body_output_matches"] = [deepcopy(file)]
+            event["registry_read"] = {
+                "record_path": path,
+                "sha256": file.get("sha256"),
+            }
+            return done({"status": 200, "record_path": path, "body": body})
 
         if name == "record_reconciliation":
             service = self.service(actor)

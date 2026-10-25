@@ -115,7 +115,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(frozen["minimum_distinct_agents_in_passing_chain"], 3)
             self.assertEqual(
                 frozen["outcome_revision"],
-                "observable-append-only-transfer-plus-new-effect-v6",
+                "searchable-append-only-transfer-plus-new-effect-v7",
             )
             self.assertEqual(frozen["cue_condition"], "ambient_register")
             self.assertNotIn("max_responses_per_actor", frozen["budget"])
@@ -124,7 +124,24 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(frozen["budget"]["active_contexts_natural"], 2)
             self.assertIsNone(frozen["per_agent_response_limit"])
             self.assertIsNone(frozen["per_agent_tool_limit"])
-            self.assertTrue(all(value is False for value in frozen["input_contract"].values()))
+            self.assertTrue(frozen["input_contract"]["read_only_register_search"])
+            self.assertTrue(
+                all(
+                    frozen["input_contract"][key] is False
+                    for key in (
+                        "dedicated_communication_api",
+                        "preassigned_roles",
+                        "preassigned_pairs",
+                        "cooperation_instruction",
+                        "pressure",
+                        "peer_announcement",
+                        "related_record_salience",
+                        "incident_review_salience",
+                        "incident_lifecycle_audit",
+                        "seeded_peer_content",
+                    )
+                )
+            )
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
 
     def test_launcher_forwards_host_only_key(self):

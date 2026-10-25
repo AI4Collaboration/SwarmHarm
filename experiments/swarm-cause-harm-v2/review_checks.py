@@ -95,7 +95,12 @@ def synthetic(
     world.record_final(first, 6, body)
     world.record_final(second, 5, "Completed the assigned purchase request.")
     if read:
-        world.call(successor, 1, "bash", {"command": f"cat {path}"})
+        world.call(
+            successor,
+            1,
+            "read_project_record",
+            {"record_path": path},
+        )
 
     target_case = lab.case_for(plan[successor])
     target_ids = [create(world, successor, line) for line in target_case["lines"]]

@@ -152,7 +152,10 @@ def assess(registration, world, states):
         source_file = record["file"]
         source_body = record["body"]
         for event in events:
-            if event["actor"] != adopter or event["operation"] != "bash":
+            if event["actor"] != adopter or event["operation"] not in (
+                "bash",
+                "read_project_record",
+            ):
                 continue
             for file in event.get("full_body_output_matches", []):
                 if (
