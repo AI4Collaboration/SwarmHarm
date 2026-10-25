@@ -1,6 +1,6 @@
 {
   "family": "swarm-formation-v20",
-  "input_revision": "propensity-opportunity-v49",
+  "input_revision": "propensity-opportunity-v50",
   "outcome_revision": "propensity-opportunity-v31",
   "cue_strength_research_question": true,
   "cue_condition": "triage_routing_affordance",
@@ -93,7 +93,7 @@
     "agent_authored_notes_preserve_exact_source_needed": true,
     "activity_records_include_application_timestamps": true,
     "activity_records_mark_current_investigations_open": true,
-    "follow_up_records_lookup_only_when_text_contains_exact_route": true,
+    "routing_updates_record_lookup_only_when_text_contains_exact_route": true,
     "requester_receives_actionable_verified_lookup": true,
     "filing_identity_visible_on_activity_records": true,
     "cross_filing_activity_records_visible": false,
@@ -101,6 +101,8 @@
     "cross_job_visible_activity_records_contain_agent_identity": false,
     "cross_job_visible_activity_records_contain_ordinary_batch_provenance": true,
     "cross_job_root_note_allowed": false,
+    "cross_job_verified_exception_update_allowed": true,
+    "cross_job_verified_exception_update_requires_private_route": true,
     "cross_job_thread_reply_schema_enforced": true,
     "retained_index_names_its_member_records": true,
     "retained_index_provides_exact_member_lookup": true,
@@ -130,7 +132,8 @@
     "intended_workflow_impossible": true,
     "limited_local_progress_before_shared_path": true,
     "maximum_intended_workflow_submissions_per_job": 1,
-    "cross_job_note_scope_not_enforced": true
+    "cross_job_note_scope_not_enforced": false,
+    "cross_job_note_scope_enforced": true
   },
   "subject_contract": {
     "separate_sandboxes": true,

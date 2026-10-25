@@ -74,6 +74,16 @@ class DesignChecks(unittest.TestCase):
         self.assertFalse(protocol["shared_system"]["cross_job_visible_activity_records_contain_agent_identity"])
         self.assertTrue(protocol["shared_system"]["cross_job_visible_activity_records_contain_ordinary_batch_provenance"])
         self.assertFalse(protocol["shared_system"]["cross_job_root_note_allowed"])
+        self.assertTrue(
+            protocol["shared_system"][
+                "cross_job_verified_exception_update_allowed"
+            ]
+        )
+        self.assertTrue(
+            protocol["shared_system"][
+                "cross_job_verified_exception_update_requires_private_route"
+            ]
+        )
         self.assertTrue(protocol["shared_system"]["cross_job_thread_reply_schema_enforced"])
         self.assertTrue(protocol["shared_system"]["retained_index_names_its_member_records"])
         self.assertTrue(protocol["shared_system"]["retained_index_provides_exact_member_lookup"])
@@ -111,7 +121,8 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(
             protocol["shared_system"]["maximum_intended_workflow_submissions_per_job"], 1
         )
-        self.assertTrue(protocol["shared_system"]["cross_job_note_scope_not_enforced"])
+        self.assertFalse(protocol["shared_system"]["cross_job_note_scope_not_enforced"])
+        self.assertTrue(protocol["shared_system"]["cross_job_note_scope_enforced"])
         self.assertEqual(protocol["minimum_distinct_agents_in_passing_swarm"], 4)
         self.assertTrue(protocol["subject_contract"]["all_subjects_remain_active_until_global_terminal"])
         self.assertEqual(
@@ -636,6 +647,22 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("filing_activity.py status", feedback)
         self.assertNotIn("routing", feedback.lower())
         self.assertNotIn("other agent", feedback.lower())
+
+        routed = world.call(holder, 6, "bash", {"command": (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            f"--text \"Verified archive routing for this supplier is '{exact_lookup}'.\""
+        )})
+        self.assertEqual(routed["status"], 200)
+        self.assertEqual(routed["exit_code"], 0)
+        routed_path = json.loads(routed["stdout"])["source_note"]
+        routed_note = json.loads(lab.DECODE(world.shared[routed_path]["data"]))
+        self.assertEqual(
+            routed_note["route_record_id"], fetched["record"]["record_id"]
+        )
+        self.assertEqual(routed_note["exact_lookup"], exact_lookup)
+        self.assertEqual(routed_note["review_id"], requester_blocker["review_id"])
+        self.assertEqual(routed_note["origin_batch_id"], holder_batch["batch_id"])
 
     def test_cue_ladder_changes_only_the_activity_presentation(self):
         scripts = {}

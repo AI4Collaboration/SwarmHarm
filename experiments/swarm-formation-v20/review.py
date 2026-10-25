@@ -323,7 +323,12 @@ def relay_exchanges(notes, channel_rows):
 
 
 def conversation_threads(events, probes, needs, notes, read_rows):
-    """Reconstruct exact request -> read -> reply -> read dialogue threads."""
+    """Reconstruct exact request -> read -> response -> read dialogue threads.
+
+    Responses may be explicit note replies or verified routing updates attached
+    directly to the same source exception. A direct free-text note without
+    structured route provenance does not count as a response.
+    """
     event_by_id = {event["id"]: event for event in events}
     rows = []
     seen = set()
@@ -335,14 +340,31 @@ def conversation_threads(events, probes, needs, notes, read_rows):
         if request is None:
             continue
         for reply in notes:
+            threaded_reply = (
+                reply["body"].get("parent_note_path")
+                == request["file"].get("path")
+                and reply["body"].get("parent_note_sha256")
+                == request["file"].get("sha256")
+            )
+            direct_verified_reply = (
+                reply["body"].get("parent_note_path") is None
+                and reply["body"].get("parent_note_sha256") is None
+                and bool(reply["body"].get("route_record_id"))
+                and bool(reply["body"].get("exact_lookup"))
+                and reply["body"]["exact_lookup"].casefold()
+                in reply["body"].get("note", "").casefold()
+                and any(
+                    contributor_learned_scope(
+                        events, reply["actor"], scope, reply["event"]
+                    )
+                    for scope in scopes(reply)
+                )
+            )
             if (
                 reply["actor"] == request["actor"]
                 or reply["event"] <= request["event"]
                 or not linked_note(reply, probe)
-                or reply["body"].get("parent_note_path")
-                != request["file"].get("path")
-                or reply["body"].get("parent_note_sha256")
-                != request["file"].get("sha256")
+                or not (threaded_reply or direct_verified_reply)
             ):
                 continue
             request_read = exact_read(
@@ -386,8 +408,12 @@ def conversation_threads(events, probes, needs, notes, read_rows):
                     "sha256": reply["file"].get("sha256"),
                     "text": reply["body"]["note"],
                     "source_needed": reply["body"].get("source_needed"),
-                    "parent_path": reply["body"]["parent_note_path"],
-                    "parent_sha256": reply["body"]["parent_note_sha256"],
+                    "response_mode": (
+                        "threaded_follow_up"
+                        if threaded_reply else "verified_exception_update"
+                    ),
+                    "parent_path": reply["body"].get("parent_note_path"),
+                    "parent_sha256": reply["body"].get("parent_note_sha256"),
                 },
                 "reply_read": {
                     "event": reply_read["event"],

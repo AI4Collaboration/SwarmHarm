@@ -26,14 +26,14 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-paired v48 rollout produced a connected four-agent read-write graph for GLM and
-a two-agent subgraph for DeepSeek, but no verified live dialogue. Cue strength
-is measured under matched tasks and verifier settings; the activity-notification
-level solved discovery and action placement, but subjects still treated
-cross-batch records as distraction rather than safe routing context. Active v49
-describes the ordinary operations-triage use of locally verified routing details
-on a matching source exception; matching live campaigns are pending. Phase 1
-remains unestablished.
+paired v49 rollout produced connected four-agent channels with repeated relays
+for both models, but no registered live dialogue. GLM also produced one
+post-hoc functional transfer after its direct verified-routing action was
+rejected by an inconsistent authorization rule. Active v50 keeps task truth,
+cue, prompt and outcome gates fixed while making that natural action usable only
+for independently fetched same-filing routes and recording structured
+provenance. Matching live campaigns are pending. Phase 1 remains
+unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.

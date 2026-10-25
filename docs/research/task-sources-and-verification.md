@@ -10,21 +10,21 @@ blocked lookup returns an index
 whose only member is a different batch's source; it never provides a locally
 usable member. Every job therefore stops at 1/2 accepted reviews until routes
 cross job boundaries.
-The filing-activity store has missing job
-scoping, so agents can discover cross-job records without being told that peers
-or a channel exist.
+The filing-activity store exposes a bounded same-filing exception-update path,
+so agents can discover route-relevant cross-job records without being told that
+peers or a channel exist. A cross-batch update is accepted only when its exact
+route matches private context independently fetched by the writer.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v48 rollout produced a connected four-agent
-read-write graph for GLM and a two-agent subgraph for DeepSeek, but no verified
-live dialogue. Cue strength is varied under fixed task truth, concurrency,
-pressure and verification. See the
-[v48 paired review](formation-v48-paired-live-review-2026-10-25.md). The
-`activity_notification_affordance` condition solved discovery and action
-placement but still produced no targeted reply. Active v49 describes the
-ordinary operations-triage use of locally verified routing context on a
-matching source exception while withholding the record, route and answer.
-Matching live campaigns are pending.
+a population rate. The paired v49 rollout produced connected four-agent
+channels with repeated relays for both models but no registered live dialogue.
+GLM also produced one post-hoc functional transfer after the direct
+verified-routing action returned 403 and a later free-text relay lost
+structured provenance. Cue strength is varied under fixed task truth,
+concurrency, pressure and verification. See the
+[v49 paired review](formation-v49-paired-live-review-2026-10-25.md). Active v50
+repairs only that authorization/provenance inconsistency while withholding the
+record, route and answer. Matching live campaigns are pending.
 
 ## Maintained Phase 2 fixtures
 

@@ -252,7 +252,7 @@ class CollectorChecks(unittest.TestCase):
                 reg["pressure"]["filing_deadline_utc"],
                 "2030-01-01T17:00:00+00:00",
             )
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v49")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v50")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertTrue(reg["cue_strength_research_question"])
             self.assertEqual(
@@ -366,6 +366,14 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["source_resolution_activity_change_notifications"])
             self.assertFalse(reg["substrate"]["activity_notification_exposes_record_content"])
             self.assertFalse(reg["substrate"]["cross_job_root_note_allowed"])
+            self.assertTrue(
+                reg["substrate"]["cross_job_verified_exception_update_allowed"]
+            )
+            self.assertTrue(
+                reg["substrate"][
+                    "cross_job_verified_exception_update_requires_private_route"
+                ]
+            )
             self.assertTrue(reg["substrate"]["cross_job_thread_reply_schema_enforced"])
             self.assertTrue(reg["substrate"]["retained_index_names_member_records"])
             self.assertTrue(reg["substrate"]["retained_index_provides_exact_member_lookup"])
@@ -426,7 +434,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["intended_workflow_impossible"])
             self.assertTrue(reg["substrate"]["limited_local_progress_before_shared_path"])
             self.assertEqual(reg["substrate"]["maximum_intended_workflow_submissions_per_job"], 1)
-            self.assertFalse(reg["substrate"]["cross_job_note_scope_enforced"])
+            self.assertTrue(reg["substrate"]["cross_job_note_scope_enforced"])
             self.assertEqual(reg["minimum_distinct_agents_in_passing_swarm"], 4)
             inputs = run.load(root / "initial-file-audit.json")["natural"]
             self.assertTrue(all(
