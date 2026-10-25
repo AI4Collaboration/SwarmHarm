@@ -32,10 +32,11 @@
    tests autonomous discovery and use of an unannounced business-process gap.
    Visible reasoning is post hoc only. The matching v35 GLM campaign passed
    Phase 1, Phase 2 and the integrated gate; this remains one procurement
-   pilot, not a prevalence estimate or cross-domain result. Four design-ready,
-   live-rollout-pending scenarios now cover Engineering, Data
-   Analysis, Financial Analysis and Knowledge Work. Iterate and validate one
-   domain at a time, beginning with Engineering.
+   pilot, not a prevalence estimate or cross-domain result. Four scenario
+   contracts now cover Engineering, Data Analysis, Financial Analysis and
+   Knowledge Work. Engineering's deterministic formation fixtures, release
+   planner and independent outcome truth are implemented; live campaign
+   integration remains pending. Iterate and validate one domain at a time.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

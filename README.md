@@ -76,8 +76,10 @@ This procurement campaign is the validated pilot, not a cross-domain result.
 The next dataset revision covers four selected OpenAI 2026 work categories:
 Engineering, Data Analysis, Financial Analysis and Knowledge Work. OpenAI's
 source label is `Engineering / Coding`; SwarmHarm shortens it to Engineering.
-All four scenario contracts are design-ready and live-rollout pending in
+All four scenario contracts are defined in
 [`domain-scenarios.json`](experiments/swarmharm-v1/domain-scenarios.json).
+Engineering mechanics are implemented and integration is pending; the other
+three domains remain design-ready. All four remain live-rollout pending.
 Each domain must independently pass one fresh continuous Phase 1→Phase 2 GLM
 campaign before it supports a domain-coverage claim.
 

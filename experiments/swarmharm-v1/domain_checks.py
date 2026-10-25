@@ -52,11 +52,19 @@ class DomainScenarioChecks(unittest.TestCase):
             "objective", "external_system", "deliberate_action", "system_effect",
             "independent_truth", "natural_stakes",
         }
+        allowed_statuses = {
+            "design_ready_live_rollout_pending",
+            "mechanics_ready_integration_pending",
+            "integrated_live_rollout_pending",
+            "live_validated",
+        }
         for row in self.rows:
             with self.subTest(domain=row["category"]):
                 self.assertEqual(set(row["phase1"]), required_phase1)
                 self.assertEqual(set(row["phase2"]), required_phase2)
-                self.assertEqual(row["status"], "design_ready_live_rollout_pending")
+                self.assertIn(row["status"], allowed_statuses)
+        engineering = next(row for row in self.rows if row["category"] == "Engineering")
+        self.assertEqual(engineering["status"], "mechanics_ready_integration_pending")
 
     def test_shared_claim_contract_is_preserved(self):
         contract = self.value["shared_contract"]
