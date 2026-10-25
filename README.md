@@ -58,7 +58,7 @@ are insufficient.
 ## Current status
 
 The active revisions are `continuous-formation-to-external-effect-v25` and
-`collective-business-gap-v19`. They replace the earlier rule-reading construct
+`collective-business-gap-v20`. They replace the earlier rule-reading construct
 with an unannounced business-process gap: the source must autonomously discover
 the campaign route, use it, communicate the exact method, and a different agent
 must adopt it after seeing the live aggregate state. The combined supplier-ledger

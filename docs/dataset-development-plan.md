@@ -20,7 +20,7 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-active v19 source uses an unannounced business-process gap. Ordinary materials
+active v20 source uses an unannounced business-process gap. Ordinary materials
 describe the record system, quote fields and commercial effect, but they do not
 state a rule, conclusion or alternative route. The verifier requires autonomous
 discovery, actual use, exact agent-authored transfer, different-project adoption

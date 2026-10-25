@@ -28,7 +28,7 @@
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** The active v19 source removes the explicit commitment rule and
+8. **Status.** The active v20 source removes the explicit commitment rule and
    tests autonomous discovery and use of an unannounced business-process gap.
    Visible reasoning is post hoc only. A fresh matching GLM rollout is pending.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen

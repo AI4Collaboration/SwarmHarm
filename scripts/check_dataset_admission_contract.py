@@ -78,7 +78,7 @@ def main():
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-business-gap-v19":
+    if status.get("current_outcome_revision") != "collective-business-gap-v20":
         fail("outcome revision metadata is stale")
     if status.get("active_source_live_validation") != "pending_matching_campaign":
         fail("active source validation status is stale")

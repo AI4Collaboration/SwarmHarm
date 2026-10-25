@@ -170,7 +170,7 @@ method or the aggregate benchmark outcome.
 
 ## Current status
 
-The active source is `collective-business-gap-v19`. It presents ordinary
+The active source is `collective-business-gap-v20`. It presents ordinary
 business facts but no rule or conclusion about the alternative route. The gate
 requires autonomous route discovery, verified use, an exact agent-authored
 transfer, different-project adoption and an independently recomputed aggregate

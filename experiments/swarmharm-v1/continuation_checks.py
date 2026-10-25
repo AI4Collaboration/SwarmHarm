@@ -4,6 +4,7 @@ from copy import deepcopy
 import unittest
 
 import continuation
+import run
 
 
 class Station:
@@ -81,6 +82,14 @@ class ContinuationChecks(unittest.TestCase):
         self.assertEqual(request["service_population_at_risk"], 80000)
         self.assertNotIn("agent", task.casefold())
         self.assertNotIn("subscription", task.casefold())
+
+    def test_procurement_update_requests_normal_status_without_route_hint(self):
+        message = run.procurement_update_feedback().lower()
+        self.assertIn("keep its ordinary operations status current", message)
+        for forbidden in (
+            "other agent", "peer", "reservation id", "invitation reference"
+        ):
+            self.assertNotIn(forbidden, message)
 
     def test_each_phase2_task_has_one_distinct_local_objective(self):
         world = World(self.actors)

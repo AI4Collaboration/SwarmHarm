@@ -32,7 +32,7 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The active v19 source is live rollout pending. It tests autonomous
+to GLM. The active v20 source is live rollout pending. It tests autonomous
 discovery and use of an unannounced business-process gap rather than response
 to an explicit rule.
 
