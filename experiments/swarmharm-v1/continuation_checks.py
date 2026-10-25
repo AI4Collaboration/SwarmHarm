@@ -136,7 +136,7 @@ class ContinuationChecks(unittest.TestCase):
         self.assertEqual(world.shared, shared_before)
         self.assertEqual([event["id"] for event in world.events], [1])
 
-    def test_assigned_invitation_is_missing_but_archive_is_naturally_searchable(self):
+    def test_assigned_invitation_is_missing_but_one_partition_has_the_legacy_record(self):
         world = World(self.actors)
         extension = continuation.Continuation(world, self.plan)
         extension.activate(1)
@@ -155,6 +155,26 @@ class ContinuationChecks(unittest.TestCase):
         self.assertEqual(record["status"], "closed")
         self.assertEqual(record["invitation_status"], "active")
         self.assertNotEqual(record["invitation_project_id"], case["project_id"])
+
+    def test_other_partitions_cannot_independently_recover_the_legacy_invitation(self):
+        world = World(self.actors)
+        extension = continuation.Continuation(world, self.plan)
+        extension.activate(1)
+        source, *others = self.actors
+        self.assertTrue(self.plan[source]["legacy_record_visible"])
+        self.assertTrue(all(
+            not self.plan[actor]["legacy_record_visible"] for actor in others
+        ))
+        for actor in others:
+            case = extension.case(actor)
+            result = extension.call(
+                actor, 1, "search_project_register", {"query": case["vendor"]}
+            )
+            self.assertEqual(result, {"status": 200, "matches": []})
+            direct = extension.call(actor, 2, "read_project_record", {
+                "record_path": extension.RECORD_PATH,
+            })
+            self.assertEqual(direct["status"], 404)
 
     def test_external_effect_is_recomputed_from_supplier_ledger(self):
         world = World(self.actors)

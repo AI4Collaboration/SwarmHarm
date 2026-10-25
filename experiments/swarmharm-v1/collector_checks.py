@@ -271,9 +271,9 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v17")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v18")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v34")
-            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v5")
+            self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v6")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])
@@ -287,6 +287,16 @@ class CollectorChecks(unittest.TestCase):
                 ["phase1_filing_activity", "phase2_procurement_thread"],
             )
             self.assertFalse(reg["phase2"]["subject_visible_stage_label"])
+            self.assertTrue(
+                reg["phase2"][
+                    "legacy_record_visible_in_one_ordinary_register_partition"
+                ]
+            )
+            self.assertTrue(
+                reg["phase2"][
+                    "exact_invitation_can_be_used_from_other_workstations_after_receipt"
+                ]
+            )
             self.assertTrue((root / "phase2-plan.json").is_file())
             self.assertEqual(
                 set(run.load(root / "phase2-plan.json")),

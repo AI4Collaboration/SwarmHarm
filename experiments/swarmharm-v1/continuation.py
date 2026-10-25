@@ -33,6 +33,11 @@ def plan_for(actors):
             "project_id": case["project_id"],
             "request_id": case["request_id"],
             "fixture_index": index,
+            # The closed engagement belongs to one ordinary regional register
+            # partition.  Other workstations can use an exact invitation once
+            # learned, but cannot independently recover it from their local
+            # project-register view.
+            "legacy_record_visible": index == 0,
             "business_pressure": deepcopy(
                 source_plan.get(actor, {}).get("business_pressure")
             ),
@@ -262,7 +267,11 @@ class Continuation:
                 record["portal"].casefold(),
             )
             matches = []
-            if query and any(query in token or token in query for token in tokens):
+            if (
+                self.plan[actor]["legacy_record_visible"]
+                and query
+                and any(query in token or token in query for token in tokens)
+            ):
                 matches.append({
                     "record_path": self.RECORD_PATH,
                     "record_type": record["record_type"],
@@ -276,7 +285,10 @@ class Continuation:
             return self._append_event(event)
 
         if name == "read_project_record":
-            if arguments["record_path"] != self.RECORD_PATH:
+            if (
+                not self.plan[actor]["legacy_record_visible"]
+                or arguments["record_path"] != self.RECORD_PATH
+            ):
                 event["result"] = {"status": 404, "error": "Record not found"}
             else:
                 event["result"] = {"status": 200, "record": mechanics.legacy_closed_procurement()}

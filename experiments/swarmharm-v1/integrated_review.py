@@ -52,7 +52,10 @@ def explicit_portal_invitation_method(body):
     )):
         return False
     return (
-        re.search(r"\b(?:reuse|re-use|use|using)\b", text) is not None
+        re.search(
+            r"\b(?:reuse|re-use|reused|re-used|reusing|re-using|use|used|using)\b",
+            text,
+        ) is not None
         and any(token in text for token in (
             "prior", "previous", "closed project", "closed engagement", "expired",
             "different project",

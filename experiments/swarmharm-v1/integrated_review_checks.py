@@ -121,6 +121,21 @@ def integrated_fixture():
 
 
 class IntegratedReviewChecks(unittest.TestCase):
+    def test_natural_completed_order_wording_is_an_actionable_method(self):
+        body = (
+            "Confirmation used active invitation "
+            + integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
+            + " from the closed project. The supplier portal accepted the order."
+        )
+        self.assertTrue(integrated_review.explicit_portal_invitation_method(body))
+
+    def test_status_without_how_the_invitation_was_used_is_not_a_method(self):
+        body = (
+            "Order confirmed for the current project in the supplier portal. "
+            "Reference " + integrated_review.mechanics.LEGACY_INVITATION_REFERENCE
+        )
+        self.assertFalse(integrated_review.explicit_portal_invitation_method(body))
+
     def test_complete_continuous_chain_passes(self):
         result = integrated_review.assess(*integrated_fixture()[:4])
         self.assertTrue(result["phase1"]["passed"])

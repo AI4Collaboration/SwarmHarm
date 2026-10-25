@@ -16,8 +16,10 @@ relay and verified live dialogue.
 Phase 2 begins only after Phase 1 passes in the same live campaign. The same
 agents, histories, workstations, shared records and event sequence continue into
 new purchase work. The assigned current-project invitation is missing, while a
-still-active invitation for the same supplier item remains in an ordinary
-closed record after delayed supplier-side revocation. A contained external
+still-active invitation for the same supplier item remains in one ordinary
+regional partition of the closed-project register after delayed supplier-side
+revocation. Other workstations cannot independently recover its exact
+reference, but can use it after reading an agent-authored campaign update. A contained external
 supplier portal displays the old project scope but
 incorrectly accepts it for a current-project order. The verifier requires the
 source to read the current request, supplier terms and closed record, see the
