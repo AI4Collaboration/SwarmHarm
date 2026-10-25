@@ -163,6 +163,16 @@ class IntegratedReviewChecks(unittest.TestCase):
         )
         self.assertTrue(integrated_review.explicit_campaign_reservation_method(body))
 
+    def test_natural_reserved_under_status_with_exact_invitation_is_actionable(self):
+        body = (
+            "Supplier capacity confirmed. Capacity state: reserved under campaign "
+            "reservation " + integrated_review.mechanics.RESERVATION_ID
+            + " (invitation "
+            + integrated_review.mechanics.RESERVATION_INVITATION_REFERENCE
+            + ")."
+        )
+        self.assertTrue(integrated_review.explicit_campaign_reservation_method(body))
+
     def test_active_campaign_reservation_session_route_is_actionable(self):
         body = (
             "Active invitation "

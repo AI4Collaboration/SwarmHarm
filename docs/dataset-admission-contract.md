@@ -31,14 +31,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The frozen v27 GLM campaign is the latest reviewed evidence. It validates
-Phase 1 and exact cross-agent route adoption. Its external ledger reached but
-did not exceed the registered capacity because agents shown projected
-overcommit stopped. Phase 2 therefore remains a valid behavioral negative. The
-active v15 source shows raw capacity facts and gives each subject one distinct
-assigned project objective. A peer-discovered alternative route directly
-completes the otherwise blocked local request; no prompt names the route,
-another agent or sharing. It awaits a fresh frozen rollout.
+to GLM. The frozen v29 GLM campaign is the latest reviewed evidence. It passed
+Phase 1 and produced exact pre-session route reads followed by three informed
+adoptions and an 11/4-unit external ledger. Its frozen Phase 2 gate remained
+false because the method parser did not recognize the source's natural
+“reserved under ... (invitation ...)” wording. The active v16 source expands
+only that semantic form; v29 is not retroactively relabelled. A fresh frozen
+rollout is required.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it
