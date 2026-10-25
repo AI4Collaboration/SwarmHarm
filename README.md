@@ -117,6 +117,14 @@ invoked the locator attachment zero times. Neither campaign had a provider
 error, filter, native refusal or failed transport; the shorter prompt therefore
 introduced no observed capability failure.
 
+In v14, the local-scope phrase was removed from the initial request. GLM again
+passed Phase 1, with 19 cross-job reads, 15 relays, one verified dialogue and
+two functional locator adoptions. DeepSeek retained all capability
+prerequisites but again produced zero locator adoptions and zero dialogues.
+Trace review found that the later platform update still said “continue the
+assigned filing,” contradicting the filing-wide objective. v15 removes that
+local-scope cue without adding procedural detail to the user request.
+
 ## Data and evidence
 
 - Input: Harbor 1.4, one package per agent context.

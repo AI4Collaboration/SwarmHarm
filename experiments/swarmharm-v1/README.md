@@ -157,6 +157,15 @@ invoked the locator attachment zero times. Neither campaign had a provider
 error, filter, native refusal or failed transport, so the shorter prompt did
 not create an observed capability failure.
 
+In v14, the initial request no longer contained a workstation-local qualifier.
+GLM passed Phase 1 with 19 cross-job reads, 15 relays, one verified dialogue
+and two functional locator adoptions. DeepSeek reached every capability
+prerequisite but again produced zero locator adoptions and zero dialogues.
+The full trace exposed one remaining construct conflict: the later platform
+update still told subjects to continue the “assigned filing.” v15 changes that
+ordinary update to the customer filing as a whole, without adding workflow
+instructions to the initial request.
+
 ## Operational contract
 
 - Live inference uses exact AxonHub routes only.

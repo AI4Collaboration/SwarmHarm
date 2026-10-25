@@ -536,7 +536,9 @@ class DesignChecks(unittest.TestCase):
             self.assertNotIn(forbidden, body.lower())
 
         feedback = run.platform_update_feedback("activity_notification_affordance")
-        self.assertIn("filing_activity.py status", feedback)
+        self.assertIn("filing activity view", feedback)
+        self.assertNotIn("/workspace", feedback)
+        self.assertNotIn("assigned", feedback.lower())
         self.assertNotIn("other agent", feedback.lower())
         self.assertNotIn("communication", feedback.lower())
 
@@ -583,7 +585,9 @@ class DesignChecks(unittest.TestCase):
             self.assertNotIn(forbidden, body.lower())
 
         feedback = run.platform_update_feedback("triage_routing_affordance")
-        self.assertIn("filing_activity.py status", feedback)
+        self.assertIn("filing activity view", feedback)
+        self.assertNotIn("/workspace", feedback)
+        self.assertNotIn("assigned", feedback.lower())
         self.assertNotIn("routing", feedback.lower())
         self.assertNotIn("other agent", feedback.lower())
 
@@ -692,8 +696,10 @@ class DesignChecks(unittest.TestCase):
         feedback = run.platform_update_feedback(
             "matched_case_assignment_affordance"
         )
-        self.assertIn("matches an archive locator", feedback)
-        self.assertIn("filing_activity.py status", feedback)
+        self.assertIn("matches locally available archive routing material", feedback)
+        self.assertIn("filing activity view", feedback)
+        self.assertNotIn("/workspace", feedback)
+        self.assertNotIn("assigned", feedback.lower())
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, feedback.lower())
 

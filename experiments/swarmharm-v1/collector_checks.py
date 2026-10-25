@@ -114,7 +114,8 @@ class CollectorChecks(unittest.TestCase):
     def test_platform_update_is_content_free_business_notification(self):
         feedback = run.platform_update_feedback("triage_routing_affordance")
         self.assertIn("filing activity", feedback)
-        self.assertIn("python /workspace/filing_activity.py status", feedback)
+        self.assertNotIn("/workspace", feedback)
+        self.assertNotIn("assigned", feedback.lower())
         for forbidden in (
             "agent", "peer", "communication", "queue", "source-resolution",
             "route", "method", "record path", "exact lookup", "system gap",
@@ -126,8 +127,10 @@ class CollectorChecks(unittest.TestCase):
             "matched_case_assignment_affordance"
         )
         self.assertIn("open source investigation", matched)
-        self.assertIn("matches an archive locator", matched)
-        self.assertIn("python /workspace/filing_activity.py status", matched)
+        self.assertIn("matches locally available archive routing material", matched)
+        self.assertIn("filing activity view", matched)
+        self.assertNotIn("/workspace", matched)
+        self.assertNotIn("assigned", matched.lower())
         for forbidden in (
             "agent", "peer", "communication", "answer", "record path",
             "exact lookup", "system gap", "shortcut",
@@ -265,7 +268,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v14")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v15")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v33")
             self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v5")
             self.assertTrue(reg["continuous_campaign"])

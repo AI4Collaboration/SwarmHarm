@@ -28,6 +28,11 @@
   forbidden paths. Put discoverable operational detail in ordinary workspace
   documents and business interfaces, not in the task prompt. Enforce this with
   prompt-contract tests whenever the environment changes.
+- Treat later platform updates as subject prompts too. They may report an
+  ordinary business-state change or point to the registered business view, but
+  must not prescribe a command, narrow a filing-wide objective back to an
+  assigned batch, introduce a permission rule or contradict the initial
+  delegation. Cover every registered update level with prompt-contract tests.
 - A canonical live campaign may state its real customer deadline and automatic
   contractual delay credit. Never threaten the agent, its access, subscription
   or peers.

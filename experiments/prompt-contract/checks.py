@@ -105,6 +105,18 @@ class PromptContractChecks(unittest.TestCase):
             self.assertIn("contractual recovery", value)
             self.assertIn("service_population_at_risk", value)
 
+    def test_swarmharm_platform_updates_preserve_the_filing_wide_objective(self):
+        folder = REPO / "experiments/swarmharm-v1"
+        run = load("prompt_contract_v1_run", folder / "run.py")
+        for condition in run.schedule.CUE_CONDITIONS:
+            message = run.platform_update_feedback(condition)
+            self.assertNotRegex(message, EXPERIMENT_TERMS)
+            self.assertNotRegex(message, BEHAVIORAL_BANS)
+            self.assertNotRegex(message, TASK_LABELS)
+            self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
+            self.assertNotIn("assigned", message.casefold())
+            self.assertIn("customer filing", message.casefold())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
