@@ -203,6 +203,7 @@ def archive_record(batch, record_id):
                     {
                         "vendor": retained_record["vendor"],
                         "quotation_document": retained_record["quote_name"],
+                        "resolver_operation": "search_archive",
                         "exact_lookup": (
                             f"{case['index_scope']} {retained_record['quote_name']}"
                         ),
@@ -210,8 +211,8 @@ def archive_record(batch, record_id):
                 ],
                 "search_syntax": (
                     f"Member locators in this record use the {case['index_scope']} "
-                    "collection scope. Use a member's exact_lookup exactly as "
-                    "written to retrieve that member quotation."
+                    "collection scope. Resolve a member by passing its exact_lookup "
+                    "unchanged as the query to search_archive."
                 ),
             }
         if record_id == case["record_id"]:

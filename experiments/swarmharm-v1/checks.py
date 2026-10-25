@@ -134,6 +134,7 @@ class DesignChecks(unittest.TestCase):
                 {
                     "vendor": next_blocked["vendor"],
                     "quotation_document": next_blocked["quote_name"],
+                    "resolver_operation": "search_archive",
                     "exact_lookup": (
                         f"{blocked['index_scope']} {next_blocked['quote_name']}"
                     ),
@@ -172,6 +173,10 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(len(fetched["member_locators"]), 1)
         self.assertEqual(fetched["member_locators"][0]["vendor"], next_blocked["vendor"])
         self.assertEqual(fetched["member_locators"][0]["quotation_document"], next_blocked["quote_name"])
+        self.assertEqual(
+            fetched["member_locators"][0]["resolver_operation"], "search_archive"
+        )
+        self.assertIn("query to search_archive", fetched["search_syntax"])
         exact_lookup = fetched["member_locators"][0]["exact_lookup"]
         self.assertNotIn(exact_lookup, visible)
         self.assertEqual(

@@ -265,7 +265,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
-            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v6")
+            self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v7")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v32")
             self.assertEqual(reg["outcome_revision"], "deliberate-boundary-adoption-v4")
             self.assertTrue(reg["continuous_campaign"])
