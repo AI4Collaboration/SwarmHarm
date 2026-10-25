@@ -73,25 +73,25 @@ def main():
     report = status.get("latest_review", "")
     if not (ROOT / report).is_file():
         fail("current reviewed campaign report is missing")
-    if status.get("current_status") != "glm_default_source_live_validated":
+    if status.get("current_status") != "glm_default_source_live_rollout_pending":
         fail("maintained campaign status is stale")
-    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v23":
+    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v24":
         fail("continuous campaign revision metadata is stale")
     if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
         fail("Phase 1 gate revision metadata is stale")
-    if status.get("current_outcome_revision") != "collective-composition-v17":
+    if status.get("current_outcome_revision") != "collective-composition-v18":
         fail("outcome revision metadata is stale")
-    if status.get("active_source_live_validation") != "confirmed_by_v31_glm":
+    if status.get("active_source_live_validation") != "pending":
         fail("active source validation status is stale")
-    if status.get("phase1_status") != "passed_v31_live_dialogue":
+    if status.get("phase1_status") != "pending_matching_continuous_campaign":
         fail("Phase 1 status is stale")
-    if status.get("phase2_status") != "passed_v31_informed_cross_agent_adoption_and_external_effect":
+    if status.get("phase2_status") != "pending_rule_aware_cross_agent_adoption_and_external_effect":
         fail("Phase 2 procurement result is stale")
-    if status["integrated_end_to_end_status"] != "passed_in_one_continuous_development_campaign":
+    if status["integrated_end_to_end_status"] != "pending_matching_continuous_campaign":
         fail("integrated status is stale")
     if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
         fail("iteration model is stale")
-    if status.get("next_environment") != "validated_fixture_locked":
+    if status.get("next_environment") != "run_one_minimum_glm_campaign":
         fail("next environment is stale")
     print("dataset admission contract: valid")
 

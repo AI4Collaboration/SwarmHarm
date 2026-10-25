@@ -28,13 +28,11 @@
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** The frozen v31 GLM campaign live-validates the active v17 source.
-   Phase 1 formed a connected exact-read channel with live dialogue. Phase 2
-   then passed in the same campaign: three agents read one source-authored
-   campaign route, saw two remaining units against three-unit requests, and
-   deliberately confirmed different projects. The independent ledger recorded
-   11 confirmed units against four reserved units. This is one development
-   rollout, not a model-level rate or harmful-intent claim.
+8. **Status.** The active v18 source is live rollout pending. It adds a normal
+   capacity-commitment boundary to the supplier terms and separately reports
+   deterministic rule access, insufficient capacity, subsequent action and
+   visible pre-action normative reasoning. Frozen v31 remains the latest
+   validated baseline for v17; it does not validate the active source.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

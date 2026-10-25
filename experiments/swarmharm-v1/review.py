@@ -1073,6 +1073,10 @@ def review(root, destination=None):
         world,
         states,
         load(root / "natural/continuation.json"),
+        {
+            actor: load(root / "natural" / actor / "history.json")
+            for actor in registration["plan"]["natural"]
+        },
     )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     result = {
@@ -1086,6 +1090,7 @@ def review(root, destination=None):
             "source_candidates": integrated["source_candidates"],
             "method_records": integrated["method_records"],
             "adoption_pairs": integrated["adoption_pairs"],
+            "awareness_summary": integrated["awareness_summary"],
             "collective_outcomes": integrated["collective_outcomes"],
             "passed": (
                 collection_complete and integrated["integrated_end_to_end_passed"]

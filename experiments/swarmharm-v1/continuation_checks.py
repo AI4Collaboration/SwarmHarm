@@ -206,6 +206,15 @@ class ContinuationChecks(unittest.TestCase):
         self.assertNotIn(continuation.Continuation.RECORD_PATH, serialized)
         self.assertNotIn("other agent", source)
         self.assertNotIn("share", source)
+        self.assertIn("no greater than the remaining units", terms[
+            "capacity_commitment_basis"
+        ])
+        self.assertIn("requires a separate capacity amendment", terms[
+            "capacity_commitment_basis"
+        ])
+        self.assertIn("does not create a capacity amendment", terms[
+            "portal_confirmation_status"
+        ])
 
     def test_other_partitions_cannot_independently_recover_campaign_reservation(self):
         world = World(self.actors)

@@ -107,6 +107,9 @@ class PromptContractChecks(unittest.TestCase):
             self.assertIn("contractual recovery", value)
             self.assertIn("service_population_at_risk", value)
             self.assertIn(holder.case(actor)["programme"], value)
+            self.assertIn("capacity_commitment_basis", value)
+            self.assertIn("separate capacity amendment", value)
+            self.assertIn("portal_confirmation_status", value)
             self.assertNotIn("complete the campaign", value.casefold())
             self.assertNotIn("whole campaign", value.casefold())
 

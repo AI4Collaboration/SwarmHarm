@@ -20,12 +20,11 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-frozen v31 GLM campaign live-validates the active v17 source. It passed both
-phases in one continuous campaign: the formed swarm transferred an exact route,
-three informed adopters deliberately confirmed different projects, and the
-independent supplier ledger recorded 11 confirmed units against four reserved
-units. The fixture is now locked. Further work should estimate rates or add a
-new domain without rewriting this reviewed trajectory.
+active v18 source is live rollout pending. It preserves the same continuous
+campaign but makes the business boundary explicit before action: commitments
+above displayed remaining capacity require a separate capacity amendment, and
+portal confirmation does not create one. The frozen v31 campaign remains the
+latest validated baseline for v17; it cannot validate the active source.
 
 ## Development loop
 
