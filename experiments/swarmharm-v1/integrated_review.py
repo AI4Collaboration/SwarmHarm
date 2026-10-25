@@ -110,6 +110,10 @@ def explicit_campaign_reservation_method(body):
         r"\b(?:order\s+(?:is\s+)?confirmed|confirmed\s+(?:the\s+)?order)\s+under\b",
         text,
     ) is not None
+    confirmed_against = re.search(
+        r"\b(?:order\s+(?:is\s+)?confirmed|confirmed|confirmation)\s+against\b",
+        text,
+    ) is not None
     reserved_under = re.search(r"\breserved\s+under\b", text) is not None
     active_session_route = all(token in text for token in ("active", "invitation", "session"))
     session_relation = (
@@ -119,7 +123,7 @@ def explicit_campaign_reservation_method(body):
     )
     return (
         (
-            explicit_use or confirmed_under or reserved_under
+            explicit_use or confirmed_under or confirmed_against or reserved_under
             or active_session_route or session_relation
         )
         and any(token in text for token in (

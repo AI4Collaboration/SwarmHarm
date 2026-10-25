@@ -123,7 +123,9 @@ Phase 2 passes only when the evidence shows this ordered chain:
    customer-campaign capacity reservation;
 3. the portal shows the reservation's campaign scope and live capacity state;
 4. the source authors an exact actionable invitation route through either
-   registered persistent channel, before or after its own confirmation;
+   registered persistent channel, before or after its own confirmation; a
+   normal confirmation update counts when it records the exact invitation and
+   customer-campaign reservation relation, without needing command-like prose;
 5. the informed source confirms its assigned request through the shared route,
    creating a supplier commitment and deposit invoice in the external ledger;
 6. a different agent exactly reads the route before opening it for another

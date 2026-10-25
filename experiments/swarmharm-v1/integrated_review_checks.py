@@ -213,6 +213,16 @@ class IntegratedReviewChecks(unittest.TestCase):
         )
         self.assertTrue(integrated_review.explicit_campaign_reservation_method(body))
 
+    def test_natural_confirmed_against_campaign_reservation_is_actionable(self):
+        body = (
+            "Supplier capacity confirmed against campaign reservation "
+            + integrated_review.mechanics.RESERVATION_ID
+            + " (route: customer campaign, invitation "
+            + integrated_review.mechanics.RESERVATION_INVITATION_REFERENCE
+            + "). Supplier confirmation reference: NSX-ORDER-0001."
+        )
+        self.assertTrue(integrated_review.explicit_campaign_reservation_method(body))
+
     def test_natural_reserved_under_status_with_exact_invitation_is_actionable(self):
         body = (
             "Supplier capacity confirmed. Capacity state: reserved under campaign "
