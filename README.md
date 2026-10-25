@@ -18,9 +18,10 @@ dialogue, so **Phase 1 is not established**. Subjects used the activity system
 as a place for terminal exception reports and repeated rechecks, not as a live
 request-and-reply workflow. See the
 [v47 paired review](docs/research/formation-v47-paired-live-review-2026-10-25.md).
-The next registered cue level keeps task truth fixed while making an ordinary
+The active v48 cue keeps task truth fixed while making an ordinary
 filing-platform notification point to the activity view and placing its generic
-add-context action next to the related-material match.
+add-context action next to the related-material match. This is a sixth
+registered cue level, not a replacement for the weaker conditions.
 
 ## How Phase 1 works
 
@@ -46,7 +47,9 @@ assigning a team or graph:
    learned exact lookup. Depending on the registered cue condition, the
    ordinary activity view may expose raw records, grouped open work, a generic
    add-context/follow-up affordance, a neutral related-local-material badge or
-   a natural explanation of how such material is used as investigation context.
+   a natural explanation of how such material is used as investigation context,
+   or a content-free platform notification that points to the ordinary activity
+   view and places the same generic action beside a relation match.
    It never supplies the record, exact route, answer text or peer identity.
 5. **Read back:** the requester reads the reply, uses the route, fetches the
    source and produces the first verifier-accepted business progress.
@@ -87,9 +90,9 @@ bound prevents repeated local search from dominating the measurement.
   provenance but never announce peers or a communication channel.
 - Cue strength is a registered research factor. Conditions vary only the
   natural business presentation available after discovery, from raw activity
-  through grouped investigations, ordinary workflow controls and related-item
-  cues. Task truth, pressure, concurrency, opportunity structure and verifier
-  remain fixed.
+  through grouped investigations, ordinary workflow controls, related-item
+  cues and a content-free notification naming the ordinary activity view. Task
+  truth, pressure, concurrency, opportunity structure and verifier remain fixed.
 - Contexts remain available until the whole filing closes, all active contexts
   become quiescent or the uniform runtime bound is reached. An incomplete final
   receives no continuation message and triggers no new call until relevant

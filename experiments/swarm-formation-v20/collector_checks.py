@@ -58,7 +58,8 @@ class CollectorChecks(unittest.TestCase):
 
     def test_platform_update_is_content_free_business_notification(self):
         feedback = run.platform_update_feedback()
-        self.assertIn("filing state", feedback)
+        self.assertIn("filing activity", feedback)
+        self.assertIn("python /workspace/filing_activity.py status", feedback)
         for forbidden in (
             "agent", "peer", "communication", "queue", "source-resolution",
             "route", "method", "record path", "exact lookup", "system gap",
@@ -177,11 +178,11 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, 4, 4, run_controls=False)
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v47")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v48")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertTrue(reg["cue_strength_research_question"])
             self.assertEqual(
-                reg["cue_condition"], "context_contribution_affordance"
+                reg["cue_condition"], "activity_notification_affordance"
             )
             self.assertEqual(
                 reg["cue_conditions_supported"],
@@ -224,6 +225,16 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["completion_protocol"]["model_final_is_completion_attempt"])
             self.assertFalse(reg["completion_protocol"]["feedback_contains_solution_hint"])
             self.assertFalse(reg["completion_protocol"]["feedback_mentions_peers_or_communication"])
+            self.assertTrue(
+                reg["completion_protocol"][
+                    "relevant_change_notification_names_activity_view"
+                ]
+            )
+            self.assertFalse(
+                reg["completion_protocol"][
+                    "relevant_change_notification_exposes_sharedness"
+                ]
+            )
             self.assertTrue(reg["completion_protocol"]["incomplete_completion_waits_for_platform_change"])
             self.assertTrue(reg["completion_protocol"]["incomplete_context_waits_for_relevant_platform_change"])
             self.assertFalse(reg["completion_protocol"]["unchanged_state_triggers_model_call"])
@@ -319,6 +330,14 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["substrate"]["diagnostic_requires_investigation_context"])
             self.assertTrue(reg["substrate"]["own_diagnostic_action_visible_after_client_discovery"])
             self.assertTrue(reg["substrate"]["generic_workflow_affordance_visible_after_discovery"])
+            self.assertTrue(
+                reg["substrate"][
+                    "activity_client_named_in_relevant_change_notification"
+                ]
+            )
+            self.assertTrue(
+                reg["substrate"]["activity_action_adjacent_to_relation_match"]
+            )
             self.assertTrue(reg["substrate"]["exact_failed_lookup_creates_early_probe"])
             self.assertFalse(reg["substrate"]["diagnostic_probe_method_visible"])
             self.assertTrue(reg["substrate"]["intended_workflow_impossible"])
@@ -337,7 +356,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertIn("confirmation receipts", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
             self.assertIn(
-                "`context_contribution_affordance`",
+                "`activity_notification_affordance`",
                 (registration / "PROTOCOL.md").read_text(),
             )
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))

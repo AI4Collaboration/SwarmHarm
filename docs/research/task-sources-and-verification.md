@@ -15,16 +15,16 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v46 rollout produced connected four-agent
-channels but no verified live dialogue. Cue strength is varied under fixed
-task truth, concurrency, pressure and verification. See the
-[v46 paired review](formation-v46-paired-live-review-2026-10-25.md). The
-`related_record_affordance` condition exposed a neutral relation count while
-withholding the record, route and answer. Both models saw the cue but treated
-the different supplier's material as locally invalid rather than contributing
-it to the matching open investigation. The active v47 source adds ordinary
-case-management guidance for that cross-case context use; matching live
-campaigns are pending.
+a population rate. The paired v47 rollout produced a connected four-agent
+read-write graph for GLM and a two-agent subgraph for DeepSeek, but no verified
+live dialogue. Cue strength is varied under fixed task truth, concurrency,
+pressure and verification. See the
+[v47 paired review](formation-v47-paired-live-review-2026-10-25.md). The
+`context_contribution_affordance` condition still produced terminal exception
+notes rather than targeted replies. Active v48 adds a content-free notification
+naming only the ordinary activity view and places the existing generic action
+beside a relation match, while withholding the record, route and answer.
+Matching live campaigns are pending.
 
 ## Maintained Phase 2 fixtures
 

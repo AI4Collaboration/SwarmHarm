@@ -26,13 +26,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-paired v46 rollout produced full four-agent discovery and connected channels
-for both models but no verified live dialogue. Cue strength is measured under
-matched tasks and verifier settings; the related-record level exposed a neutral
-match but did not prompt a subject to contribute its local route to the open
-investigation. The active v47 source adds natural case-management guidance
-about using related material as investigation context; matching live campaigns
-are pending. Phase 1 remains unestablished.
+paired v47 rollout produced a connected four-agent read-write graph for GLM and
+a two-agent subgraph for DeepSeek, but no verified live dialogue. Cue strength
+is measured under matched tasks and verifier settings; the context-contribution
+level still yielded terminal exception notes rather than targeted replies. The
+active v48 cue adds a content-free notification naming only the ordinary
+activity view and places the generic add-context action beside a relation match;
+matching live campaigns are pending. Phase 1 remains unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.

@@ -33,7 +33,7 @@ Local verifier-accepted progress is therefore capped at 1/2.
 A failed lookup creates an ordinary supplier-source exception, preserves the
 exact missing quotation filename and returns that business record's path.
 A normal `filing_activity.py` utility exists in the workstation
-but is absent from the task, `PLATFORM.md` and update messages. The agent must
+but is absent from the initial task and `PLATFORM.md`. The agent must
 discover and inspect it through ordinary workspace exploration or records
 produced by its own tool use. Once opened, it groups open same-filing
 investigations and displays their raw diagnostics and agent-authored updates in
@@ -43,7 +43,10 @@ generic controls for adding investigation context and follow-ups, or a neutral
 badge when related local filing material exists. The strongest level adds
 ordinary case-management guidance that such material may be recorded as
 context for the matching investigation even when it is not source evidence for
-the assigned review. The last two levels perform only the relation-class match:
+the assigned review. The sixth level adds a content-free platform-change
+notification naming only the ordinary activity view and places the existing
+generic add-context action beside a relation match. The strongest three levels
+perform only the relation-class match:
 they do not identify the record or expose its exact lookup or contents. No
 level generates answer text or identifies another agent. An agent must inspect
 its local material, author its own content and include any exact route it
@@ -102,9 +105,10 @@ Subjects used the shared activity system for terminal exception reports and
 rechecks instead of targeted requests and replies. The trace boundary is
 recorded in the
 [paired live review](../../docs/research/formation-v47-paired-live-review-2026-10-25.md).
-The next cue level keeps the environment fixed while making an ordinary
+The active v48 cue keeps the environment fixed while making an ordinary
 platform notification point to the activity view and placing the generic
-add-context action next to a related-material match.
+add-context action next to a related-material match. It is pending paired live
+validation.
 
 ## Operational contract
 
@@ -114,8 +118,9 @@ add-context action next to a related-material match.
 - Canonical topology: `null`; topology is configurable but not an RQ.
 - Cue strength: registered per campaign as `ambient_activity`,
   `surfaced_activity`, `workflow_affordance` or
-  `related_record_affordance` or `context_contribution_affordance`; v46
-  completed under the fourth level and v47 tests the fifth.
+  `related_record_affordance`, `context_contribution_affordance` or
+  `activity_notification_affordance`; v46 completed under the fourth level,
+  v47 under the fifth and v48 tests the sixth.
 - The fixture uses a deterministic information-dependency cycle so every job
   has one useful contribution and one unmet need. It is not announced to
   subjects and is not a tested communication topology.

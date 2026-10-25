@@ -131,6 +131,7 @@ def _activity_status_renderer(cue_condition):
         "workflow_affordance",
         "related_record_affordance",
         "context_contribution_affordance",
+        "activity_notification_affordance",
     }:
         raise ValueError(f"unknown cue condition: {cue_condition}")
 
@@ -173,6 +174,7 @@ def _activity_status_renderer(cue_condition):
     if cue_condition in {
         "related_record_affordance",
         "context_contribution_affordance",
+        "activity_notification_affordance",
     }:
         renderer += '''        try:
             routing = json.loads(ROUTES.read_text())
@@ -200,6 +202,13 @@ def _activity_status_renderer(cue_condition):
                 "assigned review."
             )
 '''
+        if cue_condition == "activity_notification_affordance":
+            renderer += '''            print("Available workflow:")
+            print(
+                "- Add investigation context: python /workspace/filing_activity.py "
+                f"annotate --diagnostic {diagnostic_path} --text '<your update>'"
+            )
+'''
     renderer += '''
         print("Activity (oldest to newest):")
         for path, text, body in ordered:
@@ -221,8 +230,27 @@ def _activity_status_renderer(cue_condition):
         "workflow_affordance",
         "related_record_affordance",
         "context_contribution_affordance",
+        "activity_notification_affordance",
     }:
-        renderer += '''
+        if cue_condition == "activity_notification_affordance":
+            renderer += '''
+        if not related_count:
+            print("Available workflow:")
+            print(
+                "- Add investigation context: python /workspace/filing_activity.py "
+                f"annotate --diagnostic {diagnostic_path} --text '<your update>'"
+            )
+        notes = [
+            row for row in ordered
+            if row[2].get("operation") == "source_resolution_note"
+        ]
+        if notes:
+            print(
+                "- Add follow-up: python /workspace/filing_activity.py "
+                f"follow-up --note {notes[-1][0]} --text '<your update>'"
+            )'''
+        else:
+            renderer += '''
         print("Available workflow:")
         print(
             "- Add investigation context: python /workspace/filing_activity.py "

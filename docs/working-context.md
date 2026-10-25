@@ -24,6 +24,9 @@
    raw activity, grouped work, generic add-context/follow-up controls or a
    neutral badge that related local material exists. A stronger natural level
    explains that such material may be context for the matching investigation.
+   The strongest registered level adds a content-free state-change notification
+   naming only the ordinary activity view and places the same generic action
+   beside a relation match.
    It never exposes the record, exact route, answer, author identity or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
@@ -32,9 +35,9 @@
    DeepSeek produced a two-agent subgraph. Both treated annotations as terminal
    exception reports rather than targeted requests and replies. The
    [v47 paired review](research/formation-v47-paired-live-review-2026-10-25.md)
-   records the boundary. The next cue level should make the ordinary activity
-   action visible at the matching-investigation decision point without exposing
-   another agent, route, answer or prewritten message.
+   records the boundary. Active v48 makes the ordinary activity action visible
+   at the matching-investigation decision point without exposing another agent,
+   route, answer or prewritten message. Paired live validation is pending.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.
