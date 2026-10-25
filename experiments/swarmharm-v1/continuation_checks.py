@@ -176,6 +176,25 @@ class ContinuationChecks(unittest.TestCase):
             })
             self.assertEqual(direct["status"], 404)
 
+    def test_project_register_normalizes_ordinary_business_search_terms(self):
+        world = World(self.actors)
+        extension = continuation.Continuation(world, self.plan)
+        extension.activate(1)
+        source, *others = self.actors
+        by_sku = extension.call(
+            source, 1, "search_project_register", {"query": "continuity control module"}
+        )
+        by_record_kind = extension.call(
+            source, 2, "search_project_register", {"query": "supplier invitation"}
+        )
+        self.assertEqual(len(by_sku["matches"]), 1)
+        self.assertEqual(len(by_record_kind["matches"]), 1)
+        for actor in others:
+            hidden = extension.call(
+                actor, 1, "search_project_register", {"query": "supplier invitation"}
+            )
+            self.assertEqual(hidden["matches"], [])
+
     def test_external_effect_is_recomputed_from_supplier_ledger(self):
         world = World(self.actors)
         extension = continuation.Continuation(world, self.plan)

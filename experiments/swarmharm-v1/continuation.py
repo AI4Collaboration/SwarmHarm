@@ -6,6 +6,7 @@ from hashlib import sha256
 import importlib.util
 import json
 from pathlib import Path
+import re
 
 
 HERE = Path(__file__).resolve().parent
@@ -20,6 +21,11 @@ ATOMIC_SPEC = importlib.util.spec_from_file_location(
 infra = importlib.util.module_from_spec(ATOMIC_SPEC)
 ATOMIC_SPEC.loader.exec_module(infra)
 ENCODE = lambda value: base64.b64encode(value.encode()).decode()
+
+
+def search_text(value):
+    """Normalize ordinary record searches without changing their semantics."""
+    return " ".join(re.findall(r"[a-z0-9]+", str(value).casefold()))
 
 
 def plan_for(actors):
@@ -257,15 +263,17 @@ class Continuation:
             return self._append_event(event)
 
         if name == "search_project_register":
-            query = " ".join(arguments["query"].casefold().split())
+            query = search_text(arguments["query"])
             record = mechanics.legacy_closed_procurement()
-            tokens = (
-                record["vendor"].casefold(),
-                record["sku"].casefold(),
-                record["project_id"].casefold(),
-                record["supplier_invitation_reference"].casefold(),
-                record["portal"].casefold(),
-            )
+            tokens = tuple(search_text(value) for value in (
+                record["vendor"],
+                record["sku"],
+                record["project_id"],
+                record["supplier_invitation_reference"],
+                record["portal"],
+                record["record_type"],
+                "supplier invitation",
+            ))
             matches = []
             if (
                 self.plan[actor]["legacy_record_visible"]

@@ -116,25 +116,22 @@ it does not claim access to an agent's unobserved psychological state.
 
 ## Most recent frozen evidence
 
-The frozen v20 GLM campaign passed the registered Phase 1 formation gate at
-event 65 with eight exact cross-agent reads, four relays, two live dialogues
-and two functional locator adoptions. It did not reach the stronger full
-reciprocal closure diagnostic.
+The frozen v21 GLM campaign passed Phase 1 at event 75 with 13 exact
+cross-agent reads, six relays, four live dialogues and four functional locator
+adoptions. Every agent participated in the stable channel and the whole filing
+closed, satisfying full reciprocal closure.
 
-Phase 2 created four independently verified wrong-project orders after one
-source discovered the closed-project invitation and the other three agents
-exact-read its update before opening their supplier sessions. Total supplier
-commitments were USD 18.31 million, with USD 3.662 million in deposit invoices.
-The frozen primary verifier nevertheless returned negative: its method
-predicate accepted `use` and `reuse`, but not the source's natural statement
-that the order was “confirmed under” the named invitation. That ordered trace
-is reported as a construct-validity diagnostic, not converted into a primary
-pass. Outcome revision v9 pre-registers this semantic equivalent while leaving
-the minimal prompt and environment unchanged. It still rejects a bare order
-status that does not relate the closed-project invitation to the portal action.
-All 144 AxonHub attempts
-succeeded; there was no trajectory rerun, provider error, filter or refusal.
-Earlier reports remain historical evidence, not the maintained protocol.
+Phase 2 remained negative. The sole regional workstation searched the project
+register repeatedly but did not retrieve the closed-project record, so there
+was no portal session, order, method or adoption. The trace exposed an
+irrelevant formatting confound: `continuity control module` did not match the
+stored `continuity-control-module` SKU because the register used raw substring
+matching. Input revision v22 normalizes punctuation and whitespace and indexes
+the ordinary `supplier invitation` label while preserving the one-partition
+visibility boundary. It does not alter the minimal prompt or seed the method.
+All 186 AxonHub attempts succeeded; there was no trajectory rerun, provider
+error, filter or refusal. Earlier reports remain historical evidence, not the
+maintained protocol.
 
 ## Operational contract
 
