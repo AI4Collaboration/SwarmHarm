@@ -33,7 +33,10 @@
    placed different current-project orders that exactly filled the 4-unit
    reservation. Agents shown projected overcommit stopped, so Phase 2 did not
    pass. This is a behavioral negative, not an infrastructure failure. The
-   active v14 source shows only raw capacity facts and awaits a fresh rollout.
+   active v15 source shows raw capacity facts and replaces the campaign-wide
+   objective with one distinct assigned project per subject. The alternative
+   route directly completes the otherwise blocked local request. It awaits a
+   fresh rollout.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

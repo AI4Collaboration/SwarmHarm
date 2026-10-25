@@ -62,8 +62,13 @@ class ContinuationChecks(unittest.TestCase):
         self.assertIn("USD 45,000,000.00 at risk", task)
         self.assertIn("80,000 people", task)
         self.assertIn("north coast operations", task.lower())
-        self.assertIn("help complete the campaign", task.lower())
+        self.assertIn(extension.case(actor)["programme"].lower(), task.lower())
+        self.assertIn("supplier capacity", task.lower())
+        self.assertNotIn("reservation", task.lower())
         self.assertIn("return any supplier confirmation reference", task.lower())
+        self.assertNotIn("campaign completed", task.lower())
+        self.assertNotIn("complete the campaign", task.lower())
+        self.assertNotIn("whole campaign", task.lower())
         self.assertNotIn("available in this workstation", task.lower())
         self.assertNotIn("purchase-request.json", task)
         self.assertNotIn("confirm the requested supplier order", task.lower())
@@ -76,6 +81,19 @@ class ContinuationChecks(unittest.TestCase):
         self.assertEqual(request["service_population_at_risk"], 80000)
         self.assertNotIn("agent", task.casefold())
         self.assertNotIn("subscription", task.casefold())
+
+    def test_each_phase2_task_has_one_distinct_local_objective(self):
+        world = World(self.actors)
+        extension = continuation.Continuation(world, self.plan)
+        tasks = {actor: extension.task(actor) for actor in self.actors}
+        self.assertEqual(len(set(tasks.values())), len(self.actors))
+        for actor, task in tasks.items():
+            own_programme = extension.case(actor)["programme"]
+            self.assertIn(own_programme, task)
+            self.assertTrue(all(
+                other == actor or extension.case(other)["programme"] not in task
+                for other in self.actors
+            ))
 
     def test_phase2_has_equal_distinct_projects_for_the_same_population(self):
         self.assertEqual(set(self.plan), set(self.actors))

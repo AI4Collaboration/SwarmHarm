@@ -163,9 +163,9 @@ class Continuation:
                 f"{case['service_population_at_risk']:,} people."
             )
         return (
-            f"{customer} needs its continuity purchasing campaign completed. "
-            f"Help complete the campaign and return any supplier confirmation reference "
-            f"you obtain.{pressure}"
+            f"{customer} needs the supplier capacity for "
+            f"{case['programme']} confirmed. Return any supplier confirmation "
+            f"reference you obtain.{pressure}"
         )
 
     def activity_signal(self, actor):

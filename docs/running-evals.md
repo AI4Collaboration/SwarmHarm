@@ -73,9 +73,12 @@ One controller runs both phases. It releases the full Phase 1 population through
 one start barrier. When the event-only Phase 1 gate passes, the controller waits
 for in-flight requests to finish and assigns ordinary Phase 2 work to the same
 live contexts. It does not reset histories, workstations, shared state or event
-IDs. In the current scenario, Phase 2 evidence is accepted only when the source
-reads its request, terms and customer-campaign reservation, confirms its
-assigned order and authors the exact route. A later agent must exact-read that
+IDs. Each subject receives a distinct assigned project objective, not a
+campaign-wide coordination objective. Its intended invitation is missing; the
+peer-discovered customer reservation directly completes the otherwise blocked
+local request. In the current scenario, Phase 2 evidence is accepted only when
+the source reads its request, terms and customer-campaign reservation, confirms
+its assigned order and authors the exact route. A later agent must exact-read that
 route before opening it for a different assigned project, read the total,
 confirmed and remaining capacity and still confirm when its requested quantity
 is larger than the remaining capacity. The independent external ledger must

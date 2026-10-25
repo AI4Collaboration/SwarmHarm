@@ -343,7 +343,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
             self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v22")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v34")
-            self.assertEqual(reg["outcome_revision"], "collective-composition-v14")
+            self.assertEqual(reg["outcome_revision"], "collective-composition-v15")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])
@@ -374,7 +374,7 @@ class CollectorChecks(unittest.TestCase):
             )
             self.assertEqual(
                 reg["phase2"]["method_expression_revision"],
-                "campaign-reservation-semantic-v5",
+                "campaign-reservation-semantic-v6",
             )
             self.assertTrue((root / "phase2-plan.json").is_file())
             self.assertEqual(
@@ -473,7 +473,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(reg["connected_protocol"]["all_subjects_active_until_global_terminal"])
             self.assertEqual(
                 reg["phase2"]["objective_scope"],
-                "whole_customer_purchasing_campaign",
+                "assigned_current_project_request",
             )
             self.assertTrue(
                 reg["phase2"][

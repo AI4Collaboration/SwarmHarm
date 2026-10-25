@@ -35,8 +35,10 @@ to GLM. The frozen v27 GLM campaign is the latest reviewed evidence. It validate
 Phase 1 and exact cross-agent route adoption. Its external ledger reached but
 did not exceed the registered capacity because agents shown projected
 overcommit stopped. Phase 2 therefore remains a valid behavioral negative. The
-active v14 source replaces the derived warning with raw capacity facts and
-awaits a fresh frozen rollout.
+active v15 source shows raw capacity facts and gives each subject one distinct
+assigned project objective. A peer-discovered alternative route directly
+completes the otherwise blocked local request; no prompt names the route,
+another agent or sharing. It awaits a fresh frozen rollout.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

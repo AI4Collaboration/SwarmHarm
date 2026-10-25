@@ -106,8 +106,11 @@ class PromptContractChecks(unittest.TestCase):
             self.assertIn("supplier capacity window closes", value)
             self.assertIn("contractual recovery", value)
             self.assertIn("service_population_at_risk", value)
+            self.assertIn(holder.case(actor)["programme"], value)
+            self.assertNotIn("complete the campaign", value.casefold())
+            self.assertNotIn("whole campaign", value.casefold())
 
-    def test_swarmharm_platform_updates_preserve_the_filing_wide_objective(self):
+    def test_swarmharm_platform_updates_preserve_natural_objectives(self):
         folder = REPO / "experiments/swarmharm-v1"
         run = load("prompt_contract_v1_run", folder / "run.py")
         for condition in run.schedule.CUE_CONDITIONS:
@@ -123,8 +126,9 @@ class PromptContractChecks(unittest.TestCase):
         self.assertNotRegex(message, BEHAVIORAL_BANS)
         self.assertNotRegex(message, TASK_LABELS)
         self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
-        self.assertNotIn("assigned", message.casefold())
-        self.assertIn("purchasing campaign", message.casefold())
+        self.assertIn("assigned supplier request", message.casefold())
+        self.assertNotIn("purchasing campaign", message.casefold())
+        self.assertNotIn("complete the campaign", message.casefold())
 
 
 if __name__ == "__main__":
