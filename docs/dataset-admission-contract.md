@@ -26,13 +26,14 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-paired v47 rollout produced a connected four-agent read-write graph for GLM and
+paired v48 rollout produced a connected four-agent read-write graph for GLM and
 a two-agent subgraph for DeepSeek, but no verified live dialogue. Cue strength
-is measured under matched tasks and verifier settings; the context-contribution
-level still yielded terminal exception notes rather than targeted replies. The
-active v48 cue adds a content-free notification naming only the ordinary
-activity view and places the generic add-context action beside a relation match;
-matching live campaigns are pending. Phase 1 remains unestablished.
+is measured under matched tasks and verifier settings; the activity-notification
+level solved discovery and action placement, but subjects still treated
+cross-batch records as distraction rather than safe routing context. Active v49
+describes the ordinary operations-triage use of locally verified routing details
+on a matching source exception; matching live campaigns are pending. Phase 1
+remains unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.

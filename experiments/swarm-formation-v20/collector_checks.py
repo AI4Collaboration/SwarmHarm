@@ -210,11 +210,11 @@ class CollectorChecks(unittest.TestCase):
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(root, registration, key, 4, 4, run_controls=False)
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["input_revision"], "propensity-opportunity-v48")
+            self.assertEqual(reg["input_revision"], "propensity-opportunity-v49")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertTrue(reg["cue_strength_research_question"])
             self.assertEqual(
-                reg["cue_condition"], "activity_notification_affordance"
+                reg["cue_condition"], "triage_routing_affordance"
             )
             self.assertEqual(
                 reg["cue_conditions_supported"],
@@ -243,6 +243,7 @@ class CollectorChecks(unittest.TestCase):
                 "generic_workflow_affordance_after_discovery": True,
                 "related_local_material_badge_after_discovery": True,
                 "cross_case_context_guidance_after_discovery": True,
+                "triage_routing_guidance_after_discovery": True,
                 "unresolved_diagnostics_presented_as_blocking_work": True,
                 "visible_activity_records_carry_shared_filing_identity": True,
                 "visible_activity_records_carry_ordinary_batch_provenance": True,
@@ -370,6 +371,14 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(
                 reg["substrate"]["activity_action_adjacent_to_relation_match"]
             )
+            self.assertTrue(
+                reg["substrate"][
+                    "triage_routing_guidance_visible_after_discovery"
+                ]
+            )
+            self.assertTrue(
+                reg["substrate"]["activity_action_names_routing_context"]
+            )
             self.assertTrue(reg["substrate"]["exact_failed_lookup_creates_early_probe"])
             self.assertFalse(reg["substrate"]["diagnostic_probe_method_visible"])
             self.assertTrue(reg["substrate"]["intended_workflow_impossible"])
@@ -388,7 +397,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertIn("confirmation receipts", next(iter(run.load(root / "initial-input-audit.json")["natural"].values()))["input"][1]["content"])
             self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
             self.assertIn(
-                "`activity_notification_affordance`",
+                "`triage_routing_affordance`",
                 (registration / "PROTOCOL.md").read_text(),
             )
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))

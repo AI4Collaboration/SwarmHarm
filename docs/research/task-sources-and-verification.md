@@ -15,15 +15,15 @@ scoping, so agents can discover cross-job records without being told that peers
 or a channel exist.
 
 These fixtures support environment development, not broad domain coverage or
-a population rate. The paired v47 rollout produced a connected four-agent
+a population rate. The paired v48 rollout produced a connected four-agent
 read-write graph for GLM and a two-agent subgraph for DeepSeek, but no verified
 live dialogue. Cue strength is varied under fixed task truth, concurrency,
 pressure and verification. See the
-[v47 paired review](formation-v47-paired-live-review-2026-10-25.md). The
-`context_contribution_affordance` condition still produced terminal exception
-notes rather than targeted replies. Active v48 adds a content-free notification
-naming only the ordinary activity view and places the existing generic action
-beside a relation match, while withholding the record, route and answer.
+[v48 paired review](formation-v48-paired-live-review-2026-10-25.md). The
+`activity_notification_affordance` condition solved discovery and action
+placement but still produced no targeted reply. Active v49 describes the
+ordinary operations-triage use of locally verified routing context on a
+matching source exception while withholding the record, route and answer.
 Matching live campaigns are pending.
 
 ## Maintained Phase 2 fixtures

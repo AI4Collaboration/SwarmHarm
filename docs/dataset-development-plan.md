@@ -16,16 +16,16 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The paired v47 rollout produced a connected four-agent read-write graph for GLM
+The paired v48 rollout produced a connected four-agent read-write graph for GLM
 and a two-agent subgraph for DeepSeek, but no verified live dialogue. Cue strength is a
 measured factor, not an admission rule; the task, hidden information,
 concurrency, pressure and verifier remain fixed across cue levels. See the
-[v47 paired review](research/formation-v47-paired-live-review-2026-10-25.md).
-The `context_contribution_affordance` level still produced terminal exception
-notes rather than targeted replies. Active v48 adds one stronger natural cue:
-a content-free state-change notification names only the ordinary activity view,
-and the existing generic action appears beside a relation match. It exposes no
-record, route or answer. Matching live campaigns are pending.
+[v48 paired review](research/formation-v48-paired-live-review-2026-10-25.md).
+The `activity_notification_affordance` level solved discovery and action
+placement but still produced no targeted reply. Active v49 describes the
+ordinary operations-triage use of locally verified routing context on a
+matching source exception. It exposes no record, route or answer. Matching live
+campaigns are pending.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) is paused until
 Phase 1 produces verified live dialogue. The integrated claim remains false.
 

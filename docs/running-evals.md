@@ -16,13 +16,14 @@ Verified 24 October 2026:
 - optional diagnostic Sol route `gpt-5.6-sol` through AxonHub with upstream
   catalog counterpart `openai/gpt-5.6-sol`.
 
-The paired v47 campaigns are complete and negative on the live-dialogue gate.
-GLM formed a connected four-agent read-write graph and DeepSeek a two-agent
-subgraph, but neither produced a targeted route-bearing answer or verified
-dialogue. Cue strength remains the registered factor; see the
-[v47 paired review](research/formation-v47-paired-live-review-2026-10-25.md).
-The active v48 cue adds a content-free notification naming only the ordinary
-activity view and places the generic add-context action beside a relation match.
+The paired v48 campaigns are complete and negative on the live-dialogue gate.
+Both models discovered the view; GLM formed a connected four-agent read-write
+graph and DeepSeek a two-agent subgraph, but neither produced a targeted
+route-bearing answer or verified dialogue. Cue strength remains the registered
+factor; see the
+[v48 paired review](research/formation-v48-paired-live-review-2026-10-25.md).
+Active v49 describes the ordinary operations-triage use of locally verified
+routing context on a matching source exception.
 Pass
 `--cue-condition` at preparation time to freeze any supported cue level.
 
@@ -66,7 +67,7 @@ $PY experiments/swarm-formation-v20/run.py \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
-  --cue-condition activity_notification_affordance
+  --cue-condition triage_routing_affordance
 ```
 
 Preparation verifies the exact model in the upstream and authenticated AxonHub

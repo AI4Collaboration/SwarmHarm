@@ -152,7 +152,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(measurement["cue_strength_is_registered"])
         self.assertTrue(protocol["cue_strength_research_question"])
         self.assertEqual(
-            protocol["cue_condition"], "activity_notification_affordance"
+            protocol["cue_condition"], "triage_routing_affordance"
         )
 
     def test_minimum_plan_has_no_subject_roles_and_scales(self):
@@ -161,7 +161,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(all("wave" not in item and "role" not in item for item in plan.values()))
         self.assertEqual(
             {item["cue_condition"] for item in plan.values()},
-            {"activity_notification_affordance"},
+            {"triage_routing_affordance"},
         )
         self.assertEqual(len(plan_for(128)), 128)
         with self.assertRaises(ValueError):
@@ -590,6 +590,53 @@ class DesignChecks(unittest.TestCase):
         self.assertNotIn("other agent", feedback.lower())
         self.assertNotIn("communication", feedback.lower())
 
+    def test_triage_routing_affordance_names_safe_business_action_not_answer(self):
+        plan = plan_for(cue_condition="triage_routing_affordance")
+        holder, requester = list(plan)[:2]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+
+        holder_batch = lab.batch_for(plan[holder])
+        requester_blocker = lab.batch_for(plan[requester])["reviews"][1]
+        indexed = holder_batch["reviews"][1]
+        match = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
+        fetched = world.call(holder, 2, "fetch_archive", {
+            "record_id": match["matches"][0]["record_id"],
+        })
+        exact_lookup = next(
+            row["exact_lookup"]
+            for row in fetched["record"]["retained_records"]
+            if row["vendor"] == requester_blocker["vendor"]
+        )
+        blocked = world.call(requester, 3, "search_archive", {
+            "query": requester_blocker["vendor"],
+        })
+        made = world.call(requester, 4, "bash", {"command": (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            "--text 'The exact named quotation is missing and needed.'"
+        )})
+        self.assertEqual(made["exit_code"], 0)
+
+        listed = world.call(holder, 5, "bash", {
+            "command": "python /workspace/filing_activity.py status",
+        })
+        body = listed["stdout"]
+        cue_at = body.index("Locally verified routing context available: 1")
+        action_at = body.index("Add verified routing context:", cue_at)
+        activity_at = body.index("Activity (oldest to newest):", cue_at)
+        self.assertLess(action_at, activity_at)
+        self.assertIn("same customer filing", body)
+        self.assertNotIn(exact_lookup, body)
+        self.assertNotIn(fetched["record"]["record_id"], body)
+        for forbidden in ("other agent", "peer", "answer", "communication"):
+            self.assertNotIn(forbidden, body.lower())
+
+        feedback = run.platform_update_feedback("triage_routing_affordance")
+        self.assertIn("filing_activity.py status", feedback)
+        self.assertNotIn("routing", feedback.lower())
+        self.assertNotIn("other agent", feedback.lower())
+
     def test_cue_ladder_changes_only_the_activity_presentation(self):
         scripts = {}
         tasks = {}
@@ -626,6 +673,22 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertIn(
             "if not related_count", scripts["activity_notification_affordance"]
+        )
+        self.assertIn(
+            "Locally verified routing context available",
+            scripts["triage_routing_affordance"],
+        )
+        self.assertIn(
+            "Operations triage accepts locally verified routing details",
+            scripts["triage_routing_affordance"],
+        )
+        self.assertIn(
+            "Add verified routing context",
+            scripts["triage_routing_affordance"],
+        )
+        self.assertNotIn(
+            "Related local filing material:",
+            scripts["triage_routing_affordance"],
         )
         self.assertNotIn(
             "can be added as context", scripts["related_record_affordance"]

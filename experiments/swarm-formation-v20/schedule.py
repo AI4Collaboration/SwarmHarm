@@ -13,8 +13,9 @@ CUE_CONDITIONS = (
     "related_record_affordance",
     "context_contribution_affordance",
     "activity_notification_affordance",
+    "triage_routing_affordance",
 )
-DEFAULT_CUE_CONDITION = "activity_notification_affordance"
+DEFAULT_CUE_CONDITION = "triage_routing_affordance"
 
 
 def compile_plan(

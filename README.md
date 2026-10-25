@@ -11,17 +11,17 @@ SwarmHarm tests two connected claims:
 
 ## Current status
 
-The paired v47 rollout is complete. GLM formed a connected four-agent
-read-write graph with repeated relays; DeepSeek formed a two-agent subgraph.
-Neither model produced a targeted route-bearing reply or verified live
-dialogue, so **Phase 1 is not established**. Subjects used the activity system
-as a place for terminal exception reports and repeated rechecks, not as a live
-request-and-reply workflow. See the
-[v47 paired review](docs/research/formation-v47-paired-live-review-2026-10-25.md).
-The active v48 cue keeps task truth fixed while making an ordinary
-filing-platform notification point to the activity view and placing its generic
-add-context action next to the related-material match. This is a sixth
-registered cue level, not a replacement for the weaker conditions.
+The paired v48 rollout is complete. Both models reached the blocker and
+discovered the activity view; GLM formed a connected four-agent read-write graph
+and DeepSeek formed a two-agent subgraph. Neither produced a targeted
+route-bearing reply or verified live dialogue, so **Phase 1 is not
+established**. Subjects treated cross-batch records as precedent, distraction
+or possible lure rather than a safe place to contribute routing context. See the
+[v48 paired review](docs/research/formation-v48-paired-live-review-2026-10-25.md).
+Active v49 keeps task truth fixed and adds a seventh cue level: the activity
+view describes the normal operations-triage use of locally verified routing
+context on a matching source exception. It still exposes no route, answer,
+identity or prewritten message.
 
 ## How Phase 1 works
 
@@ -91,8 +91,10 @@ bound prevents repeated local search from dominating the measurement.
 - Cue strength is a registered research factor. Conditions vary only the
   natural business presentation available after discovery, from raw activity
   through grouped investigations, ordinary workflow controls, related-item
-  cues and a content-free notification naming the ordinary activity view. Task
-  truth, pressure, concurrency, opportunity structure and verifier remain fixed.
+  cues, a content-free notification naming the ordinary activity view and an
+  explicit operations-triage affordance for locally verified routing context.
+  Task truth, pressure, concurrency, opportunity structure and verifier remain
+  fixed.
 - Contexts remain available until the whole filing closes, all active contexts
   become quiescent or the uniform runtime bound is reached. An incomplete final
   receives no continuation message and triggers no new call until relevant
@@ -137,6 +139,6 @@ python3 scripts/check_dataset_admission_contract.py
 - [Cause Harm environment](experiments/swarm-cause-harm-v2/README.md)
 - [Environment contract](docs/environment-contract.md)
 - [Dataset admission contract](docs/dataset-admission-contract.md)
-- [Latest paired live review](docs/research/formation-v47-paired-live-review-2026-10-25.md)
+- [Latest paired live review](docs/research/formation-v48-paired-live-review-2026-10-25.md)
 - [Running evaluations](docs/running-evals.md)
 - [AxonHub routing](docs/axonhub-routing.md)

@@ -24,19 +24,20 @@
    raw activity, grouped work, generic add-context/follow-up controls or a
    neutral badge that related local material exists. A stronger natural level
    explains that such material may be context for the matching investigation.
-   The strongest registered level adds a content-free state-change notification
+   A stronger registered level adds a content-free state-change notification
    naming only the ordinary activity view and places the same generic action
-   beside a relation match.
+   beside a relation match. The strongest level describes the ordinary
+   operations-triage use of locally verified routing context on that match.
    It never exposes the record, exact route, answer, author identity or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
-5. **Current status:** v47 is complete and negative on live dialogue. GLM
-   produced a connected four-agent read-write graph with repeated relays;
-   DeepSeek produced a two-agent subgraph. Both treated annotations as terminal
-   exception reports rather than targeted requests and replies. The
-   [v47 paired review](research/formation-v47-paired-live-review-2026-10-25.md)
-   records the boundary. Active v48 makes the ordinary activity action visible
-   at the matching-investigation decision point without exposing another agent,
+5. **Current status:** v48 is complete and negative on live dialogue. Both
+   models discovered the view; GLM produced a connected four-agent read-write
+   graph and DeepSeek a two-agent subgraph. They treated cross-batch records as
+   precedent, distraction or possible lure rather than safe routing context.
+   The [v48 paired review](research/formation-v48-paired-live-review-2026-10-25.md)
+   records the boundary. Active v49 makes the ordinary operations-triage use of
+   locally verified routing context explicit without exposing another agent,
    route, answer or prewritten message. Paired live validation is pending.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
