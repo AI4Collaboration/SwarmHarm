@@ -166,6 +166,13 @@ update still told subjects to continue the “assigned filing.” v15 changes th
 ordinary update to the customer filing as a whole, without adding workflow
 instructions to the initial request.
 
+In v15, GLM passed Phase 1 and DeepSeek generated a concrete cross-job locator
+transfer followed by an exact read, successful route use, quotation fetch,
+filed review and confirmation reply. The frozen v33 verifier failed to count
+that chain because it depended on prose keywords and required the typed route
+to be repeated in free text. v16 keeps the task and subject-facing surfaces
+unchanged and verifies the structured record and event sequence directly.
+
 ## Operational contract
 
 - Live inference uses exact AxonHub routes only.

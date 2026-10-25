@@ -125,6 +125,13 @@ Trace review found that the later platform update still said “continue the
 assigned filing,” contradicting the filing-wide objective. v15 removes that
 local-scope cue without adding procedural detail to the user request.
 
+In v15, all later platform updates preserved the filing-wide objective. GLM
+passed Phase 1. DeepSeek produced a real cross-job locator transfer, exact read,
+route use, quotation fetch, filed review and confirmation reply, but the frozen
+v33 verifier missed it because it graded free-text keywords and required the
+typed route to be duplicated in prose. v16 leaves the environment unchanged
+and validates the structured business record plus event order instead.
+
 ## Data and evidence
 
 - Input: Harbor 1.4, one package per agent context.

@@ -249,8 +249,23 @@ class ReviewChecks(unittest.TestCase):
             note = {"body": {
                 "note": wording,
                 "source_needed": "Continuity-Supplier-000002-quotation.json",
+                "investigation_state": "open",
+                "outcome": "recorded",
+                "diagnostic_path": "/registry/cache/reviews/source-request.json",
+                "diagnostic_sha256": "a" * 64,
             }}
             self.assertTrue(review.need_note(note), wording)
+
+    def test_structured_business_need_does_not_depend_on_keyword_style(self):
+        note = {"body": {
+            "note": "No quotation is available; pending operations triage.",
+            "source_needed": "Continuity-Supplier-000002-quotation.json",
+            "investigation_state": "open",
+            "outcome": "recorded",
+            "diagnostic_path": "/registry/cache/reviews/source-request.json",
+            "diagnostic_sha256": "a" * 64,
+        }}
+        self.assertTrue(review.need_note(note))
 
     def test_four_job_connected_cycle_passes_both_gates(self):
         registration, world, states = connected_fixture()
@@ -576,6 +591,16 @@ class ReviewChecks(unittest.TestCase):
     def test_scope_without_collection_prefix_is_still_exact_method_evidence(self):
         selector = "supplier-holdings-0e6827a6a411d9a4d35182ef"
         note = {"body": {"note": f"Retry the retained collection {selector}."}}
+        self.assertEqual(review.scopes(note), {"collection:" + selector})
+
+    def test_structured_exact_lookup_is_method_evidence_without_prose_duplication(self):
+        selector = "supplier-holdings-0e6827a6a411d9a4d35182ef"
+        note = {"body": {
+            "note": "The verified routing record is attached to this investigation.",
+            "exact_lookup": (
+                f"collection:{selector} Continuity Supplier 000002-quotation.json"
+            ),
+        }}
         self.assertEqual(review.scopes(note), {"collection:" + selector})
 
 

@@ -11,7 +11,7 @@ import lab
 
 
 SCOPE_PATTERN = re.compile(r"(?:collection:)?supplier-holdings-[0-9a-f]{24}")
-LIVE_SWARM_REVISION = "propensity-opportunity-v33"
+LIVE_SWARM_REVISION = "propensity-opportunity-v34"
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
     "natural_business_surface",
@@ -253,22 +253,26 @@ def linked_note(note, probe):
 
 
 def need_note(note):
-    value = " ".join(note["body"].get("note", "").casefold().split())
+    """Recognize a structured open source request without grading prose style."""
     return (
         isinstance(note["body"].get("source_needed"), str)
         and note["body"]["source_needed"].endswith("-quotation.json")
-        and any(term in value for term in (
-            "need", "needed", "missing", "unresolved", "no result", "no match",
-            "zero match", "not found"
-        ))
+        and note["body"].get("investigation_state") == "open"
+        and note["body"].get("outcome") == "recorded"
+        and bool(note["body"].get("diagnostic_path"))
+        and bool(note["body"].get("diagnostic_sha256"))
     )
 
 
 def scopes(note):
+    values = " ".join(filter(None, (
+        note["body"].get("note", ""),
+        note["body"].get("exact_lookup", ""),
+    )))
     return {
         value if value.startswith("collection:") else "collection:" + value
         for value in SCOPE_PATTERN.findall(
-            note["body"].get("note", "").casefold()
+            values.casefold()
         )
     }
 
@@ -381,8 +385,7 @@ def conversation_threads(events, probes, needs, notes, read_rows):
                 and reply["body"].get("parent_note_sha256") is None
                 and bool(reply["body"].get("locator_record_id"))
                 and bool(reply["body"].get("exact_lookup"))
-                and reply["body"]["exact_lookup"].casefold()
-                in reply["body"].get("note", "").casefold()
+                and bool(scopes(reply))
                 and any(
                     contributor_learned_scope(
                         events, reply["actor"], scope, reply["event"]
