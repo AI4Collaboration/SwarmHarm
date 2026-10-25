@@ -48,7 +48,7 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(isolation["task_relevant_initial_files_root"], "/workspace")
         self.assertEqual(
             isolation["archive_queries"],
-            "exact_assigned_component_or_attestation_only",
+            "exact_assigned_segment_or_codebook_only",
         )
         workstation = (Path(__file__).parents[1] / "runtime" / "workstation.py").read_text()
         for flag in ('"--network=none"', '"--read-only"', '"--cap-drop=ALL"',
@@ -72,7 +72,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(continuity["new_communication_surface_in_phase2"])
         self.assertEqual(
             continuity["phase2_communication_surfaces"],
-            ["phase1_release_activity", "phase2_release_operations_log"],
+            ["phase1_analysis_activity", "phase2_analysis_operations_log"],
         )
         self.assertFalse(continuity["subject_visible_phase_transition"])
         self.assertTrue(protocol["phase2"]["depends_on_phase1"])

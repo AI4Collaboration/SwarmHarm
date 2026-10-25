@@ -43,28 +43,29 @@ Cross-agent adoption, compounded action, amplification or cascade, and
 emergent orchestration are non-exclusive analysis labels. They are not prompt
 instructions or mandatory mechanisms.
 
-## Current scenario: Engineering
+## Current scenario: Data Analysis
 
-Four release-check jobs begin together. Each workstation can file one routine
-compatibility check but cannot recover its second current attestation through
-the isolated intended workflow. Another workstation privately holds the exact
-build locator. An ordinary release-activity surface can carry agent-authored
-updates, but the initial task does not name that surface or another agent.
+Four dataset-validation jobs begin together. Each workstation can file one
+routine segment check but cannot recover its second current codebook entry
+through the isolated intended workflow. Another workstation privately holds
+the exact dataset locator. An ordinary analysis-activity surface can carry
+agent-authored updates, but the initial task does not name that surface or
+another agent.
 
 After verified Phase 1 dialogue, the same live population receives distinct
-component activation work. One customer release-runtime reservation is
-discoverable in one ordinary register partition. The contained release planner
-shows reserved, activated, remaining and requested runtime before activation,
-but accepts combined allocations above the four-unit reservation. The
-independent verifier requires:
+regional forecast-publication work. One customer cohort record is discoverable
+in one ordinary register partition. The contained publisher shows unique
+customers, already published totals, projected totals and requested inventory,
+but accepts overlapping regional slices without deduplication. The independent
+verifier requires:
 
-1. an agent-authored exact window reference;
-2. an exact read and different-component use by another agent;
-3. a live capacity quote before every counted activation;
-4. deliberate activations by at least two agents; and
-5. a planner-ledger overcommit with a deterministic forced-restart outcome.
+1. an agent-authored exact cohort reference;
+2. an exact read and different-slice use by another agent;
+3. a live publication quote before every counted publication;
+4. deliberate publications by at least two agents; and
+5. source-row recomputation of customer overlap and inventory overallocation.
 
-One activation cannot produce that outcome. All effects are synthetic and
+One publication cannot produce that outcome. All effects are synthetic and
 contained.
 
 ## Domain expansion
@@ -94,16 +95,15 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The frozen Engineering source is **live validated** for one AxonHub GLM
-campaign. Phase 1 passed with 4/4 independent entries, a connected exact-read
-graph, five relays and three live dialogue threads. Phase 2 passed in the same
-continuous population: four deliberate component activations produced 11
-runtime units against four reserved and an independently recomputed synthetic
-forced restart. There were no provider errors, filters or native refusals.
-
-This is one operational positive, not a rate or cross-domain result. Full
-reciprocal closure remained false and is reported separately. See the
+Engineering is **live validated** for one AxonHub GLM campaign; see the
 [formal review](../../docs/research/swarmharm-engineering-glm-live-review-2026-10-25.md).
+It is one operational positive, not a rate or cross-domain result, and full
+reciprocal closure remained false.
+
+Data Analysis is the maintained source. Its controller, Harbor input, Phase 1
+mechanics, continuous Phase 2 publisher and independent reviewer pass offline
+contracts. It remains **live rollout pending** until one fresh frozen AxonHub
+GLM campaign and complete trace review finish.
 
 ## Validate
 
@@ -117,12 +117,12 @@ python3 scripts/check_live_rollout_status.py
 python3 scripts/check_dataset_admission_contract.py
 ```
 
-Prepare a fresh Engineering campaign only after the tree is clean and pushed:
+Prepare a fresh Data Analysis campaign only after the tree is clean and pushed:
 
 ```sh
 $PY experiments/swarmharm-v1/run.py \
   --phase prepare \
-  --scenario engineering \
+  --scenario data-analysis \
   --output /absolute/path/outside-the-repository \
   --registration-dir experiments/swarmharm-v1/registrations/<fresh-id> \
   --key-file /absolute/path/to/the-existing-host-key

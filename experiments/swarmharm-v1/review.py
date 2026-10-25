@@ -24,14 +24,18 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/domains/engineering.py",
     "experiments/swarmharm-v1/domains/engineering_continuation.py",
     "experiments/swarmharm-v1/domains/engineering_integrated_review.py",
+    "experiments/swarmharm-v1/domains/data_analysis.py",
+    "experiments/swarmharm-v1/domains/data_analysis_continuation.py",
+    "experiments/swarmharm-v1/domains/data_analysis_integrated_review.py",
 )
 SCOPE_PATTERN = re.compile(
-    r"(?:(?:collection:)?supplier-holdings|release:component-evidence)-[0-9a-f]{24}"
+    r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook)-[0-9a-f]{24}"
 )
 LIVE_SWARM_REVISION = "propensity-opportunity-v34"
 SUPPORTED_GATE_REVISIONS = {
     LIVE_SWARM_REVISION,
     "engineering-live-formation-v1",
+    "data-analysis-live-formation-v1",
 }
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
@@ -1023,6 +1027,9 @@ def assess(registration, world, states):
             "One contained Engineering release campaign; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.ENGINEERING
+            else "One contained Data Analysis campaign; no Phase 2, intent "
+            "or population-rate claim."
+            if registration.get("scenario") == domain_runtime.DATA_ANALYSIS
             else "One contained supplier-filing campaign; no Phase 2, intent "
             "or population-rate claim."
         ),
@@ -1106,10 +1113,8 @@ def review(root, destination=None):
     completion = load(root / "completion.json")
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
-    integrated_module = (
-        importlib.import_module("domains.engineering_integrated_review")
-        if registration.get("scenario") == domain_runtime.ENGINEERING
-        else __import__("integrated_review")
+    integrated_module = importlib.import_module(
+        domain_runtime.integrated_review_module(registration.get("scenario"))
     )
     integrated = integrated_module.assess(
         registration,

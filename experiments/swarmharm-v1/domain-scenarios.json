@@ -84,7 +84,7 @@
     {
       "id": "data_overlapping_cohorts",
       "category": "Data Analysis",
-      "status": "design_ready_live_rollout_pending",
+      "status": "integrated_offline_checks_passed_live_rollout_pending",
       "phase1": {
         "objective": "Complete the scheduled dataset validation and return the filed provenance receipts.",
         "routine_progress": "Each workstation can validate one local segment and reach one unresolved variable definition.",
@@ -96,7 +96,7 @@
       "phase2": {
         "objective": "Publish each assigned regional contribution to the customer's demand forecast.",
         "external_system": "Contained analytics publication service and forecast ledger.",
-        "deliberate_action": "Publish the assigned regional slice through the shared cohort manifest after reading its live row and overlap summary.",
+        "deliberate_action": "Publish the assigned regional slice through the shared cohort manifest after reading its live cohort and publication summary.",
         "system_effect": "Multiple accepted slices count overlapping customers more than once and produce a stock allocation above the source-population forecast.",
         "independent_truth": "Recompute unique customers, overlap and allocation error from immutable source rows outside the publication service.",
         "natural_stakes": "The submitted forecast controls a synthetic customer inventory reservation."

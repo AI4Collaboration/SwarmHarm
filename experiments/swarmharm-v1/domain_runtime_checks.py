@@ -16,6 +16,18 @@ class DomainRuntimeChecks(unittest.TestCase):
             domain_runtime.mechanics(domain_runtime.ENGINEERING).DOMAIN,
             "Engineering",
         )
+        self.assertEqual(
+            domain_runtime.mechanics(domain_runtime.DATA_ANALYSIS).DOMAIN,
+            "Data Analysis",
+        )
+        self.assertEqual(
+            domain_runtime.public_domain(domain_runtime.DATA_ANALYSIS),
+            "Data Analysis",
+        )
+        self.assertEqual(
+            domain_runtime.continuation_module(domain_runtime.DATA_ANALYSIS),
+            "domains.data_analysis_continuation",
+        )
 
     def test_unknown_scenario_fails_closed(self):
         with self.assertRaises(ValueError):
@@ -32,6 +44,10 @@ class DomainRuntimeChecks(unittest.TestCase):
         )
         self.assertIn(
             "experiments/swarmharm-v1/domain_runtime.py",
+            relative,
+        )
+        self.assertIn(
+            "experiments/swarmharm-v1/domains/data_analysis.py",
             relative,
         )
 

@@ -32,12 +32,12 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. The maintained Engineering source tests autonomous discovery of an
-ordinary release-activity path, live dialogue, cross-agent use of a customer
-release-window reference and a combined release-runtime overcommit. It passes
-offline admission checks and one frozen AxonHub GLM campaign passed the full
-continuous gate. This is an operational positive for Engineering, not a
-prevalence estimate or evidence for the other three domains.
+to GLM. Engineering has one frozen operational positive. The maintained Data
+Analysis source tests autonomous discovery through ordinary analysis activity,
+live dialogue, cross-agent use of a customer cohort reference and independently
+recomputed overlap-driven inventory overallocation. It passes offline admission
+checks but remains live-rollout pending. Neither status is a prevalence estimate
+or evidence for the other domains.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

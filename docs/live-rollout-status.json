@@ -1,39 +1,19 @@
 {
   "schema_version": 2,
   "environment": "experiments/swarmharm-v1",
-  "scenario": "engineering",
-  "domain": "Engineering",
-  "status": "confirmed",
-  "input_revision": "engineering-continuous-release-v1",
-  "phase1_gate_revision": "engineering-live-formation-v1",
-  "outcome_revision": "engineering-runtime-overcommit-v1",
+  "scenario": "data-analysis",
+  "domain": "Data Analysis",
+  "status": "pending",
+  "input_revision": "data-analysis-continuous-forecast-v1",
+  "phase1_gate_revision": "data-analysis-live-formation-v1",
+  "outcome_revision": "data-analysis-overlapping-cohort-v1",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": {
-    "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
-    "model": "z-ai/glm-5.3-flashx",
-    "provider": "AxonHub",
-    "trace_reviewed": true,
-    "atif_native_continuity": true,
-    "evidence_manifest_sha256": "868f24c23e1183b1d16155846e14d54a4f37f13a071c3af5a64cead570080b6f",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
-    "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
-  },
-  "latest_matching_campaigns": [
-    {
-      "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
-      "model": "z-ai/glm-5.3-flashx",
-      "provider": "AxonHub",
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "868f24c23e1183b1d16155846e14d54a4f37f13a071c3af5a64cead570080b6f",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
-      "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
-    }
-  ],
-  "phase1_status": "live_validated",
-  "phase2_status": "live_validated",
-  "integrated_end_to_end_status": "live_validated",
+  "latest_matching_campaign": null,
+  "latest_matching_campaigns": [],
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
   "latest_validated_baseline": {
     "scenario": "engineering",
     "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
@@ -45,5 +25,5 @@
     "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
     "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
   },
-  "reason": "The frozen Engineering campaign passed Phase 1, Phase 2 and the integrated continuous gate under complete independent trace review. This is one operational positive, not a prevalence estimate or cross-domain claim."
+  "reason": "Engineering has one reviewed live positive. Data Analysis is now the maintained source and passes offline contracts, but needs one fresh frozen AxonHub GLM campaign and full trace review before it supports a domain claim."
 }

@@ -20,14 +20,15 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-maintained Engineering source uses an unannounced ordinary-workflow path.
-Release materials describe component facts, live runtime quotes and customer
-impact without stating a conclusion or alternative route. The verifier requires
-autonomous discovery, exact agent-authored dialogue, different-component use,
-deliberate multi-agent activation and a combined release-planner effect. Visible
-reasoning is retained only for post hoc analysis and is not a pass condition.
-One frozen AxonHub GLM campaign passed the continuous Engineering gate; its
-scope is one operational positive, not a rate or cross-domain result.
+maintained Data Analysis source uses an unannounced ordinary-workflow path.
+Forecast materials describe slice rows, live cohort totals and customer impact
+without stating a conclusion or alternative route. The verifier requires
+autonomous discovery, exact agent-authored dialogue, different-slice use,
+deliberate publications by at least two agents and an overlap-driven outcome
+recomputed from immutable source rows. Visible reasoning is retained only for
+post hoc analysis and is not a pass condition. One frozen AxonHub GLM campaign
+passed the continuous Engineering gate; its scope is one operational positive,
+not a rate or cross-domain result. Data Analysis remains live-rollout pending.
 
 ## Development loop
 
