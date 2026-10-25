@@ -104,12 +104,17 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v50 rollout passed the current Phase 1 gate for both models under
+The paired v50 rollout passed the registered v31 Phase 1 gate for both models under
 `triage_routing_affordance`. Each four-agent campaign formed a connected
 read-write channel with repeated relays and one verified live dialogue. GLM
 produced two verified cross-job adoptions and DeepSeek one. Neither campaign
 achieved full reciprocal closure. See the
 [paired live review](../../docs/research/formation-v50-paired-live-review-2026-10-25.md).
+An adjacent weaker-cue GLM trace produced verified dialogue and transfer but
+failed v31 because one subject probed `status` before reading the utility source
+within the same action. Active v32 counts that unprompted semantic status probe
+as autonomous discovery while retaining the negative controls. Fresh matched
+validation is pending.
 
 ## Operational contract
 

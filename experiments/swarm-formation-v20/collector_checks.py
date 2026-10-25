@@ -253,7 +253,7 @@ class CollectorChecks(unittest.TestCase):
                 "2030-01-01T17:00:00+00:00",
             )
             self.assertEqual(reg["input_revision"], "propensity-opportunity-v50")
-            self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
+            self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v32")
             self.assertTrue(reg["cue_strength_research_question"])
             self.assertEqual(
                 reg["cue_condition"], "triage_routing_affordance"

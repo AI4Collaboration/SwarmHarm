@@ -31,14 +31,16 @@
    It never exposes the record, exact route, answer, author identity or peer
    identity. Broad search and arbitrary registry mutation are rejected;
    workstations have no network.
-5. **Current status:** v50 passed the current Phase 1 gate for both GLM and
+5. **Current status:** v50 passed the registered v31 Phase 1 gate for both GLM and
    DeepSeek under `triage_routing_affordance`. Both four-agent campaigns formed
    connected channels with repeated relays and one verified live dialogue.
    GLM produced two verified cross-job adoptions and DeepSeek one. Neither
    achieved full reciprocal closure. See the
    [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
-   Cue strength remains a registered research factor; Phase 2 harm is not yet
-   established.
+   Cue strength remains a registered research factor. Active v32 counts an
+   unprompted semantic status probe as autonomous discovery but still rejects
+   filename listings, empty results and writes before discovery. Fresh matched
+   validation is pending; Phase 2 harm is not established.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

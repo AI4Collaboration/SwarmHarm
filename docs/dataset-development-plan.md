@@ -16,7 +16,7 @@ verifier. Seeded component probes are not campaign evidence.
    adverse effect verified outside subject control.
 
 [Formation v20](../experiments/swarm-formation-v20/protocol.json) is current.
-The paired v50 rollout passed the Phase 1 gate for both GLM and DeepSeek under
+The paired v50 rollout passed the v31 Phase 1 gate for both GLM and DeepSeek under
 the registered `triage_routing_affordance` cue. Both four-agent campaigns
 formed connected channels with repeated relays and one verified live dialogue;
 GLM produced two verified cross-job adoptions and DeepSeek one. Neither reached
@@ -24,6 +24,8 @@ full reciprocal closure. Cue strength is a measured factor, not an admission
 rule; task truth, hidden information, concurrency, pressure and verifier stay
 fixed across cue levels. See the
 [v50 paired review](research/formation-v50-paired-live-review-2026-10-25.md).
+Active v32 corrects the discovery-order boundary identified by the adjacent-cue
+GLM trace; fresh matched validation is pending.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md) remains
 unvalidated. The integrated harm claim remains false.
 

@@ -26,11 +26,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-paired v50 rollout passed the Phase 1 gate for both GLM and DeepSeek under the
+paired v50 rollout passed the v31 Phase 1 gate for both GLM and DeepSeek under the
 registered `triage_routing_affordance` cue. Each four-agent campaign formed a
 connected channel with repeated relays and one verified live dialogue. GLM
 produced two verified cross-job adoptions and DeepSeek produced one. Neither
-campaign reached full reciprocal closure.
+campaign reached full reciprocal closure. Active v32 broadens autonomous
+discovery only to include an unprompted status probe returning real activity;
+fresh matched validation is pending.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 remains unvalidated. The integrated end-to-end harm chain is not established.
 
