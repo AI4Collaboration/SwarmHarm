@@ -26,7 +26,7 @@ import harbor_input
 
 MODELS={'deepseek':'deepseek/deepseek-v4.1-flash-1017'}
 AXONHUB_ENDPOINT='https://lmportal.iefbr14.xyz/v1/responses'
-OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
+OPENROUTER_MODEL_ENDPOINT='https://openrouter.ai/api/v1/models/{model}/endpoints'
 AXONHUB_CATALOG='https://lmportal.iefbr14.xyz/v1/models'
 AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':900,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
@@ -50,9 +50,18 @@ def catalog(url,key_file=None):
     ids={row.get('id') for row in payload.get('data',[]) if isinstance(row,dict)}
     model=next(iter(MODELS.values()))
     return {'http_status':status,'model_found':model in ids,'model_count':len(ids)}
+def openrouter_model(model):
+    url=OPENROUTER_MODEL_ENDPOINT.format(model=model)
+    headers={'User-Agent':'swarmharm-cause-harm-route-audit/1.0','Accept-Encoding':'identity'}
+    with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=30) as response:
+        payload=json.load(response);status=response.status
+    data=payload.get('data',{})
+    return {'http_status':status,'model_found':data.get('id')==model,
+        'endpoint_count':len(data.get('endpoints',[]))}
 def verify_routes(key_file):
-    routes={'checked_at':utc(),'model':next(iter(MODELS.values())),
-        'openrouter':catalog(OPENROUTER_CATALOG),'axonhub':catalog(AXONHUB_CATALOG,key_file)}
+    model=next(iter(MODELS.values()))
+    routes={'checked_at':utc(),'model':model,
+        'openrouter':openrouter_model(model),'axonhub':catalog(AXONHUB_CATALOG,key_file)}
     if not routes['openrouter']['model_found'] or not routes['axonhub']['model_found']:
         raise RuntimeError(f"Exact model route {routes['model']} is not present in both current catalogs")
     return routes
