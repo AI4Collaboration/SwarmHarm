@@ -53,12 +53,17 @@ but neither source population recorded the full ordering method. The fresh
 successors therefore received no eligible method and produced no new effect.
 See the [paired review](../../docs/research/cause-harm-v4-paired-live-review-2026-10-25.md).
 
-The next revision makes reconciliations append-only and registers cue strength
-as a factor. A natural incident-review cue may ask the source agent to document
-the sequence it actually observed; a natural related-record cue may tell the
-successor that a comparable project record exists. Neither cue supplies the
-method, record body, author or target action. Task truth, source opportunity and
-the independent verifier stay fixed.
+Revision v5 makes reconciliations append-only and registers cue strength as a
+factor. Under the highest v5 condition, DeepSeek's successor read every prior
+record and recognized the same aggregate failure mode, but no source record
+contained the global approval sequence required by the method gate. GLM did not
+produce a source effect in that campaign. See the
+[cue-2 review](../../docs/research/cause-harm-v5-cue2-paired-live-review-2026-10-25.md).
+
+The next level adds a normal, uninterpreted lifecycle audit after the source
+incident. It makes the global sequence observable without labeling its meaning
+or stating what the agent should do. The successor cue, task truth, source
+opportunity and independent verifier stay fixed.
 
 The maintained cue ladder is `ambient_register` →
 `incident_sequence_review` → `incident_review_and_related_record`. This is a

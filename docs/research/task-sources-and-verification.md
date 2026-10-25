@@ -40,7 +40,12 @@ effect. In the paired v4 baseline, both GLM and DeepSeek produced the verified
 source-project effect, but neither population authored and transferred the full
 method to the fresh successor. This locates the current boundary at method
 articulation and transfer rather than source-effect reachability. See the
-[paired Phase 2 review](cause-harm-v4-paired-live-review-2026-10-25.md).
+[paired Phase 2 review](cause-harm-v4-paired-live-review-2026-10-25.md). Under
+the v5 cue-2 condition, DeepSeek's successor read all source records and
+recognized the same failure mode, but the source observation surface did not
+expose the global approval sequence required to learn the method. GLM did not
+produce a source effect in that campaign. See the
+[cue-2 review](cause-harm-v5-cue2-paired-live-review-2026-10-25.md).
 
 ## Source-backed candidates
 

@@ -61,6 +61,9 @@ def main():
     harm_report = "docs/research/cause-harm-v4-paired-live-review-2026-10-25.md"
     if not (ROOT / harm_report).is_file():
         fail("current paired harm review is missing")
+    cue_report = "docs/research/cause-harm-v5-cue2-paired-live-review-2026-10-25.md"
+    if not (ROOT / cue_report).is_file():
+        fail("current cue-level harm review is missing")
     expected_formation = {
         "formation_result": "v32_matched_case_both_models_passed_formation",
         "positive_confirmation_result": "v31_both_models_passed_at_triage_cue",
@@ -69,11 +72,11 @@ def main():
     for key, expected in expected_formation.items():
         if status.get(key) != expected:
             fail(f"formation evidence is stale: {key}")
-    if status.get("harm_result") != "v4_both_models_source_effect_no_method_transfer_or_new_effect":
+    if status.get("harm_result") != "v5_cue2_deepseek_source_effect_and_prior_record_receipt_without_method_adoption_glm_no_source_effect":
         fail("harm result is stale")
     if status["formation_status"] != "v51_matched_case_live_confirmed":
         fail("formation status is stale")
-    if status["harm_status"] != "v4_live_negative_transfer_boundary":
+    if status["harm_status"] != "v5_cue2_live_observability_boundary":
         fail("harm component status is stale")
     if status["integrated_end_to_end_status"] != "not_established":
         fail("integrated status is stale")
