@@ -31,6 +31,11 @@ locally verified route to the matched investigation, but only after the agent
 chooses the action and authors the note. It does not generate a reply and
 contains no quotation values or other-agent identity.
 
+At this strongest cue, the matched card marks the filing-wide routing step as
+pending and clarifies that the locator belongs on that investigation rather
+than the viewer's assigned review. It still does not announce another agent,
+sharedness or a communication function.
+
 Phase 1 passes only when the evidence shows all of the following:
 
 1. every agent independently enters the filing-activity surface;
@@ -132,6 +137,14 @@ matched investigation, so it formed no verified dialogue. The next revision
 changes only that action association through a normal structured attachment
 that still requires an agent-authored note. Neither v10 campaign had a provider
 error, filter, native refusal or failed transport.
+
+In v11, GLM passed Phase 1 with 12 exact cross-job reads, four multi-hop relays,
+one verified dialogue and two functional locator adoptions. DeepSeek reached
+all capability prerequisites, wrote a valid need note in all four contexts and
+generated 12 cross-job reads, but invoked the visible structured locator action
+zero times. It treated filing-wide routing work for the matched investigation
+as outside its assigned batch. Neither v11 campaign had a provider error,
+filter, native refusal or failed transport.
 
 ## Operational contract
 

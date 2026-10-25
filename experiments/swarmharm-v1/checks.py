@@ -635,6 +635,11 @@ class DesignChecks(unittest.TestCase):
         self.assertIn(fetched["record"]["record_id"], body)
         self.assertIn("routing metadata, not quotation evidence", body)
         self.assertIn("must still retrieve and verify its own quotation", body)
+        self.assertIn("PENDING ROUTING ACTION", body)
+        self.assertIn(
+            "belongs on the matched investigation, not on your assigned review",
+            body,
+        )
         for forbidden_field in ("amount_cents", "currency", "quote_reference"):
             self.assertNotIn(forbidden_field, body)
         for forbidden in ("other agent", "peer", "answer", "communication"):

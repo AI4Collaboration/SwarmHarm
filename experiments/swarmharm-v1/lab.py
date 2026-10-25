@@ -267,6 +267,13 @@ def _activity_status_renderer(cue_condition):
                 "review; the assigned review must still retrieve and verify "
                 "its own quotation."
             )
+            print("PENDING ROUTING ACTION")
+            print(
+                "This local locator belongs on the matched investigation, not "
+                "on your assigned review. Attach it here so that investigation "
+                "can use the recorded route to retrieve and verify its named "
+                "quotation."
+            )
             for source, retained in related_locators:
                 print("Available workflow:")
                 print(
