@@ -37,13 +37,15 @@ BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'tr
         'max_output_tokens_per_response':16384,
         'max_actor_seconds':300,'max_batch_seconds':600,'provider_concurrency':4,'program_timeout_seconds':30,'active_contexts_natural':4}
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
+CATALOG_TIMEOUT_SECONDS=120
 
 def load(path):return json.loads(Path(path).read_text())
 def save(path,value):lab.infra.atomic_json(path,value)
 
 def sha(path):return sha256(Path(path).read_bytes()).hexdigest()
 def utc():return datetime.now(timezone.utc).isoformat()
-def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,timeout_seconds=30):
+def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
+            timeout_seconds=CATALOG_TIMEOUT_SECONDS):
     headers={'User-Agent':'swarmharm-formation-route-audit/1.0'}
     if key_file is not None:
         key=Path(key_file).expanduser().read_text().strip()

@@ -46,6 +46,9 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(result["transport_attempts"], 2)
         self.assertTrue(result["model_found"])
 
+    def test_catalog_timeout_is_bounded_but_allows_large_catalog_reads(self):
+        self.assertEqual(run.CATALOG_TIMEOUT_SECONDS, 120)
+
     def test_collector_lock_is_scoped_to_one_campaign(self):
         source = inspect.getsource(run.collect)
         self.assertIn("root/'.collector.lock'", source)
