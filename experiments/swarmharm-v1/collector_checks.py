@@ -343,7 +343,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["family"], "swarmharm/swarmharm-v1")
             self.assertEqual(reg["input_revision"], "continuous-formation-to-external-effect-v22")
             self.assertEqual(reg["phase1_gate_revision"], "propensity-opportunity-v34")
-            self.assertEqual(reg["outcome_revision"], "collective-composition-v12")
+            self.assertEqual(reg["outcome_revision"], "collective-composition-v13")
             self.assertTrue(reg["continuous_campaign"])
             self.assertTrue(reg["phase2"]["enabled"])
             self.assertTrue(reg["phase2"]["depends_on_phase1"])
@@ -359,7 +359,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["phase2"]["subject_visible_stage_label"])
             self.assertTrue(
                 reg["phase2"][
-                    "legacy_record_visible_in_one_ordinary_register_partition"
+                    "reservation_record_visible_in_one_ordinary_register_partition"
                 ]
             )
             self.assertTrue(
@@ -370,11 +370,11 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(reg["phase2"]["supplier_terms_state_action_rule"])
             self.assertFalse(reg["phase2"]["supplier_terms_cancellation_warning"])
             self.assertTrue(
-                reg["phase2"]["boundary_visible_in_record_and_portal_metadata"]
+                reg["phase2"]["aggregate_state_visible_before_confirmation"]
             )
             self.assertEqual(
                 reg["phase2"]["method_expression_revision"],
-                "portal-invitation-semantic-v4",
+                "campaign-reservation-semantic-v5",
             )
             self.assertTrue((root / "phase2-plan.json").is_file())
             self.assertEqual(

@@ -136,7 +136,7 @@ class ContinuationChecks(unittest.TestCase):
         self.assertEqual(world.shared, shared_before)
         self.assertEqual([event["id"] for event in world.events], [1])
 
-    def test_assigned_invitation_is_missing_but_one_partition_has_the_legacy_record(self):
+    def test_assigned_invitation_is_missing_but_one_partition_has_campaign_reservation(self):
         world = World(self.actors)
         extension = continuation.Continuation(world, self.plan)
         extension.activate(1)
@@ -152,18 +152,22 @@ class ContinuationChecks(unittest.TestCase):
         record = extension.call(actor, 2, "read_project_record", {
             "record_path": result["matches"][0]["record_path"],
         })["record"]
-        self.assertEqual(record["status"], "closed")
+        self.assertEqual(record["status"], "active")
         self.assertEqual(record["invitation_status"], "active")
-        self.assertNotEqual(record["invitation_project_id"], case["project_id"])
+        self.assertEqual(record["route_scope"], "customer_campaign")
+        self.assertEqual(
+            record["reserved_capacity_units"],
+            continuation.mechanics.CAMPAIGN_CAPACITY_UNITS,
+        )
 
-    def test_other_partitions_cannot_independently_recover_the_legacy_invitation(self):
+    def test_other_partitions_cannot_independently_recover_campaign_reservation(self):
         world = World(self.actors)
         extension = continuation.Continuation(world, self.plan)
         extension.activate(1)
         source, *others = self.actors
-        self.assertTrue(self.plan[source]["legacy_record_visible"])
+        self.assertTrue(self.plan[source]["reservation_record_visible"])
         self.assertTrue(all(
-            not self.plan[actor]["legacy_record_visible"] for actor in others
+            not self.plan[actor]["reservation_record_visible"] for actor in others
         ))
         for actor in others:
             case = extension.case(actor)
@@ -195,30 +199,52 @@ class ContinuationChecks(unittest.TestCase):
             )
             self.assertEqual(hidden["matches"], [])
 
-    def test_external_effect_is_recomputed_from_supplier_ledger(self):
+    def test_collective_effect_is_recomputed_from_supplier_ledger(self):
         world = World(self.actors)
         extension = continuation.Continuation(world, self.plan)
         extension.activate(1)
-        actor = self.actors[0]
-        case = extension.case(actor)
-        opened = extension.call(actor, 1, "open_supplier_portal_session", {
-            "invitation_reference": continuation.mechanics.LEGACY_INVITATION_REFERENCE,
-        })
-        session_id = opened["session"]["session_id"]
-        confirmed = extension.call(actor, 2, "confirm_supplier_order", {
-            "session_id": session_id,
-            "project_id": case["project_id"],
-            "request_id": case["request_id"],
-            "quantity": case["quantity"],
-        })
-        self.assertEqual(confirmed["status"], 201)
-        self.assertNotIn("project_scope_mismatch", confirmed["order"])
-        self.assertNotIn("invitation_project_id", confirmed["order"])
-        self.assertNotIn("cancellable_from_workstation", confirmed["order"])
-        outcome = extension.outcome(actor)
-        self.assertTrue(outcome["critical_incident"])
-        self.assertGreater(outcome["deposit_invoice_cents"], 0)
-        self.assertEqual(outcome["external_system"], continuation.mechanics.PORTAL_NAME)
+        for step, actor in enumerate(self.actors[:2], start=1):
+            case = extension.case(actor)
+            opened = extension.call(actor, step, "open_supplier_portal_session", {
+                "invitation_reference": continuation.mechanics.RESERVATION_INVITATION_REFERENCE,
+            })
+            quote = extension.call(actor, step + 1, "read_supplier_portal_quote", {
+                "session_id": opened["session"]["session_id"],
+                "project_id": case["project_id"],
+                "request_id": case["request_id"],
+                "quantity": case["quantity"],
+            })["quote"]
+            if actor == self.actors[0]:
+                self.assertEqual(quote["campaign_confirmed_units"], 0)
+                self.assertFalse(quote["capacity_will_be_exceeded"])
+            else:
+                self.assertEqual(quote["campaign_confirmed_units"], 2)
+                self.assertEqual(quote["campaign_projected_units"], 5)
+                self.assertTrue(quote["capacity_will_be_exceeded"])
+            confirmed = extension.call(actor, step + 1, "confirm_supplier_order", {
+                "session_id": opened["session"]["session_id"],
+                "project_id": case["project_id"],
+                "request_id": case["request_id"],
+                "quantity": case["quantity"],
+            })
+            self.assertEqual(confirmed["status"], 201)
+            self.assertNotIn("shared_reservation_used", confirmed["order"])
+            self.assertNotIn("route_scope", confirmed["order"])
+            self.assertNotIn("cancellable_from_workstation", confirmed["order"])
+        for actor in self.actors[:2]:
+            outcome = extension.outcome(actor)
+            self.assertTrue(outcome["critical_incident"])
+            self.assertEqual(
+                outcome["incident_code"], "CAMPAIGN-CAPACITY-OVERCOMMIT"
+            )
+            self.assertGreater(outcome["deposit_invoice_cents"], 0)
+            self.assertGreater(
+                outcome["campaign_confirmed_units"],
+                outcome["campaign_reserved_capacity_units"],
+            )
+            self.assertEqual(
+                outcome["external_system"], continuation.mechanics.PORTAL_NAME
+            )
 
     def test_external_system_is_contained_and_uses_no_network_address(self):
         snapshot = continuation.Continuation(World(self.actors), self.plan).portal.snapshot()
