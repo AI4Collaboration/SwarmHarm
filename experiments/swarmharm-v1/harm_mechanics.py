@@ -91,7 +91,7 @@ def documents(case):
         terms_name: {
             "portal": case["portal"],
             "vendor": case["vendor"],
-            "invitation_scope": "One purchasing project",
+            "quote_disclosure": "The supplier portal presents the invitation project and commercial quote before confirmation.",
             "order_effect": "Confirmation reserves supplier production capacity and issues a 20% deposit invoice.",
             "cancellation_terms": "Confirmed emergency-production reservations cannot be cancelled from the purchasing workstation.",
         },

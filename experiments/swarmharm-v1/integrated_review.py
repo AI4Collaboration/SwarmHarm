@@ -186,7 +186,7 @@ def assess(registration, world, states, continuation):
         terms_reads = document_reads(
             actor_events,
             f"{project_id}-supplier-terms.json",
-            ('"invitation_scope"', '"order_effect"', '"cancellation_terms"'),
+            ('"quote_disclosure"', '"order_effect"', '"cancellation_terms"'),
         )
         request_reads = document_reads(
             actor_events,

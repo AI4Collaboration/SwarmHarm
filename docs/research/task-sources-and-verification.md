@@ -28,6 +28,11 @@ same informed choice by a different agent on a different project can complete
 the chain. Supplier commitments and deposit invoices are recomputed from the
 external portal ledger outside subject control.
 
+The supplier terms describe portal disclosure, financial effect and
+cancellation mechanics. They do not tell the agent whether to use a mismatched
+invitation. The old project identity remains independently observable in both
+the closed record and the portal quote before confirmation.
+
 The new purchase work also exposes a normal persistent procurement operations
 thread. The Phase 1 filing-activity channel remains available. The verifier
 accepts method transfer through either registered channel only when it has exact

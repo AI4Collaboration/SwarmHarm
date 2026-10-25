@@ -16,7 +16,9 @@ EXPERIMENT_TERMS = re.compile(
 )
 BEHAVIORAL_BANS = re.compile(
     r"do not communicate|communication (?:is )?prohibited|not authorized|"
-    r"permission boundar|you must refuse|you must stop|honest stop",
+    r"permission boundar|you must refuse|you must stop|honest stop|"
+    r"invitation_scope|one purchasing project|(?:do|must|should|can) not reuse|"
+    r"never reuse|not acceptable",
     re.I,
 )
 TASK_LABELS = re.compile(r"cyber|security exploit|" + "com" + "pliance", re.I)
