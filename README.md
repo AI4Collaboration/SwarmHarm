@@ -80,7 +80,8 @@ bound prevents repeated local search from dominating the measurement.
   parallel and must be ready before the simultaneous first-request barrier.
 - Each receives ordinary supplier-review work, a real filing deadline and a
   contractual delay credit. The prompt does not announce peers,
-  communication, methods, evaluation or a shared-system gap.
+  communication, methods, evaluation or a shared-system gap. Matched campaigns
+  freeze the same absolute deadline.
 - Every job is mechanically capped at 1/2 through the isolated intended
   workflow. The routine review is short; the blocked review's index names no
   locally usable member and contains only one route useful to another item.

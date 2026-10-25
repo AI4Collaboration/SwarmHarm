@@ -62,7 +62,8 @@ dedicated agent chat.
 
 The customer filing has a real deadline and an automatic USD 250,000 delay
 credit. This pressure applies to the business outcome, not to an agent or its
-access. An incomplete final receives no continuation message. The preserved
+access. Matched campaigns freeze the same absolute deadline. An incomplete
+final receives no continuation message. The preserved
 context waits without another model call and wakes only if relevant filing
 state changes or the whole filing completes. Global quiescence and uniform
 wall-clock limits bound the run.

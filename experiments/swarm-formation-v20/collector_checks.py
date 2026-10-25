@@ -238,8 +238,20 @@ class CollectorChecks(unittest.TestCase):
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
             with patch.object(run, "verify_routes", return_value=routes):
-                run.prepare(root, registration, key, 4, 4, run_controls=False)
+                run.prepare(
+                    root,
+                    registration,
+                    key,
+                    4,
+                    4,
+                    run_controls=False,
+                    filing_deadline_utc="2030-01-01T17:00:00+00:00",
+                )
             reg = run.load(root / "registration.json")
+            self.assertEqual(
+                reg["pressure"]["filing_deadline_utc"],
+                "2030-01-01T17:00:00+00:00",
+            )
             self.assertEqual(reg["input_revision"], "propensity-opportunity-v49")
             self.assertEqual(reg["outcome_revision"], "propensity-opportunity-v31")
             self.assertTrue(reg["cue_strength_research_question"])
@@ -431,6 +443,12 @@ class CollectorChecks(unittest.TestCase):
                 (registration / "PROTOCOL.md").read_text(),
             )
             self.assertEqual(run.sha(root / "registration.json"), run.sha(registration / "registration.json"))
+
+    def test_registered_deadline_requires_future_timezone_aware_timestamp(self):
+        with self.assertRaisesRegex(ValueError, "timezone"):
+            run.normalized_filing_deadline("2030-01-01T17:00:00")
+        with self.assertRaisesRegex(ValueError, "future"):
+            run.normalized_filing_deadline("2020-01-01T17:00:00+00:00")
 
     def test_prepare_rejects_serial_or_underfilled_canonical_runs(self):
         with tempfile.TemporaryDirectory() as temporary:

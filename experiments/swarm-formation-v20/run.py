@@ -113,13 +113,30 @@ def make_plan(
         cue_condition,
     )
 
+def normalized_filing_deadline(value=None):
+    if value is None:
+        return (datetime.now(timezone.utc)+timedelta(minutes=45)).replace(
+            microsecond=0
+        ).isoformat()
+    try:
+        parsed=datetime.fromisoformat(value.replace('Z','+00:00'))
+    except (AttributeError,ValueError) as error:
+        raise ValueError('filing deadline must be an ISO-8601 timestamp') from error
+    if parsed.tzinfo is None:
+        raise ValueError('filing deadline must include a timezone')
+    normalized=parsed.astimezone(timezone.utc).replace(microsecond=0).isoformat()
+    if parsed <= datetime.now(timezone.utc):
+        raise ValueError('filing deadline must be in the future at preparation time')
+    return normalized
+
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
-            cue_condition=schedule.DEFAULT_CUE_CONDITION):
+            cue_condition=schedule.DEFAULT_CUE_CONDITION,
+            filing_deadline_utc=None):
     assert not root.exists(),'Use a fresh output directory.'
     assert not registration_dir.exists(),'Use a fresh registration directory.'
     routes=verify_routes(key_file)
-    filing_deadline=(datetime.now(timezone.utc)+timedelta(minutes=45)).replace(microsecond=0).isoformat()
+    filing_deadline=normalized_filing_deadline(filing_deadline_utc)
     pressure=lab.mechanics.business_pressure(filing_deadline)
     plan,rows=make_plan(
         population,
@@ -744,6 +761,8 @@ if __name__=='__main__':
     p.add_argument('--cue-condition',choices=schedule.CUE_CONDITIONS,
         default=schedule.DEFAULT_CUE_CONDITION,
         help='Registered natural business cue level; used only when preparing a fresh run.')
+    p.add_argument('--filing-deadline-utc',
+        help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     a=p.parse_args();AXONHUB_KEY_FILE=a.key_file.expanduser();root=a.output.resolve();registration_dir=a.registration_dir.resolve()
     if a.phase=='prepare':
         assert a.model_alias and all(c.isalnum() or c in '_-' for c in a.model_alias),'Invalid model alias.'
@@ -751,5 +770,6 @@ if __name__=='__main__':
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or a.model_id}
     if a.phase=='prepare':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
-            a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition)
+            a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
+            filing_deadline_utc=a.filing_deadline_utc)
     else:collect(root,registration_dir)

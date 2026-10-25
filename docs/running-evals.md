@@ -67,6 +67,7 @@ $PY experiments/swarm-formation-v20/run.py \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
+  --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
   --cue-condition triage_routing_affordance
 ```
 
@@ -79,6 +80,9 @@ the registration. Canonical formation sets active contexts equal to population:
 the collector releases the full population through one start barrier and never
 admits replacements in stages. After preparation, edit no frozen file. If anything changes,
 discard that unused registration and prepare a fresh one.
+
+Matched campaigns must freeze the same explicit filing deadline so their
+business pressure is identical when the collectors start together.
 
 `--provider-concurrency` controls only simultaneous AxonHub HTTP requests. It
 may be lower than four to respect route limits; all four agent contexts still
