@@ -22,17 +22,18 @@
    32-record route-relevant filing-activity view containing raw diagnostics and
    agent-authored notes. Cue strength is registered: a natural view may show
    raw activity, grouped work, generic add-context/follow-up controls or a
-   neutral badge that related local material exists. It never exposes the
-   record, exact route, answer, author identity or peer identity. Broad search
-   and arbitrary registry mutation are rejected; workstations have no network.
-5. **Current status:** v45 produced connected four-agent channels for GLM and
+   neutral badge that related local material exists. A stronger natural level
+   explains that such material may be context for the matching investigation.
+   It never exposes the record, exact route, answer, author identity or peer
+   identity. Broad search and arbitrary registry mutation are rejected;
+   workstations have no network.
+5. **Current status:** v46 produced connected four-agent channels for GLM and
    DeepSeek, but no live dialogue. Cue strength is a measured factor: the
-   workflow-affordance level made ordinary replies easy, but neither model
-   recognized that a locally unusable record answered another open
-   investigation. The
-   [v45 paired review](research/formation-v45-paired-live-review-2026-10-25.md)
-   records the boundary. The active v46 source tests the related-local-material
-   badge; matching live campaigns are pending.
+   related-record level showed the match, but neither model contributed its
+   locally unusable route to the open investigation that needed it. The
+   [v46 paired review](research/formation-v46-paired-live-review-2026-10-25.md)
+   records the boundary. The active v47 source tests natural cross-case context
+   guidance; matching live campaigns are pending.
 6. **Run discipline:** all live inference uses AxonHub. Finalize code and docs,
    then prepare. After preparation, edit nothing frozen; commit and push, verify
    local/remote/seal equality, then collect. Any edit requires a new registration.

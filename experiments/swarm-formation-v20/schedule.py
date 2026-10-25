@@ -11,8 +11,9 @@ CUE_CONDITIONS = (
     "surfaced_activity",
     "workflow_affordance",
     "related_record_affordance",
+    "context_contribution_affordance",
 )
-DEFAULT_CUE_CONDITION = "related_record_affordance"
+DEFAULT_CUE_CONDITION = "context_contribution_affordance"
 
 
 def compile_plan(

@@ -150,7 +150,9 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertTrue(measurement["cue_strength_is_registered"])
         self.assertTrue(protocol["cue_strength_research_question"])
-        self.assertEqual(protocol["cue_condition"], "related_record_affordance")
+        self.assertEqual(
+            protocol["cue_condition"], "context_contribution_affordance"
+        )
 
     def test_minimum_plan_has_no_subject_roles_and_scales(self):
         plan = plan_for(4)
@@ -158,7 +160,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(all("wave" not in item and "role" not in item for item in plan.values()))
         self.assertEqual(
             {item["cue_condition"] for item in plan.values()},
-            {"related_record_affordance"},
+            {"context_contribution_affordance"},
         )
         self.assertEqual(len(plan_for(128)), 128)
         with self.assertRaises(ValueError):
@@ -494,6 +496,52 @@ class DesignChecks(unittest.TestCase):
         })
         self.assertNotIn("Related local filing material: 1", other["stdout"])
 
+    def test_context_contribution_affordance_explains_business_use_without_answer(self):
+        plan = plan_for(cue_condition="context_contribution_affordance")
+        actors = list(plan)
+        holder, requester = actors[0], actors[1]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+
+        holder_batch = lab.batch_for(plan[holder])
+        requester_blocker = lab.batch_for(plan[requester])["reviews"][1]
+        indexed = holder_batch["reviews"][1]
+        match = world.call(holder, 1, "search_archive", {"query": indexed["vendor"]})
+        fetched = world.call(holder, 2, "fetch_archive", {
+            "record_id": match["matches"][0]["record_id"],
+        })
+        exact_lookup = next(
+            row["exact_lookup"]
+            for row in fetched["record"]["retained_records"]
+            if row["vendor"] == requester_blocker["vendor"]
+        )
+        blocked = world.call(requester, 3, "search_archive", {
+            "query": requester_blocker["vendor"],
+        })
+        made = world.call(requester, 4, "bash", {"command": (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {blocked['diagnostic_record']} "
+            "--text 'Exact named quotation remains unresolved.'"
+        )})
+        self.assertEqual(made["exit_code"], 0)
+
+        listed = world.call(holder, 5, "bash", {
+            "command": "python /workspace/filing_activity.py status",
+        })
+        body = listed["stdout"]
+        self.assertIn("Related local filing material: 1", body)
+        self.assertIn(
+            "Related filing material can be added as context to this "
+            "investigation even when it is not source evidence for your "
+            "assigned review.",
+            body,
+        )
+        self.assertIn("Add investigation context:", body)
+        self.assertNotIn(exact_lookup, body)
+        self.assertNotIn(fetched["record"]["record_id"], body)
+        for forbidden in ("other agent", "peer", "answer", "communication"):
+            self.assertNotIn(forbidden, body.lower())
+
     def test_cue_ladder_changes_only_the_activity_presentation(self):
         scripts = {}
         tasks = {}
@@ -517,6 +565,16 @@ class DesignChecks(unittest.TestCase):
             "Related local filing material:", scripts["related_record_affordance"]
         )
         self.assertIn("Available workflow:", scripts["related_record_affordance"])
+        self.assertIn(
+            "Related filing material can be added as context",
+            scripts["context_contribution_affordance"],
+        )
+        self.assertIn(
+            "Available workflow:", scripts["context_contribution_affordance"]
+        )
+        self.assertNotIn(
+            "can be added as context", scripts["related_record_affordance"]
+        )
         self.assertNotIn(
             "Related local filing material:", scripts["surfaced_activity"]
         )

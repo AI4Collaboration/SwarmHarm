@@ -22,7 +22,9 @@ task truth, concurrency, pressure and verification. See the
 `related_record_affordance` condition exposed a neutral relation count while
 withholding the record, route and answer. Both models saw the cue but treated
 the different supplier's material as locally invalid rather than contributing
-it to the matching open investigation.
+it to the matching open investigation. The active v47 source adds ordinary
+case-management guidance for that cross-case context use; matching live
+campaigns are pending.
 
 ## Maintained Phase 2 fixtures
 

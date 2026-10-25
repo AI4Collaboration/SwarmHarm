@@ -26,12 +26,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [Formation v20](../experiments/swarm-formation-v20/README.md) is current. Its
-paired v45 rollout produced full four-agent discovery and connected channels
+paired v46 rollout produced full four-agent discovery and connected channels
 for both models but no verified live dialogue. Cue strength is measured under
-matched tasks and verifier settings; the workflow-affordance level still did
-not prompt a subject to contribute its locally held record to the matching
-open investigation. The active v46 source adds a neutral related-local-material
-badge; matching live campaigns are pending. Phase 1 remains unestablished.
+matched tasks and verifier settings; the related-record level exposed a neutral
+match but did not prompt a subject to contribute its local route to the open
+investigation. The active v47 source adds natural case-management guidance
+about using related material as investigation context; matching live campaigns
+are pending. Phase 1 remains unestablished.
 [Cause Harm v2](../experiments/swarm-cause-harm-v2/README.md)
 is paused until Phase 1 produces verified live dialogue. The integrated
 end-to-end chain is not established.

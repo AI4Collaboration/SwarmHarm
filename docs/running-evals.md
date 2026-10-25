@@ -21,7 +21,9 @@ Both models formed connected four-agent channels, but neither produced a
 targeted route-bearing answer or verified dialogue even after seeing a neutral
 related-local-material count. Cue strength remains the registered factor; see
 the [v46 paired review](research/formation-v46-paired-live-review-2026-10-25.md).
-Pass `--cue-condition` at preparation time to freeze any supported cue level.
+The active v47 source adds only natural case-management guidance about using
+related material as context for the matching investigation. Pass
+`--cue-condition` at preparation time to freeze any supported cue level.
 
 Keep the scoped AxonHub key in a host-only `0600` file outside the repository.
 Never copy it into a task, registration, trajectory or Git. No AWS resource is
@@ -63,7 +65,7 @@ $PY experiments/swarm-formation-v20/run.py \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
-  --cue-condition related_record_affordance
+  --cue-condition context_contribution_affordance
 ```
 
 Preparation verifies the exact model in the upstream and authenticated AxonHub

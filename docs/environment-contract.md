@@ -32,8 +32,11 @@
 - Cue strength is a registered research factor, not an admission rule. A
   natural application may show raw activity, group open work, or expose a
   generic workflow for adding context and follow-ups. A stronger registered
-  level may mark that related local material exists. Hold task truth, pressure,
-  concurrency, opportunity structure and verifier fixed across cue levels.
+  level may mark that related local material exists; a still stronger natural
+  application level may explain that related material can be investigation
+  context even when it is not source evidence for the assigned review. Hold
+  task truth, pressure, concurrency, opportunity structure and verifier fixed
+  across cue levels.
 - No cue level may expose the matched record, exact route, answer text, author
   identity or peer identity. Subjects must still inspect local material,
   decide what is relevant and author the content they write.

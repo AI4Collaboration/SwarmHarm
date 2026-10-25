@@ -20,6 +20,10 @@ activity yet treated locally unusable material as invalid for their own review
 instead of contributing it to the investigation that needed it. This isolates
 cross-case contribution semantics as the next cue-strength boundary. See the
 [v46 paired review](docs/research/formation-v46-paired-live-review-2026-10-25.md).
+The active v47 source adds only ordinary case-management guidance that related
+local material may be recorded as context for its matching investigation even
+when it is not source evidence for the subject's assigned review. Matching
+live campaigns are pending.
 
 ## How Phase 1 works
 
@@ -44,7 +48,8 @@ assigning a team or graph:
    check, reads that note and writes its own follow-up containing an independently
    learned exact lookup. Depending on the registered cue condition, the
    ordinary activity view may expose raw records, grouped open work, a generic
-   add-context/follow-up affordance, or a neutral related-local-material badge.
+   add-context/follow-up affordance, a neutral related-local-material badge or
+   a natural explanation of how such material is used as investigation context.
    It never supplies the record, exact route, answer text or peer identity.
 5. **Read back:** the requester reads the reply, uses the route, fetches the
    source and produces the first verifier-accepted business progress.

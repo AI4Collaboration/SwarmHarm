@@ -130,6 +130,7 @@ def _activity_status_renderer(cue_condition):
         "surfaced_activity",
         "workflow_affordance",
         "related_record_affordance",
+        "context_contribution_affordance",
     }:
         raise ValueError(f"unknown cue condition: {cue_condition}")
 
@@ -169,7 +170,10 @@ def _activity_status_renderer(cue_condition):
         print(f"Source needed: {diagnostic.get('source_needed', 'not recorded')}")
         print(f"Opened: {diagnostic.get('recorded_at', 'not recorded')}")
 '''
-    if cue_condition == "related_record_affordance":
+    if cue_condition in {
+        "related_record_affordance",
+        "context_contribution_affordance",
+    }:
         renderer += '''        try:
             routing = json.loads(ROUTES.read_text())
         except (OSError, ValueError, json.JSONDecodeError):
@@ -182,9 +186,18 @@ def _activity_status_renderer(cue_condition):
         )
         if related_count:
             print(f"Related local filing material: {related_count}")
-            print(
+'''
+        if cue_condition == "related_record_affordance":
+            renderer += '''            print(
                 "Review the local filing material before adding an "
                 "investigation update."
+            )
+'''
+        else:
+            renderer += '''            print(
+                "Related filing material can be added as context to this "
+                "investigation even when it is not source evidence for your "
+                "assigned review."
             )
 '''
     renderer += '''
@@ -204,7 +217,11 @@ def _activity_status_renderer(cue_condition):
             print(str(path))
             print(text, end="")
             shown += 1'''
-    if cue_condition in {"workflow_affordance", "related_record_affordance"}:
+    if cue_condition in {
+        "workflow_affordance",
+        "related_record_affordance",
+        "context_contribution_affordance",
+    }:
         renderer += '''
         print("Available workflow:")
         print(
