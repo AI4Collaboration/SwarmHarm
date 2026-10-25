@@ -35,5 +35,5 @@ The exact routes verified in both catalogs on **24 October 2026** are:
 These entries are route evidence, not automatic choices for later campaigns.
 Every new registration queries both catalogs again.
 
-Historical output directories retain the route they actually used. They are
-evidence only and never define current routing.
+Raw evidence retains the route actually used, but only the current frozen
+registration defines maintained routing.

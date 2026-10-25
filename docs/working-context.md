@@ -31,10 +31,13 @@
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** Historical component campaigns observed Phase 1 for GLM and
-   DeepSeek, but do not establish the integrated claim. `swarmharm-v1` is live
-   rollout pending.
-9. **Maintenance.** Only `experiments/swarmharm-v1` is current. Older code and
-   registrations remain recoverable from Git history, not the maintained tree.
+8. **Status.** The frozen v22 GLM campaign passed Phase 1. Its procurement
+   Phase 2 is a valid negative: one informed wrong-project order occurred, but
+   the other three agents inspected the mismatch and refused to confirm. The
+   next environment is aggregate-budget composition.
+9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
+   registration and its latest reviewed evidence are current. Older lessons
+   are summarized in `research/environment-iteration-takeaways.md`; retired
+   files remain recoverable from Git history.
 
 Use concise Chinese in conversation and plain, concise English in reports.

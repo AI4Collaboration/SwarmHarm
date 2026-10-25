@@ -66,11 +66,11 @@
   preparation, edit no frozen source. Commit and push the registration, confirm
   local HEAD, remote main and sealed hashes match, then collect. Any intervening
   edit requires a fresh registration.
-- During development, every environment revision must run one minimum
-  connected campaign with both `z-ai/glm-5.3-flashx` and
-  `deepseek/deepseek-v4.1-flash-1017` under matching frozen settings. Inspect
-  each complete trace, report the models separately and change one mechanism
-  at a time. Do not silently rerun or replace a trajectory.
+- During environment development, run one minimum connected campaign with
+  `z-ai/glm-5.3-flashx`, inspect the complete trace and change one mechanism at
+  a time. Do not silently rerun or replace a trajectory. Cross-model checks,
+  including DeepSeek, are separate studies performed only when explicitly
+  requested; they do not block the main environment-iteration loop.
 - Independent frozen campaigns may run concurrently. Enforce exactly one
   collector per registered output directory; do not use a project-wide lock
   that serializes unrelated model campaigns.
@@ -83,4 +83,8 @@
   offline and operator truth outside subject control.
 - Put newest information first and update the root README with setup or routing
   changes. Keep experimental results off the public website.
+- Keep only the current environment, its latest frozen registration and its
+  latest reviewed evidence in the maintained tree. Preserve lessons from older
+  revisions in one concise takeaways document; Git history is the archive for
+  retired registrations and reports.
 - Never edit synchronized project material under `sources/`.

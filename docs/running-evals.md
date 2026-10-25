@@ -8,8 +8,7 @@ stitching.
 
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
-- exact current routes `deepseek/deepseek-v4.1-flash-1017` and
-  `z-ai/glm-5.3-flashx`; and
+- exact current development route `z-ai/glm-5.3-flashx`; and
 - a host-only AxonHub key file outside the repository.
 
 No AWS resource is required for the current local study.
@@ -47,10 +46,11 @@ $PY experiments/swarmharm-v1/run.py \
   --cue-condition matched_case_assignment_affordance
 ```
 
-Preparation verifies the exact upstream and AxonHub routes, writes Harbor 1.4
+Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
 packages, freezes the Phase 1 and Phase 2 plans, runs offline controls and seals
-all source and input hashes. Matched model campaigns must use the same settings
-and absolute filing deadline.
+all source and input hashes. Cross-model studies are prepared separately only
+when explicitly requested; they do not block the GLM environment-iteration
+loop.
 
 Inspect the assembled inputs, commit and push the registration, then edit no
 frozen file. Any source change requires a new registration.

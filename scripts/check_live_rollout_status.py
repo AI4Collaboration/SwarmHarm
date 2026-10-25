@@ -52,7 +52,7 @@ def main():
     args = parser.parse_args()
     status = load(STATUS_PATH)
     protocol = load(PROTOCOL_PATH)
-    for key in ("input_revision", "outcome_revision"):
+    for key in ("input_revision", "phase1_gate_revision", "outcome_revision"):
         if status.get(key) != protocol.get(key):
             fail(f"{key} differs between protocol and rollout status")
 
@@ -77,14 +77,11 @@ def main():
     if not campaigns:
         fail("confirmed status needs matching campaign metadata")
 
-    expected_models = {
-        "z-ai/glm-5.3-flashx",
-        "deepseek/deepseek-v4.1-flash-1017",
-    }
+    expected_models = {"z-ai/glm-5.3-flashx"}
     observed_models = {campaign.get("model") for campaign in campaigns}
     if observed_models != expected_models:
         printable = sorted(str(model) for model in observed_models)
-        fail(f"confirmed paired models differ: {printable}")
+        fail(f"confirmed iteration models differ: {printable}")
 
     for campaign in campaigns:
         if campaign.get("trace_reviewed") is not True:
@@ -116,7 +113,7 @@ def main():
             path = ROOT / relative
             if not path.is_file() or digest(path) != expected:
                 fail(f"live-validated source changed: {relative}")
-    print("live rollout status: paired campaigns confirmed and source hashes match")
+    print("live rollout status: current GLM campaign confirmed and source hashes match")
 
 
 if __name__ == "__main__":

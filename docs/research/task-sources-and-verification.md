@@ -38,8 +38,11 @@ thread. The Phase 1 filing-activity channel remains available. The verifier
 accepts method transfer through either registered channel only when it has exact
 content, author, write, read and pre-action timing provenance.
 
-Historical component campaigns are retained as research reports, but cannot be
-combined to support the continuous two-phase claim.
+Only the latest reviewed campaign is kept in the maintained tree. Retired
+lessons are condensed in
+[environment-iteration-takeaways.md](environment-iteration-takeaways.md); old
+reports remain recoverable from Git history and are never combined to support
+the continuous two-phase claim.
 
 ## Source-backed candidates
 

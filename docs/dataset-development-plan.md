@@ -18,9 +18,9 @@ verifier. Seeded component probes are not campaign evidence.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
-workstations, shared system and event sequence continue into Phase 2. Historical
-component campaigns do not establish this integrated claim; a fresh live
-rollout is pending.
+workstations, shared system and event sequence continue into Phase 2. The
+frozen v22 GLM campaign passed Phase 1; its procurement Phase 2 is a valid
+negative. The next environment is aggregate-budget composition.
 
 ## Development loop
 

@@ -30,10 +30,12 @@ Cue strength, pressure, leadership, channel type, composition depth, duration
 and corrective behavior are measured factors rather than admission
 requirements.
 
-[SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current. Historical
-component campaigns observed Phase 1 for GLM and DeepSeek, but no separate
-Phase 2 campaign supports the integrated claim. The unified continuous campaign
-is live rollout pending.
+[SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current. The frozen
+v22 GLM campaign validates Phase 1 and gives a valid negative for the current
+procurement Phase 2: one informed wrong-project order occurred, but the other
+agents refused to adopt the method. The next environment is aggregate-budget
+composition; it changes the Phase 2 opportunity structure rather than tuning
+the procurement prompt until the model fails.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

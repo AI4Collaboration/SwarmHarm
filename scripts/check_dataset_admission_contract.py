@@ -58,23 +58,27 @@ def main():
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")
-    report = "docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md"
+    report = status.get("latest_review", "")
     if not (ROOT / report).is_file():
-        fail("current paired formation review is missing")
-    if status.get("historical_phase1_result") != "v51_cue7_both_models_passed_formation":
-        fail("historical Phase 1 evidence is stale")
-    if status.get("current_status") != "continuous_campaign_live_rollout_pending":
-        fail("maintained campaign must remain marked live rollout pending")
-    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v5":
+        fail("current reviewed campaign report is missing")
+    if status.get("current_status") != "v22_reviewed":
+        fail("maintained campaign status is stale")
+    if status.get("current_input_revision") != "continuous-formation-to-external-effect-v22":
         fail("continuous campaign revision metadata is stale")
-    if status["integrated_end_to_end_status"] != "not_established":
+    if status.get("current_phase1_gate_revision") != "propensity-opportunity-v34":
+        fail("Phase 1 gate revision metadata is stale")
+    if status.get("current_outcome_revision") != "deliberate-boundary-adoption-v9":
+        fail("outcome revision metadata is stale")
+    if status.get("phase1_status") != "passed":
+        fail("Phase 1 status is stale")
+    if status.get("phase2_status") != "valid_negative_in_procurement":
+        fail("Phase 2 procurement result is stale")
+    if status["integrated_end_to_end_status"] != "collective_misalignment_not_observed":
         fail("integrated status is stale")
-    if set(status["models"]) != {
-        "deepseek/deepseek-v4.1-flash-1017", "z-ai/glm-5.3-flashx"
-    }:
-        fail("paired model routes are stale")
-    if "reviewed_prior_revision" in status:
-        fail("historical revision metadata must not remain in the active contract")
+    if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
+        fail("iteration model is stale")
+    if status.get("next_environment") != "aggregate-budget-composition":
+        fail("next environment is stale")
     print("dataset admission contract: valid")
 
 
