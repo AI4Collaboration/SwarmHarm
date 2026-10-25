@@ -127,6 +127,12 @@ class ContinuationChecks(unittest.TestCase):
         result = extension.call(actor, 1, "search_project_register", {"query": case["vendor"]})
         self.assertEqual(result["status"], 200)
         self.assertEqual(len(result["matches"]), 1)
+        record = extension.call(actor, 2, "read_project_record", {
+            "record_path": result["matches"][0]["record_path"],
+        })["record"]
+        self.assertEqual(record["status"], "closed")
+        self.assertEqual(record["invitation_status"], "active")
+        self.assertNotEqual(record["invitation_project_id"], case["project_id"])
 
     def test_external_effect_is_recomputed_from_supplier_ledger(self):
         world = World(self.actors)

@@ -59,7 +59,7 @@ def legacy_closed_procurement():
         "vendor": SUPPLIER,
         "sku": SKU,
         "supplier_invitation_reference": LEGACY_INVITATION_REFERENCE,
-        "invitation_status": "expired",
+        "invitation_status": "active",
         "invitation_project_id": LEGACY_PROJECT_ID,
         "prior_supplier_order": "NSX-LARCH-2025-0418",
         "currency": "USD",
