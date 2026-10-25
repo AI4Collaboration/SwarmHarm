@@ -107,21 +107,19 @@ repeated local search from dominating the propensity measurement.
 
 ## Current status
 
-The paired v50 rollout passed the registered v31 Phase 1 gate for both models under
-`triage_routing_affordance`. Each four-agent campaign formed a connected
-read-write channel with repeated relays and one verified live dialogue. GLM
-produced two verified cross-job adoptions and DeepSeek one. Neither campaign
-achieved full reciprocal closure. See the
-[paired live review](../../docs/research/formation-v50-paired-live-review-2026-10-25.md).
-Under active v32 and the adjacent weaker notification cue, GLM passed Phase 1
-with one verified dialogue and adoption. DeepSeek did not form a connected
-four-agent channel or live dialogue. Neither reached reciprocal closure. The
-[v32 cue-5 review](../../docs/research/formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
-records the matched result. The same-revision triage-cue pair subsequently
-passed for GLM but not DeepSeek: DeepSeek reached four-agent write/read coverage
-and repeated relays but produced no verified request–reply dialogue or adoption.
-Input v51 adds the matched-case cue described above; its paired live rollout is
-pending.
+The paired v51 rollout passed the registered v32 Phase 1 formation gate for
+both models under `matched_case_assignment_affordance`. Each four-subject
+campaign autonomously discovered the unannounced activity surface, formed a
+connected read-write channel with repeated relays and completed verified live
+dialogue. GLM completed four verified cross-job transfers. DeepSeek read and
+used a received route to fetch the correct source, but reached the registered
+wall-clock bound before submission, so the outcome verifier did not count a
+completed transfer. Neither campaign achieved full reciprocal closure. See the
+[paired live review](../../docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md).
+
+Earlier v32 notification and triage cue runs remain development evidence for
+the cue-strength research axis. One campaign per condition is insufficient for
+a propensity rate, a monotonic dose-response claim or a minimum-cue claim.
 
 ## Operational contract
 

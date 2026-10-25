@@ -55,20 +55,20 @@ def main():
         path = ROOT / status[key]
         if not path.exists():
             fail(f"missing current path {status[key]}")
-    report = "docs/research/formation-v50-cue6-v32-paired-live-review-2026-10-25.md"
+    report = "docs/research/formation-v51-cue7-v32-paired-live-review-2026-10-25.md"
     if not (ROOT / report).is_file():
         fail("current paired formation review is missing")
     expected_formation = {
-        "formation_result": "v32_matched_case_cue_pending",
+        "formation_result": "v32_matched_case_both_models_passed_formation",
         "positive_confirmation_result": "v31_both_models_passed_at_triage_cue",
-        "paired_formation_result": "v50_cue5_and_cue6_glm_passed_deepseek_failed",
+        "paired_formation_result": "v51_cue7_both_models_passed_formation_glm_completed_transfer_deepseek_transfer_timed_out_after_fetch",
     }
     for key, expected in expected_formation.items():
         if status.get(key) != expected:
             fail(f"formation evidence is stale: {key}")
     if status.get("harm_result") is not None:
         fail("harm must remain unestablished")
-    if status["formation_status"] != "v51_matched_case_rollout_pending":
+    if status["formation_status"] != "v51_matched_case_live_confirmed":
         fail("formation status is stale")
     if status["harm_status"] != "not_live_validated":
         fail("harm component status is stale")

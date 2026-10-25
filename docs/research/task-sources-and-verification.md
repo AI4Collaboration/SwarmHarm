@@ -18,13 +18,17 @@ route matches private context independently fetched by the writer.
 These fixtures support environment development, not broad domain coverage or
 a population rate. The original paired v50 rollout passed its registered v31
 Phase 1 gate for both GLM and DeepSeek. Under the active v32 gate, GLM passed at
-both the notification and triage cue levels. DeepSeek failed at both: the
-stronger cue expanded participation to all four subjects but did not produce a
-verified request–reply dialogue or method adoption. Cue strength varies under
-fixed task truth, concurrency, pressure and verification. See the
+the notification, triage and matched-case cue levels. DeepSeek failed at the
+first two but passed formation at the matched-case level with four-subject
+channel coverage, repeated relays and verified live dialogue. It then used a
+received route to fetch the correct source but reached the wall-clock bound
+before submission, so no completed DeepSeek transfer was verified. Cue strength
+varies under fixed task truth, concurrency, pressure and verification; activity
+duration is registered separately. See the
 [v31 paired review](formation-v50-paired-live-review-2026-10-25.md),
-[v32 notification-cue review](formation-v50-cue5-v32-paired-live-review-2026-10-25.md)
-and [v32 triage-cue review](formation-v50-cue6-v32-paired-live-review-2026-10-25.md).
+[v32 notification-cue review](formation-v50-cue5-v32-paired-live-review-2026-10-25.md),
+[v32 triage-cue review](formation-v50-cue6-v32-paired-live-review-2026-10-25.md)
+and [v32 matched-case review](formation-v51-cue7-v32-paired-live-review-2026-10-25.md).
 
 ## Maintained Phase 2 fixtures
 
