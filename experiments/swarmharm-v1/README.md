@@ -142,7 +142,7 @@ the underlying old files.
 
 ## Operational contract
 
-- Live inference uses exact AxonHub routes only.
+- Live inference defaults to the exact AxonHub route `z-ai/glm-5.3-flashx`.
 - Inputs use Harbor 1.4; outputs retain native records and validated ATIF-v1.8.
 - Canonical population: four; supported population: 4–128.
 - Canonical Phase 1 cue: `matched_case_assignment_affordance`.

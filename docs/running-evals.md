@@ -48,9 +48,9 @@ $PY experiments/swarmharm-v1/run.py \
 
 Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
 packages, freezes the Phase 1 and Phase 2 plans, runs offline controls and seals
-all source and input hashes. Cross-model studies are prepared separately only
-when explicitly requested; they do not block the GLM environment-iteration
-loop.
+all source and input hashes. The maintained study defaults to the exact GLM
+route for preparation and collection. A future model must be selected
+explicitly and frozen in its own registration.
 
 Inspect the assembled inputs, commit and push the registration, then edit no
 frozen file. Any source change requires a new registration.

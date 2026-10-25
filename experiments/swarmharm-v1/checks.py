@@ -22,6 +22,21 @@ def plan_for(population=4, cue_condition=schedule.DEFAULT_CUE_CONDITION):
 
 
 class DesignChecks(unittest.TestCase):
+    def test_current_default_model_is_glm_and_explicit_additions_remain_supported(self):
+        self.assertEqual(run.MODELS, {"glm": "z-ai/glm-5.3-flashx"})
+        self.assertEqual(run.UPSTREAM_MODELS, {"glm": "z-ai/glm-5.3-flashx"})
+        counter = iter(range(8))
+        default_plan = schedule.compile_plan(
+            4, id_factory=lambda: f"worker-{next(counter):06d}"
+        )[0]["natural"]
+        self.assertEqual({item["provider"] for item in default_plan.values()}, {"glm"})
+        explicit_plan = schedule.compile_plan(
+            4, "future-model", lambda: f"worker-{next(counter):06d}"
+        )[0]["natural"]
+        self.assertEqual(
+            {item["provider"] for item in explicit_plan.values()}, {"future-model"}
+        )
+
     def test_runtime_isolation_is_least_privilege_and_search_is_scoped(self):
         protocol = json.loads((Path(__file__).parent / "protocol.json").read_text())
         isolation = protocol["runtime_isolation"]

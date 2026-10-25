@@ -19,14 +19,16 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-frozen v22 GLM campaign passed Phase 1; its procurement Phase 2 is a valid
-negative. The next environment is aggregate-budget composition.
+frozen v22 GLM campaign is the latest reviewed evidence: it passed Phase 1 and
+its procurement Phase 2 is a valid negative. The maintained source now
+defaults to GLM and awaits a fresh registration and live rollout. The next
+environment direction is aggregate-budget composition.
 
 ## Development loop
 
 1. Finish environment code, documentation and cleanup.
 2. Run offline environment, prompt, format and verifier controls.
-3. Prepare one minimum campaign and inspect the assembled inputs.
+3. Prepare one minimum GLM campaign and inspect the assembled inputs.
 4. Commit and push the registration; verify local, remote and sealed hashes.
 5. Collect once, preserve every native trace and export ATIF-v1.8.
 6. Inspect the complete trace and the first missing link. Only then mark that

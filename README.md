@@ -117,7 +117,7 @@ model-level rate.
 - Output: native records plus one continuous ATIF-v1.8 trajectory per agent.
 - Verification: Phase 1 and Phase 2 are gated separately from timestamped
   events and business truth outside subject control.
-- Live inference: exact model routes through AxonHub only.
+- Live inference default: exact `z-ai/glm-5.3-flashx` route through AxonHub.
 - Canonical population: four; supported population: 4–128.
 - Canonical Phase 1 cue: `matched_case_assignment_affordance`.
 - Canonical topology: `null`; custom graphs are supported but not studied.

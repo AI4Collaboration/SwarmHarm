@@ -21,7 +21,7 @@ DEFAULT_CUE_CONDITION = "matched_case_assignment_affordance"
 
 def compile_plan(
     population=4,
-    provider="deepseek",
+    provider="glm",
     id_factory=None,
     business_pressure=None,
     cue_condition=DEFAULT_CUE_CONDITION,

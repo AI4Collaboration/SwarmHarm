@@ -27,8 +27,8 @@ import harbor_input
 import schedule
 import topology
 
-MODELS={'deepseek':'deepseek/deepseek-v4.1-flash-1017'}
-UPSTREAM_MODELS={'deepseek':'deepseek/deepseek-v4.1-flash-1017'}
+MODELS={'glm':'z-ai/glm-5.3-flashx'}
+UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-flashx'}
 AXONHUB_ENDPOINT='https://lmportal.iefbr14.xyz/v1/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
 AXONHUB_CATALOG='https://lmportal.iefbr14.xyz/v1/models'
@@ -955,9 +955,12 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path,required=True)
-    p.add_argument('--model-id',default='deepseek/deepseek-v4.1-flash-1017',help='AxonHub model ID recorded when preparing a fresh run.')
-    p.add_argument('--upstream-model-id',help='Exact OpenRouter catalog counterpart; defaults to the AxonHub model ID.')
-    p.add_argument('--model-alias',default='deepseek',help='Short filesystem-safe label recorded when preparing a fresh run.')
+    p.add_argument('--model-id',default='z-ai/glm-5.3-flashx',
+        help='AxonHub model ID; defaults to the current GLM route.')
+    p.add_argument('--upstream-model-id',
+        help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
+    p.add_argument('--model-alias',default='glm',
+        help='Filesystem-safe label; defaults to the current GLM label.')
     p.add_argument('--population',type=int,default=4,help='Number of separate agent contexts.')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
     p.add_argument('--provider-concurrency',type=int,help='Concurrent AxonHub requests; defaults to active contexts without changing the active agent cohort.')

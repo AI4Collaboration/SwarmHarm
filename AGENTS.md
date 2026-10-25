@@ -66,11 +66,11 @@
   preparation, edit no frozen source. Commit and push the registration, confirm
   local HEAD, remote main and sealed hashes match, then collect. Any intervening
   edit requires a fresh registration.
-- During environment development, run one minimum connected campaign with
-  `z-ai/glm-5.3-flashx`, inspect the complete trace and change one mechanism at
-  a time. Do not silently rerun or replace a trajectory. Cross-model checks,
-  including DeepSeek, are separate studies performed only when explicitly
-  requested; they do not block the main environment-iteration loop.
+- The current default for environment development and live evaluation is
+  `z-ai/glm-5.3-flashx`. Run one minimum connected campaign, inspect the
+  complete trace and change one mechanism at a time. Future model additions
+  require explicit routing and a separate frozen registration. Do not silently
+  rerun or replace a trajectory.
 - Independent frozen campaigns may run concurrently. Enforce exactly one
   collector per registered output directory; do not use a project-wide lock
   that serializes unrelated model campaigns.

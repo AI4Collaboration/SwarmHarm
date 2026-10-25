@@ -209,7 +209,7 @@ class CollectorChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             run.validate_response_model(request, {"model": "~z-ai/glm-flash-latest"})
 
-    def test_route_check_records_distinct_axonhub_and_upstream_namespaces(self):
+    def test_route_check_records_exact_glm_route(self):
         calls = []
 
         def fake_catalog(url, model, key_file=None):
@@ -218,22 +218,22 @@ class CollectorChecks(unittest.TestCase):
 
         key = Path("/tmp/axonhub.key")
         with (
-            patch.object(run, "MODELS", {"sol": "gpt-6.1-sol"}),
-            patch.object(run, "UPSTREAM_MODELS", {"sol": "openai/gpt-6.1-sol"}),
+            patch.object(run, "MODELS", {"glm": "z-ai/glm-5.3-flashx"}),
+            patch.object(run, "UPSTREAM_MODELS", {"glm": "z-ai/glm-5.3-flashx"}),
             patch.object(run, "catalog", side_effect=fake_catalog),
         ):
             routes = run.verify_routes(key)
-        self.assertEqual(routes["model"], "gpt-6.1-sol")
-        self.assertEqual(routes["upstream_model"], "openai/gpt-6.1-sol")
+        self.assertEqual(routes["model"], "z-ai/glm-5.3-flashx")
+        self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3-flashx")
         self.assertEqual(
             calls[0],
             (
-                run.OPENROUTER_CATALOG + "/openai/gpt-6.1-sol/endpoints",
-                "openai/gpt-6.1-sol",
+                run.OPENROUTER_CATALOG + "/z-ai/glm-5.3-flashx/endpoints",
+                "z-ai/glm-5.3-flashx",
                 None,
             ),
         )
-        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "gpt-6.1-sol", key))
+        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3-flashx", key))
 
     def test_launcher_forwards_registration_and_host_only_key(self):
         root = Path("/tmp/swarmharm-v1")
@@ -251,7 +251,7 @@ class CollectorChecks(unittest.TestCase):
             key = Path(temporary) / "key"
             key.write_text("test-key")
             routes = {
-                "checked_at": "test", "model": "deepseek/deepseek-v4.1-flash-1017",
+                "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
@@ -554,7 +554,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertNotIn("available in this workstation", frozen_task)
             self.assertNotIn("request.json", frozen_task)
             self.assertNotIn("submit each review", frozen_task)
-            self.assertIn("`deepseek/deepseek-v4.1-flash-1017`", (registration / "PROTOCOL.md").read_text())
+            self.assertIn("`z-ai/glm-5.3-flashx`", (registration / "PROTOCOL.md").read_text())
             self.assertIn(
                 "`matched_case_assignment_affordance`",
                 (registration / "PROTOCOL.md").read_text(),
@@ -574,7 +574,7 @@ class CollectorChecks(unittest.TestCase):
             key = Path(temporary) / "key"
             key.write_text("test-key")
             routes = {
-                "checked_at": "test", "model": "deepseek/deepseek-v4.1-flash-1017",
+                "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
@@ -589,8 +589,8 @@ class CollectorChecks(unittest.TestCase):
             key = Path(temporary) / "key"
             key.write_text("test-key")
             routes = {
-                "checked_at": "test", "model": "deepseek/deepseek-v4.1-flash-1017",
-                "upstream_model": "deepseek/deepseek-v4.1-flash-1017",
+                "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
+                "upstream_model": "z-ai/glm-5.3-flashx",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }

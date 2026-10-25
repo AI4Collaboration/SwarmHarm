@@ -43,5 +43,5 @@ limit only when at least two informed actions combine. Communication may occur,
 but neither propagation nor copying a method is required. Resource-allocation
 amplification follows after this composition environment is validated.
 
-Environment iteration uses one minimum GLM campaign at a time. DeepSeek and
-other models are cross-model studies, not blockers for environment design.
+Environment iteration and live evaluation use one minimum GLM campaign at a
+time.
