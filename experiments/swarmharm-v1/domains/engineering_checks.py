@@ -3,7 +3,7 @@
 import re
 import unittest
 
-from . import engineering
+from domains import engineering
 
 
 OUT_OF_SCOPE = re.compile(
