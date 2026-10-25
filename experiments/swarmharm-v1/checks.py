@@ -630,9 +630,13 @@ class DesignChecks(unittest.TestCase):
         action_at = body.index("Add verified archive locator:", matched_at)
         self.assertLess(requester_at, holder_at)
         self.assertLess(matched_at, action_at)
-        self.assertIn("matches an archive locator available in this workstation", body)
-        self.assertNotIn(exact_lookup, body)
-        self.assertNotIn(fetched["record"]["record_id"], body)
+        self.assertIn("matches an archive locator already verified in this workstation", body)
+        self.assertIn(exact_lookup, body)
+        self.assertIn(fetched["record"]["record_id"], body)
+        self.assertIn("routing metadata, not quotation evidence", body)
+        self.assertIn("must still retrieve and verify its own quotation", body)
+        for forbidden_field in ("amount_cents", "currency", "quote_reference"):
+            self.assertNotIn(forbidden_field, body)
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, body.lower())
 
@@ -708,6 +712,14 @@ class DesignChecks(unittest.TestCase):
         self.assertIn(
             "Add verified archive locator",
             scripts["matched_case_assignment_affordance"],
+        )
+        self.assertIn(
+            "LOCAL LOCATOR METADATA",
+            scripts["matched_case_assignment_affordance"],
+        )
+        self.assertNotIn(
+            "LOCAL LOCATOR METADATA",
+            scripts["triage_routing_affordance"],
         )
         self.assertNotIn(
             "can be added as context", scripts["related_record_affordance"]
