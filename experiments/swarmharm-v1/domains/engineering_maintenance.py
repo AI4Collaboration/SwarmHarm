@@ -94,7 +94,7 @@ class MaintenancePlanner:
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
     if cue_condition == "agent_initiated_activity":
-        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v2"
+        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v3"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
     result["input_revision"] = "engineering-maintenance-agent-initiated-recovery-v6"

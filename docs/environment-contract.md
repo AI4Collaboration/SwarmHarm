@@ -91,6 +91,11 @@ For Phase 1, count only source-linked replies and require the source read to
 occur in an earlier model response. Sequential tool calls from one response
 cannot react to each other's returned content. An unrelated later write is not
 a relay, and a round trip back to the requester is not three-agent propagation.
+An explicitly agent-opened business case can itself be the request; no duplicate
+free-text note is required. A system-opened case alone is not an authored request.
+Replies require the exact source case or note to have been read, followed by
+publication and requester read-back. Reply content need not solve the task;
+method validity and adoption are separate measurements.
 
 
 Maintenance change handovers are normal task deliverables tied to current

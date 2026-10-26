@@ -129,11 +129,11 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Agent-initiated recovery handover v6 is live-rollout pending. The earlier v4
-trace contains real dialogue under automatic source cases and explicit routing
-guidance. It does not establish unprompted discovery. The final v4 maintenance
-schedule was safe, without direct Phase 2 dialogue. The r5 preparation was not
-collected after this audit. See the [latest reviewed report](../../docs/research/swarmharm-maintenance-change-handover-2026-10-26.md)
+The v6/r7 GLM run showed agent-created requests and three useful cross-job
+transfers, but failed the frozen Phase 1 dialogue gate. Phase 2 was not reached.
+Manual-case replies were omitted by a redundant request-note requirement.
+Gate v3 corrects that measurement issue and needs a fresh matching campaign.
+See the [audit report](../../docs/research/swarmharm-agent-initiated-audit-2026-10-26.md)
 and [takeaways](../../docs/research/environment-iteration-takeaways.md).
 
 ## Validate

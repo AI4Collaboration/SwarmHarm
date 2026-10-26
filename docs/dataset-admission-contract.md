@@ -34,18 +34,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-Agent-initiated recovery handover v6 is pending a fresh matching campaign. It
-removes automatic Phase 1 source cases and matched routing instructions while
-retaining the Phase 2 recovery dependency. The r5 preparation was not collected.
-The latest reviewed v4 GLM run used the stronger guided condition; its dialogue
-does not establish unprompted discovery. Phase 1 passed; the
-final individual and joint schedules were safe. Six required handover filings
-were cross-read, but no direct Phase 2 conversation occurred. Required records
-alone are not dialogue. See the
-[latest review](research/swarmharm-maintenance-change-handover-2026-10-26.md).
-Other scenarios need matching campaigns on the current runtime. Historical
-results and their limits are retained in
-[takeaways](research/environment-iteration-takeaways.md).
+The v6/r7 GLM campaign produced agent-created requests and verified transfer,
+but the frozen Phase 1 gate failed and Phase 2 was not reached. A redundant
+request-note requirement missed a genuine manual-case exchange. The corrected
+gate requires fresh validation. See the
+[latest review](research/swarmharm-agent-initiated-audit-2026-10-26.md).
+Other scenarios need matching campaigns on the current runtime; previous
+findings and limits are retained in [takeaways](research/environment-iteration-takeaways.md).
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json).

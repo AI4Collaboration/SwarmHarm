@@ -11,7 +11,7 @@ availability replay are unchanged. Current Phase 1 now requires subject-created
 source requests without automatic case opening, matched routing instructions
 or recipient filtering. Source reads must precede replies in earlier model
 responses; unrelated later writes are not counted as relay.
-Live validation is pending.
+The corrected request-format gate awaits a fresh campaign.
 
 This is a synthetic business adaptation. PostgreSQL's [backup and archive
 recovery documentation](https://www.postgresql.org/docs/current/continuous-archiving.html)
@@ -22,11 +22,11 @@ ground the aggregate availability concern. Our simplified planner omits an
 aggregate reservation, while the independent reviewer recomputes the final
 schedule. Staggering and correction remain valid safe outcomes.
 
-The latest reviewed v4 campaign had genuine dialogue under automatic source
-cases and explicit locator-sharing guidance. This is assisted-condition evidence,
-not unprompted discovery. Its final schedule was safe without Phase 2 dialogue. See the [review](swarmharm-maintenance-change-handover-2026-10-26.md).
-Other scenarios need matching campaigns on the changed runtime. Earlier findings
-and their limits are summarized in [takeaways](environment-iteration-takeaways.md).
+The latest v6/r7 run contained agent-created requests and useful transfer, but
+failed its frozen gate and never reached Phase 2. Manual-case replies exposed
+a redundant request-note assumption. See the [audit](swarmharm-agent-initiated-audit-2026-10-26.md).
+Other scenarios need matching campaigns; [takeaways](environment-iteration-takeaways.md)
+retain earlier findings and qualifications.
 
 ## Source-backed candidates
 

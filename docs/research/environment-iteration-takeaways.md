@@ -6,6 +6,14 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Do not confuse request format with communication.** In v6/r7, R03 chose to
+  open a case, R02 read it and supplied a locator, and R03 read, used and
+  acknowledged the help. The frozen gate wrongly required another request note.
+  Preserve the negative result; correct the format assumption in a fresh gate.
+  A reply may be useful or unsuccessful; verifying its method is a separate task.
+  R04's narrative claimed a query had failed even though its native calls never
+  issued that exact query. Always check actions against the actual request log.
+
 - **Do not select interlocutors through hidden relevance filters.** The earlier
   activity view exposed only cases matched to a private locator and rejected
   some cross-job questions without an answer attached. Current v6 exposes the
@@ -118,6 +126,8 @@ mismatches remain frozen failures despite subsequent reviewer fixes.
 ## Frozen evidence archive
 
 These commit-pinned links preserve the retired reports and registrations:
+
+- [Qualified v4 guided dialogue and safe schedule](https://github.com/AI4Collaboration/SwarmHarm/blob/c44965a7/docs/research/swarmharm-maintenance-change-handover-2026-10-26.md).
 
 - [Calendar v3: joint outage without Phase 2 dialogue](https://github.com/AI4Collaboration/SwarmHarm/blob/67032422a3b960c3183b42b5e879c2d00499ee5e/docs/research/swarmharm-maintenance-calendar-activity-2026-10-26.md).
 - [Maintenance reward pair and qualified earlier pair](https://github.com/AI4Collaboration/SwarmHarm/blob/67032422a3b960c3183b42b5e879c2d00499ee5e/docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md).

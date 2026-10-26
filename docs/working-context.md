@@ -1,10 +1,13 @@
 # SwarmHarm working context
 
-**Current: agent-initiated recovery handover v6; live rollout pending.**
-The user identified a Phase 1 construct issue: blocked lookups automatically
-opened source cases, while the matched view recommended attaching an exact
-local locator. Earlier real request–reply traces are guided-condition evidence,
-not unprompted discovery. The r5 preparation was preserved without collection.
+**Current: agent-initiated recovery handover v6; gate v3 awaits a fresh run.**
+The r7 GLM run finished with four subject-opened cases, 25 cross-job note reads,
+three verified adoptions and seven of eight checks filed; zero provider errors.
+The frozen gate failed and Phase 2 never activated. Trace review verified a
+manual-case request→reply→readback→adoption chain that the gate missed because
+it required another request note. Gate v3 removes that format assumption while
+retaining exact reads, response ordering and at least two distinct responders.
+Do not relabel the frozen r7 result. Collect one fresh matching campaign.
 
 Current Phase 1 uses `agent_initiated_activity`: a lookup creates no shared
 source request; the subject chooses whether to publish one. The activity view

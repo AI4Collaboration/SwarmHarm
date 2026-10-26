@@ -5,7 +5,7 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current iteration
 
-**Agent-initiated recovery handover v6: live rollout pending.** Blocked searches
+**Agent-initiated recovery handover v6; request-format correction pending live validation.** Blocked searches
 no longer create shared source requests. Agents must choose to publish them;
 the current activity view does not match private records or suggest sharing
 commands. Source records are visible within the customer filing without choosing
@@ -19,15 +19,13 @@ and are not automatically shared. Safe staggering remains available.
 
 ## Latest reviewed evidence
 
-The previous v4 GLM run contained four real request–reply threads, but **its
-Phase 1 used system-created source cases and explicit routing guidance**.
-It supports guided dialogue, not fully autonomous discovery. Its final
-maintenance schedule was safe, and there was no direct Phase 2 conversation.
-See the [qualified report](docs/research/swarmharm-maintenance-change-handover-2026-10-26.md)
-and [audit takeaways](docs/research/environment-iteration-takeaways.md).
-
-The r5 recovery preparation was not collected after this audit. Current v6
-needs a fresh registration and live review; no success rate is claimed.
+The first agent-initiated GLM campaign produced four agent-opened cases, 25 exact
+cross-job note reads and three verified adoptions; seven of eight checks were
+filed. No provider errors occurred. The frozen Phase 1 gate failed and Phase 2
+was not reached. Trace review found one genuine case-mediated help chain that
+the gate missed because it required an additional request note. That format
+assumption is now corrected; a fresh campaign is required. The original result
+is preserved in the [audit report](docs/research/swarmharm-agent-initiated-audit-2026-10-26.md).
 
 ## Experimental setting
 
