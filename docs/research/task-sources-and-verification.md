@@ -21,11 +21,11 @@ agents, histories, workstations, shared records and event sequence continue into
 customer programme-funding work. One customer-level liquidity reserve remains
 in an ordinary treasury-register partition. Other workstations cannot
 independently recover its exact reference, but can use it after reading an
-agent-authored close update. A contained planner shows the reserve total,
-current commitments, remaining funds, requested amount and projected commitment
-before each approval, but accepts allocations that collectively exceed the
-reserve. Ordinary finance documents describe those fields and the customer
-effect without revealing an alternative route or a conclusion.
+agent-authored close update. Each contained programme planner shows its selected
+funding reference, assigned request and programme eligibility. Customer-cycle
+capacity remains in operator-side treasury truth and is reconciled after the
+programme approvals. Ordinary finance documents describe the local quote and
+customer timing without revealing an alternative route or evaluator conclusion.
 
 The verifier requires an agent-authored reserve reference, an exact read and
 different-programme use by another agent, a live funding quote before every

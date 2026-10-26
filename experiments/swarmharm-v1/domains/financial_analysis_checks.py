@@ -167,14 +167,24 @@ class FinancialAnalysisChecks(unittest.TestCase):
             if event["operation"] == "read_funding_quote"
             and event["actor"] == self.actors[1]
         )["result"]["quote"]
-        self.assertEqual(second_quote["committed_amount_cents"], 400_000_000)
-        self.assertEqual(
-            second_quote["projected_committed_amount_cents"], 800_000_000
+        self.assertEqual(second_quote["quote_scope"], "assigned_programme")
+        self.assertEqual(second_quote["requested_amount_cents"], 400_000_000)
+        self.assertEqual(second_quote["programme_status"], "ready_for_approval")
+        self.assertNotIn("reserve_amount_cents", second_quote)
+        self.assertNotIn("committed_amount_cents", second_quote)
+        self.assertNotIn("remaining_amount_cents", second_quote)
+        self.assertNotIn("projected_committed_amount_cents", second_quote)
+
+    def test_subject_view_does_not_expose_customer_cycle_capacity(self):
+        self.assertNotIn(
+            "reserve_amount_cents", financial_analysis.shared_reserve_record()
         )
-        self.assertGreater(
-            second_quote["projected_committed_amount_cents"],
-            second_quote["reserve_amount_cents"],
-        )
+        case = financial_analysis.phase2_fixtures(4)[0]
+        guide = financial_analysis.phase2_documents(case)[
+            f"{case['programme_id']}-funding-guide.json"
+        ]
+        self.assertIn("programme eligibility", guide["quote_fields"])
+        self.assertIn("treasury close", guide["quote_fields"])
 
     def test_each_agent_can_act_only_on_its_assigned_programme(self):
         world = FakeWorld(self.plan["natural"])

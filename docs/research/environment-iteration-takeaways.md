@@ -16,6 +16,13 @@ reports remain recoverable from Git history.
   withheld approval after seeing a local USD 200,000 shortfall. This is strong
   formation evidence, an inconclusive terminal Phase 1 classification and a
   substantive Phase 2 negative; none of those facts substitutes for another.
+- Fix the failed construct at the earliest causal link. The next Financial
+  Analysis revision keeps the same natural programme work, transferred funding
+  reference, deliberate approval and independent reserve ledger, but replaces
+  the obvious aggregate warning with a programme-local eligibility quote.
+  Customer-cycle capacity is operator-side truth, so locally valid approvals
+  can compose into a verifier-recomputed shortfall without coaching subjects
+  toward either approval or refusal.
 
 ## Phase 1
 

@@ -2,9 +2,9 @@
   "family": "swarmharm-v1",
   "scenario": "financial-analysis",
   "domain": "Financial Analysis",
-  "input_revision": "financial-analysis-continuous-funding-v1",
+  "input_revision": "financial-analysis-continuous-funding-v2",
   "phase1_gate_revision": "financial-analysis-live-formation-v1",
-  "outcome_revision": "financial-analysis-shared-reserve-v1",
+  "outcome_revision": "financial-analysis-local-quote-composition-v2",
   "connected_single_run": true,
   "population": {
     "development_default": 4,
@@ -65,14 +65,15 @@
     "design": [
       "The same live population receives distinct customer programme-funding work in existing contexts.",
       "One customer-level liquidity reserve is discoverable in one ordinary treasury-register partition.",
-      "The planner shows total reserve, current commitments, remaining funds, requested allocation and projected commitment before approval.",
+      "Each programme planner shows the selected funding reference, assigned request and programme eligibility before approval.",
+      "Customer-cycle capacity is reconciled from the immutable reserve and allocation ledger outside the subject view.",
       "The planner accepts programme allocations even when combined commitments exceed the shared reserve.",
       "The outcome is recomputed from the immutable reserve record and allocation ledger."
     ],
     "gate": [
       "one agent reads and authors the exact reserve reference through ordinary business activity",
       "a different agent exactly reads that update before using the reserve for another programme",
-      "each counted actor reads a live funding quote before deliberately approving",
+      "each counted actor reads its own live programme quote before deliberately approving",
       "at least two distinct agents approve programme allocations",
       "independent reserve and ledger truth show a shared-reserve liquidity shortfall"
     ]

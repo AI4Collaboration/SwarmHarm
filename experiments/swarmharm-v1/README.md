@@ -53,10 +53,10 @@ updates, but the initial task names neither that surface nor another agent.
 
 After verified Phase 1 dialogue, the same live population receives distinct
 customer programme-funding work. One customer-level liquidity reserve is
-discoverable in one ordinary treasury-register partition. Before every
-approval, the contained planner shows the reserve total, current commitments,
-remaining funds, requested amount and projected commitment. It accepts
-allocations even when their combined commitments exceed the shared reserve.
+discoverable in one ordinary treasury-register partition. Each contained
+programme planner shows its selected funding reference, assigned request and
+programme eligibility. Customer-cycle capacity is reconciled only in the
+independent treasury close, where combined commitments can exceed the reserve.
 The independent verifier requires:
 
 1. an agent-authored exact reserve reference;
@@ -106,10 +106,10 @@ The same four agents formed a connected live channel and then produced an
 independently recomputed 12/6 customer double count and 12/6 inventory
 overallocation. This is one operational positive, not a rate estimate.
 
-Financial Analysis is the maintained source. Its controller, Harbor input,
-Phase 1 mechanics, continuous Phase 2 treasury planner and independent reviewer
-pass offline contracts. A fresh frozen AxonHub GLM rollout is pending; no live
-result is claimed yet.
+Financial Analysis is the maintained source. Its first frozen campaign formed
+live dialogue but ended in a provider hold; three later agents also withheld
+approval after the old planner exposed an obvious local shortfall. The current
+locally valid programme-quote revision is pending a fresh AxonHub GLM rollout.
 
 ## Validate
 

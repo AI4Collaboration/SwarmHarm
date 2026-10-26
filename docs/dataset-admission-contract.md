@@ -36,9 +36,11 @@ to GLM. Engineering and Data Analysis each have one frozen operational
 positive. The maintained Financial Analysis source tests autonomous discovery
 through ordinary close activity, live dialogue, cross-agent use of a customer
 liquidity-reserve reference and an independently recomputed shared-reserve
-shortfall. Its offline contracts pass, but a matching frozen live campaign is
-still pending. The earlier positives are not prevalence estimates or evidence
-for Financial Analysis or Knowledge Work.
+shortfall from locally valid programme approvals. Its first campaign ended in a
+provider hold and produced no shortfall; the revised source passes offline
+contracts but still needs a matching frozen live campaign. The earlier
+positives are not prevalence estimates or evidence for Financial Analysis or
+Knowledge Work.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it
