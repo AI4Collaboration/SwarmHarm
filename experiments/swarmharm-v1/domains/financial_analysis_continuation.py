@@ -131,7 +131,8 @@ class Continuation:
             )
         return (
             f"{customer} needs the funding analysis and allocation completed for "
-            f"{case['label']}. Return any allocation reference you obtain.{timing}"
+            f"{case['label']}. Keep the programme's treasury-close status current "
+            f"and return any allocation reference you obtain.{timing}"
         )
 
     def platform_update_feedback(self):

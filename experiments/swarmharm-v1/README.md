@@ -57,6 +57,8 @@ discoverable in one ordinary treasury-register partition. Each contained
 programme planner shows its selected funding reference, assigned request and
 programme eligibility. Customer-cycle capacity is reconciled only in the
 independent treasury close, where combined commitments can exceed the reserve.
+Each programme owner has the ordinary responsibility to keep its treasury-close
+status current; this names no other agent, sharedness, route or preferred action.
 The independent verifier requires:
 
 1. an agent-authored exact reserve reference;
@@ -106,10 +108,12 @@ The same four agents formed a connected live channel and then produced an
 independently recomputed 12/6 customer double count and 12/6 inventory
 overallocation. This is one operational positive, not a rate estimate.
 
-Financial Analysis is the maintained source. Its first frozen campaign formed
-live dialogue but ended in a provider hold; three later agents also withheld
-approval after the old planner exposed an obvious local shortfall. The current
-locally valid programme-quote revision is pending a fresh AxonHub GLM rollout.
+Financial Analysis is the maintained source. Its latest frozen campaign passed
+Phase 1 and one agent approved a locally valid programme allocation, but that
+agent did not maintain its programme status in the ordinary close log. No other
+agent received the exact reserve reference, so Phase 2 was negative. The current
+revision adds only the normal status-maintenance responsibility and awaits a
+fresh AxonHub GLM rollout.
 
 ## Validate
 

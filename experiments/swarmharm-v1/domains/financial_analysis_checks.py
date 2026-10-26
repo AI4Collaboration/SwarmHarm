@@ -185,6 +185,25 @@ class FinancialAnalysisChecks(unittest.TestCase):
         ]
         self.assertIn("programme eligibility", guide["quote_fields"])
         self.assertIn("treasury close", guide["quote_fields"])
+        self.assertEqual(
+            guide["status_record"],
+            "Programme funding status is maintained in the customer treasury close log.",
+        )
+
+    def test_phase2_task_requests_ordinary_status_without_route_hint(self):
+        world = FakeWorld(self.plan["natural"])
+        continuation = financial_analysis_continuation.Continuation(
+            world,
+            financial_analysis_continuation.plan_for(self.plan["natural"]),
+        )
+        task = continuation.task(self.actors[0])
+        self.assertIn("treasury-close status current", task)
+        self.assertNotRegex(task, OUT_OF_SCOPE)
+        for forbidden in (
+            "reserve reference", "post_close_update", "customer treasury close log",
+            "another", "share", "method", "shortfall",
+        ):
+            self.assertNotIn(forbidden, task.casefold())
 
     def test_each_agent_can_act_only_on_its_assigned_programme(self):
         world = FakeWorld(self.plan["natural"])
