@@ -70,6 +70,26 @@ class FormationObservation:
     def ready(self, now):
         return self.ends_at is not None and now >= self.ends_at
 
+class CohortCompletion:
+    """Final answers remain provisional until the whole live cohort settles."""
+
+    def __init__(self, actors):
+        self.actors = set(actors)
+        self.finals = {}
+
+    def requested(self, actor):
+        self.finals.pop(actor, None)
+
+    def returned(self, actor, step, text, revision):
+        self.finals[actor] = {'step': step, 'text': text, 'revision': revision}
+
+    def ready(self, complete, inflight, revisions):
+        return (
+            complete and not inflight and set(self.finals) == self.actors
+            and all(self.finals[actor]['revision'] == revisions[actor]
+                    for actor in self.actors)
+        )
+
 def load(path):return json.loads(Path(path).read_text())
 def save(path,value):lab.infra.atomic_json(path,value)
 
@@ -938,6 +958,7 @@ def collect(root,registration_dir):
             }
             with ThreadPoolExecutor(max_workers=limit) as pool:
                 futures={};first_request_barrier=Barrier(len(active));phase2_pending=None
+                cohort_completion=CohortCompletion(active)
                 observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
                 publication=reg.get('source_publication')
                 def publication_pending():
@@ -1008,6 +1029,7 @@ def collect(root,registration_dir):
                             'peer_or_communication_hint':False,
                         })
                     state['status']='running';state.pop('waiting_since',None)
+                    cohort_completion.requested(actor)
                     update(phase='natural_continuation' if extension.activated else name,
                         current_actor=actor,step=step,active_workers=len(active),
                         waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
@@ -1086,17 +1108,14 @@ def collect(root,registration_dir):
                     if not calls:
                         attempt_text=transport.output_text(value);check=current_completion(actor)
                         if attempt_text and check['complete'] and extension.activated:
-                            state['final']=attempt_text;state['status']='completed'
-                            world.record_final(actor,step,state['final'])
-                            state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
-                            with state_lock:progress['completed_workers']+=1
-                            world.close_actor(actor);export(actor);active.remove(actor)
-                            continue
+                            cohort_completion.returned(actor,step,attempt_text,
+                                delivered_activity_signals[actor]['revision'])
                         attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
                         state['completion_attempts'].append(attempt)
                         signal=activity_signal(actor)
                         save(folder/f'{label}-completion-state.json',{
-                            'kind':'dormant_after_incomplete_final','attempt':attempt,
+                            'kind':('dormant_after_completion_attempt' if check['complete']
+                                else 'dormant_after_incomplete_final'),'attempt':attempt,
                             'platform_revision':signal['revision'],
                             'input_message':None,
                             'continuation_scheduled':False,
@@ -1168,13 +1187,28 @@ def collect(root,registration_dir):
                             continue
                         check=current_completion(candidate)
                         signal=activity_signal(candidate)
-                        if (extension.activated and check['complete']) or signal['revision']!=delivered_activity_signals[candidate]['revision']:
+                        completion_changed=(extension.activated and check['complete']
+                            and not states[candidate].get('completion_notice_delivered'))
+                        if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
                             submit(candidate)
                     submit(actor)
+                complete_together=cohort_completion.ready(
+                    extension.activated and extension.all_complete(),len(futures),
+                    {actor:activity_signal(actor)['revision'] for actor in active})
+                if complete_together:
+                    with state_lock:progress['completed_workers']+=len(active)
+                    save(root/name/'cohort-completion.json',{
+                        'at':utc(),'actors':sorted(active),
+                        'all_requests_finished':True,'all_latest_revisions_answered':True,
+                        'global_work_complete':True,'early_context_closure':False})
                 for actor in active.copy():
                     state=states[actor]
                     if state['status']=='waiting_for_platform_change':
-                        state['status']='quiescent'
+                        state['status']='completed' if complete_together else 'quiescent'
+                        if complete_together:
+                            final=cohort_completion.finals[actor]
+                            state['final']=final['text']
+                            world.record_final(actor,final['step'],state['final'])
                         state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
                         world.close_actor(actor);export(actor);active.remove(actor)
         except BaseException:

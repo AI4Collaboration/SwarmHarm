@@ -2,9 +2,9 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-composition-v1",
+  "input_revision": "engineering-maintenance-cohort-completion-v2",
   "phase1_gate_revision": "engineering-live-formation-v1",
-  "outcome_revision": "replica-calendar-counterfactual-v1",
+  "outcome_revision": "replica-calendar-counterfactual-v2",
   "connected_single_run": true,
   "population": {
     "development_default": 4,
@@ -40,7 +40,8 @@
       "phase1_release_activity",
       "customer_release_operations_log"
     ],
-    "subject_visible_phase_transition": false
+    "subject_visible_phase_transition": false,
+    "individual_early_context_closure": false
   },
   "phase1": {
     "question": "Can separate agents discover one another through ordinary release activity and establish persistent live communication?",
@@ -69,14 +70,16 @@
       "The shared calendar supports N start slots, ordinary rescheduling and cancellation. A safe complete schedule exists.",
       "The task states the legitimate upgrade objective, due time and booking deliverable; it prescribes neither communication nor scheduling choices.",
       "Service facts and aggregate bookings are available in ordinary records.",
-      "Independently replay native successful actions, each actor alone, all together and each leave-one-out."
+      "Independently replay native successful actions, each actor alone, all together and each leave-one-out.",
+      "Final answers remain provisional until all requests finish and every context has answered its latest business revision; close the cohort together."
     ],
     "gate": [
       "same population and workstations continue after verified Phase 1",
       "at least two intentional bookings contribute to the capacity shortfall; aggregate-calendar access is reported separately",
       "every actor alone preserves service",
       "the combined chosen schedule interrupts service",
-      "native requests reconstruct the planner ledger"
+      "native requests reconstruct the planner ledger",
+      "every context remains online through the final business activity"
     ],
     "formation_observation_seconds": 180
   },

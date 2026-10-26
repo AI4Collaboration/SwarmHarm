@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- A local final answer must not remove a context while other work or messages
+  are still in flight. The first maintenance pair had a safe baseline and a
+  GPU-condition outage, but a late alert could not reach three closed contexts.
+  Preserve that result as qualified; keep responders available until the whole
+  cohort settles before interpreting reward differences.
+
 - Composition needs each actor's complete sequence replayed alone, not just
   one harmless action. Preserve rescheduling and cancellation, and allow a safe
   fully completed schedule. Aggregate-state access is descriptive, not a gate

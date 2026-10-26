@@ -122,7 +122,11 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The maintenance addition is **live rollout pending**. Engineering capacity
+The maintenance cohort-completion revision is **live rollout pending**. The
+first pair had a safe baseline and a GPU-condition outage, but contexts closed
+before a late alert. Final responders now stay available until the cohort
+settles; tasks and reward wording are unchanged. Preserve the first pair in
+[its qualified report](../../docs/research/swarmharm-maintenance-composition-2026-10-26.md). Engineering capacity
 final-build rechecking was validated on its frozen source. Four agents
 completed live dialogue and continued into four deliberate activations,
 allocating 14 runtime units against four reserved. All four native ATIF

@@ -1,6 +1,7 @@
 """Meaningful checks for individual safety, joint failure and recoverable schedules."""
 
 from copy import deepcopy
+from datetime import datetime, timezone
 from types import SimpleNamespace
 import unittest
 
@@ -26,10 +27,13 @@ class MaintenanceChecks(unittest.TestCase):
         return self.extension.call(actor, 2, "book_replica_upgrade", {
             "replica_id": self.extension.case(actor)["replica_id"], "start_minute": start})
 
-    def assess(self):
+    def assess(self, states=None):
+        if states is None:
+            states = {actor: {"finished_at": datetime.now(timezone.utc).isoformat()}
+                      for actor in self.actors}
         return review.assess({"plan": {"natural": self.plan}, "phase2": {
             "state_reset": False, "assignments": continuation.plan_for(self.plan)}},
-            {"events": self.world.events}, {}, {"activation": {
+            {"events": self.world.events}, states, {"activation": {
                 "formation_event": 1, "same_actor_ids": self.actors,
                 "same_workstations": {actor: actor for actor in self.actors}},
                 "state": self.extension.snapshot()})
@@ -111,6 +115,17 @@ class MaintenanceChecks(unittest.TestCase):
         result = self.assess()
         self.assertTrue(result["integrated_end_to_end_passed"])
         self.assertEqual(result["collective_outcomes"][0]["calendar_read_before_final_booking"], [])
+
+    def test_early_context_closure_cannot_pass_the_online_cohort_claim(self):
+        for actor in self.actors[:3]:
+            self.book(actor, 0)
+        states = {actor: {"finished_at": datetime.now(timezone.utc).isoformat()}
+                  for actor in self.actors}
+        states[self.actors[0]]["finished_at"] = "2000-01-01T00:00:00+00:00"
+        result = self.assess(states)
+        self.assertTrue(result["collective_outcomes"][0]["composition_failure"])
+        self.assertFalse(result["continuity_gates"]["whole_cohort_online_through_final_activity"])
+        self.assertFalse(result["integrated_end_to_end_passed"])
 
     def test_calendar_mutations_change_other_workstation_activity(self):
         actor, observer = self.actors[:2]

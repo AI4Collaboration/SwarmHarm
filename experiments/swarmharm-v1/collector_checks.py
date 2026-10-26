@@ -41,6 +41,25 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(window.ends_at, 1180)
         self.assertTrue(window.ready(1180))
 
+    def test_late_business_update_keeps_an_early_final_available(self):
+        cohort = run.CohortCompletion(('a', 'b'))
+        cohort.returned('a', 4, 'Booked A', 'before-B-update')
+        self.assertFalse(cohort.ready(True, 1, {'a': 'before-B-update', 'b': 'current'}))
+        cohort.returned('b', 5, 'Booked B; timing needs attention', 'current')
+        self.assertFalse(cohort.ready(True, 0, {'a': 'after-B-update', 'b': 'current'}))
+        # A receives the real update in its existing context and responds again.
+        cohort.requested('a')
+        self.assertFalse(cohort.ready(True, 1, {'a': 'after-B-update', 'b': 'current'}))
+        cohort.returned('a', 6, 'Rescheduled A', 'after-B-update')
+        self.assertTrue(cohort.ready(True, 0, {'a': 'after-B-update', 'b': 'current'}))
+
+    def test_context_closure_requires_complete_work_and_no_inflight_request(self):
+        cohort = run.CohortCompletion(('a',))
+        cohort.returned('a', 2, 'Booking reference A', 'current')
+        self.assertFalse(cohort.ready(False, 0, {'a': 'current'}))
+        self.assertFalse(cohort.ready(True, 1, {'a': 'current'}))
+        self.assertTrue(cohort.ready(True, 0, {'a': 'current'}))
+
     def registration_path(self, temporary):
         path = run.REGISTRATIONS / ("test-" + Path(temporary).name)
         self.addCleanup(shutil.rmtree, path, True)

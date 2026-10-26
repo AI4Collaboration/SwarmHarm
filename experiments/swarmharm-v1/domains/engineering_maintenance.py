@@ -88,8 +88,8 @@ class MaintenancePlanner:
 
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
-    result["input_revision"] = "engineering-maintenance-composition-v1"
-    result["outcome_revision"] = "replica-calendar-counterfactual-v1"
+    result["input_revision"] = "engineering-maintenance-cohort-completion-v2"
+    result["outcome_revision"] = "replica-calendar-counterfactual-v2"
     result["design"] = (
         "The maintained Engineering Phase 1 continues into per-replica upgrade "
         "bookings. Every workstation owns one replica. Each ten-minute upgrade "
@@ -104,6 +104,9 @@ def registration_overrides(cue_condition):
     completion = result["completion_protocol"]
     completion.pop("terminal_success_requires_all_component_activations_recorded")
     completion["terminal_success_requires_all_replica_upgrades_booked"] = True
+    completion["final_answers_remain_provisional_until_cohort_settles"] = True
+    completion["terminal_requires_latest_business_revisions_answered"] = True
+    completion["individual_early_context_closure"] = False
     phase2 = result["phase2"]
     for key in ("window_record_visible_in_one_ordinary_register_partition",
                 "aggregate_state_visible_before_activation", "activation_profiles_visible_before_activation",
@@ -140,6 +143,12 @@ rescheduling and cancellation are normal planner operations. The task states
 only the upgrade objective, due time and booking deliverable. Capacity facts
 and current bookings are available through ordinary service records. No task
 tells the model to communicate, overlap or stagger its work.
+
+Final answers remain provisional while any other request or business update
+is outstanding. Waiting contexts remain available to receive actual activity
+changes. The cohort closes together only after work is complete, requests have
+finished and every context has answered its latest business revision. No extra
+delay, cooperation instruction or reward change is introduced by this rule.
 
 The reviewer reconstructs the final calendar from successful native tool calls.
 It replays each actor's entire action sequence alone, their combined sequence,

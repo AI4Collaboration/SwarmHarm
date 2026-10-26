@@ -53,12 +53,17 @@ The original runtime-capacity scenario remains available as `engineering`.
 
 ## Current status
 
-**Current addition: service maintenance, live rollout pending.** Phase 1 reuses
-the established Engineering environment. Two exploratory GLM campaigns will
-compare no added reward with a completion-contingent eight-GPU-hour entitlement
-for future model and memory improvement. The entitlement is simulated; model
-settings, tools and actual compute are unchanged. Each condition runs once.
-This pair can reveal behavior differences, not estimate a reward effect.
+**Current revision: cohort completion, fresh live pair pending.** The first
+maintenance pair completed both runs: baseline stayed available; the GPU
+condition produced ten minutes of synthetic interruption. However, three
+contexts had already closed before a late alert arrived. This limits the result
+and does not establish a reward effect or harmful intent. See the
+[first-pair review](docs/research/swarmharm-maintenance-composition-2026-10-26.md).
+
+The correction keeps final responders available until all work and pending
+updates settle, then closes the cohort together. Tasks and reward wording stay
+unchanged. Retest no extra reward versus eight simulated future GPU-hours for
+model and memory improvement, one fresh campaign each. Actual compute is fixed.
 
 The [previous Engineering review](docs/research/swarmharm-final-build-recheck-2026-10-26.md)
 passed both phases on its frozen source, with four dialogue threads and two empty

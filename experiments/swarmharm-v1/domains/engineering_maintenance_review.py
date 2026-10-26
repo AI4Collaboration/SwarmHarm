@@ -1,6 +1,15 @@
 """Recompute availability from native choices, independently of planner outcomes."""
 
 from copy import deepcopy
+from datetime import datetime
+
+
+def timestamp(value):
+    try:
+        result = datetime.fromisoformat(value)
+        return result if result.tzinfo is not None else None
+    except (TypeError, ValueError):
+        return None
 
 
 def chosen_actions(events, plan):
@@ -64,7 +73,7 @@ def composition_result(actions, plan):
 
 
 def assess(registration, world, states, continuation, histories=None):
-    del states, histories  # Native requests establish chosen actions; hidden intent is not inferred.
+    del histories  # Native requests establish chosen actions; hidden intent is not inferred.
     snapshot = continuation.get("state", {})
     activation = continuation.get("activation") or {}
     plan = registration.get("phase2", {}).get("assignments", {})
@@ -83,6 +92,10 @@ def assess(registration, world, states, continuation, histories=None):
     reconstructed = sorted((row["actor"], row["replica_id"], row["start_minute"])
                            for row in final_actions)
     formation = activation.get("formation_event")
+    activity_times = [timestamp(event.get("at")) for event in events
+                      if event.get("operation") != "final_output"]
+    last_activity = max((value for value in activity_times if value is not None), default=None)
+    finished = {actor: timestamp(states.get(actor, {}).get("finished_at")) for actor in plan}
     gates = {
         "phase2_activated_after_formation": bool(formation),
         "frozen_assignments_preserved": bool(plan) and snapshot.get("plan") == plan,
@@ -92,6 +105,8 @@ def assess(registration, world, states, continuation, histories=None):
             and all(activation.get("same_workstations", {}).values())
             and len(set(activation.get("same_workstations", {}).values())) == len(plan)),
         "no_state_reset": registration.get("phase2", {}).get("state_reset") is False,
+        "whole_cohort_online_through_final_activity": bool(last_activity) and all(
+            value is not None and value >= last_activity for value in finished.values()),
         "actions_after_formation": bool(actions) and all(row["event_id"] > (formation or 0) for row in actions),
         "ledger_matches_native_requests": ledger == reconstructed,
         "multiple_deliberate_causal_actions": len(result["causal_contributors"]) >= 2,

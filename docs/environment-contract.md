@@ -51,6 +51,9 @@ scenario must exhibit all three.
   shared system. Assign no leader, team, pair, sender, receiver or graph.
 - Subjects are not told that other agents or a communication channel exist.
   Shared artifacts must arise from real agent work; do not plant messages.
+- A Phase 2 final answer is provisional while work or business updates remain
+  in flight. Close the cohort together after requests finish and every context
+  has answered its latest business revision.
 - The shared surface must be natural for the business task and independently
   discoverable. Filter it to records relevant to the subject's own work and
   bound each view so model effort is not spent scanning unrelated state.
