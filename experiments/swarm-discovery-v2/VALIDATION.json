@@ -1,0 +1,68 @@
+{
+  "status": "passed",
+  "date": "2026-10-25",
+  "source_sha256": {
+    "experiments/swarm-discovery-v2/audit.py": "398a3c955008c3ffd6c98e43b37eacbb243c6fe34d165564403c83bc51ff2a51",
+    "experiments/swarm-discovery-v2/concurrent_checks.py": "b4bfcea708f3dcf88cdeb5bab68cca0a0c840935ae24cd546d4a175ba2984294",
+    "experiments/swarm-discovery-v2/design.py": "5876b11294067dd98ec7ff4e314b46c5435d6bf46703a40dbb6c080c1216273d",
+    "experiments/swarm-discovery-v2/emit_harbor.py": "954bc0ec64bc08973d332c57937158af010ad74492bca2cfd3384c73838834b9",
+    "experiments/swarm-discovery-v2/review.py": "7ea85da0e3342af729cb5bc31299826438144e5bcd4ec46220c05dae8bf112d7",
+    "experiments/swarm-discovery-v2/run.py": "77b4513a39664ea38053bcfc657d7c36e68c20c229ff6c78b9e2dcc0552eda65",
+    "experiments/swarm-discovery-v2/test_discovery.py": "331b5b435b3956c62adc1e7b877197ef378418cd0f90ca0490df0c85ff39b8df",
+    "experiments/swarm-discovery-v2/validate.py": "2536959177a5cee62c1251c61517a61b36d0ad543c25ef68e5bc816fa220e572",
+    "experiments/swarm-discovery-v2/validate_collector.py": "aa202f239f1740d0fdfb5551f58756645eb9fc5ffc4cd88fe22e25bf86b45514",
+    "experiments/swarm-discovery-v2/world.py": "a1da68e1b1077fee31a03bdb4925abef7bc177e0bf6264ccdc28e430b2f1ffe6",
+    "experiments/swarm-discovery-v2/protocol.json": "d87571faa8204271b1634674d7c08bf1e6f36f668e545e66e69ec8c039329808",
+    "experiments/back-office-v1/durability.py": "e4045946b8b873b1d764a78ea8c95ac8ca83c843e8557ba40bfa99c63a864856",
+    "experiments/back-office-v1/run_model.py": "2de24ef31f13593fdc0cb7233f1559e006d47d99a539a7282fa7f1f6141bc36d",
+    "experiments/error-propagation-v3/transport.py": "471c96ec8055985287c2b789b01464ea23a355084a7bdc5acbe3f9a97731159b",
+    "experiments/prompt-contract/checks.py": "8c9916e502e3d3d8b55bed8eb85888bae4b384bd9c29cb69b5cf44b576385973"
+  },
+  "unit_checks": 17,
+  "prompt_contract_checks": 20,
+  "inherited_stream_recovery_checks": 6,
+  "inherited_durability_checks": 12,
+  "docker_controls": {
+    "harbor_input_packages": [
+      "worker-1",
+      "worker-2",
+      "worker-3",
+      "worker-4"
+    ],
+    "empty_initial_cache": true,
+    "missing_source_unavailable_via_intended_api": true,
+    "private_workspaces_and_container_containment": true,
+    "preview_alone_lacks_source_confirmation": true,
+    "scripted_agent_authored_confirmation_exchange_completes_tasks": true,
+    "scripted_live_roundtrips_pass_only_when_reviewed": true,
+    "no_automatic_semantic_claim": true,
+    "repair_blocks_cross_cache_and_artifact_channel": true
+  },
+  "real_concurrent_shell_control": {
+    "baseline_delivered_reply": false,
+    "fixed_delivered_reply": true,
+    "subject_model_calls": 0,
+    "unknown_authorship_not_invented": true
+  },
+  "collector_control": {
+    "completed_tasks": 4,
+    "concurrent_contexts": true,
+    "model_calls": 0,
+    "ambiguous_formation_stays_null": true
+  },
+  "harbor_version": "0.24.0",
+  "harbor_input_packages": 4,
+  "validated_atif_trajectories": 4,
+  "validation_logs_sha256": {
+    "stage1-v2-unit-checks-20261025-final.txt": "e4bfaf3a233afe07c6cb6a5822e1f5cc821de193ef2dccb5c6b47902825107e0",
+    "stage1-v2-prompt-checks-20261025.txt": "43d6f1385452adf74a4a524ced63d98870e8ed32580b3e8004c6aea3c9c8e48d",
+    "stage1-v2-collector-checks-20261025-r2.txt": "25abe3c9bc620fb842929029e9be639ded47b3963fd36d78a9c067589d2f632f",
+    "stage1-v2-docker-checks-20261025-r2.txt": "959e515695d063020b880b5ecbe84bf97b6d72fa93588ae5d113e2b2a804a869",
+    "stage1-v2-atif-control-20261025-r2.txt": "3b9a344852429c5b749ccc5e64b628fe6c4816e80f79f81bc77a265dd14fac66"
+  },
+  "limits": [
+    "Overlapping shell mutations have unknown authorship; associated formation remains unscored.",
+    "No model behavior is inferred from scripted controls.",
+    "Raw backups are disjoint on this Mac; off-machine backup remains unconfigured."
+  ]
+}

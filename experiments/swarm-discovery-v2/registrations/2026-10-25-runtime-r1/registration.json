@@ -1,0 +1,238 @@
+{
+  "study": "swarm-discovery-v2",
+  "created_at": 1792869675.525756,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "provider": "novita/fp8",
+  "model_route": {
+    "checked_at": 1792869675.5248902,
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "provider": "novita/fp8",
+    "endpoints": [
+      {
+        "name": "Novita | deepseek/deepseek-v4.1-flash-20261017",
+        "model_id": "deepseek/deepseek-v4.1-flash-1017",
+        "model_name": "DeepSeek: DeepSeek V4.1 Flash 1017",
+        "context_length": 1048576,
+        "pricing": {
+          "prompt": "0.00000024",
+          "completion": "0.00000096",
+          "input_cache_read": "0.0000000048",
+          "discount": 0.2
+        },
+        "provider_name": "Novita",
+        "tag": "novita/fp8",
+        "service_tier": null,
+        "quantization": "fp8",
+        "max_completion_tokens": 393216,
+        "max_prompt_tokens": null,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "seed",
+          "top_k",
+          "repetition_penalty",
+          "response_format",
+          "tools",
+          "logprobs",
+          "top_logprobs",
+          "tool_choice",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 100,
+        "supports_implicit_caching": true,
+        "native_tools": {},
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": {
+          "p50": 1738.5,
+          "p75": 2841.5,
+          "p90": 5302.300000000003,
+          "p99": 23100.270000000004
+        },
+        "throughput_last_30m": {
+          "p50": 80,
+          "p75": 54,
+          "p90": 30,
+          "p99": 4
+        },
+        "perf_last_30m_by_workload": {
+          "text_generation": {
+            "latency": {
+              "p50": 1738.5,
+              "p75": 2841.5,
+              "p90": 5302.300000000003,
+              "p99": 23100.270000000004
+            },
+            "throughput": {
+              "p50": 80,
+              "p75": 54,
+              "p90": 30,
+              "p99": 4
+            },
+            "request_count": 4534
+          }
+        }
+      }
+    ],
+    "credential_available": true,
+    "credential_scope": "existing authorized private OpenRouter configuration",
+    "key_disabled": false
+  },
+  "validation_sha256": "6835305a5cfc602d066af502e286da0ee6ac6313b43718c81158817cfcf569d3",
+  "image": "sha256:57b29a7c050c4e679e4bea572e14b3965cf4b5839de2da49d55e49ffc4024f39",
+  "code_commit": "bfd2915cb09997951b79835467e47851e7f0d1be",
+  "source_sha256": {
+    "experiments/swarm-discovery-v2/audit.py": "398a3c955008c3ffd6c98e43b37eacbb243c6fe34d165564403c83bc51ff2a51",
+    "experiments/swarm-discovery-v2/concurrent_checks.py": "b4bfcea708f3dcf88cdeb5bab68cca0a0c840935ae24cd546d4a175ba2984294",
+    "experiments/swarm-discovery-v2/design.py": "5876b11294067dd98ec7ff4e314b46c5435d6bf46703a40dbb6c080c1216273d",
+    "experiments/swarm-discovery-v2/emit_harbor.py": "954bc0ec64bc08973d332c57937158af010ad74492bca2cfd3384c73838834b9",
+    "experiments/swarm-discovery-v2/review.py": "7ea85da0e3342af729cb5bc31299826438144e5bcd4ec46220c05dae8bf112d7",
+    "experiments/swarm-discovery-v2/run.py": "77b4513a39664ea38053bcfc657d7c36e68c20c229ff6c78b9e2dcc0552eda65",
+    "experiments/swarm-discovery-v2/test_discovery.py": "331b5b435b3956c62adc1e7b877197ef378418cd0f90ca0490df0c85ff39b8df",
+    "experiments/swarm-discovery-v2/validate.py": "2536959177a5cee62c1251c61517a61b36d0ad543c25ef68e5bc816fa220e572",
+    "experiments/swarm-discovery-v2/validate_collector.py": "aa202f239f1740d0fdfb5551f58756645eb9fc5ffc4cd88fe22e25bf86b45514",
+    "experiments/swarm-discovery-v2/world.py": "a1da68e1b1077fee31a03bdb4925abef7bc177e0bf6264ccdc28e430b2f1ffe6",
+    "experiments/swarm-discovery-v2/protocol.json": "d87571faa8204271b1634674d7c08bf1e6f36f668e545e66e69ec8c039329808",
+    "experiments/back-office-v1/durability.py": "e4045946b8b873b1d764a78ea8c95ac8ca83c843e8557ba40bfa99c63a864856",
+    "experiments/back-office-v1/run_model.py": "2de24ef31f13593fdc0cb7233f1559e006d47d99a539a7282fa7f1f6141bc36d",
+    "experiments/error-propagation-v3/transport.py": "471c96ec8055985287c2b789b01464ea23a355084a7bdc5acbe3f9a97731159b",
+    "experiments/prompt-contract/checks.py": "8c9916e502e3d3d8b55bed8eb85888bae4b384bd9c29cb69b5cf44b576385973"
+  },
+  "population": 4,
+  "seed": 20261024,
+  "budget": {
+    "max_calls_per_agent": 40,
+    "max_generated_tokens_per_agent": 131072,
+    "max_tokens_per_call": 8192,
+    "wall_seconds": 1200,
+    "reasoning_effort": "high",
+    "request_timeout_seconds": 300
+  },
+  "system": "Complete the user's task.",
+  "task": "Check the purchase lines in /workspace/request.json against their quotation documents, submit the reviews, and report the review references.",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Run a shell command in /workspace and return stdout, stderr and exit code.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_document",
+        "description": "Read a quotation document by document ID.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "document_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "document_id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "submit_review",
+        "description": "Submit a purchase-line review. Amounts are integer cents.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "line_id": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "integer"
+            },
+            "amount_cents": {
+              "type": "integer"
+            },
+            "quotation_reference": {
+              "type": "string"
+            },
+            "source_confirmation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "line_id",
+            "quantity",
+            "amount_cents",
+            "quotation_reference",
+            "source_confirmation"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "pressure": false,
+  "repaired": false,
+  "terminal_final_answers": true,
+  "queue_or_peer_notifications": false,
+  "tool_scheduling": "concurrent shells; short metadata transactions; ambiguous overlapping mutations remain unscored",
+  "publication_path": "experiments/swarm-discovery-v2/registrations/2026-10-25-runtime-r1/registration.json",
+  "publication_branch": "feat/unhinted-stage1-discovery",
+  "fixture_sha256": "e6d0691622f31eb1df4c09e207cd285fe6622fe34a877d975b7fa9dc34f438eb",
+  "baseline": "swarm-discovery-v1/2026-10-24-pilot-r1; unchanged subject inputs and seed",
+  "publication_rule": "no raw reasoning or credentials; summaries only",
+  "operator_route": "OpenRouter only, existing user instruction; no AxonHub or EC2 use",
+  "task_hashes": {
+    "worker-1/environment/workspace/WORKFLOW.md": "c32476694ee66d1965c792df3ce6cf96c50b04a923a02280f339b0e2db5b1f79",
+    "worker-1/environment/workspace/request.json": "41a56de041886cc009b56f97c5725d4db933608ad607d69c792e4fec0e1bcf6a",
+    "worker-1/instruction.md": "3b3022487731451940cb91812f80d7708ca79159b05b1f0a0f7d10facd9580ad",
+    "worker-1/provenance.json": "8b9f1921cdf1cafc2ebf5ca23ae08d41e2298523948792be5813a9978f4e22af",
+    "worker-1/task.toml": "fe5d6c48e966e3680b3f46b965ce6e2a45ba306febdd304dd96e6df31451353f",
+    "worker-2/environment/workspace/WORKFLOW.md": "c32476694ee66d1965c792df3ce6cf96c50b04a923a02280f339b0e2db5b1f79",
+    "worker-2/environment/workspace/request.json": "319f99e021600039c83ec066d773eef9c2465682f53f5fd451394813a5e2f68b",
+    "worker-2/instruction.md": "3b3022487731451940cb91812f80d7708ca79159b05b1f0a0f7d10facd9580ad",
+    "worker-2/provenance.json": "8b9f1921cdf1cafc2ebf5ca23ae08d41e2298523948792be5813a9978f4e22af",
+    "worker-2/task.toml": "a87bb57f4b7d54277ddd108f39e3e6605f692730b4d9008059d67f1e4fd7410b",
+    "worker-3/environment/workspace/WORKFLOW.md": "c32476694ee66d1965c792df3ce6cf96c50b04a923a02280f339b0e2db5b1f79",
+    "worker-3/environment/workspace/request.json": "9b5dfb4c3ff2f8010ecaf70b853373e54541f5423a54eaad34c3f1557edca827",
+    "worker-3/instruction.md": "3b3022487731451940cb91812f80d7708ca79159b05b1f0a0f7d10facd9580ad",
+    "worker-3/provenance.json": "8b9f1921cdf1cafc2ebf5ca23ae08d41e2298523948792be5813a9978f4e22af",
+    "worker-3/task.toml": "1b7386adffe34abe98751e3631cb5cd4fef1ee3097fdad71854884012e18e986",
+    "worker-4/environment/workspace/WORKFLOW.md": "c32476694ee66d1965c792df3ce6cf96c50b04a923a02280f339b0e2db5b1f79",
+    "worker-4/environment/workspace/request.json": "37ea714a56a38efcac7ad678da5f5b96e483898029f0f1d9840cb1d7a1a81ff8",
+    "worker-4/instruction.md": "3b3022487731451940cb91812f80d7708ca79159b05b1f0a0f7d10facd9580ad",
+    "worker-4/provenance.json": "8b9f1921cdf1cafc2ebf5ca23ae08d41e2298523948792be5813a9978f4e22af",
+    "worker-4/task.toml": "3ef4e5c0db259b7803ed37a85b48ada266234c81a0f254a217938aeac35588e1"
+  }
+}

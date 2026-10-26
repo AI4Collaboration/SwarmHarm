@@ -1,0 +1,83 @@
+{
+  "status": "passed",
+  "date": "2026-10-25",
+  "source_sha256": {
+    "experiments/swarm-discovery-v3/audit.py": "49828939f3d4cdceb4928038d87ab235b2238a24529788ce70397303f46413b2",
+    "experiments/swarm-discovery-v3/check_inputs.py": "664b52afeb0ad5ba701f0f98bb40ec6c2f380e93c57f362ebe26c816e985e3e1",
+    "experiments/swarm-discovery-v3/design.py": "2356f7702b45cbd25d2fc7367b07f7a5f10d2f9ac2b7338bde29de829417b051",
+    "experiments/swarm-discovery-v3/export_atif.py": "866063e42e1c5c65a07a099488094e9f551760c98773e337c5c87a2c0c5c9692",
+    "experiments/swarm-discovery-v3/run.py": "c49457669422c54d52670a6b911087e970ac0a379cb035c759b4bd4c6a0c2f2c",
+    "experiments/swarm-discovery-v3/safe_runtime.py": "f24820dedfc61cd95771a1a072a2ea5c963364acf7b0f2d580b70f9e90209a08",
+    "experiments/swarm-discovery-v3/status.py": "7e1adda08ef747c2f04843f558ba7b5c3b6329d178a812d3e1c50e54045e838c",
+    "experiments/swarm-discovery-v3/test_study.py": "3486ab60476d5b0ad931d09fc19ffbc104526e77d03e41bb00ce084afd11cc63",
+    "experiments/swarm-discovery-v3/validate_business.py": "b2e01305ffb41eda00266df3ea2bd3eda7b4b6f550a01dc078f0e60cdd8a1d5e",
+    "experiments/swarm-discovery-v3/validate_collector.py": "f43f7e0be1dcd6643b8c0ce5b1643f9248dd3ca29c2e1baca4e8bdf8868df29e",
+    "experiments/swarm-discovery-v3/validate_evidence.py": "9fb0918af36e16eb90b8665fb358300e8fee1759c3a15f40b9e9909289a8f258",
+    "experiments/swarm-discovery-v3/vendor/experiments/runtime/atomic.py": "87cbf24f1ca5d9528b48544a3494a0ff65d83a12c390e1994af1b15c4b824fdf",
+    "experiments/swarm-discovery-v3/vendor/experiments/runtime/workstation.py": "c21ca808d38c9de1fc71f3b1aebf00ccf908518caf0e0218ffb7f9b501f98237",
+    "experiments/swarm-discovery-v3/vendor/experiments/swarm-formation-v20/lab.py": "0f40dd9081fba612d96591a27b9541e1db0f173243f9b1bc6c48073674a6fb53",
+    "experiments/swarm-discovery-v3/vendor/experiments/swarm-formation-v20/mechanics.py": "6d92d812e33f346cd1ffe499d2149a069608b15e1c0a5d6af4794f2bbc739e35",
+    "experiments/swarm-discovery-v3/vendor/experiments/swarm-formation-v20/review.py": "7b3c35d1e45ab5a93f73052ba0a6e27f96691da9d62d39b0c11be2687baf94bc",
+    "experiments/swarm-discovery-v3/vendor/experiments/swarm-formation-v20/schedule.py": "74112906c963cf565e91811321148640d23a6d07ce9d8429e23fa547064609ec",
+    "experiments/swarm-discovery-v3/vendor/experiments/swarm-formation-v20/topology.py": "9962023507f88c4f9c27891615286e2c25d320998acf0e3d471d20e6d1c03f94",
+    "experiments/swarm-discovery-v3/protocol.json": "63941220539a990a1495e1ad717416f3e4f17ee4da42a399db3bb5399344ec62",
+    "experiments/swarm-discovery-v3/UPSTREAM.json": "24b42d7ca2b0c835407ce711f5a250110a910090dd5d3f8551e1b4b0893e5fc2",
+    "experiments/back-office-v1/durability.py": "e4045946b8b873b1d764a78ea8c95ac8ca83c843e8557ba40bfa99c63a864856",
+    "experiments/back-office-v1/run_model.py": "2de24ef31f13593fdc0cb7233f1559e006d47d99a539a7282fa7f1f6141bc36d",
+    "experiments/error-propagation-v3/transport.py": "471c96ec8055985287c2b789b01464ea23a355084a7bdc5acbe3f9a97731159b",
+    "experiments/swarm-discovery-v2/run.py": "77b4513a39664ea38053bcfc657d7c36e68c20c229ff6c78b9e2dcc0552eda65",
+    "experiments/prompt-contract/checks.py": "8655ee0a03c5e024beea63b3559c39ea8317ebec44e6e586c69767dcdd154b98"
+  },
+  "unit_checks": 11,
+  "assembled_prompt_checks": 21,
+  "stream_recovery_checks": 6,
+  "durability_checks": 12,
+  "verifier_counterfactual_checks": {
+    "wrong_read_hash": "rejected",
+    "lost_reads": "rejected",
+    "unrelated_reply": "rejected",
+    "non_keyword_diagnostic_annotation": "accepted without changing grounded source evidence"
+  },
+  "scripted_collector": {
+    "model_calls": 0,
+    "completed_lines": 8,
+    "grounded_live_source_chains": 4,
+    "persistent_incomplete_completions": 4,
+    "max_scripted_calls_per_actor": 16,
+    "note": "Current verifier rechecked the preserved control in a new derivative; no historical score was overwritten."
+  },
+  "repaired_view_docker_checks": {
+    "private_workspaces_and_no_host_mounts": true,
+    "no_network_readonly_nonroot_no_caps": true,
+    "foreign_archive_fetch_rejected": true,
+    "broad_queries_and_malformed_args_safe": true,
+    "source_read_required_before_submission": true,
+    "wrong_amount_rejected_by_independent_truth": true,
+    "own_routine_review_accepted": true,
+    "isolated_blocker_returns_index_not_needed_source": true,
+    "repaired_visibility_blocks_all_cross_job_notes": true,
+    "client_scripts_execute_without_operator_or_peer_hints": true
+  },
+  "harbor_version": "0.24.0",
+  "validated_harbor_input_packages": 4,
+  "validated_control_atif_trajectories": 4,
+  "pre_fix_control": {
+    "status": "failed completion check at natural admission limit",
+    "model_calls": 0,
+    "completed_lines": 5,
+    "cause": "Unordered ready-future processing starved other completed responses behind repeated finals. All evidence retained."
+  },
+  "logs_sha256": {
+    "stage1-v3-unit-20261025-final3.txt": "c607bec2b357cc6aadd4c6053d004f14988895864ba2cd8895199a6bdc617054",
+    "stage1-v3-prompt-contract-20261025.txt": "2e75744ba088987664e62e533e07c57ea8c7b682f03f8ec6bfa3b790bcc5446f",
+    "stage1-v3-recovery-20261025.txt": "7403a5c48a6bd1c9b595e17eca87a822e08eb1ed026e773985d82b1060a025ab",
+    "stage1-v3-durability-20261025.txt": "729bc96bc14202c1cc5c0bb3a5216b97ddecb170a077509a63eabe03141d2930",
+    "stage1-v3-evidence-controls-20261025-r3.log": "c2dbef67f9c7b997dfbd822dd460ca27539c5f7daa4819928114ccca9f358997",
+    "stage1-v3-control-atif-20261025-r1.log": "3b9a344852429c5b749ccc5e64b628fe6c4816e80f79f81bc77a265dd14fac66"
+  },
+  "limits": [
+    "No model behavior inferred from scripted controls",
+    "Transactions refresh registry projections between tools, not during a polling shell",
+    "Full off-machine raw backup is not configured"
+  ]
+}

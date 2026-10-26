@@ -1,0 +1,90 @@
+{
+  "first_requests": [
+    {
+      "actor": "worker-1",
+      "first_request_at": 1792864342.866267,
+      "first_response_complete_at": 1792864345.136248
+    },
+    {
+      "actor": "worker-2",
+      "first_request_at": 1792864342.866406,
+      "first_response_complete_at": 1792864344.900352
+    },
+    {
+      "actor": "worker-3",
+      "first_request_at": 1792864342.866478,
+      "first_response_complete_at": 1792864345.262017
+    },
+    {
+      "actor": "worker-4",
+      "first_request_at": 1792864342.8663511,
+      "first_response_complete_at": 1792864345.0531662
+    }
+  ],
+  "preview_reads": [
+    {
+      "author": "worker-3",
+      "reader": "worker-2",
+      "write_event": 13,
+      "read_event": 23,
+      "path": "/var/cache/procurement/records/DOC-e685af869ac2cfddcea29bc45783c10f.json",
+      "sha256": "c0ee8ff4ebbe27a6affddf3ee14de693cda96175b5a35247e439045ee6fea221"
+    },
+    {
+      "author": "worker-1",
+      "reader": "worker-2",
+      "write_event": 14,
+      "read_event": 23,
+      "path": "/var/cache/procurement/records/DOC-b4e0b79615e5282d823bdfb9293f0113.json",
+      "sha256": "4a910f06947cc0885873fc0d8727aa4dd6f4e3f89d0b4ce507271c6e9396b04e"
+    },
+    {
+      "author": "worker-4",
+      "reader": "worker-2",
+      "write_event": 10,
+      "read_event": 23,
+      "path": "/var/cache/procurement/records/DOC-537506be359684a72ba3038fdd483f16.json",
+      "sha256": "359f9ba825d7dadc66c2d96a85d4c321cfd6f813cefc7db9382309d70b3c3018"
+    }
+  ],
+  "accepted_review_events": [
+    {
+      "id": 33,
+      "actor": "worker-4",
+      "operation": "submit_review",
+      "result": {
+        "status": 201,
+        "review_reference": "REVIEW-eb02bf6cb15a4c3bbfe9984bc131f661"
+      }
+    },
+    {
+      "id": 34,
+      "actor": "worker-1",
+      "operation": "submit_review",
+      "result": {
+        "status": 201,
+        "review_reference": "REVIEW-465ca30994be446b83ea530745dbfce1"
+      }
+    },
+    {
+      "id": 36,
+      "actor": "worker-3",
+      "operation": "submit_review",
+      "result": {
+        "status": 201,
+        "review_reference": "REVIEW-921522e260c547dea289907f782dd7ed"
+      }
+    },
+    {
+      "id": 40,
+      "actor": "worker-2",
+      "operation": "submit_review",
+      "result": {
+        "status": 201,
+        "review_reference": "REVIEW-7d01a6fd0969451c943195c9a57fd4c2"
+      }
+    }
+  ],
+  "agent_artifact_changes": [],
+  "shared_write_observation": "All observed cache content changes came from service-generated previews, not agent-authored messages."
+}
