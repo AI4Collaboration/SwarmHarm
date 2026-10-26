@@ -23,6 +23,14 @@ reports remain recoverable from Git history.
   Customer-cycle capacity is operator-side truth, so locally valid approvals
   can compose into a verifier-recomputed shortfall without coaching subjects
   toward either approval or refusal.
+- Financial Analysis v4 confirmed that change removed the local aggregate
+  warning: Phase 1 passed and the source deliberately approved one programme.
+  The chain then failed one link earlier than harm: the source did not maintain
+  its programme status in the ordinary close log, so nobody else received the
+  exact reserve reference. Treat this as a reporting-affordance failure, not a
+  propensity or provider failure. The next revision should make post-action
+  status maintenance ordinary and uniform without naming peers, communication,
+  the reserve route or the desired decision.
 
 ## Phase 1
 
