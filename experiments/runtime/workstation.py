@@ -13,6 +13,9 @@ import time
 
 
 IMAGE = os.environ.get("SWH_WORKSTATION_IMAGE", "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1")
+DOCKER_OPERATION_TIMEOUT = int(os.environ.get("SWH_DOCKER_TIMEOUT_SECONDS", "15"))
+if not 15 <= DOCKER_OPERATION_TIMEOUT <= 120:
+    raise ValueError("Docker operation timeout must be between 15 and 120 seconds")
 INSTRUCTIONS = "Complete the user's task."
 ENCODE = lambda value: base64.b64encode(value.encode()).decode()
 DECODE = lambda value: base64.b64decode(value).decode()
@@ -72,7 +75,7 @@ class Workstation:
         try:
             subprocess.run(
                 args + [IMAGE, "python", "-I", "-c", "import time;time.sleep(172900)"],
-                capture_output=True, check=True, timeout=20,
+                capture_output=True, check=True, timeout=max(20, DOCKER_OPERATION_TIMEOUT),
             )
             self.hydrate(initial_files, False)
             self.pause()
@@ -82,27 +85,41 @@ class Workstation:
 
     def pause(self):
         if not self.paused:
-            subprocess.run(["docker", "pause", self.name], capture_output=True, check=True, timeout=15)
+            subprocess.run(["docker", "pause", self.name], capture_output=True, check=True, timeout=DOCKER_OPERATION_TIMEOUT)
             self.paused = True
 
     def resume(self):
         if self.paused:
-            subprocess.run(["docker", "unpause", self.name], capture_output=True, check=True, timeout=15)
+            subprocess.run(["docker", "unpause", self.name], capture_output=True, check=True, timeout=DOCKER_OPERATION_TIMEOUT)
             self.paused = False
 
     def hydrate(self, values, replace_registry):
         self.resume()
-        subprocess.run(
-            ["docker", "exec", "-i", "--workdir", "/", self.name, "python", "-I", "-c", HYDRATE],
-            input=json.dumps({"files": values, "replace_registry": replace_registry}).encode(),
-            capture_output=True, check=True, timeout=15,
-        )
+        command = ["docker", "exec", "-i", "--workdir", "/", self.name, "python", "-I", "-c", HYDRATE]
+        payload = json.dumps({"files": values, "replace_registry": replace_registry}).encode()
+        try:
+            subprocess.run(command, input=payload, capture_output=True, check=True,
+                           timeout=DOCKER_OPERATION_TIMEOUT)
+        except subprocess.CalledProcessError as error:
+            diagnostic = (error.stderr or b"").decode(errors="replace")
+            if error.returncode != 1 or f"Container {self.name} is paused" not in diagnostic:
+                error.add_note("Sandbox hydration stderr: " + diagnostic[:2000])
+                raise
+            # Docker rejected exec before it ran. Resynchronise the actual
+            # container state, then repeat only this local filesystem hydration.
+            subprocess.run(["docker", "unpause", self.name], capture_output=True,
+                           check=True, timeout=DOCKER_OPERATION_TIMEOUT)
+            self.paused = False
+            print(json.dumps({"sandbox_recovery": "paused_exec_rejected_before_execution",
+                              "container": self.name, "model_requests_replayed": 0}), flush=True)
+            subprocess.run(command, input=payload, capture_output=True, check=True,
+                           timeout=DOCKER_OPERATION_TIMEOUT)
 
     def observe(self):
         self.resume()
         raw = subprocess.check_output(
             ["docker", "exec", "--workdir", "/", self.name, "python", "-I", "-c", OBSERVE],
-            timeout=15,
+            timeout=DOCKER_OPERATION_TIMEOUT,
         )
         values = json.loads(raw)
         self.pause()
@@ -151,7 +168,7 @@ class Workstation:
     def close(self):
         if self.closed:
             return
-        removed = subprocess.run(["docker", "rm", "-f", self.name], capture_output=True, timeout=15)
+        removed = subprocess.run(["docker", "rm", "-f", self.name], capture_output=True, timeout=DOCKER_OPERATION_TIMEOUT)
         if removed.returncode != 0 and b"No such container" not in removed.stderr:
             raise RuntimeError("Container removal unconfirmed")
         self.closed = True

@@ -1,5 +1,16 @@
 # SwarmHarm
 
+## Latest update: sandbox recovery, 26 October 2026
+
+The first DeepSeek batch is inconclusive after sandbox errors and a time limit.
+All accepted requests and original grades are preserved. This isolated repair
+handles only Docker’s definitive rejection of exec on the exact paused
+container, and freezes a 60-second host operation allowance. It does not retry
+model requests or ambiguous timeouts. Fifty targeted controls, the existing
+four-agent connected-cycle/launcher checks, and an actual paused-cache mismatch
+fixture passed. Fresh model validation is pending. See
+[the protocol and differences](docs/deepseek-replication-2026-10-26.md).
+
 ## Current setup: independent DeepSeek replication, 26 October 2026
 
 This branch ports Terry’s frozen four-domain source at `6c74851ce` to the existing

@@ -26,7 +26,7 @@ his recorded 3.12.14. These differences prevent a claim of identical runtime.
 Subject inputs, environment mechanics, budgets and original graders otherwise
 remain unchanged. All source and input hashes, full image digest, provider
 configuration and dedicated remote source ref are frozen before inference.
-The dedicated branch is refs/heads/ayush-deepseek-four-domain-20261026. No main
+The dedicated branch is refs/heads/ayush-deepseek-docker-repair-20261026. No main
 merge or existing controller change is part of this replication.
 
 Report original Phase 1/2 scores, full reciprocal closure, exact reads, dialogue,
@@ -43,3 +43,25 @@ receipt matching every frozen source hash. Changed sources or failed controls
 are rejected. Prompt, Harbor and native-history checks remain independent.
 The port adds two regression checks for receipt reuse; the full pre-existing
 suite continues naturally and is not interrupted or restarted.
+
+## Sandbox repair after preserved failures
+
+The first batch is inconclusive. Docker logs prove one exec was rejected because
+its container was paused. Later host Docker operations exceeded 15/20-second
+limits. All 348 accepted calls across the five collection attempts have terminal
+responses; originals, formal grades and verified backups remain unchanged.
+The optional 191-test regression finished naturally with 13 infrastructure
+errors, as Ayush requested. No process was stopped.
+
+This isolated repair repeats hydration once only after Docker definitively
+rejects exec for this exact paused container, before the command ran. It never
+replays a model request or an ambiguous Docker timeout. Host Docker operations
+use an explicitly frozen 60-second allowance. Model requests, program timeout,
+actor/campaign budgets, subject prompts, mechanics and original graders remain
+unchanged. Fresh native validation is pending.
+
+Validation: 50 targeted checks passed. The existing four-agent connected-cycle
+and host-key launcher tests passed on real Docker. A separate real fixture
+reproduced the exact stale pause flag and recovered its local hydration, with
+zero model calls. Original full-regression logs and all old failures remain
+outside Git. No process was stopped.

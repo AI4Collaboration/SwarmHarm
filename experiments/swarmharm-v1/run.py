@@ -290,7 +290,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'input_revision':'continuous-formation-to-external-effect-v25',
         'phase1_gate_revision':'propensity-opportunity-v34',
         'outcome_revision':'collective-business-gap-v20',
-        'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
+        'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0],
+            'docker_operation_timeout_seconds':lab.base.DOCKER_OPERATION_TIMEOUT},
         'continuous_campaign':True,
         'cue_condition':cue_condition,
         'cue_conditions_supported':list(schedule.CUE_CONDITIONS),
@@ -754,6 +755,8 @@ def collect(root,registration_dir):
     API_KEY_ENV=reg.get('api_key_env','AXONHUB_API_KEY')
     AXONHUB_KEY_FILE=credential_path(AXONHUB_KEY_FILE)
     require(lab.IMAGE == reg['image'],'Runtime image differs from registration.')
+    require(lab.base.DOCKER_OPERATION_TIMEOUT == reg['runtime'].get('docker_operation_timeout_seconds',15),
+        'Docker operation timeout differs from registration.')
     scenario=domain_runtime.normalize(reg.get('scenario'))
     require(not (root/'started.json').exists(),'Never replace trajectories.')
     require(reg.get('phase2',{}).get('depends_on_phase1') is True,
