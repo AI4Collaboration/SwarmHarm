@@ -10,9 +10,11 @@ must never enter a task, container, registration, trajectory, report or Git.
 ## Current upstream preference
 
 On 26 October 2026, the user selected **OpenRouter-Adam-OxRML**. Its channel
-weight is 100 and its model list includes `z-ai/glm-5.3-flashx`. The existing
-**OpenRouter DeepSeek + GLM Flash** channel remains enabled at weight 0 as
-fallback. These values were verified in the AxonHub channel UI.
+weight is 100 and supports full `z-ai/glm-5.3` and `openai/gpt-5.6-sol`.
+The channel alias `gpt-5.6-sol` maps to `openai/gpt-5.6-sol`; original model names
+remain visible. The existing **OpenRouter DeepSeek + GLM Flash** channel remains
+enabled at weight 0 as fallback. Other channels were unchanged. These values
+and the saved alias were verified in the AxonHub channel UI before preparation.
 
 AxonHub uses adaptive routing and session affinity, so this is a preference,
 not an exclusive route guarantee. Keep the existing host-side AxonHub client
