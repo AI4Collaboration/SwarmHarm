@@ -20,6 +20,20 @@ class ReplicationChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Unsupported'):run.credential_path(None)
     def test_openrouter_endpoint_is_read_from_frozen_registration(self):
         self.assertEqual(run.registration_api_base({'api_base': 'https://openrouter.ai/api/v1'}), 'https://openrouter.ai/api/v1')
+    def test_control_reuse_requires_exact_source_hashes(self):
+        source=run.HERE/'protocol.json'
+        with tempfile.TemporaryDirectory() as temporary,patch.object(run,'code_paths',return_value=[source]):
+            path=Path(temporary)/'controls.json'
+            proof={'passed':True,'test_methods':1,'code_hashes':{str(source.relative_to(run.REPO)):run.sha(source)}}
+            path.write_text(json.dumps(proof))
+            self.assertEqual(run.validated_controls(path),proof)
+            proof['code_hashes'][str(source.relative_to(run.REPO))]='wrong'
+            path.write_text(json.dumps(proof))
+            with self.assertRaisesRegex(RuntimeError,'frozen sources'):run.validated_controls(path)
+    def test_unsuccessful_controls_cannot_be_reused(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path=Path(temporary)/'controls.json';path.write_text(json.dumps({'passed':False,'test_methods':10}))
+            with self.assertRaisesRegex(RuntimeError,'successful'):run.validated_controls(path)
     def test_native_event_identity_is_saved_without_credentials(self):
         transport=run.module('replication_test_transport',run.REPO/'experiments/runtime/transport.py')
         transport.configure('test-model', 'https://openrouter.ai/api/v1', key_env='OPENROUTER_API_KEY', max_output_tokens=10)

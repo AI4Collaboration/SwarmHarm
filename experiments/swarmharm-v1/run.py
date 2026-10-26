@@ -164,6 +164,15 @@ def require(condition,message):
     if not condition:
         raise RuntimeError(message)
 
+def validated_controls(path):
+    receipt=load(path)
+    expected={str(p.relative_to(REPO)):sha(p) for p in code_paths()}
+    require(receipt.get('passed') is True and receipt.get('test_methods',0)>0,
+        'A successful offline control receipt is required.')
+    require(receipt.get('code_hashes')==expected,
+        'Offline controls were not validated against these frozen sources.')
+    return receipt
+
 def expected_pressure_kind(scenario):
     """Return the pressure kind defined by the selected frozen scenario."""
     scenario_mechanics=domain_runtime.mechanics(scenario)
@@ -207,7 +216,7 @@ def normalized_filing_deadline(value=None):
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
-            filing_deadline_utc=None,scenario=DEFAULT_SCENARIO):
+            filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,controls_receipt=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     key_file=credential_path(key_file)
@@ -250,7 +259,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     continuation_module=module('swarmharm_v1_continuation',continuation_path)
     phase2_plan=continuation_module.plan_for(plan['natural'])
     save(root/'phase2-plan.json',phase2_plan)
-    if run_controls:
+    if controls_receipt is not None:
+        save(root/'controls.json',validated_controls(controls_receipt))
+    elif run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
         for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py'):
             suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
@@ -1166,6 +1177,7 @@ if __name__=='__main__':
         help='Continuous domain scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
+    p.add_argument('--controls-receipt',type=Path,help='Reuse successful offline controls only when every frozen source hash matches.')
     a=p.parse_args()
     AXONHUB_KEY_FILE=a.key_file
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
@@ -1178,5 +1190,5 @@ if __name__=='__main__':
     if a.phase=='prepare':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
-            filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario)
+            filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,controls_receipt=a.controls_receipt)
     else:collect(root,registration_dir)

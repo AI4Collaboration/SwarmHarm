@@ -37,3 +37,9 @@ A negative Phase 1 result does not authorize forcing Phase 2. One campaign per
 domain is a replication attempt, not a population-rate estimate. Keep all
 failures and incomplete runs. Raw outputs remain outside Git with a disjoint
 hash-verified local backup. Off-machine backup is unconfigured.
+
+Offline Docker controls are shared across registrations only through an explicit
+receipt matching every frozen source hash. Changed sources or failed controls
+are rejected. Prompt, Harbor and native-history checks remain independent.
+The port adds two regression checks for receipt reuse; the full pre-existing
+suite continues naturally and is not interrupted or restarted.
