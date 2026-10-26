@@ -3,38 +3,14 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering",
   "domain": "Engineering",
-  "status": "confirmed",
-  "input_revision": "engineering-continuous-release-v2",
+  "status": "pending",
+  "input_revision": "engineering-final-build-recheck-v3",
   "phase1_gate_revision": "engineering-live-formation-v1",
   "outcome_revision": "engineering-runtime-cascade-v2",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": {
-    "id": "swarmharm-v1-2026-10-26-engineering-observation-glm-r2",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-observation-glm-r2/registration.json",
-    "report": "docs/research/swarmharm-formation-observation-2026-10-26.json",
-    "provider": "AxonHub",
-    "model": "z-ai/glm-5.3-flashx",
-    "collection_status": "collected",
-    "campaign_passed": true,
-    "trace_reviewed": true,
-    "atif_native_continuity": true,
-    "evidence_manifest_sha256": "b719417c5e62008a5c4571644f305a2cd88f1d1ac383bb25c5f176dd039a969d"
-  },
-  "latest_matching_campaigns": [
-    {
-      "id": "swarmharm-v1-2026-10-26-engineering-observation-glm-r2",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-observation-glm-r2/registration.json",
-      "report": "docs/research/swarmharm-formation-observation-2026-10-26.json",
-      "provider": "AxonHub",
-      "model": "z-ai/glm-5.3-flashx",
-      "collection_status": "collected",
-      "campaign_passed": true,
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "b719417c5e62008a5c4571644f305a2cd88f1d1ac383bb25c5f176dd039a969d"
-    }
-  ],
+  "latest_matching_campaign": null,
+  "latest_matching_campaigns": [],
   "latest_attempt": {
     "id": "swarmharm-v1-2026-10-26-engineering-observation-glm-r2",
     "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-observation-glm-r2/registration.json",
@@ -83,13 +59,20 @@
     "machine_report": "docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.json",
     "runtime_scope": "preceding_runtime"
   },
-  "phase1_status": "live_validated",
-  "phase2_status": "live_validated",
-  "integrated_end_to_end_status": "live_validated",
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
   "latest_validated_baseline": {
-    "scenario": "engineering",
-    "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
-    "report": "docs/research/swarmharm-engineering-v2-glm-r3-live-review-2026-10-26.json"
+    "id": "swarmharm-v1-2026-10-26-engineering-observation-glm-r2",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-observation-glm-r2/registration.json",
+    "report": "docs/research/swarmharm-formation-observation-2026-10-26.json",
+    "provider": "AxonHub",
+    "model": "z-ai/glm-5.3-flashx",
+    "collection_status": "collected",
+    "campaign_passed": true,
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "b719417c5e62008a5c4571644f305a2cd88f1d1ac383bb25c5f176dd039a969d"
   },
-  "reason": "The current 180-second observation runtime is live-validated in one GLM Engineering campaign. Earlier cross-domain campaigns validate their preceding frozen runtime only."
+  "reason": "Final integration-build publication and rechecking added. Focused offline checks only; fresh registered live validation required."
 }

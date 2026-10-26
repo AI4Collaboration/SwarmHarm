@@ -264,11 +264,36 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("first_request_barrier=Barrier(len(active))", source)
         self.assertIn("provider_slots=Semaphore(budget['provider_concurrency'])", source)
         self.assertIn("with provider_slots", source)
-        self.assertIn("future=next(as_completed(tuple(futures)))", source)
+        self.assertIn("return_when=FIRST_COMPLETED", source)
         self.assertNotIn("for future in as_completed(futures)", source)
         self.assertNotIn("next_admissions", source)
         self.assertIn("active!=set(plan)", source)
         self.assertIn("continuous population is no longer intact", source)
+
+    def test_build_publication_wakes_without_forging_peer_notes(self):
+        plan, _ = run.make_plan(4, scenario="engineering")
+        world = lab.World(plan["natural"])
+        self.addCleanup(world.close)
+        before = {actor: world.activity_signal(actor) for actor in world.plan}
+        self.assertTrue(world.publish_final_build())
+        self.assertFalse(world.publish_final_build())
+        self.assertEqual(len(world.events), 1)
+        self.assertEqual(world.events[0]["actor"], "build-publisher")
+        for actor in world.plan:
+            signal = world.activity_signal(actor)
+            self.assertNotEqual(signal["revision"], before[actor]["revision"])
+            self.assertEqual(signal["relevant_cross_job_records"], 0)
+            visible = world._visible_shared(actor)
+            self.assertEqual(len(visible), 1)
+            notice = next(iter(visible.values()))
+            self.assertEqual(notice["author"], "build-publisher")
+            self.assertEqual(world._body(notice)["operation"], "build_publication")
+            case = world.service(actor).batch["reviews"][1]
+            query = case["retained_scope"] + " " + case["attestation_name"]
+            found = world.call(actor, 1, "search_archive", {"query": query})
+            self.assertEqual(found["matches"][0]["record_id"], case["record_id"])
+            fetched = world.call(actor, 2, "fetch_archive", {"record_id": case["record_id"]})
+            self.assertEqual(fetched["record"]["runtime_units"], case["runtime_units"])
 
     def test_terminal_evidence_manifest_hashes_collected_files(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -718,7 +743,7 @@ class CollectorChecks(unittest.TestCase):
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["scenario"], "engineering")
             self.assertEqual(reg["domain"], "Engineering")
-            self.assertEqual(reg["input_revision"], "engineering-continuous-release-v2")
+            self.assertEqual(reg["input_revision"], "engineering-final-build-recheck-v3")
             self.assertEqual(reg["phase1_gate_revision"], "engineering-live-formation-v1")
             self.assertEqual(reg["outcome_revision"], "engineering-runtime-cascade-v2")
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")

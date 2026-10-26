@@ -738,10 +738,71 @@ class World(base.World):
             raise ValueError("formation uses real-time submission confirmation")
         self.observation_error = None
         self.operator = Path(directory) if directory else None
+        self.source_publication_event = None
+
+    def publish_final_build(self):
+        """Publish a scheduled source revision, never an agent-authored message."""
+        if self.source_publication_event is not None:
+            return False
+        changes = []
+        revisions = {}
+        private_updates = {}
+        for actor in self.plan:
+            service = self.service(actor)
+            checks = service.publish_final_build()
+            revisions[actor] = checks
+            for check_id in checks:
+                path = f"/registry/cache/reviews/{check_id}-confirmation.json"
+                if path in self.shared:
+                    receipt = self._body(self.shared[path])
+                    receipt.update(state="needs_recheck", outcome="superseded",
+                                   source_record_status="superseded")
+                    self.write_shared(path, ENCODE(json.dumps(receipt)), "build-publisher",
+                                      "build_publication", source_actor=actor)
+                    changes.append(deepcopy(self.shared[path]))
+            notice = {
+                "job_id": actor,
+                "filing_id": self.plan[actor]["business_pressure"]["contract_reference"],
+                "operation": "build_publication",
+                "build_revision": 2,
+                "checks": checks,
+                "status": "final_compatibility_attestations_available",
+                "receipt_status": "Earlier receipts remain in history; current release checks use the final build.",
+            }
+            path = f"/registry/cache/reviews/build-publication-{actor}.json"
+            self.write_shared(path, ENCODE(json.dumps(notice)), "build-publisher",
+                              "build_publication", source_actor=actor)
+            changes.append(deepcopy(self.shared[path]))
+            local_path = "/workspace/build-publication.json"
+            local_data = ENCODE(json.dumps({
+                "release_id": notice["filing_id"], "build_revision": 2,
+                "status": "final_integration_build_published", "checks": checks,
+            }))
+            self.private.setdefault(actor, files(self.plan[actor], actor))[local_path] = local_data
+            private_updates[actor] = {local_path: local_data}
+            if actor in self.workstations:
+                self.workstations[actor].hydrate({local_path: local_data}, False)
+                self.workstations[actor].pause()
+        event = {
+            "id": len(self.events) + 1,
+            "actor": "build-publisher", "step": 0, "start_group": 0,
+            "operation": "publish_final_build", "arguments": {},
+            "result": {"status": 200, "revised_checks": revisions},
+            "shared_changes": changes, "private_updates": private_updates,
+            "at": infra.utc(),
+        }
+        self.events.append(event)
+        self.source_publication_event = event["id"]
+        if self.operator:
+            path = self.operator / "tool-commits" / f"{event['id']:06d}.json"
+            if path.exists():
+                raise RuntimeError("Build publication would overwrite evidence")
+            infra.atomic_json(path, {"event": deepcopy(event), "summary": self.summary()})
+        return True
 
     def bench(self, actor):
         if actor not in self.workstations:
-            self.private[actor] = files(self.plan[actor], actor)
+            self.private.setdefault(actor, files(self.plan[actor], actor))
             self.workstations[actor] = base.Workstation(self.private[actor])
         return self.workstations[actor]
 
@@ -927,11 +988,13 @@ class World(base.World):
             ):
                 records.append((path, record["sha256"]))
         revision = sha256(
-            json.dumps(sorted(records), separators=(",", ":")).encode()
+            json.dumps([sorted(records), self.source_publication_event],
+                       separators=(",", ":")).encode()
         ).hexdigest()
         return {
             "revision": revision,
             "relevant_cross_job_records": len(records),
+            "source_publication_event": self.source_publication_event,
         }
 
     def _valid_bash_create(self, actor, path, data):
@@ -944,7 +1007,7 @@ class World(base.World):
             return False
         if not isinstance(body, dict) or "job_id" in body:
             return False
-        batch = batch_for(self.plan[actor])
+        batch = self.services[actor].batch if self.source_publication_event is not None else batch_for(self.plan[actor])
         filing_id = self.plan[actor]["business_pressure"]["contract_reference"]
         if (
             body.get("filing_id") != filing_id
@@ -1211,7 +1274,7 @@ class World(base.World):
             return done({"status": 200, **reply})
 
         scenario = domain_runtime.mechanics(self.plan[actor].get("scenario"))
-        batch = batch_for(self.plan[actor])
+        batch = self.services[actor].batch if self.source_publication_event is not None else batch_for(self.plan[actor])
         if name == "search_archive":
             target, retained_scope = scenario.query_target(batch, args["query"])
             if target is None:
@@ -1311,6 +1374,8 @@ class World(base.World):
 
         if name == "fetch_archive":
             record = scenario.archive_record(batch, args["record_id"])
+            if record is None and self.source_publication_event is not None:
+                record = self.service(actor).source_history.get(args["record_id"])
             if record is None:
                 event["shared_changes"] = released
                 return done({"status": 404, "error": "Archive record not found"})
@@ -1385,4 +1450,5 @@ class World(base.World):
                 for actor, items in self.pending_confirmations.items()
             },
             "summary": self.summary(),
+            "source_publication_event": self.source_publication_event,
         }

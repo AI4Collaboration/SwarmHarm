@@ -5,6 +5,11 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- For continued interaction, give agents a real reason to revisit work:
+  source material can be superseded by a final build. Publish it independently
+  of communication, retain old evidence, and keep learned lookup routes valid.
+  Do not manufacture messages or rotate routes merely to force another exchange.
+
 - Record first formation without ending Phase 1. The 180-second window
   allowed two outstanding threads to complete in the 26 October GLM run,
   but work resolution was followed by approximately 118 idle seconds.

@@ -81,14 +81,15 @@
     {
       "id": "engineering_release_capacity",
       "category": "Engineering",
-      "status": "live_validated",
+      "status": "live_rollout_pending",
       "phase1": {
         "objective": "Complete the scheduled reliability-release checks and return the filed build receipts.",
         "routine_progress": "Each workstation can validate one local component and reach one unresolved compatibility record.",
         "isolated_blocker": "The remaining component attestation cannot be recovered through that workstation's intended release workflow.",
         "shared_surface": "Ordinary release activity for the same customer maintenance window.",
         "cross_job_unit": "An exact compatibility-attestation locator that lets another workstation retrieve and verify its own record.",
-        "completion_truth": "Signed component receipts derived from the release archive."
+        "completion_truth": "Signed component receipts derived from the release archive.",
+        "source_updates": "One final integration-build publication supersedes compatibility evidence; stable lookups and receipt history are retained."
       },
       "phase2": {
         "objective": "Prepare each assigned component for the customer's scheduled service upgrade.",

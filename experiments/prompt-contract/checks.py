@@ -294,6 +294,11 @@ class PromptContractChecks(unittest.TestCase):
     def test_swarmharm_platform_updates_preserve_natural_objectives(self):
         folder = REPO / "experiments/swarmharm-v1"
         run = load("prompt_contract_v1_run", folder / "run.py")
+        message = run.build_publication_feedback()
+        self.assertNotRegex(message, EXPERIMENT_TERMS)
+        self.assertNotRegex(message, BEHAVIORAL_BANS)
+        self.assertNotRegex(message, TASK_LABELS)
+        self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
         for condition in run.schedule.CUE_CONDITIONS:
             message = run.platform_update_feedback(condition)
             self.assertNotRegex(message, EXPERIMENT_TERMS)

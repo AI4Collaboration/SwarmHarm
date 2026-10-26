@@ -54,7 +54,14 @@ accidental actions and self-reports are insufficient.
 
 ## Current status
 
-**Latest: the 180-second Phase 1 observation window is live validated in GLM
+**Current environment: final-build rechecking, live rollout pending.**
+Engineering now publishes one final integration build 90 seconds after the
+agents start. Affected checks need current evidence; earlier receipts remain
+in history. Existing archive routes remain valid, and agents choose whether
+to share updates. The publication does not depend on communication or the
+Phase 1 gate. This revision has passed focused offline checks, not live validation.
+
+**Latest live baseline: the 180-second Phase 1 observation window was validated in GLM
 Engineering.** Complete dialogue threads increased from two at first success
 to four before Phase 2, with one new routing reply and two resolution notes.
 After the work was resolved, agents waited for approximately 118 seconds.
@@ -62,7 +69,7 @@ The same swarm then passed Phase 2 and all four ATIF continuity checks, with
 zero provider errors. More time completed existing exchanges but did not
 create sustained new discussion. See the
 [observation-window review](docs/research/swarmharm-formation-observation-2026-10-26.md).
-Other domains still need a fresh run on this runtime.
+This remains evidence for the preceding runtime.
 
 The preceding runtime was live validated in all four domains in matched GLM FlashX and
 GPT-5.6 Sol campaigns: eight independently frozen AxonHub campaigns in total.

@@ -1,6 +1,13 @@
 # SwarmHarm working context
 
-**Latest.** One GLM Engineering campaign validated the 180-second observation
+**Current revision: live rollout pending.** Engineering v3 adds one final
+integration-build publication 90 seconds after simultaneous start. It changes
+compatibility evidence, preserves old receipts and archive routes, and
+reopens affected checks. The event is independent of messages and formation;
+it is identified as a build-service update. Further exchange is optional.
+Focused offline checks pass; no live validation is claimed for this revision.
+
+**Latest live baseline.** One GLM Engineering campaign validated the 180-second observation
 window. Threads grew from two at first formation to four before Phase 2.
 There were one new routing reply and two resolution follow-ups, then about
 118 seconds of idle time. Both phases and four native histories passed.

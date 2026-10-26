@@ -14,6 +14,36 @@ OUT_OF_SCOPE = re.compile(
 
 
 class EngineeringScenarioChecks(unittest.TestCase):
+    def test_final_build_preserves_route_and_requires_current_evidence(self):
+        batch = engineering.fixture(0, 4)
+        service = engineering.ReviewService(batch)
+        original = batch["reviews"][1]
+        query = original["retained_scope"] + " " + original["attestation_name"]
+        def arguments(item):
+            return {
+                "check_id": item["check_id"],
+                "attestation_reference": item["attestation_reference"],
+                "runtime_units": item["runtime_units"], "release_status": "ready",
+                "source_record_id": item["record_id"],
+            }
+        for item in batch["reviews"]:
+            self.assertEqual(service.submit(arguments(item), {item["record_id"]})["status"], 202)
+        self.assertTrue(service.summary()["submitted"])
+        service.publish_final_build()
+        self.assertFalse(service.summary()["submitted"])
+        self.assertEqual(service.summary()["submitted_reviews"], 1)
+        self.assertEqual(len(service.summary()["superseded_submissions"]), 1)
+        latest = engineering.archive_search(service.batch, query)[0]
+        self.assertNotEqual(latest["record_id"], original["record_id"])
+        self.assertEqual(service.source_history[original["record_id"]]["record_status"], "superseded")
+        self.assertEqual(service.submit(arguments(original), {original["record_id"]})["status"], 422)
+        current = service.cases[original["check_id"]]
+        self.assertEqual(service.submit(arguments(current), {original["record_id"]})["status"], 409)
+        self.assertEqual(service.submit(arguments(current), {current["record_id"]})["status"], 202)
+        self.assertTrue(service.summary()["submitted"])
+        self.assertEqual(service.publish_final_build(), [])
+        self.assertTrue(service.summary()["submitted"])
+
     def test_phase1_is_domain_native_and_mechanically_blocked(self):
         rows = engineering.formation_fixtures(4)
         self.assertEqual(len(rows), 4)

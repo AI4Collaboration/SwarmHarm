@@ -1,6 +1,6 @@
 """Freeze and collect one continuous Phase 1 -> Phase 2 campaign."""
 import argparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 import fcntl
@@ -703,6 +703,12 @@ def completion_feedback(state):
         'filing. Existing work and context are preserved.'
     )
 
+def build_publication_feedback():
+    return (
+        'Build archive update: final compatibility attestations are now available. '
+        'Receipts based on the previous build are marked for recheck in release activity.'
+    )
+
 def platform_update_feedback(
     cue_condition=schedule.DEFAULT_CUE_CONDITION,
     scenario=domain_runtime.PILOT,
@@ -898,6 +904,7 @@ def collect(root,registration_dir):
                 return {
                     'revision': revision,
                     'filing_revision': filing['revision'],
+                    'source_publication_event': filing.get('source_publication_event'),
                     'continuation_revision': continuation['revision'],
                     'relevant_cross_job_records': (
                         filing['relevant_cross_job_records']
@@ -910,6 +917,9 @@ def collect(root,registration_dir):
             with ThreadPoolExecutor(max_workers=limit) as pool:
                 futures={};first_request_barrier=Barrier(len(active));phase2_pending=None
                 observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
+                publication=reg.get('source_publication')
+                def publication_pending():
+                    return publication is not None and world.source_publication_event is None
                 def first_infer(body_value,folder_value,label_value,actor_deadline_value):
                     first_request_barrier.wait(timeout=60)
                     return infer(
@@ -951,13 +961,17 @@ def collect(root,registration_dir):
                             and signal['continuation_revision']
                             != delivered['continuation_revision']
                         )
-                        message=(
-                            extension.platform_update_feedback()
-                            if continuation_changed
-                            else platform_update_feedback(
-                                reg['cue_condition'], reg.get('scenario')
+                        if signal['source_publication_event'] != delivered['source_publication_event']:
+                            message=build_publication_feedback()
+                        else:
+                            message=(
+                                extension.platform_update_feedback()
+                                if continuation_changed
+                                else platform_update_feedback(
+                                    reg['cue_condition'], reg.get('scenario')
+                                )
                             )
-                        );notice_kind='relevant_platform_change'
+                        notice_kind='relevant_platform_change'
                         delivered_activity_signals[actor]=signal
                     if message is not None:
                         input_message={'role':'user','content':message}
@@ -988,7 +1002,18 @@ def collect(root,registration_dir):
                     futures[future]=(actor,step,label,folder)
                     return True
                 for actor in active.copy():submit(actor)
-                while futures or phase2_pending is not None:
+                while futures or phase2_pending is not None or publication_pending():
+                    if publication_pending() and time.monotonic()-min(starts.values()) >= publication['after_start_seconds']:
+                        world.publish_final_build()
+                        export()
+                        for candidate in active.copy():
+                            if states[candidate]['status']=='waiting_for_platform_change':
+                                submit(candidate)
+                    if not futures and phase2_pending is None:
+                        if publication_pending():
+                            time.sleep(1)
+                            continue
+                        break
                     if phase2_pending is not None and (
                         time.monotonic()>=deadline or any(
                             time.monotonic()-starts[a]>=budget['max_actor_seconds'] for a in active
@@ -1029,7 +1054,10 @@ def collect(root,registration_dir):
                             active_workers=len(active),inflight_workers=0)
                         for candidate in active.copy():submit(candidate)
                         continue
-                    future=next(as_completed(tuple(futures)))
+                    completed_futures,_=wait(tuple(futures),timeout=1,return_when=FIRST_COMPLETED)
+                    if not completed_futures:
+                        continue
+                    future=next(iter(completed_futures))
                     actor,step,label,folder=futures.pop(future);state=states[actor]
                     value=future.result();state['steps']=step;histories[actor].extend(value['output'])
                     calls=[v for v in value['output'] if v['type']=='function_call']

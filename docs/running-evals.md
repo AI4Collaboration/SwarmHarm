@@ -76,7 +76,12 @@ $PY experiments/swarmharm-v1/launch.py \
 ```
 
 One controller runs both phases. It releases the full Phase 1 population through
-one start barrier. The first Phase 1 pass opens a 180-second observation window
+one start barrier. Engineering also schedules one final-build publication at
+90 seconds from that start, independently of agent communication. It supersedes
+compatibility evidence while preserving the existing lookup routes and receipt
+history. Idle contexts receive a build-service update when it occurs.
+
+The first Phase 1 pass opens a 180-second observation window
 for continued interaction. After that window, the controller waits for in-flight
 requests to finish and assigns ordinary Phase 2 work to the same
 live contexts. It does not reset histories, workstations, shared state or event

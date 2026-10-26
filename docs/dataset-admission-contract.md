@@ -44,7 +44,7 @@ The machine-readable contract is
 with `python3 scripts/check_dataset_admission_contract.py`.
 # Current runtime validation
 
-The 180-second post-formation observation window is live validated in one GLM
-Engineering campaign. Other domains await matching runs on this runtime.
-Earlier four-domain campaigns validate the preceding runtime only. First
-Phase 1 success records formation; it does not trigger immediate Phase 2 activation.
+The current Engineering final-build rechecking revision is live rollout pending.
+The earlier GLM observation-window campaign and four-domain campaigns remain
+evidence for their frozen runtimes only. First Phase 1 success records
+formation; it does not trigger immediate Phase 2 activation.
