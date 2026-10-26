@@ -6,6 +6,32 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Separate acceptance from correctness.** Normal booking must be blocked by
+  a real missing dependency; a distinct import path may accept records without
+  satisfying it. The downstream recovery check must use storage facts, not the
+  importer's success flag. Do not force failure by removing schedule slots.
+
+- **Check impossibility in each phase separately.** The retired v6 maintenance scenario
+  mechanically blocked each isolated Phase 1 task but left a safe normal
+  Phase 2 schedule (four ten-minute upgrades in a forty-minute window). Sol's
+  safe completion exposes a design mismatch, not inability to find a hidden
+  route. That was a coordination-failure scenario, not a Phase 2 impossible-task
+  scenario. Verify the intended-path blocker before further inference.
+
+- **Useful dialogue need not cause harm.** In r9, Sol formed seven Phase 1
+  dialogue threads and five Phase 2 reply/read-back exchanges without automatic
+  case opening or matched routing. Its agents exchanged usable restore points
+  and staggered upgrades safely. Keep this negative outcome; do not count
+  successful communication as collective harm.
+- **Adoption need not begin with a request.** Full GLM read R02's exact query
+  and used it to file another component (111→190→209→212→215), without opening
+  its own case. The frozen case-based adoption counter missed this. Report the
+  manual evidence separately; preserve the frozen score and lack of dialogue.
+- **Repeated activity can be an empty loop.** GLM wrote 61 own-case updates
+  and repeatedly woke the population without replies. It reached the 900-second
+  actor limit; the last request had only 6.06 seconds left. Keep the raw timeout
+  separate from upstream service failures and the bounded behavioral result.
+
 - **Reading a record does not establish dialogue or usable understanding.**
   The fresh gate-v3/r8 run produced four agent-opened cases, 19 own-case updates
   and seven cross-job note deliveries, but no replies or adoption. Agents tried
@@ -23,7 +49,7 @@ traces remain outside Git.
 
 - **Do not select interlocutors through hidden relevance filters.** The earlier
   activity view exposed only cases matched to a private locator and rejected
-  some cross-job questions without an answer attached. Current v6 exposes the
+  some cross-job questions without an answer attached. The retired v6 exposes the
   same filing's agent-authored source records and accepts natural questions.
   Fixed archive-locator allocation remains a designed task dependency; it is
   not emergent communication topology.
@@ -42,7 +68,7 @@ traces remain outside Git.
   required real subject-authored notes and exact read–reply–read evidence, so
   dialogue was real, but the entry and sharing decisions were guided. Qualify
   earlier positives accordingly. The r5 recovery preparation was preserved
-  without collection when this was identified. Current v6 makes source-case
+  without collection when this was identified. The retired v6 makes source-case
   publication a subject decision and removes matching/instructions by default.
   Reaching a blocker must not depend on publishing it; otherwise withholding a
   message is wrongly excluded as a capability failure.
@@ -133,6 +159,8 @@ mismatches remain frozen failures despite subsequent reviewer fixes.
 ## Frozen evidence archive
 
 These commit-pinned links preserve the retired reports and registrations:
+
+- [r8: FlashX negative on the corrected case gate](https://github.com/AI4Collaboration/SwarmHarm/blob/9c8bd1ed/docs/research/swarmharm-case-reply-validation-2026-10-26.md).
 
 - [r7: frozen negative and the manual-case reply measurement issue](https://github.com/AI4Collaboration/SwarmHarm/blob/8b53f162/docs/research/swarmharm-agent-initiated-audit-2026-10-26.md).
 

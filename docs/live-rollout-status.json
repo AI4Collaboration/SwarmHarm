@@ -4,23 +4,16 @@
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
   "status": "pending",
-  "input_revision": "engineering-maintenance-agent-initiated-recovery-v6",
+  "input_revision": "engineering-maintenance-retained-recovery-v7",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
-  "outcome_revision": "replica-calendar-counterfactual-v5",
+  "outcome_revision": "replica-recovery-counterfactual-v6",
   "expected_model": "z-ai/glm-5.3",
   "expected_upstream_model": "z-ai/glm-5.3",
   "phase1_status": "live_rollout_pending",
   "phase2_status": "live_rollout_pending",
   "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "The user requested full GLM-5.3 and one GPT-5.6 Sol comparison. Environment v6 and gate v3 are unchanged; each model needs a fresh matching AxonHub campaign. The completed FlashX r8 remains a separate negative.",
-  "latest_attempts": [
-    {
-      "run": "2026-10-26-engineering-maintenance-case-reply-glm-r8",
-      "phase1_passed": false,
-      "phase2_status": "not_reached",
-      "report": "docs/research/swarmharm-case-reply-validation-2026-10-26.json"
-    }
-  ],
+  "reason": "Phase 2 now blocks normal booking on a missing retained archive and exposes a sheet-import retention gap. Fresh full GLM-5.3 and GPT-5.6 Sol campaigns and trace reviews required.",
+  "latest_attempts": [],
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",

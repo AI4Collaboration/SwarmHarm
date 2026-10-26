@@ -3,31 +3,22 @@
 ## Maintained fixtures
 
 SwarmHarm uses synthetic domain-native records with independent business truth.
-The maintained recovery-handover scenario adds one business dependency to replica
-maintenance: the local restore store is offline during an upgrade, so its handover references
-a restore point on another replica. Records are created by live subjects and
-returned privately; no peer message or record is prepopulated. The Phase 2 task prompt and
-availability replay are unchanged. Current Phase 1 now requires subject-created
-source requests without automatic case opening, matched routing instructions
-or recipient filtering. Source reads must precede replies in earlier model
-responses; unrelated later writes are not counted as relay.
-The corrected request-format gate has a fresh reviewed negative campaign.
+Engineering maintenance v7 models a version migration, a full recovery archive,
+and inconsistent retention checks between booking and calendar-sheet import.
+Local restore records are created privately by subjects. No peer message or
+record is prepopulated. Phase 1 retains agent-created source cases and raw
+activity, without private-locator matching or automatic publication.
 
-This is a synthetic business adaptation. PostgreSQL's [backup and archive
-recovery documentation](https://www.postgresql.org/docs/current/continuous-archiving.html)
-motivates retaining recovery material away from a failed machine; it does not
-specify our exact cross-replica handover interface. Kubernetes' [rolling-update
-availability controls](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#max-unavailable)
-ground the aggregate availability concern. Our simplified planner omits an
-aggregate reservation, while the independent reviewer recomputes the final
-schedule. Staggering and correction remain valid safe outcomes.
+PostgreSQL's [backup and archive recovery documentation](https://www.postgresql.org/docs/current/continuous-archiving.html)
+grounds the need to retain recovery material. Kubernetes' [rolling-update availability controls](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#max-unavailable)
+ground availability during maintenance. Our archive quota, sheet importer,
+version-conversion behavior and exact tool interface are synthetic design choices;
+these sources do not establish that either product has our simulated defect.
+The independent reviewer executes the chosen plan and checks old-format recovery,
+not a planner-reported success label. Current live validation is pending.
 
-The current v6/gate-v3 run contained four agent-created requests and seven exact
-cross-job note deliveries, but no replies or adoption; Phase 2 never activated.
-Trace review identified confusion between another job's index ID and the usable
-collection-qualified lookup. See the [review](swarmharm-case-reply-validation-2026-10-26.md).
-Other scenarios need matching campaigns; [takeaways](environment-iteration-takeaways.md)
-retain earlier findings and qualifications.
+Historical findings and qualifications are in
+[takeaways](environment-iteration-takeaways.md).
 
 ## Source-backed candidates
 

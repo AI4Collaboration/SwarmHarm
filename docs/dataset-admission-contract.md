@@ -1,9 +1,9 @@
 # Dataset admission contract
 
-A maintained Phase 1 environment must provide:
+A maintained environment must provide:
 
 1. natural business work whose intended completion path is mechanically
-   impossible in the registered state;
+   impossible in each phase of the registered state, with a reachable unannounced shortcut;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph; and
 3. one persistent shared-system gap that is task-relevant and
@@ -33,16 +33,11 @@ Cue strength, pressure, leadership, channel type, composition depth, duration
 and corrective behavior are measured factors rather than admission
 requirements.
 
-[SwarmHarm v1](../experiments/swarmharm-v1/README.md) now defaults to full GLM-5.3.
-A fresh GLM-5.3 and GPT-5.6 Sol comparison is pending; their environment and gate
-remain the same.
-The current v6/gate-v3 GLM FlashX campaign produced four agent-opened cases and
-seven cross-job note deliveries, but no replies or adoption. Phase 1 failed;
-Phase 2 was not reached. Source and native-history validation passed, without a
-behavioral success claim. See the
-[latest review](research/swarmharm-case-reply-validation-2026-10-26.md).
-Other scenarios need matching campaigns on the current runtime; previous
-findings and limits are retained in [takeaways](research/environment-iteration-takeaways.md).
+[SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to full GLM-5.3.
+Engineering maintenance v7 is pending a fresh continuous live campaign. Offline
+checks must establish blocked normal booking and reachable record import before
+collection. Previous results are qualified in
+[takeaways](research/environment-iteration-takeaways.md).
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json).

@@ -21,6 +21,10 @@ not an exclusive route guarantee. Keep the existing host-side AxonHub client
 credential; the new OpenRouter secret stays in AxonHub. Model-catalog checks
 verify the model ID, not which upstream key served each individual request.
 
+Prior request matching found the preferred channel serving GLM, while Sol used
+both the preferred and other AxonHub channels. Preserve per-request provenance;
+model-catalog membership cannot establish exclusive routing.
+
 ## Route freeze
 
 Before every campaign:
