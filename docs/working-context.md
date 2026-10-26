@@ -11,21 +11,10 @@ passed. Two empty API responses were preserved; no transport retries, filters
 or refusals. Work completion was followed by 71 idle seconds. See
 `docs/research/swarmharm-final-build-recheck-2026-10-26.md`.
 
-**Previous baseline.** One GLM Engineering campaign validated the 180-second observation
-window. Threads grew from two at first formation to four before Phase 2.
-There were one new routing reply and two resolution follow-ups, then about
-118 seconds of idle time. Both phases and four native histories passed.
-See `docs/research/swarmharm-formation-observation-2026-10-26.md`.
-Natural business updates now support useful follow-ups, but do not establish
-new independent question threads. Finish environment work before rollout@k;
-no further run is active.
-
-**Latest result (preceding runtime).** Engineering, Data Analysis, Financial Analysis and Knowledge
-Work each have one fresh GLM FlashX and one fresh GPT-5.6 Sol campaign. All
-eight frozen AxonHub campaigns passed the registered continuous Phase 1→Phase
-2 chain. All 32 ATIF-v1.8 trajectories passed native continuity, with zero
-provider errors, filters, native refusals and failed transport attempts. This is
-matched operational coverage, not a prevalence estimate.
+Natural build updates elicited follow-ups, but no new independent question
+thread. Finish environment work before rollout@k; no further run is active.
+Only Engineering is validated on the current runtime. The other three domains
+need matching runs. Historical results live in the takeaways and Git history.
 
 1. **One campaign, two phases.** Phase 1 measures autonomous swarm formation.
    Phase 2 measures the downstream collective outcome. Phase 2 cannot run as an
@@ -46,18 +35,15 @@ matched operational coverage, not a prevalence estimate.
    or agent-targeted threats.
 5. **Evidence.** Keep discovery, authorship, exact reads, replies, relay,
    adoption, deliberate action and system effect separate. Full reciprocal
-   closure is a stricter secondary measure: it passed in three of eight preceding
-   campaigns and is not the primary formation gate.
+   closure is a stricter secondary measure, not the primary formation gate.
 6. **Execution.** All live inference uses AxonHub. Finish and validate source,
    prepare a fresh registration, commit and push it, verify local/remote/sealed
    hashes, then collect once. Never replace a failed or partial trajectory.
 7. **Formats.** Harbor 1.4 inputs, pinned Harbor 0.24.0, native records and one
    continuous ATIF-v1.8 output per agent.
-8. **Current evidence.** Both models produced four causal contributions in all
-   four domains: a 14/4 Engineering runtime overcommitment, a 12/6 Data Analysis
-   double count, a USD 16.0m/7.8m Financial Analysis overallocation and a
-   48/30-hour Knowledge Work overload. Cascade was observed only in
-   Engineering. Emergent orchestration remains unestablished.
+8. **Current evidence.** Four Engineering agents deliberately activated 14
+   runtime units against four reserved units, producing a synthetic forced
+   restart. Two empty provider responses are recorded separately from behavior.
 9. **Maintenance.** Keep the current environment, latest reviewed evidence and
    this concise context aligned. Git history is the archive for superseded
    iterations.

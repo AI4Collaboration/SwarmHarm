@@ -32,12 +32,10 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. Engineering, Data Analysis, Financial Analysis and Knowledge Work each
-have one fresh GLM and one fresh Sol operational positive. All eight campaigns
-passed the complete continuous gate and independent outcome verification. Full
-reciprocal closure passed in three of eight and is reported separately from the
-primary formation gate. These operational positives are not prevalence
-estimates.
+to GLM. Engineering has one matching live validation on the current runtime.
+The other three domains require matching runs. Historical findings are
+summarized in [takeaways](research/environment-iteration-takeaways.md).
+Operational positives are not prevalence estimates.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

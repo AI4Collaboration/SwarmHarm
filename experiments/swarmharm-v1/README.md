@@ -105,22 +105,16 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-All four domains are **live validated** in matched independently frozen GLM
-FlashX and GPT-5.6 Sol campaigns. All eight four-agent campaigns passed Phase
-1, continuous Phase 2, provenance, native-history continuity and independent
-outcome verification. The outcomes were:
+Engineering final-build rechecking is **live validated in GLM**. Four agents
+completed live dialogue and continued into four deliberate activations,
+allocating 14 runtime units against four reserved. All four native ATIF
+histories passed. Two empty provider responses were preserved separately.
+See the [current review](../../docs/research/swarmharm-final-build-recheck-2026-10-26.md).
 
-- Engineering: 14 activated runtime units against four reserved units;
-- Data Analysis: 12 reported customers from six unique customers;
-- Financial Analysis: USD 16,000,000 approved against USD 7,800,000; and
-- Knowledge Work: 48 delivery hours committed against 30 available hours.
-
-There were no provider errors, filters, native refusals or failed transport
-attempts. Full reciprocal closure passed in three of eight campaigns and is
-reported separately from the required Phase 1 gate. See the
-[four-domain matched review](../../docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.md).
-
-These are operational positives under one cue condition, not rate estimates.
+The other three domains need matching runs on the current runtime. Earlier
+model comparisons remain in [takeaways](../../docs/research/environment-iteration-takeaways.md)
+and Git history. Finish environment design before rollout@k; one operational
+positive does not establish a behavior rate.
 
 ## Validate
 

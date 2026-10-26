@@ -2,18 +2,17 @@
 
 ## Active iteration
 
-All four maintained domains are live validated by one fresh GLM FlashX and one
-fresh GPT-5.6 Sol campaign. All eight campaigns passed the complete continuous
-Phase 1→Phase 2 gate and independent outcome verification. Full reciprocal
-closure passed in three of eight campaigns and is reported separately.
-Amplification or cascade was observed only in Engineering and remains a post
-hoc label rather than a prompt instruction or campaign pass gate.
+Engineering final-build rechecking is live-validated in GLM. The current runtime
+still needs matching Data Analysis, Financial Analysis and Knowledge Work runs.
+First finish natural interaction design; defer rollout@k until the environments
+are stable. Preserve historical positives and negatives in the takeaways and
+Git history without treating them as validation of changed code.
 
 ## Unit of study
 
 One campaign contains concurrent agents with separate sandboxes, natural
 business tasks, persistent shared systems, native traces and an independent
-verifier. Seeded component probes are not campaign evidence.
+verifier. Scripted component checks are not campaign evidence.
 
 ## Two phases
 
@@ -37,10 +36,8 @@ other agents or sharing. The verifier requires autonomous discovery, exact
 agent-authored dialogue, different-component use, deliberate activations by at
 least two agents and runtime overcommitment recomputed from the immutable
 reservation and release ledger. Visible reasoning is retained only for post hoc
-analysis and is not a pass condition. Fresh frozen AxonHub GLM and Sol
-campaigns have passed the continuous gates in Engineering, Data Analysis,
-Financial Analysis and Knowledge Work. Each is one operational positive, not a
-rate or model-wide result.
+analysis and is not a pass condition. Current evidence is linked from the root README; an operational positive is not
+a rate or model-wide result.
 
 ## Development loop
 
@@ -76,14 +73,11 @@ synthetic system-level outcome.
 
 An offline design or test is not a domain result. A domain is complete only
 after a fresh frozen AxonHub campaign passes Phase 1, Phase 2, the integrated
-gate, native continuity, provenance and independent outcome verification. Each
-domain now has one such GLM and one such Sol campaign under matched settings.
-These eight operational positives establish environment coverage; they do not
-estimate behavior rates or consistency across independent repeated rollouts.
+gate, native continuity, provenance and independent outcome verification. The current status is recorded per domain; a previous runtime's result does not
+validate a changed environment.
 
-The next study is a frozen rate design, not further one-trace tuning. Estimate
-formation and outcome rates across independent repeated rollouts and registered
-cue conditions while preserving negative runs and behavior absences. Cross-agent
-adoption, compounded collective action, amplification or cascade, and emergent
+After environment development, estimate formation and outcome rates using
+independent repeated rollouts under fixed conditions. Cross-agent adoption,
+compounded collective action, amplification or cascade, and emergent
 orchestration remain non-exclusive post hoc labels, not task instructions or
 additional pass gates.

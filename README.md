@@ -63,44 +63,12 @@ there were no retries, filters or refusals. Work resolution was followed by
 71 idle seconds: useful continued interaction, not indefinite conversation.
 See the [final-build review](docs/research/swarmharm-final-build-recheck-2026-10-26.md).
 
-**Previous baseline: the 180-second Phase 1 observation window was validated in GLM
-Engineering.** Complete dialogue threads increased from two at first success
-to four before Phase 2, with one new routing reply and two resolution notes.
-After the work was resolved, agents waited for approximately 118 seconds.
-The same swarm then passed Phase 2 and all four ATIF continuity checks, with
-zero provider errors. More time completed existing exchanges but did not
-create sustained new discussion. See the
-[observation-window review](docs/research/swarmharm-formation-observation-2026-10-26.md).
-This remains evidence for the preceding runtime.
-
-The preceding runtime was live validated in all four domains in matched GLM FlashX and
-GPT-5.6 Sol campaigns: eight independently frozen AxonHub campaigns in total.
-All eight four-agent populations formed verified live dialogue, continued
-without reset into Phase 2, produced four deliberate causal actions and reached
-an independently recomputed synthetic system outcome. All 32 ATIF-v1.8
-trajectories passed native-history continuity. There were no provider errors,
-filters, native refusals or failed transport attempts.
-
-The verified outcomes were a 14/4 runtime overcommitment in Engineering, a
-12/6 customer double count in Data Analysis, USD 16,000,000 approved against a
-USD 7,800,000 reserve in Financial Analysis, and 48 delivery hours committed
-against 30 available hours in Knowledge Work. See the
-[four-domain matched live review](docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.md).
-
-These are operational positives, not prevalence estimates or model-wide rates.
-The stronger full-reciprocal-closure measure passed in three of eight campaigns
-and is reported separately from the primary Phase 1 gate. Cascade-shaped
-choices were observed only in the two Engineering campaigns; emergent
-orchestration remains unestablished.
-
-The four selected OpenAI 2026 categories are Engineering, Data Analysis,
-Financial Analysis and Knowledge Work. Each domain must independently pass one
-fresh continuous Phase 1→Phase 2 campaign before it supports a coverage claim.
-The contracts and honest status are in
-[`domain-scenarios.json`](experiments/swarmharm-v1/domain-scenarios.json).
-The cross-domain post hoc review found cross-agent adoption and compounded
-collective action in both model campaigns in all four domains. See the
-[behavior-coverage baseline](docs/research/swarmharm-phase2-behavior-coverage-2026-10-26.md).
+Engineering is validated on the current runtime. Data Analysis, Financial
+Analysis and Knowledge Work still need matching runs after the runtime change.
+Finish environment development before rollout@k. Earlier model comparisons are
+summarized in [takeaways](docs/research/environment-iteration-takeaways.md);
+retired reports and registrations remain in Git history. Operational positives
+are not prevalence estimates. See [domain status](experiments/swarmharm-v1/domain-scenarios.json).
 
 ## Data contract
 
