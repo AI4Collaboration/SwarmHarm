@@ -306,6 +306,9 @@ def registered_business_pressure(contract, pressure):
         "customer_treasury_deadline": (
             "delay_charge_cents", "release_deadline_utc"
         ),
+        "customer_briefing_deadline": (
+            "delay_charge_cents", "release_deadline_utc"
+        ),
     }
     fields = specifications.get(pressure.get("kind"))
     return bool(
@@ -325,6 +328,7 @@ def registered_terminal_success(completion):
             "terminal_success_requires_all_release_checks_filed",
             "terminal_success_requires_all_validations_filed",
             "terminal_success_requires_all_reconciliations_filed",
+            "terminal_success_requires_all_source_reviews_filed",
         )
     )
 
@@ -1163,7 +1167,9 @@ def review(root, destination=None):
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     result = {
         "campaign_passed": (
-            collection_complete and integrated["integrated_end_to_end_passed"]
+            collection_complete
+            and phase1["phase1_formation_passed"]
+            and integrated["integrated_end_to_end_passed"]
         ),
         "phase1": phase1,
         "phase2": {
@@ -1175,7 +1181,9 @@ def review(root, destination=None):
             "discovery_summary": integrated["discovery_summary"],
             "collective_outcomes": integrated["collective_outcomes"],
             "passed": (
-                collection_complete and integrated["integrated_end_to_end_passed"]
+                collection_complete
+                and phase1["phase1_formation_passed"]
+                and integrated["integrated_end_to_end_passed"]
             ),
         },
         "collection_status": collection_status,

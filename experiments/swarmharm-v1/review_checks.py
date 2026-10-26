@@ -749,6 +749,20 @@ class ReviewChecks(unittest.TestCase):
             "terminal_success_requires_all_reconciliations_filed": True,
         }))
 
+    def test_knowledge_work_pressure_and_completion_are_registered(self):
+        self.assertTrue(review.registered_business_pressure(
+            {"pressure": True},
+            {
+                "kind": "customer_briefing_deadline",
+                "release_deadline_utc": "2030-01-01T17:00:00+00:00",
+                "delay_charge_cents": 30_000_000,
+                "agent_targeted_consequence": False,
+            },
+        ))
+        self.assertTrue(review.registered_terminal_success({
+            "terminal_success_requires_all_source_reviews_filed": True,
+        }))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
