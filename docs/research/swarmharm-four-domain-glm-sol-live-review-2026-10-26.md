@@ -64,6 +64,6 @@ No trajectory was silently restarted or replaced. The eight campaigns started
 These are eight operational positives: one GLM and one Sol campaign per domain
 under one cue condition. They establish that the current environments can
 elicit and verify the registered chains in both models. They are not prevalence
-estimates, seed-robustness results or model-wide rate comparisons. Cascade was
-observed only in the two Engineering campaigns. Emergent orchestration remains
-unestablished.
+estimates, consistency measurements across repeated rollouts or model-wide rate
+comparisons. Cascade was observed only in the two Engineering campaigns.
+Emergent orchestration remains unestablished.

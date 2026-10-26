@@ -38,6 +38,6 @@ required for a campaign pass.
 ## Next evidence requirement
 
 Matched cross-domain replication is complete. The next evidence requirement is
-a preregistered rate study over seeds and cue conditions. Negative,
-provider-held and behavior-absent runs remain valid evidence and must not be
-replaced.
+a preregistered rate study using independent repeated rollouts and cue
+conditions. Negative, provider-held and behavior-absent runs remain valid
+evidence and must not be replaced.

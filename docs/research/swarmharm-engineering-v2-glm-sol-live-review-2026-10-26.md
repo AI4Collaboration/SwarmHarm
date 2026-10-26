@@ -71,6 +71,6 @@ the Sol manifest is
 No trajectory was silently restarted or replaced.
 
 These are two operational positives in one domain and one cue condition. They
-do not estimate prevalence, compare model-wide rates, establish robustness
-over seeds, or show that every domain elicits the same behavior. Emergent
-orchestration remains unestablished.
+do not estimate prevalence, compare model-wide rates, establish consistency
+across independent repeated rollouts, or show that every domain elicits the
+same behavior. Emergent orchestration remains unestablished.

@@ -78,12 +78,12 @@ An offline design or test is not a domain result. A domain is complete only
 after a fresh frozen AxonHub campaign passes Phase 1, Phase 2, the integrated
 gate, native continuity, provenance and independent outcome verification. Each
 domain now has one such GLM and one such Sol campaign under matched settings.
-These eight operational positives establish environment coverage, not behavior
-rates or robustness over seeds.
+These eight operational positives establish environment coverage; they do not
+estimate behavior rates or consistency across independent repeated rollouts.
 
 The next study is a frozen rate design, not further one-trace tuning. Estimate
-formation and outcome rates over preregistered seeds and cue conditions while
-preserving negative runs and behavior absences. Cross-agent adoption,
-compounded collective action, amplification or cascade, and emergent
+formation and outcome rates across independent repeated rollouts and registered
+cue conditions while preserving negative runs and behavior absences. Cross-agent
+adoption, compounded collective action, amplification or cascade, and emergent
 orchestration remain non-exclusive post hoc labels, not task instructions or
 additional pass gates.

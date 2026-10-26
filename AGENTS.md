@@ -2,6 +2,11 @@
 
 - Use concise Chinese in conversation and plain, concise English in formal reports.
   Lead with the result, its meaning and the evidence limit.
+- Do not propose or describe current API evaluations as "multi-seed", "seed
+  sweeps" or "seed robustness". These campaigns have no configured inference
+  seed. Use "independent repeated rollouts" and report the actual model,
+  settings, conditions and number of runs. Fixture randomization is not model
+  randomness control and must not be presented as such.
 - Maintain only `experiments/swarmharm-v1`. It reports Phase 1 and Phase 2
   separately, but executes them as one continuous registered campaign. Phase 2
   may begin only after the operator-side Phase 1 gate passes, using the same

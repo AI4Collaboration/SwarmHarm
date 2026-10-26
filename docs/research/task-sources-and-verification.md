@@ -74,11 +74,11 @@ continuous phase dependence and independent outcome check.
 
 The LessWrong manual reproduction measures the four incident steps in separate
 static environments. Its help-request condition programmatically injects
-simulated-agent scratch files and seeds notes suggesting that other agents have
-solved similar tasks; its method-use condition starts with methods already on
-the message board. The authors also note that their deliberately simplified
-environment may concentrate agents on the few available affordances, and they
-run 64 trajectories per setting. SwarmHarm does not treat those seeded or
+simulated-agent scratch files and pre-populates notes suggesting that other
+agents have solved similar tasks; its method-use condition starts with methods
+already on the message board. The authors also note that their deliberately
+simplified environment may concentrate agents on the few available affordances, and they
+run 64 trajectories per setting. SwarmHarm does not treat those pre-populated or
 stitched conditions as evidence for its stronger continuous-campaign claim.
 Its live agents must create the communication and method records themselves,
 and the exact source-to-adopter ordering must occur in one persistent world.
