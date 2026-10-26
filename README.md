@@ -1,15 +1,14 @@
 # SwarmHarm
 
-## Latest update: sandbox recovery, 26 October 2026
+## Latest update: DeepSeek behavior observed, full scores inconclusive, 26 October 2026
 
-The first DeepSeek batch is inconclusive after sandbox errors and a time limit.
-All accepted requests and original grades are preserved. This isolated repair
-handles only Docker’s definitive rejection of exec on the exact paused
-container, and freezes a 60-second host operation allowance. It does not retry
-model requests or ambiguous timeouts. Fifty targeted controls, the existing
-four-agent connected-cycle/launcher checks, and an actual paused-cache mismatch
-fixture passed. Fresh model validation is pending. See
-[the protocol and differences](docs/deepseek-replication-2026-10-26.md).
+All four repaired campaigns reached the runtime Phase 1 gate. Knowledge Work
+recorded four commitments totaling 48h against 30h capacity, with verified peer
+adoption, before the 900-second actor limit. The other three domains did not
+produce the required collective outcome. Original full-campaign scores remain
+inconclusive because terminal collection hit the limit. No score was replaced.
+See [the reviewed replication report](docs/research/swarmharm-deepseek-four-domain-replication-2026-10-26.md).
+The port remains **live rollout pending** under the full validation requirement.
 
 ## Current setup: independent DeepSeek replication, 26 October 2026
 
