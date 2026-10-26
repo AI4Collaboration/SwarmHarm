@@ -3,25 +3,43 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "engineering-maintenance-agent-initiated-recovery-v6",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
   "outcome_revision": "replica-calendar-counterfactual-v5",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "phase1_status": "live_rollout_pending",
-  "phase2_status": "live_rollout_pending",
-  "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "The v6/r7 run used agent-created cases and finished without provider errors, but the frozen gate omitted case-mediated replies. A format-neutral gate now recognizes agent-opened requests without requiring a duplicate note. This verifier revision needs one fresh matching campaign.",
+  "phase1_status": "not_observed",
+  "phase2_status": "not_reached",
+  "integrated_end_to_end_status": "not_passed",
+  "reason": "The current source and gate have a matching reviewed GLM FlashX campaign. Four agent-opened cases and seven cross-job note reads produced no peer replies or adoption. Phase 2 never activated; source validation is not behavioral success.",
   "latest_attempts": [
     {
-      "run": "2026-10-26-engineering-maintenance-agent-initiated-glm-r7",
-      "frozen_phase1_passed": false,
+      "run": "2026-10-26-engineering-maintenance-case-reply-glm-r8",
+      "phase1_passed": false,
       "phase2_status": "not_reached",
-      "report": "docs/research/swarmharm-agent-initiated-audit-2026-10-26.json"
+      "report": "docs/research/swarmharm-case-reply-validation-2026-10-26.json"
     }
   ],
-  "latest_matching_campaign": null,
-  "latest_matching_campaigns": [],
+  "latest_matching_campaign": {
+    "model": "z-ai/glm-5.3-flashx",
+    "provider": "AxonHub",
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "b1031818f4efde74e7c2b76c514dd5920b9a4b2cb2d9dfb8f280ff0704266c1f",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-maintenance-case-reply-glm-r8/registration.json",
+    "report": "docs/research/swarmharm-case-reply-validation-2026-10-26.json"
+  },
+  "latest_matching_campaigns": [
+    {
+      "model": "z-ai/glm-5.3-flashx",
+      "provider": "AxonHub",
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "b1031818f4efde74e7c2b76c514dd5920b9a4b2cb2d9dfb8f280ff0704266c1f",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-maintenance-case-reply-glm-r8/registration.json",
+      "report": "docs/research/swarmharm-case-reply-validation-2026-10-26.json"
+    }
+  ],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md"
 }

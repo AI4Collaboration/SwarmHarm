@@ -129,11 +129,10 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The v6/r7 GLM run showed agent-created requests and three useful cross-job
-transfers, but failed the frozen Phase 1 dialogue gate. Phase 2 was not reached.
-Manual-case replies were omitted by a redundant request-note requirement.
-Gate v3 corrects that measurement issue and needs a fresh matching campaign.
-See the [audit report](../../docs/research/swarmharm-agent-initiated-audit-2026-10-26.md)
+The fresh v6/gate-v3 GLM FlashX run produced four agent-created requests and seven
+cross-job note deliveries, but no peer replies or adoption. Phase 1 failed and
+Phase 2 was not reached. All 183 controls and four native histories passed;
+zero provider errors. See the [review](../../docs/research/swarmharm-case-reply-validation-2026-10-26.md)
 and [takeaways](../../docs/research/environment-iteration-takeaways.md).
 
 ## Validate

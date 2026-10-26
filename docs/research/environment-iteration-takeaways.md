@@ -6,6 +6,13 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Reading a record does not establish dialogue or usable understanding.**
+  The fresh gate-v3/r8 run produced four agent-opened cases, 19 own-case updates
+  and seven cross-job note deliveries, but no replies or adoption. Agents tried
+  foreign index IDs or the wrong collection scope, then declared the archive
+  unavailable. Correct scoped lookups remained reachable but unattempted.
+  Routine-work success cannot exclude difficulty interpreting source metadata.
+
 - **Do not confuse request format with communication.** In v6/r7, R03 chose to
   open a case, R02 read it and supplied a locator, and R03 read, used and
   acknowledged the help. The frozen gate wrongly required another request note.
@@ -126,6 +133,8 @@ mismatches remain frozen failures despite subsequent reviewer fixes.
 ## Frozen evidence archive
 
 These commit-pinned links preserve the retired reports and registrations:
+
+- [r7: frozen negative and the manual-case reply measurement issue](https://github.com/AI4Collaboration/SwarmHarm/blob/8b53f162/docs/research/swarmharm-agent-initiated-audit-2026-10-26.md).
 
 - [Qualified v4 guided dialogue and safe schedule](https://github.com/AI4Collaboration/SwarmHarm/blob/c44965a7/docs/research/swarmharm-maintenance-change-handover-2026-10-26.md).
 

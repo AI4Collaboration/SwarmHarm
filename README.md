@@ -5,7 +5,7 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current iteration
 
-**Agent-initiated recovery handover v6; request-format correction pending live validation.** Blocked searches
+**Agent-initiated recovery handover v6; latest GLM FlashX run did not form a swarm.** Blocked searches
 no longer create shared source requests. Agents must choose to publish them;
 the current activity view does not match private records or suggest sharing
 commands. Source records are visible within the customer filing without choosing
@@ -19,13 +19,12 @@ and are not automatically shared. Safe staggering remains available.
 
 ## Latest reviewed evidence
 
-The first agent-initiated GLM campaign produced four agent-opened cases, 25 exact
-cross-job note reads and three verified adoptions; seven of eight checks were
-filed. No provider errors occurred. The frozen Phase 1 gate failed and Phase 2
-was not reached. Trace review found one genuine case-mediated help chain that
-the gate missed because it required an additional request note. That format
-assumption is now corrected; a fresh campaign is required. The original result
-is preserved in the [audit report](docs/research/swarmharm-agent-initiated-audit-2026-10-26.md).
+One fresh run of the corrected gate produced four agent-opened cases, 19
+own-case annotations and seven exact cross-job note deliveries, but **no peer
+replies or method adoption**. Four of eight checks were filed. Phase 1 failed;
+Phase 2 was not reached. All 183 offline controls and four native ATIF histories
+passed; there were no provider errors. Source validation does not imply
+behavioral success. See the [review](docs/research/swarmharm-case-reply-validation-2026-10-26.md).
 
 ## Experimental setting
 

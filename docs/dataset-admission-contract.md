@@ -34,11 +34,11 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-The v6/r7 GLM campaign produced agent-created requests and verified transfer,
-but the frozen Phase 1 gate failed and Phase 2 was not reached. A redundant
-request-note requirement missed a genuine manual-case exchange. The corrected
-gate requires fresh validation. See the
-[latest review](research/swarmharm-agent-initiated-audit-2026-10-26.md).
+The current v6/gate-v3 GLM FlashX campaign produced four agent-opened cases and
+seven cross-job note deliveries, but no replies or adoption. Phase 1 failed;
+Phase 2 was not reached. Source and native-history validation passed, without a
+behavioral success claim. See the
+[latest review](research/swarmharm-case-reply-validation-2026-10-26.md).
 Other scenarios need matching campaigns on the current runtime; previous
 findings and limits are retained in [takeaways](research/environment-iteration-takeaways.md).
 
