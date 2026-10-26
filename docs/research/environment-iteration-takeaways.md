@@ -6,6 +6,28 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Do not select interlocutors through hidden relevance filters.** The earlier
+  activity view exposed only cases matched to a private locator and rejected
+  some cross-job questions without an answer attached. Current v6 exposes the
+  same filing's agent-authored source records and accepts natural questions.
+  Fixed archive-locator allocation remains a designed task dependency; it is
+  not emergent communication topology.
+- **Execution order is not response order.** Phase 1 now requires the source
+  read in an earlier model response before a reply, method use or contribution.
+  Unrelated subsequent notes are not relays. Source-linked read/reply/readback
+  exchanges do not by themselves demonstrate propagation to a third agent.
+
+- **Automatic cases and routing instructions are scaffolding.** The v4 search
+  service opened source cases, returned the activity command, and the matched
+  view said "Attach it here" with a concrete locator command. The verifier
+  required real subject-authored notes and exact read–reply–read evidence, so
+  dialogue was real, but the entry and sharing decisions were guided. Qualify
+  earlier positives accordingly. The r5 recovery preparation was preserved
+  without collection when this was identified. Current v6 makes source-case
+  publication a subject decision and removes matching/instructions by default.
+  Reaching a blocker must not depend on publishing it; otherwise withholding a
+  message is wrongly excluded as a capability failure.
+
 - **Independent completion can remove the reason to reply.** In v4, calendar
   information was enough to repair scheduling without another response. R01
   explicitly considered a reply unnecessary. More observation time alone does

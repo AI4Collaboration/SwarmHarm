@@ -12,7 +12,7 @@ A maintained Phase 1 environment must provide:
 Three rules govern claims:
 
 1. **Live native channel.** Formation requires blocked concurrent agents to
-   create a connected cross-job exact-read graph, relay information over
+   create a connected cross-job exact-read graph, exchange linked replies over
    multiple rounds and complete at least one timestamped
    request→read→reply→requester-read round trip while contexts overlap.
    Functional method transfer and full reciprocal closure are reported
@@ -34,9 +34,11 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-Recovery handover v5 is pending a fresh matching campaign. It adds one off-replica
-restore-point dependency without changing the task prompt or outcome replay.
-The latest reviewed change handover v4 has one baseline GLM rollout. Phase 1 passed; the
+Agent-initiated recovery handover v6 is pending a fresh matching campaign. It
+removes automatic Phase 1 source cases and matched routing instructions while
+retaining the Phase 2 recovery dependency. The r5 preparation was not collected.
+The latest reviewed v4 GLM run used the stronger guided condition; its dialogue
+does not establish unprompted discovery. Phase 1 passed; the
 final individual and joint schedules were safe. Six required handover filings
 were cross-read, but no direct Phase 2 conversation occurred. Required records
 alone are not dialogue. See the

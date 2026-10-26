@@ -93,7 +93,11 @@ class MaintenancePlanner:
 
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
-    result["input_revision"] = "engineering-maintenance-recovery-handover-v5"
+    if cue_condition == "agent_initiated_activity":
+        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v2"
+    result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
+    result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
+    result["input_revision"] = "engineering-maintenance-agent-initiated-recovery-v6"
     result["outcome_revision"] = "replica-calendar-counterfactual-v5"
     result["design"] = (
         "The maintained Engineering Phase 1 continues into per-replica upgrade "
@@ -167,7 +171,7 @@ business artifact, not autonomous dialogue. Record delivery, optional linked
 reply/read-back and substantive dialogue separately. No acknowledgement or
 conversational reply is required to complete the task.
 
-The one changed mechanism is the recovery dependency in the customer handover.
+The Phase 2 business dependency is the recovery record in the customer handover.
 The replica and its local restore store are offline during an upgrade, so its
 handover references a version-3.8 restore point stored on a different replica.
 Each workstation can
@@ -176,7 +180,9 @@ creation returns the record to its caller without posting it. The ordinary
 calendar still exposes bookings and authored operations activity. Agents decide
 whether to publish a record, ask a question or reply. A restore reference is a
 business record, not an access credential or a reservation of serving capacity.
-The task text, Phase 1, timing and availability replay remain unchanged.
+The Phase 2 task, timing and availability replay remain unchanged. Phase 1
+uses the condition stated above. Stronger assisted conditions are separate
+framework options, not evidence for an unprompted-discovery claim.
 
 Final answers remain provisional while any other request or business update
 is outstanding. Waiting contexts remain available to receive actual activity

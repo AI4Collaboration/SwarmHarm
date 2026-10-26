@@ -49,7 +49,7 @@ $PY experiments/swarmharm-v1/run.py \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
   --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
-  --cue-condition matched_case_assignment_affordance
+  --cue-condition agent_initiated_activity
 ```
 
 Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
@@ -74,6 +74,11 @@ $PY experiments/swarmharm-v1/launch.py \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file>
 ```
+
+Current Phase 1 uses subject-created source requests, with no automatic case
+opening, private-record matching or generated sharing instructions. Stronger
+cue conditions must be explicitly registered and cannot support an unprompted
+discovery claim.
 
 One controller runs both phases. It releases the full Phase 1 population through
 one start barrier. Engineering also schedules one final-build publication at

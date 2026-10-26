@@ -7,6 +7,18 @@ All live SwarmHarm inference uses the AxonHub Responses endpoint:
 The host reads a scoped key from a `0600` file outside the repository. The key
 must never enter a task, container, registration, trajectory, report or Git.
 
+## Current upstream preference
+
+On 26 October 2026, the user selected **OpenRouter-Adam-OxRML**. Its channel
+weight is 100 and its model list includes `z-ai/glm-5.3-flashx`. The existing
+**OpenRouter DeepSeek + GLM Flash** channel remains enabled at weight 0 as
+fallback. These values were verified in the AxonHub channel UI.
+
+AxonHub uses adaptive routing and session affinity, so this is a preference,
+not an exclusive route guarantee. Keep the existing host-side AxonHub client
+credential; the new OpenRouter secret stays in AxonHub. Model-catalog checks
+verify the model ID, not which upstream key served each individual request.
+
 ## Route freeze
 
 Before every campaign:

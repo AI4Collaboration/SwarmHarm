@@ -11,7 +11,7 @@ import schedule
 import topology
 
 
-def plan_for(population=4, cue_condition=schedule.DEFAULT_CUE_CONDITION):
+def plan_for(population=4, cue_condition="matched_case_assignment_affordance"):
     counter = iter(range(1000))
     return schedule.compile_plan(
         population,

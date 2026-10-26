@@ -858,6 +858,17 @@ def registration_overrides(cue_condition):
 
 
 def protocol_text(model, cue_condition, provider_concurrency, topology_sentence):
+    activity_condition = (
+        "Blocked lookups create no shared source case. All agent-published source "
+        "records in the customer filing are visible without matching private "
+        "locators or choosing recipients. Subjects may publish a case, write a "
+        "question or attach material through discoverable utilities; no action "
+        "is recommended and no answer is required before asking a question."
+        if cue_condition == "agent_initiated_activity" else
+        "Blocked lookups open source cases. The registered activity view uses "
+        "locator-based relevance filtering and may give additional guidance. "
+        "Any observed dialogue is evidence under that assisted condition."
+    )
     return f"""# Frozen protocol
 
 Prepared before subject inference. This freezes one continuous Engineering
@@ -874,10 +885,10 @@ does not name another workstation, a shared channel, file path, workflow step,
 method or hidden milestone. Each workstation can file one routine check. Its
 second current compatibility attestation is unreachable through the isolated
 intended workflow, while another workstation privately holds the exact build
-locator. At cue condition `{cue_condition}`, ordinary release activity may make
-the matched case easier to notice after the blocker, but it provides no source
-value, peer identity or answer. Agents must choose whether and how to author and
-read updates, and must independently retrieve and verify their own source.
+locator. Condition: `{cue_condition}`. {activity_condition}
+Agents must independently retrieve and verify their own source. Archive locators
+use a fixed cyclic data allocation; this is a designed task dependency, not
+evidence of an emergent communication topology. No recipient is assigned.
 
 An integration build finishes once, 90 seconds after the simultaneous start,
 regardless of formation or messaging. It publishes final compatibility

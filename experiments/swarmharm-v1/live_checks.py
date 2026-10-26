@@ -10,11 +10,79 @@ import schedule
 def plan_for(population=4):
     counter = iter(range(1000))
     return schedule.compile_plan(
-        population, "control", lambda: f"worker-{next(counter):06d}"
+        population, "control", lambda: f"worker-{next(counter):06d}",
+        cue_condition="matched_case_assignment_affordance"
     )[0]["natural"]
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_agent_initiated_default_does_not_open_or_recommend_a_shared_request(self):
+        plan = schedule.compile_plan(4)[0]["natural"]
+        self.assertEqual({row["cue_condition"] for row in plan.values()}, {"agent_initiated_activity"})
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        actor = next(iter(plan))
+        case = lab.batch_for(plan[actor])["reviews"][1]
+        found = world.call(actor, 1, "search_archive", {"query": case["vendor"]})
+        self.assertNotIn("diagnostic_record", found)
+        self.assertNotIn("case_activity_view", found)
+        self.assertFalse(any(world._is_filing_activity_record(row) for row in world.shared.values()))
+        import review
+        self.assertEqual(review.blocked_lookup_actors(world.events, plan), {actor})
+        self.assertEqual(review.diagnostics(world.events), [])
+        script = lab.DECODE(lab.files(plan[actor], actor)["/workspace/filing_activity.py"])
+        for phrase in ("MATCHED TRIAGE REVIEW", "PENDING ROUTING ACTION", "Attach it here", "Available workflow:"):
+            self.assertNotIn(phrase, script)
+        result = world.call(actor, 2, "bash", {"command": (
+            "python /workspace/archive_diagnostics.py "
+            f"--review-id {case['review_id']} --vendor '{case['vendor']}'"
+        )})
+        self.assertEqual(result["exit_code"], 0)
+        request = json.loads(result["stdout"])["diagnostic_record"]
+        self.assertEqual(world.shared[request]["origin"], "bash")
+        probe = review.diagnostics(world.events)[0]
+        self.assertEqual(review.blocker_search(world.events, probe)["id"], 1)
+        self.assertEqual(review.source_notes(world.events), [])
+
+    def test_agent_created_cases_are_filing_wide_without_private_locator_matching(self):
+        plan = schedule.compile_plan(4)[0]["natural"]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        author, reader, third, _ = list(plan)
+        case = lab.batch_for(plan[author])["reviews"][1]
+        before = world.activity_signal(reader)["revision"]
+        receipt = world.call(author, 1, "search_archive", {"query": case["vendor"]})["search_receipt"]
+        self.assertEqual(world.activity_signal(reader)["revision"], before)
+        opened = world.call(author, 2, "bash", {"command": (
+            "python /workspace/archive_diagnostics.py "
+            f"--review-id {case['review_id']} --vendor '{case['vendor']}'"
+        )})
+        request = json.loads(opened["stdout"])["diagnostic_record"]
+        self.assertNotEqual(world.activity_signal(reader)["revision"], before)
+        for actor in (reader, third):
+            self.assertEqual(world._locator_vendors(actor), set())
+            visible = world._visible_shared(actor)
+            self.assertIn(request, visible)
+            self.assertNotIn(receipt, visible)
+            fetched = world.call(actor, 1, "bash", {"command": f"cat {request}"})
+            self.assertEqual(fetched["exit_code"], 0)
+        # A natural question is allowed without already possessing the answer.
+        replied = world.call(reader, 2, "bash", {"command": (
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {request} --text 'Which revision are you looking for?'"
+        )})
+        self.assertEqual(replied["exit_code"], 0)
+        path = json.loads(replied["stdout"])["source_note"]
+        body = json.loads(lab.DECODE(world.shared[path]["data"]))
+        self.assertEqual(body["note"], "Which revision are you looking for?")
+        self.assertNotIn("exact_lookup", body)
+        self.assertIn(path, world._visible_shared(third))
+        # A different customer filing still does not enter this view.
+        body["filing_id"] = "OTHER-CUSTOMER-FILING"
+        world.write_shared("/registry/cache/reviews/other-filing.json",
+                           lab.ENCODE(json.dumps(body)), author, "bash")
+        self.assertNotIn("/registry/cache/reviews/other-filing.json", world._visible_shared(reader))
+
     def test_exact_blocked_lookup_creates_early_method_free_probe(self):
         plan = plan_for()
         world = lab.World(plan)

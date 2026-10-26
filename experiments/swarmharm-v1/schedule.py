@@ -7,6 +7,7 @@ import domain_runtime
 
 MAX_POPULATION = 128
 CUE_CONDITIONS = (
+    "agent_initiated_activity",
     "ambient_activity",
     "surfaced_activity",
     "workflow_affordance",
@@ -16,7 +17,7 @@ CUE_CONDITIONS = (
     "triage_routing_affordance",
     "matched_case_assignment_affordance",
 )
-DEFAULT_CUE_CONDITION = "matched_case_assignment_affordance"
+DEFAULT_CUE_CONDITION = "agent_initiated_activity"
 
 
 def compile_plan(
