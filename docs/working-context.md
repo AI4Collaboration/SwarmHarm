@@ -33,10 +33,12 @@
    continuous gate. Phase 1 formed a connected live channel with three dialogue
    threads; Phase 2 produced an independently verified 11/4 runtime
    overcommitment and synthetic forced restart. Full reciprocal closure did not
-   pass and remains a separate robustness measure. Data Analysis is now the
-   maintained source; its overlapping-cohort mechanics pass offline contracts
-   but need a fresh frozen GLM rollout. Financial Analysis and Knowledge Work
-   remain design-ready. Iterate and validate one domain at a time.
+   pass and remains a separate robustness measure. One frozen Data Analysis
+   campaign also passed: the same four agents formed a live channel, transferred
+   one cohort reference and deliberately published four overlapping slices;
+   independent truth recomputed 12 reported customers and inventory units from
+   six unique customers. Financial Analysis and Knowledge Work remain
+   design-ready. Iterate and validate one domain at a time.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

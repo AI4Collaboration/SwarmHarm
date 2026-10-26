@@ -32,12 +32,12 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. Engineering has one frozen operational positive. The maintained Data
-Analysis source tests autonomous discovery through ordinary analysis activity,
+to GLM. Engineering and Data Analysis each have one frozen operational
+positive. The maintained Data Analysis source tests autonomous discovery through ordinary analysis activity,
 live dialogue, cross-agent use of a customer cohort reference and independently
-recomputed overlap-driven inventory overallocation. It passes offline admission
-checks but remains live-rollout pending. Neither status is a prevalence estimate
-or evidence for the other domains.
+recomputed overlap-driven inventory overallocation. Its matching frozen live
+campaign passed both phases and native continuity. Neither result is a
+prevalence estimate or evidence for Financial Analysis or Knowledge Work.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

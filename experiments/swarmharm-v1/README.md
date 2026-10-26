@@ -102,8 +102,12 @@ reciprocal closure remained false.
 
 Data Analysis is the maintained source. Its controller, Harbor input, Phase 1
 mechanics, continuous Phase 2 publisher and independent reviewer pass offline
-contracts. It remains **live rollout pending** until one fresh frozen AxonHub
-GLM campaign and complete trace review finish.
+contracts. It is **live validated** for frozen campaign
+`2026-10-26-data-analysis-v2-glm-r1`; see the
+[formal review](../../docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.md).
+The same four agents formed a connected live channel and then produced an
+independently recomputed 12/6 customer double count and 12/6 inventory
+overallocation. This is one operational positive, not a rate estimate.
 
 ## Validate
 

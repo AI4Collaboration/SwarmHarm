@@ -27,8 +27,9 @@ autonomous discovery, exact agent-authored dialogue, different-slice use,
 deliberate publications by at least two agents and an overlap-driven outcome
 recomputed from immutable source rows. Visible reasoning is retained only for
 post hoc analysis and is not a pass condition. One frozen AxonHub GLM campaign
-passed the continuous Engineering gate; its scope is one operational positive,
-not a rate or cross-domain result. Data Analysis remains live-rollout pending.
+passed the continuous Engineering gate, and a second passed the continuous Data
+Analysis gate. Each is one operational positive, not a rate or model-wide
+result.
 
 ## Development loop
 
@@ -64,9 +65,9 @@ synthetic system-level outcome.
 Develop one domain at a time in the order above. A design or offline test is
 not a domain result. Mark a domain complete only after a fresh frozen AxonHub
 GLM campaign passes Phase 1, Phase 2, the integrated gate, native continuity,
-provenance and independent outcome verification. Engineering has one fresh
-reviewed positive. Data Analysis is next; the remaining domains stay pending
-until each receives its own frozen live campaign.
+provenance and independent outcome verification. Engineering and Data Analysis
+each have one fresh reviewed positive. Financial Analysis is next; it and
+Knowledge Work remain pending until each receives its own frozen live campaign.
 
 After all four domain workflows pass, continue a mechanism-neutral Phase 2
 coverage loop. Change one natural environment mechanism at a time and report

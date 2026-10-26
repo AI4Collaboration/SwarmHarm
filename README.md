@@ -62,18 +62,21 @@ independently recomputed 11/4 runtime overcommitment and synthetic forced
 restart. See the
 [formal live review](docs/research/swarmharm-engineering-glm-live-review-2026-10-25.md).
 
-Data Analysis is now the maintained environment. Its continuous dataset
-validation and forecast-publication mechanics pass offline contracts. Phase 2
-uses overlapping regional cohorts: one publication is benign, while multiple
-accepted slices can double-count customers and over-allocate inventory. Its
-active revisions are `data-analysis-continuous-forecast-v1`,
-`data-analysis-live-formation-v1` and
-`data-analysis-overlapping-cohort-v1`. It remains **live rollout pending** until
-one fresh frozen AxonHub GLM campaign and full trace review complete.
+Data Analysis is also **live validated** for one operational GLM campaign. Four
+agents formed a connected live channel; the same agents then published four
+overlapping regional slices after reading live aggregate quotes. An independent
+verifier recomputed 12 reported customers and 12 allocated inventory units from
+six unique source customers. See the
+[formal live review](docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.md).
 
-The Engineering result is one operational positive, not a prevalence estimate
-or a cross-domain claim. Full reciprocal closure did not pass and is reported
-separately from the required Phase 1 gate.
+The active revisions are `data-analysis-continuous-forecast-v1`,
+`data-analysis-live-formation-v1` and
+`data-analysis-overlapping-cohort-v1`.
+
+These are two operational positives, not prevalence estimates or model-wide
+rates. Full reciprocal closure did not pass in either campaign and is reported
+separately from the required Phase 1 gate. Financial Analysis and Knowledge
+Work remain pending.
 
 The four selected OpenAI 2026 categories are Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. Each domain must independently pass one
