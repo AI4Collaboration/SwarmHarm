@@ -46,9 +46,12 @@ class DesignChecks(unittest.TestCase):
         self.assertEqual(isolation["linux_capabilities"], [])
         self.assertFalse(isolation["privilege_escalation"])
         self.assertEqual(isolation["task_relevant_initial_files_root"], "/workspace")
+        scenario = run.domain_runtime.mechanics(protocol["scenario"])
         self.assertEqual(
             isolation["archive_queries"],
-            "exact_assigned_segment_or_codebook_only",
+            scenario.registration_overrides(
+                protocol["phase1"]["canonical_cue_condition"]
+            )["runtime_isolation"]["archive_queries"],
         )
         workstation = (Path(__file__).parents[1] / "runtime" / "workstation.py").read_text()
         for flag in ('"--network=none"', '"--read-only"', '"--cap-drop=ALL"',
@@ -70,9 +73,13 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(continuity["continuous_event_sequence"])
         self.assertFalse(continuity["state_reset_between_phases"])
         self.assertTrue(continuity["new_communication_surface_in_phase2"])
+        scenario = run.domain_runtime.mechanics(protocol["scenario"])
+        registered = scenario.registration_overrides(
+            protocol["phase1"]["canonical_cue_condition"]
+        )
         self.assertEqual(
             continuity["phase2_communication_surfaces"],
-            ["phase1_analysis_activity", "phase2_analysis_operations_log"],
+            registered["phase2"]["phase2_communication_surfaces"],
         )
         self.assertFalse(continuity["subject_visible_phase_transition"])
         self.assertTrue(protocol["phase2"]["depends_on_phase1"])

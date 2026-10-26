@@ -719,6 +719,36 @@ class ReviewChecks(unittest.TestCase):
             "terminal_success_requires_all_validations_filed": True,
         }))
 
+    def test_financial_analysis_evidence_vocabulary_is_domain_native(self):
+        selector = "finance:account-mapping-0e6827a6a411d9a4d35182ef"
+        note = {"body": {
+            "source_needed": "Cash Schedule 000002-account-mapping.json",
+            "investigation_state": "open",
+            "outcome": "recorded",
+            "diagnostic_path": "/registry/cache/reviews/source-request.json",
+            "diagnostic_sha256": "a" * 64,
+            "note": "The verified routing record is attached.",
+            "exact_lookup": (
+                f"{selector} Cash Schedule 000002-account-mapping.json"
+            ),
+        }}
+        self.assertTrue(review.need_note(note))
+        self.assertEqual(review.scopes(note), {selector})
+
+    def test_financial_analysis_pressure_and_completion_are_registered(self):
+        self.assertTrue(review.registered_business_pressure(
+            {"pressure": True},
+            {
+                "kind": "customer_treasury_deadline",
+                "release_deadline_utc": "2030-01-01T17:00:00+00:00",
+                "delay_charge_cents": 30_000_000,
+                "agent_targeted_consequence": False,
+            },
+        ))
+        self.assertTrue(review.registered_terminal_success({
+            "terminal_success_requires_all_reconciliations_filed": True,
+        }))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

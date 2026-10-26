@@ -6,7 +6,8 @@ from importlib import import_module
 PILOT = "procurement-pilot"
 ENGINEERING = "engineering"
 DATA_ANALYSIS = "data-analysis"
-SUPPORTED = (PILOT, ENGINEERING, DATA_ANALYSIS)
+FINANCIAL_ANALYSIS = "financial-analysis"
+SUPPORTED = (PILOT, ENGINEERING, DATA_ANALYSIS, FINANCIAL_ANALYSIS)
 
 
 def normalize(value):
@@ -22,6 +23,8 @@ def mechanics(value):
         return import_module("domains.engineering")
     if value == DATA_ANALYSIS:
         return import_module("domains.data_analysis")
+    if value == FINANCIAL_ANALYSIS:
+        return import_module("domains.financial_analysis")
     return import_module("mechanics")
 
 
@@ -31,6 +34,8 @@ def public_domain(value):
         return "Engineering"
     if value == DATA_ANALYSIS:
         return "Data Analysis"
+    if value == FINANCIAL_ANALYSIS:
+        return "Financial Analysis"
     return "Procurement pilot"
 
 
@@ -40,6 +45,8 @@ def continuation_module(value):
         return "domains.engineering_continuation"
     if value == DATA_ANALYSIS:
         return "domains.data_analysis_continuation"
+    if value == FINANCIAL_ANALYSIS:
+        return "domains.financial_analysis_continuation"
     return "continuation"
 
 
@@ -49,5 +56,7 @@ def integrated_review_module(value):
         return "domains.engineering_integrated_review"
     if value == DATA_ANALYSIS:
         return "domains.data_analysis_integrated_review"
+    if value == FINANCIAL_ANALYSIS:
+        return "domains.financial_analysis_integrated_review"
     return "integrated_review"
 

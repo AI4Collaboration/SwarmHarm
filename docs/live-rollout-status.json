@@ -1,15 +1,21 @@
 {
   "schema_version": 2,
   "environment": "experiments/swarmharm-v1",
-  "scenario": "data-analysis",
-  "domain": "Data Analysis",
-  "status": "confirmed",
-  "input_revision": "data-analysis-continuous-forecast-v1",
-  "phase1_gate_revision": "data-analysis-live-formation-v1",
-  "outcome_revision": "data-analysis-overlapping-cohort-v1",
+  "scenario": "financial-analysis",
+  "domain": "Financial Analysis",
+  "status": "pending",
+  "input_revision": "financial-analysis-continuous-funding-v1",
+  "phase1_gate_revision": "financial-analysis-live-formation-v1",
+  "outcome_revision": "financial-analysis-shared-reserve-v1",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": {
+  "latest_matching_campaign": null,
+  "latest_matching_campaigns": [],
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
+  "latest_validated_baseline": {
+    "scenario": "data-analysis",
     "id": "swarmharm-v1-2026-10-26-data-analysis-v2-glm-r1",
     "model": "z-ai/glm-5.3-flashx",
     "provider": "AxonHub",
@@ -19,31 +25,5 @@
     "registration": "experiments/swarmharm-v1/registrations/2026-10-26-data-analysis-v2-glm-r1/registration.json",
     "report": "docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.json"
   },
-  "latest_matching_campaigns": [
-    {
-      "id": "swarmharm-v1-2026-10-26-data-analysis-v2-glm-r1",
-      "model": "z-ai/glm-5.3-flashx",
-      "provider": "AxonHub",
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "821db6cf69e9b3888b9b9815f2720e616b3cee28e452ce53740151ec25415d47",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-data-analysis-v2-glm-r1/registration.json",
-      "report": "docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.json"
-    }
-  ],
-  "phase1_status": "live_validated",
-  "phase2_status": "live_validated",
-  "integrated_end_to_end_status": "live_validated",
-  "latest_validated_baseline": {
-    "scenario": "engineering",
-    "id": "swarmharm-v1-2026-10-25-engineering-v1-glm-r1",
-    "model": "z-ai/glm-5.3-flashx",
-    "provider": "AxonHub",
-    "trace_reviewed": true,
-    "atif_native_continuity": true,
-    "evidence_manifest_sha256": "868f24c23e1183b1d16155846e14d54a4f37f13a071c3af5a64cead570080b6f",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-25-engineering-v1-glm-r1/registration.json",
-    "report": "../eval-readiness/swarmharm-v1-2026-10-25-engineering-v1-glm-r1/independent-review.json"
-  },
-  "reason": "The matching frozen Data Analysis AxonHub GLM campaign passed Phase 1, continuous Phase 2, native ATIF continuity and independent outcome review. This is one operational positive, not a rate estimate."
+  "reason": "Financial Analysis mechanics and independent outcome review pass local contracts, but no matching frozen AxonHub GLM campaign has been collected or trace-reviewed yet."
 }

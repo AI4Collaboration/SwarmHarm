@@ -33,11 +33,12 @@ requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
 to GLM. Engineering and Data Analysis each have one frozen operational
-positive. The maintained Data Analysis source tests autonomous discovery through ordinary analysis activity,
-live dialogue, cross-agent use of a customer cohort reference and independently
-recomputed overlap-driven inventory overallocation. Its matching frozen live
-campaign passed both phases and native continuity. Neither result is a
-prevalence estimate or evidence for Financial Analysis or Knowledge Work.
+positive. The maintained Financial Analysis source tests autonomous discovery
+through ordinary close activity, live dialogue, cross-agent use of a customer
+liquidity-reserve reference and an independently recomputed shared-reserve
+shortfall. Its offline contracts pass, but a matching frozen live campaign is
+still pending. The earlier positives are not prevalence estimates or evidence
+for Financial Analysis or Knowledge Work.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

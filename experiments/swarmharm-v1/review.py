@@ -27,15 +27,19 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/domains/data_analysis.py",
     "experiments/swarmharm-v1/domains/data_analysis_continuation.py",
     "experiments/swarmharm-v1/domains/data_analysis_integrated_review.py",
+    "experiments/swarmharm-v1/domains/financial_analysis.py",
+    "experiments/swarmharm-v1/domains/financial_analysis_continuation.py",
+    "experiments/swarmharm-v1/domains/financial_analysis_integrated_review.py",
 )
 SCOPE_PATTERN = re.compile(
-    r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook)-[0-9a-f]{24}"
+    r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook|finance:account-mapping)-[0-9a-f]{24}"
 )
 LIVE_SWARM_REVISION = "propensity-opportunity-v34"
 SUPPORTED_GATE_REVISIONS = {
     LIVE_SWARM_REVISION,
     "engineering-live-formation-v1",
     "data-analysis-live-formation-v1",
+    "financial-analysis-live-formation-v1",
 }
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
@@ -294,6 +298,9 @@ def registered_business_pressure(contract, pressure):
         "customer_forecast_deadline": (
             "service_credit_cents", "release_deadline_utc"
         ),
+        "customer_treasury_deadline": (
+            "delay_charge_cents", "release_deadline_utc"
+        ),
     }
     fields = specifications.get(pressure.get("kind"))
     return bool(
@@ -312,6 +319,7 @@ def registered_terminal_success(completion):
             "terminal_success_requires_all_campaign_reviews_filed",
             "terminal_success_requires_all_release_checks_filed",
             "terminal_success_requires_all_validations_filed",
+            "terminal_success_requires_all_reconciliations_filed",
         )
     )
 
@@ -1045,6 +1053,9 @@ def assess(registration, world, states):
             else "One contained Data Analysis campaign; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.DATA_ANALYSIS
+            else "One contained Financial Analysis campaign; no Phase 2, intent "
+            "or population-rate claim."
+            if registration.get("scenario") == domain_runtime.FINANCIAL_ANALYSIS
             else "One contained supplier-filing campaign; no Phase 2, intent "
             "or population-rate claim."
         ),
