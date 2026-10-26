@@ -40,9 +40,12 @@ if HARBOR_VERSION!='0.24.0':
 
 MODELS={'glm':'z-ai/glm-5.3-flashx'}
 UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-flashx'}
-AXONHUB_ENDPOINT='https://lmportal.iefbr14.xyz/v1/responses'
+DEFAULT_REASONING='high'
+DEFAULT_SCENARIO=domain_runtime.ENGINEERING
+AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
+AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
-AXONHUB_CATALOG='https://lmportal.iefbr14.xyz/v1/models'
+AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
@@ -86,7 +89,12 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
 def verify_routes(key_file):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
-    routes={'checked_at':utc(),'model':model,'upstream_model':upstream,
+    routes={'checked_at':utc(),'api_base':AXONHUB_API_BASE,
+        'responses_endpoint':AXONHUB_ENDPOINT,
+        'axonhub_catalog_endpoint':AXONHUB_CATALOG,
+        'openrouter_catalog_endpoint':OPENROUTER_CATALOG,
+        'model':model,'upstream_model':upstream,
+        'reasoning_effort':DEFAULT_REASONING,
         'openrouter':catalog(
             f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream),
         'axonhub':catalog(AXONHUB_CATALOG,model,key_file)}
@@ -99,6 +107,13 @@ def validate_response_model(request,response):
     expected=request['model'];returned=response.get('model')
     if returned!=expected:
         raise ValueError(f'Provider returned model {returned!r}; expected frozen model {expected!r}')
+def registration_api_base(registration):
+    base=registration.get('api_base')
+    if base:return base.rstrip('/')
+    endpoint=registration.get('endpoint','')
+    if not endpoint.endswith('/responses'):
+        raise ValueError('Frozen AxonHub endpoint must end in /responses')
+    return endpoint[:-len('/responses')].rstrip('/')
 def retryable_transport_error(error,error_file):
     if isinstance(error,(ValueError,AssertionError)):return False
     if not error_file.exists():return True
@@ -177,7 +192,7 @@ def normalized_filing_deadline(value=None):
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
-            filing_deadline_utc=None,scenario=domain_runtime.PILOT):
+            filing_deadline_utc=None,scenario=DEFAULT_SCENARIO):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     key_file=guardrails.credential_file(key_file,REPO)
@@ -238,10 +253,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     for path in paths:
         target=root/'code'/path.relative_to(REPO);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,target)
     reg={'family':'swarmharm/swarmharm-v1','created_at':utc(),'models':MODELS,
-        'upstream_models':UPSTREAM_MODELS,'reasoning':'high',
+        'upstream_models':UPSTREAM_MODELS,'reasoning':DEFAULT_REASONING,
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'endpoint':AXONHUB_ENDPOINT,'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
+        'api_base':AXONHUB_API_BASE,'endpoint':AXONHUB_ENDPOINT,
+        'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
         'input_revision':'continuous-formation-to-external-effect-v25',
         'phase1_gate_revision':'propensity-opportunity-v34',
         'outcome_revision':'collective-business-gap-v20',
@@ -725,7 +741,7 @@ def collect(root,registration_dir):
     lock=(root/'.collector.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     transport=module('swarmharm_v1_axonhub_transport',REPO/'experiments/runtime/transport.py')
-    transport.configure(next(iter(reg['models'].values())), 'https://lmportal.iefbr14.xyz/v1', key_file=AXONHUB_KEY_FILE,
+    transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=AXONHUB_KEY_FILE,
         max_output_tokens=budget['max_output_tokens_per_response'])
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
@@ -1125,8 +1141,8 @@ if __name__=='__main__':
         default=schedule.DEFAULT_CUE_CONDITION,
         help='Registered natural business cue level; used only when preparing a fresh run.')
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
-        default=domain_runtime.KNOWLEDGE_WORK,
-        help='Continuous domain scenario; defaults to the maintained Knowledge Work source.')
+        default=DEFAULT_SCENARIO,
+        help='Continuous domain scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     a=p.parse_args()

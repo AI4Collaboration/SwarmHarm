@@ -23,13 +23,30 @@ Before every campaign:
 Do not use a drifting `latest` alias or inherit a model ID from a historical run.
 Provider errors, filters and refusals remain separate from behavioral results.
 
-The current default route verified in both catalogs on **24 October 2026** is:
+The current default route verified in both catalogs on **26 October 2026** is:
 
 - GLM FlashX: `z-ai/glm-5.3-flashx`.
+
+The maintained registration settings are:
+
+- API base: `https://lmportal.iefbr14.xyz/v1`;
+- Responses endpoint: `https://lmportal.iefbr14.xyz/v1/responses`;
+- reasoning effort: `high`;
+- request timeout: 300 seconds with at most three transport attempts;
+- maximum output: 16,384 tokens per response;
+- canonical provider concurrency: four for four simultaneously active agents;
+- actor wall clock: 900 seconds; and
+- campaign wall clock: 1,800 seconds.
 
 Every new registration queries both catalogs again and freezes its exact
 identifier. Future model additions must be explicit; they never silently change
 the default.
+
+Every registration also freezes the AxonHub API base, Responses endpoint,
+catalog endpoint, reasoning effort and request budget. Collection reads the API
+base from that frozen registration rather than from a second hard-coded value.
+The maintained CLI default is Engineering; the other three maintained domains
+must still be selected explicitly when preparing their own registrations.
 
 Raw evidence retains the route actually used, but only the current frozen
 registration defines maintained routing.

@@ -296,6 +296,9 @@ class CollectorChecks(unittest.TestCase):
             routes = run.verify_routes(key)
         self.assertEqual(routes["model"], "z-ai/glm-5.3-flashx")
         self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3-flashx")
+        self.assertEqual(routes["api_base"], run.AXONHUB_API_BASE)
+        self.assertEqual(routes["responses_endpoint"], run.AXONHUB_ENDPOINT)
+        self.assertEqual(routes["reasoning_effort"], run.DEFAULT_REASONING)
         self.assertEqual(
             calls[0],
             (
@@ -305,6 +308,21 @@ class CollectorChecks(unittest.TestCase):
             ),
         )
         self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3-flashx", key))
+
+    def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
+        self.assertEqual(run.DEFAULT_SCENARIO, "engineering")
+        self.assertEqual(run.DEFAULT_REASONING, "high")
+        self.assertEqual(
+            run.registration_api_base({
+                "api_base": run.AXONHUB_API_BASE,
+                "endpoint": run.AXONHUB_ENDPOINT,
+            }),
+            run.AXONHUB_API_BASE,
+        )
+        self.assertEqual(
+            run.registration_api_base({"endpoint": run.AXONHUB_ENDPOINT}),
+            run.AXONHUB_API_BASE,
+        )
 
     def test_launcher_forwards_registration_and_host_only_key(self):
         root = Path("/tmp/swarmharm-v1")
@@ -334,6 +352,7 @@ class CollectorChecks(unittest.TestCase):
                     4,
                     run_controls=False,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
+                    scenario="procurement-pilot",
                 )
             reg = run.load(root / "registration.json")
             self.assertEqual(
@@ -716,7 +735,10 @@ class CollectorChecks(unittest.TestCase):
             }
             with patch.object(run, "verify_routes", return_value=routes):
                 with self.assertRaisesRegex(ValueError, "every context active together"):
-                    run.prepare(root, registration, key, 4, 1)
+                    run.prepare(
+                        root, registration, key, 4, 1,
+                        scenario="procurement-pilot",
+                    )
 
     def test_provider_concurrency_is_independent_of_active_agent_cohort(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -730,7 +752,10 @@ class CollectorChecks(unittest.TestCase):
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
             with patch.object(run, "verify_routes", return_value=routes):
-                run.prepare(root, registration, key, 4, 4, 1, run_controls=False)
+                run.prepare(
+                    root, registration, key, 4, 4, 1,
+                    run_controls=False, scenario="procurement-pilot",
+                )
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
             self.assertEqual(reg["budget"]["provider_concurrency"], 1)
@@ -743,7 +768,10 @@ class CollectorChecks(unittest.TestCase):
                 key = self.key_file(temporary)
                 with patch.object(run, "verify_routes", return_value=routes):
                     with self.assertRaisesRegex(ValueError, "provider concurrency"):
-                        run.prepare(root, registration, key, 4, 4, invalid, run_controls=False)
+                        run.prepare(
+                            root, registration, key, 4, 4, invalid,
+                            run_controls=False, scenario="procurement-pilot",
+                        )
 
 
 if __name__ == "__main__":
