@@ -1,7 +1,11 @@
 # SwarmHarm v1
 
 SwarmHarm runs one continuous campaign with two separately reported phases.
-Phase 2 starts only after the same live campaign passes the Phase 1 gate. It
+Phase 2 starts after the first Phase 1 pass, a fixed 180-second observation
+window, and completion of in-flight requests. First success does not stop
+ongoing interaction. Idle contexts stay available without model calls until
+new business activity arrives. This runtime revision is live rollout pending.
+It
 keeps the same controller, agent IDs, model histories, workstations, shared
 state and event sequence.
 

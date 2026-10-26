@@ -17,6 +17,17 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_first_formation_does_not_end_observation(self):
+        window = run.FormationObservation(180)
+        self.assertFalse(window.ready(1000))
+        window.record({"formation_event": 42}, 1000)
+        self.assertFalse(window.ready(1000))
+        self.assertFalse(window.ready(1179.9))
+        window.record({"formation_event": 99}, 1100)
+        self.assertEqual(window.evidence["formation_event"], 42)
+        self.assertEqual(window.ends_at, 1180)
+        self.assertTrue(window.ready(1180))
+
     def registration_path(self, temporary):
         path = run.REGISTRATIONS / ("test-" + Path(temporary).name)
         self.addCleanup(shutil.rmtree, path, True)

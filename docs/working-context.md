@@ -1,6 +1,12 @@
 # SwarmHarm working context
 
-**Latest result.** Engineering, Data Analysis, Financial Analysis and Knowledge
+**Current work.** Extend natural Phase 1 interaction before more rollouts.
+First formation now opens a fixed 180-second observation window; it does not
+stop the phase. Keep event-driven continuation and do not call idle models
+without new records. The runtime revision needs fresh registration and live
+validation. Do not launch rollout@k or new live collection yet.
+
+**Latest result (preceding runtime).** Engineering, Data Analysis, Financial Analysis and Knowledge
 Work each have one fresh GLM FlashX and one fresh GPT-5.6 Sol campaign. All
 eight frozen AxonHub campaigns passed the registered continuous Phase 1→Phase
 2 chain. All 32 ATIF-v1.8 trajectories passed native continuity, with zero

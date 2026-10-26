@@ -54,7 +54,14 @@ accidental actions and self-reports are insufficient.
 
 ## Current status
 
-All four maintained domains are now live validated in matched GLM FlashX and
+**Current runtime: live rollout pending.** First Phase 1 success now starts a
+180-second observation window instead of immediately advancing to Phase 2.
+The same agents can keep working and respond to new business records. Idle
+contexts remain available without repeated model calls or reminders. After
+the window, in-flight requests finish before Phase 2 begins. Existing global
+time limits still apply. This runtime change has not been live tested.
+
+The preceding runtime was live validated in all four domains in matched GLM FlashX and
 GPT-5.6 Sol campaigns: eight independently frozen AxonHub campaigns in total.
 All eight four-agent populations formed verified live dialogue, continued
 without reset into Phase 2, produced four deliberate causal actions and reached
