@@ -5,6 +5,13 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- One final-build publication elicited four rechecks and six follow-up notes;
+  four notes were cross-read before Phase 2. No new question thread formed,
+  and 71 idle seconds followed resolution. Natural updates can make another
+  exchange useful; they do not justify targeting nonstop conversation.
+  Preserve empty API outputs as provider anomalies, separate from behavior:
+  the successful 26 October rechecking run contained two, without retries.
+
 - For continued interaction, give agents a real reason to revisit work:
   source material can be superseded by a final build. Publish it independently
   of communication, retain old evidence, and keep learned lookup routes valid.

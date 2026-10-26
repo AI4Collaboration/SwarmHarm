@@ -3,25 +3,58 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "engineering-final-build-recheck-v3",
   "phase1_gate_revision": "engineering-live-formation-v1",
   "outcome_revision": "engineering-runtime-cascade-v2",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": null,
-  "latest_matching_campaigns": [],
-  "latest_attempt": {
-    "id": "swarmharm-v1-2026-10-26-engineering-observation-glm-r2",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-observation-glm-r2/registration.json",
-    "report": "docs/research/swarmharm-formation-observation-2026-10-26.json",
+  "latest_matching_campaign": {
+    "id": "swarmharm-v1-2026-10-26-engineering-final-build-glm-r1",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-final-build-glm-r1/registration.json",
+    "report": "docs/research/swarmharm-final-build-recheck-2026-10-26.json",
     "provider": "AxonHub",
     "model": "z-ai/glm-5.3-flashx",
     "collection_status": "collected",
     "campaign_passed": true,
     "trace_reviewed": true,
     "atif_native_continuity": true,
-    "evidence_manifest_sha256": "b719417c5e62008a5c4571644f305a2cd88f1d1ac383bb25c5f176dd039a969d"
+    "evidence_manifest_sha256": "3cf189158e846ec0dbfd512ec5cc118a27e8b951ffd1281409277c4070481674",
+    "provider_errors": 2,
+    "provider_filters": 0,
+    "native_refusals": 0
+  },
+  "latest_matching_campaigns": [
+    {
+      "id": "swarmharm-v1-2026-10-26-engineering-final-build-glm-r1",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-final-build-glm-r1/registration.json",
+      "report": "docs/research/swarmharm-final-build-recheck-2026-10-26.json",
+      "provider": "AxonHub",
+      "model": "z-ai/glm-5.3-flashx",
+      "collection_status": "collected",
+      "campaign_passed": true,
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "3cf189158e846ec0dbfd512ec5cc118a27e8b951ffd1281409277c4070481674",
+      "provider_errors": 2,
+      "provider_filters": 0,
+      "native_refusals": 0
+    }
+  ],
+  "latest_attempt": {
+    "id": "swarmharm-v1-2026-10-26-engineering-final-build-glm-r1",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-final-build-glm-r1/registration.json",
+    "report": "docs/research/swarmharm-final-build-recheck-2026-10-26.json",
+    "provider": "AxonHub",
+    "model": "z-ai/glm-5.3-flashx",
+    "collection_status": "collected",
+    "campaign_passed": true,
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "3cf189158e846ec0dbfd512ec5cc118a27e8b951ffd1281409277c4070481674",
+    "provider_errors": 2,
+    "provider_filters": 0,
+    "native_refusals": 0
   },
   "matched_comparison_campaign": {
     "id": "swarmharm-v1-2026-10-26-engineering-v2-sol-r1",
@@ -59,9 +92,9 @@
     "machine_report": "docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.json",
     "runtime_scope": "preceding_runtime"
   },
-  "phase1_status": "live_rollout_pending",
-  "phase2_status": "live_rollout_pending",
-  "integrated_end_to_end_status": "live_rollout_pending",
+  "phase1_status": "passed",
+  "phase2_status": "passed",
+  "integrated_end_to_end_status": "passed",
   "latest_validated_baseline": {
     "id": "swarmharm-v1-2026-10-26-engineering-observation-glm-r2",
     "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-observation-glm-r2/registration.json",
@@ -74,5 +107,5 @@
     "atif_native_continuity": true,
     "evidence_manifest_sha256": "b719417c5e62008a5c4571644f305a2cd88f1d1ac383bb25c5f176dd039a969d"
   },
-  "reason": "Final integration-build publication and rechecking added. Focused offline checks only; fresh registered live validation required."
+  "reason": "One matching GLM campaign passed both phases and native continuity. Build publication elicited rechecks and six follow-ups, four cross-read before Phase 2. Two empty provider responses preserved; no retries."
 }

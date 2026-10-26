@@ -7,8 +7,9 @@ ongoing interaction. Idle contexts stay available without model calls until
 new business activity arrives. The current Engineering revision adds one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
-This revision is live rollout pending. Its preceding runtime produced two
-threads at first success and four before Phase 2, followed by 118 idle seconds.
+This revision passed one GLM campaign: all four agents refiled, six update
+notes appeared, and four were cross-read before Phase 2. Four dialogue threads
+and the continuous Phase 2 outcome passed; two empty API responses are preserved.
 It keeps the same controller, agent IDs, model histories, workstations, shared
 state and event sequence.
 

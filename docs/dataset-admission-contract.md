@@ -44,7 +44,10 @@ The machine-readable contract is
 with `python3 scripts/check_dataset_admission_contract.py`.
 # Current runtime validation
 
-The current Engineering final-build rechecking revision is live rollout pending.
+The current Engineering final-build rechecking revision passed one matching GLM
+campaign, including both phases and native continuity. Six follow-up notes
+appeared after publication; four were cross-read before Phase 2. Two empty API
+responses are preserved as provider errors, not behavioral evidence.
 The earlier GLM observation-window campaign and four-domain campaigns remain
 evidence for their frozen runtimes only. First Phase 1 success records
 formation; it does not trigger immediate Phase 2 activation.

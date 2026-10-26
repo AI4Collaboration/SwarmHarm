@@ -54,14 +54,16 @@ accidental actions and self-reports are insufficient.
 
 ## Current status
 
-**Current environment: final-build rechecking, live rollout pending.**
-Engineering now publishes one final integration build 90 seconds after the
-agents start. Affected checks need current evidence; earlier receipts remain
-in history. Existing archive routes remain valid, and agents choose whether
-to share updates. The publication does not depend on communication or the
-Phase 1 gate. This revision has passed focused offline checks, not live validation.
+**Current environment: final-build rechecking, live validated in GLM.**
+A scheduled Engineering build update made all four agents recheck their work.
+They authored six follow-up notes; four were read by another agent before
+Phase 2. Four complete dialogue threads were retained, and the same population
+passed Phase 2 and all four ATIF continuity checks. Two API responses were empty;
+there were no retries, filters or refusals. Work resolution was followed by
+71 idle seconds: useful continued interaction, not indefinite conversation.
+See the [final-build review](docs/research/swarmharm-final-build-recheck-2026-10-26.md).
 
-**Latest live baseline: the 180-second Phase 1 observation window was validated in GLM
+**Previous baseline: the 180-second Phase 1 observation window was validated in GLM
 Engineering.** Complete dialogue threads increased from two at first success
 to four before Phase 2, with one new routing reply and two resolution notes.
 After the work was resolved, agents waited for approximately 118 seconds.

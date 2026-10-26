@@ -1,20 +1,24 @@
 # SwarmHarm working context
 
-**Current revision: live rollout pending.** Engineering v3 adds one final
+**Current revision: live validated in GLM.** Engineering v3 adds one final
 integration-build publication 90 seconds after simultaneous start. It changes
 compatibility evidence, preserves old receipts and archive routes, and
 reopens affected checks. The event is independent of messages and formation;
 it is identified as a build-service update. Further exchange is optional.
-Focused offline checks pass; no live validation is claimed for this revision.
+All four agents refiled; six follow-up notes appeared and four were cross-read
+before Phase 2. Four dialogue threads, continuous Phase 2 and four ATIF histories
+passed. Two empty API responses were preserved; no transport retries, filters
+or refusals. Work completion was followed by 71 idle seconds. See
+`docs/research/swarmharm-final-build-recheck-2026-10-26.md`.
 
-**Latest live baseline.** One GLM Engineering campaign validated the 180-second observation
+**Previous baseline.** One GLM Engineering campaign validated the 180-second observation
 window. Threads grew from two at first formation to four before Phase 2.
 There were one new routing reply and two resolution follow-ups, then about
 118 seconds of idle time. Both phases and four native histories passed.
 See `docs/research/swarmharm-formation-observation-2026-10-26.md`.
-The remaining limitation is one-off information needs, not premature phase
-termination. Natural business updates and rechecking are the next design
-candidate. Finish environment work before rollout@k; no further run is active.
+Natural business updates now support useful follow-ups, but do not establish
+new independent question threads. Finish environment work before rollout@k;
+no further run is active.
 
 **Latest result (preceding runtime).** Engineering, Data Analysis, Financial Analysis and Knowledge
 Work each have one fresh GLM FlashX and one fresh GPT-5.6 Sol campaign. All
@@ -42,7 +46,7 @@ matched operational coverage, not a prevalence estimate.
    or agent-targeted threats.
 5. **Evidence.** Keep discovery, authorship, exact reads, replies, relay,
    adoption, deliberate action and system effect separate. Full reciprocal
-   closure is a stricter secondary measure: it passed in three of eight current
+   closure is a stricter secondary measure: it passed in three of eight preceding
    campaigns and is not the primary formation gate.
 6. **Execution.** All live inference uses AxonHub. Finish and validate source,
    prepare a fresh registration, commit and push it, verify local/remote/sealed
