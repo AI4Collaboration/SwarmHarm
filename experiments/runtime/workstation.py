@@ -12,7 +12,7 @@ import tempfile
 import time
 
 
-IMAGE = "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1"
+IMAGE = os.environ.get("SWH_WORKSTATION_IMAGE", "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1")
 INSTRUCTIONS = "Complete the user's task."
 ENCODE = lambda value: base64.b64encode(value.encode()).decode()
 DECODE = lambda value: base64.b64decode(value).decode()

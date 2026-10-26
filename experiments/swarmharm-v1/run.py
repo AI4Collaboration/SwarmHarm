@@ -10,6 +10,7 @@ import importlib.util
 import io
 import http.client
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -42,11 +43,22 @@ MODELS={'glm':'z-ai/glm-5.3-flashx'}
 UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-flashx'}
 DEFAULT_REASONING='high'
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING
-AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
+AXONHUB_API_BASE=os.environ.get('SWH_API_BASE','https://lmportal.iefbr14.xyz/v1')
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
 AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
+API_KEY_ENV=os.environ.get('SWH_API_KEY_ENV','AXONHUB_API_KEY')
+SOURCE_REF=os.environ.get('SWH_SOURCE_REF','refs/heads/main')
+PROVIDER_ROUTE=json.loads(os.environ.get('SWH_PROVIDER_ROUTE','null'))
+
+def credential_path(path):
+    if path is not None:return guardrails.credential_file(path,REPO)
+    if API_KEY_ENV not in {'OPENROUTER_API_KEY','AXONHUB_API_KEY'}:
+        raise ValueError('Unsupported credential environment name')
+    if not os.environ.get(API_KEY_ENV,'').strip():
+        raise ValueError('Existing host-only API credential is unavailable')
+    return None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
         'max_actor_seconds':900,'max_batch_seconds':1800,'provider_concurrency':4,
@@ -62,6 +74,9 @@ def utc():return datetime.now(timezone.utc).isoformat()
 def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
             timeout_seconds=CATALOG_TIMEOUT_SECONDS):
     headers={'User-Agent':'swarmharm-formation-route-audit/1.0'}
+    if key_file is None and url == AXONHUB_CATALOG:
+        key=os.environ.get(API_KEY_ENV,'').strip()
+        if key:headers['Authorization']='Bearer '+key
     if key_file is not None:
         key=Path(key_file).expanduser().read_text().strip()
         if not key:raise RuntimeError('AxonHub key file is empty')
@@ -195,7 +210,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
-    key_file=guardrails.credential_file(key_file,REPO)
+    key_file=credential_path(key_file)
     if root.exists():raise FileExistsError('Use a fresh output directory.')
     if registration_dir.exists():raise FileExistsError('Use a fresh registration directory.')
     routes=verify_routes(key_file)
@@ -218,6 +233,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if AXONHUB_API_BASE == 'https://openrouter.ai/api/v1':
+        budget['max_transport_attempts_per_request']=1
     budget['active_contexts_natural']=resolved_active_contexts
     if budget['active_contexts_natural'] != population:
         raise ValueError('canonical formation requires every context active together')
@@ -257,7 +274,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
         'api_base':AXONHUB_API_BASE,'endpoint':AXONHUB_ENDPOINT,
-        'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
+        'credential_source':'Existing host-only API credential; never supplied to subjects.',
+        'api_key_env':API_KEY_ENV,'provider_route':PROVIDER_ROUTE,'source_ref':SOURCE_REF,
         'input_revision':'continuous-formation-to-external-effect-v25',
         'phase1_gate_revision':'propensity-opportunity-v34',
         'outcome_revision':'collective-business-gap-v20',
@@ -602,7 +620,7 @@ def verify_collection_freeze(root,registration_dir,reg):
     require(not status.strip(),'Git worktree must be clean before inference.')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
     remote=subprocess.check_output(
-        ['git','ls-remote','origin','refs/heads/main'],cwd=REPO,text=True
+        ['git','ls-remote','origin',reg.get('source_ref','refs/heads/main')],cwd=REPO,text=True
     ).split()[0]
     require(head==remote,'Registration source must be committed and pushed before inference.')
     tracked=subprocess.run(
@@ -720,8 +738,11 @@ def collect(root,registration_dir):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     global AXONHUB_KEY_FILE
-    AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
+    global API_KEY_ENV
     reg=load(root/'registration.json')
+    API_KEY_ENV=reg.get('api_key_env','AXONHUB_API_KEY')
+    AXONHUB_KEY_FILE=credential_path(AXONHUB_KEY_FILE)
+    require(lab.IMAGE == reg['image'],'Runtime image differs from registration.')
     scenario=domain_runtime.normalize(reg.get('scenario'))
     require(not (root/'started.json').exists(),'Never replace trajectories.')
     require(reg.get('phase2',{}).get('depends_on_phase1') is True,
@@ -741,7 +762,7 @@ def collect(root,registration_dir):
     lock=(root/'.collector.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     transport=module('swarmharm_v1_axonhub_transport',REPO/'experiments/runtime/transport.py')
-    transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=AXONHUB_KEY_FILE,
+    transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=AXONHUB_KEY_FILE,key_env=API_KEY_ENV,
         max_output_tokens=budget['max_output_tokens_per_response'])
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
@@ -823,7 +844,7 @@ def collect(root,registration_dir):
         if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
         if classification['status']=='text_refusal_candidate':print(json.dumps({'alert':'text_refusal_candidate','request':str((folder/label).relative_to(root))}),flush=True)
         return value
-    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']}}
+    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']},**({'provider':reg['provider_route']} if reg.get('provider_route') else {})}
     cleanup=[]
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
@@ -1126,7 +1147,7 @@ if __name__=='__main__':
     def stop_operator(signum,frame):raise KeyboardInterrupt()
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
-    p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path,required=True)
+    p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path,help='Existing host-only key file, or use the frozen host environment name.')
     p.add_argument('--model-id',default='z-ai/glm-5.3-flashx',
         help='AxonHub model ID; defaults to the current GLM route.')
     p.add_argument('--upstream-model-id',
@@ -1146,7 +1167,7 @@ if __name__=='__main__':
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     a=p.parse_args()
-    AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
+    AXONHUB_KEY_FILE=a.key_file
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)
     if a.phase=='prepare':

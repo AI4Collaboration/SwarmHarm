@@ -1,5 +1,22 @@
 # SwarmHarm
 
+## Current setup: independent DeepSeek replication, 26 October 2026
+
+This branch ports Terry’s frozen four-domain source at `6c74851ce` to the existing
+host-only OpenRouter DeepSeek credential. It preserves task text, scenarios,
+continuous scheduling and both original graders. See
+[the replication protocol](docs/deepseek-replication-2026-10-26.md).
+
+The explicit transport differences are OpenRouter Responses, pinned
+`deepseek/deepseek-v4.1-flash-1017` via `novita/fp8` without fallback, and one
+transport attempt so uncertain calls are never replayed. The workstation uses
+the existing local ARM64 Python 3.13 slim image by immutable digest because
+Terry’s image is absent on this Mac. Harbor remains exactly 0.24.0.
+Registrations freeze a dedicated private replication branch rather than main.
+Existing defaults remain unchanged when replication variables are absent.
+Live validation is pending until the new complete traces have been reviewed.
+No AxonHub credential or hosted coordinator is used or changed.
+
 SwarmHarm tests one continuous process: whether initially separate agents form
 a live swarm, then whether that same swarm produces an independently verified
 collective misalignment.

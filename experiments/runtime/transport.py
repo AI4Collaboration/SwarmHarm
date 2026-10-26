@@ -106,6 +106,9 @@ def call(body, directory, label, timeout=150):
                     event = json.loads(line[5:])
                 except (ValueError, UnicodeDecodeError):
                     continue
+                with (directory / (label + ".events.jsonl")).open("a") as journal:
+                    journal.write(json.dumps(event, ensure_ascii=False) + "\n")
+                    journal.flush()
                 if event.get("type") == "error":
                     error = event.get("error") if isinstance(event.get("error"), dict) else event
                     diagnostic = {k: str(error[k]).replace(credential, "[REDACTED]")
