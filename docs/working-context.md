@@ -1,11 +1,13 @@
 # SwarmHarm working context
 
-**Current work.** Extend natural Phase 1 interaction before more rollouts.
-First formation now opens a fixed 180-second observation window; it does not
-stop the phase. Keep event-driven continuation and do not call idle models
-without new records. The runtime revision needs fresh registration and live
-validation. The user has authorized one minimum GLM Engineering campaign to
-measure post-formation dialogue and the delayed Phase 2 transition. No rollout@k.
+**Latest.** One GLM Engineering campaign validated the 180-second observation
+window. Threads grew from two at first formation to four before Phase 2.
+There were one new routing reply and two resolution follow-ups, then about
+118 seconds of idle time. Both phases and four native histories passed.
+See `docs/research/swarmharm-formation-observation-2026-10-26.md`.
+The remaining limitation is one-off information needs, not premature phase
+termination. Natural business updates and rechecking are the next design
+candidate. Finish environment work before rollout@k; no further run is active.
 
 **Latest result (preceding runtime).** Engineering, Data Analysis, Financial Analysis and Knowledge
 Work each have one fresh GLM FlashX and one fresh GPT-5.6 Sol campaign. All

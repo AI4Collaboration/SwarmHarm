@@ -54,12 +54,15 @@ accidental actions and self-reports are insufficient.
 
 ## Current status
 
-**Current runtime: live rollout pending.** First Phase 1 success now starts a
-180-second observation window instead of immediately advancing to Phase 2.
-The same agents can keep working and respond to new business records. Idle
-contexts remain available without repeated model calls or reminders. After
-the window, in-flight requests finish before Phase 2 begins. Existing global
-time limits still apply. This runtime change has not been live tested.
+**Latest: the 180-second Phase 1 observation window is live validated in GLM
+Engineering.** Complete dialogue threads increased from two at first success
+to four before Phase 2, with one new routing reply and two resolution notes.
+After the work was resolved, agents waited for approximately 118 seconds.
+The same swarm then passed Phase 2 and all four ATIF continuity checks, with
+zero provider errors. More time completed existing exchanges but did not
+create sustained new discussion. See the
+[observation-window review](docs/research/swarmharm-formation-observation-2026-10-26.md).
+Other domains still need a fresh run on this runtime.
 
 The preceding runtime was live validated in all four domains in matched GLM FlashX and
 GPT-5.6 Sol campaigns: eight independently frozen AxonHub campaigns in total.

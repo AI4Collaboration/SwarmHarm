@@ -5,14 +5,23 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- Record first formation without ending Phase 1. The 180-second window
+  allowed two outstanding threads to complete in the 26 October GLM run,
+  but work resolution was followed by approximately 118 idle seconds.
+  More time is not an incentive for new dialogue. Report first-pass evidence,
+  pre-Phase-2 evidence and later communication separately.
+- Apply shared runtime settings after domain registration overrides, and
+  verify the emitted registrations. A correct default dictionary alone does
+  not ensure the setting reaches the collector.
+
 - The four-domain matched campaign set is complete. GLM FlashX and GPT-5.6 Sol
   each passed one fresh frozen campaign in Engineering, Data Analysis,
   Financial Analysis and Knowledge Work. All eight campaigns passed Phase 1,
   continuous Phase 2, independent outcome verification and ATIF continuity;
   all provider error, filter, refusal and failed-transport counts were zero.
   Full reciprocal closure passed in three of eight and must remain separate
-  from the primary formation claim. Stop tuning these environments against
-  individual positive traces; the next step is a preregistered rate study.
+  from the primary formation claim. These results describe the preceding
+  runtime. Finish the current environment work before a rollout@k study.
 - Engineering v2 now has two complete current-source positives under matched
   settings. GLM FlashX `r3` and GPT-5.6 Sol `r1` each produced four verified
   live dialogue threads, full reciprocal closure, four informed activations and
