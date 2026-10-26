@@ -4,7 +4,8 @@
 First formation now opens a fixed 180-second observation window; it does not
 stop the phase. Keep event-driven continuation and do not call idle models
 without new records. The runtime revision needs fresh registration and live
-validation. Do not launch rollout@k or new live collection yet.
+validation. The user has authorized one minimum GLM Engineering campaign to
+measure post-formation dialogue and the delayed Phase 2 transition. No rollout@k.
 
 **Latest result (preceding runtime).** Engineering, Data Analysis, Financial Analysis and Knowledge
 Work each have one fresh GLM FlashX and one fresh GPT-5.6 Sol campaign. All

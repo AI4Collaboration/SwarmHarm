@@ -531,7 +531,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'plan_file':'phase2-plan.json',
             'depends_on_phase1':True,
             'activation_gate':'verified_phase1_live_communication',
-            'formation_observation_seconds':180,
             'activation_waits_for_inflight_requests_to_drain':True,
             'new_population':False,
             'new_contexts':False,
@@ -562,6 +561,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'route-confirmation.json','phase2-plan.json')}}
     if hasattr(scenario_mechanics, 'registration_overrides'):
         reg.update(scenario_mechanics.registration_overrides(cue_condition))
+    reg['phase2']['formation_observation_seconds']=180
     registration_dir.mkdir(parents=True)
     topology_sentence = (
         'The canonical shared-system condition has no predefined agent topology.'
@@ -587,6 +587,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             next(iter(MODELS.values())), cue_condition,
             budget['provider_concurrency'], topology_sentence,
         ))
+    with (root/'PROTOCOL.md').open('a') as protocol:
+        protocol.write(
+            '\nFirst Phase 1 success records formation and starts a fixed '
+            '180-second observation window. Existing work and event-driven '
+            'interaction continue without a subject-visible stage notification. '
+            'After the window, in-flight requests drain before Phase 2 starts.\n')
     reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{

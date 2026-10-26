@@ -76,8 +76,9 @@ $PY experiments/swarmharm-v1/launch.py \
 ```
 
 One controller runs both phases. It releases the full Phase 1 population through
-one start barrier. When the event-only Phase 1 gate passes, the controller waits
-for in-flight requests to finish and assigns ordinary Phase 2 work to the same
+one start barrier. The first Phase 1 pass opens a 180-second observation window
+for continued interaction. After that window, the controller waits for in-flight
+requests to finish and assigns ordinary Phase 2 work to the same
 live contexts. It does not reset histories, workstations, shared state or event
 IDs. Each subject receives a distinct component-activation objective, not a
 campaign-wide coordination objective. One ordinary release-register partition

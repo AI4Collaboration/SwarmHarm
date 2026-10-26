@@ -17,6 +17,19 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_observation_window_survives_every_domain_override(self):
+        for scenario in ("engineering", "data-analysis", "financial-analysis", "knowledge-work"):
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
+                output = Path(temporary) / "study"
+                registration = self.registration_path(temporary)
+                with patch.object(run, "verify_routes", return_value={}):
+                    run.prepare(output, registration, self.key_file(temporary),
+                                run_controls=False, scenario=scenario)
+                frozen = run.load(output / "registration.json")
+                self.assertEqual(frozen["phase2"]["formation_observation_seconds"], 180)
+                self.assertIn("180-second observation window",
+                              (output / "PROTOCOL.md").read_text())
+
     def test_first_formation_does_not_end_observation(self):
         window = run.FormationObservation(180)
         self.assertFalse(window.ready(1000))
