@@ -95,7 +95,7 @@ def main():
             "phase1_status", "phase2_status", "integrated_end_to_end_status"
         )):
             fail("pending active source contains a passed phase status")
-    if status.get("iteration_model") != "z-ai/glm-5.3-flashx":
+    if status.get("iteration_model") != "z-ai/glm-5.3":
         fail("iteration model is stale")
     if not status.get("next_environment"):
         fail("next environment is missing")

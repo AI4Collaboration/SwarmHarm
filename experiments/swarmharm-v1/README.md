@@ -114,7 +114,7 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 ## Execution and evidence
 
 - Live inference uses AxonHub; the current default route is
-  `z-ai/glm-5.3-flashx`.
+  `z-ai/glm-5.3`.
 - Inputs use Harbor 1.4 with pinned Harbor 0.24.0.
 - Outputs retain native records and one continuous ATIF-v1.8 trajectory per
   agent.
@@ -128,6 +128,8 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
   frozen source. Collect each registration at most once.
 
 ## Status
+
+One GLM-5.3 and one GPT-5.6 Sol run are pending, with the same environment and gate.
 
 The fresh v6/gate-v3 GLM FlashX run produced four agent-created requests and seven
 cross-job note deliveries, but no peer replies or adoption. Phase 1 failed and

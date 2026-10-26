@@ -23,8 +23,8 @@ def plan_for(population=4, cue_condition="matched_case_assignment_affordance"):
 
 class DesignChecks(unittest.TestCase):
     def test_current_default_model_is_glm_and_explicit_additions_remain_supported(self):
-        self.assertEqual(run.MODELS, {"glm": "z-ai/glm-5.3-flashx"})
-        self.assertEqual(run.UPSTREAM_MODELS, {"glm": "z-ai/glm-5.3-flashx"})
+        self.assertEqual(run.MODELS, {"glm": "z-ai/glm-5.3"})
+        self.assertEqual(run.UPSTREAM_MODELS, {"glm": "z-ai/glm-5.3"})
         counter = iter(range(8))
         default_plan = schedule.compile_plan(
             4, id_factory=lambda: f"worker-{next(counter):06d}"

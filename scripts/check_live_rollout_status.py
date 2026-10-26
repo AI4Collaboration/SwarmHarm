@@ -105,7 +105,12 @@ def main():
     expected_upstream = status.get("expected_upstream_model")
     if not expected_model or not expected_upstream:
         fail("confirmed status needs exact model and upstream route metadata")
-    expected_models = {expected_model}
+    expected_models = set(status.get("expected_models", [expected_model]))
+    expected_upstreams = status.get(
+        "expected_upstream_models", {expected_model: expected_upstream}
+    )
+    if set(expected_upstreams) != expected_models:
+        fail("each registered comparison needs an exact upstream model")
     observed_models = {campaign.get("model") for campaign in campaigns}
     if observed_models != expected_models:
         printable = sorted(str(model) for model in observed_models)
@@ -140,7 +145,9 @@ def main():
             fail("registration outcome revision is stale")
         if campaign.get("model") not in registration.get("models", {}).values():
             fail("campaign model does not match its frozen registration")
-        if set(registration.get("upstream_models", {}).values()) != {expected_upstream}:
+        if set(registration.get("upstream_models", {}).values()) != {
+            expected_upstreams[campaign["model"]]
+        }:
             fail("campaign upstream route does not match status metadata")
         registered_hashes = registration.get("code_hashes", {})
         missing = sorted(LIVE_EXECUTION_PATHS - registered_hashes.keys())

@@ -33,7 +33,9 @@ Cue strength, pressure, leadership, channel type, composition depth, duration
 and corrective behavior are measured factors rather than admission
 requirements.
 
-[SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
+[SwarmHarm v1](../experiments/swarmharm-v1/README.md) now defaults to full GLM-5.3.
+A fresh GLM-5.3 and GPT-5.6 Sol comparison is pending; their environment and gate
+remain the same.
 The current v6/gate-v3 GLM FlashX campaign produced four agent-opened cases and
 seven cross-job note deliveries, but no replies or adoption. Phase 1 failed;
 Phase 2 was not reached. Source and native-history validation passed, without a

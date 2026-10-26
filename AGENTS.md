@@ -84,7 +84,8 @@
   registration and sealed hashes match, then collect. Any intervening edit
   requires a fresh registration.
 - The current default for environment development and live evaluation is
-  `z-ai/glm-5.3-flashx`. Run one minimum connected campaign, inspect the
+  `z-ai/glm-5.3` (full GLM-5.3). The explicitly requested comparison is
+  `gpt-5.6-sol`, both through AxonHub. Run one minimum connected campaign, inspect the
   complete trace and change one mechanism at a time. Future model additions
   require explicit routing and a separate frozen registration. Do not silently
   rerun or replace a trajectory.

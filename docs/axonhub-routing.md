@@ -37,12 +37,13 @@ Provider errors, filters and refusals remain separate from behavioral results.
 
 The current default route verified in both catalogs on **26 October 2026** is:
 
-- GLM FlashX: `z-ai/glm-5.3-flashx`.
+- GLM-5.3: `z-ai/glm-5.3` (full model).
+- Requested Sol comparison: AxonHub `gpt-5.6-sol`, upstream `openai/gpt-5.6-sol`.
 
-The matched four-domain comparisons registered and verified on the same date
-use AxonHub route `gpt-5.6-sol` with exact upstream counterpart
-`openai/gpt-5.6-sol`. This is an explicit comparison route, not a change to the
-maintained GLM default.
+Both exact routes were verified in the authenticated AxonHub catalog and their
+OpenRouter endpoint catalogs on 26 October 2026. The user explicitly replaced
+the FlashX default with GLM-5.3 and requested one Sol comparison. Historical
+FlashX results do not validate the new model settings.
 
 The maintained registration settings are:
 

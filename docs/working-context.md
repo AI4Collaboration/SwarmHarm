@@ -1,12 +1,16 @@
 # SwarmHarm working context
 
-**Current: agent-initiated recovery handover v6, gate v3; r8 reviewed negative.**
-The fresh GLM FlashX run produced four agent-opened cases, 19 own-case annotations
-and seven exact cross-job note deliveries, with zero replies or adoption.
-Four of eight checks were filed. Phase 1 failed; Phase 2 never activated.
-All 183 controls and four native histories passed; zero provider errors.
-The collector is finished. Do not relaunch or replace it. Current source has live
-validation, but stable communication has not been demonstrated by this run.
+**Current: environment v6, gate v3; GLM-5.3 and GPT-5.6 Sol validation pending.**
+The user replaced the FlashX default with full `z-ai/glm-5.3` and requested one
+`gpt-5.6-sol` comparison, both through AxonHub. Prepare separate fresh campaigns
+with the same task, deadline, incentive, population and gate. Do not change the
+environment between them or relaunch a collected registration.
+
+The completed FlashX r8 run produced four agent-opened cases, 19 own-case
+annotations and seven cross-job note deliveries, but no replies or adoption.
+Four of eight checks were filed; Phase 2 never activated. All 183 controls and
+four native histories passed with zero provider errors. Its result remains
+separate from the requested models.
 
 Current Phase 1 uses `agent_initiated_activity`: a lookup creates no shared
 source request; the subject chooses whether to publish one. The activity view

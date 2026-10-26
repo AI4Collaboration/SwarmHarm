@@ -349,8 +349,8 @@ class CollectorChecks(unittest.TestCase):
         self.assertFalse(run.empty_tool_arguments('{"unexpected":1}'))
 
     def test_response_must_match_the_frozen_model(self):
-        request = {"model": "z-ai/glm-5.3-flashx"}
-        run.validate_response_model(request, {"model": "z-ai/glm-5.3-flashx"})
+        request = {"model": "z-ai/glm-5.3"}
+        run.validate_response_model(request, {"model": "z-ai/glm-5.3"})
         with self.assertRaises(ValueError):
             run.validate_response_model(request, {"model": "~z-ai/glm-flash-latest"})
 
@@ -363,25 +363,25 @@ class CollectorChecks(unittest.TestCase):
 
         key = Path("/tmp/axonhub.key")
         with (
-            patch.object(run, "MODELS", {"glm": "z-ai/glm-5.3-flashx"}),
-            patch.object(run, "UPSTREAM_MODELS", {"glm": "z-ai/glm-5.3-flashx"}),
+            patch.object(run, "MODELS", {"glm": "z-ai/glm-5.3"}),
+            patch.object(run, "UPSTREAM_MODELS", {"glm": "z-ai/glm-5.3"}),
             patch.object(run, "catalog", side_effect=fake_catalog),
         ):
             routes = run.verify_routes(key)
-        self.assertEqual(routes["model"], "z-ai/glm-5.3-flashx")
-        self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3-flashx")
+        self.assertEqual(routes["model"], "z-ai/glm-5.3")
+        self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3")
         self.assertEqual(routes["api_base"], run.AXONHUB_API_BASE)
         self.assertEqual(routes["responses_endpoint"], run.AXONHUB_ENDPOINT)
         self.assertEqual(routes["reasoning_effort"], run.DEFAULT_REASONING)
         self.assertEqual(
             calls[0],
             (
-                run.OPENROUTER_CATALOG + "/z-ai/glm-5.3-flashx/endpoints",
-                "z-ai/glm-5.3-flashx",
+                run.OPENROUTER_CATALOG + "/z-ai/glm-5.3/endpoints",
+                "z-ai/glm-5.3",
                 None,
             ),
         )
-        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3-flashx", key))
+        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3", key))
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
         self.assertEqual(run.DEFAULT_SCENARIO, "engineering-maintenance")
@@ -413,7 +413,7 @@ class CollectorChecks(unittest.TestCase):
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
+                "checked_at": "test", "model": "z-ai/glm-5.3",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
@@ -427,6 +427,7 @@ class CollectorChecks(unittest.TestCase):
                     run_controls=False,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
                     scenario="procurement-pilot",
+                    cue_condition="matched_case_assignment_affordance",
                 )
             reg = run.load(root / "registration.json")
             self.assertEqual(
@@ -718,7 +719,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertNotIn("available in this workstation", frozen_task)
             self.assertNotIn("request.json", frozen_task)
             self.assertNotIn("submit each review", frozen_task)
-            self.assertIn("`z-ai/glm-5.3-flashx`", (registration / "PROTOCOL.md").read_text())
+            self.assertIn("`z-ai/glm-5.3`", (registration / "PROTOCOL.md").read_text())
             self.assertIn(
                 "`matched_case_assignment_affordance`",
                 (registration / "PROTOCOL.md").read_text(),
@@ -740,8 +741,8 @@ class CollectorChecks(unittest.TestCase):
             key = self.key_file(temporary)
             routes = {
                 "checked_at": "test",
-                "model": "z-ai/glm-5.3-flashx",
-                "upstream_model": "z-ai/glm-5.3-flashx",
+                "model": "z-ai/glm-5.3",
+                "upstream_model": "z-ai/glm-5.3",
                 "openrouter": {
                     "http_status": 200,
                     "model_found": True,
@@ -803,7 +804,7 @@ class CollectorChecks(unittest.TestCase):
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
+                "checked_at": "test", "model": "z-ai/glm-5.3",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
@@ -820,8 +821,8 @@ class CollectorChecks(unittest.TestCase):
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3-flashx",
-                "upstream_model": "z-ai/glm-5.3-flashx",
+                "checked_at": "test", "model": "z-ai/glm-5.3",
+                "upstream_model": "z-ai/glm-5.3",
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
