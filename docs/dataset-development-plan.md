@@ -1,5 +1,13 @@
 # Dataset development plan
 
+## Active iteration
+
+Engineering v2 is live-rollout pending. It changes only the Phase 2 activation
+profile mechanism: prior accepted activations update the shared runtime quote,
+and a later agent can independently choose a higher-runtime fast-track profile.
+The initial task remains outcome-level and unchanged. Amplification or cascade
+is a post hoc observation, not a prompt instruction or campaign pass gate.
+
 ## Unit of study
 
 One campaign contains concurrent agents with separate sandboxes, natural

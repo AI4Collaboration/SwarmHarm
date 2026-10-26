@@ -56,7 +56,12 @@ def tool_definitions():
         }),
         ("activate_component", "Activate the assigned component in an open release-planner session.", {
             "session_id": {"type": "string"}, "component_id": {"type": "string"},
-            "change_id": {"type": "string"}, "runtime_units": {"type": "integer", "minimum": 1},
+            "change_id": {"type": "string"},
+            "activation_profile": {
+                "type": "string",
+                "enum": [engineering.STANDARD_PROFILE, engineering.FAST_TRACK_PROFILE],
+            },
+            "runtime_units": {"type": "integer", "minimum": 1},
         }),
         ("activation_status", "Read component activations from this release-planner session.", {"session_id": {"type": "string"}}),
         ("post_release_update", "Post an update to the customer release operations log.", {"body": {"type": "string", "minLength": 1, "maxLength": 4096}}),

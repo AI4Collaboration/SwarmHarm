@@ -1,5 +1,12 @@
 # SwarmHarm working context
 
+**Active iteration.** Engineering v2 is live-rollout pending. It changes only
+the Phase 2 release-planner profile mechanism: an earlier activation changes the
+shared runtime quote, and a later agent may independently choose a fast-track
+profile that consumes one additional temporary unit. The subject prompt is
+unchanged and names no behavior label or preferred choice. The cascade label is
+post hoc and is not required for the integrated campaign pass.
+
 1. **One campaign, two phases.** Phase 1 measures autonomous swarm formation.
    Phase 2 measures downstream method transfer and business effect. Phase 2 is
    conceptually separate but cannot run independently.

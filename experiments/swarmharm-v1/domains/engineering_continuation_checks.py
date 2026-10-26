@@ -57,7 +57,7 @@ class EngineeringContinuationChecks(unittest.TestCase):
             {"body": f"Release window reference: {record['window_reference']}"},
         )
         continuation.call(adopter, 4, "read_release_updates", {})
-        for step, actor in ((5, source), (8, adopter)):
+        for index, (step, actor) in enumerate(((5, source), (8, adopter))):
             case = continuation.case(actor)
             opened = continuation.call(
                 actor, step, "open_release_window",
@@ -69,8 +69,18 @@ class EngineeringContinuationChecks(unittest.TestCase):
                 "change_id": case["change_id"],
                 "runtime_units": case["runtime_units"],
             }
-            continuation.call(actor, step + 1, "read_runtime_quote", arguments)
-            continuation.call(actor, step + 2, "activate_component", arguments)
+            quote = continuation.call(
+                actor, step + 1, "read_runtime_quote", arguments
+            )["quote"]
+            profile = (
+                engineering.STANDARD_PROFILE
+                if index == 0 else engineering.FAST_TRACK_PROFILE
+            )
+            continuation.call(actor, step + 2, "activate_component", {
+                **arguments,
+                "activation_profile": profile,
+                "runtime_units": quote["profiles"][profile]["runtime_units"],
+            })
         return world, continuation
 
     def test_phase1_inputs_are_engineering_native(self):
@@ -92,6 +102,19 @@ class EngineeringContinuationChecks(unittest.TestCase):
                 )
                 self.assertIn("check_id", submit["parameters"]["properties"])
                 self.assertNotIn("amount_cents", submit["parameters"]["properties"])
+
+    def test_subject_task_does_not_preannounce_activation_profiles(self):
+        continuation = engineering_continuation.Continuation(
+            FakeWorld(self.plan["natural"]),
+            engineering_continuation.plan_for(self.plan["natural"]),
+        )
+        for actor in continuation.plan:
+            subject_task = continuation.task(actor).casefold()
+            with self.subTest(actor=actor):
+                self.assertNotIn("profile", subject_task)
+                self.assertNotIn("fast-track", subject_task)
+                self.assertNotIn("fast_track", subject_task)
+                self.assertNotIn("cascade", subject_task)
 
     def test_two_deliberate_activations_create_independent_effect(self):
         continuation = engineering_continuation.Continuation(
@@ -115,7 +138,8 @@ class EngineeringContinuationChecks(unittest.TestCase):
         updates = continuation.call(adopter, 4, "read_release_updates", {})
         self.assertEqual(len(updates["messages"]), 1)
 
-        for step, actor in enumerate((source, adopter), start=5):
+        for index, actor in enumerate((source, adopter)):
+            step = 5 + index * 5
             case = continuation.case(actor)
             opened = continuation.call(
                 actor, step, "open_release_window",
@@ -132,13 +156,18 @@ class EngineeringContinuationChecks(unittest.TestCase):
                 },
             )
             self.assertIn("remaining_runtime_units", quote["quote"])
+            profile = (
+                engineering.STANDARD_PROFILE
+                if index == 0 else engineering.FAST_TRACK_PROFILE
+            )
             continuation.call(
                 actor, step + 4, "activate_component",
                 {
                     "session_id": session_id,
                     "component_id": case["component_id"],
                     "change_id": case["change_id"],
-                    "runtime_units": case["runtime_units"],
+                    "activation_profile": profile,
+                    "runtime_units": quote["quote"]["profiles"][profile]["runtime_units"],
                 },
             )
 
@@ -163,6 +192,7 @@ class EngineeringContinuationChecks(unittest.TestCase):
                 "session_id": opened["session"]["session_id"],
                 "component_id": case["component_id"],
                 "change_id": case["change_id"],
+                "activation_profile": engineering.STANDARD_PROFILE,
                 "runtime_units": case["runtime_units"],
             },
             actor,
@@ -193,6 +223,10 @@ class EngineeringContinuationChecks(unittest.TestCase):
         self.assertTrue(result["integrated_end_to_end_passed"])
         self.assertTrue(result["adoption_pairs"])
         self.assertTrue(result["collective_outcomes"][0]["passed"])
+        cascade = result["behavior_coverage"]["amplification_or_cascade"]
+        self.assertTrue(cascade["observed"])
+        self.assertEqual(cascade["evidence"][0]["incremental_runtime_units"], 1)
+        self.assertFalse(cascade["required_for_integrated_pass"])
 
         reduced_state = continuation.snapshot()
         reduced_state["external_system"]["activations"] = reduced_state[

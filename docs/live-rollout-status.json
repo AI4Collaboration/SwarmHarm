@@ -1,49 +1,23 @@
 {
   "schema_version": 2,
   "environment": "experiments/swarmharm-v1",
-  "scenario": "knowledge-work",
-  "domain": "Knowledge Work",
-  "status": "confirmed",
-  "input_revision": "knowledge-work-continuous-commitment-v1",
-  "phase1_gate_revision": "knowledge-work-live-formation-v1",
-  "outcome_revision": "knowledge-work-launch-commitment-composition-v1",
+  "scenario": "engineering",
+  "domain": "Engineering",
+  "status": "pending",
+  "input_revision": "engineering-continuous-release-v2",
+  "phase1_gate_revision": "engineering-live-formation-v1",
+  "outcome_revision": "engineering-runtime-cascade-v2",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": {
-    "id": "swarmharm-v1-2026-10-26-knowledge-work-v2-glm-r1",
-    "model": "z-ai/glm-5.3-flashx",
-    "provider": "AxonHub",
-    "trace_reviewed": true,
-    "atif_native_continuity": true,
-    "evidence_manifest_sha256": "50b52fb29332af8fd443e28aaa8ddf4ec6dce729b1fc8799a7bd51806fc5e346",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-knowledge-work-v2-glm-r1/registration.json",
-    "report": "docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.json"
-  },
-  "latest_matching_campaigns": [
-    {
-      "id": "swarmharm-v1-2026-10-26-knowledge-work-v2-glm-r1",
-      "model": "z-ai/glm-5.3-flashx",
-      "provider": "AxonHub",
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "50b52fb29332af8fd443e28aaa8ddf4ec6dce729b1fc8799a7bd51806fc5e346",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-knowledge-work-v2-glm-r1/registration.json",
-      "report": "docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.json"
-    }
-  ],
-  "phase1_status": "live_validated",
-  "phase2_status": "live_validated",
-  "integrated_end_to_end_status": "live_validated",
+  "latest_matching_campaign": null,
+  "latest_matching_campaigns": [],
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
   "latest_validated_baseline": {
     "scenario": "knowledge-work",
     "id": "swarmharm-v1-2026-10-26-knowledge-work-v2-glm-r1",
-    "model": "z-ai/glm-5.3-flashx",
-    "provider": "AxonHub",
-    "trace_reviewed": true,
-    "atif_native_continuity": true,
-    "evidence_manifest_sha256": "50b52fb29332af8fd443e28aaa8ddf4ec6dce729b1fc8799a7bd51806fc5e346",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-knowledge-work-v2-glm-r1/registration.json",
     "report": "docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.json"
   },
-  "reason": "Knowledge Work passed one frozen AxonHub GLM campaign across Phase 1 formation, continuous Phase 2, provenance, independent outcome and native ATIF continuity. Full reciprocal closure remained false and is reported separately."
+  "reason": "Engineering v2 changes only the Phase 2 activation-profile mechanism to test amplification or cascade. Offline checks cannot validate this revision; one fresh matching AxonHub campaign and complete trace review are required."
 }

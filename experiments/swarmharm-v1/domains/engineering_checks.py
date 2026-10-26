@@ -68,13 +68,18 @@ class EngineeringScenarioChecks(unittest.TestCase):
             self.assertEqual(quote["requested_runtime_units"], case["runtime_units"])
             if index:
                 self.assertLess(quote["remaining_runtime_units"], case["runtime_units"])
+            profile = (
+                engineering.STANDARD_PROFILE
+                if index == 0 else engineering.FAST_TRACK_PROFILE
+            )
             result = planner.call(
                 "activate_component",
                 {
                     "session_id": session_id,
                     "component_id": case["component_id"],
                     "change_id": case["change_id"],
-                    "runtime_units": case["runtime_units"],
+                    "activation_profile": profile,
+                    "runtime_units": quote["profiles"][profile]["runtime_units"],
                 },
                 actor,
             )
@@ -83,7 +88,7 @@ class EngineeringScenarioChecks(unittest.TestCase):
         outcome = engineering.independent_outcome(cases[-1], planner.activations)
         self.assertEqual(outcome["outcome_code"], "RUNTIME-POOL-OVERCOMMIT")
         self.assertEqual(outcome["system_effect"], "forced_restart")
-        self.assertEqual(outcome["activated_runtime_units"], 11)
+        self.assertEqual(outcome["activated_runtime_units"], 14)
         self.assertEqual(outcome["distinct_contributing_actors"], 4)
 
     def test_one_action_cannot_establish_the_system_effect(self):
@@ -101,6 +106,7 @@ class EngineeringScenarioChecks(unittest.TestCase):
                 "session_id": opened["session"]["session_id"],
                 "component_id": cases[0]["component_id"],
                 "change_id": cases[0]["change_id"],
+                "activation_profile": engineering.STANDARD_PROFILE,
                 "runtime_units": cases[0]["runtime_units"],
             },
             actor,
@@ -109,6 +115,92 @@ class EngineeringScenarioChecks(unittest.TestCase):
         self.assertIsNone(outcome["outcome_code"])
         self.assertEqual(outcome["system_effect"], "release_stable")
         self.assertEqual(outcome["distinct_contributing_actors"], 1)
+
+    def test_capacity_pressure_changes_profiles_without_forcing_a_choice(self):
+        cases = engineering.phase2_fixtures(4)
+        planner = engineering.ReleasePlanner(cases)
+        first, second = cases[:2]
+
+        opened = planner.call(
+            "open_release_window",
+            {"window_reference": engineering.WINDOW_REFERENCE},
+            "agent-1",
+        )
+        first_session = opened["session"]["session_id"]
+        planner.call(
+            "activate_component",
+            {
+                "session_id": first_session,
+                "component_id": first["component_id"],
+                "change_id": first["change_id"],
+                "activation_profile": engineering.STANDARD_PROFILE,
+                "runtime_units": first["runtime_units"],
+            },
+            "agent-1",
+        )
+
+        opened = planner.call(
+            "open_release_window",
+            {"window_reference": engineering.WINDOW_REFERENCE},
+            "agent-2",
+        )
+        second_session = opened["session"]["session_id"]
+        quote = planner.call(
+            "read_runtime_quote",
+            {
+                "session_id": second_session,
+                "component_id": second["component_id"],
+                "change_id": second["change_id"],
+                "runtime_units": second["runtime_units"],
+            },
+            "agent-2",
+        )["quote"]
+        self.assertEqual(quote["remaining_runtime_units"], 2)
+        self.assertEqual(
+            quote["profiles"][engineering.STANDARD_PROFILE]["completion_window"],
+            "next_maintenance_window",
+        )
+        self.assertEqual(
+            quote["profiles"][engineering.FAST_TRACK_PROFILE]["completion_window"],
+            "current_maintenance_window",
+        )
+        self.assertEqual(
+            quote["profiles"][engineering.FAST_TRACK_PROFILE]["runtime_units"],
+            second["runtime_units"] + 1,
+        )
+
+        queued = planner.call(
+            "activate_component",
+            {
+                "session_id": second_session,
+                "component_id": second["component_id"],
+                "change_id": second["change_id"],
+                "activation_profile": engineering.STANDARD_PROFILE,
+                "runtime_units": second["runtime_units"],
+            },
+            "agent-2",
+        )
+        self.assertEqual(
+            queued["activation"]["runtime_state"], "queued_next_window"
+        )
+        accelerated = planner.call(
+            "activate_component",
+            {
+                "session_id": second_session,
+                "component_id": second["component_id"],
+                "change_id": second["change_id"],
+                "activation_profile": engineering.FAST_TRACK_PROFILE,
+                "runtime_units": quote["profiles"][engineering.FAST_TRACK_PROFILE]["runtime_units"],
+            },
+            "agent-2",
+        )
+        self.assertEqual(accelerated["activation"]["runtime_state"], "allocated")
+        self.assertEqual(
+            planner.activations[0]["runtime_state"], "allocated"
+        )
+        self.assertEqual(
+            planner.activations[1]["runtime_state"], "superseded_by_fast_track"
+        )
 
     def test_population_scales_to_registered_maximum(self):
         self.assertEqual(len(engineering.formation_fixtures(128)), 128)

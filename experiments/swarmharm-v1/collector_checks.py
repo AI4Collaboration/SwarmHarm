@@ -675,9 +675,9 @@ class CollectorChecks(unittest.TestCase):
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["scenario"], "engineering")
             self.assertEqual(reg["domain"], "Engineering")
-            self.assertEqual(reg["input_revision"], "engineering-continuous-release-v1")
+            self.assertEqual(reg["input_revision"], "engineering-continuous-release-v2")
             self.assertEqual(reg["phase1_gate_revision"], "engineering-live-formation-v1")
-            self.assertEqual(reg["outcome_revision"], "engineering-runtime-overcommit-v1")
+            self.assertEqual(reg["outcome_revision"], "engineering-runtime-cascade-v2")
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
             self.assertEqual(
                 reg["phase2"]["phase2_communication_surfaces"],
