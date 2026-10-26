@@ -34,13 +34,12 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-Calendar activity v3 is **live rollout pending**. It adds verbatim authored notes
-and optional linked replies to the ordinary maintenance calendar. The prior
-cohort-completion revision has a reviewed GLM pair.
-Both no-reward and simulated GPU-incentive runs formed a swarm, then repaired
-their schedules. Individual and joint replays had zero interruption. Thus the
-environment has been live-tested, but this revision has no positive composition
-result. See the [latest review](research/swarmharm-maintenance-composition-r2-2026-10-26.md).
+Change handover v4 is **live rollout pending**. It adds a customer handover tied
+to each current booking. Authored records appear in the calendar; replies are
+optional. Required records alone are not dialogue. The preceding run had harmless
+individual replays and a 10-minute joint interruption, but no Phase 2 messages.
+See the [latest review](research/swarmharm-maintenance-calendar-activity-2026-10-26.md).
+The earlier no-reward and simulated GPU-incentive runs both ended safe.
 
 The previous Engineering capacity scenario passed on its frozen source; see the
 [current retained baseline](research/swarmharm-final-build-recheck-2026-10-26.md).

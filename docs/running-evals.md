@@ -85,11 +85,13 @@ The first Phase 1 pass opens a 180-second observation window
 for continued interaction. After that window, the controller waits for in-flight
 requests to finish and assigns ordinary Phase 2 work to the same
 live contexts. It does not reset histories, workstations, shared state or event
-IDs. In `engineering-maintenance`, each subject schedules one replica upgrade.
+IDs. In `engineering-maintenance`, each subject schedules one replica upgrade
+and files its customer change handover tied to the current booking.
 The ordinary calendar contains service facts, current bookings and its verbatim
-operations activity. The log starts empty; subjects can post notes and linked
-replies, but the task does not request communication. Exact note delivery,
-reply/read-back and substantive dialogue are reviewed separately. Independent
+operations activity. The log starts empty; required handover artifacts are not
+dialogue. Subjects can post optional notes and linked replies, but the task does
+not request conversation. Exact delivery, reply/read-back and substantive
+dialogue are reviewed separately. Independent
 replay compares each actor's complete actions alone, the joint final calendar
 and each leave-one-out result. Corrected conflicts are valid negative outcomes.
 Final responders remain available through the whole cohort's final activity.

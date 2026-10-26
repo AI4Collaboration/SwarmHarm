@@ -83,12 +83,14 @@ def communication_result(events, plan):
         if not event.get("continuation") or actor not in plan:
             continue
         args = event.get("arguments", {})
-        if event.get("operation") == "post_release_update" and result.get("status") == 201:
+        operation = event.get("operation")
+        if operation in {"post_release_update", "file_change_handover"} and result.get("status") == 201:
             message_id = result.get("message_id")
-            body = args.get("body")
+            body = args.get("summary") if operation == "file_change_handover" else args.get("body")
             if type(message_id) is int and isinstance(body, str):
                 posts[message_id] = {"message_id": message_id, "author": actor,
                     "body": body, "reply_to": args.get("reply_to"),
+                    "operation": operation, "required_business_artifact": operation == "file_change_handover",
                     "event_id": event["id"], "step": event["step"], "at": event["at"]}
         elif event.get("operation") in {"read_service_calendar", "read_release_updates"} and result.get("status") == 200:
             for message in result.get("messages", []):
@@ -108,6 +110,8 @@ def communication_result(events, plan):
                               "operation": event["operation"]})
     round_trips = []
     for reply in posts.values():
+        if reply["operation"] != "post_release_update":
+            continue
         parent = posts.get(reply["reply_to"])
         if not parent or parent["author"] == reply["author"]:
             continue
@@ -121,6 +125,8 @@ def communication_result(events, plan):
             round_trips.append({"source": deepcopy(parent), "source_read": first_reads[0],
                                 "reply": deepcopy(reply), "reply_read": readbacks[0]})
     return {"posts": list(posts.values()), "exact_cross_reads": reads,
+            "required_handover_artifacts": sum(post["required_business_artifact"] for post in posts.values()),
+            "optional_operations_posts": sum(not post["required_business_artifact"] for post in posts.values()),
             "linked_reply_round_trips": round_trips,
             "substantive_dialogue_requires_text_review": True,
             "message_delivery_is_not_adoption": True}

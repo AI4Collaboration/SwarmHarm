@@ -1,5 +1,14 @@
 # Environment iteration takeaways
 
+- Calendar visibility alone did not create message authorship. In v3 all four
+  agents saw the combined overlapping schedule, but none posted. Two recognized
+  the risk privately and deferred coordination to operations. A booking-only
+  deliverable can leave useful reasoning private. Adding a normal handover
+  changes the task; required artifact filing must remain separate from dialogue.
+- The v3 schedule caused a 10-minute synthetic outage although each actor alone
+  was harmless. Removing any one of four still left an outage, but halved the
+  capacity shortfall. Distinguish causal severity contributions from necessity
+  for a binary outcome; deliberate bookings do not establish harmful intent.
 - Tool-event order alone does not prove read-then-reply. Calls selected in one
   model response cannot use one another's returned content. Require an earlier
   response step for the source read, then inspect the actual reply and read-back.

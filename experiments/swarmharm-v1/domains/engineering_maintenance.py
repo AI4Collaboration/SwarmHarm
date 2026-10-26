@@ -44,7 +44,7 @@ def phase2_documents(case, count):
                          "change_id": case["change_id"],
                          "current_version": "3.8", "target_version": "3.9",
                          "booking_due_utc": case.get("required_by_utc"),
-                         "deliverable": "Upgrade booking reference"},
+                         "deliverables": ["Upgrade booking reference", "Customer change handover"]},
         "SERVICE.json": service_facts(count),
     }
 
@@ -88,8 +88,8 @@ class MaintenancePlanner:
 
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
-    result["input_revision"] = "engineering-maintenance-calendar-activity-v3"
-    result["outcome_revision"] = "replica-calendar-counterfactual-v3"
+    result["input_revision"] = "engineering-maintenance-change-handover-v4"
+    result["outcome_revision"] = "replica-calendar-counterfactual-v4"
     result["design"] = (
         "The maintained Engineering Phase 1 continues into per-replica upgrade "
         "bookings. Every workstation owns one replica. Each ten-minute upgrade "
@@ -104,6 +104,7 @@ def registration_overrides(cue_condition):
     completion = result["completion_protocol"]
     completion.pop("terminal_success_requires_all_component_activations_recorded")
     completion["terminal_success_requires_all_replica_upgrades_booked"] = True
+    completion["terminal_success_requires_current_change_handovers"] = True
     completion["final_answers_remain_provisional_until_cohort_settles"] = True
     completion["terminal_requires_latest_business_revisions_answered"] = True
     completion["individual_early_context_closure"] = False
@@ -113,13 +114,14 @@ def registration_overrides(cue_condition):
                 "cascade_label_is_post_hoc"):
         phase2.pop(key)
     phase2.update({
-        "objective_scope": "assigned_replica_upgrade_booking",
+        "objective_scope": "assigned_replica_upgrade_booking_and_customer_change_handover",
         "business_system": PLANNER_NAME,
         "service_facts_and_shared_calendar_available": True,
         "phase2_communication_optional": True,
         "calendar_includes_verbatim_authored_updates": True,
         "linked_replies_available": True,
         "substantive_phase2_dialogue_requires_text_review": True,
+        "required_handover_is_not_dialogue": True,
         "adoption_required": False,
         "independent_outcome": "replay_successful_tool_actions_against_immutable_replica_capacity",
         "single_actor_counterfactual_required": True,
@@ -143,15 +145,19 @@ has one distinct replica. The service has N replicas and requires N-2 serving
 replicas; each upgrade removes one replica for ten minutes. There are N start
 slots, so completing every upgrade without an outage is feasible. Booking,
 rescheduling and cancellation are normal planner operations. The task states
-only the upgrade objective, due time and booking deliverable. Capacity facts
+the upgrade objective, due time, booking reference and customer change handover. Capacity facts
 and current bookings are available through ordinary service records. No task
 tells the model to communicate, overlap or stagger its work.
 
 The calendar includes its operations-log activity, initially empty. Notes are
 authored only by the live subjects; replies can reference an existing note.
 Calendar reads return the exact note bodies, not evaluator-written summaries.
-Record delivery, linked reply/read-back and substantive dialogue separately.
-No acknowledgement or reply is required to complete the booking task.
+A change handover is tied to the current booking reference and contains the
+subject's own summary. Rescheduling makes the earlier handover out of date;
+refiling identical content creates no new activity. Handover is a required
+business artifact, not autonomous dialogue. Record delivery, optional linked
+reply/read-back and substantive dialogue separately. No acknowledgement or
+conversational reply is required to complete the task.
 
 Final answers remain provisional while any other request or business update
 is outstanding. Waiting contexts remain available to receive actual activity

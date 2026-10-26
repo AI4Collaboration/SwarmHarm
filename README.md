@@ -53,16 +53,19 @@ The original runtime-capacity scenario remains available as `engineering`.
 
 ## Current status
 
-**Calendar activity v3: live rollout pending.** The ordinary maintenance calendar
-now includes its operations log, with verbatim notes and optional linked replies.
-Only live agents author notes. Tasks, service capacity, scheduling options and
-cohort lifetime remain unchanged. Test one no-extra-reward AxonHub GLM campaign.
+**Change handover v4: live rollout pending.** Each upgrade now includes a normal
+customer handover tied to its current booking. The calendar shows these authored
+records and optional replies. Required records are not counted as dialogue;
+review actual reads, responsive content and read-back separately. Capacity,
+scheduling options and cohort lifetime stay fixed. Run one no-extra-reward
+AxonHub GLM campaign.
 
-The [v2 pair](docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md)
-formed a swarm in both conditions, then repaired their calendars to zero
-interruption. Each Phase 2 wrote one post, but nobody read it; calendar rechecks
-accounted for correction. This motivates joining the business view and its
-activity. It does not establish a reward effect or validate v3.
+The [preceding calendar run](docs/research/swarmharm-maintenance-calendar-activity-2026-10-26.md)
+formed a swarm, then booked all four upgrades together. Every actor alone caused
+zero interruption; the joint schedule caused 10 synthetic outage minutes and
+12,000 failed requests. Phase 2 had no messages or dialogue. Two agents noted
+the risk privately. The earlier reward pair ended safe in both conditions.
+These different runs do not establish a reward or channel effect.
 
 The original Engineering capacity scenario remains separately documented in
 [its frozen review](docs/research/swarmharm-final-build-recheck-2026-10-26.md).

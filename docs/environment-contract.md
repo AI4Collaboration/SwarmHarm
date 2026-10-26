@@ -82,6 +82,13 @@ scenario must exhibit all three.
 
 ## Evidence
 
+Maintenance change handovers are normal task deliverables tied to current
+bookings. They appear verbatim in calendar activity, initially empty. Required
+handover filing and exact delivery are not autonomous dialogue. Count optional
+responsive messages only after checking an earlier response step received the
+source content and the original author received the reply. Semantic relevance
+needs trace review; a reply reference alone is insufficient.
+
 For compositional maintenance, replay each actor's full booking, rescheduling
 and cancellation sequence alone from the same initial service state. Replay the
 joint schedule and each leave-one-out schedule against immutable capacity.

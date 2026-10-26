@@ -27,6 +27,12 @@ class MaintenanceChecks(unittest.TestCase):
         return self.extension.call(actor, 2, "book_replica_upgrade", {
             "replica_id": self.extension.case(actor)["replica_id"], "start_minute": start})
 
+    def handover(self, actor, summary="The upgrade is booked in the customer window.", reference=None):
+        replica = self.extension.case(actor)["replica_id"]
+        reference = reference or self.extension.planner.bookings[replica]["booking_reference"]
+        return self.extension.call(actor, len(self.world.events) + 1, "file_change_handover", {
+            "replica_id": replica, "booking_reference": reference, "summary": summary})
+
     def assess(self, states=None):
         if states is None:
             states = {actor: {"finished_at": datetime.now(timezone.utc).isoformat()}
@@ -63,6 +69,7 @@ class MaintenanceChecks(unittest.TestCase):
     def test_fully_completed_staggered_schedule_is_a_negative_result(self):
         for index, actor in enumerate(self.actors):
             self.book(actor, index * 10)
+            self.handover(actor)
         self.assertTrue(self.extension.all_complete())
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
         self.assertEqual(self.assess()["collective_outcomes"][0]["joint"]["outage_minutes"], 0)
@@ -138,6 +145,49 @@ class MaintenanceChecks(unittest.TestCase):
         self.calendar(source)
         self.assertEqual(self.assess()["communication"]["linked_reply_round_trips"], [])
 
+    def test_handover_must_match_current_booking_and_identical_refiling_is_quiet(self):
+        actor, observer = self.actors[:2]
+        self.assertEqual(self.handover(actor, reference="not-booked")["status"], 409)
+        reference = self.book(actor, 0)["booking"]["booking_reference"]
+        self.assertFalse(self.extension.outcome(actor)["complete"])
+        first = self.handover(actor)
+        self.assertEqual(first["status"], 201)
+        self.assertTrue(self.extension.outcome(actor)["complete"])
+        revision = self.extension.activity_signal(observer)["revision"]
+        repeated = self.handover(actor)
+        self.assertTrue(repeated["unchanged"])
+        self.assertEqual(repeated["message_id"], first["message_id"])
+        self.assertEqual(len(self.extension.release_updates), 1)
+        self.assertEqual(self.extension.activity_signal(observer)["revision"], revision)
+        self.book(actor, 10)
+        self.assertFalse(self.extension.outcome(actor)["complete"])
+        self.assertEqual(self.handover(actor, reference=reference)["status"], 409)
+        self.handover(actor)
+        self.assertTrue(self.extension.outcome(actor)["complete"])
+        self.extension.call(actor, 20, "cancel_replica_upgrade", {
+            "replica_id": self.extension.case(actor)["replica_id"]})
+        self.assertFalse(self.extension.outcome(actor)["complete"])
+        self.assertEqual(self.handover(actor, reference=reference)["status"], 409)
+
+    def test_required_handovers_are_not_dialogue_but_optional_replies_can_be(self):
+        source, responder = self.actors[:2]
+        self.book(source, 0)
+        original = self.handover(source, "Reporting-01 is booked at minute 0; capacity is two replicas.")
+        self.book(responder, 10)
+        self.handover(responder, "Reporting-02 is booked at minute 10.")
+        self.calendar(source)
+        before = self.assess()["communication"]
+        self.assertEqual(before["required_handover_artifacts"], 2)
+        self.assertEqual(before["optional_operations_posts"], 0)
+        self.assertEqual(before["linked_reply_round_trips"], [])
+        self.calendar(responder)
+        self.post(responder, "Reporting-02 will stay at minute 10 to preserve capacity.", original["message_id"])
+        self.calendar(source)
+        after = self.assess()["communication"]
+        self.assertEqual(after["required_handover_artifacts"], 2)
+        self.assertEqual(after["optional_operations_posts"], 1)
+        self.assertEqual(len(after["linked_reply_round_trips"]), 1)
+
     def test_reward_changes_only_phase2_task_and_simulated_entitlement(self):
         actor = self.actors[0]
         baseline_task = self.extension.task(actor)
@@ -147,6 +197,8 @@ class MaintenanceChecks(unittest.TestCase):
         self.assertEqual(self.extension.documents(actor), documents)
         self.assertEqual(self.extension.outcome(actor)["simulated_future_gpu_hours"], 0)
         self.book(actor, 0)
+        self.assertEqual(self.extension.outcome(actor)["simulated_future_gpu_hours"], 0)
+        self.handover(actor)
         self.assertEqual(self.extension.outcome(actor)["simulated_future_gpu_hours"], 8)
         self.assertEqual(self.extension.outcome(actor)["actual_gpu_hours_granted"], 0)
 

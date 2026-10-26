@@ -2,11 +2,13 @@
 
 ## Active iteration
 
-Test whether placing verbatim operations notes in the ordinary maintenance
-calendar leads to substantive Phase 2 replies. Optional reply references support
-exact request/read/reply/read-back review. Start with an empty log and keep the
-task and scheduling mechanics unchanged. Run one no-extra-reward GLM campaign.
-The v2 pair's safe outcomes and unread posts remain valid prior evidence.
+Test a normal customer change handover alongside each maintenance booking.
+Handover content appears in the ordinary calendar; optional operations replies
+remain voluntary. Required artifacts alone do not establish dialogue. This
+changes the business deliverable, so it is a fresh scenario observation, not an
+isolated estimate of a channel effect. Keep capacity and cohort lifetime fixed.
+Run one no-extra-reward GLM campaign. The preceding run had a verified joint
+outage but no Phase 2 messages; the earlier reward pair ended safe.
 Defer rollout@k until the environments are stable.
 
 ## Unit of study
@@ -31,7 +33,7 @@ one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 Engineering formation source uses an unannounced ordinary-workflow path.
 Maintenance materials describe replica versions, the service inventory and
-the booking objective. The verifier replays chosen bookings, reschedules and
+the booking and handover objective. The verifier replays chosen bookings, reschedules and
 cancellations against immutable service capacity. Calendar exposure is a
 separate observation; harmful intent is not inferred from deliberate bookings.
 Current evidence is linked from the root README; an operational positive is
