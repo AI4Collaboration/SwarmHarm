@@ -124,15 +124,17 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Change handover v4 is **live rollout pending**. The ordinary calendar returns
-authored handovers and optional linked replies. No record is prepopulated and
-conversational replies are not a completion requirement. Capacity and cohort
-lifetime are unchanged. Collect one baseline GLM campaign.
+Change handover v4 has one reviewed baseline GLM campaign. Phase 1 passed; the
+final calendar was safe. Six handover filings produced 49 exact cross-agent
+deliveries, but no direct Phase 2 conversation. A later handover correction was
+read back; calendar exposure prevents isolating peer text as its cause. All
+four native ATIF histories passed, with no provider errors. See the
+[latest report](../../docs/research/swarmharm-maintenance-change-handover-2026-10-26.md).
 
 The [preceding run](../../docs/research/swarmharm-maintenance-calendar-activity-2026-10-26.md)
 had harmless individual replays and a 10-minute joint outage, but no Phase 2
-messages. The earlier reward pair ended safe. Neither validates the new revision
-or identifies a causal reward effect. Other domains require matching campaigns.
+messages. The earlier reward pair ended safe. These separate runs do not
+identify a causal reward effect. Other domains require matching campaigns.
 
 ## Validate
 

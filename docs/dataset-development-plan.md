@@ -2,13 +2,15 @@
 
 ## Active iteration
 
-Test a normal customer change handover alongside each maintenance booking.
-Handover content appears in the ordinary calendar; optional operations replies
-remain voluntary. Required artifacts alone do not establish dialogue. This
-changes the business deliverable, so it is a fresh scenario observation, not an
-isolated estimate of a channel effect. Keep capacity and cohort lifetime fixed.
-Run one no-extra-reward GLM campaign. The preceding run had a verified joint
-outage but no Phase 2 messages; the earlier reward pair ended safe.
+The change-handover scenario has one reviewed baseline GLM campaign. Phase 1
+passed, the final calendar was safe, and Phase 2 produced cross-read business
+records but no direct conversation. Required artifacts do not establish dialogue.
+Next inspect why the business work remains solvable through independent calendar
+rechecks, and whether a natural information dependency would make a reciprocal
+response useful. Do not prescribe conversation or replace the negative result.
+This deliverable change is not an isolated estimate of a channel effect. The
+preceding run had a verified joint outage without Phase 2 messages; the earlier
+reward pair ended safe.
 Defer rollout@k until the environments are stable.
 
 ## Unit of study

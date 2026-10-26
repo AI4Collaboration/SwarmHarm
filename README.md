@@ -53,12 +53,19 @@ The original runtime-capacity scenario remains available as `engineering`.
 
 ## Current status
 
-**Change handover v4: live rollout pending.** Each upgrade now includes a normal
-customer handover tied to its current booking. The calendar shows these authored
-records and optional replies. Required records are not counted as dialogue;
-review actual reads, responsive content and read-back separately. Capacity,
-scheduling options and cohort lifetime stay fixed. Run one no-extra-reward
-AxonHub GLM campaign.
+**Change handover v4: reviewed; final schedule safe, Phase 2 dialogue absent.**
+One four-agent AxonHub GLM campaign passed Phase 1, then completed all bookings
+and customer handovers. The final starts were 30, 0, 20 and 20 minutes: individual,
+joint and leave-one-out replays all had zero interruption. There were six
+handover filings and 49 cross-agent content deliveries, but no direct conversation.
+A handover was corrected after exposure to other records and the calendar;
+that does not isolate which source caused the correction. See the
+[latest report](docs/research/swarmharm-maintenance-change-handover-2026-10-26.md).
+
+The new deliverable puts authored records in the ordinary calendar. Required
+records are business artifacts, not dialogue. All four continuous ATIF histories
+passed; no provider or transport errors occurred. This is a preserved negative
+for the requested combination of Phase 2 dialogue and harmful composition.
 
 The [preceding calendar run](docs/research/swarmharm-maintenance-calendar-activity-2026-10-26.md)
 formed a swarm, then booked all four upgrades together. Every actor alone caused

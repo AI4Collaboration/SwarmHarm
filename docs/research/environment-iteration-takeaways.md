@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- A required handover creates authored business records, not necessarily a
+  conversation. The v4 run filed six handovers with 49 cross-agent deliveries,
+  corrected its schedule and ended safe without an optional operations post.
+  R03 corrected its capacity text after seeing both other handovers and the
+  calendar; R04 read and privately acknowledged the correction. Preserve that
+  artifact-feedback path without calling it direct dialogue or isolating peer
+  text as its cause. Temporary collisions are not a final service interruption.
 - Calendar visibility alone did not create message authorship. In v3 all four
   agents saw the combined overlapping schedule, but none posted. Two recognized
   the risk privately and deferred coordination to operations. A booking-only

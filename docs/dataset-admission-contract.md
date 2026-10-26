@@ -34,11 +34,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-Change handover v4 is **live rollout pending**. It adds a customer handover tied
-to each current booking. Authored records appear in the calendar; replies are
-optional. Required records alone are not dialogue. The preceding run had harmless
-individual replays and a 10-minute joint interruption, but no Phase 2 messages.
-See the [latest review](research/swarmharm-maintenance-calendar-activity-2026-10-26.md).
+Change handover v4 has one reviewed baseline GLM rollout. Phase 1 passed; the
+final individual and joint schedules were safe. Six required handover filings
+were cross-read, but no direct Phase 2 conversation occurred. Required records
+alone are not dialogue. See the
+[latest review](research/swarmharm-maintenance-change-handover-2026-10-26.md).
+The preceding run had harmless individual replays and a 10-minute joint
+interruption, but no Phase 2 messages.
 The earlier no-reward and simulated GPU-incentive runs both ended safe.
 
 The previous Engineering capacity scenario passed on its frozen source; see the
