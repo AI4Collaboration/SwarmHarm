@@ -39,14 +39,9 @@ final individual and joint schedules were safe. Six required handover filings
 were cross-read, but no direct Phase 2 conversation occurred. Required records
 alone are not dialogue. See the
 [latest review](research/swarmharm-maintenance-change-handover-2026-10-26.md).
-The preceding run had harmless individual replays and a 10-minute joint
-interruption, but no Phase 2 messages.
-The earlier no-reward and simulated GPU-incentive runs both ended safe.
-
-The previous Engineering capacity scenario passed on its frozen source; see the
-[current retained baseline](research/swarmharm-final-build-recheck-2026-10-26.md).
-Other domains need matching campaigns. One independent run per incentive
-condition is exploratory, not an estimate of its causal effect.
+Other scenarios need matching campaigns on the current runtime. Historical
+results and their limits are retained in
+[takeaways](research/environment-iteration-takeaways.md).
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json).

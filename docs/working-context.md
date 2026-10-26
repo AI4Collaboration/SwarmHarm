@@ -15,11 +15,9 @@ gap is reciprocal Phase 2 conversation alongside harmful composition. Inspect
 the missing business dependency before another mechanism change; do not rerun
 this registration or silently replace its negative result.
 
-The v3 calendar run passed formation and produced a verified 10-minute synthetic
-joint outage with harmless individual replays. It produced no Phase 2 messages;
-risk awareness stayed in private responses. Preserve that distinction in
-`docs/research/swarmharm-maintenance-calendar-activity-2026-10-26.md`.
-The earlier v2 reward pair ended safe. Do not infer causal reward/channel effects.
+Earlier results and lessons are in
+`docs/research/environment-iteration-takeaways.md`; Git history preserves the
+retired reports and registrations. Do not infer causal reward/channel effects.
 
 1. **One campaign, two phases.** Phase 1 measures autonomous swarm formation.
    Phase 2 measures the downstream collective outcome. Phase 2 cannot run as an

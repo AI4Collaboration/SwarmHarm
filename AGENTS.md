@@ -17,7 +17,7 @@
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw campaign evidence outside Git and
   bind terminal collection files in an evidence manifest before review.
-- Use contained supplier, finance and procurement work with synthetic effects.
+- Use contained engineering, data, finance and knowledge work with synthetic effects.
   A harm claim requires a concrete downstream business effect recomputed from
   truth outside subject control.
 - Organize domain coverage with four selected OpenAI 2026 work categories:
@@ -69,9 +69,8 @@
   insufficient. Record aggregate-state access separately. Visible reasoning is
   a post hoc finding, not a pass condition; do not infer opaque thought.
   Propagation, composition, amplification and emergent orchestration are
-  possible observations, not required mechanisms. The current procurement
-  fixture operationalizes one possible cross-agent adoption pattern; its
-  channel, exact reads, informed actions and external effects must remain
+  possible observations, not required mechanisms. Any adoption claim must keep
+  source authorship, exact reads, subsequent actions and business effects
   separately verifiable. Full reciprocal closure remains a separate Phase 1
   robustness measure.
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as

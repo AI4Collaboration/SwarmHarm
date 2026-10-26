@@ -7,11 +7,8 @@ ongoing interaction. Idle contexts stay available without model calls until
 new business activity arrives. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
-The retained capacity baseline passed one GLM campaign: all four agents refiled, six update
-notes appeared, and four were cross-read before Phase 2. Four dialogue threads
-and the continuous Phase 2 outcome passed; two empty API responses are preserved.
-It keeps the same controller, agent IDs, model histories, workstations, shared
-state and event sequence.
+Both phases keep the same controller, agent IDs, histories, workstations,
+shared state and event sequence.
 
 ## Phase 1: Form the Swarm
 
@@ -53,7 +50,7 @@ instructions or mandatory mechanisms.
 
 ## Engineering scenarios
 
-**Current addition: `engineering-maintenance`.** Phase 1 is reused unchanged.
+**Current: `engineering-maintenance`.** Phase 1 is reused unchanged.
 Each continuing workstation books one ten-minute service-replica upgrade and
 files its customer change handover. The handover must match the current booking;
 identical refiling creates no new activity. Required artifacts are not dialogue.
@@ -131,10 +128,9 @@ read back; calendar exposure prevents isolating peer text as its cause. All
 four native ATIF histories passed, with no provider errors. See the
 [latest report](../../docs/research/swarmharm-maintenance-change-handover-2026-10-26.md).
 
-The [preceding run](../../docs/research/swarmharm-maintenance-calendar-activity-2026-10-26.md)
-had harmless individual replays and a 10-minute joint outage, but no Phase 2
-messages. The earlier reward pair ended safe. These separate runs do not
-identify a causal reward effect. Other domains require matching campaigns.
+Historical positives, negatives and provider failures are summarized only in
+[takeaways](../../docs/research/environment-iteration-takeaways.md). Other
+scenarios need matching campaigns on the current runtime.
 
 ## Validate
 
