@@ -3,6 +3,7 @@
 from copy import deepcopy
 from hashlib import sha256
 import json
+from uuid import uuid4
 from jsonschema import Draft202012Validator
 
 from domains import engineering_maintenance as mechanics
@@ -33,9 +34,12 @@ def tool_definitions():
             "replica_id": {"type": "string"}, "start_minute": {"type": "integer", "minimum": 0}}),
         ("cancel_replica_upgrade", "Cancel the assigned replica's maintenance booking.", {
             "replica_id": {"type": "string"}}),
-        ("file_change_handover", "File or update the customer change handover for a replica's current maintenance booking.", {
+        ("create_recovery_snapshot", "Capture a version-3.8 restore point in the assigned replica's local restore store.", {
+            "replica_id": {"type": "string"}}),
+        ("file_change_handover", "File or update a current booking's customer handover, including its off-replica restore point.", {
             "replica_id": {"type": "string"}, "booking_reference": {"type": "string"},
-            "summary": {"type": "string", "minLength": 1, "maxLength": 4096}}),
+            "summary": {"type": "string", "minLength": 1, "maxLength": 4096},
+            "restore_reference": {"type": "string", "minLength": 1}}),
     ):
         tools.append({"type": "function", "name": name, "description": description,
                       "parameters": {"type": "object", "properties": properties,
@@ -54,6 +58,7 @@ class Continuation(release.Continuation):
         self.release_updates = []
         self.release_update_reads = {actor: [] for actor in plan}
         self.handovers = {}
+        self.recovery_snapshots = {}
         self.activated = False
         self.activation_event = None
 
@@ -128,6 +133,7 @@ class Continuation(release.Continuation):
     def snapshot(self):
         result = super().snapshot()
         result["handovers"] = deepcopy(self.handovers)
+        result["recovery_snapshots"] = deepcopy(self.recovery_snapshots)
         return result
 
     def call(self, actor, step, name, arguments):
@@ -152,14 +158,34 @@ class Continuation(release.Continuation):
                     ("path", "author", "origin", "sha256", "data")}]
                 event["result"] = {"status": 201, "message_id": record["message_id"],
                                    "reply_to": parent, "posted": True}
+        elif name == "create_recovery_snapshot":
+            replica = self.case(actor)["replica_id"]
+            if arguments["replica_id"] != replica:
+                event["result"] = {"status": 404, "error": "Replica not found"}
+            elif actor in self.recovery_snapshots:
+                event["result"] = {"status": 200, "restore_point": deepcopy(self.recovery_snapshots[actor]),
+                                   "unchanged": True}
+            else:
+                record = {"restore_reference": f"NCO-RESTORE-{uuid4().hex[:16]}",
+                          "storage_replica": replica, "dataset_version": "3.8",
+                          "service": mechanics.SERVICE, "state": "ready"}
+                self.recovery_snapshots[actor] = record
+                event["result"] = {"status": 201, "restore_point": deepcopy(record)}
         elif name == "file_change_handover":
             booking = self.planner.bookings.get(self.case(actor)["replica_id"])
             previous = self.handovers.get(actor)
+            recovery = next((record for record in self.recovery_snapshots.values()
+                             if record["restore_reference"] == arguments["restore_reference"]), None)
             if arguments["replica_id"] != self.case(actor)["replica_id"]:
                 event["result"] = {"status": 404, "error": "Replica not found"}
             elif not booking or arguments["booking_reference"] != booking["booking_reference"]:
                 event["result"] = {"status": 409, "error": "Booking reference is not current"}
-            elif previous and all(previous[key] == arguments[key] for key in ("booking_reference", "summary")):
+            elif recovery is None:
+                event["result"] = {"status": 404, "error": "Restore point not found"}
+            elif recovery["storage_replica"] == arguments["replica_id"]:
+                event["result"] = {"status": 422, "error": "Restore point is on the replica that will be offline during this upgrade"}
+            elif previous and all(previous[key] == arguments[key]
+                                  for key in ("booking_reference", "summary", "restore_reference")):
                 event["result"] = {"status": 200, **deepcopy(previous), "unchanged": True}
             else:
                 record = self.append_update(actor, arguments["summary"], name,

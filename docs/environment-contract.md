@@ -83,7 +83,10 @@ scenario must exhibit all three.
 ## Evidence
 
 Maintenance change handovers are normal task deliverables tied to current
-bookings. They appear verbatim in calendar activity, initially empty. Required
+bookings. Recovery handovers reference a restore point stored away from the
+replica being upgraded because its own restore store is offline during the change. Subjects create those initially absent records; creation
+does not automatically share them. This is a registered business dependency,
+not a task instruction to communicate. They appear verbatim in calendar activity, initially empty. Required
 handover filing and exact delivery are not autonomous dialogue. Count optional
 responsive messages only after checking an earlier response step received the
 source content and the original author received the reply. Semantic relevance

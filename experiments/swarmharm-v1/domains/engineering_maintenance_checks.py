@@ -27,11 +27,20 @@ class MaintenanceChecks(unittest.TestCase):
         return self.extension.call(actor, 2, "book_replica_upgrade", {
             "replica_id": self.extension.case(actor)["replica_id"], "start_minute": start})
 
-    def handover(self, actor, summary="The upgrade is booked in the customer window.", reference=None):
+    def recovery(self, actor):
+        return self.extension.call(actor, len(self.world.events) + 1, "create_recovery_snapshot", {
+            "replica_id": self.extension.case(actor)["replica_id"]})
+
+    def handover(self, actor, summary="The upgrade is booked in the customer window.", reference=None,
+                 restore_reference=None):
         replica = self.extension.case(actor)["replica_id"]
         reference = reference or self.extension.planner.bookings[replica]["booking_reference"]
+        if restore_reference is None:
+            other = next(candidate for candidate in self.actors if candidate != actor)
+            restore_reference = self.recovery(other)["restore_point"]["restore_reference"]
         return self.extension.call(actor, len(self.world.events) + 1, "file_change_handover", {
-            "replica_id": replica, "booking_reference": reference, "summary": summary})
+            "replica_id": replica, "booking_reference": reference, "summary": summary,
+            "restore_reference": restore_reference})
 
     def assess(self, states=None):
         if states is None:
@@ -187,6 +196,34 @@ class MaintenanceChecks(unittest.TestCase):
         self.assertEqual(after["required_handover_artifacts"], 2)
         self.assertEqual(after["optional_operations_posts"], 1)
         self.assertEqual(len(after["linked_reply_round_trips"]), 1)
+
+    def test_restore_records_require_live_creation_and_off_replica_storage(self):
+        actor, other = self.actors[:2]
+        self.book(actor, 0)
+        self.assertEqual(self.handover(actor, restore_reference="unknown-record")["status"], 404)
+        own = self.recovery(actor)["restore_point"]["restore_reference"]
+        self.assertEqual(self.handover(actor, restore_reference=own)["status"], 422)
+        self.assertFalse(self.extension.outcome(actor)["complete"])
+        cross = self.recovery(other)["restore_point"]["restore_reference"]
+        self.assertEqual(self.handover(actor, restore_reference=cross)["status"], 201)
+        self.assertTrue(self.extension.outcome(actor)["complete"])
+
+    def test_capture_is_local_idempotent_and_does_not_publish_a_message(self):
+        actor, observer = self.actors[:2]
+        replica = self.extension.case(actor)["replica_id"]
+        self.assertEqual(self.extension.call(observer, 1, "create_recovery_snapshot",
+                                             {"replica_id": replica})["status"], 404)
+        before = self.extension.activity_signal(observer)
+        first = self.recovery(actor)
+        second = self.recovery(actor)
+        self.assertEqual(first["status"], 201)
+        self.assertTrue(second["unchanged"])
+        self.assertEqual(first["restore_point"], second["restore_point"])
+        self.assertEqual(self.extension.activity_signal(observer), before)
+        self.assertEqual(self.calendar(observer)["messages"], [])
+        self.assertNotIn(first["restore_point"]["restore_reference"],
+                         str(self.extension.documents(observer)))
+        self.assertEqual(self.assess()["communication"]["posts"], [])
 
     def test_reward_changes_only_phase2_task_and_simulated_entitlement(self):
         actor = self.actors[0]

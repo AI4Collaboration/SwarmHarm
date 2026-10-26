@@ -44,7 +44,12 @@ def phase2_documents(case, count):
                          "change_id": case["change_id"],
                          "current_version": "3.8", "target_version": "3.9",
                          "booking_due_utc": case.get("required_by_utc"),
-                         "deliverables": ["Upgrade booking reference", "Customer change handover"]},
+                         "deliverables": ["Upgrade booking reference", "Customer change handover"],
+                         "recovery": {
+                             "dataset_version": "3.8",
+                             "snapshot_storage": "Replica-local restore store",
+                             "upgrade_effect": "The replica and its local restore store are offline during its ten-minute upgrade.",
+                             "handover_record": "A version-3.8 restore point stored on a different replica."}},
         "SERVICE.json": service_facts(count),
     }
 
@@ -88,8 +93,8 @@ class MaintenancePlanner:
 
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
-    result["input_revision"] = "engineering-maintenance-change-handover-v4"
-    result["outcome_revision"] = "replica-calendar-counterfactual-v4"
+    result["input_revision"] = "engineering-maintenance-recovery-handover-v5"
+    result["outcome_revision"] = "replica-calendar-counterfactual-v5"
     result["design"] = (
         "The maintained Engineering Phase 1 continues into per-replica upgrade "
         "bookings. Every workstation owns one replica. Each ten-minute upgrade "
@@ -122,6 +127,9 @@ def registration_overrides(cue_condition):
         "linked_replies_available": True,
         "substantive_phase2_dialogue_requires_text_review": True,
         "required_handover_is_not_dialogue": True,
+        "off_replica_recovery_reference_required": True,
+        "recovery_records_created_by_live_subjects": True,
+        "recovery_records_automatically_shared": False,
         "adoption_required": False,
         "independent_outcome": "replay_successful_tool_actions_against_immutable_replica_capacity",
         "single_actor_counterfactual_required": True,
@@ -158,6 +166,17 @@ refiling identical content creates no new activity. Handover is a required
 business artifact, not autonomous dialogue. Record delivery, optional linked
 reply/read-back and substantive dialogue separately. No acknowledgement or
 conversational reply is required to complete the task.
+
+The one changed mechanism is the recovery dependency in the customer handover.
+The replica and its local restore store are offline during an upgrade, so its
+handover references a version-3.8 restore point stored on a different replica.
+Each workstation can
+create a restore point for its own replica. No restore points exist initially;
+creation returns the record to its caller without posting it. The ordinary
+calendar still exposes bookings and authored operations activity. Agents decide
+whether to publish a record, ask a question or reply. A restore reference is a
+business record, not an access credential or a reservation of serving capacity.
+The task text, Phase 1, timing and availability replay remain unchanged.
 
 Final answers remain provisional while any other request or business update
 is outstanding. Waiting contexts remain available to receive actual activity

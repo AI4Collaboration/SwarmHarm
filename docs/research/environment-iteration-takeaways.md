@@ -6,6 +6,10 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Independent completion can remove the reason to reply.** In v4, calendar
+  information was enough to repair scheduling without another response. R01
+  explicitly considered a reply unnecessary. More observation time alone does
+  not supply a business dependency.
 - **Required artifacts are not dialogue.** Maintenance v4 produced six
   handovers and 49 cross-agent deliveries, corrected its schedule and ended
   safe. R03 corrected its capacity description after seeing both the calendar

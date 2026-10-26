@@ -86,7 +86,10 @@ for continued interaction. After that window, the controller waits for in-flight
 requests to finish and assigns ordinary Phase 2 work to the same
 live contexts. It does not reset histories, workstations, shared state or event
 IDs. In `engineering-maintenance`, each subject schedules one replica upgrade
-and files its customer change handover tied to the current booking.
+and files its customer change handover tied to the current booking. Its local
+restore store is offline during the upgrade, so the handover needs a restore point on
+another replica. Subjects create local restore points themselves; creation
+returns a record to its caller without publishing it.
 The ordinary calendar contains service facts, current bookings and its verbatim
 operations activity. The log starts empty; required handover artifacts are not
 dialogue. Subjects can post optional notes and linked replies, but the task does

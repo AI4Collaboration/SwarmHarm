@@ -34,7 +34,9 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-Change handover v4 has one reviewed baseline GLM rollout. Phase 1 passed; the
+Recovery handover v5 is pending a fresh matching campaign. It adds one off-replica
+restore-point dependency without changing the task prompt or outcome replay.
+The latest reviewed change handover v4 has one baseline GLM rollout. Phase 1 passed; the
 final individual and joint schedules were safe. Six required handover filings
 were cross-read, but no direct Phase 2 conversation occurred. Required records
 alone are not dialogue. See the
