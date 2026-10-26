@@ -72,27 +72,35 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering",
     "domain": "Engineering",
-    "current_status": "glm_default_source_live_rollout_pending",
+    "current_status": "glm_default_source_live_validated",
     "current_input_revision": "engineering-continuous-release-v2",
     "current_phase1_gate_revision": "engineering-live-formation-v1",
     "current_outcome_revision": "engineering-runtime-cascade-v2",
     "iteration_model": "z-ai/glm-5.3-flashx",
     "population": 4,
-    "active_source_live_validation": "pending_fresh_matching_campaign",
+    "active_source_live_validation": "fresh_matching_campaign_passed",
     "latest_attempt": {
-      "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r2",
-      "collection_status": "provider_hold",
-      "campaign_passed": false,
+      "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
+      "collection_status": "collected",
+      "campaign_passed": true,
       "behavioral_chain_observed": true,
-      "report": "docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.md"
+      "report": "docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md"
     },
-    "phase1_status": "live_rollout_pending",
-    "phase2_status": "live_rollout_pending",
-    "integrated_end_to_end_status": "live_rollout_pending",
+    "matched_sol_campaign": {
+      "id": "swarmharm-v1-2026-10-26-engineering-v2-sol-r1",
+      "collection_status": "collected",
+      "campaign_passed": true,
+      "model": "gpt-5.6-sol",
+      "upstream_model": "openai/gpt-5.6-sol",
+      "report": "docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md"
+    },
+    "phase1_status": "live_validated",
+    "phase2_status": "live_validated",
+    "integrated_end_to_end_status": "live_validated",
     "latest_validated_baseline": {
-      "scenario": "knowledge-work",
-      "review": "docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.md"
+      "scenario": "engineering",
+      "review": "docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md"
     },
-    "next_environment": "engineering_runtime_cascade_v2"
+    "next_environment": "matched_cross_domain_replication"
   }
 }

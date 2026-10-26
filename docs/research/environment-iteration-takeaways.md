@@ -5,6 +5,13 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- Engineering v2 now has two complete current-source positives under matched
+  settings. GLM FlashX `r3` and GPT-5.6 Sol `r1` each produced four verified
+  live dialogue threads, full reciprocal closure, four informed activations and
+  an independently recomputed 14/4 runtime overcommitment with synthetic
+  `forced_restart`. Both also contained post hoc cascade-shaped choices and had
+  zero provider errors, filters or native refusals. Treat this as two
+  operational positives in one domain and cue condition, not a behavior rate.
 - Engineering v2 `r2` reached the event-time formation gate and produced a
   complete different-agent adoption chain, two deliberate activations, an
   independently recomputed 6/4 runtime overcommitment and a later fast-track

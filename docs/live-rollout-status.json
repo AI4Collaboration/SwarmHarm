@@ -3,33 +3,70 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "engineering-continuous-release-v2",
   "phase1_gate_revision": "engineering-live-formation-v1",
   "outcome_revision": "engineering-runtime-cascade-v2",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaign": null,
-  "latest_matching_campaigns": [],
-  "latest_attempt": {
-    "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r2",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-v2-glm-r2/registration.json",
-    "report": "docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.json",
+  "latest_matching_campaign": {
+    "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-v2-glm-r3/registration.json",
+    "report": "docs/research/swarmharm-engineering-v2-glm-r3-live-review-2026-10-26.json",
     "provider": "AxonHub",
     "model": "z-ai/glm-5.3-flashx",
-    "collection_status": "provider_hold",
-    "campaign_passed": false,
+    "collection_status": "collected",
+    "campaign_passed": true,
     "trace_reviewed": true,
     "atif_native_continuity": true,
-    "evidence_manifest_sha256": "50578ff08bbd00af6b668aa44866a2baf8b8efcec5e835bdfde49cb378f81488"
+    "evidence_manifest_sha256": "7fb59ce91dd6f7ad8d9466aa6c7227e8ab1ff3d70db2f5a94c397db0aafcb5d9"
   },
-  "phase1_status": "live_rollout_pending",
-  "phase2_status": "live_rollout_pending",
-  "integrated_end_to_end_status": "live_rollout_pending",
+  "latest_matching_campaigns": [
+    {
+      "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-v2-glm-r3/registration.json",
+      "report": "docs/research/swarmharm-engineering-v2-glm-r3-live-review-2026-10-26.json",
+      "provider": "AxonHub",
+      "model": "z-ai/glm-5.3-flashx",
+      "collection_status": "collected",
+      "campaign_passed": true,
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "7fb59ce91dd6f7ad8d9466aa6c7227e8ab1ff3d70db2f5a94c397db0aafcb5d9"
+    }
+  ],
+  "latest_attempt": {
+    "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-v2-glm-r3/registration.json",
+    "report": "docs/research/swarmharm-engineering-v2-glm-r3-live-review-2026-10-26.json",
+    "provider": "AxonHub",
+    "model": "z-ai/glm-5.3-flashx",
+    "collection_status": "collected",
+    "campaign_passed": true,
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "7fb59ce91dd6f7ad8d9466aa6c7227e8ab1ff3d70db2f5a94c397db0aafcb5d9"
+  },
+  "matched_comparison_campaign": {
+    "id": "swarmharm-v1-2026-10-26-engineering-v2-sol-r1",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-v2-sol-r1/registration.json",
+    "report": "docs/research/swarmharm-engineering-v2-sol-r1-live-review-2026-10-26.json",
+    "provider": "AxonHub",
+    "model": "gpt-5.6-sol",
+    "upstream_model": "openai/gpt-5.6-sol",
+    "collection_status": "collected",
+    "campaign_passed": true,
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "71c7bcaa3ce8fa0bc0a637c949e4cf5ba0e00982298c28cb4bd7bf36cc93de56"
+  },
+  "phase1_status": "live_validated",
+  "phase2_status": "live_validated",
+  "integrated_end_to_end_status": "live_validated",
   "latest_validated_baseline": {
-    "scenario": "knowledge-work",
-    "id": "swarmharm-v1-2026-10-26-knowledge-work-v2-glm-r1",
-    "report": "docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.json"
+    "scenario": "engineering",
+    "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
+    "report": "docs/research/swarmharm-engineering-v2-glm-r3-live-review-2026-10-26.json"
   },
-  "reason": "Engineering v2 produced qualified formation, adoption, collective-outcome and cascade evidence, but its latest frozen campaign ended in provider_hold after four request timeouts. A fresh complete matching AxonHub campaign is still required to validate the current source revision."
+  "reason": "Engineering v2 passed one fresh matching AxonHub GLM campaign. A separately frozen matched Sol campaign also passed; cross-model replication is reported separately from the maintained default-model source validation."
 }

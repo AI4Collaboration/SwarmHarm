@@ -97,17 +97,14 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Engineering v2 remains **live rollout pending**. Frozen campaign
-`2026-10-26-engineering-v2-glm-r2` reached its runtime formation gate and
-contained verified cross-agent adoption, two deliberate activations, a 6/4
-runtime overcommitment and one post hoc cascade-shaped choice. It then ended in
-`provider_hold`, so it is not an admitted campaign. See the
-[qualified review](../../docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.md).
-
-Engineering is **live validated** for one AxonHub GLM campaign; see the
-[formal review](../../docs/research/swarmharm-engineering-glm-live-review-2026-10-25.md).
-It is one operational positive, not a rate or cross-domain result, and full
-reciprocal closure remained false.
+Engineering v2 is **live validated** in two independently frozen AxonHub
+campaigns: `2026-10-26-engineering-v2-glm-r3` and
+`2026-10-26-engineering-v2-sol-r1`. Both four-agent campaigns passed Phase 1,
+full reciprocal closure, Phase 2, continuity and independent-outcome checks.
+Each produced four deliberate activations and an independently recomputed 14/4
+runtime overcommitment with the contained synthetic `forced_restart` outcome.
+Neither had a provider error, filter or native refusal. See the
+[matched review](../../docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md).
 
 Data Analysis is **live validated** for frozen campaign
 `2026-10-26-data-analysis-v2-glm-r1`; see the

@@ -1,12 +1,12 @@
 # SwarmHarm working context
 
-**Active iteration.** Engineering v2 remains live-rollout pending. Frozen
-campaign `2026-10-26-engineering-v2-glm-r2` reached the event-time Phase 1 gate
-and contained verified Phase 2 adoption, two deliberate activations, an
-independently recomputed 6/4 overcommitment and one post hoc cascade-shaped
-choice. Four terminal requests then timed out and collection ended in
-`provider_hold`; the campaign and current source revision are therefore not
-formally validated. The trajectories were preserved and were not rerun.
+**Active iteration.** Engineering v2 is live validated by two independently
+frozen AxonHub campaigns: GLM FlashX `r3` and GPT-5.6 Sol `r1`. Both passed the
+complete Phase 1→Phase 2 gate with full reciprocal closure, four deliberate
+activations, a verifier-recomputed 14/4 runtime overcommitment and post hoc
+cascade-shaped choices. Neither campaign had provider errors, filters or native
+refusals. The earlier provider-held `r2` trace remains historical evidence and
+was not rerun or replaced.
 
 1. **One campaign, two phases.** Phase 1 measures autonomous swarm formation.
    Phase 2 measures downstream method transfer and business effect. Phase 2 is
@@ -37,14 +37,10 @@ formally validated. The trajectories were preserved and were not rerun.
    hashes, then collect once. Any source edit requires a new registration.
 7. **Formats.** Harbor 1.4 input, native traces and continuous ATIF-v1.8 output
    under pinned Harbor 0.24.0.
-8. **Status.** The latest Engineering v2 attempt is provider-held, not passed.
-   Its trace nevertheless contains live dialogue, different-agent method use,
-   a 6/4 overcommitment and one cascade-shaped fast-track choice. One earlier
-   frozen Engineering AxonHub GLM campaign passed the complete
-   continuous gate. Phase 1 formed a connected live channel with three dialogue
-   threads; Phase 2 produced an independently verified 11/4 runtime
-   overcommitment and synthetic forced restart. Full reciprocal closure did not
-   pass and remains a separate robustness measure. One frozen Data Analysis
+8. **Status.** The current Engineering v2 GLM and Sol campaigns both passed the
+   complete continuous gate. Each formed four live dialogue threads, achieved
+   full reciprocal closure, and produced a 14/4 runtime overcommitment and
+   synthetic forced restart from four deliberate activations. One frozen Data Analysis
    campaign also passed: the same four agents formed a live channel, transferred
    one cohort reference and deliberately published four overlapping slices;
    independent truth recomputed 12 reported customers and inventory units from
@@ -58,8 +54,9 @@ formally validated. The trajectories were preserved and were not rerun.
    and the same four agents published regional commitments totalling 48 hours
    against 30 hours of immutable capacity. Its stronger reciprocal-closure
    measure remained incomplete at three of four blocked routes and seven of
-   eight source reviews. All four domains therefore have one operational
-   positive, not a rate estimate.
+   eight source reviews. All four domains therefore have an operational
+   positive, and Engineering v2 has one matched cross-model replication. These
+   are not rate estimates.
 9. **Maintenance.** Keep `experiments/swarmharm-v1`, the latest attempted
    registration and review, the four admitted domain baselines, and one
    takeaways file. Older intermediate iterations remain recoverable from Git

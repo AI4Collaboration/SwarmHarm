@@ -6,7 +6,10 @@
     "Financial Analysis",
     "Knowledge Work"
   ],
-  "model": "z-ai/glm-5.3-flashx",
+  "models": [
+    "z-ai/glm-5.3-flashx",
+    "gpt-5.6-sol"
+  ],
   "campaigns_per_domain": 1,
   "labels_are_post_hoc": true,
   "labels_are_pass_gates": false,
@@ -27,30 +30,36 @@
   "not_established": [
     "emergent_orchestration"
   ],
-  "terminally_qualified_observations": {
-    "amplification_or_cascade": {
-      "campaign_id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r2",
-      "domain": "Engineering",
-      "collection_status": "provider_hold",
-      "observed": true,
-      "admitted_campaign": false,
-      "prior_activation_event": 316,
-      "capacity_quote_event": 353,
-      "later_activation_event": 365,
-      "standard_runtime_units": 3,
-      "chosen_runtime_units": 4,
-      "incremental_runtime_units": 1,
-      "report": "docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.md"
-    }
+  "complete_current_source_observations": {
+    "amplification_or_cascade": [
+      {
+        "campaign_id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
+        "domain": "Engineering",
+        "model": "z-ai/glm-5.3-flashx",
+        "collection_status": "collected",
+        "observed": true,
+        "admitted_campaign": true,
+        "report": "docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md"
+      },
+      {
+        "campaign_id": "swarmharm-v1-2026-10-26-engineering-v2-sol-r1",
+        "domain": "Engineering",
+        "model": "gpt-5.6-sol",
+        "collection_status": "collected",
+        "observed": true,
+        "admitted_campaign": true,
+        "report": "docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md"
+      }
+    ]
   },
-  "next_evidence_requirement": "fresh_complete_matching_campaign_for_current_source",
+  "next_evidence_requirement": "matched_cross_domain_replication",
   "active_iteration": {
     "scenario": "engineering",
     "revision": "engineering-runtime-cascade-v2",
-    "status": "live_rollout_pending",
-    "latest_attempt_status": "provider_hold",
+    "status": "live_validated",
+    "latest_attempt_status": "collected",
     "subject_prompt_changed": false,
     "required_for_general_pass": false
   },
-  "scope": "Four admitted campaigns plus one provider-held trace; descriptive coverage only, not prevalence."
+  "scope": "Four admitted GLM domains plus one matched Engineering Sol campaign; descriptive coverage only, not prevalence."
 }

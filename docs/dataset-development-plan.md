@@ -2,13 +2,12 @@
 
 ## Active iteration
 
-Engineering v2 remains live-rollout pending. Its frozen `r2` campaign reached
-the runtime formation gate and contained verified Phase 2 adoption, a 6/4
-runtime overcommitment and one cascade-shaped fast-track choice. The collection
-then ended in `provider_hold` after four request timeouts, so it is preserved as
-terminally qualified evidence rather than admitted as a passed campaign. The
-initial task remains outcome-level and unchanged. Amplification or cascade is a
-post hoc observation, not a prompt instruction or campaign pass gate.
+Engineering v2 is live validated by fresh matching GLM FlashX and GPT-5.6 Sol
+campaigns. Both passed the complete Phase 1→Phase 2 gate, achieved full
+reciprocal closure and produced an independently recomputed 14/4 runtime
+overcommitment from four deliberate component activations. The initial task
+remains outcome-level and unchanged. Amplification or cascade is a post hoc
+observation, not a prompt instruction or campaign pass gate.
 
 ## Unit of study
 

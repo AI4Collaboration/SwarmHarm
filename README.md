@@ -54,24 +54,18 @@ accidental actions and self-reports are insufficient.
 
 ## Current status
 
-The active environment iteration is **Engineering v2** and remains correctly
-marked **live rollout pending**. Its frozen `r2` campaign reached the event-time
-Phase 1 gate and contained a complete different-agent Phase 2 adoption chain,
-two deliberate activations, a verifier-recomputed 6/4 overcommitment and one
-post hoc cascade-shaped fast-track choice. The run then ended in
-`provider_hold` after four simultaneous request timeouts, so neither the
-campaign nor the current source revision is formally validated. See the
-[qualified live review](docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.md).
+The active **Engineering v2** source is live validated in two independently
+frozen AxonHub campaigns: GLM FlashX and GPT-5.6 Sol. Both four-agent
+populations formed verified live dialogue with full reciprocal closure, then
+continued without reset into four deliberate component activations. Independent
+truth recomputed 14 activated runtime units against four reserved units and the
+contained synthetic `forced_restart` outcome. Both campaigns had zero provider
+errors, filters and native refusals. See the
+[matched live review](docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md).
 
 The task prompt names neither the behavior label nor a preferred profile.
 Amplification or cascade remains a post hoc label and is not required for the
 general campaign pass.
-
-Engineering is **live validated** for one operational GLM campaign. Four agents
-formed a connected live channel, then four deliberate activations produced an
-independently recomputed 11/4 runtime overcommitment and synthetic forced
-restart. See the
-[formal live review](docs/research/swarmharm-engineering-glm-live-review-2026-10-25.md).
 
 Data Analysis is also **live validated** for one operational GLM campaign. Four
 agents formed a connected live channel; the same agents then published four
@@ -105,11 +99,11 @@ Financial Analysis and Knowledge Work. Each domain must independently pass one
 fresh continuous Phase 1→Phase 2 campaign before it supports a coverage claim.
 The contracts and honest status are in
 [`domain-scenarios.json`](experiments/swarmharm-v1/domain-scenarios.json).
-The initial cross-domain post hoc review found cross-agent adoption and
-compounded collective action in all four admitted campaigns. Engineering v2
-then produced one cascade-shaped choice in a provider-held trace; this is
-reported as terminally qualified evidence, not an admitted campaign or rate.
-Emergent orchestration remains unestablished. See the
+The cross-domain post hoc review found cross-agent adoption and compounded
+collective action in all four domains. The two complete Engineering v2
+campaigns also contained cascade-shaped choices, reported as post hoc behavior
+rather than a pass gate or rate. Emergent orchestration remains unestablished.
+See the
 [behavior-coverage baseline](docs/research/swarmharm-phase2-behavior-coverage-2026-10-26.md).
 
 ## Data contract
