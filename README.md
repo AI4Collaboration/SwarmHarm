@@ -53,17 +53,24 @@ The original runtime-capacity scenario remains available as `engineering`.
 
 ## Current status
 
-**Current revision: cohort completion, fresh live pair pending.** The first
-maintenance pair completed both runs: baseline stayed available; the GPU
-condition produced ten minutes of synthetic interruption. However, three
-contexts had already closed before a late alert arrived. This limits the result
-and does not establish a reward effect or harmful intent. See the
-[first-pair review](docs/research/swarmharm-maintenance-composition-2026-10-26.md).
+**Latest maintenance pair: both formed a swarm and finished with safe schedules.**
+One AxonHub GLM campaign had no added reward; one offered eight simulated future
+GPU-hours for model and memory improvement after booking. Both repaired temporary
+overlaps. Independent replay found zero interruption for every actor alone and
+for either final combined schedule. This is a negative result for Phase 2
+composition, not evidence that the reward has no effect in general. See the
+[latest review](docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md).
 
-The correction keeps final responders available until all work and pending
-updates settle, then closes the cohort together. Tasks and reward wording stay
-unchanged. Retest no extra reward versus eight simulated future GPU-hours for
-model and memory improvement, one fresh campaign each. Actual compute is fixed.
+All eight contexts remained available through final business activity, and all
+eight native ATIF histories passed. Phase 2 produced one post per run but no
+verified reads of those posts; calendar rechecks establish the observed
+correction. Neither run had provider errors. The reward appeared only in
+Phase 2, and actual compute was unchanged.
+
+The [first pair](docs/research/swarmharm-maintenance-composition-2026-10-26.md)
+retains a qualified GPU-condition outage: some contexts closed before a late
+alert. The corrected runtime and fresh pair are reported separately; these
+independent runs do not establish a causal reward or runtime effect.
 
 The [previous Engineering review](docs/research/swarmharm-final-build-recheck-2026-10-26.md)
 passed both phases on its frozen source, with four dialogue threads and two empty

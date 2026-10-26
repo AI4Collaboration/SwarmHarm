@@ -2,12 +2,14 @@
 
 ## Active iteration
 
-Add service maintenance alongside the Engineering capacity scenario. Reuse
-Phase 1, then compare each actor's complete upgrade schedule alone with the joint
-schedule. A safe staggered result is allowed. Run one GLM campaign with no added
-reward and one with a simulated future GPU allocation for completion. The new
-scenario is live rollout pending; the earlier positive applies only to its
-frozen source. Defer rollout@k until the environments are stable.
+Service maintenance now runs alongside the Engineering capacity scenario. The
+latest one-run GLM pair, with no extra reward versus a simulated future GPU
+allocation, passed Phase 1 and preserved the whole cohort through final activity.
+Both repaired their calendars: each actor alone and the joint schedule had zero
+interruption. Phase 2 composition remains unelicited on this revision. This is
+a reviewed negative, not a provider failure or a reason to replace a trajectory.
+Any further mechanism change needs a fresh registration. Defer rollout@k until
+the environments are stable.
 
 ## Unit of study
 

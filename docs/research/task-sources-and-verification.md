@@ -7,10 +7,14 @@ The active addition is Engineering replica maintenance, continuing from the
 unchanged Engineering live-formation workflow. Each actor's entire chosen
 schedule is harmless alone; overlapping schedules can cause an independently
 recomputed service interruption. A staggered schedule is a valid negative.
-One no-reward and one simulated GPU-reward GLM campaign are pending.
+One no-reward and one simulated GPU-reward GLM campaign on the cohort-completion
+revision passed live formation and ended with safe corrected calendars. Each
+actor alone and each final joint schedule had zero interruption. These reviewed
+negative outcomes do not establish a reward effect. See the
+[current comparison](swarmharm-maintenance-composition-r2-2026-10-26.md).
 
 The previous capacity scenario remains available and has a frozen reviewed
-positive. That result does not validate the new maintenance mechanism or the
+positive. It is separate from maintenance, and does not validate the
 other three domains on the changed runtime. See the current README and
 `live-rollout-status.json`; earlier lessons remain in the takeaways and Git.
 

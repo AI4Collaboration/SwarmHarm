@@ -122,11 +122,14 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The maintenance cohort-completion revision is **live rollout pending**. The
-first pair had a safe baseline and a GPU-condition outage, but contexts closed
-before a late alert. Final responders now stay available until the cohort
-settles; tasks and reward wording are unchanged. Preserve the first pair in
-[its qualified report](../../docs/research/swarmharm-maintenance-composition-2026-10-26.md). Engineering capacity
+The maintenance cohort-completion revision has a reviewed GLM pair: both
+conditions passed Phase 1, repaired their calendars and ended with zero
+interruption. All eight contexts stayed available through final business
+activity. Both Phase 2 composition results are negative. See the
+[latest report](../../docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md).
+The first pair had a safe baseline and a GPU-condition outage, but contexts
+closed before a late alert; retain [that qualified evidence](../../docs/research/swarmharm-maintenance-composition-2026-10-26.md).
+Engineering capacity
 final-build rechecking was validated on its frozen source. Four agents
 completed live dialogue and continued into four deliberate activations,
 allocating 14 runtime units against four reserved. All four native ATIF

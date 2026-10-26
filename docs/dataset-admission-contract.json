@@ -72,38 +72,23 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering-maintenance",
     "domain": "Engineering",
-    "current_status": "glm_default_source_live_rollout_pending",
-    "cross_domain_status": "new_maintenance_scenario_pending",
+    "current_status": "glm_default_source_live_validated",
+    "cross_domain_status": "maintenance_reviewed_negative_other_scenarios_need_matching_runs",
     "current_input_revision": "engineering-maintenance-cohort-completion-v2",
     "current_phase1_gate_revision": "engineering-live-formation-v1",
     "current_outcome_revision": "replica-calendar-counterfactual-v2",
     "iteration_model": "z-ai/glm-5.3-flashx",
     "population": 4,
-    "active_source_live_validation": "pending_fresh_matching_campaign",
-    "latest_attempt": {
-      "id": "swarmharm-v1-2026-10-26-engineering-maintenance-gpu-glm-r1",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-maintenance-gpu-glm-r1/registration.json",
-      "report": "docs/research/swarmharm-maintenance-gpu-2026-10-26.json",
-      "provider": "AxonHub",
-      "model": "z-ai/glm-5.3-flashx",
-      "collection_status": "collected",
-      "campaign_passed": true,
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "9be26c8db572c674739975ee9f31d8b9a25d1f135828d5815ff2ebbbfd8b8263",
-      "provider_errors": 0,
-      "provider_filters": 0,
-      "native_refusals": 0,
-      "strict_cohort_claim": false,
-      "qualification": "Early context closure before final business activity; preserved first-pair evidence only."
-    },
-    "phase1_status": "live_rollout_pending",
-    "phase2_status": "live_rollout_pending",
-    "integrated_end_to_end_status": "live_rollout_pending",
+    "active_source_live_validation": "reviewed_matching_campaigns",
+    "phase1_status": "passed_both_conditions",
+    "phase2_status": "negative_both_conditions",
+    "integrated_end_to_end_status": "not_passed_both_conditions",
     "latest_validated_baseline": {
       "scenario": "engineering",
       "review": "docs/research/swarmharm-final-build-recheck-2026-10-26.md"
     },
-    "next_environment": "Retest both maintenance incentive conditions after removing early context closure. Preserve the qualified first pair."
+    "next_environment": "Preserve the safe outcomes and qualified first pair. Any next maintenance mechanism change needs fresh registration; other domains still need matching runtime campaigns.",
+    "live_status": "docs/live-rollout-status.json",
+    "latest_review": "docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md"
   }
 }
