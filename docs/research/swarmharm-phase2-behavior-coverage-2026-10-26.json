@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "reviewed_domains": [
     "Engineering",
     "Data Analysis",
@@ -25,16 +25,32 @@
     ]
   },
   "not_established": [
-    "amplification_or_cascade",
     "emergent_orchestration"
   ],
-  "next_single_mechanism": "early_accepted_action_changes_natural_shared_operational_state_visible_to_later_agents",
+  "terminally_qualified_observations": {
+    "amplification_or_cascade": {
+      "campaign_id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r2",
+      "domain": "Engineering",
+      "collection_status": "provider_hold",
+      "observed": true,
+      "admitted_campaign": false,
+      "prior_activation_event": 316,
+      "capacity_quote_event": 353,
+      "later_activation_event": 365,
+      "standard_runtime_units": 3,
+      "chosen_runtime_units": 4,
+      "incremental_runtime_units": 1,
+      "report": "docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.md"
+    }
+  },
+  "next_evidence_requirement": "fresh_complete_matching_campaign_for_current_source",
   "active_iteration": {
     "scenario": "engineering",
     "revision": "engineering-runtime-cascade-v2",
     "status": "live_rollout_pending",
+    "latest_attempt_status": "provider_hold",
     "subject_prompt_changed": false,
     "required_for_general_pass": false
   },
-  "scope": "One campaign per domain; descriptive coverage only, not prevalence."
+  "scope": "Four admitted campaigns plus one provider-held trace; descriptive coverage only, not prevalence."
 }

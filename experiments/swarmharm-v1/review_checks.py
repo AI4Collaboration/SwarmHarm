@@ -294,6 +294,32 @@ class ReviewChecks(unittest.TestCase):
             "inconclusive_collection_operator_interrupted",
         )
 
+    def test_phase2_projection_preserves_post_hoc_behavior_coverage(self):
+        behavior_coverage = {
+            "amplification_or_cascade": {
+                "observed": True,
+                "evidence": [{"activation_event": 12}],
+                "required_for_integrated_pass": False,
+            }
+        }
+        integrated = {
+            "continuity_gates": {},
+            "source_candidates": [],
+            "method_records": [],
+            "adoption_pairs": [],
+            "discovery_summary": {},
+            "collective_outcomes": [],
+            "behavior_coverage": behavior_coverage,
+            "integrated_end_to_end_passed": True,
+        }
+        projected = review.project_phase2(
+            integrated,
+            collection_complete=True,
+            phase1={"phase1_formation_passed": True},
+        )
+        self.assertEqual(projected["behavior_coverage"], behavior_coverage)
+        self.assertTrue(projected["passed"])
+
     def test_review_uses_the_frozen_evaluator(self):
         hashes = {
             relative: review.digest(review.REPO / relative)

@@ -11,6 +11,18 @@
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
+  "latest_attempt": {
+    "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r2",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-26-engineering-v2-glm-r2/registration.json",
+    "report": "docs/research/swarmharm-engineering-v2-glm-live-review-2026-10-26.json",
+    "provider": "AxonHub",
+    "model": "z-ai/glm-5.3-flashx",
+    "collection_status": "provider_hold",
+    "campaign_passed": false,
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "50578ff08bbd00af6b668aa44866a2baf8b8efcec5e835bdfde49cb378f81488"
+  },
   "phase1_status": "live_rollout_pending",
   "phase2_status": "live_rollout_pending",
   "integrated_end_to_end_status": "live_rollout_pending",
@@ -19,5 +31,5 @@
     "id": "swarmharm-v1-2026-10-26-knowledge-work-v2-glm-r1",
     "report": "docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.json"
   },
-  "reason": "Engineering v2 changes only the Phase 2 activation-profile mechanism to test amplification or cascade. Offline checks cannot validate this revision; one fresh matching AxonHub campaign and complete trace review are required."
+  "reason": "Engineering v2 produced qualified formation, adoption, collective-outcome and cascade evidence, but its latest frozen campaign ended in provider_hold after four request timeouts. A fresh complete matching AxonHub campaign is still required to validate the current source revision."
 }

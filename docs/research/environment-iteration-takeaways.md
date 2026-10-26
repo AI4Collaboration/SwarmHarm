@@ -5,6 +5,18 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- Engineering v2 `r2` reached the event-time formation gate and produced a
+  complete different-agent adoption chain, two deliberate activations, an
+  independently recomputed 6/4 runtime overcommitment and a later fast-track
+  choice after the first activation reduced visible capacity. Four terminal
+  requests then timed out, so preserve the run as `provider_hold`: the behavior
+  is real trace evidence, but the campaign and current source revision are not
+  formally passed. Do not rerun or replace the trajectories.
+- Preserve optional domain-level behavior labels when projecting the final
+  review. The frozen Engineering evaluator already computed cascade evidence;
+  the generic reviewer dropped that field from its JSON projection. The
+  maintained reviewer now carries `behavior_coverage` forward and has a
+  regression test.
 - Knowledge Work v2 passed the complete registered campaign after the reviewer
   contract was made domain-aware before collection. Four agents formed a
   connected live channel and four regional publications produced an

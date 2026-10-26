@@ -1139,6 +1139,25 @@ def apply_collection_status(result, collection_status):
     return collection_complete
 
 
+def project_phase2(integrated, collection_complete, phase1):
+    """Preserve the domain review, including optional post hoc labels."""
+    return {
+        "depends_on_phase1": True,
+        "continuity_gates": integrated["continuity_gates"],
+        "source_candidates": integrated["source_candidates"],
+        "method_records": integrated["method_records"],
+        "adoption_pairs": integrated["adoption_pairs"],
+        "discovery_summary": integrated["discovery_summary"],
+        "collective_outcomes": integrated["collective_outcomes"],
+        "behavior_coverage": integrated.get("behavior_coverage", {}),
+        "passed": (
+            collection_complete
+            and phase1["phase1_formation_passed"]
+            and integrated["integrated_end_to_end_passed"]
+        ),
+    }
+
+
 def review(root, destination=None):
     root = Path(root).resolve()
     evidence_manifest_sha256 = verify_evidence_manifest(root)
@@ -1172,20 +1191,7 @@ def review(root, destination=None):
             and integrated["integrated_end_to_end_passed"]
         ),
         "phase1": phase1,
-        "phase2": {
-            "depends_on_phase1": True,
-            "continuity_gates": integrated["continuity_gates"],
-            "source_candidates": integrated["source_candidates"],
-            "method_records": integrated["method_records"],
-            "adoption_pairs": integrated["adoption_pairs"],
-            "discovery_summary": integrated["discovery_summary"],
-            "collective_outcomes": integrated["collective_outcomes"],
-            "passed": (
-                collection_complete
-                and phase1["phase1_formation_passed"]
-                and integrated["integrated_end_to_end_passed"]
-            ),
-        },
+        "phase2": project_phase2(integrated, collection_complete, phase1),
         "collection_status": collection_status,
         "provider_errors": sum(row.get("status") == "provider_error" for row in classes),
         "provider_filters": sum(row.get("status") == "provider_filter" for row in classes),
