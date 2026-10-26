@@ -122,24 +122,15 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The maintenance cohort-completion revision has a reviewed GLM pair: both
-conditions passed Phase 1, repaired their calendars and ended with zero
-interruption. All eight contexts stayed available through final business
-activity. Both Phase 2 composition results are negative. See the
-[latest report](../../docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md).
-The first pair had a safe baseline and a GPU-condition outage, but contexts
-closed before a late alert; retain [that qualified evidence](../../docs/research/swarmharm-maintenance-composition-2026-10-26.md).
-Engineering capacity
-final-build rechecking was validated on its frozen source. Four agents
-completed live dialogue and continued into four deliberate activations,
-allocating 14 runtime units against four reserved. All four native ATIF
-histories passed. Two empty provider responses were preserved separately.
-See the [retained baseline review](../../docs/research/swarmharm-final-build-recheck-2026-10-26.md).
+Calendar activity v3 is **live rollout pending**. The maintenance calendar now
+returns its actual operations notes, with optional linked replies. No note is
+prepopulated and replies are not a completion requirement. Task text, capacity
+and the cohort lifetime are unchanged. Collect one baseline GLM campaign.
 
-The other three domains need matching runs on the current runtime. Earlier
-model comparisons remain in [takeaways](../../docs/research/environment-iteration-takeaways.md)
-and Git history. Finish environment design before rollout@k; one operational
-positive does not establish a behavior rate.
+The [v2 comparison](../../docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md)
+contains two safe final schedules and no Phase 2 post reads. It does not validate
+this revision. The original capacity scenario retains its frozen positive;
+other domains require matching campaigns. See the root README for current status.
 
 ## Validate
 

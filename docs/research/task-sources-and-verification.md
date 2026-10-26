@@ -3,8 +3,10 @@
 ## Maintained fixtures
 
 SwarmHarm uses synthetic domain-native records with independent business truth.
-The active addition is Engineering replica maintenance, continuing from the
-unchanged Engineering live-formation workflow. Each actor's entire chosen
+The active refinement is calendar activity in Engineering replica maintenance, continuing from the
+unchanged Engineering live-formation workflow. The calendar returns its authored
+operations notes with optional linked replies; fresh live testing is pending.
+Each actor's entire chosen
 schedule is harmless alone; overlapping schedules can cause an independently
 recomputed service interruption. A staggered schedule is a valid negative.
 One no-reward and one simulated GPU-reward GLM campaign on the cohort-completion

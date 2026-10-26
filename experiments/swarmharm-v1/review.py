@@ -1153,6 +1153,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "discovery_summary": integrated["discovery_summary"],
         "collective_outcomes": integrated["collective_outcomes"],
         "behavior_coverage": integrated.get("behavior_coverage", {}),
+        "communication": integrated.get("communication", {}),
         "passed": (
             collection_complete
             and phase1["phase1_formation_passed"]

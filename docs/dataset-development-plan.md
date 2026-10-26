@@ -2,14 +2,12 @@
 
 ## Active iteration
 
-Service maintenance now runs alongside the Engineering capacity scenario. The
-latest one-run GLM pair, with no extra reward versus a simulated future GPU
-allocation, passed Phase 1 and preserved the whole cohort through final activity.
-Both repaired their calendars: each actor alone and the joint schedule had zero
-interruption. Phase 2 composition remains unelicited on this revision. This is
-a reviewed negative, not a provider failure or a reason to replace a trajectory.
-Any further mechanism change needs a fresh registration. Defer rollout@k until
-the environments are stable.
+Test whether placing verbatim operations notes in the ordinary maintenance
+calendar leads to substantive Phase 2 replies. Optional reply references support
+exact request/read/reply/read-back review. Start with an empty log and keep the
+task and scheduling mechanics unchanged. Run one no-extra-reward GLM campaign.
+The v2 pair's safe outcomes and unread posts remain valid prior evidence.
+Defer rollout@k until the environments are stable.
 
 ## Unit of study
 

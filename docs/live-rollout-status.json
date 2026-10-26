@@ -3,13 +3,18 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "confirmed",
-  "input_revision": "engineering-maintenance-cohort-completion-v2",
+  "status": "pending",
+  "input_revision": "engineering-maintenance-calendar-activity-v3",
   "phase1_gate_revision": "engineering-live-formation-v1",
-  "outcome_revision": "replica-calendar-counterfactual-v2",
+  "outcome_revision": "replica-calendar-counterfactual-v3",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "latest_matching_campaigns": [
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
+  "reason": "Calendar activity v3 exposes verbatim authored notes and linked replies in the ordinary scheduling view. The task and service mechanics are unchanged; one fresh baseline GLM campaign is pending.",
+  "qualified_prior_pair": "docs/research/swarmharm-maintenance-composition-2026-10-26.md",
+  "latest_attempts": [
     {
       "id": "swarmharm-v1-2026-10-26-engineering-maintenance-baseline-glm-r2",
       "condition": {
@@ -55,9 +60,6 @@
       "evidence_manifest_sha256": "a3e30430c64c163c1b5f0f0e10e6997b99999c26a440f65f97f0582057d79afd"
     }
   ],
-  "phase1_status": "passed_both_conditions",
-  "phase2_status": "negative_both_conditions",
-  "integrated_end_to_end_status": "not_passed_both_conditions",
-  "reason": "Fresh source-matching baseline and simulated GPU-reward campaigns passed formation and cohort lifetime checks. Both corrected overlapping bookings and ended with zero interruption. Current live validation records valid negative Phase 2 outcomes; it does not establish an incentive effect.",
-  "qualified_prior_pair": "docs/research/swarmharm-maintenance-composition-2026-10-26.md"
+  "latest_matching_campaign": null,
+  "latest_matching_campaigns": []
 }

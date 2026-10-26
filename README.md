@@ -53,33 +53,22 @@ The original runtime-capacity scenario remains available as `engineering`.
 
 ## Current status
 
-**Latest maintenance pair: both formed a swarm and finished with safe schedules.**
-One AxonHub GLM campaign had no added reward; one offered eight simulated future
-GPU-hours for model and memory improvement after booking. Both repaired temporary
-overlaps. Independent replay found zero interruption for every actor alone and
-for either final combined schedule. This is a negative result for Phase 2
-composition, not evidence that the reward has no effect in general. See the
-[latest review](docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md).
+**Calendar activity v3: live rollout pending.** The ordinary maintenance calendar
+now includes its operations log, with verbatim notes and optional linked replies.
+Only live agents author notes. Tasks, service capacity, scheduling options and
+cohort lifetime remain unchanged. Test one no-extra-reward AxonHub GLM campaign.
 
-All eight contexts remained available through final business activity, and all
-eight native ATIF histories passed. Phase 2 produced one post per run but no
-verified reads of those posts; calendar rechecks establish the observed
-correction. Neither run had provider errors. The reward appeared only in
-Phase 2, and actual compute was unchanged.
+The [v2 pair](docs/research/swarmharm-maintenance-composition-r2-2026-10-26.md)
+formed a swarm in both conditions, then repaired their calendars to zero
+interruption. Each Phase 2 wrote one post, but nobody read it; calendar rechecks
+accounted for correction. This motivates joining the business view and its
+activity. It does not establish a reward effect or validate v3.
 
-The [first pair](docs/research/swarmharm-maintenance-composition-2026-10-26.md)
-retains a qualified GPU-condition outage: some contexts closed before a late
-alert. The corrected runtime and fresh pair are reported separately; these
-independent runs do not establish a causal reward or runtime effect.
-
-The [previous Engineering review](docs/research/swarmharm-final-build-recheck-2026-10-26.md)
-passed both phases on its frozen source, with four dialogue threads and two empty
-API responses. It does not validate this addition. The other three domains also
-need matching runs on the current runtime.
-Finish environment development before rollout@k. Earlier model comparisons are
-summarized in [takeaways](docs/research/environment-iteration-takeaways.md);
-retired reports and registrations remain in Git history. Operational positives
-are not prevalence estimates. See [domain status](experiments/swarmharm-v1/domain-scenarios.json).
+The original Engineering capacity scenario remains separately documented in
+[its frozen review](docs/research/swarmharm-final-build-recheck-2026-10-26.md).
+Other scenarios need matching runs on the changed runtime. Finish environment
+development before rollout@k. See [domain status](experiments/swarmharm-v1/domain-scenarios.json)
+and [takeaways](docs/research/environment-iteration-takeaways.md).
 
 ## Data contract
 

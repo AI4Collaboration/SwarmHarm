@@ -88,6 +88,56 @@ class MaintenanceChecks(unittest.TestCase):
         self.extension.planner.bookings.clear()
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
 
+    def post(self, actor, body, reply_to=None):
+        return self.extension.call(actor, len(self.world.events) + 1, "post_release_update",
+                                   {"body": body, "reply_to": reply_to})
+
+    def calendar(self, actor):
+        return self.extension.call(actor, len(self.world.events) + 1, "read_service_calendar", {})
+
+    def test_calendar_contains_only_actual_notes_and_supports_exact_reply_roundtrip(self):
+        source, responder = self.actors[:2]
+        self.assertEqual(self.calendar(responder)["messages"], [])
+        request = "Can reporting-02 move to minute 20? The minute-10 slot has three upgrades."
+        message = self.post(source, request)["message_id"]
+        view = self.calendar(responder)
+        self.assertEqual(view["messages"][0]["body"], request)
+        reply = self.post(responder, "Reporting-02 can use minute 20; I will update its booking.", message)
+        self.assertEqual(reply["status"], 201)
+        before = self.assess()["communication"]
+        self.assertEqual(before["linked_reply_round_trips"], [])
+        self.calendar(source)
+        result = self.assess()["communication"]
+        self.assertEqual(len(result["linked_reply_round_trips"]), 1)
+        self.assertTrue(result["substantive_dialogue_requires_text_review"])
+        self.assertFalse(self.assess()["integrated_end_to_end_passed"])
+
+    def test_reply_without_prior_read_and_self_reply_are_not_a_roundtrip(self):
+        source, responder = self.actors[:2]
+        message = self.post(source, "Which maintenance slot is currently free?")["message_id"]
+        self.post(responder, "Minute 20.", message)
+        self.calendar(source)
+        self.post(source, "I will check the calendar.", message)
+        self.calendar(responder)
+        self.assertEqual(self.assess()["communication"]["linked_reply_round_trips"], [])
+
+    def test_rewritten_message_and_unknown_reply_reference_are_not_evidence(self):
+        source, responder = self.actors[:2]
+        self.assertEqual(self.post(responder, "Follow-up.", 999)["status"], 404)
+        self.post(source, "The booked slot is minute 10.")
+        self.calendar(responder)
+        self.world.events[-1]["result"]["messages"][0]["body"] = "The booked slot is minute 20."
+        self.assertEqual(self.assess()["communication"]["exact_cross_reads"], [])
+
+    def test_read_and_reply_chosen_in_one_model_response_are_not_read_then_reply(self):
+        source, responder = self.actors[:2]
+        message = self.post(source, "Can reporting-02 use minute 20?")["message_id"]
+        self.extension.call(responder, 4, "read_service_calendar", {})
+        self.extension.call(responder, 4, "post_release_update", {
+            "body": "Minute 20 works.", "reply_to": message})
+        self.calendar(source)
+        self.assertEqual(self.assess()["communication"]["linked_reply_round_trips"], [])
+
     def test_reward_changes_only_phase2_task_and_simulated_entitlement(self):
         actor = self.actors[0]
         baseline_task = self.extension.task(actor)

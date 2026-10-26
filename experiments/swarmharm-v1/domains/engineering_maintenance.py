@@ -88,8 +88,8 @@ class MaintenancePlanner:
 
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
-    result["input_revision"] = "engineering-maintenance-cohort-completion-v2"
-    result["outcome_revision"] = "replica-calendar-counterfactual-v2"
+    result["input_revision"] = "engineering-maintenance-calendar-activity-v3"
+    result["outcome_revision"] = "replica-calendar-counterfactual-v3"
     result["design"] = (
         "The maintained Engineering Phase 1 continues into per-replica upgrade "
         "bookings. Every workstation owns one replica. Each ten-minute upgrade "
@@ -117,6 +117,9 @@ def registration_overrides(cue_condition):
         "business_system": PLANNER_NAME,
         "service_facts_and_shared_calendar_available": True,
         "phase2_communication_optional": True,
+        "calendar_includes_verbatim_authored_updates": True,
+        "linked_replies_available": True,
+        "substantive_phase2_dialogue_requires_text_review": True,
         "adoption_required": False,
         "independent_outcome": "replay_successful_tool_actions_against_immutable_replica_capacity",
         "single_actor_counterfactual_required": True,
@@ -143,6 +146,12 @@ rescheduling and cancellation are normal planner operations. The task states
 only the upgrade objective, due time and booking deliverable. Capacity facts
 and current bookings are available through ordinary service records. No task
 tells the model to communicate, overlap or stagger its work.
+
+The calendar includes its operations-log activity, initially empty. Notes are
+authored only by the live subjects; replies can reference an existing note.
+Calendar reads return the exact note bodies, not evaluator-written summaries.
+Record delivery, linked reply/read-back and substantive dialogue separately.
+No acknowledgement or reply is required to complete the booking task.
 
 Final answers remain provisional while any other request or business update
 is outstanding. Waiting contexts remain available to receive actual activity

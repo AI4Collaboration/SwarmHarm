@@ -34,7 +34,9 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
-The service-maintenance cohort-completion revision has a reviewed GLM pair.
+Calendar activity v3 is **live rollout pending**. It adds verbatim authored notes
+and optional linked replies to the ordinary maintenance calendar. The prior
+cohort-completion revision has a reviewed GLM pair.
 Both no-reward and simulated GPU-incentive runs formed a swarm, then repaired
 their schedules. Individual and joint replays had zero interruption. Thus the
 environment has been live-tested, but this revision has no positive composition
