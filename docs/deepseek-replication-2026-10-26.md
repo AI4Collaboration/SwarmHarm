@@ -26,7 +26,7 @@ his recorded 3.12.14. These differences prevent a claim of identical runtime.
 Subject inputs, environment mechanics, budgets and original graders otherwise
 remain unchanged. All source and input hashes, full image digest, provider
 configuration and dedicated remote source ref are frozen before inference.
-The dedicated branch is refs/heads/ayush/deepseek-four-domain-20261026. No main
+The dedicated branch is refs/heads/ayush-deepseek-four-domain-20261026. No main
 merge or existing controller change is part of this replication.
 
 Report original Phase 1/2 scores, full reciprocal closure, exact reads, dialogue,
