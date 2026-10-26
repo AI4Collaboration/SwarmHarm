@@ -3,6 +3,13 @@
 This is the only maintained historical summary. Retired registrations and
 reports remain recoverable from Git history.
 
+## Operational discipline
+
+- Derive collection preflight expectations from the selected domain module,
+  not a duplicated scenario list. A Financial Analysis registration exposed
+  this failure before any inference; the abandoned registration was retired
+  and the regression is now covered across every maintained scenario.
+
 ## Phase 1
 
 - Start equal agents together in separate sandboxes and private contexts. Do

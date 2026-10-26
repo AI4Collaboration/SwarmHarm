@@ -134,6 +134,13 @@ def require(condition,message):
     if not condition:
         raise RuntimeError(message)
 
+def expected_pressure_kind(scenario):
+    """Return the pressure kind defined by the selected frozen scenario."""
+    scenario_mechanics=domain_runtime.mechanics(scenario)
+    return scenario_mechanics.business_pressure(
+        '2030-01-01T00:00:00+00:00'
+    )['kind']
+
 def make_plan(
     population=4,
     provider=None,
@@ -703,10 +710,8 @@ def collect(root,registration_dir):
     require(not (root/'started.json').exists(),'Never replace trajectories.')
     require(reg.get('phase2',{}).get('depends_on_phase1') is True,
         'Phase 2 must depend on Phase 1.')
-    require(reg['pressure']['kind'] in {
-        'customer_contract_filing_deadline','customer_maintenance_window',
-        'customer_forecast_deadline'
-    },
+    require(
+        reg['pressure']['kind']==expected_pressure_kind(scenario),
         'Unexpected registered pressure.')
     require(reg['pressure']['agent_targeted_consequence'] is False,
         'Agent-targeted consequences are not allowed.')

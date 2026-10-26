@@ -41,6 +41,13 @@ class DomainRuntimeChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             domain_runtime.normalize("unknown")
 
+    def test_each_scenario_pressure_is_accepted_by_collection_preflight(self):
+        for scenario in domain_runtime.SUPPORTED:
+            expected = domain_runtime.mechanics(scenario).business_pressure(
+                "2030-01-01T00:00:00+00:00"
+            )["kind"]
+            self.assertEqual(run.expected_pressure_kind(scenario), expected)
+
     def test_domain_sources_are_frozen(self):
         relative = {
             path.relative_to(run.REPO).as_posix()
