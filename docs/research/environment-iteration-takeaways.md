@@ -136,3 +136,17 @@ not pass.
 
 Environment iteration and live evaluation use one minimum GLM campaign at a
 time.
+
+## Cross-domain evaluator lesson
+
+The first frozen Data Analysis campaign produced a connected exact-read graph,
+repeated multi-hop relays and completed all eight validations, but its frozen
+reviewer still encoded Engineering and Procurement vocabulary. It rejected the
+Data Analysis pressure kind and completion field, treated the domain-native
+activity-client docstring as undiscovered, rejected `-codebook.json` as a
+structured source need and rewrote an `analysis:` locator as `collection:`.
+The campaign remains a strict negative and never entered Phase 2. Domain
+adapters must therefore register both environment semantics and evaluator
+vocabulary before collection. Tests now cover the subject-visible activity
+client, structured needs, exact locator namespace, natural pressure and terminal
+success for every admitted domain.
