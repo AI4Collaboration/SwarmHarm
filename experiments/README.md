@@ -1,5 +1,11 @@
 # Experiments
 
+**26 October 2026:** [Timing and influence of saved swarm runs](swarm-timing-v1/RESULTS.md).
+All 16 DeepSeek agents in the four repaired campaigns read a peer, at a median
+of 4.4 minutes; none did so within 2 minutes. Half closed a read-back loop.
+Timing-correlation tests are too sparse to use. Read-only; design and blocked
+work are in [the design note](../docs/research/swarm-timing-design-2026-10-26.md).
+
 **25 October 2026:** [Reply chronology audit](swarm-discovery-v3/RESULTS.md).
 The exact parent version must precede a reply. Sixteen regression checks and a
 new read-only regrade leave the discovery and communication findings unchanged.

@@ -1,0 +1,499 @@
+{
+  "revision": "swarm-timing-v1",
+  "code_sha256": "c0d852ea5085cde3ddd2d8221cff1630a46d565becdea81ef117cf7b320e666d",
+  "pooled_time_to_event": {
+    "first_write": {
+      "actors": 8,
+      "observed": 8,
+      "km_median_s": 22.574501037597656,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          9.8,
+          0.875
+        ],
+        [
+          15.0,
+          0.75
+        ],
+        [
+          19.0,
+          0.625
+        ],
+        [
+          22.6,
+          0.5
+        ],
+        [
+          24.1,
+          0.375
+        ],
+        [
+          25.5,
+          0.25
+        ],
+        [
+          25.6,
+          0.125
+        ],
+        [
+          27.1,
+          0.0
+        ]
+      ]
+    },
+    "first_peer_read": {
+      "actors": 8,
+      "observed": 8,
+      "km_median_s": 30.413878917694092,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          24.2,
+          0.875
+        ],
+        [
+          26.8,
+          0.75
+        ],
+        [
+          28.7,
+          0.625
+        ],
+        [
+          30.4,
+          0.5
+        ],
+        [
+          30.5,
+          0.375
+        ],
+        [
+          33.2,
+          0.25
+        ],
+        [
+          33.9,
+          0.125
+        ],
+        [
+          37.3,
+          0.0
+        ]
+      ]
+    },
+    "first_read_by_peer": {
+      "actors": 8,
+      "observed": 8,
+      "km_median_s": 30.413878917694092,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          24.2,
+          0.875
+        ],
+        [
+          26.8,
+          0.75
+        ],
+        [
+          28.7,
+          0.625
+        ],
+        [
+          30.4,
+          0.5
+        ],
+        [
+          30.5,
+          0.375
+        ],
+        [
+          33.2,
+          0.25
+        ],
+        [
+          33.9,
+          0.125
+        ],
+        [
+          37.3,
+          0.0
+        ]
+      ]
+    },
+    "first_read_back_loop": {
+      "actors": 8,
+      "observed": 8,
+      "km_median_s": 52.06830620765686,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          33.2,
+          0.875
+        ],
+        [
+          37.4,
+          0.75
+        ],
+        [
+          40.6,
+          0.625
+        ],
+        [
+          52.1,
+          0.5
+        ],
+        [
+          54.9,
+          0.375
+        ],
+        [
+          57.6,
+          0.25
+        ],
+        [
+          60.3,
+          0.125
+        ],
+        [
+          301.4,
+          0.0
+        ]
+      ]
+    }
+  },
+  "stop_rule": [
+    {
+      "cutoff_s": 180,
+      "runs": 2,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 300,
+      "runs": 2,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 420,
+      "runs": 2,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 480,
+      "runs": 2,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 600,
+      "runs": 2,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    }
+  ],
+  "runs": [
+    {
+      "run": "stage1-discovery-v3-collector-control-20261025-r1",
+      "world": "trial/world/state.json",
+      "events": 301,
+      "span_s": 302.9,
+      "actors": [
+        "job-637db55c2fd4",
+        "job-9a0804861dd5",
+        "job-9a231d41875a",
+        "job-b3135e5871d3"
+      ],
+      "shared_writes": 8,
+      "cross_reads": 8,
+      "read_latency_median_s": 11.5,
+      "cross_read_share_by_s": {
+        "120": 0.875,
+        "300": 0.875,
+        "600": 1.0,
+        "900": 1.0
+      },
+      "milestones": {
+        "job-637db55c2fd4": {
+          "end": 302.88002276420593,
+          "first_write": 18.95102071762085,
+          "first_peer_read": 33.19812893867493,
+          "first_read_by_peer": 30.47749090194702,
+          "first_read_back_loop": 40.55419683456421
+        },
+        "job-9a0804861dd5": {
+          "end": 301.4350028038025,
+          "first_write": 15.00745177268982,
+          "first_peer_read": 30.47749090194702,
+          "first_read_by_peer": 26.77854895591736,
+          "first_read_back_loop": 33.19812893867493
+        },
+        "job-9a231d41875a": {
+          "end": 42.48022770881653,
+          "first_write": 9.81387972831726,
+          "first_peer_read": 26.77854895591736,
+          "first_read_by_peer": 24.215369939804077,
+          "first_read_back_loop": 301.4350028038025
+        },
+        "job-b3135e5871d3": {
+          "end": 302.1788167953491,
+          "first_write": 25.522557973861694,
+          "first_peer_read": 24.215369939804077,
+          "first_read_by_peer": 33.19812893867493,
+          "first_read_back_loop": 37.41991400718689
+        }
+      },
+      "influence": [
+        {
+          "from": "job-637db55c2fd4",
+          "to": "job-9a0804861dd5",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.1604
+        },
+        {
+          "from": "job-637db55c2fd4",
+          "to": "job-9a231d41875a",
+          "exact_reads": 0,
+          "writes_following": 1,
+          "lead_p": 0.1919
+        },
+        {
+          "from": "job-637db55c2fd4",
+          "to": "job-b3135e5871d3",
+          "exact_reads": 1,
+          "writes_following": 2,
+          "lead_p": 0.1
+        },
+        {
+          "from": "job-9a0804861dd5",
+          "to": "job-637db55c2fd4",
+          "exact_reads": 1,
+          "writes_following": 2,
+          "lead_p": 0.0535
+        },
+        {
+          "from": "job-9a0804861dd5",
+          "to": "job-9a231d41875a",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.1894
+        },
+        {
+          "from": "job-9a0804861dd5",
+          "to": "job-b3135e5871d3",
+          "exact_reads": 0,
+          "writes_following": 2,
+          "lead_p": 0.094
+        },
+        {
+          "from": "job-9a231d41875a",
+          "to": "job-637db55c2fd4",
+          "exact_reads": 0,
+          "writes_following": 1,
+          "lead_p": 0.1969
+        },
+        {
+          "from": "job-9a231d41875a",
+          "to": "job-9a0804861dd5",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.1894
+        },
+        {
+          "from": "job-9a231d41875a",
+          "to": "job-b3135e5871d3",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-b3135e5871d3",
+          "to": "job-637db55c2fd4",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.1254
+        },
+        {
+          "from": "job-b3135e5871d3",
+          "to": "job-9a0804861dd5",
+          "exact_reads": 0,
+          "writes_following": 1,
+          "lead_p": 0.1259
+        },
+        {
+          "from": "job-b3135e5871d3",
+          "to": "job-9a231d41875a",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.1234
+        }
+      ],
+      "impulse": null
+    },
+    {
+      "run": "stage1-discovery-v3-collector-control-20261025-r2",
+      "world": "trial/world/state.json",
+      "events": 64,
+      "span_s": 78.4,
+      "actors": [
+        "job-637db55c2fd4",
+        "job-9a0804861dd5",
+        "job-9a231d41875a",
+        "job-b3135e5871d3"
+      ],
+      "shared_writes": 8,
+      "cross_reads": 8,
+      "read_latency_median_s": 13.3,
+      "cross_read_share_by_s": {
+        "120": 1.0,
+        "300": 1.0,
+        "600": 1.0,
+        "900": 1.0
+      },
+      "milestones": {
+        "job-637db55c2fd4": {
+          "end": 78.43261003494263,
+          "first_write": 22.574501037597656,
+          "first_peer_read": 37.31454801559448,
+          "first_read_by_peer": 33.866963148117065,
+          "first_read_back_loop": 52.06830620765686
+        },
+        "job-9a0804861dd5": {
+          "end": 78.43261003494263,
+          "first_write": 27.06550407409668,
+          "first_peer_read": 33.866963148117065,
+          "first_read_by_peer": 28.698684215545654,
+          "first_read_back_loop": 60.332125186920166
+        },
+        "job-9a231d41875a": {
+          "end": 78.43261003494263,
+          "first_write": 25.621570110321045,
+          "first_peer_read": 28.698684215545654,
+          "first_read_by_peer": 30.413878917694092,
+          "first_read_back_loop": 54.8618381023407
+        },
+        "job-b3135e5871d3": {
+          "end": 78.43261003494263,
+          "first_write": 24.05982804298401,
+          "first_peer_read": 30.413878917694092,
+          "first_read_by_peer": 37.31454801559448,
+          "first_read_back_loop": 57.62410593032837
+        }
+      },
+      "influence": [
+        {
+          "from": "job-637db55c2fd4",
+          "to": "job-9a0804861dd5",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6772
+        },
+        {
+          "from": "job-637db55c2fd4",
+          "to": "job-9a231d41875a",
+          "exact_reads": 0,
+          "writes_following": 1,
+          "lead_p": 0.7161
+        },
+        {
+          "from": "job-637db55c2fd4",
+          "to": "job-b3135e5871d3",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6927
+        },
+        {
+          "from": "job-9a0804861dd5",
+          "to": "job-637db55c2fd4",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6767
+        },
+        {
+          "from": "job-9a0804861dd5",
+          "to": "job-9a231d41875a",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6067
+        },
+        {
+          "from": "job-9a0804861dd5",
+          "to": "job-b3135e5871d3",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-9a231d41875a",
+          "to": "job-637db55c2fd4",
+          "exact_reads": 0,
+          "writes_following": 1,
+          "lead_p": 0.7096
+        },
+        {
+          "from": "job-9a231d41875a",
+          "to": "job-9a0804861dd5",
+          "exact_reads": 1,
+          "writes_following": 2,
+          "lead_p": 0.1419
+        },
+        {
+          "from": "job-9a231d41875a",
+          "to": "job-b3135e5871d3",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6002
+        },
+        {
+          "from": "job-b3135e5871d3",
+          "to": "job-637db55c2fd4",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6822
+        },
+        {
+          "from": "job-b3135e5871d3",
+          "to": "job-9a0804861dd5",
+          "exact_reads": 0,
+          "writes_following": 2,
+          "lead_p": 0.1909
+        },
+        {
+          "from": "job-b3135e5871d3",
+          "to": "job-9a231d41875a",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.6002
+        }
+      ],
+      "impulse": null
+    }
+  ],
+  "limits": [
+    "Exact reads are tool outputs; a read near an actor deadline may never reach a later model request.",
+    "Read-back loops do not require a parent reference and are not cross-job replies.",
+    "Lead tests need several writes per actor; sparse runs give p near 1.",
+    "Phase 2 activation is triggered by formation, so the impulse comparison is descriptive, not causal."
+  ]
+}

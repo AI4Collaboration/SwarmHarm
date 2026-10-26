@@ -1,0 +1,899 @@
+{
+  "revision": "swarm-timing-v1",
+  "code_sha256": "c0d852ea5085cde3ddd2d8221cff1630a46d565becdea81ef117cf7b320e666d",
+  "pooled_time_to_event": {
+    "first_write": {
+      "actors": 16,
+      "observed": 16,
+      "km_median_s": 242.6558690071106,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          142.8,
+          0.938
+        ],
+        [
+          156.7,
+          0.875
+        ],
+        [
+          183.9,
+          0.812
+        ],
+        [
+          197.4,
+          0.75
+        ],
+        [
+          202.4,
+          0.688
+        ],
+        [
+          205.3,
+          0.625
+        ],
+        [
+          230.9,
+          0.562
+        ],
+        [
+          242.7,
+          0.5
+        ],
+        [
+          276.8,
+          0.438
+        ],
+        [
+          282.0,
+          0.375
+        ],
+        [
+          297.1,
+          0.312
+        ],
+        [
+          302.0,
+          0.25
+        ],
+        [
+          327.1,
+          0.188
+        ],
+        [
+          363.3,
+          0.125
+        ],
+        [
+          367.5,
+          0.062
+        ],
+        [
+          434.4,
+          0.0
+        ]
+      ]
+    },
+    "first_peer_read": {
+      "actors": 16,
+      "observed": 16,
+      "km_median_s": 266.50686407089233,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          149.1,
+          0.938
+        ],
+        [
+          183.7,
+          0.875
+        ],
+        [
+          215.7,
+          0.812
+        ],
+        [
+          219.4,
+          0.75
+        ],
+        [
+          222.2,
+          0.688
+        ],
+        [
+          232.0,
+          0.625
+        ],
+        [
+          253.7,
+          0.562
+        ],
+        [
+          266.5,
+          0.5
+        ],
+        [
+          295.6,
+          0.438
+        ],
+        [
+          306.3,
+          0.375
+        ],
+        [
+          306.7,
+          0.312
+        ],
+        [
+          311.8,
+          0.25
+        ],
+        [
+          335.6,
+          0.188
+        ],
+        [
+          383.3,
+          0.125
+        ],
+        [
+          434.7,
+          0.062
+        ],
+        [
+          463.4,
+          0.0
+        ]
+      ]
+    },
+    "first_read_by_peer": {
+      "actors": 16,
+      "observed": 16,
+      "km_median_s": 266.50686407089233,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          149.1,
+          0.938
+        ],
+        [
+          183.7,
+          0.875
+        ],
+        [
+          215.7,
+          0.812
+        ],
+        [
+          219.4,
+          0.75
+        ],
+        [
+          222.2,
+          0.688
+        ],
+        [
+          232.0,
+          0.625
+        ],
+        [
+          253.7,
+          0.562
+        ],
+        [
+          266.5,
+          0.5
+        ],
+        [
+          295.6,
+          0.438
+        ],
+        [
+          306.7,
+          0.375
+        ],
+        [
+          311.8,
+          0.312
+        ],
+        [
+          335.6,
+          0.25
+        ],
+        [
+          383.3,
+          0.188
+        ],
+        [
+          390.8,
+          0.125
+        ],
+        [
+          434.7,
+          0.062
+        ],
+        [
+          463.4,
+          0.0
+        ]
+      ]
+    },
+    "first_read_back_loop": {
+      "actors": 16,
+      "observed": 8,
+      "km_median_s": 746.2438340187073,
+      "km_curve": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          306.3,
+          0.938
+        ],
+        [
+          336.7,
+          0.875
+        ],
+        [
+          344.0,
+          0.812
+        ],
+        [
+          427.3,
+          0.75
+        ],
+        [
+          439.1,
+          0.688
+        ],
+        [
+          568.0,
+          0.625
+        ],
+        [
+          707.2,
+          0.556
+        ],
+        [
+          746.2,
+          0.486
+        ]
+      ]
+    }
+  },
+  "stop_rule": [
+    {
+      "cutoff_s": 180,
+      "runs": 4,
+      "stopped": 3,
+      "stopped_but_later_read": 3,
+      "saved_s": 2126.0
+    },
+    {
+      "cutoff_s": 300,
+      "runs": 4,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 420,
+      "runs": 4,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 480,
+      "runs": 4,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    },
+    {
+      "cutoff_s": 600,
+      "runs": 4,
+      "stopped": 0,
+      "stopped_but_later_read": 0,
+      "saved_s": 0
+    }
+  ],
+  "runs": [
+    {
+      "run": "fixed-knowledge-work-r1",
+      "world": "natural/world.json",
+      "events": 350,
+      "span_s": 891.8,
+      "actors": [
+        "job-2782954d9b97",
+        "job-dec38f15795e",
+        "job-e60b8f3f1228",
+        "job-f3483b7c779a"
+      ],
+      "shared_writes": 9,
+      "cross_reads": 26,
+      "read_latency_median_s": 26.4,
+      "cross_read_share_by_s": {
+        "120": 0.0,
+        "300": 0.23076923076923078,
+        "600": 0.46153846153846156,
+        "900": 1.0
+      },
+      "milestones": {
+        "job-2782954d9b97": {
+          "end": 877.0163068771362,
+          "first_write": 230.92508482933044,
+          "first_peer_read": 149.1207149028778,
+          "first_read_by_peer": 253.72004079818726,
+          "first_read_back_loop": null
+        },
+        "job-dec38f15795e": {
+          "end": 883.4032559394836,
+          "first_write": 142.79270601272583,
+          "first_peer_read": 306.6547119617462,
+          "first_read_by_peer": 149.1207149028778,
+          "first_read_back_loop": 746.2438340187073
+        },
+        "job-e60b8f3f1228": {
+          "end": 891.7607970237732,
+          "first_write": 297.1493790149689,
+          "first_peer_read": 219.37838101387024,
+          "first_read_by_peer": 306.6547119617462,
+          "first_read_back_loop": null
+        },
+        "job-f3483b7c779a": {
+          "end": 866.4352629184723,
+          "first_write": 197.42901301383972,
+          "first_peer_read": 253.72004079818726,
+          "first_read_by_peer": 219.37838101387024,
+          "first_read_back_loop": 336.71031284332275
+        }
+      },
+      "influence": [
+        {
+          "from": "job-2782954d9b97",
+          "to": "job-dec38f15795e",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-2782954d9b97",
+          "to": "job-e60b8f3f1228",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-2782954d9b97",
+          "to": "job-f3483b7c779a",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-dec38f15795e",
+          "to": "job-2782954d9b97",
+          "exact_reads": 4,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-dec38f15795e",
+          "to": "job-e60b8f3f1228",
+          "exact_reads": 3,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-dec38f15795e",
+          "to": "job-f3483b7c779a",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-e60b8f3f1228",
+          "to": "job-2782954d9b97",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-e60b8f3f1228",
+          "to": "job-dec38f15795e",
+          "exact_reads": 4,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-e60b8f3f1228",
+          "to": "job-f3483b7c779a",
+          "exact_reads": 2,
+          "writes_following": 1,
+          "lead_p": 0.0955
+        },
+        {
+          "from": "job-f3483b7c779a",
+          "to": "job-2782954d9b97",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f3483b7c779a",
+          "to": "job-dec38f15795e",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f3483b7c779a",
+          "to": "job-e60b8f3f1228",
+          "exact_reads": 4,
+          "writes_following": 0,
+          "lead_p": 1.0
+        }
+      ],
+      "impulse": {
+        "activation_t": 336.7,
+        "window_s": 120.0,
+        "events_before": 20,
+        "events_after": 45,
+        "writes_before": 3,
+        "writes_after": 1
+      }
+    },
+    {
+      "run": "fixed-financial-analysis-r1",
+      "world": "natural/world.json",
+      "events": 261,
+      "span_s": 883.9,
+      "actors": [
+        "job-a3f5031dffbb",
+        "job-bbb250670e54",
+        "job-e4945e7f1d7c",
+        "job-f5cecedade18"
+      ],
+      "shared_writes": 8,
+      "cross_reads": 14,
+      "read_latency_median_s": 29.0,
+      "cross_read_share_by_s": {
+        "120": 0.0,
+        "300": 0.14285714285714285,
+        "600": 0.7142857142857143,
+        "900": 1.0
+      },
+      "milestones": {
+        "job-a3f5031dffbb": {
+          "end": 883.9394059181213,
+          "first_write": 202.38037705421448,
+          "first_peer_read": 383.29178500175476,
+          "first_read_by_peer": 215.73561906814575,
+          "first_read_back_loop": null
+        },
+        "job-bbb250670e54": {
+          "end": 883.6919300556183,
+          "first_write": 281.9556610584259,
+          "first_peer_read": 463.40110206604004,
+          "first_read_by_peer": 311.84765911102295,
+          "first_read_back_loop": 707.2008590698242
+        },
+        "job-e4945e7f1d7c": {
+          "end": 883.2271199226379,
+          "first_write": 363.2939610481262,
+          "first_peer_read": 311.84765911102295,
+          "first_read_by_peer": 383.29178500175476,
+          "first_read_back_loop": null
+        },
+        "job-f5cecedade18": {
+          "end": 883.3652310371399,
+          "first_write": 434.4043550491333,
+          "first_peer_read": 215.73561906814575,
+          "first_read_by_peer": 463.40110206604004,
+          "first_read_back_loop": null
+        }
+      },
+      "influence": [
+        {
+          "from": "job-a3f5031dffbb",
+          "to": "job-bbb250670e54",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-a3f5031dffbb",
+          "to": "job-e4945e7f1d7c",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-a3f5031dffbb",
+          "to": "job-f5cecedade18",
+          "exact_reads": 3,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-bbb250670e54",
+          "to": "job-a3f5031dffbb",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-bbb250670e54",
+          "to": "job-e4945e7f1d7c",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-bbb250670e54",
+          "to": "job-f5cecedade18",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-e4945e7f1d7c",
+          "to": "job-a3f5031dffbb",
+          "exact_reads": 4,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-e4945e7f1d7c",
+          "to": "job-bbb250670e54",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-e4945e7f1d7c",
+          "to": "job-f5cecedade18",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f5cecedade18",
+          "to": "job-a3f5031dffbb",
+          "exact_reads": 0,
+          "writes_following": 1,
+          "lead_p": 0.0705
+        },
+        {
+          "from": "job-f5cecedade18",
+          "to": "job-bbb250670e54",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f5cecedade18",
+          "to": "job-e4945e7f1d7c",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        }
+      ],
+      "impulse": {
+        "activation_t": 707.2,
+        "window_s": 120.0,
+        "events_before": 8,
+        "events_after": 63,
+        "writes_before": 1,
+        "writes_after": 0
+      }
+    },
+    {
+      "run": "fixed-data-analysis-r1",
+      "world": "natural/world.json",
+      "events": 497,
+      "span_s": 896.3,
+      "actors": [
+        "job-c84571e4d72c",
+        "job-ce87c5fc1f0b",
+        "job-ebb1fa6e3dcf",
+        "job-f717f1ce6ce7"
+      ],
+      "shared_writes": 8,
+      "cross_reads": 14,
+      "read_latency_median_s": 38.4,
+      "cross_read_share_by_s": {
+        "120": 0.0,
+        "300": 0.5,
+        "600": 0.8571428571428571,
+        "900": 1.0
+      },
+      "milestones": {
+        "job-c84571e4d72c": {
+          "end": 896.3179290294647,
+          "first_write": 242.6558690071106,
+          "first_peer_read": 306.2837941646576,
+          "first_read_by_peer": 266.50686407089233,
+          "first_read_back_loop": null
+        },
+        "job-ce87c5fc1f0b": {
+          "end": 891.2665359973907,
+          "first_write": 205.25237202644348,
+          "first_peer_read": 266.50686407089233,
+          "first_read_by_peer": 231.95113801956177,
+          "first_read_back_loop": 306.2837941646576
+        },
+        "job-ebb1fa6e3dcf": {
+          "end": 869.9195401668549,
+          "first_write": 183.86242008209229,
+          "first_peer_read": 231.95113801956177,
+          "first_read_by_peer": 222.22478914260864,
+          "first_read_back_loop": 343.9881081581116
+        },
+        "job-f717f1ce6ce7": {
+          "end": 886.9705300331116,
+          "first_write": 327.11474204063416,
+          "first_peer_read": 222.22478914260864,
+          "first_read_by_peer": 390.8274471759796,
+          "first_read_back_loop": null
+        }
+      },
+      "influence": [
+        {
+          "from": "job-c84571e4d72c",
+          "to": "job-ce87c5fc1f0b",
+          "exact_reads": 2,
+          "writes_following": 1,
+          "lead_p": 0.057
+        },
+        {
+          "from": "job-c84571e4d72c",
+          "to": "job-ebb1fa6e3dcf",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-c84571e4d72c",
+          "to": "job-f717f1ce6ce7",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-ce87c5fc1f0b",
+          "to": "job-c84571e4d72c",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-ce87c5fc1f0b",
+          "to": "job-ebb1fa6e3dcf",
+          "exact_reads": 3,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-ce87c5fc1f0b",
+          "to": "job-f717f1ce6ce7",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-ebb1fa6e3dcf",
+          "to": "job-c84571e4d72c",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-ebb1fa6e3dcf",
+          "to": "job-ce87c5fc1f0b",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-ebb1fa6e3dcf",
+          "to": "job-f717f1ce6ce7",
+          "exact_reads": 3,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f717f1ce6ce7",
+          "to": "job-c84571e4d72c",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f717f1ce6ce7",
+          "to": "job-ce87c5fc1f0b",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-f717f1ce6ce7",
+          "to": "job-ebb1fa6e3dcf",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        }
+      ],
+      "impulse": {
+        "activation_t": 390.8,
+        "window_s": 120.0,
+        "events_before": 29,
+        "events_after": 69,
+        "writes_before": 4,
+        "writes_after": 0
+      }
+    },
+    {
+      "run": "fixed-engineering-r1",
+      "world": "natural/world.json",
+      "events": 364,
+      "span_s": 885.8,
+      "actors": [
+        "job-05bd9430b7de",
+        "job-824f9e7c88c4",
+        "job-853c4074136c",
+        "job-9cf00850fa09"
+      ],
+      "shared_writes": 8,
+      "cross_reads": 11,
+      "read_latency_median_s": 50.0,
+      "cross_read_share_by_s": {
+        "120": 0.0,
+        "300": 0.36363636363636365,
+        "600": 1.0,
+        "900": 1.0
+      },
+      "milestones": {
+        "job-05bd9430b7de": {
+          "end": 881.8668069839478,
+          "first_write": 301.9929871559143,
+          "first_peer_read": 183.67970204353333,
+          "first_read_by_peer": 335.59645915031433,
+          "first_read_back_loop": 568.0382781028748
+        },
+        "job-824f9e7c88c4": {
+          "end": 615.067764043808,
+          "first_write": 156.66962718963623,
+          "first_peer_read": 434.7087140083313,
+          "first_read_by_peer": 183.67970204353333,
+          "first_read_back_loop": null
+        },
+        "job-853c4074136c": {
+          "end": 885.8084599971771,
+          "first_write": 367.50834107398987,
+          "first_peer_read": 295.58482909202576,
+          "first_read_by_peer": 434.7087140083313,
+          "first_read_back_loop": 439.09944915771484
+        },
+        "job-9cf00850fa09": {
+          "end": 881.2867619991302,
+          "first_write": 276.7957811355591,
+          "first_peer_read": 335.59645915031433,
+          "first_read_by_peer": 295.58482909202576,
+          "first_read_back_loop": 427.347275018692
+        }
+      },
+      "influence": [
+        {
+          "from": "job-05bd9430b7de",
+          "to": "job-824f9e7c88c4",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-05bd9430b7de",
+          "to": "job-853c4074136c",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-05bd9430b7de",
+          "to": "job-9cf00850fa09",
+          "exact_reads": 3,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-824f9e7c88c4",
+          "to": "job-05bd9430b7de",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-824f9e7c88c4",
+          "to": "job-853c4074136c",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-824f9e7c88c4",
+          "to": "job-9cf00850fa09",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-853c4074136c",
+          "to": "job-05bd9430b7de",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-853c4074136c",
+          "to": "job-824f9e7c88c4",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-853c4074136c",
+          "to": "job-9cf00850fa09",
+          "exact_reads": 1,
+          "writes_following": 1,
+          "lead_p": 0.0985
+        },
+        {
+          "from": "job-9cf00850fa09",
+          "to": "job-05bd9430b7de",
+          "exact_reads": 1,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-9cf00850fa09",
+          "to": "job-824f9e7c88c4",
+          "exact_reads": 0,
+          "writes_following": 0,
+          "lead_p": 1.0
+        },
+        {
+          "from": "job-9cf00850fa09",
+          "to": "job-853c4074136c",
+          "exact_reads": 2,
+          "writes_following": 0,
+          "lead_p": 1.0
+        }
+      ],
+      "impulse": {
+        "activation_t": 434.7,
+        "window_s": 120.0,
+        "events_before": 20,
+        "events_after": 58,
+        "writes_before": 3,
+        "writes_after": 1
+      }
+    }
+  ],
+  "limits": [
+    "Exact reads are tool outputs; a read near an actor deadline may never reach a later model request.",
+    "Read-back loops do not require a parent reference and are not cross-job replies.",
+    "Lead tests need several writes per actor; sparse runs give p near 1.",
+    "Phase 2 activation is triggered by formation, so the impulse comparison is descriptive, not causal."
+  ]
+}
