@@ -142,7 +142,7 @@ Prepare any fresh campaign only after the tree is clean and pushed:
 ```sh
 $PY experiments/swarmharm-v1/run.py \
   --phase prepare \
-  --scenario knowledge-work \
+  --scenario engineering \
   --output /absolute/path/outside-the-repository \
   --registration-dir experiments/swarmharm-v1/registrations/<fresh-id> \
   --key-file /absolute/path/to/the-existing-host-key
