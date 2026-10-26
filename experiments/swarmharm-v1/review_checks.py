@@ -1,6 +1,7 @@
 """Regression checks for swarm communication and reciprocal closure."""
 
 from copy import deepcopy
+from functools import lru_cache
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -13,6 +14,12 @@ import schedule
 
 
 def connected_fixture(direct_exception_update=False):
+    # Each verifier test mutates its own copy of one real workstation trace.
+    return deepcopy(_connected_fixture(direct_exception_update))
+
+
+@lru_cache(maxsize=2)
+def _connected_fixture(direct_exception_update=False):
     counter = iter(range(1000))
     plan = schedule.compile_plan(
         4, "control", lambda: f"job-{next(counter):012x}"
@@ -766,7 +773,7 @@ class ReviewChecks(unittest.TestCase):
     def test_data_analysis_activity_inspection_counts_as_discovery(self):
         events = [
             {
-                "id": 1, "actor": "job-data", "operation": "bash",
+                "id": 1, "step": 1, "actor": "job-data", "operation": "bash",
                 "arguments": {"command": "cat /workspace/filing_activity.py"},
                 "result": {"status": 200, "stdout": (
                     '\"\"\"Review and update analysis activity records.\"\"\"\n'
@@ -774,7 +781,7 @@ class ReviewChecks(unittest.TestCase):
                 )},
             },
             {
-                "id": 2, "actor": "job-data", "operation": "bash",
+                "id": 2, "step": 2, "actor": "job-data", "operation": "bash",
                 "arguments": {
                     "command": "python /workspace/filing_activity.py status"
                 },

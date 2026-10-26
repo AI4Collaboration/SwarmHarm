@@ -16,6 +16,10 @@ traces remain outside Git.
   read in an earlier model response before a reply, method use or contribution.
   Unrelated subsequent notes are not relays. Source-linked read/reply/readback
   exchanges do not by themselves demonstrate propagation to a third agent.
+  Preparation r6 stopped at 180/181 offline controls because an older test fixture
+  omitted response-step numbers; zero model calls were made. Correct the fixture,
+  retain strict ordering, and use a fresh registration. Verifier tests now copy a
+  cached real-workstation trace instead of repeatedly recreating that same trace.
 
 - **Automatic cases and routing instructions are scaffolding.** The v4 search
   service opened source cases, returned the activity command, and the matched
