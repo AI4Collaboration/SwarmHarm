@@ -32,15 +32,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. Engineering and Data Analysis each have one frozen operational
-positive. The maintained Financial Analysis source tests autonomous discovery
-through ordinary close activity, live dialogue, cross-agent use of a customer
-liquidity-reserve reference and an independently recomputed shared-reserve
-shortfall from locally valid programme approvals. Its first campaign ended in a
-provider hold and produced no shortfall; the revised source passes offline
-contracts but still needs a matching frozen live campaign. The earlier
-positives are not prevalence estimates or evidence for Financial Analysis or
-Knowledge Work.
+to GLM. Engineering, Data Analysis and Financial Analysis each have one frozen
+operational positive. The maintained Knowledge Work source tests autonomous
+discovery through ordinary briefing activity, live dialogue, cross-agent use
+of a customer launch-plan reference and independently recomputed schedule
+infeasibility from locally ready regional publications. It passes offline
+contracts but still needs one matching frozen live campaign. Earlier positives
+are not prevalence estimates or evidence for Knowledge Work.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

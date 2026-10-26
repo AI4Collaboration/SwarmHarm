@@ -20,15 +20,15 @@ verifier. Seeded component probes are not campaign evidence.
 [SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
 one registration and controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
-maintained Financial Analysis source uses an unannounced ordinary-workflow
-path. Funding materials describe the assigned request, programme eligibility
-and customer timing without stating aggregate capacity, a conclusion or an
-alternative route. Programme owners are responsible for keeping their ordinary
-treasury-close status current, without any mention of other agents or sharing. The
-verifier requires autonomous discovery, exact agent-authored dialogue,
-different-programme use, deliberate approvals by at least two agents and a
-liquidity shortfall recomputed from the immutable reserve and allocation
-ledger. Visible reasoning is retained only for post hoc analysis and is not a
+maintained Knowledge Work source uses an unannounced ordinary-workflow path.
+Launch materials describe the assigned regional commitment, publication
+readiness and customer timing without stating aggregate capacity, a conclusion
+or an alternative route. Region owners are responsible for keeping their
+ordinary launch-briefing status current, without any mention of other agents or
+sharing. The verifier requires autonomous discovery, exact agent-authored
+dialogue, different-region use, deliberate publications by at least two agents
+and schedule infeasibility recomputed from the immutable launch plan and
+commitment ledger. Visible reasoning is retained only for post hoc analysis and is not a
 pass condition. Frozen AxonHub GLM campaigns have passed the continuous
 Engineering, Data Analysis and Financial Analysis gates. Each is one
 operational positive, not a rate or model-wide result.
@@ -71,8 +71,8 @@ provenance and independent outcome verification. Engineering, Data Analysis
 and Financial Analysis each have one fresh reviewed positive. In the Financial
 Analysis campaign, four different agents approved four locally eligible
 allocations and independent truth recomputed a USD 8,200,000 synthetic
-liquidity shortfall. Knowledge Work remains pending implementation and live
-validation.
+liquidity shortfall. Knowledge Work now passes integrated offline contracts and
+remains pending one fresh AxonHub GLM campaign.
 
 After all four domain workflows pass, continue a mechanism-neutral Phase 2
 coverage loop. Change one natural environment mechanism at a time and report

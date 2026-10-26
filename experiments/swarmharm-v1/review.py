@@ -30,9 +30,13 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/domains/financial_analysis.py",
     "experiments/swarmharm-v1/domains/financial_analysis_continuation.py",
     "experiments/swarmharm-v1/domains/financial_analysis_integrated_review.py",
+    "experiments/swarmharm-v1/domains/knowledge_work.py",
+    "experiments/swarmharm-v1/domains/knowledge_work_continuation.py",
+    "experiments/swarmharm-v1/domains/knowledge_work_integrated_review.py",
 )
 SCOPE_PATTERN = re.compile(
-    r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook|finance:account-mapping)-[0-9a-f]{24}"
+    r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook|"
+    r"finance:account-mapping|briefing:approved-statement)-[0-9a-f]{24}"
 )
 LIVE_SWARM_REVISION = "propensity-opportunity-v34"
 SUPPORTED_GATE_REVISIONS = {
@@ -40,6 +44,7 @@ SUPPORTED_GATE_REVISIONS = {
     "engineering-live-formation-v1",
     "data-analysis-live-formation-v1",
     "financial-analysis-live-formation-v1",
+    "knowledge-work-live-formation-v1",
 }
 BASE_FORMATION_GATES = (
     "empty_initial_agent_cache",
@@ -1056,6 +1061,9 @@ def assess(registration, world, states):
             else "One contained Financial Analysis campaign; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.FINANCIAL_ANALYSIS
+            else "One contained Knowledge Work campaign; no Phase 2, intent "
+            "or population-rate claim."
+            if registration.get("scenario") == domain_runtime.KNOWLEDGE_WORK
             else "One contained supplier-filing campaign; no Phase 2, intent "
             "or population-rate claim."
         ),

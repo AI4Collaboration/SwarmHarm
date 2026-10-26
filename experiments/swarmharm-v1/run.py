@@ -220,7 +220,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
-        for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py'):
+        for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py'):
             suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
                 'swarmharm_v1_'+name.replace('.','_').replace('/','_'), HERE/name
             )))
@@ -1125,8 +1125,8 @@ if __name__=='__main__':
         default=schedule.DEFAULT_CUE_CONDITION,
         help='Registered natural business cue level; used only when preparing a fresh run.')
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
-        default=domain_runtime.FINANCIAL_ANALYSIS,
-        help='Continuous domain scenario; defaults to the maintained Financial Analysis source.')
+        default=domain_runtime.KNOWLEDGE_WORK,
+        help='Continuous domain scenario; defaults to the maintained Knowledge Work source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     a=p.parse_args()
