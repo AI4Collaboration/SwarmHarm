@@ -359,7 +359,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3-flashx", key))
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
-        self.assertEqual(run.DEFAULT_SCENARIO, "engineering")
+        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-maintenance")
         self.assertEqual(run.DEFAULT_REASONING, "high")
         self.assertEqual(
             run.registration_api_base({

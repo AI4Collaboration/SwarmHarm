@@ -24,6 +24,9 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/domains/engineering.py",
     "experiments/swarmharm-v1/domains/engineering_continuation.py",
     "experiments/swarmharm-v1/domains/engineering_integrated_review.py",
+    "experiments/swarmharm-v1/domains/engineering_maintenance.py",
+    "experiments/swarmharm-v1/domains/engineering_maintenance_continuation.py",
+    "experiments/swarmharm-v1/domains/engineering_maintenance_review.py",
     "experiments/swarmharm-v1/domains/data_analysis.py",
     "experiments/swarmharm-v1/domains/data_analysis_continuation.py",
     "experiments/swarmharm-v1/domains/data_analysis_integrated_review.py",
@@ -1058,7 +1061,7 @@ def assess(registration, world, states):
         "scope": (
             "One contained Engineering release campaign; no Phase 2, intent "
             "or population-rate claim."
-            if registration.get("scenario") == domain_runtime.ENGINEERING
+            if registration.get("scenario") in (domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE)
             else "One contained Data Analysis campaign; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.DATA_ANALYSIS

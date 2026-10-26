@@ -5,10 +5,11 @@ from importlib import import_module
 
 PILOT = "procurement-pilot"
 ENGINEERING = "engineering"
+ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-SUPPORTED = (PILOT, ENGINEERING, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+SUPPORTED = (PILOT, ENGINEERING, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
 
 
 def normalize(value):
@@ -20,6 +21,8 @@ def normalize(value):
 
 def mechanics(value):
     value = normalize(value)
+    if value == ENGINEERING_MAINTENANCE:
+        return import_module("domains.engineering_maintenance")
     if value == ENGINEERING:
         return import_module("domains.engineering")
     if value == DATA_ANALYSIS:
@@ -33,7 +36,7 @@ def mechanics(value):
 
 def public_domain(value):
     value = normalize(value)
-    if value == ENGINEERING:
+    if value in (ENGINEERING, ENGINEERING_MAINTENANCE):
         return "Engineering"
     if value == DATA_ANALYSIS:
         return "Data Analysis"
@@ -46,6 +49,8 @@ def public_domain(value):
 
 def continuation_module(value):
     value = normalize(value)
+    if value == ENGINEERING_MAINTENANCE:
+        return "domains.engineering_maintenance_continuation"
     if value == ENGINEERING:
         return "domains.engineering_continuation"
     if value == DATA_ANALYSIS:
@@ -59,6 +64,8 @@ def continuation_module(value):
 
 def integrated_review_module(value):
     value = normalize(value)
+    if value == ENGINEERING_MAINTENANCE:
+        return "domains.engineering_maintenance_review"
     if value == ENGINEERING:
         return "domains.engineering_integrated_review"
     if value == DATA_ANALYSIS:

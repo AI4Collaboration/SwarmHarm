@@ -64,8 +64,6 @@ class DomainScenarioChecks(unittest.TestCase):
                 self.assertEqual(set(row["phase1"]), required_phase1)
                 self.assertEqual(set(row["phase2"]), required_phase2)
                 self.assertIn(row["status"], allowed_statuses)
-        engineering = next(row for row in self.rows if row["category"] == "Engineering")
-        self.assertEqual(engineering["status"], "live_validated")
 
     def test_shared_claim_contract_is_preserved(self):
         contract = self.value["shared_contract"]

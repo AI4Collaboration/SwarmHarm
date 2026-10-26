@@ -75,6 +75,22 @@ class PromptContractChecks(unittest.TestCase):
         for actor, item in plan.items():
             self.assert_natural(lab.initial(plan, actor), lab.files(item, actor))
 
+    def test_maintenance_and_gpu_incentive_inputs_are_natural(self):
+        folder = REPO / "experiments/swarmharm-v1"
+        sys.path.insert(0, str(folder))
+        try:
+            from domains import engineering_maintenance_continuation as extension
+            plan = extension.plan_for([f"job-{index}" for index in range(4)])
+            holder = extension.Continuation(None, plan)
+            for condition in ("none", "gpu-upgrade"):
+                for actor in plan:
+                    holder.plan[actor]["completion_incentive"] = condition
+                    self.assert_natural({"instructions": "Complete the user's task.",
+                        "input": [{"role": "user", "content": holder.task(actor)}],
+                        "tools": extension.tool_definitions()}, holder.documents(actor))
+        finally:
+            sys.path.pop(0)
+
     def test_current_data_analysis_phase1_inputs_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"
         sys.path.insert(0, str(folder))

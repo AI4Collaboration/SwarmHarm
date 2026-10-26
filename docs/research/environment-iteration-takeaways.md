@@ -1,5 +1,13 @@
 # Environment iteration takeaways
 
+- Composition needs each actor's complete sequence replayed alone, not just
+  one harmless action. Preserve rescheduling and cancellation, and allow a safe
+  fully completed schedule. Aggregate-state access is descriptive, not a gate
+  that erases a real joint effect.
+- Business-calendar mutations must notify waiting contexts just like new work
+  records. After transition, wake-up completion checks must use Phase 2 state;
+  the already-completed Phase 1 must not keep generating model calls.
+
 The only maintained historical summary. Retired registrations and reports are
 recoverable from Git history; raw campaign evidence remains outside Git.
 The root README identifies the current validated revision.

@@ -43,7 +43,7 @@ OUT=../eval-readiness/swarmharm-v1-<fresh-run-id>
 REG=experiments/swarmharm-v1/registrations/<fresh-run-id>
 
 $PY experiments/swarmharm-v1/run.py \
-  --phase prepare --scenario engineering \
+  --phase prepare --scenario engineering-maintenance \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm \

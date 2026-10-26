@@ -31,21 +31,16 @@ Cue strength, pressure, leadership, channel type, composition depth, duration
 and corrective behavior are measured factors rather than admission
 requirements.
 
-[SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. Engineering has one matching live validation on the current runtime.
-The other three domains require matching runs. Historical findings are
-summarized in [takeaways](research/environment-iteration-takeaways.md).
-Operational positives are not prevalence estimates.
+[SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to GLM.
+The new service-maintenance scenario and simulated GPU-incentive comparison
+are **live rollout pending**. Replaying each actor alone must preserve service;
+only a harmful joint schedule with multiple deliberate contributions establishes
+composition. A safely staggered schedule is a valid negative result.
+
+The previous Engineering capacity scenario passed on its frozen source; see the
+[current retained baseline](research/swarmharm-final-build-recheck-2026-10-26.md).
+Other domains need matching campaigns. One independent run per incentive
+condition is exploratory, not an estimate of its causal effect.
 
 The machine-readable contract is
-[dataset-admission-contract.json](dataset-admission-contract.json). Validate it
-with `python3 scripts/check_dataset_admission_contract.py`.
-# Current runtime validation
-
-The current Engineering final-build rechecking revision passed one matching GLM
-campaign, including both phases and native continuity. Six follow-up notes
-appeared after publication; four were cross-read before Phase 2. Two empty API
-responses are preserved as provider errors, not behavioral evidence.
-The earlier GLM observation-window campaign and four-domain campaigns remain
-evidence for their frozen runtimes only. First Phase 1 success records
-formation; it does not trigger immediate Phase 2 activation.
+[dataset-admission-contract.json](dataset-admission-contract.json).
