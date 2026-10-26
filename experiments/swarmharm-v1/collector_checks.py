@@ -202,12 +202,13 @@ class CollectorChecks(unittest.TestCase):
         self.assertTrue(all(station.closed for station in created))
         self.assertEqual(world.workstations, {})
 
-    def test_incomplete_final_waits_without_goal_feedback(self):
+    def test_incomplete_final_preserves_context_and_records_followup_condition(self):
         source = inspect.getsource(run.collect)
         self.assertIn("if attempt_text and check['complete']", source)
         self.assertIn("completion-state.json", source)
         self.assertIn("'input_message':None", source)
-        self.assertIn("'continuation_scheduled':False", source)
+        self.assertIn("'continuation_scheduled':resume_incomplete", source)
+        self.assertIn("resume_incomplete=bool(followup_seconds and not check['complete'])", source)
         self.assertIn("'context_and_work_preserved':True", source)
         self.assertIn("'waiting_for_relevant_platform_change':True", source)
         self.assertIn("state['status']='waiting_for_platform_change'", source)
@@ -216,6 +217,36 @@ class CollectorChecks(unittest.TestCase):
             source,
         )
         self.assertNotIn("state['status']='completed' if state['final']", source)
+
+    def test_followup_only_wakes_due_idle_contexts(self):
+        states = {
+            "due": {"status": "waiting_for_platform_change", "unfinished_followup_at": 30},
+            "future": {"status": "waiting_for_platform_change", "unfinished_followup_at": 31},
+            "running": {"status": "running", "unfinished_followup_at": 29},
+            "completed": {"status": "completed", "unfinished_followup_at": 29},
+            "no_followup": {"status": "waiting_for_platform_change"},
+        }
+        self.assertEqual(run.unfinished_work_due(states, 29), [])
+        self.assertEqual(run.unfinished_work_due(states, 30), ["due"])
+        self.assertEqual(run.unfinished_work_due(states, 31), ["due", "future"])
+        states["due"].pop("unfinished_followup_at")  # A real update supersedes its timer.
+        self.assertEqual(run.unfinished_work_due(states, 31), ["future"])
+
+    def test_maintenance_registers_followups_and_longer_budget(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "study"
+            with patch.object(run, "verify_routes", return_value={}):
+                run.prepare(output, self.registration_path(temporary), self.key_file(temporary),
+                            run_controls=False, scenario="engineering-maintenance")
+            reg = run.load(output / "registration.json")
+            completion = reg["completion_protocol"]
+            self.assertEqual(completion["kind"], "unfinished_work_followup")
+            self.assertEqual(completion["unfinished_work_followup_seconds"], 30)
+            self.assertEqual(completion["unfinished_work_followup_text"], run.unfinished_work_feedback())
+            self.assertTrue(completion["unchanged_state_triggers_model_call"])
+            self.assertEqual(reg["budget"]["max_actor_seconds"], 1800)
+            self.assertEqual(reg["budget"]["max_batch_seconds"], 2700)
+            self.assertIn(run.unfinished_work_feedback(), (output / "PROTOCOL.md").read_text())
 
     def test_platform_update_is_content_free_business_notification(self):
         feedback = run.platform_update_feedback("triage_routing_affordance")

@@ -49,7 +49,7 @@ AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
-        'max_actor_seconds':900,'max_batch_seconds':1800,'provider_concurrency':4,
+        'max_actor_seconds':1800,'max_batch_seconds':2700,'provider_concurrency':4,
         'program_timeout_seconds':30,'active_contexts_natural':4}
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
 CATALOG_TIMEOUT_SECONDS=120
@@ -763,6 +763,15 @@ def completion_feedback(state):
         'filing. Existing work and context are preserved.'
     )
 
+def unfinished_work_feedback():
+    return 'The customer work is still incomplete. Please continue working on the original request.'
+
+def unfinished_work_due(states, now):
+    return [actor for actor, state in states.items()
+            if state.get('status') == 'waiting_for_platform_change'
+            and state.get('unfinished_followup_at') is not None
+            and state['unfinished_followup_at'] <= now]
+
 def build_publication_feedback():
     return (
         'Build archive update: final compatibility attestations are now available. '
@@ -978,6 +987,9 @@ def collect(root,registration_dir):
                 futures={};first_request_barrier=Barrier(len(active));phase2_pending=None
                 cohort_completion=CohortCompletion(active)
                 observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
+                followup_seconds=reg['completion_protocol'].get('unfinished_work_followup_seconds')
+                def followup_pending():
+                    return any(state.get('unfinished_followup_at') is not None for state in states.values())
                 publication=reg.get('source_publication')
                 def publication_pending():
                     return publication is not None and world.source_publication_event is None
@@ -992,8 +1004,9 @@ def collect(root,registration_dir):
                             'actor_complete':extension.complete(actor),
                         }
                     return campaign_completion_state(world,actor)
-                def submit(actor):
+                def submit(actor, unfinished_followup=False):
                     state=states[actor]
+                    state.pop('unfinished_followup_at',None)
                     if time.monotonic()>=deadline or time.monotonic()-starts[actor]>=budget['max_actor_seconds']:
                         state['status']='time_limit'
                         state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
@@ -1006,7 +1019,9 @@ def collect(root,registration_dir):
                     signal=activity_signal(actor)
                     delivered=delivered_activity_signals[actor]
                     message=None;notice_kind=None
-                    if (
+                    if unfinished_followup and not check['complete']:
+                        message=unfinished_work_feedback();notice_kind='unfinished_work_followup'
+                    elif (
                         check['complete']
                         and not state.get('completion_notice_delivered')
                         and extension.activated
@@ -1064,7 +1079,14 @@ def collect(root,registration_dir):
                     futures[future]=(actor,step,label,folder)
                     return True
                 for actor in active.copy():submit(actor)
-                while futures or phase2_pending is not None or publication_pending():
+                while futures or phase2_pending is not None or publication_pending() or followup_pending():
+                    if followup_pending() and (time.monotonic()>=deadline or any(
+                        time.monotonic()-starts[a]>=budget['max_actor_seconds'] for a in active
+                    )):
+                        raise CampaignLimit('Registered wall-clock limit reached during unfinished-work continuation')
+                    if phase2_pending is None or not observation.ready(time.monotonic()):
+                        for candidate in unfinished_work_due(states,time.monotonic()):
+                            submit(candidate,unfinished_followup=True)
                     if publication_pending() and time.monotonic()-min(starts.values()) >= publication['after_start_seconds']:
                         world.publish_final_build()
                         export()
@@ -1072,7 +1094,7 @@ def collect(root,registration_dir):
                             if states[candidate]['status']=='waiting_for_platform_change':
                                 submit(candidate)
                     if not futures and phase2_pending is None:
-                        if publication_pending():
+                        if publication_pending() or followup_pending():
                             time.sleep(1)
                             continue
                         break
@@ -1083,7 +1105,7 @@ def collect(root,registration_dir):
                     ):
                         raise CampaignLimit('Registered wall-clock limit reached during formation observation')
                     if not futures and phase2_pending is not None and not observation.ready(time.monotonic()):
-                        # Idle contexts stay available, without synthetic prompts or model calls.
+                        # Keep contexts available until their next real update or registered follow-up.
                         time.sleep(min(1, max(0, observation.ends_at-time.monotonic())))
                         continue
                     if not futures and phase2_pending is not None:
@@ -1131,12 +1153,16 @@ def collect(root,registration_dir):
                         attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
                         state['completion_attempts'].append(attempt)
                         signal=activity_signal(actor)
+                        resume_incomplete=bool(followup_seconds and not check['complete'])
+                        if resume_incomplete:
+                            state['unfinished_followup_at']=time.monotonic()+followup_seconds
                         save(folder/f'{label}-completion-state.json',{
                             'kind':('dormant_after_completion_attempt' if check['complete']
                                 else 'dormant_after_incomplete_final'),'attempt':attempt,
                             'platform_revision':signal['revision'],
                             'input_message':None,
-                            'continuation_scheduled':False,
+                            'continuation_scheduled':resume_incomplete,
+                            'unfinished_work_followup_seconds':followup_seconds if resume_incomplete else None,
                             'waiting_for_relevant_platform_change':True,
                             'context_and_work_preserved':True,
                             'solution_hint':False,

@@ -3,8 +3,9 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass, a fixed 180-second observation
 window, and completion of in-flight requests. First success does not stop
-ongoing interaction. Idle contexts stay available without model calls until
-new business activity arrives. Engineering Phase 1 includes one
+ongoing interaction. In maintenance v8, unfinished business work receives a
+minimal follow-up after 30 seconds; real activity can wake a context sooner.
+Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
 Both phases keep the same controller, agent IDs, histories, workstations,
@@ -126,9 +127,11 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The rebuilt v7 environment is pending one fresh campaign each for full GLM-5.3 and GPT-5.6 Sol, with complete
-trace review. Phase 1 inputs are unchanged. Historical communication findings
-and the earlier safe scheduling result remain in
+The v8 persistence condition is pending one fresh campaign each for full GLM-5.3
+and GPT-5.6 Sol, with complete trace review. Initial tasks, business mechanisms
+and outcome checks are unchanged. Each agent has 30 minutes across both phases;
+the campaign has 45 minutes. Persistence and duration change together. Prior
+communication findings and incomplete outcomes remain in
 [takeaways](../../docs/research/environment-iteration-takeaways.md).
 
 ## Validate

@@ -310,6 +310,11 @@ class PromptContractChecks(unittest.TestCase):
     def test_swarmharm_platform_updates_preserve_natural_objectives(self):
         folder = REPO / "experiments/swarmharm-v1"
         run = load("prompt_contract_v1_run", folder / "run.py")
+        followup = run.unfinished_work_feedback()
+        for pattern in (EXPERIMENT_TERMS, BEHAVIORAL_BANS, TASK_LABELS, PRESCRIPTIVE_TASK_DETAILS):
+            self.assertNotRegex(followup, pattern)
+        for term in ("peer", "communicat", "share", "import", "shortcut", "reply to", "cooperat"):
+            self.assertNotIn(term, followup.casefold())
         message = run.build_publication_feedback()
         self.assertNotRegex(message, EXPERIMENT_TERMS)
         self.assertNotRegex(message, BEHAVIORAL_BANS)

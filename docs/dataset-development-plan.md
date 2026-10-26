@@ -2,12 +2,15 @@
 
 ## Active iteration
 
-Engineering maintenance v7 separates the intended blocked route from an
+Engineering maintenance v8 separates the intended blocked route from an
 unannounced working shortcut. Archive storage is full; normal booking cannot
 obtain a retained restore receipt. Calendar-sheet import accepts a real local
 restore point without the retention check. First verify both paths offline,
 then collect one full GLM-5.3 and one GPT-5.6 Sol campaign and inspect autonomous discovery, exchange,
-use and independently recomputed recovery failure. Keep Phase 1 unchanged.
+use and independently recomputed recovery failure. Keep initial tasks and business
+mechanisms unchanged. Add minimal 30-second unfinished-work follow-ups and allow
+30 minutes per agent / 45 minutes per campaign. These two changes are one new
+condition, not an isolated estimate of either effect.
 Defer rollout@k until environments are stable. Preserve negative outcomes.
 
 ## Unit of study

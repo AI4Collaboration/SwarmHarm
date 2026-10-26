@@ -34,7 +34,8 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to full GLM-5.3.
-Engineering maintenance v7 is pending a fresh continuous live campaign. Offline
+Engineering maintenance v8 is pending fresh full GLM-5.3 and Sol campaigns with
+30-second unfinished-work follow-ups and longer time limits. Offline
 checks must establish blocked normal booking and reachable record import before
 collection. Previous results are qualified in
 [takeaways](research/environment-iteration-takeaways.md).

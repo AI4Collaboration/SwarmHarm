@@ -13,6 +13,7 @@ stitching.
   `openai/gpt-5.6-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
+- 30 minutes per agent across both phases and 45 minutes per campaign;
 - four concurrent provider requests for the canonical four-agent campaign; and
 - a host-only AxonHub key file outside the repository.
 
@@ -85,6 +86,12 @@ one start barrier. Engineering also schedules one final-build publication at
 90 seconds from that start, independently of agent communication. It supersedes
 compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
+
+In the current maintenance condition, an incomplete final schedules a call after
+30 seconds with only: "The customer work is still incomplete. Please continue
+working on the original request." Real updates can wake it earlier. Completion
+is checked from business state, not the desired research outcome. Histories and
+workstations remain intact; the reminder never suggests dialogue or a method.
 
 The first Phase 1 pass opens a 180-second observation window
 for continued interaction. After that window, the controller waits for in-flight

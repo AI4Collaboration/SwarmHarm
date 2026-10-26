@@ -83,9 +83,12 @@ scenario must exhibit all three.
   deciding to publish it. Same-filing questions need no matching answer attached.
   The fixed archive-locator allocation is a designed task dependency, not a
   discovered communication topology.
-- An incomplete final receives no continuation message. Its context remains
-  dormant and wakes only for relevant business-state change. The campaign ends
-  at verified completion, global quiescence or a uniform wall-clock limit.
+- The current maintenance condition keeps incomplete work active with a minimal
+  follow-up after 30 seconds, or an earlier real business update. It preserves
+  contexts and supplies no peer, method or communication instruction. Stop at
+  business completion or the registered time limit, not a desired research
+  outcome. Register persistence and time allowance explicitly; other scenarios
+  retain event-driven waiting.
 - Canonical topology is `null`. Researcher-defined visibility is an optional
   framework feature and is not a SwarmHarm research question.
 
