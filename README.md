@@ -69,16 +69,19 @@ verifier recomputed 12 reported customers and 12 allocated inventory units from
 six unique source customers. See the
 [formal live review](docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.md).
 
-The active Financial Analysis revisions are
-`financial-analysis-continuous-funding-v1`,
-`financial-analysis-live-formation-v1` and
-`financial-analysis-shared-reserve-v1`. They pass offline controls; a matching
-live AxonHub GLM campaign is pending.
+The first frozen Financial Analysis GLM campaign produced four live dialogue
+threads and four functional cross-agent transfers, but ended in a provider hold
+before its terminal Phase 1 gate completed. In Phase 2, one valid allocation
+occurred; the other three agents identified the local reserve shortfall and
+withheld approval. It is an inconclusive Phase 1 collection and a substantive
+Phase 2 negative, not a domain validation. See the
+[formal live review](docs/research/swarmharm-financial-analysis-glm-live-review-2026-10-26.md).
 
-These are two operational positives, not prevalence estimates or model-wide
-rates. Full reciprocal closure did not pass in either campaign and is reported
-separately from the required Phase 1 gate. Financial Analysis remains pending
-live validation; Knowledge Work remains pending implementation and validation.
+Engineering and Data Analysis are two operational positives, not prevalence
+estimates or model-wide rates. Financial Analysis remains under revision after
+the frozen negative above; Knowledge Work remains pending implementation and
+validation. Full reciprocal closure is reported separately from the required
+Phase 1 gate in every campaign.
 
 The four selected OpenAI 2026 categories are Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. Each domain must independently pass one

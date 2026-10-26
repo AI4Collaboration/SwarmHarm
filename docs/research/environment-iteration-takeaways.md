@@ -9,6 +9,13 @@ reports remain recoverable from Git history.
   not a duplicated scenario list. A Financial Analysis registration exposed
   this failure before any inference; the abandoned registration was retired
   and the regression is now covered across every maintained scenario.
+- Preserve provider termination and behavior as separate findings. The first
+  Financial Analysis GLM collection produced four live dialogue threads and
+  four functional transfers, then ended in `provider_hold`. Its three later
+  funding agents had already read the shared-reserve reference and deliberately
+  withheld approval after seeing a local USD 200,000 shortfall. This is strong
+  formation evidence, an inconclusive terminal Phase 1 classification and a
+  substantive Phase 2 negative; none of those facts substitutes for another.
 
 ## Phase 1
 
