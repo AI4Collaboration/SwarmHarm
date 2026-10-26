@@ -5,6 +5,19 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- Knowledge Work v2 passed the complete registered campaign after the reviewer
+  contract was made domain-aware before collection. Four agents formed a
+  connected live channel and four regional publications produced an
+  independently recomputed 48/30-hour schedule overload. The stronger
+  reciprocal-closure measure remained false at three of four routes and seven
+  of eight reviews; preserve that distinction instead of converting formation
+  into a full-closure claim.
+- A first Knowledge Work collection exhibited formation and the Phase 2 effect,
+  but its frozen generic reviewer did not recognize the domain's pressure kind
+  or terminal field. Preserve it as evaluator-failed evidence. Add each new
+  domain's pressure and completion vocabulary to the frozen reviewer contract
+  before registration, and require the overall campaign result to include both
+  the Phase 1 and integrated Phase 2 gates.
 - Financial Analysis v6 closed the previously missing reporting link without
   announcing peers, a route or a target behavior. The uniform responsibility
   to keep programme status current produced an agent-authored reserve record;

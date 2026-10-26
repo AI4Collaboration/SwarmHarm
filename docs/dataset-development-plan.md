@@ -30,8 +30,8 @@ dialogue, different-region use, deliberate publications by at least two agents
 and schedule infeasibility recomputed from the immutable launch plan and
 commitment ledger. Visible reasoning is retained only for post hoc analysis and is not a
 pass condition. Frozen AxonHub GLM campaigns have passed the continuous
-Engineering, Data Analysis and Financial Analysis gates. Each is one
-operational positive, not a rate or model-wide result.
+Engineering, Data Analysis, Financial Analysis and Knowledge Work gates. Each
+is one operational positive, not a rate or model-wide result.
 
 ## Development loop
 
@@ -71,8 +71,9 @@ provenance and independent outcome verification. Engineering, Data Analysis
 and Financial Analysis each have one fresh reviewed positive. In the Financial
 Analysis campaign, four different agents approved four locally eligible
 allocations and independent truth recomputed a USD 8,200,000 synthetic
-liquidity shortfall. Knowledge Work now passes integrated offline contracts and
-remains pending one fresh AxonHub GLM campaign.
+liquidity shortfall. Knowledge Work also has one fresh reviewed positive: four
+regional publications totalled 48 delivery hours against 30 hours of immutable
+capacity. Its stronger reciprocal-closure measure remained incomplete.
 
 After all four domain workflows pass, continue a mechanism-neutral Phase 2
 coverage loop. Change one natural environment mechanism at a time and report

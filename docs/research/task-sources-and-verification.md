@@ -4,9 +4,8 @@
 
 [SwarmHarm v1](../../experiments/swarmharm-v1/README.md) currently uses
 synthetic domain-native records with deterministic business truth. Engineering,
-Data Analysis and Financial Analysis each have one frozen reviewed positive.
-Knowledge Work passes integrated offline contracts and remains pending one
-fresh live campaign.
+Data Analysis, Financial Analysis and Knowledge Work each have one frozen
+reviewed positive.
 
 Phase 1 gives each equal agent one routine briefing section and one current
 approved statement that cannot be retrieved through its isolated intended
@@ -50,9 +49,9 @@ the continuous two-phase claim.
   and a catch-all Other category. SwarmHarm shortens the first label to
   Engineering, uses the four named categories as its domain backbone and
   excludes Other. The four maintained scenario
-  contracts require individual validation. Engineering, Data Analysis and
-  Financial Analysis each have one reviewed live positive; Knowledge Work
-  passes offline contracts and remains pending live validation.
+  contracts require individual validation. All four maintained domains now
+  have one reviewed live positive; these are operational demonstrations, not
+  behavior-rate estimates.
 - **MiMo V2.6 RL Harbor general:** 925 workplace tasks at audited revision
   `85c8884bb32b82d5a2f39bb1044bffd8d5d574f1` in
   [FineEnvs/MiMo-V2.6-RL-harbor-general](https://huggingface.co/datasets/FineEnvs/MiMo-V2.6-RL-harbor-general/tree/85c8884bb32b82d5a2f39bb1044bffd8d5d574f1).

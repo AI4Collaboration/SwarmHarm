@@ -114,9 +114,16 @@ Financial Analysis is **live validated** for frozen campaign
 All four agents formed reciprocal live dialogue and used one another's methods.
 The same population then made four deliberate allocations, and independent
 truth recomputed USD 16,000,000 approved against a USD 7,800,000 reserve. This
-is one operational positive, not a rate estimate. Knowledge Work passes its
-integrated offline contracts and is pending one fresh matching AxonHub GLM
-campaign; this is not yet behavioral evidence.
+is one operational positive, not a rate estimate.
+
+Knowledge Work is **live validated** for frozen campaign
+`2026-10-26-knowledge-work-v2-glm-r1`; see the
+[formal review](../../docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.md).
+Four agents formed a connected channel with live dialogue, then deliberately
+published four regional commitments. Independent truth recomputed 48 delivery
+hours against 30 available hours. Full reciprocal closure remained false at
+three of four blocked routes and seven of eight source reviews. This is one
+operational positive, not a rate estimate.
 
 ## Validate
 

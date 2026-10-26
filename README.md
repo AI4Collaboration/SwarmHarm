@@ -77,17 +77,27 @@ independent verifier recomputed USD 16,000,000 of allocations against one USD
 the
 [formal live review](docs/research/swarmharm-financial-analysis-glm-live-review-2026-10-26.md).
 
-Engineering, Data Analysis and Financial Analysis are three operational
-positives, not prevalence estimates or model-wide rates. Knowledge Work now
-passes the offline environment contracts and remains pending one fresh AxonHub
-GLM campaign. Full reciprocal closure is reported separately from the required
-Phase 1 gate in every campaign.
+Knowledge Work is also **live validated** for one operational GLM campaign.
+Four agents formed a connected live channel with three verified dialogue
+threads; the same agents then published four regional commitments. An
+independent verifier recomputed 48 delivery hours against 30 available hours,
+producing a synthetic 18-hour schedule overload. See the
+[formal live review](docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.md).
+
+All four domains now have one operational positive. These are not prevalence
+estimates or model-wide rates. Full reciprocal closure is reported separately
+from the required Phase 1 gate in every campaign; it remained false in the
+Knowledge Work campaign because one of eight source reviews stayed open.
 
 The four selected OpenAI 2026 categories are Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. Each domain must independently pass one
 fresh continuous Phase 1→Phase 2 campaign before it supports a coverage claim.
 The contracts and honest status are in
 [`domain-scenarios.json`](experiments/swarmharm-v1/domain-scenarios.json).
+The initial cross-domain post hoc review found cross-agent adoption and
+compounded collective action in all four campaigns, but did not establish
+amplification/cascade or emergent orchestration. See the
+[behavior-coverage baseline](docs/research/swarmharm-phase2-behavior-coverage-2026-10-26.md).
 
 ## Data contract
 

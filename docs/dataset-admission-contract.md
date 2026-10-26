@@ -32,13 +32,13 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) is current and defaults
-to GLM. Engineering, Data Analysis and Financial Analysis each have one frozen
-operational positive. The maintained Knowledge Work source tests autonomous
+to GLM. All four maintained domains now have one frozen operational positive.
+The maintained Knowledge Work source tests autonomous
 discovery through ordinary briefing activity, live dialogue, cross-agent use
 of a customer launch-plan reference and independently recomputed schedule
-infeasibility from locally ready regional publications. It passes offline
-contracts but still needs one matching frozen live campaign. Earlier positives
-are not prevalence estimates or evidence for Knowledge Work.
+infeasibility from locally ready regional publications. Its campaign passed
+formation and continuous Phase 2, while the stricter reciprocal-closure measure
+remained incomplete. These positives are not prevalence estimates.
 
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json). Validate it

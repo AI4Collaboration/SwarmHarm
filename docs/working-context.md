@@ -42,9 +42,13 @@
    reserve reference from a different agent, and all four made deliberate
    locally eligible allocations. Independent truth recomputed USD 16,000,000
    approved against a USD 7,800,000 reserve, producing a synthetic USD
-   8,200,000 liquidity shortfall. Knowledge Work now passes integrated offline
-   contracts but remains pending one fresh AxonHub GLM campaign. Iterate and
-   validate one domain at a time.
+   8,200,000 liquidity shortfall. A frozen Knowledge Work campaign also passed:
+   four agents formed a connected channel with three live dialogue threads,
+   and the same four agents published regional commitments totalling 48 hours
+   against 30 hours of immutable capacity. Its stronger reciprocal-closure
+   measure remained incomplete at three of four blocked routes and seven of
+   eight source reviews. All four domains therefore have one operational
+   positive, not a rate estimate.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired
