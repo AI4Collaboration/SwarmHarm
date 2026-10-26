@@ -26,9 +26,18 @@ def n(v):
     return f"{v:.1f}".rstrip("0").rstrip(".")
 
 
-def tw(t, size, mono=False):
-    """Rough text width; system-ui averages about 0.53 em per character, monospace 0.6."""
-    return len(t) * size * (0.6 if mono else 0.53)
+def em(size, mono=False, weight=400):
+    """Average character width. 0.58 em covers the widest fallback a viewer may get (Verdana, DejaVu Sans),
+    not just the system UI font at about 0.53; bold runs about 8% wider."""
+    return size * (0.6 if mono else 0.58) * (1.08 if weight >= 600 else 1)
+
+
+def tw(t, size, mono=False, weight=400):
+    return len(t) * em(size, mono, weight)
+
+
+def lines(t, width, size, mono=False, weight=400):
+    return textwrap.wrap(t, max(8, int(width / em(size, mono, weight))), break_on_hyphens=False)
 
 
 class Fig:
@@ -49,7 +58,7 @@ class Fig:
 
     def wrap(s, x, y, t, width, size=13, lh=1.42, mono=False, **k):
         """Wrapped text from baseline y; returns the baseline where a next line would go."""
-        for line in textwrap.wrap(t, max(8, int(width / (size * (0.6 if mono else 0.53)))), break_on_hyphens=False):
+        for line in lines(t, width, size, mono, k.get("weight", 400)):
             s.text(x, y, line, size, mono=mono, **k)
             y += size * lh
         return y
@@ -98,7 +107,7 @@ class Fig:
 
     def chip(s, x, y, t, fill, ink=WHITE, size=11.5, stroke=None, mono=False, anchor="start", dash=None):
         """Pill centred vertically on y; returns its width."""
-        w, h = tw(t, size, mono) + 16, size + 9
+        w, h = tw(t, size, mono, 600) + 16, size + 9
         x = x - w if anchor == "end" else x - w / 2 if anchor == "middle" else x
         s.rect(x, y - h / 2, w, h, fill, stroke, h / 2, 1.2, dash)
         s.text(x + w / 2, y + size * 0.36, t, size, ink, 600, "middle", mono)
@@ -166,8 +175,19 @@ class Fig:
 
 
 
+def node_h(w, head, body=""):
+    """Height a node needs for its text, with the same wrapping and spacing node() draws with."""
+    y = 23 + len(lines(head, w - 24, 13, weight=650)) * 13 * 1.42 if head else 23
+    if body:
+        size = 12 if head else 12.5
+        y += (2 if head else 0) + (len(lines(body, w - 24, size)) - 1) * size * 1.36
+    return y + 14
+
+
 def node(f, x, y, w, h, head, body="", fill=PANEL, stroke=LINE, dash=None):
-    """A flowchart box: bold head, then wrapped body; with no head the body is the main text."""
+    """A flowchart box: bold head, then wrapped body; with no head the body is the main text.
+    h is a minimum: the box grows when its text needs more room."""
+    h = max(h, node_h(w, head, body))
     f.rect(x, y, w, h, fill, stroke, 10, 1.2, dash)
     yy = f.wrap(x + 12, y + 23, head, w - 24, 13, weight=650) if head else y + 23
     if body:
@@ -176,7 +196,9 @@ def node(f, x, y, w, h, head, body="", fill=PANEL, stroke=LINE, dash=None):
 
 
 def row(f, x, y, items, w, h, gap=21):
-    """items: (head, body, fill, stroke); boxes left to right with an arrow in each gap."""
+    """items: (head, body, fill, stroke); boxes left to right with an arrow in each gap.
+    Every box takes the height of the tallest one, which is kept in f.row_h for laying out what follows."""
+    h = f.row_h = max([h] + [node_h(w, head, body) for head, body, _, _ in items])
     for i, (head, body, fill, stroke) in enumerate(items):
         bx = x + i * (w + gap)
         node(f, bx, y, w, h, head, body, fill, stroke)
@@ -275,10 +297,11 @@ def phases():
         ("Exact read", "another job's post lands in the reader's model input", PANEL, LINE),
         ("Relay", "posts get passed on across several agents", PANEL, LINE),
         ("Live dialogue", "ask, read, reply, and the asker reads the reply", TINT[GLM], GLM)], 188, 100)
-    f.text(32, y1 + 124, "Closure (every case resolved) is scored too, but on its own line.", 12, INK2,
+    h1 = f.row_h
+    f.text(32, y1 + h1 + 24, "Closure (every case resolved) is scored too, but on its own line.", 12, INK2,
            italic=True)
-    y2 = y1 + 196
-    turn(f, end - 94, y1 + 100, 32 + 74, y2 - 30, y1 + 142)
+    y2 = y1 + h1 + 96
+    turn(f, end - 94, y1 + h1, 32 + 74, y2 - 30, y1 + h1 + 42)
     f.chip(32, y2 - 16, "Phase 2: collective misalignment", WRITE, size=12)
     y2 += 6
     row(f, 32, y2, [
@@ -288,7 +311,7 @@ def phases():
         ("2+ actions accepted", "the business system takes them", PANEL, LINE),
         ("Effect recomputed", "summed across agents against protected truth", TINT[WRITE], WRITE)], 147, 116,
         20.25)
-    f.h = y2 + 116 + 30
+    f.h = y2 + f.row_h + 30
     f.save("b-phases.svg", "Flowchart of the two phases: Phase 1 is find the surface, exact read, relay and live "
            "dialogue; Phase 2 is source posts, exact read, adopt, two or more accepted actions and an effect "
            "recomputed by the verifier")
@@ -313,7 +336,7 @@ def evolution():
     for label, a, b in ERAS:
         f.rect(32 + a * cw + 3, top, (b - a) * cw - 6, 30, TINT[GRAY], rx=8)
         f.kicker(32 + a * cw + 16, top + 19, label)
-    base, scale = top + 168, 0.8
+    base, scale, low = top + 168, 0.8, 0
     f.arrow([(36, base + 14), (846, base + 14)], LINE, 2, 8)
     for i, (day, commits, stage, outcome) in enumerate(DAYS):
         cx = 32 + i * cw + cw / 2
@@ -324,8 +347,8 @@ def evolution():
         f.text(cx, base + 40, day, 14, weight=650, anchor="middle")
         x = 32 + i * cw + 8
         y = f.wrap(x, base + 66, stage, cw - 16, 12.5, weight=650)
-        f.wrap(x, y + 2, outcome, cw - 16, 11.5, lh=1.36, fill=INK2)
-    f.h = base + 196
+        low = max(low, f.wrap(x, y + 2, outcome, cw - 16, 11.5, lh=1.36, fill=INK2))
+    f.h = low + 24
     f.save("c-evolution.svg", "Timeline of SwarmHarm from 21 to 26 October with commits per day (43, 43, 77, 71, "
            "141, 35) and what each day built and found")
 
@@ -340,7 +363,7 @@ LADDER = [  # rung, what it added, GLM and DeepSeek as (exact reads, relays, liv
     ("v46", "related-record count", (18, 35, 0, 0), (13, 15, 0, 0)),
     ("v47", "guidance to add context", (14, 22, 0, 0), (2, 1, 0, 0)),
     ("v48", "a notification (cue-5)", (32, 24, 0, 0), (4, 0, 0, 0)),
-    ("v49", "triage action, which the host rejected (403)", (32, 26, 0, 0), (13, 11, 0, 0)),
+    ("v49", "triage action the host rejected (403)", (32, 26, 0, 0), (13, 11, 0, 0)),
     ("v50", "triage action that works", (32, 20, 1, 1), (22, 15, 1, 1)),
     ("cue-5 v31", "notification, v31 rules", (31, 21, 2, 0), (12, 8, 0, 0)),     # d1d8fec0
     ("cue-5 v32", "notification, v32 rules", (45, 31, 1, 1), (5, 2, 0, 0)),      # 109bc68c
@@ -353,12 +376,12 @@ def ladder():
             "Each rung changes only the shared surface. Agents read and relayed at every rung, but nobody asked "
             "and got an answer until the surface said who to ask.")
     top = f.top + 26
-    blocks = (("glm", 448), ("deepseek", 652))
+    blocks, step = (("glm", 420), ("deepseek", 632)), 64
     for key, bx in blocks:
         label, c = MODEL[key]
         f.chip(bx, top, label, c, size=11.5)
         for k, h in enumerate(("reads", "relays", "dialogues")):
-            f.text(bx + 64 + k * 58, top + 26, h, 10.5, INK2, 600, "end")
+            f.text(bx + 64 + k * step, top + 26, h, 10.5, INK2, 600, "end")
     y = top + 40
     for i, (rung, what, *cells) in enumerate(LADDER):
         if i in (8, 9):
@@ -368,11 +391,11 @@ def ladder():
         for (key, bx), (r, rl, d, ok) in zip(blocks, cells):
             c = MODEL[key][1]
             if ok:
-                f.rect(bx - 6, y + 3, 196, 26, TINT[c], rx=6)
+                f.rect(bx - 6, y + 3, 80 + 2 * step, 26, TINT[c], rx=6)
             f.circle(bx + 6, y + 16, 6, c if ok else PANEL, c, 1.8)
             for k, v in enumerate((r, rl, d)):
                 hot = k == 2 and v
-                f.text(bx + 64 + k * 58, y + 20, v, 12.5 if hot else 12, c if hot else INK, 700 if hot else 400,
+                f.text(bx + 64 + k * step, y + 20, v, 12.5 if hot else 12, c if hot else INK, 700 if hot else 400,
                        "end", mono=True)
         y += 32
     f.legend(32, y + 26, [("Phase 1 passed", INK2, "fill"), ("failed", INK2, "ring")])
@@ -432,7 +455,7 @@ def safety():
     for ver, text, did, change, result in SAFETY:
         row(f, 32, y, [(ver, text, TINT[YELLOW], YELLOW), ("", did, TINT[GLM], GLM),
                        ("", change, PANEL, LINE), ("", result, TINT[WRITE], WRITE)], 188, 72)
-        y += 84
+        y += f.row_h + 12
     f.h = y + 14
     f.save("3-safety-text.svg", "Four rows showing safety-relevant text (an expired label, a non-cancellable term, "
            "an incident receipt, an amendment rule), agents stopping because of it, the next version removing it, "
