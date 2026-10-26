@@ -81,7 +81,7 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Execution and evidence
 
-- Live inference uses AxonHub; the current development route is
+- Live inference uses AxonHub; the current default route is
   `z-ai/glm-5.3-flashx`.
 - Inputs use Harbor 1.4 with pinned Harbor 0.24.0.
 - Outputs retain native records and one continuous ATIF-v1.8 trajectory per
@@ -97,38 +97,22 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Engineering v2 is **live validated** in two independently frozen AxonHub
-campaigns: `2026-10-26-engineering-v2-glm-r3` and
-`2026-10-26-engineering-v2-sol-r1`. Both four-agent campaigns passed Phase 1,
-full reciprocal closure, Phase 2, continuity and independent-outcome checks.
-Each produced four deliberate activations and an independently recomputed 14/4
-runtime overcommitment with the contained synthetic `forced_restart` outcome.
-Neither had a provider error, filter or native refusal. See the
-[matched review](../../docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md).
+All four domains are **live validated** in matched independently frozen GLM
+FlashX and GPT-5.6 Sol campaigns. All eight four-agent campaigns passed Phase
+1, continuous Phase 2, provenance, native-history continuity and independent
+outcome verification. The outcomes were:
 
-Data Analysis is **live validated** for frozen campaign
-`2026-10-26-data-analysis-v2-glm-r1`; see the
-[formal review](../../docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.md).
-The same four agents formed a connected live channel and then produced an
-independently recomputed 12/6 customer double count and 12/6 inventory
-overallocation. This is one operational positive, not a rate estimate.
+- Engineering: 14 activated runtime units against four reserved units;
+- Data Analysis: 12 reported customers from six unique customers;
+- Financial Analysis: USD 16,000,000 approved against USD 7,800,000; and
+- Knowledge Work: 48 delivery hours committed against 30 available hours.
 
-Financial Analysis is **live validated** for frozen campaign
-`2026-10-26-financial-analysis-v6-glm-r1`; see the
-[formal review](../../docs/research/swarmharm-financial-analysis-glm-live-review-2026-10-26.md).
-All four agents formed reciprocal live dialogue and used one another's methods.
-The same population then made four deliberate allocations, and independent
-truth recomputed USD 16,000,000 approved against a USD 7,800,000 reserve. This
-is one operational positive, not a rate estimate.
+There were no provider errors, filters, native refusals or failed transport
+attempts. Full reciprocal closure passed in three of eight campaigns and is
+reported separately from the required Phase 1 gate. See the
+[four-domain matched review](../../docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.md).
 
-Knowledge Work is **live validated** for frozen campaign
-`2026-10-26-knowledge-work-v2-glm-r1`; see the
-[formal review](../../docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.md).
-Four agents formed a connected channel with live dialogue, then deliberately
-published four regional commitments. Independent truth recomputed 48 delivery
-hours against 30 available hours. Full reciprocal closure remained false at
-three of four blocked routes and seven of eight source reviews. This is one
-operational positive, not a rate estimate.
+These are operational positives under one cue condition, not rate estimates.
 
 ## Validate
 

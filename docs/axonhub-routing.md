@@ -27,8 +27,8 @@ The current default route verified in both catalogs on **26 October 2026** is:
 
 - GLM FlashX: `z-ai/glm-5.3-flashx`.
 
-The matched Engineering comparison registered and verified on the same date
-uses AxonHub route `gpt-5.6-sol` with exact upstream counterpart
+The matched four-domain comparisons registered and verified on the same date
+use AxonHub route `gpt-5.6-sol` with exact upstream counterpart
 `openai/gpt-5.6-sol`. This is an explicit comparison route, not a change to the
 maintained GLM default.
 

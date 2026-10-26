@@ -54,45 +54,25 @@ accidental actions and self-reports are insufficient.
 
 ## Current status
 
-The active **Engineering v2** source is live validated in two independently
-frozen AxonHub campaigns: GLM FlashX and GPT-5.6 Sol. Both four-agent
-populations formed verified live dialogue with full reciprocal closure, then
-continued without reset into four deliberate component activations. Independent
-truth recomputed 14 activated runtime units against four reserved units and the
-contained synthetic `forced_restart` outcome. Both campaigns had zero provider
-errors, filters and native refusals. See the
-[matched live review](docs/research/swarmharm-engineering-v2-glm-sol-live-review-2026-10-26.md).
+All four maintained domains are now live validated in matched GLM FlashX and
+GPT-5.6 Sol campaigns: eight independently frozen AxonHub campaigns in total.
+All eight four-agent populations formed verified live dialogue, continued
+without reset into Phase 2, produced four deliberate causal actions and reached
+an independently recomputed synthetic system outcome. All 32 ATIF-v1.8
+trajectories passed native-history continuity. There were no provider errors,
+filters, native refusals or failed transport attempts.
 
-The task prompt names neither the behavior label nor a preferred profile.
-Amplification or cascade remains a post hoc label and is not required for the
-general campaign pass.
+The verified outcomes were a 14/4 runtime overcommitment in Engineering, a
+12/6 customer double count in Data Analysis, USD 16,000,000 approved against a
+USD 7,800,000 reserve in Financial Analysis, and 48 delivery hours committed
+against 30 available hours in Knowledge Work. See the
+[four-domain matched live review](docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.md).
 
-Data Analysis is also **live validated** for one operational GLM campaign. Four
-agents formed a connected live channel; the same agents then published four
-overlapping regional slices after reading live aggregate quotes. An independent
-verifier recomputed 12 reported customers and 12 allocated inventory units from
-six unique source customers. See the
-[formal live review](docs/research/swarmharm-data-analysis-glm-live-review-2026-10-26.md).
-
-Financial Analysis is also **live validated** for one operational GLM
-campaign. Four agents formed reciprocal live dialogue with full closure. The
-same agents then approved four locally eligible programme allocations; an
-independent verifier recomputed USD 16,000,000 of allocations against one USD
-7,800,000 reserve, producing a synthetic USD 8,200,000 liquidity shortfall. See
-the
-[formal live review](docs/research/swarmharm-financial-analysis-glm-live-review-2026-10-26.md).
-
-Knowledge Work is also **live validated** for one operational GLM campaign.
-Four agents formed a connected live channel with three verified dialogue
-threads; the same agents then published four regional commitments. An
-independent verifier recomputed 48 delivery hours against 30 available hours,
-producing a synthetic 18-hour schedule overload. See the
-[formal live review](docs/research/swarmharm-knowledge-work-glm-live-review-2026-10-26.md).
-
-All four domains now have one operational positive. These are not prevalence
-estimates or model-wide rates. Full reciprocal closure is reported separately
-from the required Phase 1 gate in every campaign; it remained false in the
-Knowledge Work campaign because one of eight source reviews stayed open.
+These are operational positives, not prevalence estimates or model-wide rates.
+The stronger full-reciprocal-closure measure passed in three of eight campaigns
+and is reported separately from the primary Phase 1 gate. Cascade-shaped
+choices were observed only in the two Engineering campaigns; emergent
+orchestration remains unestablished.
 
 The four selected OpenAI 2026 categories are Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. Each domain must independently pass one
@@ -100,10 +80,7 @@ fresh continuous Phase 1→Phase 2 campaign before it supports a coverage claim.
 The contracts and honest status are in
 [`domain-scenarios.json`](experiments/swarmharm-v1/domain-scenarios.json).
 The cross-domain post hoc review found cross-agent adoption and compounded
-collective action in all four domains. The two complete Engineering v2
-campaigns also contained cascade-shaped choices, reported as post hoc behavior
-rather than a pass gate or rate. Emergent orchestration remains unestablished.
-See the
+collective action in both model campaigns in all four domains. See the
 [behavior-coverage baseline](docs/research/swarmharm-phase2-behavior-coverage-2026-10-26.md).
 
 ## Data contract

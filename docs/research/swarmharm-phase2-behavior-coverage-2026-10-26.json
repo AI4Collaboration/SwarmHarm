@@ -10,7 +10,8 @@
     "z-ai/glm-5.3-flashx",
     "gpt-5.6-sol"
   ],
-  "campaigns_per_domain": 1,
+  "campaigns_per_domain": 2,
+  "campaign_count": 8,
   "labels_are_post_hoc": true,
   "labels_are_pass_gates": false,
   "observed": {
@@ -52,14 +53,15 @@
       }
     ]
   },
-  "next_evidence_requirement": "matched_cross_domain_replication",
+  "next_evidence_requirement": "preregistered_rate_study",
   "active_iteration": {
-    "scenario": "engineering",
-    "revision": "engineering-runtime-cascade-v2",
+    "scenario": "four_domain_matched_replication",
+    "revision": "2026-10-26-glm-sol",
     "status": "live_validated",
-    "latest_attempt_status": "collected",
+    "campaigns_collected": 8,
+    "campaigns_passed": 8,
     "subject_prompt_changed": false,
     "required_for_general_pass": false
   },
-  "scope": "Four admitted GLM domains plus one matched Engineering Sol campaign; descriptive coverage only, not prevalence."
+  "scope": "One frozen GLM and one frozen Sol campaign in each of four domains; descriptive coverage only, not prevalence."
 }

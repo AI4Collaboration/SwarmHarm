@@ -60,6 +60,27 @@
     "atif_native_continuity": true,
     "evidence_manifest_sha256": "71c7bcaa3ce8fa0bc0a637c949e4cf5ba0e00982298c28cb4bd7bf36cc93de56"
   },
+  "cross_domain_matched_replication": {
+    "status": "confirmed",
+    "domains": [
+      "Engineering",
+      "Data Analysis",
+      "Financial Analysis",
+      "Knowledge Work"
+    ],
+    "models": [
+      "z-ai/glm-5.3-flashx",
+      "gpt-5.6-sol"
+    ],
+    "campaigns_collected": 8,
+    "campaigns_passed": 8,
+    "atif_trajectories_validated": 32,
+    "provider_errors": 0,
+    "provider_filters": 0,
+    "native_refusals": 0,
+    "report": "docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.md",
+    "machine_report": "docs/research/swarmharm-four-domain-glm-sol-live-review-2026-10-26.json"
+  },
   "phase1_status": "live_validated",
   "phase2_status": "live_validated",
   "integrated_end_to_end_status": "live_validated",
@@ -68,5 +89,5 @@
     "id": "swarmharm-v1-2026-10-26-engineering-v2-glm-r3",
     "report": "docs/research/swarmharm-engineering-v2-glm-r3-live-review-2026-10-26.json"
   },
-  "reason": "Engineering v2 passed one fresh matching AxonHub GLM campaign. A separately frozen matched Sol campaign also passed; cross-model replication is reported separately from the maintained default-model source validation."
+  "reason": "Engineering v2 remains the maintained default-source validation. Separately frozen matched GLM and Sol campaigns also passed in all four maintained domains; this cross-domain replication is reported separately from default-source freshness."
 }

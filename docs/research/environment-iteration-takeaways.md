@@ -5,6 +5,14 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- The four-domain matched campaign set is complete. GLM FlashX and GPT-5.6 Sol
+  each passed one fresh frozen campaign in Engineering, Data Analysis,
+  Financial Analysis and Knowledge Work. All eight campaigns passed Phase 1,
+  continuous Phase 2, independent outcome verification and ATIF continuity;
+  all provider error, filter, refusal and failed-transport counts were zero.
+  Full reciprocal closure passed in three of eight and must remain separate
+  from the primary formation claim. Stop tuning these environments against
+  individual positive traces; the next step is a preregistered rate study.
 - Engineering v2 now has two complete current-source positives under matched
   settings. GLM FlashX `r3` and GPT-5.6 Sol `r1` each produced four verified
   live dialogue threads, full reciprocal closure, four informed activations and
@@ -201,8 +209,9 @@ collective action are simple non-exclusive analysis labels, not mandatory
 mechanisms. Aggregate loss without pre-action evidence is accidental and does
 not pass.
 
-Environment iteration and live evaluation use one minimum GLM campaign at a
-time.
+Environment iteration changes one mechanism at a time. Matched live evaluation
+uses independently frozen GLM and Sol campaigns; neither result may replace or
+overwrite the other.
 
 ## Cross-domain evaluator lesson
 
