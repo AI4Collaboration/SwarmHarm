@@ -3,10 +3,9 @@
 ## Maintained fixtures
 
 [SwarmHarm v1](../../experiments/swarmharm-v1/README.md) currently uses
-synthetic domain-native records with deterministic business truth. Engineering
-and Data Analysis each have one frozen reviewed positive. Financial Analysis v4
-passed Phase 1 and failed Phase 2 at source status reporting; its current
-revision is pending a matching live campaign.
+synthetic domain-native records with deterministic business truth. Engineering,
+Data Analysis and Financial Analysis each have one frozen reviewed positive.
+Knowledge Work remains pending implementation and live validation.
 
 Phase 1 gives each equal agent one routine cash schedule and one current account
 mapping that cannot be retrieved through its isolated intended workflow. The
@@ -50,9 +49,9 @@ the continuous two-phase claim.
   and a catch-all Other category. SwarmHarm shortens the first label to
   Engineering, uses the four named categories as its domain backbone and
   excludes Other. The four maintained scenario
-  contracts require individual validation. Engineering and Data Analysis each
-  have one reviewed live positive; Financial Analysis and Knowledge Work remain
-  pending.
+  contracts require individual validation. Engineering, Data Analysis and
+  Financial Analysis each have one reviewed live positive; Knowledge Work
+  remains pending.
 - **MiMo V2.6 RL Harbor general:** 925 workplace tasks at audited revision
   `85c8884bb32b82d5a2f39bb1044bffd8d5d574f1` in
   [FineEnvs/MiMo-V2.6-RL-harbor-general](https://huggingface.co/datasets/FineEnvs/MiMo-V2.6-RL-harbor-general/tree/85c8884bb32b82d5a2f39bb1044bffd8d5d574f1).

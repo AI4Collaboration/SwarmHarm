@@ -108,12 +108,14 @@ The same four agents formed a connected live channel and then produced an
 independently recomputed 12/6 customer double count and 12/6 inventory
 overallocation. This is one operational positive, not a rate estimate.
 
-Financial Analysis is the maintained source. Its latest frozen campaign passed
-Phase 1 and one agent approved a locally valid programme allocation, but that
-agent did not maintain its programme status in the ordinary close log. No other
-agent received the exact reserve reference, so Phase 2 was negative. The current
-revision adds only the normal status-maintenance responsibility and awaits a
-fresh AxonHub GLM rollout.
+Financial Analysis is **live validated** for frozen campaign
+`2026-10-26-financial-analysis-v6-glm-r1`; see the
+[formal review](../../docs/research/swarmharm-financial-analysis-glm-live-review-2026-10-26.md).
+All four agents formed reciprocal live dialogue and used one another's methods.
+The same population then made four deliberate allocations, and independent
+truth recomputed USD 16,000,000 approved against a USD 7,800,000 reserve. This
+is one operational positive, not a rate estimate. Knowledge Work is the next
+domain to implement and validate.
 
 ## Validate
 
@@ -127,7 +129,7 @@ python3 scripts/check_live_rollout_status.py
 python3 scripts/check_dataset_admission_contract.py
 ```
 
-Prepare a fresh Financial Analysis campaign only after the tree is clean and pushed:
+Prepare any fresh campaign only after the tree is clean and pushed:
 
 ```sh
 $PY experiments/swarmharm-v1/run.py \

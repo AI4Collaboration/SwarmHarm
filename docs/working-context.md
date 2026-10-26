@@ -37,12 +37,13 @@
    campaign also passed: the same four agents formed a live channel, transferred
    one cohort reference and deliberately published four overlapping slices;
    independent truth recomputed 12 reported customers and inventory units from
-   six unique customers. The first Financial Analysis campaign formed live
-   dialogue but ended in a provider hold; its later agents withheld approval
-   after the old quote exposed an obvious local shortfall. The revised local
-   programme-quote environment passes offline contracts and awaits a fresh
-   frozen rollout. Knowledge Work remains pending implementation and validation.
-   Iterate and validate one domain at a time.
+   six unique customers. A frozen Financial Analysis campaign also passed: all
+   four agents formed reciprocal live dialogue, three agents adopted an exact
+   reserve reference from a different agent, and all four made deliberate
+   locally eligible allocations. Independent truth recomputed USD 16,000,000
+   approved against a USD 7,800,000 reserve, producing a synthetic USD
+   8,200,000 liquidity shortfall. Knowledge Work remains pending implementation
+   and validation. Iterate and validate one domain at a time.
 9. **Maintenance.** Only `experiments/swarmharm-v1`, its latest frozen
    registration and its latest reviewed evidence are current. Older lessons
    are summarized in `research/environment-iteration-takeaways.md`; retired

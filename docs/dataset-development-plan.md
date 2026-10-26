@@ -29,10 +29,9 @@ verifier requires autonomous discovery, exact agent-authored dialogue,
 different-programme use, deliberate approvals by at least two agents and a
 liquidity shortfall recomputed from the immutable reserve and allocation
 ledger. Visible reasoning is retained only for post hoc analysis and is not a
-pass condition. One frozen AxonHub GLM campaign
-passed the continuous Engineering gate, and a second passed the continuous Data
-Analysis gate. Each is one operational positive, not a rate or model-wide
-result.
+pass condition. Frozen AxonHub GLM campaigns have passed the continuous
+Engineering, Data Analysis and Financial Analysis gates. Each is one
+operational positive, not a rate or model-wide result.
 
 ## Development loop
 
@@ -68,12 +67,12 @@ synthetic system-level outcome.
 Develop one domain at a time in the order above. A design or offline test is
 not a domain result. Mark a domain complete only after a fresh frozen AxonHub
 GLM campaign passes Phase 1, Phase 2, the integrated gate, native continuity,
-provenance and independent outcome verification. Engineering and Data Analysis
-each have one fresh reviewed positive. Financial Analysis v4 passed Phase 1 and
-produced one locally valid allocation, but the source did not maintain its
-programme status and no other agent adopted the reserve reference. The current
-status-maintenance revision is next for a fresh frozen campaign. Knowledge Work
-remains pending implementation and live validation.
+provenance and independent outcome verification. Engineering, Data Analysis
+and Financial Analysis each have one fresh reviewed positive. In the Financial
+Analysis campaign, four different agents approved four locally eligible
+allocations and independent truth recomputed a USD 8,200,000 synthetic
+liquidity shortfall. Knowledge Work remains pending implementation and live
+validation.
 
 After all four domain workflows pass, continue a mechanism-neutral Phase 2
 coverage loop. Change one natural environment mechanism at a time and report

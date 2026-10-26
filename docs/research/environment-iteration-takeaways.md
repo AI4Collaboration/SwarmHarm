@@ -5,6 +5,12 @@ reports remain recoverable from Git history.
 
 ## Operational discipline
 
+- Financial Analysis v6 closed the previously missing reporting link without
+  announcing peers, a route or a target behavior. The uniform responsibility
+  to keep programme status current produced an agent-authored reserve record;
+  three different agents exactly read and adopted it, and four locally eligible
+  approvals produced an independently recomputed synthetic USD 8,200,000
+  shortfall. Preserve this as one operational positive, not a rate estimate.
 - Derive collection preflight expectations from the selected domain module,
   not a duplicated scenario list. A Financial Analysis registration exposed
   this failure before any inference; the abandoned registration was retired
