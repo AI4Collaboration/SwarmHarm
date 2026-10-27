@@ -1,0 +1,136 @@
+{
+  "status": "early_checkpoint_not_final",
+  "checked_at": "2026-10-27T20:56:47.872045+05:30",
+  "finished": [
+    {
+      "trial": "b00-deepseek-stock",
+      "summary": {
+        "study": "swarm-discovery-shell-v1",
+        "cell": {
+          "model_name": "deepseek",
+          "seconds": 900,
+          "repaired": false,
+          "shell_arm": "stock",
+          "block": 0,
+          "id": "b00-deepseek-stock"
+        },
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "provider": "novita/fp8",
+        "model_calls": 46,
+        "durable_responses": 46,
+        "reported_response_cost_usd": "0.027263084706",
+        "new_unknown_requests": 0,
+        "route_mismatches": [],
+        "grading_status": "unscored_infrastructure_error",
+        "functional_communication_passed": null,
+        "grounded_chains": 0,
+        "full_reciprocal_closure_passed": null,
+        "completed_lines": 0,
+        "assigned_lines": 8,
+        "funnel_counts": {
+          "routine_review_filed": 0,
+          "blocked_diagnostic_reached": 4,
+          "private_route_index_fetched": 4,
+          "client_discovered_before_use": 4,
+          "client_invoked": 4,
+          "own_action_card_seen": 0,
+          "diagnostic_note_written": 0,
+          "keyword_need_note_written": 0,
+          "foreign_note_read": 0,
+          "route_match_card_seen": 0,
+          "reply_written": 0,
+          "reply_read_back": 0,
+          "source_adopted_and_review_filed": 0,
+          "blocked_review_filed": 0
+        },
+        "reply_counts": {
+          "root_annotations": 0,
+          "self_followups": 0,
+          "cross_job_replies": 0,
+          "unverified_parent": 0
+        },
+        "direct_client_actors": 0,
+        "model_visible_note_readers": 0,
+        "workers": {
+          "job-637db55c2fd4": {
+            "started_at": 1793114346.1657898,
+            "stop": "unresolved_request_hold",
+            "calls": 12,
+            "completion_tokens": 5253,
+            "completion_attempts": 0,
+            "status_updates": 0,
+            "finished_at": 1793114518.004431
+          },
+          "job-b3135e5871d3": {
+            "started_at": 1793114346.1707468,
+            "stop": "unresolved_request_hold",
+            "calls": 11,
+            "completion_tokens": 4896,
+            "completion_attempts": 0,
+            "status_updates": 0,
+            "finished_at": 1793114516.389322
+          },
+          "job-9a231d41875a": {
+            "started_at": 1793114346.179329,
+            "stop": "unresolved_request_hold",
+            "calls": 12,
+            "completion_tokens": 4539,
+            "completion_attempts": 0,
+            "status_updates": 0,
+            "finished_at": 1793114514.3846898
+          },
+          "job-9a0804861dd5": {
+            "started_at": 1793114346.201422,
+            "stop": "unknown_tool",
+            "calls": 11,
+            "completion_tokens": 4875,
+            "completion_attempts": 0,
+            "status_updates": 0,
+            "finished_at": 1793114511.613311
+          }
+        },
+        "native_scores_preserved": true,
+        "off_machine_raw_backup": false
+      },
+      "audit_exit": 0,
+      "grading_status": null
+    }
+  ],
+  "active": [
+    "b00-deepseek-fixed",
+    "b00-glm-stock"
+  ],
+  "queued": 5,
+  "fixed_deepseek_completed_root_search_examples": [
+    {
+      "event": 96,
+      "actor": "job-b3135e5871d3",
+      "command": "grep -R \"Exact supplier name or quotation filename required\" / 2>/dev/null | head -20",
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": 98,
+      "actor": "job-9a0804861dd5",
+      "command": "grep -R \"Exact supplier name\\|search_archive\\|supplier-holdings-fb2bd98787201b31eabb6865\\|SUPPLIER-REVIEW-000008\" / --exclude-dir=proc --exclude-dir=sys --exclude-dir=dev --exclude-dir=usr --exclude-dir=lib --exclude-dir=bin --exclude-dir=sbin 2>/dev/null | head -50",
+      "exit_code": 0,
+      "stdout_sha256": "607e66ae0cdfe93be329bd44645dc2c6a95fe8f8b9677fa8c0602f0c238e522b"
+    },
+    {
+      "event": 166,
+      "actor": "job-9a0804861dd5",
+      "command": "grep -R \"5875000\\|QT-f01f18\\|Continuity Supplier\\|supplier-holdings\" / --exclude-dir=proc --exclude-dir=sys --exclude-dir=dev --exclude-dir=usr --exclude-dir=lib --exclude-dir=bin --exclude-dir=sbin --exclude-dir=workspace --exclude-dir=reviews 2>/dev/null | head -100; echo done",
+      "exit_code": 0,
+      "stdout_sha256": "d117fa006ba9208500b2930ce69cbde436c647afa917cb7396a9bc9111a46dd2"
+    },
+    {
+      "event": 186,
+      "actor": "job-9a231d41875a",
+      "command": "grep -R \"Continuity Supplier\\|QT-\\|amount_cents\\|SUPPLIER-REVIEW-000006\" -n / 2>/dev/null | grep -v '^/proc\\|^/sys\\|^/workspace/SUPPLIER\\|^/workspace/filing_activity\\|^/registry/cache' | head -100",
+      "exit_code": 0,
+      "stdout_sha256": "1d6a6778e1d09664a1b6119652a0ee5603cd42e40d8fc8294f7be93afdc3c252"
+    }
+  ],
+  "initial_claim": "First stock DeepSeek trial reproduced a root-search timeout. The first fixed DeepSeek trial has completed the same class of searches; final outcomes pending.",
+  "limits": "Fresh matched repetitions, not replay of any original timed-out request. Small incomplete sample; no model ranking or alignment claim."
+}

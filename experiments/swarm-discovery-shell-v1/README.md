@@ -4,6 +4,8 @@
 complete. Eight fresh matched trials are registered; the first stock/fixed
 DeepSeek pair is running with verified image identities. No completed model
 outcome is claimed yet. [Diagnosis and scope](DIAGNOSIS.md).
+The [first checkpoint](results/2026-10-27-checkpoint-r1/summary.json) preserves the
+stock timeout and completed fixed-image root searches; the suite remains in progress.
 
 The comparison crosses DeepSeek/Novita and GLM Prime/Alibaba with stock versus
 finite-root search defaults. There are two repetitions per cell, four concurrent
