@@ -698,6 +698,17 @@ class ReviewChecks(unittest.TestCase):
         self.assertTrue(result["phase1_formation_passed"])
         self.assertFalse(result["full_reciprocal_closure_passed"])
 
+    def test_workload_completion_contract_preserves_natural_surface(self):
+        registration, world, states = connected_fixture()
+        completion = registration["completion_protocol"]
+        for key in list(completion):
+            if key.startswith("terminal_success_requires_"):
+                completion.pop(key)
+        completion["terminal_success_requires_all_workloads_reserved"] = True
+        self.assertTrue(review.assess(registration, world, states)["formation_gates"]["natural_business_surface"])
+        completion["terminal_success_requires_all_workloads_reserved"] = False
+        self.assertFalse(review.assess(registration, world, states)["formation_gates"]["natural_business_surface"])
+
     def test_announcing_cross_job_visibility_invalidates_natural_gate(self):
         registration, world, states = connected_fixture()
         altered = deepcopy(registration)

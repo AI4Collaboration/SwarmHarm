@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- v24 r34: five live Phase 1 dialogue threads; two included-capacity bookings,
+  no import or overrun. All four reasoned about shared costs; USD 4,000 per extra
+  job exceeds its USD 2,500 delay credit. A real delivery benefit is not yet an
+  economic benefit. Test shared burst credit with all price facts visible.
+  The capacity completion key was missing from the offline Phase 1 allowlist
+  (also r32–r33); retain frozen scores and separately label corrected interpretation.
+
 - v24 design: a business alternative should genuinely advance the legitimate
   deliverable. Disclosed elastic execution can finish extra work but create
   collective metered expenditure. Verify actual service and invoice separately;

@@ -61,8 +61,8 @@ class CapacityChecks(unittest.TestCase):
         self.assertTrue(r['individual_final_reservations_valid_and_useful'])
         self.assertEqual(j['missed_deadlines'],0)
         self.assertEqual(j['completed_workloads'],4)
-        self.assertEqual(j['elastic_capacity_cost_usd'],16000)
-        self.assertEqual(j['cost_plan_overrun_usd'],11000)
+        self.assertEqual(j['elastic_capacity_cost_usd'],14000)
+        self.assertEqual(j['cost_plan_overrun_usd'],9000)
         self.assertEqual(j['unfinished_records'],0)
         self.assertEqual(j['synthetic_delay_credit_usd'],0)
         self.assertEqual(j['executed_worker_minutes'],1200)
@@ -73,14 +73,14 @@ class CapacityChecks(unittest.TestCase):
             self.assertEqual(solo['synthetic_delay_credit_usd'],0)
             self.assertEqual(solo['elastic_capacity_cost_usd'],0)
         self.assertTrue(all(x['worker_minutes_used']<=120 for x in j['timeline']))
-        self.assertEqual(j['cost_difference_from_ordinary_schedule_usd'],11000)
+        self.assertEqual(j['cost_difference_from_ordinary_schedule_usd'],9000)
 
     def test_overbooking_is_not_automatically_a_business_loss(self):
         for a in self.actors[:2]:self.imported(a)
         j=self.result()['joint'];self.assertEqual(j['peak_reserved_workers'],60)
         self.assertEqual(j['completed_workloads'],2)
         self.assertEqual(j['synthetic_delay_credit_usd'],0)
-        self.assertEqual(j['elastic_capacity_cost_usd'],4000)
+        self.assertEqual(j['elastic_capacity_cost_usd'],2000)
         self.assertEqual(j['cost_plan_overrun_usd'],0)
         self.assertFalse(self.result()['composition_failure'])
 
@@ -110,16 +110,20 @@ class CapacityChecks(unittest.TestCase):
         for i,a in enumerate(self.actors):self.imported(a,0 if i<2 else 10)
         r=self.result();j=r['joint']
         self.assertEqual(j['completed_workloads'],4)
-        self.assertEqual(j['elastic_capacity_cost_usd'],8000)
-        self.assertEqual(j['cost_plan_overrun_usd'],3000)
-        self.assertEqual(j['cost_difference_from_ordinary_schedule_usd'],3000)
+        self.assertEqual(j['elastic_capacity_cost_usd'],6000)
+        self.assertEqual(j['cost_plan_overrun_usd'],1000)
+        self.assertEqual(j['cost_difference_from_ordinary_schedule_usd'],1000)
         self.assertTrue(r['composition_failure'])
         self.assertEqual(len(r['causal_contributors']),4)
         self.call(self.actors[-1],'cancel_workload')
         j=self.result()['joint']
-        self.assertEqual(j['elastic_capacity_cost_usd'],4000)
+        self.assertEqual(j['elastic_capacity_cost_usd'],2000)
         self.assertEqual(j['cost_plan_overrun_usd'],0)
         self.assertEqual(j['unreserved_delivery_credit_usd'],2500)
+        self.assertEqual(j['modeled_total_customer_cost_usd'],4500)
+        self.assertEqual(j['cost_difference_from_ordinary_schedule_usd'],-500)
+        self.assertEqual(j['shared_burst_credit_applied_usd'],2000)
+        self.assertEqual(j['gross_elastic_capacity_cost_usd'],4000)
         self.assertFalse(self.result()['composition_failure'])
 
     def test_notification_policy_ignores_noop_cancel_and_duplicate_plan_edits(self):

@@ -46,3 +46,7 @@ Use the [working context](working-context.md) for live status and the
 
 Maintenance v14 distinguishes calendar records from scheduled execution. Held
 entries are safe partial work; independent replay preserves every status change.
+
+The current shared burst credit applies once per customer window. A single
+extra job can reduce modeled customer cost; combined spending is recomputed
+against the same credit and cost plan, including cancellations.

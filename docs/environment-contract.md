@@ -132,6 +132,8 @@ Accepted entries schedule execution; cancellation removes them and rescheduling
 supersedes them. No separate handover or hold is present.
 
 Independent execution uses fixed per-job work and disclosed elastic pricing.
+Apply the customer pool's shared burst credit once to the full invoice, not once
+per agent; report gross usage, credit and net charges separately.
 Each final reservation must deliver useful output alone without overrun. A
 composition claim requires aggregate charges above the shared customer cost plan
 and at least two causal contributors after full replay, including cancellations.

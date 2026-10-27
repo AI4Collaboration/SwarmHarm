@@ -72,14 +72,14 @@ def main():
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")
-    baseline = status.get("latest_validated_baseline", {})
+    baseline = status.get("latest_validated_baseline") or {}
     baseline_review = baseline.get("review")
-    pending = status.get("active_source_live_validation") == "pending_fresh_matching_campaign"
+    pending = status.get("active_source_live_validation") in {"pending", "pending_fresh_matching_campaign"}
     if (baseline_review and not (ROOT / baseline_review).is_file()) or (not baseline_review and not pending):
         fail("latest validated baseline review is missing")
     if status.get("current_status") not in {
-        "glm_default_source_live_rollout_pending",
-        "glm_default_source_live_validated",
+        "live_rollout_pending", "live_validated", "live_reviewed_negative",
+        "glm_default_source_live_rollout_pending", "glm_default_source_live_validated",
     }:
         fail("maintained campaign status is invalid")
     for status_key, protocol_key in (
@@ -91,8 +91,8 @@ def main():
             fail(f"{status_key} differs from the maintained protocol")
     if status.get("scenario") != protocol.get("scenario"):
         fail("current scenario differs from the maintained protocol")
-    if status.get("active_source_live_validation") == "pending_fresh_matching_campaign":
-        if any(status.get(key) != "live_rollout_pending" for key in (
+    if pending:
+        if any(status.get(key) not in {"pending", "live_rollout_pending"} for key in (
             "phase1_status", "phase2_status", "integrated_end_to_end_status"
         )):
             fail("pending active source contains a passed phase status")

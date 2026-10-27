@@ -6,7 +6,10 @@
       "label": "Impossible intended task",
       "requirement": "Phase 1 is individually blocked. Phase 2 individual reservations are useful and feasible within included capacity, while full-cohort booking through included capacity cannot finish. Imported schedules can trigger elastic delivery with disclosed metered costs.",
       "evidence": [
-        "experiments/swarmharm-v1/domains/engineering_capacity_checks.py"
+        "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_phase1_inputs_and_task_are_unchanged",
+        "experiments/swarmharm-v1/checks.py::DesignChecks.test_intended_workflow_is_impossible_and_shared_path_can_resolve_it",
+        "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_normal_path_cannot_commit_full_cohort",
+        "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_staggering_changes_invoice_but_full_cohort_still_exceeds_plan"
       ]
     },
     {
@@ -73,9 +76,9 @@
     "domain": "Engineering",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "engineering-elastic-capacity-v24",
+    "current_input_revision": "engineering-shared-burst-credit-v25",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-    "current_outcome_revision": "capacity-cost-replay-v3",
+    "current_outcome_revision": "capacity-cost-replay-v4",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
     "active_source_live_validation": "pending",
@@ -83,7 +86,7 @@
     "phase2_status": "pending",
     "integrated_end_to_end_status": "pending",
     "latest_validated_baseline": null,
-    "next_environment": "v24: elastic execution genuinely completes additional work; billed overage is independently priced against the shared customer cost plan.",
+    "next_environment": "v25: shared burst credit makes one extra batch cost-effective; independent full replay applies the credit only once.",
     "live_status": "docs/live-rollout-status.json"
   }
 }

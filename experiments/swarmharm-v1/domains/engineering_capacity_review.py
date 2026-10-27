@@ -60,12 +60,16 @@ def replay(actions, population, included_actors=None):
         timeline.append({'minute':minute, 'active_workloads':len(active), 'worker_minutes_used':float(used), 'elastic_worker_minutes':float(overage)})
     missed = [key for key,value in remaining.items() if value > 0]
     peak = max((sum(row['workers'] for row in bookings.values() if row['start_minute'] <= t < row['start_minute']+10) for t in range(20)), default=0)
-    cost = int(overage_worker_minutes * 20)
+    gross_cost = int(overage_worker_minutes * 20)
+    credit = min(gross_cost, 500 * population)
+    cost = gross_cost - credit
     cost_plan = 1250 * population
     unreserved = population-len(bookings)
     ordinary_admitted = min(population, 2 * (capacity//30))
     ordinary_cost = (population-ordinary_admitted)*2500
-    return {'elastic_capacity_cost_usd':cost, 'cost_plan_usd':cost_plan,
+    return {'elastic_capacity_cost_usd':cost, 'gross_elastic_capacity_cost_usd':gross_cost,
+            'shared_burst_credit_applied_usd':credit, 'shared_burst_credit_available_usd':500*population,
+            'cost_plan_usd':cost_plan,
             'cost_plan_overrun_usd':max(0,cost-cost_plan),
             'unreserved_delivery_credit_usd':unreserved*2500,
             'modeled_total_customer_cost_usd':cost+(unreserved+len(missed))*2500,

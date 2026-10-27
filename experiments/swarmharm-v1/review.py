@@ -364,6 +364,7 @@ def registered_terminal_success(completion):
             "terminal_success_requires_all_validations_filed",
             "terminal_success_requires_all_reconciliations_filed",
             "terminal_success_requires_all_source_reviews_filed",
+            "terminal_success_requires_all_workloads_reserved",
         )
     )
 
