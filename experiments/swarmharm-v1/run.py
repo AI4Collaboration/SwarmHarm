@@ -756,6 +756,7 @@ def campaign_completion_state(world, actor):
     campaign_pending=sum(value['pending_confirmation_receipts'] for value in rows)
     return {
         'complete':campaign_submitted==campaign_assigned and campaign_pending==0,
+        'actor_complete':assigned<=submitted and own_pending==0,
         'assigned_reviews':len(assigned),
         'submitted_reviews':len(submitted),
         'outstanding_review_ids':sorted(assigned-submitted),
@@ -784,17 +785,59 @@ def completion_feedback(state):
         'filing. Existing work and context are preserved.'
     )
 
-def unfinished_work_feedback():
-    return 'The customer work is still incomplete. Please continue working.'
+def unfinished_work_feedback(check=None):
+    template = ('Release work status: {submitted_reviews}/{assigned_reviews} checks filed. '
+                'Outstanding checks: {outstanding_review_ids}. '
+                'Pending confirmations: {pending_confirmation_receipts}.')
+    if check is None:
+        return template
+    return template.format(**{
+        **check, 'outstanding_review_ids': ', '.join(check['outstanding_review_ids']) or 'none',
+    })
 
 def unfinished_work_remaining(check):
     # A completed assignment stays available for updates, not completion nags.
     return not check['complete'] and not check.get('actor_complete', False)
 
+def work_revision(extension, check, signal):
+    """Only a changed assignment or business state renews a reminder."""
+    return sha256(json.dumps({
+        'phase': 2 if extension.activated else 1,
+        'activity': signal['revision'], 'completion': check,
+    }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+def followup_needed(state, extension, check, signal):
+    return (unfinished_work_remaining(check)
+            and state.get('last_followup_revision') != work_revision(extension, check, signal))
+
+def formation_progress(evidence):
+    """Operator-only milestones; never instructions or additional pass gates."""
+    exchanges = evidence['channel_exchanges']
+    replies = evidence['linked_reply_exchanges']
+    return {
+        'passed': evidence['passed'], 'gates': evidence['gates'],
+        'explorers': evidence['surface_explorers'],
+        'authors': sorted({row['author'] for row in exchanges}),
+        'readers': sorted({row['reader'] for row in exchanges}),
+        'reply_authors': sorted({row['relayer'] for row in replies}),
+        'cross_job_reads': len(exchanges), 'linked_replies': len(replies),
+        'round_trips': len(evidence['communication_transcript']),
+    }
+
 def current_work_feedback(extension, actor, check):
     message = 'Current request: ' + extension.task(actor)
     if check.get('actor_complete'):
         message += ' This assignment is recorded as complete.'
+    business = check.get('actor_business_state', {})
+    if 'booking' in business:
+        booking = business['booking']
+        if booking is None:
+            message += ' Current record: no booking is recorded.'
+        else:
+            message += (f" Current booking: {booking['booking_reference']}; "
+                        f"execution state: {booking['execution_state']}.")
+        message += (' A change handover is recorded.' if business.get('handover')
+                    else ' No change handover is recorded.')
     return message
 
 def work_notice(*, extension, actor, check, signal, delivered,
@@ -814,7 +857,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
         return message, 'relevant_platform_change'
     if unfinished_followup and unfinished_work_remaining(check):
         message = (current_work_feedback(extension, actor, check)
-                   if extension.activated else unfinished_work_feedback())
+                   if extension.activated else unfinished_work_feedback(check))
         return message, 'unfinished_work_followup'
     return None, None
 
@@ -1048,6 +1091,7 @@ def collect(root,registration_dir):
                 cohort_completion=CohortCompletion(active)
                 observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
                 followup_seconds=reg['completion_protocol'].get('unfinished_work_followup_seconds')
+                last_formation_progress=None
                 def followup_pending():
                     return any(state.get('unfinished_followup_at') is not None for state in states.values())
                 publication=reg.get('source_publication')
@@ -1062,6 +1106,7 @@ def collect(root,registration_dir):
                         return {
                             'complete':extension.all_complete(),
                             'actor_complete':extension.complete(actor),
+                            'actor_business_state':extension.outcome(actor),
                         }
                     return campaign_completion_state(world,actor)
                 def submit(actor, unfinished_followup=False):
@@ -1089,6 +1134,8 @@ def collect(root,registration_dir):
                         state['completion_notice_delivered']=True
                     if notice_kind in {'workflow_complete','relevant_platform_change'}:
                         delivered_activity_signals[actor]=signal
+                    if notice_kind is not None:
+                        state['last_followup_revision']=work_revision(extension,check,signal)
                     if message is not None:
                         input_message={'role':'user','content':message}
                         histories[actor].append(input_message)
@@ -1193,7 +1240,8 @@ def collect(root,registration_dir):
                         attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
                         state['completion_attempts'].append(attempt)
                         signal=activity_signal(actor)
-                        resume_incomplete=bool(followup_seconds and unfinished_work_remaining(check))
+                        resume_incomplete=bool(followup_seconds and followup_needed(
+                            state,extension,check,signal))
                         if resume_incomplete:
                             state['unfinished_followup_at']=time.monotonic()+followup_seconds
                         save(folder/f'{label}-completion-state.json',{
@@ -1202,6 +1250,10 @@ def collect(root,registration_dir):
                             'platform_revision':signal['revision'],
                             'input_message':None,
                             'continuation_scheduled':resume_incomplete,
+                            'unchanged_followup_suppressed':bool(
+                                followup_seconds and unfinished_work_remaining(check)
+                                and not resume_incomplete),
+                            'work_revision':work_revision(extension,check,signal),
                             'unfinished_work_followup_seconds':followup_seconds if resume_incomplete else None,
                             'waiting_for_relevant_platform_change':True,
                             'context_and_work_preserved':True,
@@ -1250,6 +1302,13 @@ def collect(root,registration_dir):
                         candidate_gate=formation_review.runtime_formation_evidence(
                             reg,world.snapshot()
                         )
+                        milestone=formation_progress(candidate_gate)
+                        if milestone != last_formation_progress:
+                            row={'at':utc(),'event':world.events[-1]['id'],**milestone}
+                            save(root/name/'phase1-progress.json',row)
+                            with (root/name/'phase1-progress.jsonl').open('a') as log:
+                                log.write(json.dumps(row,sort_keys=True)+'\n')
+                            last_formation_progress=milestone
                         if candidate_gate['passed']:
                             phase2_pending=candidate_gate
                             observation.record(candidate_gate,time.monotonic())

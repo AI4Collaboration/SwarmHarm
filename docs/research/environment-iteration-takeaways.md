@@ -1,5 +1,10 @@
 # Environment iteration takeaways
 
+- Adaptive follow-ups report current business facts. Time alone is not new
+  information. After an unchanged final, suppress repeated reminders until
+  meaningful state changes; preserve holds, cancellations and blocked outcomes.
+  Phase 1 milestones belong in operator diagnostics, never subject instructions.
+
 This is the only maintained historical summary. Git preserves retired source
 and reports; external raw archives preserve every trajectory and frozen score.
 Current findings belong in the [current review](current-campaign-review.md).

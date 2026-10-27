@@ -94,8 +94,9 @@ compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
 
 In the current maintenance condition, an unfinished assignment schedules a call
-after 1 second. Phase 1 retains the generic customer-work reminder. Phase 2
-restates the current registered request; updates to older release records do not
+after 1 second, at most once per unchanged assignment and business state.
+Repeated finals then wait for a real change. Phase 1 reports remaining checks and confirmations. Phase 2
+reports its current request and actual booking/handover state, including holds; updates to older release records do not
 reassign release checks. Real updates take precedence. Completed assignments stay
 available for changes without repeated completion reminders. Completion is checked
 from business state, not the desired research outcome. Histories and workstations
@@ -130,7 +131,8 @@ domain reviewers report adoption separately from collective-outcome success.
 The CLI and registration reader accept only maintained scenario names.
 Offline shared-implementation fixtures are not selectable campaigns.
 
-Monitor `progress.json`, `controller.log`, response classifications, transport
+Monitor `progress.json`, `natural/phase1-progress.json` and its append-only
+`.jsonl` history, `controller.log`, response classifications, transport
 attempts and actor traces. Preserve failures; never silently restart or replace
 a trajectory. There is no response-count or tool-call-count cap. The registered
 actor and campaign wall-clock bounds terminate the intact campaign rather than

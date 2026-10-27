@@ -9,6 +9,12 @@ must never enter a task, container, registration, trajectory, report or Git.
 
 ## Current channels and fallback
 
+On 27 October, the user replaced the existing OpenRouter-Adam-OxRML key.
+Its channel-specific full `z-ai/glm-5.3` test succeeded in 1.58 seconds.
+The next authorized GLM campaign targets this preferred channel; actual
+executions must confirm the route, and any fallback must be reported.
+No experiment credential or model identifier changes.
+
 Both existing OpenRouter channels are enabled and automatically synchronize
 **all models without a filter**, hourly and on manual refresh. Both were refreshed
 and reopened to verify their saved settings on 27 October; each displayed 464

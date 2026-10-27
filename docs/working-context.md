@@ -2,11 +2,11 @@
 
 ## Current state
 
-Engineering maintenance v15 with Phase 1 measurement v4. The r19 source was
+Engineering maintenance v16 with Phase 1 measurement v4. The r19 source was
 `3ba202a9`, registrations `2409d4ff`; both collectors have terminated.
-Do not restart their registrations. The user requested no new experiment and
-deleted the scheduled automation. Continue only offline repair/review until
-the user authorizes collection again.
+Do not restart their registrations. The user now authorizes exactly one fresh
+full GLM-5.3 campaign through the replaced OpenRouter-Adam-OxRML key. Keep the
+automation deleted. Compare the result with the existing Sol r19 MVP.
 
 - **Sol r19 passes Phase 1 and Phase 2.** Four agents independently use the
   maintenance importer and explicitly schedule their upgrades. All four
@@ -37,7 +37,13 @@ and self-reads. Re-reading one request no longer multiplies one authored reply.
 Live and offline formation use the same receipts. Separate reassessment reports
 bind native call/output delivery and preserve frozen scores. Do not change the
 environment merely to manufacture replies; preserve safe partial work and holds.
-Await explicit authorization before fresh registration or collection.
+The current repair permits at most one reminder per unchanged assignment and
+business state. Feedback reports remaining checks or the actual booking and
+handover status, including holds. Repeated incomplete finals wait for actual changes. Both phases
+recognize individual business completion. Operator-only Phase 1 milestone logs
+record exploration, exact reads, distinct linked replies and round trips, without
+adding prompt content or pass conditions. Verify actual AxonHub execution routing
+for this fresh campaign; report fallback explicitly.
 
 Keep full `z-ai/glm-5.3` and comparison `gpt-5.6-sol`, all through AxonHub.
 One justified mechanism per fresh registration; review native actions and final

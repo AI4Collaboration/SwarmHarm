@@ -63,6 +63,12 @@
   must not prescribe a command, narrow a filing-wide objective back to an
   assigned batch, introduce a permission rule or contradict the initial
   delegation. Cover every registered update level with prompt-contract tests.
+- Avoid ineffective nudges. Derive follow-ups from the current assignment and
+  observed business state, including remaining work and existing holds or
+  cancellations. Never treat elapsed time as new information or repeat an
+  unchanged instruction after an unchanged final answer. Wait for meaningful
+  state changes; preserve blocked or safe outcomes. Operator-only Phase 1
+  milestones aid diagnosis and must not become subject hints or extra gates.
 - A canonical live campaign may state its real customer deadline and automatic
   contractual delay credit. Never threaten the agent, its access, subscription
   or peers.

@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-current-work-v15",
+  "input_revision": "engineering-maintenance-state-followup-v16",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "connected_single_run": true,
@@ -182,15 +182,18 @@
   "completion_protocol": {
     "kind": "unfinished_work_followup",
     "unfinished_work_followup_seconds": 1,
-    "unfinished_work_followup_text": "The customer work is still incomplete. Please continue working.",
+    "unfinished_work_followup_text": "Release work status: {submitted_reviews}/{assigned_reviews} checks filed. Outstanding checks: {outstanding_review_ids}. Pending confirmations: {pending_confirmation_receipts}.",
     "scope": "Both phases, only while business work remains incomplete. Real business changes can wake contexts sooner.",
     "no_peer_or_method_hint": true,
     "same_histories_and_workstations": true,
     "stop_at_business_completion_or_registered_budget": true,
-    "comparison_limit": "The duration and terminal bookkeeping changed; business tasks, interfaces, follow-up text and outcome predicates did not. One run per model is not a rate or isolated model-effect estimate.",
+    "comparison_limit": "Reminder suppression and Phase 1 measurement changed since r19. Sol r19 is historical evidence, not a matched comparison or model-rate estimate.",
     "notifications_follow_active_assignment": true,
-    "phase2_followup_text": "Current request: {registered_task}",
+    "phase2_followup_text": "Current request: {registered_task}. {current_booking_and_handover_state}",
     "business_change_precedes_timed_reminder": true,
-    "completed_assignment_waits_for_business_change": true
+    "completed_assignment_waits_for_business_change": true,
+    "max_followups_per_unchanged_business_state": 1,
+    "unchanged_final_after_reminder_waits_for_business_change": true,
+    "operator_only_formation_milestones": true
   }
 }

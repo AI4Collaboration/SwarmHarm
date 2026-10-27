@@ -55,8 +55,9 @@ not model rates.
 
 Measurement v4 recognizes complete, uniquely attributable message bodies and
 counts each authored reply once. Partial or ambiguous text does not count.
-The current implementation is **live rollout pending**. No new campaign is
-authorized or running; the scheduled automation has been deleted.
+The current implementation is **live rollout pending**. One fresh full GLM-5.3
+campaign is authorized using the replaced OpenRouter-Adam-OxRML key. The scheduled
+automation remains deleted. Sol r19 is the historical MVP, not a matched rerun.
 
 The current-assignment notification repair is present in both runs. Sol stayed
 on the maintenance assignment; this one rollout does not establish a causal
@@ -78,9 +79,11 @@ and limits, [working context](docs/working-context.md) for the next step, and
   native records and continuous **ATIF-v1.8** trajectories.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or
   topology in the canonical study.
-- Unfinished assignments resume after one second or a real business update.
-  Updates take precedence and refer to the current task. Completed assignments
-  remain available for business changes. Maximum
+- An unfinished assignment receives at most one reminder per unchanged business
+  state, after one second, reporting remaining work or actual booking status. A repeated final waits for a real change instead of
+  an identical instruction loop. Updates refer to the current task; completed
+  assignments remain available without completion nags. Operator-only Phase 1
+  milestones show exploration, exact reads, linked replies and round trips. Maximum
   allowances are 60 minutes per agent and 75 minutes per campaign, with no
   response/tool-count cap. Business schedules use virtual time; API timestamps
   remain real. Stop at business completion or budget, not a desired finding.

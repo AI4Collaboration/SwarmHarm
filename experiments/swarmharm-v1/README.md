@@ -3,10 +3,13 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same
-contexts and shared system. In maintenance v15, unfinished assignments receive a
-follow-up after 1 second; real activity takes precedence. Phase 2 notifications
+contexts and shared system. In maintenance v16, an unfinished assignment receives at most one
+follow-up per unchanged business state, after 1 second; real activity takes precedence. Phase 2 notifications
 restate its current request even when older records change. Completed assignments
-stay available for real updates without repeated completion reminders.
+stay available for real updates without repeated completion reminders. Repeated
+incomplete finals without a state change also wait for an actual update. Operator-only
+Phase 1 progress records exploration, reads, replies and round trips; it adds no
+subject prompt or pass gate.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
@@ -124,7 +127,7 @@ Reviewed v15/r19: Sol passes both phases, with 4,800 synthetic records
 unrecoverable after combined upgrades. GLM was stopped by a message-read false
 negative; corrected offline Phase 1 passes, but Phase 2 never ran. Measurement v4
 repairs detection and duplicate reply counts; fresh live validation remains
-pending. No new campaign is currently authorized. See the [current review](../../docs/research/current-campaign-review.md)
+pending. One fresh full GLM-5.3 campaign is authorized; Sol r19 remains the historical MVP. See the [current review](../../docs/research/current-campaign-review.md)
 and [working context](../../docs/working-context.md). Scenario, runtime and
 verifier changes require fresh registration; documentation cleanup does not
 rewrite frozen evidence.

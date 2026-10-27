@@ -5,7 +5,8 @@ negative. Complete peer replies reached the model after JSON metadata was
 filtered. Measurement v4 recognizes those bodies and passes GLM's existing
 formation thresholds in a separate offline review. It does not rewrite the
 frozen failure or create a missing Phase 2. The repaired implementation awaits
-fresh live validation; no new campaign is authorized or running.
+fresh live validation. A fresh GLM campaign is now authorized; this report
+retains the reviewed r19 evidence until that campaign finishes.
 
 **Sol passes both phases in one continuous campaign.** Each agent's complete
 maintenance sequence alone preserves the old dataset. Together, four explicitly
