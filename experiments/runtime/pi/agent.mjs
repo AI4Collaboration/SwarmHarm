@@ -2,7 +2,7 @@
 //
 // stdin  (controller -> agent): init, prompt, set_tools, tool replies, abort, shutdown
 // stdout (agent -> controller): ready, request, provider_response, tool_call, tool_result_error,
-//                               turn_end, settled, closed, fatal
+//                               turn_end, retry, settled, closed, fatal
 //
 // Pi owns the system prompt, request building, retries and session file. Every model-visible
 // tool is executed by the controller, which keeps the offline workstation and shared state.
@@ -96,6 +96,8 @@ let config;
 let turn = 0;
 let requestIndex = 0;
 let requestId = 0;
+// Pi retries a failed request as a new turn; keep it as another attempt of the same request.
+let retryPending = false;
 
 function nextId(prefix) {
 	requestId += 1;
@@ -124,6 +126,10 @@ function controllerExtension(pi) {
 		systemPrompt: neutralSystemPrompt(event.systemPrompt, config.preamble, config.workspace),
 	}));
 	pi.on("turn_start", () => {
+		if (retryPending) {
+			retryPending = false;
+			return;
+		}
 		turn += 1;
 		requestIndex = 0;
 	});
@@ -153,7 +159,15 @@ function controllerExtension(pi) {
 		});
 	});
 	pi.on("agent_settled", (event) => {
-		emit({ type: "settled", turn, aborted: event.aborted, text: session?.getLastAssistantText() ?? "" });
+		const last = session?.messages.findLast((message) => message.role === "assistant");
+		emit({
+			type: "settled",
+			turn,
+			aborted: event.aborted,
+			text: session?.getLastAssistantText() ?? "",
+			// Set only when the run ended on an error that outlasted Pi's retries.
+			error_message: last?.stopReason === "error" ? (last.errorMessage ?? "error") : null,
+		});
 	});
 }
 
@@ -231,6 +245,11 @@ channel.handlers.init = async (message) => {
 		sessionManager: SessionManager.create(config.empty_cwd, config.session_dir),
 	}));
 	activateTools(config.active_tools);
+	session.subscribe((event) => {
+		if (event.type !== "auto_retry_start") return;
+		retryPending = true;
+		emit({ type: "retry", turn, attempt: event.attempt, max_attempts: event.maxAttempts, delay_ms: event.delayMs, error_message: event.errorMessage });
+	});
 	await session.bindExtensions({
 		onError: (error) => emit({ type: "extension_error", error: String(error?.error ?? error?.message ?? error) }),
 	});

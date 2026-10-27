@@ -27,6 +27,8 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     """Preflight calls confirm_service; subjects list the workspace once, then answer."""
 
     requests = []
+    # Subject requests to fail once with the transient error OpenRouter returned on 27 October.
+    fail_subject_requests = 0
 
     def log_message(self, *args):
         pass
@@ -39,6 +41,11 @@ class ScriptedResponses(BaseHTTPRequestHandler):
         goal = next((GOAL_ID.search(_text(item)) for item in reversed(body['input'])
                      if item.get('role') == 'user' and GOAL_ID.search(_text(item))), None)
         number = len(type(self).requests)
+        if tools != ['confirm_service'] and type(self).fail_subject_requests:
+            type(self).fail_subject_requests -= 1
+            return self.stream([{'type': 'response.failed', 'response': {
+                'id': f'resp_{number}', 'object': 'response', 'status': 'failed', 'model': body['model'],
+                'output': [], 'error': {'code': 'server_error', 'message': 'Sorry, something went wrong.'}}}])
         if tools == ['confirm_service']:
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
         elif not outputs:
@@ -59,6 +66,9 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             {'type': 'response.output_item.done', 'output_index': 0, 'item': item},
             {'type': 'response.completed', 'response': response},
         ]
+        self.stream(events)
+
+    def stream(self, events):
         self.send_response(200)
         self.send_header('Content-Type', 'text/event-stream')
         self.end_headers()
@@ -81,6 +91,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
 class PiCollectChecks(unittest.TestCase):
     def setUp(self):
         ScriptedResponses.requests = []
+        ScriptedResponses.fail_subject_requests = 0
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -164,6 +175,34 @@ class PiCollectChecks(unittest.TestCase):
                 trajectory = run.load(root / 'natural' / actor / 'agent/trajectory.json')
                 calls = [call['function_name'] for step in trajectory['steps'] for call in step.get('tool_calls', [])]
                 self.assertIn('goal_complete', calls)
+
+    def test_transient_provider_error_is_retried_within_the_same_request(self):
+        ScriptedResponses.fail_subject_requests = 1
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, 'off')
+            self.assertEqual(reg['harness']['settings']['retry']['maxRetries'], 3)
+            results = self.assert_native_records(root, reg)
+            retried = [actor for actor in reg['plan']['natural']
+                       if run.load(root / 'natural' / actor / 'result.json')['provider_retries']]
+            self.assertEqual(len(retried), 1)
+            attempts = root / 'natural' / retried[0] / 'trace/transport-attempts'
+            failed = list(attempts.glob('*/0001.error.json'))
+            self.assertEqual(len(failed), 1)
+            label = failed[0].parent
+            self.assertTrue((label / '0002.response.json').exists())
+            self.assertTrue((root / 'natural' / retried[0] / 'trace' / f'{label.name}.response.json').exists())
+            self.assertFalse(list((root / 'natural' / retried[0] / 'trace').glob('*.collector-error.json')))
+            self.assertTrue(all(result['native_continuity_passed'] for result in results))
+
+    def test_provider_error_after_every_retry_holds_the_campaign(self):
+        ScriptedResponses.fail_subject_requests = 10_000
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, 'off')
+            completion = run.load(root / 'completion.json')
+            self.assertEqual(completion['status'], 'provider_hold', completion)
+            errors = list((root / 'natural').glob('*/trace/*.collector-error.json'))
+            self.assertTrue(errors)
+            self.assertEqual(run.load(errors[0])['transport_attempts'], 4)
 
 
 if __name__ == '__main__':

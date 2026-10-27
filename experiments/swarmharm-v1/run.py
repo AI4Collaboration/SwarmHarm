@@ -1014,7 +1014,7 @@ def collect(root,registration_dir):
                     'start_group':item.get('start_group',0),'status':'starting','steps':0,
                     'tools':0,'final':'','completion_attempts':[],'platform_notifications':[],
                     'extension_continuations':[],'harness_rejected_tool_calls':[],
-                    'extension_errors':[]}
+                    'extension_errors':[],'provider_retries':[]}
                 save(root/name/actor/'initial-input.json',initial[name][actor])
                 agents[actor]=pi_agent.PiAgent(
                     actor,events,folder=root/name/actor/'pi',model=reg['models'][item['provider']],
@@ -1258,13 +1258,16 @@ def collect(root,registration_dir):
                 nonlocal phase2_pending,last_formation_progress
                 state=states[actor];turn=message['turn'];state['steps']=turn
                 folder=root/name/actor/'trace';label=f'{turn:04d}'
-                if message['stop_reason'] in ('error','aborted'):
-                    save(folder/f'{label}.collector-error.json',{'type':message['stop_reason'],
-                        'message':(message['error_message'] or '')[:500],
-                        'transport_attempts':len(turn_records.get((actor,turn),{}).get('attempts',{}))})
-                    record_review({'path':str(folder.relative_to(root)),'label':label,
-                        'status':'provider_error','detail':message['error_message']})
-                    raise Hold(message['error_message'] or message['stop_reason'])
+                attempts=turn_records.get((actor,turn),{}).get('attempts',{})
+                if message['stop_reason']=='error':
+                    # Pi may still retry; the run settles with error_message if every retry fails.
+                    save(folder/'transport-attempts'/label/f'{max(attempts,default=0):04d}.turn-error.json',
+                        {'type':'error','message':(message['error_message'] or '')[:500],'at':utc()})
+                    return
+                if message['stop_reason']=='aborted':
+                    save(folder/f'{label}.collector-error.json',{'type':'aborted',
+                        'message':(message['error_message'] or '')[:500],'transport_attempts':len(attempts)})
+                    raise Hold(message['error_message'] or 'aborted')
                 if not message['tool_calls']:
                     # The run ends here; completion handling follows its settlement.
                     return
@@ -1297,8 +1300,21 @@ def collect(root,registration_dir):
                     return
                 wake_waiting()
                 submit(actor)
+            def on_retry(actor,message):
+                states[actor]['provider_retries'].append({
+                    'step':message['turn'],'attempt':message['attempt'],'max_attempts':message['max_attempts'],
+                    'delay_ms':message['delay_ms'],'error':(message['error_message'] or '')[:500],'at':utc()})
+                export(actor)
             def on_settled(actor,message):
                 state=states[actor]
+                if message.get('error_message'):
+                    label=f"{message['turn']:04d}";folder=root/name/actor/'trace'
+                    save(folder/f'{label}.collector-error.json',{'type':'error',
+                        'message':message['error_message'][:500],
+                        'transport_attempts':len(turn_records.get((actor,message['turn']),{}).get('attempts',{}))})
+                    record_review({'path':str(folder.relative_to(root)),'label':label,
+                        'status':'provider_error','detail':message['error_message']})
+                    raise Hold(message['error_message'])
                 if message['turn'] in (0,state.get('last_settled_turn')):
                     return
                 state['last_settled_turn']=message['turn'];running.discard(actor)
@@ -1348,6 +1364,7 @@ def collect(root,registration_dir):
                 elif kind=='provider_response':on_response(actor,message)
                 elif kind=='tool_call':on_tool_call(actor,message)
                 elif kind=='turn_end':on_turn_end(actor,message)
+                elif kind=='retry':on_retry(actor,message)
                 elif kind=='settled':
                     if not message['aborted']:on_settled(actor,message)
                 elif kind=='tool_result_error':
@@ -1498,8 +1515,11 @@ def collect(root,registration_dir):
                     calls.extend(item for item in value.get('output',[]) if item.get('type')=='function_call')
                 elif kind=='tool_call':agent.reply(message['id'],output='{"status":"available"}')
                 elif kind=='turn_end':
-                    if message['stop_reason'] in ('error','aborted'):raise Hold(message['error_message'] or message['stop_reason'])
-                elif kind=='settled':final=message['text']
+                    if message['stop_reason']=='aborted':raise Hold('aborted')
+                elif kind=='retry':continue
+                elif kind=='settled':
+                    if message.get('error_message'):raise Hold(message['error_message'])
+                    final=message['text']
                 elif kind in ('fatal','exited','closed'):raise RuntimeError(f'Pi preflight stopped: {message}')
             require(
                 len(calls)==1 and calls[0]['name']=='confirm_service'
