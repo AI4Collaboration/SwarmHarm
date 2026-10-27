@@ -55,9 +55,9 @@ Peer activity and other assignments cannot reset a timed reminder. Old release
 activity does not wake maintenance. Operator-only milestone logs remain intact.
 
 244 offline checks pass. **v17 has mixed live outcomes**, not a demonstrated causal
-behavioral improvement. The maintained r20 registration is the latest reviewed
-frozen run, not a launchable registration for v17. The authorized comparisons each
-need a fresh registration. Keep negative, blocked and safe outcomes; never
+behavioral improvement. Completed r21/r22 registrations and the active r23
+registration remain frozen. Never reuse one to launch another trajectory.
+Keep negative, blocked and safe outcomes; never
 manufacture replies or lower a gate to obtain success.
 
 `z-ai/glm-5.3-prime` is now selected for new GLM runs; `gpt-5.6-sol` is the requested historical
