@@ -94,8 +94,10 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- All live inference uses AxonHub. Verify the exact route in upstream and
-  authenticated AxonHub catalogs before preparation.
+- All live inference uses AxonHub, except registrations on branch
+  `arth/e1-rollouts` that explicitly select `--provider openrouter`. Verify the
+  exact route in the upstream catalog and with the gateway's authenticated check
+  before preparation.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this
   routing policy does not expand the experiment's registered model selection.

@@ -58,7 +58,8 @@ and limits, [working context](docs/working-context.md) for the next step, and
 
 ## Runtime and scope
 
-- All live inference uses **AxonHub**: full `z-ai/glm-5.3` by default, with
+- Live inference uses **AxonHub** by default, or a registered direct
+  **OpenRouter** route (`--provider openrouter`): full `z-ai/glm-5.3` by default, with
   `gpt-5.6-sol` as the requested comparison.
   OpenRouter channels synchronize all models and support automatic fallback;
   OpenAI models prefer the existing TerryJwy channels. Each experiment still

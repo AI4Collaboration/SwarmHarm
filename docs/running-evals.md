@@ -7,7 +7,8 @@ stitching.
 ## Runtime
 
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
-- AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
+- AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses` by
+  default, or `https://openrouter.ai/api/v1/responses` with `--provider openrouter`;
 - exact current default and upstream route `z-ai/glm-5.3`;
 - matched comparison route `gpt-5.6-sol`, with OpenRouter catalog counterpart
   `openai/gpt-5.6-sol`;
@@ -15,7 +16,7 @@ stitching.
   attempts and 16,384 output tokens per response;
 - 60 minutes per agent across both phases and 75 minutes per campaign;
 - four concurrent provider requests for the canonical four-agent campaign; and
-- a host-only AxonHub key file outside the repository.
+- a host-only key file for the selected gateway, outside the repository.
 
 Catalog verification does not pin a provider channel. AxonHub may use another
 eligible channel for the same model; record actual executions and any routing
@@ -57,12 +58,27 @@ $PY experiments/swarmharm-v1/run.py \
   --cue-condition agent_initiated_activity
 ```
 
-Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
+Preparation verifies the exact upstream and gateway route, writes Harbor 1.4
 packages, freezes the Phase 1 and Phase 2 plans, runs offline controls and seals
 all source and input hashes, including the frozen protocol. The maintained
 study defaults to the exact GLM
 route for preparation and collection. A future model must be selected
 explicitly and frozen in its own registration.
+
+### Direct OpenRouter route
+
+`--provider openrouter` freezes `https://openrouter.ai/api/v1/responses` and an
+OpenRouter key file instead of AxonHub. Use OpenRouter slugs as model IDs, for
+example `openai/gpt-5.6-sol` rather than the AxonHub alias `gpt-5.6-sol`; the
+upstream ID equals the model ID. Preparation checks the public endpoint catalog
+and an authenticated `GET /api/v1/key`, which proves the key without a model call.
+
+OpenRouter serves GLM-5.3 from many endpoints, several of them fp4-quantized.
+To keep the full model fixed across rollouts, freeze provider routing, e.g.
+`--openrouter-provider-routing '{"quantizations": ["bf16", "fp8"]}'`. The object
+is stored in the registration and sent as `provider` on every request.
+Compatibility of the transport fields with OpenRouter's Responses API is first
+shown by the collector's native preflight; record that result.
 
 Both `OUT` and the key file must remain outside the repository. Inspect the
 assembled inputs, commit and push the registration, make sure the worktree is

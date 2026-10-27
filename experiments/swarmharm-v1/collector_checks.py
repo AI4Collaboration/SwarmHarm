@@ -501,6 +501,7 @@ class CollectorChecks(unittest.TestCase):
             routes = run.verify_routes(key)
         self.assertEqual(routes["model"], "z-ai/glm-5.3")
         self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3")
+        self.assertEqual(routes["provider"], "AxonHub")
         self.assertEqual(routes["api_base"], run.AXONHUB_API_BASE)
         self.assertEqual(routes["responses_endpoint"], run.AXONHUB_ENDPOINT)
         self.assertEqual(routes["reasoning_effort"], run.DEFAULT_REASONING)
@@ -513,6 +514,69 @@ class CollectorChecks(unittest.TestCase):
             ),
         )
         self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3", key))
+
+    def test_direct_openrouter_route_checks_public_catalog_and_authenticated_key(self):
+        calls = []
+
+        def fake_catalog(url, model, key_file=None):
+            calls.append((url, model, key_file))
+            return {"http_status": 200, "model_found": model is not None, "model_count": 1}
+
+        key = Path("/tmp/openrouter.key")
+        with (
+            patch.object(run, "PROVIDER", "openrouter"),
+            patch.object(run, "MODELS", {"sol": "openai/gpt-5.6-sol"}),
+            patch.object(run, "UPSTREAM_MODELS", {"sol": "openai/gpt-5.6-sol"}),
+            patch.object(run, "catalog", side_effect=fake_catalog),
+        ):
+            routes = run.verify_routes(key)
+        self.assertEqual(routes["provider"], "OpenRouter")
+        self.assertEqual(routes["api_base"], run.OPENROUTER_API_BASE)
+        self.assertEqual(routes["responses_endpoint"], "https://openrouter.ai/api/v1/responses")
+        self.assertEqual(routes["openrouter_key_status"], {"http_status": 200})
+        self.assertNotIn("axonhub", routes)
+        self.assertEqual(calls, [
+            (run.OPENROUTER_CATALOG + "/openai/gpt-5.6-sol/endpoints", "openai/gpt-5.6-sol", None),
+            (run.OPENROUTER_KEY_STATUS, None, key),
+        ])
+        with (
+            patch.object(run, "PROVIDER", "openrouter"),
+            patch.object(run, "MODELS", {"sol": "gpt-5.6-sol"}),
+            patch.object(run, "UPSTREAM_MODELS", {"sol": "openai/gpt-5.6-sol"}),
+            patch.object(run, "catalog", side_effect=fake_catalog),
+            self.assertRaisesRegex(RuntimeError, "no separate upstream model ID"),
+        ):
+            run.verify_routes(key)
+
+    def test_openrouter_provider_routing_is_validated_and_registered(self):
+        self.assertEqual(run.openrouter_request_options("openrouter", None), {})
+        self.assertEqual(run.openrouter_request_options("axonhub", None), {})
+        self.assertEqual(
+            run.openrouter_request_options("openrouter", '{"quantizations": ["bf16", "fp8"]}'),
+            {"provider": {"quantizations": ["bf16", "fp8"]}})
+        with self.assertRaisesRegex(RuntimeError, "requires --provider openrouter"):
+            run.openrouter_request_options("axonhub", '{"quantizations": ["fp8"]}')
+        for value in ('[]', '{}', '"fp8"'):
+            with self.assertRaisesRegex(RuntimeError, "non-empty JSON object"):
+                run.openrouter_request_options("openrouter", value)
+        self.assertIn("**reg.get('request_options',{})", inspect.getsource(run.collect))
+        options = {"provider": {"quantizations": ["bf16", "fp8"]}}
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "study"
+            with (
+                patch.object(run, "PROVIDER", "openrouter"),
+                patch.object(run, "REQUEST_OPTIONS", options),
+                patch.object(run, "verify_routes", return_value={}),
+            ):
+                run.prepare(output, self.registration_path(temporary), self.key_file(temporary),
+                            run_controls=False, scenario="engineering-maintenance")
+            reg = run.load(output / "registration.json")
+        self.assertEqual(reg["provider"], "OpenRouter")
+        self.assertEqual(reg["api_base"], run.OPENROUTER_API_BASE)
+        self.assertEqual(reg["endpoint"], "https://openrouter.ai/api/v1/responses")
+        self.assertEqual(reg["request_options"], options)
+        self.assertEqual(run.registration_api_base(reg), run.OPENROUTER_API_BASE)
+        self.assertIn("OpenRouter key", reg["credential_source"])
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
         self.assertEqual(run.DEFAULT_SCENARIO, "engineering-maintenance")

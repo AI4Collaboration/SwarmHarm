@@ -1,6 +1,8 @@
 # Model routing
 
-All live SwarmHarm inference uses the AxonHub Responses endpoint:
+SwarmHarm inference uses the AxonHub Responses endpoint by default. A
+registration may instead freeze a direct OpenRouter route; see
+[Direct OpenRouter route](running-evals.md#direct-openrouter-route).
 
 `https://lmportal.iefbr14.xyz/v1/responses`
 

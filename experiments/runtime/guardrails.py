@@ -15,12 +15,12 @@ def outside_repository(path, repository, label):
 
 def credential_file(path, repository):
     if path is None:
-        raise ValueError("An existing host-only AxonHub key file is required")
-    resolved = outside_repository(path, repository, "AxonHub key file")
+        raise ValueError("An existing host-only model gateway key file is required")
+    resolved = outside_repository(path, repository, "Model gateway key file")
     if not resolved.is_file():
-        raise ValueError("The AxonHub key file must be a regular file")
+        raise ValueError("The model gateway key file must be a regular file")
     if not resolved.read_text().strip():
-        raise ValueError("The AxonHub key file is empty")
+        raise ValueError("The model gateway key file is empty")
     return resolved
 
 

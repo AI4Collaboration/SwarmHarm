@@ -1,4 +1,4 @@
-"""Host-only AxonHub Responses transport for every live model run.
+"""Host-only Responses transport for every live model run (AxonHub or OpenRouter).
 
 The credential is read only from ``AXONHUB_API_KEY`` or an explicitly supplied
 host-side key file.  It is never copied into a task container, registration,
@@ -37,7 +37,7 @@ def configure(model, base_url="https://lmportal.iefbr14.xyz/v1", key_env=API_KEY
             or url.query or url.fragment):
         raise ValueError("Use an HTTPS API base URL without credentials or query parameters")
     if not isinstance(model, str) or not model.strip():
-        raise ValueError("Provide an explicit AxonHub model ID")
+        raise ValueError("Provide an explicit model ID")
     if max_output_tokens is not None and (type(max_output_tokens) is not int or max_output_tokens < 1):
         raise ValueError("max_output_tokens must be a positive integer")
     MODEL = model
@@ -50,9 +50,9 @@ def configure(model, base_url="https://lmportal.iefbr14.xyz/v1", key_env=API_KEY
 def key():
     value = API_KEY_FILE.read_text().strip() if API_KEY_FILE else os.environ.get(API_KEY_ENV, "").strip()
     if not value:
-        raise ValueError("No AxonHub API credential configured; no request was sent")
+        raise ValueError("No model gateway credential configured; no request was sent")
     if any(c.isspace() for c in value):
-        raise ValueError("The AxonHub key file must contain only the key")
+        raise ValueError("The model gateway key file must contain only the key")
     return value
 
 
@@ -64,9 +64,9 @@ def save(path, value):
 
 def payload(body):
     if MODEL is None:
-        raise ValueError("AxonHub route is not configured")
+        raise ValueError("Model gateway route is not configured")
     if "max_output_tokens" in body:
-        raise ValueError("Output allowance must come from the registered AxonHub transport setup")
+        raise ValueError("Output allowance must come from the registered transport setup")
     result = {"model": MODEL, "store": False, "stream": True,
               "parallel_tool_calls": False,
               "include": ["reasoning.encrypted_content"], **body}
@@ -82,7 +82,7 @@ def call(body, directory, label, timeout=150):
     save(directory / (label + ".request.json"), request_body)
     request = urllib.request.Request(ENDPOINT, data=json.dumps(request_body).encode(), headers={
         "Authorization": "Bearer " + credential, "Content-Type": "application/json",
-        "Accept": "text/event-stream", "User-Agent": "SwarmHarm-AxonHub/1.0"})
+        "Accept": "text/event-stream", "User-Agent": "SwarmHarm/1.0"})
     started = time.monotonic()
     response = None
 
@@ -111,7 +111,7 @@ def call(body, directory, label, timeout=150):
                     diagnostic = {k: str(error[k]).replace(credential, "[REDACTED]")
                                   for k in ("type", "code", "message", "status", "param") if k in error}
                     save(directory / (label + ".error.json"), {"provider_error": diagnostic})
-                    raise RuntimeError("Inference stream returned an AxonHub error")
+                    raise RuntimeError("Inference stream returned a gateway error")
                 if event.get("type") in ("response.completed", "response.failed", "response.incomplete"):
                     response = event.get("response", {})
                     break
@@ -127,7 +127,7 @@ def call(body, directory, label, timeout=150):
         except (ValueError, TypeError, AttributeError):
             pass
         save(directory / (label + ".error.json"), diagnostic)
-        raise RuntimeError("AxonHub HTTP " + str(error.code)) from None
+        raise RuntimeError("Gateway HTTP " + str(error.code)) from None
     except TimeoutError:
         save(directory / (label + ".error.json"), {"timeout_seconds": timeout})
         raise
@@ -137,7 +137,7 @@ def call(body, directory, label, timeout=150):
             signal.signal(signal.SIGALRM, old_handler)
     if response is None:
         save(directory / (label + ".error.json"), {"provider_error": "No terminal response"})
-        raise RuntimeError("AxonHub stream ended without a terminal response")
+        raise RuntimeError("Gateway stream ended without a terminal response")
     save(directory / (label + ".response.json"), response)
     if response.get("status") != "completed" or response.get("model") != MODEL:
         save(directory / (label + ".error.json"), {
@@ -146,7 +146,7 @@ def call(body, directory, label, timeout=150):
                 "status": response.get("status")},
             "native_error": response.get("error"),
             "incomplete_details": response.get("incomplete_details")})
-        raise RuntimeError("AxonHub status/model mismatch; native response preserved")
+        raise RuntimeError("Gateway status/model mismatch; native response preserved")
     return response
 
 

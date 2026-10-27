@@ -59,5 +59,5 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--registration-dir',type=Path,required=True)
     parser.add_argument('--key-file',type=Path,required=True,
-        help='Existing host-only AxonHub key file; never copied into the study.')
+        help='Existing host-only model gateway key file; never copied into the study.')
     a=parser.parse_args();print(json.dumps({'pid':launch(a.output,a.registration_dir,key_file=a.key_file),'scheduled_task':False}),flush=True)

@@ -44,9 +44,15 @@ DEFAULT_REASONING='high'
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_MAINTENANCE
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
-OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
+OPENROUTER_API_BASE='https://openrouter.ai/api/v1'
+OPENROUTER_CATALOG=f'{OPENROUTER_API_BASE}/models'
+OPENROUTER_KEY_STATUS=f'{OPENROUTER_API_BASE}/key'
 AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
-AXONHUB_KEY_FILE=None
+PROVIDERS={'axonhub':{'name':'AxonHub','api_base':AXONHUB_API_BASE},
+    'openrouter':{'name':'OpenRouter','api_base':OPENROUTER_API_BASE}}
+PROVIDER='axonhub'
+REQUEST_OPTIONS={}
+MODEL_KEY_FILE=None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
         'max_actor_seconds':3600,'max_batch_seconds':4500,'provider_concurrency':4,
@@ -100,7 +106,7 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
     headers={'User-Agent':'swarmharm-formation-route-audit/1.0'}
     if key_file is not None:
         key=Path(key_file).expanduser().read_text().strip()
-        if not key:raise RuntimeError('AxonHub key file is empty')
+        if not key:raise RuntimeError('Model gateway key file is empty')
         headers['Authorization']='Bearer '+key
     if attempts < 1:raise ValueError('catalog attempts must be positive')
     for attempt in range(1,attempts+1):
@@ -125,20 +131,37 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
 def verify_routes(key_file):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
-    routes={'checked_at':utc(),'api_base':AXONHUB_API_BASE,
-        'responses_endpoint':AXONHUB_ENDPOINT,
-        'axonhub_catalog_endpoint':AXONHUB_CATALOG,
+    provider=PROVIDERS[PROVIDER];api_base=provider['api_base']
+    routes={'checked_at':utc(),'provider':provider['name'],'api_base':api_base,
+        'responses_endpoint':f'{api_base}/responses',
         'openrouter_catalog_endpoint':OPENROUTER_CATALOG,
         'model':model,'upstream_model':upstream,
         'reasoning_effort':DEFAULT_REASONING,
+        'request_options':REQUEST_OPTIONS,
         'openrouter':catalog(
-            f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream),
-        'axonhub':catalog(AXONHUB_CATALOG,model,key_file)}
-    if not routes['openrouter']['model_found'] or not routes['axonhub']['model_found']:
+            f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream)}
+    if PROVIDER=='axonhub':
+        routes['axonhub_catalog_endpoint']=AXONHUB_CATALOG
+        routes['axonhub']=catalog(AXONHUB_CATALOG,model,key_file)
+        gateway_found=routes['axonhub']['model_found']
+    else:
+        require(model==upstream,'A direct OpenRouter route has no separate upstream model ID.')
+        # The model catalog is public, so a separate authenticated read proves the key.
+        routes['openrouter_key_status_endpoint']=OPENROUTER_KEY_STATUS
+        routes['openrouter_key_status']={
+            'http_status':catalog(OPENROUTER_KEY_STATUS,None,key_file)['http_status']}
+        gateway_found=True
+    if not routes['openrouter']['model_found'] or not gateway_found:
         raise RuntimeError(
-            f"AxonHub route {model} or upstream counterpart {upstream} is absent from its current catalog"
+            f"{provider['name']} route {model} or upstream counterpart {upstream} is absent from its current catalog"
         )
     return routes
+def openrouter_request_options(provider,routing_json):
+    if routing_json is None:return {}
+    require(provider=='openrouter','OpenRouter provider routing requires --provider openrouter.')
+    routing=json.loads(routing_json)
+    require(isinstance(routing,dict) and routing,'OpenRouter provider routing must be a non-empty JSON object.')
+    return {'provider':routing}
 def validate_response_model(request,response):
     expected=request['model'];returned=response.get('model')
     if returned!=expected:
@@ -148,7 +171,7 @@ def registration_api_base(registration):
     if base:return base.rstrip('/')
     endpoint=registration.get('endpoint','')
     if not endpoint.endswith('/responses'):
-        raise ValueError('Frozen AxonHub endpoint must end in /responses')
+        raise ValueError('Frozen model gateway endpoint must end in /responses')
     return endpoint[:-len('/responses')].rstrip('/')
 def retryable_transport_error(error,error_file):
     if isinstance(error,(ValueError,AssertionError)):return False
@@ -317,8 +340,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'upstream_models':UPSTREAM_MODELS,'reasoning':DEFAULT_REASONING,
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'api_base':AXONHUB_API_BASE,'endpoint':AXONHUB_ENDPOINT,
-        'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
+        'provider':PROVIDERS[PROVIDER]['name'],'api_base':PROVIDERS[PROVIDER]['api_base'],
+        'endpoint':PROVIDERS[PROVIDER]['api_base']+'/responses','request_options':REQUEST_OPTIONS,
+        'credential_source':f"Existing host-only {PROVIDERS[PROVIDER]['name']} key; never supplied to subjects.",
         'input_revision':'continuous-formation-to-external-effect-v25',
         'phase1_gate_revision':'propensity-opportunity-v34',
         'outcome_revision':'collective-business-gap-v20',
@@ -877,8 +901,8 @@ def procurement_update_feedback():
 def collect(root,registration_dir):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
-    global AXONHUB_KEY_FILE
-    AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
+    global MODEL_KEY_FILE
+    MODEL_KEY_FILE=guardrails.credential_file(MODEL_KEY_FILE,REPO)
     reg=load(root/'registration.json')
     scenario=domain_runtime.normalize(reg.get('scenario'))
     require(not (root/'started.json').exists(),'Never replace trajectories.')
@@ -898,8 +922,8 @@ def collect(root,registration_dir):
     verify_collection_freeze(root,registration_dir,reg)
     lock=(root/'.collector.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    transport=module('swarmharm_v1_axonhub_transport',REPO/'experiments/runtime/transport.py')
-    transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=AXONHUB_KEY_FILE,
+    transport=module('swarmharm_v1_transport',REPO/'experiments/runtime/transport.py')
+    transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=MODEL_KEY_FILE,
         max_output_tokens=budget['max_output_tokens_per_response'])
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
@@ -989,7 +1013,7 @@ def collect(root,registration_dir):
         if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
         if classification['status']=='text_refusal_candidate':print(json.dumps({'alert':'text_refusal_candidate','request':str((folder/label).relative_to(root))}),flush=True)
         return value
-    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']}}
+    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']},**reg.get('request_options',{})}
     cleanup=[]
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
@@ -1359,15 +1383,19 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path,required=True)
+    p.add_argument('--provider',choices=sorted(PROVIDERS),default='axonhub',
+        help='Model gateway frozen into a fresh registration; collection reads it from the registration.')
+    p.add_argument('--openrouter-provider-routing',
+        help='Optional JSON object sent as OpenRouter `provider` routing on every request, e.g. to exclude fp4 endpoints.')
     p.add_argument('--model-id',default='z-ai/glm-5.3',
-        help='AxonHub model ID; defaults to the current GLM route.')
+        help='Gateway model ID; defaults to the current GLM route.')
     p.add_argument('--upstream-model-id',
-        help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
+        help='Exact upstream catalog counterpart; defaults to the gateway model ID.')
     p.add_argument('--model-alias',default='glm',
         help='Filesystem-safe label; defaults to the current GLM label.')
     p.add_argument('--population',type=int,default=4,help='Number of separate agent contexts.')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
-    p.add_argument('--provider-concurrency',type=int,help='Concurrent AxonHub requests; defaults to active contexts without changing the active agent cohort.')
+    p.add_argument('--provider-concurrency',type=int,help='Concurrent model gateway requests; defaults to active contexts without changing the active agent cohort.')
     p.add_argument('--topology-file',type=Path,help='Optional researcher-defined directed visibility graph; absent from canonical runs.')
     p.add_argument('--cue-condition',choices=schedule.CUE_CONDITIONS,
         default=schedule.DEFAULT_CUE_CONDITION,
@@ -1380,7 +1408,7 @@ if __name__=='__main__':
     p.add_argument('--completion-incentive', choices=('none', 'gpu-upgrade'), default='none',
         help='Maintenance comparison only: a synthetic Phase 2 completion reward; no actual GPU grant.')
     a=p.parse_args()
-    AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
+    MODEL_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)
     if a.phase=='prepare':
@@ -1388,8 +1416,10 @@ if __name__=='__main__':
             raise ValueError('Invalid model alias.')
         MODELS={a.model_alias:a.model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or a.model_id}
+        PROVIDER=a.provider
+        REQUEST_OPTIONS=openrouter_request_options(a.provider,a.openrouter_provider_routing)
     if a.phase=='prepare':
-        prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
+        prepare(root,registration_dir,MODEL_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
             filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
             completion_incentive=a.completion_incentive)
