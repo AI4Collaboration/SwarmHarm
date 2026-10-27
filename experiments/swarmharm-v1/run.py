@@ -699,16 +699,24 @@ FROZEN_REGISTRATION_FILES=(
     'initial-input-audit.json','initial-file-audit.json','route-confirmation.json',
     'phase2-plan.json')
 
+def pushed_branch_ref(repo):
+    branch=subprocess.run(['git','symbolic-ref','--quiet','--short','HEAD'],
+        cwd=repo,capture_output=True,text=True)
+    require(branch.returncode==0,'Collection requires a checked-out branch, not a detached HEAD.')
+    return 'refs/heads/'+branch.stdout.strip()
+
 def verify_collection_freeze(root,registration_dir,reg):
     status=subprocess.check_output(
         ['git','status','--porcelain=v1','--untracked-files=all'],
         cwd=REPO,text=True)
     require(not status.strip(),'Git worktree must be clean before inference.')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+    ref=pushed_branch_ref(REPO)
     remote=subprocess.check_output(
-        ['git','ls-remote','origin','refs/heads/main'],cwd=REPO,text=True
-    ).split()[0]
-    require(head==remote,'Registration source must be committed and pushed before inference.')
+        ['git','ls-remote','origin',ref],cwd=REPO,text=True
+    ).split()
+    require(remote[:1]==[head],
+        f'Registration source must be committed and pushed to origin {ref} before inference.')
     tracked=subprocess.run(
         ['git','ls-files','--error-unmatch','--']+[
             str((registration_dir/name).relative_to(REPO))

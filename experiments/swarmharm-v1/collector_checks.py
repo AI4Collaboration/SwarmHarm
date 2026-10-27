@@ -5,6 +5,7 @@ import io
 import inspect
 import json
 import shutil
+import subprocess
 import tempfile
 import threading
 import urllib.error
@@ -456,6 +457,22 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(run.retryable_transport_error(RuntimeError("422"), path))
             run.save(path, {"http_status": 429})
             self.assertTrue(run.retryable_transport_error(RuntimeError("429"), path))
+
+    def test_collection_freeze_follows_the_checked_out_branch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            def git(*args):
+                subprocess.run(["git", *args], cwd=temporary, check=True, capture_output=True)
+            git("init", "-q", "-b", "arth/e1-rollouts")
+            git("-c", "user.name=check", "-c", "user.email=check@example.com",
+                "commit", "-q", "--allow-empty", "-m", "start")
+            self.assertEqual(run.pushed_branch_ref(temporary), "refs/heads/arth/e1-rollouts")
+            git("checkout", "-q", "--detach")
+            with self.assertRaisesRegex(RuntimeError, "detached HEAD"):
+                run.pushed_branch_ref(temporary)
+        source = inspect.getsource(run.verify_collection_freeze)
+        self.assertIn("ref=pushed_branch_ref(REPO)", source)
+        self.assertIn("require(remote[:1]==[head]", source)
+        self.assertNotIn("refs/heads/main", source)
 
     def test_empty_preflight_arguments_accept_provider_wrapper(self):
         self.assertTrue(run.empty_tool_arguments("{}"))
