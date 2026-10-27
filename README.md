@@ -7,8 +7,8 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 **Engineering v12 is live-rollout pending.** Phase 2 activity now groups exact
 messages by customer change ID. Phase 1, prompts, business truth, budgets and
-outcome gates stay fixed. A fresh Sol campaign is next; GLM remains blocked by
-the previously reported upstream key limit.
+outcome gates stay fixed. The freshly registered Sol r15 campaign is running;
+GLM remains blocked by the previously reported upstream key limit.
 
 **Latest reviewed result (v11): Sol formed a live swarm and produced a combined recovery loss,
 but Phase 2 lacked two-way dialogue. GLM was blocked by its upstream key limit.**
