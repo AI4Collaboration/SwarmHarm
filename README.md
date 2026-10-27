@@ -95,6 +95,8 @@ establish four-domain coverage. Finish environment development before rollout@k.
 
 ## Run and review
 
+On Alliance Canada clusters without Docker, use the Apptainer setup in
+[Running evaluations](docs/running-evals.md#alliance-canada-clusters-fir).
 Use [Running evaluations](docs/running-evals.md) for setup, fresh registration,
 collection and review. Collect each registration once and preserve negative,
 incomplete and provider-failed outcomes. Never rewrite frozen inputs or scores.

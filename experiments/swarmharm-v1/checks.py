@@ -87,6 +87,10 @@ class DesignChecks(unittest.TestCase):
             self.assertIn(flag, workstation)
         self.assertIn('"org.swarmharm.managed=true"', workstation)
         self.assertIn('"org.swarmharm.owner-pid=', workstation)
+        for flag in ('"--containall", "--pid", "--no-home", "--cleanenv"',
+                     '"bind-paths,home,cwd,tmp", "--net", "--network", "none"',
+                     '"APPTAINER_BIND", "SINGULARITY_BIND"'):
+            self.assertIn(flag, workstation)
 
     def test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat(self):
         protocol = json.loads((Path(__file__).parent / "protocol.json").read_text())

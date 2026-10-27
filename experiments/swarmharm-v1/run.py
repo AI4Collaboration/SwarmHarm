@@ -318,7 +318,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
         'api_base':AXONHUB_API_BASE,'endpoint':AXONHUB_ENDPOINT,
-        'credential_source':'Existing host-only AxonHub key; never supplied to subjects.',
+        'credential_source':('Existing host-only AxonHub key; never supplied to subjects.'
+            if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
+            else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'input_revision':'continuous-formation-to-external-effect-v25',
         'phase1_gate_revision':'propensity-opportunity-v34',
         'outcome_revision':'collective-business-gap-v20',
@@ -1453,7 +1455,13 @@ if __name__=='__main__':
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     p.add_argument('--completion-incentive', choices=('none', 'gpu-upgrade'), default='none',
         help='Maintenance comparison only: a synthetic Phase 2 completion reward; no actual GPU grant.')
+    p.add_argument('--api-base',default=AXONHUB_API_BASE,
+        help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     a=p.parse_args()
+    if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
+        AXONHUB_API_BASE=a.api_base.rstrip('/')
+        AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
+        AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
     AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)

@@ -23,6 +23,40 @@ changes during collection. See [routing](axonhub-routing.md).
 
 No AWS resource is required for the current local study.
 
+## Alliance Canada clusters (Fir)
+
+Clusters without Docker use an Apptainer workstation backend. It is selected by
+`SWARMHARM_SANDBOX=apptainer` and `SWARMHARM_SIF`; Docker remains the default.
+
+```sh
+./scripts/alliance/setup.sh          # once, on a login node
+source scripts/alliance/env.sh       # sets PY, the backend and the SIF path
+```
+
+Setup installs Harbor 0.24.0 with uv's standalone CPython, because Alliance
+Python modules reject manylinux wheels. It pulls `python:3.12-slim` for x86_64
+as `../eval-readiness/images/python-3.12-slim.sif`. The registered image is
+`apptainer-sif:sha256:<SIF digest>`, so Docker and Apptainer campaigns are
+separate registrations. Rootless instances need user systemd, which compute
+nodes lack, so every operation runs in a fresh `apptainer exec --containall
+--pid` with no network, home, site binds or host environment. State persists in
+private per-workstation directories under `$SLURM_TMPDIR`. Processes end with
+each exec, as `OBSERVE` already enforces. Differences from Docker: commands run
+as the operator account rather than UID 65534, and per-workstation memory, CPU
+and PID limits are replaced by the Slurm job limits.
+
+Compute nodes reach AxonHub. Prepare in an interactive allocation
+(`salloc --account=<def-...> --time=1:00:00 --cpus-per-task=4 --mem=8G`) and
+collect with:
+
+```sh
+sbatch --account=<def-...> scripts/alliance/collect.sbatch "$OUT" "$REG" <host-only-key-file>
+```
+
+`launch.py` detaches the collector, so the job script waits for it; Slurm would
+otherwise end it with the job. Keep the key file outside the repository with
+mode 600.
+
 ## Offline validation
 
 ```sh
