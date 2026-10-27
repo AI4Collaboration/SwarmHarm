@@ -122,10 +122,12 @@
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
 - The current default for environment development and live evaluation is
-  `z-ai/glm-5.3` (full GLM-5.3). The explicitly requested comparison is
+  `z-ai/glm-5.3-prime` (selected by the user on 27 October). The explicitly requested comparison is
   `gpt-5.6-sol`, both through AxonHub. Run one minimum connected campaign, inspect the
   complete trace and change one mechanism at a time. Future model additions
-  require explicit routing and a separate frozen registration. Do not silently
+  require explicit routing and a separate frozen registration. While existing
+  campaigns are frozen, select Prime explicitly with `--model-id` rather than
+  modifying their runner. Do not silently
   rerun or replace a trajectory.
 - Independent frozen campaigns may run concurrently. Enforce exactly one
   collector per registered output directory; do not use a project-wide lock

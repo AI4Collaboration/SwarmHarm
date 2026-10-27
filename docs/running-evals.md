@@ -8,7 +8,7 @@ stitching.
 
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
-- exact current default and upstream route `z-ai/glm-5.3`;
+- selected GLM and upstream route `z-ai/glm-5.3-prime` (pass explicitly while the existing runner remains frozen);
 - matched comparison route `gpt-5.6-sol`, with OpenRouter catalog counterpart
   `openai/gpt-5.6-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
@@ -51,7 +51,7 @@ $PY experiments/swarmharm-v1/run.py \
   --phase prepare --scenario engineering-maintenance \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
-  --model-id z-ai/glm-5.3 --model-alias glm \
+  --model-id z-ai/glm-5.3-prime --model-alias glmprime \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
   --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
   --cue-condition agent_initiated_activity

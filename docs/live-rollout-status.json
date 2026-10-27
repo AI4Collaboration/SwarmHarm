@@ -7,63 +7,91 @@
   "input_revision": "engineering-maintenance-case-notifications-v17",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
-  "expected_model": "z-ai/glm-5.3",
-  "expected_upstream_model": "z-ai/glm-5.3",
+  "expected_model": "z-ai/glm-5.3-prime",
+  "expected_upstream_model": "z-ai/glm-5.3-prime",
   "phase1_status": "r20_glm_negative_v17_pending",
   "phase2_status": "r20_glm_not_reached_sol_r19_passed",
   "integrated_end_to_end_status": "r20_glm_negative_sol_r19_historical_pass",
-  "reason": "v17 five-model comparison authorized; preparing one fresh registration per model. Current source remains pending live validation; historical results are unchanged.",
+  "reason": "r21 outcomes retained; Muse remains active. Four added r22 model comparisons authorized, with Prime selected for new GLM runs.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
     "anthropic/claude-opus-5.5",
     "google/gemini-4-argon",
     "meta/muse-spark-open",
-    "x-ai/grok-4.7"
+    "x-ai/grok-4.7",
+    "z-ai/glm-5.3-prime",
+    "moonshotai/kimi-k3.1-pro",
+    "qwen/qwen3.8-max-prime",
+    "deepseek/deepseek-v4.1-flash-1017"
   ],
   "expected_upstream_models": {
     "z-ai/glm-5.3": "z-ai/glm-5.3",
     "anthropic/claude-opus-5.5": "anthropic/claude-opus-5.5",
     "google/gemini-4-argon": "google/gemini-4-argon",
     "meta/muse-spark-open": "meta/muse-spark-open",
-    "x-ai/grok-4.7": "x-ai/grok-4.7"
+    "x-ai/grok-4.7": "x-ai/grok-4.7",
+    "z-ai/glm-5.3-prime": "z-ai/glm-5.3-prime",
+    "moonshotai/kimi-k3.1-pro": "moonshotai/kimi-k3.1-pro",
+    "qwen/qwen3.8-max-prime": "qwen/qwen3.8-max-prime",
+    "deepseek/deepseek-v4.1-flash-1017": "deepseek/deepseek-v4.1-flash-1017"
   },
   "latest_review": "docs/research/current-campaign-review.md",
   "active_campaigns": [
     {
       "model": "z-ai/glm-5.3",
       "run_id": "2026-10-27-adaptive-v17-glm-r21",
-      "status": "preparing",
+      "status": "collected_with_limits",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-glm-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-glm-r21/registration.json"
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-glm-r21/registration.json",
+      "pid": 81044,
+      "started_at": "2026-10-27T12:30:48.162378+00:00",
+      "model_requests_started": 140,
+      "finished_at": "2026-10-27T12:35:15.325599+00:00"
     },
     {
       "model": "anthropic/claude-opus-5.5",
       "run_id": "2026-10-27-adaptive-v17-claude-r21",
-      "status": "preparing",
+      "status": "provider_hold",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-claude-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-claude-r21/registration.json"
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-claude-r21/registration.json",
+      "pid": 81046,
+      "started_at": "2026-10-27T12:30:48.145554+00:00",
+      "model_requests_started": 18,
+      "error": "AxonHub status/model mismatch; native response preserved",
+      "finished_at": "2026-10-27T12:31:08.836700+00:00"
     },
     {
       "model": "google/gemini-4-argon",
       "run_id": "2026-10-27-adaptive-v17-gemini-r21",
-      "status": "preparing",
+      "status": "collected_with_limits",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-gemini-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-gemini-r21/registration.json"
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-gemini-r21/registration.json",
+      "pid": 81045,
+      "started_at": "2026-10-27T12:30:48.138530+00:00",
+      "model_requests_started": 154,
+      "finished_at": "2026-10-27T12:40:45.030283+00:00"
     },
     {
       "model": "meta/muse-spark-open",
       "run_id": "2026-10-27-adaptive-v17-muse-r21",
-      "status": "preparing",
+      "status": "running",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-muse-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-muse-r21/registration.json"
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-muse-r21/registration.json",
+      "pid": 81042,
+      "started_at": "2026-10-27T12:30:48.138534+00:00",
+      "model_requests_started": 809
     },
     {
       "model": "x-ai/grok-4.7",
       "run_id": "2026-10-27-adaptive-v17-grok-r21",
-      "status": "preparing",
+      "status": "collected_with_limits",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-grok-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-grok-r21/registration.json"
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-grok-r21/registration.json",
+      "pid": 81043,
+      "started_at": "2026-10-27T12:30:48.311317+00:00",
+      "model_requests_started": 127,
+      "finished_at": "2026-10-27T12:33:26.429225+00:00"
     }
   ],
   "current_campaigns": [

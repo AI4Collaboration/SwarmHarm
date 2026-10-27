@@ -57,6 +57,9 @@ activity notices despite timer deduplication. The repair now separates passive
 notifications from completion reminders, without changing record visibility or
 formation thresholds. Five fresh comparisons are now authorized: full GLM-5.3, Claude Opus 5.5,
 Gemini 4 Argon, Muse Spark Open and Grok 4.7, each with four concurrent agents.
+The user has additionally authorized GLM-5.3-Prime, Kimi K3.1 Pro,
+Qwen3.8 Max Prime and DeepSeek V4.1 Flash-1017, with one new registration each.
+Prime supersedes GLM-5.3 for future GLM runs; existing trajectories remain intact.
 Earlier frozen results are preserved; no scheduled automation is active.
 
 See the [current review](docs/research/current-campaign-review.md) for evidence
@@ -65,7 +68,7 @@ and limits, [working context](docs/working-context.md) for the next step, and
 
 ## Runtime and scope
 
-- All live inference uses **AxonHub**: full `z-ai/glm-5.3` by default, with
+- All live inference uses **AxonHub**: `z-ai/glm-5.3-prime` for new GLM runs, with
   `gpt-5.6-sol` as the requested comparison.
   OpenRouter channels synchronize all models and support automatic fallback;
   OpenAI models prefer the existing TerryJwy channels. Each experiment still
