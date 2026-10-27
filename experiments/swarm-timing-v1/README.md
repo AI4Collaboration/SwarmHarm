@@ -4,8 +4,10 @@ This analysis measures when each agent first reaches a communication milestone
 and who reads whom. It reads saved worlds only. It calls no model and leaves
 frozen source, original scores and native traces unchanged.
 
-A read is the world's own exact match: `full_body_output_matches` with the path,
-sha256 and full body of another actor's file version. Shared writes follow the
+A read is the world's own exact match, as in `read_evidence` of the
+swarmharm-v1 protocol on `main`: a complete record (`full_body_output_matches`)
+or a unique complete message body (`message_body_output_matches`), bound to
+another actor's file version and author. Older worlds have only the first kind. Shared writes follow the
 `swarmharm-v1` review rule on `main` (`review.writes()`): a successful bash
 call, authored by the actor, not under `/registry/cache/.activity/`. Timestamps come from `at`; untimed
 discovery-v3 `final_output` markers take the previous event's time.
@@ -31,8 +33,8 @@ python experiments/swarm-timing-v1/timing.py NEW_OUTPUT_DIRECTORY NATIVE_RUN [NA
 ```
 
 A native run holds either `natural/world.json` (swarmharm-v1) or
-`trial/world/state.json` (discovery-v3). Several runs are pooled. Ten checks
-cover detection of known coupling, false alarms on independent timelines, a
+`trial/world/state.json` (discovery-v3). Several runs are pooled. Eleven checks
+cover detection of known coupling, message-body reads, false alarms on independent timelines, a
 relay ring without read-back, self-reads and failed writes, censoring, the stop
 rule, both layouts and native preservation. The output directory must be new.
 It receives `summary.json` with the analysis source hash, `preservation.json`

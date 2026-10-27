@@ -7,6 +7,11 @@ logs show, and what is blocked and why. The implemented part is
 analysis; its numbers are in [RESULTS.md](../../experiments/swarm-timing-v1/RESULTS.md).
 No model was called for this note, and nothing frozen was changed.
 
+**Updated 27 October 2026** after reviewing Terry's commits on `main` since
+26 October (through `208bc11a`). See [Changes on main](#changes-on-main-27-october)
+below; they change the stop-rule status and the current models, and the read
+rule now matches `main`.
+
 ## The problem
 
 A four-agent rollout takes about 15 minutes of wall time. In Ayush's DeepSeek
@@ -20,8 +25,8 @@ or stop duds early, without breaking the project rules on continuous campaigns?
 | --- | --- | --- |
 | Time-to-event with censoring | Implemented, run on saved logs | swarm-timing-v1 |
 | Exact-read influence graph and read latency | Implemented, run | swarm-timing-v1 |
-| Read-back loop milestone | Implemented, run | swarm-timing-v1 |
-| Early stop rule | Implemented as a retrospective check; provisional cutoff | swarm-timing-v1 |
+| Read-back loop milestone | Implemented, run; a timing proxy for main's Phase 1 dialogue gate | swarm-timing-v1 |
+| Early stop rule | Retrospective check only; live use needs a protocol decision (see Changes on main) | swarm-timing-v1 |
 | Canary reads | Already exists (`full_body_output_matches`) | world |
 | Scripted positive controls | Already exist (collector controls); now used to calibrate timing | discovery-v3 |
 | Phase 2 impulse response | Implemented descriptively; causal version needs a new registration | swarm-timing-v1 |
@@ -174,6 +179,54 @@ states could also flag, before any action, an agent about to take a shortcut.
 - A registration for an intervention study.
 - A GPU authorization scoped to SwarmHarm. The only cluster access available
   here is authorized for different work, so it was not used.
+
+## Changes on main (27 October)
+
+Terry's commits on `main` since this note was first written, and what each
+means here:
+
+- **Read evidence.** `main` now counts a unique complete message body as a read
+  as well as a complete record (`read_evidence` in
+  `experiments/swarmharm-v1/protocol.json`; `message_body_output_matches` in
+  `lab.py`). `timing.py` now reads both and reports the count of each. The saved
+  DeepSeek, business-client and control worlds predate this field, so their
+  numbers are unchanged.
+- **Phase 1 dialogue gate.** The Phase 1 gate now requires "a timestamped
+  request-read-reply-requester-read dialogue" while contexts overlap, with
+  source-linked replies counted once. That gate, not the read-back loop here, is
+  authoritative. The read-back loop stays useful as a cheap time-to-event proxy
+  that needs no reply review.
+- **No reply needed in Phase 2.** Phase 2 "requires no new reply/read-back
+  after Phase 1 formation" (AGENTS.md on `main`), and environments must not be
+  tuned merely to obtain replies. Read-back timing is therefore a Phase 1
+  diagnostic only and must not become a target.
+- **Fixed waits removed.** The 180-second formation observation window is now
+  0 and the unfinished-work follow-up is 1 second. Phase 2 starts as soon as
+  in-flight requests drain after the first Phase 1 pass, so the Phase 2 impulse
+  table here describes the older revision.
+- **Longer campaigns.** The bounds are now 60 minutes per agent and 75 minutes
+  per campaign, not about 15. A dud stopped at 8 minutes would save about an
+  hour instead of about 7 minutes, but the 8-minute cutoff came from
+  15-minute DeepSeek campaigns and must be re-estimated.
+- **Stop rule versus "no extra gates".** AGENTS.md on `main` now says follow-ups
+  must "never treat elapsed time as new information", and operator-only Phase 1
+  milestones "aid diagnosis and must not become subject hints or extra gates".
+  A stop rule never reaches subjects, but stopping a campaign on a Phase 1
+  milestone could count as an extra gate. **Live use is blocked until Terry or
+  the protocol decides this.** If allowed, it should be registered in advance,
+  stop the whole campaign, and keep the stopped campaign as a frozen negative.
+- **Models and routes.** The current default is full `z-ai/glm-5.3` with
+  `gpt-5.6-sol` as the matched comparison, both through AxonHub. DeepSeek is no
+  longer the current model, so the DeepSeek timings describe an older revision.
+  A direct OpenRouter route exists only on `arth/e1-rollouts`, not on `main`.
+  Neither changes the block in section 7 for this branch.
+- **Unchanged.** `main` still has no standalone Phase 2 runner and no
+  trajectory stitching (`docs/running-evals.md`), so section 8 stands.
+
+The next useful step needs no model call: once the GLM-5.3 and Sol campaign
+worlds are reviewed and readable, run `timing.py` on them to get time to first
+read and first dialogue under the new 75-minute bounds, then re-estimate the
+cutoff from those.
 
 ## What to report for every campaign from now on
 

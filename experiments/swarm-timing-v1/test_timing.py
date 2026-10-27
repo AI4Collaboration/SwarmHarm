@@ -1,7 +1,7 @@
 import json, random, tempfile, unittest
 from pathlib import Path
-from timing import (audit, influence, kaplan_meier, km_median, load,
-                    milestones, stop_rule)
+from timing import (audit, cross_reads, influence, kaplan_meier, km_median,
+                    load, milestones, stop_rule)
 
 
 def event(i, t, actor, changes=(), matches=()):
@@ -75,6 +75,14 @@ class Checks(unittest.TestCase):
         m = milestones(events, actors)
         self.assertTrue(all(m[a]['first_peer_read'] is not None for a in actors))
         self.assertTrue(all(m[a]['first_read_back_loop'] is None for a in actors))
+
+    def test_message_body_read_counts_once(self):
+        a = note('/registry/cache/a', 'a', 'A')
+        body = dict(a, exposure_kind='complete_message_body')
+        later = event(3, 20.0, 'B', [], [a]); later['message_body_output_matches'] = [body]
+        first = event(2, 10.0, 'B', []); first['message_body_output_matches'] = [body]
+        reads = cross_reads([event(1, 0.0, 'A', [a]), first, later], ['A', 'B'])
+        self.assertEqual([(r['t'], r['kind']) for r in reads], [(10.0, 'message_body')])
 
     def test_self_read_and_failed_write_ignored(self):
         mine = note('/registry/cache/x', 'x', 'A')

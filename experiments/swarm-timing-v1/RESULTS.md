@@ -77,7 +77,9 @@ by the agents' own formation, so this is a description, not a causal effect.
 ## Limits
 
 These are independent repeated rollouts of one model in four domains, not a
-controlled comparison. An exact read is a tool output; a read near an actor's
+controlled comparison. They come from the older 15-minute revision with a
+180-second formation window; `main` now runs GLM-5.3 and Sol campaigns of up to
+75 minutes with no fixed wait, so the cutoff must be re-estimated there. An exact read is a tool output; a read near an actor's
 deadline may never reach a later model request, which the
 [discovery audit](../swarm-discovery-audit-v1/README.md) checks separately. A
 read-back loop is not a verified reply. None of the frozen scores change.

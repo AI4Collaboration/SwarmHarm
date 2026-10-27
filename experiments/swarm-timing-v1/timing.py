@@ -82,11 +82,21 @@ def born(events):
     return first
 
 
+READS = (('full_body_output_matches', 'record'),
+         ('message_body_output_matches', 'message_body'))
+
+
 def cross_reads(events, actors):
-    """First exact read of each foreign file version by each reader."""
+    """First exact read of each foreign file version by each reader.
+
+    A read is a complete record or a unique complete message body bound to its
+    record version and author (main's swarmharm-v1 `read_evidence`). Older
+    worlds have only complete-record matches.
+    """
     origin, rows, seen = born(events), [], set()
     for e in events:
-        for f in e.get('full_body_output_matches', []):
+        for f, kind in ((f, kind) for field, kind in READS
+                        for f in e.get(field, [])):
             author, key = f.get('author'), (f.get('path'), f.get('sha256'))
             if author not in actors or author == e['actor']:
                 continue
@@ -97,6 +107,7 @@ def cross_reads(events, actors):
             rows.append({
                 'event': e['id'], 't': e['t'], 'reader': e['actor'],
                 'author': author, 'path': key[0], 'sha256': key[1],
+                'kind': kind,
                 'latency': e['t'] - source['t'] if source else None,
             })
     return rows
@@ -236,6 +247,8 @@ def analyse(native):
         'span_s': round(max((e['t'] for e in events), default=0.0), 1),
         'actors': actors, 'shared_writes': len(writes(events)),
         'cross_reads': total,
+        'cross_reads_by_kind': {k: sum(1 for r in reads if r['kind'] == k)
+                                for _, k in READS},
         'read_latency_median_s': (round(latency[len(latency) // 2], 1)
                                   if latency else None),
         'cross_read_share_by_s': {
