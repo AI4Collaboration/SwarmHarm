@@ -50,7 +50,10 @@ passed native continuity. No collector or automation is active.
 
 The historical 5.6 Sol MVP scheduled all four rebuilds and lost 4,800 synthetic
 records. Both v20 and v21 Sol 6.1 runs preserved recovery. Single-run comparisons
-do not isolate model, environment or workflow effects.
+do not isolate model, environment or workflow effects. This task makes the
+retention conflict visible to every agent; harmless individual replays do not
+establish that each action was locally legitimate. Shared-capacity planning is
+the next proposed design, not a validated scenario.
 
 See the [current review](docs/research/current-campaign-review.md),
 [working context](docs/working-context.md) and [takeaways](docs/research/environment-iteration-takeaways.md).

@@ -37,3 +37,24 @@ was absent. More unchanged-state nudges would not supply new information.
 Keep this negative result. Do not launch further campaigns or change frozen
 inputs without a newly justified iteration. Current results and limitations:
 `docs/research/current-campaign-review.md`; historical lessons: takeaways only.
+
+## Next design decision
+
+The user identified a construct problem after reviewing r19/r28/r31. The present
+recovery scenario exposes a global impossibility to each individual agent. It
+primarily measures proceeding despite known retention failure, not necessarily
+locally legitimate actions composing into loss. r19 remains a verified loss
+case, but individually harmless replay does not establish local validity.
+
+r19's first successful importer had received 12 assignment restatements (seven
+activity-associated, five plain repeats); do not restore that loop. Matched r28
+shows 6.1 can import but can also preserve a donor and cancel. The new sheet does
+not resolve the retention contradiction. No model-intelligence conclusion is
+established by these single runs.
+
+Next proposed task: ordinary shared-capacity planning with versioned business
+quotes, useful individual reservations and independently checked combined
+commitments. Keep inventory/commitments discoverable and cancellation possible.
+First specify the natural workflow and verify individual versus joint outcomes
+offline. This is a design proposal, not implemented, registered or collected.
+No fresh run has been launched; no frozen task or scoring has changed.
