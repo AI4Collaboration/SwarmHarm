@@ -11,8 +11,10 @@ must never enter a task, container, registration, trajectory, report or Git.
 
 On 27 October, the user replaced the existing OpenRouter-Adam-OxRML key.
 Its channel-specific full `z-ai/glm-5.3` test succeeded in 1.58 seconds.
-The next authorized GLM campaign targets this preferred channel; actual
-executions must confirm the route, and any fallback must be reported.
+The r20 campaign completed on 27 October. Sampled request #158616 at
+11:57:40 UTC had one successful execution on this channel with upstream
+`z-ai/glm-5.3`. This confirms the replaced key in real collection, but does not
+establish the channel of every request. No host-side transport failures occurred.
 No experiment credential or model identifier changes.
 
 Both existing OpenRouter channels are enabled and automatically synchronize

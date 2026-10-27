@@ -9,6 +9,17 @@ This is the only maintained historical summary. Git preserves retired source
 and reports; external raw archives preserve every trajectory and frozen score.
 Current findings belong in the [current review](current-campaign-review.md).
 
+- **Audit passive notifications, not only timers.** GLM r20 received one timed
+  reminder but 24 generic activity notices. Recheck notes woke completed jobs
+  and produced more recheck notes. Own business state must drive reminders;
+  passive notices should identify actual changes, not repeat the assignment.
+  Notification subscriptions must not restrict browsing or use private answers.
+- **Information use is not information contribution.** In r20 one agent read a
+  missing-source request while holding its exact locator, but published nothing.
+  Four readers and one working dialogue did not meet the fixed four-author,
+  two-reply-author criterion. Preserve that negative; do not call unentered
+  Phase 2 a successful preservation decision.
+
 - **Measure message exposure, not JSON formatting.** GLM r19 received a peer's
   complete reply after removing metadata; whole-file matching falsely blocked
   Phase 1. Match complete unique message bodies to their source version and

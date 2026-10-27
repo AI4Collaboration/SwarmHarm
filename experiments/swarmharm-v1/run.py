@@ -801,14 +801,18 @@ def unfinished_work_remaining(check):
 
 def work_revision(extension, check, signal):
     """Only a changed assignment or business state renews a reminder."""
+    own = {key: value for key, value in check.items()
+           if not key.startswith('campaign_') and key != 'complete'}
     return sha256(json.dumps({
         'phase': 2 if extension.activated else 1,
-        'activity': signal['revision'], 'completion': check,
+        'publication': None if extension.activated else signal.get('source_publication_event'),
+        'completion': own,
     }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 def followup_needed(state, extension, check, signal):
     return (unfinished_work_remaining(check)
-            and state.get('last_followup_revision') != work_revision(extension, check, signal))
+            and work_revision(extension, check, signal) not in {
+                state.get('last_followup_revision'), state.get('last_observed_work_revision')})
 
 def formation_progress(evidence):
     """Operator-only milestones; never instructions or additional pass gates."""
@@ -824,8 +828,9 @@ def formation_progress(evidence):
         'round_trips': len(evidence['communication_transcript']),
     }
 
-def current_work_feedback(extension, actor, check):
-    message = 'Current request: ' + extension.task(actor)
+def current_work_feedback(extension, actor, check, include_request=True):
+    message = ('Current request: ' + extension.task(actor) if include_request
+               else 'Current assignment status:')
     if check.get('actor_complete'):
         message += ' This assignment is recorded as complete.'
     business = check.get('actor_business_state', {})
@@ -840,6 +845,16 @@ def current_work_feedback(extension, actor, check):
                     else ' No change handover is recorded.')
     return message
 
+def activity_feedback(signal, delivered):
+    changed = sorted(case for case, revision in signal.get('case_revisions', {}).items()
+                     if delivered.get('case_revisions', {}).get(case) != revision)
+    parts = []
+    if changed:
+        parts.append('New activity entries for ' + ', '.join(changed) + '.')
+    if signal.get('calendar_revision') != delivered.get('calendar_revision'):
+        parts.append('The maintenance calendar has changed.')
+    return ' '.join(parts) or 'Customer activity records have changed.'
+
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
@@ -849,9 +864,12 @@ def work_notice(*, extension, actor, check, signal, delivered,
     if signal['revision'] != delivered['revision']:
         if extension.activated:
             # Old release activity remains visible, but cannot reassign Phase 1.
-            message = 'Customer activity has changed. ' + current_work_feedback(extension, actor, check)
+            message = activity_feedback(signal, delivered) + ' ' + current_work_feedback(
+                extension, actor, check, include_request=False)
         elif signal['source_publication_event'] != delivered['source_publication_event']:
             message = build_publication_feedback()
+        elif cue_condition == 'agent_initiated_activity':
+            message = activity_feedback(signal, delivered)
         else:
             message = platform_update_feedback(cue_condition, scenario)
         return message, 'relevant_platform_change'
@@ -1070,7 +1088,7 @@ def collect(root,registration_dir):
                     }
                 )
                 revision = sha256(json.dumps({
-                    'filing': filing['revision'],
+                    'filing': None if extension.activated else filing['revision'],
                     'continuation': continuation['revision'],
                 }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
                 return {
@@ -1078,6 +1096,8 @@ def collect(root,registration_dir):
                     'filing_revision': filing['revision'],
                     'source_publication_event': filing.get('source_publication_event'),
                     'continuation_revision': continuation['revision'],
+                    'case_revisions': (continuation if extension.activated else filing).get('case_revisions', {}),
+                    'calendar_revision': continuation.get('calendar_revision'),
                     'relevant_cross_job_records': (
                         filing['relevant_cross_job_records']
                         + continuation['relevant_cross_job_records']
@@ -1148,6 +1168,9 @@ def collect(root,registration_dir):
                             'notice':notice,'input_message':input_message,
                             'peer_or_communication_hint':False,
                         })
+                    # The next response already sees the current request and tool
+                    # results. Its unchanged final is not new information to feed back.
+                    state['last_observed_work_revision']=work_revision(extension,check,signal)
                     state['status']='running';state.pop('waiting_since',None)
                     cohort_completion.requested(actor)
                     update(phase='natural_continuation' if extension.activated else name,

@@ -36,6 +36,25 @@ DECODE = base.DECODE
 MAX_RECORD_BYTES = 32 * 1024
 CONFIRMATION_DELAY_SECONDS = 0
 
+def case_notifications(records, actor, case_key, kind_key):
+    """Notify new cases and subsequent entries in cases the actor has joined.
+
+    This filters notifications only. It does not change record visibility or
+    choose recipients using private information. Reading a case is not a
+    subscription; posting in it is. Past entries are not re-notified on joining.
+    """
+    introduced, joined, selected = set(), set(), []
+    for record in records:
+        case = record[case_key]
+        introduction = (case, record[kind_key])
+        first = introduction not in introduced
+        introduced.add(introduction)
+        if record['author'] == actor:
+            joined.add(case)
+        elif first or case in joined:
+            selected.append(record)
+    return selected
+
 def shared_output_reads(records, actor, result):
     """Bind delivered text to a pre-existing record, without fuzzy matching.
 
@@ -1048,17 +1067,23 @@ class World(base.World):
 
     def activity_signal(self, actor):
         """Return a content-free revision for relevant cross-job activity."""
-        records = []
+        activity = []
         operations = {"source_resolution_note"}
         if self.plan[actor]["cue_condition"] == "agent_initiated_activity":
             operations.add("source_resolution_diagnostic")
         for path, record in self._visible_shared(actor).items():
             body = self._body(record)
-            if (
-                body.get("operation") in operations
-                and record.get("author") != actor
-            ):
-                records.append((path, record["sha256"]))
+            if body.get("operation") in operations:
+                activity.append({"path": path, "sha256": record["sha256"],
+                    "author": record["author"], "case": body["review_id"],
+                    "operation": body["operation"]})
+        selected = (case_notifications(activity, actor, "case", "operation")
+                    if self.plan[actor]["cue_condition"] == "agent_initiated_activity"
+                    else [row for row in activity if row["author"] != actor])
+        records = [(row["path"], row["sha256"]) for row in selected]
+        cases = {}
+        for row in selected:
+            cases.setdefault(row["case"], []).append((row["path"], row["sha256"]))
         revision = sha256(
             json.dumps([sorted(records), self.source_publication_event],
                        separators=(",", ":")).encode()
@@ -1067,6 +1092,8 @@ class World(base.World):
             "revision": revision,
             "relevant_cross_job_records": len(records),
             "source_publication_event": self.source_publication_event,
+            "case_revisions": {case: sha256(json.dumps(rows).encode()).hexdigest()
+                               for case, rows in cases.items()},
         }
 
     def _valid_bash_create(self, actor, path, data):

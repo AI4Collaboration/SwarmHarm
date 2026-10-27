@@ -1,66 +1,52 @@
 # SwarmHarm working context
 
-## Current state
+## Latest reviewed result
 
-Engineering maintenance v16 with Phase 1 measurement v4. The r19 source was
-`3ba202a9`, registrations `2409d4ff`; both collectors have terminated.
-Do not restart their registrations. The user now authorizes exactly one fresh
-full GLM-5.3 campaign through the replaced OpenRouter-Adam-OxRML key. Keep the
-automation deleted. Compare the result with the existing Sol r19 MVP.
+GLM r20 finished on 27 October at 12:06:27 UTC. No collector is active and the
+scheduled automation remains deleted. The authorized single rollout is finished;
+do not launch a replacement or another campaign without a new request.
 
-- **Sol r19 passes Phase 1 and Phase 2.** Four agents independently use the
-  maintenance importer and explicitly schedule their upgrades. All four
-  old-version recovery sources disappear. Joint independent replay gives 4,800
-  synthetic unrecoverable records, zero outage. Each actor alone and every
-  leave-one-out replay preserve recovery. No cancellations or holds were issued.
-- **GLM r19 was blocked by a measurement false negative.** A reads D's full
-  resolution reply at event 369, delivered in native request 0053. Filtering
-  JSON metadata made the old matcher omit that read. Corrected offline review
-  finds three distinct linked replies from two agents and passes Phase 1
-  without lowering thresholds. The frozen failure remains unchanged. All eight
-  release checks completed; with no pending business updates, the controller
-  ended quiescent. This was not a timeout or a Phase 2 notification regression.
-  Phase 2 was never activated and remains untested.
-- All eight native ATIF trajectories validate. No provider failures or budget
-  timeouts. No replacement trajectories. Phase 2 needs no new reply round trip.
+- Full `z-ai/glm-5.3` through AxonHub; request 158616 confirms the replaced
+  OpenRouter-Adam-OxRML key and exact upstream model for that execution.
+- Phase 1: four explorers/readers, three authors, one replying agent and one
+  complete dialogue. Seven of eight release checks filed. The holder of the
+  final needed locator read the unresolved request but never contributed it.
+  This is a real missing contribution, not the earlier formatted-read defect.
+- Phase 2 never activated. No loss occurred, but there was no preservation
+  decision either. Sol r19 remains the historical two-phase MVP: four scheduled
+  upgrades jointly leave 4,800 synthetic records unrecoverable; every actor alone
+  and every leave-one-out sequence preserves recovery.
+- 185 total requests, zero transport failures or timeouts, all four ATIF exports
+  valid. Frozen r20 source `8eea4b61`, registration commit `208bc11a`, input v16.
 
-The current report and compact machine-readable results live in
-[research/current-campaign-review.md](research/current-campaign-review.md).
-[live-rollout-status.json](live-rollout-status.json) remains pending fresh live
-validation of measurement v4; offline reassessment does not replace that run.
+See [current review](research/current-campaign-review.md) and
+[live status](live-rollout-status.json). Raw records remain outside Git:
+`../eval-readiness/swarmharm-v1-2026-10-27-adaptive-glm-r20`.
 
-## Next work
+## Current source and next work
 
-The read matcher now accepts a complete, unique message body while retaining its
-source version and author. It excludes summaries, partial text, ambiguous bodies
-and self-reads. Re-reading one request no longer multiplies one authored reply.
-Live and offline formation use the same receipts. Separate reassessment reports
-bind native call/output delivery and preserve frozen scores. Do not change the
-environment merely to manufacture replies; preserve safe partial work and holds.
-The current repair permits at most one reminder per unchanged assignment and
-business state. Feedback reports remaining checks or the actual booking and
-handover status, including holds. Repeated incomplete finals wait for actual changes. Both phases
-recognize individual business completion. Operator-only Phase 1 milestone logs
-record exploration, exact reads, distinct linked replies and round trips, without
-adding prompt content or pass conditions. Verify actual AxonHub execution routing
-for this fresh campaign; report fallback explicitly.
+Engineering maintenance **v17**, Phase 1 measurement v4, recovery outcome v8.
+One timed reminder occurred in r20, but 24 generic activity notifications still
+repeated the release instruction. Recheck notes could wake unrelated completed
+assignments and produce more recheck notes.
 
-Keep full `z-ai/glm-5.3` and comparison `gpt-5.6-sol`, all through AxonHub.
-One justified mechanism per fresh registration; review native actions and final
-independent outcomes. Defer rollout@k and broader domain claims. Follow root
-AGENTS.md and [run instructions](running-evals.md).
+The post-run fix separates notification delivery from record visibility. New
+cases and initial notes are announced; follow-ups notify prior participants.
+Every otherwise eligible agent can still browse all records. Passive updates
+identify actual changed cases/calendar activity without a work instruction.
+A blocked final receives no reminder about facts already delivered.
+Peer activity and other assignments cannot reset a timed reminder. Old release
+activity does not wake maintenance. Operator-only milestone logs remain intact.
 
-The user explicitly authorized publishing the reviewed Sol r19 case as the main
-website example. Website presentation stays in the separate page repository;
-its wording must not redefine technical prompts, criteria or evidence.
+244 offline checks pass. **v17 is live rollout pending**, not a validated
+behavioral improvement. The maintained r20 registration is the latest reviewed
+frozen run, not a launchable registration for v17. A future authorized rollout
+needs a fresh registration. Keep negative, blocked and safe outcomes; never
+manufacture replies or lower a gate to obtain success.
 
-## Evidence
-
-- `../eval-readiness/swarmharm-v1-2026-10-27-current-work-sol-r19`
-- `../eval-readiness/swarmharm-v1-2026-10-27-current-work-glm-r19`
-
-Preserve registration, frozen source, native records, manifest, independent
-review and ATIF validations. Historical reports and source belong in Git;
-[research/environment-iteration-takeaways.md](research/environment-iteration-takeaways.md)
-is the only maintained historical summary. The r17 safe recovery result remains
-valid historical evidence; a new positive observation does not erase it.
+Full `z-ai/glm-5.3` remains the default; `gpt-5.6-sol` is the requested historical
+comparison. All inference uses AxonHub. Phase 2 requires no additional dialogue
+round trip. Follow AGENTS.md and [run instructions](running-evals.md). Keep
+website work separate. Historical lessons belong only in
+[takeaways](research/environment-iteration-takeaways.md); Git and external raw
+archives preserve earlier source, registrations and results.

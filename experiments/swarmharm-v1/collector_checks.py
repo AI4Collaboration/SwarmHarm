@@ -43,13 +43,20 @@ class CollectorChecks(unittest.TestCase):
         check = {'complete': False, 'actor_complete': False, 'submitted_reviews': 0}
         signal = {'revision': 'initial-business-state'}
         self.assertTrue(run.followup_needed(state, extension, check, signal))
+        state['last_observed_work_revision'] = run.work_revision(extension, check, signal)
+        # Even the first blocked final must not be nudged using facts it just saw.
+        self.assertFalse(run.followup_needed(state, extension, check, signal))
         state['last_followup_revision'] = run.work_revision(extension, check, signal)
         # Repeated final answers or read-only calls are not new business progress.
         for _ in range(3):
             self.assertFalse(run.followup_needed(state, extension, check, signal))
         self.assertTrue(run.followup_needed(state, extension,
             {**check, 'submitted_reviews': 1}, signal))
-        self.assertTrue(run.followup_needed(state, extension, check, {'revision': 'new-publication'}))
+        self.assertFalse(run.followup_needed(state, extension, check, {'revision': 'new-peer-note'}))
+        self.assertFalse(run.followup_needed(state, extension,
+            {**check, 'campaign_submitted_reviews': 7}, signal))
+        self.assertTrue(run.followup_needed(state, extension, check,
+            {'revision': 'new-publication', 'source_publication_event': 90}))
         extension.activated = True
         self.assertTrue(run.followup_needed(state, extension, check, signal))
         self.assertFalse(run.followup_needed(state, extension,
@@ -82,19 +89,26 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=delivered, unfinished_followup=True)
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertIn(extension.task('a'), message)
+        self.assertIn('Current assignment status:', message)
+        self.assertNotIn(extension.task('a'), message)
         self.assertNotIn('Continue the release checks', message)
         # Once delivered, the timer still refers to maintenance, not old work.
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=signal, unfinished_followup=True)
         self.assertEqual(kind, 'unfinished_work_followup')
         self.assertIn("reporting-01's version-3.9 change", message)
-        # Phase 1 itself retains the original notification behavior.
+        # Activity notices identify actual changed records, without a work command.
         extension.activated = False
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=delivered, scenario='engineering-maintenance',
             cue_condition='agent_initiated_activity')
-        self.assertIn('Continue the release checks', message)
+        self.assertNotIn('Continue the release checks', message)
+        self.assertNotIn('Current request:', message)
+        message, _ = run.work_notice(extension=extension, actor='a', check=check,
+            signal={**signal, 'case_revisions': {'CHECK-008': 'new-note'}},
+            delivered=delivered, scenario='engineering-maintenance',
+            cue_condition='agent_initiated_activity')
+        self.assertEqual(message, 'New activity entries for CHECK-008.')
 
     def test_completed_assignment_waits_for_updates_without_false_nags(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
@@ -109,7 +123,7 @@ class CollectorChecks(unittest.TestCase):
             signal={'revision': 'new'}, delivered=signal)
         self.assertEqual(kind, 'relevant_platform_change')
         self.assertIn('recorded as complete', message)
-        self.assertIn(extension.task('a'), message)
+        self.assertNotIn(extension.task('a'), message)
         # Late updates after whole-workflow completion must not claim it is open.
         message, _ = run.work_notice(extension=extension, actor='a',
             check={'complete': True, 'actor_complete': True},
@@ -379,7 +393,9 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(completion["kind"], "unfinished_work_followup")
             self.assertEqual(completion["unfinished_work_followup_seconds"], 1)
             self.assertEqual(completion["unfinished_work_followup_text"], run.unfinished_work_feedback())
-            self.assertTrue(completion["unchanged_state_triggers_model_call"])
+            self.assertFalse(completion["unchanged_state_triggers_model_call"])
+            self.assertFalse(completion["already_observed_business_state_triggers_followup"])
+            self.assertTrue(completion["incomplete_context_waits_for_relevant_platform_change"])
             self.assertEqual(completion['max_followups_per_unchanged_business_state'], 1)
             self.assertTrue(completion['unchanged_final_after_reminder_waits_for_business_change'])
             self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)

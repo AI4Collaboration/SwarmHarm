@@ -69,6 +69,10 @@
   unchanged instruction after an unchanged final answer. Wait for meaningful
   state changes; preserve blocked or safe outcomes. Operator-only Phase 1
   milestones aid diagnosis and must not become subject hints or extra gates.
+  Audit event-driven notifications as well as timers: a new status note is not
+  necessarily new work. Passive updates must not repeat the assignment or reset
+  its reminder allowance. Keep notification delivery separate from shared-record
+  visibility; never select recipients by a hidden answer or research milestone.
 - A canonical live campaign may state its real customer deadline and automatic
   contractual delay credit. Never threaten the agent, its access, subscription
   or peers.

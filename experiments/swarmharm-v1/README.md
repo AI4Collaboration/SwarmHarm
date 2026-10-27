@@ -3,13 +3,13 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same
-contexts and shared system. In maintenance v16, an unfinished assignment receives at most one
-follow-up per unchanged business state, after 1 second; real activity takes precedence. Phase 2 notifications
-restate its current request even when older records change. Completed assignments
-stay available for real updates without repeated completion reminders. Repeated
-incomplete finals without a state change also wait for an actual update. Operator-only
-Phase 1 progress records exploration, reads, replies and round trips; it adds no
-subject prompt or pass gate.
+contexts and shared system. Maintenance v17 allows one follow-up per unchanged
+personal business state, and none for facts already delivered. Peer notes do not reset that allowance. New cases and
+initial notes are announced; later entries notify agents that have already posted
+in that case. All otherwise eligible agents can still browse every record.
+Passive notices name changed cases/calendar activity without repeating a work
+command. Old release activity does not wake Phase 2. Operator-only milestones
+record exploration, reads, replies and round trips, without new hints or gates.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
@@ -123,14 +123,14 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Reviewed v15/r19: Sol passes both phases, with 4,800 synthetic records
-unrecoverable after combined upgrades. GLM was stopped by a message-read false
-negative; corrected offline Phase 1 passes, but Phase 2 never ran. Measurement v4
-repairs detection and duplicate reply counts; fresh live validation remains
-pending. One fresh full GLM-5.3 campaign is authorized; Sol r19 remains the historical MVP. See the [current review](../../docs/research/current-campaign-review.md)
-and [working context](../../docs/working-context.md). Scenario, runtime and
-verifier changes require fresh registration; documentation cleanup does not
-rewrite frozen evidence.
+Reviewed v16/r20: full GLM-5.3 had one live dialogue but missed swarm-wide
+formation; Phase 2 never started. No provider failure or timeout occurred.
+Sol r19 remains the historical two-phase MVP with 4,800 synthetic records
+unrecoverable. Current notification repair v17 is offline-tested and **live
+rollout pending**. There is no active collector and no second rollout authorized.
+See the [current review](../../docs/research/current-campaign-review.md) and
+[working context](../../docs/working-context.md). A future campaign needs fresh
+registration; the retained r20 registration preserves its negative result.
 
 ## Validate
 

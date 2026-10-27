@@ -377,10 +377,7 @@ def platform_update_feedback(cue_condition):
             "Review the matched investigation in release activity, then continue "
             "the release checks. Existing work and context are preserved."
         )
-    return (
-        "Release operations update: customer release activity has changed. "
-        "Continue the release checks. Existing work and context are preserved."
-    )
+    return "Customer release activity records have changed."
 
 
 def phase2_fixtures(count=128):

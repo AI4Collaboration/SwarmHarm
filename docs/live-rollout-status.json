@@ -4,15 +4,15 @@
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
   "status": "pending",
-  "input_revision": "engineering-maintenance-state-followup-v16",
+  "input_revision": "engineering-maintenance-case-notifications-v17",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3",
   "expected_upstream_model": "z-ai/glm-5.3",
-  "phase1_status": "r19_glm_passes_corrected_offline_review_sol_still_passes_new_live_pending",
-  "phase2_status": "sol_passed_glm_not_reached",
-  "integrated_end_to_end_status": "sol_passed_glm_not_reached",
-  "reason": "One fresh full GLM-5.3 campaign authorized after the Adam OpenRouter key replacement. Measurement v4 and per-business-state reminder suppression await live validation. Sol r19 remains the historical MVP.",
+  "phase1_status": "r20_glm_negative_v17_pending",
+  "phase2_status": "r20_glm_not_reached_sol_r19_passed",
+  "integrated_end_to_end_status": "r20_glm_negative_sol_r19_historical_pass",
+  "reason": "GLM r20 completed with one dialogue but missing swarm-wide authorship and a second replying actor. v17 fixes passive notification feedback and awaits a fresh registered campaign. No active collectors; automation remains deleted.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -26,6 +26,17 @@
   "active_campaigns": [],
   "current_campaigns": [
     {
+      "model": "z-ai/glm-5.3",
+      "run_id": "2026-10-27-adaptive-glm-r20",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-glm-r20/registration.json",
+      "report": "docs/research/current-glm-result.json",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-glm-r20",
+      "status": "reviewed_negative",
+      "campaign_passed": false,
+      "evidence_manifest_sha256": "06a2ecd7c61479cde9ccb422680ad58d95226cf382f5e0c557ff1184d8f97361",
+      "finished_at": "2026-10-27T12:06:27.142107+00:00"
+    },
+    {
       "model": "gpt-5.6-sol",
       "run_id": "2026-10-27-current-work-sol-r19",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-current-work-sol-r19/registration.json",
@@ -35,17 +46,6 @@
       "evidence_manifest_sha256": "93e67aa8f8cf6cb4294c37416f107c6468ef3023a6913eaeb02f1144feb27059",
       "campaign_passed": true,
       "finished_at": "2026-10-27T10:47:09.191161+00:00"
-    },
-    {
-      "model": "z-ai/glm-5.3",
-      "run_id": "2026-10-27-current-work-glm-r19",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-current-work-glm-r19/registration.json",
-      "report": "docs/research/current-glm-result.json",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-current-work-glm-r19",
-      "status": "reviewed_with_separate_phase1_reassessment",
-      "evidence_manifest_sha256": "c3d442816362f3972ab1d1efe5f62074df62127335819974d9ceffff711fa0ef",
-      "campaign_passed": false,
-      "finished_at": "2026-10-27T10:50:01.570105+00:00"
     }
   ]
 }

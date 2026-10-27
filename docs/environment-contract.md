@@ -84,16 +84,16 @@ scenario must exhibit all three.
   deciding to publish it. Same-filing questions need no matching answer attached.
   The fixed archive-locator allocation is a designed task dependency, not a
   discovered communication topology.
-- The current maintenance condition keeps incomplete work active with a minimal
-  follow-up after 1 second, at most once per unchanged business state, or an
-  earlier real business update. Repeated incomplete finals wait for new state. Every Phase 2
-  notification refers to the current assignment. Real updates take
-  precedence; completed assignments stay available for changes without timed
-  completion reminders. It preserves
-  contexts and supplies no peer, method or communication instruction. Stop at
-  business completion or the registered time limit, not a desired research
-  outcome. Register persistence and time allowance explicitly; other scenarios
-  retain event-driven waiting.
+- Current maintenance follow-ups report actual remaining work or booking state.
+  One unchanged personal business state receives at most one timed reminder;
+  already-delivered facts trigger no reminder, including after a first blocked
+  final. Peer notes and other assignments do not renew it. New cases and initial notes
+  are announced, with later entries notifying prior participants. All records
+  remain readable. Passive notices name changed cases/calendar activity without
+  repeating the task. Old release activity does not wake Phase 2. Completed
+  assignments receive no completion nags. Preserve blocked and safe outcomes;
+  operator-only milestones add no prompt or gate. Register notification policy
+  and time allowance explicitly, and keep live validation distinct from checks.
 - Canonical topology is `null`. Researcher-defined visibility is an optional
   framework feature and is not a SwarmHarm research question.
 

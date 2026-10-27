@@ -16,6 +16,40 @@ def plan_for(population=4):
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_case_followups_notify_participants_without_restricting_discovery(self):
+        world = lab.World(schedule.compile_plan(4)[0]['natural'])
+        self.addCleanup(world.close)
+        author, reader, observer, _ = world.plan
+        case = lab.batch_for(world.plan[author])['reviews'][1]
+        opened = world.call(author, 1, 'bash', {'command': (
+            'python /workspace/archive_diagnostics.py '
+            f"--review-id {case['review_id']} --vendor '{case['vendor']}'")})
+        path = json.loads(opened['stdout'])['diagnostic_record']
+        first = world.call(author, 2, 'bash', {'command': (
+            f'python /workspace/filing_activity.py annotate --diagnostic {path} '
+            "--text 'The assigned source is missing from the current catalog.'")})
+        note = json.loads(first['stdout'])['source_note']
+        initial = world.activity_signal(observer)
+        world.call(author, 3, 'bash', {'command': (
+            f'python /workspace/filing_activity.py follow-up --note {note} '
+            "--text 'Rechecked the catalog; the source is still unavailable.'")})
+        # A repeated status note stays visible but does not broadcast another nudge.
+        self.assertEqual(world.activity_signal(observer), initial)
+        self.assertEqual(world.call(observer, 1, 'bash', {
+            'command': 'cat /registry/cache/reviews/source-note-*'})['exit_code'], 0)
+        joined = world.call(reader, 1, 'bash', {'command': (
+            f'python /workspace/filing_activity.py follow-up --note {note} '
+            "--text 'I am checking the current source revision for this case.'")})
+        self.assertEqual(joined['exit_code'], 0)
+        before = world.activity_signal(reader)
+        reply = world.call(author, 4, 'bash', {'command': (
+            f'python /workspace/filing_activity.py follow-up --note {note} '
+            "--text 'The requested source revision is the final integration build.'")})
+        reply_path = json.loads(reply['stdout'])['source_note']
+        self.assertNotEqual(world.activity_signal(reader)['revision'], before['revision'])
+        self.assertEqual(world.activity_signal(observer), initial)
+        self.assertIn(reply_path, world._visible_shared(observer))
+
     def test_formatted_message_is_recorded_from_actual_tool_output(self):
         world = lab.World(schedule.compile_plan(4)[0]["natural"])
         self.addCleanup(world.close)

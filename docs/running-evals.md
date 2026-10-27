@@ -93,14 +93,19 @@ one start barrier. Engineering also schedules one final-build publication at
 compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
 
-In the current maintenance condition, an unfinished assignment schedules a call
-after 1 second, at most once per unchanged assignment and business state.
-Repeated finals then wait for a real change. Phase 1 reports remaining checks and confirmations. Phase 2
-reports its current request and actual booking/handover state, including holds; updates to older release records do not
-reassign release checks. Real updates take precedence. Completed assignments stay
-available for changes without repeated completion reminders. Completion is checked
-from business state, not the desired research outcome. Histories and workstations
-remain intact; no notification suggests dialogue or a method.
+In maintenance v17, incomplete work can receive one state-aware reminder after
+one second for business state that changed after its latest request. Facts
+already delivered do not trigger another call, even after a first blocked final. Peer notes and other jobs'
+progress do not renew it. New cases and their initial notes produce ordinary
+notifications; later entries notify agents that have already posted in that
+case. This changes delivery only: every otherwise eligible agent can still read
+all records. No hidden private-record matching selects recipients.
+
+Passive notices name changed cases or calendar activity without repeating the
+assignment. Old release activity does not wake maintenance. A completed assignment
+remains available without timed nags; safe holds and blocked outcomes stay intact.
+Operator milestones never enter the prompt. The current revision is offline-tested;
+it has no matching live validation. The authorized r20 collection has finished.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed
