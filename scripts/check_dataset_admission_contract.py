@@ -74,7 +74,8 @@ def main():
         fail(f"missing current path {status['environment']}")
     baseline = status.get("latest_validated_baseline", {})
     baseline_review = baseline.get("review")
-    if not baseline_review or not (ROOT / baseline_review).is_file():
+    pending = status.get("active_source_live_validation") == "pending_fresh_matching_campaign"
+    if (baseline_review and not (ROOT / baseline_review).is_file()) or (not baseline_review and not pending):
         fail("latest validated baseline review is missing")
     if status.get("current_status") not in {
         "glm_default_source_live_rollout_pending",

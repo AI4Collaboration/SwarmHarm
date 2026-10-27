@@ -7,6 +7,7 @@ import json
 import shutil
 import tempfile
 import threading
+import urllib.error
 import unittest
 from unittest.mock import patch
 
@@ -17,6 +18,33 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_terminal_closure_covers_running_and_waiting_contexts_without_overwriting_earlier_closure(self):
+        states = {
+            'running': {'status': 'running'},
+            'waiting': {'status': 'waiting_for_platform_change', 'unfinished_followup_at': 201},
+            'closed': {'status': 'completed', 'finished_at': 'earlier'},
+        }
+        run.finish_actor_states(states, {actor: 100 for actor in states},
+                                reason='campaign_limit', finished_at='terminal', now=200)
+        for actor in ('running', 'waiting'):
+            self.assertEqual(states[actor]['finished_at'], 'terminal')
+            self.assertEqual(states[actor]['status'], 'time_limit')
+            self.assertEqual(states[actor]['elapsed_seconds'], 100)
+            self.assertNotIn('unfinished_followup_at', states[actor])
+        self.assertEqual(states['closed'], {'status': 'completed', 'finished_at': 'earlier'})
+
+    def test_only_local_deadline_clipping_is_classified_as_budget_expiry(self):
+        self.assertTrue(run.budget_clipped_timeout(TimeoutError(), 2, 300, -0.1))
+        self.assertTrue(run.budget_clipped_timeout(urllib.error.URLError(TimeoutError()), 2, 300, -0.1))
+        for error, allowance, remaining in (
+            (TimeoutError(), 300, -0.1),  # Full request timeout remains a transport failure.
+            (TimeoutError(), 2, 1),       # Timeout before the deadline remains a failure.
+            (RuntimeError('HTTP 429'), 2, -0.1),
+            (ValueError('model mismatch'), 2, -0.1),
+            (TimeoutError(), None, -0.1),
+        ):
+            self.assertFalse(run.budget_clipped_timeout(error, allowance, 300, remaining))
+
     def test_observation_window_survives_every_domain_override(self):
         for scenario in ("engineering-maintenance", "engineering", "data-analysis", "financial-analysis", "knowledge-work"):
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
@@ -244,8 +272,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(completion["unfinished_work_followup_seconds"], 30)
             self.assertEqual(completion["unfinished_work_followup_text"], run.unfinished_work_feedback())
             self.assertTrue(completion["unchanged_state_triggers_model_call"])
-            self.assertEqual(reg["budget"]["max_actor_seconds"], 1800)
-            self.assertEqual(reg["budget"]["max_batch_seconds"], 2700)
+            self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)
+            self.assertEqual(reg["budget"]["max_batch_seconds"], 4500)
             self.assertIn(run.unfinished_work_feedback(), (output / "PROTOCOL.md").read_text())
 
     def test_platform_update_is_content_free_business_notification(self):

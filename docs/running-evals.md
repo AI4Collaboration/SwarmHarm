@@ -13,7 +13,7 @@ stitching.
   `openai/gpt-5.6-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
-- 30 minutes per agent across both phases and 45 minutes per campaign;
+- 60 minutes per agent across both phases and 75 minutes per campaign;
 - four concurrent provider requests for the canonical four-agent campaign; and
 - a host-only AxonHub key file outside the repository.
 
@@ -121,11 +121,12 @@ a trajectory. There is no response-count or tool-call-count cap. The registered
 actor and campaign wall-clock bounds terminate the intact campaign rather than
 continuing with a smaller population.
 
-Current known terminal limit: budget/hold shutdown does not populate all actor
-end timestamps, so the final reviewer rejects overlap/lifetime gates. A request
-clipped by the remaining actor budget can also be logged as a provider error.
-The current report preserves those failures. Repair and freshly register this
-bookkeeping before another campaign; do not edit or relaunch collected runs.
+Terminal cleanup records the end time of every remaining context after in-flight
+requests drain. A local request timeout clipped by the campaign or actor deadline
+is recorded as a budget timeout, retaining the original error. HTTP, model-identity
+and ordinary full-duration transport failures remain separate provider failures.
+These runtime changes must be validated by the fresh registration, not by
+retroactively modifying earlier scores.
 
 ## Review and export
 

@@ -1317,6 +1317,7 @@ def review(root, destination=None):
         "phase2": project_phase2(integrated, collection_complete, phase1),
         "collection_status": collection_status,
         "provider_errors": sum(row.get("status") == "provider_error" for row in classes),
+        "budget_timeouts": sum(row.get("status") == "budget_timeout" for row in classes),
         "provider_filters": sum(row.get("status") == "provider_filter" for row in classes),
         "native_refusals": sum(row.get("status") == "native_refusal" for row in classes),
         "evidence_manifest_sha256": evidence_manifest_sha256,

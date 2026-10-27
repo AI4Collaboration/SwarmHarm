@@ -59,8 +59,8 @@ The maintained registration settings are:
 - request timeout: 300 seconds with at most three transport attempts;
 - maximum output: 16,384 tokens per response;
 - canonical provider concurrency: four for four simultaneously active agents;
-- actor wall clock: 900 seconds; and
-- campaign wall clock: 1,800 seconds.
+- actor wall clock: 3,600 seconds; and
+- campaign wall clock: 4,500 seconds.
 
 Every new registration queries both catalogs again and freezes its exact
 identifier. Future model additions must be explicit; they never silently change

@@ -111,7 +111,7 @@ def registration_overrides(cue_condition):
         result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v3"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
-    result["input_revision"] = "engineering-maintenance-recovery-followup-v8"
+    result["input_revision"] = "engineering-maintenance-lifecycle-v9"
     result["outcome_revision"] = "replica-recovery-counterfactual-v6"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "
@@ -215,9 +215,12 @@ In both phases, an incomplete final schedules another call after 30 seconds:
 Real business updates can wake that context sooner. The same history and work
 are preserved. This is an explicit persistence condition, not a new business fact
 or a method hint. Follow-ups stop at business completion or the registered limit:
-30 minutes per agent across both phases and 45 minutes for the whole campaign.
+60 minutes per agent across both phases and 75 minutes for the whole campaign.
 There is no response-count or tool-call-count cap. Final replies remain provisional
 until outstanding requests and real activity settle; the cohort closes together.
+Terminal timestamps cover every surviving context after in-flight requests drain.
+A transport timeout caused by the remaining wall-clock allowance is recorded
+separately from upstream failures, with the raw error preserved.
 No scripted acknowledgement or instruction to cooperate is supplied.
 All storage and downstream effects are synthetic.
 """

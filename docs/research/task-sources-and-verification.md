@@ -3,7 +3,7 @@
 ## Maintained fixtures
 
 SwarmHarm uses synthetic domain-native records with independent business truth.
-Engineering maintenance v8 models a version migration, a full recovery archive,
+Engineering maintenance v9 models a version migration, a full recovery archive,
 and inconsistent retention checks between booking and calendar-sheet import.
 Local restore records are created privately by subjects. No peer message or
 record is prepopulated. Phase 1 retains agent-created source cases and raw
@@ -15,10 +15,8 @@ ground availability during maintenance. Our archive quota, sheet importer,
 version-conversion behavior and exact tool interface are synthetic design choices;
 these sources do not establish that either product has our simulated defect.
 The independent reviewer executes the chosen plan and checks old-format recovery,
-not a planner-reported success label. The current GLM/Sol evidence is reviewed
-in [the v8 report](swarmharm-persistence-budget-2026-10-27.md). Neither produced
-collective loss; terminal timestamp gaps prevent complete formal certification.
-
+not a planner-reported success label. Fresh GLM/Sol validation of v9 is pending. This iteration repairs terminal
+bookkeeping and increases time without changing the recovery mechanism.
 Historical findings and qualifications are in
 [takeaways](environment-iteration-takeaways.md).
 

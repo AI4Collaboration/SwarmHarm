@@ -49,7 +49,7 @@ AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
-        'max_actor_seconds':1800,'max_batch_seconds':2700,'provider_concurrency':4,
+        'max_actor_seconds':3600,'max_batch_seconds':4500,'provider_concurrency':4,
         'program_timeout_seconds':30,'active_contexts_natural':4}
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
 CATALOG_TIMEOUT_SECONDS=120
@@ -155,6 +155,23 @@ def retryable_transport_error(error,error_file):
     if not error_file.exists():return True
     payload=load(error_file);status=payload.get('http_status')
     return status is None or status in RETRYABLE_HTTP_STATUS
+
+def budget_clipped_timeout(error, allowance, request_timeout, remaining):
+    """Only a local timeout at the actual campaign boundary is budget expiry."""
+    reason = error.reason if isinstance(error, urllib.error.URLError) else error
+    return (isinstance(reason, TimeoutError) and allowance is not None
+            and allowance < request_timeout and remaining <= 0)
+
+def finish_actor_states(states, starts, *, reason, finished_at, now):
+    """Record closure of surviving contexts after pending inference has drained."""
+    for actor, state in states.items():
+        if state.get('finished_at'):
+            continue
+        if state['status'] in ('running', 'waiting_for_platform_change', 'interrupted'):
+            state['status'] = 'time_limit' if reason == 'campaign_limit' else 'interrupted'
+        state.update(finished_at=finished_at, termination_reason=reason,
+                     elapsed_seconds=round(now-starts[actor], 2))
+        state.pop('unfinished_followup_at', None)
 def empty_tool_arguments(raw):
     value=json.loads(raw)
     return value=={} or value=={'parameters':{}}
@@ -211,7 +228,7 @@ def make_plan(
 
 def normalized_filing_deadline(value=None):
     if value is None:
-        return (datetime.now(timezone.utc)+timedelta(minutes=45)).replace(
+        return (datetime.now(timezone.utc)+timedelta(seconds=BUDGET['max_batch_seconds']+900)).replace(
             microsecond=0
         ).isoformat()
     try:
@@ -873,6 +890,7 @@ def collect(root,registration_dir):
         limit=budget['max_transport_attempts_per_request'];value=None;classification=None;last_error=None
         request_id=str((folder/label).relative_to(root))
         for attempt in range(1,limit+1):
+            allowance=None
             with state_lock:
                 progress['model_requests_started']+=1
             attempt_folder=folder/'transport-attempts'/label;attempt_label=f'{attempt:04d}'
@@ -885,8 +903,8 @@ def collect(root,registration_dir):
                         remaining.append(actor_deadline-time.monotonic())
                     if min(remaining)<=0:
                         raise CampaignLimit('Registered actor or campaign wall-clock limit reached')
-                    value=transport.call(body,attempt_folder,attempt_label,
-                        timeout=min(budget['request_timeout_seconds'],max(1,min(remaining))))
+                    allowance=min(budget['request_timeout_seconds'],min(remaining))
+                    value=transport.call(body,attempt_folder,attempt_label,timeout=allowance)
                 validate_response_model(body,value)
             except CampaignLimit:
                 mark_inflight(request_id,None)
@@ -894,8 +912,13 @@ def collect(root,registration_dir):
             except Exception as error:
                 last_error=error;error_file=attempt_folder/(attempt_label+'.error.json')
                 attempt_class=monitor.classify(load(error_file),True) if error_file.exists() else {'status':'provider_error'}
+                remaining=min(deadline, actor_deadline if actor_deadline is not None else deadline)-time.monotonic()
+                expired=budget_clipped_timeout(error,allowance,budget['request_timeout_seconds'],remaining)
+                if expired:
+                    attempt_class={'status':'budget_timeout','raw_error_preserved':True}
                 record_attempt({'path':str((folder/label).relative_to(root)),'attempt':attempt,
-                    'status':'failed','classification':attempt_class,'error_type':type(error).__name__,'at':utc()})
+                    'status':'failed','classification':attempt_class,'error_type':type(error).__name__,
+                    'timeout_seconds':allowance,'at':utc()})
                 retryable=retryable_transport_error(error,error_file)
                 within_actor=(actor_deadline is None or time.monotonic()<actor_deadline)
                 if retryable and attempt<limit and time.monotonic()<deadline and within_actor:
@@ -909,6 +932,8 @@ def collect(root,registration_dir):
                     'transport_attempts':attempt})
                 record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
                 mark_inflight(request_id,None)
+                if expired:
+                    raise CampaignLimit('Inference reached its registered wall-clock boundary; raw timeout retained') from error
                 raise Hold(str(error)) from error
             shutil.copy2(attempt_folder/(attempt_label+'.request.json'),folder/(label+'.request.json'))
             shutil.copy2(attempt_folder/(attempt_label+'.response.json'),folder/(label+'.response.json'))
@@ -926,7 +951,7 @@ def collect(root,registration_dir):
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension=continuation_module.Continuation(world,load(root/'phase2-plan.json'))
-        phase2_activation=None
+        phase2_activation=None;termination_reason='quiescence'
         def export(actor=None):
             save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
             save(root/name/'continuation.json',{
@@ -1009,7 +1034,6 @@ def collect(root,registration_dir):
                     state.pop('unfinished_followup_at',None)
                     if time.monotonic()>=deadline or time.monotonic()-starts[actor]>=budget['max_actor_seconds']:
                         state['status']='time_limit'
-                        state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
                         export(actor)
                         raise CampaignLimit(
                             'One context reached its registered wall-clock limit; '
@@ -1240,6 +1264,7 @@ def collect(root,registration_dir):
                     extension.activated and extension.all_complete(),len(futures),
                     {actor:activity_signal(actor)['revision'] for actor in active})
                 if complete_together:
+                    termination_reason='business_complete'
                     with state_lock:progress['completed_workers']+=len(active)
                     save(root/name/'cohort-completion.json',{
                         'at':utc(),'actors':sorted(active),
@@ -1255,12 +1280,19 @@ def collect(root,registration_dir):
                             world.record_final(actor,final['step'],state['final'])
                         state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
                         world.close_actor(actor);export(actor);active.remove(actor)
-        except BaseException:
+        except BaseException as error:
+            termination_reason=('campaign_limit' if isinstance(error,CampaignLimit)
+                else 'provider_hold' if isinstance(error,Hold)
+                else 'operator_interrupted' if isinstance(error,KeyboardInterrupt)
+                else 'collector_error')
             for actor,state in states.items():
                 if state['status']=='running':
                     state['status']='interrupted';state['interrupted_at']=utc();export(actor)
             raise
         finally:
+            finish_actor_states(states,starts,reason=termination_reason,
+                                finished_at=utc(),now=time.monotonic())
+            for actor in states:export(actor)
             cleanup.extend({'phase':name,**item} for item in world.close());export()
             save(root/name/'actors.json',states)
         return states,world.summary()

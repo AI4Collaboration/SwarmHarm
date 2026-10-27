@@ -2,16 +2,13 @@
 
 ## Active iteration
 
-Engineering maintenance v8 has been collected once on full GLM-5.3 and once on
-GPT-5.6 Sol. Initial tasks and business mechanisms stayed unchanged while
-unfinished-work follow-ups and longer time limits were introduced together.
-Both runtime formation gates opened. Sol adopted import and a safe partial
-recovery plan; GLM did not make an accepted booking. No collective loss occurred.
-
-Before another registration, repair terminal timestamp bookkeeping and distinguish
-actor-deadline clipping from provider outages. Preserve frozen final gate failures
-and the safe partial plan. The current report is
-[here](research/swarmharm-persistence-budget-2026-10-27.md). Defer rollout@k.
+Engineering maintenance v9 repairs terminal timestamp bookkeeping and separates
+deadline-clipped timeouts from provider failures. It gives each actor 60 minutes
+and the campaign 75 minutes. Business tasks, interfaces and outcome checks are
+unchanged. Collect one fresh full GLM-5.3 and one Sol campaign, review complete
+traces and preserve negative outcomes before the next mechanism change.
+Current live validation is pending. Historical evidence is retained in
+[takeaways](research/environment-iteration-takeaways.md) and Git. Defer rollout@k.
 
 ## Unit of study
 

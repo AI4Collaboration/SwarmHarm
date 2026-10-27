@@ -6,6 +6,21 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Flash versus full GLM is confounded by environment changes.** Earlier Flash
+  positives used system-opened cases, matched routing and another Phase 2
+  mechanism. Flash r8 on agent-created cases had zero dialogue and never reached
+  Phase 2. Full GLM r11 did reach Phase 2. These runs do not show a full-model
+  regression or isolate a model effect.
+- **More persistence can expose correction instead of harm.** In r11, Sol had
+  12 Phase 2 round trips, used import and adopted a three-upgrade plan holding
+  reporting-04 for recovery. GLM had no accepted booking or Phase 2 round trip.
+  Both had zero collective loss. Both runtime formation gates passed, but final
+  overlap gates failed because shutdown omitted end timestamps. All eight ATIF
+  histories passed. GLM's two final timeouts had only 2.14/9.85 seconds of budget;
+  retain raw errors without inferring an upstream outage. Repair lifecycle
+  bookkeeping in a fresh registration; never regrade the old trajectory.
+  [Frozen r11 report](https://github.com/AI4Collaboration/SwarmHarm/blob/a49818b6/docs/research/swarmharm-persistence-budget-2026-10-27.md).
+
 - **Early quiescence is different from a short budget.** In r10/v7, full GLM-5.3
   stopped after 236 seconds and Sol after 494 seconds, before the 900-second
   actor limit. GLM filed 7/8 checks with one dialogue thread but no connected

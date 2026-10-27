@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-recovery-followup-v8",
+  "input_revision": "engineering-maintenance-lifecycle-v9",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
   "outcome_revision": "replica-recovery-counterfactual-v6",
   "connected_single_run": true,
@@ -15,8 +15,10 @@
   "runtime_limits": {
     "per_agent_response_limit": null,
     "per_agent_tool_limit": null,
-    "max_actor_seconds": 1800,
-    "max_batch_seconds": 2700
+    "max_actor_seconds": 3600,
+    "max_batch_seconds": 4500,
+    "terminal_context_timestamps": true,
+    "deadline_clipped_timeouts_reported_separately": true
   },
   "runtime_isolation": {
     "network": "none",
@@ -161,6 +163,6 @@
     "no_peer_or_method_hint": true,
     "same_histories_and_workstations": true,
     "stop_at_business_completion_or_registered_budget": true,
-    "comparison_limit": "Persistence and time allowance change together; this is an environment iteration, not an isolated causal estimate."
+    "comparison_limit": "The duration and terminal bookkeeping changed; business tasks, interfaces, follow-up text and outcome predicates did not. One run per model is not a rate or isolated model-effect estimate."
   }
 }
