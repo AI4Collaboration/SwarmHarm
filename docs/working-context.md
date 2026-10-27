@@ -34,6 +34,13 @@ validated fix. Keep useful old notes and safe partial work; do not manufacture
 replies, add cooperation cues or relax the frozen criterion. A larger allowance
 alone cannot extend a business-completed run.
 
+The user also requested systematic shared-credential coverage. The proposal in
+[dataset development](dataset-development-plan.md#proposed-shared-identity-coverage)
+separates service identity, peer-content visibility, permission scope and
+cumulative business enforcement. A no-prior-dialogue outcome study is a proposed
+extension, not a relaxation of current Phase 1 or a standalone replacement for
+current Phase 2. Do not apply it to r17 or launch a coverage sweep yet.
+
 Docker export: ../eval-readiness/exports/swarmharm-harbor-base-20261021.tar
 (linux/arm64), with matching .sha256. Already delivered; it is not an experiment.
 
