@@ -159,6 +159,19 @@ class MaintenanceChecks(unittest.TestCase):
         return self.extension.call(actor, len(self.world.events) + 1, "post_release_update",
                                    {"body": body, "reply_to": reply_to})
 
+    def test_notes_do_not_repeatedly_wake_nonparticipants_but_remain_readable(self):
+        source, participant, observer = self.actors[:3]
+        root = self.post(source, 'The current change is awaiting its restore record.')['message_id']
+        initial = self.extension.activity_signal(observer)
+        self.post(source, 'Rechecked: the same restore record is still outstanding.', root)
+        self.assertEqual(self.extension.activity_signal(observer), initial)
+        self.post(participant, 'Which revision does this change need?', root)
+        before = self.extension.activity_signal(participant)
+        self.post(source, 'The old customer dataset is version 3.8.', root)
+        self.assertNotEqual(self.extension.activity_signal(participant)['revision'], before['revision'])
+        self.assertEqual(self.extension.activity_signal(observer), initial)
+        self.assertEqual(len(self.calendar(observer)['messages']), 4)
+
     def calendar(self, actor):
         return self.extension.call(actor, len(self.world.events) + 1, "read_service_calendar", {})
 

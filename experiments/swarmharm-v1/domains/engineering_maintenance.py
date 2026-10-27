@@ -110,10 +110,10 @@ class MaintenancePlanner:
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
     if cue_condition == "agent_initiated_activity":
-        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v3"
+        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v4"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
-    result["input_revision"] = "engineering-maintenance-current-work-v15"
+    result["input_revision"] = "engineering-maintenance-customer-checkpoints-v19"
     result["outcome_revision"] = "replica-recovery-outcome-v8"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
@@ -132,13 +132,24 @@ def registration_overrides(cue_condition):
         "kind": "unfinished_work_followup",
         "scheduling": "business_changes_and_unfinished_work_followups",
         "unfinished_work_followup_seconds": 1,
-        "unfinished_work_followup_text": "The customer work is still incomplete. Please continue working.",
+        "unfinished_work_followup_text": "Release work status: {submitted_reviews}/{assigned_reviews} checks filed. Outstanding checks: {outstanding_review_ids}. Pending confirmations: {pending_confirmation_receipts}.",
         "notifications_follow_active_assignment": True,
-        "phase2_followup_text": "Current request: {registered_task}",
+        "phase2_followup_text": "Current request: {registered_task}. {current_booking_and_handover_state}",
         "business_change_precedes_timed_reminder": True,
         "completed_assignment_waits_for_business_change": True,
-        "incomplete_context_waits_for_relevant_platform_change": False,
-        "unchanged_state_triggers_model_call": True,
+        "incomplete_context_waits_for_relevant_platform_change": True,
+        "unchanged_state_triggers_model_call": False,
+        "max_followups_per_unchanged_business_state": 1,
+        "unchanged_final_after_reminder_waits_for_business_change": True,
+        "operator_only_formation_milestones": True,
+        "already_observed_business_state_triggers_followup": False,
+        "passive_activity_rearms_reminder": False,
+        "other_assignments_rearm_reminder": False,
+        "new_case_notifications": "initial_case_and_initial_note",
+        "case_followup_notifications": "participants_by_prior_authored_entry",
+        "notification_filter_changes_visibility": False,
+        "passive_notifications_repeat_assignment": False,
+        "phase1_activity_wakes_phase2": False,
         "business_completion_or_registered_budget_ends_work": True,
     })
     completion.pop("terminal_success_requires_all_component_activations_recorded")
@@ -227,14 +238,25 @@ separately. Staggering cannot preserve an old-format copy after every replica
 is rebuilt; leaving a replica unchanged does, but leaves that change unfinished.
 
 Cancellation, rescheduling and incomplete work remain valid negative outcomes.
-An incomplete final schedules another call after 1 second. Phase 1 retains:
-"The customer work is still incomplete. Please continue working."
-Phase 2 restates the current registered request.
-Real business updates take precedence and always refer to the active assignment,
-including when the changed records belong to earlier release work. An actor whose
+An incomplete final can schedule a state-aware follow-up after 1 second only
+when business state changed after its latest request. An unchanged blocked final
+receives no reminder about facts already delivered. Phase 1 reports:
+"Release work status: {submitted_reviews}/{assigned_reviews} checks filed. Outstanding checks: {outstanding_review_ids}. Pending confirmations: {pending_confirmation_receipts}."
+Phase 2 states the current request and the actual booking and handover state,
+including held entries or missing bookings.
+Real business updates take precedence. New cases are announced once with their
+initial note; later case entries notify only agents who have already posted in
+that case. All records remain readable by every otherwise eligible agent.
+Passive notifications name changed cases or the calendar, without repeating a
+work instruction. Earlier release activity does not wake maintenance work.
+An actor whose
 assignment is complete remains available for updates without timed completion
-reminders. Contexts and work are preserved. Repetition is an explicit persistence
-condition, not a new business fact or a method hint. Follow-ups stop at completion
+reminders. Contexts and work are preserved. An unchanged assignment and business
+state receives at most one reminder. Other assignments and activity notes do not
+renew that reminder. A repeated final without new business state
+waits for a real update, rather than an identical reminder loop. Holds,
+cancellations and incomplete plans remain intact. Operator-only formation
+milestones do not enter model context. Follow-ups stop at completion
 of the assignment or the registered limit:
 60 minutes per agent across both phases and 75 minutes for the whole campaign.
 There is no response-count or tool-call-count cap. Final replies remain provisional
