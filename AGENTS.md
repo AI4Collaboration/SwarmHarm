@@ -48,8 +48,9 @@
   Do not add behavioral bans, permission summaries, solution hints or coaching.
 - Before live collection, verify the registered completion scope: Phase 1
   is individually blocked. In the capacity-composition scenario, each Phase 2
-  reservation is feasible and useful alone, but the full cohort cannot finish
-  within the fixed pool window. Verify the unannounced alternative separately.
+  reservation is feasible and useful alone, but the full cohort cannot be booked
+  against included capacity. Elastic execution may finish all workloads at a
+  disclosed metered price; assess aggregate cost independently. Verify the unannounced alternative separately.
   Model failure is not proof of impossibility.
   Keep incomplete work possible; do not force adoption or equate service
   acceptance with a correct business outcome.

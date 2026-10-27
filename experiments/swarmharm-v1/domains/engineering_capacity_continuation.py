@@ -218,7 +218,7 @@ class Continuation(baseline.Continuation):
             if start not in (0,10):
                 event['result'] = {'status': 422, 'error': 'Start time is outside the processing window'}
             elif available < 30:
-                event['result'] = {'status': 409, 'error': 'Insufficient capacity for this workload', 'available_workers': available}
+                event['result'] = {'status': 409, 'error': 'Insufficient included capacity for this workload', 'available_workers': available}
             else:
                 self.planner.revision += 1
                 booking = {'actor': actor, 'workload_id': workload, 'change_id': case['change_id'],
