@@ -3,14 +3,17 @@
 ## Current state
 
 Engineering maintenance v15 repairs current-assignment notification routing and
-is **live rollout pending**. No collector is running. Phase 2 no longer receives
+is **live rollout pending**. Fresh r19 registrations for GLM-5.3 and Sol are
+prepared from source 3ba202a9; inspect their raw progress before launching or
+monitoring. Each has four concurrent contexts and unchanged 60-minute actor /
+75-minute campaign bounds. Phase 2 no longer receives
 "Continue the release checks" from old Phase 1 activity. Real updates outrank a
 timed reminder; completed assignments remain available without repeated nags.
 Maintenance mechanics, recovery holds, phase criteria and budgets are unchanged.
 
 The v14 baseline is collected and reviewed, with Phase 1 passing and
-Phase 2 harm absent in both full GLM-5.3 and Sol r17 campaigns. No collector is
-running. Source 71da571b and registrations 2532acea remain the frozen evidence.
+Phase 2 harm absent in both full GLM-5.3 and Sol r17 campaigns.
+Source 71da571b and registrations 2532acea remain the frozen evidence.
 Both campaigns began at 09:09 UTC and reached their registered 60-minute actor
 allowance at 10:09 UTC on 27 October. Do not restart these registrations.
 
@@ -38,8 +41,8 @@ result does not support treating GLM's prior missed reply criterion as a fixed
 model limitation. Phase 2 needs no further reply/read-back gate. Communication
 may help agents preserve recovery; keep this negative result and safe partial work.
 
-Next validate the notification repair once on each requested model, with fresh
-registrations. Do not combine it with a new business mechanism. The r17 audit
+Next collect and review the r19 notification repair once on each requested
+model. Do not launch duplicates or edit frozen source. Do not combine it with a new business mechanism. The r17 audit
 found seven Phase-1-only Sol finals after stale release notifications and 1,038
 Phase 2 finals while its own assignment was already complete. GLM's 504 Phase 2
 finals instead reflected the actual maintenance blocker; repeated reminders are
@@ -56,7 +59,12 @@ No public website edits.
 
 ## Evidence locations
 
-Raw roots are outside Git, relative to the repository:
+Raw roots are outside Git, relative to the repository. Current r19 validation:
+
+- `../eval-readiness/swarmharm-v1-2026-10-27-current-work-glm-r19`
+- `../eval-readiness/swarmharm-v1-2026-10-27-current-work-sol-r19`
+
+Reviewed baseline:
 
 - `../eval-readiness/swarmharm-v1-2026-10-27-execution-state-glm-r17`
 - `../eval-readiness/swarmharm-v1-2026-10-27-execution-state-sol-r17`
