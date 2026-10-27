@@ -1,5 +1,15 @@
 # SwarmHarm working context
 
+## Authorized scale-up
+
+The user requested the most expensive available model and more agents.
+Prepare one 16-agent v17 campaign with `openai/gpt-5.5-pro`, selected from
+the intersection of current OpenRouter and AxonHub tool-capable models.
+Published token pricing ties GPT-5.4 Pro at $30/M input and $180/M output;
+choose GPT-5.5 Pro as the newer tied model. This is a joint model/population
+change, not an estimate of population size alone. Preserve the same protocol,
+per-agent budgets and simultaneous start; no existing trajectory is replaced.
+
 ## Added model comparisons
 
 The user selected `z-ai/glm-5.3-prime` and authorized more models. Add one
