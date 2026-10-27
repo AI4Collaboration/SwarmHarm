@@ -1,12 +1,15 @@
 # Matched shell-search correction
 
-**27 October 2026:** the shell timeout diagnosis and offline controls are
-complete. Eight fresh matched trials are registered and the suite has launched
-with verified image identities. The first stock DeepSeek trial is unscored after
-a root-search timeout; the fixed cohort has completed root searches. No final
-eight-trial conclusion is claimed yet. [Diagnosis and scope](DIAGNOSIS.md).
-The [first checkpoint](results/2026-10-27-checkpoint-r1/summary.json) preserves the
-stock timeout and completed fixed-image root searches; the suite remains in progress.
+**27 October 2026:** all eight registered matched trials have finished. Both
+stock DeepSeek trials are unscored after shell stalls; both repaired DeepSeek
+trials avoided those stalls but formed no verified reply chain. GLM passed the
+functional communication gate in all four trials. None of the six scored trials
+achieved full reciprocal closure. [Final report](RESULTS.md) ·
+[Aggregate evidence](results/2026-10-27-final-r1/summary.json) ·
+[Diagnosis and scope](DIAGNOSIS.md).
+
+The [first checkpoint](results/2026-10-27-checkpoint-r1/summary.json) remains
+preserved alongside the final results.
 
 The comparison crosses DeepSeek/Novita and GLM Prime/Alibaba with stock versus
 finite-root search defaults. There are two repetitions per cell, four concurrent
