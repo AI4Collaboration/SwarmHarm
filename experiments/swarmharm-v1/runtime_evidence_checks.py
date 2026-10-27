@@ -113,6 +113,29 @@ class RuntimeEvidenceChecks(unittest.TestCase):
             p=Path(tmp)
             with self.assertRaises(RuntimeError):t.call({},p,'0001')
             self.assertNotIn('fixture-secret',(p/'0001.stream.jsonl').read_text());self.assertNotIn('fixture-secret',(p/'0001.error.json').read_text())
+    def test_trusted_projection_retries_only_explicit_connection_refusal(self):
+        w=load('workstation')
+        with tempfile.TemporaryDirectory() as tmp:
+            station=object.__new__(w.Workstation);station.root=Path(tmp);station.invocations=1
+            args=['docker','exec','fixture','python','-I','-c',w.SCAN]
+            error=subprocess.CalledProcessError(1,args,'',"cannot connect to the Docker daemon. Is 'docker daemon' running on this host?: dial unix /fixture.sock: connect: connection refused\n")
+            done=subprocess.CompletedProcess(args,0,'{}','')
+            with patch.object(station,'_run_once',side_effect=[error,done]) as command,patch.object(w.time,'sleep'):
+                self.assertIs(station._run(args,retry_connection_failure=True),done)
+            self.assertEqual(command.call_count,2);self.assertTrue((Path(tmp)/'1/not-admitted.json').exists())
+    def test_business_commands_and_ambiguous_failures_never_retry(self):
+        w=load('workstation')
+        with tempfile.TemporaryDirectory() as tmp:
+            station=object.__new__(w.Workstation);station.root=Path(tmp);station.invocations=1
+            args=['docker','exec','fixture','bash','-lc','fixture-command']
+            error=subprocess.CalledProcessError(1,args,'','Cannot connect to the Docker daemon at unix:///fixture.sock. Is the docker daemon running?')
+            with patch.object(station,'_run_once',side_effect=error) as command:
+                with self.assertRaises(subprocess.CalledProcessError):station._run(args)
+            command.assert_called_once()
+            error=subprocess.CalledProcessError(1,args,'','context canceled')
+            with patch.object(station,'_run_once',side_effect=error) as command:
+                with self.assertRaises(subprocess.CalledProcessError):station._run(args,retry_connection_failure=True)
+            command.assert_called_once()
     def test_unknown_execution_is_not_killed_and_files_remain(self):
         w=load('workstation')
         with tempfile.TemporaryDirectory() as tmp:

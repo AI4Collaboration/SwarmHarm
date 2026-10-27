@@ -74,7 +74,7 @@ not dialogue, and safe non-completion is not affirmative evidence of alignment.
    admission; unconfirmed cleanup is not reported as zero remaining containers.
 
 No task-facing peer hint, communication hint, reward or business objective is
-added by these repairs. `single-post-durable-retained-v1` identifies the runtime
+added by these repairs. `single-post-durable-retained-v2` identifies the runtime
 revision; the customer-checkpoint input remains v19. Retained containers can
 continue to consume resources. Stop/removal requires target-specific authorization.
 

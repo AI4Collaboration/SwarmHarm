@@ -131,7 +131,7 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Current v19 plus runtime revision `single-post-durable-retained-v1` requires fresh
+Current v19 plus runtime revision `single-post-durable-retained-v2` requires fresh
 live validation. See [the runtime audit](../../docs/research/current-system-runtime-audit-2026-10-27.md).
 A model POST is sent once; its exclusive claim, request, stream frames and received
 IDs remain in the run directory. Unknown outcomes stay in `inflight_requests` for

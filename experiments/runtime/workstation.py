@@ -9,6 +9,8 @@ import subprocess
 import uuid
 import importlib.util
 import tempfile
+import re
+import time
 ATOMIC_SPEC=importlib.util.spec_from_file_location("swarmharm_workstation_atomic",Path(__file__).parent/'atomic.py')
 infra=importlib.util.module_from_spec(ATOMIC_SPEC);ATOMIC_SPEC.loader.exec_module(infra)
 save=infra.atomic_json
@@ -80,7 +82,22 @@ class Workstation:
             detail=error.stderr.decode(errors='replace') if isinstance(error.stderr,bytes) else str(error.stderr or error)
             raise RuntimeError('Workstation startup failed: '+detail+'; artifacts: '+str(self.root)) from error
 
-    def _run(self,args,input=None,timeout=30):
+    def _run(self,args,input=None,timeout=30,retry_connection_failure=False):
+        for attempt in range(3):
+            try:
+                return self._run_once(args,input,timeout)
+            except subprocess.CalledProcessError as error:
+                # Opt in only for trusted observation/projection, never subject bash.
+                text=(error.stderr or '').strip()
+                refused=(error.returncode==1 and not error.stdout and (
+                    re.fullmatch(r"Cannot connect to the Docker daemon at unix://[^\n]+\. Is the docker daemon running\?",text)
+                    or re.fullmatch(r"cannot connect to the Docker daemon\. Is 'docker daemon' running on this host\?: dial unix [^\n]+: connect: connection refused",text)))
+                if not retry_connection_failure or not refused or attempt==2:raise
+                save(self.root/str(self.invocations)/'not-admitted.json',
+                     {'reason':text,'retry':'trusted operation; explicit connection failure before admission'})
+                time.sleep(.25*(attempt+1))
+
+    def _run_once(self,args,input=None,timeout=30):
         self.invocations+=1;folder=self.root/str(self.invocations);folder.mkdir()
         save(folder/'command.json',{'arguments':args,'timeout':timeout})
         input_path=folder/'stdin';input_path.write_text(input or '')
@@ -97,7 +114,7 @@ class Workstation:
         return result
 
     def observe(self):
-        values=json.loads(self._run(['docker','exec',self.name,'python','-I','-c',SCAN]).stdout)
+        values=json.loads(self._run(['docker','exec',self.name,'python','-I','-c',SCAN],retry_connection_failure=True).stdout)
         save(self.root/'last-snapshot.json',values)
         if values['background_processes']:
             # The mirrored business view cannot safely be refreshed while an
@@ -107,7 +124,7 @@ class Workstation:
 
     def hydrate(self,values,replace_registry):
         self.observe()
-        return self._run(['docker','exec','-i',self.name,'python','-I','-c',HYDRATE],input=json.dumps({'files':values,'replace_registry':replace_registry}))
+        return self._run(['docker','exec','-i',self.name,'python','-I','-c',HYDRATE],input=json.dumps({'files':values,'replace_registry':replace_registry}),retry_connection_failure=True)
 
     def execute(self,command,shared):
         self.hydrate(shared,True)

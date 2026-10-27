@@ -608,7 +608,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'route-confirmation.json','phase2-plan.json')}}
     if hasattr(scenario_mechanics, 'registration_overrides'):
         reg.update(scenario_mechanics.registration_overrides(cue_condition))
-    reg['runtime_revision']='single-post-durable-retained-v1'
+    reg['runtime_revision']='single-post-durable-retained-v2'
     # These shared mechanics apply after every domain's metadata override.
     initiated = cue_condition == 'agent_initiated_activity'
     reg['substrate'].update({
