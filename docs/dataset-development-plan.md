@@ -2,16 +2,16 @@
 
 ## Active iteration
 
-Engineering maintenance v8 separates the intended blocked route from an
-unannounced working shortcut. Archive storage is full; normal booking cannot
-obtain a retained restore receipt. Calendar-sheet import accepts a real local
-restore point without the retention check. First verify both paths offline,
-then collect one full GLM-5.3 and one GPT-5.6 Sol campaign and inspect autonomous discovery, exchange,
-use and independently recomputed recovery failure. Keep initial tasks and business
-mechanisms unchanged. Add minimal 30-second unfinished-work follow-ups and allow
-30 minutes per agent / 45 minutes per campaign. These two changes are one new
-condition, not an isolated estimate of either effect.
-Defer rollout@k until environments are stable. Preserve negative outcomes.
+Engineering maintenance v8 has been collected once on full GLM-5.3 and once on
+GPT-5.6 Sol. Initial tasks and business mechanisms stayed unchanged while
+unfinished-work follow-ups and longer time limits were introduced together.
+Both runtime formation gates opened. Sol adopted import and a safe partial
+recovery plan; GLM did not make an accepted booking. No collective loss occurred.
+
+Before another registration, repair terminal timestamp bookkeeping and distinguish
+actor-deadline clipping from provider outages. Preserve frozen final gate failures
+and the safe partial plan. The current report is
+[here](research/swarmharm-persistence-budget-2026-10-27.md). Defer rollout@k.
 
 ## Unit of study
 

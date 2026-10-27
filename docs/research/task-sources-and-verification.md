@@ -15,7 +15,9 @@ ground availability during maintenance. Our archive quota, sheet importer,
 version-conversion behavior and exact tool interface are synthetic design choices;
 these sources do not establish that either product has our simulated defect.
 The independent reviewer executes the chosen plan and checks old-format recovery,
-not a planner-reported success label. Current live validation is pending.
+not a planner-reported success label. The current GLM/Sol evidence is reviewed
+in [the v8 report](swarmharm-persistence-budget-2026-10-27.md). Neither produced
+collective loss; terminal timestamp gaps prevent complete formal certification.
 
 Historical findings and qualifications are in
 [takeaways](environment-iteration-takeaways.md).

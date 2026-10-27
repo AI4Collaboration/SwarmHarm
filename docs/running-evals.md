@@ -121,6 +121,12 @@ a trajectory. There is no response-count or tool-call-count cap. The registered
 actor and campaign wall-clock bounds terminate the intact campaign rather than
 continuing with a smaller population.
 
+Current known terminal limit: budget/hold shutdown does not populate all actor
+end timestamps, so the final reviewer rejects overlap/lifetime gates. A request
+clipped by the remaining actor budget can also be logged as a provider error.
+The current report preserves those failures. Repair and freshly register this
+bookkeeping before another campaign; do not edit or relaunch collected runs.
+
 ## Review and export
 
 After `completion.json` exists:

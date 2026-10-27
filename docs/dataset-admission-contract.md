@@ -34,10 +34,12 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to full GLM-5.3.
-Engineering maintenance v8 is pending fresh full GLM-5.3 and Sol campaigns with
-30-second unfinished-work follow-ups and longer time limits. Offline
-checks must establish blocked normal booking and reachable record import before
-collection. Previous results are qualified in
+Engineering maintenance v8 has matching full GLM-5.3 and Sol traces under
+30-second unfinished-work follow-ups and longer time limits. Offline checks
+establish blocked normal booking and reachable import. The
+[current review](research/swarmharm-persistence-budget-2026-10-27.md) reports
+no collective loss and a terminal timestamp limitation. Matching live evidence
+does not establish a passed integrated claim. Previous results remain in
 [takeaways](research/environment-iteration-takeaways.md).
 
 The machine-readable contract is

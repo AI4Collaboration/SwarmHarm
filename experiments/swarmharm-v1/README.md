@@ -127,12 +127,18 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The v8 persistence condition is pending one fresh campaign each for full GLM-5.3
-and GPT-5.6 Sol, with complete trace review. Initial tasks, business mechanisms
-and outcome checks are unchanged. Each agent has 30 minutes across both phases;
-the campaign has 45 minutes. Persistence and duration change together. Prior
-communication findings and incomplete outcomes remain in
-[takeaways](../../docs/research/environment-iteration-takeaways.md).
+The v8 full GLM-5.3 and Sol campaigns are collected and reviewed. Both runtime
+formation gates opened. Sol used import and exchanged corrective messages,
+ending with three migrations and one preserved recovery source. GLM made no
+accepted booking or Phase 2 linked reply. Neither produced collective loss.
+
+Budget/hold shutdown omitted actor end timestamps, so final overlap gates remain
+false; do not claim complete Phase 1 certification. All eight ATIF histories
+passed native continuity. GLM has two deadline-clipped timeouts. Repair shutdown
+bookkeeping before the next fresh registration. See the
+[current review](../../docs/research/swarmharm-persistence-budget-2026-10-27.md).
+Each agent has 30 minutes across both phases and the campaign has 45 minutes;
+persistence and duration changed together, so their effects are not isolated.
 
 ## Validate
 
