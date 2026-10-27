@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **A real artifact does not guarantee adoption.** v21/r31 Sol 6.1 read all four
+  actual maintenance sheets but made no edits or imports after archive failures.
+  Removing hold did not produce scheduling; no cancellation was needed. All
+  recovery copies remained. Preserve the negative result: no failed discovery
+  claim, no proof of known working acceptance, and no extra unchanged nudges.
+
 - **Candidate recognition is not verified acceptance.** Sol 6.1 r30 proposed
   cross-replica recovery and stated it would not use import after reading peer
   objections, but never tested cross-replica import. The MVP did test it and

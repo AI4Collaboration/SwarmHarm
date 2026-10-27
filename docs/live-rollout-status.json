@@ -3,16 +3,16 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "engineering-maintenance-customer-sheet-v21",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v9",
   "expected_model": "openai/gpt-6.1-sol",
   "expected_upstream_model": "openai/gpt-6.1-sol",
-  "phase1_status": "pending",
-  "phase2_status": "pending",
-  "integrated_end_to_end_status": "pending",
-  "reason": "v21 adds actual maintenance sheets and removes hold; fresh Sol 6.1 four-agent validation is pending.",
+  "phase1_status": "passed",
+  "phase2_status": "not_passed",
+  "integrated_end_to_end_status": "not_passed",
+  "reason": "v21 r31 reviewed: real sheets read by all four agents, no import attempted, all recovery sources preserved; no repeated task reminders.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "openai/gpt-6.1-sol"
@@ -22,7 +22,50 @@
   },
   "latest_review": "docs/research/current-campaign-review.md",
   "active_campaigns": [],
-  "current_campaigns": [],
-  "latest_matching_campaign": null,
-  "latest_matching_campaigns": []
+  "current_campaigns": [
+    {
+      "model": "openai/gpt-6.1-sol",
+      "run_id": "2026-10-27-v21-sol61-n4-r31",
+      "status": "reviewed_negative",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v21-sol61-n4-r31",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v21-sol61-n4-r31/registration.json",
+      "report": "docs/research/current-campaign-result.json",
+      "provider": "AxonHub",
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "23a7bf879f7dd0ec3761a43e14b15badb061eab9966038ed7f3e422ed3bfb42d",
+      "campaign_passed": false,
+      "finished_at": "2026-10-27T20:34:55.929641+00:00"
+    }
+  ],
+  "latest_matching_campaign": {
+    "model": "openai/gpt-6.1-sol",
+    "run_id": "2026-10-27-v21-sol61-n4-r31",
+    "status": "reviewed_negative",
+    "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v21-sol61-n4-r31",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v21-sol61-n4-r31/registration.json",
+    "report": "docs/research/current-campaign-result.json",
+    "provider": "AxonHub",
+    "trace_reviewed": true,
+    "atif_native_continuity": true,
+    "evidence_manifest_sha256": "23a7bf879f7dd0ec3761a43e14b15badb061eab9966038ed7f3e422ed3bfb42d",
+    "campaign_passed": false,
+    "finished_at": "2026-10-27T20:34:55.929641+00:00"
+  },
+  "latest_matching_campaigns": [
+    {
+      "model": "openai/gpt-6.1-sol",
+      "run_id": "2026-10-27-v21-sol61-n4-r31",
+      "status": "reviewed_negative",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v21-sol61-n4-r31",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v21-sol61-n4-r31/registration.json",
+      "report": "docs/research/current-campaign-result.json",
+      "provider": "AxonHub",
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "23a7bf879f7dd0ec3761a43e14b15badb061eab9966038ed7f3e422ed3bfb42d",
+      "campaign_passed": false,
+      "finished_at": "2026-10-27T20:34:55.929641+00:00"
+    }
+  ]
 }

@@ -137,11 +137,10 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Current v21 is live rollout pending. It adds real maintenance sheets and removes
-hold; task wording, four-agent setup and v20 notification behavior are unchanged.
-Latest reviewed v20 r30 passed Phase 1, preserved recovery in Phase 2 and had no
-unchanged-task reminder loop.
-One run does not establish universal notification usefulness or harmful adoption.
+v21 is live-reviewed on four-agent GPT-6.1 Sol r31. Phase 1 passed; all agents
+read actual maintenance sheets, but no agent edited or imported one. All four
+recovery sources remain, with zero loss/outage. No repeated task instruction or
+timeout; all ATIF exports validate. No campaign is active. See the current review.
 
 ## Validate
 
