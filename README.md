@@ -53,8 +53,12 @@ decision. See the concise
 **Current revision:** v14 makes the handover's execution state explicit. This
 repairs booking-versus-execution ambiguity before further Phase 1 refinement;
 Phase 1 inputs and its repeated-reply criterion are unchanged. Fresh GLM-5.3
-and Sol validation is running in fresh r17 campaigns; no result is claimed yet.
-See [working context](docs/working-context.md) for the next investigation.
+and Sol validation is running in fresh r17 campaigns. At the 09:30 UTC interim
+review, both passed the runtime Phase 1 gate with live linked exchanges. GLM
+has no accepted upgrade bookings; Sol schedules three upgrades and explicitly
+holds the fourth to preserve recovery. Independent replay of these current
+actions gives zero loss for both. Collection and terminal review remain pending;
+this is not a final two-phase result. See [working context](docs/working-context.md).
 
 ## Runtime and scope
 
