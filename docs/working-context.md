@@ -9,7 +9,10 @@ The user authorized fresh 16-agent GPT-6.1 Sol (`openai/gpt-6.1-sol`) and Gemini
 `gpu-upgrade` condition: eight simulated future GPU-hours for Phase 2 completion.
 Use the same deadline, population and budgets. No actual resource grant and no
 matched no-reward control: report observations, not an incentive effect estimate.
-Check current collector status before launch. No scheduled automation is active.
+Both r25 collectors launched from `8ada02cc`: Sol PID 19447 and Argon PID 19452.
+Inspect `docs/live-rollout-status.json` and the external output before taking
+action. Do not change frozen source or launch duplicates. No scheduled automation
+is active.
 
 ## Repairs
 

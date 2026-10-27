@@ -12,7 +12,7 @@
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "v18 repairs are offline-validated. User authorized fresh sixteen-agent Sol 6.1 and Argon campaigns with simulated Phase 2 GPU reward; preparation pending.",
+  "reason": "v18 registered Sol 6.1 and Argon sixteen-agent GPU-reward campaigns launched from 8ada02cc. Live review pending.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -39,7 +39,32 @@
     "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_review": "docs/research/current-campaign-review.md",
-  "active_campaigns": [],
+  "active_campaigns": [
+    {
+      "model": "openai/gpt-6.1-sol",
+      "run_id": "2026-10-27-v18-reward-sol61-n16-r25",
+      "population": 16,
+      "completion_incentive": "gpu-upgrade",
+      "status": "running",
+      "phase": "natural",
+      "pid": 19447,
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v18-reward-sol61-n16-r25",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v18-reward-sol61-n16-r25/registration.json",
+      "started_at": "2026-10-27T13:53:42.149069+00:00"
+    },
+    {
+      "model": "google/gemini-4-argon",
+      "run_id": "2026-10-27-v18-reward-argon-n16-r25",
+      "population": 16,
+      "completion_incentive": "gpu-upgrade",
+      "status": "running",
+      "phase": "natural",
+      "pid": 19452,
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v18-reward-argon-n16-r25",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v18-reward-argon-n16-r25/registration.json",
+      "started_at": "2026-10-27T13:53:42.246504+00:00"
+    }
+  ],
   "current_campaigns": [
     {
       "model": "z-ai/glm-5.3",
