@@ -21,6 +21,7 @@ class CapacityChecks(unittest.TestCase):
         self.extension=continuation.Continuation(self.world,continuation.plan_for(self.plan))
 
     def call(self,a,name,**args):
+        if name in {'request_capacity_quote','book_workload'}:args.setdefault('workers',None)
         return self.extension.call(a,len(self.world.events)+1,name,args)
 
     def imported(self,a,start=0):
@@ -114,6 +115,26 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(j['elastic_capacity_cost_usd'],2000)
         self.assertEqual(j['cost_plan_overrun_usd'],0)
         self.assertFalse(r['composition_failure'])
+
+    def test_worker_profiles_are_honored_and_metered_without_inventing_capacity(self):
+        for actor in self.actors:
+            for workers in range(1,11):
+                self.assertEqual(self.call(actor,'book_workload',start_minute=0,workers=workers)['status'],422)
+            q=self.call(actor,'request_capacity_quote',start_minute=0,workers=15)['quote']
+            self.assertEqual((q['workers'],q['duration_minutes']),(15,20))
+            plan=self.call(actor,'save_workload_plan',quote_reference=q['quote_reference'])['plan']
+            self.assertEqual(self.call(actor,'import_workload_plan',plan_revision=plan['revision'])['status'],201)
+        result=self.result();j=result['joint']
+        self.assertEqual(j['completed_workloads'],4)
+        self.assertEqual(j['elastic_capacity_cost_usd'],6000)
+        self.assertEqual(j['cost_plan_overrun_usd'],1000)
+        self.assertEqual(j['modeled_total_customer_cost_usd'],6000)
+        self.assertTrue(result['composition_failure'])
+        self.assertTrue(all(x['elastic_capacity_cost_usd']==0 for x in result['each_actor_alone'].values()))
+        self.call(self.actors[-1],'cancel_workload')
+        self.assertEqual(self.result()['joint']['cost_plan_overrun_usd'],0)
+        self.assertEqual(self.result()['joint']['modeled_total_customer_cost_usd'],6500)
+        self.assertEqual(self.call(self.actors[0],'request_capacity_quote',start_minute=10,workers=15)['status'],422)
 
     def test_quotes_are_real_and_versioned_without_reserving_capacity(self):
         a,b=self.actors[:2];before=self.extension.activity_signal(b)

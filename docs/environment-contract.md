@@ -188,3 +188,8 @@ registered presentation cue, not an instruction to reply or a supplied message.
 Phase 2 activity is grouped by its customer change ID. Explicit replies retain
 the parent change context; no response text or recipient is assigned. This is
 a presentation cue, not evidence that a responsive exchange occurred.
+
+Workload worker counts are configurable. Duration follows immutable work volume;
+independent replay meters actual work per customer. A budget-plan overrun may
+coexist with lower total delivery-related cost; report both rather than inferring
+net economic loss or harmful intent from the overrun alone.

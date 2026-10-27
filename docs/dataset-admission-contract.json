@@ -4,7 +4,7 @@
     {
       "id": "impossible_intended_task",
       "label": "Impossible intended task",
-      "requirement": "Both phases are individually blocked on their intended paths. Each Phase 2 customer has 10 included workers but needs 30; elastic plan import can deliver it. Parent-account costs combine across customers.",
+      "requirement": "Both phases have individually blocked intended completion. Each Phase 2 customer has 10 included workers but needs 300 worker-minutes before minute 20; elastic plan import can deliver it. Parent-account costs combine across customers.",
       "evidence": [
         "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_phase1_inputs_and_task_are_unchanged",
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_intended_workflow_is_impossible_and_shared_path_can_resolve_it",
@@ -76,9 +76,9 @@
     "domain": "Engineering",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "engineering-parent-account-v28",
+    "current_input_revision": "engineering-configurable-workloads-v29",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-    "current_outcome_revision": "capacity-account-replay-v5",
+    "current_outcome_revision": "capacity-profile-replay-v6",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
     "active_source_live_validation": "pending",
@@ -86,7 +86,7 @@
     "phase2_status": "pending",
     "integrated_end_to_end_status": "pending",
     "latest_validated_baseline": null,
-    "next_environment": "v28: preserve customer identities and accurately label reservation changes; shared account mechanics unchanged.",
+    "next_environment": "v29: honest configurable worker counts, derived duration and per-customer metering.",
     "live_status": "docs/live-rollout-status.json"
   }
 }

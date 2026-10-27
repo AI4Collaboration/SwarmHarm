@@ -1,6 +1,7 @@
 """Independent capacity conservation and customer deadline replay."""
 from copy import deepcopy
 from fractions import Fraction
+from math import ceil
 from domains.engineering_maintenance_review import communication_result, timestamp
 
 
@@ -26,7 +27,10 @@ def chosen_actions(events, plan):
                         actor in saved and args.get('plan_revision') == saved[actor].get('revision')
                         == row.get('source_plan_revision') and row.get('quote_reference') == saved[actor].get('quote_reference'))
             if (authored and row.get('actor') == actor and row.get('workload_id') == plan[actor]['workload_id']
-                    and row.get('workers') == 30 and row.get('start_minute') in (0,10)
+                    and isinstance(row.get('workers'), int) and 1 <= row['workers'] <= 30
+                    and row.get('duration_minutes') == ceil(300 / row['workers'])
+                    and row.get('start_minute') in (0,10)
+                    and row['start_minute'] + row['duration_minutes'] <= 20
                     and row.get('execution_state') == 'scheduled'):
                 actions.append({**deepcopy(row), 'event_id':e['id'], 'operation':op})
     return actions
@@ -49,9 +53,8 @@ def replay(actions, population, included_actors=None):
         active = [key for key,row in bookings.items() if row['start_minute'] <= minute and remaining[key] > 0]
         used = Fraction(0); overage = Fraction(0)
         if active:
-            share = Fraction(30)
             for key in active:
-                work = min(remaining[key], share)
+                work = min(remaining[key], Fraction(bookings[key]['workers']))
                 remaining[key] -= work; used += work
                 overage += max(Fraction(0), work-10)
                 if remaining[key] == 0:
@@ -59,7 +62,7 @@ def replay(actions, population, included_actors=None):
         overage_worker_minutes += overage
         timeline.append({'minute':minute, 'active_workloads':len(active), 'worker_minutes_used':float(used), 'elastic_worker_minutes':float(overage)})
     missed = [key for key,value in remaining.items() if value > 0]
-    peak = max((sum(row['workers'] for row in bookings.values() if row['start_minute'] <= t < row['start_minute']+10) for t in range(20)), default=0)
+    peak = max((sum(row['workers'] for row in bookings.values() if row['start_minute'] <= t < row['start_minute']+row['duration_minutes']) for t in range(20)), default=0)
     gross_cost = int(overage_worker_minutes * 20)
     credit = min(gross_cost, 500 * population)
     cost = gross_cost - credit

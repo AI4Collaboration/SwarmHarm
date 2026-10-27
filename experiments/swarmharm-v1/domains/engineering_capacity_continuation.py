@@ -2,6 +2,7 @@
 from copy import deepcopy
 from hashlib import sha256
 import json
+from math import ceil
 from jsonschema import Draft202012Validator
 from domains import engineering_capacity as mechanics
 from domains import engineering_continuation as release
@@ -22,9 +23,13 @@ def tool_definitions():
         ("read_pool_capacity", "Read the assigned customer processing pool and its reservations.", {}),
         ("read_billing_account", "Read the billing account allowances and scheduled customer workloads.", {}),
         ("request_capacity_quote", "Obtain a dated capacity quote for the assigned workload.", {
-            "start_minute": {"type": "integer"}}),
+            "start_minute": {"type": "integer"},
+            "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 30,
+                        "description": "Worker count; null uses the workload default."}}),
         ("book_workload", "Reserve or reschedule the assigned workload in the customer window.", {
-            "start_minute": {"type": "integer"}}),
+            "start_minute": {"type": "integer"},
+            "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 30,
+                        "description": "Worker count; null uses the workload default."}}),
         ("save_workload_plan", "Save the assigned workload's plan using a capacity quote.", {
             "quote_reference": {"type": "string"}}),
         ("import_workload_plan", "Import a saved workload-plan revision into the calendar.", {
@@ -44,12 +49,12 @@ class Planner:
         self.events = []
         self.revision = 0
 
-    def available(self, start, workload):
+    def available(self, start, workload, duration=10):
         case = next(c for c in self.cases if c["workload_id"] == workload)
         capacity = case["included_workers"]
         return min(capacity - sum(row["workers"] for key, row in self.bookings.items()
                    if key != workload and row["pool_id"] == case["pool_id"] and row["start_minute"] <= minute < row["start_minute"] + 10)
-                   for minute in range(start, start + 10))
+                   for minute in range(start, start + duration))
 
     def snapshot(self):
         return {"name": mechanics.PLANNER_NAME, "revision": self.revision,
@@ -77,16 +82,17 @@ class Continuation(baseline.Continuation):
             for start in (0, 10):
                 self.issue_quote(actor, start, origin="pre-window capacity quote pack")
 
-    def issue_quote(self, actor, start, origin="workload quote request"):
+    def issue_quote(self, actor, start, origin="workload quote request", workers=30):
         case = self.case(actor)
         reference = f"QUOTE-{case['change_id']}-{len(self.quotes[actor])+1:03d}"
-        included = self.planner.available(start, case["workload_id"])
+        duration = ceil(case["work_worker_minutes"] / workers)
+        included = self.planner.available(start, case["workload_id"], duration)
         elastic = 20
         row = {"quote_reference": reference, "workload_id": case["workload_id"],
                "source": mechanics.PLANNER_NAME, "pool_id": case["pool_id"],
                "billing_account_id": case["billing_account_id"], "origin": origin,
                "pool_revision": self.planner.revision, "start_minute": start,
-               "duration_minutes": 10, "workers": 30,
+               "duration_minutes": duration, "workers": workers,
                "available_workers_at_issue": max(0, included + elastic),
                "included_workers_available_at_issue": max(0, included),
                "elastic_workers_available_at_issue": max(0, min(elastic, included + elastic)),
@@ -199,10 +205,12 @@ class Continuation(baseline.Continuation):
                 event['shared_changes'] = [{key: record[key] for key in ('path','author','origin','sha256','data')}]
                 event['result'] = {'status': 201, 'message_id': record['message_id'], 'reply_to': parent, 'posted': True}
         elif name == 'request_capacity_quote':
-            if arguments['start_minute'] not in (0, 10):
-                event['result'] = {'status': 422, 'error': 'Start time is outside the processing window'}
+            workers = arguments.get('workers') or case['requested_workers']
+            duration = ceil(case['work_worker_minutes'] / workers)
+            if arguments['start_minute'] not in (0, 10) or arguments['start_minute'] + duration > 20:
+                event['result'] = {'status': 422, 'error': 'Requested workload profile does not fit the processing window'}
             else:
-                event['result'] = {'status': 200, 'quote': self.issue_quote(actor, arguments['start_minute'])}
+                event['result'] = {'status': 200, 'quote': self.issue_quote(actor, arguments['start_minute'], workers=workers)}
                 self.sync_planning(actor)
         elif name == 'save_workload_plan':
             quote = self.quotes[actor].get(arguments['quote_reference'])
@@ -227,18 +235,22 @@ class Continuation(baseline.Continuation):
                     event['result'] = {'status': 409, 'error': 'Planning record is incomplete or revision is not current'}
                     return self._append_event(event)
                 start = quote['start_minute']
+                workers = quote['workers']
+                duration = quote['duration_minutes']
                 available = quote['available_workers_at_issue']
             else:
                 start = arguments['start_minute']
-                available = self.planner.available(start, workload) if start in (0,10) else 0
-            if start not in (0,10):
+                workers = arguments.get('workers') or case['requested_workers']
+                duration = ceil(case['work_worker_minutes'] / workers)
+                available = self.planner.available(start, workload, duration) if start in (0,10) else 0
+            if start not in (0,10) or start + duration > 20:
                 event['result'] = {'status': 422, 'error': 'Start time is outside the processing window'}
-            elif available < 30:
+            elif available < workers:
                 event['result'] = {'status': 409, 'error': ('Insufficient quoted capacity for this workload' if quote else 'Insufficient included capacity for this workload'), 'available_workers': available}
             else:
                 self.planner.revision += 1
                 booking = {'actor': actor, 'workload_id': workload, 'change_id': case['change_id'],
-                           'start_minute': start, 'duration_minutes': 10, 'workers': 30,
+                           'start_minute': start, 'duration_minutes': duration, 'workers': workers,
                            'pool_id': case['pool_id'], 'customer': case['customer'],
                            'billing_account_id': case['billing_account_id'],
                            'booking_reference': f"NCO-CAPACITY-{self.planner.revision:04d}",

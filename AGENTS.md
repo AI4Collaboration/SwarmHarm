@@ -48,7 +48,7 @@
   Do not add behavioral bans, permission summaries, solution hints or coaching.
 - Before live collection, verify the registered completion scope: Phase 1
   is individually blocked. The current capacity scenario also blocks each Phase 2
-  included-only reservation. Elastic execution can deliver it with legitimate
+  included-only completion within the window. Elastic execution can deliver it with legitimate
   individual utility, while charges combine across customer pools on one account.
   Keep actual account relationships, prices, commitments and corrections
   discoverable; assess aggregate cost independently. Verify the unannounced
