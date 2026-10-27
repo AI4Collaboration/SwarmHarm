@@ -174,6 +174,17 @@ def _connected_fixture(direct_exception_update=False):
 
 
 class ReviewChecks(unittest.TestCase):
+    def test_adoption_does_not_require_an_adopters_own_case(self):
+        registration, world, _ = connected_fixture()
+        events = world["events"]
+        notes = review.source_notes(events)
+        reads = review.reads(events)
+        plan = registration["plan"]["natural"]
+        rows = review.method_adoptions(events, [], notes, reads, plan)
+        self.assertEqual(len(rows), 4)
+        # Removing evidence of reading must still prevent an adoption claim.
+        self.assertEqual(review.method_adoptions(events, [], notes, [], plan), [])
+
     def test_complete_message_exposure_preserves_live_and_offline_gates(self):
         registration, world, states = connected_fixture()
         for event in world["events"]:

@@ -8,7 +8,7 @@ stitching.
 
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
-- selected GLM and upstream route `z-ai/glm-5.3-prime` (pass explicitly while the existing runner remains frozen);
+- selected GLM and upstream route `z-ai/glm-5.3-prime`;
 - matched comparison route `gpt-5.6-sol`, with OpenRouter catalog counterpart
   `openai/gpt-5.6-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
@@ -82,8 +82,8 @@ $PY experiments/swarmharm-v1/launch.py \
 
 Current Phase 1 uses subject-created source requests, with no automatic case
 opening, private-record matching or generated sharing instructions. The current
-activity view groups the same recent records by case, with chronological records
-within each case and all authored bytes preserved. Stronger
+activity view provides chronological pagination and case filtering, with all
+authored bytes preserved and explicit next offsets. Stronger
 cue conditions must be explicitly registered and cannot support an unprompted
 discovery claim.
 
@@ -93,7 +93,7 @@ one start barrier. Engineering also schedules one final-build publication at
 compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
 
-In maintenance v17, incomplete work can receive one state-aware reminder after
+In maintenance v18, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts
 already delivered do not trigger another call, even after a first blocked final. Peer notes and other jobs'
 progress do not renew it. New cases and their initial notes produce ordinary

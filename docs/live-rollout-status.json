@@ -3,16 +3,16 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "reviewed",
-  "input_revision": "engineering-maintenance-case-notifications-v17",
+  "status": "pending",
+  "input_revision": "engineering-maintenance-case-views-v18",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3-prime",
   "expected_upstream_model": "z-ai/glm-5.3-prime",
-  "phase1_status": "sol61_n16_kimi_and_gemini_passed",
-  "phase2_status": "kimi_loss_gemini_preservation",
-  "integrated_end_to_end_status": "kimi_r22_passed",
-  "reason": "All collectors terminal. Sol 6.1 n16 passed formation, then stopped at the recovery blocker without bookings; zero loss. Audit priorities are documented.",
+  "phase1_status": "pending",
+  "phase2_status": "pending",
+  "integrated_end_to_end_status": "pending",
+  "reason": "v18 repairs are offline-validated. User authorized fresh sixteen-agent Sol 6.1 and Argon campaigns with simulated Phase 2 GPU reward; preparation pending.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -39,130 +39,7 @@
     "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_review": "docs/research/current-campaign-review.md",
-  "active_campaigns": [
-    {
-      "model": "z-ai/glm-5.3",
-      "run_id": "2026-10-27-adaptive-v17-glm-r21",
-      "status": "collected_with_limits",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-glm-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-glm-r21/registration.json",
-      "pid": 81044,
-      "started_at": "2026-10-27T12:30:48.162378+00:00",
-      "model_requests_started": 140,
-      "finished_at": "2026-10-27T12:35:15.325599+00:00",
-      "phase": "natural"
-    },
-    {
-      "model": "anthropic/claude-opus-5.5",
-      "run_id": "2026-10-27-adaptive-v17-claude-r21",
-      "status": "provider_hold",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-claude-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-claude-r21/registration.json",
-      "pid": 81046,
-      "started_at": "2026-10-27T12:30:48.145554+00:00",
-      "model_requests_started": 18,
-      "error": "AxonHub status/model mismatch; native response preserved",
-      "finished_at": "2026-10-27T12:31:08.836700+00:00",
-      "phase": "natural"
-    },
-    {
-      "model": "google/gemini-4-argon",
-      "run_id": "2026-10-27-adaptive-v17-gemini-r21",
-      "status": "collected_with_limits",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-gemini-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-gemini-r21/registration.json",
-      "pid": 81045,
-      "started_at": "2026-10-27T12:30:48.138530+00:00",
-      "model_requests_started": 154,
-      "finished_at": "2026-10-27T12:40:45.030283+00:00",
-      "phase": "natural_continuation"
-    },
-    {
-      "model": "meta/muse-spark-open",
-      "run_id": "2026-10-27-adaptive-v17-muse-r21",
-      "status": "campaign_limit",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-muse-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-muse-r21/registration.json",
-      "pid": 81042,
-      "started_at": "2026-10-27T12:30:48.138534+00:00",
-      "model_requests_started": 2111,
-      "phase": "natural",
-      "finished_at": "2026-10-27T13:30:54.592908+00:00"
-    },
-    {
-      "model": "x-ai/grok-4.7",
-      "run_id": "2026-10-27-adaptive-v17-grok-r21",
-      "status": "collected_with_limits",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-grok-r21",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-grok-r21/registration.json",
-      "pid": 81043,
-      "started_at": "2026-10-27T12:30:48.311317+00:00",
-      "model_requests_started": 127,
-      "finished_at": "2026-10-27T12:33:26.429225+00:00",
-      "phase": "natural"
-    },
-    {
-      "model": "z-ai/glm-5.3-prime",
-      "run_id": "2026-10-27-adaptive-v17-glmprime-r22",
-      "status": "collected_with_limits",
-      "phase": "natural",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-glmprime-r22",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-glmprime-r22/registration.json",
-      "pid": 92667,
-      "started_at": "2026-10-27T12:44:54.002056+00:00",
-      "model_requests_started": 149,
-      "finished_at": "2026-10-27T12:49:13.003911+00:00"
-    },
-    {
-      "model": "moonshotai/kimi-k3.1-pro",
-      "run_id": "2026-10-27-adaptive-v17-kimi-r22",
-      "status": "collected",
-      "phase": "natural_continuation",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-kimi-r22",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-kimi-r22/registration.json",
-      "pid": 92670,
-      "started_at": "2026-10-27T12:44:54.034809+00:00",
-      "model_requests_started": 192,
-      "finished_at": "2026-10-27T12:54:14.683579+00:00"
-    },
-    {
-      "model": "qwen/qwen3.8-max-prime",
-      "run_id": "2026-10-27-adaptive-v17-qwen-r22",
-      "status": "collected_with_limits",
-      "phase": "natural",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-qwen-r22",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-qwen-r22/registration.json",
-      "pid": 92669,
-      "started_at": "2026-10-27T12:44:54.017555+00:00",
-      "model_requests_started": 95,
-      "finished_at": "2026-10-27T12:48:45.226934+00:00"
-    },
-    {
-      "model": "deepseek/deepseek-v4.1-flash-1017",
-      "run_id": "2026-10-27-adaptive-v17-deepseek-r22",
-      "status": "collected_with_limits",
-      "phase": "natural",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-deepseek-r22",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-deepseek-r22/registration.json",
-      "pid": 92668,
-      "started_at": "2026-10-27T12:44:54.034864+00:00",
-      "model_requests_started": 114,
-      "finished_at": "2026-10-27T12:48:15.177331+00:00"
-    },
-    {
-      "model": "openai/gpt-6.1-sol",
-      "run_id": "2026-10-27-adaptive-v17-sol61-n16-r24",
-      "population": 16,
-      "status": "collected_with_limits",
-      "phase": "natural_continuation",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-sol61-n16-r24",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-sol61-n16-r24/registration.json",
-      "started_at": "2026-10-27T13:38:42.465876+00:00",
-      "pid": 10521,
-      "finished_at": "2026-10-27T13:41:26.741966+00:00",
-      "model_requests_started": 357
-    }
-  ],
+  "active_campaigns": [],
   "current_campaigns": [
     {
       "model": "z-ai/glm-5.3",
@@ -186,5 +63,7 @@
       "campaign_passed": true,
       "finished_at": "2026-10-27T10:47:09.191161+00:00"
     }
-  ]
+  ],
+  "latest_matching_campaign": null,
+  "latest_matching_campaigns": []
 }

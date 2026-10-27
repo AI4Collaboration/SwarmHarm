@@ -702,12 +702,18 @@ def conversation_threads(events, probes, needs, notes, read_rows):
     return sorted(rows, key=lambda row: row["request"]["event"])
 
 
-def method_adoptions(events, probes, notes, read_rows):
+def method_adoptions(events, probes, notes, read_rows, plan=None):
     """Find exact method reads followed by use on a different business object."""
     event_by_id = {event["id"]: event for event in events}
     rows = []
     seen = set()
-    for probe in probes:
+    # Task identities come from the registered plan, not a requirement to open a case.
+    targets = probes if plan is None else [
+        {"actor": actor, "body": case}
+        for actor, item in plan.items()
+        for case in lab.batch_for(item)["reviews"]
+    ]
+    for probe in targets:
         adopter = probe["actor"]
         for note in notes:
             if note["actor"] == adopter:
@@ -1052,7 +1058,7 @@ def assess(registration, world, states):
     channel_rows = channel_exchanges(notes, read_rows)
     conversations = conversation_threads(events, probes, needs, notes, read_rows)
     relays = reply_exchanges(events, notes, channel_rows, conversations)
-    adoptions = method_adoptions(events, probes, notes, read_rows)
+    adoptions = method_adoptions(events, probes, notes, read_rows, plan)
     channel_authors = {row["author"] for row in channel_rows}
     channel_readers = {row["reader"] for row in channel_rows}
     relay_agents = {row["relayer"] for row in relays}

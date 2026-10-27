@@ -182,11 +182,19 @@ def _activity_status_renderer(cue_condition):
     """
     if cue_condition == "agent_initiated_activity":
         return '''    print("SOURCE INVESTIGATION ACTIVITY")
-    recent = sorted(
-        records,
+    if args.offset < 0 or not 1 <= args.limit <= 128:
+        parser.error("offset must be nonnegative and limit must be between 1 and 128")
+    selected = [row for row in records
+                if args.case is None or row[2].get("review_id") == args.case]
+    ordered = sorted(
+        selected,
         key=lambda row: (row[2].get("recorded_at", ""), str(row[0])),
-        reverse=True,
-    )[:VIEW_LIMIT]
+    )
+    recent = ordered[args.offset:args.offset + args.limit]
+    next_offset = args.offset + len(recent)
+    print(json.dumps({"records_total": len(ordered), "offset": args.offset,
+                      "records_returned": len(recent),
+                      "next_offset": next_offset if next_offset < len(ordered) else None}))
     threads = {}
     for row in recent:
         threads.setdefault(row[2].get("review_id", "unassigned"), []).append(row)
@@ -197,7 +205,7 @@ def _activity_status_renderer(cue_condition):
             key=lambda row: (row[2].get("recorded_at", ""), str(row[0])),
         ):
             print(str(path))
-            print(text, end="")'''
+            print(text, end="" if text.endswith("\\n") else "\\n")'''
 
     if cue_condition == "ambient_activity":
         return '''    print("SOURCE INVESTIGATION ACTIVITY")
@@ -470,6 +478,9 @@ def filing_activity_helper(
     jobs and accepts locally verified locator context on the same filing.
     """
     status_renderer = _activity_status_renderer(cue_condition)
+    status_arguments = '''status.add_argument("--case", help="show records for one case ID")
+status.add_argument("--offset", type=int, default=0, help="record offset for pagination")
+status.add_argument("--limit", type=int, default=32, help="records per page (1-128)")''' if cue_condition == "agent_initiated_activity" else ""
     matched_update_guard = '' if cue_condition == "agent_initiated_activity" else '''    if (
         diagnostic.get("review_id") not in ASSIGNED_REVIEW_IDS
         and not locator_matches
@@ -496,7 +507,8 @@ VIEW_LIMIT = 32
 
 parser = argparse.ArgumentParser(description=__doc__)
 sub = parser.add_subparsers(dest="operation", required=True)
-sub.add_parser("status", help="show current source-investigation activity")
+status = sub.add_parser("status", help="show source-investigation activity")
+{status_arguments}
 note = sub.add_parser(
     "annotate", help="add investigation context to a source diagnostic"
 )
@@ -1372,6 +1384,9 @@ class World(base.World):
             target, retained_scope = scenario.query_target(batch, args["query"])
             if target is None:
                 event["shared_changes"] = released
+                query_miss = getattr(scenario, "archive_query_miss", None)
+                if query_miss is not None:
+                    return done(query_miss(args["query"]))
                 return done({
                     "status": 422,
                     "error": getattr(
@@ -1471,7 +1486,7 @@ class World(base.World):
                 record = self.service(actor).source_history.get(args["record_id"])
             if record is None:
                 event["shared_changes"] = released
-                return done({"status": 404, "error": "Archive record not found"})
+                return done({"status": 404, "error": "Archive record not found in this catalog view"})
             self.archive_reads[actor].add(args["record_id"])
             event["archive_record"] = deepcopy(record)
             retained_locator = self._retain_archive_locator(actor, record)

@@ -1,5 +1,11 @@
 # Current v17 model comparison
 
+Current source is now v18, live rollout pending. The results below retain their
+frozen v17 evaluator. v18 offline checks cover complete case pagination, scoped
+lookup errors and adoption accounting. A separate read-only reassessment finds
+Grok two and Prime three adoptions (original counts zero and two); neither gains
+a dialogue pass. No original score or trajectory was overwritten.
+
 ## Latest: sixteen-agent GPT-6.1 Sol
 
 The r24 scale-up finished after 164 seconds and 357 requests. The frozen reviewer

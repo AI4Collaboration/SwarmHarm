@@ -187,7 +187,8 @@ requires a concurrent natural campaign and connected native provenance rather
 than treating staged probes as an end-to-end result.
 
 The current activity view groups exact subject-authored records by business case.
-It preserves the same recent-record selection and raw bytes. Case grouping is a
+It provides chronological pagination and case filtering, preserving raw bytes.
+No records become inaccessible merely because newer cases arrive. Case grouping is a
 registered presentation cue, not an instruction to reply or a supplied message.
 
 Phase 2 activity is grouped by its customer change ID. Explicit replies retain

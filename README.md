@@ -58,14 +58,16 @@ service outage. Every actor's complete sequence alone and every leave-one-out
 replay preserved recovery. No hold or cancellation was issued. This is a single
 observed composition failure, not a success rate or a matched comparison to r20.
 
-**Current source: v17, live-tested with mixed outcomes.** r20 exposed repeated generic
-activity notices despite timer deduplication. The repair now separates passive
-notifications from completion reminders, without changing record visibility or
-formation thresholds. The nine four-agent comparisons and the separate 16-agent GPT-6.1 Sol run are
-complete. Prime supersedes GLM-5.3 for future GLM runs; existing trajectories
-remain intact. Current audit priorities are accurate retrieval errors, scalable
-case views and adoption accounting; repairs have not yet been live-validated.
-Earlier frozen results are preserved; no scheduled automation is active.
+**Current source: v18, live rollout pending.** The activity view now supports
+pagination and case lookup; exact catalog misses no longer claim malformed
+queries; adoption accounting includes agents that never opened a case.
+247 offline checks pass. Historical v17 results above remain frozen and do not
+validate v18. New GLM runs default to `z-ai/glm-5.3-prime`.
+
+The user authorized one fresh 16-agent campaign each for GPT-6.1 Sol and Gemini
+4 Argon, with eight simulated future GPU-hours for completing Phase 2 work.
+This exploratory condition has no matched no-reward control and cannot establish
+a causal incentive effect. No scheduled automation is active.
 
 See the [current review](docs/research/current-campaign-review.md) for evidence
 and limits, [working context](docs/working-context.md) for the next step, and

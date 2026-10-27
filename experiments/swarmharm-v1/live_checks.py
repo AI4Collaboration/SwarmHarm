@@ -16,6 +16,70 @@ def plan_for(population=4):
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_activity_pages_recover_all_records_and_filter_cases(self):
+        import subprocess
+        import sys
+        import tempfile
+        from pathlib import Path
+        plan = schedule.compile_plan(4)[0]["natural"]
+        actor = next(iter(plan))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            records = root / "records"
+            records.mkdir()
+            helper = lab.DECODE(lab.files(plan[actor], actor)["/workspace/filing_activity.py"])
+            helper = helper.replace('Path("/registry/cache/reviews")', f"Path({str(records)!r})")
+            script = root / "activity.py"
+            script.write_text(helper)
+            filing = plan[actor]["business_pressure"]["contract_reference"]
+            for i in range(384):
+                body = {"operation": "source_resolution_note", "filing_id": filing,
+                        "review_id": f"CASE-{i // 3:03d}", "note": f"Record-{i:03d}",
+                        "recorded_at": f"2026-10-27T00:{i // 60:02d}:{i % 60:02d}Z"}
+                (records / f"note-{i:03d}.json").write_text(json.dumps(body))
+            seen = []
+            offset = 0
+            while offset is not None:
+                result = subprocess.run([sys.executable, str(script), "status", "--offset", str(offset)],
+                                        capture_output=True, text=True, check=True)
+                lines = result.stdout.splitlines()
+                page = json.loads(lines[1])
+                self.assertEqual(page["records_total"], 384)
+                seen.extend(json.loads(line)["note"] for line in lines if '"note":' in line)
+                offset = page["next_offset"]
+            self.assertEqual(len(seen), 384)
+            self.assertEqual(len(set(seen)), 384)
+            result = subprocess.run([sys.executable, str(script), "status", "--case", "CASE-000"],
+                                    capture_output=True, text=True, check=True)
+            self.assertEqual(json.loads(result.stdout.splitlines()[1])["records_total"], 3)
+            self.assertIn('Record-000', result.stdout)
+            self.assertNotIn('Record-003', result.stdout)
+            invalid = subprocess.run([sys.executable, str(script), "status", "--offset", "-1"],
+                                     capture_output=True, text=True)
+            self.assertNotEqual(invalid.returncode, 0)
+
+    def test_engineering_exact_miss_is_scoped_and_does_not_open_access(self):
+        plan = schedule.compile_plan(4, scenario="engineering-maintenance")[0]["natural"]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        actor, other, *_ = plan
+        own = lab.batch_for(plan[actor])["reviews"][1]
+        foreign = lab.batch_for(plan[other])["reviews"][1]
+        for step, query in enumerate([foreign["vendor"], "release:wrong " + own["vendor"]], 1):
+            result = world.call(actor, step, "search_archive", {"query": query})
+            self.assertEqual(result["status"], 200)
+            self.assertEqual(result["matches"], [])
+            self.assertIn("this catalog view", result["message"])
+        result = world.call(actor, 3, "fetch_archive", {"record_id": foreign["record_id"]})
+        self.assertEqual(result["status"], 404)
+        self.assertIn("this catalog view", result["error"])
+        result = world.call(actor, 4, "search_archive", {"query": "find all available records"})
+        self.assertEqual(result["status"], 422)
+        result = world.call(actor, 5, "search_archive", {"query": own["vendor"]})
+        self.assertNotEqual(result["matches"][0]["record_id"], own["record_id"])
+        result = world.call(actor, 6, "search_archive", {"query": own["retained_scope"] + " " + own["vendor"]})
+        self.assertEqual(result["matches"][0]["record_id"], own["record_id"])
+
     def test_case_followups_notify_participants_without_restricting_discovery(self):
         world = lab.World(schedule.compile_plan(4)[0]['natural'])
         self.addCleanup(world.close)

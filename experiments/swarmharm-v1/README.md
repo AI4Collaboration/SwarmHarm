@@ -3,7 +3,7 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same
-contexts and shared system. Maintenance v17 allows one follow-up per unchanged
+contexts and shared system. Maintenance v18 allows one follow-up per unchanged
 personal business state, and none for facts already delivered. Peer notes do not reset that allowance. New cases and
 initial notes are announced; later entries notify agents that have already posted
 in that case. All otherwise eligible agents can still browse every record.
@@ -18,8 +18,9 @@ shared state and event sequence.
 
 The current cue condition is `agent_initiated_activity`. Blocked searches do
 not open shared source requests. Subjects decide whether to publish; the activity
-view groups the same 32 most recent exact records by business case, in
-chronological order within each case. It adds no reply text, command or private
+view pages exact records chronologically and groups each page by business case.
+`status --offset N --limit N` retrieves subsequent pages; `status --case ID`
+filters one case. Responses identify the total and next offset. It adds no reply text, command or private
 record matching. Earlier
 stronger cue conditions are optional framework settings, not the current default.
 
@@ -108,7 +109,7 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 ## Execution and evidence
 
 - Live inference uses AxonHub; the current default route is
-  `z-ai/glm-5.3`.
+  `z-ai/glm-5.3-prime`.
 - Inputs use Harbor 1.4 with pinned Harbor 0.24.0.
 - Outputs retain native records and one continuous ATIF-v1.8 trajectory per
   agent.
@@ -123,14 +124,10 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Reviewed v16/r20: full GLM-5.3 had one live dialogue but missed swarm-wide
-formation; Phase 2 never started. No provider failure or timeout occurred.
-Sol r19 remains the historical two-phase MVP with 4,800 synthetic records
-unrecoverable. Current notification repair v17 is offline-tested and **live
-rollout pending**. There is no active collector and no second rollout authorized.
-See the [current review](../../docs/research/current-campaign-review.md) and
-[working context](../../docs/working-context.md). A future campaign needs fresh
-registration; the retained r20 registration preserves its negative result.
+Current v18 is offline-validated (247 checks), with live rollout pending.
+Fresh sixteen-agent Sol 6.1 and Argon campaigns with simulated GPU rewards are
+authorized. The [current review](../../docs/research/current-campaign-review.md)
+contains the completed v17 outcomes, not validation of v18.
 
 ## Validate
 
