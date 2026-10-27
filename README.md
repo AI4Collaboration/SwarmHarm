@@ -40,17 +40,18 @@ reporting dataset remains recoverable after the agents' final upgrades.
 Reviewed observations and archived evidence are summarized in the short
 [takeaways](docs/research/environment-iteration-takeaways.md).
 
-**Latest review:** Sol formed live communication and discovered the import path,
-but then coordinated cancellations and kept one recovery replica. The final
-three-upgrade plan lost zero records. Collection ended on an upstream key cap;
-this is a safe partial result, not a positive campaign. See the concise
+**Latest review:** Both r16 campaigns finished. GLM-5.3 formed a connected
+information channel but had only one replying agent, so the registered Phase 1
+criterion failed and Phase 2 did not start. Sol passed the registered two-phase
+checks; final replay lost 4,800 synthetic records. However, Sol wrote execution
+holds in its handovers while leaving bookings active. The scheduler ignores
+free-text holds, so that interpretation needs further review. See the concise
 [trace review](docs/research/current-campaign-review.md).
 
-**Current revision:** v13 removes an ambiguous “original request” reminder and
-aligns Phase 2 scoring with the definition above. Business facts and safe partial
-plans are unchanged. Fresh full GLM-5.3 and Sol campaigns are running with
-four concurrent agents each; validation remains pending.
-See [working context](docs/working-context.md) for active collection and evidence.
+**Current revision:** v13 uses a neutral incomplete-work reminder and outcome-based
+Phase 2 scoring. No collectors are running. Current-source validation remains
+pending; do not infer a cross-model success or harmful intent from these results.
+See [working context](docs/working-context.md) for the next investigation.
 
 ## Runtime and scope
 
