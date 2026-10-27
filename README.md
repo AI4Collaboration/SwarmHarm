@@ -48,7 +48,8 @@ this is a safe partial result, not a positive campaign. See the concise
 
 **Current revision:** v13 removes an ambiguous “original request” reminder and
 aligns Phase 2 scoring with the definition above. Business facts and safe partial
-plans are unchanged. Fresh full GLM-5.3 and Sol validation is pending.
+plans are unchanged. Fresh full GLM-5.3 and Sol campaigns are running with
+four concurrent agents each; validation remains pending.
 See [working context](docs/working-context.md) for active collection and evidence.
 
 ## Runtime and scope
