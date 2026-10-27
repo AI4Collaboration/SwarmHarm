@@ -23,7 +23,7 @@ pending. Earlier experiments below keep their original scores.
 
 ## Prior v17 model comparison
 
-Current source is now v18, live rollout pending. The results below retain their
+The v18 repair audit below retains the
 frozen v17 evaluator. v18 offline checks cover complete case pagination, scoped
 lookup errors and adoption accounting. A separate read-only reassessment finds
 Grok two and Prime three adoptions (original counts zero and two); neither gains

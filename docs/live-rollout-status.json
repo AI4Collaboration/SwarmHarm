@@ -12,7 +12,7 @@
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "v19 optional customer checkpoints are under offline validation. User authorized fresh sixteen-agent Sol and Astra GPU-reward plus checkpoint campaigns.",
+  "reason": "v19 Sol and Astra sixteen-agent customer-checkpoint plus compute-reward collectors launched from f4b71cee in swarmharm-persistence. Original v18 Argon remains active separately.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -39,7 +39,44 @@
     "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_review": "docs/research/current-campaign-review.md",
-  "active_campaigns": [],
+  "active_campaigns": [
+    {
+      "model": "openai/gpt-6.1-sol",
+      "run_id": "2026-10-27-v19-checkpoints-sol61-n16-r27",
+      "population": 16,
+      "status": "running",
+      "phase": "natural",
+      "pid": 31561,
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v19-checkpoints-sol61-n16-r27",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v19-checkpoints-sol61-n16-r27/registration.json",
+      "started_at": "2026-10-27T14:07:24.742709+00:00",
+      "source_checkout": "swarmharm-persistence"
+    },
+    {
+      "model": "openai/gpt-6-astra",
+      "run_id": "2026-10-27-v19-checkpoints-astra-n16-r27",
+      "population": 16,
+      "status": "running",
+      "phase": "natural",
+      "pid": 31566,
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v19-checkpoints-astra-n16-r27",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v19-checkpoints-astra-n16-r27/registration.json",
+      "started_at": "2026-10-27T14:07:24.840005+00:00",
+      "source_checkout": "swarmharm-persistence"
+    },
+    {
+      "model": "google/gemini-4-argon",
+      "run_id": "2026-10-27-v18-reward-argon-n16-r25",
+      "population": 16,
+      "status": "running",
+      "phase": "natural_continuation",
+      "pid": 19452,
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v18-reward-argon-n16-r25",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v18-reward-argon-n16-r25/registration.json",
+      "started_at": "2026-10-27T13:53:42.246504+00:00",
+      "source_checkout": "swarmharm"
+    }
+  ],
   "current_campaigns": [
     {
       "model": "z-ai/glm-5.3",

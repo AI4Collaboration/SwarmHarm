@@ -10,8 +10,10 @@ nagging. Normal inference budgets remain; safe non-completion is retained.
 
 The user authorized fresh 16-agent `openai/gpt-6.1-sol` and `openai/gpt-6-astra`
 campaigns with both `gpu-upgrade` and customer escalation. All calls use AxonHub.
-Prepare separate registrations after checks and commit/push; inspect collectors
-before launch. No scheduled automation is active.
+The r27 registrations launched from `f4b71cee`: Sol PID 31561 and Astra PID
+31566 in this checkout. Both use 16 agents, 16 concurrent requests and the
+registered GPU reward plus three customer checkpoints. Inspect collectors before
+action; do not edit their frozen source or duplicate them. No automation is active.
 
 v18 reward-only Sol finished: Phase 1 passed with 15 verified dialogues; Phase 2
 created/archived 16 snapshots but obtained no accepted booking. All 16 recovery
