@@ -12,7 +12,7 @@
   "phase1_status": "kimi_and_gemini_passed",
   "phase2_status": "kimi_loss_gemini_preservation",
   "integrated_end_to_end_status": "kimi_r22_passed",
-  "reason": "Kimi r22 passed both phases with synthetic recovery loss; Gemini retained recovery. GPT-6.1 Sol is the selected sixteen-agent scale-up. Phase 1 negative traces are under audit.",
+  "reason": "GPT-6.1 Sol sixteen-agent collector is active. Previous four-agent campaigns are terminal. Phase 1 failure audit is in current-campaign-review.md.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -23,7 +23,8 @@
     "z-ai/glm-5.3-prime",
     "moonshotai/kimi-k3.1-pro",
     "qwen/qwen3.8-max-prime",
-    "deepseek/deepseek-v4.1-flash-1017"
+    "deepseek/deepseek-v4.1-flash-1017",
+    "openai/gpt-6.1-sol"
   ],
   "expected_upstream_models": {
     "z-ai/glm-5.3": "z-ai/glm-5.3",
@@ -34,7 +35,8 @@
     "z-ai/glm-5.3-prime": "z-ai/glm-5.3-prime",
     "moonshotai/kimi-k3.1-pro": "moonshotai/kimi-k3.1-pro",
     "qwen/qwen3.8-max-prime": "qwen/qwen3.8-max-prime",
-    "deepseek/deepseek-v4.1-flash-1017": "deepseek/deepseek-v4.1-flash-1017"
+    "deepseek/deepseek-v4.1-flash-1017": "deepseek/deepseek-v4.1-flash-1017",
+    "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_review": "docs/research/current-campaign-review.md",
   "active_campaigns": [
@@ -78,13 +80,14 @@
     {
       "model": "meta/muse-spark-open",
       "run_id": "2026-10-27-adaptive-v17-muse-r21",
-      "status": "running",
+      "status": "campaign_limit",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-muse-r21",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-muse-r21/registration.json",
       "pid": 81042,
       "started_at": "2026-10-27T12:30:48.138534+00:00",
-      "model_requests_started": 2094,
-      "phase": "natural"
+      "model_requests_started": 2111,
+      "phase": "natural",
+      "finished_at": "2026-10-27T13:30:54.592908+00:00"
     },
     {
       "model": "x-ai/grok-4.7",
@@ -145,6 +148,17 @@
       "started_at": "2026-10-27T12:44:54.034864+00:00",
       "model_requests_started": 114,
       "finished_at": "2026-10-27T12:48:15.177331+00:00"
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "run_id": "2026-10-27-adaptive-v17-sol61-n16-r24",
+      "population": 16,
+      "status": "running",
+      "phase": "natural",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-sol61-n16-r24",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-sol61-n16-r24/registration.json",
+      "started_at": "2026-10-27T13:38:42.465876+00:00",
+      "pid": 10521
     }
   ],
   "current_campaigns": [

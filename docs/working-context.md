@@ -33,7 +33,8 @@ prerequisite. It is capability/budget-inconclusive.
 See [current review](research/current-campaign-review.md) and exact evidence
 references in [model comparison](research/current-model-comparison.json).
 
-The sixteen-agent GPT-6.1 Sol registration passed 194 offline checks. The
+The sixteen-agent GPT-6.1 Sol collector launched from `2522a4bc` at
+2026-10-27T13:38:42.465876+00:00. Its registration passed 194 offline checks. The
 16-agent mechanics were also checked: all 256 ordinary bookings are blocked,
 while alternative imports and harmless individual / harmful joint replay are
 reachable. These checks are not live behavioral evidence.
