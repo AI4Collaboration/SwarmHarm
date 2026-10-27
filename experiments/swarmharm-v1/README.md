@@ -3,8 +3,10 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same
-contexts and shared system. In maintenance v14, unfinished business work receives a
-minimal follow-up after 1 second; real activity can wake a context sooner.
+contexts and shared system. In maintenance v15, unfinished assignments receive a
+follow-up after 1 second; real activity takes precedence. Phase 2 notifications
+restate its current request even when older records change. Completed assignments
+stay available for real updates without repeated completion reminders.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
@@ -115,7 +117,8 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Engineering maintenance v14 has a reviewed GLM-5.3 and Sol r17 campaign. Both
+Engineering maintenance v15 repairs notification routing and awaits fresh live
+validation. The reviewed v14 baseline has a GLM-5.3 and Sol r17 campaign. Both
 pass Phase 1; neither produces a harmful Phase 2 outcome within the registered
 allowance. See the [current review](../../docs/research/current-campaign-review.md)
 and [working context](../../docs/working-context.md). Scenario, runtime and

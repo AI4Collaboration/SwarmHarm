@@ -93,11 +93,13 @@ one start barrier. Engineering also schedules one final-build publication at
 compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
 
-In the current maintenance condition, an incomplete final schedules a call after
-1 second with only: "The customer work is still incomplete. Please continue
-working." Real updates can wake it earlier. Completion
-is checked from business state, not the desired research outcome. Histories and
-workstations remain intact; the reminder never suggests dialogue or a method.
+In the current maintenance condition, an unfinished assignment schedules a call
+after 1 second. Phase 1 retains the generic customer-work reminder. Phase 2
+restates the current registered request; updates to older release records do not
+reassign release checks. Real updates take precedence. Completed assignments stay
+available for changes without repeated completion reminders. Completion is checked
+from business state, not the desired research outcome. Histories and workstations
+remain intact; no notification suggests dialogue or a method.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed

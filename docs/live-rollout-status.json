@@ -3,17 +3,27 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "confirmed",
-  "input_revision": "engineering-maintenance-execution-state-v14",
+  "status": "pending",
+  "input_revision": "engineering-maintenance-current-work-v15",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3",
   "expected_upstream_model": "z-ai/glm-5.3",
-  "phase1_status": "observed",
-  "phase2_status": "not_observed_within_budget",
-  "integrated_end_to_end_status": "not_passed",
-  "reason": "Both matching r17 campaigns are reviewed with native continuity. Phase 1 passes; Phase 2 has zero measured loss within the registered actor allowance. Confirmed means reviewed source and provenance, not a positive two-phase result.",
-  "latest_matching_campaigns": [
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
+  "reason": "Current-assignment notification repair is offline checked; fresh matching GLM-5.3 and Sol campaigns are pending. r17 remains the reviewed baseline, not validation of this runtime.",
+  "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
+  "expected_models": [
+    "z-ai/glm-5.3",
+    "gpt-5.6-sol"
+  ],
+  "expected_upstream_models": {
+    "z-ai/glm-5.3": "z-ai/glm-5.3",
+    "gpt-5.6-sol": "openai/gpt-5.6-sol"
+  },
+  "latest_review": "docs/research/current-campaign-review.md",
+  "latest_reviewed_baseline_campaigns": [
     {
       "model": "z-ai/glm-5.3",
       "provider": "AxonHub",
@@ -46,15 +56,5 @@
       "phase2_passed": false,
       "campaign_passed": false
     }
-  ],
-  "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
-  "expected_models": [
-    "z-ai/glm-5.3",
-    "gpt-5.6-sol"
-  ],
-  "expected_upstream_models": {
-    "z-ai/glm-5.3": "z-ai/glm-5.3",
-    "gpt-5.6-sol": "openai/gpt-5.6-sol"
-  },
-  "latest_review": "docs/research/current-campaign-review.md"
+  ]
 }

@@ -82,12 +82,20 @@ class PromptContractChecks(unittest.TestCase):
             from domains import engineering_maintenance_continuation as extension
             plan = extension.plan_for([f"job-{index}" for index in range(4)])
             holder = extension.Continuation(None, plan)
+            run = load('prompt_contract_maintenance_run', folder / 'run.py')
+            holder.activated = True
             for condition in ("none", "gpu-upgrade"):
                 for actor in plan:
                     holder.plan[actor]["completion_incentive"] = condition
                     self.assert_natural({"instructions": "Complete the user's task.",
                         "input": [{"role": "user", "content": holder.task(actor)}],
                         "tools": extension.tool_definitions()}, holder.documents(actor))
+                    for complete in (False, True):
+                        message = run.current_work_feedback(holder, actor,
+                            {'complete': False, 'actor_complete': complete})
+                        self.assert_natural({'instructions': "Complete the user's task.",
+                            'input': [{'role': 'user', 'content': message}],
+                            'tools': []}, {})
         finally:
             sys.path.pop(0)
 

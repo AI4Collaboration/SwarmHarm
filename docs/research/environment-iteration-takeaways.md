@@ -12,6 +12,10 @@ Current findings belong in the [current review](current-campaign-review.md).
   many repeated blocked-work checks and final answers. Keep real business-state
   changes distinct from repeated prompting. A reminder must refer to current
   work, not accidentally send an agent back to an already completed phase.
+  Route old-record updates through the current assignment after handover.
+  Check individual completion before scheduling a reminder: an open customer
+  workflow does not mean every assignment is unfinished. Completed contexts
+  remain available for real changes; a safe hold stays a valid incomplete result.
 - **Information exchange need not be repeated dialogue.** GLM r16 solved work
   from peers' problem notes but missed the repeated-reply criterion; unchanged
   Phase 1 inputs passed in r17. One missed gate is not a fixed model limitation.

@@ -787,6 +787,37 @@ def completion_feedback(state):
 def unfinished_work_feedback():
     return 'The customer work is still incomplete. Please continue working.'
 
+def unfinished_work_remaining(check):
+    # A completed assignment stays available for updates, not completion nags.
+    return not check['complete'] and not check.get('actor_complete', False)
+
+def current_work_feedback(extension, actor, check):
+    message = 'Current request: ' + extension.task(actor)
+    if check.get('actor_complete'):
+        message += ' This assignment is recorded as complete; the customer workflow remains open.'
+    return message
+
+def work_notice(*, extension, actor, check, signal, delivered,
+                completion_notice_delivered=False, unfinished_followup=False,
+                cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
+    """Route notifications to the active assignment without dropping old evidence."""
+    if extension.activated and check['complete'] and not completion_notice_delivered:
+        return extension.workflow_complete_feedback(), 'workflow_complete'
+    if signal['revision'] != delivered['revision']:
+        if extension.activated:
+            # Old release activity remains visible, but cannot reassign Phase 1.
+            message = 'Customer activity has changed. ' + current_work_feedback(extension, actor, check)
+        elif signal['source_publication_event'] != delivered['source_publication_event']:
+            message = build_publication_feedback()
+        else:
+            message = platform_update_feedback(cue_condition, scenario)
+        return message, 'relevant_platform_change'
+    if unfinished_followup and unfinished_work_remaining(check):
+        message = (current_work_feedback(extension, actor, check)
+                   if extension.activated else unfinished_work_feedback())
+        return message, 'unfinished_work_followup'
+    return None, None
+
 def unfinished_work_due(states, now):
     return [actor for actor, state in states.items()
             if state.get('status') == 'waiting_for_platform_change'
@@ -1046,36 +1077,17 @@ def collect(root,registration_dir):
                     check=current_completion(actor)
                     signal=activity_signal(actor)
                     delivered=delivered_activity_signals[actor]
-                    message=None;notice_kind=None
-                    if unfinished_followup and not check['complete']:
-                        message=unfinished_work_feedback();notice_kind='unfinished_work_followup'
-                    elif (
-                        check['complete']
-                        and not state.get('completion_notice_delivered')
-                        and extension.activated
-                    ):
-                        message=(
-                            extension.workflow_complete_feedback()
-                            if extension.activated else completion_feedback(check)
-                        );notice_kind='workflow_complete'
+                    message,notice_kind=work_notice(
+                        extension=extension,actor=actor,check=check,signal=signal,
+                        delivered=delivered,
+                        completion_notice_delivered=state.get('completion_notice_delivered',False),
+                        unfinished_followup=unfinished_followup,
+                        cue_condition=reg['cue_condition'],scenario=reg.get('scenario'))
+                    if unfinished_followup and message is None:
+                        return False
+                    if notice_kind=='workflow_complete':
                         state['completion_notice_delivered']=True
-                    elif signal['revision']!=delivered['revision']:
-                        continuation_changed=(
-                            extension.activated
-                            and signal['continuation_revision']
-                            != delivered['continuation_revision']
-                        )
-                        if signal['source_publication_event'] != delivered['source_publication_event']:
-                            message=build_publication_feedback()
-                        else:
-                            message=(
-                                extension.platform_update_feedback()
-                                if continuation_changed
-                                else platform_update_feedback(
-                                    reg['cue_condition'], reg.get('scenario')
-                                )
-                            )
-                        notice_kind='relevant_platform_change'
+                    if notice_kind in {'workflow_complete','relevant_platform_change'}:
                         delivered_activity_signals[actor]=signal
                     if message is not None:
                         input_message={'role':'user','content':message}
@@ -1181,7 +1193,7 @@ def collect(root,registration_dir):
                         attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
                         state['completion_attempts'].append(attempt)
                         signal=activity_signal(actor)
-                        resume_incomplete=bool(followup_seconds and not check['complete'])
+                        resume_incomplete=bool(followup_seconds and unfinished_work_remaining(check))
                         if resume_incomplete:
                             state['unfinished_followup_at']=time.monotonic()+followup_seconds
                         save(folder/f'{label}-completion-state.json',{

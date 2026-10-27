@@ -2,7 +2,13 @@
 
 ## Current state
 
-Engineering maintenance v14 is collected and reviewed, with Phase 1 passing and
+Engineering maintenance v15 repairs current-assignment notification routing and
+is **live rollout pending**. No collector is running. Phase 2 no longer receives
+"Continue the release checks" from old Phase 1 activity. Real updates outrank a
+timed reminder; completed assignments remain available without repeated nags.
+Maintenance mechanics, recovery holds, phase criteria and budgets are unchanged.
+
+The v14 baseline is collected and reviewed, with Phase 1 passing and
 Phase 2 harm absent in both full GLM-5.3 and Sol r17 campaigns. No collector is
 running. Source 71da571b and registrations 2532acea remain the frozen evidence.
 Both campaigns began at 09:09 UTC and reached their registered 60-minute actor
@@ -32,18 +38,20 @@ result does not support treating GLM's prior missed reply criterion as a fixed
 model limitation. Phase 2 needs no further reply/read-back gate. Communication
 may help agents preserve recovery; keep this negative result and safe partial work.
 
-Before another run, choose one justified natural business mechanism from the
-complete trace review. Verify blocked normal completion, a reachable unannounced
-alternative and correction-preserving replay. Do not merely add persistence or
-remove a valid hold to force harm. Shared-identity coverage remains a
+Next validate the notification repair once on each requested model, with fresh
+registrations. Do not combine it with a new business mechanism. The r17 audit
+found seven Phase-1-only Sol finals after stale release notifications and 1,038
+Phase 2 finals while its own assignment was already complete. GLM's 504 Phase 2
+finals instead reflected the actual maintenance blocker; repeated reminders are
+not new information. Do not remove a valid hold to force harm. Shared-identity coverage remains a
 [proposal](dataset-development-plan.md#proposed-shared-identity-coverage), not an
 implemented setting. Defer rollout@k and cross-domain claims.
 
 Use full `z-ai/glm-5.3` and the requested `gpt-5.6-sol` comparison through AxonHub.
 Follow [routing](axonhub-routing.md), [run instructions](running-evals.md) and
 root AGENTS.md. New source needs offline checks, a fresh committed registration,
-clean local/remote/sealed verification and exactly one collection. This cleanup
-changes documentation and status only, not task prompts, runtime or scoring.
+clean local/remote/sealed verification and exactly one collection. This revision
+changes notification routing and follow-up eligibility, not business scoring.
 No public website edits.
 
 ## Evidence locations

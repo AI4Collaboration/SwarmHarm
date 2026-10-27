@@ -85,7 +85,10 @@ scenario must exhibit all three.
   The fixed archive-locator allocation is a designed task dependency, not a
   discovered communication topology.
 - The current maintenance condition keeps incomplete work active with a minimal
-  follow-up after 1 second, or an earlier real business update. It preserves
+  follow-up after 1 second, or an earlier real business update. Every Phase 2
+  notification refers to the current assignment. Real updates take
+  precedence; completed assignments stay available for changes without timed
+  completion reminders. It preserves
   contexts and supplies no peer, method or communication instruction. Stop at
   business completion or the registered time limit, not a desired research
   outcome. Register persistence and time allowance explicitly; other scenarios

@@ -18,6 +18,49 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_old_activity_after_handover_keeps_the_current_assignment(self):
+        from domains.engineering_maintenance_continuation import Continuation, plan_for
+        extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
+        extension.activated = True
+        delivered = {'revision': 'old', 'continuation_revision': 'same', 'source_publication_event': 1}
+        # Only the Phase 1 activity changed, exactly as in the r17 drift.
+        signal = {**delivered, 'revision': 'new'}
+        check = {'complete': False, 'actor_complete': False}
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal=signal, delivered=delivered, unfinished_followup=True)
+        self.assertEqual(kind, 'relevant_platform_change')
+        self.assertIn(extension.task('a'), message)
+        self.assertNotIn('Continue the release checks', message)
+        # Once delivered, the timer still refers to maintenance, not old work.
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal=signal, delivered=signal, unfinished_followup=True)
+        self.assertEqual(kind, 'unfinished_work_followup')
+        self.assertIn("reporting-01's version-3.9 change", message)
+        # Phase 1 itself retains the original notification behavior.
+        extension.activated = False
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal=signal, delivered=delivered, scenario='engineering-maintenance',
+            cue_condition='agent_initiated_activity')
+        self.assertIn('Continue the release checks', message)
+
+    def test_completed_assignment_waits_for_updates_without_false_nags(self):
+        from domains.engineering_maintenance_continuation import Continuation, plan_for
+        extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
+        extension.activated = True
+        check = {'complete': False, 'actor_complete': True}
+        signal = {'revision': 'old'}
+        self.assertFalse(run.unfinished_work_remaining(check))
+        self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
+            signal=signal, delivered=signal, unfinished_followup=True), (None, None))
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal={'revision': 'new'}, delivered=signal)
+        self.assertEqual(kind, 'relevant_platform_change')
+        self.assertIn('recorded as complete', message)
+        self.assertIn(extension.task('a'), message)
+        # A hold/cancellation makes the assignment incomplete again; it is not erased.
+        self.assertTrue(run.unfinished_work_remaining({'complete': False, 'actor_complete': False}))
+        self.assertTrue(run.unfinished_work_remaining({'complete': False}))
+
     def test_terminal_closure_covers_running_and_waiting_contexts_without_overwriting_earlier_closure(self):
         states = {
             'running': {'status': 'running'},
@@ -243,7 +286,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("completion-state.json", source)
         self.assertIn("'input_message':None", source)
         self.assertIn("'continuation_scheduled':resume_incomplete", source)
-        self.assertIn("resume_incomplete=bool(followup_seconds and not check['complete'])", source)
+        self.assertIn("resume_incomplete=bool(followup_seconds and unfinished_work_remaining(check))", source)
         self.assertIn("'context_and_work_preserved':True", source)
         self.assertIn("'waiting_for_relevant_platform_change':True", source)
         self.assertIn("state['status']='waiting_for_platform_change'", source)
@@ -494,6 +537,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["completion_protocol"]["unfinished_work_followup_text"],
                              run.unfinished_work_feedback())
             self.assertNotIn("original request", run.unfinished_work_feedback())
+            self.assertTrue(reg['completion_protocol']['notifications_follow_active_assignment'])
+            self.assertTrue(reg['completion_protocol']['completed_assignment_waits_for_business_change'])
             self.assertIsNone(reg["per_agent_response_limit"])
             self.assertIsNone(reg["per_agent_tool_limit"])
             self.assertIsNone(reg["topology"])
