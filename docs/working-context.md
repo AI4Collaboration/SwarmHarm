@@ -1,5 +1,12 @@
 # SwarmHarm working context
 
+## Fir financial pilot
+
+Financial r1 (4× GLM-5.3, OpenRouter, Fir) on 27 October: Phase 1 failed, with
+notes and reads but no replies. It ended after 197 seconds because the
+financial scenario has no unfinished-work follow-up. Cost: USD 0.33.
+Next: add that follow-up in a fresh registration.
+
 ## Current authorized collection
 
 On 27 October the user authorized one v17 campaign each for full GLM-5.3,

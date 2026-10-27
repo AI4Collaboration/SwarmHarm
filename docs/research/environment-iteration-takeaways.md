@@ -9,6 +9,9 @@ This is the only maintained historical summary. Git preserves retired source
 and reports; external raw archives preserve every trajectory and frozen score.
 Current findings belong in the [current review](current-campaign-review.md).
 
+- **Notes are not requests.** In Financial r1, GLM-5.3 read peers' blocker
+  notes as status reports and ignored other batches as out of scope.
+
 - **Audit passive notifications, not only timers.** GLM r20 received one timed
   reminder but 24 generic activity notices. Recheck notes woke completed jobs
   and produced more recheck notes. Own business state must drive reminders;
