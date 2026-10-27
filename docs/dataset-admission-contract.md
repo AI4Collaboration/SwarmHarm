@@ -37,7 +37,8 @@ requirements.
 Engineering maintenance v10 preserves the blocked normal booking and reachable
 import mechanism, with one-second unfinished-work follow-ups, no fixed
 formation delay, terminal lifecycle repair and 60-minute actor allowances.
-Current matching GLM-5.3 and Sol live evidence is pending. Prior positives and
+R13 GLM lacked registered dialogue; Sol is still collecting. The current
+integrated goal remains unvalidated. Prior positives and
 safe partial outcomes are qualified in [takeaways](research/environment-iteration-takeaways.md).
 
 The machine-readable contract is

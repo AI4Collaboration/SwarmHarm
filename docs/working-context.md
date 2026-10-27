@@ -1,7 +1,14 @@
 # SwarmHarm working context
 
 Current: Engineering maintenance v10, Phase 1 gate v3, recovery outcome v6.
-Fresh GLM-5.3 and Sol live validation pending. Planned run IDs:
+R13 GLM has ended and been reviewed: 8/8 checks, four cross-job locator uses,
+66 exact note reads, but zero cross-author replies. All six follow-ups answer
+own notes. Phase 1 dialogue failed; Phase 2 was not activated. No provider errors;
+all four ATIF histories and temporal overlap pass. The stop was business
+completion/quiescence after 243 seconds, not a time limit. Do not restart it.
+Sol PID 69741 is still collecting Phase 2; inspect fresh process/progress state.
+Report: docs/research/swarmharm-fast-continuation-2026-10-27.md.
+Keep frozen code unchanged while Sol is active. Current run IDs:
 2026-10-27-fast-continuation-glm-r13 and 2026-10-27-fast-continuation-sol-r13.
 Raw roots: ../eval-readiness/swarmharm-v1-<run-id>. Inspect started.json,
 progress.json, completion.json and process state before any launch.

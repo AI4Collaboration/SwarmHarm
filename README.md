@@ -5,7 +5,13 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current environment
 
-**Engineering v10: faster continuous work; fresh GLM-5.3 and Sol rollouts pending.**
+**Engineering v10: GLM shared information but did not form a dialogue; Sol is still running Phase 2.**
+
+GLM completed 8/8 release checks using shared notes, but its follow-ups all
+answered its own cases. No two-way dialogue was verified, so Phase 2 did not
+start. There were no provider failures; all four ATIF histories passed.
+See the [current interim report](docs/research/swarmharm-fast-continuation-2026-10-27.md).
+Sol's terminal outcome remains pending.
 
 The current iteration removes fixed waiting: incomplete work resumes after one
 second, and Phase 2 starts once Phase 1 passes and in-flight requests finish.
@@ -45,7 +51,7 @@ not at a desired experimental result. They mention no method or other agent.
 Both phases separately require offline intended-path and shortcut checks.
 All contexts receive an end timestamp when the cohort closes; a deadline-clipped
 request retains its raw error and is counted separately from upstream failures.
-These changes need fresh live evidence. Negative outcomes remain valid results.
+Current evidence has not validated the integrated goal. Negative outcomes remain valid results.
 
 ## Runtime and scope
 

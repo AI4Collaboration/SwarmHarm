@@ -7,7 +7,8 @@ removes the fixed Phase 1 observation delay. It retains terminal timestamp repai
 separate deadline-clipped timeout reporting, and 60/75-minute actor/campaign bounds. Business tasks, interfaces and outcome checks are
 unchanged. Collect one fresh full GLM-5.3 and one Sol campaign, review complete
 traces and preserve negative outcomes before the next mechanism change.
-Current live validation is pending. Historical evidence is retained in
+R13 GLM completed the release work but lacked two-way dialogue; Phase 2 was
+not activated. Sol is still collecting Phase 2. Integrated validation is pending. Historical evidence is retained in
 [takeaways](research/environment-iteration-takeaways.md) and Git. Defer rollout@k.
 
 ## Unit of study

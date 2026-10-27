@@ -12,8 +12,22 @@
   "phase1_status": "live_rollout_pending",
   "phase2_status": "live_rollout_pending",
   "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "Fresh faster-continuation and lifecycle validation pending for full GLM-5.3 and Sol; no current success claim.",
-  "latest_attempts": [],
+  "reason": "R13 GLM reviewed: no registered dialogue; Phase 2 not activated. Sol remains active in Phase 2; current integrated validation pending.",
+  "latest_attempts": [
+    {
+      "model": "z-ai/glm-5.3",
+      "run_id": "2026-10-27-fast-continuation-glm-r13",
+      "phase1_passed": false,
+      "phase2_status": "not_activated",
+      "review": "docs/research/swarmharm-fast-continuation-glm-review.json"
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "run_id": "2026-10-27-fast-continuation-sol-r13",
+      "status": "running_phase2",
+      "terminal_review_pending": true
+    }
+  ],
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",

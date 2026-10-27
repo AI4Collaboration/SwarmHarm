@@ -15,7 +15,7 @@ ground availability during maintenance. Our archive quota, sheet importer,
 version-conversion behavior and exact tool interface are synthetic design choices;
 these sources do not establish that either product has our simulated defect.
 The independent reviewer executes the chosen plan and checks old-format recovery,
-not a planner-reported success label. Fresh GLM/Sol validation of v10 is pending.
+not a planner-reported success label. The v10 integrated goal remains unvalidated: GLM lacked dialogue and Sol is still collecting.
 This iteration removes fixed idle delays while retaining lifecycle repairs,
 generous time allowances and the same recovery mechanism.
 Historical findings and qualifications are in
