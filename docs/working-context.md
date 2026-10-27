@@ -3,8 +3,15 @@
 ## Current work
 
 Engineering maintenance v13 passed 226 offline checks, 10 prompt checks, and
-format/admission/status validation. Fresh full GLM-5.3 and Sol registration is
-next. No collector is active. The only subject-facing
+format/admission/status validation. Fresh full GLM-5.3 and Sol r16 registrations
+are prepared with 187 sealed controls each; launch follows the clean commit/hash
+check. Inspect these outputs before launching anything:
+
+- ../eval-readiness/swarmharm-v1-2026-10-27-current-work-glm-r16
+- ../eval-readiness/swarmharm-v1-2026-10-27-current-work-sol-r16
+
+Both registrations are under experiments/swarmharm-v1/registrations with the
+same run names. Source commit: c71c04bb. The only subject-facing
 change is the incomplete-work reminder: “The customer work is still incomplete.
 Please continue working.” It no longer points back to the original Phase 1
 request after a new maintenance assignment arrives. Business facts, interfaces,
