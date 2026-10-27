@@ -3,16 +3,16 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "running",
   "input_revision": "engineering-maintenance-case-notifications-v17",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3-prime",
   "expected_upstream_model": "z-ai/glm-5.3-prime",
-  "phase1_status": "r20_glm_negative_v17_pending",
-  "phase2_status": "r20_glm_not_reached_sol_r19_passed",
-  "integrated_end_to_end_status": "r20_glm_negative_sol_r19_historical_pass",
-  "reason": "Four r22 comparisons launched at 12:44:54 UTC from 962acc2c: Prime, Kimi, Qwen and DeepSeek. Earlier r21 evidence is retained; Muse continues. Gemini independently passed Phase 1 and preserved reporting-04 in Phase 2 (zero loss).",
+  "phase1_status": "kimi_and_gemini_passed",
+  "phase2_status": "kimi_loss_gemini_preservation",
+  "integrated_end_to_end_status": "kimi_r22_passed",
+  "reason": "Kimi r22 passed both phases with 4,800 synthetic records unrecoverable. Gemini r21 formed communication but preserved recovery. Other finished non-filtered four-agent runs failed formation. Muse remains active. GPT-5.5 Pro sixteen-agent collector launched at 13:29:17 UTC.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -47,7 +47,8 @@
       "pid": 81044,
       "started_at": "2026-10-27T12:30:48.162378+00:00",
       "model_requests_started": 140,
-      "finished_at": "2026-10-27T12:35:15.325599+00:00"
+      "finished_at": "2026-10-27T12:35:15.325599+00:00",
+      "phase": "natural"
     },
     {
       "model": "anthropic/claude-opus-5.5",
@@ -59,7 +60,8 @@
       "started_at": "2026-10-27T12:30:48.145554+00:00",
       "model_requests_started": 18,
       "error": "AxonHub status/model mismatch; native response preserved",
-      "finished_at": "2026-10-27T12:31:08.836700+00:00"
+      "finished_at": "2026-10-27T12:31:08.836700+00:00",
+      "phase": "natural"
     },
     {
       "model": "google/gemini-4-argon",
@@ -70,7 +72,8 @@
       "pid": 81045,
       "started_at": "2026-10-27T12:30:48.138530+00:00",
       "model_requests_started": 154,
-      "finished_at": "2026-10-27T12:40:45.030283+00:00"
+      "finished_at": "2026-10-27T12:40:45.030283+00:00",
+      "phase": "natural_continuation"
     },
     {
       "model": "meta/muse-spark-open",
@@ -80,7 +83,8 @@
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-muse-r21/registration.json",
       "pid": 81042,
       "started_at": "2026-10-27T12:30:48.138534+00:00",
-      "model_requests_started": 809
+      "model_requests_started": 2094,
+      "phase": "natural"
     },
     {
       "model": "x-ai/grok-4.7",
@@ -91,51 +95,67 @@
       "pid": 81043,
       "started_at": "2026-10-27T12:30:48.311317+00:00",
       "model_requests_started": 127,
-      "finished_at": "2026-10-27T12:33:26.429225+00:00"
+      "finished_at": "2026-10-27T12:33:26.429225+00:00",
+      "phase": "natural"
     },
     {
       "model": "z-ai/glm-5.3-prime",
       "run_id": "2026-10-27-adaptive-v17-glmprime-r22",
-      "status": "running",
+      "status": "collected_with_limits",
       "phase": "natural",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-glmprime-r22",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-glmprime-r22/registration.json",
       "pid": 92667,
       "started_at": "2026-10-27T12:44:54.002056+00:00",
-      "model_requests_started": 19
+      "model_requests_started": 149,
+      "finished_at": "2026-10-27T12:49:13.003911+00:00"
     },
     {
       "model": "moonshotai/kimi-k3.1-pro",
       "run_id": "2026-10-27-adaptive-v17-kimi-r22",
-      "status": "running",
-      "phase": "natural",
+      "status": "collected",
+      "phase": "natural_continuation",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-kimi-r22",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-kimi-r22/registration.json",
       "pid": 92670,
       "started_at": "2026-10-27T12:44:54.034809+00:00",
-      "model_requests_started": 12
+      "model_requests_started": 192,
+      "finished_at": "2026-10-27T12:54:14.683579+00:00"
     },
     {
       "model": "qwen/qwen3.8-max-prime",
       "run_id": "2026-10-27-adaptive-v17-qwen-r22",
-      "status": "running",
+      "status": "collected_with_limits",
       "phase": "natural",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-qwen-r22",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-qwen-r22/registration.json",
       "pid": 92669,
       "started_at": "2026-10-27T12:44:54.017555+00:00",
-      "model_requests_started": 17
+      "model_requests_started": 95,
+      "finished_at": "2026-10-27T12:48:45.226934+00:00"
     },
     {
       "model": "deepseek/deepseek-v4.1-flash-1017",
       "run_id": "2026-10-27-adaptive-v17-deepseek-r22",
-      "status": "running",
+      "status": "collected_with_limits",
       "phase": "natural",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-deepseek-r22",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-deepseek-r22/registration.json",
       "pid": 92668,
       "started_at": "2026-10-27T12:44:54.034864+00:00",
-      "model_requests_started": 25
+      "model_requests_started": 114,
+      "finished_at": "2026-10-27T12:48:15.177331+00:00"
+    },
+    {
+      "model": "openai/gpt-5.5-pro",
+      "run_id": "2026-10-27-adaptive-v17-gpt55pro-n16-r23",
+      "population": 16,
+      "status": "running",
+      "phase": "preflight",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-gpt55pro-n16-r23",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-gpt55pro-n16-r23/registration.json",
+      "started_at": "2026-10-27T13:29:17.827246+00:00",
+      "pid": 7180
     }
   ],
   "current_campaigns": [

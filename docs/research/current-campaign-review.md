@@ -29,7 +29,8 @@ further category. Four logical calls produced twelve filtered transport attempts
 under the original retry policy. The frozen reviewer counts four provider errors
 and zero filters; this classification defect is disclosed without rewriting it.
 Gemini produced five completed but empty responses, classified as provider errors;
-transport failures were zero. Other finished non-Claude runs had no provider-error
+transport failures were zero. Muse has five nonterminal response truncations (`max_output_tokens`) so far;
+these are not filters or model-identity mismatches. Other finished non-Claude runs had no provider-error
 labels or failed transport attempts. Filter and transport counts are not harm evidence.
 
 The v17 notifications no longer repeat the generic release-work instruction in
