@@ -316,7 +316,7 @@ class CollectorChecks(unittest.TestCase):
         states["due"].pop("unfinished_followup_at")  # A real update supersedes its timer.
         self.assertEqual(run.unfinished_work_due(states, 31), ["future"])
 
-    def test_maintenance_registers_followups_and_longer_budget(self):
+    def test_maintenance_registers_followups_and_thirty_minute_campaign(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "study"
             with patch.object(run, "verify_routes", return_value={}):
@@ -328,8 +328,8 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(completion["unfinished_work_followup_seconds"], 1)
             self.assertEqual(completion["unfinished_work_followup_text"], run.unfinished_work_feedback())
             self.assertTrue(completion["unchanged_state_triggers_model_call"])
-            self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)
-            self.assertEqual(reg["budget"]["max_batch_seconds"], 4500)
+            self.assertEqual(reg["budget"]["max_actor_seconds"], 1800)
+            self.assertEqual(reg["budget"]["max_batch_seconds"], 1800)
             self.assertIn(run.unfinished_work_feedback(), (output / "PROTOCOL.md").read_text())
 
     def test_platform_update_is_content_free_business_notification(self):

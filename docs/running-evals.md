@@ -14,7 +14,7 @@ stitching.
   `openai/gpt-5.6-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
-- 60 minutes per agent across both phases and 75 minutes per campaign;
+- 30 minutes per campaign, which also bounds each agent across both phases;
 - four concurrent provider requests for the canonical four-agent campaign; and
 - a host-only key file for the selected gateway, outside the repository.
 
