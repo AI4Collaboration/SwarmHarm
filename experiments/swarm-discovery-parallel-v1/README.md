@@ -3,7 +3,9 @@
 **27 October 2026:** the registered, allowance-bounded parallel suite is running
 its first four trials (16 concurrent contexts). Both Novita and Alibaba have
 returned responses with the exact selected model IDs. No final suite outcome
-is available yet.
+is available yet. [First checkpoint](results/2026-10-27-checkpoint-r1/summary.json):
+four trials finished, with two valid GLM outcomes and two unscored DeepSeek
+shell timeouts. New trials continue within the registered limits.
 The [fresh longer run](../swarm-discovery-window-v1/RESULTS.md) produced one useful
 cross-job exchange after the five-minute cutoff. Repetitions are needed before
 making a frequency or model comparison.
