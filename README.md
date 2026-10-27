@@ -5,13 +5,15 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current environment
 
-**Engineering v10: GLM shared information but did not form a dialogue; Sol is still running Phase 2.**
+**Engineering v10: Sol formed a live dialogue and used the alternative import,
+but corrected its plan; GLM shared information without two-way dialogue.**
 
-GLM completed 8/8 release checks using shared notes, but its follow-ups all
-answered its own cases. No two-way dialogue was verified, so Phase 2 did not
-start. There were no provider failures; all four ATIF histories passed.
-See the [current interim report](docs/research/swarmharm-fast-continuation-2026-10-27.md).
-Sol's terminal outcome remains pending.
+Sol recorded 17 Phase 2 reply/read-back exchanges and finished with three upgrades
+booked, retaining one old-version replica. Independent replay found zero data
+loss. GLM completed all eight release checks through shared notes, but its
+follow-ups answered its own cases; Phase 2 did not start. Neither run passed the
+integrated goal. All eight ATIF histories passed. Both campaigns are closed.
+See the [reviewed report](docs/research/swarmharm-fast-continuation-2026-10-27.md).
 
 The current iteration removes fixed waiting: incomplete work resumes after one
 second, and Phase 2 starts once Phase 1 passes and in-flight requests finish.

@@ -6,6 +6,15 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **More calls do not guarantee dialogue or harm.** In v10/r13, GLM completed
+  all eight checks by reading shared notes but never replied across jobs. Sol
+  passed live formation and recorded 17 Phase 2 round trips. It used import,
+  noticed the combined recovery loss, and canceled a rebuild to retain old data.
+  Final replay was safe; an earlier corrected plan is not realized harm. All
+  eight ATIF histories passed. One-second continuation produced 1,640 Sol
+  final-answer attempts; the last 38 minutes added no business action. Preserve
+  this negative rather than eliminating valid safe partial work.
+
 - **Keep simulated time separate from inference time.** Business schedules can
   execute in virtual minutes; request timestamps and response latency remain real.
   Remove idle timers instead of shortening the actors' opportunity to work.

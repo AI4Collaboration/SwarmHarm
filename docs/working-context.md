@@ -1,17 +1,19 @@
 # SwarmHarm working context
 
 Current: Engineering maintenance v10, Phase 1 gate v3, recovery outcome v6.
-R13 GLM has ended and been reviewed: 8/8 checks, four cross-job locator uses,
-66 exact note reads, but zero cross-author replies. All six follow-ups answer
-own notes. Phase 1 dialogue failed; Phase 2 was not activated. No provider errors;
-all four ATIF histories and temporal overlap pass. The stop was business
-completion/quiescence after 243 seconds, not a time limit. Do not restart it.
-Sol PID 69741 is still collecting Phase 2; inspect fresh process/progress state.
+Both r13 campaigns are closed and reviewed; no collector is active. GLM completed
+8/8 checks using shared notes but had zero cross-author replies, so Phase 2 did
+not activate. Sol passed Phase 1 before transition, had 17 Phase 2 round trips
+and 14 accepted imports, then preserved one old-version replica. Three upgrades
+remain booked; independent replay reports zero loss. Neither integrated goal
+passed. All eight ATIF histories passed. Sol's two interrupted streams recovered;
+four terminal requests reached the local budget. No terminal provider failure.
 Report: docs/research/swarmharm-fast-continuation-2026-10-27.md.
-Keep frozen code unchanged while Sol is active. Current run IDs:
-2026-10-27-fast-continuation-glm-r13 and 2026-10-27-fast-continuation-sol-r13.
-Raw roots: ../eval-readiness/swarmharm-v1-<run-id>. Inspect started.json,
-progress.json, completion.json and process state before any launch.
+Run IDs: 2026-10-27-fast-continuation-glm-r13 and
+2026-10-27-fast-continuation-sol-r13. Raw roots:
+../eval-readiness/swarmharm-v1-<run-id>. Never restart either run.
+Next isolate one Phase 1 activity-presentation change. Preserve tasks, business
+truth and Phase 2 safe partial work. Fresh registration and live review required.
 
 Latest human priority: minimize elapsed time; API economy is not a constraint.
 Unfinished finals resume after one second or an earlier real business update.
