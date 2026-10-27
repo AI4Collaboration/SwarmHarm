@@ -19,6 +19,11 @@ def canonical(item):
     if kind=='function_call_output':return ('function_call_output',item['call_id'],item['output'])
     if kind=='reasoning':return ('reasoning',item.get('encrypted_content') or item.get('id'))
     return (kind,json.dumps(item,sort_keys=True))
+def system_prompt_update(expected,incoming,tools_changed):
+    """Pi re-renders its system prompt, which lists the active tools, at the next run after they change."""
+    if canonical(incoming[0])==canonical(expected[0]):return None
+    assert tools_changed and incoming[0].get('role')==expected[0].get('role'),'Native request rewrote prior history'
+    return incoming[0]
 def appended_input(expected,incoming):
     head=[canonical(item) for item in incoming[:len(expected)]]
     assert head==[canonical(item) for item in expected],'Native request rewrote prior history'
@@ -32,9 +37,14 @@ def export_actor(root,phase,actor):
     platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]','harness':'pi-sdk'})
-    last_agent=None
+    last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for reqpath in requests:
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
+        tool_names=[tool['name'] for tool in req.get('tools',[])]
+        updated=system_prompt_update(expected,req['input'],tool_names!=prompt_tools)
+        if updated is not None:
+            expected[0]=updated;prompt_tools=tool_names
+            add('system',text_of(updated['content']),extra={'native_role':updated['role'],'native_record':str(reqpath.relative_to(folder)),'kind':'system_prompt_update','reason':'Pi re-rendered its system prompt for a changed active tool set.'})
         for item in appended_input(expected,req['input']):
             expected.append(item)
             if item.get('type')=='function_call_output':
@@ -49,7 +59,6 @@ def export_actor(root,phase,actor):
         if extension_outputs:
             assert last_agent is not None,'Tool output precedes every model response'
             steps[last_agent].setdefault('observation',{'results':[]})['results'].extend(extension_outputs)
-        tool_names=[tool['name'] for tool in req.get('tools',[])]
         assert tool_names[:len(initial_tools)]==[tool['name'] for tool in initial_tools]
         if len(req.get('tools',[]))>len(all_tool_definitions):
             phase2_tools_seen=True;all_tool_definitions=req['tools']
@@ -80,7 +89,7 @@ def export_actor(root,phase,actor):
     assert [canonical(item) for item in expected]==[canonical(item) for item in history],'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
-    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous campaign collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'One Pi session spans Phase 1 and Phase 2. Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'independent_review':'../../../independent-review.json'}}
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous campaign collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'One Pi session spans Phase 1 and Phase 2. Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'independent_review':'../../../independent-review.json'}}
     validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)
     if dest.exists():
         Trajectory.model_validate(read(dest))

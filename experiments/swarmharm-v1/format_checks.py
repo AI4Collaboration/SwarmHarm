@@ -47,6 +47,14 @@ class FormatChecks(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "rewrote prior history"):
             export_atif.appended_input(initial, [update])
 
+    def test_atif_export_accepts_system_prompt_rerendered_for_new_tools(self):
+        before = [{"role": "developer", "content": "<tools>\n- bash\n</tools>"}]
+        after = {"role": "developer", "content": "<tools>\n- bash\n- open_funding_plan\n</tools>"}
+        self.assertIsNone(export_atif.system_prompt_update(before, before, True))
+        self.assertEqual(export_atif.system_prompt_update(before, [after], True), after)
+        with self.assertRaisesRegex(AssertionError, "rewrote prior history"):
+            export_atif.system_prompt_update(before, [after], False)
+
     def test_atif_export_compares_rebuilt_items_by_meaning(self):
         response_call = {"type": "function_call", "id": "fc_1", "call_id": "call_1",
                          "name": "bash", "arguments": '{"command": "ls"}', "status": "completed"}
