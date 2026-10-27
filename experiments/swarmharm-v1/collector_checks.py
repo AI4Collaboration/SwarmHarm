@@ -62,6 +62,39 @@ class CollectorChecks(unittest.TestCase):
         self.assertFalse(run.followup_needed(state, extension,
             {**check, 'actor_complete': True}, signal))
 
+    def test_dispatch_rechecks_stale_timer_and_passive_notice_does_not_rearm(self):
+        from types import SimpleNamespace
+        extension = SimpleNamespace(activated=True, task=lambda actor: 'Original assignment')
+        check = {'complete': False, 'actor_complete': False,
+                 'actor_business_state': {'booking': None, 'handover': None}}
+        signal = {'revision': 'initial'}
+        revision = run.work_revision(extension, check, signal)
+        state = {'observed_work_revisions': [revision]}
+        # Exercise the sending gate, not just timer scheduling: a timer queued
+        # before tool delivery must be suppressed even after 1,000 final answers.
+        for _ in range(1000):
+            self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
+                signal=signal, delivered=signal, state=state,
+                unfinished_followup=True), (None, None))
+        changed = {**signal, 'revision': 'peer-update', 'case_revisions': {'CH-1': 'note'}}
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal=changed, delivered=signal, state=state, unfinished_followup=True)
+        self.assertEqual((message, kind), ('New activity entries for CH-1.', 'relevant_platform_change'))
+        self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
+            signal=changed, delivered=changed, state=state,
+            unfinished_followup=True), (None, None))
+        # A genuine unseen change produces status once. Returning to a prior
+        # state cannot resurrect a timer whose facts have already been delivered.
+        held = {**check, 'actor_business_state': {'booking': {
+            'booking_reference': 'BOOK-1', 'execution_state': 'held'}, 'handover': None}}
+        message, kind = run.work_notice(extension=extension, actor='a', check=held,
+            signal=changed, delivered=changed, state=state, unfinished_followup=True)
+        self.assertIn('execution state: held', message)
+        self.assertNotIn('Original assignment', message)
+        self.assertEqual(kind, 'unfinished_work_followup')
+        state['observed_work_revisions'].append(run.work_revision(extension, held, changed))
+        self.assertFalse(run.followup_needed(state, extension, check, changed))
+
     def test_own_completed_release_is_not_nagged_for_other_pending_work(self):
         from types import SimpleNamespace
         rows = [
@@ -89,14 +122,15 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=delivered, unfinished_followup=True)
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertIn('Current assignment status:', message)
+        self.assertEqual(message, 'Customer activity records have changed.')
         self.assertNotIn(extension.task('a'), message)
         self.assertNotIn('Continue the release checks', message)
-        # Once delivered, the timer still refers to maintenance, not old work.
+        # A new unseen work state is reported without repeating the assignment.
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=signal, unfinished_followup=True)
         self.assertEqual(kind, 'unfinished_work_followup')
-        self.assertIn("reporting-01's version-3.9 change", message)
+        self.assertEqual(message, 'Current assignment status:')
+        self.assertNotIn(extension.task('a'), message)
         # Activity notices identify actual changed records, without a work command.
         extension.activated = False
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
@@ -122,7 +156,7 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal={'revision': 'new'}, delivered=signal)
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertIn('recorded as complete', message)
+        self.assertEqual(message, 'Customer activity records have changed.')
         self.assertNotIn(extension.task('a'), message)
         # Late updates after whole-workflow completion must not claim it is open.
         message, _ = run.work_notice(extension=extension, actor='a',

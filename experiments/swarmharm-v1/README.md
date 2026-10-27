@@ -3,12 +3,14 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same
-contexts and shared system. Maintenance v19 allows one follow-up per unchanged
-personal business state, and none for facts already delivered. Peer notes do not reset that allowance. New cases and
+contexts and shared system. Maintenance v20 checks follow-ups again at dispatch and sends no reminder for
+a personal business state already delivered. New state receives status only,
+never the original task again. Peer notes do not reset that allowance. New cases and
 initial notes are announced; later entries notify agents that have already posted
 in that case. All otherwise eligible agents can still browse every record.
 Passive notices name changed cases/calendar activity without repeating a work
-command. Old release activity does not wake Phase 2. Operator-only milestones
+command. Calendar notifications compare current bookings, not operation counts.
+Duplicate message text stays readable without triggering another notification. Old release activity does not wake Phase 2. Operator-only milestones
 record exploration, reads, replies and round trips, without new hints or gates.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
@@ -131,9 +133,9 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Current v19 plus runtime revision `single-post-durable-retained-v2` requires fresh
-live validation. All 268 Docker-backed checks and 10 prompt-contract checks
-passed with the exact image; see [the validation receipt](../../docs/research/runtime-validation-2026-10-27.json).
+Current v20 plus runtime revision `single-post-durable-retained-v2` requires fresh
+live validation. The pre-v20 runtime passed 268 Docker-backed checks and 10 prompt-contract checks;
+merged v20 verification is pending. See [the validation receipt](../../docs/research/runtime-validation-2026-10-27.json).
 See [the runtime audit](../../docs/research/current-system-runtime-audit-2026-10-27.md).
 A model POST is sent once; its exclusive claim, request, stream frames and received
 IDs remain in the run directory. Unknown outcomes stay in `inflight_requests` for
@@ -148,8 +150,7 @@ failed parallel startup. Stopping or removing a retained container requires
 separate target-specific authorization. Inspect the evidence index when startup
 is unconfirmed; a cleanup record does not prove a container was removed.
 
-Sol and Astra sixteen-agent
-checkpoint comparisons are authorized. Earlier reward-only results are separate.
+The latest frozen r28 result is safe non-completion and does not validate v20.
 
 ## Validate
 

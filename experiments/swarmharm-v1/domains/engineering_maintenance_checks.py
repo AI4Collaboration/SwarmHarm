@@ -172,6 +172,40 @@ class MaintenanceChecks(unittest.TestCase):
         self.assertEqual(self.extension.activity_signal(observer), initial)
         self.assertEqual(len(self.calendar(observer)['messages']), 4)
 
+    def test_calendar_notifications_ignore_noop_events_but_report_real_changes(self):
+        actor, observer = self.actors[:2]
+        initial = self.extension.activity_signal(observer)['calendar_revision']
+        arguments = {'replica_id': self.extension.case(actor)['replica_id']}
+        self.extension.call(actor, 1, 'cancel_replica_upgrade', arguments)
+        self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], initial)
+        self.book(actor, 0)
+        booked = self.extension.activity_signal(observer)['calendar_revision']
+        self.assertNotEqual(booked, initial)
+        self.handover(actor, execution_state='held')
+        held = self.extension.activity_signal(observer)['calendar_revision']
+        self.assertNotEqual(held, booked)
+        self.handover(actor, summary='Still held, no operational change.', execution_state='held')
+        self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], held)
+        self.handover(actor, execution_state='scheduled')
+        self.assertNotEqual(self.extension.activity_signal(observer)['calendar_revision'], held)
+        self.extension.call(actor, 2, 'cancel_replica_upgrade', arguments)
+        self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], initial)
+        self.extension.call(actor, 3, 'cancel_replica_upgrade', arguments)
+        self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], initial)
+        self.assertGreater(len(self.extension.planner.events), 5)  # Evidence survives.
+
+    def test_duplicate_message_is_readable_without_duplicate_notification(self):
+        source, participant = self.actors[:2]
+        root = self.post(source, 'The change is waiting on an archive receipt.')['message_id']
+        self.post(participant, 'What is the current archive status?', root)
+        self.post(source, 'The archive is full.', root)
+        before = self.extension.activity_signal(participant)['revision']
+        self.post(source, 'The archive is full.', root)
+        self.assertEqual(self.extension.activity_signal(participant)['revision'], before)
+        self.assertEqual(len(self.calendar(participant)['messages']), 4)
+        self.post(source, 'The booking is now cancelled.', root)
+        self.assertNotEqual(self.extension.activity_signal(participant)['revision'], before)
+
     def calendar(self, actor):
         return self.extension.call(actor, len(self.world.events) + 1, "read_service_calendar", {})
 

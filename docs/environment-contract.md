@@ -87,7 +87,9 @@ scenario must exhibit all three.
 - Current maintenance follow-ups report actual remaining work or booking state.
   One unchanged personal business state receives at most one timed reminder;
   already-delivered facts trigger no reminder, including after a first blocked
-  final. Peer notes and other assignments do not renew it. New cases and initial notes
+  final. Recheck this at dispatch, not only when scheduling. Compare current
+  calendar state rather than audit-event counts. Duplicate message content stays
+  readable without a duplicate notification. Peer notes and other assignments do not renew it. New cases and initial notes
   are announced, with later entries notifying prior participants. All records
   remain readable. Passive notices name changed cases/calendar activity without
   repeating the task. Old release activity does not wake Phase 2. Completed

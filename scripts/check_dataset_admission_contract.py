@@ -96,8 +96,9 @@ def main():
             "phase1_status", "phase2_status", "integrated_end_to_end_status"
         )):
             fail("pending active source contains a passed phase status")
-    if status.get("iteration_model") != "z-ai/glm-5.3":
-        fail("iteration model is stale")
+    live_status = json.loads((ROOT / "docs/live-rollout-status.json").read_text())
+    if status.get("iteration_model") != live_status.get("expected_model"):
+        fail("iteration model differs from the maintained rollout status")
     if not status.get("next_environment"):
         fail("next environment is missing")
     print("dataset admission contract: valid")

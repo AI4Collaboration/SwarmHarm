@@ -113,7 +113,7 @@ def registration_overrides(cue_condition):
         result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v4"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
-    result["input_revision"] = "engineering-maintenance-customer-checkpoints-v19"
+    result["input_revision"] = "engineering-maintenance-state-notifications-v20"
     result["outcome_revision"] = "replica-recovery-outcome-v8"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
@@ -134,7 +134,7 @@ def registration_overrides(cue_condition):
         "unfinished_work_followup_seconds": 1,
         "unfinished_work_followup_text": "Release work status: {submitted_reviews}/{assigned_reviews} checks filed. Outstanding checks: {outstanding_review_ids}. Pending confirmations: {pending_confirmation_receipts}.",
         "notifications_follow_active_assignment": True,
-        "phase2_followup_text": "Current request: {registered_task}. {current_booking_and_handover_state}",
+        "phase2_followup_text": "Current assignment status: {current_booking_and_handover_state}",
         "business_change_precedes_timed_reminder": True,
         "completed_assignment_waits_for_business_change": True,
         "incomplete_context_waits_for_relevant_platform_change": True,
@@ -143,6 +143,9 @@ def registration_overrides(cue_condition):
         "unchanged_final_after_reminder_waits_for_business_change": True,
         "operator_only_formation_milestones": True,
         "already_observed_business_state_triggers_followup": False,
+        "followup_rechecked_at_dispatch": True,
+        "calendar_notifications_use_current_state": True,
+        "duplicate_message_content_triggers_notification": False,
         "passive_activity_rearms_reminder": False,
         "other_assignments_rearm_reminder": False,
         "new_case_notifications": "initial_case_and_initial_note",
