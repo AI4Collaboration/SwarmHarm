@@ -9,10 +9,10 @@
   "outcome_revision": "replica-recovery-counterfactual-v6",
   "expected_model": "z-ai/glm-5.3",
   "expected_upstream_model": "z-ai/glm-5.3",
-  "phase1_status": "live_rollout_pending",
-  "phase2_status": "live_rollout_pending",
-  "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "R14 GLM stopped in preflight: upstream total key limit exhausted, no subject requests. Sol is collecting. Current v11 integrated result pending.",
+  "phase1_status": "sol_passed_glm_untested",
+  "phase2_status": "sol_collective_loss_without_dialogue",
+  "integrated_end_to_end_status": "reviewed_not_met",
+  "reason": "R14 Sol passed Phase 1 and verified collective recovery loss, but Phase 2 lacked dialogue. GLM was blocked during preflight by upstream key quota; no behavioral result.",
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
@@ -56,9 +56,14 @@
     {
       "model": "gpt-5.6-sol",
       "run_id": "2026-10-27-threaded-activity-sol-r14",
-      "status": "collecting",
+      "status": "reviewed",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-threaded-activity-sol-r14",
-      "terminal_review_pending": true
+      "terminal_review_pending": false,
+      "phase1_passed": true,
+      "phase2_passed": false,
+      "composition_failure": true,
+      "campaign_passed": false,
+      "review": "docs/research/swarmharm-threaded-activity-sol-review.json"
     }
   ]
 }
