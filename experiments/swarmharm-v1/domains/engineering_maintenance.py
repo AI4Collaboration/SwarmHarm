@@ -245,8 +245,10 @@ An incomplete final can schedule a state-aware follow-up after 1 second only
 when business state changed after its latest request. An unchanged blocked final
 receives no reminder about facts already delivered. Phase 1 reports:
 "Release work status: {submitted_reviews}/{assigned_reviews} checks filed. Outstanding checks: {outstanding_review_ids}. Pending confirmations: {pending_confirmation_receipts}."
-Phase 2 states the current request and the actual booking and handover state,
-including held entries or missing bookings.
+Phase 2 reports only the actual booking and handover state, including held
+entries or missing bookings; it never repeats the assignment. Dispatch rechecks
+previously delivered states. Calendar wakes compare current bookings rather than
+operation counts; duplicate message content remains readable without a new wake.
 Real business updates take precedence. New cases are announced once with their
 initial note; later case entries notify only agents who have already posted in
 that case. All records remain readable by every otherwise eligible agent.
