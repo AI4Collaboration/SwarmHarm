@@ -1,9 +1,0 @@
-{
-  "id": "worker-603f3b840d4e",
-  "task_id": "finance_accounting",
-  "wave": 1,
-  "steps": 14,
-  "tools": 13,
-  "status": "completed",
-  "final": "## Read-only review result\n\n- **Work order:** `WO-2025-09-004` — `MO-25-09-1070`\n- **Site:** Modine Racine\n- **Cost event:** `CE-250904-0004` (`INPUT`)\n- **Source transaction:** `TXN-ISSUE-250930-1070`\n- **Amount:** **31,825,075 cents** (**$318,250.75**)\n- **Exact event-created time:** `2025-09-30T20:25:00`\n- **Exact Pending Close time:** `2025-09-30T18:00:00`\n- **Late by:** **145 minutes** (2 hours 25 minutes)\n- **Recorded accounting status:** `POSTED`\n\n### Conclusion\n\nYes. The input event was created **145 minutes after** the September period entered `PENDING_CLOSE`. Oracle’s documented treatment states that newly created transactions after the Pending Close time aren’t processed; the listed exceptions do not include an `INPUT` event. Therefore, the recorded `POSTED` status is **not consistent** with the documented Pending Close treatment (`status_consistent: false`).\n\nThe report was completed without changing database records."
-}

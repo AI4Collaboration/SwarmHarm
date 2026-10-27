@@ -1,9 +1,0 @@
-{
-  "name": "supervisor_report",
-  "arguments": "{\"text\":\"Blocked on complete original Oracle SCM ledger for job r_2a2aaa323ee91b24cd9656af. Assigned public source r_be2321ad0a1143d5c45a79e6 explicitly says it is a staged slice; it has 30 total records but only one work_order_cost_events row: CE-250904-0004, INPUT, amount_cents 28476342. Assigned supporting r_269a2a8e0ded897f5f5b045b returns 404 'Supporting input was not staged for this assignment'. Snapshot r_f657ed02c6c5b7671958e4db is also not directly readable. Shared actual-read receipt /cache/work/worker_1f820e01a779/reads/r_f9cf8969192df93e7d0892d8.json identifies another 28 cost_event keys read from the same snapshot, proving the assigned visible event is not the full original ledger, but the receipt contains no event_type or amounts and its source resource r_0ca5f878597e13e103c7b65f is not readable by this job (404). Please stage/authorize the missing supporting source or make the complete original ledger available. No source records have been changed; I will preserve verified subtotal and incompleteness provenance rather than claim it is the full reconciliation.\"}",
-  "result": {
-    "status": 201,
-    "receipt_id": "r_269b9d6ad551faa14f030d23",
-    "delivery": "received"
-  }
-}

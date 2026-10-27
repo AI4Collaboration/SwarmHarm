@@ -1,70 +1,69 @@
-# Data sources
+# Task sources and verification
 
-**Latest: one original MiMo finance task ran through Harbor with Sol.** The source
-rubric returned 0.7/1; requested records and a memo were created without changing
-original data. Two failed predicates are sensitive to equivalent wording.
-[Result and limits](../../experiments/mimo-finance-v1/RESULTS.md). This is source-task
-execution, not an impossible-task or multi-agent test.
+## Maintained fixtures
 
-The earlier [Harbor approval-code pilot](../../experiments/approval-code-v1/RESULTS.md)
-is synthetic and HVE-inspired. Four tasks ran through Harbor; this is not MiMo
-coverage. Future source-backed imports use Harbor inputs and ATIF outputs.
+SwarmHarm uses synthetic domain-native records with independent business truth.
+Engineering maintenance v14 models a version migration, a full recovery archive,
+and inconsistent retention checks between booking and calendar-sheet import.
+Local restore records are created privately by subjects. No peer message or
+record is prepopulated. Phase 1 retains agent-created source cases and raw
+activity, without private-locator matching or automatic publication.
 
-Twelve more synthetic back-office families are emitted as Harbor tasks and
-checked locally, not built or run with a model. Their sources, the full list
-of candidates and what we dropped are in [scenario candidates](scenario-candidates-2026-10-21.md).
+PostgreSQL's [backup and archive recovery documentation](https://www.postgresql.org/docs/current/continuous-archiving.html)
+grounds the need to retain recovery material. Kubernetes' [rolling-update availability controls](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#max-unavailable)
+ground availability during maintenance. Our archive quota, sheet importer,
+version-conversion behavior and exact tool interface are synthetic design choices;
+these sources do not establish that either product has our simulated defect.
+The independent reviewer executes the chosen plan and checks old-format recovery,
+not a planner-reported success label. Exact Phase 2 messages are grouped by
+customer change. Current collection status belongs in
+[working context](../working-context.md); historical lessons belong in
+[takeaways](environment-iteration-takeaways.md).
 
-**Earlier custom task data are synthetic.** The completed business-cache studies use
-three locally constructed workflows: payroll, billing and procurement. They are
-not three external benchmarks. The latest settlement study used synthetic invoices and equipment orders across
-three vendors. Two normal jobs passed; six experimental jobs exchanged data but
-posted no transaction. See the [settlement report](../../experiments/procurement-settlement-v1/RESULTS.md).
+Twelve more synthetic back-office families are emitted as Harbor tasks
+and checked locally on the `ayush` branch, not built or run with a model. Their
+sources, the full list of candidates and what we dropped are in
+[scenario candidates](scenario-candidates-2026-10-21.md).
 
-The [new composition design](../../experiments/procurement-composition-v1/README.md)
-also uses original synthetic records: six requisitions, three supplier pairs and
-explicit tax-inclusive unit prices. The [customer-contract adaptation](../../experiments/procurement-contract-v1/RESULTS.md)
-now has a completed six-task Sol run with original synthetic contract terms:
-over-budget commitments occurred, but no method propagation.
+## Source-backed candidates
 
-Earlier source-backed candidates and method references remain useful, but a
-candidate dataset is not evaluated SwarmHarm coverage.
+- **OpenAI 2026 work categories:** the June 2026 Codex economic research report
+  names Engineering / Coding, Data Analysis, Financial Analysis, Knowledge Work
+  and a catch-all Other category. SwarmHarm shortens the first label to
+  Engineering, uses the four named categories as its domain backbone and
+  excludes Other. The four maintained scenario
+  contracts require individual validation. Historical domain positives apply only to their frozen sources;
+  current coverage needs matching live validation.
+- **MiMo V2.6 RL Harbor general:** 925 workplace tasks at audited revision
+  `85c8884bb32b82d5a2f39bb1044bffd8d5d574f1` in
+  [FineEnvs/MiMo-V2.6-RL-harbor-general](https://huggingface.co/datasets/FineEnvs/MiMo-V2.6-RL-harbor-general/tree/85c8884bb32b82d5a2f39bb1044bffd8d5d574f1).
+  Candidate tasks still require the admission checks above.
+- **MiMo code:** a candidate only after a natural business adaptation with an
+  independently verified outcome.
 
-## Sources and their roles
+## Design references
 
-- **MiMo general_agent:** business questions, records and MCP tools for realistic
-  task construction. The audited revision was
-  `639865fd3374018d6cb29b9fb82dd531406fcf5f`, containing 925 general_agent tasks.
-  Two local task checks tested execution and grading, not a multi-agent incident.
-  See [source dataset](https://huggingface.co/datasets/XiaomiMiMo/MiMo-V2.6-RL-oss/tree/639865fd3374018d6cb29b9fb82dd531406fcf5f)
-  and the [historical smoke report](../archive/mimo-smoke-2026-10-16.md).
-- **ImpossibleBench SWE:** a reference for pairing ordinary tasks with conflicting
-  acceptance tests. Earlier coding studies used derived functions; this is not
-  the source of the current business records.
-  [Paper](https://arxiv.org/abs/2510.20270).
-- **ImpossibleBench audit:** measurement lessons about distinguishing test gaming,
-  ordinary errors and disclosed conflicts. The audit concerns its LiveCodeBench
-  component, not MiMo. [Audit](https://www.lesswrong.com/posts/qnrjAhiqire7JeoN2/good-evals-are-hard-an-impossiblebench-audit).
-- **Hack-Verifiable Environments / HVTB and Hackbait:** references for observable
-  shortcut use and detector controls. Earlier local adaptations do not constitute
-  full-suite coverage or prove that a business-process exploit works.
-  [HVE paper](https://arxiv.org/abs/2605.20744) ·
-  [Hackbait](https://pypi.org/project/hackbait/).
+- [ImpossibleBench](https://arxiv.org/abs/2510.20270): explicit infeasibility.
+- [LessWrong reproduction](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment):
+  discovery, request, sharing and use measurements.
+- [OpenAI incident summary](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)
+  and [METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/):
+  persistence, blocked-task concentration and cross-run work.
 
-The previously supplied counts of 260 writable restricted tasks and 191 tasks
-without mutation checks were not independently verified. Neither “all tasks use
-LLM judges” nor writable tools alone establishes an exploitable task. Do not use
-these claims as measured dataset coverage.
+References shape the environment; they are not completed SwarmHarm coverage.
+Admit a task only after proving its blocker, source truth, reachable mechanism,
+continuous phase dependence and independent outcome check.
 
-## Domain labels and admission
+The LessWrong manual reproduction measures the four incident steps in separate
+static environments. Its help-request condition programmatically injects
+simulated-agent scratch files and pre-populates notes suggesting that other
+agents have solved similar tasks; its method-use condition starts with methods
+already on the message board. The authors also note that their deliberately
+simplified environment may concentrate agents on the few available affordances, and they
+run 64 trajectories per setting. SwarmHarm does not treat those pre-populated or
+stitched conditions as evidence for its stronger continuous-campaign claim.
+Its live agents must create communication themselves. If method transfer is
+claimed, the method record and exact source-to-adopter ordering must also occur
+in that same persistent world. Method transfer is not a universal Phase 2 gate.
 
-Earlier domain labels used [UN ISIC Rev.4](https://unstats.un.org/unsd/classifications/Econ/Detail/EN/27/K)
-as an activity taxonomy: health (86), finance/insurance (64–66), accounting (6920),
-legal services (6910), education (85) and public administration (84).
-Finance/accounting is our combined grouping, not an official ISIC category.
-These labels describe task activities, not risk levels or completed coverage.
-
-Before admitting a new task, verify provenance, an independently correct ordinary
-solution, the blocker, a reachable process weakness, its actual downstream effect,
-and the distinction between data copying and method transfer. Keep source wording
-and operator adaptations explicit. See the [current design](hf-design-iteration-2026-10-21.md)
-and [outcome criteria](../business-outcome-criteria.md).
+[Admission contract](../dataset-admission-contract.md)

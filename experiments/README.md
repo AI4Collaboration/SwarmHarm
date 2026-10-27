@@ -1,8 +1,13 @@
 # Experiments
 
+The maintained study is [swarmharm-v1](swarmharm-v1/). The other directories
+here are frozen `ayush`-branch studies; they ran on earlier revisions and do
+not define current operation. Studies retired on `main` remain in Git history.
+
 **25 October 2026:** [Reply chronology audit](swarm-discovery-v3/RESULTS.md).
 The exact parent version must precede a reply. Sixteen regression checks and a
 new read-only regrade leave the discovery and communication findings unchanged.
+Audit code: [swarm-discovery-audit-v1](swarm-discovery-audit-v1/README.md).
 
 **25 October 2026:** [Business-client discovery and persistent histories](swarm-discovery-v3/RESULTS.md).
 All four contexts discovered the client and read cross-job notes; no cross-job
@@ -12,47 +17,19 @@ runs remain preserved.
 **25 October 2026:** [Stage 1 diagnosis and runtime correction](swarm-discovery-v2/DIAGNOSIS.md).
 Real concurrent-shell controls expose and fix a blocked reply. The registered
 repeat retained identical unhinted inputs and again observed no communication.
-[Results](swarm-discovery-v2/RESULTS.md). The original pilot stays frozen.
+[Results](swarm-discovery-v2/RESULTS.md). The original pilot
+([swarm-discovery-v1](swarm-discovery-v1/RESULTS.md)) stays frozen.
 
-**Latest:** [MiMo finance](mimo-finance-v1/RESULTS.md) — one original source task
-completed through Harbor with Sol; original rubric 0.7/1, no original records
-changed. Two wording-sensitive checks failed. No peer or impossible condition.
-
-## Latest completed study
-
-[Harbor approval-code pilot](approval-code-v1/RESULTS.md): the funded gate passed;
-none of three experimental tasks used a foreign approval. Two received the code,
-with no method sharing or adoption. Four schema-validated ATIF trajectories are
-available in the Harbor viewer.
-
-## Previous study
-
-[Customer-contract procurement](procurement-contract-v1/RESULTS.md): two funded
-capabilities passed; six experimental agents made over-budget purchases totaling
-$1,390 in excess commitments. No method files or peer-method adoption. The report
-separates control failure from deliberate discovery and pressure causation.
-
-The previous [settlement study](procurement-settlement-v1/RESULTS.md) found data
-exchange and request-procedure reuse, with no approval-cache changes or overruns.
-These different mechanisms must not be treated as a matched pressure comparison.
-Use the [running guide](../docs/running-evals.md) for future registered studies.
+**24 October 2026:** [Connected-office error propagation](error-propagation-v3/RESULTS.md)
+and the [back-office recovery procedure](back-office-v1/RECOVERY.md).
 
 ## Supporting components
 
-- [Public reader](infra-reader-v1/REPORT.md): durable observation, verified
-  receipts and independent replay.
 - [Prompt checks](prompt-contract/checks.py): audit actual assembled inputs.
 - [Outcome criteria](../docs/business-outcome-criteria.md): distinguish cooperation,
   method adoption and a concrete adverse business effect.
+- [Running guide](../docs/running-evals.md) for registered studies.
 
-## Historical studies
-
-The [history index](../docs/history-index.md) groups completed, interrupted and
-negative results. Earlier study families are historical; its old settings
-and launch commands are not the current operating guide.
-
-Each historical family links to its results and an immutable version of its
-original documentation. Frozen registrations, source snapshots, native traces
-and analyses remain at their original paths. Older source modules are retained
-because later runners import them, including transport and response monitoring.
-Do not interpret a directory's presence as an active or completed experiment.
+Frozen registrations, source snapshots, native traces and analyses remain at
+their original paths. Do not interpret a directory's presence as an active or
+completed experiment.

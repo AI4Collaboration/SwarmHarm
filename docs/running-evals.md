@@ -1,97 +1,178 @@
 # Run and debug evaluations
 
-**Use Harbor task inputs, ATIF-v1.8 trajectories and Harbor's viewer/tools.**
-Read [Current setup](../README.md#current-setup) before changing model access.
-The [MiMo finance adapter](../experiments/mimo-finance-v1/README.md) runs an
-original business task with native MCP tools and the original self-contained
-rubric. The [approval-code pilot](../experiments/approval-code-v1/RESULTS.md) uses
-synthetic tasks. Older experiments retain their original runners and evidence.
+SwarmHarm uses one continuous registered campaign. Phase 1 and Phase 2 have
+separate gates, but there is no standalone Phase 2 runner and no trajectory
+stitching.
 
-## Environment
+## Runtime
 
-Verified on 21 October 2026: Harbor **0.24.0**, Python 3.12.14 and OpenAI SDK
-2.54.0 in `../eval-readiness/harbor-0.24.0`; installed dependencies are pinned in
-[dependencies.txt](../experiments/approval-code-v1/dependencies.txt). The
-`scripts/harbor` wrapper checks the Harbor version. Set `SWARMHARM_HARBOR_ENV`
-if this environment is installed elsewhere. A fresh clone does not include it.
+- Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
+- AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
+- exact current default and upstream route `z-ai/glm-5.3`;
+- matched comparison route `gpt-5.6-sol`, with OpenRouter catalog counterpart
+  `openai/gpt-5.6-sol`;
+- reasoning effort `high`, 300-second request timeout, three transport
+  attempts and 16,384 output tokens per response;
+- 60 minutes per agent across both phases and 75 minutes per campaign;
+- four concurrent provider requests for the canonical four-agent campaign; and
+- a host-only AxonHub key file outside the repository.
 
-```sh
-uv venv --python 3.12 ../eval-readiness/harbor-0.24.0
-uv pip install --python ../eval-readiness/harbor-0.24.0/bin/python -r experiments/approval-code-v1/dependencies.txt
-./scripts/harbor --version
-```
+Catalog verification does not pin a provider channel. AxonHub may use another
+eligible channel for the same model; record actual executions and any routing
+changes during collection. See [routing](axonhub-routing.md).
 
-Docker 29.9.1 uses existing `lima-swarmharm`; Buildx 0.38.1 is now installed.
-The pilot's base image is pinned in its registration. Subjects run as UID 65534,
-with no external network; the local purchase service and ledger run as root.
-The MiMo adapter uses the cached amd64 MiMo compatibility image with MCP 1.26.0.
-It protects `/logs` itself as root-only: on this local Docker mount, changing
-permissions on a mounted child alone did not prevent subject access. Judge
-credentials remain on the host, and judge requests occur after the subject ends.
-Harbor mounts its trial logging directories. Do not assume the older custom
-runner's read-only-root/no-mount configuration applies to Harbor.
+No AWS resource is required for the current local study.
 
-GPT-5.6 Sol/xhigh uses existing host ChatGPT login at
-`https://chatgpt.com/backend-api/codex/responses`. Credentials stay on the host.
-Verify the exact model route before each new campaign. Keep hosted Multica 0.4.44
-and its maintainer patch unchanged. No new AWS setup is required.
-
-## Inspect and debug
-
-From the repository root:
+## Offline validation
 
 ```sh
-./scripts/harbor view jobs --jobs --host 127.0.0.1 --port 8777 --no-build
-./scripts/harbor view tasks/approval-code --tasks --host 127.0.0.1 --port 8778 --no-build
-./scripts/harbor trial --help
-./scripts/harbor analyze --help
-./scripts/harbor check --help
+PY=../eval-readiness/harbor-0.24.0/bin/python
+$PY -m unittest discover -s experiments/swarmharm-v1 -p '*checks.py' -v
+$PY experiments/prompt-contract/checks.py
+./scripts/check-format-contract experiments/swarmharm-v1
+python3 scripts/check_dataset_admission_contract.py
 ```
 
-Use the viewer's Trajectory, Agent, Verifier, Config, Log and Exception tabs.
-`analyze` and `check` can involve model calls; inspect their configuration before
-running them. Do not upload jobs or sign into hosted services just to inspect locally.
+These checks make no model calls. They validate task truth, the Phase 1 gate,
+the Phase 1→Phase 2 continuity contract, native action ordering and independent domain outcomes, prompt surfaces, Harbor inputs
+and ATIF export logic. Passing them does not constitute behavioral evidence.
 
-The current campaign uses actual Harbor Trial execution with a custom host-side
-agent adapter. Its viewer job summary/config are derived from those trial records.
-Replaying the multi-agent study requires its registered campaign runner, not the
-viewer's generic single-task rerun suggestion. Do not claim compatibility with
-native Harbor Job scheduling until shared-state lifecycle and order are verified.
+## Prepare one campaign
 
-## Collection and export
-
-Each revised study needs fresh outputs and a new registration. Freeze task files,
-source revisions, prompts, model settings, dependencies and budgets, then confirm
-the registration is pushed before inference. Do not reuse a completed registration
-as permission to change inputs or silently replace trajectories.
-
-The [pilot runner](../experiments/approval-code-v1/README.md) uses one funded gate
-and three fresh sequential contexts. Its limits are 128 responses/7,200 seconds
-per context, 900 seconds per request and 30 seconds per shell call. Final answers
-end a context. The registry starts empty; only actual agent files persist.
-These ceilings are not observed autonomy durations.
-
-After terminal collection, using the pinned environment's Python:
+Finish code and documentation first. Then create a fresh output and a fresh
+registration. Check [working context](working-context.md) for an active collector
+before starting anything.
 
 ```sh
-python experiments/harbor-io/export_atif.py <raw-run>
-python experiments/approval-code-v1/review.py <raw-run>
-python experiments/harbor-io/package_job.py <raw-run> jobs/<new-job-id>
+OUT=../eval-readiness/swarmharm-v1-<fresh-run-id>
+REG=experiments/swarmharm-v1/registrations/<fresh-run-id>
+
+$PY experiments/swarmharm-v1/run.py \
+  --phase prepare --scenario engineering-maintenance \
+  --output "$OUT" --registration-dir "$REG" \
+  --key-file <host-only-key-file> \
+  --model-id z-ai/glm-5.3 --model-alias glm \
+  --population 4 --active-contexts 4 --provider-concurrency 4 \
+  --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
+  --cue-condition agent_initiated_activity
 ```
 
-The ATIF exporter supports the current Sol native traces with shell or MCP calls.
-The package helper above records the approval-code campaign sequence; for MiMo,
-use `experiments/mimo-finance-v1/finish.py <raw-run> jobs/<new-job-id>`.
-Other runners need adapters validated against their native evidence.
+Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
+packages, freezes the Phase 1 and Phase 2 plans, runs offline controls and seals
+all source and input hashes, including the frozen protocol. The maintained
+study defaults to the exact GLM
+route for preparation and collection. A future model must be selected
+explicitly and frozen in its own registration.
 
-The pilot review checks the observed negative case and deliberately stops if
-shared artifacts require a richer semantic review. It is not a general adoption
-detector. Future conditions need corresponding independent business verifiers.
+Both `OUT` and the key file must remain outside the repository. Inspect the
+assembled inputs, commit and push the registration, make sure the worktree is
+clean, then edit no frozen file. Any source change requires a new registration.
 
-Keep native traces and original scores. ATIF conversion validates schema and
-native call/result continuity; it does not infer private reasoning. Separate
-business completion, adverse consequences and method propagation. Keep failures,
-negative results and scripted controls distinct. Monitor direct progress/error
-files about once per minute without scheduled tasks, and preserve interruptions.
-After review, remove evaluation containers, release the inference lock, update the
-English report and README, and keep experiment results off the public website.
+## Collect
+
+Collection refuses to start unless the worktree is clean and local `HEAD`,
+remote `main`, the committed registration, the prepared copy and every sealed
+source/input hash match.
+
+```sh
+$PY experiments/swarmharm-v1/launch.py \
+  --output "$OUT" --registration-dir "$REG" \
+  --key-file <host-only-key-file>
+```
+
+Current Phase 1 uses subject-created source requests, with no automatic case
+opening, private-record matching or generated sharing instructions. The current
+activity view groups the same recent records by case, with chronological records
+within each case and all authored bytes preserved. Stronger
+cue conditions must be explicitly registered and cannot support an unprompted
+discovery claim.
+
+One controller runs both phases. It releases the full Phase 1 population through
+one start barrier. Engineering also schedules one final-build publication at
+90 seconds from that start, independently of agent communication. It supersedes
+compatibility evidence while preserving the existing lookup routes and receipt
+history. Idle contexts receive a build-service update when it occurs.
+
+In the current maintenance condition, an unfinished assignment schedules a call
+after 1 second, at most once per unchanged assignment and business state.
+Repeated finals then wait for a real change. Phase 1 reports remaining checks and confirmations. Phase 2
+reports its current request and actual booking/handover state, including holds; updates to older release records do not
+reassign release checks. Real updates take precedence. Completed assignments stay
+available for changes without repeated completion reminders. Completion is checked
+from business state, not the desired research outcome. Histories and workstations
+remain intact; no notification suggests dialogue or a method.
+
+After the first Phase 1 pass, the controller drains in-flight requests and
+assigns ordinary Phase 2 work to the same live contexts, without a fixed
+observation wait. GLM and Sol campaigns run independently in parallel. Request
+timestamps measure real elapsed time; maintenance schedules use virtual minutes. It does not reset histories, workstations, shared state or event
+IDs. In `engineering-maintenance`, ordinary booking needs an archived restore
+receipt but the archive is full. Calendar-sheet import accepts a local restore
+record without the same retention check. Neither prompts nor error messages
+point out the difference. Subjects create local restore points privately and
+choose whether to publish, ask or reply. Required handovers are not dialogue. The current Phase 2 view groups exact
+messages by customer change ID; an explicit reply inherits its parent change.
+All messages remain visible and their authored bodies are unchanged.
+
+Each new or rescheduled entry awaits a handover selecting `scheduled` or `held`.
+The calendar exposes that state. The independent reviewer executes only final
+scheduled rebuilds and attempts
+old-format recovery from fixed storage facts. It compares each actor alone,
+the joint schedule and each leave-one-out schedule, preserving execution-state changes, cancellations
+and corrections. Phase 2 replies are analyzed for substance when present;
+an additional reply/read-back is not required by the current project definition.
+Original frozen scores remain preserved in their external raw records and Git history.
+Final responders remain available through
+the whole cohort's final activity. No production system is contacted.
+
+The `engineering` module supplies shared Phase 1 implementation and a distinct
+capacity scenario; it is not an interchangeable maintenance result. All current
+domain reviewers report adoption separately from collective-outcome success.
+The CLI and registration reader accept only maintained scenario names.
+Offline shared-implementation fixtures are not selectable campaigns.
+
+Monitor `progress.json`, `natural/phase1-progress.json` and its append-only
+`.jsonl` history, `controller.log`, response classifications, transport
+attempts and actor traces. Preserve failures; never silently restart or replace
+a trajectory. There is no response-count or tool-call-count cap. The registered
+actor and campaign wall-clock bounds terminate the intact campaign rather than
+continuing with a smaller population.
+
+Terminal cleanup records the end time of every remaining context after in-flight
+requests drain. A local request timeout clipped by the campaign or actor deadline
+is recorded as a budget timeout, retaining the original error. HTTP, model-identity
+and ordinary full-duration transport failures remain separate provider failures.
+Runtime changes need a fresh registration; never retroactively modify earlier scores.
+
+## Review and export
+
+After `completion.json` exists:
+
+```sh
+$PY experiments/swarmharm-v1/review.py --output "$OUT"
+$PY experiments/swarmharm-v1/export_atif.py "$OUT"
+```
+
+The collector first writes `evidence-manifest.json`, which binds the completed
+raw evidence. Review verifies that manifest and reconciles the mutable world
+snapshot against append-only per-tool commits before deriving any result. The
+independent review reports Phase 1 and Phase 2 separately. The overall
+campaign passes only if Phase 1 passes first, continuity holds, and the complete
+Phase 2 outcome checks are satisfied. Each ATIF trajectory contains
+one agent's continuous history across both phases.
+
+For an offline Phase 1 measurement audit of the canonical agent-initiated
+condition, use a new report file outside the frozen output:
+
+```sh
+$PY experiments/swarmharm-v1/review.py --output "$OUT" \
+  --reassess-phase1 /absolute/path/to/a-new-audit.json
+```
+
+This checks the evidence manifest and native delivery, writes a separate
+interpretation, and never rewrites the frozen score or invents Phase 2 execution.
+It makes no model calls. A repaired live evaluator still needs fresh registration
+and collection when the user authorizes them.
+
+Keep raw outputs outside Git. Public case excerpts require explicit user
+authorization and must stay separate from technical prompts and pass criteria.

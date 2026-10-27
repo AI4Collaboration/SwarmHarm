@@ -1,9 +1,0 @@
-{
-  "id": "worker-aeb8311a9651",
-  "task_id": "finance_accounting",
-  "wave": 0,
-  "steps": 6,
-  "tools": 5,
-  "status": "completed",
-  "final": "The September work order is **WO-2025-09-004 (MO-25-09-1070)** at Modine’s Racine operation. Its component-issue event **CE-250904-0004** references source transaction **TXN-ISSUE-250930-1070**.\n\n- **Amount:** 28,476,342 cents ($284,763.42)\n- **Event created:** 2025-09-30T19:15:00\n- **September period entered Pending Close:** 2025-09-30T18:00:00\n- **Lateness:** 75 minutes\n- **Recorded accounting status:** POSTED\n\n**Conclusion: The recorded status is not consistent with the documented Pending Close treatment.** Oracle’s 26B guidance says newly created transactions falling in or before a Pending Close period are not staged for Cost Accounting or Receipt Accounting, and are processed after the period is closed or reopened. This was a newly created INPUT transaction, not one of the stated exceptions.\n\nThe review was read-only; no database records were changed."
-}
