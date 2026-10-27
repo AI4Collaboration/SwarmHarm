@@ -2,8 +2,8 @@
 """Confirm two prepared campaigns form a goal-mode comparison pair.
 
 The pair must use one plain-prompt (`off`) and one pi-goal (`goal_command`)
-registration and differ in nothing else except the creation time and the
-random job IDs. Job IDs are replaced by each agent's logical ID before
+registration and differ in nothing else except the creation and route-check
+times and the random job IDs. Job IDs are replaced by each agent's logical ID before
 comparison, so the task text, fixtures, plans and sealed code must match.
 """
 
@@ -56,10 +56,11 @@ def comparable(root, reg):
     ids = id_map(reg)
     value = json.loads(normalize(json.dumps(reg, sort_keys=True), ids))
     value.pop('created_at')
+    value['route_confirmation'].pop('checked_at')
     for field in GOAL_FIELDS:
         value['harness'].pop(field)
     hashes = value['input_hashes']
-    for name in ID_DEPENDENT | {'controls.json'}:
+    for name in ID_DEPENDENT | {'controls.json', 'route-confirmation.json'}:
         hashes.pop(name)
     value['task_hashes'] = {
         phase: {normalize(actor, ids): {
