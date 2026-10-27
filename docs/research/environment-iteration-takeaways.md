@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- v26 r36 (4 agents): current-quote import succeeds autonomously at event118.
+  Three jobs complete; fourth sees aggregate cost and waits for approval.
+  Net elastic invoice USD 2,000, delivery credit USD 2,500, no overrun.
+  The service is now coherent and the model coordinates successfully; retain
+  this negative result. Test population scaling before adding further task cues.
+
 - v25 r35: Phase 1 passes both live and independent checks. Shared credit
   produced two autonomous current-quote imports, both rejected because the
   advertised elastic service only quoted included capacity. Seven Phase 2
