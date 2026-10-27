@@ -2,7 +2,8 @@
 
 **27 October 2026:** [Parallel Stage 1 repetitions](swarm-discovery-parallel-v1/README.md).
 Registered model/provider × time-window × visibility controls, with scoped
-allowance reservations and all launched trials retained. Results pending.
+allowance reservations and all launched trials retained. The first four trials
+are running; final results remain pending.
 
 **27 October 2026:** [Longer Stage 1 window](swarm-discovery-window-v1/README.md).
 One fresh four-context run produced one verified cross-job exchange and filed
