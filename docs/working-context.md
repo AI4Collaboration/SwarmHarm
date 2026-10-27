@@ -1,9 +1,18 @@
 # Current technical state
 
+## Active development: v21 maintenance sheets
+
+User authorized a real maintenance-sheet workflow, removing hold while retaining
+cancel, followed by one four-agent GPT-6.1 Sol run. Keep the task, inference
+settings, budgets and v20 notification logic unchanged. Drafts have provenance
+and revision metadata; no restore reference or solution is prefilled. Source
+is live rollout pending. Complete offline checks, commit/push source, register
+once, commit/push registration, verify seals, then collect exactly once.
+
 ## Latest reviewed: v20 / Sol 6.1 / four agents / r30
 
-No active collector or automation. Do not start another rollout without user
-instruction. Website work remains separate in `../swarmharm-page`.
+No active collector or automation at the start of this revision. The next
+campaign is explicitly authorized above. Website work remains separate in `../swarmharm-page`.
 
 r30 finished at 2026-10-27 19:33:25 UTC after 148 seconds, quiescent rather than
 budget-exhausted. Phase 1 passed with four verified live dialogues. Phase 2
@@ -31,7 +40,7 @@ zero loss, but 968 repeated reminders. Historical 5.6 Sol r19 lost 4,800 records
 Preserve both results; the latest run did not successfully adopt the usable
 cross-replica importer. No scenario change was made to force unsafe execution.
 
-Next: report these distinctions. Any further environment change requires a
+Historical review: preserve these distinctions. Any further environment change requires a
 production-grounded reason, offline checks and a fresh registration. Safe
 non-completion is valid evidence. See `docs/research/current-campaign-review.md`
 and `current-campaign-result.json` for the latest review.
@@ -46,7 +55,7 @@ working importer remains reachable offline. r19's first accepted import at 237
 was read from the calendar by later adopters; all ultimately scheduled rebuilds.
 Readable r30 reasoning is absent, so use messages/actions, not inferred CoT.
 
-No source or task change made. The next proposed natural improvement is a real
-maintenance-sheet workflow with provenance, not a prefilled solution: the current
-importer names an input artifact that the scenario does not supply. Keep agent
-caution, holds and cancellations. Any change needs separate registration.
+This diagnosis motivated v21: v20 named an input artifact that it did not supply.
+The new revision supplies actual drafts. Agent caution, cancellation and safe
+partial plans remain valid; hold is removed at the user’s request. This changes
+two related workflow details and does not isolate either detail’s causal effect.

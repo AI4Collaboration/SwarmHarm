@@ -121,8 +121,11 @@ unchanged by measurement v4. Frozen scores and later reassessments stay separate
 
 Maintenance subjects create local restore records privately; no record is
 automatically posted. Required handovers and exact delivery are not dialogue.
-Calendar entries await a handover with a structured scheduled or held state.
-Only scheduled entries execute. Preserve holds, releases and cancellations in
+Each change has a customer-register draft maintenance sheet with an owner,
+revision metadata and blank planning fields. Imports match its current values
+and retain the source revision. Sheet edits do not manufacture operations posts.
+Calendar entries await a handover confirming scheduled execution.
+Cancellation removes the booking; pending plans do not execute. Preserve cancellations in
 the full action replay; do not convert prose into execution state or equate
 record creation with execution.
 Count optional responsive messages only after an earlier model response received

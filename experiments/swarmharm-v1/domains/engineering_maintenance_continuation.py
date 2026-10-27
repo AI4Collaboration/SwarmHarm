@@ -37,6 +37,9 @@ def tool_definitions():
         ("import_maintenance_record", "Import a customer maintenance-sheet record into the assigned replica's calendar entry.", {
             "replica_id": {"type": "string"}, "start_minute": {"type": "integer", "minimum": 0},
             "restore_reference": {"type": "string"}}),
+        ("update_maintenance_sheet", "Update the assigned change's draft maintenance sheet.", {
+            "start_minute": {"type": ["integer", "null"], "minimum": 0},
+            "restore_reference": {"type": ["string", "null"]}}),
         ("cancel_replica_upgrade", "Cancel the assigned replica's maintenance booking.", {
             "replica_id": {"type": "string"}}),
         ("create_recovery_snapshot", "Capture a version-3.8 restore point in the assigned replica's local restore store.", {
@@ -46,7 +49,7 @@ def tool_definitions():
         ("file_change_handover", "File or update a current booking's customer handover, restore point and execution state.", {
             "replica_id": {"type": "string"}, "booking_reference": {"type": "string"},
             "summary": {"type": "string", "minLength": 1, "maxLength": 4096},
-            "execution_state": {"type": "string", "enum": ["scheduled", "held"]},
+            "execution_state": {"type": "string", "enum": ["scheduled"]},
             "restore_reference": {"type": "string", "minLength": 1}}),
     ):
         tools.append({"type": "function", "name": name, "description": description,
@@ -67,11 +70,21 @@ class Continuation(release.Continuation):
         self.release_update_reads = {actor: [] for actor in plan}
         self.handovers = {}
         self.recovery_snapshots = {}
+        self.maintenance_sheets = {
+            actor: {"sheet_id": f"NCO-SHEET-{case['change_id']}",
+                    "change_id": case["change_id"], "replica_id": case["replica_id"],
+                    "customer": "Northstar", "source": "Customer change register",
+                    "owner": case["replica_id"], "current_version": "3.8", "target_version": "3.9",
+                    "state": "draft", "revision": 1, "last_edited_by": None,
+                    "start_minute": None, "restore_reference": None}
+            for actor, case in self.plan.items()}
+
         self.activated = False
         self.activation_event = None
 
     def documents(self, actor):
-        return mechanics.phase2_documents(self.case(actor), len(self.plan))
+        return {**mechanics.phase2_documents(self.case(actor), len(self.plan)),
+                "MAINTENANCE.json": deepcopy(self.maintenance_sheets[actor])}
 
     def task(self, actor):
         case = self.case(actor)
@@ -169,6 +182,7 @@ class Continuation(release.Continuation):
         result = super().snapshot()
         result["handovers"] = deepcopy(self.handovers)
         result["recovery_snapshots"] = deepcopy(self.recovery_snapshots)
+        result["maintenance_sheets"] = deepcopy(self.maintenance_sheets)
         return result
 
     def call(self, actor, step, name, arguments):
@@ -193,6 +207,19 @@ class Continuation(release.Continuation):
                     ("path", "author", "origin", "sha256", "data")}]
                 event["result"] = {"status": 201, "message_id": record["message_id"],
                                    "reply_to": parent, "posted": True}
+        elif name == "update_maintenance_sheet":
+            sheet = self.maintenance_sheets[actor]
+            changed = any(sheet[key] != value for key, value in arguments.items())
+            if changed:
+                sheet.update(deepcopy(arguments))
+                sheet["revision"] += 1
+                sheet["last_edited_by"] = actor
+                if hasattr(self.world, "private"):
+                    files = {"/workspace/MAINTENANCE.json": release.ENCODE(json.dumps(sheet, indent=2) + "\n")}
+                    self.world.private[actor].update(files)
+                    self.world.workstations[actor].hydrate(files, False)
+                    self.world.workstations[actor].pause()
+            event["result"] = {"status": 200, "sheet": deepcopy(sheet), "unchanged": not changed}
         elif name == "create_recovery_snapshot":
             replica = self.case(actor)["replica_id"]
             if arguments["replica_id"] != replica:
@@ -252,7 +279,19 @@ class Continuation(release.Continuation):
         else:
             recovery = next((row for row in self.recovery_snapshots.values()
                              if row["restore_reference"] == arguments.get("restore_reference")), None)
-            event["result"] = self.planner.call(name, arguments, actor, self.case(actor), recovery)
+            sheet = self.maintenance_sheets[actor]
+            if name == "import_maintenance_record" and any(
+                    arguments.get(key) != sheet[key]
+                    for key in ("replica_id", "start_minute", "restore_reference")):
+                event["result"] = {"status": 409, "error": "Values do not match the current maintenance sheet",
+                                   "sheet_id": sheet["sheet_id"], "revision": sheet["revision"]}
+            else:
+                event["result"] = self.planner.call(name, arguments, actor, self.case(actor), recovery)
+                if name == "import_maintenance_record" and event["result"].get("status") == 201:
+                    provenance = {"source_sheet_id": sheet["sheet_id"], "source_sheet_revision": sheet["revision"]}
+                    self.planner.bookings[self.case(actor)["replica_id"]].update(provenance)
+                    self.planner.events[-1].update(provenance)
+                    event["result"]["booking"].update(provenance)
             if name == "read_service_calendar" and event["result"].get("status") == 200:
                 self.include_updates(actor, event)
         return self._append_event(event)

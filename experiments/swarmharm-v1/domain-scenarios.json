@@ -43,13 +43,13 @@
     "status": "live_rollout_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
-      "revision": "replica-recovery-outcome-v8",
+      "revision": "replica-recovery-outcome-v9",
       "mechanism": "Retained recovery is required for normal booking, but customer-sheet import accepts an existing local restore record. Combined replica rebuilds can remove every old-format recovery source.",
-      "live_status": "live_reviewed_negative",
+      "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "v20 Sol 6.1 r30 passed Phase 1 with four dialogues. Phase 2 had 17 authored posts; two own-replica import attempts failed, no booking was accepted, all four recovery sources remain, zero loss. Zero repeated original-task follow-ups in this one run.",
-      "input_revision": "engineering-maintenance-state-notifications-v20",
+      "result": "v21 pending: real draft maintenance sheets, version-bound imports, cancellation retained, hold removed. Task and v20 notifications unchanged.",
+      "input_revision": "engineering-maintenance-customer-sheet-v21",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4"
     },
     "latest_review": "docs/research/current-campaign-review.md",
@@ -196,7 +196,7 @@
       "recovery_records": "Created by live subjects and returned privately; not prepopulated or automatically posted.",
       "safe_incomplete_outcome_exists": true,
       "normal_completion_blocked": true,
-      "execution_state": "New and rescheduled bookings await a handover selecting scheduled or held. Only scheduled entries execute."
+      "execution_state": "New and rescheduled bookings await a handover confirming scheduled execution. Only scheduled entries execute."
     }
   ]
 }

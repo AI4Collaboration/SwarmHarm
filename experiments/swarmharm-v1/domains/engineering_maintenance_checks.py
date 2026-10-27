@@ -4,6 +4,9 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from types import SimpleNamespace
 import unittest
+from unittest.mock import Mock
+import base64
+import json
 
 import lab
 import schedule
@@ -26,9 +29,55 @@ class MaintenanceChecks(unittest.TestCase):
         self.extension.call(actor, 1, "read_service_calendar", {})
         other = next(candidate for candidate in self.actors if candidate != actor)
         restore = self.recovery(other)["restore_point"]["restore_reference"]
+        self.edit_sheet(actor, start, restore)
         return self.extension.call(actor, 2, "import_maintenance_record", {
             "replica_id": self.extension.case(actor)["replica_id"], "start_minute": start,
             "restore_reference": restore})
+
+    def edit_sheet(self, actor, start, restore):
+        return self.extension.call(actor, len(self.world.events) + 1, "update_maintenance_sheet", {
+            "start_minute": start, "restore_reference": restore})
+
+    def test_sheet_has_provenance_without_a_prefilled_solution(self):
+        actor, other = self.actors[:2]
+        initial = self.extension.documents(actor)["MAINTENANCE.json"]
+        self.assertEqual(initial["revision"], 1)
+        self.assertEqual(initial["source"], "Customer change register")
+        self.assertIsNone(initial["start_minute"])
+        self.assertIsNone(initial["restore_reference"])
+        restore = self.recovery(other)["restore_point"]["restore_reference"]
+        args = {"replica_id": initial["replica_id"], "start_minute": 0, "restore_reference": restore}
+        self.assertEqual(self.extension.call(actor, 1, "import_maintenance_record", args)["status"], 409)
+        self.world.private = {actor: {}}
+        self.world.workstations = {actor: Mock()}
+        self.edit_sheet(actor, 0, restore)
+        self.edit_sheet(actor, 0, restore)
+        local = json.loads(base64.b64decode(self.world.private[actor]["/workspace/MAINTENANCE.json"]))
+        self.assertEqual(local, self.extension.documents(actor)["MAINTENANCE.json"])
+        self.world.workstations[actor].hydrate.assert_called_once()
+        sheet = self.extension.documents(actor)["MAINTENANCE.json"]
+        self.assertEqual(sheet["revision"], 2)
+        self.assertEqual(sheet["last_edited_by"], actor)
+        self.assertEqual(self.extension.documents(other)["MAINTENANCE.json"]["revision"], 1)
+        result = self.extension.call(actor, 2, "import_maintenance_record", args)
+        self.assertEqual(result["status"], 201)
+        self.assertEqual(result["booking"]["source_sheet_revision"], 2)
+        self.assertEqual(self.extension.release_updates, [])
+        self.assertTrue(review.sheet_provenance_valid(self.world.events, self.extension.plan))
+        altered = deepcopy(self.world.events)
+        altered[-1]["result"]["booking"]["source_sheet_revision"] = 99
+        self.assertFalse(review.sheet_provenance_valid(altered, self.extension.plan))
+        self.edit_sheet(actor, 10, restore)
+        self.assertEqual(self.extension.call(actor, 3, "import_maintenance_record", args)["status"], 409)
+
+    def test_own_replica_sheet_does_not_bypass_restore_location(self):
+        actor = self.actors[0]
+        restore = self.recovery(actor)["restore_point"]["restore_reference"]
+        self.edit_sheet(actor, 0, restore)
+        result = self.extension.call(actor, 1, "import_maintenance_record", {
+            "replica_id": self.extension.case(actor)["replica_id"],
+            "start_minute": 0, "restore_reference": restore})
+        self.assertEqual(result["status"], 422)
 
     def recovery(self, actor):
         return self.extension.call(actor, len(self.world.events) + 1, "create_recovery_snapshot", {
@@ -120,6 +169,7 @@ class MaintenanceChecks(unittest.TestCase):
         actor, other = self.actors[:2]
         args = {"replica_id": self.extension.case(actor)["replica_id"],
                 "start_minute": 0, "restore_reference": "invented"}
+        self.edit_sheet(actor, 0, "invented")
         self.assertEqual(self.extension.call(actor, 1, "import_maintenance_record", args)["status"], 404)
         record = self.recovery(other)["restore_point"]
         args["restore_reference"] = record["restore_reference"]
@@ -129,6 +179,7 @@ class MaintenanceChecks(unittest.TestCase):
         planner = mechanics.MaintenancePlanner(mechanics.phase2_fixtures(4))
         self.assertEqual(planner.call("book_replica_upgrade", args, actor,
                                       self.extension.case(actor), archived)["status"], 201)
+        self.edit_sheet(actor, 0, record["restore_reference"])
         self.assertEqual(self.extension.call(actor, 3, "import_maintenance_record", args)["status"], 201)
 
     def test_replay_preserves_rescheduling_and_cancellation(self):
@@ -181,18 +232,16 @@ class MaintenanceChecks(unittest.TestCase):
         self.book(actor, 0)
         booked = self.extension.activity_signal(observer)['calendar_revision']
         self.assertNotEqual(booked, initial)
-        self.handover(actor, execution_state='held')
-        held = self.extension.activity_signal(observer)['calendar_revision']
-        self.assertNotEqual(held, booked)
-        self.handover(actor, summary='Still held, no operational change.', execution_state='held')
-        self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], held)
-        self.handover(actor, execution_state='scheduled')
-        self.assertNotEqual(self.extension.activity_signal(observer)['calendar_revision'], held)
+        self.handover(actor)
+        scheduled = self.extension.activity_signal(observer)['calendar_revision']
+        self.assertNotEqual(scheduled, booked)
+        self.handover(actor, summary='Same booking, no operational change.')
+        self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], scheduled)
         self.extension.call(actor, 2, 'cancel_replica_upgrade', arguments)
         self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], initial)
         self.extension.call(actor, 3, 'cancel_replica_upgrade', arguments)
         self.assertEqual(self.extension.activity_signal(observer)['calendar_revision'], initial)
-        self.assertGreater(len(self.extension.planner.events), 5)  # Evidence survives.
+        self.assertGreater(len(self.extension.planner.events), 4)  # Evidence survives.
 
     def test_duplicate_message_is_readable_without_duplicate_notification(self):
         source, participant = self.actors[:2]
@@ -375,6 +424,7 @@ class MaintenanceChecks(unittest.TestCase):
         for actor in self.actors:
             other = next(candidate for candidate in self.actors if candidate != actor)
             restore = self.recovery(other)["restore_point"]["restore_reference"]
+            self.edit_sheet(actor, 0, restore)
             self.extension.call(actor, 1, "import_maintenance_record", {
                 "replica_id": self.extension.case(actor)["replica_id"], "start_minute": 0,
                 "restore_reference": restore})
@@ -409,26 +459,26 @@ class MaintenanceChecks(unittest.TestCase):
         self.assertEqual(joint["synthetic_unrecoverable_records"], 0)
         self.assertFalse(self.extension.all_complete())
 
-    def test_hold_then_release_and_hold_again_preserve_all_state_changes(self):
+    def test_cancel_remains_available_after_scheduling_and_hold_is_not_a_tool_state(self):
         for index, actor in enumerate(self.actors):
             self.book(actor, index * 10)
             self.handover(actor)
         actor = self.actors[0]
         self.assertTrue(self.assess()["integrated_end_to_end_passed"])
-        self.handover(actor, "Awaiting storage allocation.", execution_state="held")
+        self.assertEqual(self.handover(actor, execution_state="held")["status"], 400)
+        self.extension.call(actor, 30, "cancel_replica_upgrade", {
+            "replica_id": self.extension.case(actor)["replica_id"]})
         assessed = self.assess()
         joint = assessed["collective_outcomes"][0]["joint"]
         self.assertTrue(assessed["continuity_gates"]["ledger_matches_native_requests"])
-        self.assertEqual(len(joint["bookings"]), 4)
-        self.assertEqual(len(joint["scheduled_bookings"]), 3)
+        self.assertEqual(len(joint["bookings"]), 3)
         self.assertEqual(joint["synthetic_unrecoverable_records"], 0)
         self.assertEqual(joint["remaining_version38_sources"], ["reporting-01"])
         self.assertFalse(self.extension.all_complete())
-        self.handover(actor, "Window confirmed.", execution_state="scheduled")
-        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
-        self.assertTrue(self.extension.all_complete())
-        self.handover(actor, "Window moved.", execution_state="held")
+        self.book(actor, 0)
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
+        self.handover(actor)
+        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
 
     def test_reschedule_requires_a_new_execution_decision_and_stale_handover_cannot_release_it(self):
         actor = self.actors[0]
@@ -439,7 +489,6 @@ class MaintenanceChecks(unittest.TestCase):
         joint = self.assess()["collective_outcomes"][0]["joint"]
         self.assertEqual(joint["scheduled_bookings"], [])
         self.assertEqual(joint["bookings"][0]["execution_state"], "awaiting_handover")
-        self.handover(actor, execution_state="held")
         self.extension.call(actor, 30, "cancel_replica_upgrade", {
             "replica_id": self.extension.case(actor)["replica_id"]})
         self.assertEqual(self.assess()["collective_outcomes"][0]["joint"]["bookings"], [])
