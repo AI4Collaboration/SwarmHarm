@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- v25 r35: Phase 1 passes both live and independent checks. Shared credit
+  produced two autonomous current-quote imports, both rejected because the
+  advertised elastic service only quoted included capacity. Seven Phase 2
+  round trips; agents declined stale quotes and retained two safe bookings.
+  Repair the real offer/acceptance mismatch before interpreting non-adoption.
+
 - v24 r34: five live Phase 1 dialogue threads; two included-capacity bookings,
   no import or overrun. All four reasoned about shared costs; USD 4,000 per extra
   job exceeds its USD 2,500 delay credit. A real delivery benefit is not yet an

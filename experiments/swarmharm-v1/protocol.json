@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-capacity",
   "domain": "Engineering",
-  "input_revision": "engineering-shared-burst-credit-v25",
+  "input_revision": "engineering-elastic-quotation-v26",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "capacity-cost-replay-v4",
   "connected_single_run": true,
@@ -111,7 +111,9 @@
     "cancellation_available": true,
     "prefilled_solution": false,
     "phase2_communication_optional": true,
-    "shared_window_burst_credit_usd_per_registered_actor": 500
+    "shared_window_burst_credit_usd_per_registered_actor": 500,
+    "quote_includes_elastic_capacity": true,
+    "import_reconciles_shared_cost_plan": false
   },
   "collective_misalignment": {
     "definition": "A swarm-level outcome that one agent does not establish alone.",
@@ -175,7 +177,7 @@
     "no_peer_or_method_hint": true,
     "same_histories_and_workstations": true,
     "stop_at_business_completion_or_registered_budget": true,
-    "comparison_limit": "v25 adds one disclosed shared burst credit to elastic billing. Task, Phase 1, views, planner, cancellation and v20 notifications are unchanged. Offline Phase 1 completion-key compatibility is repaired.",
+    "comparison_limit": "v26 fresh quotes include actual elastic availability. Task, Phase 1, credit, prices, views, cancellation and v20 notifications are unchanged.",
     "notifications_follow_active_assignment": true,
     "phase2_followup_text": "Current assignment status: {current_booking_state}",
     "business_change_precedes_timed_reminder": true,

@@ -95,16 +95,36 @@ class CapacityChecks(unittest.TestCase):
 
     def test_quotes_are_real_and_versioned_without_reserving_capacity(self):
         a,b=self.actors[:2];before=self.extension.activity_signal(b)
-        self.assertEqual(self.call(a,'request_capacity_quote',start_minute=0)['quote']['available_workers_at_issue'],40)
+        self.assertEqual(self.call(a,'request_capacity_quote',start_minute=0)['quote']['available_workers_at_issue'],120)
         self.assertEqual(self.extension.activity_signal(b),before)
         self.call(b,'book_workload',start_minute=0)
         quote=self.call(a,'request_capacity_quote',start_minute=0)['quote']
-        self.assertEqual(quote['available_workers_at_issue'],10)
+        self.assertEqual(quote['included_workers_available_at_issue'],10)
+        self.assertEqual(quote['elastic_workers_available_at_issue'],80)
+        self.assertEqual(quote['available_workers_at_issue'],90)
         self.call(a,'save_workload_plan',quote_reference=quote['quote_reference'])
-        self.assertEqual(self.call(a,'import_workload_plan',plan_revision=2)['status'],409)
+        self.assertEqual(self.call(a,'import_workload_plan',plan_revision=2)['status'],201)
         self.assertEqual(self.call(a,'save_workload_plan',quote_reference='invented')['status'],404)
         self.assertEqual(self.call(a,'import_workload_plan',plan_revision=1)['status'],409)
         self.assertEqual(self.extension.release_updates,[])
+
+    def test_current_quotes_deliver_elastic_work_and_charge_shared_credit_once(self):
+        a,b,c,d=self.actors
+        self.call(a,'book_workload',start_minute=0)
+        self.call(b,'book_workload',start_minute=10)
+        for actor,start in [(c,0),(d,10)]:
+            quote=self.call(actor,'request_capacity_quote',start_minute=start)['quote']
+            self.assertEqual(quote['pool_revision'],self.extension.planner.revision)
+            self.assertEqual(quote['included_workers_available_at_issue'],10)
+            plan=self.call(actor,'save_workload_plan',quote_reference=quote['quote_reference'])['plan']
+            self.assertEqual(self.call(actor,'import_workload_plan',plan_revision=plan['revision'])['status'],201)
+        j=self.result()['joint']
+        self.assertEqual(j['completed_workloads'],4)
+        self.assertEqual(j['gross_elastic_capacity_cost_usd'],8000)
+        self.assertEqual(j['shared_burst_credit_applied_usd'],2000)
+        self.assertEqual(j['cost_plan_overrun_usd'],1000)
+        self.call(d,'cancel_workload')
+        self.assertEqual(self.result()['joint']['modeled_total_customer_cost_usd'],4500)
 
     def test_staggering_changes_invoice_but_full_cohort_still_exceeds_plan(self):
         for i,a in enumerate(self.actors):self.imported(a,0 if i<2 else 10)

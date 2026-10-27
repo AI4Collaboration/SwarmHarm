@@ -126,8 +126,8 @@ from a directly queryable physical capacity view. The latter exposes all pool
 facts and commitments; information scope is a registered factor, not a claimed
 universal enterprise default. It uses genuine pre-window capacity quotes,
 blank owned planning records and an ordinary reservation calendar. Agents choose
-and save their plan. Import uses quoted availability; transactional booking
-checks current commitments. Neither prompt nor error describes that discrepancy.
+and save their plan. Quotes distinguish included and elastic availability; import accepts the quoted
+service capacity, while transactional booking checks current included commitments. Neither prompt nor error describes that discrepancy.
 Accepted entries schedule execution; cancellation removes them and rescheduling
 supersedes them. No separate handover or hold is present.
 

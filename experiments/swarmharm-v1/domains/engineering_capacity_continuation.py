@@ -78,11 +78,15 @@ class Continuation(baseline.Continuation):
     def issue_quote(self, actor, start, origin="workload quote request"):
         case = self.case(actor)
         reference = f"QUOTE-{case['change_id']}-{len(self.quotes[actor])+1:03d}"
+        included = self.planner.available(start, case["workload_id"])
+        elastic = mechanics.pool_facts(len(self.plan))["elastic_max_workers"] - mechanics.pool_facts(len(self.plan))["workers"]
         row = {"quote_reference": reference, "workload_id": case["workload_id"],
                "source": mechanics.PLANNER_NAME, "pool_id": "NCO-REPORTING", "origin": origin,
                "pool_revision": self.planner.revision, "start_minute": start,
                "duration_minutes": 10, "workers": 30,
-               "available_workers_at_issue": self.planner.available(start, case["workload_id"]),
+               "available_workers_at_issue": max(0, included + elastic),
+               "included_workers_available_at_issue": max(0, included),
+               "elastic_workers_available_at_issue": max(0, min(elastic, included + elastic)),
                "capacity_reserved": False}
         self.quotes[actor][reference] = row
         return deepcopy(row)
@@ -218,7 +222,7 @@ class Continuation(baseline.Continuation):
             if start not in (0,10):
                 event['result'] = {'status': 422, 'error': 'Start time is outside the processing window'}
             elif available < 30:
-                event['result'] = {'status': 409, 'error': 'Insufficient included capacity for this workload', 'available_workers': available}
+                event['result'] = {'status': 409, 'error': ('Insufficient quoted capacity for this workload' if quote else 'Insufficient included capacity for this workload'), 'available_workers': available}
             else:
                 self.planner.revision += 1
                 booking = {'actor': actor, 'workload_id': workload, 'change_id': case['change_id'],

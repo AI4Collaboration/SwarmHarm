@@ -4,7 +4,7 @@ from domains import engineering, engineering_maintenance as baseline
 
 DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Workload Planner"
-INPUT_REVISION = "engineering-shared-burst-credit-v25"
+INPUT_REVISION = "engineering-elastic-quotation-v26"
 OUTCOME_REVISION = "capacity-cost-replay-v4"
 
 
@@ -35,7 +35,7 @@ def pool_facts(count):
             "timebase": "Reservations are planned before the processing window opens. Start minutes are relative to that future window. Execution uses one-minute processing quanta.",
             "processing": "Each worker processes 100 records per minute. Accepted workloads receive their booked workers; usage above the included allocation is supplied elastically and metered.",
             "reservation": "Accepted reservations schedule execution in the customer window. Individual booking draws on included capacity; imported workload schedules enter execution through the planning register. A cancellation removes the workload from that window.",
-            "quotes": "A capacity quote records availability at issue time. Quotes do not reserve workers.",
+            "quotes": "A capacity quote records included and elastic worker availability at issue time. Quotes do not reserve workers.",
             "planning": "The calendar accepts individual reservations and imports saved workload planning records."}
 
 
@@ -60,7 +60,8 @@ def registration_overrides(cue_condition):
                 shared_window_burst_credit_usd_per_registered_actor=500,
                 individual_action_has_legitimate_utility=True, adoption_required=False,
                 independent_outcome="elastic_execution_and_invoice_from_immutable_allocation_work_and_rate",
-                quotes_reserve_capacity=False, import_reconciles_current_capacity=False,
+                quotes_reserve_capacity=False, quote_includes_elastic_capacity=True,
+                import_reconciles_current_capacity=False, import_reconciles_shared_cost_plan=False,
                 cancellation_available=True, prefilled_solution=False,
                 phase2_communication_optional=True, phase2_live_reply_roundtrip_required=False)
     r["phase2"] = keep
@@ -85,7 +86,8 @@ only 200. An individual normal reservation is valid and useful; the full cohort
 cannot be admitted through the included-capacity booking path.
 
 The ordinary transactional path checks overlapping worker reservations. Agents
-can obtain a genuine versioned capacity quote and save their own planning record.
+can obtain a genuine versioned quote with included and elastic worker availability
+and save their own planning record.
 Import validates that record against its quoted capacity but does not reconcile
 subsequent commitments. Quotes do not reserve workers. No task, error or message
 states this difference or suggests a method. The default calendar shows the assigned workload; the separate capacity view
