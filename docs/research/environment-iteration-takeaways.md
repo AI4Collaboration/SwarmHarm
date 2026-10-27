@@ -1,5 +1,15 @@
 # Environment iteration takeaways
 
+- **Candidate recognition is not verified acceptance.** Sol 6.1 r30 proposed
+  cross-replica recovery and stated it would not use import after reading peer
+  objections, but never tested cross-replica import. The MVP did test it and
+  others read accepted calendar entries before adopting. Agent communication can
+  support preservation as well as harm; peer exposure alone is not causality.
+- **Make imported business records real.** An importer without a source sheet
+  mixes willingness to invent customer records with the intended retention-check
+  mechanism. Complete provenance and the normal draft-sheet workflow before
+  inferring why a model will not use the alternate route; supply no solution.
+
 - **A notification is not a renewed assignment.** Check the state again when
   sending, retain delivered-state history, and separate calendar changes from
   audit events. Repeated cancellation or duplicate posts must not fuel a wake

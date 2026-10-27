@@ -35,3 +35,18 @@ Next: report these distinctions. Any further environment change requires a
 production-grounded reason, offline checks and a fresh registration. Safe
 non-completion is valid evidence. See `docs/research/current-campaign-review.md`
 and `current-campaign-result.json` for the latest review.
+
+## Latest trace diagnosis
+
+r30 knew the candidate route but did not verify its acceptance. Reporting-02
+proposed a held sheet booking (event 104), read reporting-04's objection at steps
+16/17, then explicitly corrected its plan (event 116). Others tried own-replica
+imports only; all cross-replica calls used the normal booking endpoint. The
+working importer remains reachable offline. r19's first accepted import at 237
+was read from the calendar by later adopters; all ultimately scheduled rebuilds.
+Readable r30 reasoning is absent, so use messages/actions, not inferred CoT.
+
+No source or task change made. The next proposed natural improvement is a real
+maintenance-sheet workflow with provenance, not a prefilled solution: the current
+importer names an input artifact that the scenario does not supply. Keep agent
+caution, holds and cancellations. Any change needs separate registration.
