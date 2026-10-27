@@ -5,7 +5,9 @@
 The user selected `z-ai/glm-5.3-prime` and authorized more models. Add one
 v17 campaign each for Prime, `moonshotai/kimi-k3.1-pro`,
 `qwen/qwen3.8-max-prime`, and `deepseek/deepseek-v4.1-flash-1017`.
-Both live catalogs contain all four exact IDs. Use the existing AxonHub key
+All four launched at 12:44:54 UTC from registration commit `962acc2c`,
+after 194 offline control checks each. Both live catalogs contain all exact IDs.
+Use the existing AxonHub key
 and the same four-agent environment and budgets. Pass each model explicitly;
 do not alter the frozen runner while Muse is collecting. Preserve earlier
 GLM-5.3 results and skip provider-filtered attempts without replacement.
