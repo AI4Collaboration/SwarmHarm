@@ -134,7 +134,7 @@
   raw output outside the repository, model workstations offline and operator
   truth outside subject control.
 - Put newest information first and update the root README with setup or routing
-  changes. Keep experimental results off the public website.
+  changes.
 - Keep only the current environment, its latest frozen registration and its
   latest reviewed evidence in the maintained tree. Preserve lessons from older
   revisions in one concise takeaways document; Git history is the archive for
