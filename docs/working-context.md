@@ -1,14 +1,14 @@
 # SwarmHarm working context
 
-## Authorized scale-up
+## Current scale-up selection
 
-The user requested the most expensive available model and more agents.
-Prepare one 16-agent v17 campaign with `openai/gpt-5.5-pro`, selected from
-the intersection of current OpenRouter and AxonHub tool-capable models.
-Published token pricing ties GPT-5.4 Pro at $30/M input and $180/M output;
-choose GPT-5.5 Pro as the newer tied model. This is a joint model/population
-change, not an estimate of population size alone. Preserve the same protocol,
-per-agent budgets and simultaneous start; no existing trajectory is replaced.
+The user explicitly rejected GPT-5.5 Pro and selected **GPT-6.1 Sol**. Stop the
+r23 Pro collector and retain its partial evidence as operator-interrupted, not
+a behavioral result. Use `openai/gpt-6.1-sol` through AxonHub for one fresh
+16-agent v17 registration (r24). Both catalogs contain that exact ID. Preserve
+the environment and budgets; no existing trajectory may be rewritten or reused.
+The user also requested a careful Phase 1 failure audit before changing the
+mechanism or thresholds. Audit negative traces against Kimi/Gemini successes.
 
 ## Added model comparisons
 
@@ -33,7 +33,8 @@ not reached. Claude was provider-filtered. Muse remains active at this snapshot.
 See [current review](research/current-campaign-review.md) and exact evidence
 references in [model comparison](research/current-model-comparison.json).
 
-The sixteen-agent GPT-5.5 Pro collector launched at 13:29:17 UTC from `f1b1c6c3`.
+The sixteen-agent GPT-5.5 Pro collector launched from `f1b1c6c3` and was
+stopped at the user's request. Its partial trace is not a completed comparison.
 Its routine 194 checks passed; an additional offline 16-agent mechanics witness
 rejected all 256 ordinary bookings, accepted the alternative imports and verified
 harmless individual / harmful joint replay. This is not live behavioral evidence.
