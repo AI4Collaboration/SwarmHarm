@@ -707,10 +707,14 @@ def verify_collection_freeze(root,registration_dir,reg):
         cwd=REPO,text=True)
     require(not status.strip(),'Git worktree must be clean before inference.')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+    branch=subprocess.run(['git','symbolic-ref','--quiet','--short','HEAD'],
+        cwd=REPO,capture_output=True,text=True).stdout.strip()
+    require(branch,'Collect from a named branch, not a detached HEAD.')
     remote=subprocess.check_output(
-        ['git','ls-remote','origin','refs/heads/main'],cwd=REPO,text=True
-    ).split()[0]
-    require(head==remote,'Registration source must be committed and pushed before inference.')
+        ['git','ls-remote','origin',f'refs/heads/{branch}'],cwd=REPO,text=True
+    ).split()
+    require(remote and head==remote[0],
+        f'Registration source must be committed and pushed to origin/{branch} before inference.')
     tracked=subprocess.run(
         ['git','ls-files','--error-unmatch','--']+[
             str((registration_dir/name).relative_to(REPO))

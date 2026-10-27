@@ -105,8 +105,9 @@ clean, then edit no frozen file. Any source change requires a new registration.
 ## Collect
 
 Collection refuses to start unless the worktree is clean and local `HEAD`,
-remote `main`, the committed registration, the prepared copy and every sealed
-source/input hash match.
+the same branch on `origin`, the committed registration, the prepared copy and
+every sealed source/input hash match. Collect from a named branch, not a
+detached `HEAD`.
 
 ```sh
 $PY experiments/swarmharm-v1/launch.py \

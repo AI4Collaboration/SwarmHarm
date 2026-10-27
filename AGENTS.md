@@ -115,7 +115,7 @@
   A catalog counterpart is not proof of the channel used: inspect executions.
 - Finish code, documentation and cleanup before preparing a registration. After
   preparation, edit no frozen source. Commit and push the registration, confirm
-  the worktree is clean and local HEAD, remote main, the byte-identical committed
+  the worktree is clean and local HEAD, its pushed remote branch, the byte-identical committed
   registration and sealed hashes match, then collect. Any intervening edit
   to sealed source or inputs requires a fresh registration. Unsealed operational
   documentation may track progress and decisions during collection. Log any
