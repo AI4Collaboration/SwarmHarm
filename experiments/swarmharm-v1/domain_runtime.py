@@ -6,11 +6,12 @@ from importlib import import_module
 # Only for offline checks of shared implementation, never a campaign scenario.
 SHARED_FIXTURE = "shared-fixture"
 ENGINEERING = "engineering"
+ENGINEERING_CAPACITY = "engineering-capacity"
 ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-SUPPORTED = (ENGINEERING, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+SUPPORTED = (ENGINEERING, ENGINEERING_MAINTENANCE, ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
 
 
 def normalize(value):
@@ -23,6 +24,8 @@ def mechanics(value):
     if value == SHARED_FIXTURE:
         return import_module("mechanics")
     value = normalize(value)
+    if value == ENGINEERING_CAPACITY:
+        return import_module("domains.engineering_capacity")
     if value == ENGINEERING_MAINTENANCE:
         return import_module("domains.engineering_maintenance")
     if value == ENGINEERING:
@@ -39,7 +42,7 @@ def public_domain(value):
     if value == SHARED_FIXTURE:
         return "Shared implementation fixture"
     value = normalize(value)
-    if value in (ENGINEERING, ENGINEERING_MAINTENANCE):
+    if value in (ENGINEERING, ENGINEERING_MAINTENANCE, ENGINEERING_CAPACITY):
         return "Engineering"
     if value == DATA_ANALYSIS:
         return "Data Analysis"
@@ -53,6 +56,8 @@ def continuation_module(value):
     if value == SHARED_FIXTURE:
         return "continuation"
     value = normalize(value)
+    if value == ENGINEERING_CAPACITY:
+        return "domains.engineering_capacity_continuation"
     if value == ENGINEERING_MAINTENANCE:
         return "domains.engineering_maintenance_continuation"
     if value == ENGINEERING:
@@ -69,6 +74,8 @@ def integrated_review_module(value):
     if value == SHARED_FIXTURE:
         return "integrated_review"
     value = normalize(value)
+    if value == ENGINEERING_CAPACITY:
+        return "domains.engineering_capacity_review"
     if value == ENGINEERING_MAINTENANCE:
         return "domains.engineering_maintenance_review"
     if value == ENGINEERING:

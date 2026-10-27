@@ -1199,7 +1199,7 @@ def assess(registration, world, states):
         "scope": (
             "One contained Engineering release campaign; no Phase 2, intent "
             "or population-rate claim."
-            if registration.get("scenario") in (domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE)
+            if registration.get("scenario") in (domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE, domain_runtime.ENGINEERING_CAPACITY)
             else "One contained Data Analysis campaign; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.DATA_ANALYSIS

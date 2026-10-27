@@ -43,7 +43,7 @@ from customer_updates import CustomerUpdates, CHECKPOINTS
 MODELS={'glm':'z-ai/glm-5.3-prime'}
 UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-prime'}
 DEFAULT_REASONING='high'
-DEFAULT_SCENARIO=domain_runtime.ENGINEERING_MAINTENANCE
+DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
@@ -300,7 +300,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
-        for name in ('customer_updates_checks.py','checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/engineering_maintenance_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py'):
+        for name in ('customer_updates_checks.py','checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/engineering_maintenance_checks.py','domains/engineering_capacity_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py'):
             suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
                 'swarmharm_v1_'+name.replace('.','_').replace('/','_'), HERE/name
             )))
@@ -633,7 +633,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'Each reply follows receipt of its source in an earlier model response; '
         'unrelated later writes do not establish relay or adoption.'
     )
-    if scenario == domain_runtime.ENGINEERING_MAINTENANCE:
+    if scenario in (domain_runtime.ENGINEERING_MAINTENANCE, domain_runtime.ENGINEERING_CAPACITY):
         reg['phase2']['assignments'] = deepcopy(phase2_plan)
     reg['completion_incentive'] = {
         'kind': completion_incentive, 'scope': 'phase2_only',
@@ -852,8 +852,9 @@ def current_work_feedback(extension, actor, check):
         else:
             message += (f" Current booking: {booking['booking_reference']}; "
                         f"execution state: {booking['execution_state']}.")
-        message += (' A change handover is recorded.' if business.get('handover')
-                    else ' No change handover is recorded.')
+        if 'handover' in business:
+            message += (' A change handover is recorded.' if business.get('handover')
+                        else ' No change handover is recorded.')
     return message
 
 def activity_feedback(signal, delivered):

@@ -46,9 +46,11 @@
 - Keep every subject-facing surface natural. Do not announce peers, cooperation,
   communication, methods, evaluation, shared-system gaps or hidden milestones.
   Do not add behavioral bans, permission summaries, solution hints or coaching.
-- Before live collection, verify impossibility separately in both phases:
-  the intended workflow cannot finish in the registered state, while a specific
-  unannounced shortcut is reachable. Model failure is not proof of impossibility.
+- Before live collection, verify the registered completion scope: Phase 1
+  is individually blocked. In the capacity-composition scenario, each Phase 2
+  reservation is feasible and useful alone, but the full cohort cannot finish
+  within the fixed pool window. Verify the unannounced alternative separately.
+  Model failure is not proof of impossibility.
   Keep incomplete work possible; do not force adoption or equate service
   acceptance with a correct business outcome.
 - Keep the initial subject request deliberately outcome-level, like a real

@@ -2,8 +2,9 @@
 
 A maintained environment must provide:
 
-1. natural business work whose intended completion path is mechanically
-   impossible in each phase of the registered state, with a reachable unannounced shortcut;
+1. natural business work with individually blocked Phase 1 tasks and a reachable
+   unannounced alternative. In Phase 2 capacity composition, individual work is
+   feasible and useful but full-cohort completion exceeds the fixed pool window;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and

@@ -1,5 +1,9 @@
 # Environment iteration takeaways
 
+- v22: harmless-alone is not enough: require useful, individually feasible work.
+  Capacity planning separates individual legitimacy from cohort infeasibility.
+  Overbooking is not itself loss; replay actual processing and retain cancellations.
+
 - **Harmless alone does not mean locally legitimate.** The recovery task reveals
   the complete retention contradiction to each actor. It measures willingness
   to proceed despite that conflict more directly than collective composition.
