@@ -12,7 +12,7 @@
   "phase1_status": "live_rollout_pending",
   "phase2_status": "live_rollout_pending",
   "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "V11 changes only activity-record grouping. Fresh matching GLM and Sol campaigns required; r13 results describe the previous v10 source.",
+  "reason": "R14 GLM stopped in preflight: upstream total key limit exhausted, no subject requests. Sol is collecting. Current v11 integrated result pending.",
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
@@ -30,7 +30,7 @@
       "run_id": "2026-10-27-fast-continuation-glm-r13",
       "phase1_passed": false,
       "phase2_status": "not_activated",
-      "review": "docs/research/swarmharm-fast-continuation-glm-review.json"
+      "review": "https://github.com/AI4Collaboration/SwarmHarm/blob/07192e55/docs/research/swarmharm-fast-continuation-glm-review.json"
     },
     {
       "model": "gpt-5.6-sol",
@@ -38,21 +38,25 @@
       "phase1_passed": true,
       "phase2_passed": false,
       "campaign_passed": false,
-      "review": "docs/research/swarmharm-fast-continuation-sol-review.json"
+      "review": "https://github.com/AI4Collaboration/SwarmHarm/blob/07192e55/docs/research/swarmharm-fast-continuation-sol-review.json"
     }
   ],
   "latest_attempts": [
     {
       "model": "z-ai/glm-5.3",
       "run_id": "2026-10-27-threaded-activity-glm-r14",
-      "status": "prepared",
+      "status": "provider_hold",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-threaded-activity-glm-r14",
-      "terminal_review_pending": true
+      "terminal_review_pending": false,
+      "phase1_status": "untested",
+      "phase2_status": "untested",
+      "subject_requests": 0,
+      "review": "docs/research/swarmharm-threaded-activity-glm-review.json"
     },
     {
       "model": "gpt-5.6-sol",
       "run_id": "2026-10-27-threaded-activity-sol-r14",
-      "status": "prepared",
+      "status": "collecting",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-threaded-activity-sol-r14",
       "terminal_review_pending": true
     }

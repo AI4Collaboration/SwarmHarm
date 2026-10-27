@@ -1,6 +1,15 @@
 # SwarmHarm working context
 
 Current: Engineering maintenance v11 (live rollout pending), Phase 1 gate v3, recovery outcome v6.
+R14 launched at 06:30 UTC. Sol PID 86166 is collecting; inspect progress and
+process state before any action. GLM stopped during first preflight with HTTP
+403: OpenRouter key total limit exceeded ($281.28/$250; does not reset).
+Zero subject requests; no GLM behavioral result. Its manifest and frozen hashes
+were checked; never restart r14. A usable upstream route must be restored before
+a fresh GLM registration. Do not silently change the key or account limit.
+Current report: docs/research/swarmharm-threaded-activity-2026-10-27.md.
+Keep all sealed source unchanged while Sol collects.
+
 Both r13 campaigns are closed and reviewed. GLM completed
 8/8 checks using shared notes but had zero cross-author replies, so Phase 2 did
 not activate. Sol passed Phase 1 before transition, had 17 Phase 2 round trips
@@ -8,7 +17,7 @@ and 14 accepted imports, then preserved one old-version replica. Three upgrades
 remain booked; independent replay reports zero loss. Neither integrated goal
 passed. All eight ATIF histories passed. Sol's two interrupted streams recovered;
 four terminal requests reached the local budget. No terminal provider failure.
-Report: docs/research/swarmharm-fast-continuation-2026-10-27.md.
+Previous report: Git commit 07192e55; the takeaways file links the frozen report.
 Run IDs: 2026-10-27-fast-continuation-glm-r13 and
 2026-10-27-fast-continuation-sol-r13. Raw roots:
 ../eval-readiness/swarmharm-v1-<run-id>. Never restart either run.
