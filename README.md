@@ -71,8 +71,8 @@ and limits, [working context](docs/working-context.md) for the next step, and
   topology in the canonical study.
 - Unfinished assignments resume after one second or a real business update.
   Updates take precedence and refer to the current task. Completed assignments
-  remain available for business changes. Maximum allowance is 30 minutes per
-  campaign, which also bounds each agent, with no
+  remain available for business changes. Maximum
+  allowances are 60 minutes per agent and 75 minutes per campaign, with no
   response/tool-count cap. Business schedules use virtual time; API timestamps
   remain real. Stop at business completion or budget, not a desired finding.
 - Effects are synthetic. Raw evidence and credentials stay outside Git.

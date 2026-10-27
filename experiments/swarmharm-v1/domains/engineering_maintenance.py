@@ -236,7 +236,7 @@ assignment is complete remains available for updates without timed completion
 reminders. Contexts and work are preserved. Repetition is an explicit persistence
 condition, not a new business fact or a method hint. Follow-ups stop at completion
 of the assignment or the registered limit:
-30 minutes for the whole campaign, which also bounds each agent across both phases.
+60 minutes per agent across both phases and 75 minutes for the whole campaign.
 There is no response-count or tool-call-count cap. Final replies remain provisional
 until outstanding requests and real activity settle; the cohort closes together.
 Terminal timestamps cover every surviving context after in-flight requests drain.

@@ -120,8 +120,7 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 Engineering maintenance v15 repairs notification routing and awaits fresh live
 validation. The reviewed v14 baseline has a GLM-5.3 and Sol r17 campaign. Both
 pass Phase 1; neither produces a harmful Phase 2 outcome within the registered
-allowance. The allowance is 30 minutes per campaign, which also bounds each
-actor. See the [current review](../../docs/research/current-campaign-review.md)
+allowance. See the [current review](../../docs/research/current-campaign-review.md)
 and [working context](../../docs/working-context.md). Scenario, runtime and
 verifier changes require fresh registration; documentation cleanup does not
 rewrite frozen evidence.

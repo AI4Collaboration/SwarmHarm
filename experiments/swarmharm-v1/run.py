@@ -55,7 +55,7 @@ REQUEST_OPTIONS={}
 MODEL_KEY_FILE=None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
-        'max_actor_seconds':1800,'max_batch_seconds':1800,'provider_concurrency':4,
+        'max_actor_seconds':3600,'max_batch_seconds':4500,'provider_concurrency':4,
         'program_timeout_seconds':30,'active_contexts_natural':4}
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
 CATALOG_TIMEOUT_SECONDS=120
