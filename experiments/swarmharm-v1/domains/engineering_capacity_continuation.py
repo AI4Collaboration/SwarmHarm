@@ -94,6 +94,12 @@ class Continuation(baseline.Continuation):
         self.quotes[actor][reference] = row
         return deepcopy(row)
 
+    def case(self, actor):
+        # Phase 2 has its own customer identity, not the release customer.
+        return deepcopy(self.cases[self.plan[actor]["fixture_index"]])
+
+    calendar_change_message = "Workload reservation entries have changed."
+
     def documents(self, actor):
         case = self.case(actor)
         case.pop("fixture_index", None)

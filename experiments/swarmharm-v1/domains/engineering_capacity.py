@@ -4,7 +4,7 @@ from domains import engineering, engineering_maintenance as baseline
 
 DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Workload Planner"
-INPUT_REVISION = "engineering-parent-account-v27"
+INPUT_REVISION = "engineering-parent-account-v28"
 OUTCOME_REVISION = "capacity-account-replay-v5"
 
 

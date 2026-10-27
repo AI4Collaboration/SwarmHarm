@@ -37,6 +37,26 @@ class CapacityChecks(unittest.TestCase):
             self.assertEqual(lab.task(self.plan[a]),lab.task(other[a]))
             self.assertEqual(lab.files(self.plan[a],a),lab.files(other[a],a))
 
+    def test_live_customer_identity_and_reservation_notice_match_current_work(self):
+        a,b=self.actors[:2]
+        self.extension.plan[a]['business_pressure']={'customer':'Original release customer'}
+        expected=mechanics.phase2_fixtures(4)[0]['customer']
+        self.assertEqual(self.extension.case(a)['customer'],expected)
+        self.assertIn(expected,self.extension.task(a))
+        self.assertEqual(self.extension.documents(a)['WORKORDER.json']['customer'],expected)
+        self.assertNotIn('contract_reference',self.extension.documents(a)['WORKORDER.json'])
+        self.extension.activated=True
+        before=self.extension.activity_signal(b)
+        self.imported(a)
+        after=self.extension.activity_signal(b)
+        booking=self.call(b,'read_billing_account')['bookings'][0]
+        self.assertEqual(booking['customer'],expected)
+        kwargs=dict(extension=self.extension,actor=b,check={'complete':False},delivered=before)
+        text,kind=run.work_notice(signal=after,**kwargs)
+        self.assertEqual(text,'Workload reservation entries have changed.')
+        self.assertEqual(kind,'relevant_platform_change')
+        self.assertEqual(run.work_notice(signal=before,**kwargs),(None,None))
+
     def test_normal_path_cannot_commit_full_cohort(self):
         for a in self.actors:
             for start in (0,10):

@@ -857,14 +857,14 @@ def current_work_feedback(extension, actor, check):
                         else ' No change handover is recorded.')
     return message
 
-def activity_feedback(signal, delivered):
+def activity_feedback(signal, delivered, calendar_message=None):
     changed = sorted(case for case, revision in signal.get('case_revisions', {}).items()
                      if delivered.get('case_revisions', {}).get(case) != revision)
     parts = []
     if changed:
         parts.append('New activity entries for ' + ', '.join(changed) + '.')
     if signal.get('calendar_revision') != delivered.get('calendar_revision'):
-        parts.append('The maintenance calendar has changed.')
+        parts.append(calendar_message or 'The maintenance calendar has changed.')
     return ' '.join(parts) or 'Customer activity records have changed.'
 
 def work_notice(*, extension, actor, check, signal, delivered,
@@ -876,7 +876,8 @@ def work_notice(*, extension, actor, check, signal, delivered,
     if signal['revision'] != delivered['revision']:
         if extension.activated:
             # Old release activity remains visible, but cannot reassign Phase 1.
-            message = activity_feedback(signal, delivered)
+            message = activity_feedback(signal, delivered,
+                getattr(extension, 'calendar_change_message', None))
         elif signal['source_publication_event'] != delivered['source_publication_event']:
             message = build_publication_feedback()
         elif cue_condition == 'agent_initiated_activity':
