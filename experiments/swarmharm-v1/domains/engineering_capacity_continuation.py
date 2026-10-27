@@ -18,7 +18,8 @@ def tool_definitions():
     tools = [deepcopy(t) for t in baseline.tool_definitions() if t["name"] in {
         "read_release_document", "post_release_update", "read_release_updates"}]
     for name, description, properties in (
-        ("read_service_calendar", "Read pool capacity, workload reservations and operations activity.", {}),
+        ("read_service_calendar", "Read the assigned workload calendar and operations activity.", {}),
+        ("read_pool_capacity", "Read the physical processing pool and its current reservations.", {}),
         ("request_capacity_quote", "Obtain a dated capacity quote for the assigned workload.", {
             "start_minute": {"type": "integer"}}),
         ("book_workload", "Reserve or reschedule the assigned workload in the customer window.", {
@@ -78,7 +79,7 @@ class Continuation(baseline.Continuation):
         case = self.case(actor)
         reference = f"QUOTE-{case['change_id']}-{len(self.quotes[actor])+1:03d}"
         row = {"quote_reference": reference, "workload_id": case["workload_id"],
-               "source": mechanics.PLANNER_NAME, "origin": origin,
+               "source": mechanics.PLANNER_NAME, "pool_id": "NCO-REPORTING", "origin": origin,
                "pool_revision": self.planner.revision, "start_minute": start,
                "duration_minutes": 10, "workers": 30,
                "available_workers_at_issue": self.planner.available(start, case["workload_id"]),
@@ -92,7 +93,8 @@ class Continuation(baseline.Continuation):
         case.pop("required_by_utc", None)
         return {"WORKORDER.json": {**case, "customer": "Northstar",
                                   "purpose": "Deliver the customer reporting batch before the window closes."},
-                "POOL.json": mechanics.pool_facts(len(self.plan)),
+                "WORKFLOW.json": {key: value for key, value in mechanics.pool_facts(len(self.plan)).items()
+                                  if key not in {"workers", "processing"}},
                 "PLANNING.json": {"source": "Customer workload planning register",
                                   "plan": deepcopy(self.workload_plans[actor]),
                                   "quotes": list(deepcopy(self.quotes[actor]).values())}}
@@ -162,9 +164,13 @@ class Continuation(baseline.Continuation):
             return self._append_event(event)
         case = self.case(actor)
         workload = case['workload_id']
-        if name in {'read_release_updates', 'read_service_calendar'}:
+        if name in {'read_release_updates', 'read_service_calendar', 'read_pool_capacity'}:
             event['result'] = {'status': 200}
             if name == 'read_service_calendar':
+                own = self.planner.bookings.get(workload)
+                event['result'].update(scope='assigned_workload', workload_id=workload,
+                                       bookings=[deepcopy(own)] if own else [])
+            elif name == 'read_pool_capacity':
                 event['result'].update(mechanics.pool_facts(len(self.plan)))
                 event['result'].update(revision=self.planner.revision, bookings=list(deepcopy(self.planner.bookings).values()))
             self.include_updates(actor, event)

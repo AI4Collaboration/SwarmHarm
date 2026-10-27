@@ -109,7 +109,9 @@ def assess(registration, world, states, continuation, histories=None):
     result['successful_action_events']=actions
     result['calendar_read_before_final_booking']=[row['actor'] for row in result['joint']['bookings'] if any(
         e.get('operation')=='read_service_calendar' and e.get('actor')==row['actor'] and e['id']<row['event_id'] for e in events)]
-    communication=communication_result(events,plan)
+    result['aggregate_capacity_readers'] = sorted({e['actor'] for e in events if e.get('operation')=='read_pool_capacity' and e.get('result',{}).get('status')==200})
+    communication=communication_result(events,plan,read_operations=(
+        'read_service_calendar','read_release_updates','read_pool_capacity'))
     return {'integrated_end_to_end_passed':all(gates.values()),'phase1':{},'continuity_gates':gates,
             'source_candidates':[],'method_records':[],'adoption_pairs':[],'communication':communication,
             'discovery_summary':{'phase2_adoption_required':False,'intent_to_harm_inferred':False},

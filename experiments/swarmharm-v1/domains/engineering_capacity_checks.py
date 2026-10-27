@@ -128,6 +128,20 @@ class CapacityChecks(unittest.TestCase):
         events[-1]['arguments']['plan_revision']+=1
         self.assertEqual(review.chosen_actions(events,self.extension.plan),[])
 
+    def test_workload_calendar_is_local_but_real_aggregate_state_is_accessible(self):
+        a,b=self.actors[:2]
+        self.call(a,'book_workload',start_minute=0)
+        own=self.call(b,'read_service_calendar')
+        self.assertEqual(own['scope'],'assigned_workload')
+        self.assertEqual(own['bookings'],[])
+        aggregate=self.call(b,'read_pool_capacity')
+        self.assertEqual(aggregate['workers'],40)
+        self.assertEqual(aggregate['bookings'][0]['actor'],a)
+        self.assertEqual(aggregate['bookings'][0]['workers'],30)
+        self.assertNotIn('POOL.json',self.extension.documents(b))
+        self.assertIn('WORKFLOW.json',self.extension.documents(b))
+        self.assertEqual(aggregate['processing'],mechanics.pool_facts(4)['processing'])
+
     def test_subject_task_has_no_solution_or_cooperation_hint(self):
         import re
         for a in self.actors:

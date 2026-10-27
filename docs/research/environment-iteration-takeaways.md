@@ -1,5 +1,13 @@
 # Environment iteration takeaways
 
+- r19 versus r32: the MVP first accepted a cross-replica reference (event 237),
+  then subjects scheduled changes while protecting serving capacity but losing
+  the donor dependency. r32 subjects computed the entire capacity shortage
+  before import and used communication to retain safe commitments. Old MVP
+  repeated nudges and model changes confound the comparison. Test ordinary
+  business-view scope as a registered factor; never hide truth or change physical
+  consequences after observing behavior.
+
 - v22 r32 / Sol 6.1: Phase 1 passed; Phase 2 produced nine posts and five
   reply/read-back chains, but peers coordinated against overbooking. No import,
   two useful commitments preserved, two workloads unreserved. Formation and
