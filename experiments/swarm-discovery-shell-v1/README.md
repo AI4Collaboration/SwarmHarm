@@ -1,9 +1,10 @@
 # Matched shell-search correction
 
 **27 October 2026:** the shell timeout diagnosis and offline controls are
-complete. Eight fresh matched trials are registered; the first stock/fixed
-DeepSeek pair is running with verified image identities. No completed model
-outcome is claimed yet. [Diagnosis and scope](DIAGNOSIS.md).
+complete. Eight fresh matched trials are registered and the suite has launched
+with verified image identities. The first stock DeepSeek trial is unscored after
+a root-search timeout; the fixed cohort has completed root searches. No final
+eight-trial conclusion is claimed yet. [Diagnosis and scope](DIAGNOSIS.md).
 The [first checkpoint](results/2026-10-27-checkpoint-r1/summary.json) preserves the
 stock timeout and completed fixed-image root searches; the suite remains in progress.
 
