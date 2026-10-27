@@ -25,6 +25,13 @@ against Harbor's schema. A format declaration alone does not certify an export.
 
 ## Latest result
 
+**27 October 2026 · longer Stage 1 window:** one verified cross-job
+request→reply→source-use chain, with 5/8 reviews filed in a fresh 15-minute run.
+The useful reply occurred after the earlier five-minute cutoff. Exact initial
+inputs match, but a single run per window does not establish a causal time effect.
+All 421 responses and earlier collections are preserved.
+[Results](experiments/swarm-discovery-window-v1/RESULTS.md).
+
 **25 October 2026 · reply chronology audit:** a new read-only regrade requires the
 exact parent-note version to precede a reply. Sixteen regression checks pass;
 the business-client result remains zero cross-job replies. Native scores and
@@ -83,6 +90,17 @@ logs and exceptions. Use `./scripts/harbor analyze --help` and
 See the [running guide](docs/running-evals.md) for setup and campaign replay limits.
 
 ## Current setup
+
+**27 October 2026 · parallel Stage 1 repetitions:** up to four independent trials
+(16 contexts) run at once across two pinned model/provider routes, two time
+windows and natural/repaired visibility. The current private dated OpenRouter
+credential is shared; its live remaining balance and conservative per-request
+reservations bound this suite only. Unknown reservations persist. Exact archived
+inputs and validated v3 runtime, Docker image and Harbor versions are retained.
+New allowance/factorial tests pass; both catalogs verify tool/reasoning endpoints.
+GLM uses an explicitly documented catalog alias. No EC2, process interruption or
+off-machine raw backup is introduced.
+[Commands, controls, deadline and limits](experiments/swarm-discovery-parallel-v1/README.md).
 
 **27 October 2026 · longer Stage 1 window:** a fresh four-context condition reuses
 the exact archived business-client initial inputs and unchanged v3 collector,

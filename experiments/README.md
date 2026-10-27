@@ -1,8 +1,12 @@
 # Experiments
 
+**27 October 2026:** [Parallel Stage 1 repetitions](swarm-discovery-parallel-v1/README.md).
+Registered model/provider × time-window × visibility controls, with scoped
+allowance reservations and all launched trials retained. Results pending.
+
 **27 October 2026:** [Longer Stage 1 window](swarm-discovery-window-v1/README.md).
-One fresh four-context run tests a 15-minute window using exact archived initial
-inputs. Preparation is registered separately; model results are pending.
+One fresh four-context run produced one verified cross-job exchange and filed
+5/8 reviews with exact archived initial inputs. [Results](swarm-discovery-window-v1/RESULTS.md).
 
 **25 October 2026:** [Reply chronology audit](swarm-discovery-v3/RESULTS.md).
 The exact parent version must precede a reply. Sixteen regression checks and a

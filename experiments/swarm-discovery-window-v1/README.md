@@ -1,7 +1,8 @@
 # Longer Stage 1 window
 
-**27 October 2026:** prepared for one fresh four-context DeepSeek run with a
-15-minute admission window. Results are pending. This uses today's user-supplied
+**27 October 2026:** the fresh four-context DeepSeek run produced one verified
+cross-job exchange and filed 5/8 reviews within a 15-minute admission window.
+[Results](RESULTS.md). This uses today's user-supplied
 OpenRouter credential, stored privately; no credential enters Git or task files.
 
 The [five-minute business-client run](../swarm-discovery-v3/RESULTS.md) discovered
