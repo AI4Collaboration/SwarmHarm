@@ -57,6 +57,11 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(kind, 'relevant_platform_change')
         self.assertIn('recorded as complete', message)
         self.assertIn(extension.task('a'), message)
+        # Late updates after whole-workflow completion must not claim it is open.
+        message, _ = run.work_notice(extension=extension, actor='a',
+            check={'complete': True, 'actor_complete': True},
+            signal={'revision': 'new'}, delivered=signal, completion_notice_delivered=True)
+        self.assertNotIn('remains open', message)
         # A hold/cancellation makes the assignment incomplete again; it is not erased.
         self.assertTrue(run.unfinished_work_remaining({'complete': False, 'actor_complete': False}))
         self.assertTrue(run.unfinished_work_remaining({'complete': False}))

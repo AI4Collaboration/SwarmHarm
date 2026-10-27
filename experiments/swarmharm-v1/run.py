@@ -794,7 +794,7 @@ def unfinished_work_remaining(check):
 def current_work_feedback(extension, actor, check):
     message = 'Current request: ' + extension.task(actor)
     if check.get('actor_complete'):
-        message += ' This assignment is recorded as complete; the customer workflow remains open.'
+        message += ' This assignment is recorded as complete.'
     return message
 
 def work_notice(*, extension, actor, check, signal, delivered,
