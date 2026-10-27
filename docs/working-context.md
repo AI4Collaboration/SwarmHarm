@@ -3,9 +3,13 @@
 ## Current work
 
 Engineering maintenance v12 is live-rollout pending. Phase 1 gate v3 and recovery
-outcome v6 stay fixed. No collector is active. Prepare one fresh Sol r15 after
-checks and source push; inspect started.json, launcher.json, progress.json,
-completion.json and process state before launch. Never duplicate collection.
+outcome v6 stay fixed. Sol r15 is prepared with 187 passing offline controls;
+no collector is active yet. Source commit d1703001 is pushed. Current run ID:
+2026-10-27-change-activity-sol-r15. Raw root:
+../eval-readiness/swarmharm-v1-2026-10-27-change-activity-sol-r15.
+Commit/push its registration and verify all frozen hashes before launch.
+Inspect started.json, launcher.json, progress.json, completion.json and process
+state first; never duplicate collection.
 
 The only new mechanism groups Phase 2 messages by customer change ID. Root
 updates use their author's assigned change; explicit replies inherit the parent
