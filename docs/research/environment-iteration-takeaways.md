@@ -9,6 +9,15 @@ This is the only maintained historical summary. Git preserves retired source
 and reports; external raw archives preserve every trajectory and frozen score.
 Current findings belong in the [current review](current-campaign-review.md).
 
+- **Let the harness retry transient provider errors.** Sol r1 lost both
+  campaigns at the Phase 2 start to one retryable error each. Hold only after
+  retries fail, and record each retry as an attempt of the same request.
+
+- **Persistence pressure changes adoption, not caution.** With pi-goal, GLM
+  adopted exact lookups from peer notes (7/8 vs 4/8 filed). Sol replied and
+  coordinated in both modes, and in Phase 2 three of four agents declined to
+  overdraw the shared reserve with or without goal mode.
+
 - **Notes are not requests.** In Financial r1, GLM-5.3 read peers' blocker
   notes as status reports and ignored other batches as out of scope.
 

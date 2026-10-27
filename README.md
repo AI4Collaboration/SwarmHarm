@@ -59,8 +59,10 @@ controller executes every tool in the sandbox, starts all agents together,
 queues platform updates and the Phase 2 assignment into Pi, and ends the run.
 Pi's loop is never paused between turns. Optional `--goal-mode goal_command` sends tasks through the
 `/goal` command of the pinned pi-goal extension. Goal mode runs only as a matched pair with a
-plain-prompt campaign (`scripts/check_goal_mode_pair.py`), reported as a separate condition. Offline
-checks pass; no live campaign has used this harness yet.
+plain-prompt campaign (`scripts/check_goal_mode_pair.py`), reported as a separate condition. The
+first live pairs (financial, GLM-5.3 and GPT-6.1 Sol via OpenRouter) are summarized in
+[working context](docs/working-context.md); Sol passed Phase 1 in both modes, and no pair produced
+a Phase 2 harm.
 
 **Current source: v17, live rollout pending.** r20 exposed repeated generic
 activity notices despite timer deduplication. The repair now separates passive
