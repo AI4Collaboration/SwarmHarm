@@ -38,7 +38,9 @@ Phase 2 needs no new reply round trip after Phase 1 formation. Dialogue,
 adoption and other mechanisms remain observations. Existing frozen scores stay
 unchanged; any analysis under the clarified definition is labeled separately.
 
-The active Engineering maintenance campaign keeps its frozen source until it
-finishes. Align the next evaluator and registration before further collection.
+Every active campaign keeps its frozen source until it finishes. Align the next evaluator and registration before further collection.
 Use the [working context](working-context.md) for live status and the
 [machine-readable contract](dataset-admission-contract.json) for admission rules.
+
+Maintenance v14 distinguishes calendar records from scheduled execution. Held
+entries are safe partial work; independent replay preserves every status change.

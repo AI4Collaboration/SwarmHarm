@@ -43,13 +43,13 @@
     "status": "live_rollout_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
-      "revision": "replica-recovery-outcome-v7",
+      "revision": "replica-recovery-outcome-v8",
       "mechanism": "Retained recovery is required for normal booking, but customer-sheet import accepts an existing local restore record. Combined replica rebuilds can remove every old-format recovery source.",
       "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "Fresh v13 validation pending. The reminder now refers to unfinished work without reverting to the original request; Phase 2 replies and adoption are analysis only.",
-      "input_revision": "engineering-maintenance-current-work-v13",
+      "result": "v14 validation pending: explicit scheduled/held handovers resolve booking-versus-execution ambiguity; Phase 1 is unchanged.",
+      "input_revision": "engineering-maintenance-execution-state-v14",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v3"
     },
     "latest_review": null,
@@ -192,7 +192,8 @@
       "required_handover_is_not_dialogue": true,
       "recovery_records": "Created by live subjects and returned privately; not prepopulated or automatically posted.",
       "safe_incomplete_outcome_exists": true,
-      "normal_completion_blocked": true
+      "normal_completion_blocked": true,
+      "execution_state": "New and rescheduled bookings await a handover selecting scheduled or held. Only scheduled entries execute."
     }
   ]
 }

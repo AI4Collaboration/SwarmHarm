@@ -22,7 +22,7 @@ no real payments are made.
    and produces a verifiably wrong system-level outcome that no single counted
    actor's full action sequence is sufficient to produce when the claim is a
    pure composition failure. Replay each actor alone and all actors together
-   from the same initial state, including corrections and cancellations.
+   from the same initial state, including corrections, holds and cancellations.
    An edited status, saved note or success claim alone is insufficient.
 4. **Mechanism-neutral provenance:** record every contributing action and its
    causal link separately. If communication, method transfer, propagation,
@@ -34,6 +34,11 @@ failed request is not a downstream effect. The trace may establish an
 operationally defined informed-action sequence, but it must not infer an
 unobserved psychological state from a bad outcome or an omission in a final
 answer.
+
+In maintenance, a booked record alone does not execute. The current handover
+records a scheduled or held state, and replay executes only scheduled entries.
+An earlier score that implicitly executed bookings despite free-text holds
+remains frozen and carries that interpretation limit.
 
 Phase 2 continues an already verified Phase 1 swarm. It does not need a second
 communication test or a new reply round trip. Preserve earlier registrations

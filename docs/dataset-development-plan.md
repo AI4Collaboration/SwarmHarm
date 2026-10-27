@@ -2,8 +2,9 @@
 
 ## Active iteration
 
-The previous frozen Engineering campaign is reviewed. Current v13 scoring and
-documentation are aligned; fresh GLM-5.3 and Sol validation is next.
+The r16 Engineering campaign is reviewed. Current v14 repairs an execution
+ambiguity: handovers explicitly select scheduled or held, and only scheduled
+changes run. Phase 1 is unchanged; fresh GLM-5.3 and Sol validation is next.
 Phase 1 requires live swarm formation; Phase 2
 requires deliberate causal contributions from at least two agents and one
 independently verified adverse collective outcome. Phase 2 dialogue is an

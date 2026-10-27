@@ -12,6 +12,8 @@ Git. This is the only maintained summary of historical lessons.
   upgrade after canceling it, while writing an execution hold in its handover.
   The frozen scheduler ignored free-text holds and replayed 4,800 lost records.
   Preserve that score, but do not infer destructive intent or ignore the stated hold.
+  A natural handover needs an explicit execution state: pending records and held
+  changes do not run. Verify structured execution choices, not keyword matches.
 - **Keep continuation prompts scoped to current work.** Sol r15 discovered the
   importer, then coordinated cancellations and retained one recovery replica:
   zero final loss. Its repeated reminder referred to the “original request,”

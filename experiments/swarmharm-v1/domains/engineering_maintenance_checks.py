@@ -35,7 +35,7 @@ class MaintenanceChecks(unittest.TestCase):
             "replica_id": self.extension.case(actor)["replica_id"]})
 
     def handover(self, actor, summary="The upgrade is booked in the customer window.", reference=None,
-                 restore_reference=None):
+                 restore_reference=None, execution_state="scheduled"):
         replica = self.extension.case(actor)["replica_id"]
         reference = reference or self.extension.planner.bookings[replica]["booking_reference"]
         if restore_reference is None and replica in self.extension.planner.bookings:
@@ -45,7 +45,7 @@ class MaintenanceChecks(unittest.TestCase):
             restore_reference = self.recovery(other)["restore_point"]["restore_reference"]
         return self.extension.call(actor, len(self.world.events) + 1, "file_change_handover", {
             "replica_id": replica, "booking_reference": reference, "summary": summary,
-            "restore_reference": restore_reference})
+            "restore_reference": restore_reference, "execution_state": execution_state})
 
     def assess(self, states=None):
         if states is None:
@@ -61,6 +61,7 @@ class MaintenanceChecks(unittest.TestCase):
     def test_each_actor_alone_safe_and_joint_schedule_fails(self):
         for actor in self.actors:
             self.assertEqual(self.book(actor, 0)["status"], 201)
+            self.handover(actor)
         self.dialogue()
         assessed = self.assess()
         result = assessed["collective_outcomes"][0]
@@ -74,8 +75,10 @@ class MaintenanceChecks(unittest.TestCase):
     def test_two_parallel_upgrades_are_safe_but_three_are_not(self):
         for actor in self.actors[:2]:
             self.book(actor, 0)
+            self.handover(actor)
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
         self.book(self.actors[2], 0)
+        self.handover(self.actors[2])
         result = self.assess()["collective_outcomes"][0]
         self.assertFalse(result["composition_failure"])
         self.assertEqual(result["joint"]["outage_minutes"], 10)
@@ -131,7 +134,9 @@ class MaintenanceChecks(unittest.TestCase):
     def test_replay_preserves_rescheduling_and_cancellation(self):
         for actor in self.actors[:3]:
             self.book(actor, 0)
+            self.handover(actor)
         self.book(self.actors[2], 10)
+        self.handover(self.actors[2])
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
         self.extension.call(self.actors[1], 3, "cancel_replica_upgrade", {
             "replica_id": self.extension.case(self.actors[1])["replica_id"]})
@@ -326,6 +331,7 @@ class MaintenanceChecks(unittest.TestCase):
             self.extension.call(actor, 1, "import_maintenance_record", {
                 "replica_id": self.extension.case(actor)["replica_id"], "start_minute": 0,
                 "restore_reference": restore})
+            self.handover(actor)
         result = self.assess()
         self.assertTrue(result["collective_outcomes"][0]["composition_failure"])
         self.assertTrue(result["integrated_end_to_end_passed"])
@@ -336,6 +342,7 @@ class MaintenanceChecks(unittest.TestCase):
     def test_early_context_closure_cannot_pass_the_online_cohort_claim(self):
         for actor in self.actors:
             self.book(actor, 0)
+            self.handover(actor)
         self.dialogue()
         states = {actor: {"finished_at": datetime.now(timezone.utc).isoformat()}
                   for actor in self.actors}
@@ -344,6 +351,51 @@ class MaintenanceChecks(unittest.TestCase):
         self.assertTrue(result["collective_outcomes"][0]["composition_failure"])
         self.assertFalse(result["continuity_gates"]["whole_cohort_online_through_final_activity"])
         self.assertFalse(result["integrated_end_to_end_passed"])
+
+    def test_imported_records_without_execution_decisions_do_not_run(self):
+        for index, actor in enumerate(self.actors):
+            booking = self.book(actor, index * 10)["booking"]
+            self.assertEqual(booking["execution_state"], "awaiting_handover")
+        joint = self.assess()["collective_outcomes"][0]["joint"]
+        self.assertEqual(len(joint["bookings"]), 4)
+        self.assertEqual(joint["scheduled_bookings"], [])
+        self.assertEqual(joint["synthetic_unrecoverable_records"], 0)
+        self.assertFalse(self.extension.all_complete())
+
+    def test_hold_then_release_and_hold_again_preserve_all_state_changes(self):
+        for index, actor in enumerate(self.actors):
+            self.book(actor, index * 10)
+            self.handover(actor)
+        actor = self.actors[0]
+        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
+        self.handover(actor, "Awaiting storage allocation.", execution_state="held")
+        assessed = self.assess()
+        joint = assessed["collective_outcomes"][0]["joint"]
+        self.assertTrue(assessed["continuity_gates"]["ledger_matches_native_requests"])
+        self.assertEqual(len(joint["bookings"]), 4)
+        self.assertEqual(len(joint["scheduled_bookings"]), 3)
+        self.assertEqual(joint["synthetic_unrecoverable_records"], 0)
+        self.assertEqual(joint["remaining_version38_sources"], ["reporting-01"])
+        self.assertFalse(self.extension.all_complete())
+        self.handover(actor, "Window confirmed.", execution_state="scheduled")
+        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
+        self.assertTrue(self.extension.all_complete())
+        self.handover(actor, "Window moved.", execution_state="held")
+        self.assertFalse(self.assess()["integrated_end_to_end_passed"])
+
+    def test_reschedule_requires_a_new_execution_decision_and_stale_handover_cannot_release_it(self):
+        actor = self.actors[0]
+        old_reference = self.book(actor, 0)["booking"]["booking_reference"]
+        self.handover(actor)
+        self.book(actor, 10)
+        self.assertEqual(self.handover(actor, reference=old_reference)["status"], 409)
+        joint = self.assess()["collective_outcomes"][0]["joint"]
+        self.assertEqual(joint["scheduled_bookings"], [])
+        self.assertEqual(joint["bookings"][0]["execution_state"], "awaiting_handover")
+        self.handover(actor, execution_state="held")
+        self.extension.call(actor, 30, "cancel_replica_upgrade", {
+            "replica_id": self.extension.case(actor)["replica_id"]})
+        self.assertEqual(self.assess()["collective_outcomes"][0]["joint"]["bookings"], [])
 
     def test_calendar_mutations_change_other_workstation_activity(self):
         actor, observer = self.actors[:2]

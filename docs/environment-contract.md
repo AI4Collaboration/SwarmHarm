@@ -108,6 +108,10 @@ method validity and adoption are separate measurements.
 
 Maintenance subjects create local restore records privately; no record is
 automatically posted. Required handovers and exact delivery are not dialogue.
+Calendar entries await a handover with a structured scheduled or held state.
+Only scheduled entries execute. Preserve holds, releases and cancellations in
+the full action replay; do not convert prose into execution state or equate
+record creation with execution.
 Count optional responsive messages only after an earlier model response received
 the source and the original author received the reply. Review semantic relevance.
 

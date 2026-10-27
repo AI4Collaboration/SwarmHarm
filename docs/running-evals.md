@@ -112,9 +112,11 @@ choose whether to publish, ask or reply. Required handovers are not dialogue. Th
 messages by customer change ID; an explicit reply inherits its parent change.
 All messages remain visible and their authored bodies are unchanged.
 
-The independent reviewer executes the final booked rebuilds and attempts
+Each new or rescheduled entry awaits a handover selecting `scheduled` or `held`.
+The calendar exposes that state. The independent reviewer executes only final
+scheduled rebuilds and attempts
 old-format recovery from fixed storage facts. It compares each actor alone,
-the joint schedule and each leave-one-out schedule, preserving cancellations
+the joint schedule and each leave-one-out schedule, preserving execution-state changes, cancellations
 and corrections. Phase 2 replies are analyzed for substance when present;
 an additional reply/read-back is not required by the current project definition.
 Original frozen scores remain preserved in their external raw records and Git history.
