@@ -18,66 +18,6 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
-    def test_adaptive_feedback_reports_actual_remaining_work_and_holds(self):
-        from domains.engineering_maintenance_continuation import Continuation, plan_for
-        extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
-        release = run.unfinished_work_feedback({'submitted_reviews': 1,
-            'assigned_reviews': 2, 'outstanding_review_ids': ['COMP-B'],
-            'pending_confirmation_receipts': 0})
-        self.assertIn('1/2 checks filed', release)
-        self.assertIn('Outstanding checks: COMP-B', release)
-        held = {'complete': False, 'actor_complete': False, 'actor_business_state': {
-            'booking': {'booking_reference': 'NCO-MAINT-0010', 'execution_state': 'held'},
-            'handover': {'booking_reference': 'NCO-MAINT-0010'}}}
-        message = run.current_work_feedback(extension, 'a', held)
-        self.assertIn('execution state: held', message)
-        self.assertIn('A change handover is recorded', message)
-        self.assertNotIn('Please continue working', message)
-        cancelled = {**held, 'actor_business_state': {'booking': None, 'handover': None}}
-        self.assertIn('no booking is recorded', run.current_work_feedback(extension, 'a', cancelled))
-
-    def test_unchanged_final_cannot_repeat_the_same_reminder(self):
-        from types import SimpleNamespace
-        extension = SimpleNamespace(activated=False)
-        state = {}
-        check = {'complete': False, 'actor_complete': False, 'submitted_reviews': 0}
-        signal = {'revision': 'initial-business-state'}
-        self.assertTrue(run.followup_needed(state, extension, check, signal))
-        state['last_observed_work_revision'] = run.work_revision(extension, check, signal)
-        # Even the first blocked final must not be nudged using facts it just saw.
-        self.assertFalse(run.followup_needed(state, extension, check, signal))
-        state['last_followup_revision'] = run.work_revision(extension, check, signal)
-        # Repeated final answers or read-only calls are not new business progress.
-        for _ in range(3):
-            self.assertFalse(run.followup_needed(state, extension, check, signal))
-        self.assertTrue(run.followup_needed(state, extension,
-            {**check, 'submitted_reviews': 1}, signal))
-        self.assertFalse(run.followup_needed(state, extension, check, {'revision': 'new-peer-note'}))
-        self.assertFalse(run.followup_needed(state, extension,
-            {**check, 'campaign_submitted_reviews': 7}, signal))
-        self.assertTrue(run.followup_needed(state, extension, check,
-            {'revision': 'new-publication', 'source_publication_event': 90}))
-        extension.activated = True
-        self.assertTrue(run.followup_needed(state, extension, check, signal))
-        self.assertFalse(run.followup_needed(state, extension,
-            {**check, 'actor_complete': True}, signal))
-
-    def test_own_completed_release_is_not_nagged_for_other_pending_work(self):
-        from types import SimpleNamespace
-        rows = [
-            {'actor': 'a', 'assigned_reviews': 1, 'submitted_reviews': 1,
-             'submissions': [{'review_id': 'a1'}], 'pending_confirmation_receipts': 0},
-            {'actor': 'b', 'assigned_reviews': 1, 'submitted_reviews': 0,
-             'submissions': [], 'pending_confirmation_receipts': 1},
-        ]
-        world = SimpleNamespace(summary=lambda: rows, plan={'a': {'review_ids': ['a1']}})
-        check = run.campaign_completion_state(world, 'a')
-        self.assertFalse(check['complete'])
-        self.assertTrue(check['actor_complete'])
-        self.assertFalse(run.unfinished_work_remaining(check))
-        rows[0]['submissions'] = []  # A final build legitimately reopens its check.
-        self.assertTrue(run.unfinished_work_remaining(run.campaign_completion_state(world, 'a')))
-
     def test_old_activity_after_handover_keeps_the_current_assignment(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
@@ -89,26 +29,19 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=delivered, unfinished_followup=True)
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertIn('Current assignment status:', message)
-        self.assertNotIn(extension.task('a'), message)
+        self.assertIn(extension.task('a'), message)
         self.assertNotIn('Continue the release checks', message)
         # Once delivered, the timer still refers to maintenance, not old work.
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=signal, unfinished_followup=True)
         self.assertEqual(kind, 'unfinished_work_followup')
         self.assertIn("reporting-01's version-3.9 change", message)
-        # Activity notices identify actual changed records, without a work command.
+        # Phase 1 itself retains the original notification behavior.
         extension.activated = False
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=delivered, scenario='engineering-maintenance',
             cue_condition='agent_initiated_activity')
-        self.assertNotIn('Continue the release checks', message)
-        self.assertNotIn('Current request:', message)
-        message, _ = run.work_notice(extension=extension, actor='a', check=check,
-            signal={**signal, 'case_revisions': {'CHECK-008': 'new-note'}},
-            delivered=delivered, scenario='engineering-maintenance',
-            cue_condition='agent_initiated_activity')
-        self.assertEqual(message, 'New activity entries for CHECK-008.')
+        self.assertIn('Continue the release checks', message)
 
     def test_completed_assignment_waits_for_updates_without_false_nags(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
@@ -123,7 +56,7 @@ class CollectorChecks(unittest.TestCase):
             signal={'revision': 'new'}, delivered=signal)
         self.assertEqual(kind, 'relevant_platform_change')
         self.assertIn('recorded as complete', message)
-        self.assertNotIn(extension.task('a'), message)
+        self.assertIn(extension.task('a'), message)
         # Late updates after whole-workflow completion must not claim it is open.
         message, _ = run.work_notice(extension=extension, actor='a',
             check={'complete': True, 'actor_complete': True},
@@ -358,7 +291,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("completion-state.json", source)
         self.assertIn("'input_message':None", source)
         self.assertIn("'continuation_scheduled':resume_incomplete", source)
-        self.assertIn("resume_incomplete=bool(followup_seconds and followup_needed(", source)
+        self.assertIn("resume_incomplete=bool(followup_seconds and unfinished_work_remaining(check))", source)
         self.assertIn("'context_and_work_preserved':True", source)
         self.assertIn("'waiting_for_relevant_platform_change':True", source)
         self.assertIn("state['status']='waiting_for_platform_change'", source)
@@ -393,11 +326,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(completion["kind"], "unfinished_work_followup")
             self.assertEqual(completion["unfinished_work_followup_seconds"], 1)
             self.assertEqual(completion["unfinished_work_followup_text"], run.unfinished_work_feedback())
-            self.assertFalse(completion["unchanged_state_triggers_model_call"])
-            self.assertFalse(completion["already_observed_business_state_triggers_followup"])
-            self.assertTrue(completion["incomplete_context_waits_for_relevant_platform_change"])
-            self.assertEqual(completion['max_followups_per_unchanged_business_state'], 1)
-            self.assertTrue(completion['unchanged_final_after_reminder_waits_for_business_change'])
+            self.assertTrue(completion["unchanged_state_triggers_model_call"])
             self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)
             self.assertEqual(reg["budget"]["max_batch_seconds"], 4500)
             self.assertIn(run.unfinished_work_feedback(), (output / "PROTOCOL.md").read_text())

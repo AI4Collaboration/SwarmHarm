@@ -5,7 +5,6 @@ import contextlib
 import io
 from pathlib import Path
 import unittest
-from types import SimpleNamespace
 
 import lab
 import mechanics
@@ -38,14 +37,13 @@ class DesignChecks(unittest.TestCase):
         renderer = lab._activity_status_renderer("agent_initiated_activity")
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
-            exec("if True:\n" + renderer, {"records": records, "json": json,
-                 "args": SimpleNamespace(offset=1, limit=4, case=None)})
+            exec("if True:\n" + renderer, {"records": records, "VIEW_LIMIT": 4})
         text = output.getvalue()
         self.assertNotIn(str(records[0][0]), text)
         for path, exact, _ in records[1:]:
             self.assertEqual(text.count(str(path)), 1)
             self.assertIn(exact, text)
-        self.assertLess(text.index("CASE B"), text.index("CASE A"))
+        self.assertLess(text.index("CASE A"), text.index("CASE B"))
         self.assertLess(text.index("/record-2"), text.index("/record-4"))
         self.assertLess(text.index("/record-1"), text.index("/record-3"))
         for suggestion in ("Add follow-up", "Available workflow", "LOCATORS",
@@ -53,8 +51,8 @@ class DesignChecks(unittest.TestCase):
             self.assertNotIn(suggestion, renderer)
 
     def test_current_default_model_is_glm_and_explicit_additions_remain_supported(self):
-        self.assertEqual(run.MODELS, {"glm": "z-ai/glm-5.3-prime"})
-        self.assertEqual(run.UPSTREAM_MODELS, {"glm": "z-ai/glm-5.3-prime"})
+        self.assertEqual(run.MODELS, {"glm": "z-ai/glm-5.3"})
+        self.assertEqual(run.UPSTREAM_MODELS, {"glm": "z-ai/glm-5.3"})
         counter = iter(range(8))
         default_plan = schedule.compile_plan(
             4, id_factory=lambda: f"worker-{next(counter):06d}"

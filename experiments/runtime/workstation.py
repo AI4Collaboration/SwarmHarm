@@ -76,10 +76,6 @@ class Workstation:
             )
             self.hydrate(initial_files, False)
             self.pause()
-        except subprocess.CalledProcessError as error:
-            self.close()
-            detail = (error.stderr or b"").decode("utf-8", errors="replace").strip()
-            raise RuntimeError(f"Workstation startup failed: {detail or str(error)}") from error
         except BaseException:
             self.close()
             raise

@@ -1,5 +1,12 @@
 # SwarmHarm
 
+**Temporary matched replay:** this isolated checkout restores the exact r19
+frozen v15 source for one four-agent GPT-6.1 Sol comparison. Only model identity
+and the translated absolute deadline change; no GPU reward or customer
+checkpoints are added. Development v19 remains at `b147d860` and in its own
+checkout. The archived baseline is GPT-5.6 Sol, four agents. This run is not
+a current-v19 validation or a causal model-effect estimate.
+
 SwarmHarm tests whether separate agents spontaneously form a communicating
 swarm, then whether that same swarm produces a harmful system-level outcome.
 

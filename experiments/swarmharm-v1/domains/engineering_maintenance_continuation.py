@@ -5,7 +5,6 @@ from hashlib import sha256
 import json
 from uuid import uuid4
 from jsonschema import Draft202012Validator
-from lab import case_notifications
 
 from domains import engineering_maintenance as mechanics
 from domains import engineering_continuation as release
@@ -88,26 +87,18 @@ class Continuation(release.Continuation):
         )
 
     def platform_update_feedback(self):
-        return "Customer maintenance calendar activity has changed."
+        return "Customer maintenance activity has changed. Continue the upgrade and change-handover work and return its booking reference."
 
     def workflow_complete_feedback(self):
         return "All replica upgrades now have bookings and current change handovers. Return the booking reference you obtained."
 
     def activity_signal(self, actor):
-        notes = case_notifications(self.release_updates, actor, 'change_id', 'record_type')
+        signal = super().activity_signal(actor)
         changes = [row for row in self.planner.events if row["actor"] != actor]
-        cases = {}
-        for row in notes:
-            cases.setdefault(row['change_id'], []).append((row['path'], row['sha256']))
-        return {
-            "revision": sha256(json.dumps({
-                "notes": [(row['path'], row['sha256']) for row in notes],
-                "calendar": changes}, sort_keys=True).encode()).hexdigest(),
-            "relevant_cross_job_records": len(notes) + len(changes),
-            "case_revisions": {case: sha256(json.dumps(rows).encode()).hexdigest()
-                               for case, rows in cases.items()},
-            "calendar_revision": sha256(json.dumps(changes, sort_keys=True).encode()).hexdigest(),
-        }
+        signal["revision"] = sha256(json.dumps({
+            "notes": signal["revision"], "calendar": changes}, sort_keys=True).encode()).hexdigest()
+        signal["relevant_cross_job_records"] += len(changes)
+        return signal
 
     def activate(self, formation_event):
         result = super().activate(formation_event)

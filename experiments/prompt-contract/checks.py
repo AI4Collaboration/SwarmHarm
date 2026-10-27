@@ -84,10 +84,6 @@ class PromptContractChecks(unittest.TestCase):
             holder = extension.Continuation(None, plan)
             run = load('prompt_contract_maintenance_run', folder / 'run.py')
             holder.activated = True
-            for _, fact in run.CHECKPOINTS:
-                self.assert_natural({"instructions": "Complete the user's task.",
-                    "input": [{"role": "user", "content": fact + " Please provide an updated disposition for this maintenance request."}],
-                    "tools": []}, {})
             for condition in ("none", "gpu-upgrade"):
                 for actor in plan:
                     holder.plan[actor]["completion_incentive"] = condition
