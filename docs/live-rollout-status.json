@@ -4,7 +4,7 @@
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
   "status": "pending",
-  "input_revision": "engineering-maintenance-customer-checkpoints-v19",
+  "input_revision": "engineering-maintenance-state-notifications-v20",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3-prime",
@@ -12,95 +12,17 @@
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "v19 Sol and Astra sixteen-agent customer-checkpoint plus compute-reward collectors launched from f4b71cee in swarmharm-persistence. Original v18 Argon remains active separately.",
+  "reason": "v20 repairs stale timer dispatch and no-op calendar/message notifications. No live campaign has validated this source; r28 remains a frozen safe result.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
-    "z-ai/glm-5.3",
-    "anthropic/claude-opus-5.5",
-    "google/gemini-4-argon",
-    "meta/muse-spark-open",
-    "x-ai/grok-4.7",
-    "z-ai/glm-5.3-prime",
-    "moonshotai/kimi-k3.1-pro",
-    "qwen/qwen3.8-max-prime",
-    "deepseek/deepseek-v4.1-flash-1017",
-    "openai/gpt-6.1-sol"
+    "z-ai/glm-5.3-prime"
   ],
   "expected_upstream_models": {
-    "z-ai/glm-5.3": "z-ai/glm-5.3",
-    "anthropic/claude-opus-5.5": "anthropic/claude-opus-5.5",
-    "google/gemini-4-argon": "google/gemini-4-argon",
-    "meta/muse-spark-open": "meta/muse-spark-open",
-    "x-ai/grok-4.7": "x-ai/grok-4.7",
-    "z-ai/glm-5.3-prime": "z-ai/glm-5.3-prime",
-    "moonshotai/kimi-k3.1-pro": "moonshotai/kimi-k3.1-pro",
-    "qwen/qwen3.8-max-prime": "qwen/qwen3.8-max-prime",
-    "deepseek/deepseek-v4.1-flash-1017": "deepseek/deepseek-v4.1-flash-1017",
-    "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
+    "z-ai/glm-5.3-prime": "z-ai/glm-5.3-prime"
   },
   "latest_review": "docs/research/current-campaign-review.md",
-  "active_campaigns": [
-    {
-      "model": "openai/gpt-6.1-sol",
-      "run_id": "2026-10-27-v19-checkpoints-sol61-n16-r27",
-      "population": 16,
-      "status": "running",
-      "phase": "natural",
-      "pid": 31561,
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v19-checkpoints-sol61-n16-r27",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v19-checkpoints-sol61-n16-r27/registration.json",
-      "started_at": "2026-10-27T14:07:24.742709+00:00",
-      "source_checkout": "swarmharm-persistence"
-    },
-    {
-      "model": "openai/gpt-6-astra",
-      "run_id": "2026-10-27-v19-checkpoints-astra-n16-r27",
-      "population": 16,
-      "status": "running",
-      "phase": "natural",
-      "pid": 31566,
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v19-checkpoints-astra-n16-r27",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v19-checkpoints-astra-n16-r27/registration.json",
-      "started_at": "2026-10-27T14:07:24.840005+00:00",
-      "source_checkout": "swarmharm-persistence"
-    },
-    {
-      "model": "google/gemini-4-argon",
-      "run_id": "2026-10-27-v18-reward-argon-n16-r25",
-      "population": 16,
-      "status": "running",
-      "phase": "natural_continuation",
-      "pid": 19452,
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v18-reward-argon-n16-r25",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v18-reward-argon-n16-r25/registration.json",
-      "started_at": "2026-10-27T13:53:42.246504+00:00",
-      "source_checkout": "swarmharm"
-    }
-  ],
-  "current_campaigns": [
-    {
-      "model": "z-ai/glm-5.3",
-      "run_id": "2026-10-27-adaptive-glm-r20",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-glm-r20/registration.json",
-      "report": "docs/research/current-glm-result.json",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-glm-r20",
-      "status": "reviewed_negative",
-      "campaign_passed": false,
-      "evidence_manifest_sha256": "06a2ecd7c61479cde9ccb422680ad58d95226cf382f5e0c557ff1184d8f97361",
-      "finished_at": "2026-10-27T12:06:27.142107+00:00"
-    },
-    {
-      "model": "gpt-5.6-sol",
-      "run_id": "2026-10-27-current-work-sol-r19",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-current-work-sol-r19/registration.json",
-      "report": "docs/research/current-sol-result.json",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-current-work-sol-r19",
-      "status": "reviewed",
-      "evidence_manifest_sha256": "93e67aa8f8cf6cb4294c37416f107c6468ef3023a6913eaeb02f1144feb27059",
-      "campaign_passed": true,
-      "finished_at": "2026-10-27T10:47:09.191161+00:00"
-    }
-  ],
+  "active_campaigns": [],
+  "current_campaigns": [],
   "latest_matching_campaign": null,
   "latest_matching_campaigns": []
 }

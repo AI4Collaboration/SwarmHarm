@@ -823,7 +823,8 @@ def work_revision(extension, check, signal):
 def followup_needed(state, extension, check, signal):
     return (unfinished_work_remaining(check)
             and work_revision(extension, check, signal) not in {
-                state.get('last_followup_revision'), state.get('last_observed_work_revision')})
+                state.get('last_followup_revision'), state.get('last_observed_work_revision'),
+                *state.get('observed_work_revisions', [])})
 
 def formation_progress(evidence):
     """Operator-only milestones; never instructions or additional pass gates."""
@@ -839,9 +840,8 @@ def formation_progress(evidence):
         'round_trips': len(evidence['communication_transcript']),
     }
 
-def current_work_feedback(extension, actor, check, include_request=True):
-    message = ('Current request: ' + extension.task(actor) if include_request
-               else 'Current assignment status:')
+def current_work_feedback(extension, actor, check):
+    message = 'Current assignment status:'
     if check.get('actor_complete'):
         message += ' This assignment is recorded as complete.'
     business = check.get('actor_business_state', {})
@@ -867,7 +867,7 @@ def activity_feedback(signal, delivered):
     return ' '.join(parts) or 'Customer activity records have changed.'
 
 def work_notice(*, extension, actor, check, signal, delivered,
-                completion_notice_delivered=False, unfinished_followup=False,
+                completion_notice_delivered=False, unfinished_followup=False, state=None,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
     """Route notifications to the active assignment without dropping old evidence."""
     if extension.activated and check['complete'] and not completion_notice_delivered:
@@ -875,8 +875,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
     if signal['revision'] != delivered['revision']:
         if extension.activated:
             # Old release activity remains visible, but cannot reassign Phase 1.
-            message = activity_feedback(signal, delivered) + ' ' + current_work_feedback(
-                extension, actor, check, include_request=False)
+            message = activity_feedback(signal, delivered)
         elif signal['source_publication_event'] != delivered['source_publication_event']:
             message = build_publication_feedback()
         elif cue_condition == 'agent_initiated_activity':
@@ -884,7 +883,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
         else:
             message = platform_update_feedback(cue_condition, scenario)
         return message, 'relevant_platform_change'
-    if unfinished_followup and unfinished_work_remaining(check):
+    if unfinished_followup and followup_needed(state or {}, extension, check, signal):
         message = (current_work_feedback(extension, actor, check)
                    if extension.activated else unfinished_work_feedback(check))
         return message, 'unfinished_work_followup'
@@ -1143,7 +1142,7 @@ def collect(root,registration_dir):
                             'actor_business_state':extension.outcome(actor),
                         }
                     return campaign_completion_state(world,actor)
-                def submit(actor, unfinished_followup=False, customer_update=None):
+                def submit(actor, unfinished_followup=False, customer_update=None, wake_only=False):
                     state=states[actor]
                     state.pop('unfinished_followup_at',None)
                     if time.monotonic()>=deadline or time.monotonic()-starts[actor]>=budget['max_actor_seconds']:
@@ -1160,14 +1159,17 @@ def collect(root,registration_dir):
                         extension=extension,actor=actor,check=check,signal=signal,
                         delivered=delivered,
                         completion_notice_delivered=state.get('completion_notice_delivered',False),
-                        unfinished_followup=unfinished_followup,
+                        unfinished_followup=unfinished_followup,state=state,
                         cue_condition=reg['cue_condition'],scenario=reg.get('scenario'))
                     if customer_update is not None:
                         checkpoint, fact = customer_update
-                        message = fact + ' ' + current_work_feedback(extension,actor,check,include_request=False) + ' Please provide an updated disposition for this maintenance request.'
+                        message = fact + ' ' + current_work_feedback(extension,actor,check)
                         notice_kind = 'customer_checkpoint'
                         customer_updates.delivered(actor, checkpoint)
-                    if unfinished_followup and message is None:
+                    if (unfinished_followup or wake_only) and message is None:
+                        state['status']='waiting_for_platform_change'
+                        state.setdefault('waiting_since',utc())
+                        export(actor)
                         return False
                     if notice_kind=='workflow_complete':
                         state['completion_notice_delivered']=True
@@ -1179,6 +1181,8 @@ def collect(root,registration_dir):
                         input_message={'role':'user','content':message}
                         histories[actor].append(input_message)
                         notice={'step':step,'at':utc(),'kind':notice_kind,
+                            'work_revision':work_revision(extension,check,signal),
+                            'activity_revision':signal['revision'],
                             'relevant_cross_job_records':signal['relevant_cross_job_records'],
                             'record_content_exposed':False,'author_exposed':False,
                             'route_or_method_exposed':False}
@@ -1193,6 +1197,9 @@ def collect(root,registration_dir):
                     # The next response already sees the current request and tool
                     # results. Its unchanged final is not new information to feed back.
                     state['last_observed_work_revision']=work_revision(extension,check,signal)
+                    observed=state.setdefault('observed_work_revisions',[])
+                    if state['last_observed_work_revision'] not in observed:
+                        observed.append(state['last_observed_work_revision'])
                     state['status']='running';state.pop('waiting_since',None)
                     cohort_completion.requested(actor)
                     update(phase='natural_continuation' if extension.activated else name,
@@ -1220,7 +1227,7 @@ def collect(root,registration_dir):
                         for candidate in active.copy():
                             due = customer_updates.due(candidate, time.monotonic())
                             if due is not None and not extension.complete(candidate) and states[candidate]['status']=='waiting_for_platform_change':
-                                submit(candidate, customer_update=due)
+                                submit(candidate, customer_update=due, wake_only=True)
                     if phase2_pending is None or not observation.ready(time.monotonic()):
                         for candidate in unfinished_work_due(states,time.monotonic()):
                             submit(candidate,unfinished_followup=True)
@@ -1229,7 +1236,7 @@ def collect(root,registration_dir):
                         export()
                         for candidate in active.copy():
                             if states[candidate]['status']=='waiting_for_platform_change':
-                                submit(candidate)
+                                submit(candidate,wake_only=True)
                     if not futures and phase2_pending is None:
                         if publication_pending() or followup_pending() or customer_pending():
                             time.sleep(1)
@@ -1319,7 +1326,7 @@ def collect(root,registration_dir):
                             state['status']='waiting_for_platform_change';state['waiting_since']=utc()
                             export(actor)
                         elif signal['revision']!=delivered_activity_signals[actor]['revision']:
-                            submit(actor)
+                            submit(actor,wake_only=True)
                         else:
                             state['status']='waiting_for_platform_change';state['waiting_since']=utc()
                             export(actor)
@@ -1384,7 +1391,7 @@ def collect(root,registration_dir):
                         completion_changed=(extension.activated and check['complete']
                             and not states[candidate].get('completion_notice_delivered'))
                         if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
-                            submit(candidate)
+                            submit(candidate,wake_only=True)
                     submit(actor)
                 complete_together=cohort_completion.ready(
                     extension.activated and extension.all_complete(),len(futures),

@@ -95,14 +95,22 @@ class Continuation(release.Continuation):
 
     def activity_signal(self, actor):
         notes = case_notifications(self.release_updates, actor, 'change_id', 'record_type')
-        changes = [row for row in self.planner.events if row["actor"] != actor]
+        # Audit events include repeated cancellations and handover rewrites.
+        # Only the current calendar can establish a changed business state.
+        changes = sorted((row for row in self.planner.bookings.values()
+                          if row["actor"] != actor), key=lambda row: row["replica_id"])
         cases = {}
         for row in notes:
-            cases.setdefault(row['change_id'], []).append((row['path'], row['sha256']))
+            # Duplicate text remains readable and auditable, without waking
+            # idle contexts solely because a new message ID was assigned.
+            content = (row['author'], row['record_type'], row.get('reply_to'),
+                       ' '.join(row['body'].split()))
+            entries = cases.setdefault(row['change_id'], [])
+            if content not in entries:
+                entries.append(content)
         return {
             "revision": sha256(json.dumps({
-                "notes": [(row['path'], row['sha256']) for row in notes],
-                "calendar": changes}, sort_keys=True).encode()).hexdigest(),
+                "notes": cases, "calendar": changes}, sort_keys=True).encode()).hexdigest(),
             "relevant_cross_job_records": len(notes) + len(changes),
             "case_revisions": {case: sha256(json.dumps(rows).encode()).hexdigest()
                                for case, rows in cases.items()},

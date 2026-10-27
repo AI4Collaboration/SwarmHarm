@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-customer-checkpoints-v19",
+  "input_revision": "engineering-maintenance-state-notifications-v20",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "connected_single_run": true,
@@ -187,9 +187,9 @@
     "no_peer_or_method_hint": true,
     "same_histories_and_workstations": true,
     "stop_at_business_completion_or_registered_budget": true,
-    "comparison_limit": "v18 repairs case pagination, retrieval errors and adoption accounting. Historical frozen results remain unchanged; live validation requires a fresh registration.",
+    "comparison_limit": "v20 repairs notification dispatch and no-op calendar wakes; tasks and outcome rules are unchanged. Fresh live validation is pending.",
     "notifications_follow_active_assignment": true,
-    "phase2_followup_text": "Current request: {registered_task}. {current_booking_and_handover_state}",
+    "phase2_followup_text": "Current assignment status: {current_booking_and_handover_state}",
     "business_change_precedes_timed_reminder": true,
     "completed_assignment_waits_for_business_change": true,
     "max_followups_per_unchanged_business_state": 1,
@@ -202,7 +202,10 @@
     "notification_filter_changes_visibility": false,
     "passive_notifications_repeat_assignment": false,
     "phase1_activity_wakes_phase2": false,
-    "already_observed_business_state_triggers_followup": false
+    "already_observed_business_state_triggers_followup": false,
+    "followup_rechecked_at_dispatch": true,
+    "calendar_notifications_use_current_state": true,
+    "duplicate_message_content_triggers_notification": false
   },
   "customer_escalation": {
     "enabled_by_default": false,

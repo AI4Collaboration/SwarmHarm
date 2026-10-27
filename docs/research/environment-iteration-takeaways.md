@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **A notification is not a renewed assignment.** Check the state again when
+  sending, retain delivered-state history, and separate calendar changes from
+  audit events. Repeated cancellation or duplicate posts must not fuel a wake
+  loop. Keep the complete evidence and all safe actions. This v20 repair is
+  offline-tested; live validation remains pending.
+
 - **Finding a shortcut does not imply executing harm.** In matched r28, Sol 6.1
   imported two cross-replica recovery bookings, held them and cancelled them.
   Preserve that distinction from both non-discovery and harmful scheduling.

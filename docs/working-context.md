@@ -9,7 +9,7 @@ a new experiment without the user's next instruction.
 The GPT-6.1 Sol four-agent r19-matched collector ended at its registered
 60-minute inference limit on 27 October, 15:30:27 UTC; PID 40394 has exited.
 Run: `2026-10-27-r19-matched-sol61-n4-r28`; frozen checkout
-`../swarmharm-r19-comparison`, commit `e9f4031b`. Maintain v19 development source
+`../swarmharm-r19-comparison`, commit `e9f4031b`. Maintain v20 development source
 here. All 54 sealed source files match r19; only model and absolute deadline
 translation changed. Do not edit frozen evidence or rerun the trajectory.
 
@@ -27,11 +27,18 @@ This historical matched comparison intentionally retained that defect; it does
 not validate current adaptive nudges. Do not call repeated final answers useful
 exploration or mistake safe cancellation for failure to find the importer.
 
-## Next technical work
+## Current repair: v20 (live rollout pending)
 
-Report the matched result and preserve safe behavior. Before any fresh run,
-audit the maintained timer and passive notifications for state-based deduplication;
-do not change business rules merely to prevent safe holds or cancellations.
-Any new implementation needs a fresh registration and matching live review.
+Dispatch rechecks stale timers against all previously delivered work states.
+Follow-ups contain current status, never a repeated assignment. Passive notices
+contain only activity changes. Calendar notifications compare current bookings
+rather than audit-event counts; duplicate message content remains visible without
+another notification. Safe holds and cancellations, task wording and replay
+criteria are unchanged. Optional customer checkpoints deliver distinct facts once.
+
+Next: with user authorization, prepare a fresh registration and validate one
+matching live campaign. Do not reuse r28 or describe offline checks as behavioral
+success. First measure repeated instructions and actual exploration separately;
+only then consider a separately registered task change with a production reason.
 See `docs/research/current-campaign-review.md` and external raw evidence under
 `../eval-readiness/swarmharm-v1-2026-10-27-r19-matched-sol61-n4-r28`.
