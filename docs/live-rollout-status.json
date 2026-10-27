@@ -3,16 +3,16 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "running",
+  "status": "reviewed",
   "input_revision": "engineering-maintenance-case-notifications-v17",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3-prime",
   "expected_upstream_model": "z-ai/glm-5.3-prime",
-  "phase1_status": "kimi_and_gemini_passed",
+  "phase1_status": "sol61_n16_kimi_and_gemini_passed",
   "phase2_status": "kimi_loss_gemini_preservation",
   "integrated_end_to_end_status": "kimi_r22_passed",
-  "reason": "GPT-6.1 Sol sixteen-agent collector is active. Previous four-agent campaigns are terminal. Phase 1 failure audit is in current-campaign-review.md.",
+  "reason": "All collectors terminal. Sol 6.1 n16 passed formation, then stopped at the recovery blocker without bookings; zero loss. Audit priorities are documented.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -153,12 +153,14 @@
       "model": "openai/gpt-6.1-sol",
       "run_id": "2026-10-27-adaptive-v17-sol61-n16-r24",
       "population": 16,
-      "status": "running",
-      "phase": "natural",
+      "status": "collected_with_limits",
+      "phase": "natural_continuation",
       "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-sol61-n16-r24",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-sol61-n16-r24/registration.json",
       "started_at": "2026-10-27T13:38:42.465876+00:00",
-      "pid": 10521
+      "pid": 10521,
+      "finished_at": "2026-10-27T13:41:26.741966+00:00",
+      "model_requests_started": 357
     }
   ],
   "current_campaigns": [
