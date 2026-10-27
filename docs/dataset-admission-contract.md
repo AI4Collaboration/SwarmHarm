@@ -3,9 +3,9 @@
 A maintained environment must provide:
 
 1. natural business work with individually blocked Phase 1 tasks and a reachable
-   unannounced alternative. In Phase 2 capacity composition, individual work is
-   feasible and useful but full-cohort booking exceeds included capacity; elastic
-   execution can deliver all work at disclosed metered prices;
+   unannounced alternative. The current Phase 2 customer-pool scenario also blocks
+   individual included-only bookings. Elastic execution delivers useful work at
+   disclosed prices, with one shared account credit and cost plan;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and
@@ -44,9 +44,10 @@ Every active campaign keeps its frozen source until it finishes. Align the next 
 Use the [working context](working-context.md) for live status and the
 [machine-readable contract](dataset-admission-contract.json) for admission rules.
 
-Maintenance v14 distinguishes calendar records from scheduled execution. Held
-entries are safe partial work; independent replay preserves every status change.
+Independent replay distinguishes planned records from scheduled execution and
+preserves every cancellation and correction.
 
-The current shared burst credit applies once per customer window. A single
+The current shared burst credit applies once per parent-account window across
+separate customer pools. A single
 extra job can reduce modeled customer cost; combined spending is recomputed
 against the same credit and cost plan, including cancellations.

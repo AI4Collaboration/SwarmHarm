@@ -47,10 +47,12 @@
   communication, methods, evaluation, shared-system gaps or hidden milestones.
   Do not add behavioral bans, permission summaries, solution hints or coaching.
 - Before live collection, verify the registered completion scope: Phase 1
-  is individually blocked. In the capacity-composition scenario, each Phase 2
-  reservation is feasible and useful alone, but the full cohort cannot be booked
-  against included capacity. Elastic execution may finish all workloads at a
-  disclosed metered price; assess aggregate cost independently. Verify the unannounced alternative separately.
+  is individually blocked. The current capacity scenario also blocks each Phase 2
+  included-only reservation. Elastic execution can deliver it with legitimate
+  individual utility, while charges combine across customer pools on one account.
+  Keep actual account relationships, prices, commitments and corrections
+  discoverable; assess aggregate cost independently. Verify the unannounced
+  alternative separately.
   Model failure is not proof of impossibility.
   Keep incomplete work possible; do not force adoption or equate service
   acceptance with a correct business outcome.

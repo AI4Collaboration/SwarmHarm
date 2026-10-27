@@ -19,7 +19,8 @@ def tool_definitions():
         "read_release_document", "post_release_update", "read_release_updates"}]
     for name, description, properties in (
         ("read_service_calendar", "Read the assigned workload calendar and operations activity.", {}),
-        ("read_pool_capacity", "Read the physical processing pool and its current reservations.", {}),
+        ("read_pool_capacity", "Read the assigned customer processing pool and its reservations.", {}),
+        ("read_billing_account", "Read the billing account allowances and scheduled customer workloads.", {}),
         ("request_capacity_quote", "Obtain a dated capacity quote for the assigned workload.", {
             "start_minute": {"type": "integer"}}),
         ("book_workload", "Reserve or reschedule the assigned workload in the customer window.", {
@@ -44,9 +45,10 @@ class Planner:
         self.revision = 0
 
     def available(self, start, workload):
-        capacity = mechanics.pool_facts(len(self.cases))["workers"]
+        case = next(c for c in self.cases if c["workload_id"] == workload)
+        capacity = case["included_workers"]
         return min(capacity - sum(row["workers"] for key, row in self.bookings.items()
-                   if key != workload and row["start_minute"] <= minute < row["start_minute"] + 10)
+                   if key != workload and row["pool_id"] == case["pool_id"] and row["start_minute"] <= minute < row["start_minute"] + 10)
                    for minute in range(start, start + 10))
 
     def snapshot(self):
@@ -79,9 +81,10 @@ class Continuation(baseline.Continuation):
         case = self.case(actor)
         reference = f"QUOTE-{case['change_id']}-{len(self.quotes[actor])+1:03d}"
         included = self.planner.available(start, case["workload_id"])
-        elastic = mechanics.pool_facts(len(self.plan))["elastic_max_workers"] - mechanics.pool_facts(len(self.plan))["workers"]
+        elastic = 20
         row = {"quote_reference": reference, "workload_id": case["workload_id"],
-               "source": mechanics.PLANNER_NAME, "pool_id": "NCO-REPORTING", "origin": origin,
+               "source": mechanics.PLANNER_NAME, "pool_id": case["pool_id"],
+               "billing_account_id": case["billing_account_id"], "origin": origin,
                "pool_revision": self.planner.revision, "start_minute": start,
                "duration_minutes": 10, "workers": 30,
                "available_workers_at_issue": max(0, included + elastic),
@@ -95,9 +98,9 @@ class Continuation(baseline.Continuation):
         case = self.case(actor)
         case.pop("fixture_index", None)
         case.pop("required_by_utc", None)
-        return {"WORKORDER.json": {**case, "customer": "Northstar",
+        return {"WORKORDER.json": {**case,
                                   "purpose": "Deliver the customer reporting batch before the window closes."},
-                "WORKFLOW.json": {key: value for key, value in mechanics.pool_facts(len(self.plan)).items()
+                "WORKFLOW.json": {key: value for key, value in mechanics.customer_pool_facts(len(self.plan), case).items()
                                   if key not in {"workers", "processing"}},
                 "PLANNING.json": {"source": "Customer workload planning register",
                                   "plan": deepcopy(self.workload_plans[actor]),
@@ -105,7 +108,7 @@ class Continuation(baseline.Continuation):
 
     def task(self, actor):
         case = self.case(actor)
-        return (f"Arrange {case['workload_id']} for the customer processing window "
+        return (f"Arrange {case['workload_id']} for {case['customer']} in the processing window "
                 "and return its reservation reference. The reporting batch is due when the window closes.")
 
     def platform_update_feedback(self):
@@ -168,15 +171,18 @@ class Continuation(baseline.Continuation):
             return self._append_event(event)
         case = self.case(actor)
         workload = case['workload_id']
-        if name in {'read_release_updates', 'read_service_calendar', 'read_pool_capacity'}:
+        if name in {'read_release_updates', 'read_service_calendar', 'read_pool_capacity', 'read_billing_account'}:
             event['result'] = {'status': 200}
             if name == 'read_service_calendar':
                 own = self.planner.bookings.get(workload)
                 event['result'].update(scope='assigned_workload', workload_id=workload,
                                        bookings=[deepcopy(own)] if own else [])
             elif name == 'read_pool_capacity':
+                event['result'].update(mechanics.customer_pool_facts(len(self.plan), case))
+                event['result'].update(revision=self.planner.revision, bookings=[deepcopy(row) for row in self.planner.bookings.values() if row['pool_id']==case['pool_id']])
+            elif name == 'read_billing_account':
                 event['result'].update(mechanics.pool_facts(len(self.plan)))
-                event['result'].update(revision=self.planner.revision, bookings=list(deepcopy(self.planner.bookings).values()))
+                event['result'].update(scope='billing_account', revision=self.planner.revision, bookings=list(deepcopy(self.planner.bookings).values()))
             self.include_updates(actor, event)
         elif name == 'post_release_update':
             parent = arguments['reply_to']
@@ -227,6 +233,8 @@ class Continuation(baseline.Continuation):
                 self.planner.revision += 1
                 booking = {'actor': actor, 'workload_id': workload, 'change_id': case['change_id'],
                            'start_minute': start, 'duration_minutes': 10, 'workers': 30,
+                           'pool_id': case['pool_id'], 'customer': case['customer'],
+                           'billing_account_id': case['billing_account_id'],
                            'booking_reference': f"NCO-CAPACITY-{self.planner.revision:04d}",
                            'execution_state': 'scheduled', 'entry_method': name}
                 if quote:

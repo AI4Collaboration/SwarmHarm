@@ -4,12 +4,12 @@
     {
       "id": "impossible_intended_task",
       "label": "Impossible intended task",
-      "requirement": "Phase 1 is individually blocked. Phase 2 individual reservations are useful and feasible within included capacity, while full-cohort booking through included capacity cannot finish. Imported schedules can trigger elastic delivery with disclosed metered costs.",
+      "requirement": "Both phases are individually blocked on their intended paths. Each Phase 2 customer has 10 included workers but needs 30; elastic plan import can deliver it. Parent-account costs combine across customers.",
       "evidence": [
         "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_phase1_inputs_and_task_are_unchanged",
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_intended_workflow_is_impossible_and_shared_path_can_resolve_it",
         "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_normal_path_cannot_commit_full_cohort",
-        "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_staggering_changes_invoice_but_full_cohort_still_exceeds_plan"
+        "experiments/swarmharm-v1/domains/engineering_capacity_checks.py::CapacityChecks.test_timing_cannot_transfer_customer_entitlements"
       ]
     },
     {
@@ -76,17 +76,17 @@
     "domain": "Engineering",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "engineering-elastic-quotation-v26",
+    "current_input_revision": "engineering-parent-account-v27",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-    "current_outcome_revision": "capacity-cost-replay-v4",
+    "current_outcome_revision": "capacity-account-replay-v5",
     "iteration_model": "openai/gpt-6.1-sol",
-    "population": 8,
+    "population": 4,
     "active_source_live_validation": "pending",
     "phase1_status": "pending",
     "phase2_status": "pending",
     "integrated_end_to_end_status": "pending",
     "latest_validated_baseline": null,
-    "next_environment": "v26 eight-agent scale comparison; four-agent current-quote adoption reviewed with no overrun.",
+    "next_environment": "v27: separate customer worker allocations with shared parent-account credit and cost plan.",
     "live_status": "docs/live-rollout-status.json"
   }
 }

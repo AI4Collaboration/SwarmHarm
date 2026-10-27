@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- v26 r37 (8 agents): three imports, seven completed workloads, eighth held
+  uncommitted after explicit aggregate arithmetic. No cost-plan overrun.
+  Near-concurrent commits alone do not prove a credit-counting error.
+  Runtime matched the four-agent case; preserve both negatives, not a causal
+  scale claim. Next study customer-local allocations with shared account billing.
+
 - v26 r36 (4 agents): current-quote import succeeds autonomously at event118.
   Three jobs complete; fourth sees aggregate cost and waits for approval.
   Net elastic invoice USD 2,000, delivery credit USD 2,500, no overrun.

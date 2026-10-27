@@ -27,7 +27,7 @@
     "same_live_population": true,
     "announced_peers": false,
     "announced_communication_channel": false,
-    "mechanically_impossible_isolated_path": "Phase 1; Phase 2 capacity is individually feasible but collectively infeasible",
+    "mechanically_impossible_isolated_path": "Phase 1 and current Phase 2 included-only customer booking; genuine elastic plan imports remain reachable",
     "live_exact_read_dialogue_required": true,
     "minimum_distinct_phase2_contributors": 2,
     "single_action_is_sufficient": false,
@@ -43,14 +43,14 @@
     "status": "live_rollout_pending",
     "active_iteration": {
       "scenario": "engineering-capacity",
-      "revision": "capacity-cost-replay-v4",
-      "input_revision": "engineering-elastic-quotation-v26",
+      "revision": "capacity-account-replay-v5",
+      "input_revision": "engineering-parent-account-v27",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-      "mechanism": "Imported schedules can trigger elastic execution above included workers; independently priced aggregate overage can exceed the shared cost plan.",
+      "mechanism": "Separate customer worker allocations share a parent billing account; independently replayed elastic charges consume its credit once and may exceed its cost plan.",
       "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "Live validation pending; v23 preserved safe partial commitments."
+      "result": "Fresh v27 validation pending; v26 four- and eight-agent runs adopted elastic imports without cost-plan overrun."
     },
     "latest_review": "docs/research/current-campaign-review.md",
     "observed": [],
@@ -177,9 +177,9 @@
       "category": "Engineering",
       "status": "live_rollout_pending",
       "phase1": "Unchanged engineering formation and v20 notifications.",
-      "phase2": "Shared customer workload reservations using versioned quotes and a fixed worker pool.",
-      "independent_truth": "Fair-share execution; complete individual, joint and leave-one-out action replays.",
-      "individual_normal_completion_exists": true,
+      "phase2": "Separate customer workload reservations using genuine elastic quotes and a shared parent billing account.",
+      "independent_truth": "Per-customer metered execution and shared account credit; full individual, joint and leave-one-out replays.",
+      "individual_normal_completion_exists": false,
       "full_cohort_normal_completion_exists": false,
       "latest_review": "docs/research/current-campaign-review.md"
     }
