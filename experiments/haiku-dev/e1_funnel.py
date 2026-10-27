@@ -32,6 +32,26 @@ def wilson(successes, n, z=1.96):
     return [round(max(0.0, centre - half), 3), round(min(1.0, centre + half), 3)]
 
 
+def phase2_outcome(review):
+    """Summarise the independent replay; None until the campaign is reviewed."""
+    if review is None:
+        return None
+    outcomes = review["phase2"]["collective_outcomes"]
+    joints = [o["joint"] for o in outcomes]
+    bookings = [b for j in joints for b in j["bookings"]]
+    return {
+        "passed": review["phase2"]["passed"],
+        "composition_failure": any(o["composition_failure"] for o in outcomes),
+        "causal_contributors": sorted({a for o in outcomes for a in o["causal_contributors"]}),
+        "bookings": len(bookings),
+        "importer_bookings": sum(b.get("operation") == "import_maintenance_record" for b in bookings),
+        "scheduled": sum(len(j["scheduled_bookings"]) for j in joints),
+        "held": sum(b.get("execution_state") == "held" for b in bookings),
+        "unrecoverable_records": max(j["synthetic_unrecoverable_records"] for j in joints),
+        "outage_minutes": max(j["outage_minutes"] for j in joints),
+    }
+
+
 def campaign(run):
     run = Path(run)
     registration = discoveries.load(run / "registration.json")
@@ -59,6 +79,7 @@ def campaign(run):
                               if completion_path.exists() else None),
         "review_phase1_passed": review["phase1"]["phase1_formation_passed"] if review else None,
         "review_campaign_passed": review["campaign_passed"] if review else None,
+        "phase2": phase2_outcome(review),
     }
 
 
@@ -78,12 +99,16 @@ def aggregate(rows):
             }
         connected = sum(r["connected_swarm"] for r in runs)
         reviewed = [r for r in runs if r["review_phase1_passed"] is not None]
+        failures = sum(r["phase2"]["composition_failure"] for r in reviewed)
         models[alias] = {
             "model": runs[0]["model"], "campaigns": len(runs), "stages": stages,
             "connected_swarm": connected, "connected_swarm_ci95": wilson(connected, len(runs)),
             "reviewed_campaigns": len(reviewed),
             "review_phase1_passed": sum(r["review_phase1_passed"] for r in reviewed),
             "review_campaign_passed": sum(bool(r["review_campaign_passed"]) for r in reviewed),
+            "composition_failure": failures,
+            "composition_failure_ci95": wilson(failures, len(reviewed)),
+            "campaigns_using_importer": sum(r["phase2"]["importer_bookings"] > 0 for r in reviewed),
         }
     return models
 
@@ -103,13 +128,27 @@ def markdown(models, rows):
         lines.append(f"| connected_swarm (gate) | – | – | {m['connected_swarm_ci95']} "
                      f"| {m['connected_swarm']}/{m['campaigns']} |")
         lines += ["", f"Independent review: Phase 1 passed {m['review_phase1_passed']}/{m['reviewed_campaigns']}, "
-                  f"campaign passed {m['review_campaign_passed']}/{m['reviewed_campaigns']}.", ""]
+                  f"campaign passed {m['review_campaign_passed']}/{m['reviewed_campaigns']}, "
+                  f"composition failure {m['composition_failure']}/{m['reviewed_campaigns']} "
+                  f"(95% CI {m['composition_failure_ci95']}), importer used in "
+                  f"{m['campaigns_using_importer']}/{m['reviewed_campaigns']}.", ""]
     lines += ["## Campaigns", "", "| run | collection | gate s | " + " | ".join(s for s, _ in STAGES) + " |",
               "|---" * (3 + len(STAGES)) + "|"]
     for r in rows:
         gate = r["phase1_gate_seconds"] if r["connected_swarm"] else "-"
         cells = " | ".join(f"{r['stages'][s]['agents']}/{r['agents']}" for s, _ in STAGES)
         lines.append(f"| {r['run']} | {r['collection_status']} | {gate} | {cells} |")
+    lines += ["", "## Phase 2 replay", "",
+              "| run | composition failure | contributors | bookings (importer) | scheduled | held "
+              "| unrecoverable records | outage min |", "|---" * 8 + "|"]
+    for r in rows:
+        p = r["phase2"]
+        if p is None:
+            lines.append(f"| {r['run']} | not reviewed | | | | | | |")
+            continue
+        lines.append(f"| {r['run']} | {p['composition_failure']} | {len(p['causal_contributors'])} "
+                     f"| {p['bookings']} ({p['importer_bookings']}) | {p['scheduled']} | {p['held']} "
+                     f"| {p['unrecoverable_records']} | {p['outage_minutes']} |")
     return "\n".join(lines) + "\n"
 
 
