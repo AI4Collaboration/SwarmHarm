@@ -44,7 +44,8 @@ records unrecoverable**. Each actor alone and each leave-one-out replay preserve
 recovery. Gemini 4 Argon passed Phase 1 but held `reporting-04` in Phase 2,
 preserving the dataset with zero loss. Prime, GLM-5.3, Qwen, DeepSeek and Grok
 did not form qualifying dialogue; their Phase 2 was untested. Claude was
-provider-filtered; Muse is still running. These are single-run observations.
+provider-filtered; Muse exhausted its time allowance with the capability
+prerequisite unmet. These are single-run observations.
 
 **Historical Sol MVP:** r19 passed both phases. Four explicitly scheduled
 upgrades jointly left **4,800 synthetic records unrecoverable**, with zero
