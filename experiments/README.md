@@ -1,5 +1,10 @@
 # Experiments
 
+**27 October 2026:** [Matched shell-search correction](swarm-discovery-shell-v1/README.md).
+Recursive root searches explain nine timeout records. A validated filesystem
+search fix has separate stock/fixed images and an eight-trial matched follow-up.
+The older shared-key suite held itself; its results and processes remain preserved.
+
 **27 October 2026:** [Parallel Stage 1 repetitions](swarm-discovery-parallel-v1/README.md).
 Registered model/provider × time-window × visibility controls, with scoped
 allowance reservations and all launched trials retained. The first four trials

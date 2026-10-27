@@ -1,5 +1,11 @@
 # Parallel Stage 1 repetitions
 
+**27 October 2026 · later status:** the suite independently held after shared-key
+exhaustion, with 34 finished trials and no active model trials. Its nine unresolved
+shell records and conservative reservation remain preserved. A separate
+[matched shell correction](../swarm-discovery-shell-v1/README.md) addresses root-search
+timeouts; this suite is not restarted. Earlier checkpoints below are historical.
+
 **27 October 2026:** the registered, allowance-bounded parallel suite is running
 its first four trials (16 concurrent contexts). Both Novita and Alibaba have
 returned responses with the exact selected model IDs. No final suite outcome

@@ -91,7 +91,20 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
-**27 October 2026 · parallel Stage 1 repetitions:** up to four independent trials
+**27 October 2026 · matched shell-search correction:** eight fresh trials compare
+stock and finite-root grep defaults under DeepSeek/Novita and GLM Prime/Alibaba.
+Two new pinned images share the previous parent and add only the grep shim; all
+business inputs, tools, permissions, 900-second windows and 30-second no-kill
+shell waits remain matched. Twelve parser and six adapter checks, finite Docker
+search controls and complete scripted business exchanges validate the change.
+The earlier suite had independently held after shared-key exhaustion; no old
+process, unknown request or reservation is resumed or released. The previously
+authorized private key and both provider routes were reverified for a separate
+allowance-bounded follow-up. Harbor 0.24.0, containment and local verified exports
+remain in use; full off-machine raw backup remains unconfigured.
+[Diagnosis, commands and limits](experiments/swarm-discovery-shell-v1/README.md).
+
+**27 October 2026 · earlier parallel Stage 1 repetitions (now held):** up to four independent trials
 (16 contexts) run at once across two pinned model/provider routes, two time
 windows and natural/repaired visibility. The current private dated OpenRouter
 credential is shared; its live remaining balance and conservative per-request
