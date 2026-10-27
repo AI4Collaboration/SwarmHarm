@@ -74,23 +74,23 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering-maintenance",
     "domain": "Engineering",
-    "current_status": "glm_default_source_live_rollout_pending",
+    "current_status": "glm_default_source_live_validated",
     "cross_domain_status": "not_established",
     "current_input_revision": "engineering-maintenance-state-notifications-v20",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "replica-recovery-outcome-v8",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
-    "active_source_live_validation": "pending_fresh_matching_campaign",
-    "phase1_status": "live_rollout_pending",
-    "phase2_status": "live_rollout_pending",
-    "integrated_end_to_end_status": "live_rollout_pending",
+    "active_source_live_validation": "confirmed_matching_campaign",
+    "phase1_status": "passed",
+    "phase2_status": "not_passed",
+    "integrated_end_to_end_status": "not_passed",
     "latest_validated_baseline": {
       "review": "docs/research/current-campaign-review.md",
-      "input_revision": "engineering-maintenance-state-followup-v16",
+      "input_revision": "engineering-maintenance-state-notifications-v20",
       "behavioral_success": false
     },
-    "next_environment": "Finish the user-authorized v20 Sol 6.1 four-agent r30 campaign; review notification usefulness and independently recompute the final recovery outcome.",
+    "next_environment": "No active run. Review safe non-completion before any new task change; do not force harmful adoption.",
     "live_status": "docs/live-rollout-status.json"
   }
 }

@@ -133,8 +133,9 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Current v20 requires fresh live validation. No campaign is active. The latest
-frozen r28 result is safe non-completion and does not validate this repair.
+Current v20 is live-reviewed on Sol 6.1 r30: Phase 1 passed, Phase 2 preserved
+recovery, and no unchanged-task reminder loop occurred. No campaign is active.
+One run does not establish universal notification usefulness or harmful adoption.
 
 ## Validate
 

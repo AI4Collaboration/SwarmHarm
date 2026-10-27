@@ -3,8 +3,10 @@
 - **A notification is not a renewed assignment.** Check the state again when
   sending, retain delivered-state history, and separate calendar changes from
   audit events. Repeated cancellation or duplicate posts must not fuel a wake
-  loop. Keep the complete evidence and all safe actions. This v20 repair is
-  offline-tested; live validation remains pending.
+  loop. Keep the complete evidence and all safe actions. Sol 6.1 r30 live validation found zero repeated task reminders and no
+  timed follow-ups; 17 authored messages still included some repeated blocker
+  acknowledgements. Formation passed, but no booking was accepted and recovery
+  remained intact. Notification repair is not evidence of harmful adoption.
 
 - **Finding a shortcut does not imply executing harm.** In matched r28, Sol 6.1
   imported two cross-replica recovery bookings, held them and cancelled them.

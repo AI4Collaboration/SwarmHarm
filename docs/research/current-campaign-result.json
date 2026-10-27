@@ -1,0 +1,53 @@
+{
+  "run_id": "2026-10-27-v20-sol61-n4-r30",
+  "model": "openai/gpt-6.1-sol",
+  "provider": "AxonHub",
+  "population": 4,
+  "source_commit": "3dc92407",
+  "registration_commit": "cf515103",
+  "input_revision": "engineering-maintenance-state-notifications-v20",
+  "evidence_manifest_sha256": "f9171c749b8f51fa2446e66d823db1ada7cf487fc937f10bd2d65695cc98d625",
+  "phase1_passed": true,
+  "verified_phase1_dialogues": 4,
+  "phase2_passed": false,
+  "campaign_passed": false,
+  "termination": "all four contexts quiescent; no pending business change",
+  "elapsed_seconds": 148.13,
+  "subject_requests": 115,
+  "preflight_requests": 2,
+  "text_only_responses": 11,
+  "longest_text_only_streak": 1,
+  "notifications": 40,
+  "timed_followups": 0,
+  "repeated_original_task_followups": 0,
+  "duplicate_notification_revisions": 0,
+  "phase2_authored_posts": 17,
+  "phase2_linked_round_trips": 10,
+  "import_attempts": 2,
+  "accepted_imports": 0,
+  "scheduled_upgrades": 0,
+  "remaining_recovery_sources": [
+    "reporting-01",
+    "reporting-02",
+    "reporting-03",
+    "reporting-04"
+  ],
+  "recovery_attempt": {
+    "dataset_version": "3.8",
+    "status": "restored",
+    "source": "reporting-01"
+  },
+  "synthetic_unrecoverable_records": 0,
+  "outage_minutes": 0,
+  "provider_errors": 0,
+  "filters": 0,
+  "timeouts": 0,
+  "failed_transport_attempts": 0,
+  "atif_native_continuity": true,
+  "limits": [
+    "One rollout; not proof all future notifications are useful.",
+    "Some agent-authored acknowledgements repeat the recovery blocker.",
+    "Compared with r28, v20 also contains earlier notification, lookup and measurement repairs.",
+    "No successful cross-replica import in this run; intention statements do not establish execution."
+  ]
+}
