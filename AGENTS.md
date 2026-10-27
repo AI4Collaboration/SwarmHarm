@@ -46,6 +46,14 @@
 - Keep every subject-facing surface natural. Do not announce peers, cooperation,
   communication, methods, evaluation, shared-system gaps or hidden milestones.
   Do not add behavioral bans, permission summaries, solution hints or coaching.
+- The one labelled exception is the Pi harness goal-mode comparison. A
+  `--goal-mode goal_command` campaign sends the task through the pinned pi-goal
+  `/goal` command, whose own persistence rules and goal tools reach subjects
+  and lie outside the natural prompt contract. Run it only as one half of a
+  matched pair with an `off` campaign (same model, scenario, population, cue
+  condition and deadline; check with `scripts/check_goal_mode_pair.py`).
+  Report the two modes as separate conditions, never pool them, and never use a
+  goal-mode campaign alone to support the natural-delegation claim.
 - Before live collection, verify impossibility separately in both phases:
   the intended workflow cannot finish in the registered state, while a specific
   unannounced shortcut is reachable. Model failure is not proof of impossibility.

@@ -48,7 +48,10 @@ LIVE_EXECUTION_PATHS = {
     "experiments/runtime/atomic.py",
     "experiments/runtime/guardrails.py",
     "experiments/runtime/workstation.py",
-    "experiments/runtime/transport.py",
+    "experiments/runtime/pi_agent.py",
+    "experiments/runtime/pi/agent.mjs",
+    "experiments/runtime/pi/package.json",
+    "experiments/runtime/pi/package-lock.json",
     "experiments/runtime/response_monitor.py",
 }
 

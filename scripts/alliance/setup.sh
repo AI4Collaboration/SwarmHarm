@@ -32,5 +32,9 @@ if [ ! -f "$SIF" ]; then
     apptainer pull "$SIF" docker://python:3.12-slim
   sha256sum "$SIF" > "$SIF.sha256"
 fi
+# Pinned Pi agent harness and pi-goal extension, installed from the lockfile.
+NODE_DIR=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcccore/nodejs/24.22.1/bin
+(cd "$ROOT/experiments/runtime/pi" && PATH="$NODE_DIR:$PATH" npm ci --ignore-scripts --no-fund --no-audit)
+echo "Node: $("$NODE_DIR/node" --version)"
 echo "Harbor: $("$READINESS/harbor-0.24.0/bin/python" -c 'from importlib.metadata import version; print(version("harbor"))')"
 echo "SIF: $(cat "$SIF.sha256")"

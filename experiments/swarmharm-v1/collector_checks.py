@@ -148,18 +148,6 @@ class CollectorChecks(unittest.TestCase):
             self.assertNotIn('unfinished_followup_at', states[actor])
         self.assertEqual(states['closed'], {'status': 'completed', 'finished_at': 'earlier'})
 
-    def test_only_local_deadline_clipping_is_classified_as_budget_expiry(self):
-        self.assertTrue(run.budget_clipped_timeout(TimeoutError(), 2, 300, -0.1))
-        self.assertTrue(run.budget_clipped_timeout(urllib.error.URLError(TimeoutError()), 2, 300, -0.1))
-        for error, allowance, remaining in (
-            (TimeoutError(), 300, -0.1),  # Full request timeout remains a transport failure.
-            (TimeoutError(), 2, 1),       # Timeout before the deadline remains a failure.
-            (RuntimeError('HTTP 429'), 2, -0.1),
-            (ValueError('model mismatch'), 2, -0.1),
-            (TimeoutError(), None, -0.1),
-        ):
-            self.assertFalse(run.budget_clipped_timeout(error, allowance, 300, remaining))
-
     def test_no_fixed_observation_wait_survives_every_domain_override(self):
         for scenario in ("engineering-maintenance", "engineering", "data-analysis", "financial-analysis", "knowledge-work"):
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
@@ -471,11 +459,12 @@ class CollectorChecks(unittest.TestCase):
 
     def test_collector_has_one_start_barrier_then_resubmits_each_live_actor(self):
         source = inspect.getsource(run.collect)
-        self.assertIn("first_request_barrier=Barrier(len(active))", source)
-        self.assertIn("provider_slots=Semaphore(budget['provider_concurrency'])", source)
-        self.assertIn("with provider_slots", source)
-        self.assertIn("return_when=FIRST_COMPLETED", source)
-        self.assertNotIn("for future in as_completed(futures)", source)
+        # Every Pi session is ready before any task is released, then all are prompted together.
+        self.assertIn("pi_agent.wait_ready(events,active)", source)
+        self.assertLess(source.index("pi_agent.wait_ready(events,active)"),
+                        source.index("for actor in active.copy():submit(actor)"))
+        self.assertNotIn("hold=True", source)
+        self.assertNotIn("ThreadPoolExecutor", source)
         self.assertNotIn("next_admissions", source)
         self.assertIn("active!=set(plan)", source)
         self.assertIn("continuous population is no longer intact", source)
@@ -519,14 +508,6 @@ class CollectorChecks(unittest.TestCase):
             self.assertIn("completion.json", manifest["files"])
             self.assertNotIn("controller.log", manifest["files"])
             self.assertNotIn("evidence-manifest.json", manifest["files"])
-
-    def test_retry_classification(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "error.json"
-            run.save(path, {"http_status": 422})
-            self.assertFalse(run.retryable_transport_error(RuntimeError("422"), path))
-            run.save(path, {"http_status": 429})
-            self.assertTrue(run.retryable_transport_error(RuntimeError("429"), path))
 
     def test_empty_preflight_arguments_accept_provider_wrapper(self):
         self.assertTrue(run.empty_tool_arguments("{}"))
@@ -716,15 +697,15 @@ class CollectorChecks(unittest.TestCase):
             }
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(
-                    root, registration, key, 4, 4, 1,
+                    root, registration, key, 4, 4, 4,
                     run_controls=False, scenario="engineering-maintenance",
                 )
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
-            self.assertEqual(reg["budget"]["provider_concurrency"], 1)
+            self.assertEqual(reg["budget"]["provider_concurrency"], 4)
             self.assertTrue(reg["connected_protocol"]["all_subjects_active_until_global_terminal"])
 
-        for invalid in (0, 5):
+        for invalid in (0, 1, 5):
             with self.subTest(invalid=invalid), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary) / "study"
                 registration = self.registration_path(temporary)

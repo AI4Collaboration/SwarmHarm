@@ -52,6 +52,16 @@ service outage. Every actor's complete sequence alone and every leave-one-out
 replay preserved recovery. No hold or cancellation was issued. This is a single
 observed composition failure, not a success rate or a matched comparison to r20.
 
+**Agent harness: Pi SDK, live rollout pending (27 October).** Agents now run as
+pinned Pi 1.4.0 sessions instead of a hand-written Responses loop. Pi supplies
+the system prompt (with a neutral opening), retries and session files; the
+controller executes every tool in the sandbox, starts all agents together,
+queues platform updates and the Phase 2 assignment into Pi, and ends the run.
+Pi's loop is never paused between turns. Optional `--goal-mode goal_command` sends tasks through the
+`/goal` command of the pinned pi-goal extension. Goal mode runs only as a matched pair with a
+plain-prompt campaign (`scripts/check_goal_mode_pair.py`), reported as a separate condition. Offline
+checks pass; no live campaign has used this harness yet.
+
 **Current source: v17, live rollout pending.** r20 exposed repeated generic
 activity notices despite timer deduplication. The repair now separates passive
 notifications from completion reminders, without changing record visibility or
@@ -71,6 +81,8 @@ and limits, [working context](docs/working-context.md) for the next step, and
   OpenAI models prefer the existing TerryJwy channels. Each experiment still
   fixes its model. Actual upstream channels are recorded
   separately from catalog model names.
+- Each agent is one **Pi SDK** session (`@earendil-works/pi-coding-agent@1.4.0`,
+  Node.js >= 22.19); install it with `npm ci` in `experiments/runtime/pi`.
 - Inputs use **Harbor 1.4**; runtime is pinned to **Harbor 0.24.0**. Outputs retain
   native records and continuous **ATIF-v1.8** trajectories.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or

@@ -45,16 +45,33 @@ def load(name, path):
         sys.path.pop(0)
 
 
+PI_AGENT = load("prompt_contract_pi_agent", REPO / "experiments/runtime/pi_agent.py")
+JOB_PLACEHOLDER = "SWARMHARM_JOB_CONTEXT"
+RENDERED = {}
+
+
+def system_prompt(native):
+    """The system prompt the registered Pi harness sends with these tools and job context."""
+    key = json.dumps(native["tools"], sort_keys=True)
+    if key not in RENDERED:
+        names = [tool["name"] for tool in native["tools"]]
+        RENDERED[key] = PI_AGENT.render_system_prompt(native["tools"], names, JOB_PLACEHOLDER)["system_prompt"]
+    developer = [item["content"] for item in native["input"] if item.get("role") == "developer"]
+    return RENDERED[key].replace(JOB_PLACEHOLDER, developer[0] if developer else "")
+
+
 def surface(native, files):
     return "\n".join(
-        [native["instructions"], *(item["content"] for item in native["input"]),
+        [system_prompt(native), *(item["content"] for item in native["input"]),
          json.dumps(native["tools"], ensure_ascii=False), json.dumps(files, ensure_ascii=False)]
     )
 
 
 class PromptContractChecks(unittest.TestCase):
     def assert_natural(self, native, files):
-        self.assertEqual(native["instructions"], "Complete the user's task.")
+        prompt = system_prompt(native)
+        self.assertTrue(prompt.startswith(PI_AGENT.PREAMBLE))
+        self.assertNotRegex(prompt, r"coding agent harness|<docs>|\bpi\b")
         value = surface(native, files)
         self.assertNotRegex(value, EXPERIMENT_TERMS)
         self.assertNotRegex(value, BEHAVIORAL_BANS)
@@ -74,6 +91,25 @@ class PromptContractChecks(unittest.TestCase):
         plan = schedule.compile_plan(4, "control", lambda: f"job-{next(counter):012x}")[0]["natural"]
         for actor, item in plan.items():
             self.assert_natural(lab.initial(plan, actor), lab.files(item, actor))
+
+    def test_goal_mode_changes_only_tools_and_pi_goal_input(self):
+        # Goal mode is a labelled harness condition (AGENTS.md). Its system prompt must stay the
+        # natural one; pi-goal adds only its own tools and goal messages, which are recorded as
+        # outside this contract.
+        folder = REPO / "experiments/swarmharm-v1"
+        schedule = load("prompt_contract_v1_schedule", folder / "schedule.py")
+        lab = load("prompt_contract_v1_lab", folder / "lab.py")
+        counter = iter(range(4))
+        plan = schedule.compile_plan(4, "control", lambda: f"job-{next(counter):012x}")[0]["natural"]
+        native = lab.initial(plan, next(iter(plan)))
+        names = [tool["name"] for tool in native["tools"]]
+        plain = PI_AGENT.render_system_prompt(native["tools"], names, JOB_PLACEHOLDER, "off")
+        goal = PI_AGENT.render_system_prompt(native["tools"], names, JOB_PLACEHOLDER, "goal_command")
+        self.assertEqual(goal["system_prompt"], plain["system_prompt"])
+        self.assertEqual(plain["active_tools"], names)
+        self.assertEqual(goal["active_tools"], names + PI_AGENT.GOAL_TOOLS)
+        self.assertIn("goal", goal["commands"])
+        self.assertEqual(PI_AGENT.goal_prompt("TASK"), "/goal TASK")
 
     def test_maintenance_and_gpu_incentive_inputs_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"

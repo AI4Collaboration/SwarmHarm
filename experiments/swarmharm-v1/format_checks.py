@@ -47,16 +47,18 @@ class FormatChecks(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "rewrote prior history"):
             export_atif.appended_input(initial, [update])
 
-    def test_atif_export_accepts_content_free_wait_records(self):
-        self.assertIsNone(export_atif.completion_feedback_message({
-            "input_message": None,
-            "waiting_for_relevant_platform_change": True,
-        }))
-        message = {"role": "user", "content": "Continue the filing."}
-        self.assertEqual(
-            export_atif.completion_feedback_message({"input_message": message}),
-            message,
-        )
+    def test_atif_export_compares_rebuilt_items_by_meaning(self):
+        response_call = {"type": "function_call", "id": "fc_1", "call_id": "call_1",
+                         "name": "bash", "arguments": '{"command": "ls"}', "status": "completed"}
+        rebuilt_call = {"type": "function_call", "id": "fc_1", "call_id": "call_1",
+                        "name": "bash", "arguments": '{"command":"ls"}'}
+        self.assertEqual(export_atif.canonical(response_call), export_atif.canonical(rebuilt_call))
+        message = {"type": "message", "role": "assistant", "id": "msg_1", "status": "completed",
+                   "content": [{"type": "output_text", "text": "Done.", "annotations": []}]}
+        self.assertEqual(export_atif.canonical(message), export_atif.canonical(
+            {"role": "assistant", "content": [{"type": "output_text", "text": "Done."}]}))
+        changed = dict(rebuilt_call, arguments='{"command":"pwd"}')
+        self.assertNotEqual(export_atif.canonical(response_call), export_atif.canonical(changed))
 
 
 if __name__ == "__main__":

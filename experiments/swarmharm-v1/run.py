@@ -1,6 +1,5 @@
 """Freeze and collect one continuous Phase 1 -> Phase 2 campaign."""
 import argparse
-from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 import fcntl
@@ -15,7 +14,7 @@ import shutil
 import subprocess
 import sys
 import time
-from threading import Barrier, Lock, Semaphore
+from threading import Lock
 import unittest
 import urllib.error
 import urllib.request
@@ -34,6 +33,10 @@ GUARDRAIL_SPEC=importlib.util.spec_from_file_location(
     'swarmharm_run_guardrails',REPO/'experiments/runtime/guardrails.py')
 guardrails=importlib.util.module_from_spec(GUARDRAIL_SPEC)
 GUARDRAIL_SPEC.loader.exec_module(guardrails)
+PI_AGENT_SPEC=importlib.util.spec_from_file_location(
+    'swarmharm_run_pi_agent',REPO/'experiments/runtime/pi_agent.py')
+pi_agent=importlib.util.module_from_spec(PI_AGENT_SPEC)
+PI_AGENT_SPEC.loader.exec_module(pi_agent)
 HARBOR_VERSION=package_version('harbor')
 if HARBOR_VERSION!='0.24.0':
     raise RuntimeError(f'Use pinned Harbor 0.24.0, found {HARBOR_VERSION}')
@@ -150,18 +153,6 @@ def registration_api_base(registration):
     if not endpoint.endswith('/responses'):
         raise ValueError('Frozen AxonHub endpoint must end in /responses')
     return endpoint[:-len('/responses')].rstrip('/')
-def retryable_transport_error(error,error_file):
-    if isinstance(error,(ValueError,AssertionError)):return False
-    if not error_file.exists():return True
-    payload=load(error_file);status=payload.get('http_status')
-    return status is None or status in RETRYABLE_HTTP_STATUS
-
-def budget_clipped_timeout(error, allowance, request_timeout, remaining):
-    """Only a local timeout at the actual campaign boundary is budget expiry."""
-    reason = error.reason if isinstance(error, urllib.error.URLError) else error
-    return (isinstance(reason, TimeoutError) and allowance is not None
-            and allowance < request_timeout and remaining <= 0)
-
 def finish_actor_states(states, starts, *, reason, finished_at, now):
     """Record closure of surviving contexts after pending inference has drained."""
     for actor, state in states.items():
@@ -194,8 +185,9 @@ def code_paths():
         ]
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py',
-            'runtime/transport.py','runtime/response_monitor.py',
-            'prompt-contract/checks.py')]
+            'runtime/response_monitor.py',
+            'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
+            'runtime/pi/package-lock.json','prompt-contract/checks.py')]
     )
 
 def require(condition,message):
@@ -246,7 +238,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
-            completion_incentive='none'):
+            completion_incentive='none',goal_mode='off'):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     key_file=guardrails.credential_file(key_file,REPO)
@@ -283,6 +275,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         else provider_concurrency)
     if not 1 <= resolved_provider_concurrency <= resolved_active_contexts:
         raise ValueError('provider concurrency must be between one and active contexts')
+    if resolved_provider_concurrency != resolved_active_contexts:
+        raise ValueError('each Pi session sends its own requests; provider concurrency must equal active contexts')
+    harness=pi_agent.harness_registration(goal_mode)
     budget['provider_concurrency']=resolved_provider_concurrency
     save(root/'fixtures.json',rows);save(root/'activation-plan.json',activation)
     save(root/'topology.json',topology_spec)
@@ -296,7 +291,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
-        for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/engineering_maintenance_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py'):
+        for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/engineering_maintenance_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py','pi_collect_checks.py'):
             suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
                 'swarmharm_v1_'+name.replace('.','_').replace('/','_'), HERE/name
             )))
@@ -315,7 +310,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         target=root/'code'/path.relative_to(REPO);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,target)
     reg={'family':'swarmharm/swarmharm-v1','created_at':utc(),'models':MODELS,
         'upstream_models':UPSTREAM_MODELS,'reasoning':DEFAULT_REASONING,
-        'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
+        'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
         'api_base':AXONHUB_API_BASE,'endpoint':AXONHUB_ENDPOINT,
         'credential_source':('Existing host-only AxonHub key; never supplied to subjects.'
@@ -957,15 +952,17 @@ def collect(root,registration_dir):
     verify_collection_freeze(root,registration_dir,reg)
     lock=(root/'.collector.lock').open('a+')
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    transport=module('swarmharm_v1_axonhub_transport',REPO/'experiments/runtime/transport.py')
-    transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=AXONHUB_KEY_FILE,
-        max_output_tokens=budget['max_output_tokens_per_response'])
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
+    harness=reg['harness']
+    require(harness['kind']=='pi-sdk','This collector drives registered Pi SDK sessions.')
+    require(pi_agent.installed_versions()==harness['installed'],'Installed Pi runtime differs from the registration.')
+    require(pi_agent.node_version()==harness['node_version'],'Node.js differs from the registration.')
+    api_key=AXONHUB_KEY_FILE.read_text().strip()
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
     continuation_path = HERE / (domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=module('swarmharm_v1_continuation',continuation_path)
     initial=load(root/'initial-input-audit.json');response_review=[];transport_attempts=[]
-    state_lock=Lock();provider_slots=Semaphore(budget['provider_concurrency'])
+    state_lock=Lock()
     began=time.monotonic();deadline=began+budget['max_batch_seconds'];progress={
         'status':'running','phase':'preflight','completed_workers':0,
         'model_requests_started':0,'inflight_requests':{}}
@@ -987,73 +984,17 @@ def collect(root,registration_dir):
                 progress['inflight_requests'][request_id]=value
             progress.update(updated_at=utc(),elapsed_seconds=round(time.monotonic()-began,2))
             save(root/'progress.json',progress);print(json.dumps(progress),flush=True)
-    def infer(body,folder,label,actor_deadline=None):
-        transport.MODEL=body['model']
-        limit=budget['max_transport_attempts_per_request'];value=None;classification=None;last_error=None
-        request_id=str((folder/label).relative_to(root))
-        for attempt in range(1,limit+1):
-            allowance=None
-            with state_lock:
-                progress['model_requests_started']+=1
-            attempt_folder=folder/'transport-attempts'/label;attempt_label=f'{attempt:04d}'
-            mark_inflight(request_id,{'started_at':utc(),'model':body['model'],
-                'transport_attempt':attempt,'transport_attempt_limit':limit})
-            try:
-                with provider_slots:
-                    remaining=[deadline-time.monotonic()]
-                    if actor_deadline is not None:
-                        remaining.append(actor_deadline-time.monotonic())
-                    if min(remaining)<=0:
-                        raise CampaignLimit('Registered actor or campaign wall-clock limit reached')
-                    allowance=min(budget['request_timeout_seconds'],min(remaining))
-                    value=transport.call(body,attempt_folder,attempt_label,timeout=allowance)
-                validate_response_model(body,value)
-            except CampaignLimit:
-                mark_inflight(request_id,None)
-                raise
-            except Exception as error:
-                last_error=error;error_file=attempt_folder/(attempt_label+'.error.json')
-                attempt_class=monitor.classify(load(error_file),True) if error_file.exists() else {'status':'provider_error'}
-                remaining=min(deadline, actor_deadline if actor_deadline is not None else deadline)-time.monotonic()
-                expired=budget_clipped_timeout(error,allowance,budget['request_timeout_seconds'],remaining)
-                if expired:
-                    attempt_class={'status':'budget_timeout','raw_error_preserved':True}
-                record_attempt({'path':str((folder/label).relative_to(root)),'attempt':attempt,
-                    'status':'failed','classification':attempt_class,'error_type':type(error).__name__,
-                    'timeout_seconds':allowance,'at':utc()})
-                retryable=retryable_transport_error(error,error_file)
-                within_actor=(actor_deadline is None or time.monotonic()<actor_deadline)
-                if retryable and attempt<limit and time.monotonic()<deadline and within_actor:
-                    time.sleep(budget['transport_retry_backoff_seconds']);continue
-                folder.mkdir(parents=True,exist_ok=True)
-                attempt_request=attempt_folder/(attempt_label+'.request.json')
-                if attempt_request.exists():shutil.copy2(attempt_request,folder/(label+'.request.json'))
-                if error_file.exists():shutil.copy2(error_file,folder/(label+'.error.json'))
-                classification=attempt_class
-                save(folder/(label+'.collector-error.json'),{'type':type(error).__name__,'message':str(error)[:500],
-                    'transport_attempts':attempt})
-                record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
-                mark_inflight(request_id,None)
-                if expired:
-                    raise CampaignLimit('Inference reached its registered wall-clock boundary; raw timeout retained') from error
-                raise Hold(str(error)) from error
-            shutil.copy2(attempt_folder/(attempt_label+'.request.json'),folder/(label+'.request.json'))
-            shutil.copy2(attempt_folder/(attempt_label+'.response.json'),folder/(label+'.response.json'))
-            classification=monitor.classify(value)
-            record_attempt({'path':str((folder/label).relative_to(root)),'attempt':attempt,
-                'status':'completed','classification':classification,'at':utc()});break
-        require(value is not None and classification is not None,str(last_error))
-        record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
-        mark_inflight(request_id,None)
-        if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
-        if classification['status']=='text_refusal_candidate':print(json.dumps({'alert':'text_refusal_candidate','request':str((folder/label).relative_to(root))}),flush=True)
-        return value
-    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']}}
     cleanup=[]
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension=continuation_module.Continuation(world,load(root/'phase2-plan.json'))
         phase2_activation=None;termination_reason='quiescence'
+        events=pi_agent.new_queue();agents={}
+        # Running contexts are inside a Pi run; the rest have settled. Pi runs its own loop:
+        # input for a running context is queued by Pi for its next turn.
+        running=set();pending_texts={};pending_tools={}
+        turn_records={};executed_calls={}
+        phase2_tool_names=[tool['name'] for tool in continuation_module.tool_definitions()]
         def export(actor=None):
             save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
             save(root/name/'continuation.json',{
@@ -1067,6 +1008,31 @@ def collect(root,registration_dir):
             limit=budget['active_contexts_natural']
             active=schedule.simultaneous_admissions(plan,limit)
             workstations=world.prepare_workstations(active,max_workers=limit)
+            for actor in active:
+                item=plan[actor];histories[actor]=[];starts[actor]=time.monotonic()
+                states[actor]={'actor':actor,'provider':item['provider'],
+                    'start_group':item.get('start_group',0),'status':'starting','steps':0,
+                    'tools':0,'final':'','completion_attempts':[],'platform_notifications':[],
+                    'extension_continuations':[],'harness_rejected_tool_calls':[],
+                    'extension_errors':[]}
+                save(root/name/actor/'initial-input.json',initial[name][actor])
+                agents[actor]=pi_agent.PiAgent(
+                    actor,events,folder=root/name/actor/'pi',model=reg['models'][item['provider']],
+                    api_base=registration_api_base(reg),api_key=api_key,thinking_level=reg['reasoning'],
+                    max_output_tokens=budget['max_output_tokens_per_response'],
+                    context_window=harness['context_window'],
+                    request_timeout_ms=budget['request_timeout_seconds']*1000,
+                    tools=lab.tools(item)+continuation_module.tool_definitions(),
+                    active_tools=[tool['name'] for tool in lab.tools(item)],
+                    job_context=initial[name][actor]['input'][0]['content'],
+                    goal_mode=harness['goal_mode'])
+            for actor,value in pi_agent.wait_ready(events,active).items():
+                save(root/name/actor/'pi-system-prompt.json',{'system_prompt':value['system_prompt'],
+                    'active_tools':value['active_tools'],'commands':value['commands']})
+                require(set(value['active_tools'])=={
+                    tool['name'] for tool in lab.tools(plan[actor])}|set(harness['extension_tools']),
+                    f'{actor} started with unregistered tools: {value["active_tools"]}')
+                states[actor]['pi_session']=value
             activation_time=utc()
             save(root/name/'activation.json',{
                 'policy':'simultaneous_start_barrier',
@@ -1074,16 +1040,15 @@ def collect(root,registration_dir):
                 'actors':sorted(active),
                 'ordered_arrivals':False,
                 'all_workstations_ready_before_release':True,
+                'all_agent_sessions_ready_before_release':True,
                 'workstation_count':len(workstations),
             })
             for actor in active:
-                item=plan[actor];starts[actor]=time.monotonic()
-                histories[actor]=deepcopy(initial[name][actor]['input'])
-                states[actor]={'actor':actor,'provider':item['provider'],
-                    'start_group':item.get('start_group',0),'status':'running','steps':0,
-                    'tools':0,'final':'','completion_attempts':[],'platform_notifications':[],
-                    'started_at':activation_time}
-                save(root/name/actor/'initial-input.json',initial[name][actor]);export(actor)
+                starts[actor]=time.monotonic();states[actor]['started_at']=activation_time
+                task=initial[name][actor]['input'][1]['content']
+                pending_texts[actor]=[pi_agent.goal_prompt(task)
+                    if harness['goal_mode']=='goal_command' else task]
+                export(actor)
             def activity_signal(actor):
                 filing = world.activity_signal(actor)
                 continuation = (
@@ -1112,311 +1077,443 @@ def collect(root,registration_dir):
             delivered_activity_signals={
                 actor:activity_signal(actor) for actor in active
             }
-            with ThreadPoolExecutor(max_workers=limit) as pool:
-                futures={};first_request_barrier=Barrier(len(active));phase2_pending=None
-                cohort_completion=CohortCompletion(active)
-                observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
-                followup_seconds=reg['completion_protocol'].get('unfinished_work_followup_seconds')
-                last_formation_progress=None
-                def followup_pending():
-                    return any(state.get('unfinished_followup_at') is not None for state in states.values())
-                publication=reg.get('source_publication')
-                def publication_pending():
-                    return publication is not None and world.source_publication_event is None
-                def first_infer(body_value,folder_value,label_value,actor_deadline_value):
-                    first_request_barrier.wait(timeout=60)
-                    return infer(
-                        body_value,folder_value,label_value,actor_deadline_value)
-                def current_completion(actor):
-                    if extension is not None and extension.activated:
-                        return {
-                            'complete':extension.all_complete(),
-                            'actor_complete':extension.complete(actor),
-                            'actor_business_state':extension.outcome(actor),
-                        }
-                    return campaign_completion_state(world,actor)
-                def submit(actor, unfinished_followup=False):
-                    state=states[actor]
-                    state.pop('unfinished_followup_at',None)
-                    if time.monotonic()>=deadline or time.monotonic()-starts[actor]>=budget['max_actor_seconds']:
-                        state['status']='time_limit'
-                        export(actor)
-                        raise CampaignLimit(
-                            'One context reached its registered wall-clock limit; '
-                            'the continuous population is no longer intact.')
-                    step=state['steps']+1;label=f"{step:04d}";folder=root/name/actor/'trace'
-                    check=current_completion(actor)
-                    signal=activity_signal(actor)
-                    delivered=delivered_activity_signals[actor]
-                    message,notice_kind=work_notice(
-                        extension=extension,actor=actor,check=check,signal=signal,
-                        delivered=delivered,
-                        completion_notice_delivered=state.get('completion_notice_delivered',False),
-                        unfinished_followup=unfinished_followup,
-                        cue_condition=reg['cue_condition'],scenario=reg.get('scenario'))
-                    if unfinished_followup and message is None:
-                        return False
-                    if notice_kind=='workflow_complete':
-                        state['completion_notice_delivered']=True
-                    if notice_kind in {'workflow_complete','relevant_platform_change'}:
-                        delivered_activity_signals[actor]=signal
-                    if notice_kind is not None:
-                        state['last_followup_revision']=work_revision(extension,check,signal)
-                    if message is not None:
-                        input_message={'role':'user','content':message}
-                        histories[actor].append(input_message)
-                        notice={'step':step,'at':utc(),'kind':notice_kind,
-                            'relevant_cross_job_records':signal['relevant_cross_job_records'],
-                            'record_content_exposed':False,'author_exposed':False,
-                            'route_or_method_exposed':False}
-                        state['platform_notifications'].append(notice)
-                        save(folder/f'{label}-platform-update.json',{
-                            'notice':notice,'input_message':input_message,
-                            'peer_or_communication_hint':False,
-                        })
-                    # The next response already sees the current request and tool
-                    # results. Its unchanged final is not new information to feed back.
-                    state['last_observed_work_revision']=work_revision(extension,check,signal)
-                    state['status']='running';state.pop('waiting_since',None)
+            phase2_pending=None
+            cohort_completion=CohortCompletion(active)
+            observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
+            followup_seconds=reg['completion_protocol'].get('unfinished_work_followup_seconds')
+            last_formation_progress=None
+            def followup_pending():
+                return any(state.get('unfinished_followup_at') is not None for state in states.values())
+            publication=reg.get('source_publication')
+            def publication_pending():
+                return publication is not None and world.source_publication_event is None
+            def current_completion(actor):
+                if extension is not None and extension.activated:
+                    return {
+                        'complete':extension.all_complete(),
+                        'actor_complete':extension.complete(actor),
+                        'actor_business_state':extension.outcome(actor),
+                    }
+                return campaign_completion_state(world,actor)
+            def within_limits(actor):
+                return (time.monotonic()<deadline
+                    and time.monotonic()-starts[actor]<budget['max_actor_seconds'])
+            def submit(actor, unfinished_followup=False):
+                """Let the context make its next request, with any due business notice."""
+                state=states[actor]
+                state.pop('unfinished_followup_at',None)
+                if not within_limits(actor):
+                    state['status']='time_limit'
+                    export(actor)
+                    raise CampaignLimit(
+                        'One context reached its registered wall-clock limit; '
+                        'the continuous population is no longer intact.')
+                step=state['steps']+1;label=f"{step:04d}";folder=root/name/actor/'trace'
+                check=current_completion(actor)
+                signal=activity_signal(actor)
+                delivered=delivered_activity_signals[actor]
+                message,notice_kind=work_notice(
+                    extension=extension,actor=actor,check=check,signal=signal,
+                    delivered=delivered,
+                    completion_notice_delivered=state.get('completion_notice_delivered',False),
+                    unfinished_followup=unfinished_followup,
+                    cue_condition=reg['cue_condition'],scenario=reg.get('scenario'))
+                if unfinished_followup and message is None:
+                    return False
+                texts=pending_texts.pop(actor,[])+([message] if message is not None else [])
+                idle=actor not in running
+                if idle and not texts:
+                    # A settled context starts a run only from new input.
+                    return False
+                if notice_kind=='workflow_complete':
+                    state['completion_notice_delivered']=True
+                if notice_kind in {'workflow_complete','relevant_platform_change'}:
+                    delivered_activity_signals[actor]=signal
+                if notice_kind is not None:
+                    state['last_followup_revision']=work_revision(extension,check,signal)
+                if message is not None:
+                    input_message={'role':'user','content':message}
+                    notice={'step':step,'at':utc(),'kind':notice_kind,
+                        'relevant_cross_job_records':signal['relevant_cross_job_records'],
+                        'record_content_exposed':False,'author_exposed':False,
+                        'route_or_method_exposed':False}
+                    state['platform_notifications'].append(notice)
+                    save(folder/f'{label}-platform-update.json',{
+                        'notice':notice,'input_message':input_message,
+                        'peer_or_communication_hint':False,
+                    })
+                # The next response already sees the current request and tool
+                # results. Its unchanged final is not new information to feed back.
+                state['last_observed_work_revision']=work_revision(extension,check,signal)
+                state['status']='running';state.pop('waiting_since',None)
+                cohort_completion.requested(actor)
+                tools=pending_tools.pop(actor,None)
+                if tools is not None:agents[actor].set_tools(tools)
+                if texts:agents[actor].prompt(*texts)
+                running.add(actor)
+                update(phase='natural_continuation' if extension.activated else name,
+                    current_actor=actor,step=step,active_workers=len(active),
+                    waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
+                    ready_workers=0,inflight_workers=len(running))
+                export(actor)
+                return True
+            def wait(actor):
+                state=states[actor];running.discard(actor)
+                state['status']='waiting_for_platform_change';state['waiting_since']=utc()
+                export(actor)
+            def wake_waiting():
+                for candidate in active.copy():
+                    if states[candidate]['status']!='waiting_for_platform_change':
+                        continue
+                    check=current_completion(candidate)
+                    signal=activity_signal(candidate)
+                    completion_changed=(extension.activated and check['complete']
+                        and not states[candidate].get('completion_notice_delivered'))
+                    if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
+                        submit(candidate)
+            def on_request(actor,message):
+                state=states[actor];turn=message['turn'];label=f'{turn:04d}'
+                folder=root/name/actor/'trace';attempts=folder/'transport-attempts'/label
+                record=turn_records.setdefault((actor,turn),{'attempts':{}})
+                previous=record['attempts'].get(message['attempt']-1)
+                if previous is not None and previous.get('status') is None:
+                    previous['status']='failed'
+                    record_attempt({'path':str((folder/label).relative_to(root)),
+                        'attempt':message['attempt']-1,'status':'failed',
+                        'classification':{'status':'provider_error','detail':'retried by harness'},'at':utc()})
+                record['attempts'][message['attempt']]={'status':None}
+                save(attempts/f"{message['attempt']:04d}.request.json",message['payload'])
+                shutil.copy2(attempts/f"{message['attempt']:04d}.request.json",folder/f'{label}.request.json')
+                histories[actor]=deepcopy(message['payload'].get('input',[]))
+                with state_lock:progress['model_requests_started']+=1
+                mark_inflight(str((folder/label).relative_to(root)),{'started_at':utc(),
+                    'model':message['payload'].get('model'),'transport_attempt':message['attempt']})
+                if actor not in running:
+                    # Only a loaded extension starts a run without controller input.
+                    running.add(actor);state['status']='running';state.pop('waiting_since',None)
+                    state['extension_continuations'].append({'step':turn,'at':utc()})
                     cohort_completion.requested(actor)
-                    update(phase='natural_continuation' if extension.activated else name,
-                        current_actor=actor,step=step,active_workers=len(active),
-                        waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
-                        ready_workers=0,inflight_workers=len(futures)+1)
-                    call=first_infer if step==1 else infer
-                    toolset=(
-                        lab.tools(item)+continuation_module.tool_definitions()
-                        if extension.activated else lab.tools(item)
+                export(actor)
+            def on_response(actor,message):
+                turn=message['turn'];label=f'{turn:04d}';event=message['event']
+                folder=root/name/actor/'trace';attempts=folder/'transport-attempts'/label
+                record=turn_records[(actor,turn)]['attempts'][message['attempt']]
+                path=str((folder/label).relative_to(root))
+                if event['type']!='response.completed':
+                    save(attempts/f"{message['attempt']:04d}.error.json",event)
+                    classification=monitor.classify(event.get('response',event),True)
+                    record['status']='failed'
+                    record_attempt({'path':path,'attempt':message['attempt'],'status':'failed',
+                        'classification':classification,'at':utc()})
+                    if classification['status']=='provider_filter':
+                        record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
+                        raise Hold(classification['status'])
+                    return
+                value=event['response']
+                save(attempts/f"{message['attempt']:04d}.response.json",value)
+                shutil.copy2(attempts/f"{message['attempt']:04d}.response.json",folder/f'{label}.response.json')
+                record['status']='completed';record['response']=value
+                validate_response_model({'model':reg['models'][states[actor]['provider']]},value)
+                classification=monitor.classify(value)
+                record_attempt({'path':path,'attempt':message['attempt'],'status':'completed',
+                    'classification':classification,'at':utc()})
+                record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
+                mark_inflight(path,None)
+                histories[actor].extend(deepcopy(value.get('output',[])))
+                export(actor)
+                if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
+                if classification['status']=='text_refusal_candidate':print(json.dumps({'alert':'text_refusal_candidate','request':path}),flush=True)
+            def on_tool_call(actor,message):
+                state=states[actor];turn=message['turn'];label=f'{turn:04d}'
+                folder=root/name/actor/'trace';record=turn_records[(actor,turn)]
+                completed=[value['response'] for value in record['attempts'].values() if 'response' in value]
+                call_id=message['call_id'].split('|',1)[0]
+                calls=[item for item in completed[-1].get('output',[])
+                    if item.get('type')=='function_call' and item.get('call_id')==call_id]
+                require(len(calls)==1 and calls[0]['name']==message['name'],
+                    f'Tool call {call_id} is not in the native response')
+                call=calls[0];record['tools']=record.get('tools',0)+1;index=record['tools']
+                state['tools']+=1
+                try:args=json.loads(call['arguments']) if len(call['arguments'].encode())<=140000 else None
+                except (ValueError,TypeError):args=None
+                extension_names=set(phase2_tool_names) if extension.activated else set()
+                result=(
+                    extension.call(actor,turn,call['name'],args)
+                    if call['name'] in extension_names
+                    else world.call(actor,turn,call['name'],args)
+                );event=world.events[-1]
+                save(folder/f'{label}-tool-{index}.json',{'event_id':event['id'],'name':call['name'],
+                    'call_id':call_id,'arguments':call['arguments'],'result':result})
+                output=json.dumps(result,ensure_ascii=False)
+                histories[actor].append({'type':'function_call_output','call_id':call_id,'output':output})
+                executed_calls.setdefault(actor,set()).add(message['call_id'])
+                agents[actor].reply(message['id'],output=output)
+                export(actor)
+                if world.observation_error is not None:
+                    error=world.observation_error
+                    save(root/'observer-hold.json',{'at':utc(),'actor':actor,'event_id':event['id'],'kind':error.kind,'phase':error.phase,'message':str(error),'model_calls_retried':0,'tool_result_saved':True})
+                    if error.kind=='operator_interrupted':raise KeyboardInterrupt()
+                    raise ObservationHold(str(error))
+            def on_turn_end(actor,message):
+                nonlocal phase2_pending,last_formation_progress
+                state=states[actor];turn=message['turn'];state['steps']=turn
+                folder=root/name/actor/'trace';label=f'{turn:04d}'
+                if message['stop_reason'] in ('error','aborted'):
+                    save(folder/f'{label}.collector-error.json',{'type':message['stop_reason'],
+                        'message':(message['error_message'] or '')[:500],
+                        'transport_attempts':len(turn_records.get((actor,turn),{}).get('attempts',{}))})
+                    record_review({'path':str(folder.relative_to(root)),'label':label,
+                        'status':'provider_error','detail':message['error_message']})
+                    raise Hold(message['error_message'] or message['stop_reason'])
+                if not message['tool_calls']:
+                    # The run ends here; completion handling follows its settlement.
+                    return
+                export(actor);summary=world.summary()
+                update(submitted_reviews=sum(c['submitted_reviews'] for c in summary),shared_files=len(world.shared),events=len(world.events))
+                if not extension.activated and phase2_pending is None:
+                    candidate_gate=formation_review.runtime_formation_evidence(
+                        reg,world.snapshot()
                     )
-                    future=pool.submit(
-                        call,body(histories[actor],state['provider'],toolset),folder,label,
-                        starts[actor]+budget['max_actor_seconds']
-                    )
-                    futures[future]=(actor,step,label,folder)
-                    return True
-                for actor in active.copy():submit(actor)
-                while futures or phase2_pending is not None or publication_pending() or followup_pending():
-                    if followup_pending() and (time.monotonic()>=deadline or any(
-                        time.monotonic()-starts[a]>=budget['max_actor_seconds'] for a in active
-                    )):
-                        raise CampaignLimit('Registered wall-clock limit reached during unfinished-work continuation')
-                    if phase2_pending is None or not observation.ready(time.monotonic()):
-                        for candidate in unfinished_work_due(states,time.monotonic()):
-                            submit(candidate,unfinished_followup=True)
-                    if publication_pending() and time.monotonic()-min(starts.values()) >= publication['after_start_seconds']:
-                        world.publish_final_build()
-                        export()
-                        for candidate in active.copy():
-                            if states[candidate]['status']=='waiting_for_platform_change':
-                                submit(candidate)
-                    if not futures and phase2_pending is None:
-                        if publication_pending() or followup_pending():
-                            time.sleep(1)
-                            continue
-                        break
-                    if phase2_pending is not None and (
-                        time.monotonic()>=deadline or any(
-                            time.monotonic()-starts[a]>=budget['max_actor_seconds'] for a in active
-                        )
-                    ):
-                        raise CampaignLimit('Registered wall-clock limit reached during formation observation')
-                    if not futures and phase2_pending is not None and not observation.ready(time.monotonic()):
-                        # Keep contexts available until their next real update or registered follow-up.
-                        time.sleep(min(1, max(0, observation.ends_at-time.monotonic())))
-                        continue
-                    if not futures and phase2_pending is not None:
-                        if active!=set(plan):
-                            raise ObservationHold(
-                                'Phase 2 activation requires the complete Phase 1 population')
-                        observation_record=load(root/name/'formation-observation.json')
-                        observation_record.update(
-                            finished_at=utc(),
-                            elapsed_seconds=round(time.monotonic()-(observation.ends_at-observation.seconds),2),
-                        )
-                        save(root/name/'formation-observation.json',observation_record)
-                        phase2_activation=extension.activate(
-                            phase2_pending['formation_event']
-                        )
-                        save(root/name/'phase1-gate.json',phase2_pending)
-                        save(root/name/'continuation-activation.json',phase2_activation)
-                        for candidate in active:
-                            histories[candidate].append({
-                                'role':'user','content':extension.task(candidate)
-                            })
-                            states[candidate]['status']='running'
-                            states[candidate]['continuation_assigned_at']=utc()
-                            states[candidate].pop('waiting_since',None)
-                            states[candidate].pop('completion_notice_delivered',None)
-                            delivered_activity_signals[candidate]=activity_signal(candidate)
-                            export(candidate)
-                        phase2_pending=None
-                        update(phase='natural_continuation',formation_gate_passed=True,
-                            active_workers=len(active),inflight_workers=0)
-                        for candidate in active.copy():submit(candidate)
-                        continue
-                    completed_futures,_=wait(tuple(futures),timeout=1,return_when=FIRST_COMPLETED)
-                    if not completed_futures:
-                        continue
-                    future=next(iter(completed_futures))
-                    actor,step,label,folder=futures.pop(future);state=states[actor]
-                    value=future.result();state['steps']=step;histories[actor].extend(value['output'])
-                    calls=[v for v in value['output'] if v['type']=='function_call']
-                    if not calls:
-                        attempt_text=transport.output_text(value);check=current_completion(actor)
-                        if attempt_text and check['complete'] and extension.activated:
-                            cohort_completion.returned(actor,step,attempt_text,
-                                delivered_activity_signals[actor]['revision'])
-                        attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
-                        state['completion_attempts'].append(attempt)
-                        signal=activity_signal(actor)
-                        resume_incomplete=bool(followup_seconds and followup_needed(
-                            state,extension,check,signal))
-                        if resume_incomplete:
-                            state['unfinished_followup_at']=time.monotonic()+followup_seconds
-                        save(folder/f'{label}-completion-state.json',{
-                            'kind':('dormant_after_completion_attempt' if check['complete']
-                                else 'dormant_after_incomplete_final'),'attempt':attempt,
-                            'platform_revision':signal['revision'],
-                            'input_message':None,
-                            'continuation_scheduled':resume_incomplete,
-                            'unchanged_followup_suppressed':bool(
-                                followup_seconds and unfinished_work_remaining(check)
-                                and not resume_incomplete),
-                            'work_revision':work_revision(extension,check,signal),
-                            'unfinished_work_followup_seconds':followup_seconds if resume_incomplete else None,
-                            'waiting_for_relevant_platform_change':True,
-                            'context_and_work_preserved':True,
-                            'solution_hint':False,
-                            'peer_or_communication_hint':False,
+                    milestone=formation_progress(candidate_gate)
+                    if milestone != last_formation_progress:
+                        row={'at':utc(),'event':world.events[-1]['id'],**milestone}
+                        save(root/name/'phase1-progress.json',row)
+                        with (root/name/'phase1-progress.jsonl').open('a') as log:
+                            log.write(json.dumps(row,sort_keys=True)+'\n')
+                        last_formation_progress=milestone
+                    if candidate_gate['passed']:
+                        phase2_pending=candidate_gate
+                        observation.record(candidate_gate,time.monotonic())
+                        save(root/name/'phase1-gate.json',candidate_gate)
+                        save(root/name/'formation-observation.json',{
+                            'started_at':utc(),
+                            'duration_seconds':observation.seconds,
+                            'first_formation_event':candidate_gate['formation_event'],
+                            'subject_notification':False,
                         })
-                        export(actor);summary=world.summary()
-                        update(completion_attempts=sum(len(value.get('completion_attempts',[])) for value in states.values()),
-                            submitted_reviews=sum(c['submitted_reviews'] for c in summary),
-                            shared_files=len(world.shared),events=len(world.events))
-                        if phase2_pending is not None and observation.ready(time.monotonic()):
-                            state['status']='waiting_for_platform_change';state['waiting_since']=utc()
-                            export(actor)
-                        elif signal['revision']!=delivered_activity_signals[actor]['revision']:
-                            submit(actor)
-                        else:
-                            state['status']='waiting_for_platform_change';state['waiting_since']=utc()
-                            export(actor)
-                            update(waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
-                                inflight_workers=len(futures))
-                        continue
-                    for index,call in enumerate(calls,1):
-                        state['tools']+=1
-                        try:args=json.loads(call['arguments']) if len(call['arguments'].encode())<=140000 else None
-                        except (ValueError,TypeError):args=None
-                        extension_names=(
-                            {tool['name'] for tool in continuation_module.tool_definitions()}
-                            if extension.activated else set()
-                        )
-                        result=(
-                            extension.call(actor,step,call['name'],args)
-                            if call['name'] in extension_names
-                            else world.call(actor,step,call['name'],args)
-                        );event=world.events[-1]
-                        save(folder/f'{label}-tool-{index}.json',{'event_id':event['id'],'name':call['name'],'arguments':call['arguments'],'result':result})
-                        histories[actor].append({'type':'function_call_output','call_id':call['call_id'],'output':json.dumps(result,ensure_ascii=False)})
+                        update(phase='formation_observation',formation_gate_passed=True,
+                            formation_event=candidate_gate['formation_event'])
+                if phase2_pending is not None and observation.ready(time.monotonic()):
+                    return
+                wake_waiting()
+                submit(actor)
+            def on_settled(actor,message):
+                state=states[actor]
+                if message['turn'] in (0,state.get('last_settled_turn')):
+                    return
+                state['last_settled_turn']=message['turn'];running.discard(actor)
+                step=state['steps'];label=f'{step:04d}';folder=root/name/actor/'trace'
+                attempt_text=message['text'];check=current_completion(actor)
+                if attempt_text and check['complete'] and extension.activated:
+                    cohort_completion.returned(actor,step,attempt_text,
+                        delivered_activity_signals[actor]['revision'])
+                attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
+                state['completion_attempts'].append(attempt)
+                signal=activity_signal(actor)
+                resume_incomplete=bool(followup_seconds and followup_needed(
+                    state,extension,check,signal))
+                if resume_incomplete:
+                    state['unfinished_followup_at']=time.monotonic()+followup_seconds
+                save(folder/f'{label}-completion-state.json',{
+                    'kind':('dormant_after_completion_attempt' if check['complete']
+                        else 'dormant_after_incomplete_final'),'attempt':attempt,
+                    'platform_revision':signal['revision'],
+                    'input_message':None,
+                    'continuation_scheduled':resume_incomplete,
+                    'unchanged_followup_suppressed':bool(
+                        followup_seconds and unfinished_work_remaining(check)
+                        and not resume_incomplete),
+                    'work_revision':work_revision(extension,check,signal),
+                    'unfinished_work_followup_seconds':followup_seconds if resume_incomplete else None,
+                    'waiting_for_relevant_platform_change':True,
+                    'context_and_work_preserved':True,
+                    'solution_hint':False,
+                    'peer_or_communication_hint':False,
+                })
+                export(actor);summary=world.summary()
+                update(completion_attempts=sum(len(value.get('completion_attempts',[])) for value in states.values()),
+                    submitted_reviews=sum(c['submitted_reviews'] for c in summary),
+                    shared_files=len(world.shared),events=len(world.events))
+                if phase2_pending is not None and observation.ready(time.monotonic()):
+                    wait(actor)
+                elif signal['revision']!=delivered_activity_signals[actor]['revision']:
+                    if not submit(actor):wait(actor)
+                else:
+                    wait(actor)
+                    update(waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
+                        inflight_workers=len(running))
+            def handle(actor,message):
+                kind=message['type']
+                if kind=='request':on_request(actor,message)
+                elif kind=='provider_response':on_response(actor,message)
+                elif kind=='tool_call':on_tool_call(actor,message)
+                elif kind=='turn_end':on_turn_end(actor,message)
+                elif kind=='settled':
+                    if not message['aborted']:on_settled(actor,message)
+                elif kind=='tool_result_error':
+                    if message['call_id'] not in executed_calls.get(actor,set()):
+                        states[actor]['harness_rejected_tool_calls'].append({**message,'at':utc()})
                         export(actor)
-                        if world.observation_error is not None:
-                            error=world.observation_error
-                            save(root/'observer-hold.json',{'at':utc(),'actor':actor,'event_id':event['id'],'kind':error.kind,'phase':error.phase,'message':str(error),'model_calls_retried':0,'tool_result_saved':True})
-                            if error.kind=='operator_interrupted':raise KeyboardInterrupt()
-                            raise ObservationHold(str(error))
-                    export(actor);summary=world.summary()
-                    update(submitted_reviews=sum(c['submitted_reviews'] for c in summary),shared_files=len(world.shared),events=len(world.events))
-                    if not extension.activated and phase2_pending is None:
-                        candidate_gate=formation_review.runtime_formation_evidence(
-                            reg,world.snapshot()
-                        )
-                        milestone=formation_progress(candidate_gate)
-                        if milestone != last_formation_progress:
-                            row={'at':utc(),'event':world.events[-1]['id'],**milestone}
-                            save(root/name/'phase1-progress.json',row)
-                            with (root/name/'phase1-progress.jsonl').open('a') as log:
-                                log.write(json.dumps(row,sort_keys=True)+'\n')
-                            last_formation_progress=milestone
-                        if candidate_gate['passed']:
-                            phase2_pending=candidate_gate
-                            observation.record(candidate_gate,time.monotonic())
-                            save(root/name/'phase1-gate.json',candidate_gate)
-                            save(root/name/'formation-observation.json',{
-                                'started_at':utc(),
-                                'duration_seconds':observation.seconds,
-                                'first_formation_event':candidate_gate['formation_event'],
-                                'subject_notification':False,
-                            })
-                            update(phase='formation_observation',formation_gate_passed=True,
-                                formation_event=candidate_gate['formation_event'])
-                    if phase2_pending is not None and observation.ready(time.monotonic()):
-                        state['status']='waiting_for_platform_change'
-                        state['waiting_since']=utc();export(actor)
-                        continue
+                elif kind=='extension_error':
+                    states[actor]['extension_errors'].append({'at':utc(),'error':message['error']})
+                    print(json.dumps({'alert':'extension_error','actor':actor,'error':message['error']}),flush=True)
+                    export(actor)
+                elif kind in ('fatal','exited','closed'):
+                    raise RuntimeError(f'Pi agent {actor} stopped: {message}')
+                else:
+                    raise RuntimeError(f'Unknown Pi agent event: {message}')
+            def next_event(timeout=1):
+                try:
+                    actor,message=events.get(timeout=timeout)
+                except pi_agent.Empty:
+                    return
+                handle(actor,message)
+            for actor in active.copy():submit(actor)
+            while running or phase2_pending is not None or publication_pending() or followup_pending():
+                if any(not within_limits(actor) for actor in running) or (
+                    (followup_pending() or phase2_pending is not None) and not all(within_limits(a) for a in active)):
+                    raise CampaignLimit('Registered wall-clock limit reached')
+                if phase2_pending is None or not observation.ready(time.monotonic()):
+                    for candidate in unfinished_work_due(states,time.monotonic()):
+                        if not submit(candidate,unfinished_followup=True):
+                            states[candidate].pop('unfinished_followup_at',None)
+                if publication_pending() and time.monotonic()-min(starts.values()) >= publication['after_start_seconds']:
+                    world.publish_final_build()
+                    export()
                     for candidate in active.copy():
-                        if states[candidate]['status']!='waiting_for_platform_change':
-                            continue
-                        check=current_completion(candidate)
-                        signal=activity_signal(candidate)
-                        completion_changed=(extension.activated and check['complete']
-                            and not states[candidate].get('completion_notice_delivered'))
-                        if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
+                        if states[candidate]['status']=='waiting_for_platform_change':
                             submit(candidate)
-                    submit(actor)
-                complete_together=cohort_completion.ready(
-                    extension.activated and extension.all_complete(),len(futures),
-                    {actor:activity_signal(actor)['revision'] for actor in active})
-                if complete_together:
-                    termination_reason='business_complete'
-                    with state_lock:progress['completed_workers']+=len(active)
-                    save(root/name/'cohort-completion.json',{
-                        'at':utc(),'actors':sorted(active),
-                        'all_requests_finished':True,'all_latest_revisions_answered':True,
-                        'global_work_complete':True,'early_context_closure':False})
-                for actor in active.copy():
-                    state=states[actor]
-                    if state['status']=='waiting_for_platform_change':
-                        state['status']='completed' if complete_together else 'quiescent'
-                        if complete_together:
-                            final=cohort_completion.finals[actor]
-                            state['final']=final['text']
-                            world.record_final(actor,final['step'],state['final'])
-                        state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
-                        world.close_actor(actor);export(actor);active.remove(actor)
+                if phase2_pending is None and not running:
+                    if publication_pending() or followup_pending():
+                        next_event();continue
+                    break
+                if phase2_pending is not None and not observation.ready(time.monotonic()):
+                    # Keep contexts available until their next real update or registered follow-up.
+                    next_event(min(1, max(0.05, observation.ends_at-time.monotonic())));continue
+                if phase2_pending is not None:
+                    # Running contexts receive Phase 2 through Pi's queue at their next turn.
+                    if active!=set(plan):
+                        raise ObservationHold(
+                            'Phase 2 activation requires the complete Phase 1 population')
+                    observation_record=load(root/name/'formation-observation.json')
+                    observation_record.update(
+                        finished_at=utc(),
+                        elapsed_seconds=round(time.monotonic()-(observation.ends_at-observation.seconds),2),
+                    )
+                    save(root/name/'formation-observation.json',observation_record)
+                    phase2_activation=extension.activate(
+                        phase2_pending['formation_event']
+                    )
+                    save(root/name/'phase1-gate.json',phase2_pending)
+                    save(root/name/'continuation-activation.json',phase2_activation)
+                    for candidate in active:
+                        pending_texts[candidate]=[extension.task(candidate)]
+                        pending_tools[candidate]=[tool['name'] for tool in lab.tools(plan[candidate])]+phase2_tool_names
+                        states[candidate]['status']='running'
+                        states[candidate]['continuation_assigned_at']=utc()
+                        states[candidate].pop('waiting_since',None)
+                        states[candidate].pop('completion_notice_delivered',None)
+                        delivered_activity_signals[candidate]=activity_signal(candidate)
+                        export(candidate)
+                    phase2_pending=None
+                    update(phase='natural_continuation',formation_gate_passed=True,
+                        active_workers=len(active),inflight_workers=len(running))
+                    for candidate in active.copy():
+                        require(submit(candidate),'Phase 2 assignment was not delivered')
+                    continue
+                next_event()
+            complete_together=cohort_completion.ready(
+                extension.activated and extension.all_complete(),len(running),
+                {actor:activity_signal(actor)['revision'] for actor in active})
+            if complete_together:
+                termination_reason='business_complete'
+                with state_lock:progress['completed_workers']+=len(active)
+                save(root/name/'cohort-completion.json',{
+                    'at':utc(),'actors':sorted(active),
+                    'all_requests_finished':True,'all_latest_revisions_answered':True,
+                    'global_work_complete':True,'early_context_closure':False})
+            for actor in active.copy():
+                state=states[actor]
+                if state['status']=='waiting_for_platform_change':
+                    state['status']='completed' if complete_together else 'quiescent'
+                    if complete_together:
+                        final=cohort_completion.finals[actor]
+                        state['final']=final['text']
+                        world.record_final(actor,final['step'],state['final'])
+                    state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
+                    world.close_actor(actor);export(actor);active.remove(actor)
         except BaseException as error:
             termination_reason=('campaign_limit' if isinstance(error,CampaignLimit)
                 else 'provider_hold' if isinstance(error,Hold)
                 else 'operator_interrupted' if isinstance(error,KeyboardInterrupt)
                 else 'collector_error')
             for actor,state in states.items():
-                if state['status']=='running':
+                if state['status'] in ('running','starting'):
                     state['status']='interrupted';state['interrupted_at']=utc();export(actor)
             raise
         finally:
+            for actor,agent in agents.items():
+                states[actor]['pi_exit_code']=agent.close()
             finish_actor_states(states,starts,reason=termination_reason,
                                 finished_at=utc(),now=time.monotonic())
             for actor in states:export(actor)
             cleanup.extend({'phase':name,**item} for item in world.close());export()
             save(root/name/'actors.json',states)
         return states,world.summary()
-    save(root/'started.json',{'at':utc(),'pid':__import__('os').getpid()})
-    try:
+    def preflight(provider,model):
+        """One tool round trip through the registered Pi harness and route."""
+        folder=root/'preflight'/provider;events=pi_agent.new_queue();calls=[];final=None
         tool={'type':'function','name':'confirm_service','description':'Return the service status.',
             'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False},'strict':True}
-        for provider,model in reg['models'].items():
-            history=[{'role':'user','content':'Check service availability using confirm_service.'}]
-            request=body(history,provider);request['tools']=[tool]
-            first=infer(request,root/'preflight'/provider,'0001');calls=[v for v in first['output'] if v['type']=='function_call']
+        agent=pi_agent.PiAgent('preflight',events,folder=folder/'pi',model=model,
+            api_base=registration_api_base(reg),api_key=api_key,thinking_level=reg['reasoning'],
+            max_output_tokens=budget['max_output_tokens_per_response'],
+            context_window=harness['context_window'],
+            request_timeout_ms=budget['request_timeout_seconds']*1000,
+            tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off')
+        try:
+            pi_agent.wait_ready(events,['preflight'])
+            agent.prompt('Check service availability using confirm_service.')
+            limit=time.monotonic()+3*budget['request_timeout_seconds']
+            while final is None:
+                try:_,message=events.get(timeout=max(1,limit-time.monotonic()))
+                except pi_agent.Empty:raise Hold('Model preflight did not settle') from None
+                kind=message['type'];label=f"{message.get('turn',0):04d}"
+                if kind=='request':
+                    save(folder/f"{label}-{message['attempt']:04d}.request.json",message['payload'])
+                    with state_lock:progress['model_requests_started']+=1
+                elif kind=='provider_response':
+                    event=message['event'];save(folder/f"{label}-{message['attempt']:04d}.response.json",event)
+                    value=event.get('response',event)
+                    if event['type']!='response.completed':
+                        record_attempt({'path':str(folder.relative_to(root)),'attempt':message['attempt'],
+                            'status':'failed','classification':monitor.classify(value,True),'at':utc()})
+                        continue
+                    validate_response_model({'model':model},value)
+                    classification=monitor.classify(value)
+                    record_attempt({'path':str(folder.relative_to(root)),'attempt':message['attempt'],
+                        'status':'completed','classification':classification,'at':utc()})
+                    record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
+                    if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
+                    calls.extend(item for item in value.get('output',[]) if item.get('type')=='function_call')
+                elif kind=='tool_call':agent.reply(message['id'],output='{"status":"available"}')
+                elif kind=='turn_end':
+                    if message['stop_reason'] in ('error','aborted'):raise Hold(message['error_message'] or message['stop_reason'])
+                elif kind=='settled':final=message['text']
+                elif kind in ('fatal','exited','closed'):raise RuntimeError(f'Pi preflight stopped: {message}')
             require(
                 len(calls)==1 and calls[0]['name']=='confirm_service'
                 and empty_tool_arguments(calls[0]['arguments']),
                 'Model preflight did not call confirm_service exactly once.')
-            history+=first['output']+[{'type':'function_call_output','call_id':calls[0]['call_id'],'output':'{"status":"available"}'}]
-            request=body(history,provider);request['tools']=[tool];second=infer(request,root/'preflight'/provider,'0002')
-            require(bool(transport.output_text(second)),
-                'Model preflight did not return a terminal text response.')
-            save(root/'preflight'/provider/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning']})
+            require(bool(final),'Model preflight did not return a terminal text response.')
+            save(folder/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning'],
+                'harness':'pi-sdk','pi_version':harness['pi_version']})
+        finally:
+            agent.close()
+    save(root/'started.json',{'at':utc(),'pid':__import__('os').getpid()})
+    try:
+        for provider,model in reg['models'].items():
+            preflight(provider,model)
         states,summary=phase('natural')
         update(status='collected' if len(states)==len(reg['plan']['natural']) and all(v['status']=='completed' for v in states.values()) else 'collected_with_limits')
     except ObservationHold as error:update(status='observer_hold',error=str(error))
@@ -1459,6 +1556,8 @@ if __name__=='__main__':
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     p.add_argument('--completion-incentive', choices=('none', 'gpu-upgrade'), default='none',
         help='Maintenance comparison only: a synthetic Phase 2 completion reward; no actual GPU grant.')
+    p.add_argument('--goal-mode',choices=pi_agent.GOAL_MODES,default='off',
+        help='off sends the task as a plain prompt; goal_command sends it as /goal through pi-goal.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     a=p.parse_args()
@@ -1478,5 +1577,5 @@ if __name__=='__main__':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
             filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
-            completion_incentive=a.completion_incentive)
+            completion_incentive=a.completion_incentive,goal_mode=a.goal_mode)
     else:collect(root,registration_dir)
