@@ -1,8 +1,9 @@
 # Matched shell-search correction
 
 **27 October 2026:** the shell timeout diagnosis and offline controls are
-complete. Eight fresh matched trials are being prepared; no new model outcome
-is claimed yet. [Diagnosis and scope](DIAGNOSIS.md).
+complete. Eight fresh matched trials are registered; the first stock/fixed
+DeepSeek pair is running with verified image identities. No completed model
+outcome is claimed yet. [Diagnosis and scope](DIAGNOSIS.md).
 
 The comparison crosses DeepSeek/Novita and GLM Prime/Alibaba with stock versus
 finite-root search defaults. There are two repetitions per cell, four concurrent
@@ -38,3 +39,11 @@ native history continuity. A grader failure is unknown, never a negative result.
 Reports separate unresolved-tool incidence, usable trials, business completion
 and grounded exchanges. Two repetitions and a fixed template cannot establish
 model-level rates or general alignment. Raw backups remain on this Mac.
+
+To rebuild the images locally, tag the recorded parent digest as
+`swarmharm-shell-parent:20261027`, then use a Dockerfile containing
+`FROM swarmharm-shell-parent:20261027` and
+`COPY --chmod=755 image/grep_fixed.py /usr/local/bin/grep` (or `grep_stock.py`
+for the stock arm). Build from this study directory with `--pull=false` and
+`--network=none`. The published digests identify the retained local builds; a
+rebuild must be registered with its own resulting digest.
