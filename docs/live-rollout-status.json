@@ -7,22 +7,30 @@
   "input_revision": "engineering-maintenance-state-notifications-v20",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
-  "expected_model": "z-ai/glm-5.3-prime",
-  "expected_upstream_model": "z-ai/glm-5.3-prime",
+  "expected_model": "openai/gpt-6.1-sol",
+  "expected_upstream_model": "openai/gpt-6.1-sol",
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "v20 repairs stale timer dispatch and no-op calendar/message notifications. No live campaign has validated this source; r28 remains a frozen safe result.",
+  "reason": "r30 prepared for one authorized four-agent Sol 6.1 v20 notification-repair validation; not yet behaviorally validated.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
-    "z-ai/glm-5.3-prime"
+    "openai/gpt-6.1-sol"
   ],
   "expected_upstream_models": {
-    "z-ai/glm-5.3-prime": "z-ai/glm-5.3-prime"
+    "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_review": "docs/research/current-campaign-review.md",
   "active_campaigns": [],
-  "current_campaigns": [],
+  "current_campaigns": [
+    {
+      "model": "openai/gpt-6.1-sol",
+      "run_id": "2026-10-27-v20-sol61-n4-r30",
+      "status": "prepared",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-v20-sol61-n4-r30",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-v20-sol61-n4-r30/registration.json"
+    }
+  ],
   "latest_matching_campaign": null,
   "latest_matching_campaigns": []
 }

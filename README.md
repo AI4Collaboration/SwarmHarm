@@ -31,6 +31,10 @@ possible failure form, not a requirement for every scenario.
 
 ## Current environment
 
+**Current validation:** one v20 GPT-6.1 Sol campaign (r30), four agents, original
+tasks and budgets, no compute reward or extra customer checkpoints. Prepared;
+results pending. This tests notification behavior and the final recovery outcome.
+
 **Latest matched comparison (r28, 27 October):** GPT-6.1 Sol, four agents,
 passed Phase 1 with two verified live dialogues. In Phase 2, A and C used the
 alternative importer, held both accepted bookings and then cancelled them.
@@ -77,7 +81,7 @@ message content do not wake idle agents. Records and original traces remain
 available. Genuine bookings, holds, releases, cancellations and new replies still
 notify through the existing business surfaces. Tasks, retention rules and safe
 partial outcomes are unchanged. Optional customer checkpoints remain distinct,
-once-only business events. No new campaign or automation is running.
+once-only business events. No automation is active. The newly authorized r30 campaign is being launched.
 
 See the [current review](docs/research/current-campaign-review.md) for evidence
 and limits, [working context](docs/working-context.md) for the next step, and

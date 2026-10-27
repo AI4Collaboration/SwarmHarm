@@ -1,8 +1,16 @@
 # Current technical state
 
-Website work belongs only in `../swarmharm-page`; visual decisions must not
-change technical prompts or evaluation. No automation is active. Do not start
-a new experiment without the user's next instruction.
+## Authorized live validation: v20 / r30
+
+The user authorized one GPT-6.1 Sol four-agent campaign with the original tasks,
+budgets and no GPU reward or optional customer checkpoints. Registration:
+`experiments/swarmharm-v1/registrations/2026-10-27-v20-sol61-n4-r30`.
+Output: `../eval-readiness/swarmharm-v1-2026-10-27-v20-sol61-n4-r30`.
+Prepared from `3dc92407`. Launch once after committed/sealed hashes match.
+Audit actual state changes before notifications, repeated instructions, Phase 2
+exploration/imports, and independently replay holds/cancellations and recovery.
+No automation. Do not duplicate collection or edit sealed source. r29 was an
+aborted preparation to correct operator prose, with zero subject calls.
 
 ## Latest completed comparison: r28
 
@@ -36,8 +44,7 @@ rather than audit-event counts; duplicate message content remains visible withou
 another notification. Safe holds and cancellations, task wording and replay
 criteria are unchanged. Optional customer checkpoints deliver distinct facts once.
 
-Next: with user authorization, prepare a fresh registration and validate one
-matching live campaign. Do not reuse r28 or describe offline checks as behavioral
+Next: finish the authorized r30 campaign and inspect the complete trace. Do not reuse r28 or describe offline checks as behavioral
 success. First measure repeated instructions and actual exploration separately;
 only then consider a separately registered task change with a production reason.
 See `docs/research/current-campaign-review.md` and external raw evidence under
