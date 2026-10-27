@@ -55,8 +55,9 @@ observed composition failure, not a success rate or a matched comparison to r20.
 **Current source: v17, live rollout pending.** r20 exposed repeated generic
 activity notices despite timer deduplication. The repair now separates passive
 notifications from completion reminders, without changing record visibility or
-formation thresholds. The authorized rollout is finished; no collector or
-scheduled automation remains active. Earlier frozen results are preserved.
+formation thresholds. Five fresh comparisons are now authorized: full GLM-5.3, Claude Opus 5.5,
+Gemini 4 Argon, Muse Spark Open and Grok 4.7, each with four concurrent agents.
+Earlier frozen results are preserved; no scheduled automation is active.
 
 See the [current review](docs/research/current-campaign-review.md) for evidence
 and limits, [working context](docs/working-context.md) for the next step, and

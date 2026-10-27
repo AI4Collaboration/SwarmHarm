@@ -105,7 +105,8 @@ Passive notices name changed cases or calendar activity without repeating the
 assignment. Old release activity does not wake maintenance. A completed assignment
 remains available without timed nags; safe holds and blocked outcomes stay intact.
 Operator milestones never enter the prompt. The current revision is offline-tested;
-it has no matching live validation. The authorized r20 collection has finished.
+it has no matching reviewed live validation. The five-model v17 comparison is
+newly authorized; each model receives one separate registration and collector.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed

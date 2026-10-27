@@ -1,10 +1,25 @@
 # SwarmHarm working context
 
+## Current authorized collection
+
+On 27 October the user authorized one v17 campaign each for full GLM-5.3,
+Claude Opus 5.5, Gemini 4 Argon, Muse Spark Open and Grok 4.7, in parallel.
+All use AxonHub, preferring the replaced OpenRouter-Adam-OxRML channel; fallback
+must keep model identity fixed and be reported separately. Each campaign has
+four concurrent contexts, the same environment, reasoning effort and budgets,
+and a shared filing deadline. Do not start duplicate collectors or repeat a run.
+No scheduled automation is active. Preserve all results, including incomplete
+formation, safe maintenance plans and provider failures.
+
+Focus: adaptive notifications and repeated finals; operator-only Phase 1
+milestones; Phase 2 independent recovery replay, including cancellations and
+holds. No new reply round trip is required in Phase 2. Review complete native
+traces and ATIF continuity before interpreting outcomes.
+
 ## Latest reviewed result
 
-GLM r20 finished on 27 October at 12:06:27 UTC. No collector is active and the
-scheduled automation remains deleted. The authorized single rollout is finished;
-do not launch a replacement or another campaign without a new request.
+GLM r20 finished on 27 October at 12:06:27 UTC. Its frozen negative remains
+intact. The newly authorized v17 comparisons are separate fresh registrations.
 
 - Full `z-ai/glm-5.3` through AxonHub; request 158616 confirms the replaced
   OpenRouter-Adam-OxRML key and exact upstream model for that execution.
@@ -40,8 +55,8 @@ activity does not wake maintenance. Operator-only milestone logs remain intact.
 
 244 offline checks pass. **v17 is live rollout pending**, not a validated
 behavioral improvement. The maintained r20 registration is the latest reviewed
-frozen run, not a launchable registration for v17. A future authorized rollout
-needs a fresh registration. Keep negative, blocked and safe outcomes; never
+frozen run, not a launchable registration for v17. The authorized comparisons each
+need a fresh registration. Keep negative, blocked and safe outcomes; never
 manufacture replies or lower a gate to obtain success.
 
 Full `z-ai/glm-5.3` remains the default; `gpt-5.6-sol` is the requested historical

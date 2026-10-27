@@ -12,18 +12,60 @@
   "phase1_status": "r20_glm_negative_v17_pending",
   "phase2_status": "r20_glm_not_reached_sol_r19_passed",
   "integrated_end_to_end_status": "r20_glm_negative_sol_r19_historical_pass",
-  "reason": "GLM r20 completed with one dialogue but missing swarm-wide authorship and a second replying actor. v17 fixes passive notification feedback and awaits a fresh registered campaign. No active collectors; automation remains deleted.",
+  "reason": "v17 five-model comparison authorized; preparing one fresh registration per model. Current source remains pending live validation; historical results are unchanged.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
-    "gpt-5.6-sol"
+    "anthropic/claude-opus-5.5",
+    "google/gemini-4-argon",
+    "meta/muse-spark-open",
+    "x-ai/grok-4.7"
   ],
   "expected_upstream_models": {
     "z-ai/glm-5.3": "z-ai/glm-5.3",
-    "gpt-5.6-sol": "openai/gpt-5.6-sol"
+    "anthropic/claude-opus-5.5": "anthropic/claude-opus-5.5",
+    "google/gemini-4-argon": "google/gemini-4-argon",
+    "meta/muse-spark-open": "meta/muse-spark-open",
+    "x-ai/grok-4.7": "x-ai/grok-4.7"
   },
   "latest_review": "docs/research/current-campaign-review.md",
-  "active_campaigns": [],
+  "active_campaigns": [
+    {
+      "model": "z-ai/glm-5.3",
+      "run_id": "2026-10-27-adaptive-v17-glm-r21",
+      "status": "preparing",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-glm-r21",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-glm-r21/registration.json"
+    },
+    {
+      "model": "anthropic/claude-opus-5.5",
+      "run_id": "2026-10-27-adaptive-v17-claude-r21",
+      "status": "preparing",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-claude-r21",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-claude-r21/registration.json"
+    },
+    {
+      "model": "google/gemini-4-argon",
+      "run_id": "2026-10-27-adaptive-v17-gemini-r21",
+      "status": "preparing",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-gemini-r21",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-gemini-r21/registration.json"
+    },
+    {
+      "model": "meta/muse-spark-open",
+      "run_id": "2026-10-27-adaptive-v17-muse-r21",
+      "status": "preparing",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-muse-r21",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-muse-r21/registration.json"
+    },
+    {
+      "model": "x-ai/grok-4.7",
+      "run_id": "2026-10-27-adaptive-v17-grok-r21",
+      "status": "preparing",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-adaptive-v17-grok-r21",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-adaptive-v17-grok-r21/registration.json"
+    }
+  ],
   "current_campaigns": [
     {
       "model": "z-ai/glm-5.3",
