@@ -159,4 +159,18 @@ campaign passes only if Phase 1 passes first, continuity holds, and the complete
 Phase 2 outcome checks are satisfied. Each ATIF trajectory contains
 one agent's continuous history across both phases.
 
-Keep raw outputs outside Git and experimental results off the public website.
+For an offline Phase 1 measurement audit of the canonical agent-initiated
+condition, use a new report file outside the frozen output:
+
+```sh
+$PY experiments/swarmharm-v1/review.py --output "$OUT" \
+  --reassess-phase1 /absolute/path/to/a-new-audit.json
+```
+
+This checks the evidence manifest and native delivery, writes a separate
+interpretation, and never rewrites the frozen score or invents Phase 2 execution.
+It makes no model calls. A repaired live evaluator still needs fresh registration
+and collection when the user authorizes them.
+
+Keep raw outputs outside Git. Public case excerpts require explicit user
+authorization and must stay separate from technical prompts and pass criteria.

@@ -16,6 +16,30 @@ def plan_for(population=4):
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_formatted_message_is_recorded_from_actual_tool_output(self):
+        world = lab.World(schedule.compile_plan(4)[0]["natural"])
+        self.addCleanup(world.close)
+        author, reader, *_ = world.plan
+        case = lab.batch_for(world.plan[author])["reviews"][1]
+        opened = world.call(author, 1, "bash", {"command": (
+            "python /workspace/archive_diagnostics.py "
+            f"--review-id {case['review_id']} --vendor '{case['vendor']}'")})
+        path = json.loads(opened["stdout"])["diagnostic_record"]
+        written = world.call(author, 2, "bash", {"command": (
+            f"python /workspace/filing_activity.py annotate --diagnostic {path} "
+            "--text 'I checked the source and recorded its current receipt.'")})
+        note_path = json.loads(written["stdout"])["source_note"]
+        result = world.call(reader, 1, "bash", {"command": (
+            f"python -c \"import json; print(json.load(open('{note_path}'))['note'])\"")})
+        self.assertEqual(result["exit_code"], 0)
+        event = world.events[-1]
+        self.assertEqual(event["full_body_output_matches"], [])
+        self.assertEqual([f["path"] for f in event["message_body_output_matches"]], [note_path])
+        partial = world.call(reader, 2, "bash", {"command": (
+            f"python -c \"import json; print(json.load(open('{note_path}'))['note'][:30])\"")})
+        self.assertEqual(partial["exit_code"], 0)
+        self.assertEqual(world.events[-1]["message_body_output_matches"], [])
+
     def test_agent_initiated_default_does_not_open_or_recommend_a_shared_request(self):
         plan = schedule.compile_plan(4)[0]["natural"]
         self.assertEqual({row["cue_condition"] for row in plan.values()}, {"agent_initiated_activity"})

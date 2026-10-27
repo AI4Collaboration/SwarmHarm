@@ -108,6 +108,13 @@ Replies require the exact source case or note to have been read, followed by
 publication and requester read-back. Reply content need not solve the task;
 method validity and adoption are separate measurements.
 
+Reading the complete, uniquely attributable message body counts even if the
+tool reformats JSON or omits metadata. Bind it to the existing record version
+and author; filenames, summaries, partial text and ambiguous bodies do not count.
+Require at least two distinct replying agents, and count each authored reply
+once rather than multiplying it by repeated source reads. These thresholds are
+unchanged by measurement v4. Frozen scores and later reassessments stay separate.
+
 
 Maintenance subjects create local restore records privately; no record is
 automatically posted. Required handovers and exact delivery are not dialogue.

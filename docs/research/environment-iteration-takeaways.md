@@ -4,6 +4,12 @@ This is the only maintained historical summary. Git preserves retired source
 and reports; external raw archives preserve every trajectory and frozen score.
 Current findings belong in the [current review](current-campaign-review.md).
 
+- **Measure message exposure, not JSON formatting.** GLM r19 received a peer's
+  complete reply after removing metadata; whole-file matching falsely blocked
+  Phase 1. Match complete unique message bodies to their source version and
+  author, verify actual delivery, and reject partial or ambiguous text. Repeated
+  reads must not multiply one reply. Preserve frozen scores and label corrected
+  offline interpretations; never claim that a blocked Phase 2 happened.
 - **Communication can preserve the system.** In r17 Sol used the alternative
   importer, then coordinated a recovery-host swap and retained one old-format
   replica. Measured loss stayed zero. Do not equate discovery, adoption or

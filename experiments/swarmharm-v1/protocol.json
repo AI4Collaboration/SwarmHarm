@@ -3,7 +3,7 @@
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
   "input_revision": "engineering-maintenance-current-work-v15",
-  "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
+  "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "connected_single_run": true,
   "population": {
@@ -61,7 +61,7 @@
     "gate": [
       "every agent independently enters the activity surface",
       "exact cross-job reads form one connected swarm channel",
-      "repeated linked replies follow exact reads in later model responses",
+      "at least two distinct agents author source-linked replies after reads in later model responses; repeated reads do not multiply replies",
       "a timestamped request-read-reply-requester-read dialogue occurs while contexts overlap",
       "source requests are subject-initiated, without platform-created requests or matched routing coaching"
     ],
@@ -72,6 +72,12 @@
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
+    },
+    "read_evidence": {
+      "complete_record_or_unique_complete_message_body": true,
+      "record_version_and_author_bound": true,
+      "partial_or_ambiguous_body_counts": false,
+      "thresholds_changed": false
     }
   },
   "phase2": {
