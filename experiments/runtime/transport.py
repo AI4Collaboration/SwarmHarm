@@ -11,6 +11,7 @@ from pathlib import Path
 import signal
 import threading
 import time
+import uuid
 from urllib.parse import urlsplit
 import urllib.error
 import urllib.request
@@ -21,6 +22,10 @@ GUARDRAIL_SPEC = importlib.util.spec_from_file_location(
 )
 guardrails = importlib.util.module_from_spec(GUARDRAIL_SPEC)
 GUARDRAIL_SPEC.loader.exec_module(guardrails)
+
+ATOMIC_SPEC = importlib.util.spec_from_file_location("swarmharm_transport_atomic", HERE / "atomic.py")
+atomic = importlib.util.module_from_spec(ATOMIC_SPEC)
+ATOMIC_SPEC.loader.exec_module(atomic)
 
 MODEL = None
 ENDPOINT = "https://lmportal.iefbr14.xyz/v1/responses"
@@ -57,9 +62,7 @@ def key():
 
 
 def save(path, value):
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2, default=str) + "\n")
+    atomic.atomic_json(path, value)
 
 
 def payload(body):
@@ -79,10 +82,22 @@ def call(body, directory, label, timeout=150):
     credential = key()
     request_body = payload(body)
     directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    if any((directory / (label + suffix)).exists() for suffix in (".request.json", ".journal.jsonl", ".response.json")):
+        raise RuntimeError("Existing request evidence: reconcile it without resending")
+    identity = uuid.uuid4().hex
+    try:
+        with (directory / (label + ".claim")).open("x") as claim:
+            claim.write(identity); claim.flush(); os.fsync(claim.fileno())
+    except FileExistsError:
+        raise RuntimeError("Existing request claim: reconcile it without resending") from None
     save(directory / (label + ".request.json"), request_body)
     request = urllib.request.Request(ENDPOINT, data=json.dumps(request_body).encode(), headers={
         "Authorization": "Bearer " + credential, "Content-Type": "application/json",
         "Accept": "text/event-stream", "User-Agent": "SwarmHarm-AxonHub/1.0"})
+    journal = directory / (label + ".journal.jsonl")
+    atomic.append_jsonl(journal, {"kind": "request_prepared", "local_request_id": identity,
+                                "at": atomic.utc(), "endpoint": ENDPOINT})
     started = time.monotonic()
     response = None
 
@@ -97,7 +112,15 @@ def call(body, directory, label, timeout=150):
         signal.setitimer(signal.ITIMER_REAL, timeout)
     try:
         with guardrails.open_url(request, timeout=timeout) as stream:
+            headers = getattr(stream, "headers", {})
+            atomic.append_jsonl(journal, {"kind": "response_headers", "local_request_id": identity,
+                "at": atomic.utc(), "headers": {name: str(headers[name]).replace(credential, "[REDACTED]")
+                    for name in ("x-request-id", "request-id", "x-generation-id") if name in headers}})
             for line in stream:
+                text = line.decode("utf-8", errors="replace")
+                atomic.append_jsonl(directory / (label + ".stream.jsonl"),
+                    {"at": atomic.utc(), "line": text.replace(credential, "[REDACTED]"),
+                     "credential_redacted": credential in text})
                 if time.monotonic() - started > timeout:
                     raise TimeoutError("Inference request exceeded wall time")
                 if not line.startswith(b"data:"):
@@ -127,9 +150,20 @@ def call(body, directory, label, timeout=150):
         except (ValueError, TypeError, AttributeError):
             pass
         save(directory / (label + ".error.json"), diagnostic)
+        atomic.append_jsonl(journal, {"kind": "request_rejected" if error.code in (400,401,403,404,422) else "request_unknown",
+            "local_request_id": identity, "http_status": error.code, "at": atomic.utc()})
         raise RuntimeError("AxonHub HTTP " + str(error.code)) from None
     except TimeoutError:
         save(directory / (label + ".error.json"), {"timeout_seconds": timeout})
+        atomic.append_jsonl(journal, {"kind": "request_unknown", "local_request_id": identity,
+                                    "error": "TimeoutError", "at": atomic.utc()})
+        raise
+    except Exception as error:
+        if not (directory / (label + ".error.json")).exists():
+            save(directory / (label + ".error.json"), {"error_type": type(error).__name__,
+                 "message": str(error).replace(credential, "[REDACTED]")[:2048]})
+        atomic.append_jsonl(journal, {"kind": "request_unknown", "local_request_id": identity,
+                                    "error": type(error).__name__, "at": atomic.utc()})
         raise
     finally:
         if use_process_alarm:
@@ -137,8 +171,13 @@ def call(body, directory, label, timeout=150):
             signal.signal(signal.SIGALRM, old_handler)
     if response is None:
         save(directory / (label + ".error.json"), {"provider_error": "No terminal response"})
+        atomic.append_jsonl(journal, {"kind": "request_unknown", "local_request_id": identity,
+                                    "error": "No terminal response", "at": atomic.utc()})
         raise RuntimeError("AxonHub stream ended without a terminal response")
     save(directory / (label + ".response.json"), response)
+    atomic.append_jsonl(journal, {"kind": "response_saved", "local_request_id": identity,
+                                "provider_response_id": response.get("id"), "status": response.get("status"),
+                                "at": atomic.utc()})
     if response.get("status") != "completed" or response.get("model") != MODEL:
         save(directory / (label + ".error.json"), {
             "provider_error": {"type": "model_or_status_mismatch",
@@ -148,6 +187,28 @@ def call(body, directory, label, timeout=150):
             "incomplete_details": response.get("incomplete_details")})
         raise RuntimeError("AxonHub status/model mismatch; native response preserved")
     return response
+
+
+def request_outcome(directory, label):
+    """Unknown requests stay recoverable until a terminal provider record exists."""
+    directory = Path(directory)
+    journal = directory / (label + ".journal.jsonl")
+    last = {"kind": "request_unknown", "reason": "No terminal transport record"}
+    if journal.exists():
+        for line in journal.read_text().splitlines():
+            try:
+                event = json.loads(line)
+            except ValueError:
+                continue  # A crash can leave an unfinished final append.
+            if event.get("kind") in {"response_saved", "request_rejected", "request_unknown"}:
+                last = event
+    response_path = directory / (label + ".response.json")
+    if last['kind'] == 'request_unknown' and response_path.exists():
+        response = json.loads(response_path.read_text())
+        if response.get('status') in {'completed','failed','incomplete'}:
+            return {"kind":"response_saved", "provider_response_id":response.get('id'),
+                    "status":response['status'], "source":"durable_response"}
+    return last
 
 
 def output_text(response):

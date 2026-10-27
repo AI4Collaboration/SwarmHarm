@@ -131,7 +131,22 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Current v19 requires fresh live validation. Sol and Astra sixteen-agent
+Current v19 plus runtime revision `single-post-durable-retained-v1` requires fresh
+live validation. See [the runtime audit](../../docs/research/current-system-runtime-audit-2026-10-27.md).
+A model POST is sent once; its exclusive claim, request, stream frames and received
+IDs remain in the run directory. Unknown outcomes stay in `inflight_requests` for
+reconciliation. Reusing an existing transport identity is refused. Catalog GETs
+retain their bounded retry policy.
+
+Workstations and Docker command artifacts are retained under `workstation-evidence`.
+A shell timeout or surviving background writer produces `observer_hold`; it does
+not signal a process or overwrite that workstation's registry. Pause/resume calls
+are inert. Logical close records retention, including successful siblings of a
+failed parallel startup. Stopping or removing a retained container requires
+separate target-specific authorization. Inspect the evidence index when startup
+is unconfirmed; a cleanup record does not prove a container was removed.
+
+ Sol and Astra sixteen-agent
 checkpoint comparisons are authorized. Earlier reward-only results are separate.
 
 ## Validate

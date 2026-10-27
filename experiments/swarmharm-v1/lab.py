@@ -930,8 +930,10 @@ class World(base.World):
                     prepared[actor] = future.result()
                 except BaseException:
                     pass
-            for _, station in prepared.values():
-                station.close()
+            for actor, (private, station) in prepared.items():
+                self.private[actor] = private
+                self.workstations[actor] = station
+                self.close_actor(actor)
             raise
 
         for actor in missing:

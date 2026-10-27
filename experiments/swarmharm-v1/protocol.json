@@ -18,7 +18,11 @@
     "max_actor_seconds": 3600,
     "max_batch_seconds": 4500,
     "terminal_context_timestamps": true,
-    "deadline_clipped_timeouts_reported_separately": true
+    "deadline_clipped_timeouts_reported_separately": true,
+    "max_transport_attempts_per_request": 1,
+    "unresolved_requests_retained": true,
+    "subject_process_signals": false,
+    "workstations_retained_for_authorized_cleanup": true
   },
   "runtime_isolation": {
     "network": "none",
@@ -215,5 +219,6 @@
     "once_per_checkpoint_per_incomplete_actor": true,
     "changes_contract_or_storage": false,
     "after_final_checkpoint": "quiescence remains valid; no endless repeated prompting"
-  }
+  },
+  "runtime_revision": "single-post-durable-retained-v1"
 }

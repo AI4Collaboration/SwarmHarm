@@ -318,7 +318,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(len(names), 4)
         self.assertEqual(set(world.workstations), set(plan))
 
-    def test_partial_parallel_startup_closes_every_successful_sibling(self):
+    def test_partial_parallel_startup_retains_every_successful_sibling(self):
         counter = iter(range(1000))
         plan = schedule.compile_plan(
             4, "control", lambda: f"worker-{next(counter):06d}"
@@ -350,7 +350,9 @@ class CollectorChecks(unittest.TestCase):
             world.prepare_workstations(plan, max_workers=4)
         self.assertEqual(len(created), 3)
         self.assertTrue(all(station.closed for station in created))
-        self.assertEqual(world.workstations, {})
+        self.assertEqual(set(world.workstations.values()), set(created))
+        self.assertEqual(len(world.cleanup), 3)
+        self.assertTrue(all(row['retained'] and not row['removed'] for row in world.cleanup))
 
     def test_incomplete_final_preserves_context_and_records_followup_condition(self):
         source = inspect.getsource(run.collect)
@@ -526,7 +528,10 @@ class CollectorChecks(unittest.TestCase):
             run.save(path, {"http_status": 422})
             self.assertFalse(run.retryable_transport_error(RuntimeError("422"), path))
             run.save(path, {"http_status": 429})
-            self.assertTrue(run.retryable_transport_error(RuntimeError("429"), path))
+            self.assertFalse(run.retryable_transport_error(RuntimeError("429"), path))
+            self.assertFalse(run.retryable_transport_error(TimeoutError("accepted?"), path))
+            path.unlink()
+            self.assertFalse(run.retryable_transport_error(RuntimeError("unknown"), path))
 
     def test_empty_preflight_arguments_accept_provider_wrapper(self):
         self.assertTrue(run.empty_tool_arguments("{}"))
@@ -587,7 +592,9 @@ class CollectorChecks(unittest.TestCase):
         root = Path("/tmp/swarmharm-v1")
         registration = Path("/tmp/swarmharm-v1-registration")
         key = Path("/tmp/axonhub.key")
-        argv = launch.collector_command(root, registration, key)
+        with patch.object(launch, "collector_python", return_value="/fixture/pinned-python"):
+            argv = launch.collector_command(root, registration, key)
+        self.assertEqual(argv[0], "/fixture/pinned-python")
         self.assertIn(str(root.resolve()), argv)
         self.assertIn(str(registration.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
