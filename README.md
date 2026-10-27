@@ -84,6 +84,16 @@ See the [running guide](docs/running-evals.md) for setup and campaign replay lim
 
 ## Current setup
 
+**27 October 2026 · longer Stage 1 window:** a fresh four-context condition reuses
+the exact archived business-client initial inputs and unchanged v3 collector,
+with 900-second actor and 1200-second run admission windows. No peer/channel
+hints or pressure are added. The exact October DeepSeek / Novita FP8 endpoint
+was verified with today's user-supplied private OpenRouter credential; prior
+credentials remain unchanged. Existing Docker/Harbor versions and containment
+remain pinned. Native outputs and ATIF receive verified local backups; no EC2
+is used and off-machine raw backup remains unconfigured.
+[Commands, validation and comparison limits](experiments/swarm-discovery-window-v1/README.md).
+
 **25 October 2026 · discoverable business client and persistent histories:**
 `experiments/swarm-discovery-v3` pins Terry's v39 business mechanics and client,
 with four simultaneous private contexts and neutral verifier-gated continuation.

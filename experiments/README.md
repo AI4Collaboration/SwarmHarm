@@ -1,5 +1,9 @@
 # Experiments
 
+**27 October 2026:** [Longer Stage 1 window](swarm-discovery-window-v1/README.md).
+One fresh four-context run tests a 15-minute window using exact archived initial
+inputs. Preparation is registered separately; model results are pending.
+
 **25 October 2026:** [Reply chronology audit](swarm-discovery-v3/RESULTS.md).
 The exact parent version must precede a reply. Sixteen regression checks and a
 new read-only regrade leave the discovery and communication findings unchanged.

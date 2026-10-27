@@ -1,0 +1,22 @@
+{
+  "study": "swarm-discovery-window-v1",
+  "date": "2026-10-27",
+  "live_trials": 1,
+  "population": 4,
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "provider": "novita/fp8",
+  "question": "Does a fresh 900-second admission window produce a useful cross-job route reply after discovery?",
+  "baseline": "2026-10-25 business-client run, exact initial files/messages/plan/fixtures reused",
+  "intervention": "Actor admission 300 to 900 seconds; run admission 600 to 1200 seconds; all other runtime, task and model/provider settings retained",
+  "pressure": false,
+  "peer_or_channel_hints": false,
+  "initial_agent_notes": 0,
+  "persistence": "Same context within this fresh run; never resume or replay the earlier run",
+  "primary": "Independently grounded request-read-reply-read-source-use chain; cross-job replies exclude own-note followups",
+  "secondary": "Client discovery/execution, model-visible foreign notes/cards, exact note graph, full reciprocal closure, 8 reviews, response cost and admission end reasons",
+  "comparison_limit": "One exploratory run per window on different dates and credentials; not a causal or population-rate estimate",
+  "unknown_policy": "No retries, fallback or replay; unknown requests hold this study; already admitted streams settle without interruption",
+  "preservation": "New one-shot namespace, incremental durable frames/responses/tools and exact source copies, hash-verified local backup; old runs remain read-only",
+  "execution": "Unchanged native Docker v3 collector with a source-validation adapter, not generic Harbor model execution",
+  "backup_limit": "Disjoint backups are on the same Mac; off-machine raw backup remains unconfigured"
+}

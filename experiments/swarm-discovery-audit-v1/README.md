@@ -27,8 +27,9 @@ python experiments/swarm-discovery-audit-v1/test_audit.py -v
 python experiments/swarm-discovery-audit-v1/audit.py NATIVE_RUN NEW_AUDIT_DIRECTORY
 ```
 
-Sixteen regression checks cover source reads, quoted commands, Python flags,
+Seventeen regression checks cover source reads, quoted commands, Python flags,
 self-follow-ups, wrong parent hashes, parent chronology, overwritten versions
-and a successful shell wrapper containing a failed client call.
+a successful shell wrapper containing a failed client call, and timing from the
+registered admission window.
 New derivatives include the auditor's source hash, original
 native hashes and a disjoint verified backup. Earlier derivatives are retained.

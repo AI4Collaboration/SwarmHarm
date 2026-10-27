@@ -85,7 +85,7 @@ def reply_roles(events):
     return counts,rows
 
 
-def model_visibility(native,events,workers):
+def model_visibility(native,events,workers,actor_admission_seconds=300):
     mapping={}
     for actor in workers:
         rows=[json.loads(line) for line in (native/'trial/agents'/actor/'journal.jsonl').read_text().splitlines()]
@@ -115,7 +115,7 @@ def model_visibility(native,events,workers):
             if name not in cards[actor]:
                 item=dict(mapping[event['id']],event=event['id'])
                 t=item['next_model_input_at']
-                item['approx_seconds_left_in_admission_window']=round(workers[actor]['started_at']+300-t,1) if t else None
+                item['approx_seconds_left_in_admission_window']=round(workers[actor]['started_at']+actor_admission_seconds-t,1) if t else None
                 cards[actor][name]=item
     return mapping,cards
 
@@ -123,7 +123,8 @@ def model_visibility(native,events,workers):
 def audit(native,out):
     before=hashes(native);state=json.loads((native/'trial/world/state.json').read_text());original=json.loads((native/'trial/result.json').read_text());inputs=json.loads((native/'initial-files.json').read_text())
     corrected=metrics(state['events'],inputs);workers=json.loads((native/'trial/workers.json').read_text())
-    roles,note_rows=reply_roles(state['events']);visibility,cards=model_visibility(native,state['events'],workers)
+    admission=json.loads((native/'registration.json').read_text())['budget']['actor_admission_seconds']
+    roles,note_rows=reply_roles(state['events']);visibility,cards=model_visibility(native,state['events'],workers,admission)
     model_note_reads=[]
     for event in state['events']:
         for record in event.get('full_body_output_matches',[]):

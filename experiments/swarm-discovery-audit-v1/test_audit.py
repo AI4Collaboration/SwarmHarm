@@ -1,5 +1,5 @@
 import base64,unittest
-from audit import client_commands,metrics,reply_roles
+from audit import client_commands,metrics,reply_roles,model_visibility
 class Checks(unittest.TestCase):
     def test_cat_is_not_execution(self):self.assertEqual(client_commands('cd /workspace && cat filing_activity.py'),[])
     def test_echo_is_not_execution(self):self.assertEqual(client_commands('echo python filing_activity.py status'),[])
@@ -59,4 +59,18 @@ class Checks(unittest.TestCase):
             changes.append({'origin':'bash','author':'a','path':path,'sha256':path+'-sha','data':base64.b64encode(json.dumps(body).encode()).decode()})
         counts,_=reply_roles([{'id':1,'actor':'a','shared_changes':changes}])
         self.assertEqual(counts['a']['unverified_parent'],1);self.assertEqual(counts['a']['self_followups'],0)
+    def test_visibility_timing_uses_registered_window(self):
+        import json,tempfile
+        from pathlib import Path
+        args={'command':'python filing_activity.py status'};result={'stdout':'{"operation": "source_resolution_route_match"}'}
+        rows=[{'kind':'tool_prepared','call':{'id':'c','function':{'name':'bash','arguments':json.dumps(args)}}},
+              {'kind':'tool_result','call_id':'c','result':result},
+              {'kind':'request_prepared','time':150,'request_id':'r','body':{'messages':[{'role':'tool','tool_call_id':'c','content':json.dumps(result)}]}},
+              {'kind':'response_saved','request_id':'r'}]
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);folder=root/'trial/agents/a';folder.mkdir(parents=True)
+            (folder/'journal.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+            events=[{'id':1,'actor':'a','operation':'bash','arguments':args,'result':result}]
+            _,cards=model_visibility(root,events,{'a':{'started_at':100}},900)
+            self.assertEqual(cards['a']['foreign_route_card']['approx_seconds_left_in_admission_window'],850)
 if __name__=='__main__':unittest.main()
