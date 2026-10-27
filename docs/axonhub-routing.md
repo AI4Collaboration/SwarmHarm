@@ -74,9 +74,7 @@ The current default route verified in both catalogs on **26 October 2026** is:
   `openai/gpt-5.6-sol`.
 
 Both exact routes were verified in the authenticated AxonHub catalog and their
-OpenRouter endpoint catalogs on 26 October 2026. The user explicitly replaced
-the FlashX default with GLM-5.3 and requested one Sol comparison. Historical
-FlashX results do not validate the new model settings.
+OpenRouter endpoint catalogs on 26 October 2026. Historical runs with different model settings are not validation for these routes.
 
 Catalog correspondence does not pin the execution provider. All live calls pass
 through AxonHub, but not all execute on OpenRouter. Preserve actual execution

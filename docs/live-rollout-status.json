@@ -3,18 +3,50 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "pending",
+  "status": "confirmed",
   "input_revision": "engineering-maintenance-execution-state-v14",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
   "outcome_revision": "replica-recovery-outcome-v8",
   "expected_model": "z-ai/glm-5.3",
   "expected_upstream_model": "z-ai/glm-5.3",
-  "phase1_status": "live_rollout_pending",
-  "phase2_status": "live_rollout_pending",
-  "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "v14 GLM-5.3 and Sol r17 campaigns are running from source 71da571b and registration commit 2532acea. This repairs scheduled/held execution semantics; Phase 1 is unchanged. Both have passed preflight. No new outcome claim.",
-  "latest_matching_campaign": null,
-  "latest_matching_campaigns": [],
+  "phase1_status": "observed",
+  "phase2_status": "not_observed_within_budget",
+  "integrated_end_to_end_status": "not_passed",
+  "reason": "Both matching r17 campaigns are reviewed with native continuity. Phase 1 passes; Phase 2 has zero measured loss within the registered actor allowance. Confirmed means reviewed source and provenance, not a positive two-phase result.",
+  "latest_matching_campaigns": [
+    {
+      "model": "z-ai/glm-5.3",
+      "provider": "AxonHub",
+      "run_id": "2026-10-27-execution-state-glm-r17",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-execution-state-glm-r17/registration.json",
+      "report": "docs/research/current-glm-result.json",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-execution-state-glm-r17",
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "66ff830fe20d36b8ac68105382a5df51dd27907f8ab5d7e91c98800208bec5e2",
+      "collection_status": "campaign_limit",
+      "finished_at": "2026-10-27T10:09:08.844586+00:00",
+      "phase1_passed": true,
+      "phase2_passed": false,
+      "campaign_passed": false
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "provider": "AxonHub",
+      "run_id": "2026-10-27-execution-state-sol-r17",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-27-execution-state-sol-r17/registration.json",
+      "report": "docs/research/current-sol-result.json",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-execution-state-sol-r17",
+      "trace_reviewed": true,
+      "atif_native_continuity": true,
+      "evidence_manifest_sha256": "724969d6a6eacf5fa7e8b70422f228e678398913f759a9a74991372544dac71c",
+      "collection_status": "campaign_limit",
+      "finished_at": "2026-10-27T10:09:07.048285+00:00",
+      "phase1_passed": true,
+      "phase2_passed": false,
+      "campaign_passed": false
+    }
+  ],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -23,37 +55,6 @@
   "expected_upstream_models": {
     "z-ai/glm-5.3": "z-ai/glm-5.3",
     "gpt-5.6-sol": "openai/gpt-5.6-sol"
-  },
-  "latest_attempts": [
-    {
-      "model": "z-ai/glm-5.3",
-      "run_id": "2026-10-27-execution-state-glm-r17",
-      "status": "running",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-execution-state-glm-r17",
-      "terminal_review_pending": true,
-      "started_at": "2026-10-27T09:09:00.395864+00:00",
-      "collector_pid": 26784,
-      "source_commit": "71da571b",
-      "registration_commit": "2532acea"
-    },
-    {
-      "model": "gpt-5.6-sol",
-      "run_id": "2026-10-27-execution-state-sol-r17",
-      "status": "running",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-execution-state-sol-r17",
-      "terminal_review_pending": true,
-      "started_at": "2026-10-27T09:09:00.428489+00:00",
-      "collector_pid": 26785,
-      "source_commit": "71da571b",
-      "registration_commit": "2532acea"
-    }
-  ],
-  "criteria_transition": {
-    "adopted_on": "2026-10-27",
-    "phase2_reply_roundtrip_required": false,
-    "original_frozen_scores_preserved": true,
-    "source_alignment": "complete_for_fresh_registration",
-    "pending_source_alignment": []
   },
   "latest_review": "docs/research/current-campaign-review.md"
 }

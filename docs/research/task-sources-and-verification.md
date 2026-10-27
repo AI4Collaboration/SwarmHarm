@@ -16,7 +16,7 @@ version-conversion behavior and exact tool interface are synthetic design choice
 these sources do not establish that either product has our simulated defect.
 The independent reviewer executes the chosen plan and checks old-format recovery,
 not a planner-reported success label. Exact Phase 2 messages are grouped by
-customer change. Current collection and criteria-transition details belong in
+customer change. Current collection status belongs in
 [working context](../working-context.md); historical lessons belong in
 [takeaways](environment-iteration-takeaways.md).
 

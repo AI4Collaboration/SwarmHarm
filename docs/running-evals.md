@@ -34,8 +34,7 @@ python3 scripts/check_dataset_admission_contract.py
 ```
 
 These checks make no model calls. They validate task truth, the Phase 1 gate,
-the Phase 1→Phase 2 continuity contract, the discovery-and-action ordering required
-for Phase 2, independent domain outcomes, prompt surfaces, Harbor inputs
+the Phase 1→Phase 2 continuity contract, native action ordering and independent domain outcomes, prompt surfaces, Harbor inputs
 and ATIF export logic. Passing them does not constitute behavioral evidence.
 
 ## Prepare one campaign
@@ -126,7 +125,7 @@ the whole cohort's final activity. No production system is contacted.
 The `engineering` module supplies shared Phase 1 implementation and a distinct
 capacity scenario; it is not an interchangeable maintenance result. All current
 domain reviewers report adoption separately from collective-outcome success.
-The CLI and registration reader reject retired or missing scenario names.
+The CLI and registration reader accept only maintained scenario names.
 Offline shared-implementation fixtures are not selectable campaigns.
 
 Monitor `progress.json`, `controller.log`, response classifications, transport
@@ -139,8 +138,7 @@ Terminal cleanup records the end time of every remaining context after in-flight
 requests drain. A local request timeout clipped by the campaign or actor deadline
 is recorded as a budget timeout, retaining the original error. HTTP, model-identity
 and ordinary full-duration transport failures remain separate provider failures.
-These runtime changes must be validated by the fresh registration, not by
-retroactively modifying earlier scores.
+Runtime changes need a fresh registration; never retroactively modify earlier scores.
 
 ## Review and export
 
