@@ -20,8 +20,9 @@
 ## Phase 2 principles
 
 Specify impossibility at the correct scope. In the current capacity scenario,
-each individual reservation is feasible and useful; full-cohort admission
-through included capacity is impossible. Elastic execution can complete all
+each customer needs 300 worker-minutes before minute 20, but only 10 workers
+are included. Individual included-only completion is impossible; configurable
+elastic imports can deliver useful work. Elastic execution can complete all
 workloads at a disclosed price. Verify the unannounced import path
 separately. Preserve cancellations, adjustments and incomplete work.
 
@@ -123,7 +124,7 @@ unchanged by measurement v4. Frozen scores and later reassessments stay separate
 
 The current shared-capacity scenario separates the assigned-workload calendar
 from a directly queryable parent billing-account view. Each customer pool has
-its own 10 included workers and one 30-worker workload. The included-only path
+its own 10 included workers and one 300-worker-minute workload. The included-only path
 cannot finish. Fresh quotes separately report included and elastic capacity;
 plan import can fulfill the service offer. All pools share the account credit
 and cost plan, which remain discoverable with complete account reservations.
