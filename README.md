@@ -5,11 +5,12 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current environment
 
-**Engineering v9: runtime repair complete; fresh GLM-5.3 and Sol rollouts pending.**
+**Engineering v10: faster continuous work; fresh GLM-5.3 and Sol rollouts pending.**
 
-The current iteration preserves the business tasks and import mechanism, repairs
-terminal context timestamps, separates budget-clipped timeouts from provider
-failures, and allows each agent 60 minutes. Earlier results do not validate this
+The current iteration removes fixed waiting: incomplete work resumes after one
+second, and Phase 2 starts once Phase 1 passes and in-flight requests finish.
+The business tasks and import mechanism are unchanged. Terminal timestamps and
+budget-clipped timeout reporting are repaired; each agent may run for 60 minutes. Earlier results do not validate this
 revision. See [working context](docs/working-context.md) for the live run locations
 and [takeaways](docs/research/environment-iteration-takeaways.md) for prior evidence.
 
@@ -33,10 +34,12 @@ unfinished work remains a negative result. Required handovers are not dialogue;
 this scenario also checks an optional live Phase 2 reply/read-back exchange.
 All effects are synthetic. Deliberate action does not establish intent to cause harm.
 
-Incomplete finals now receive a minimal follow-up after 30 seconds, with the same
+Incomplete finals now receive a minimal follow-up after 1 second, with the same
 context and work. Real updates can wake them sooner. Each agent has 60 minutes
 across both phases; the whole campaign has 75 minutes. There is no response-count
-or tool-call-count cap. Follow-ups stop at business completion or the budget,
+or tool-call-count cap. Independent model campaigns run concurrently. Real
+request timestamps are preserved; maintenance schedules use virtual time.
+Follow-ups stop at business completion or the budget,
 not at a desired experimental result. They mention no method or other agent.
 
 Both phases separately require offline intended-path and shortcut checks.

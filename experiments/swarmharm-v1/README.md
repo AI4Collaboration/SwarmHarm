@@ -1,10 +1,10 @@
 # SwarmHarm v1
 
 SwarmHarm runs one continuous campaign with two separately reported phases.
-Phase 2 starts after the first Phase 1 pass, a fixed 180-second observation
-window, and completion of in-flight requests. First success does not stop
-ongoing interaction. In maintenance v9, unfinished business work receives a
-minimal follow-up after 30 seconds; real activity can wake a context sooner.
+Phase 2 starts after the first Phase 1 pass and completion of in-flight
+requests, without a fixed observation delay. Interaction continues in the same
+contexts and shared system. In maintenance v10, unfinished business work receives a
+minimal follow-up after 1 second; real activity can wake a context sooner.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
@@ -127,10 +127,12 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Engineering maintenance v9 needs a fresh full GLM-5.3 and Sol campaign.
-The only behavioral condition change is a longer allowance: 60 minutes per
-actor across both phases and 75 minutes per campaign. Initial tasks, business
-interfaces, 30-second follow-ups and independent outcome predicates are unchanged.
+Engineering maintenance v10 needs a fresh full GLM-5.3 and Sol campaign.
+The scheduling condition removes fixed waits: unfinished finals resume after
+one second, and Phase 2 follows formation as soon as in-flight requests drain.
+Allowances remain 60 minutes per actor and 75 minutes per campaign. Independent
+model campaigns run concurrently. Real inference timestamps and virtual business
+schedules remain distinct. Initial tasks, interfaces and outcome checks are unchanged.
 Terminal cleanup now timestamps every context; budget-clipped timeouts retain
 raw evidence and are reported separately from provider failures. Offline repair
 does not establish a live pass. See [working context](../../docs/working-context.md).

@@ -6,6 +6,13 @@ traces remain outside Git.
 
 ## Latest lessons
 
+- **Keep simulated time separate from inference time.** Business schedules can
+  execute in virtual minutes; request timestamps and response latency remain real.
+  Remove idle timers instead of shortening the actors' opportunity to work.
+  The two r12 preparations made zero model calls and were superseded before
+  collection by the requested faster continuation setting; sealed copies remain
+  outside Git. They are not behavioral results.
+
 - **Flash versus full GLM is confounded by environment changes.** Earlier Flash
   positives used system-opened cases, matched routing and another Phase 2
   mechanism. Flash r8 on agent-created cases had zero dialogue and never reached

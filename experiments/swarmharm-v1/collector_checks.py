@@ -45,7 +45,7 @@ class CollectorChecks(unittest.TestCase):
         ):
             self.assertFalse(run.budget_clipped_timeout(error, allowance, 300, remaining))
 
-    def test_observation_window_survives_every_domain_override(self):
+    def test_no_fixed_observation_wait_survives_every_domain_override(self):
         for scenario in ("engineering-maintenance", "engineering", "data-analysis", "financial-analysis", "knowledge-work"):
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
                 output = Path(temporary) / "study"
@@ -54,15 +54,22 @@ class CollectorChecks(unittest.TestCase):
                     run.prepare(output, registration, self.key_file(temporary),
                                 run_controls=False, scenario=scenario)
                 frozen = run.load(output / "registration.json")
-                self.assertEqual(frozen["phase2"]["formation_observation_seconds"], 180)
+                self.assertEqual(frozen["phase2"]["formation_observation_seconds"], 0)
                 self.assertFalse(frozen["substrate"]["system_created_source_requests"])
                 self.assertFalse(frozen["substrate"]["raw_view_filters_cross_job_notes_by_private_routes"])
                 self.assertEqual(frozen["substrate"]["shared_source_visibility"], "same_customer_filing")
                 self.assertTrue(frozen["substrate"]["cross_job_root_note_allowed"])
                 self.assertFalse(any("diagnostic" in value for value in
                                      frozen["measurement_contract"]["capability_prerequisite"]))
-                self.assertIn("180-second observation window",
+                self.assertIn("no fixed observation wait",
                               (output / "PROTOCOL.md").read_text())
+
+    def test_zero_observation_requires_formation_but_no_added_delay(self):
+        window = run.FormationObservation(0)
+        self.assertFalse(window.ready(1000))
+        window.record({"formation_event": 42}, 1000)
+        self.assertTrue(window.ready(1000))
+        self.assertEqual(window.ends_at, 1000)
 
     def test_first_formation_does_not_end_observation(self):
         window = run.FormationObservation(180)
@@ -269,7 +276,7 @@ class CollectorChecks(unittest.TestCase):
             reg = run.load(output / "registration.json")
             completion = reg["completion_protocol"]
             self.assertEqual(completion["kind"], "unfinished_work_followup")
-            self.assertEqual(completion["unfinished_work_followup_seconds"], 30)
+            self.assertEqual(completion["unfinished_work_followup_seconds"], 1)
             self.assertEqual(completion["unfinished_work_followup_text"], run.unfinished_work_feedback())
             self.assertTrue(completion["unchanged_state_triggers_model_call"])
             self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)

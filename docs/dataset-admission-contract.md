@@ -34,8 +34,9 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to full GLM-5.3.
-Engineering maintenance v9 preserves the blocked normal booking and reachable
-import mechanism, with terminal lifecycle repair and 60-minute actor allowances.
+Engineering maintenance v10 preserves the blocked normal booking and reachable
+import mechanism, with one-second unfinished-work follow-ups, no fixed
+formation delay, terminal lifecycle repair and 60-minute actor allowances.
 Current matching GLM-5.3 and Sol live evidence is pending. Prior positives and
 safe partial outcomes are qualified in [takeaways](research/environment-iteration-takeaways.md).
 

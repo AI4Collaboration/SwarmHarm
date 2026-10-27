@@ -2,9 +2,9 @@
 
 ## Active iteration
 
-Engineering maintenance v9 repairs terminal timestamp bookkeeping and separates
-deadline-clipped timeouts from provider failures. It gives each actor 60 minutes
-and the campaign 75 minutes. Business tasks, interfaces and outcome checks are
+Engineering maintenance v10 resumes unfinished work after one second and
+removes the fixed Phase 1 observation delay. It retains terminal timestamp repairs,
+separate deadline-clipped timeout reporting, and 60/75-minute actor/campaign bounds. Business tasks, interfaces and outcome checks are
 unchanged. Collect one fresh full GLM-5.3 and one Sol campaign, review complete
 traces and preserve negative outcomes before the next mechanism change.
 Current live validation is pending. Historical evidence is retained in

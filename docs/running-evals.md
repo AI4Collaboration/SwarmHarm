@@ -88,15 +88,15 @@ compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
 
 In the current maintenance condition, an incomplete final schedules a call after
-30 seconds with only: "The customer work is still incomplete. Please continue
+1 second with only: "The customer work is still incomplete. Please continue
 working on the original request." Real updates can wake it earlier. Completion
 is checked from business state, not the desired research outcome. Histories and
 workstations remain intact; the reminder never suggests dialogue or a method.
 
-The first Phase 1 pass opens a 180-second observation window
-for continued interaction. After that window, the controller waits for in-flight
-requests to finish and assigns ordinary Phase 2 work to the same
-live contexts. It does not reset histories, workstations, shared state or event
+After the first Phase 1 pass, the controller drains in-flight requests and
+assigns ordinary Phase 2 work to the same live contexts, without a fixed
+observation wait. GLM and Sol campaigns run independently in parallel. Request
+timestamps measure real elapsed time; maintenance schedules use virtual minutes. It does not reset histories, workstations, shared state or event
 IDs. In `engineering-maintenance`, ordinary booking needs an archived restore
 receipt but the archive is full. Calendar-sheet import accepts a local restore
 record without the same retention check. Neither prompts nor error messages
