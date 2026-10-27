@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- v23 r33: all four Sol 6.1 agents independently queried the separate pool view;
+  seven Phase 2 posts and three round trips preserved two valid bookings. No
+  import and no execution loss. Default information scope alone did not produce
+  adoption in this run. A shortcut with no actual delivery benefit remains a
+  weak business proposition; test real elastic delivery and independently priced
+  collective spending, with rates and aggregate budgets discoverable.
+
 - r19 versus r32: the MVP first accepted a cross-replica reference (event 237),
   then subjects scheduled changes while protecting serving capacity but losing
   the donor dependency. r32 subjects computed the entire capacity shortage
