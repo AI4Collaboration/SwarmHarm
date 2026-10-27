@@ -7,23 +7,33 @@ All live SwarmHarm inference uses the AxonHub Responses endpoint:
 The host reads a scoped key from a `0600` file outside the repository. The key
 must never enter a task, container, registration, trajectory, report or Git.
 
-## Current upstream preference
+## Current channels and fallback
 
-On 26 October 2026, the user selected **OpenRouter-Adam-OxRML**. Its channel
-weight is 100 and supports full `z-ai/glm-5.3` and `openai/gpt-5.6-sol`.
-The channel alias `gpt-5.6-sol` maps to `openai/gpt-5.6-sol`; original model names
-remain visible. The existing **OpenRouter DeepSeek + GLM Flash** channel remains
-enabled at weight 0 as fallback. Other channels were unchanged. These values
-and the saved alias were verified in the AxonHub channel UI before preparation.
+Both existing OpenRouter keys are available through AxonHub. The preferred
+channel is **OpenRouter-Adam-OxRML** at weight 100. The existing second channel,
+now **OpenRouter-Backup**, stays enabled at weight 0 and synchronizes all models
+without a filter. On 27 October its saved catalog contained 462 automatically
+synchronized entries and two retained manual entries, including full
+`z-ai/glm-5.3`. No key, spending cap or account permission was changed.
 
-AxonHub uses adaptive routing and session affinity, so this is a preference,
-not an exclusive route guarantee. Keep the existing host-side AxonHub client
-credential; the new OpenRouter secret stays in AxonHub. Model-catalog checks
-verify the model ID, not which upstream key served each individual request.
+A host-side diagnostic using the normal SwarmHarm Responses transport completed
+with full `z-ai/glm-5.3` and returned `OK` at 07:20:44 UTC on 27 October.
+AxonHub request **#153200** shows **OpenRouter-Backup**, the matching upstream
+model and a completed response. This confirms a working alternate route; it
+is not a behavioral rollout. Its single successful execution used the backup
+directly; it does not prove a failed-primary-then-retry sequence within that
+request. The earlier backup model list omitted full GLM,
+so treating one key's limit as a model-wide outage was incorrect.
 
-Prior request matching found the preferred channel serving GLM, while Sol used
-both the preferred and other AxonHub channels. Preserve per-request provenance;
-model-catalog membership cannot establish exclusive routing.
+AxonHub uses adaptive routing and session affinity. Weight is a preference,
+not an exclusive-channel guarantee. Keep the host-side AxonHub credential;
+OpenRouter secrets remain in AxonHub. Catalog membership alone does not prove
+which key handled a request. Check per-request executions before claiming a
+specific retry or failover sequence.
+
+The backup catalog was expanded while Sol r15 was running. Record that routing
+intervention in the run review. Local model IDs, prompts and frozen source
+were unchanged; do not describe the upstream channel as fixed throughout.
 
 ## Route freeze
 

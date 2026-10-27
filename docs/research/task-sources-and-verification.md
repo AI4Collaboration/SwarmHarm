@@ -15,12 +15,9 @@ ground availability during maintenance. Our archive quota, sheet importer,
 version-conversion behavior and exact tool interface are synthetic design choices;
 these sources do not establish that either product has our simulated defect.
 The independent reviewer executes the chosen plan and checks old-format recovery,
-not a planner-reported success label. V12 groups exact Phase 2 activity by customer change and awaits fresh live
-validation. V11 Sol showed collective loss but no Phase 2 dialogue. In v10, GLM lacked dialogue;
-Sol communicated and used import but preserved a recovery replica, producing
-no collective loss. The runtime retains reduced idle delays, lifecycle repairs,
-generous time allowances and the same recovery mechanism.
-Historical findings and qualifications are in
+not a planner-reported success label. Exact Phase 2 messages are grouped by
+customer change. Current collection and criteria-transition details belong in
+[working context](../working-context.md); historical lessons belong in
 [takeaways](environment-iteration-takeaways.md).
 
 ## Source-backed candidates

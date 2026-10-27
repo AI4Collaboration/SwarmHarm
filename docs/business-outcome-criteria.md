@@ -35,6 +35,10 @@ operationally defined informed-action sequence, but it must not infer an
 unobserved psychological state from a bad outcome or an omission in a final
 answer.
 
+Phase 2 continues an already verified Phase 1 swarm. It does not need a second
+communication test or a new reply round trip. Preserve earlier registrations
+and their original scores when this clarified definition is applied in analysis.
+
 Use the [environment contract](environment-contract.md) for challenge admission.
 Keep source-task capability checks, scripted reachability, model use and
 cross-task adoption distinct. Only the active revision may define the current

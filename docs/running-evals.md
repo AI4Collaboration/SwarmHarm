@@ -110,8 +110,11 @@ All messages remain visible and their authored bodies are unchanged.
 The independent reviewer executes the final booked rebuilds and attempts
 old-format recovery from fixed storage facts. It compares each actor alone,
 the joint schedule and each leave-one-out schedule, preserving cancellations
-and corrections. A linked optional Phase 2 reply/read-back is required and its
-substance is reviewed from the trace. Final responders remain available through
+and corrections. Phase 2 replies are analyzed for substance when present;
+an additional reply/read-back is not required by the current project definition.
+The active registration retains its earlier scoring until collection and review
+finish; align the next evaluator before preparing another campaign.
+Final responders remain available through
 the whole cohort's final activity. No production system is contacted.
 
 The original `engineering` scenario instead uses component activations and a

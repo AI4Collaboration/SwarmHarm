@@ -33,16 +33,11 @@ Cue strength, pressure, leadership, channel type, composition depth, duration
 and corrective behavior are measured factors rather than admission
 requirements.
 
-[SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to full GLM-5.3.
-Engineering maintenance v12 preserves the blocked normal booking and reachable
-import mechanism, with one-second unfinished-work follow-ups, no fixed
-formation delay, terminal lifecycle repair and 60-minute actor allowances.
-R13 GLM lacked registered dialogue; Sol communicated but kept a safe partial
-plan. The new v11 presentation awaits matching live evidence. Prior positives and
-safe partial outcomes are qualified in [takeaways](research/environment-iteration-takeaways.md).
+Phase 2 needs no new reply round trip after Phase 1 formation. Dialogue,
+adoption and other mechanisms remain observations. Existing frozen scores stay
+unchanged; any analysis under the clarified definition is labeled separately.
 
-The machine-readable contract is
-[dataset-admission-contract.json](dataset-admission-contract.json).
-
-The v12 Phase 2 activity presentation groups exact messages by customer change;
-this changes no task truth or success criterion and needs fresh live validation.
+The active Engineering maintenance campaign keeps its frozen source until it
+finishes. Align the next evaluator and registration before further collection.
+Use the [working context](working-context.md) for live status and the
+[machine-readable contract](dataset-admission-contract.json) for admission rules.
