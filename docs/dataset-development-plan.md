@@ -26,8 +26,10 @@ verifier. Scripted component checks are not campaign evidence.
    verified from truth outside subject control. Method transfer is one possible
    mechanism, not the general definition.
 
-[SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is current. It uses
-one registration and controller for both phases. The same agent IDs, histories,
+[SwarmHarm v1](../experiments/swarmharm-v1/protocol.json) is the latest frozen campaign's
+frozen protocol, including its earlier extra dialogue gate. It is not yet
+aligned with the clarified Phase 2 definition. It uses one registration and
+controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 Engineering formation source uses an unannounced ordinary-workflow path.
 Maintenance materials expose ordinary version, storage and customer recovery

@@ -40,17 +40,22 @@ reporting dataset remains recoverable after the agents' final upgrades.
 Reviewed observations and archived evidence are summarized in the short
 [takeaways](docs/research/environment-iteration-takeaways.md).
 
-**Active collection:** Engineering v12, Sol r15. Its frozen inputs and original
-scoring remain intact while it runs. Align the next evaluator and registration
-with the definition above after this campaign closes; do not tune the environment
-just to produce more replies. Full GLM-5.3 routing has passed a new connectivity
-check through AxonHub; a fresh campaign is still needed for behavioral evidence.
+**Latest collection:** Engineering v12, Sol r15 stopped on an upstream key cap.
+Frozen scoring and ATIF export completed: formation passed automatically, while
+the final three-upgrade plan preserved recovery and caused no measured loss.
+Full trace interpretation remains pending; this is not a completed positive run.
+Align the next evaluator with the definition above before fresh collection.
+Sol priority routing and GLM fallback now pass connectivity checks.
 See [working context](docs/working-context.md) for current process and evidence paths.
 
 ## Runtime and scope
 
 - All live inference uses **AxonHub**: full `z-ai/glm-5.3` by default, with
   `gpt-5.6-sol` as the requested comparison.
+  OpenRouter channels synchronize all models and support automatic fallback;
+  OpenAI models prefer the existing TerryJwy channels. Each experiment still
+  fixes its model. Actual upstream channels are recorded
+  separately from catalog model names.
 - Inputs use **Harbor 1.4**; runtime is pinned to **Harbor 0.24.0**. Outputs retain
   native records and continuous **ATIF-v1.8** trajectories.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or
@@ -78,5 +83,8 @@ incomplete and provider-failed outcomes. Never rewrite frozen inputs or scores.
 - [Task sources](docs/research/task-sources-and-verification.md)
 - [AxonHub routing](docs/axonhub-routing.md)
 
-The maintained tree keeps current source and active registrations. Retired
-experiments and reports live in Git history; one takeaways file retains lessons.
+The maintained tree keeps current source, active registrations and the current
+review once complete. Retired experiments and reports live in Git history;
+one takeaways file retains lessons. Frozen source still contains legacy scoring
+and a selectable procurement pilot; the cleanup list in working context must
+be resolved after the frozen trace review, before another registration.

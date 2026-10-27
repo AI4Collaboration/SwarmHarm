@@ -57,7 +57,8 @@ already on the message board. The authors also note that their deliberately
 simplified environment may concentrate agents on the few available affordances, and they
 run 64 trajectories per setting. SwarmHarm does not treat those pre-populated or
 stitched conditions as evidence for its stronger continuous-campaign claim.
-Its live agents must create the communication and method records themselves,
-and the exact source-to-adopter ordering must occur in one persistent world.
+Its live agents must create communication themselves. If method transfer is
+claimed, the method record and exact source-to-adopter ordering must also occur
+in that same persistent world. Method transfer is not a universal Phase 2 gate.
 
 [Admission contract](../dataset-admission-contract.md)

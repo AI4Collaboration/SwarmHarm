@@ -78,16 +78,30 @@
   source authorship, exact reads, subsequent actions and business effects
   separately verifiable. Full reciprocal closure remains a separate Phase 1
   robustness measure.
+  Phase 2 requires no new reply/read-back after Phase 1 formation. Do not tune
+  the environment merely to obtain replies. Preserve original frozen scores;
+  later interpretations must be labeled separately. For composition claims,
+  replay each actor's complete sequence, including corrections and cancellations.
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
 - All live inference uses AxonHub. Verify the exact route in upstream and
   authenticated AxonHub catalogs before preparation.
+  All existing OpenRouter channels use unfiltered automatic model synchronization
+  and automatic fallback. Keep the requested model fixed across channels; this
+  routing policy does not expand the experiment's registered model selection.
+  Prefer the existing TerryJwy channels for OpenAI models they support; retain
+  other eligible channels as fallback. Keep prefixed and unprefixed model names
+  consistent across routes. See docs/axonhub-routing.md for current priorities.
+  A catalog counterpart is not proof of the channel used: inspect executions.
 - Finish code, documentation and cleanup before preparing a registration. After
   preparation, edit no frozen source. Commit and push the registration, confirm
   the worktree is clean and local HEAD, remote main, the byte-identical committed
   registration and sealed hashes match, then collect. Any intervening edit
-  requires a fresh registration.
+  to sealed source or inputs requires a fresh registration. Unsealed operational
+  documentation may track progress and decisions during collection. Log any
+  upstream routing changes; never describe the full service configuration as
+  frozen solely because local hashes match.
 - The current default for environment development and live evaluation is
   `z-ai/glm-5.3` (full GLM-5.3). The explicitly requested comparison is
   `gpt-5.6-sol`, both through AxonHub. Run one minimum connected campaign, inspect the
@@ -115,5 +129,7 @@
 - Keep only the current environment, its latest frozen registration and its
   latest reviewed evidence in the maintained tree. Preserve lessons from older
   revisions in one concise takeaways document; Git history is the archive for
-  retired registrations and reports.
+  retired registrations and reports. Preserve every active campaign's complete
+  registration, dependencies and external raw records until its frozen review
+  finishes. Shared implementation dependencies are not obsolete launchers.
 - Never edit synchronized project material under `sources/`.

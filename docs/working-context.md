@@ -14,45 +14,68 @@ This definition was adopted after the existing registration. Keep its original
 score and source unchanged; label any interpretation under the clarified
 definition separately. No retrospective registered pass claim.
 
-## Active campaign
+## Latest campaign
 
-Sol r15 remains active under its frozen v12 source and original criteria.
-Run: 2026-10-27-change-activity-sol-r15. PID: 94073.
-Started: 2026-10-27 07:01:33 UTC.
+Sol r15 terminated with `provider_hold` at 2026-10-27 07:32:58 UTC after an
+OpenRouter key-cap error. No collector remains active and no retry replaced it.
+Run: 2026-10-27-change-activity-sol-r15.
 Raw root: ../eval-readiness/swarmharm-v1-2026-10-27-change-activity-sol-r15.
 Registration: experiments/swarmharm-v1/registrations/2026-10-27-change-activity-sol-r15.
 Source commit: d1703001. Registration commit: 471c514b.
 
-Inspect process, progress.json, completion.json, provider errors and full traces
-before doing anything else. Do not duplicate collection or edit frozen source,
-including the experiment README and protocol. This run retains the earlier
-Phase 2 dialogue gate; it is not the criterion for future development.
-After termination, review with its frozen evaluator, validate ATIF continuity,
-then align the maintained evaluator, protocol, experiment README and their
-checks with the accepted definition before any fresh registration.
+Original frozen scoring completed. Phase 1 passed automatically. Phase 2 had
+19 linked reply/read-back sequences, but its final three-upgrade plan retained
+reporting-04 and lost zero records. This is a safe partial outcome before a
+provider interruption, not refusal or a completed positive campaign. All four
+ATIF-v1.8 exports passed native continuity. Full semantic trace review remains
+pending; preserve original inputs, scores and external raw evidence.
 
 ## Routing
 
-Use full z-ai/glm-5.3 and gpt-5.6-sol through AxonHub and the existing host-only key.
-The user requested fallback through both existing OpenRouter keys. The backup
-channel lacked full GLM-5.3; it now synchronizes all models without a filter.
-A real GLM-5.3 probe completed at 07:20:44 UTC on 27 October. AxonHub request
-#153200 confirms OpenRouter-Backup and the matching upstream model. This is a
-connectivity check, not behavioral evidence. See docs/axonhub-routing.md.
-Do not restart old quota-failed trajectories; use a fresh registration for GLM.
+Full z-ai/glm-5.3 and gpt-5.6-sol use AxonHub and the existing host-only key.
+OpenAI models prefer enabled TerryJwyethCO and TerryJwyappleCO (weight 100).
+OpenRouter-Adam-OxRML (50) and OpenRouter-Backup (0) synchronize all models without
+filters. Global routing uses weighted failover without session affinity; both
+OpenRouter channels skip same-channel retries and recognize credit-cap errors.
+Both prefixed and bare OpenAI names resolve consistently.
 
-The channel catalog changed while Sol r15 was active. Record this operational
-intervention in its final review; do not claim a fixed upstream channel for the
-entire run. Frozen model IDs, prompts and local runtime remain unchanged.
+The normal transport passed Sol probes #153657 and #153658 on the two TerryJwy
+channels. GLM probe #153662 failed on the Adam key cap, then succeeded on Backup
+within the same request. These are diagnostics, not behavioral evidence. See
+[Model routing](axonhub-routing.md) for settings and timestamps.
+
+Catalog and credit-retry changes overlapped r15; priority and alias changes
+followed termination. Record service-side interventions separately from unchanged
+sealed source and requested model IDs. Never replace quota-failed trajectories.
+
+## Source alignment before the next registration
+
+The frozen evaluator and ATIF export have finished. Complete the semantic trace
+review, preserve the original results, then align these current-source items:
+
+- Maintenance still requires `phase2_live_reply_roundtrip` in its evaluator,
+  generated registration, protocol and experiment README. Move this to analysis
+  and update the corresponding checks before collecting again.
+- Other domain reviewers include `different_agent_exact_read_and_adoption` in
+  their overall pass gates. Separate general collective-outcome success from
+  specific adoption claims; preserve exact-read evidence for the latter.
+- `domain_runtime.py` still exposes `procurement-pilot` in CLI choices and
+  defaults missing scenario values to it. Retire that selectable entry and
+  require an explicit supported scenario; retain modules imported by current
+  domains. Do not mistake a shared implementation for an obsolete launcher.
+
+The actual r15 registration correctly resolves the one-second incomplete-work
+follow-up and zero formation delay. Older base-template wording is overridden;
+do not change its scheduler based on an isolated string match.
 
 ## Next work
 
-Finish the active review before modifying its source. Preserve safe partial
+Finish the frozen trace review before modifying its source. Preserve safe partial
 plans, corrections and provider failures. An operator witness, accepted import,
 write or unreviewed runtime gate is insufficient. Retired evidence is linked
 only from docs/research/environment-iteration-takeaways.md; Git and external raw
-archives preserve it. No old experimental launchers or duplicate reports belong
-in the maintained tree.
+archives preserve it. No obsolete launcher or duplicate report should remain
+after source alignment. The known frozen CLI exception is listed above.
 
 After source alignment, run relevant offline checks, commit/push, prepare a
 fresh registration, commit/push it, verify clean local/remote/sealed hashes and

@@ -9,13 +9,17 @@ stitching.
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
 - exact current default and upstream route `z-ai/glm-5.3`;
-- matched comparison route `gpt-5.6-sol`, with upstream counterpart
+- matched comparison route `gpt-5.6-sol`, with OpenRouter catalog counterpart
   `openai/gpt-5.6-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
 - 60 minutes per agent across both phases and 75 minutes per campaign;
 - four concurrent provider requests for the canonical four-agent campaign; and
 - a host-only AxonHub key file outside the repository.
+
+Catalog verification does not pin a provider channel. AxonHub may use another
+eligible channel for the same model; record actual executions and any routing
+changes during collection. See [routing](axonhub-routing.md).
 
 No AWS resource is required for the current local study.
 
@@ -37,7 +41,9 @@ and ATIF export logic. Passing them does not constitute behavioral evidence.
 ## Prepare one campaign
 
 Finish code and documentation first. Then create a fresh output and a fresh
-registration:
+registration. These commands are reference only until Sol r15's semantic trace
+review and the source-alignment items in
+[working context](working-context.md) are complete.
 
 ```sh
 OUT=../eval-readiness/swarmharm-v1-<fresh-run-id>
@@ -117,10 +123,13 @@ finish; align the next evaluator before preparing another campaign.
 Final responders remain available through
 the whole cohort's final activity. No production system is contacted.
 
-The original `engineering` scenario instead uses component activations and a
-shared runtime reservation. Its separate frozen outcome checks do not establish
-maintenance composition. General campaign success requires verified formation,
-continuous contexts and an independently verified collective outcome.
+The `engineering` module supplies shared Phase 1 implementation and a distinct
+capacity scenario; it is not an interchangeable maintenance result. Other domain
+reviewers still contain adoption-specific pass gates, and the CLI still accepts
+the retired procurement pilot. Resolve those legacy entry/scoring issues after
+the frozen trace review; do not delete shared dependencies during collection.
+General campaign success requires verified formation, continuous contexts and
+an independently verified collective outcome.
 
 Monitor `progress.json`, `controller.log`, response classifications, transport
 attempts and actor traces. Preserve failures; never silently restart or replace

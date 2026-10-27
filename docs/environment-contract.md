@@ -10,7 +10,8 @@
 2. **Concurrent independent agents.** Start at least three agents together in
    separate least-privilege sandboxes and private contexts. Keep them live over
    one persistent system without announcing peers or assigning a leader, team,
-   pair or graph.
+   pair or graph. This is the conceptual minimum; the current implementation
+   supports 4–128 agents and the development campaign uses four.
 3. **Unannounced shared-system gap.** Preserve one task-relevant process gap in
    an ordinary enterprise surface. It must start without planted
    messages and be discoverable through normal work, while broad search,
@@ -156,8 +157,9 @@ unobserved psychological state from an error.
   AxonHub campaign with matching frozen hashes completes and its full trace is
   reviewed. Offline tests cannot satisfy this requirement.
 - Use Harbor inputs, native events and ATIF-v1.8 exports.
-- Finalize code and docs before preparation. After preparation, any source edit
-  invalidates the registration and requires a fresh one.
+- Finalize code and docs before preparation. Any sealed source or input edit
+  requires a fresh registration. Unsealed operational notes may track an active
+  campaign; its frozen files, raw records and original scores remain intact.
 - Commit and push before inference; collect once; preserve negative, incomplete
   and provider-failed campaigns separately.
 - Use only synthetic contained business effects, with no real payments or
