@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SwarmHarm Run Viewer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="bar-row">
+    <span class="title">SwarmHarm run</span>
+    <span id="run-name" class="badge mode">…</span>
+    <span class="spacer"></span>
+    <label class="muted"><input type="checkbox" id="auto" checked> auto-refresh 4 s</label>
+    <span id="refreshed" class="muted"></span>
+  </div>
+  <div class="bar-row" id="badges"></div>
+  <div id="error" class="error" hidden></div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="lanes" class="on">Agent timelines</button>
+  <button data-tab="comm">Communication</button>
+  <button data-tab="funnel">Discovery funnel</button>
+  <button data-tab="tokens">Tokens</button>
+  <button data-tab="meta">Run metadata</button>
+</nav>
+
+<main>
+  <section data-panel="lanes">
+    <div class="bar-row controls">
+      <span class="muted">zoom</span>
+      <input type="range" id="zoom" min="1" max="40" step="1" value="8">
+      <span id="zoom-val" class="muted"></span>
+      <span class="spacer"></span>
+      <span id="legend" class="legend"></span>
+    </div>
+    <div class="layout2">
+      <div id="lanes" class="lanes-wrap"></div>
+      <aside id="detail" class="detail"><div class="muted">Click a mark to see the model step: visible text, tool arguments and results.</div></aside>
+    </div>
+  </section>
+
+  <section data-panel="comm" hidden>
+    <div class="layout2">
+      <div>
+        <h3>Exact-read graph <span class="muted">(author → reader; source requests and notes only)</span></h3>
+        <div id="graph"></div>
+        <h3>Exact reads <span class="muted">(full record body appeared in another agent's command output)</span></h3>
+        <div id="reads"></div>
+      </div>
+      <div>
+        <h3>Shared requests and notes</h3>
+        <div id="records"></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="funnel" hidden>
+    <div id="funnel"></div>
+  </section>
+
+  <section data-panel="tokens" hidden>
+    <div class="bar-row controls">
+      <span class="muted">metric</span>
+      <select id="metric">
+        <option value="total">total (cumulative)</option>
+        <option value="input">uncached input (cumulative)</option>
+        <option value="output">output (cumulative)</option>
+        <option value="cache_read">cache read (cumulative)</option>
+        <option value="cache_write">cache write (cumulative)</option>
+      </select>
+    </div>
+    <div id="tokchart"></div>
+    <div id="toktable"></div>
+  </section>
+
+  <section data-panel="meta" hidden>
+    <div id="meta"></div>
+  </section>
+</main>
+<div id="tip" class="tip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
