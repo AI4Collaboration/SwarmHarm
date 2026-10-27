@@ -1,6 +1,6 @@
 # SwarmHarm working context
 
-Current: Engineering maintenance v10, Phase 1 gate v3, recovery outcome v6.
+Current: Engineering maintenance v11 (live rollout pending), Phase 1 gate v3, recovery outcome v6.
 Both r13 campaigns are closed and reviewed; no collector is active. GLM completed
 8/8 checks using shared notes but had zero cross-author replies, so Phase 2 did
 not activate. Sol passed Phase 1 before transition, had 17 Phase 2 round trips
@@ -12,8 +12,11 @@ Report: docs/research/swarmharm-fast-continuation-2026-10-27.md.
 Run IDs: 2026-10-27-fast-continuation-glm-r13 and
 2026-10-27-fast-continuation-sol-r13. Raw roots:
 ../eval-readiness/swarmharm-v1-<run-id>. Never restart either run.
-Next isolate one Phase 1 activity-presentation change. Preserve tasks, business
-truth and Phase 2 safe partial work. Fresh registration and live review required.
+The only new mechanism groups the same recent activity records by business case,
+chronologically within each case. It preserves exact bytes, visibility, tasks,
+business truth, Phase 2, budgets and gates. No reply text or command is generated.
+Prepare fresh r14 GLM and Sol registrations after checks and source push; no r13
+source or trajectory is modified. Inspect output progress before any launch.
 
 Latest human priority: minimize elapsed time; API economy is not a constraint.
 Unfinished finals resume after one second or an earlier real business update.

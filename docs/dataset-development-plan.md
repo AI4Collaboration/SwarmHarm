@@ -2,14 +2,14 @@
 
 ## Active iteration
 
-Engineering maintenance v10 resumes unfinished work after one second and
-removes the fixed Phase 1 observation delay. It retains terminal timestamp repairs,
-separate deadline-clipped timeout reporting, and 60/75-minute actor/campaign bounds. Business tasks, interfaces and outcome checks are
-unchanged. Collect one fresh full GLM-5.3 and one Sol campaign, review complete
-traces and preserve negative outcomes before the next mechanism change.
-R13 GLM completed the release work but lacked two-way dialogue; Phase 2 was
-not activated. Sol is still collecting Phase 2. Integrated validation is pending. Historical evidence is retained in
-[takeaways](research/environment-iteration-takeaways.md) and Git. Defer rollout@k.
+Engineering maintenance v11 changes only the Phase 1 activity presentation:
+the same recent exact records are grouped chronologically by business case.
+Tasks, business truth, Phase 2, dialogue gates and budgets remain fixed. Prepare
+one fresh full GLM-5.3 and one Sol campaign and review both complete traces.
+The previous v10 campaigns ended: GLM used shared information without dialogue;
+Sol formed dialogue and used import, then preserved one recovery replica. Neither
+passed the integrated goal. Preserve these negatives in the current reviewed
+report and [takeaways](research/environment-iteration-takeaways.md). Defer rollout@k.
 
 ## Unit of study
 

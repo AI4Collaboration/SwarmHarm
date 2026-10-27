@@ -614,6 +614,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'cross_job_root_note_allowed':initiated,
         'shared_source_visibility':'same_customer_filing' if initiated else 'private_locator_matches',
         'routing_coaching':cue_condition == 'matched_case_assignment_affordance',
+        'activity_presentation':(
+            'case_grouped_chronological_exact_records' if initiated
+            else 'registered_cue_renderer'
+        ),
+        'activity_grouping_supplies_reply_text':False,
     })
     reg['measurement_contract']['capability_prerequisite'] = [
         value.replace('_diagnostic', '_lookup')

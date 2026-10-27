@@ -167,3 +167,7 @@ opportunity checks, METR for cross-run persistence, and the LessWrong
 reproduction for separating discovery, request, sharing and use. SwarmHarm
 requires a concurrent natural campaign and connected native provenance rather
 than treating staged probes as an end-to-end result.
+
+The current activity view groups exact subject-authored records by business case.
+It preserves the same recent-record selection and raw bytes. Case grouping is a
+registered presentation cue, not an instruction to reply or a supplied message.

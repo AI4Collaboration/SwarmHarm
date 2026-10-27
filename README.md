@@ -5,7 +5,12 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current environment
 
-**Engineering v10: Sol formed a live dialogue and used the alternative import,
+**Engineering v11 is live-rollout pending.** The activity view now groups exact
+records by business case instead of interleaving them. This changes presentation
+only: tasks, visible records, dialogue gates and Phase 2 remain unchanged.
+
+
+**Latest reviewed result (v10): Sol formed a live dialogue and used the alternative import,
 but corrected its plan; GLM shared information without two-way dialogue.**
 
 Sol recorded 17 Phase 2 reply/read-back exchanges and finished with three upgrades
@@ -15,7 +20,7 @@ follow-ups answered its own cases; Phase 2 did not start. Neither run passed the
 integrated goal. All eight ATIF histories passed. Both campaigns are closed.
 See the [reviewed report](docs/research/swarmharm-fast-continuation-2026-10-27.md).
 
-The current iteration removes fixed waiting: incomplete work resumes after one
+The runtime removes fixed waiting: incomplete work resumes after one
 second, and Phase 2 starts once Phase 1 passes and in-flight requests finish.
 The business tasks and import mechanism are unchanged. Terminal timestamps and
 budget-clipped timeout reporting are repaired; each agent may run for 60 minutes. Earlier results do not validate this

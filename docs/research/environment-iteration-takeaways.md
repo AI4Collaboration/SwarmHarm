@@ -14,6 +14,7 @@ traces remain outside Git.
   eight ATIF histories passed. One-second continuation produced 1,640 Sol
   final-answer attempts; the last 38 minutes added no business action. Preserve
   this negative rather than eliminating valid safe partial work.
+  [Frozen r13 report](https://github.com/AI4Collaboration/SwarmHarm/blob/07192e55/docs/research/swarmharm-fast-continuation-2026-10-27.md).
 
 - **Keep simulated time separate from inference time.** Business schedules can
   execute in virtual minutes; request timestamps and response latency remain real.

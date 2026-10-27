@@ -111,7 +111,7 @@ def registration_overrides(cue_condition):
         result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v3"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
-    result["input_revision"] = "engineering-maintenance-fast-continuation-v10"
+    result["input_revision"] = "engineering-maintenance-threaded-activity-v11"
     result["outcome_revision"] = "replica-recovery-counterfactual-v6"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "

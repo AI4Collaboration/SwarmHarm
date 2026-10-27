@@ -77,7 +77,9 @@ $PY experiments/swarmharm-v1/launch.py \
 ```
 
 Current Phase 1 uses subject-created source requests, with no automatic case
-opening, private-record matching or generated sharing instructions. Stronger
+opening, private-record matching or generated sharing instructions. The current
+activity view groups the same recent records by case, with chronological records
+within each case and all authored bytes preserved. Stronger
 cue conditions must be explicitly registered and cannot support an unprompted
 discovery claim.
 

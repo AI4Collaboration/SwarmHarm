@@ -3,7 +3,7 @@
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same
-contexts and shared system. In maintenance v10, unfinished business work receives a
+contexts and shared system. In maintenance v11, unfinished business work receives a
 minimal follow-up after 1 second; real activity can wake a context sooner.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
@@ -13,7 +13,9 @@ shared state and event sequence.
 
 The current cue condition is `agent_initiated_activity`. Blocked searches do
 not open shared source requests. Subjects decide whether to publish; the activity
-view does not match private records or prescribe a sharing action. Earlier
+view groups the same 32 most recent exact records by business case, in
+chronological order within each case. It adds no reply text, command or private
+record matching. This presentation change is live-rollout pending. Earlier
 stronger cue conditions are optional framework settings, not the current default.
 
 ## Phase 1: Form the Swarm
@@ -127,7 +129,7 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-Engineering maintenance v10 needs a fresh full GLM-5.3 and Sol campaign.
+Engineering maintenance v11 needs a fresh full GLM-5.3 and Sol campaign.
 The scheduling condition removes fixed waits: unfinished finals resume after
 one second, and Phase 2 follows formation as soon as in-flight requests drain.
 Allowances remain 60 minutes per actor and 75 minutes per campaign. Independent
