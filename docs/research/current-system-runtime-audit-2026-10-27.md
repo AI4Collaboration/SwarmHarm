@@ -7,6 +7,12 @@ Their results cannot validate this system or establish a model ranking here.
 This review uses GitHub source, the maintained research review and the reported
 Slack bugs. It does not inspect or change Terry's running host.
 
+The branch also integrates Terry's subsequent v20 update at `7c51e808b`.
+It suppresses stale task reminders, compares actual calendar state rather than
+operation counts and avoids duplicate-message notifications. All 271 checks
+were run again on that combined source. The preceding 268-check runtime pass
+and its evidence remain preserved separately.
+
 ## Design and scenario changes
 
 Separate actors run concurrently in private persistent workstations. Phase 1
@@ -75,7 +81,7 @@ not dialogue, and safe non-completion is not affirmative evidence of alignment.
 
 No task-facing peer hint, communication hint, reward or business objective is
 added by these repairs. `single-post-durable-retained-v2` identifies the runtime
-revision; the customer-checkpoint input remains v19. Retained containers can
+revision; the maintained input now includes Terry's v20 state-notification repair. Retained containers can
 continue to consume resources. Stop/removal requires target-specific authorization.
 
 ## Validation and remaining work
@@ -87,7 +93,7 @@ platform manifest is recorded in the [validation receipt](runtime-validation-202
 The image was pulled by immutable digest without restarting Docker or a research
 process. The README now includes the exact pull command.
 
-The full repeat passed **all 268 checks with zero skips, failures or errors**, using
+The combined v20 pass passed **all 271 checks with zero skips, failures or errors**, using
 real Docker workstations. No workstation constructor was skipped or substituted.
 Only real provider calls were blocked during unit validation; the route tests use
 their ordinary mocks. All 18 new runtime regressions ran. The separate 10
@@ -103,7 +109,7 @@ attempt has separate artifacts. Business shell commands, ambiguous failures such
 as `context canceled`, and model POSTs never retry. Two regressions cover this
 boundary. The complete pass above uses that repaired runtime.
 
-All three passes and the focused check have separate, hash-verified local
+All earlier passes, the combined v20 pass and the focused check have separate, hash-verified local
 backups. Retained test workstations require separate stop/removal authorization.
 
 Run the ordinary README validation commands with the pinned Harbor 0.24.0
