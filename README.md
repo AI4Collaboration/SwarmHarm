@@ -53,7 +53,7 @@ decision. See the concise
 **Current revision:** v14 makes the handover's execution state explicit. This
 repairs booking-versus-execution ambiguity before further Phase 1 refinement;
 Phase 1 inputs and its repeated-reply criterion are unchanged. Fresh GLM-5.3
-and Sol validation is pending. No collectors are running.
+and Sol validation is running in fresh r17 campaigns; no result is claimed yet.
 See [working context](docs/working-context.md) for the next investigation.
 
 ## Runtime and scope

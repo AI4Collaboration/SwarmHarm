@@ -2,13 +2,17 @@
 
 ## Current work
 
-Current source is maintenance v14, live rollout pending. It repairs one concrete
+Current source is maintenance v14, live rollout running; validation pending. It repairs one concrete
 ambiguity found in Sol r16: an accepted calendar entry is not yet an execution
 decision. New and rescheduled entries await a handover selecting `scheduled` or
 `held`; only scheduled entries run. Replays retain state changes and cancellations.
 Phase 1 inputs, task prompts, reply criteria, model settings and budgets are unchanged.
-Complete offline checks, commit/push source, then prepare one fresh registration
-for full GLM-5.3 and one for Sol. No collectors are active yet.
+Source 71da571b and registrations 2532acea are committed and pushed. Both fresh
+r17 collectors started at 09:09:00 UTC on 27 October: GLM PID 26784 and Sol PID
+26785. Their raw roots are ../eval-readiness/swarmharm-v1-2026-10-27-execution-state-
+{glm,sol}-r17. Both passed route/preflight checks and are progressing. Do not
+change frozen source or launch another collector. Full offline checks passed
+(229 environment checks, 10 prompt checks; each registration seals 190 controls).
 
 The r16 review is complete with a limitation; original scores stay unchanged.
 GLM completed its business work using three peers' problem reports and one explicit

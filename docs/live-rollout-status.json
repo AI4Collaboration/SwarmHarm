@@ -12,7 +12,7 @@
   "phase1_status": "live_rollout_pending",
   "phase2_status": "live_rollout_pending",
   "integrated_end_to_end_status": "live_rollout_pending",
-  "reason": "v14 repairs booking-versus-execution ambiguity using explicit scheduled/held handovers. Phase 1 is unchanged. Fresh full GLM-5.3 and Sol validation pending; r16 original scores and traces preserved.",
+  "reason": "v14 GLM-5.3 and Sol r17 campaigns are running from source 71da571b and registration commit 2532acea. This repairs scheduled/held execution semantics; Phase 1 is unchanged. Both have passed preflight. No new outcome claim.",
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
@@ -27,41 +27,25 @@
   "latest_attempts": [
     {
       "model": "z-ai/glm-5.3",
-      "run_id": "2026-10-27-current-work-glm-r16",
-      "status": "collected_with_limits",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-current-work-glm-r16",
-      "terminal_review_pending": false,
-      "started_at": "2026-10-27T08:13:04.720816+00:00",
-      "source_commit": "c71c04bb",
-      "registration_commit": "118ccf3c",
-      "finished_at": "2026-10-27T08:20:24.860193+00:00",
-      "original_scoring_completed": true,
-      "atif_native_continuity": true,
-      "provider_errors": 0,
-      "automated_observations": {
-        "phase1_formation_passed": false,
-        "phase2_passed": false,
-        "campaign_passed": false
-      }
+      "run_id": "2026-10-27-execution-state-glm-r17",
+      "status": "running",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-execution-state-glm-r17",
+      "terminal_review_pending": true,
+      "started_at": "2026-10-27T09:09:00.395864+00:00",
+      "collector_pid": 26784,
+      "source_commit": "71da571b",
+      "registration_commit": "2532acea"
     },
     {
       "model": "gpt-5.6-sol",
-      "run_id": "2026-10-27-current-work-sol-r16",
-      "status": "collected",
-      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-current-work-sol-r16",
-      "terminal_review_pending": false,
-      "started_at": "2026-10-27T08:13:04.749464+00:00",
-      "source_commit": "c71c04bb",
-      "registration_commit": "118ccf3c",
-      "finished_at": "2026-10-27T08:29:17.543355+00:00",
-      "original_scoring_completed": true,
-      "atif_native_continuity": true,
-      "provider_errors": 0,
-      "automated_observations": {
-        "phase1_formation_passed": true,
-        "phase2_passed": true,
-        "campaign_passed": true
-      }
+      "run_id": "2026-10-27-execution-state-sol-r17",
+      "status": "running",
+      "raw_output": "../eval-readiness/swarmharm-v1-2026-10-27-execution-state-sol-r17",
+      "terminal_review_pending": true,
+      "started_at": "2026-10-27T09:09:00.428489+00:00",
+      "collector_pid": 26785,
+      "source_commit": "71da571b",
+      "registration_commit": "2532acea"
     }
   ],
   "criteria_transition": {
