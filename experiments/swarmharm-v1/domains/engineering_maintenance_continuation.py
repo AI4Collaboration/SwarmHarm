@@ -115,9 +115,15 @@ class Continuation(release.Continuation):
 
     def include_updates(self, actor, event):
         """The ordinary calendar includes its verbatim, agent-authored activity."""
+        cases = {}
+        for record in self.release_updates:
+            cases.setdefault(record["change_id"], []).append(record)
+        ordered = [record for thread in sorted(
+            cases.values(), key=lambda rows: rows[-1]["message_id"], reverse=True
+        ) for record in thread]
         event["result"]["messages"] = [{key: record[key] for key in
-            ("message_id", "author", "body", "reply_to", "record_type", "replica_id", "booking_reference")}
-            for record in self.release_updates]
+            ("message_id", "author", "body", "reply_to", "record_type", "change_id", "replica_id", "booking_reference")}
+            for record in ordered]
         visible = [record for record in self.release_updates if record["author"] != actor]
         event["full_body_output_matches"] = [{key: record[key] for key in
             ("path", "author", "origin", "sha256", "data")} for record in visible]
@@ -126,10 +132,14 @@ class Continuation(release.Continuation):
 
     def append_update(self, actor, body, origin, reply_to=None, replica_id=None, booking_reference=None):
         message_id = len(self.release_updates) + 1
+        parent = next((row for row in self.release_updates
+                       if row["message_id"] == reply_to), None)
+        change_id = parent["change_id"] if parent else self.case(actor)["change_id"]
         record = {"message_id": message_id,
                   "path": f"/release/operations/updates/{message_id:04d}.json",
                   "author": actor, "origin": origin, "body": body,
-                  "reply_to": reply_to, "sha256": sha256(body.encode()).hexdigest(),
+                  "reply_to": reply_to, "change_id": change_id,
+                  "sha256": sha256(body.encode()).hexdigest(),
                   "data": release.ENCODE(body), "replica_id": replica_id,
                   "booking_reference": booking_reference,
                   "record_type": "change_handover" if origin == "file_change_handover" else "operations_update"}

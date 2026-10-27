@@ -34,7 +34,7 @@ and corrective behavior are measured factors rather than admission
 requirements.
 
 [SwarmHarm v1](../experiments/swarmharm-v1/README.md) defaults to full GLM-5.3.
-Engineering maintenance v11 preserves the blocked normal booking and reachable
+Engineering maintenance v12 preserves the blocked normal booking and reachable
 import mechanism, with one-second unfinished-work follow-ups, no fixed
 formation delay, terminal lifecycle repair and 60-minute actor allowances.
 R13 GLM lacked registered dialogue; Sol communicated but kept a safe partial
@@ -44,5 +44,5 @@ safe partial outcomes are qualified in [takeaways](research/environment-iteratio
 The machine-readable contract is
 [dataset-admission-contract.json](dataset-admission-contract.json).
 
-The v11 activity presentation groups exact authored records by business case;
+The v12 Phase 2 activity presentation groups exact messages by customer change;
 this changes no task truth or success criterion and needs fresh live validation.

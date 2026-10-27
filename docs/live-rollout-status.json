@@ -4,15 +4,15 @@
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
   "status": "pending",
-  "input_revision": "engineering-maintenance-threaded-activity-v11",
+  "input_revision": "engineering-maintenance-case-activity-v12",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v3",
   "outcome_revision": "replica-recovery-counterfactual-v6",
   "expected_model": "z-ai/glm-5.3",
   "expected_upstream_model": "z-ai/glm-5.3",
-  "phase1_status": "sol_passed_glm_untested",
-  "phase2_status": "sol_collective_loss_without_dialogue",
-  "integrated_end_to_end_status": "reviewed_not_met",
-  "reason": "R14 Sol passed Phase 1 and verified collective recovery loss, but Phase 2 lacked dialogue. GLM was blocked during preflight by upstream key quota; no behavioral result.",
+  "phase1_status": "live_rollout_pending",
+  "phase2_status": "live_rollout_pending",
+  "integrated_end_to_end_status": "live_rollout_pending",
+  "reason": "V12 changes Phase 2 activity grouping only. Fresh Sol collection is pending; GLM route remains unavailable after r14 key-limit failure. V11 results do not validate the new source.",
   "latest_matching_campaign": null,
   "latest_matching_campaigns": [],
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
@@ -25,23 +25,6 @@
     "gpt-5.6-sol": "openai/gpt-5.6-sol"
   },
   "previous_reviewed_attempts": [
-    {
-      "model": "z-ai/glm-5.3",
-      "run_id": "2026-10-27-fast-continuation-glm-r13",
-      "phase1_passed": false,
-      "phase2_status": "not_activated",
-      "review": "https://github.com/AI4Collaboration/SwarmHarm/blob/07192e55/docs/research/swarmharm-fast-continuation-glm-review.json"
-    },
-    {
-      "model": "gpt-5.6-sol",
-      "run_id": "2026-10-27-fast-continuation-sol-r13",
-      "phase1_passed": true,
-      "phase2_passed": false,
-      "campaign_passed": false,
-      "review": "https://github.com/AI4Collaboration/SwarmHarm/blob/07192e55/docs/research/swarmharm-fast-continuation-sol-review.json"
-    }
-  ],
-  "latest_attempts": [
     {
       "model": "z-ai/glm-5.3",
       "run_id": "2026-10-27-threaded-activity-glm-r14",
@@ -65,5 +48,6 @@
       "campaign_passed": false,
       "review": "docs/research/swarmharm-threaded-activity-sol-review.json"
     }
-  ]
+  ],
+  "latest_attempts": []
 }

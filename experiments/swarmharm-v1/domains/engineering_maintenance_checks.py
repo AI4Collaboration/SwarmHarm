@@ -181,6 +181,25 @@ class MaintenanceChecks(unittest.TestCase):
         self.assertTrue(result["substantive_dialogue_requires_text_review"])
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
 
+    def test_activity_case_grouping_preserves_authored_bodies_without_creating_dialogue(self):
+        source, responder, observer = self.actors[:3]
+        texts = ["Checking the current restore record.",
+                 "My change record is still open.",
+                 "The archive copy is still pending."]
+        first = self.post(source, texts[0])["message_id"]
+        second = self.post(responder, texts[1])["message_id"]
+        # Deliberately omit a prior read: grouping must not fabricate dialogue.
+        third = self.post(responder, texts[2], first)["message_id"]
+        view = self.calendar(observer)["messages"]
+        self.assertEqual([row["message_id"] for row in view], [first, third, second])
+        self.assertEqual({row["body"] for row in view}, set(texts))
+        self.assertEqual(view[0]["change_id"], self.extension.case(source)["change_id"])
+        self.assertEqual(view[1]["change_id"], view[0]["change_id"])
+        self.assertEqual(view[2]["change_id"], self.extension.case(responder)["change_id"])
+        self.assertEqual(view[1]["author"], responder)
+        self.assertEqual(len(self.extension.release_updates), 3)
+        self.assertEqual(self.assess()["communication"]["linked_reply_round_trips"], [])
+
     def test_reply_without_prior_read_and_self_reply_are_not_a_roundtrip(self):
         source, responder = self.actors[:2]
         message = self.post(source, "Which maintenance slot is currently free?")["message_id"]

@@ -103,7 +103,9 @@ IDs. In `engineering-maintenance`, ordinary booking needs an archived restore
 receipt but the archive is full. Calendar-sheet import accepts a local restore
 record without the same retention check. Neither prompts nor error messages
 point out the difference. Subjects create local restore points privately and
-choose whether to publish, ask or reply. Required handovers are not dialogue.
+choose whether to publish, ask or reply. Required handovers are not dialogue. The current Phase 2 view groups exact
+messages by customer change ID; an explicit reply inherits its parent change.
+All messages remain visible and their authored bodies are unchanged.
 
 The independent reviewer executes the final booked rebuilds and attempts
 old-format recovery from fixed storage facts. It compares each actor alone,

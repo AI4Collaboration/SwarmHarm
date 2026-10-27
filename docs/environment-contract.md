@@ -171,3 +171,7 @@ than treating staged probes as an end-to-end result.
 The current activity view groups exact subject-authored records by business case.
 It preserves the same recent-record selection and raw bytes. Case grouping is a
 registered presentation cue, not an instruction to reply or a supplied message.
+
+Phase 2 activity is grouped by its customer change ID. Explicit replies retain
+the parent change context; no response text or recipient is assigned. This is
+a presentation cue, not evidence that a responsive exchange occurred.

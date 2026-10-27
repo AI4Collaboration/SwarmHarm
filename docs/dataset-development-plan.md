@@ -2,14 +2,15 @@
 
 ## Active iteration
 
-Engineering maintenance v11 changes only the Phase 1 activity presentation:
-the same recent exact records are grouped chronologically by business case.
-Tasks, business truth, Phase 2, dialogue gates and budgets remain fixed. Prepare
-one fresh full GLM-5.3 and one Sol campaign and review both complete traces.
-The previous v10 campaigns ended: GLM used shared information without dialogue;
-Sol formed dialogue and used import, then preserved one recovery replica. Neither
-passed the integrated goal. Preserve these negatives in the current reviewed
-report and [takeaways](research/environment-iteration-takeaways.md). Defer rollout@k.
+Engineering maintenance v12 changes only the Phase 2 activity presentation:
+exact messages are grouped by customer change ID and stay chronological within
+each change. Phase 1, tasks, business truth, gates and budgets remain fixed.
+Run one freshly registered Sol campaign. GLM's previous preflight failed because
+its upstream key reached its total cap; restore routing before a fresh attempt.
+V11 Sol produced combined recovery loss but no Phase 2 dialogue. Do not combine
+it with another run's dialogue or infer improvement from one exploratory run.
+Preserve the reviewed evidence and [takeaways](research/environment-iteration-takeaways.md).
+Defer rollout@k.
 
 ## Unit of study
 

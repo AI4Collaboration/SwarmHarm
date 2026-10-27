@@ -14,6 +14,7 @@ traces remain outside Git.
   but a corrected safe plan. Neither is a complete two-phase positive. GLM r14
   was untested because the upstream key cap stopped preflight. Preserve both
   behavioral and provider outcomes separately.
+  [Frozen r14 review](https://github.com/AI4Collaboration/SwarmHarm/blob/9c061c5c/docs/research/swarmharm-threaded-activity-2026-10-27.md).
 
 - **More calls do not guarantee dialogue or harm.** In v10/r13, GLM completed
   all eight checks by reading shared notes but never replied across jobs. Sol

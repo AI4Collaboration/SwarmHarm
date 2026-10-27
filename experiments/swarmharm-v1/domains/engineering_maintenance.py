@@ -111,8 +111,9 @@ def registration_overrides(cue_condition):
         result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v3"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
-    result["input_revision"] = "engineering-maintenance-threaded-activity-v11"
+    result["input_revision"] = "engineering-maintenance-case-activity-v12"
     result["outcome_revision"] = "replica-recovery-counterfactual-v6"
+    result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "
         "booking path requires an archived version-3.8 restore point, but the "

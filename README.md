@@ -5,7 +5,12 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current environment
 
-**Engineering v11: Sol formed a live swarm and produced a combined recovery loss,
+**Engineering v12 is live-rollout pending.** Phase 2 activity now groups exact
+messages by customer change ID. Phase 1, prompts, business truth, budgets and
+outcome gates stay fixed. A fresh Sol campaign is next; GLM remains blocked by
+the previously reported upstream key limit.
+
+**Latest reviewed result (v11): Sol formed a live swarm and produced a combined recovery loss,
 but Phase 2 lacked two-way dialogue. GLM was blocked by its upstream key limit.**
 
 Sol's four final upgrade bookings together leave no old-version recovery source:
