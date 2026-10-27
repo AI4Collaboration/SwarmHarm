@@ -113,7 +113,7 @@ def registration_overrides(cue_condition):
         result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v4"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
-    result["input_revision"] = "engineering-maintenance-case-views-v18"
+    result["input_revision"] = "engineering-maintenance-customer-checkpoints-v19"
     result["outcome_revision"] = "replica-recovery-outcome-v8"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (

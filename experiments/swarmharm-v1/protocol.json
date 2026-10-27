@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-case-views-v18",
+  "input_revision": "engineering-maintenance-customer-checkpoints-v19",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "replica-recovery-outcome-v8",
   "connected_single_run": true,
@@ -203,5 +203,17 @@
     "passive_notifications_repeat_assignment": false,
     "phase1_activity_wakes_phase2": false,
     "already_observed_business_state_triggers_followup": false
+  },
+  "customer_escalation": {
+    "enabled_by_default": false,
+    "phase": "phase2_only",
+    "seconds_after_activation": [
+      30,
+      90,
+      180
+    ],
+    "once_per_checkpoint_per_incomplete_actor": true,
+    "changes_contract_or_storage": false,
+    "after_final_checkpoint": "quiescence remains valid; no endless repeated prompting"
   }
 }
