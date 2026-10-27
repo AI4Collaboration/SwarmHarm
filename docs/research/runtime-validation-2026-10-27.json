@@ -1,0 +1,61 @@
+{
+  "runtime_revision": "single-post-durable-retained-v2",
+  "tested_source_commit": "c11df638c7d18a53225574758e76184a1248b231",
+  "image": {
+    "reference": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "image_id_verified": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "platform": {
+      "architecture": "arm64",
+      "os": "linux",
+      "variant": "v8"
+    },
+    "selected_manifest": "sha256:16bf2b5c59a08523519d3c8589deca849285dee1d62a3653e124c3dba340f15e",
+    "official_source": "https://github.com/docker-library/python.git#2a3b794c223ab067d122719541cdd54a068732a5:3.12/slim-trixie",
+    "python_version": "3.12.15-slim-trixie",
+    "docker_daemon_restarted": false,
+    "image_substituted": false
+  },
+  "full_checks": {
+    "tests": 268,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "passed": true,
+    "image": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "real_docker": true,
+    "new_model_calls": 0,
+    "processes_signalled": false,
+    "tested_source_commit": "c11df638c7d18a53225574758e76184a1248b231"
+  },
+  "first_pass": {
+    "tests": 266,
+    "errors": 1,
+    "skipped": 0,
+    "error": "One read-only Docker snapshot could not connect to the daemon; original artifacts retained."
+  },
+  "second_pass": {
+    "tests": 266,
+    "errors": 1,
+    "skipped": 0,
+    "error": "Another explicit Docker connection refusal during trusted projection; original artifacts retained."
+  },
+  "docker_retry_policy": {
+    "max_attempts": 3,
+    "trusted_snapshot_or_projection_only": true,
+    "explicit_connection_failure_only": true,
+    "business_shell_or_ambiguous_error_retry": false
+  },
+  "affected_check_fresh_fixture": {
+    "tests": 1,
+    "passed": true
+  },
+  "prompt_checks": {
+    "tests": 10,
+    "passed": true
+  },
+  "format_contract_passed": true,
+  "dataset_admission_contract_passed": true,
+  "live_rollout_status": "pending",
+  "raw_evidence_backup_off_machine": false,
+  "workstation_retention": "No process signals or forced removal; command artifacts and workstation identities preserved."
+}

@@ -132,7 +132,9 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 ## Status
 
 Current v19 plus runtime revision `single-post-durable-retained-v2` requires fresh
-live validation. See [the runtime audit](../../docs/research/current-system-runtime-audit-2026-10-27.md).
+live validation. All 268 Docker-backed checks and 10 prompt-contract checks
+passed with the exact image; see [the validation receipt](../../docs/research/runtime-validation-2026-10-27.json).
+See [the runtime audit](../../docs/research/current-system-runtime-audit-2026-10-27.md).
 A model POST is sent once; its exclusive claim, request, stream frames and received
 IDs remain in the run directory. Unknown outcomes stay in `inflight_requests` for
 reconciliation. Reusing an existing transport identity is refused. Catalog GETs
@@ -146,13 +148,14 @@ failed parallel startup. Stopping or removing a retained container requires
 separate target-specific authorization. Inspect the evidence index when startup
 is unconfirmed; a cleanup record does not prove a container was removed.
 
- Sol and Astra sixteen-agent
+Sol and Astra sixteen-agent
 checkpoint comparisons are authorized. Earlier reward-only results are separate.
 
 ## Validate
 
 ```sh
 PY=../eval-readiness/harbor-0.24.0/bin/python
+docker pull python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
 PYTHONPATH=experiments/swarmharm-v1 $PY -m unittest discover \
   -s experiments/swarmharm-v1 -p '*checks.py' -v
 $PY experiments/prompt-contract/checks.py

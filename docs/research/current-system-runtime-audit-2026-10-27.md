@@ -80,46 +80,47 @@ continue to consume resources. Stop/removal requires target-specific authorizati
 
 ## Validation and remaining work
 
-Offline discovery ran 266 checks: **205 passed, 61 Docker-dependent checks
-explicitly skipped**, with no failures or errors. This includes 16 new runtime
-regressions for partial streams, identity reuse, reconciliation, filtering,
-launcher version checks and retained execution. The separate 10 prompt-contract
-checks passed. Format-contract and dataset-admission checks passed; live-rollout
-metadata correctly remains pending. Syntax compilation and whitespace checks
-passed. These are offline results, not a full canonical pass.
+The exact pinned image was recovered from Docker's official Python repository:
+`python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1`.
+The tested platform is `linux/arm64/v8`, Python 3.12.15 slim-trixie. Its selected
+platform manifest is recorded in the [validation receipt](runtime-validation-2026-10-27.json).
+The image was pulled by immutable digest without restarting Docker or a research
+process. The README now includes the exact pull command.
 
-To reproduce this offline-only audit, use the pinned Harbor interpreter as `$PY`:
+The full repeat passed **all 268 checks with zero skips, failures or errors**, using
+real Docker workstations. No workstation constructor was skipped or substituted.
+Only real provider calls were blocked during unit validation; the route tests use
+their ordinary mocks. All 18 new runtime regressions ran. The separate 10
+prompt-contract checks, format contract and dataset-admission checks passed.
+Live-rollout metadata remains correctly pending.
 
-```sh
-PYTHONPATH=experiments/swarmharm-v1 "$PY" - <<'PY'
-import unittest
-from unittest.mock import patch
-import lab, run
-suite = unittest.defaultTestLoader.discover(
-    'experiments/swarmharm-v1', pattern='*checks.py')
-def unavailable(self, *args, **kwargs):
-    raise unittest.SkipTest('Canonical workbench image unavailable')
-with patch.object(lab.base.Workstation, '__init__', unavailable), patch.object(
-    run.guardrails, 'open_url', side_effect=AssertionError('No live provider calls')):
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-raise SystemExit(not result.wasSuccessful())
-PY
-```
+Two earlier full passes each ran 266 checks with zero skips and encountered one
+Docker connection refusal during trusted observation/projection. Their logs and
+command artifacts remain preserved. A fresh focused check passed. The runtime
+now permits at most three attempts only for trusted snapshot/projection operations
+whose client explicitly reports a failed connection before admission. Each failed
+attempt has separate artifacts. Business shell commands, ambiguous failures such
+as `context canceled`, and model POSTs never retry. Two regressions cover this
+boundary. The complete pass above uses that repaired runtime.
 
-Use the ordinary README validation commands when the canonical image is present;
-the skip harness is not a preparation control or admission waiver.
+All three passes and the focused check have separate, hash-verified local
+backups. Retained test workstations require separate stop/removal authorization.
 
-Full canonical validation remains pending: the pinned workbench
-image `sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1`
-is unavailable locally. No replacement image or older OpenRouter run is presented
-as a canonical rollout. No AxonHub model calls are made in this audit.
+Run the ordinary README validation commands with the pinned Harbor 0.24.0
+interpreter and the exact image. The earlier 205-pass/61-skip audit remains in
+history; it is superseded by this complete Docker-backed pass.
 
-A fresh registered, exact-image continuous campaign must validate the changed
-runtime before any new live-environment claim. Existing v19/r19 collectors,
-registrations, native scores and unresolved requests remain on their frozen
-source. The separate eight-trial stock-versus-repaired shell study continues
-under its original controller. Its first repaired DeepSeek trial reached four
-routine filings and read foreign notes without a verified reply chain; its stock
-counterpart is unscored after a shell stall. This diagnoses an infrastructure
-confound, not a causal model or alignment difference. Repeats and the other model
-cells must finish before a combined comparison.
+This completes mechanical validation. A fresh registered continuous model run
+must still validate the changed runtime before a new live-environment claim.
+Existing v19/r19 collectors, registrations, native scores and unresolved requests
+keep their frozen source. No new model requests or Terry-owned credentials are
+used for these checks. The maintained runtime's live validation and dataset
+admission status have not been promoted by the unit results.
+
+The separate eight-trial shell study has now finished: repaired DeepSeek avoided
+the two observed stock-image stalls but formed no verified chain in either
+scored repeat. GLM formed chains in all four repeats. The two stock DeepSeek
+trials remain infrastructure-unknown. All 32 trajectories were freshly validated
+with native continuity. The [final report](https://github.com/AI4Collaboration/SwarmHarm/blob/c68ba08eb/experiments/swarm-discovery-shell-v1/RESULTS.md)
+records costs, preserved native scores and the late-output supplements. It does
+not supply matching live validation for this different maintained environment.
