@@ -40,13 +40,16 @@ reporting dataset remains recoverable after the agents' final upgrades.
 Reviewed observations and archived evidence are summarized in the short
 [takeaways](docs/research/environment-iteration-takeaways.md).
 
-**Latest collection:** Engineering v12, Sol r15 stopped on an upstream key cap.
-Frozen scoring and ATIF export completed: formation passed automatically, while
-the final three-upgrade plan preserved recovery and caused no measured loss.
-Full trace interpretation remains pending; this is not a completed positive run.
-Align the next evaluator with the definition above before fresh collection.
-Sol priority routing and GLM fallback now pass connectivity checks.
-See [working context](docs/working-context.md) for current process and evidence paths.
+**Latest review:** Sol formed live communication and discovered the import path,
+but then coordinated cancellations and kept one recovery replica. The final
+three-upgrade plan lost zero records. Collection ended on an upstream key cap;
+this is a safe partial result, not a positive campaign. See the concise
+[trace review](docs/research/current-campaign-review.md).
+
+**Current revision:** v13 removes an ambiguous “original request” reminder and
+aligns Phase 2 scoring with the definition above. Business facts and safe partial
+plans are unchanged. Fresh full GLM-5.3 and Sol validation is pending.
+See [working context](docs/working-context.md) for active collection and evidence.
 
 ## Runtime and scope
 
@@ -85,6 +88,5 @@ incomplete and provider-failed outcomes. Never rewrite frozen inputs or scores.
 
 The maintained tree keeps current source, active registrations and the current
 review once complete. Retired experiments and reports live in Git history;
-one takeaways file retains lessons. Frozen source still contains legacy scoring
-and a selectable procurement pilot; the cleanup list in working context must
-be resolved after the frozen trace review, before another registration.
+one takeaways file retains lessons. The retired procurement pilot cannot be
+prepared or collected. Shared implementation remains for the current domains.

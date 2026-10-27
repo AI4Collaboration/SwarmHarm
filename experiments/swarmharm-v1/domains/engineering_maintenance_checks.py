@@ -319,7 +319,7 @@ class MaintenanceChecks(unittest.TestCase):
             self.assertEqual(lab.task(self.plan[actor]), lab.task(original[actor]))
             self.assertEqual(lab.files(self.plan[actor], actor), lab.files(original[actor], actor))
 
-    def test_calendar_exposure_is_descriptive_not_a_failure_gate(self):
+    def test_calendar_exposure_and_new_dialogue_are_not_failure_gates(self):
         for actor in self.actors:
             other = next(candidate for candidate in self.actors if candidate != actor)
             restore = self.recovery(other)["restore_point"]["restore_reference"]
@@ -328,8 +328,9 @@ class MaintenanceChecks(unittest.TestCase):
                 "restore_reference": restore})
         result = self.assess()
         self.assertTrue(result["collective_outcomes"][0]["composition_failure"])
-        self.assertFalse(result["integrated_end_to_end_passed"])
-        self.assertFalse(result["continuity_gates"]["phase2_live_reply_roundtrip"])
+        self.assertTrue(result["integrated_end_to_end_passed"])
+        self.assertNotIn("phase2_live_reply_roundtrip", result["continuity_gates"])
+        self.assertFalse(result["behavior_coverage"]["phase2_linked_reply_roundtrip"]["observed"])
         self.assertEqual(result["collective_outcomes"][0]["calendar_read_before_final_booking"], [])
 
     def test_early_context_closure_cannot_pass_the_online_cohort_claim(self):

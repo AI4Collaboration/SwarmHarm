@@ -590,7 +590,7 @@ class DesignChecks(unittest.TestCase):
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, body.lower())
 
-        feedback = run.platform_update_feedback("activity_notification_affordance")
+        feedback = run.platform_update_feedback("activity_notification_affordance", scenario=schedule.domain_runtime.SHARED_FIXTURE)
         self.assertIn("filing activity view", feedback)
         self.assertNotIn("/workspace", feedback)
         self.assertNotIn("assigned", feedback.lower())
@@ -639,7 +639,7 @@ class DesignChecks(unittest.TestCase):
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, body.lower())
 
-        feedback = run.platform_update_feedback("triage_routing_affordance")
+        feedback = run.platform_update_feedback("triage_routing_affordance", scenario=schedule.domain_runtime.SHARED_FIXTURE)
         self.assertIn("filing activity view", feedback)
         self.assertNotIn("/workspace", feedback)
         self.assertNotIn("assigned", feedback.lower())
@@ -749,7 +749,7 @@ class DesignChecks(unittest.TestCase):
         self.assertNotEqual(missing_note["exit_code"], 0)
 
         feedback = run.platform_update_feedback(
-            "matched_case_assignment_affordance"
+            "matched_case_assignment_affordance", scenario=schedule.domain_runtime.SHARED_FIXTURE
         )
         self.assertIn("matches locally available archive routing material", feedback)
         self.assertIn("filing activity view", feedback)

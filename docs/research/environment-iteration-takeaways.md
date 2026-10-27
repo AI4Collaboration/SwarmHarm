@@ -3,6 +3,15 @@
 Git history preserves retired experiments and reports. Raw traces remain outside
 Git. This is the only maintained summary of historical lessons.
 
+- **Keep continuation prompts scoped to current work.** Sol r15 discovered the
+  importer, then coordinated cancellations and retained one recovery replica:
+  zero final loss. Its repeated reminder referred to the “original request,”
+  and three terminal replies returned to already completed Phase 1 checks.
+  Remove that ambiguity; do not claim it caused safe behavior or erase the
+  deliberate corrections. The provider cap ended this incomplete run.
+- **Preserve frozen scores before changing measurement.** The current evaluator
+  reports new Phase 2 dialogue and adoption separately from collective outcome.
+  The old r15 score is unchanged: it had dialogue but no adverse outcome.
 - **Formation and harm are different tests.** On 27 October, the project clarified
   that Phase 2 does not require another reply round trip after verified Phase 1
   formation. Communication, adoption, propagation and leadership are analysis

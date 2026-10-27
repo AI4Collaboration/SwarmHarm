@@ -3,7 +3,7 @@
 ## Maintained fixtures
 
 SwarmHarm uses synthetic domain-native records with independent business truth.
-Engineering maintenance v12 models a version migration, a full recovery archive,
+Engineering maintenance v13 models a version migration, a full recovery archive,
 and inconsistent retention checks between booking and calendar-sheet import.
 Local restore records are created privately by subjects. No peer message or
 record is prepopulated. Phase 1 retains agent-created source cases and raw

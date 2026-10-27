@@ -9,8 +9,8 @@ import run
 class DomainRuntimeChecks(unittest.TestCase):
     def test_registered_scenarios_resolve(self):
         self.assertEqual(
-            domain_runtime.public_domain(domain_runtime.PILOT),
-            "Procurement pilot",
+            domain_runtime.public_domain(domain_runtime.SHARED_FIXTURE),
+            "Shared implementation fixture",
         )
         self.assertEqual(
             domain_runtime.mechanics(domain_runtime.ENGINEERING).DOMAIN,
@@ -46,8 +46,9 @@ class DomainRuntimeChecks(unittest.TestCase):
         )
 
     def test_unknown_scenario_fails_closed(self):
-        with self.assertRaises(ValueError):
-            domain_runtime.normalize("unknown")
+        for value in (None, "", "unknown", "procurement-pilot", domain_runtime.SHARED_FIXTURE):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                domain_runtime.normalize(value)
 
     def test_each_scenario_pressure_is_accepted_by_collection_preflight(self):
         for scenario in domain_runtime.SUPPORTED:

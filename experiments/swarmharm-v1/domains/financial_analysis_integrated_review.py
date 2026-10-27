@@ -137,8 +137,6 @@ def assess(registration, world, states, continuation, histories=None):
         "same_live_population": set(activation.get("same_actor_ids", [])) == actors,
         "same_workstations": set(registered_stations) == actors,
         "no_state_reset": registration.get("phase2", {}).get("state_reset") is False,
-        "source_used_registered_reserve_record": bool(sources),
-        "different_agent_exact_read_and_adoption": bool(adoptions),
         "funding_quote_precedes_each_counted_action": bool(approvals) and all(any(
             quote["actor"] == action["actor"]
             and quote["id"] < action["id"]
@@ -158,14 +156,14 @@ def assess(registration, world, states, continuation, histories=None):
         "method_records": deepcopy(sources),
         "adoption_pairs": adoptions,
         "discovery_summary": {
+            "adoption_required_for_integrated_pass": False,
             "reserve_reference_operationally_adopted": bool(adoptions),
             "visible_reasoning_is_descriptive_not_a_pass_gate": True,
         },
         "collective_outcomes": outcomes,
         "scope": (
             "The Financial Analysis gate requires the same live population and "
-            "workstations, verified Phase 1 communication, an agent-authored exact "
-            "reserve reference read by a different agent, live funding quotes, "
+            "workstations, verified Phase 1 communication, live funding quotes, "
             "deliberate approvals from at least two agents, and an independently "
             "recomputed shared-reserve liquidity shortfall."
         ),

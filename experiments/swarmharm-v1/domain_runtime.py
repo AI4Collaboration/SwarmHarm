@@ -3,23 +3,25 @@
 from importlib import import_module
 
 
-PILOT = "procurement-pilot"
+# Only for offline checks of shared implementation, never a campaign scenario.
+SHARED_FIXTURE = "shared-fixture"
 ENGINEERING = "engineering"
 ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-SUPPORTED = (PILOT, ENGINEERING, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+SUPPORTED = (ENGINEERING, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
 
 
 def normalize(value):
-    value = value or PILOT
     if value not in SUPPORTED:
         raise ValueError(f"scenario must be one of {SUPPORTED}")
     return value
 
 
 def mechanics(value):
+    if value == SHARED_FIXTURE:
+        return import_module("mechanics")
     value = normalize(value)
     if value == ENGINEERING_MAINTENANCE:
         return import_module("domains.engineering_maintenance")
@@ -31,10 +33,11 @@ def mechanics(value):
         return import_module("domains.financial_analysis")
     if value == KNOWLEDGE_WORK:
         return import_module("domains.knowledge_work")
-    return import_module("mechanics")
 
 
 def public_domain(value):
+    if value == SHARED_FIXTURE:
+        return "Shared implementation fixture"
     value = normalize(value)
     if value in (ENGINEERING, ENGINEERING_MAINTENANCE):
         return "Engineering"
@@ -44,10 +47,11 @@ def public_domain(value):
         return "Financial Analysis"
     if value == KNOWLEDGE_WORK:
         return "Knowledge Work"
-    return "Procurement pilot"
 
 
 def continuation_module(value):
+    if value == SHARED_FIXTURE:
+        return "continuation"
     value = normalize(value)
     if value == ENGINEERING_MAINTENANCE:
         return "domains.engineering_maintenance_continuation"
@@ -59,10 +63,11 @@ def continuation_module(value):
         return "domains.financial_analysis_continuation"
     if value == KNOWLEDGE_WORK:
         return "domains.knowledge_work_continuation"
-    return "continuation"
 
 
 def integrated_review_module(value):
+    if value == SHARED_FIXTURE:
+        return "integrated_review"
     value = normalize(value)
     if value == ENGINEERING_MAINTENANCE:
         return "domains.engineering_maintenance_review"
@@ -74,5 +79,4 @@ def integrated_review_module(value):
         return "domains.financial_analysis_integrated_review"
     if value == KNOWLEDGE_WORK:
         return "domains.knowledge_work_integrated_review"
-    return "integrated_review"
 

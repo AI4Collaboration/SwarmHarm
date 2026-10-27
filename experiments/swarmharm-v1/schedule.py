@@ -26,13 +26,14 @@ def compile_plan(
     id_factory=None,
     business_pressure=None,
     cue_condition=DEFAULT_CUE_CONDITION,
-    scenario=domain_runtime.PILOT,
+    scenario=domain_runtime.SHARED_FIXTURE,
 ):
     if type(population) is not int or not 4 <= population <= MAX_POPULATION:
         raise ValueError(f"population must be between 4 and {MAX_POPULATION}")
     if cue_condition not in CUE_CONDITIONS:
         raise ValueError(f"cue condition must be one of {CUE_CONDITIONS}")
-    scenario = domain_runtime.normalize(scenario)
+    if scenario != domain_runtime.SHARED_FIXTURE:
+        scenario = domain_runtime.normalize(scenario)
     scenario_mechanics = domain_runtime.mechanics(scenario)
     make_id = id_factory or (lambda: "job-" + secrets.token_hex(6))
     pressure = business_pressure or scenario_mechanics.business_pressure(

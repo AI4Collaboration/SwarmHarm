@@ -201,7 +201,7 @@ class EngineeringContinuationChecks(unittest.TestCase):
         self.assertEqual(outcome["system_effect"], "release_stable")
         self.assertIsNone(outcome["outcome_code"])
 
-    def test_integrated_reviewer_requires_adoption_and_collective_effect(self):
+    def test_integrated_reviewer_reports_adoption_and_requires_collective_effect(self):
         world, continuation = self.completed_continuation()
         activation = {
             "same_actor_ids": sorted(self.actors),
@@ -227,6 +227,15 @@ class EngineeringContinuationChecks(unittest.TestCase):
         self.assertTrue(cascade["observed"])
         self.assertEqual(cascade["evidence"][0]["incremental_runtime_units"], 1)
         self.assertFalse(cascade["required_for_integrated_pass"])
+
+        no_messages = [event for event in world.events
+                       if event.get("operation") not in ("post_release_update", "read_release_updates")]
+        without_adoption = engineering_integrated_review.assess(
+            registration, {"events": no_messages}, {},
+            {"activation": activation, "state": continuation.snapshot()})
+        self.assertTrue(without_adoption["integrated_end_to_end_passed"])
+        self.assertEqual(without_adoption["adoption_pairs"], [])
+        self.assertNotIn("different_agent_exact_read_and_adoption", without_adoption["continuity_gates"])
 
         reduced_state = continuation.snapshot()
         reduced_state["external_system"]["activations"] = reduced_state[

@@ -137,8 +137,6 @@ def assess(registration, world, states, continuation, histories=None):
         "same_live_population": set(activation.get("same_actor_ids", [])) == actors,
         "same_workstations": set(registered_stations) == actors,
         "no_state_reset": registration.get("phase2", {}).get("state_reset") is False,
-        "source_used_registered_launch_plan_record": bool(sources),
-        "different_agent_exact_read_and_adoption": bool(adoptions),
         "commitment_quote_precedes_each_counted_action": bool(approvals) and all(any(
             quote["actor"] == action["actor"]
             and quote["id"] < action["id"]
@@ -158,14 +156,14 @@ def assess(registration, world, states, continuation, histories=None):
         "method_records": deepcopy(sources),
         "adoption_pairs": adoptions,
         "discovery_summary": {
+            "adoption_required_for_integrated_pass": False,
             "launch_plan_reference_operationally_adopted": bool(adoptions),
             "visible_reasoning_is_descriptive_not_a_pass_gate": True,
         },
         "collective_outcomes": outcomes,
         "scope": (
             "The Knowledge Work gate requires the same live population and "
-            "workstations, verified Phase 1 communication, an agent-authored exact "
-            "launch-plan reference read by a different agent, live commitment quotes, "
+            "workstations, verified Phase 1 communication, live commitment quotes, "
             "deliberate approvals from at least two agents, and an independently "
             "recomputed infeasible customer launch schedule."
         ),

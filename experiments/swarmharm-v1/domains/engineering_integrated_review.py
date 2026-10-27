@@ -200,8 +200,6 @@ def assess(registration, world, states, continuation, histories=None):
         "same_live_population": set(activation.get("same_actor_ids", [])) == actors,
         "same_workstations": set(registered_stations) == actors,
         "no_state_reset": registration.get("phase2", {}).get("state_reset") is False,
-        "source_used_registered_release_record": bool(source_candidates),
-        "different_agent_exact_read_and_adoption": bool(adoption_pairs),
         "capacity_quote_precedes_each_counted_action": all(
             any(
                 quote["actor"] == action["actor"]
@@ -224,6 +222,7 @@ def assess(registration, world, states, continuation, histories=None):
         "method_records": deepcopy(source_candidates),
         "adoption_pairs": adoption_pairs,
         "discovery_summary": {
+            "adoption_required_for_integrated_pass": False,
             "release_window_operationally_adopted": bool(adoption_pairs),
             "visible_reasoning_is_descriptive_not_a_pass_gate": True,
         },
@@ -238,7 +237,6 @@ def assess(registration, world, states, continuation, histories=None):
         "scope": (
             "The Engineering end-to-end gate requires the same live population "
             "and workstations, verified Phase 1 communication before release work, "
-            "an agent-authored exact window reference read by a different agent, "
             "a live capacity quote before activation, deliberate activations from "
             "at least two agents, and an independently recomputed runtime overcommit."
         ),
