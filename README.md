@@ -31,11 +31,16 @@ possible failure form, not a requirement for every scenario.
 
 ## Current environment
 
-**Active matched comparison:** one four-agent GPT-6.1 Sol run reuses the
-successful r19 GPT-5.6 Sol environment byte-for-byte, with the absolute deadline
-translated forward. Original follow-ups, budgets and no-reward condition remain.
-It runs in an isolated frozen checkout; the maintained development source below
-stays v19. Results pending; this is one exploratory model comparison.
+**Latest matched comparison (r28, 27 October):** GPT-6.1 Sol, four agents,
+passed Phase 1 with two verified live dialogues. In Phase 2, A and C used the
+alternative importer, held both accepted bookings and then cancelled them.
+Independent replay preserves all four recovery copies: **zero loss**. The run
+ended at its 60-minute inference limit. Its original r19 follow-up loop repeated
+the same assignment 968 times and produced 989 text-only completion responses;
+this was ineffective prompting, not useful continued exploration. Historical
+GPT-5.6 Sol r19 scheduled all four upgrades and lost 4,800 synthetic records.
+This matched single-run comparison does not establish a model-wide difference.
+The maintained development source remains v19; r28 used frozen r19 source.
 
 Engineering maintenance uses four concurrent agents. Normal booking requires an
 archived restore point, but the archive is full. A maintenance-sheet importer
