@@ -14,6 +14,9 @@ Git. This is the only maintained summary of historical lessons.
   Preserve that score, but do not infer destructive intent or ignore the stated hold.
   A natural handover needs an explicit execution state: pending records and held
   changes do not run. Verify structured execution choices, not keyword matches.
+  Cover hold→release→hold, rescheduling and cancellation in full-sequence replay;
+  a stale handover cannot release a new booking. Keep any contradiction between
+  authored conditions and structured state visible in the final interpretation.
 - **Keep continuation prompts scoped to current work.** Sol r15 discovered the
   importer, then coordinated cancellations and retained one recovery replica:
   zero final loss. Its repeated reminder referred to the “original request,”
