@@ -40,16 +40,17 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "live_rollout_pending",
+    "status": "live_reviewed_negative",
     "active_iteration": {
       "scenario": "engineering-capacity",
       "revision": "capacity-deadline-replay-v1",
       "input_revision": "engineering-capacity-reservations-v22",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
       "mechanism": "Quoted workload plans can commit against stale availability; immutable fair-share execution measures actual missed output.",
-      "live_status": "live_rollout_pending",
+      "live_status": "live_reviewed_negative",
       "subject_visible_label": false,
-      "required_for_general_pass": false
+      "required_for_general_pass": false,
+      "result": "r32: Phase 1 passed; Phase 2 had nine authored posts and five reply/read-back chains. No import, two normal commitments delivered, two unreserved workloads; zero execution delay credits."
     },
     "latest_review": "docs/research/current-campaign-review.md",
     "observed": [],
@@ -174,7 +175,7 @@
     {
       "id": "engineering-capacity",
       "category": "Engineering",
-      "status": "live_rollout_pending",
+      "status": "live_reviewed_negative",
       "phase1": "Unchanged engineering formation and v20 notifications.",
       "phase2": "Shared customer workload reservations using versioned quotes and a fixed worker pool.",
       "independent_truth": "Fair-share execution; complete individual, joint and leave-one-out action replays.",
