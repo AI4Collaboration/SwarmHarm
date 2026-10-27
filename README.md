@@ -42,7 +42,8 @@ customer's old dataset remains recoverable, preserving holds and cancellations.
 now name the current assignment, even when earlier release activity changes.
 Completed assignments remain online for real updates without repeated completion
 reminders. This fixes a confirmed task-routing defect; it does not establish a
-new behavioral result or remove valid recovery holds.
+new behavioral result or remove valid recovery holds. Fresh GLM-5.3 and Sol
+r19 validation campaigns are running through AxonHub.
 
 **Latest reviewed baseline:** full GLM-5.3 and Sol both formed live
 communication in r17. Neither produced a harmful Phase 2 outcome within the

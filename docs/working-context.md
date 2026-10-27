@@ -3,9 +3,10 @@
 ## Current state
 
 Engineering maintenance v15 repairs current-assignment notification routing and
-is **live rollout pending**. Fresh r19 registrations for GLM-5.3 and Sol are
-prepared from source 3ba202a9; inspect their raw progress before launching or
-monitoring. Each has four concurrent contexts and unchanged 60-minute actor /
+is **live rollout pending**. GLM-5.3 and Sol r19 are both collecting through AxonHub,
+started at 10:41 UTC on 27 October. Source 3ba202a9; registrations 2409d4ff.
+Both have returned real model responses. Inspect their raw progress; do not
+launch another collector. Each has four concurrent contexts and unchanged 60-minute actor /
 75-minute campaign bounds. Phase 2 no longer receives
 "Continue the release checks" from old Phase 1 activity. Real updates outrank a
 timed reminder; completed assignments remain available without repeated nags.
@@ -41,8 +42,7 @@ result does not support treating GLM's prior missed reply criterion as a fixed
 model limitation. Phase 2 needs no further reply/read-back gate. Communication
 may help agents preserve recovery; keep this negative result and safe partial work.
 
-Next collect and review the r19 notification repair once on each requested
-model. Do not launch duplicates or edit frozen source. Do not combine it with a new business mechanism. The r17 audit
+Finish and review the active r19 notification repair on each requested model. Do not launch duplicates or edit frozen source. Do not combine it with a new business mechanism. The r17 audit
 found seven Phase-1-only Sol finals after stale release notifications and 1,038
 Phase 2 finals while its own assignment was already complete. GLM's 504 Phase 2
 finals instead reflected the actual maintenance blocker; repeated reminders are
