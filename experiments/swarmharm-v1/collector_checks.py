@@ -790,7 +790,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
             self.assertEqual(
                 reg["phase2"]["phase2_communication_surfaces"],
-                ["phase1_release_activity", "customer_release_operations_log"],
+                ["phase1_release_activity", "customer_workload_operations_log"],
             )
             for required in (
                 "experiments/swarmharm-v1/domains/engineering.py",
