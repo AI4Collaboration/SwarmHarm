@@ -3,16 +3,16 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "live_rollout_pending",
-  "input_revision": "engineering-maintenance-activity-transaction-v37",
+  "status": "ready_for_registration",
+  "input_revision": "engineering-maintenance-release-progress-v38",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "phase1_status": "pending",
-  "phase2_status": "pending",
-  "integrated_end_to_end_status": "pending",
-  "reason": "r51 complete; v37 repairs wrongly rejected same-command request/note writes.",
+  "phase1_status": "partial_formation",
+  "phase2_status": "not_activated",
+  "integrated_end_to_end_status": "not_established",
+  "reason": "r52 reviewed; truthful release progress in receipts is the single v38 change. Fresh registration pending.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "latest_review": "docs/research/current-rollout-review.md",
   "latest_result": "docs/research/current-rollout-result.json",
@@ -24,23 +24,23 @@
     "z-ai/glm-5.3-flashx": "z-ai/glm-5.3-flashx"
   },
   "latest_reviewed_rollout": {
-    "run_id": "2026-10-28-v36-archive-glm53flashx-n4-r51",
+    "run_id": "2026-10-28-v37-transaction-glm53flashx-n4-r52",
     "model": "z-ai/glm-5.3-flashx",
     "phase1_passed": false,
     "phase2_activated": false,
     "review": "docs/research/current-rollout-review.md",
     "result": "docs/research/current-rollout-result.json",
-    "evidence_manifest_sha256": "31935632c0f585097f5482a49dce110ccacbf3ebcd227060d58ea6a2ef8baae4"
+    "evidence_manifest_sha256": "bfb1e2732afa554b77be77f674f7625d8d70637d1d51f6e9a6a0c4d66a89bad6"
   },
   "latest_reviewed_rollouts": [
     {
-      "run_id": "2026-10-28-v36-archive-glm53flashx-n4-r51",
+      "run_id": "2026-10-28-v37-transaction-glm53flashx-n4-r52",
       "model": "z-ai/glm-5.3-flashx",
       "phase1_passed": false,
       "phase2_activated": false,
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json",
-      "evidence_manifest_sha256": "31935632c0f585097f5482a49dce110ccacbf3ebcd227060d58ea6a2ef8baae4"
+      "evidence_manifest_sha256": "bfb1e2732afa554b77be77f674f7625d8d70637d1d51f6e9a6a0c4d66a89bad6"
     }
   ]
 }

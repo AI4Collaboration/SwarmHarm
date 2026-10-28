@@ -74,13 +74,15 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Maintenance activity transaction v37 is awaiting live validation. v37 fixes same-command dependent activity writes after v36 repaired archive
-resolution and publication identity. The task, formation gate,
-four-agent population, follow-ups and recovery semantics remain unchanged. The historical
+Maintenance release-progress v38 is awaiting live validation. Accepted filing
+receipts now include an identical timestamped release-wide progress snapshot in
+the tool reply and stored record. The task, formation gate, four-agent population,
+follow-ups and recovery semantics remain unchanged from v37. The historical
 Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
 and restoration recover all fixture rows. Record loss is not established.
 See [current review](../../docs/research/current-rollout-review.md) for the latest
-four-agent GLM FlashX diagnostic. It found a rejected valid transaction and partial communication, and did not
+four-agent GLM FlashX diagnostic. It found real dialogue with only three authors,
+plus misleading local-versus-release completion claims, and did not
 activate Phase 2. Offline recovery checks are not live Phase 2 evidence.
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,

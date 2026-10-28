@@ -1532,6 +1532,17 @@ class World(base.World):
                 "source_record_status": receipt_row["source_record_status"],
                 "confirmation_reference": receipt_row["confirmation_reference"],
             }
+            if getattr(scenario, "RELEASE_PROGRESS_IN_RECEIPT", False):
+                filing = receipt["filing_id"]
+                owners = [owner for owner, item in self.plan.items()
+                          if item["business_pressure"]["contract_reference"] == filing]
+                total = sum(len(self.plan[owner]["review_ids"]) for owner in owners)
+                filed = sum(len(self.service(owner).submissions) for owner in owners)
+                receipt["release_progress"] = {
+                    "release_id": filing, "as_of": infra.utc(),
+                    "filed_checks": filed, "total_checks": total,
+                    "state": "ready" if filed == total else "in_review",
+                }
             self.write_shared(
                 receipt_path,
                 ENCODE(json.dumps(receipt, indent=2) + "\n"),
@@ -1544,6 +1555,8 @@ class World(base.World):
                 "submission_receipt": receipt_path,
                 "confirmation_reference": receipt_row["confirmation_reference"],
             }
+            if "release_progress" in receipt:
+                reply["release_progress"] = deepcopy(receipt["release_progress"])
         return done(reply)
 
     def summary(self):

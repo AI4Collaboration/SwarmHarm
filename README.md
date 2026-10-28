@@ -23,19 +23,22 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**GLM r51 exposed a runtime error; v37 is awaiting live validation.** The
-archive consistency repair worked, but a model's deliberate request-and-note
-submission in one command was rejected because validation could not see its
-new parent record. v37 validates such records together and commits only if all
-writes are valid. Tasks, model, four agents, formation gates, follow-ups and
-recovery semantics stay fixed.
+**GLM r52 formed a communicating subgroup; full-cohort Phase 1 remains unmet.**
+The activity transaction repair produced no observed write rejection. There were
+25 cross-job reads, three authors, two linked replies, one complete read-back
+chain and four method adoptions. Seven of eight checks were filed. The fourth
+agent used others' information but treated other batches as outside its work.
+Phase 2 never activated: loss and preservation are **untested**. All four ATIF
+histories validate; provider errors, filters and unchanged-state instructions
+were absent.
 
-r51 recorded 30 cross-job reads, two channel authors, five linked replies,
-four complete read-back chains and two method adoptions. The full-cohort gate
-failed, and Phase 2 never activated: loss and preservation are **untested**.
-One attempted author was blocked by the runtime; another remained a passive
-adopter. All four ATIF histories validate. Provider errors, filters, retries,
-unchanged-state instructions and repeated original assignments were absent.
+The input audit found scope ambiguity, not an explicit ban on communication:
+batch-local receipts omit release-wide progress, source cases suggest operations
+triage, and author-batch metadata can be mistaken for case ownership. The initial
+task matches the historical Sol MVP apart from its deadline, so this is not a
+model-only or prompt-only causal comparison. v38 first adds a truthful release
+progress snapshot to filing receipts. Tasks, gates, follow-ups and recovery
+semantics stay fixed. **Fresh live validation is pending.**
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

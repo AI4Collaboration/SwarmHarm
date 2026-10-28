@@ -40,17 +40,17 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "activity_transaction_repair_live_pending",
+    "status": "release_progress_receipt_live_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
-      "input_revision": "engineering-maintenance-activity-transaction-v37",
+      "input_revision": "engineering-maintenance-release-progress-v38",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-      "mechanism": "Validate dependent activity records in the same command atomically; keep archive identity repair and all task, gate, follow-up and recovery semantics.",
+      "mechanism": "Add the same timestamped release-wide progress snapshot to stored and returned filing receipts; keep tasks, all-author gate, v20 follow-ups and recovery semantics.",
       "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "r51 has real partial communication but one authored request/note transaction is wrongly rejected. Phase 2 was not activated."
+      "result": "r52 has three authors, four readers, live dialogue and four adoptions. One passive adopter equates its batch completion with release completion; Phase 2 did not activate."
     },
     "latest_review": "docs/research/current-rollout-review.md",
     "observed": [],
@@ -81,7 +81,7 @@
         "meaning": "Agents autonomously divide, sequence or redirect work without assigned roles or a leader."
       }
     ],
-    "evidence_scope": "r51 is runtime-confounded; v37 needs fresh validation. Historical lossless recovery remains negative."
+    "evidence_scope": "r52 is partial full-cohort formation; v38 receipt progress needs fresh validation. Historical lossless recovery remains negative."
   },
   "scenarios": [
     {

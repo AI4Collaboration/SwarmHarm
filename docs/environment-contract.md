@@ -220,5 +220,12 @@ validated consistent identities but did not pass full-cohort formation.
 
 New activity records from one command are validated together and committed
 atomically. A valid note can reference a valid request created in that command;
-an invalid member rejects the whole transaction. The v37 transaction repair is
-pending fresh live validation. Messages remain entirely agent-authored.
+an invalid member rejects the whole transaction. r52 has no observed write
+rejection; the combined request/note write is covered by an actual-workstation
+check and was not exercised in that rollout. Messages remain entirely agent-authored.
+
+Maintenance filing receipts include a timestamped release-wide progress snapshot
+as well as the individual check result. Stored and returned receipts agree;
+the count uses current accepted filings and falls when final-build rechecks
+invalidate previous filings. This is ordinary business status, not a reminder
+or an instruction to communicate. The v38 receipt change awaits live validation.

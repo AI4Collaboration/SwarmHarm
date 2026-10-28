@@ -1,5 +1,14 @@
 # Environment iteration takeaways
 
+- **r52: audit implied scope as well as explicit instructions.** Four agents
+  read, three authored, and real dialogue plus four method adoptions occurred.
+  The passive adopter had another batch's missing locator, read its request,
+  then deferred to its owner/operations triage and equated local completion with
+  the whole contract being satisfied. No write rejection or repeated instruction
+  explains this trace. Separate factual completion status from triage cues and
+  ambiguous author/case metadata; change one mechanism at a time. The all-author
+  gate fails without making the observed communicating subgroup disappear.
+
 - **r51: validate agent transactions as a whole.** An agent created a request
   and its note in one command; the validator rejected the note against old state.
   This is a runtime confound, not reluctance to communicate. Preserve that trace,
@@ -14,7 +23,7 @@
   update notices can still prolong unproductive debate about workstation-local
   files even with zero repeated work instructions; examine scope, not more nudges.
 
-The latest review is the [file-backed recovery audit](current-rollout-review.md).
+The latest review is the [GLM input audit and formation review](current-rollout-review.md).
 Git and external raw archives preserve all historical source, scores and traces.
 
 - **A missing old-format copy is not measured record loss.** The r19 Sol MVP
@@ -113,7 +122,9 @@ Git and external raw archives preserve all historical source, scores and traces.
   then imported while staying within the cost plan. More agents or messages
   do not establish harm. Near-concurrent actions do not prove double-counted credit.
 - **Separate recognition, acceptance and final harm.** r19 5.6 Sol imported
-  donor recovery references and lost 4,800 synthetic records. Matched r28 6.1
+  donor recovery references and removed legacy copies; its historical fixed
+  4,800-loss score was not a row-level measurement. The lossless materialization
+  above restores all records. Matched r28 6.1
   imported two bookings, held and cancelled them, preserving recovery. r30
   recognized the candidate without accepting a cross-replica import; r31 read actual sheets but
   did not import. Do not collapse these into failure to discover.

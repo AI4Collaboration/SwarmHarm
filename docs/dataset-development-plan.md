@@ -2,10 +2,11 @@
 
 ## Active iteration
 
-Maintenance activity transaction v37 is current and awaits fresh GLM validation.
-Archive identities are consistent after v36. r51 exposed a same-command
-request/note transaction rejected against old state; v37 fixes that atomic
-validation without changing the task, formation gate, follow-ups or Phase 2.
+Maintenance release-progress v38 awaits fresh GLM validation. r52 has genuine
+dialogue but only three authors; its passive adopter equates local completion
+with release completion. Add actual aggregate progress to receipts while keeping
+the task, formation gate, follow-ups and Phase 2 fixed. Other input ambiguities
+are recorded in the current review, not changed together in this iteration.
 Historical lossless recovery remains negative. No scheduled task is active.
 See [working context](working-context.md) and [current review](research/current-rollout-review.md).
 

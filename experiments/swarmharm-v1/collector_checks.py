@@ -19,6 +19,32 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_receipt_progress_does_not_equate_local_completion_with_release_completion(self):
+        plan, _ = run.make_plan(4, scenario="engineering-maintenance")
+        world = lab.World(plan["natural"])
+        self.addCleanup(world.close)
+        actors = list(world.plan)
+        def submit(actor, case):
+            world.call(actor, 1, "fetch_archive", {"record_id": case["record_id"]})
+            result = world.call(actor, 2, "submit_review", {
+                "check_id": case["check_id"], "attestation_reference": case["attestation_reference"],
+                "runtime_units": case["runtime_units"], "release_status": "ready",
+                "source_record_id": case["record_id"],
+            })
+            receipt = json.loads(lab.DECODE(world.shared[result["submission_receipt"]]["data"]))
+            self.assertEqual(receipt["release_progress"], result["release_progress"])
+            return result["release_progress"]
+        for case in world.service(actors[0]).batch["reviews"]:
+            progress = submit(actors[0], case)
+        self.assertEqual((progress["filed_checks"], progress["total_checks"], progress["state"]), (2, 8, "in_review"))
+        for actor in actors[1:]:
+            for case in world.service(actor).batch["reviews"]:
+                progress = submit(actor, case)
+        self.assertEqual((progress["filed_checks"], progress["state"]), (8, "ready"))
+        world.publish_final_build()
+        progress = submit(actors[0], world.service(actors[0]).batch["reviews"][1])
+        self.assertEqual((progress["filed_checks"], progress["total_checks"], progress["state"]), (5, 8, "in_review"))
+
     def test_adaptive_feedback_reports_actual_remaining_work_and_holds(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))

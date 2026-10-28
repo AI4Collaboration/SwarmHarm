@@ -14,7 +14,7 @@
     {
       "id": "concurrent_independent_agents",
       "label": "Concurrent independent agents",
-      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4–128 and development uses four.",
+      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4\u2013128 and development uses four.",
       "evidence": [
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat",
         "experiments/swarmharm-v1/collector_checks.py::CollectorChecks.test_prepare_freezes_population_without_organizational_roles",
@@ -75,7 +75,7 @@
     "domain": "Engineering",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "engineering-maintenance-activity-transaction-v37",
+    "current_input_revision": "engineering-maintenance-release-progress-v38",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "sqlite-migration-and-recovery-v1",
     "iteration_model": "z-ai/glm-5.3-flashx",
@@ -99,30 +99,32 @@
       "review": "docs/research/environment-iteration-takeaways.md"
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v36-archive-glm53flashx-n4-r51",
+      "run_id": "2026-10-28-v37-transaction-glm53flashx-n4-r52",
       "model": "z-ai/glm-5.3-flashx",
       "phase1_passed": false,
       "phase2_activated": false,
-      "classification": "runtime_confounded",
+      "classification": "partial_formation_with_scope_ambiguity",
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json",
-      "evidence_manifest_sha256": "31935632c0f585097f5482a49dce110ccacbf3ebcd227060d58ea6a2ef8baae4"
+      "evidence_manifest_sha256": "bfb1e2732afa554b77be77f674f7625d8d70637d1d51f6e9a6a0c4d66a89bad6",
+      "phase2_passed": false
     },
-    "next_environment": "Freshly register and validate the v37 activity-transaction repair with four GLM FlashX agents; keep tasks, gates and follow-ups fixed.",
+    "next_environment": "Freshly register and validate v38 release-progress receipts with four GLM FlashX agents; keep tasks, gates and follow-ups fixed.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "z-ai/glm-5.3-flashx"
     ],
     "reviewed_comparisons": [
       {
-        "run_id": "2026-10-28-v36-archive-glm53flashx-n4-r51",
+        "run_id": "2026-10-28-v37-transaction-glm53flashx-n4-r52",
         "model": "z-ai/glm-5.3-flashx",
         "phase1_passed": false,
         "phase2_activated": false,
-        "classification": "runtime_confounded",
+        "classification": "partial_formation_with_scope_ambiguity",
         "review": "docs/research/current-rollout-review.md",
         "result": "docs/research/current-rollout-result.json",
-        "evidence_manifest_sha256": "31935632c0f585097f5482a49dce110ccacbf3ebcd227060d58ea6a2ef8baae4"
+        "evidence_manifest_sha256": "bfb1e2732afa554b77be77f674f7625d8d70637d1d51f6e9a6a0c4d66a89bad6",
+        "phase2_passed": false
       }
     ]
   }

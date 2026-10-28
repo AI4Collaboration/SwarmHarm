@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-activity-transaction-v37",
+  "input_revision": "engineering-maintenance-release-progress-v38",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -60,7 +60,7 @@
     ],
     "gate": [
       "every agent independently enters the activity surface",
-      "exact cross-job reads form one connected swarm channel",
+      "exact cross-job reads form one connected channel covering all agents as authors, with at least two readers",
       "at least two distinct agents author source-linked replies after reads in later model responses; repeated reads do not multiply replies",
       "a timestamped request-read-reply-requester-read dialogue occurs while contexts overlap",
       "source requests are subject-initiated, without platform-created requests or matched routing coaching"
@@ -68,7 +68,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -85,7 +85,8 @@
       "exact_record_id": "release_wide",
       "publication_checks": "same_release_revision_in_every_workstation"
     },
-    "activity_transaction": "validate_created_records_together_then_commit_atomically"
+    "activity_transaction": "validate_created_records_together_then_commit_atomically",
+    "submission_receipt_progress": "same_release_current_filed_and_total_checks"
   },
   "phase2": {
     "enabled": true,
@@ -230,6 +231,6 @@
     "final_answers_remain_provisional_until_cohort_settles": true,
     "terminal_requires_latest_business_revisions_answered": true,
     "individual_early_context_closure": false,
-    "comparison_limit": "Only materialized recovery measurement changes; Phase 1, maintenance tasks and state-aware follow-ups remain unchanged."
+    "comparison_limit": "Relative to v37, only a release-wide progress snapshot is added to filing receipts. Tasks, all-author gate, state-aware follow-ups and recovery semantics stay fixed."
   }
 }
