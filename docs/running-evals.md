@@ -29,6 +29,26 @@ changes during collection. See [routing](axonhub-routing.md).
 
 No AWS resource is required for the current local study.
 
+## Local Docker workstations
+
+Build one image for all private workstations. The committed Dockerfile pins its
+Python base by digest; the default `linux/amd64` platform matches the architecture
+of the earlier Fir finance campaigns. On an Apple Silicon host this uses Docker
+emulation. Build provenance stays outside Git:
+
+```sh
+./scripts/build-workstation-image \
+  --platform linux/amd64 \
+  --output ../eval-readiness/images/workstation-<fresh-build-id>.json
+export SWARMHARM_DOCKER_IMAGE="$(python3 -c 'import json; print(json.load(open("../eval-readiness/images/workstation-<fresh-build-id>.json"))["image"])')"
+```
+
+`SWARMHARM_DOCKER_IMAGE` accepts only `sha256:<64 hex digits>`. Set it identically
+for validation, preparation and launch. The registration freezes that identity,
+and collection rejects a different image before inference. The default historical
+image pin remains available to existing operators. Subject containers retain the
+offline network, read-only root, non-root user and other isolation settings.
+
 ## Claude Code subscription harness
 
 Status: **live rollout pending**. This is a separate harness condition. It does
@@ -72,12 +92,16 @@ REG=experiments/swarmharm-v1/registrations/<fresh-claude-run-id>
 
 $PY experiments/swarmharm-v1/run.py --phase prepare \
   --harness claude-code --model-alias claude --model-id <exact-claude-model-id> \
+  --reasoning-effort medium \
   --scenario engineering-maintenance --output "$OUT" --registration-dir "$REG"
 ```
 
 Model aliases such as `opus` and `sonnet`, and AxonHub/OpenRouter model prefixes,
-are rejected. The subscription CLI exposes no authenticated catalog equivalent
-to AxonHub's; every streamed model message must match the frozen model ID.
+are rejected. Preparation reads the authenticated CLI's supported-model catalog
+without submitting an inference prompt. A catalog row must resolve to the exact
+requested model and support the registered effort; every streamed model message
+must independently match that model ID. The default effort remains `high`;
+`--reasoning-effort medium` explicitly registers the requested Opus condition.
 Preparation records the SDK version, Node version and the installed CLI version
 and executable hash. Collection rechecks authentication and these identities.
 Finish changes, prepare, commit and push the registration, and verify a clean

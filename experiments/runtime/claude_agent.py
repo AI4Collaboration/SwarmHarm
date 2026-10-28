@@ -9,6 +9,7 @@ from queue import Empty
 import re
 import shutil
 import subprocess
+import tempfile
 import threading
 
 HERE = Path(__file__).resolve().parent
@@ -126,6 +127,20 @@ def validate_model(model):
 
 def system_prompt(job_context):
     return PREAMBLE + ('\n\n' + job_context if job_context else '')
+
+
+def subscription_catalog(model,effort):
+    """Inspect the authenticated SDK catalog; no user prompt or model call."""
+    validate_model(model)
+    with tempfile.TemporaryDirectory(prefix='swarmharm-subscription-catalog-') as folder:
+        result=subprocess.run([node_binary(),str(CLAUDE_DIR/'catalog.mjs'),model,effort,claude_binary()],
+            cwd=folder,env=subscription_env(),capture_output=True,text=True,timeout=60)
+    if result.returncode:
+        raise RuntimeError('Claude subscription model catalog check failed')
+    value=json.loads(result.stdout)
+    if not value.get('model_and_effort_found'):
+        raise RuntimeError(f'The subscription CLI catalog does not expose {model} at {effort} effort')
+    return value
 
 
 def harness_registration(goal_mode='off'):

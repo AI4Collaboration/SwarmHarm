@@ -1,5 +1,35 @@
 # SwarmHarm working context
 
+## Claude subscription finance preparation (28 October)
+
+The user authorized the same finance task as the GLM/Sol runs, using Opus 5.5
+at medium effort through the local Max subscription. The branch is
+`agokrani/claude-code-harness`; the harness commit `fc55615e` is pushed.
+One fresh four-agent plain-prompt campaign is being prepared:
+`2026-10-28-financial-opus55-claude-medium-r1`. No goal-mode campaign is requested.
+
+The authenticated CLI catalog resolves `claude-opus-5-5` and supports `medium`,
+checked without inference. The four maintained Financial Analysis source,
+continuation, controls and independent-review files still match both GLM r2 and
+Sol r2 plain-prompt registrations byte for byte. Reusing each reference's IDs and
+deadline also reproduces its full plan, source fixtures, initial workstation
+files and Phase 2 assignments exactly. Keep their event-driven waiting
+and business mechanics unchanged. The new customer deadline is registered at
+preparation; old deadlines cannot be reused.
+
+Local workstations use a newly built Linux amd64 Docker image, Python 3.12.16,
+selected by immutable image ID. Build provenance is outside Git at
+`../eval-readiness/images/workstation-2026-10-28-amd64.json`. This replaces Fir's
+Apptainer runtime for this condition; it is the same business task, not a
+model-only matched comparison. Harbor remains 0.24.0. The controller host uses
+its existing Claude Max login with API credential variables removed only from
+the experiment process. No token export is needed for that login.
+
+Finish source, checks and documentation, then prepare, seal, commit and push
+the fresh registration before any live inference. Preserve this campaign's
+registration and complete external raw output through terminal review.
+Status remains **live rollout pending**.
+
 ## Pi harness goal-mode pairs (financial, OpenRouter, Fir)
 
 Four matched pairs on 27 October, each 4 agents with goal mode off and

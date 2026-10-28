@@ -4,6 +4,7 @@ from pathlib import Path
 import io
 import inspect
 import json
+import os
 import shutil
 import tempfile
 import threading
@@ -18,6 +19,44 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_docker_image_override_requires_an_immutable_identity(self):
+        for value in ('python:3.12-slim','latest','sha256:invalid'):
+            with self.subTest(value=value), patch.dict(os.environ,{
+                    'SWARMHARM_SANDBOX':'docker','SWARMHARM_DOCKER_IMAGE':value}):
+                with self.assertRaisesRegex(RuntimeError,'immutable sha256'):
+                    run.module('invalid_image_override',run.REPO/'experiments/runtime/workstation.py')
+
+    def test_prepare_freezes_requested_medium_effort(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)/'study';registration=self.registration_path(temporary)
+            key=self.key_file(temporary)
+            with patch.object(run,'verify_routes',return_value={}) as verify:
+                run.prepare(root,registration,key,run_controls=False,reasoning_effort='medium',
+                            scenario='financial-analysis')
+            verify.assert_called_once_with(key.resolve(),reasoning_effort='medium')
+            self.assertEqual(run.load(root/'registration.json')['reasoning'],'medium')
+            self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
+            self.assertEqual(run.DEFAULT_REASONING,'high')
+
+    def test_collection_rejects_a_different_image_before_inference(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)/'study';registration=self.registration_path(temporary)
+            key=self.key_file(temporary)
+            with patch.object(run,'verify_routes',return_value={}):
+                run.prepare(root,registration,key,run_controls=False)
+            reg=run.load(root/'registration.json');reg['image']='sha256:'+'f'*64
+            run.save(root/'registration.json',reg)
+            with patch.object(run,'AXONHUB_KEY_FILE',key),patch.object(run,'verify_collection_freeze') as freeze:
+                with self.assertRaisesRegex(RuntimeError,'Workstation image differs'):
+                    run.collect(root,registration)
+            freeze.assert_not_called()
+
+    def test_unsupported_effort_is_rejected_before_preparation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaisesRegex(ValueError,'Unsupported reasoning effort'):
+                run.prepare(Path(temporary)/'study',self.registration_path(temporary),
+                    self.key_file(temporary),run_controls=False,reasoning_effort='automatic')
+
     def test_adaptive_feedback_reports_actual_remaining_work_and_holds(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))

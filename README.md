@@ -1,5 +1,12 @@
 # SwarmHarm
 
+**Finance Opus 5.5 setup (28 October), live rollout pending.** The requested
+subscription condition uses `claude-opus-5-5`, medium effort, four simultaneous
+agents and the same finance source truth as the GLM/Sol plain-prompt runs.
+The authenticated Claude CLI catalog confirms the model and effort. The local
+Linux amd64 workstation image is built from a pinned Python base and selected
+by immutable image ID; see [Docker setup](docs/running-evals.md#local-docker-workstations).
+
 **Claude subscription harness added (28 October), live rollout pending.**
 Use `--harness claude-code` with an explicit Claude model ID to run persistent
 Claude Code sessions through the pinned Claude Agent SDK. Authenticate with

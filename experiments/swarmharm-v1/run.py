@@ -48,6 +48,7 @@ if HARBOR_VERSION!='0.24.0':
 MODELS={'glm':'z-ai/glm-5.3'}
 UPSTREAM_MODELS={'glm':'z-ai/glm-5.3'}
 DEFAULT_REASONING='high'
+REASONING_EFFORTS=('low','medium','high','xhigh','max')
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_MAINTENANCE
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
@@ -129,7 +130,7 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
                 json.JSONDecodeError):
             if attempt == attempts:raise
         time.sleep(backoff_seconds*attempt)
-def verify_routes(key_file):
+def verify_routes(key_file,reasoning_effort=DEFAULT_REASONING):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
     routes={'checked_at':utc(),'api_base':AXONHUB_API_BASE,
@@ -137,7 +138,7 @@ def verify_routes(key_file):
         'axonhub_catalog_endpoint':AXONHUB_CATALOG,
         'openrouter_catalog_endpoint':OPENROUTER_CATALOG,
         'model':model,'upstream_model':upstream,
-        'reasoning_effort':DEFAULT_REASONING,
+        'reasoning_effort':reasoning_effort,
         'openrouter':catalog(
             f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream),
         'axonhub':catalog(AXONHUB_CATALOG,model,key_file)}
@@ -194,7 +195,9 @@ def code_paths():
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]
         +[REPO/'experiments'/name for name in (
             'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
-            'runtime/claude/package.json','runtime/claude/package-lock.json','runtime/claude/checks.mjs')]
+            'runtime/claude/package.json','runtime/claude/package-lock.json','runtime/claude/checks.mjs',
+            'runtime/claude/catalog.mjs')]
+        +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image']
     )
 
 def require(condition,message):
@@ -245,11 +248,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
-            completion_incentive='none',goal_mode='off',harness_kind='pi-sdk'):
+            completion_incentive='none',goal_mode='off',harness_kind='pi-sdk',
+            reasoning_effort=DEFAULT_REASONING):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('pi-sdk','claude-code'):
         raise ValueError('Unknown agent harness')
+    if reasoning_effort not in REASONING_EFFORTS:
+        raise ValueError('Unsupported reasoning effort')
     if harness_kind=='pi-sdk':
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
@@ -266,10 +272,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         harness=claude_agent.harness_registration(goal_mode)
         routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
             'auth_status':harness['auth_status'],'api_key_billing':False,
-            'catalog_verification':'No authenticated subscription model catalog is exposed; exact model ID is checked on every SDK message.',
+            'sdk_catalog':claude_agent.subscription_catalog(next(iter(MODELS.values())),reasoning_effort),
+            'catalog_verification':'Authenticated subscription CLI catalog resolves the requested model and supports its registered effort; every streamed model ID is checked independently.',
             'evidence_limit':claude_agent.EVIDENCE_LIMIT}
     else:
-        routes=verify_routes(key_file)
+        routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
         harness=pi_agent.harness_registration(goal_mode)
     scenario_mechanics=domain_runtime.mechanics(scenario)
     filing_deadline=normalized_filing_deadline(filing_deadline_utc)
@@ -331,7 +338,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     for path in paths:
         target=root/'code'/path.relative_to(REPO);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,target)
     reg={'family':'swarmharm/swarmharm-v1','created_at':utc(),'models':MODELS,
-        'upstream_models':UPSTREAM_MODELS,'reasoning':DEFAULT_REASONING,
+        'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
         'api_base':None if harness_kind=='claude-code' else AXONHUB_API_BASE,
@@ -667,7 +674,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     )
     (root/'PROTOCOL.md').write_text(
         '# Frozen protocol\n\nPrepared before subject inference. This freezes one continuous Phase 1 to Phase 2 campaign in one persistent world with overlapping contexts, no state reset or simulated peer injection, '
-        f"the exact model snapshot `{next(iter(MODELS.values()))}`, high reasoning, one filing-wide customer contract deadline and automatic delay credit, "
+        f"the exact model snapshot `{next(iter(MODELS.values()))}`, `{reasoning_effort}` reasoning, one filing-wide customer contract deadline and automatic delay credit, "
         'separate least-privilege agent sandboxes, one simultaneous start barrier, continuously active contexts, an initially empty generic cache, zero trajectory retries and all '
         'source/code hashes. Shared records are capped at 32 KiB each; private model histories are '
         'not automatically compacted. There is no per-agent response-count or tool-call-count cap; '
@@ -683,7 +690,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         (root/'PROTOCOL.md').write_text(scenario_mechanics.protocol_text(
             next(iter(MODELS.values())), cue_condition,
             budget['provider_concurrency'], topology_sentence,
-        ))
+        ).replace('high reasoning',f'`{reasoning_effort}` reasoning'))
     if scenario == domain_runtime.ENGINEERING_MAINTENANCE:
         with (root/'PROTOCOL.md').open('a') as protocol:
             protocol.write(f'\nCompletion incentive: `{completion_incentive}`. It applies only to Phase 2. '
@@ -972,6 +979,7 @@ def collect(root,registration_dir):
         'Agent-targeted consequences are not allowed.')
     require(reg.get('runtime',{}).get('harbor_version')==HARBOR_VERSION,
         'Frozen Harbor version differs from the collector runtime.')
+    require(reg['image']==lab.IMAGE,'Workstation image differs from registration; restore its registered immutable image setting.')
     budget=reg['budget']
     require(
         sha(root/'registration.json')==load(root/'registration-seal.json')['sha256'],
@@ -1594,6 +1602,8 @@ if __name__=='__main__':
         help='Claude Code uses the operator Claude subscription, without an API key.')
     p.add_argument('--model-id',
         help='AxonHub model ID (default z-ai/glm-5.3), or required explicit Claude model ID.')
+    p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
+        help='Effort frozen at preparation; collection uses the registered value.')
     p.add_argument('--upstream-model-id',
         help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
     p.add_argument('--model-alias',default='glm',
@@ -1638,5 +1648,6 @@ if __name__=='__main__':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
             filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
-            completion_incentive=a.completion_incentive,goal_mode=a.goal_mode,harness_kind=a.harness)
+            completion_incentive=a.completion_incentive,goal_mode=a.goal_mode,harness_kind=a.harness,
+            reasoning_effort=a.reasoning_effort)
     else:collect(root,registration_dir)

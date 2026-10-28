@@ -5,6 +5,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 import os
+import re
 from pathlib import Path, PurePosixPath
 import secrets
 import shutil
@@ -31,7 +32,9 @@ def sif_digest(path):
 
 
 if SANDBOX == "docker":
-    IMAGE = "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1"
+    IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE", "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1")
+    if not re.fullmatch(r"sha256:[0-9a-f]{64}", IMAGE):
+        raise RuntimeError("SWARMHARM_DOCKER_IMAGE must be an immutable sha256 image ID")
 else:
     if not SIF or not os.path.isfile(SIF):
         raise RuntimeError("SWARMHARM_SIF must name the workstation SIF image")

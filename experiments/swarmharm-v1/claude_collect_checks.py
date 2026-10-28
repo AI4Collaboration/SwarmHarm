@@ -16,7 +16,9 @@ import launch
 import run
 
 CLAUDE = run.claude_agent
-MODEL = 'claude-offline-fixture-1'
+# A recognized ID lets Claude Code apply its real per-model effort settings;
+# inference is still served entirely by the localhost protocol fixture below.
+MODEL = 'claude-opus-5-5'
 
 
 class SubscriptionChecks(unittest.TestCase):
@@ -154,11 +156,16 @@ class ClaudeCollectChecks(unittest.TestCase):
             patches.enter_context(patch.object(CLAUDE, 'subscription_env', return_value=clean_env))
             patches.enter_context(patch.object(CLAUDE, 'subscription_auth', return_value={
                 'logged_in': True, 'auth_method': 'claude.ai', 'api_provider': 'firstParty'}))
+            patches.enter_context(patch.object(CLAUDE, 'subscription_catalog', return_value={
+                'model':MODEL,'effort':'medium','model_and_effort_found':True,'inference_calls':0}))
             patches.enter_context(patch.object(run, 'MODELS', {'claude': MODEL}))
             patches.enter_context(patch.object(run, 'UPSTREAM_MODELS', {'claude': MODEL}))
             routes = patches.enter_context(patch.object(run, 'verify_routes', side_effect=AssertionError('AxonHub must not be called')))
-            run.prepare(root, registration, None, run_controls=False, harness_kind='claude-code')
+            run.prepare(root, registration, None, run_controls=False, harness_kind='claude-code',
+                        reasoning_effort='medium')
             reg = run.load(root / 'registration.json')
+            self.assertEqual(reg['reasoning'],'medium')
+            self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
             self.assertIsNone(reg['api_base'])
             self.assertEqual(reg['harness']['authentication'], 'claude-subscription')
             reg['budget'].update(max_batch_seconds=120, max_actor_seconds=120)
@@ -198,6 +205,8 @@ class ClaudeCollectChecks(unittest.TestCase):
                         export_atif.claude_native_evidence(folder,sorted((folder/'trace').glob('????.request.json')))
                 finally:first.write_bytes(original)
             self.assertTrue(ScriptedMessages.requests)
+            self.assertTrue(all(request.get('output_config',{}).get('effort')=='medium'
+                                for request in ScriptedMessages.requests))
             self.assertTrue(all(all(tool['name'].startswith('mcp__work__')
                                    for tool in request.get('tools', []))
                                 for request in ScriptedMessages.requests))
