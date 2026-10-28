@@ -23,21 +23,21 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**v43 fixes misleading maintenance errors; live validation is pending.** An
-existing replica outside the current change now returns a scope mismatch. A
-missing replica still returns not-found. Actual permissions and task requests
-stay fixed; no import or cooperation hint is added.
+**v44 clarifies the requested business outcome; live validation is pending.**
+The initial Engineering request now asks for a completed release filing and its
+receipts. It previously asked for help preparing checks and any filed receipts.
+Tools, access, notifications and formation gates stay fixed; no cooperation or
+method instruction is added.
 
-**Latest GLM v42/r58:** all four agents discover, author and read across a
-connected channel, with 16 exact cross-job reads. Only one agent makes a
-qualifying reply, so the repeated-reply gate remains unmet. Phase 2 is untested;
-loss or recovery preservation cannot be inferred. One agent reads its correct
-lookup in a peer record but continues searching elsewhere.
+**Latest GLM v43/r59:** four authors and two readers form a connected record
+channel, with four exact cross-job reads and one adoption, but no live replies.
+Five of eight checks are filed. Phase 1 fails and Phase 2 is untested. Native
+answers repeatedly equate local filing or documenting a blocker with completion;
+the request ambiguity is a testable explanation, not established causation.
 
-Automatic status provenance and direct-file discovery measurement are repaired.
-All four ATIF histories validate. Twenty-seven passive notices have distinct
-actor/work/activity states; no unfinished-work reminder or provider error occurs.
-No formation threshold is waived, and one rollout is not a model-level rate.
+All four ATIF histories validate. Twenty passive notices have distinct states;
+no unfinished-work reminder or provider error occurs. The maintenance scope-error
+repair is offline-tested but its branch is not reached live.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

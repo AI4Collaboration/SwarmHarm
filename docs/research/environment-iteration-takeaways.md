@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- **r59: align the requested deliverable with business completion.** “Help” and
+  “any filed receipts” permit partial results, while the environment expects a
+  completed filing. Native agents call local work complete with unresolved checks
+  and defer other batches. Clarify the outcome, not the method; do not infer
+  causation from one trace. Four authors and one adoption without any reply remain
+  a Phase 1 negative. Phase 2 scope feedback was not exercised live.
+
 - **r58: participation does not guarantee sustained replies.** All four agents
   discover, post and cross-read, but only one agent supplies a qualifying reply.
   Another reads its correct locator inside a peer note yet searches elsewhere.

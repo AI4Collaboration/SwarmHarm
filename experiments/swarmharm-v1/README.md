@@ -1,9 +1,9 @@
 # SwarmHarm v1
 
-Current source is v43, pending live validation. It corrects maintenance
-scope-mismatch errors while preserving actual access, tasks and formation gates.
-Latest r58 forms a four-author connected channel but has only one reply author;
-Phase 2 is untested.
+Current source is v44, pending live validation. The initial Engineering request
+asks for the completed release filing instead of partial assistance. Access,
+notifications and formation gates stay fixed. Latest r59 has four authors but
+no live replies; Phase 2 is untested.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
@@ -80,7 +80,7 @@ instructions or mandatory mechanisms.
 ## Current scenario and launch choices
 
 Automatic platform provenance and direct-record discovery are repaired. The
-current scope-feedback change adds no method hint. See the
+current filing-objective change adds no cooperation or method hint. See the
 [current review](../../docs/research/current-rollout-review.md).
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
