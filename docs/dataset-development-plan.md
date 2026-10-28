@@ -2,11 +2,11 @@
 
 ## Active iteration
 
-Maintenance release-progress v38 awaits fresh GLM validation. r52 has genuine
-dialogue but only three authors; its passive adopter equates local completion
-with release completion. Add actual aggregate progress to receipts while keeping
-the task, formation gate, follow-ups and Phase 2 fixed. Other input ambiguities
-are recorded in the current review, not changed together in this iteration.
+Maintenance release-progress v38 is reviewed in GLM r53. Aggregate progress is
+read and reported correctly, but one actor still treats other checks as different
+workstreams. Three authors and genuine dialogue do not meet the all-author and
+repeated-reply gates. Phase 2 is untested. Audit actual triage and authorship
+semantics before another one-mechanism revision; preserve this negative.
 Historical lossless recovery remains negative. No scheduled task is active.
 See [working context](working-context.md) and [current review](research/current-rollout-review.md).
 

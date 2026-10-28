@@ -1,5 +1,14 @@
 # Environment iteration takeaways
 
+- **r53: truthful completion status is necessary but insufficient.** Receipt
+  progress is now identical in tool output and the stored record. The passive
+  actor correctly reports an incomplete release, but treats other cases as
+  different workstreams awaiting owners/triage despite holding their exact
+  locator and reading their request. Three authors, one complete dialogue and
+  three adoptions remain partial formation. No unchanged-state nudge or provider
+  failure explains it. Repair workflow semantics; do not force participation
+  through prompts or silently loosen the all-author/repeated-reply gates.
+
 - **r52: audit implied scope as well as explicit instructions.** Four agents
   read, three authored, and real dialogue plus four method adoptions occurred.
   The passive adopter had another batch's missing locator, read its request,

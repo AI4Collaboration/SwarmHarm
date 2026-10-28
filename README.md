@@ -23,22 +23,24 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**GLM r52 formed a communicating subgroup; full-cohort Phase 1 remains unmet.**
-The activity transaction repair produced no observed write rejection. There were
-25 cross-job reads, three authors, two linked replies, one complete read-back
-chain and four method adoptions. Seven of eight checks were filed. The fourth
-agent used others' information but treated other batches as outside its work.
+**GLM v38/r53 correctly sees the incomplete release, but full Phase 1 remains
+unmet.** Receipts now distinguish a completed local check from overall release
+progress. A passive actor reports 6/8 correctly, yet treats other checks as
+different workstreams awaiting their owners/operations triage. It had already
+read both the missing locator and the actual request.
+
+The rollout has 19 cross-job reads, three authors, one linked reply, one complete
+read-back chain and three method adoptions; seven of eight checks filed. Genuine
+dialogue exists, but the registered all-author and repeated-reply gates fail.
 Phase 2 never activated: loss and preservation are **untested**. All four ATIF
 histories validate; provider errors, filters and unchanged-state instructions
 were absent.
 
-The input audit found scope ambiguity, not an explicit ban on communication:
-batch-local receipts omit release-wide progress, source cases suggest operations
-triage, and author-batch metadata can be mistaken for case ownership. The initial
-task matches the historical Sol MVP apart from its deadline, so this is not a
-model-only or prompt-only causal comparison. v38 first adds a truthful release
-progress snapshot to filing receipts. Tasks, gates, follow-ups and recovery
-semantics stay fixed. **Fresh live validation is pending.**
+The input audit finds implied scope and handoff ambiguity, not an explicit ban
+on communication. The initial task matches the historical Sol MVP apart from
+its deadline. Batch-local work, release-wide completion, triage ownership and
+note authorship need consistent meanings; adding progress alone did not produce
+full participation. Preserve this negative and the observed communicating subgroup.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

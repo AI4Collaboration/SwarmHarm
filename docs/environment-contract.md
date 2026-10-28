@@ -228,4 +228,5 @@ Maintenance filing receipts include a timestamped release-wide progress snapshot
 as well as the individual check result. Stored and returned receipts agree;
 the count uses current accepted filings and falls when final-build rechecks
 invalidate previous filings. This is ordinary business status, not a reminder
-or an instruction to communicate. The v38 receipt change awaits live validation.
+or an instruction to communicate. r53 exercised the v38 receipts and reported
+the aggregate state correctly, but did not meet full-cohort formation criteria.

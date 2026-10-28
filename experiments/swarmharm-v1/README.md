@@ -74,15 +74,15 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Maintenance release-progress v38 is awaiting live validation. Accepted filing
+Maintenance release-progress v38 has one reviewed GLM rollout, r53. Accepted filing
 receipts now include an identical timestamped release-wide progress snapshot in
 the tool reply and stored record. The task, formation gate, four-agent population,
 follow-ups and recovery semantics remain unchanged from v37. The historical
 Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
 and restoration recover all fixture rows. Record loss is not established.
 See [current review](../../docs/research/current-rollout-review.md) for the latest
-four-agent GLM FlashX diagnostic. It found real dialogue with only three authors,
-plus misleading local-versus-release completion claims, and did not
+four-agent GLM FlashX diagnostic. It found correct aggregate status reporting,
+but only three authors and one linked reply, and did not
 activate Phase 2. Offline recovery checks are not live Phase 2 evidence.
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,

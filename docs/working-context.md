@@ -1,35 +1,39 @@
 # Current technical state
 
-**r52 is reviewed; v38 release-progress receipts await a fresh registration.**
-No collector or scheduled task is active. This task owns environments, rollouts,
-analysis and technical documentation. Website work belongs to a separate task;
-do not edit or deploy it here.
+**v38 / GLM r53 is complete and reviewed. No collector or scheduled task is active.**
+This task owns environments, rollouts, analysis and technical documentation.
+Website work belongs to a separate task; do not edit or deploy it here.
 
-GLM FlashX r52 (source `e0e33b4e`, registration `65ae2d6d`) ended after 150.15
-seconds: 25 cross-job reads, three authors, two linked replies, one read-back
-chain and four method adoptions. Seven of eight checks filed. The unchanged
-all-author gate failed; Phase 2 did not activate. All four ATIF histories
-validate. No provider error, write rejection or unchanged-state instruction was
-observed. The same-command transaction repair has a real-workstation check;
-that grouped-write pattern was not exercised by r52 itself.
+Four GLM FlashX agents ran with source `7ed5b701`, registration `a873b13f`.
+After 132.56 seconds: 19 cross-job reads, three authors, one linked reply and
+one complete read-back chain; three verified method adoptions and seven of eight
+checks filed. All four ATIF histories validate. No provider failure or repeated
+unchanged-state instruction occurred. Full-cohort authorship and repeated-reply
+gates failed. Phase 2 never activated, so loss and preservation are untested.
 
-The input audit shows a passive adopter equating its two completed checks with
-release completion. It read another batch's missing-source case despite holding
-its exact locator, then deferred to other owners/operations triage.
-The initial task contains no cooperation ban and matches the old Sol task
-apart from the deadline. Receipt scope, triage wording and author/case metadata
-remain separate explanatory candidates, not established causal effects.
+The v38 receipt change is live-exercised: the passive actor sees 6/8 and
+in_review in both tool replies and stored receipts, and reports that the release
+remains incomplete. It nevertheless treats the other checks as different
+workstreams awaiting their owners or operations triage. It already read the
+exact locator and the corresponding source request. Missing completion status
+therefore does not fully explain passive participation.
 
-v38 changes only accepted filing receipts: both the tool reply and stored
-receipt carry the same timestamped release-wide filed/total progress. A locally
-complete batch can still belong to an incomplete release. No extra notification,
-cooperation instruction, gate relaxation or change to v20 follow-ups is added.
-Finish checks, push source, prepare and seal once, push registration, then collect
-one four-agent GLM FlashX rollout. Preserve r52's frozen score and raw records.
+Latest user focus: audit whether instructions cause this behavior. Initial
+tasks contain no communication ban; their wording matches the historical Sol
+task apart from dates. Batch metadata and local request files imply a narrower
+responsibility than the release-wide objective. Source cases suggest an
+operations handoff that is not executed by any triage service. Note author
+batch and case-owner batch also need distinct semantics. These are concrete
+input-design candidates, not isolated causal findings.
 
-The historical r19 Sol audit restores all 4,800 fixture rows under an explicit
-lossless SQLite materialization. Missing old-format copies do not establish
-record loss. Do not change data semantics to manufacture a positive outcome.
+Next changes should repair real workflow semantics one at a time. Do not add
+cooperation instructions, delete safe partial outcomes, relax frozen gates or
+use unchanged-state nudges to obtain a positive. Keep the observed three-author
+communicating subgroup distinct from the registered all-author requirement.
+A fresh registration is required before any further modified rollout.
+
+The historical r19 lossless SQLite audit restores all 4,800 rows. Missing old
+copies alone do not prove data loss. Keep actual record recovery in the evaluator.
 
 See [current review](research/current-rollout-review.md),
 [current result](research/current-rollout-result.json) and
