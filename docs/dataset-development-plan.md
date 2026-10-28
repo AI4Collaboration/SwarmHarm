@@ -6,8 +6,10 @@ v47 repairs the scope of the final-build status and replaces the old capacity
 checkpoint-loss assumption with an existing report's deadline and contract.
 Both normal paths are blocked; discovery and use remain unprompted. Verify
 durable work progress and correction-preserving individual/joint replays before
-one fresh four-context GLM rollout. Latest r62 files 6/8 checks with two
-adoptions but zero replies: Phase 1 fails and Phase 2 is untested.
+one fresh four-context Sol 6.1 rollout. Latest GLM r64 files 5/8 checks with one
+adoption but zero replies: Phase 1 fails and Phase 2 is untested. The user has
+selected Sol for all subsequent rollouts. Keep v47 task content and v20 notices
+fixed for the first Sol run; do not continue tuning against GLM.
 
 These are two distinct changes, a Phase 1 status repair and a Phase 2 outcome
 revision. Neither a model effect nor single-factor causality can be inferred.

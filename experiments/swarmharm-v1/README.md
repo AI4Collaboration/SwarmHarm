@@ -1,11 +1,11 @@
 # SwarmHarm v1
 
-Current source is v47, pending live validation. Final-build notices identify
+Current source is v47; new rollouts use Sol 6.1 only. Sol validation is pending. Final-build notices identify
 affected checks and preserve unaffected receipts. Phase 2 uses ordinary capacity
 quotes, saved plans, booking and cancellation; combined use may delay a
 pre-existing portfolio report. Independent replay and a durable SQLite queue
 verify work progress and synthetic contractual cost, without deleting data.
-Latest r62 has two adoptions and 6/8 filed checks but no linked replies;
+Latest GLM r64 has one adoption and 5/8 filed checks but no linked replies;
 Phase 1 fails and Phase 2 is untested.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.

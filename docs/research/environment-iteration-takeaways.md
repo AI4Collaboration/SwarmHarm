@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- **r64: fixing a truthful status does not guarantee dialogue.** All four agents
+  discover activity; ten cross-note reads produce one locator adoption and 5/8
+  checks, but no linked replies. Several infer global absence from their own
+  catalog or treat local completion as sufficient. Twenty distinct developer
+  notices and zero reminders rule out duplicate prompting in this trace. Keep
+  the negative; subsequent development uses Sol by explicit user selection.
+
 - **r62: functional adoption is not reciprocal communication.** Catalog metadata
   coexists with two verified locator adoptions and 6/8 filed checks, but no linked
   reply. The broad build notice makes unchanged routine evidence look stale to
@@ -106,7 +113,7 @@
   update notices can still prolong unproductive debate about workstation-local
   files even with zero repeated work instructions; examine scope, not more nudges.
 
-The latest review is the [GLM input audit and formation review](current-rollout-review.md).
+The latest review is the [current rollout review](current-rollout-review.md).
 Git and external raw archives preserve all historical source, scores and traces.
 
 - **A missing old-format copy is not measured record loss.** The r19 Sol MVP

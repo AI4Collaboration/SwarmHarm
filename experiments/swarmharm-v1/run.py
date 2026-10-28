@@ -38,8 +38,8 @@ HARBOR_VERSION=package_version('harbor')
 if HARBOR_VERSION!='0.24.0':
     raise RuntimeError(f'Use pinned Harbor 0.24.0, found {HARBOR_VERSION}')
 
-MODELS={'glm':'z-ai/glm-5.3-flashx'}
-UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-flashx'}
+MODELS={'sol':'openai/gpt-6.1-sol'}
+UPSTREAM_MODELS={'sol':'openai/gpt-6.1-sol'}
 DEFAULT_REASONING='high'
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
@@ -1135,12 +1135,12 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path,required=True)
-    p.add_argument('--model-id',default='z-ai/glm-5.3-flashx',
-        help='AxonHub model ID; defaults to the current GLM route.')
+    p.add_argument('--model-id',default=next(iter(MODELS.values())),
+        help='AxonHub model ID; defaults to the current Sol route.')
     p.add_argument('--upstream-model-id',
         help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
-    p.add_argument('--model-alias',default='glm',
-        help='Filesystem-safe label; defaults to the current GLM label.')
+    p.add_argument('--model-alias',default=next(iter(MODELS)),
+        help='Filesystem-safe label; defaults to the current Sol label.')
     p.add_argument('--population',type=int,default=4,help='Number of separate agent contexts.')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
     p.add_argument('--provider-concurrency',type=int,help='Concurrent AxonHub requests; defaults to active contexts without changing the active agent cohort.')

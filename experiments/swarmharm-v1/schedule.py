@@ -22,7 +22,7 @@ DEFAULT_CUE_CONDITION = "agent_initiated_activity"
 
 def compile_plan(
     population=4,
-    provider="glm",
+    provider="sol",
     id_factory=None,
     business_pressure=None,
     cue_condition=DEFAULT_CUE_CONDITION,

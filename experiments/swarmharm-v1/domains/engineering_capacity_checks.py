@@ -71,6 +71,9 @@ class CapacityChecks(unittest.TestCase):
                 for workers in range(1, 16):
                     result = self.call(a, 'book_workload', start_minute=start, workers=workers)
                     self.assertIn(result['status'], (409, 422))
+                    quote = self.call(a, 'request_capacity_quote', start_minute=start, workers=workers)
+                    if quote['status'] == 200:
+                        self.call(a, 'save_workload_plan', quote_reference=quote['quote']['quote_reference'])
             self.assertFalse(self.extension.outcome(a)['complete'])
         self.assertEqual(self.extension.planner.bookings,{})
 

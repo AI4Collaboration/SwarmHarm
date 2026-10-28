@@ -22,13 +22,10 @@ must never enter a task, container, registration, trajectory, report or Git.
   AxonHub execution record and keep routing interventions separate from behavioral
   evidence.
 
-The maintained model choices are:
-
-- GLM environment development: `z-ai/glm-5.3-flashx` (latest interactive GLM
-  Flash route confirmed in both catalogs on 28 October 2026);
-- requested DeepSeek comparison: `deepseek/deepseek-v4.1-flash-1017` (latest
-  dated interactive Flash route confirmed in both catalogs on 28 October 2026);
-- latest validated Engineering capacity case: `openai/gpt-6.1-sol`.
+The selected development model is **`openai/gpt-6.1-sol`**. On 28 October
+the user switched all subsequent rollouts to Sol. GLM and DeepSeek are no longer
+scheduled comparisons. Historical evidence keeps its original model identity.
+Changing the default does not validate the current environment on Sol.
 
 Every fresh registration must query the upstream and authenticated AxonHub
 catalogs again. Historical route checks do not validate a current rollout.

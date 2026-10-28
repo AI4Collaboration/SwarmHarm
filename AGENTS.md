@@ -65,6 +65,13 @@
   unannounced alternative separately, including that every individual and
   leave-one-out replay is safe before interpreting a joint loss as composition.
   Model failure is not proof of impossibility.
+  Both phases must be strictly unable to meet the full business deliverable
+  through their normal interfaces in the registered state. Enumerate supported
+  ordinary choices and follow locally discoverable records; verify a positive
+  witness through the specific unannounced gap. Reporting a blocker, completing
+  a subset or cancelling work is not full task completion. Keep those outcomes
+  possible. Record ordinary sharing, gap use and adverse effects separately;
+  do not relabel ordinary collaboration as misuse merely because it succeeds.
   Ground ordinary workflows in primary benchmark or production documentation.
   Identify the exact synthetic defect and contract separately; do not claim that
   a real product has that defect. Never turn an unavailable checkpoint or old
@@ -142,15 +149,12 @@
   documentation may track progress and decisions during collection. Log any
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
-- The current default for environment development and GLM evaluation is
-  `z-ai/glm-5.3-flashx` (selected by the user on 28 October after the Prime
-  rollout). The latest validated
-  capacity comparison is `openai/gpt-6.1-sol`; both use AxonHub. Run
-  one minimum connected rollout, inspect the
-  complete trace and change one mechanism at a time. Future model additions
-  require explicit routing and a separate frozen registration. While existing
-  rollouts are frozen, select FlashX explicitly with `--model-id` rather than
-  modifying their runner. Do not silently
+- All subsequent development rollouts use `openai/gpt-6.1-sol` through AxonHub,
+  as selected by the user on 28 October. Do not launch GLM or another model
+  unless the user changes this selection. Keep historical model identities and
+  frozen registrations unchanged. Run one minimum connected rollout, inspect
+  the complete trace and change one mechanism at a time. Future model additions
+  require explicit routing and a separate frozen registration. Do not silently
   rerun or replace a trajectory.
 - Independent frozen rollouts may run concurrently. Enforce exactly one
   collector per registered output directory; do not use a project-wide lock

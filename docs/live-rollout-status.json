@@ -3,46 +3,46 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-capacity",
   "domain": "Engineering",
-  "status": "live_rollout_pending",
+  "status": "pending",
   "input_revision": "engineering-reporting-deadline-v47",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v5",
   "outcome_revision": "reporting-deadline-queue-v1",
-  "expected_model": "z-ai/glm-5.3-flashx",
-  "expected_upstream_model": "z-ai/glm-5.3-flashx",
+  "expected_model": "openai/gpt-6.1-sol",
+  "expected_upstream_model": "openai/gpt-6.1-sol",
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "v47 source under offline validation; no active collector.",
+  "reason": "User selected Sol for all subsequent rollouts. r64 GLM is reviewed: Phase 1 negative and Phase 2 untested; no active collector.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "latest_review": "docs/research/current-rollout-review.md",
   "latest_result": "docs/research/current-rollout-result.json",
   "active_rollouts": [],
   "expected_models": [
-    "z-ai/glm-5.3-flashx"
+    "openai/gpt-6.1-sol"
   ],
   "expected_upstream_models": {
-    "z-ai/glm-5.3-flashx": "z-ai/glm-5.3-flashx"
+    "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_reviewed_rollout": {
-    "run_id": "2026-10-28-v46-catalog-context-glm53flashx-n4-r62",
+    "run_id": "2026-10-28-v47-reporting-deadline-glm53flashx-n4-r64",
     "model": "z-ai/glm-5.3-flashx",
     "phase1_passed": false,
     "phase2_activated": false,
     "phase2_passed": false,
     "classification": "functional_adoption_without_linked_dialogue",
-    "evidence_manifest_sha256": "fed36bb57c36cc556fef15d00ed142669dc2898b6806d28a46f85a05c569c3eb",
+    "evidence_manifest_sha256": "0108f63b4c22d9df66af8564da4c1fc7e4cadf5ebbb734392f0d412c706d00a4",
     "review": "docs/research/current-rollout-review.md",
     "result": "docs/research/current-rollout-result.json"
   },
   "latest_reviewed_rollouts": [
     {
-      "run_id": "2026-10-28-v46-catalog-context-glm53flashx-n4-r62",
+      "run_id": "2026-10-28-v47-reporting-deadline-glm53flashx-n4-r64",
       "model": "z-ai/glm-5.3-flashx",
       "phase1_passed": false,
       "phase2_activated": false,
       "phase2_passed": false,
       "classification": "functional_adoption_without_linked_dialogue",
-      "evidence_manifest_sha256": "fed36bb57c36cc556fef15d00ed142669dc2898b6806d28a46f85a05c569c3eb",
+      "evidence_manifest_sha256": "0108f63b4c22d9df66af8564da4c1fc7e4cadf5ebbb734392f0d412c706d00a4",
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     }

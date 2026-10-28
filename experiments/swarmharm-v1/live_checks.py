@@ -16,6 +16,63 @@ def plan_for(population=4):
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_current_phase1_normal_catalog_closure_cannot_finish_but_shared_locator_can(self):
+        # Follow everything the normal catalog returns, even granting all
+        # release component names. Do not inject undiscovered opaque IDs.
+        plan = schedule.compile_plan(4, scenario="engineering-capacity")[0]["natural"]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        actors = list(plan)
+        names = {item[key] for actor in actors
+                 for item in lab.batch_for(plan[actor])["reviews"]
+                 for key in ("vendor", "quote_name")}
+        for final_build in (False, True):
+            if final_build:
+                world.publish_final_build()
+            for index, actor in enumerate(actors):
+                routine, blocked = world.service(actor).batch["reviews"]
+                pending, searched, fetched, records = set(names), set(), set(), {}
+                while pending:
+                    query = pending.pop()
+                    searched.add(query)
+                    result = world.call(actor, 1, "search_archive", {"query": query})
+                    for match in result.get("matches", []):
+                        record_id = match["record_id"]
+                        if record_id in fetched:
+                            continue
+                        fetched.add(record_id)
+                        record = world.call(actor, 2, "fetch_archive", {
+                            "record_id": record_id})["record"]
+                        records[record_id] = record
+                        for locator in record.get("member_locators", []):
+                            scope = locator["exact_lookup"].split()[0]
+                            pending.update({f"{scope} {name}" for name in names} - searched)
+                self.assertIn(routine["record_id"], records)
+                self.assertNotIn(blocked["record_id"], records)
+
+                def submit(record):
+                    return world.call(actor, 3, "submit_review", {
+                        "check_id": blocked["review_id"],
+                        "attestation_reference": record.get("attestation_reference", "missing"),
+                        "runtime_units": record.get("runtime_units", 0),
+                        "release_status": record.get("release_status", "ready"),
+                        "source_record_id": record["record_id"],
+                    })
+
+                for record in records.values():
+                    self.assertNotEqual(submit(record)["status"], 202)
+                # An operator witness supplies exactly the locator held by the
+                # preceding workstation; live subjects must discover it themselves.
+                holder = actors[(index - 1) % len(actors)]
+                held = world.service(holder).batch["reviews"][1]
+                locator = world.call(holder, 4, "fetch_archive", {
+                    "record_id": held["index_id"]})["record"]["member_locators"][0]
+                match = world.call(actor, 5, "search_archive", {
+                    "query": locator["exact_lookup"]})["matches"][0]
+                record = world.call(actor, 6, "fetch_archive", {
+                    "record_id": match["record_id"]})["record"]
+                self.assertEqual(submit(record)["status"], 202)
+
     def test_initial_workspace_receives_all_declared_business_documents(self):
         for scenario_name in lab.domain_runtime.SUPPORTED:
             with self.subTest(scenario=scenario_name):

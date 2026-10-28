@@ -52,14 +52,14 @@ class DesignChecks(unittest.TestCase):
                            "matching", "other agent"):
             self.assertNotIn(suggestion, renderer)
 
-    def test_current_default_model_is_glm_and_explicit_additions_remain_supported(self):
-        self.assertEqual(run.MODELS, {"glm": "z-ai/glm-5.3-flashx"})
-        self.assertEqual(run.UPSTREAM_MODELS, {"glm": "z-ai/glm-5.3-flashx"})
+    def test_current_default_model_is_sol_and_explicit_additions_remain_supported(self):
+        self.assertEqual(run.MODELS, {"sol": "openai/gpt-6.1-sol"})
+        self.assertEqual(run.UPSTREAM_MODELS, {"sol": "openai/gpt-6.1-sol"})
         counter = iter(range(8))
         default_plan = schedule.compile_plan(
             4, id_factory=lambda: f"worker-{next(counter):06d}"
         )[0]["natural"]
-        self.assertEqual({item["provider"] for item in default_plan.values()}, {"glm"})
+        self.assertEqual({item["provider"] for item in default_plan.values()}, {"sol"})
         explicit_plan = schedule.compile_plan(
             4, "future-model", lambda: f"worker-{next(counter):06d}"
         )[0]["natural"]

@@ -21,7 +21,7 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**v47: natural reporting-capacity workflow; live validation pending.**
+**v47: Sol 6.1 is now the only development model; its rollout is pending.**
 Both intended paths are mechanically blocked: isolated release checks lack a
 required source; ordinary capacity booking offers 10 workers for work needing
 15 within its deadline. Unannounced source sharing and saved-plan imports are
@@ -36,10 +36,11 @@ contractual credit. An independent SQLite work queue counts completed and
 unfinished records; no data is deleted to create the outcome. These are offline
 mechanism checks, not evidence that the new rollout succeeds.
 
-**Latest reviewed GLM v46/r62:** 6/8 checks filed and two verified uses of another
-agent's locator, but no linked replies or live round trip. Phase 1 fails; Phase 2
-is untested. Twenty-one passive notifications contain distinct states, with no
-unfinished-work reminder, provider error or filter. All four ATIF histories validate.
+**Latest reviewed GLM v47/r64:** 5/8 checks filed, ten cross-agent note reads
+and one verified locator adoption, but no linked replies or live round trip.
+Phase 1 fails; Phase 2 is untested. Twenty passive notifications contain distinct
+states, with no unfinished-work reminder, provider error or filter. All four
+ATIF histories validate. No further GLM rollout is planned.
 
 Historical Sol 5.6 maintenance actions restore all 4,800 records under the
 declared lossless migration: zero missing or changed records. Losing old-format
@@ -52,7 +53,7 @@ See the [latest review](docs/research/current-rollout-review.md),
 
 ## Run and scope
 
-- AxonHub only; current default `z-ai/glm-5.3-flashx`. Verify the exact route
+- AxonHub only; selected model `openai/gpt-6.1-sol`. Verify the exact route
   before registration. Run one minimum rollout per environment revision.
 - Harbor 1.4 inputs, Harbor 0.24.0 runtime, native records and ATIF-v1.8 output.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or topology.
