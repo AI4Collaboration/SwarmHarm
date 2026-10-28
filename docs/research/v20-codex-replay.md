@@ -26,7 +26,7 @@ checks remain intact. The maintained environment was not rolled back.
 - Each actor received its Phase 1 task and Phase 2 assignment exactly once.
 - Zero unfinished-work follow-ups, repeated original assignments, duplicate
   notification revision tuples or completion-feedback instructions.
-- All 52 passive notifications had distinct work/activity revision pairs.
+- All 50 passive notifications had distinct work/activity revision pairs.
 - Fifteen text-only final responses; the longest consecutive streak was one.
   Every subsequent call after a final received a new platform update and used
   tools to inspect state before another final.
