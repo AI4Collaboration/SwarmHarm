@@ -552,6 +552,12 @@ def activity_feedback(signal, delivered, calendar_message=None):
         parts.append(calendar_message or 'The maintenance calendar has changed.')
     return ' '.join(parts) or 'Customer activity records have changed.'
 
+def platform_notice_message(message, kind):
+    """Keep automatic status separate from a new human assignment."""
+    return {'role':'developer','content':json.dumps({
+        'source':'platform_status','event':kind,'status':message,
+    },ensure_ascii=False)}
+
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False, state=None,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
@@ -846,7 +852,7 @@ def collect(root,registration_dir):
                     if notice_kind is not None:
                         state['last_followup_revision']=work_revision(extension,check,signal)
                     if message is not None:
-                        input_message={'role':'user','content':message}
+                        input_message=platform_notice_message(message,notice_kind)
                         histories[actor].append(input_message)
                         notice={'step':step,'at':utc(),'kind':notice_kind,
                             'work_revision':work_revision(extension,check,signal),

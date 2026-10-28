@@ -1,5 +1,9 @@
 # SwarmHarm v1
 
+Current source is v41, pending live validation. Automatic status is developer-role
+platform context; real assignments remain user messages. Content, timing, tasks,
+access, gates and budgets are unchanged. ATIF preserves both native roles.
+
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same

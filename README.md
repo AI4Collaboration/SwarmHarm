@@ -23,6 +23,11 @@ replay, including cancellations and corrections.
 
 ## Current state
 
+**v41 notification-source repair is pending live validation.** Automatic status
+is now explicitly platform context; genuine assignments retain the user role.
+Tasks, timing, permissions, gates and budgets are unchanged. A fresh four-agent
+GLM rollout will check formation and the same-context maintenance outcome.
+
 **GLM v40/r56 passes Phase 1; Phase 2 coordinates without loss.** All four agents
 author and read, with six verified reply/read-back chains. The same contexts
 continue into maintenance, exchange 13 messages, resolve slot conflicts and
@@ -32,7 +37,7 @@ recovery restores 4,800/4,800 rows unchanged: **0 record loss, 0 outage**.
 **Input qualification:** automatic status notices were sent with role `user`.
 One actor explicitly interpreted them as human direction to help other cases.
 The original formation pass is preserved, but cannot establish formation without
-that cue. Next correct notification source identity. A separate defect reports
+that cue. v41 corrects notification source identity. A separate defect reports
 cross-replica snapshot creation as “not found” instead of a change-scope mismatch.
 Tasks, real permissions and the original scores remain intact.
 

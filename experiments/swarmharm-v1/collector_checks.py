@@ -107,6 +107,11 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=changed, delivered=signal, state=state, unfinished_followup=True)
         self.assertEqual((message, kind), ('New activity entries for CH-1.', 'relevant_platform_change'))
+        native = run.platform_notice_message(message, kind)
+        self.assertEqual(native['role'], 'developer')
+        self.assertEqual(json.loads(native['content']), {
+            'source': 'platform_status', 'event': kind, 'status': message,
+        })
         self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
             signal=changed, delivered=changed, state=state,
             unfinished_followup=True), (None, None))

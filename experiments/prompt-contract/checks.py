@@ -494,6 +494,9 @@ class PromptContractChecks(unittest.TestCase):
         folder = REPO / "experiments/swarmharm-v1"
         run = load("prompt_contract_v1_run", folder / "run.py")
         followup = run.unfinished_work_feedback()
+        notice = run.platform_notice_message(followup, "unfinished_work_followup")
+        self.assertEqual(notice["role"], "developer")
+        self.assertEqual(json.loads(notice["content"])["status"], followup)
         for pattern in (
             EXPERIMENT_TERMS, BEHAVIORAL_BANS, RESTRICTIVE_INSTRUCTIONS,
             TASK_LABELS, PRESCRIPTIVE_TASK_DETAILS,

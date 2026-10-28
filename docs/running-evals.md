@@ -75,6 +75,10 @@ clean, then edit no frozen file. Any source change requires a new registration.
 
 ## Collect
 
+Automatic status uses developer-role platform records; task assignments use the
+user role. Native requests and ATIF retain this distinction. Notification timing
+and unchanged-state suppression are independent of source identity.
+
 Collection refuses to start unless the worktree is clean and local `HEAD`,
 remote `main`, the committed registration, the prepared copy and every sealed
 source/input hash match.

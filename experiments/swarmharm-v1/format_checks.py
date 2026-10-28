@@ -37,13 +37,19 @@ class FormatChecks(unittest.TestCase):
     def test_atif_export_accepts_append_only_platform_updates(self):
         initial = [{"role": "user", "content": "Complete the filing."}]
         update = {
-            "role": "user",
-                    "content": "Customer filing state has changed.",
+            "role": "developer",
+            "content": '{"source":"platform_status","status":"Customer filing state has changed."}',
         }
         self.assertEqual(
             export_atif.appended_input(initial, initial + [update]),
             [update],
         )
+        self.assertEqual(export_atif.completion_feedback_message({"input_message": update}), update)
+        step = export_atif.input_step(update, kind="relevant_platform_change")
+        self.assertEqual(step["source"], "system")
+        self.assertEqual(step["extra"]["native_role"], "developer")
+        self.assertEqual(step["message"], update["content"])
+        self.assertEqual(export_atif.input_step(initial[0])["source"], "user")
         with self.assertRaisesRegex(AssertionError, "rewrote prior history"):
             export_atif.appended_input(initial, [update])
 

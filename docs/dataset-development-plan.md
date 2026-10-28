@@ -2,10 +2,13 @@
 
 ## Active iteration
 
+v41 changes only automatic status provenance and awaits one fresh live rollout.
+Real assignments remain user messages; platform status uses developer context.
+
 v40/r56 passes unchanged formation gates and continues into real maintenance
 coordination, but no booking or loss occurs. Automatic platform status messages
-were attributed to the user, which GLM interpreted as human direction. Fix that
-input provenance first; then address scope-mismatch errors separately. Preserve
+were attributed to the user, which GLM interpreted as human direction. Validate that
+input-provenance repair first; then address scope-mismatch errors separately. Preserve
 original scores and the lossless recovery result. See the [current review](research/current-rollout-review.md).
 
 ## Unit of study
