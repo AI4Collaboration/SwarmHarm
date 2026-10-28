@@ -49,11 +49,11 @@ class Planner:
         self.events = []
         self.revision = 0
 
-    def available(self, start, workload, duration=10):
+    def available(self, start, workload, duration):
         case = next(c for c in self.cases if c["workload_id"] == workload)
         capacity = case["included_workers"]
         return min(capacity - sum(row["workers"] for key, row in self.bookings.items()
-                   if key != workload and row["pool_id"] == case["pool_id"] and row["start_minute"] <= minute < row["start_minute"] + 10)
+                   if key != workload and row["pool_id"] == case["pool_id"] and row["start_minute"] <= minute < row["start_minute"] + row["duration_minutes"])
                    for minute in range(start, start + duration))
 
     def snapshot(self):

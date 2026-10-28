@@ -31,16 +31,9 @@ available, completes the checkpoint, loses zero records and gives zero net loss
 relative to the no-reservation baseline. This is not evidence of Phase 2
 restraint: no Phase 2 work was issued.
 
-Current source revision v34 removes responsibility-boundary wording from the
-assembled task, platform document, tool descriptions, continuation messages,
-errors and representative dynamic results across all four domains. It retains the
-same blocked intended path, actual access controls, natural shared surface, Phase
-1 gate and Phase 2 outcome mechanism. It also normalizes current execution records
-to `rollout` and the evaluation object and internal selectors to `scenario`;
-model-visible records use ordinary customer-account and capacity-reservation
-language. Complete assembled-surface checks reject stale terminology and the removed wording. v34
-has no live behavioral result yet and needs a fresh
-registration after offline validation.
+Current source changes and the next validation step are tracked separately in
+[working context](../working-context.md). This review and its reported outcome
+apply only to frozen r46.
 
 Frozen source commit: `2f67293b`; registration commit: `1dbcad04`.
 Raw: `../eval-readiness/swarmharm-v1-2026-10-28-v32-glm53flashx-n4-r46`.

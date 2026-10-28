@@ -7,6 +7,7 @@ import json
 import shutil
 import tempfile
 import threading
+import tomllib
 import urllib.error
 import unittest
 from unittest.mock import patch
@@ -116,7 +117,7 @@ class CollectorChecks(unittest.TestCase):
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
         extension.activated = True
         delivered = {'revision': 'old', 'continuation_revision': 'same', 'source_publication_event': 1}
-        # Only the Phase 1 activity changed, exactly as in the r17 drift.
+        # Only Phase 1 activity changed; it must not restore the old assignment.
         signal = {**delivered, 'revision': 'new'}
         check = {'complete': False, 'actor_complete': False}
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
@@ -195,7 +196,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(run.budget_clipped_timeout(error, allowance, 300, remaining))
 
     def test_no_fixed_observation_wait_survives_every_domain_override(self):
-        for scenario in ("engineering-maintenance", "engineering", "data-analysis", "financial-analysis", "knowledge-work"):
+        for scenario in run.domain_runtime.SUPPORTED:
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
                 output = Path(temporary) / "study"
                 registration = self.registration_path(temporary)
@@ -416,12 +417,12 @@ class CollectorChecks(unittest.TestCase):
         states["due"].pop("unfinished_followup_at")  # A real update supersedes its timer.
         self.assertEqual(run.unfinished_work_due(states, 31), ["future"])
 
-    def test_maintenance_registers_followups_and_longer_budget(self):
+    def test_current_capacity_registers_followups_and_budget(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "study"
             with patch.object(run, "verify_routes", return_value={}):
                 run.prepare(output, self.registration_path(temporary), self.key_file(temporary),
-                            run_controls=False, scenario="engineering-maintenance")
+                            run_controls=False, scenario="engineering-capacity")
             reg = run.load(output / "registration.json")
             completion = reg["completion_protocol"]
             self.assertEqual(completion["kind"], "unfinished_work_followup")
@@ -434,7 +435,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(completion['unchanged_final_after_reminder_waits_for_business_change'])
             self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)
             self.assertEqual(reg["budget"]["max_batch_seconds"], 4500)
-            self.assertIn(run.unfinished_work_feedback(), (output / "PROTOCOL.md").read_text())
+            self.assertIn("no unchanged-state task", (output / "PROTOCOL.md").read_text())
 
     def test_platform_update_is_content_free_business_notification(self):
         feedback = run.platform_update_feedback("triage_routing_affordance")
@@ -568,13 +569,14 @@ class CollectorChecks(unittest.TestCase):
         self.assertFalse(run.empty_tool_arguments('{"unexpected":1}'))
 
     def test_response_must_match_the_frozen_model(self):
-        request = {"model": "z-ai/glm-5.3"}
-        run.validate_response_model(request, {"model": "z-ai/glm-5.3"})
+        request = {"model": next(iter(run.MODELS.values()))}
+        run.validate_response_model(request, {"model": next(iter(run.MODELS.values()))})
         with self.assertRaises(ValueError):
             run.validate_response_model(request, {"model": "~z-ai/glm-flash-latest"})
 
     def test_route_check_records_exact_glm_route(self):
         calls = []
+        model = next(iter(run.MODELS.values()))
 
         def fake_catalog(url, model, key_file=None):
             calls.append((url, model, key_file))
@@ -582,25 +584,25 @@ class CollectorChecks(unittest.TestCase):
 
         key = Path("/tmp/axonhub.key")
         with (
-            patch.object(run, "MODELS", {"glm": "z-ai/glm-5.3"}),
-            patch.object(run, "UPSTREAM_MODELS", {"glm": "z-ai/glm-5.3"}),
+            patch.object(run, "MODELS", {"glm": model}),
+            patch.object(run, "UPSTREAM_MODELS", {"glm": model}),
             patch.object(run, "catalog", side_effect=fake_catalog),
         ):
             routes = run.verify_routes(key)
-        self.assertEqual(routes["model"], "z-ai/glm-5.3")
-        self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3")
+        self.assertEqual(routes["model"], model)
+        self.assertEqual(routes["upstream_model"], model)
         self.assertEqual(routes["api_base"], run.AXONHUB_API_BASE)
         self.assertEqual(routes["responses_endpoint"], run.AXONHUB_ENDPOINT)
         self.assertEqual(routes["reasoning_effort"], run.DEFAULT_REASONING)
         self.assertEqual(
             calls[0],
             (
-                run.OPENROUTER_CATALOG + "/z-ai/glm-5.3/endpoints",
-                "z-ai/glm-5.3",
+                run.OPENROUTER_CATALOG + f"/{model}/endpoints",
+                model,
                 None,
             ),
         )
-        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3", key))
+        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, model, key))
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
         self.assertEqual(run.DEFAULT_SCENARIO, "engineering-capacity")
@@ -632,7 +634,7 @@ class CollectorChecks(unittest.TestCase):
             registration = self.registration_path(temporary)
             with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
                 run.prepare(root, registration, self.key_file(temporary), 4, 4,
-                            run_controls=False, scenario="engineering-maintenance")
+                            run_controls=False, scenario="engineering-capacity")
             reg = run.load(root / "registration.json")
             actors = reg["plan"]["natural"]
             self.assertEqual(len(actors), 4)
@@ -663,8 +665,8 @@ class CollectorChecks(unittest.TestCase):
             key = self.key_file(temporary)
             routes = {
                 "checked_at": "test",
-                "model": "z-ai/glm-5.3",
-                "upstream_model": "z-ai/glm-5.3",
+                "model": next(iter(run.MODELS.values())),
+                "upstream_model": next(iter(run.MODELS.values())),
                 "openrouter": {
                     "http_status": 200,
                     "model_found": True,
@@ -685,19 +687,22 @@ class CollectorChecks(unittest.TestCase):
                     4,
                     run_controls=False,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
-                    scenario="engineering",
+                    scenario="engineering-capacity",
                 )
 
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["scenario"], "engineering")
+            self.assertEqual(reg["scenario"], run.DEFAULT_SCENARIO)
             self.assertEqual(reg["domain"], "Engineering")
-            self.assertEqual(reg["input_revision"], "engineering-final-build-recheck-v3")
-            self.assertEqual(reg["phase1_gate_revision"], "engineering-live-formation-v1")
-            self.assertEqual(reg["outcome_revision"], "engineering-runtime-outcome-v3")
+            for actor in reg["plan"]["natural"]:
+                task = tomllib.loads((root / "tasks" / "natural" / actor / "task.toml").read_text())
+                self.assertEqual(task["agent"]["timeout_sec"], reg["budget"]["max_actor_seconds"])
+            self.assertEqual(reg["input_revision"], run.domain_runtime.mechanics(run.DEFAULT_SCENARIO).INPUT_REVISION)
+            self.assertEqual(reg["phase1_gate_revision"], "engineering-agent-initiated-formation-v4")
+            self.assertEqual(reg["outcome_revision"], run.domain_runtime.mechanics(run.DEFAULT_SCENARIO).OUTCOME_REVISION)
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
             self.assertEqual(
                 reg["phase2"]["phase2_communication_surfaces"],
-                ["phase1_release_activity", "customer_release_operations_log"],
+                ["phase1_release_activity", "customer_workload_operations_log"],
             )
             for required in (
                 "experiments/swarmharm-v1/domains/engineering.py",
@@ -720,13 +725,24 @@ class CollectorChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "future"):
             run.normalized_filing_deadline("2020-01-01T17:00:00+00:00")
 
+    def test_internal_fixtures_cannot_start_a_new_rollout(self):
+        for scenario in ("shared-fixture", "engineering", "engineering-maintenance"):
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
+                output = Path(temporary) / "study"
+                with patch.object(run, "verify_routes") as route_check:
+                    with self.assertRaisesRegex(ValueError, "scenario must be one of"):
+                        run.prepare(output, self.registration_path(temporary),
+                                    self.key_file(temporary), scenario=scenario)
+                route_check.assert_not_called()
+                self.assertFalse(output.exists())
+
     def test_prepare_rejects_serial_or_underfilled_canonical_runs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3",
+                "checked_at": "test", "model": next(iter(run.MODELS.values())),
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
@@ -734,7 +750,7 @@ class CollectorChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "every context active together"):
                     run.prepare(
                         root, registration, key, 4, 1,
-                        scenario="engineering-maintenance",
+                        scenario="engineering-capacity",
                     )
 
     def test_provider_concurrency_is_independent_of_active_agent_cohort(self):
@@ -743,15 +759,15 @@ class CollectorChecks(unittest.TestCase):
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3",
-                "upstream_model": "z-ai/glm-5.3",
+                "checked_at": "test", "model": next(iter(run.MODELS.values())),
+                "upstream_model": next(iter(run.MODELS.values())),
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(
                     root, registration, key, 4, 4, 1,
-                    run_controls=False, scenario="engineering-maintenance",
+                    run_controls=False, scenario="engineering-capacity",
                 )
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
@@ -767,7 +783,7 @@ class CollectorChecks(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "provider concurrency"):
                         run.prepare(
                             root, registration, key, 4, 4, invalid,
-                            run_controls=False, scenario="engineering-maintenance",
+                            run_controls=False, scenario="engineering-capacity",
                         )
 
 

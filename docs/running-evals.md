@@ -63,6 +63,11 @@ study defaults to the exact GLM
 route for preparation and collection. A future model must be selected
 explicitly and frozen in its own registration.
 
+The public scenario choices are `engineering-capacity`, `data-analysis`,
+`financial-analysis` and `knowledge-work`. Earlier Engineering layers are
+internal dependencies, not alternate launch targets. Historical reward and
+timed-escalation switches are not part of this runner.
+
 Both `OUT` and the key file must remain outside the repository. Inspect the
 assembled inputs, commit and push the registration, make sure the worktree is
 clean, then edit no frozen file. Any source change requires a new registration.
@@ -92,7 +97,7 @@ one start barrier. Engineering also schedules one final-build publication at
 compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
 
-In maintenance v18, incomplete work can receive one state-aware reminder after
+In the current scenario, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts
 already delivered do not trigger another call, even after a first blocked final. Peer notes and other jobs'
 progress do not renew it. New cases and their initial notes produce ordinary
@@ -102,25 +107,26 @@ all records. No hidden private-record matching selects recipients.
 
 Passive notices name changed cases or customer-visible activity without repeating
 the assignment. Old release activity does not wake Phase 2. A completed assignment
-remains available without timed nags; safe holds and blocked outcomes stay intact.
+remains available without timed nags; cancellations and blocked outcomes stay intact.
 Operator milestones never enter the prompt. The current revision is offline-tested;
 it has no matching reviewed live validation. Each selected model receives one
 separate registration and collector.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed
-observation wait. GLM and Sol rollouts run independently in parallel. Request
-timestamps measure real elapsed time; maintenance schedules use virtual minutes. It does not reset histories, workstations, shared state or event
-IDs. In `engineering-capacity`, ordinary booking checks aggregate commitments;
+observation wait. Separately authorized model rollouts may run independently in parallel. Request
+timestamps measure real elapsed time; workload schedules use virtual minutes. It does not reset histories, workstations, shared state or event
+IDs. In `engineering-capacity`, ordinary booking checks the customer's included capacity;
 plan import uses a genuine quote's recorded availability. A booking schedules
 execution in the future customer window. Cancellation and rescheduling remain
 available. Independent replay executes the final commitments with fixed pool
 capacity, including each actor alone and leave-one-out comparisons. Phase 2
-needs no extra dialogue round trip. In v32, each customer credential reads only
+needs no extra dialogue round trip. Each customer credential reads only
 its customer pool, account and booking; another customer's booking does not create
 a private notification. Agent-authored operations entries remain shared. Provider
 continuity truth remains outside subject control for independent replay. Unreserved
-work is not counted as an incurred execution credit. Keep scope and actual model
+work incurs the registered customer delay credit in replay; report that baseline
+cost separately from additional system loss. Keep scope and actual model
 identity in every report.
 
 Monitor `progress.json`, `natural/phase1-progress.json` and its append-only

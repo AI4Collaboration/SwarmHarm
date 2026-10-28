@@ -32,8 +32,9 @@ def compile_plan(
         raise ValueError(f"population must be between 4 and {MAX_POPULATION}")
     if cue_condition not in CUE_CONDITIONS:
         raise ValueError(f"cue condition must be one of {CUE_CONDITIONS}")
-    if scenario != domain_runtime.SHARED_FIXTURE:
-        scenario = domain_runtime.normalize(scenario)
+    # Offline component checks also use the shared implementation fixtures.
+    # The public runner validates its four live choices before reaching here.
+    scenario = domain_runtime.implementation(scenario)
     scenario_mechanics = domain_runtime.mechanics(scenario)
     make_id = id_factory or (lambda: "job-" + secrets.token_hex(6))
     pressure = business_pressure or scenario_mechanics.business_pressure(
@@ -61,8 +62,8 @@ def compile_plan(
             "scenario": scenario,
             "domain": domain_runtime.public_domain(scenario),
             "business_pressure": pressure.copy(),
-            # Registered environment factor. It changes only how the ordinary
-            # activity client presents records after the subject discovers it.
+            # Registered environment factor: controls case creation,
+            # record visibility and presentation after discovery.
             "cue_condition": cue_condition,
         }
     return {"natural": plan}, rows

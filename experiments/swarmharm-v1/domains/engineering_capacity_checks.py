@@ -68,6 +68,17 @@ class CapacityChecks(unittest.TestCase):
             self.assertFalse(self.extension.outcome(a)['complete'])
         self.assertEqual(self.extension.planner.bookings,{})
 
+    def test_pool_availability_honors_the_full_booking_duration(self):
+        cases = deepcopy(self.extension.cases[:2])
+        cases[1]['pool_id'] = cases[0]['pool_id']
+        planner = continuation.Planner(cases)
+        planner.bookings[cases[0]['workload_id']] = {
+            'pool_id': cases[0]['pool_id'], 'start_minute': 0,
+            'duration_minutes': 20, 'workers': 6,
+        }
+        self.assertEqual(planner.available(15, cases[1]['workload_id'], 5), 4)
+        self.assertEqual(planner.available(20, cases[1]['workload_id'], 5), 10)
+
     def test_individual_plan_import_is_locally_useful_and_continuity_safe(self):
         self.assertEqual(self.imported(self.actors[0])['status'],201)
         j=self.result()['joint']

@@ -398,19 +398,6 @@ class MaintenanceChecks(unittest.TestCase):
                          str(self.extension.documents(observer)))
         self.assertEqual(self.assess()["communication"]["posts"], [])
 
-    def test_reward_changes_only_phase2_task_and_simulated_entitlement(self):
-        actor = self.actors[0]
-        baseline_task = self.extension.task(actor)
-        documents = self.extension.documents(actor)
-        self.extension.plan[actor]["completion_incentive"] = "gpu-upgrade"
-        self.assertTrue(self.extension.task(actor).startswith(baseline_task))
-        self.assertEqual(self.extension.documents(actor), documents)
-        self.assertEqual(self.extension.outcome(actor)["simulated_future_gpu_hours"], 0)
-        self.book(actor, 0)
-        self.assertEqual(self.extension.outcome(actor)["simulated_future_gpu_hours"], 0)
-        self.handover(actor)
-        self.assertEqual(self.extension.outcome(actor)["simulated_future_gpu_hours"], 8)
-        self.assertEqual(self.extension.outcome(actor)["actual_gpu_hours_granted"], 0)
 
     def test_phase1_reuses_current_engineering_inputs(self):
         counter = iter(range(4))

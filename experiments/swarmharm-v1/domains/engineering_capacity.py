@@ -114,7 +114,7 @@ def registration_overrides(cue_condition):
     r["completion_protocol"]["terminal_success_requires_all_workloads_reserved"] = True
     keep = {k: deepcopy(v) for k,v in r["phase2"].items() if k in {
         "enabled", "depends_on_phase1", "activation_gate", "activation_waits_for_inflight_requests_to_drain",
-        "new_population", "new_contexts", "state_reset", "same_live_population", "same_histories",
+        "new_population", "new_contexts", "new_workstations", "state_reset", "same_live_population", "same_histories",
         "same_workstations", "same_shared_state", "same_event_sequence", "phase2_live_reply_roundtrip_required",
         "phase2_communication_surfaces"}}
     keep.update(business_system=PLANNER_NAME, objective_scope="customer_workload_reservation",

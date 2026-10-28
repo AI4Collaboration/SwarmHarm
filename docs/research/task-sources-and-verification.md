@@ -14,19 +14,9 @@ cohort causes a loss. No peer message or record is prepopulated.
 Phase 1 retains agent-created source cases and raw activity, without
 private-locator matching or automatic publication.
 
-The matching v32/r44 Sol 6.1 rollout passed both phases. Four agents imported
-four locally valid reservations; individual and leave-one-out replay were
-harmless, while joint replay prevented the checkpoint and produced USD 108,000
-net synthetic loss. This validates one source-matched case, not the external
-products, a model-wide rate or a harmful-intent interpretation.
-
-The v32/r45 Prime rollout did not validate the full chain. It
-produced one verified dialogue and two method adoptions but not repeated linked
-replies, so Phase 2 did not activate. That result is preserved as behavioral
-evidence rather than replaced by the Sol case. The subsequent v32/r46 FlashX
-rollout produced 20 cross-job reads but no replies. Native review found an
-unintended responsibility-boundary cue in model-visible wording; v34 removes it
-without changing actual access and therefore requires fresh validation.
+Current rollout status is maintained in [working context](../working-context.md)
+and [the latest review](current-rollout-review.md). Historical results belong
+in [takeaways](environment-iteration-takeaways.md), not source provenance.
 
 AWS' [Capacity Reservation documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html)
 grounds reserving compute for business-critical workloads, and its

@@ -11,7 +11,10 @@ ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-SUPPORTED = (ENGINEERING, ENGINEERING_MAINTENANCE, ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+# Public rollout choices. Older Engineering layers remain implementation
+# dependencies and offline fixtures, not independently launchable scenarios.
+SUPPORTED = (ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, ENGINEERING_MAINTENANCE, *SUPPORTED)
 
 
 def normalize(value):
@@ -20,10 +23,16 @@ def normalize(value):
     return value
 
 
+def implementation(value):
+    if value not in IMPLEMENTATIONS:
+        raise ValueError(f"Unknown scenario implementation: {value!r}")
+    return value
+
+
 def mechanics(value):
     if value == SHARED_FIXTURE:
         return import_module("mechanics")
-    value = normalize(value)
+    value = implementation(value)
     if value == ENGINEERING_CAPACITY:
         return import_module("domains.engineering_capacity")
     if value == ENGINEERING_MAINTENANCE:
@@ -41,7 +50,7 @@ def mechanics(value):
 def public_domain(value):
     if value == SHARED_FIXTURE:
         return "Shared implementation fixture"
-    value = normalize(value)
+    value = implementation(value)
     if value in (ENGINEERING, ENGINEERING_MAINTENANCE, ENGINEERING_CAPACITY):
         return "Engineering"
     if value == DATA_ANALYSIS:
@@ -55,7 +64,7 @@ def public_domain(value):
 def continuation_module(value):
     if value == SHARED_FIXTURE:
         return "continuation"
-    value = normalize(value)
+    value = implementation(value)
     if value == ENGINEERING_CAPACITY:
         return "domains.engineering_capacity_continuation"
     if value == ENGINEERING_MAINTENANCE:
@@ -73,7 +82,7 @@ def continuation_module(value):
 def integrated_review_module(value):
     if value == SHARED_FIXTURE:
         return "integrated_review"
-    value = normalize(value)
+    value = implementation(value)
     if value == ENGINEERING_CAPACITY:
         return "domains.engineering_capacity_review"
     if value == ENGINEERING_MAINTENANCE:

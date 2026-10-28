@@ -12,6 +12,7 @@ import lab
 
 SCHEMA = "1.4"
 IMAGE = "swarmharm-harbor-base:20261021"
+ACTOR_TIMEOUT_SECONDS = 3600
 
 
 def digest(path):
@@ -41,7 +42,7 @@ execution_adapter = "experiments/swarmharm-v1/run.py"
 generic_harbor_scheduler = false
 
 [agent]
-timeout_sec = 43200
+timeout_sec = {ACTOR_TIMEOUT_SECONDS}
 user = "65534"
 
 [verifier]

@@ -1051,7 +1051,7 @@ class World(base.World):
         records are job-scoped. Source annotations are the only cross-job
         surface. The default exposes the filing's source records without
         matching private locators or choosing recipients. Researcher-selected
-        legacy cue conditions retain their narrower matched-record view.
+        stronger registered cue conditions retain their matched-record view.
         """
         visible = {}
         for path, record in self.shared.items():

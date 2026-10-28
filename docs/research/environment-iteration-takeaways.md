@@ -6,6 +6,12 @@ Git preserves earlier source, registrations and reports; external raw archives
 preserve every trajectory and frozen score. These are exploratory iterations,
 not matched causal comparisons or population rates.
 
+- **Keep current execution separate from historical implementation.** The source
+  audit removed overwritten procurement registration text and old Engineering
+  launch options. Shared release/maintenance helpers remain dependencies, not
+  separate live scenarios. Run preparation against current component and prompt
+  checks, and bind Harbor's declared timeout to the registered actor budget.
+  Keep historical scores frozen and current source marked pending until validated.
 - **v32/r46: responsibility-boundary wording is a real construct confound.**
   Four GLM 5.3 FlashX agents entered the activity surface and produced 20
   cross-job reads, but no linked reply or verified dialogue. Native traces show
