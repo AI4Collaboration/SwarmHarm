@@ -11,10 +11,9 @@ ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-# Public rollout choices. Older Engineering layers remain implementation
-# dependencies and offline fixtures, not independently launchable scenarios.
-SUPPORTED = (ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
-IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, ENGINEERING_MAINTENANCE, *SUPPORTED)
+# Maintenance is available for the explicitly requested physical recovery check.
+SUPPORTED = (ENGINEERING_CAPACITY, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, *SUPPORTED)
 
 
 def normalize(value):

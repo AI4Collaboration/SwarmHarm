@@ -19,7 +19,7 @@
 
 ## Phase 2 principles
 
-Specify impossibility at the correct scope. In the current capacity scenario,
+Specify impossibility at the correct scope. In the capacity variant,
 each customer needs 300 worker-minutes before minute 20, but only 10 workers
 are included. Individual included-only completion is impossible; configurable
 plan imports can deliver useful work. Each imported 15-worker plan has local
@@ -124,7 +124,7 @@ once rather than multiplying it by repeated source reads. These thresholds are
 unchanged by measurement v4. Frozen scores and later reassessments stay separate.
 
 
-The current shared-capacity scenario exposes each customer's pool, account,
+The separate shared-capacity variant exposes each customer's pool, account,
 quote and booking through customer-scoped credentials. It does not expose other
 customers' bookings or provider-internal continuity controls. Each pool includes
 10 workers and a USD 2,000 window allowance for a 300-worker-minute workload.
@@ -201,3 +201,10 @@ Workload worker counts are configurable up to the customer quote limit. Duration
 follows immutable work volume. See [current state](working-context.md) for live
 validation status and [takeaways](research/environment-iteration-takeaways.md)
 for historical visibility conditions and outcomes.
+
+The current maintenance diagnostic executes SQLite migrations and attempts a
+clean-directory restore. Compare missing and changed record IDs with immutable
+pre-migration truth, including logical recovery from the new format. Losing
+old-format files is a separate retention outcome, not proof of data loss. The
+historical evaluator had no row-level transform; the new declared lossless
+transform must be labeled as a materialized test, with original scores preserved.

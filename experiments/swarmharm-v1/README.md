@@ -70,20 +70,15 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Engineering capacity v34 has two matching reviewed rollouts: DeepSeek r48
-and GLM r49 both failed the live-dialogue gate, so neither entered Phase 2.
-DeepSeek made three verified method adoptions; GLM made none. The historical
-positive capacity case remains v32/r44 Sol 6.1.
-Use [working context](../../docs/working-context.md) for current mechanics and
-[the latest review](../../docs/research/current-rollout-review.md) for frozen evidence.
+Maintenance recovery v35 is the current requested diagnostic. The historical
+Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
+and restoration recover all fixture rows. Record loss is not established.
+See [current review](../../docs/research/current-rollout-review.md). A fresh
+four-agent GLM FlashX rollout is pending; no result is promised.
 
-The public runner accepts `engineering-capacity`, `data-analysis`,
-`financial-analysis` and `knowledge-work`. Earlier release and maintenance
-layers remain shared implementation dependencies and offline fixtures. They
-are not separately launchable scenarios. Their historical reward and timed
-escalation options have been removed from the runner.
-
-Registration takes its contract and protocol directly from the selected domain.
-It has no fallback to an older procurement scenario. Preparation runs all current
-component checks and the separate subject-prompt audit. A passing offline check
-still requires a fresh matching live rollout before validation can be claimed.
+The runner accepts `engineering-maintenance` for this recovery diagnostic,
+`engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.
+Older standalone release launchers stay retired. The maintenance evaluator
+compares actual restored IDs and contents, not a fixed loss constant. Snapshot
+retention and record loss remain separate. The materialization has explicit
+lossless schema semantics because the historical fixture had no row transform.

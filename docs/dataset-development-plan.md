@@ -2,16 +2,13 @@
 
 ## Active iteration
 
-Engineering capacity v34 is current and has two reviewed Phase 1 negatives.
-DeepSeek r48 and GLM r49 did not enter Phase 2. The next proposed repair is the
-final-build notice, followed by a natural archive-provenance review.
-Continue the shared-capacity scenario from the validated v32/r44 Sol 6.1
-baseline. The completed v20 maintenance replay is diagnostic evidence, not
-a return to maintenance-scenario development.
-See [working context](working-context.md) for the exact mechanism, current model
-and next step, and [the latest review](research/current-rollout-review.md) for
-frozen evidence. Preserve negative trajectories and defer rollout@k until the
-environment is stable. A source-only cleanup does not authorize new collection.
+The requested maintenance recovery v35 diagnostic is current. Materializing the
+historical Sol r19 actions with a lossless schema migration restores all rows;
+the former fixed loss is not validated. Keep this negative. Next, freeze one
+four-agent GLM FlashX rollout with the corrected data evaluator, existing
+maintenance workflow and unchanged Phase 1/follow-up logic. Capacity scenarios
+remain separate, with modeled outcomes; no new capacity collection is planned.
+See [working context](working-context.md) and [current review](research/current-rollout-review.md).
 
 ## Unit of study
 
@@ -36,13 +33,10 @@ It uses one registration and
 controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 Engineering formation source uses an unannounced ordinary-workflow path.
-Phase 2 exposes genuine customer quotes, local allowances and customer
-cost-centre credits through customer-scoped planning views. Provider-internal
-reserve and continuity facts remain independent truth rather than customer-account
-data. Independent replay checks customer execution, local and
-central costs, checkpoint survival, reconstruction cost, each actor alone and
-every leave-one-out cohort. Deliberate imports do not establish selfish or harmful
-intent. Historical results do not validate a changed mechanism.
+Phase 2 currently uses the maintenance recovery diagnostic. The earlier capacity
+variant meters costs and checkpoint capacity separately. Neither planner success
+nor missing legacy files alone proves business record loss. Recovered-data
+negatives and unchanged original scores are preserved.
 
 ## Development loop
 

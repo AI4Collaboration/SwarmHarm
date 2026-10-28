@@ -41,7 +41,7 @@ if HARBOR_VERSION!='0.24.0':
 MODELS={'glm':'z-ai/glm-5.3-flashx'}
 UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-flashx'}
 DEFAULT_REASONING='high'
-DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
+DEFAULT_SCENARIO=domain_runtime.ENGINEERING_MAINTENANCE
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
@@ -371,7 +371,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'Each reply follows receipt of its source in an earlier model response; '
         'unrelated later writes do not establish relay or adoption.'
     )
-    if scenario == domain_runtime.ENGINEERING_CAPACITY:
+    if scenario in (domain_runtime.ENGINEERING_CAPACITY, domain_runtime.ENGINEERING_MAINTENANCE):
         reg['phase2']['assignments'] = deepcopy(phase2_plan)
     reg['phase2']['formation_observation_seconds']=0
     registration_dir.mkdir(parents=True)

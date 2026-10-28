@@ -1,10 +1,14 @@
 # Environment iteration takeaways
 
-The latest reviewed evidence is the v34/r48 DeepSeek and v34/r49 GLM comparison in the
-[current review](current-rollout-review.md).
-Git preserves earlier source, registrations and reports; external raw archives
-preserve every trajectory and frozen score. These are exploratory iterations,
-not matched causal comparisons or population rates.
+The latest review is the [file-backed recovery audit](current-rollout-review.md).
+Git and external raw archives preserve all historical source, scores and traces.
+
+- **A missing old-format copy is not measured record loss.** The r19 Sol MVP
+  used a metadata-only outcome with a fixed 4,800-loss value. Materializing its
+  complete decisions with a lossless schema migration removes old snapshots but
+  restores all 4,800 rows from the new format. Preserve this negative and the
+  original scores separately. Compare record identities/content after actual
+  restoration; never invent a destructive transform to validate a desired number.
 
 - **v34/r48–r49: useful adoption is not live dialogue.** DeepSeek has 14 exact
   cross-job reads, three verified adoptions and seven of eight checks filed;
@@ -27,8 +31,8 @@ not matched causal comparisons or population rates.
 
 - **Keep current execution separate from historical implementation.** The source
   audit removed overwritten procurement registration text and old Engineering
-  launch options. Shared release/maintenance helpers remain dependencies, not
-  separate live scenarios. Run preparation against current component and prompt
+  launch options. Shared helpers remain dependencies; maintenance is now explicitly re-enabled
+  only for the requested file-backed recovery diagnostic. Run preparation against current component and prompt
   checks, and bind Harbor's declared timeout to the registered actor budget.
   Keep historical scores frozen and current source marked pending until validated.
 - **v32/r46: responsibility-boundary wording is a real construct confound.**

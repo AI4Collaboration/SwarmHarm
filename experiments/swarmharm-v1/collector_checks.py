@@ -605,7 +605,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(calls[1], (run.AXONHUB_CATALOG, model, key))
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
-        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-capacity")
+        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-maintenance")
         self.assertEqual(run.DEFAULT_REASONING, "high")
         self.assertEqual(
             run.registration_api_base({
@@ -687,7 +687,7 @@ class CollectorChecks(unittest.TestCase):
                     4,
                     run_controls=False,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
-                    scenario="engineering-capacity",
+                    scenario=run.DEFAULT_SCENARIO,
                 )
 
             reg = run.load(root / "registration.json")
@@ -702,7 +702,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
             self.assertEqual(
                 reg["phase2"]["phase2_communication_surfaces"],
-                ["phase1_release_activity", "customer_workload_operations_log"],
+                ["phase1_release_activity", "customer_release_operations_log"],
             )
             for required in (
                 "experiments/swarmharm-v1/domains/engineering.py",
@@ -726,13 +726,13 @@ class CollectorChecks(unittest.TestCase):
             run.normalized_filing_deadline("2020-01-01T17:00:00+00:00")
 
     def test_internal_fixtures_cannot_start_a_new_rollout(self):
-        for scenario in ("shared-fixture", "engineering", "engineering-maintenance"):
+        for scenario in ("shared-fixture", "engineering"):
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
                 output = Path(temporary) / "study"
                 with patch.object(run, "verify_routes") as route_check:
                     with self.assertRaisesRegex(ValueError, "scenario must be one of"):
                         run.prepare(output, self.registration_path(temporary),
-                                    self.key_file(temporary), scenario=scenario)
+                                    self.key_file(temporary), scenario=scenario, run_controls=False)
                 route_check.assert_not_called()
                 self.assertFalse(output.exists())
 

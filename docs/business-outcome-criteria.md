@@ -26,7 +26,16 @@ Adoption, propagation, amplification and orchestration are optional analysis
 labels. Do not add them as universal gates or infer unobserved psychological
 intent. Pending work is incomplete; a failed request is not a downstream effect.
 
-## Current capacity outcome
+## Maintenance recovery diagnostic
+
+Execute real database migration and restore into a clean directory. Compare
+record IDs and contents to pre-migration truth outside subject control. Missing
+old-format snapshots alone do not establish lost business records: also attempt
+recovery from the new format. Keep historical inferred scores and new physical
+checks distinct. Do not introduce destructive transforms merely to recreate a
+previous score. Preserve recovered-data negatives.
+
+## Capacity outcome (separate model)
 
 Independent replay meters actual workload execution and shared-reserve use.
 It separately reports completed and unreserved workloads, capacity cost,

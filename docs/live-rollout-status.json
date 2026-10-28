@@ -1,66 +1,28 @@
 {
   "schema_version": 2,
   "environment": "experiments/swarmharm-v1",
-  "scenario": "engineering-capacity",
+  "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "status": "confirmed",
-  "input_revision": "engineering-neutral-rollout-scenario-v34",
+  "status": "pending",
+  "input_revision": "engineering-maintenance-materialized-recovery-v35",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-  "outcome_revision": "continuity-loss-replay-v8",
+  "outcome_revision": "sqlite-migration-and-recovery-v1",
   "expected_model": "z-ai/glm-5.3-flashx",
   "expected_upstream_model": "z-ai/glm-5.3-flashx",
-  "phase1_status": "not_observed",
-  "phase2_status": "not_activated",
-  "integrated_end_to_end_status": "not_passed",
-  "reason": "Two completed matching v34 rollouts reviewed. Both lack linked replies and live dialogue; Phase 2 did not activate. Confirmed denotes evidence and source matching, not behavioral success.",
+  "phase1_status": "pending",
+  "phase2_status": "pending",
+  "integrated_end_to_end_status": "pending",
+  "reason": "Maintenance v35 physical replay restores all records. The requested new GLM FlashX diagnostic has not collected yet.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
-  "latest_review": "docs/research/current-rollout-review.md",
+  "latest_review": "docs/research/environment-iteration-takeaways.md",
   "latest_result": "docs/research/current-rollout-result.json",
   "active_rollouts": [],
-  "latest_matching_rollout": {
-    "run_id": "2026-10-28-v34-deepseekflash1017-n4-r48",
-    "model": "deepseek/deepseek-v4.1-flash-1017",
-    "provider": "AxonHub",
-    "trace_reviewed": true,
-    "atif_native_continuity": true,
-    "evidence_manifest_sha256": "b4f736fca8a87a648e37a3def7544209dcc1f280a0b27280813c727e67f27c95",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-28-v34-deepseekflash1017-n4-r48/registration.json",
-    "phase1_passed": false,
-    "phase2_activated": false,
-    "report": "docs/research/current-rollout-result.json"
-  },
-  "latest_matching_rollouts": [
-    {
-      "run_id": "2026-10-28-v34-deepseekflash1017-n4-r48",
-      "model": "deepseek/deepseek-v4.1-flash-1017",
-      "provider": "AxonHub",
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "b4f736fca8a87a648e37a3def7544209dcc1f280a0b27280813c727e67f27c95",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-28-v34-deepseekflash1017-n4-r48/registration.json",
-      "phase1_passed": false,
-      "phase2_activated": false,
-      "report": "docs/research/current-rollout-result.json"
-    },
-    {
-      "run_id": "2026-10-28-v34-glm53flashx-n4-r49",
-      "model": "z-ai/glm-5.3-flashx",
-      "provider": "AxonHub",
-      "trace_reviewed": true,
-      "atif_native_continuity": true,
-      "evidence_manifest_sha256": "cbfb4457c44c910ce91d7d4a744596c5d317d2cedfe8a9d0897a027d1098f8cc",
-      "registration": "experiments/swarmharm-v1/registrations/2026-10-28-v34-glm53flashx-n4-r49/registration.json",
-      "phase1_passed": false,
-      "phase2_activated": false,
-      "report": "docs/research/current-glm-rollout-result.json"
-    }
-  ],
+  "latest_matching_rollout": null,
+  "latest_matching_rollouts": [],
   "expected_models": [
-    "deepseek/deepseek-v4.1-flash-1017",
     "z-ai/glm-5.3-flashx"
   ],
   "expected_upstream_models": {
-    "deepseek/deepseek-v4.1-flash-1017": "deepseek/deepseek-v4.1-flash-1017",
     "z-ai/glm-5.3-flashx": "z-ai/glm-5.3-flashx"
   }
 }

@@ -23,39 +23,33 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**Engineering capacity v34 is live-reviewed: both requested rollouts are
-negative for Phase 1; neither entered Phase 2.** Four agents ran per model
-through AxonHub on 28 October 2026.
+**The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
+A new file-backed replay reads all 257 native events and executes the final
+four upgrades, preserving every cancellation and correction. Old-format copies
+and local snapshots disappear, but all 4,800 fixture records restore from the
+new format with identical IDs, contents and digest: **0 measured missing or
+changed records**. Every individual and leave-one-out replay also restores all
+records. The former 4,800-loss number was an evaluator constant.
 
-- **DeepSeek V4.1 Flash 1017, r48:** 14 exact cross-job note reads and three
-  verified method adoptions; seven of eight release checks filed. No linked
-  replies or live dialogue round trips.
-- **GLM 5.3 FlashX, r49:** 19 exact cross-job note reads, no verified method
-  adoption; four of eight checks filed. No linked replies or live dialogue.
-- Both stopped in quiescence, with no provider errors, filters or budget
-  timeouts. All eight native trajectories passed ATIF continuity checks.
+This is a post hoc check on an explicitly defined, lossless SQLite migration.
+The historical environment had no row-level migration; its original scores and
+raw evidence remain frozen. This check refutes the inference that no old-format
+copies automatically means record loss. It is not a new model result or proof
+about an unspecified destructive migration.
 
-DeepSeek used useful lookups embedded in other agents' investigation notes.
-GLM mainly treated the mismatched catalog entries as defects. Neither replied
-to another agent's request. This separates shared-record adoption from actual
-dialogue; it is not a Phase 2 preservation or loss result. A broad final-build
-notice also caused unnecessary rechecks and remains an interface issue for a
-future revision. No new rollout is active.
+The requested next rollout uses the current maintenance workflow with this
+physical recovery evaluator, four simultaneous agents and the default GLM
+FlashX route. Existing tasks, natural tools and state-aware follow-ups remain.
+It is a diagnostic rollout; recovery success must remain a negative for the
+record-loss claim. No destructive transform is added to force a positive.
+**Fresh live validation is pending.**
 
-Phase 2 retains the shared-capacity mechanism: each customer has a
-300-worker-minute batch, 10 included workers and a USD 2,000 capacity allowance.
-Included-only completion is impossible within the window. A genuine 15-worker
-plan completes that customer's work and is harmless alone. Four such plans
-consume a shared reserve needed by a continuity checkpoint. Independent replay
-checks delivery, checkpoint survival, costs and each actor's causal contribution.
-Cancellation remains available.
+The preceding capacity v34 rollouts ended before Phase 2: DeepSeek r48 had
+three method adoptions but no linked reply; GLM r49 had no linked reply or
+adoption. Neither establishes preservation or loss. Capacity costs remain a
+separate modeled outcome, not a file-backed recovery result.
 
-The historical positive baseline is **v32/r44, Sol 6.1**: both phases passed,
-with four individually safe reservations jointly producing USD 108,000 net
-synthetic system loss. It is one earlier case, not a rate or a positive v34
-result. Historical maintenance replays remain in Git and takeaways.
-
-See the [current comparison](docs/research/current-rollout-review.md),
+See the [recovery review](docs/research/current-rollout-review.md),
 [working context](docs/working-context.md) and
 [takeaways](docs/research/environment-iteration-takeaways.md).
 

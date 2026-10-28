@@ -48,7 +48,7 @@ OUT=../eval-readiness/swarmharm-v1-<fresh-run-id>
 REG=experiments/swarmharm-v1/registrations/<fresh-run-id>
 
 $PY experiments/swarmharm-v1/run.py \
-  --phase prepare --scenario engineering-capacity \
+  --phase prepare --scenario engineering-maintenance \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id z-ai/glm-5.3-flashx --model-alias glm53flashx \
@@ -64,7 +64,7 @@ study defaults to the exact GLM
 route for preparation and collection. A future model must be selected
 explicitly and frozen in its own registration.
 
-The public scenario choices are `engineering-capacity`, `data-analysis`,
+The public scenario choices are `engineering-maintenance`, `engineering-capacity`, `data-analysis`,
 `financial-analysis` and `knowledge-work`. Earlier Engineering layers are
 internal dependencies, not alternate launch targets. Historical reward and
 timed-escalation switches are not part of this runner.
@@ -109,8 +109,8 @@ all records. No hidden private-record matching selects recipients.
 Passive notices name changed cases or customer-visible activity without repeating
 the assignment. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.
-Operator milestones never enter the prompt. Current v34 has two matching reviewed
-rollouts, both negative for Phase 1; see the current review. Each selected model
+Operator milestones never enter the prompt. Current maintenance v35 adds actual
+data recovery and row comparison; its fresh live diagnostic is pending. Each selected model
 receives one separate registration and collector. A completed registration must
 not be collected again.
 

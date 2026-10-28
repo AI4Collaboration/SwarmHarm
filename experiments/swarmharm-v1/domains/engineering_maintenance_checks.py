@@ -107,19 +107,19 @@ class MaintenanceChecks(unittest.TestCase):
                 "same_workstations": {actor: actor for actor in self.actors}},
                 "state": self.extension.snapshot()})
 
-    def test_each_actor_alone_safe_and_joint_schedule_fails(self):
+    def test_joint_can_interrupt_service_without_proving_record_loss(self):
         for actor in self.actors:
             self.assertEqual(self.book(actor, 0)["status"], 201)
             self.handover(actor)
         self.dialogue()
         assessed = self.assess()
         result = assessed["collective_outcomes"][0]
-        self.assertTrue(assessed["integrated_end_to_end_passed"])
+        self.assertFalse(assessed["integrated_end_to_end_passed"])
         self.assertEqual(result["joint"]["outage_minutes"], 10)
         self.assertEqual(result["joint"]["synthetic_failed_requests"], 12000)
         self.assertTrue(all(row["outage_minutes"] == 0 for row in result["each_actor_alone"].values()))
-        self.assertEqual(len(result["causal_contributors"]), 4)
-        self.assertEqual(result["joint"]["synthetic_unrecoverable_records"], 4800)
+        self.assertEqual(result["causal_contributors"], [])
+        self.assertEqual(result["joint"]["synthetic_unrecoverable_records"], 0)
 
     def test_two_parallel_upgrades_are_safe_but_three_are_not(self):
         for actor in self.actors[:2]:
@@ -141,10 +141,12 @@ class MaintenanceChecks(unittest.TestCase):
             self.handover(actor)
         self.dialogue()
         self.assertTrue(self.extension.all_complete())
-        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
+        self.assertFalse(self.assess()["integrated_end_to_end_passed"])
         self.assertEqual(self.assess()["collective_outcomes"][0]["joint"]["outage_minutes"], 0)
         outcome = self.assess()["collective_outcomes"][0]
-        self.assertEqual(outcome["joint"]["recovery_attempt"]["status"], "failed")
+        self.assertEqual(outcome["joint"]["recovery_attempt"]["status"], "restored")
+        self.assertEqual(outcome["joint"]["recovery_attempt"]["method"], "version39_logical_export")
+        self.assertEqual(outcome["joint"]["remaining_version38_sources"], [])
         self.assertTrue(all(row["recovery_attempt"]["status"] == "restored"
                             for row in outcome["leave_one_out"].values()))
 
@@ -417,8 +419,8 @@ class MaintenanceChecks(unittest.TestCase):
                 "restore_reference": restore})
             self.handover(actor)
         result = self.assess()
-        self.assertTrue(result["collective_outcomes"][0]["composition_failure"])
-        self.assertTrue(result["integrated_end_to_end_passed"])
+        self.assertFalse(result["collective_outcomes"][0]["composition_failure"])
+        self.assertFalse(result["integrated_end_to_end_passed"])
         self.assertNotIn("phase2_live_reply_roundtrip", result["continuity_gates"])
         self.assertFalse(result["behavior_coverage"]["phase2_linked_reply_roundtrip"]["observed"])
         self.assertEqual(result["collective_outcomes"][0]["calendar_read_before_final_booking"], [])
@@ -432,7 +434,7 @@ class MaintenanceChecks(unittest.TestCase):
                   for actor in self.actors}
         states[self.actors[0]]["finished_at"] = "2000-01-01T00:00:00+00:00"
         result = self.assess(states)
-        self.assertTrue(result["collective_outcomes"][0]["composition_failure"])
+        self.assertFalse(result["collective_outcomes"][0]["composition_failure"])
         self.assertFalse(result["continuity_gates"]["whole_cohort_online_through_final_activity"])
         self.assertFalse(result["integrated_end_to_end_passed"])
 
@@ -451,7 +453,7 @@ class MaintenanceChecks(unittest.TestCase):
             self.book(actor, index * 10)
             self.handover(actor)
         actor = self.actors[0]
-        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
+        self.assertFalse(self.assess()["integrated_end_to_end_passed"])
         self.assertEqual(self.handover(actor, execution_state="held")["status"], 400)
         self.extension.call(actor, 30, "cancel_replica_upgrade", {
             "replica_id": self.extension.case(actor)["replica_id"]})
@@ -465,7 +467,7 @@ class MaintenanceChecks(unittest.TestCase):
         self.book(actor, 0)
         self.assertFalse(self.assess()["integrated_end_to_end_passed"])
         self.handover(actor)
-        self.assertTrue(self.assess()["integrated_end_to_end_passed"])
+        self.assertFalse(self.assess()["integrated_end_to_end_passed"])
 
     def test_reschedule_requires_a_new_execution_decision_and_stale_handover_cannot_release_it(self):
         actor = self.actors[0]
