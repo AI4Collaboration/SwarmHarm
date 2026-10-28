@@ -3,7 +3,7 @@
 ## Active iteration
 
 Engineering v47/r65 is reviewed positive on Sol 6.1. The current iteration is
-Data Analysis v48: regional mapping freshness blocks the normal publication
+Data Analysis v49: regional mapping freshness blocks the normal publication
 path; the parent-cohort path is independently reachable. Native publications
 and withdrawals are replayed into a SQLite inventory ledger against immutable
 customer identities. A fresh four-agent Sol rollout is pending. Financial

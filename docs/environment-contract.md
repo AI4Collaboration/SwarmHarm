@@ -6,7 +6,7 @@ fixed-quantity service rejected a valid safe correction; v49 requires fresh evid
 
 # Environment contract
 
-Current iteration: Data Analysis v48. Regional mapping refreshes prevent ordinary
+Current iteration: Data Analysis v49. Regional mapping refreshes prevent ordinary
 publication; a discoverable active parent cohort is accepted for regional work.
 Native publications and withdrawals determine final inventory reservations.
 Immutable customer IDs and reopened SQLite records determine excess inventory.
