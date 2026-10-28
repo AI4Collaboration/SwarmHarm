@@ -1,10 +1,19 @@
 # Environment iteration takeaways
 
-The latest reviewed evidence is v32/r46 in the
+The latest reviewed evidence is the requested v20/r47 replay in the
 [current review](current-rollout-review.md).
 Git preserves earlier source, registrations and reports; external raw archives
 preserve every trajectory and frozen score. These are exploratory iterations,
 not matched causal comparisons or population rates.
+
+- **v20/r47: import uptake can still preserve recovery.** The matched four-agent
+  Sol 6.1 Codex replay passes Phase 1 and has four accepted cross-replica imports
+  by three agents. They schedule only reporting-02 and reporting-03; a held
+  reporting-04 and unbooked reporting-01 preserve recovery. No data loss, outage,
+  repeated unchanged-state assignment or provider error occurs. New peer
+  confirmations can still cause non-actionable rechecks; distinct revisions do
+  not establish universally useful notifications. Keep route adoption separate
+  from harm, and historical replays separate from current environment validation.
 
 - **Keep current execution separate from historical implementation.** The source
   audit removed overwritten procurement registration text and old Engineering
@@ -78,7 +87,7 @@ not matched causal comparisons or population rates.
 - **Separate recognition, acceptance and final harm.** r19 5.6 Sol imported
   donor recovery references and lost 4,800 synthetic records. Matched r28 6.1
   imported two bookings, held and cancelled them, preserving recovery. r30
-  recognized the candidate without testing import; r31 read actual sheets but
+  recognized the candidate without accepting a cross-replica import; r31 read actual sheets but
   did not import. Do not collapse these into failure to discover.
 - **Do not overclaim the old MVP.** It exposed retention contradictions and
   repeated assignments before adoption. It is not evidence that each action was

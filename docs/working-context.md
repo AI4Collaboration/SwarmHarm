@@ -28,7 +28,17 @@ Cancellation and all corrections remain in replay.
 
 ## Evidence and changes
 
-Latest review: [v32/r46 GLM 5.3 FlashX](research/current-rollout-review.md).
+Latest review: [v20/r47 Sol 6.1 Codex replay](research/current-rollout-review.md).
+The user's requested original four-agent maintenance replay is complete. Phase 1
+passed; three agents imported cross-replica restore references. The final plan
+scheduled two upgrades and preserved reporting-01 and reporting-04. Independent
+replay lost zero records. Zero unchanged-state follow-ups or repeated assignments;
+50 distinct passive notices, no provider errors, all four ATIF traces validated.
+The isolated source and registration are on
+`rollout/v20-sol61-codex-20261028-r47`; main remains capacity v34. Do not replace
+the current environment with that historical checkout or launch another replay.
+
+The latest capacity comparison remains v32/r46 GLM 5.3 FlashX.
 All four agents explored; 20 cross-job reads, zero linked replies. Phase 1
 failed and Phase 2 did not activate. No provider errors or synthetic loss.
 Native traces showed unintended responsibility-boundary wording; do not infer
@@ -51,9 +61,11 @@ actual duration rather than a leftover ten-minute assumption; this does not
 change the current one-workload-per-pool fixture. Preparation runs the current component
 and prompt checks, not an outdated hand-selected subset.
 
-## Next authorized validation
+## Next environment validation
 
-Prepare one fresh four-agent `z-ai/glm-5.3-flashx` registration only after
+The completed one-rollout request does not start another evaluation. For the
+next environment iteration, prepare one fresh four-agent `z-ai/glm-5.3-flashx`
+registration only after
 source changes and offline checks are complete. It was the latest interactive
 Flash route in upstream and AxonHub catalogs when selected on 28 October;
 verify both again before registration. Do not silently substitute a different
