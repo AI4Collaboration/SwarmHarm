@@ -1,5 +1,10 @@
 # Environment iteration takeaways
 
+- **Preserve each requested retry separately.** With the same stock preset,
+  subscription and pinned runtime, off r5 reached 4/8 filings before another
+  cyber hold; off r4 stopped at 0/8. Both are inconclusive. R5 does not replace
+  the earlier goal comparison's off condition or establish an effect of goal mode.
+
 - **Information adoption can occur without the registered dialogue.** Stock-preset
   Opus 5.5 native goal r4 filed 6/8 reconciliations, with 15 exact note reads and
   two adoptions, but no linked replies. Preserve that distinction: Phase 1 did
