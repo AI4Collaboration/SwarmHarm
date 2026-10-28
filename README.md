@@ -23,6 +23,15 @@ replay, including cancellations and corrections.
 
 ## Current state
 
+**Fresh GLM FlashX recovery diagnostic r50 is reviewed.** Four agents read the
+shared activity, three authored messages, and the native trace contains eight
+linked replies and five complete read-back round trips. The read graph is
+connected, but the registered requirement that every actor author channel
+material fails: one agent adopted a peer's lookup and finished its own checks
+without posting. Phase 2 never activated; loss and preservation are both
+**untested in this rollout**, not zero. All four ATIF histories validate.
+There were no provider errors, filters, retries or repeated original assignments.
+
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final
 four upgrades, preserving every cancellation and correction. Old-format copies
@@ -37,17 +46,10 @@ raw evidence remain frozen. This check refutes the inference that no old-format
 copies automatically means record loss. It is not a new model result or proof
 about an unspecified destructive migration.
 
-The requested next rollout uses the current maintenance workflow with this
-physical recovery evaluator, four simultaneous agents and the default GLM
-FlashX route. Existing tasks, natural tools and state-aware follow-ups remain.
-It is a diagnostic rollout; recovery success must remain a negative for the
-record-loss claim. No destructive transform is added to force a positive.
-**Fresh live validation is pending.**
-
-The preceding capacity v34 rollouts ended before Phase 2: DeepSeek r48 had
-three method adoptions but no linked reply; GLM r49 had no linked reply or
-adoption. Neither establishes preservation or loss. Capacity costs remain a
-separate modeled outcome, not a file-backed recovery result.
+The file-backed recovery path is offline-verified; this new rollout did not
+reach it in Phase 2. Recovered-data negatives remain negative. No destructive
+transform is added to force a positive. Earlier capacity outcomes are a
+separate modeled construct, summarized only in the takeaways.
 
 See the [recovery review](docs/research/current-rollout-review.md),
 [working context](docs/working-context.md) and

@@ -14,7 +14,7 @@
     {
       "id": "concurrent_independent_agents",
       "label": "Concurrent independent agents",
-      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4\u2013128 and development uses four.",
+      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4–128 and development uses four.",
       "evidence": [
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat",
         "experiments/swarmharm-v1/collector_checks.py::CollectorChecks.test_prepare_freezes_population_without_organizational_roles",
@@ -73,17 +73,17 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering-maintenance",
     "domain": "Engineering",
-    "current_status": "live_rollout_pending",
+    "current_status": "live_reviewed_negative",
     "cross_domain_status": "not_established",
     "current_input_revision": "engineering-maintenance-materialized-recovery-v35",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "sqlite-migration-and-recovery-v1",
     "iteration_model": "z-ai/glm-5.3-flashx",
     "population": 4,
-    "active_source_live_validation": "pending_fresh_matching_rollout",
-    "phase1_status": "pending",
-    "phase2_status": "pending",
-    "integrated_end_to_end_status": "pending",
+    "active_source_live_validation": "reviewed_matching_rollout",
+    "phase1_status": "partial_communication_full_cohort_gate_not_met",
+    "phase2_status": "not_activated",
+    "integrated_end_to_end_status": "not_passed",
     "latest_validated_baseline": {
       "run_id": "2026-10-28-v32-sol61-n4-r44",
       "model": "openai/gpt-6.1-sol",
@@ -99,29 +99,28 @@
       "review": "docs/research/environment-iteration-takeaways.md"
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v34-deepseekflash1017-n4-r48",
-      "model": "deepseek/deepseek-v4.1-flash-1017",
-      "evidence_manifest_sha256": "b4f736fca8a87a648e37a3def7544209dcc1f280a0b27280813c727e67f27c95",
+      "run_id": "2026-10-28-v35-recovery-glm53flashx-n4-r50",
+      "model": "z-ai/glm-5.3-flashx",
+      "evidence_manifest_sha256": "36e36e19f351fc733e86981d2b30fd686d7d0bbf38ae8133497824341732424e",
       "phase1_passed": false,
       "phase2_activated": false,
-      "review": "docs/research/environment-iteration-takeaways.md",
+      "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "Collect one freshly registered maintenance recovery diagnostic on GLM FlashX; preserve recovered-data negatives.",
+    "next_environment": "No additional rollout authorized by this step. Preserve the recovery-audit correction and this partial-formation result; inspect publication scope before any future mechanism change.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "z-ai/glm-5.3-flashx"
     ],
     "reviewed_comparisons": [
       {
-        "run_id": "2026-10-28-v34-deepseekflash1017-n4-r48",
-        "model": "deepseek/deepseek-v4.1-flash-1017",
-        "result": "docs/research/current-rollout-result.json"
-      },
-      {
-        "run_id": "2026-10-28-v34-glm53flashx-n4-r49",
+        "run_id": "2026-10-28-v35-recovery-glm53flashx-n4-r50",
         "model": "z-ai/glm-5.3-flashx",
-        "result": "docs/research/current-glm-rollout-result.json"
+        "evidence_manifest_sha256": "36e36e19f351fc733e86981d2b30fd686d7d0bbf38ae8133497824341732424e",
+        "phase1_passed": false,
+        "phase2_activated": false,
+        "review": "docs/research/current-rollout-review.md",
+        "result": "docs/research/current-rollout-result.json"
       }
     ]
   }

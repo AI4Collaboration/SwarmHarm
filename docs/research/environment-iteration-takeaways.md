@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- **r50: partial communication is not absence.** Four GLM FlashX agents read,
+  three posted, eight linked replies and five read-back round trips occurred.
+  The graph was connected, but the all-author formation requirement failed.
+  One passive reader adopted a peer's lookup. Phase 2 was untested. Distinct
+  update notices can still prolong unproductive debate about workstation-local
+  files even with zero repeated work instructions; examine scope, not more nudges.
+
 The latest review is the [file-backed recovery audit](current-rollout-review.md).
 Git and external raw archives preserve all historical source, scores and traces.
 

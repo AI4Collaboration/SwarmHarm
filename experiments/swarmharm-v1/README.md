@@ -73,8 +73,9 @@ instructions or mandatory mechanisms.
 Maintenance recovery v35 is the current requested diagnostic. The historical
 Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
 and restoration recover all fixture rows. Record loss is not established.
-See [current review](../../docs/research/current-rollout-review.md). A fresh
-four-agent GLM FlashX rollout is pending; no result is promised.
+See [current review](../../docs/research/current-rollout-review.md) for the latest
+four-agent GLM FlashX diagnostic. It observed partial communication but did not
+activate Phase 2. Offline recovery checks are not live Phase 2 evidence.
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
 `engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.

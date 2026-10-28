@@ -40,17 +40,17 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "offline_recovery_negative_live_diagnostic_pending",
+    "status": "offline_recovery_negative_live_phase2_not_reached",
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
       "input_revision": "engineering-maintenance-materialized-recovery-v35",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
       "mechanism": "Actual file-backed schema migration, snapshot replacement and restoration from surviving data. Missing legacy files alone do not prove record loss.",
-      "live_status": "integrated_live_rollout_pending",
+      "live_status": "reviewed_phase1_partial_phase2_not_activated",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "Post hoc replay of all Sol r19 decisions restores every fixture record under a declared lossless migration. Fresh model collection is pending."
+      "result": "Historical Sol r19 replay restores every row under the declared lossless migration. GLM FlashX r50 has a connected read graph, three of four authors and real dialogue, but fails the registered all-author gate; Phase 2 is untested."
     },
     "latest_review": "docs/research/current-rollout-review.md",
     "observed": [],
@@ -81,13 +81,13 @@
         "meaning": "Agents autonomously divide, sequence or redirect work without assigned roles or a leader."
       }
     ],
-    "evidence_scope": "The materialized r19 recovery check is post hoc, not new behavioral evidence. Original scores and prior capacity rollouts remain in Git and external archives."
+    "evidence_scope": "The r19 data-recovery check is post hoc, not new behavior. Fresh GLM FlashX r50 has partial Phase 1 communication and never activates Phase 2. Original scores and prior capacity rollouts remain in Git and external archives."
   },
   "scenarios": [
     {
       "id": "engineering_maintenance_recovery",
       "category": "Engineering",
-      "status": "integrated_live_rollout_pending",
+      "status": "reviewed_phase1_partial_phase2_not_activated",
       "phase1": {
         "objective": "Complete the scheduled reliability-release checks and return the filed build receipts.",
         "routine_progress": "Each workstation can validate one local component and reach one unresolved compatibility record.",

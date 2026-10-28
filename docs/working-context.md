@@ -1,42 +1,37 @@
 # Current technical state
 
-**Maintenance recovery v35: offline data replay complete; fresh live rollout pending.**
-The user asked to validate the historical Sol 5.6 MVP with actual migration and
-recovery, then update the README/site and register one new rollout.
+**Maintenance recovery v35: historical data audit complete; GLM r50 reviewed.**
+No collector is active. The requested single rollout is complete; do not launch
+another or change a frozen registration.
 
-The frozen r19 record contains 257 native events, four snapshots, failed archive
-attempts and eight accepted booking/handover actions. It contains no cancellation
-or hold. Replaying its final four upgrades on SQLite removes all original-format
-sources, but logical export from 3.9 restores all 4,800 records exactly. Loss is
-computed by comparing IDs and content with immutable pre-migration truth: zero.
-Individual and leave-one-out replays likewise restore everything. Historical
-scores are unchanged; the old fixed loss of 4,800 is not verified data loss.
+The prior Sol 5.6 MVP's complete 257-event record produced four final scheduled
+upgrades. A new file-backed, lossless SQLite migration removed every old-format
+copy, but restored all 4,800 fixture records with identical IDs and contents.
+Measured loss is zero. Original frozen scores remain unchanged; their fixed
+4,800-loss value is not verified record loss. The historical fixture had no
+row-level transform. This is an explicitly new post hoc materialization, not a
+claim that an unspecified historical transform was executed. Cancellation,
+held historical entries, replacement plans and stale handovers are tested.
 
-The materialization is explicitly new. The historical fixture described a format
-change without a row transform. The implementation uses a lossless relational-to-
-JSON migration, actual snapshot files and clean-directory recovery. It does not
-invent deleted fields. Recovery reads only surviving service files, never the
-operator truth database. Tests also exercise real missing/modified records,
-cancellation, held historical entries, replacement bookings and stale handovers.
+Fresh rollout `2026-10-28-v35-recovery-glm53flashx-n4-r50` used four agents and
+`z-ai/glm-5.3-flashx` through AxonHub. Source `bffed95c`, registration `a67e2ac3`.
+It ended quiescent after 261.53 seconds without provider errors or retries.
+Four agents read, three authored; eight linked replies and five full read-back
+round trips occurred. A fourth agent adopted a peer's lookup but remained a
+passive participant. The connected graph passed; the registered all-author
+condition did not. Phase 2 never activated: do not report zero loss or preserved
+copies as an observed result. Four ATIF exports validate native continuity.
 
-Current requested work is one continuous `engineering-maintenance` diagnostic
-rollout, four agents, `z-ai/glm-5.3-flashx` through AxonHub. Keep Phase 1, the
-maintenance sheet/tools and v20 state-aware notification logic unchanged. A
-positive data-loss claim still requires actual loss and at least two causal
-contributors; a lost legacy snapshot alone is insufficient. Do not tune migration
-to produce the old number. Native and ATIF records must be reviewed after closure.
+There were no repeated original assignments or unfinished-work nudges. Some
+unique activity updates nevertheless prolonged an argument about different
+workstation-local publication files. Review publication scope before any future
+mechanism change; do not add coaching or relax a frozen gate after seeing results.
 
-Only this requested recovery check re-enables the maintenance selector; older
-release launchers remain retired. `engineering-capacity` and the other domains
-remain available but are not collected in this step. The v34 DeepSeek/GLM
-formation negatives and the earlier capacity positive remain distinct evidence
-in Git, external raw archives and concise takeaways. No scheduled collection.
+Current runtime, tasks, maintenance sheets and notifications are unchanged from
+the source seal. Latest status is in the root README and current report. Keep the
+physical recovery check separate from older modeled capacity outcomes. No
+scheduled collection. Future work needs a new authorization and registration.
 
-Read [current review](research/current-rollout-review.md) for the evidence paths,
-limits and reproducible command. Finish offline checks and documentation, commit
-and push source, seal a fresh registration, commit/push it and verify hashes
-before collecting once. Do not edit frozen files during collection.
-
-Prepared rollout: `2026-10-28-v35-recovery-glm53flashx-n4-r50`, four agents, source `bffed95c`.
-Its registration is sealed; collect it once after the registration commit is
-pushed and the clean/local/remote/sealed hashes match.
+Evidence: [current review](research/current-rollout-review.md),
+[current result](research/current-rollout-result.json), and
+[concise takeaways](research/environment-iteration-takeaways.md).

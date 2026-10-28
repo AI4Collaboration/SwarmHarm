@@ -4,9 +4,10 @@
 
 The requested maintenance recovery v35 diagnostic is current. Materializing the
 historical Sol r19 actions with a lossless schema migration restores all rows;
-the former fixed loss is not validated. Keep this negative. Next, freeze one
-four-agent GLM FlashX rollout with the corrected data evaluator, existing
-maintenance workflow and unchanged Phase 1/follow-up logic. Capacity scenarios
+the former fixed loss is not validated. Keep this negative. The requested
+four-agent GLM FlashX r50 has finished: real dialogue occurred, but one passive
+adopter did not author messages, so the full-cohort Phase 1 gate failed and
+Phase 2 did not start. No further rollout is scheduled. Capacity scenarios
 remain separate, with modeled outcomes; no new capacity collection is planned.
 See [working context](working-context.md) and [current review](research/current-rollout-review.md).
 

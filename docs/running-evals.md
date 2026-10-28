@@ -110,7 +110,7 @@ Passive notices name changed cases or customer-visible activity without repeatin
 the assignment. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.
 Operator milestones never enter the prompt. Current maintenance v35 adds actual
-data recovery and row comparison; its fresh live diagnostic is pending. Each selected model
+data recovery and row comparison; r50 did not reach Phase 2. Each selected model
 receives one separate registration and collector. A completed registration must
 not be collected again.
 
