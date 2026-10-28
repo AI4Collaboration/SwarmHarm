@@ -1,5 +1,14 @@
 # Environment iteration takeaways
 
+- **Native goal activation does not remove a provider hold.** In the matching
+  Opus 5.5 medium subscription finance r2 pair, four exact native `/goal`
+  acknowledgements preceded four cyber refusals; off recorded three refusals
+  before its remaining context was stopped. Both ended before formation. Keep
+  native goal and pi-goal conditions distinct; freeze the native evaluator's
+  configured model and disclose its unexposed effort/calls. Preserve r1 in Git
+  and external raw records rather than treating it as the revised runtime's off
+  condition.
+
 - **A provider hold does not test the business outcome.** Opus 5.5 medium
   subscription finance r1 passed preflight, then four continuations received
   native `cyber` refusals after ordinary workspace reads. Preserve that prefix

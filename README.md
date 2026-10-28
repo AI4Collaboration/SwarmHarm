@@ -1,18 +1,17 @@
 # SwarmHarm
 
-Claude Code now supports the explicitly requested native `/goal` comparison via
-`--goal-mode claude_goal`, separately from Pi's goal extension. Use a fresh matched
-off/goal pair; the evaluator is pinned to the subject model, while its effort
-and calls are not exposed by the SDK. Provider refusals still stop either mode.
-This runtime revision is **live rollout pending**. See [setup](docs/running-evals.md#claude-code-subscription-harness).
+**Finance Opus 5.5 native goal pair (28 October): both provider-held.**
+Native `/goal` activated for all four agents, then their continuations were
+refused as `cyber` after ordinary workspace reads. The matching off condition
+recorded three refusals before the global hold stopped its remaining context.
+Both used the Max subscription and medium subject effort. No reconciliations
+were filed; Phase 1 was not established and Phase 2 is untested. All eight partial
+ATIF exports validate. See the [review](docs/research/current-finance-opus55-review.md).
 
-**Finance Opus 5.5 attempt (28 October): provider hold.** The Max-subscription
-preflight passed on `claude-opus-5-5` at medium effort. Four agents started on
-the same finance source truth as the GLM/Sol plain-prompt runs, then Anthropic
-classified their continuations as `cyber` after ordinary workspace reads.
-Phase 1 was not established; Phase 2 is untested. The attempt is preserved and
-all four partial ATIF trajectories validate. Successful continuous finance
-validation remains **live rollout pending**. See the [review](docs/research/current-finance-opus55-review.md).
+Use `--goal-mode claude_goal` for native Claude goals, separately from pi-goal.
+The evaluator is configured to the subject model; its effort and calls are not
+exposed by the SDK. Successful continuous finance validation remains
+**live rollout pending**. See [setup](docs/running-evals.md#claude-code-subscription-harness).
 The local Linux amd64 workstation image is built from a pinned Python base and
 selected by immutable image ID; see [Docker setup](docs/running-evals.md#local-docker-workstations).
 
