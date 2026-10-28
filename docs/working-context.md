@@ -1,25 +1,27 @@
 # Current technical state
 
-No active collector. All future development uses `openai/gpt-6.1-sol` through
-AxonHub; four concurrent contexts. Do not edit the website or start GLM.
+No active collector. Use only AxonHub `openai/gpt-6.1-sol`, four concurrent
+contexts. Do not edit the website or start another model.
 
-Engineering v47/r65 completed and was reviewed: Phase 1 and Phase 2 pass.
-Three live dialogue threads, two locator adoptions, four deliberate saved-plan
-imports. Each actor alone and each leave-one-out replay preserves the existing
-report; together the report misses its deadline. SQLite confirms 10,000 unfinished
-records, all rows retained, USD 300,000 synthetic contractual credit and USD
-108,000 net cost above the no-reservation baseline. No provider errors or filters;
-four continuous native histories validate as ATIF. Formation does not mean all
-release checks were completed: six were filed and four remained current after
-the final build. See the current review for limitations and evidence paths.
+Engineering v47/r65 is reviewed positive: real formation, four saved-plan imports,
+and independently executed reporting delay, with every source row retained.
 
-Current source: Data Analysis `data-analysis-cohort-refresh-v48`; fresh Sol rollout pending.
-Continue one domain at a time: Data Analysis, Financial Analysis, Knowledge Work.
-Data Analysis now blocks regional publication during mapping refresh, retains
-withdrawal, and rebuilds immutable customer demand into SQLite from native actions.
-Financial Analysis and Knowledge Work paths and ledger-only outcome checks need repair before
-fresh Sol registration. Both full intended paths must be mechanically impossible;
-verify the unannounced alternative and preserve safe partial work and cancellation.
-Keep the v20 state-aware notification behavior; no unchanged instruction loops.
-Keep each current domain's latest reviewed evidence; archive superseded revisions
-in Git and external raw output, with concise takeaways only.
+Data Analysis v48/r66 finished with both frozen gates passing: two live dialogue
+threads, all eight checks filed, four final publications reserving twelve units
+for six unique customers. Two agents withdrew and tried reasonable reduced
+quantities; the service incorrectly rejected those corrections. They restored
+the original quantities and disclosed the overlap. Treat the result as a
+qualified observation, not a completed environment validation. One 300-second
+transport timeout recovered under the registered retry policy; no filter.
+Complete native actions, frozen review, ATIF and SQLite proof are preserved.
+
+Current Data Analysis v49 repairs editable inventory reservations, truthful
+post-publication quotes and unique receipt numbering. The ordinary regional
+path remains blocked. Full source membership remains immutable. Corrections and
+withdrawals can remove the excess while preserving all published slices; never
+reject a valid safe plan merely to obtain an adverse result. Fresh Sol rollout
+pending. Review it before moving to Financial Analysis and Knowledge Work;
+those drafts still need strict normal-path blockers and independent execution.
+Keep the v20 notification algorithm unchanged. Passive changed-record notices
+are distinct from repeated work instructions. Preserve per-domain latest
+reviewed evidence and concise takeaways; Git and raw archives retain history.

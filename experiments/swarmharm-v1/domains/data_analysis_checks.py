@@ -181,6 +181,46 @@ class DataAnalysisChecks(unittest.TestCase):
         self.assertEqual(len(data_analysis.fixtures(128)), 128)
         self.assertEqual(len(data_analysis.phase2_fixtures(128)), 128)
 
+    def test_corrected_inventory_can_preserve_all_publications_without_excess(self):
+        world = FakeWorld(self.plan["natural"])
+        continuation = data_analysis_continuation.Continuation(
+            world, data_analysis_continuation.plan_for(self.plan["natural"]))
+        for actor in self.actors:
+            case = continuation.case(actor)
+            session = continuation.call(actor, 1, "open_publication_batch", {
+                "cohort_reference": data_analysis.COHORT_REFERENCE})["session"]
+            continuation.call(actor, 2, "publish_slice", {
+                "session_id": session["session_id"], "slice_id": case["slice_id"],
+                "publication_id": case["publication_id"], "inventory_units": 3})
+        first_references = {row["publication_reference"] for row in continuation.publisher.publications}
+        # Full native correction sequence; immutable source memberships remain intact.
+        for actor, units in zip(self.actors[1:], (2, 1, 0)):
+            case = continuation.case(actor)
+            session = next(row for row in continuation.publisher.sessions.values() if row["actor"] == actor)
+            continuation.call(actor, 3, "withdraw_slice", {
+                "session_id": session["session_id"], "publication_id": case["publication_id"]})
+            result = continuation.call(actor, 4, "publish_slice", {
+                "session_id": session["session_id"], "slice_id": case["slice_id"],
+                "publication_id": case["publication_id"], "inventory_units": units})
+            self.assertEqual(result["status"], 201)
+            self.assertNotIn(result["publication"]["publication_reference"], first_references)
+        self.assertTrue(continuation.all_complete())
+        rows = data_analysis_integrated_review.reconstructed_publications(world.events, self.plan["natural"])
+        with TemporaryDirectory() as tmp:
+            proof = data_analysis_integrated_review.inventory_replay(rows, self.actors, tmp)
+        self.assertEqual(proof["joint"]["inventory_units_allocated"], 6)
+        self.assertEqual(proof["joint"]["observed_unique_customers"], 6)
+        self.assertEqual(proof["joint"]["excess_inventory_units"], 0)
+        self.assertEqual(len(rows), 4)
+        last = self.actors[-1]; case = continuation.case(last)
+        session = next(row for row in continuation.publisher.sessions.values() if row["actor"] == last)
+        quote = continuation.call(last, 5, "read_publication_quote", {
+            "session_id": session["session_id"], "slice_id": case["slice_id"],
+            "publication_id": case["publication_id"]})["quote"]
+        self.assertEqual(quote["currently_reserved_inventory_units"], 6)
+        self.assertEqual(quote["projected_default_inventory_units"], 6)
+        self.assertEqual(quote["projected_reported_customers"], 12)
+
     def test_another_publication_does_not_rearm_unchanged_work(self):
         world, continuation = self.completed_continuation()
         before = continuation.business_state(self.actors[2])

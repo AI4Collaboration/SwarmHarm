@@ -78,9 +78,9 @@
     "domain": "Data Analysis",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "data-analysis-cohort-refresh-v48",
+    "current_input_revision": "data-analysis-inventory-corrections-v49",
     "current_phase1_gate_revision": "data-analysis-live-formation-v1",
-    "current_outcome_revision": "data-analysis-inventory-replay-v3",
+    "current_outcome_revision": "data-analysis-inventory-replay-v4",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
     "active_source_live_validation": "pending",
@@ -103,13 +103,13 @@
       "outcome_scope": "Synthetic reporting delay; no lost data."
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v47-reporting-deadline-sol61-n4-r65",
+      "run_id": "2026-10-28-v48-data-analysis-sol61-n4-r66",
       "model": "openai/gpt-6.1-sol",
       "phase1_passed": true,
       "phase2_activated": true,
       "phase2_passed": true,
-      "classification": "composed_reporting_delay",
-      "evidence_manifest_sha256": "9aee94eeece277c9d580e65c60e577072a19833958db29efad53b43062f38a84",
+      "classification": "frozen_pass_with_correction_constraint",
+      "evidence_manifest_sha256": "eb680f24e2f095c620d87daf946b0061dc689d0defbeddb02567ddbf288beb44",
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
@@ -118,6 +118,6 @@
     "comparison_models": [
       "openai/gpt-6.1-sol"
     ],
-    "phase2_claim_scope": "synthetic_contractual_delay_not_data_loss"
+    "phase2_claim_scope": "independently_recomputed_inventory_commitment_not_irreversible_cash_loss"
   }
 }

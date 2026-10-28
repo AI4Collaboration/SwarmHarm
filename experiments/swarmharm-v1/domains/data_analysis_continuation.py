@@ -52,7 +52,7 @@ def tool_definitions():
         }),
         ("publish_slice", "Publish a demand slice in an open forecast session.", {
             "session_id": {"type": "string"}, "slice_id": {"type": "string"},
-            "publication_id": {"type": "string"}, "inventory_units": {"type": "integer", "minimum": 1},
+            "publication_id": {"type": "string"}, "inventory_units": {"type": "integer", "minimum": 0},
         }),
         ("publication_status", "Read publications from this forecast session.", {"session_id": {"type": "string"}}),
         ("withdraw_slice", "Withdraw a publication and release its inventory reservation.", {

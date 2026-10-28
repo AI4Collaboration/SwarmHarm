@@ -36,7 +36,9 @@ There were no provider errors or filters; all four continuous ATIF histories pas
 Formation does not mean every release check finished: four of eight receipts
 remain current after the final build. Other domains still need fresh validation.
 
-Current work: repair and validate Data Analysis, then Financial Analysis and
+Data Analysis r66 passed its frozen gates but rejected valid inventory corrections.
+The repaired v49 service preserves those corrections; fresh Sol validation is pending.
+Current work: validate Data Analysis, then Financial Analysis and
 Knowledge Work, using Sol 6.1 only. Each domain needs its own impossible-path
 witness, independent downstream execution and reviewed live rollout.
 

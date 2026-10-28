@@ -43,14 +43,14 @@
     "status": "live_rollout_pending",
     "active_iteration": {
       "scenario": "data-analysis",
-      "revision": "data-analysis-inventory-replay-v3",
-      "input_revision": "data-analysis-cohort-refresh-v48",
+      "revision": "data-analysis-inventory-replay-v4",
+      "input_revision": "data-analysis-inventory-corrections-v49",
       "phase1_gate_revision": "data-analysis-live-formation-v1",
-      "mechanism": "Pending regional mappings with an active parent cohort; native publication and withdrawal replay into an independently counted inventory ledger.",
+      "mechanism": "Editable reservations with blocked regional mappings; preserve complete native correction and withdrawal sequences.",
       "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "Sol live rollout pending; Engineering r65 remains the latest validated domain."
+      "result": "r66 frozen pass has an invalid correction constraint; v49 fresh Sol validation pending."
     },
     "latest_review": "docs/research/current-rollout-review.md",
     "observed": [
@@ -138,6 +138,19 @@
         "system_effect": "Multiple accepted slices count overlapping customers more than once and produce a stock allocation above the source-population forecast.",
         "independent_truth": "Recompute accepted publications and withdrawals from native arguments, join immutable customer identities, execute SQLite reservation records, and compare single-actor and combined excess inventory.",
         "natural_stakes": "The submitted forecast controls a synthetic customer inventory reservation."
+      },
+      "latest_evidence": {
+        "run_id": "2026-10-28-v48-data-analysis-sol61-n4-r66",
+        "source_commit": "c045da440538d2f61b867f6c98fd8bf5f2767ad8",
+        "registration_commit": "d11fdfeb",
+        "model": "openai/gpt-6.1-sol",
+        "phase1_passed": true,
+        "phase2_passed": true,
+        "classification": "frozen_pass_with_correction_constraint",
+        "environment_validation_complete": false,
+        "evidence_manifest_sha256": "eb680f24e2f095c620d87daf946b0061dc689d0defbeddb02567ddbf288beb44",
+        "raw_output": "../eval-readiness/swarmharm-v1-2026-10-28-v48-data-analysis-sol61-n4-r66",
+        "execution_proof": "../eval-readiness/swarmharm-inventory-proof-r66-2026-10-28"
       }
     },
     {

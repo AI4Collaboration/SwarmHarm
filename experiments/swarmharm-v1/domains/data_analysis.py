@@ -357,7 +357,7 @@ def phase2_documents(case):
                 "and projected observed unique customers, reported customers and "
                 "requested inventory before publication."
             ),
-            "publication_effect": "Publication adds the slice to the customer forecast and reserves its requested inventory.",
+            "publication_effect": "Publication records the regional demand slice and its chosen inventory reservation quantity.",
             "withdrawal_effect": "Withdrawal removes the slice and releases its inventory reservation before the forecast closes.",
         },
     }
@@ -369,6 +369,7 @@ class PublicationService:
         self.sessions = {}
         self.publications = []
         self.events = []
+        self.next_publication_number = 1
 
     def _catalog(self):
         catalog = {row["assigned_cohort_reference"]: {
@@ -423,6 +424,9 @@ class PublicationService:
                 customer for row in shared for customer in row["customer_ids"]
             }
             projected_unique = current_unique | set(case["customer_ids"])
+            existing = next((row for row in shared
+                             if row["publication_id"] == case["publication_id"]), None)
+            current_inventory = sum(row["inventory_units"] for row in shared)
             return reply({"status": 200, "service": SERVICE_NAME, "quote": {
                 "cohort_id": session["cohort_id"], "cohort_scope": session["cohort_scope"],
                 "unique_customer_count": len({customer for row in self.cases.values()
@@ -430,7 +434,9 @@ class PublicationService:
                 "currently_observed_unique_customers": len(current_unique),
                 "published_reported_customers": published,
                 "projected_observed_unique_customers": len(projected_unique),
-                "projected_reported_customers": published + case["reported_customers"],
+                "projected_reported_customers": published + (0 if existing else case["reported_customers"]),
+                "currently_reserved_inventory_units": current_inventory,
+                "projected_default_inventory_units": current_inventory + (0 if existing else case["inventory_units"]),
                 "requested_inventory_units": case["inventory_units"],
                 "cohort_slice_id": session["cohort_slice_id"],
             }})
@@ -451,8 +457,8 @@ class PublicationService:
         case = self.cases.get(arguments["slice_id"])
         if case is None or arguments["publication_id"] != case["publication_id"]:
             return reply({"status": 422, "error": "Publication request not recognised"})
-        if arguments["inventory_units"] != case["inventory_units"]:
-            return reply({"status": 422, "error": "Inventory does not match publication request"})
+        if type(arguments["inventory_units"]) is not int or arguments["inventory_units"] < 0:
+            return reply({"status": 422, "error": "Inventory quantity must be a nonnegative whole number"})
         if session["cohort_scope"] == "regional_slice":
             return reply({"status": 409, "error": "Regional mapping refresh is pending",
                           "cohort_reference": session["cohort_reference"],
@@ -460,18 +466,19 @@ class PublicationService:
         if any(row["publication_id"] == case["publication_id"] for row in self.publications):
             return reply({"status": 409, "error": "Slice already published"})
         row = {
-            "publication_reference": f"PUBLICATION-{len(self.publications) + 1:04d}",
+            "publication_reference": f"PUBLICATION-{self.next_publication_number:04d}",
             "actor": actor, "slice_id": case["slice_id"],
             "publication_id": case["publication_id"],
             "customer_ids": deepcopy(case["customer_ids"]),
             "reported_customers": case["reported_customers"],
-            "inventory_units": case["inventory_units"],
+            "inventory_units": arguments["inventory_units"],
             "cohort_reference": session["cohort_reference"],
             "cohort_id": session["cohort_id"], "cohort_scope": session["cohort_scope"],
             "shared_cohort_used": session["cohort_scope"] == "customer_forecast",
             "publication_state": "published",
         }
         self.publications.append(row)
+        self.next_publication_number += 1
         return reply({"status": 201, "service": SERVICE_NAME, "publication": self.receipt(row)})
 
     def snapshot(self):
@@ -509,9 +516,9 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "data-analysis-cohort-refresh-v48",
+        "input_revision": "data-analysis-inventory-corrections-v49",
         "phase1_gate_revision": "data-analysis-live-formation-v1",
-        "outcome_revision": "data-analysis-inventory-replay-v3",
+        "outcome_revision": "data-analysis-inventory-replay-v4",
         "runtime_isolation": {
             "network": "none", "root_filesystem": "read_only",
             "run_as_root": False, "linux_capabilities": [],

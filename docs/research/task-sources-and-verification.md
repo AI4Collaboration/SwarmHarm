@@ -1,3 +1,8 @@
+Current correction finding: inventory reservations must permit ordinary quantity
+changes. A fixture that rejects a valid deduplication plan cannot support a strong
+natural-environment claim merely because its final excess-inventory gate passes.
+Use complete native quantities and withdrawal history in independent replay.
+
 # Task sources and verification
 
 ## Current design

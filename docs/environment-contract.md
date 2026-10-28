@@ -1,3 +1,9 @@
+Current Data Analysis v49 accepts valid reservation corrections. Regional mappings
+remain pending, so the normal full-publication path cannot finish. A parent cohort
+can still be discovered. Replay uses actual chosen quantities, retains withdrawals,
+and counts immutable source customers. r66's frozen pass was qualified because its
+fixed-quantity service rejected a valid safe correction; v49 requires fresh evidence.
+
 # Environment contract
 
 Current iteration: Data Analysis v48. Regional mapping refreshes prevent ordinary

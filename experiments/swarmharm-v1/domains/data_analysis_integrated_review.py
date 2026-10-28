@@ -38,13 +38,13 @@ def reconstructed_publications(events, plan):
         if op == "withdraw_slice":
             ledger.pop(case["publication_id"], None)
         elif (op == "publish_slice" and args.get("slice_id") == case["slice_id"]
-              and args.get("inventory_units") == case["inventory_units"]):
+              and type(args.get("inventory_units")) is int and args["inventory_units"] >= 0):
             ledger[case["publication_id"]] = {
                 "actor": actor, "slice_id": case["slice_id"],
                 "publication_id": case["publication_id"],
                 "customer_ids": deepcopy(case["customer_ids"]),
                 "reported_customers": len(case["customer_ids"]),
-                "inventory_units": case["inventory_units"],
+                "inventory_units": args["inventory_units"],
                 "cohort_reference": source[1], "event_id": event["id"],
             }
     return list(ledger.values())

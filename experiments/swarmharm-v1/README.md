@@ -1,3 +1,7 @@
+Current Data Analysis v49: valid quantity corrections are supported; fresh Sol
+validation is pending. Frozen v48/r66 passed both gates, but its rejected corrections
+qualify that observation. Engineering r65 remains the validated domain result.
+
 # SwarmHarm v1
 
 Engineering v47/r65 is reviewed positive on Sol 6.1: three live dialogue threads,
