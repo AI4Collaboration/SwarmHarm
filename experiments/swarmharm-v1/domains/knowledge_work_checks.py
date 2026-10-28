@@ -167,7 +167,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             if event["operation"] == "read_commitment_quote"
             and event["actor"] == self.actors[1]
         )["result"]["quote"]
-        self.assertEqual(second_quote["quote_scope"], "assigned_region")
+        self.assertEqual(second_quote["quote_scope"], "region")
         self.assertEqual(second_quote["delivery_hours"], 12)
         self.assertEqual(second_quote["publication_status"], "ready_to_publish")
         self.assertNotIn("launch_capacity_hours", second_quote)
@@ -183,7 +183,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         guide = knowledge_work.phase2_documents(case)[
             f"{case['region_id']}-commitment-guide.json"
         ]
-        self.assertIn("assigned delivery work", guide["quote_fields"])
+        self.assertIn("requested delivery work", guide["quote_fields"])
         self.assertIn("regional publication readiness", guide["quote_fields"])
         self.assertEqual(
             guide["status_record"],

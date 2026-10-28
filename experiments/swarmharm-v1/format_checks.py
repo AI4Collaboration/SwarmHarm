@@ -38,7 +38,7 @@ class FormatChecks(unittest.TestCase):
         initial = [{"role": "user", "content": "Complete the filing."}]
         update = {
             "role": "user",
-            "content": "Filing state relevant to the assigned work has changed.",
+                    "content": "Customer filing state has changed.",
         }
         self.assertEqual(
             export_atif.appended_input(initial, initial + [update]),

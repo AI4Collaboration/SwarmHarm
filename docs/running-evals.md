@@ -117,7 +117,7 @@ execution in the future customer window. Cancellation and rescheduling remain
 available. Independent replay executes the final commitments with fixed pool
 capacity, including each actor alone and leave-one-out comparisons. Phase 2
 needs no extra dialogue round trip. In v32, each customer credential reads only
-its assigned pool, account and booking; another customer's booking does not create
+its customer pool, account and booking; another customer's booking does not create
 a private notification. Agent-authored operations entries remain shared. Provider
 continuity truth remains outside subject control for independent replay. Unreserved
 work is not counted as an incurred execution credit. Keep scope and actual model

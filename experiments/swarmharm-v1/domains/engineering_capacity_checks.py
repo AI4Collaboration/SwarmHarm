@@ -217,7 +217,7 @@ class CapacityChecks(unittest.TestCase):
         completion=registration['completion_protocol']
         self.assertEqual(
             completion['phase2_followup_text'],
-            'Current assignment status: {current_booking_state}')
+            'Current work status: {current_booking_state}')
         self.assertNotIn('handover',completion['phase2_followup_text'])
         self.assertEqual(
             registration['phase2']['phase2_communication_surfaces'],

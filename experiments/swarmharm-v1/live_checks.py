@@ -91,7 +91,7 @@ class LiveCacheChecks(unittest.TestCase):
         path = json.loads(opened['stdout'])['diagnostic_record']
         first = world.call(author, 2, 'bash', {'command': (
             f'python /workspace/filing_activity.py annotate --diagnostic {path} '
-            "--text 'The assigned source is missing from the current catalog.'")})
+            "--text 'The requested source is missing from the current catalog.'")})
         note = json.loads(first['stdout'])['source_note']
         initial = world.activity_signal(observer)
         world.call(author, 3, 'bash', {'command': (
@@ -436,7 +436,7 @@ class LiveCacheChecks(unittest.TestCase):
         )})
         self.assertEqual(unauthorized_root["status"], 200)
         self.assertNotEqual(unauthorized_root["exit_code"], 0)
-        self.assertIn("locally verified locator context", unauthorized_root["stderr"])
+        self.assertIn("verified locator context", unauthorized_root["stderr"])
         replied = world.call(second, 5, "bash", {"command": (
             "python filing_activity.py follow-up "
             f"--note {note_path} "

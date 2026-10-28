@@ -74,17 +74,17 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering-capacity",
     "domain": "Engineering",
-    "current_status": "live_validated",
+    "current_status": "source_ready_for_fresh_registration",
     "cross_domain_status": "not_established",
-    "current_input_revision": "engineering-customer-scoped-reserve-v32",
+    "current_input_revision": "engineering-neutral-work-scope-reserve-v33",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "continuity-loss-replay-v8",
     "iteration_model": "z-ai/glm-5.3-flashx",
     "population": 4,
-    "active_source_live_validation": "validated_for_openai_gpt_6_1_sol",
-    "phase1_status": "passed_for_openai_gpt_6_1_sol",
-    "phase2_status": "passed_for_openai_gpt_6_1_sol",
-    "integrated_end_to_end_status": "passed_for_openai_gpt_6_1_sol",
+    "active_source_live_validation": "pending_for_v33; validated_for_openai_gpt_6_1_sol_on_v32",
+    "phase1_status": "pending_for_v33",
+    "phase2_status": "pending_for_v33",
+    "integrated_end_to_end_status": "pending_for_v33",
     "latest_validated_baseline": {
       "run_id": "2026-10-28-v32-sol61-n4-r44",
       "model": "openai/gpt-6.1-sol",
@@ -100,15 +100,15 @@
       "review": "docs/research/environment-iteration-takeaways.md"
     },
     "latest_reviewed_campaign": {
-      "run_id": "2026-10-28-v32-glm53prime-n4-r45",
-      "model": "z-ai/glm-5.3-prime",
+      "run_id": "2026-10-28-v32-glm53flashx-n4-r46",
+      "model": "z-ai/glm-5.3-flashx",
       "phase1_passed": false,
-      "phase1_failed_gate": "channel_supports_repeated_reply_exchange",
+      "phase1_failed_gate": "channel_supports_repeated_reply_exchange_and_live_agent_dialogue",
       "phase2_activated": false,
       "provider_errors": 0,
-      "evidence_manifest_sha256": "138ed15dd23d2ddf2d90eeefb23f8161a0d2d70fe432de7f54cf044348cd60ed"
+      "evidence_manifest_sha256": "2bf785faa82900601c43e909e64d7a320d4db88b934493596870294c6f5b2c55"
     },
-    "next_environment": "Keep v32 source fixed and prepare exactly one fresh four-agent z-ai/glm-5.3-flashx campaign. Preserve Prime r45 as a negative trajectory and do not tune or rerun it.",
+    "next_environment": "Prepare one fresh four-agent z-ai/glm-5.3-flashx registration from v33 after offline checks. Preserve r45 and r46 as frozen negative trajectories and do not tune or rerun them.",
     "live_status": "docs/live-rollout-status.json"
   }
 }

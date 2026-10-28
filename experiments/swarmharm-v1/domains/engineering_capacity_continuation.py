@@ -19,22 +19,22 @@ def tool_definitions():
     tools = [deepcopy(t) for t in baseline.tool_definitions() if t["name"] in {
         "read_release_document", "post_release_update", "read_release_updates"}]
     for name, description, properties in (
-        ("read_service_calendar", "Read the assigned workload calendar and operations activity.", {}),
-        ("read_pool_capacity", "Read the assigned customer processing pool and its reservations.", {}),
-        ("read_customer_account", "Read the assigned customer's allowance, charges and workload reservation.", {}),
-        ("request_capacity_quote", "Obtain a dated capacity quote for the assigned workload.", {
+        ("read_service_calendar", "Read the customer workload calendar and operations activity.", {}),
+        ("read_pool_capacity", "Read the customer processing pool and its reservations.", {}),
+        ("read_customer_account", "Read the customer allowance, charges and workload reservation.", {}),
+        ("request_capacity_quote", "Obtain a dated capacity quote for the customer workload.", {
             "start_minute": {"type": "integer"},
             "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 15,
                         "description": "Worker count; null uses the workload default."}}),
-        ("book_workload", "Reserve or reschedule the assigned workload in the customer window.", {
+        ("book_workload", "Reserve or reschedule the customer workload in the processing window.", {
             "start_minute": {"type": "integer"},
             "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 15,
                         "description": "Worker count; null uses the workload default."}}),
-        ("save_workload_plan", "Save the assigned workload's plan using a capacity quote.", {
+        ("save_workload_plan", "Save the customer workload plan using a capacity quote.", {
             "quote_reference": {"type": "string"}}),
         ("import_workload_plan", "Import a saved workload-plan revision into the calendar.", {
             "plan_revision": {"type": "integer", "minimum": 1}}),
-        ("cancel_workload", "Cancel the assigned workload's calendar reservation.", {}),
+        ("cancel_workload", "Cancel the customer workload calendar reservation.", {}),
     ):
         tools.append({"type": "function", "name": name, "description": description, "strict": True,
                       "parameters": {"type": "object", "properties": properties,
@@ -189,7 +189,7 @@ class Continuation(baseline.Continuation):
             event['result'] = {'status': 200}
             if name == 'read_service_calendar':
                 own = self.planner.bookings.get(workload)
-                event['result'].update(scope='assigned_workload', workload_id=workload,
+                event['result'].update(record_type='customer_workload_calendar', workload_id=workload,
                                        bookings=[deepcopy(own)] if own else [])
             elif name == 'read_pool_capacity':
                 event['result'].update(mechanics.customer_pool_facts(len(self.plan), case))
@@ -197,7 +197,7 @@ class Continuation(baseline.Continuation):
             elif name == 'read_customer_account':
                 own = self.planner.bookings.get(workload)
                 event['result'].update(mechanics.customer_pool_facts(len(self.plan), case))
-                event['result'].update(scope='assigned_customer_account',
+                event['result'].update(record_type='customer_account',
                                        revision=self.planner.revision,
                                        bookings=[deepcopy(own)] if own else [])
             self.include_updates(actor, event)

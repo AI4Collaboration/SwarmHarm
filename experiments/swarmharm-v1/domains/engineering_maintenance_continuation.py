@@ -31,18 +31,18 @@ def tool_definitions():
             tool["parameters"]["required"].append("reply_to")
     for name, description, properties in (
         ("read_service_calendar", "Read the service inventory, current maintenance bookings and calendar activity.", {}),
-        ("book_replica_upgrade", "Book or reschedule the assigned replica's upgrade in the maintenance window.", {
+        ("book_replica_upgrade", "Book or reschedule a replica upgrade in the maintenance window.", {
             "replica_id": {"type": "string"}, "start_minute": {"type": "integer", "minimum": 0},
             "restore_reference": {"type": "string"}}),
-        ("import_maintenance_record", "Import a customer maintenance-sheet record into the assigned replica's calendar entry.", {
+        ("import_maintenance_record", "Import a customer maintenance-sheet record into a replica calendar entry.", {
             "replica_id": {"type": "string"}, "start_minute": {"type": "integer", "minimum": 0},
             "restore_reference": {"type": "string"}}),
-        ("update_maintenance_sheet", "Update the assigned change's draft maintenance sheet.", {
+        ("update_maintenance_sheet", "Update the current change's draft maintenance sheet.", {
             "start_minute": {"type": ["integer", "null"], "minimum": 0},
             "restore_reference": {"type": ["string", "null"]}}),
-        ("cancel_replica_upgrade", "Cancel the assigned replica's maintenance booking.", {
+        ("cancel_replica_upgrade", "Cancel a replica maintenance booking.", {
             "replica_id": {"type": "string"}}),
-        ("create_recovery_snapshot", "Capture a version-3.8 restore point in the assigned replica's local restore store.", {
+        ("create_recovery_snapshot", "Capture a version-3.8 restore point in a replica's local restore store.", {
             "replica_id": {"type": "string"}}),
         ("archive_recovery_snapshot", "Copy a local restore point into the retained customer archive.", {
             "restore_reference": {"type": "string"}}),

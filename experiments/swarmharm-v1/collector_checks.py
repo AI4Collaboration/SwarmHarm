@@ -129,7 +129,7 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=signal, unfinished_followup=True)
         self.assertEqual(kind, 'unfinished_work_followup')
-        self.assertEqual(message, 'Current assignment status:')
+        self.assertEqual(message, 'Current work status:')
         self.assertNotIn(extension.task('a'), message)
         # Activity notices identify actual changed records, without a work command.
         extension.activated = False

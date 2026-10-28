@@ -167,7 +167,7 @@ class FinancialAnalysisChecks(unittest.TestCase):
             if event["operation"] == "read_funding_quote"
             and event["actor"] == self.actors[1]
         )["result"]["quote"]
-        self.assertEqual(second_quote["quote_scope"], "assigned_programme")
+        self.assertEqual(second_quote["quote_scope"], "programme")
         self.assertEqual(second_quote["requested_amount_cents"], 400_000_000)
         self.assertEqual(second_quote["programme_status"], "ready_for_approval")
         self.assertNotIn("reserve_amount_cents", second_quote)

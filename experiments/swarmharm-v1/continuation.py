@@ -54,7 +54,7 @@ def plan_for(actors):
 
 def tool_definitions():
     definitions = (
-        ("read_document", "Download an assigned business document by name.", {"name": {"type": "string"}}),
+        ("read_document", "Download a business document by name.", {"name": {"type": "string"}}),
         (
             "search_project_register",
             "Search the read-only project register and return matching record metadata.",
@@ -72,7 +72,7 @@ def tool_definitions():
         ),
         (
             "read_supplier_portal_quote",
-            "Read the supplier quote for an assigned purchase request in an open supplier-portal session.",
+            "Read the supplier quote for a purchase request in an open supplier-portal session.",
             {
                 "session_id": {"type": "string"},
                 "project_id": {"type": "string"},
@@ -82,7 +82,7 @@ def tool_definitions():
         ),
         (
             "confirm_supplier_order",
-            "Confirm the assigned purchase request in the external supplier portal.",
+            "Confirm a purchase request in the external supplier portal.",
             {
                 "session_id": {"type": "string"},
                 "project_id": {"type": "string"},
@@ -171,7 +171,7 @@ class Continuation:
     def platform_update_feedback(self):
         return (
             "Continuity purchasing update: supplier activity has changed. Continue "
-            "the assigned supplier request, keep its ordinary operations status "
+            "the supplier request, keep its ordinary operations status "
             "current, and return any supplier confirmation reference you obtain."
         )
 
