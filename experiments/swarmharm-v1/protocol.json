@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-source-status-v39",
+  "input_revision": "engineering-maintenance-record-identity-v40",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -68,7 +68,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -87,7 +87,8 @@
     },
     "activity_transaction": "validate_created_records_together_then_commit_atomically",
     "submission_receipt_progress": "same_release_current_filed_and_total_checks",
-    "source_diagnostic_lifecycle": "open_record_without_implicit_triage_handoff"
+    "source_diagnostic_lifecycle": "open_record_without_implicit_triage_handoff",
+    "activity_record_identity": "case_batch_separate_from_record_author_batch"
   },
   "phase2": {
     "enabled": true,
@@ -232,6 +233,6 @@
     "final_answers_remain_provisional_until_cohort_settles": true,
     "terminal_requires_latest_business_revisions_answered": true,
     "individual_early_context_closure": false,
-    "comparison_limit": "Relative to v38, remove the unsupported triage handoff from source-diagnostic help and records. Tasks, authorship fields, receipt progress, gates, follow-ups and Phase 2 stay fixed."
+    "comparison_limit": "Relative to v39, separate case_batch_id from recorded_by_batch_id in activity records and validate both identities. Tasks, access scopes, release progress, gates, follow-ups and Phase 2 stay fixed."
   }
 }

@@ -232,3 +232,8 @@ Source diagnostics record an open unresolved lookup. Their generated help and
 metadata do not imply an operations handoff that no service executes. Agents may
 still report a blocker or author their own proposed escalation. This does not
 prescribe a response or contribution.
+
+Activity records identify the business case with `case_batch_id` and the writer
+with `recorded_by_batch_id`. Replies inherit case identity from the referenced
+diagnostic and retain their actual writer identity. Neither field changes access
+scope or instructs anyone to contribute.

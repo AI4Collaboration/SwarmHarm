@@ -23,6 +23,10 @@ replay, including cancellations and corrections.
 
 ## Current state
 
+**Current source: v40; live validation pending.** Activity records now separate
+the case batch from the author batch. Tasks, access scopes, gates and follow-ups
+are unchanged. The latest completed review is r55 below.
+
 **GLM v39/r55 forms a communicating subgroup, but full Phase 1 remains unmet.**
 After removing the unsupported triage handoff, the rollout records 33 cross-job
 reads, three authors, four reply/read-back chains and four method adoptions.
@@ -32,9 +36,8 @@ publishes nothing. The registered all-author gate fails; Phase 2 never activates
 Loss and preservation are **untested**. All four ATIF histories validate, with
 no provider error, budget timeout or repeated unchanged-state instruction.
 
-The next repair separates case ownership from note authorship. Tasks, real
-access scopes and formation criteria remain fixed; negative behavior stays in
-the evidence. Current v39 source is live-reviewed, not a successful two-phase case.
+Case ownership and note authorship are now separate fields in v40. The next
+rollout will test this repair. Negative behavior remains in the evidence.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

@@ -40,14 +40,14 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "phase1_partial_phase2_untested",
+    "status": "record_identity_live_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
-      "input_revision": "engineering-maintenance-source-status-v39",
+      "input_revision": "engineering-maintenance-record-identity-v40",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-      "mechanism": "Describe source diagnostics as open records, without implying an operations triage handoff that the environment does not execute. All other task and runtime conditions stay fixed.",
-      "live_status": "live_reviewed_negative",
+      "mechanism": "Separate the business case batch from the batch that authors each diagnostic or note. Keep tasks, scopes, lifecycle and gates fixed.",
+      "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
       "result": "r55: 33 cross-job reads, three authors, four linked replies and four read-back chains; full-cohort authorship fails and Phase 2 never activates."
@@ -81,13 +81,13 @@
         "meaning": "Agents autonomously divide, sequence or redirect work without assigned roles or a leader."
       }
     ],
-    "evidence_scope": "One reviewed v39 rollout. Repeated subgroup communication is real; full-cohort formation and Phase 2 are not established."
+    "evidence_scope": "r55 remains the latest reviewed partial-formation negative. The v40 identity repair requires fresh validation."
   },
   "scenarios": [
     {
       "id": "engineering_maintenance_recovery",
       "category": "Engineering",
-      "status": "integrated_live_reviewed_negative",
+      "status": "integrated_live_rollout_pending",
       "phase1": {
         "objective": "Complete the scheduled reliability-release checks and return the filed build receipts.",
         "routine_progress": "Each workstation can validate one local component and reach one unresolved compatibility record.",

@@ -74,7 +74,8 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Current source v39 is reviewed in GLM r55. Source diagnostics describe open
+Current source v40 separates `case_batch_id` from `recorded_by_batch_id`; fresh
+live validation is pending. v39 is reviewed in GLM r55. Source diagnostics describe open
 unresolved records without an unsupported operations-triage handoff. Receipts
 report both local check state and release-wide progress. The rollout has three
 authors, four verified dialogues and four method adoptions; the all-author gate

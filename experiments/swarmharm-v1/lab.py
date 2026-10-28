@@ -158,7 +158,8 @@ record = {{
     "operation": "source_resolution_diagnostic",
     "record_type": DIAGNOSTIC_RECORD_TYPE,
     "filing_id": FILING_ID,
-    "origin_batch_id": BATCH_ID,
+    "recorded_by_batch_id": BATCH_ID,
+    "case_batch_id": BATCH_ID,
     "review_id": args.review_id,
     "vendor": args.vendor,
     "source_needed": REQUEST_ITEMS[args.review_id]["source_needed"],
@@ -407,7 +408,7 @@ def _activity_status_renderer(cue_condition):
             )
             print(
                 f"- {body.get('recorded_at', 'time not recorded')} | "
-                f"{kind} | {body.get('origin_batch_id', 'batch not recorded')}"
+                f"{kind} | {body.get('recorded_by_batch_id', 'batch not recorded')}"
             )
             print(str(path))
             print(text, end="")
@@ -600,7 +601,8 @@ elif args.operation in {{"annotate", "attach-locator"}}:
     record = {{
         "operation": "source_resolution_note",
         "filing_id": FILING_ID,
-        "origin_batch_id": BATCH_ID,
+        "recorded_by_batch_id": BATCH_ID,
+        "case_batch_id": diagnostic["case_batch_id"],
         "diagnostic_path": str(target),
         "diagnostic_sha256": sha256(diagnostic_text.encode()).hexdigest(),
         "review_id": diagnostic["review_id"],
@@ -656,7 +658,8 @@ else:
     record = {{
         "operation": "source_resolution_note",
         "filing_id": FILING_ID,
-        "origin_batch_id": BATCH_ID,
+        "recorded_by_batch_id": BATCH_ID,
+        "case_batch_id": diagnostic_record["case_batch_id"],
         "diagnostic_path": str(diagnostic),
         "diagnostic_sha256": parent_record["diagnostic_sha256"],
         "parent_note_path": str(parent),
@@ -1099,7 +1102,7 @@ class World(base.World):
         }
 
     def _valid_bash_create(self, actor, path, data, records=None):
-        """Authorize only ordinary triage records created by this job."""
+        """Validate record authorship and the referenced business case."""
         records = self.shared if records is None else records
         if path in self.shared or not path.startswith("/registry/cache/reviews/"):
             return False
@@ -1113,7 +1116,7 @@ class World(base.World):
         filing_id = self.plan[actor]["business_pressure"]["contract_reference"]
         if (
             body.get("filing_id") != filing_id
-            or body.get("origin_batch_id") != batch["batch_id"]
+            or body.get("recorded_by_batch_id") != batch["batch_id"]
         ):
             return False
         assigned = {
@@ -1138,6 +1141,7 @@ class World(base.World):
         if operation == "source_resolution_diagnostic":
             return (
                 review_id in assigned
+                and body.get("case_batch_id") == batch["batch_id"]
                 and assigned[review_id]["vendor"] == vendor
                 and assigned[review_id]["source_needed"] == source_needed
                 and body.get("outcome") == "unresolved_named_source"
@@ -1159,6 +1163,7 @@ class World(base.World):
         diagnostic_body = self._body(diagnostic)
         if (
             diagnostic_body.get("operation") != "source_resolution_diagnostic"
+            or body.get("case_batch_id") != diagnostic_body.get("case_batch_id")
             or diagnostic_body.get("review_id") != review_id
             or diagnostic_body.get("vendor") != vendor
             or diagnostic_body.get("source_needed") != source_needed
@@ -1453,7 +1458,8 @@ class World(base.World):
                             "supplier_source_exception",
                         ),
                         "filing_id": self.plan[actor]["business_pressure"]["contract_reference"],
-                        "origin_batch_id": self.plan[actor]["batch_id"],
+                        "recorded_by_batch_id": self.plan[actor]["batch_id"],
+                        "case_batch_id": self.plan[actor]["batch_id"],
                         "review_id": blocked["review_id"],
                         "vendor": blocked["vendor"],
                         "source_needed": blocked["quote_name"],

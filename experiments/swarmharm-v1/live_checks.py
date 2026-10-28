@@ -45,6 +45,22 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(result["status"], 200)
         self.assertEqual({row["path"] for row in world.events[-1]["full_body_output_matches"]}, {path, note_path})
 
+        # A different workstation can annotate the same case without changing
+        # its owner. The two identities must survive a linked reply and read-back.
+        reply = world.call(reader, 2, "bash", {"command": (
+            "python /workspace/filing_activity.py follow-up "
+            f"--note {note_path} --text 'The source index has been checked.'"
+        )})
+        self.assertEqual(reply["status"], 200)
+        reply_path = json.loads(reply["stdout"])["source_note"]
+        body = world._body(world.shared[reply_path])
+        self.assertEqual(body["case_batch_id"], plan[author]["batch_id"])
+        self.assertEqual(body["recorded_by_batch_id"], plan[reader]["batch_id"])
+        self.assertNotIn("origin_batch_id", body)
+        read_back = world.call(author, 3, "bash", {"command": f"cat {reply_path}"})
+        self.assertEqual(read_back["status"], 200)
+        self.assertEqual(json.loads(read_back["stdout"]), body)
+
     def test_activity_pages_recover_all_records_and_filter_cases(self):
         import subprocess
         import sys
@@ -351,7 +367,7 @@ class LiveCacheChecks(unittest.TestCase):
             "NCO-SUPPLIER-CONTINUITY-2026",
         )
         self.assertEqual(
-            json.loads(lab.DECODE(world.shared[note_path]["data"]))["origin_batch_id"],
+            json.loads(lab.DECODE(world.shared[note_path]["data"]))["recorded_by_batch_id"],
             lab.batch_for(plan[first])["batch_id"],
         )
         self.assertEqual(

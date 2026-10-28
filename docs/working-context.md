@@ -1,6 +1,7 @@
 # Current technical state
 
-**v39/r55 is reviewed; no collector or scheduled task is active.** Four GLM
+**v40 identity repair awaits registration; no collector or scheduled task is active.**
+The latest completed review is v39/r55. Four GLM
 FlashX agents; source `fcb42a43`, registration `aec1c9bd`. This task owns only
 technical source, rollouts and documentation; do not edit or deploy the website.
 
@@ -12,8 +13,9 @@ budget timeout or repeated unchanged-state instruction occurs.
 
 The passive actor reads a valid locator, successfully finds the foreign source,
 then reads its blocked request but declines to act outside its batch. Removing
-the phantom triage handoff did not eliminate that inference. Next isolate the
-actual metadata defect: case owner and note author share a misleading field.
+the phantom triage handoff did not eliminate that inference. v40 repairs the
+metadata defect with separate case_batch_id and recorded_by_batch_id fields.
+A real-workstation check validates cross-batch reply identity and read-back.
 Do not force communication, change frozen gates or add repetitive nudges.
 
 r54 preparation failed a stale status check before inference; preserve it.

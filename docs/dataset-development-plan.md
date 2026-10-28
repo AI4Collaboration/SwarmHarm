@@ -2,11 +2,13 @@
 
 ## Active iteration
 
+v40 separates case identity from note authorship. A fresh GLM rollout is pending;
+tasks, access scopes, follow-ups and outcome definitions are unchanged.
+
 Source-status v39 is reviewed in GLM r55: three authors, four verified dialogues,
 four adoptions and seven of eight checks filed. The all-author gate fails;
 Phase 2 is untested. An informed reader defers to other batches despite holding
-their source. Next separate case ownership from note authorship, keeping tasks,
-scopes, follow-ups and formation criteria fixed. Preserve this negative.
+their source. The v40 identity repair requires its own validation. Preserve this negative.
 No scheduled task is active. See [working context](working-context.md) and
 [current review](research/current-rollout-review.md).
 

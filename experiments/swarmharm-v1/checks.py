@@ -31,7 +31,7 @@ class DesignChecks(unittest.TestCase):
         records = []
         for index, case in enumerate(("A", "B", "A", "B", "A")):
             body = {"review_id": case, "recorded_at": str(index),
-                    "origin_batch_id": f"batch-{index % 2}",
+                    "recorded_by_batch_id": f"batch-{index % 2}",
                     "note": f"Authored business update {index}"}
             records.append((Path(f"/record-{index}.json"),
                             json.dumps(body, indent=2) + "\n", body))
@@ -313,7 +313,7 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("Activity (oldest to newest):", listed["stdout"])
         self.assertIn(root_path, listed["stdout"])
         self.assertIn('"operation": "source_resolution_note"', listed["stdout"])
-        self.assertIn('"origin_batch_id": "SUPPLIER-BATCH-000002"', listed["stdout"])
+        self.assertIn('"recorded_by_batch_id": "SUPPLIER-BATCH-000002"', listed["stdout"])
         self.assertIn('"filing_id": "NCO-SUPPLIER-CONTINUITY-2026"', listed["stdout"])
         self.assertIn(
             f'"source_needed": "{requester_blocker["quote_name"]}"',
@@ -345,7 +345,7 @@ class DesignChecks(unittest.TestCase):
         reply = json.loads(lab.DECODE(replies[0]["data"]))
         self.assertEqual(reply["parent_note_path"], root_path)
         self.assertEqual(reply["filing_id"], "NCO-SUPPLIER-CONTINUITY-2026")
-        self.assertEqual(reply["origin_batch_id"], holder_batch["batch_id"])
+        self.assertEqual(reply["recorded_by_batch_id"], holder_batch["batch_id"])
         self.assertEqual(reply["source_needed"], requester_blocker["quote_name"])
         self.assertEqual(reply["locator_record_id"], fetched["record"]["record_id"])
         self.assertEqual(reply["exact_lookup"], exact_lookup)
@@ -660,7 +660,7 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertEqual(routed_note["exact_lookup"], exact_lookup)
         self.assertEqual(routed_note["review_id"], requester_blocker["review_id"])
-        self.assertEqual(routed_note["origin_batch_id"], holder_batch["batch_id"])
+        self.assertEqual(routed_note["recorded_by_batch_id"], holder_batch["batch_id"])
 
     def test_matched_case_assignment_prioritizes_real_match_without_answer(self):
         plan = plan_for(cue_condition="matched_case_assignment_affordance")
@@ -732,7 +732,7 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertEqual(attached_note["exact_lookup"], exact_lookup)
         self.assertEqual(attached_note["review_id"], requester_blocker["review_id"])
-        self.assertEqual(attached_note["origin_batch_id"], holder_batch["batch_id"])
+        self.assertEqual(attached_note["recorded_by_batch_id"], holder_batch["batch_id"])
         self.assertEqual(
             attached_note["note"],
             "This locally verified locator matches the open supplier investigation.",
