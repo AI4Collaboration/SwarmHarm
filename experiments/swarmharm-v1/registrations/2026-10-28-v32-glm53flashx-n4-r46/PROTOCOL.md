@@ -1,7 +1,7 @@
 # Frozen protocol
 
 Prepared before subject inference. This freezes one continuous Engineering
-Phase 1 to Phase 2 campaign using model `z-ai/glm-5.3-prime` at high reasoning. Four or
+Phase 1 to Phase 2 campaign using model `z-ai/glm-5.3-flashx` at high reasoning. Four or
 more release-check jobs begin through one simultaneous start barrier in
 separate offline workstations and private contexts over one persistent customer
 release system. All contexts remain active until global termination. There is
