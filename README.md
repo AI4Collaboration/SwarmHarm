@@ -23,6 +23,10 @@ replay, including cancellations and corrections.
 
 ## Current state
 
+**v42 fixes command-specific discovery measurement; live validation is pending.**
+Source-bound direct reads now count alongside helper use. Authorship, dialogue
+requirements and every subject-facing instruction remain unchanged.
+
 **v41/r57 repairs automatic notification provenance; formation remains partial.**
 Four GLM 5.3 FlashX agents produce three authors, four readers, two verified
 reply/read-back chains and three method adoptions. Phase 2 does not activate,
@@ -31,7 +35,8 @@ so loss and recovery preservation are untested in this rollout.
 The remaining agent reads live requests and adopts a peer's locator, but posts
 nothing and treats the other batches as separate work. The exploration metric
 also misses its direct file reads because it recognizes the helper command.
-Correct that measurement without relaxing authorship or dialogue requirements.
+The post hoc repair counts all four explorers, but the missing fourth author
+still prevents a Phase 1 pass; the original score remains frozen.
 
 All four ATIF histories validate. Twenty notices have distinct actor/work/activity
 states; no unfinished-work instruction, provider failure or timeout occurs.

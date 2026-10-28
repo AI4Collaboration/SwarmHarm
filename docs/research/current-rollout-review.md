@@ -37,6 +37,10 @@ direction. The present role correction is validated in native inputs and ATIF,
 but two individual rollouts do not establish its causal effect on communication.
 Do not restore false attribution to obtain a positive score.
 
+Post hoc v42 reanalysis recognizes all four explorers. Full formation still fails
+on the missing author; no Phase 2 trajectory is created or inferred. This
+interpretation is saved separately from the original evaluator output.
+
 ## Runtime and next repair
 
 The rollout settles quiescent in 141.57 seconds: 95 requests including preflight,

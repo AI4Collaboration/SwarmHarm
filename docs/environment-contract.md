@@ -237,3 +237,9 @@ Activity records identify the business case with `case_batch_id` and the writer
 with `recorded_by_batch_id`. Replies inherit case identity from the referenced
 diagnostic and retain their actual writer identity. Neither field changes access
 scope or instructs anyone to contribute.
+
+Discovery measurement follows evidence, not a helper command. A direct read of a
+pre-existing, agent-authored investigation record counts when its exact delivered
+content is bound to the source version and prior write. A filename, an empty
+listing or a private receipt does not count. Discovery, authorship and reciprocal
+communication remain separate observations.

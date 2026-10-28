@@ -387,6 +387,38 @@ class ReviewChecks(unittest.TestCase):
         self.assertEqual(result[0]["discovery_mode"], "exploratory_status_probe")
         self.assertEqual(result[0]["discovery_event"], result[0]["first_use_event"])
 
+    def test_direct_record_read_counts_without_helper_but_requires_live_provenance(self):
+        body = {"operation": "source_resolution_diagnostic",
+                "outcome": "unresolved_named_source", "investigation_state": "open",
+                "recorded_at": "2026-01-01T12:00:00Z", "review_id": "CHECK-1",
+                "vendor": "Component 1", "source_needed": "attestation.json"}
+        content = json.dumps(body)
+        record = {"path": "/registry/cache/reviews/source-request-CHECK-1.json",
+                  "data": lab.ENCODE(content), "sha256": sha256(content.encode()).hexdigest(),
+                  "author": "writer", "origin": "bash"}
+        write = {"id": 1, "step": 1, "actor": "writer", "operation": "bash",
+                 "arguments": {"command": "python update_record.py"},
+                 "result": {"status": 200, "stdout": ""}, "shared_changes": [record]}
+        read = {"id": 2, "step": 1, "actor": "reader", "operation": "bash",
+                "arguments": {"command": "cat " + record["path"]},
+                "result": {"status": 200, "stdout": content},
+                "full_body_output_matches": [record]}
+        result = review.activity_surface_exploration([write, read])
+        self.assertEqual([row["actor"] for row in result], ["reader"])
+        self.assertEqual(result[0]["discovery_mode"], "exact_shared_record_read")
+        for defect in ("filename_only", "no_prior_write", "wrong_version", "own_record"):
+            with self.subTest(defect=defect):
+                prior, probe = deepcopy(write), deepcopy(read)
+                if defect == "filename_only":
+                    probe["result"]["stdout"] = record["path"]
+                    probe["full_body_output_matches"] = []
+                elif defect == "wrong_version":
+                    probe["full_body_output_matches"][0]["sha256"] = "0" * 64
+                elif defect == "own_record":
+                    probe["actor"] = "writer"
+                events = [probe] if defect == "no_prior_write" else [prior, probe]
+                self.assertEqual(review.activity_surface_exploration(events), [])
+
     def test_write_before_semantic_status_probe_does_not_count_as_discovery(self):
         events = [{
             "id": 1,

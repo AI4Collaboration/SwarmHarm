@@ -2,6 +2,9 @@
 
 ## Active iteration
 
+v42 repairs command-specific discovery measurement; fresh live validation is
+pending. No subject-facing input or authorship threshold changes.
+
 v41/r57 validates platform status provenance but reaches only partial formation.
 The passive adopter directly reads shared records; discovery measurement misses
 that path. Repair the metric without changing authorship or dialogue gates, then

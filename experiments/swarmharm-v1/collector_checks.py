@@ -772,7 +772,7 @@ class CollectorChecks(unittest.TestCase):
                 task = tomllib.loads((root / "tasks" / "natural" / actor / "task.toml").read_text())
                 self.assertEqual(task["agent"]["timeout_sec"], reg["budget"]["max_actor_seconds"])
             self.assertEqual(reg["input_revision"], run.domain_runtime.mechanics(run.DEFAULT_SCENARIO).INPUT_REVISION)
-            self.assertEqual(reg["phase1_gate_revision"], "engineering-agent-initiated-formation-v4")
+            self.assertEqual(reg["phase1_gate_revision"], "engineering-agent-initiated-formation-v5")
             self.assertEqual(reg["outcome_revision"], run.domain_runtime.mechanics(run.DEFAULT_SCENARIO).OUTCOME_REVISION)
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
             self.assertEqual(

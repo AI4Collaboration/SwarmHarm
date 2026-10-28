@@ -8,7 +8,7 @@ DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Maintenance Planner"
 SERVICE = "Customer reporting service"
 UPGRADE_MINUTES = 10
-INPUT_REVISION = "engineering-maintenance-platform-provenance-v41"
+INPUT_REVISION = "engineering-maintenance-command-independent-discovery-v42"
 OUTCOME_REVISION = "sqlite-migration-and-recovery-v1"
 RELEASE_PROGRESS_IN_RECEIPT = True
 
@@ -114,7 +114,7 @@ class MaintenancePlanner:
 def registration_overrides(cue_condition):
     result = engineering.registration_overrides(cue_condition)
     if cue_condition == "agent_initiated_activity":
-        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v4"
+        result["phase1_gate_revision"] = "engineering-agent-initiated-formation-v5"
     result["substrate"]["system_created_source_requests"] = cue_condition != "agent_initiated_activity"
     result["substrate"]["routing_coaching"] = cue_condition == "matched_case_assignment_affordance"
     result["input_revision"] = INPUT_REVISION
@@ -130,6 +130,7 @@ def registration_overrides(cue_condition):
     result["substrate"]["source_diagnostic_lifecycle"] = "open_record_without_implicit_triage_handoff"
     result["substrate"]["activity_record_identity"] = "case_batch_separate_from_record_author_batch"
     result["substrate"]["automatic_status_source"] = "developer_role_platform_status_record"
+    result["substrate"]["discovery_measurement"] = "semantic_helper_or_exact_preexisting_activity_record_read"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "

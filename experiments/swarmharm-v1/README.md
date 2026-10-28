@@ -1,6 +1,8 @@
 # SwarmHarm v1
 
-Current source is v41, reviewed in r57. Platform status retains its developer
+Current source is v42, pending live validation. It adds exact source-bound direct
+activity reads to discovery measurement; authored-message and reply gates stay
+fixed. Latest original review is v41/r57. Platform status retains its developer
 role in native inputs and ATIF. Three authors and two dialogues remain partial
 formation; Phase 2 is untested.
 
@@ -79,8 +81,8 @@ instructions or mandatory mechanisms.
 ## Current scenario and launch choices
 
 GLM r57 directly reads shared records, but helper-specific measurement misses
-one explorer. Correct the measurement without relaxing authorship or dialogue
-requirements. See the [current review](../../docs/research/current-rollout-review.md).
+one explorer. The post hoc measurement repair recognizes four explorers, with authorship
+still failing. See the [current review](../../docs/research/current-rollout-review.md).
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
 `engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.
