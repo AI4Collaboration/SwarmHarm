@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Confirm two prepared campaigns form a goal-mode comparison pair.
 
-The pair must use one plain-prompt (`off`) and one pi-goal (`goal_command`)
+The pair must use one plain-prompt (`off`) and one goal-enabled
+(`goal_command` for Pi, `claude_goal` for Claude Code)
 registration and differ in nothing else except the creation and route-check
 times and the random job IDs. Job IDs are replaced by each agent's logical ID before
 comparison, so the task text, fixtures, plans and sealed code must match.
@@ -58,7 +59,9 @@ def comparable(root, reg):
     value.pop('created_at')
     value['route_confirmation'].pop('checked_at')
     for field in GOAL_FIELDS:
-        value['harness'].pop(field)
+        value['harness'].pop(field,None)
+    if value['harness'].get('kind')=='claude-code':
+        value['harness'].pop('goal_evaluator',None)
     hashes = value['input_hashes']
     for name in ID_DEPENDENT | {'controls.json', 'route-confirmation.json'}:
         hashes.pop(name)
@@ -86,8 +89,15 @@ def check(first, second):
     regs = [(root, load(root)) for root in (first, second)]
     modes = sorted(reg['harness']['goal_mode'] for _, reg in regs)
     problems = []
-    if modes != ['goal_command', 'off']:
-        problems.append(f'goal modes are {modes}; a pair needs one off and one goal_command')
+    kinds={reg['harness']['kind'] for _,reg in regs}
+    expected=['claude_goal','off'] if kinds=={'claude-code'} else ['goal_command','off']
+    if modes != expected:
+        problems.append(f'goal modes are {modes}; this harness pair needs {expected}')
+    for _,reg in regs:
+        if reg['harness'].get('goal_mode')=='claude_goal':
+            model=next(iter(reg['models'].values()))
+            if (reg['harness'].get('goal_evaluator') or {}).get('model')!=model:
+                problems.append('native goal evaluator differs from the registered subject model')
     (a, a_files, a_passed), (b, b_files, b_passed) = (comparable(root, reg) for root, reg in regs)
     problems += [f'registration differs at {path}' for path in differences(a, b)]
     problems += [f'{name} differs after job-ID normalization' for name in a_files if a_files[name] != b_files[name]]

@@ -120,7 +120,28 @@ Only registered MCP tools reach the controller, which executes them sequentially
 in the existing offline workstation and business service. Phase 2 adds its MCP
 tools to the same query after the operator gate; it does not restart or resume
 another process. The initial task and later business updates use streaming input.
-`--goal-mode goal_command` is Pi-only and is rejected here.
+`--goal-mode goal_command` is Pi-only. The explicitly requested Claude comparison
+uses `--goal-mode claude_goal`, which dispatches the unchanged task through Claude
+Code's native `/goal`. It requires the installed CLI to advertise that command
+and acknowledge the exact condition before inference; unavailable or rejected
+commands cannot silently become plain prompts. Phase 2 sets a new native goal
+from its ordinary assignment in the same session, after the normal gate.
+
+Run native goals only alongside a fresh `off` campaign with identical model,
+scenario, population, cue condition and customer deadline. Check the prepared
+pair with `scripts/check_goal_mode_pair.py`. The previous provider-held attempt
+remains separate; it is not a matched off condition for revised runtime code.
+Report modes separately. Native `/goal` is a different mechanism from pi-goal.
+
+Claude's native goal uses a separate prompt-based completion evaluator. The
+harness pins `ANTHROPIC_DEFAULT_HAIKU_MODEL` to the same exact registered subject
+model in both conditions, without changing subscription authentication. Its
+effort is SDK-managed and not exposed; only subject turns have verified registered
+effort. Goal check-ins and automatic goal retries are disabled. Native goal
+acknowledgements, status and transcript entries remain in SDK evidence. Evaluator
+requests, full inputs and exact inference counts are not exposed by the SDK, so
+main-turn counts do not include them. A refusal still terminates collection,
+including in goal mode. See [Claude's native goal documentation](https://code.claude.com/docs/en/goal).
 
 The custom system prompt contains the neutral delegation preamble and ordinary
 job context. SDK-internal reminders are not fully observable, so the registration

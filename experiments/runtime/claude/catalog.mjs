@@ -14,5 +14,6 @@ try {
   }) => ({ value, resolvedModel, displayName, supportsEffort, supportedEffortLevels }));
   const matching = models.filter((row) => row.value === model || row.resolvedModel === model);
   const found = matching.some((row) => row.supportsEffort && row.supportedEffortLevels?.includes(effort));
-  process.stdout.write(`${JSON.stringify({ model, effort, model_and_effort_found: found, models, inference_calls: 0 })}\n`);
+  const native_goal_available = (await session.supportedCommands()).some((command) => command.name === "goal" && command.builtin);
+  process.stdout.write(`${JSON.stringify({ model, effort, model_and_effort_found: found, models, native_goal_available, inference_calls: 0 })}\n`);
 } finally { session.close(); }

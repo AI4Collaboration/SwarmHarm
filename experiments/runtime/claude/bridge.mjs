@@ -39,6 +39,7 @@ export class ClaudeBridge {
     this.nativeIndex = 0;
     this.history = [];
     this.pendingInputs = [];
+    this.goalCommands = [];
     this.calls = new Map();
     this.callWaiters = new Set();
     this.toolChain = Promise.resolve();
@@ -85,7 +86,13 @@ export class ClaudeBridge {
       },
     });
     await this.session.initializationResult();
+    const commands = config.goal_mode === "claude_goal" ? await this.session.supportedCommands() : [];
+    if (config.goal_mode === "claude_goal" && !commands.some((command) => command.name === "goal" && command.builtin)) {
+      this.session.close();
+      throw new Error("Claude Code does not expose native /goal for this session");
+    }
     this.reading = this.consume().catch((error) => {
+      if (error instanceof ProviderHold) this.session.close();
       if (!this.closed) this.channel.emit(error instanceof ProviderHold
         ? { type: "settled", turn: this.turn, aborted: false, text: "", error_message: error.message }
         : { type: "fatal", message: String(error.message ?? error) });
@@ -94,7 +101,7 @@ export class ClaudeBridge {
       session_file: join(config.folder, "session.jsonl"),
       native_dir: join(config.folder, "native"),
       active_tools: [...this.active], system_prompt: config.system_prompt,
-      commands: [], harness: "claude-code" });
+      commands, harness: "claude-code" });
   }
 
   server(name, names) {
@@ -121,6 +128,12 @@ export class ClaudeBridge {
 
   prompt(texts) {
     for (const text of texts) {
+      if (text.startsWith("/goal ")) {
+        if (this.config.goal_mode !== "claude_goal") throw new Error("Unregistered native goal command");
+        const condition = text.slice(6);
+        if (!condition.trim() || condition.length > 4000) throw new Error("Invalid native goal condition");
+        this.goalCommands.push(condition);
+      }
       const message = { type: "user", session_id: this.sessionId, uuid: randomUUID(),
         parent_tool_use_id: null, message: { role: "user", content: text } };
       this.native({ type: "controller_input", input: message });
@@ -131,6 +144,7 @@ export class ClaudeBridge {
 
   start(message, source) {
     if (this.current) throw new Error("Overlapping Claude model messages");
+    if (this.goalCommands.length) throw new Error("Claude started inference before confirming the registered native goal");
     if (message.model !== this.config.model) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
     this.history.push(...this.pendingInputs.splice(0));
     this.current = { id: message.id, turn: ++this.turn, blocks: [], usage: message.usage ?? {}, source };
@@ -230,6 +244,18 @@ export class ClaudeBridge {
         }
         else if (event.type === "message_stop") this.finish(source);
       } else if (message.type === "assistant") {
+        if (message.local_command_run) {
+          const command = message.local_command_run;
+          const expected = this.goalCommands[0];
+          if (this.config.goal_mode !== "claude_goal" || command.command !== "goal"
+              || expected === undefined || command.args !== expected
+              || message.message.model !== "<synthetic>"
+              || message.message.content.some((block) => block.type !== "text")
+              || !message.message.content.map((block) => block.text).join("\n").startsWith(`Goal set: ${expected}`))
+            throw new Error("Claude did not confirm the registered native goal");
+          this.goalCommands.shift();
+          continue; // Local command output is retained natively, not a model answer.
+        }
         if (message.error) throw new ProviderHold(`Claude assistant error: ${message.error}`);
         if (message.supersedes?.length) throw new ProviderHold("Claude superseded prior messages");
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");

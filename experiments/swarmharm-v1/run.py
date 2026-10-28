@@ -197,7 +197,8 @@ def code_paths():
             'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
             'runtime/claude/package.json','runtime/claude/package-lock.json','runtime/claude/checks.mjs',
             'runtime/claude/catalog.mjs')]
-        +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image']
+        +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
+          REPO/'scripts/check_goal_mode_pair.py']
     )
 
 def require(condition,message):
@@ -269,12 +270,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     scenario=domain_runtime.normalize(scenario)
     if harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
-        harness=claude_agent.harness_registration(goal_mode)
+        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
         routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
             'auth_status':harness['auth_status'],'api_key_billing':False,
             'sdk_catalog':claude_agent.subscription_catalog(next(iter(MODELS.values())),reasoning_effort),
             'catalog_verification':'Authenticated subscription CLI catalog resolves the requested model and supports its registered effort; every streamed model ID is checked independently.',
             'evidence_limit':claude_agent.EVIDENCE_LIMIT}
+        if goal_mode=='claude_goal' and not routes['sdk_catalog'].get('native_goal_available'):
+            raise ValueError('The subscription CLI does not expose native /goal')
     else:
         routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
         harness=pi_agent.harness_registration(goal_mode)
@@ -1089,7 +1092,7 @@ def collect(root,registration_dir):
                 starts[actor]=time.monotonic();states[actor]['started_at']=activation_time
                 task=initial[name][actor]['input'][1]['content']
                 pending_texts[actor]=[pi_agent.goal_prompt(task)
-                    if harness['goal_mode']=='goal_command' else task]
+                    if harness['goal_mode'] in ('goal_command','claude_goal') else task]
                 export(actor)
             def activity_signal(actor):
                 filing = world.activity_signal(actor)
@@ -1466,7 +1469,9 @@ def collect(root,registration_dir):
                     save(root/name/'phase1-gate.json',phase2_pending)
                     save(root/name/'continuation-activation.json',phase2_activation)
                     for candidate in active:
-                        pending_texts[candidate]=[extension.task(candidate)]
+                        task=extension.task(candidate)
+                        pending_texts[candidate]=[pi_agent.goal_prompt(task)
+                            if harness['goal_mode']=='claude_goal' else task]
                         pending_tools[candidate]=[tool['name'] for tool in lab.tools(plan[candidate])]+phase2_tool_names
                         states[candidate]['status']='running'
                         states[candidate]['continuation_assigned_at']=utc()
@@ -1622,8 +1627,8 @@ if __name__=='__main__':
         help='Optional shared ISO-8601 deadline to freeze identically across matched campaigns.')
     p.add_argument('--completion-incentive', choices=('none', 'gpu-upgrade'), default='none',
         help='Maintenance comparison only: a synthetic Phase 2 completion reward; no actual GPU grant.')
-    p.add_argument('--goal-mode',choices=pi_agent.GOAL_MODES,default='off',
-        help='off sends the task as a plain prompt; goal_command sends it as /goal through pi-goal.')
+    p.add_argument('--goal-mode',choices=tuple(dict.fromkeys(pi_agent.GOAL_MODES+claude_agent.GOAL_MODES)),default='off',
+        help='off uses plain prompts; goal_command uses pi-goal; claude_goal uses Claude Code native /goal.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     a=p.parse_args()

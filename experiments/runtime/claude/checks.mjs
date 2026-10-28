@@ -8,7 +8,7 @@ import { ClaudeBridge } from "./bridge.mjs";
 
 // Scripted SDK frames test fail-closed behavior. The Python integration check
 // separately exercises the real SDK and CLI against localhost.
-async function fixture(t) {
+async function fixture(t, goalMode = "off") {
   const folder = mkdtempSync(join(tmpdir(), "swarmharm-claude-guard-"));
   const events = [];
   const frames = [];
@@ -16,6 +16,7 @@ async function fixture(t) {
   let closed = false;
   const query = {
     initializationResult: async () => ({}),
+    supportedCommands: async () => [{ name: "goal", builtin: true }],
     close: () => { closed = true; wake?.(); },
     [Symbol.asyncIterator]: async function* () {
       while (!closed) {
@@ -35,7 +36,7 @@ async function fixture(t) {
     cancelAll: () => {},
   });
   await bridge.init({ folder, model: "claude-fixture-1", system_prompt: "Complete the work.",
-    active_tools: [], tools: [], settings: { tools: [] }, request_timeout_ms: 100 });
+    active_tools: [], tools: [], settings: { tools: [] }, request_timeout_ms: 100, goal_mode: goalMode });
   t.after(async () => { await bridge.close(); rmSync(folder, { recursive: true }); });
   return { bridge, events, async feed(...messages) {
     frames.push(...messages); wake?.(); await setImmediate();
@@ -83,4 +84,35 @@ test("compaction preserves a held attempt instead of accepting rewritten history
   await f.feed({ type: "system", subtype: "compact_boundary" });
   assert.equal(f.events.at(-1).type, "settled");
   assert.match(f.events.at(-1).error_message, /compact_boundary/);
+});
+
+test("native goals require a matching local command acknowledgement before inference", async (t) => {
+  const f = await fixture(t, "claude_goal");
+  f.bridge.prompt(["/goal Receipts are filed."]);
+  await f.feed({ type: "assistant", local_command_run: { command: "goal", args: "Receipts are filed." },
+    message: { model: "<synthetic>", content: [{ type: "text", text: "Goal set: Receipts are filed." }] } });
+  await f.feed({ type: "stream_event", event: { type: "message_start", message: {
+    id: "message-1", model: "claude-fixture-1" } } });
+  assert.equal(f.events.at(-1).type, "request");
+});
+
+test("an unavailable goal cannot silently become a plain prompt", async (t) => {
+  const f = await fixture(t, "claude_goal");
+  f.bridge.prompt(["/goal Receipts are filed."]);
+  await f.feed({ type: "stream_event", event: { type: "message_start", message: {
+    id: "message-1", model: "claude-fixture-1" } } });
+  assert.equal(f.events.at(-1).type, "fatal");
+  assert.match(f.events.at(-1).message, /before confirming/);
+});
+
+test("a goal refusal stops the SDK before any continuation", async (t) => {
+  const f = await fixture(t, "claude_goal");
+  await f.feed(
+    { type: "stream_event", event: { type: "message_start", message: { id: "message-1", model: "claude-fixture-1" } } },
+    { type: "stream_event", event: { type: "message_delta", delta: { stop_reason: "refusal" } } },
+    { type: "stream_event", event: { type: "message_stop" } },
+  );
+  assert.equal(f.events.at(-1).type, "settled");
+  assert.match(f.events.at(-1).error_message, /refused/);
+  assert.equal(f.events.filter((event) => event.type === "request").length, 1);
 });

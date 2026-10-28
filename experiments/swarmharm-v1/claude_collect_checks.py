@@ -59,10 +59,50 @@ class SubscriptionChecks(unittest.TestCase):
         CLAUDE.validate_model('claude-sonnet-4-6')
         with self.assertRaisesRegex(ValueError, 'pi-goal'):CLAUDE.harness_registration('goal_command')
 
+    def test_native_goal_registration_pins_evaluator_and_disables_timer_retries(self):
+        with patch.object(CLAUDE,'subscription_auth',return_value={}), \
+                patch.object(CLAUDE,'installed_versions',return_value={}), \
+                patch.object(CLAUDE,'node_version',return_value='v22.22.3'), \
+                patch.object(CLAUDE,'cli_identity',return_value={}):
+            registration=CLAUDE.harness_registration('claude_goal',MODEL)
+        self.assertEqual(registration['goal_evaluator']['model'],MODEL)
+        self.assertEqual(registration['environment']['ANTHROPIC_DEFAULT_HAIKU_MODEL'],MODEL)
+        self.assertEqual(registration['environment']['CLAUDE_CODE_GOAL_CHECKIN_MINUTES'],'0')
+        self.assertEqual(registration['extension_tools'],[])
+
     def test_claude_launcher_needs_no_api_key(self):
         with patch.object(launch, 'collector_python', return_value='/python'):
             argv = launch.collector_command('/tmp/study', '/tmp/registration')
         self.assertNotIn('--key-file', argv)
+
+    def test_native_goal_pair_requires_matching_deadline_and_evaluator(self):
+        checker=run.module('claude_goal_pair_check',run.REPO/'scripts/check_goal_mode_pair.py')
+        with tempfile.TemporaryDirectory() as temporary,ExitStack() as patches:
+            for name,value in (('subscription_auth',{}),('installed_versions',{}),
+                               ('node_version','v22.22.3'),('cli_identity',{})):
+                patches.enter_context(patch.object(CLAUDE,name,return_value=value))
+            patches.enter_context(patch.object(CLAUDE,'subscription_catalog',return_value={
+                'model_and_effort_found':True,'native_goal_available':True,'inference_calls':0}))
+            patches.enter_context(patch.object(run,'MODELS',{'claude':MODEL}))
+            patches.enter_context(patch.object(run,'UPSTREAM_MODELS',{'claude':MODEL}))
+            roots=[]
+            for mode in ('off','claude_goal'):
+                root=Path(temporary)/mode;roots.append(root)
+                registration=run.REGISTRATIONS/f'test-goal-{Path(temporary).name}-{mode}'
+                self.addCleanup(shutil.rmtree,registration,True)
+                run.prepare(root,registration,None,run_controls=False,harness_kind='claude-code',
+                    scenario='financial-analysis',reasoning_effort='medium',goal_mode=mode,
+                    filing_deadline_utc='2030-01-01T00:00:00+00:00')
+            self.assertEqual(checker.check(*roots),[])
+            path=roots[1]/'registration.json';original=run.load(path)
+            changed=json.loads(json.dumps(original))
+            changed['pressure']['release_deadline_utc']='2030-01-02T00:00:00+00:00'
+            run.save(path,changed)
+            self.assertTrue(checker.check(*roots))
+            changed=json.loads(json.dumps(original))
+            changed['harness']['goal_evaluator']['model']='claude-other-1'
+            run.save(path,changed)
+            self.assertIn('native goal evaluator differs from the registered subject model',checker.check(*roots))
 
 
 class ScriptedMessages(BaseHTTPRequestHandler):
@@ -128,6 +168,42 @@ class ScriptedMessages(BaseHTTPRequestHandler):
     and (CLAUDE.CLAUDE_DIR / 'node_modules/@anthropic-ai/claude-agent-sdk/package.json').exists(),
     'Claude Code, Node.js and the optional Claude SDK install required')
 class ClaudeCollectChecks(unittest.TestCase):
+    def test_real_sdk_native_goal_is_acknowledged_before_first_model_request(self):
+        ScriptedMessages.requests=[]
+        server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedMessages)
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        self.addCleanup(server.shutdown)
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture=Path(temporary)/'offline-goal.mjs'
+            fixture.write_text(
+                f'import * as sdk from {json.dumps((CLAUDE.CLAUDE_DIR / "node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs").as_uri())};\n'
+                f'import {{serve}} from {json.dumps((CLAUDE.CLAUDE_DIR / "agent.mjs").as_uri())};\n'
+                f'serve({{...sdk, query: (args) => sdk.query({{...args, options: {{...args.options, env: {{...args.options.env, '
+                f'ANTHROPIC_API_KEY: "offline-fixture-key", ANTHROPIC_BASE_URL: "http://127.0.0.1:{server.server_port}"}}}}}})}});\n')
+            clean_env={name:os.environ[name] for name in ('PATH','HOME','USER','TMPDIR') if name in os.environ}
+            clean_env.update(CLAUDE.RUNTIME_ENV)
+            tool={'name':'confirm_service','description':'Read the service status.',
+                  'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False}}
+            events=CLAUDE.new_queue()
+            with patch.object(CLAUDE,'AGENT',fixture),patch.object(CLAUDE,'subscription_env',return_value=clean_env):
+                agent=CLAUDE.ClaudeAgent('goal',events,folder=Path(temporary)/'goal',model=MODEL,
+                    thinking_level='medium',max_output_tokens=1024,request_timeout_ms=10000,
+                    tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='claude_goal')
+            try:
+                ready=CLAUDE.wait_ready(events,['goal'])['goal']
+                self.assertTrue(any(command['name']=='goal' for command in ready['commands']))
+                agent.prompt('/goal The service status is confirmed.')
+                _,event=events.get(timeout=30)
+                self.assertEqual(event['type'],'request',event)
+                self.assertEqual(event['payload']['reasoning']['effort'],'medium')
+                native=[run.load(path) for path in (Path(temporary)/'goal/native').glob('*.json')]
+                confirmations=[message for message in native if message.get('local_command_run',{}).get('command')=='goal']
+                self.assertEqual(len(confirmations),1)
+                self.assertEqual(confirmations[0]['local_command_run']['args'],'The service status is confirmed.')
+                self.assertTrue(ScriptedMessages.requests)
+                self.assertEqual(ScriptedMessages.requests[0]['model'],MODEL)
+            finally:agent.close()
+
     def test_bridge_rejects_unregistered_execution_and_provider_changes(self):
         result = subprocess.run([CLAUDE.node_binary(), '--test', str(CLAUDE.CLAUDE_DIR / 'checks.mjs')],
             capture_output=True, text=True, timeout=30)

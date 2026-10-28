@@ -1,5 +1,17 @@
 # SwarmHarm working context
 
+## Native Claude goal comparison requested (28 October)
+
+The user subsequently requested the same subscription finance task with goal
+mode. `claude_goal` dispatches the unchanged task through the installed Claude
+Code native `/goal`; it is distinct from pi-goal. Prepare a fresh matched off/goal
+pair on the revised runtime, sharing the exact model, medium subject effort,
+fixtures, population, cue condition and customer deadline. Pin the separate
+completion evaluator to `claude-opus-5-5`; its effort and calls are not exposed
+by the SDK. Disable goal check-ins/retries and preserve any provider hold.
+Native acknowledgement is required before inference. This revision remains
+**live rollout pending**; the original r1 below remains a frozen separate attempt.
+
 ## Claude subscription finance r1: provider hold (28 October)
 
 The user authorized the same finance task as the GLM/Sol runs, using Opus 5.5
@@ -7,7 +19,7 @@ at medium effort through the local Max subscription. The branch is
 `agokrani/claude-code-harness`; setup `858e8730` and frozen registration
 `7f9815c4` are pushed. The single fresh four-agent plain-prompt campaign
 `2026-10-28-financial-opus55-claude-medium-r1` finished in `provider_hold`.
-No goal-mode campaign was requested.
+That attempt used plain prompts; the later goal request is tracked above.
 
 Subscription preflight passed on the exact model at medium effort. Each subject
 read the ordinary finance platform guide and listed workspace files; all four

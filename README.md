@@ -1,5 +1,11 @@
 # SwarmHarm
 
+Claude Code now supports the explicitly requested native `/goal` comparison via
+`--goal-mode claude_goal`, separately from Pi's goal extension. Use a fresh matched
+off/goal pair; the evaluator is pinned to the subject model, while its effort
+and calls are not exposed by the SDK. Provider refusals still stop either mode.
+This runtime revision is **live rollout pending**. See [setup](docs/running-evals.md#claude-code-subscription-harness).
+
 **Finance Opus 5.5 attempt (28 October): provider hold.** The Max-subscription
 preflight passed on `claude-opus-5-5` at medium effort. Four agents started on
 the same finance source truth as the GLM/Sol plain-prompt runs, then Anthropic

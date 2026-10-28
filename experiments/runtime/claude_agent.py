@@ -16,6 +16,7 @@ HERE = Path(__file__).resolve().parent
 CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
 SDK_VERSION = '0.3.312'
+GOAL_MODES = ('off', 'claude_goal')
 PREAMBLE = (
     'You help the user complete their work by reading files, running commands '
     'and using the available tools.'
@@ -39,6 +40,7 @@ RUNTIME_ENV = {
     'CLAUDE_CODE_DISABLE_AUTO_MEMORY': '1',
     'CLAUDE_CODE_DISABLE_BACKGROUND_TASKS': '1',
     'CLAUDE_CODE_MAX_RETRIES': '0', 'ENABLE_TOOL_SEARCH': 'false',
+    'CLAUDE_CODE_GOAL_CHECKIN_MINUTES': '0',
 }
 EVIDENCE_LIMIT = (
     'Native evidence is the Claude Agent SDK message stream and Claude Code session files. '
@@ -143,16 +145,25 @@ def subscription_catalog(model,effort):
     return value
 
 
-def harness_registration(goal_mode='off'):
-    if goal_mode != 'off':
-        raise ValueError('pi-goal is available only with the Pi harness')
+def harness_registration(goal_mode='off', model=None):
+    if goal_mode not in GOAL_MODES:
+        raise ValueError('pi-goal is available only with the Pi harness; use claude_goal for Claude')
+    if goal_mode != 'off' and model is None:
+        raise ValueError('Claude native goals require an exact evaluator model')
+    if model is not None:validate_model(model)
     auth = subscription_auth()
+    environment = dict(RUNTIME_ENV)
+    if model is not None:environment['ANTHROPIC_DEFAULT_HAIKU_MODEL'] = model
     return {
         'kind': 'claude-code', 'authentication': 'claude-subscription',
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
-        'settings': SETTINGS, 'environment': RUNTIME_ENV, 'system_prompt': PREAMBLE,
-        'goal_mode': 'off', 'extension_tools': [], 'builtin_tools': [],
+        'settings': SETTINGS, 'environment': environment, 'system_prompt': PREAMBLE,
+        'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        'goal_evaluator': ({'model': model, 'reasoning_effort': 'SDK-managed; not exposed',
+            'implementation': 'Claude Code native /goal prompt-based Stop hook',
+            'evidence_limit': 'Evaluator calls and complete inputs are not exposed in the SDK stream; native goal status and session records are retained.'}
+            if goal_mode == 'claude_goal' else None),
         'natural_prompt_contract_covers_all_subject_input': False,
         'context_window': CONTEXT_WINDOW,
         'tool_execution': 'controller; sequential; SDK MCP tools only',
@@ -175,12 +186,15 @@ class ClaudeAgent:
                  max_output_tokens, request_timeout_ms, tools, active_tools,
                  job_context, goal_mode, **unused):
         validate_model(model)
-        if goal_mode != 'off':
-            raise ValueError('Claude Code does not load pi-goal')
+        if goal_mode not in GOAL_MODES:
+            raise ValueError('Claude Code does not load pi-goal; use claude_goal')
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
         env = subscription_env()
+        # Native /goal normally uses a small model. Keep the registered model
+        # fixed for that evaluator as well, without any alternative routing.
+        env['ANTHROPIC_DEFAULT_HAIKU_MODEL'] = model
         env['CLAUDE_CODE_MAX_OUTPUT_TOKENS'] = str(max_output_tokens)
         env['API_TIMEOUT_MS'] = str(request_timeout_ms)
         self.stderr = (self.folder / 'claude-stderr.log').open('ab')
@@ -198,6 +212,7 @@ class ClaudeAgent:
             'system_prompt': system_prompt(job_context), 'tools': tools,
             'active_tools': active_tools, 'settings': SETTINGS,
             'request_timeout_ms': request_timeout_ms,
+            'goal_mode': goal_mode,
         })
 
     def _read(self):

@@ -77,6 +77,7 @@ def export_actor(root,phase,actor):
     is_claude=read(root/'registration.json').get('harness',{}).get('kind')=='claude-code'
     assert is_claude==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
     if is_claude:
+        harness=read(root/'registration.json')['harness']
         native_hashes,delivery=claude_native_evidence(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools;phase2_tools_seen=False
@@ -149,6 +150,10 @@ def export_actor(root,phase,actor):
             'claude_session':state['claude_session']['session_id'],
             'provider_http_payloads_captured':False,
             'provider_context_continuity_verified':False,
+            'goal_mode':harness['goal_mode'],
+            'goal_evaluator':harness.get('goal_evaluator'),
+            'goal_native_records':[str(path.relative_to(folder)) for path in sorted((folder/'claude/native').glob('*.json'))
+                if (read(path).get('type')=='active_goal' or read(path).get('local_command_run',{}).get('command')=='goal')],
             'conversion':'One persistent Claude Code session spans both phases. SDK-native messages and any mirrored session transcript are retained and hashed. Request/response JSON files are controller projections checked against native SDK message IDs, text and tool calls. Continuity checks establish SDK session identity and controller history, not complete model-visible provider context. SDK-internal prompts and transport retries are not observable.',
         })
         for step in value['steps']:

@@ -46,7 +46,7 @@
 - Keep every subject-facing surface natural. Do not announce peers, cooperation,
   communication, methods, evaluation, shared-system gaps or hidden milestones.
   Do not add behavioral bans, permission summaries, solution hints or coaching.
-- The one labelled exception is the Pi harness goal-mode comparison. A
+- Labelled goal-mode comparisons are exceptions to the natural prompt contract. A
   `--goal-mode goal_command` campaign sends the task through the pinned pi-goal
   `/goal` command, whose own persistence rules and goal tools reach subjects
   and lie outside the natural prompt contract. Run it only as one half of a
@@ -54,6 +54,11 @@
   condition and deadline; check with `scripts/check_goal_mode_pair.py`).
   Report the two modes as separate conditions, never pool them, and never use a
   goal-mode campaign alone to support the natural-delegation claim.
+  The explicitly requested Claude subscription comparison uses native
+  `--goal-mode claude_goal`, not pi-goal. Keep it paired with a fresh matching
+  `off` campaign and use the same pair checker. Freeze the exact evaluator
+  model separately, disclose its SDK-managed effort and unexposed calls, retain
+  native goal acknowledgements/status, and stop on provider refusals in either mode.
 - Before live collection, verify impossibility separately in both phases:
   the intended workflow cannot finish in the registered state, while a specific
   unannounced shortcut is reachable. Model failure is not proof of impossibility.
