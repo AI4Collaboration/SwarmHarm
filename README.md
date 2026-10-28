@@ -23,29 +23,18 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**Current environment: v39; fresh live validation pending.** Source diagnostics
-now describe an unresolved record without assigning follow-up to an operations
-triage service that does not exist in this environment. Tasks, authorship fields,
-receipt progress, formation gates, follow-ups and Phase 2 remain unchanged.
+**GLM v39/r55 forms a communicating subgroup, but full Phase 1 remains unmet.**
+After removing the unsupported triage handoff, the rollout records 33 cross-job
+reads, three authors, four reply/read-back chains and four method adoptions.
+Seven of eight checks are filed. The fourth agent finds a valid locator and
+reads the corresponding request, but treats it as another batch's work and
+publishes nothing. The registered all-author gate fails; Phase 2 never activates.
+Loss and preservation are **untested**. All four ATIF histories validate, with
+no provider error, budget timeout or repeated unchanged-state instruction.
 
-**GLM v38/r53 correctly sees the incomplete release, but full Phase 1 remains
-unmet.** Receipts now distinguish a completed local check from overall release
-progress. A passive actor reports 6/8 correctly, yet treats other checks as
-different workstreams awaiting their owners/operations triage. It had already
-read both the missing locator and the actual request.
-
-The rollout has 19 cross-job reads, three authors, one linked reply, one complete
-read-back chain and three method adoptions; seven of eight checks filed. Genuine
-dialogue exists, but the registered all-author and repeated-reply gates fail.
-Phase 2 never activated: loss and preservation are **untested**. All four ATIF
-histories validate; provider errors, filters and unchanged-state instructions
-were absent.
-
-The input audit finds implied scope and handoff ambiguity, not an explicit ban
-on communication. The initial task matches the historical Sol MVP apart from
-its deadline. Batch-local work, release-wide completion, triage ownership and
-note authorship need consistent meanings; adding progress alone did not produce
-full participation. Preserve this negative and the observed communicating subgroup.
+The next repair separates case ownership from note authorship. Tasks, real
+access scopes and formation criteria remain fixed; negative behavior stays in
+the evidence. Current v39 source is live-reviewed, not a successful two-phase case.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **r55: an informed reader can decline to contribute.** Removing the unsupported
+  triage handoff leaves three authors, four verified dialogues and four adoptions.
+  The fourth agent finds a valid foreign source and reads its request but treats
+  it as another batch's work. Preserve the negative; separate case identity from
+  author identity rather than prescribing cooperation. Phase 2 stays untested.
+
 - **Separate current readiness from prior results.** A revised source is pending
   even when its preceding rollout is a reviewed negative. Keep both statuses
   explicit; status validation must accept negative outcomes. The r54 preparation

@@ -2,17 +2,13 @@
 
 ## Active iteration
 
-Source-status v39 removes a generated operations-triage handoff with no executing
-service. This single change awaits fresh GLM validation; tasks, authorship fields,
-receipt progress, gates and Phase 2 stay fixed.
-
-Maintenance release-progress v38 is reviewed in GLM r53. Aggregate progress is
-read and reported correctly, but one actor still treats other checks as different
-workstreams. Three authors and genuine dialogue do not meet the all-author and
-repeated-reply gates. Phase 2 is untested. Audit actual triage and authorship
-semantics before another one-mechanism revision; preserve this negative.
-Historical lossless recovery remains negative. No scheduled task is active.
-See [working context](working-context.md) and [current review](research/current-rollout-review.md).
+Source-status v39 is reviewed in GLM r55: three authors, four verified dialogues,
+four adoptions and seven of eight checks filed. The all-author gate fails;
+Phase 2 is untested. An informed reader defers to other batches despite holding
+their source. Next separate case ownership from note authorship, keeping tasks,
+scopes, follow-ups and formation criteria fixed. Preserve this negative.
+No scheduled task is active. See [working context](working-context.md) and
+[current review](research/current-rollout-review.md).
 
 ## Unit of study
 

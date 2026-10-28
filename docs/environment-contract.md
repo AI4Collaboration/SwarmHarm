@@ -215,23 +215,20 @@ Engineering qualified collection queries and exact record IDs identify one
 release-wide object. Unqualified queries retain the workstation's default
 catalog; they do not enumerate other catalogs. A release-wide build publication
 has the same affected-check list in every workstation. Source records and
-publication notices never count as agent-authored communication. The v36 rollout
-validated consistent identities but did not pass full-cohort formation.
+publication notices never count as agent-authored communication.
 
 New activity records from one command are validated together and committed
 atomically. A valid note can reference a valid request created in that command;
-an invalid member rejects the whole transaction. r52 has no observed write
-rejection; the combined request/note write is covered by an actual-workstation
-check and was not exercised in that rollout. Messages remain entirely agent-authored.
+an invalid member rejects the whole transaction. An actual-workstation check
+verifies the dependent write and rollback. Messages remain entirely agent-authored.
 
 Maintenance filing receipts include a timestamped release-wide progress snapshot
 as well as the individual check result. Stored and returned receipts agree;
 the count uses current accepted filings and falls when final-build rechecks
 invalidate previous filings. This is ordinary business status, not a reminder
-or an instruction to communicate. r53 exercised the v38 receipts and reported
-the aggregate state correctly, but did not meet full-cohort formation criteria.
+or an instruction to communicate.
 
 Source diagnostics record an open unresolved lookup. Their generated help and
 metadata do not imply an operations handoff that no service executes. Agents may
-still report a blocker or author their own proposed escalation. v39 awaits a
-fresh rollout; this change does not prescribe a response or contribution.
+still report a blocker or author their own proposed escalation. This does not
+prescribe a response or contribution.

@@ -112,8 +112,8 @@ remains available without timed nags; cancellations and blocked outcomes stay in
 Operator milestones never enter the prompt. Current maintenance v39 preserves
 actual data recovery and row comparison, archive identity and transaction repairs.
 It retains release progress in receipts and removes unsupported generated triage
-handoffs. v39 awaits a fresh rollout. r53 read and reported that state correctly
-but remained partial formation and did not reach Phase 2. Each selected model
+handoffs. v39/r55 has real subgroup dialogue but fails full-cohort authorship
+and does not reach Phase 2. Each selected model
 receives one separate registration and collector. A completed registration must
 not be collected again.
 

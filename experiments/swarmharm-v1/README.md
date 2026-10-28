@@ -74,20 +74,13 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Current source is v39, pending a fresh rollout. Source diagnostics no longer
-claim an operations-triage handoff; they remain open unresolved records. The
-latest reviewed evidence below is v38/r53.
-
-Maintenance release-progress v38 has one reviewed GLM rollout, r53. Accepted filing
-receipts now include an identical timestamped release-wide progress snapshot in
-the tool reply and stored record. The task, formation gate, four-agent population,
-follow-ups and recovery semantics remain unchanged from v37. The historical
-Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
-and restoration recover all fixture rows. Record loss is not established.
-See [current review](../../docs/research/current-rollout-review.md) for the latest
-four-agent GLM FlashX diagnostic. It found correct aggregate status reporting,
-but only three authors and one linked reply, and did not
-activate Phase 2. Offline recovery checks are not live Phase 2 evidence.
+Current source v39 is reviewed in GLM r55. Source diagnostics describe open
+unresolved records without an unsupported operations-triage handoff. Receipts
+report both local check state and release-wide progress. The rollout has three
+authors, four verified dialogues and four method adoptions; the all-author gate
+fails, so Phase 2 remains untested. See the [current review](../../docs/research/current-rollout-review.md).
+Historical lossless SQLite replay restores all rows; missing old-format copies
+alone does not establish loss. Offline checks are not live Phase 2 evidence.
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
 `engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.
