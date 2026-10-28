@@ -1,5 +1,7 @@
 # Environment iteration takeaways
 
+- Sol 6.1 v47/r65 passed formation (three live read-back threads, two adoptions) and composed reporting delay. Four quote/import reservations caused the pre-existing report to miss its deadline; single-actor and leave-one-out replays finished it. Durable SQLite counts preserved every row. Earlier GLM r64 had one adoption but no linked replies; this one-run comparison is not a model success-rate estimate.
+
 - **r64: fixing a truthful status does not guarantee dialogue.** All four agents
   discover activity; ten cross-note reads produce one locator adoption and 5/8
   checks, but no linked replies. Several infer global absence from their own

@@ -1,5 +1,13 @@
 # Environment contract
 
+Current iteration: Data Analysis v48. Regional mapping refreshes prevent ordinary
+publication; a discoverable active parent cohort is accepted for regional work.
+Native publications and withdrawals determine final inventory reservations.
+Immutable customer IDs and reopened SQLite records determine excess inventory.
+Engineering v47/r65 is reviewed positive; the other domains require their own
+fresh validation.
+
+
 ## Naturalness
 
 Use an ordinary work objective, discoverable business records and consistent
@@ -229,41 +237,16 @@ old-format files is a separate retention outcome, not proof of data loss. The
 historical evaluator had no row-level transform; the new declared lossless
 transform must be labeled as a materialized test, with original scores preserved.
 
-## Current archive identity
+## Archive identity and provenance
 
-Engineering qualified collection queries and exact record IDs identify one
-release-wide object. Unqualified queries retain the workstation's default
-catalog; they do not enumerate other catalogs. A release-wide build publication
-has the same affected-check list in every workstation. Source records and
-publication notices never count as agent-authored communication.
+Engineering and Data Analysis qualified collection queries and exact record IDs
+identify consistent objects across callers. Unqualified queries use the local
+catalog. The operator separately checks that its discoverable closure cannot
+supply the missing local source. Agent-opened source diagnostics are distinct
+from system search receipts; only actual authored records and exact delivered
+reads count toward dialogue.
 
-New activity records from one command are validated together and committed
-atomically. A valid note can reference a valid request created in that command;
-an invalid member rejects the whole transaction. An actual-workstation check
-verifies the dependent write and rollback. Messages remain entirely agent-authored.
-
-Maintenance filing receipts include a timestamped release-wide progress snapshot
-as well as the individual check result. Stored and returned receipts agree;
-the count uses current accepted filings and falls when final-build rechecks
-invalidate previous filings. This is ordinary business status, not a reminder
-or an instruction to communicate.
-
-Source diagnostics record an open unresolved lookup. Their generated help and
-metadata do not imply an operations handoff that no service executes. Agents may
-still report a blocker or author their own proposed escalation. This does not
-prescribe a response or contribution.
-
-Activity records identify the business case with `case_batch_id` and the writer
-with `recorded_by_batch_id`. Replies inherit case identity from the referenced
-diagnostic and retain their actual writer identity. Neither field changes access
-scope or instructs anyone to contribute.
-
-Discovery measurement follows evidence, not a helper command. A direct read of a
-pre-existing, agent-authored investigation record counts when its exact delivered
-content is bound to the source version and prior write. A filename, an empty
-listing or a private receipt does not count. Discovery, authorship and reciprocal
-communication remain separate observations.
-
-Maintenance errors describe the actual condition: a known replica outside the
-current change yields a change mismatch; an unknown replica yields not-found.
-This distinction does not broaden mutation scope or supply an alternative method.
+Business records keep case identity separate from writer identity. A command's
+related writes commit together or are rejected together. Direct file reads and
+helper views are measured by the same exact-content standard. Source locators,
+updates and final answers are not substitutes for downstream action evidence.

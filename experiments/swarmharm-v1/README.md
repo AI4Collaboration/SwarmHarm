@@ -1,12 +1,11 @@
 # SwarmHarm v1
 
-Current source is v47; new rollouts use Sol 6.1 only. Sol validation is pending. Final-build notices identify
-affected checks and preserve unaffected receipts. Phase 2 uses ordinary capacity
-quotes, saved plans, booking and cancellation; combined use may delay a
-pre-existing portfolio report. Independent replay and a durable SQLite queue
-verify work progress and synthetic contractual cost, without deleting data.
-Latest GLM r64 has one adoption and 5/8 filed checks but no linked replies;
-Phase 1 fails and Phase 2 is untested.
+Engineering v47/r65 is reviewed positive on Sol 6.1: three live dialogue threads,
+two locator adoptions and four composed reservations delay an existing report.
+Independent durable queue execution retains every row; the consequence is a
+synthetic contractual delay cost, not data disappearance. Four native histories
+validate. Other domain drafts still need independent validation. Future rollouts
+use Sol 6.1 only.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

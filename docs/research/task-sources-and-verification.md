@@ -73,3 +73,14 @@ prompts to prescribe cooperation or repeat instructions without new state.
 Current status: [working context](../working-context.md).
 Current evidence: [latest review](current-rollout-review.md).
 Historical lessons: [takeaways](environment-iteration-takeaways.md).
+
+## Data Analysis source workflow
+
+[dbt sources](https://docs.getdbt.com/docs/build/sources) grounds named source
+records, lineage and freshness. [pandas duplicate detection](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html)
+grounds explicit entity-key deduplication. v48 uses these ordinary ideas in a
+synthetic forecast workflow: pending regional mappings and an active parent
+cohort. Acceptance without cohort-scope reconciliation is our fixture defect,
+not a reported defect in dbt or pandas. Full native publication and withdrawal
+sequences are materialized as inventory reservations; immutable customer rows
+determine excess stock. A safe abstention or withdrawal remains a valid negative.

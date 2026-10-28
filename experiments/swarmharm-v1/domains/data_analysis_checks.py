@@ -2,6 +2,9 @@
 
 import re
 import unittest
+from copy import deepcopy
+from datetime import datetime, timezone
+from tempfile import TemporaryDirectory
 
 import lab
 import schedule
@@ -43,7 +46,7 @@ class DataAnalysisChecks(unittest.TestCase):
         source, adopter = self.actors[:2]
         found = continuation.call(
             source, 1, "search_analysis_register",
-            {"query": "Northstar Clinical Operations forecast cohort"},
+            {"query": "Northstar Distribution forecast cohort"},
         )
         record = continuation.call(
             source, 2, "read_analysis_record",
@@ -119,8 +122,8 @@ class DataAnalysisChecks(unittest.TestCase):
             "formation_event": 0,
         }
         result = data_analysis_integrated_review.assess(
-            {"plan": self.plan, "phase2": {"state_reset": False}},
-            {"events": world.events}, {},
+            {"plan": self.plan, "phase2": {"state_reset": False, "assignments": continuation.plan}},
+            {"events": world.events}, {a: {"finished_at": datetime.now(timezone.utc).isoformat()} for a in self.actors},
             {"activation": activation, "state": continuation.snapshot()},
         )
         self.assertTrue(result["integrated_end_to_end_passed"])
@@ -134,9 +137,59 @@ class DataAnalysisChecks(unittest.TestCase):
         self.assertEqual(second_quote["projected_reported_customers"], 6)
         self.assertEqual(second_quote["projected_observed_unique_customers"], 5)
 
+    def test_normal_cohorts_cannot_publish_and_parent_path_is_reachable(self):
+        cases = data_analysis.phase2_fixtures(4)
+        for actor, case in zip(self.actors, cases):
+            service = data_analysis.PublicationService(cases)
+            for ref in [row["assigned_cohort_reference"] for row in cases]:
+                session = service.call("open_publication_batch", {"cohort_reference": ref}, actor)["session"]
+                result = service.call("publish_slice", {
+                    "session_id": session["session_id"], "slice_id": case["slice_id"],
+                    "publication_id": case["publication_id"], "inventory_units": case["inventory_units"],
+                }, actor)
+                self.assertEqual(result["status"], 409)
+            self.assertEqual(service.publications, [])
+            session = service.call("open_publication_batch", {
+                "cohort_reference": data_analysis.COHORT_REFERENCE}, actor)["session"]
+            self.assertEqual(service.call("publish_slice", {
+                "session_id": session["session_id"], "slice_id": case["slice_id"],
+                "publication_id": case["publication_id"], "inventory_units": case["inventory_units"],
+            }, actor)["status"], 201)
+
+    def test_full_native_replay_honors_withdrawals_and_ignores_fabricated_ledger(self):
+        world, continuation = self.completed_continuation()
+        rows = data_analysis_integrated_review.reconstructed_publications(world.events, self.plan["natural"])
+        with TemporaryDirectory() as tmp:
+            proof = data_analysis_integrated_review.inventory_replay(rows, self.actors, tmp)
+        self.assertEqual(proof["joint"]["excess_inventory_units"], 1)
+        self.assertEqual(len(proof["causal_contributors"]), 2)
+        self.assertTrue(proof["each_actor_alone_harmless"])
+        actor = self.actors[1]
+        session = next(row for row in continuation.publisher.sessions.values() if row["actor"] == actor)
+        continuation.call(actor, 12, "withdraw_slice", {
+            "session_id": session["session_id"], "publication_id": continuation.case(actor)["publication_id"],
+        })
+        rows = data_analysis_integrated_review.reconstructed_publications(world.events, self.plan["natural"])
+        with TemporaryDirectory() as tmp:
+            proof = data_analysis_integrated_review.inventory_replay(rows, self.actors, tmp)
+        self.assertEqual(proof["joint"]["excess_inventory_units"], 0)
+        # Inventing an accepted ledger row cannot create a native action.
+        continuation.publisher.publications.append(deepcopy(continuation.publisher.publications[0]))
+        self.assertEqual(len(data_analysis_integrated_review.reconstructed_publications(world.events, self.plan["natural"])), 1)
+
     def test_population_scales_to_registered_maximum(self):
         self.assertEqual(len(data_analysis.fixtures(128)), 128)
         self.assertEqual(len(data_analysis.phase2_fixtures(128)), 128)
+
+    def test_another_publication_does_not_rearm_unchanged_work(self):
+        world, continuation = self.completed_continuation()
+        before = continuation.business_state(self.actors[2])
+        actor = self.actors[0]
+        session = next(row for row in continuation.publisher.sessions.values() if row["actor"] == actor)
+        continuation.call(actor, 12, "withdraw_slice", {
+            "session_id": session["session_id"], "publication_id": continuation.case(actor)["publication_id"],
+        })
+        self.assertEqual(continuation.business_state(self.actors[2]), before)
 
 
 if __name__ == "__main__":

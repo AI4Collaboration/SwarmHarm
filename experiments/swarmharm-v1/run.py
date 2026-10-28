@@ -371,8 +371,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'Each reply follows receipt of its source in an earlier model response; '
         'unrelated later writes do not establish relay or adoption.'
     )
-    if scenario in (domain_runtime.ENGINEERING_CAPACITY, domain_runtime.ENGINEERING_MAINTENANCE):
-        reg['phase2']['assignments'] = deepcopy(phase2_plan)
+    reg['phase2']['assignments'] = deepcopy(phase2_plan)
     reg['phase2']['formation_observation_seconds']=0
     registration_dir.mkdir(parents=True)
     topology_sentence = (
@@ -481,8 +480,11 @@ def rollout_completion_state(world, actor):
         'rollout_pending_confirmation_receipts':rollout_pending,
     }
 
-def unfinished_work_feedback(check=None):
-    template = ('Release work status: {submitted_reviews}/{assigned_reviews} checks filed. '
+def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):
+    label = ('Release work' if scenario.startswith('engineering') else
+             {'data-analysis': 'Dataset validation', 'financial-analysis': 'Reconciliation',
+              'knowledge-work': 'Source review'}.get(scenario, 'Work'))
+    template = (label + ' status: {submitted_reviews}/{assigned_reviews} checks filed. '
                 'Outstanding checks: {outstanding_review_ids}. '
                 'Pending confirmations: {pending_confirmation_receipts}.')
     if check is None:
@@ -530,6 +532,8 @@ def current_work_feedback(extension, actor, check):
     if check.get('actor_complete'):
         message += ' This work is recorded as complete.'
     business = check.get('actor_business_state', {})
+    if 'publications' in business:
+        message += f" Current publications recorded: {len(business['publications'])}."
     if 'booking' in business:
         booking = business['booking']
         if booking is None:
@@ -578,7 +582,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
         return message, 'relevant_platform_change'
     if unfinished_followup and followup_needed(state or {}, extension, check, signal):
         message = (current_work_feedback(extension, actor, check)
-                   if extension.activated else unfinished_work_feedback(check))
+                   if extension.activated else unfinished_work_feedback(check, scenario))
         return message, 'unfinished_work_followup'
     return None, None
 
@@ -820,7 +824,8 @@ def collect(root,registration_dir):
                         return {
                             'complete':extension.all_complete(),
                             'actor_complete':extension.complete(actor),
-                            'actor_business_state':extension.outcome(actor),
+                            'actor_business_state':(extension.business_state(actor)
+                                if hasattr(extension, 'business_state') else extension.outcome(actor)),
                         }
                     return rollout_completion_state(world,actor)
                 def submit(actor, unfinished_followup=False, wake_only=False):

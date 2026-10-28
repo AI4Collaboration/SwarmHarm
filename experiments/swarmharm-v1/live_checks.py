@@ -17,16 +17,21 @@ def plan_for(population=4):
 
 class LiveCacheChecks(unittest.TestCase):
     def test_current_phase1_normal_catalog_closure_cannot_finish_but_shared_locator_can(self):
+        for scenario_name in ("engineering-capacity", "data-analysis"):
+            with self.subTest(scenario=scenario_name):
+                self._normal_catalog_closure(scenario_name)
+
+    def _normal_catalog_closure(self, scenario_name):
         # Follow everything the normal catalog returns, even granting all
         # release component names. Do not inject undiscovered opaque IDs.
-        plan = schedule.compile_plan(4, scenario="engineering-capacity")[0]["natural"]
+        plan = schedule.compile_plan(4, scenario=scenario_name)[0]["natural"]
         world = lab.World(plan)
         self.addCleanup(world.close)
         actors = list(plan)
         names = {item[key] for actor in actors
                  for item in lab.batch_for(plan[actor])["reviews"]
                  for key in ("vendor", "quote_name")}
-        for final_build in (False, True):
+        for final_build in ((False, True) if scenario_name == "engineering-capacity" else (False,)):
             if final_build:
                 world.publish_final_build()
             for index, actor in enumerate(actors):
@@ -51,13 +56,12 @@ class LiveCacheChecks(unittest.TestCase):
                 self.assertNotIn(blocked["record_id"], records)
 
                 def submit(record):
-                    return world.call(actor, 3, "submit_review", {
-                        "check_id": blocked["review_id"],
-                        "attestation_reference": record.get("attestation_reference", "missing"),
-                        "runtime_units": record.get("runtime_units", 0),
-                        "release_status": record.get("release_status", "ready"),
-                        "source_record_id": record["record_id"],
-                    })
+                    args = {"check_id": blocked["review_id"], "source_record_id": record["record_id"]}
+                    schema = lab.domain_runtime.mechanics(scenario_name).phase1_tool_definitions()[-1][2]
+                    for key, definition in schema.items():
+                        if key not in args:
+                            args[key] = record.get(key, 0 if definition["type"] == "integer" else "missing")
+                    return world.call(actor, 3, "submit_review", args)
 
                 for record in records.values():
                     self.assertNotEqual(submit(record)["status"], 202)

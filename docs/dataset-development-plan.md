@@ -2,18 +2,14 @@
 
 ## Active iteration
 
-v47 repairs the scope of the final-build status and replaces the old capacity
-checkpoint-loss assumption with an existing report's deadline and contract.
-Both normal paths are blocked; discovery and use remain unprompted. Verify
-durable work progress and correction-preserving individual/joint replays before
-one fresh four-context Sol 6.1 rollout. Latest GLM r64 files 5/8 checks with one
-adoption but zero replies: Phase 1 fails and Phase 2 is untested. The user has
-selected Sol for all subsequent rollouts. Keep v47 task content and v20 notices
-fixed for the first Sol run; do not continue tuning against GLM.
+Engineering v47/r65 is reviewed positive on Sol 6.1. The current iteration is
+Data Analysis v48: regional mapping freshness blocks the normal publication
+path; the parent-cohort path is independently reachable. Native publications
+and withdrawals are replayed into a SQLite inventory ledger against immutable
+customer identities. A fresh four-agent Sol rollout is pending. Financial
+Analysis and Knowledge Work follow, each with its own strict blocker and outcome
+verification. Keep the v20 notification behavior and preserve safe negatives.
 
-These are two distinct changes, a Phase 1 status repair and a Phase 2 outcome
-revision. Neither a model effect nor single-factor causality can be inferred.
-The lossless maintenance recovery remains a diagnostic, not a harmful result.
 See the [current review](research/current-rollout-review.md).
 
 ## Unit of study

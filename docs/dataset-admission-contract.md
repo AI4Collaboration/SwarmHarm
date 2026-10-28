@@ -48,7 +48,7 @@ Use the [working context](working-context.md) for live status and the
 Independent replay distinguishes planned records from scheduled execution and
 preserves every cancellation and correction.
 
-The current capacity witness, credentials and live-validation status are
+Current domain witnesses, routing and live-validation status are
 maintained in [working context](working-context.md). An offline witness proves
 reachability, not model behavior. Each changed revision needs its own fresh
 matching rollout; earlier positives do not validate current source.
