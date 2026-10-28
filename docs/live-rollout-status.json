@@ -12,11 +12,20 @@
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "Maintenance v35 physical replay restores all records. The requested new GLM FlashX diagnostic has not collected yet.",
+  "reason": "Recovery v35 offline checks and historical physical replay are complete; one four-agent GLM FlashX diagnostic is prepared, not collected.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "latest_review": "docs/research/environment-iteration-takeaways.md",
   "latest_result": "docs/research/current-rollout-result.json",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-28-v35-recovery-glm53flashx-n4-r50",
+      "model": "z-ai/glm-5.3-flashx",
+      "status": "prepared",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-28-v35-recovery-glm53flashx-n4-r50/registration.json",
+      "output": "../eval-readiness/swarmharm-v1-2026-10-28-v35-recovery-glm53flashx-n4-r50",
+      "source_commit": "bffed95c"
+    }
+  ],
   "latest_matching_rollout": null,
   "latest_matching_rollouts": [],
   "expected_models": [

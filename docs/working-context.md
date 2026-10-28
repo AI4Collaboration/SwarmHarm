@@ -36,3 +36,7 @@ Read [current review](research/current-rollout-review.md) for the evidence paths
 limits and reproducible command. Finish offline checks and documentation, commit
 and push source, seal a fresh registration, commit/push it and verify hashes
 before collecting once. Do not edit frozen files during collection.
+
+Prepared rollout: `2026-10-28-v35-recovery-glm53flashx-n4-r50`, four agents, source `bffed95c`.
+Its registration is sealed; collect it once after the registration commit is
+pushed and the clean/local/remote/sealed hashes match.
