@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-initial-documents-v45",
+  "input_revision": "engineering-maintenance-catalog-context-v46",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v5",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -91,7 +91,8 @@
     "activity_record_identity": "case_batch_separate_from_record_author_batch",
     "discovery_measurement": "Semantic helper inspection/use or exact read of a pre-existing agent-authored activity record; command-independent, with source/version provenance. Authorship and dialogue gates remain unchanged.",
     "initial_work_objective": "complete_reliability_release_filing",
-    "initial_business_documents": "all_declared_local_documents_delivered"
+    "initial_business_documents": "all_declared_local_documents_delivered",
+    "archive_query_context": "actual_catalog_scope_and_release_build_revision"
   },
   "phase2": {
     "enabled": true,
@@ -237,7 +238,7 @@
     "final_answers_remain_provisional_until_cohort_settles": true,
     "terminal_requires_latest_business_revisions_answered": true,
     "individual_early_context_closure": false,
-    "comparison_limit": "v45 delivers previously omitted declared initial business documents. The v44 request, permissions, tools, notification behavior and evaluation gates remain fixed.",
+    "comparison_limit": "v46 adds actual catalog scope and current release-build metadata to query results and receipts. Matching, access, task requests, notifications and formation gates remain fixed.",
     "automatic_status_source": "developer_role_platform_status_record"
   }
 }

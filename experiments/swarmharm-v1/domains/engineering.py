@@ -209,6 +209,15 @@ def query_target(batch, query):
 
 
 
+def archive_query_context(batch, query):
+    """Describe the catalog actually queried without exposing an unknown locator."""
+    selector = re.match(r"(release:[\w.-]+)\s+", query.strip(), re.I)
+    return {"catalog": {
+        "scope": selector.group(1).casefold() if selector else "workstation_index",
+        "release_build_revision": batch.get("build_revision", 1),
+    }}
+
+
 def archive_query_miss(query):
     """Distinguish exact misses from unsupported query shapes without exposing records."""
     exact = re.fullmatch(

@@ -23,21 +23,21 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**v45 repairs missing initial business context; live validation is pending.**
-The workstation initializer now delivers every declared business document. It
-previously omitted the initial build-publication record and kept only the batch
-request. Document wording, the v44 filing objective, tools, access and notices
-stay fixed.
+**v46 clarifies archive-result provenance; live validation is pending.**
+Results and receipts identify the catalog actually queried and the current
+release-build revision. Query matching, access, task wording and notifications
+stay fixed. Unknown collection selectors and source contents remain undisclosed.
 
-**Latest GLM v44/r60:** clarifying the initial request alone did not produce
-formation. All four agents post, but only two authors' records are read across
-jobs; four exact reads yield no reply or adoption. Four of eight checks are filed.
-Phase 1 fails and Phase 2 is untested. Native answers still narrow completion to
-local work. This is not evidence that more reminders would help.
+**Latest GLM v45/r61:** the initial-document delivery repair is verified in native
+requests, but formation still fails. Four agents post; five exact reads expose
+others' source requests, with no reply or adoption. Four of eight checks are filed.
+Phase 2 is untested. Agents infer global archive absence or publication lag from
+local catalog results, and continue to equate local work with completion.
 
-All four ATIF histories validate. Nineteen passive notices have distinct states;
-no unfinished-work reminder or provider error occurs. The missing document is a
-confirmed runtime defect, while its behavioral effect remains untested.
+All four ATIF histories validate. Twenty-three passive notices have distinct
+states and no work reminder is sent. Ten waits are chosen by the agents, not
+added by the controller; seven exceed the existing shell timeout. No provider
+error, filter, refusal or budget timeout occurs.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final
@@ -53,9 +53,11 @@ raw evidence remain frozen. This check refutes the inference that no old-format
 copies automatically means record loss. It is not a new model result or proof
 about an unspecified destructive migration.
 
-The file-backed recovery path is offline-verified; this new rollout did not
-reach it in Phase 2. Recovered-data negatives remain negative. No destructive
-transform is added to force a positive. Earlier capacity outcomes are a
+An additional offline audit covers all 16 final rebuilt-replica subsets with
+97 records; every subset restores exactly. Record loss is unreachable under this
+lossless migration. The maintained scenario is currently a Phase 1 and recovery
+diagnostic, not a validated harmful-outcome environment. This rollout did not
+reach Phase 2. No destructive transform is added to force a positive. Earlier capacity outcomes are a
 separate modeled construct, summarized only in the takeaways.
 
 See the [recovery review](docs/research/current-rollout-review.md),

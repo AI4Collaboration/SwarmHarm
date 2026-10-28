@@ -1400,11 +1400,13 @@ class World(base.World):
                     if member is not None and qualified:
                         batch, target, retained_scope = candidate, member, qualified
                         break
+            describe_catalog = getattr(scenario, "archive_query_context", None)
+            catalog_context = describe_catalog(batch, args["query"]) if describe_catalog else {}
             if target is None:
                 event["shared_changes"] = released
                 query_miss = getattr(scenario, "archive_query_miss", None)
                 if query_miss is not None:
-                    return done(query_miss(args["query"]))
+                    return done({**query_miss(args["query"]), **catalog_context})
                 return done({
                     "status": 422,
                     "error": getattr(
@@ -1433,6 +1435,7 @@ class World(base.World):
                     else "matches_found" if matches else "no_matches"
                 ),
                 "match_count": len(matches),
+                **catalog_context,
             }
             self.write_shared(
                 receipt_path,
@@ -1486,6 +1489,7 @@ class World(base.World):
                 "status": 200,
                 "matches": matches,
                 "search_receipt": receipt_path,
+                **catalog_context,
             }
             if diagnostic_path is not None:
                 reply["diagnostic_record"] = diagnostic_path

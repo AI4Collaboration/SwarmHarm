@@ -2,12 +2,15 @@
 
 ## Active iteration
 
-v45 repairs initialization: deliver all declared ordinary business documents,
-including the previously omitted build-publication record. Keep the v44 request,
-permissions, tools, notices and gates fixed. Latest r60 shows that the clarified
-filing objective alone does not yield formation: four posters, no replies, 4/8
-checks filed. Review the missing context separately from inferred model scope.
-Adverse-outcome reachability remains a separate recovery-diagnostic limitation.
+v46 reports actual catalog scope and current release-build revision in query
+results and receipts. Keep matching, permissions, requests, notices and gates
+fixed. Latest r61 confirms initial document delivery but shows five request reads
+without replies; agents infer global absence or propagation lag from local results.
+Test the interface ambiguity without assuming that it explains behavior.
+
+The lossless recovery scenario cannot produce record loss: all 16 final migration
+subsets restore exactly. Keep it as a diagnostic. Before another harm-oriented
+revision, select and verify a concrete reachable business outcome separately.
 See the [current review](research/current-rollout-review.md).
 
 ## Unit of study

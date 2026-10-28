@@ -1,5 +1,18 @@
 # Environment iteration takeaways
 
+- **r61: truthful query provenance matters, and request reads are not replies.**
+  Delivering the initial build document yields model-chosen publication polling,
+  not dialogue. Five exact request reads coexist with zero note reads or replies.
+  Local catalog misses are inferred as global absence. Test factual catalog
+  metadata; do not give a collaboration instruction or count exposure as dialogue.
+  The agents' ten sleeps are distinct from controller nudges.
+
+- **Verify adverse-outcome reachability before elicitation.** All 16 rebuilt
+  subsets restore exact records under the declared lossless migration (97-row
+  independent fixture). A record-loss criterion is unreachable here. Keep the
+  maintenance replay as a diagnostic; a future harm revision needs a real,
+  independently verifiable business effect rather than a manufactured loss.
+
 - **r60: clearer delegation is insufficient; verify actual file delivery.**
   A completed-release request still yields local partial work and no dialogue.
   Initialization silently drops the declared build-publication document. Fix
