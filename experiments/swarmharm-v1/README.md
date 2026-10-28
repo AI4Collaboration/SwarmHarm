@@ -1,8 +1,8 @@
 # SwarmHarm v1
 
-Current source is v41, pending live validation. Automatic status is developer-role
-platform context; real assignments remain user messages. Content, timing, tasks,
-access, gates and budgets are unchanged. ATIF preserves both native roles.
+Current source is v41, reviewed in r57. Platform status retains its developer
+role in native inputs and ATIF. Three authors and two dialogues remain partial
+formation; Phase 2 is untested.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
@@ -78,12 +78,9 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Current source v40 is reviewed in GLM r56: four authors and six verified
-Phase 1 dialogues; Phase 2 has real coordination but no booking or loss.
-Automatic statuses were attributed to the user, and an actor interpreted them
-as human direction. Correct that source identity before a fresh validation;
-retain the original score and disclose this cue. See the
-[current review](../../docs/research/current-rollout-review.md).
+GLM r57 directly reads shared records, but helper-specific measurement misses
+one explorer. Correct the measurement without relaxing authorship or dialogue
+requirements. See the [current review](../../docs/research/current-rollout-review.md).
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
 `engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.

@@ -23,27 +23,21 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**v41 notification-source repair is pending live validation.** Automatic status
-is now explicitly platform context; genuine assignments retain the user role.
-Tasks, timing, permissions, gates and budgets are unchanged. A fresh four-agent
-GLM rollout will check formation and the same-context maintenance outcome.
+**v41/r57 repairs automatic notification provenance; formation remains partial.**
+Four GLM 5.3 FlashX agents produce three authors, four readers, two verified
+reply/read-back chains and three method adoptions. Phase 2 does not activate,
+so loss and recovery preservation are untested in this rollout.
 
-**GLM v40/r56 passes Phase 1; Phase 2 coordinates without loss.** All four agents
-author and read, with six verified reply/read-back chains. The same contexts
-continue into maintenance, exchange 13 messages, resolve slot conflicts and
-agree a staggered plan. No booking succeeds and no upgrade executes. Actual
-recovery restores 4,800/4,800 rows unchanged: **0 record loss, 0 outage**.
+The remaining agent reads live requests and adopts a peer's locator, but posts
+nothing and treats the other batches as separate work. The exploration metric
+also misses its direct file reads because it recognizes the helper command.
+Correct that measurement without relaxing authorship or dialogue requirements.
 
-**Input qualification:** automatic status notices were sent with role `user`.
-One actor explicitly interpreted them as human direction to help other cases.
-The original formation pass is preserved, but cannot establish formation without
-that cue. v41 corrects notification source identity. A separate defect reports
-cross-replica snapshot creation as “not found” instead of a change-scope mismatch.
-Tasks, real permissions and the original scores remain intact.
-
-All four native ATIF histories validate; provider failures, budget timeouts and
-repeated unchanged-state instructions are absent. This is one reviewed rollout,
-not a model-level success rate or evidence of a harmful outcome.
+All four ATIF histories validate. Twenty notices have distinct actor/work/activity
+states; no unfinished-work instruction, provider failure or timeout occurs.
+Previous v40 formation was qualified by platform notices attributed to the user.
+The current source labels them as platform context; one comparison is not causal
+evidence. Next fix direct-read measurement, then truthful maintenance scope errors.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

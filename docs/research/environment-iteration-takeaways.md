@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **r57: recognize direct reads, and distinguish participation from adoption.**
+  Platform-role notifications validate without user impersonation. One agent
+  reads raw shared records and adopts a locator but never posts. The helper-only
+  exploration metric misses its entry; fixing that cannot supply its missing
+  authorship. Three authors and two dialogues remain partial; Phase 2 is untested.
+
 - **r56: audit who a notification appears to come from.** Distinct case/writer
   identities coexist with a full four-author formation pass and six dialogues.
   But automatic statuses use the user role, and an actor infers human direction.
