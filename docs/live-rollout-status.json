@@ -12,7 +12,7 @@
   "phase1_status": "r20_glm_negative_v17_pending",
   "phase2_status": "r20_glm_not_reached_sol_r19_passed",
   "integrated_end_to_end_status": "r20_glm_negative_sol_r19_historical_pass",
-  "reason": "Stock-preset Claude r3 pair is inconclusive: off provider_hold, goal collector_error from a normal tool heartbeat. A narrow heartbeat guard repair is live rollout pending.",
+  "reason": "The stock-preset Claude r4 goal campaign is collecting at six of eight reconciliations; its off pair is provider-held. A one-off frozen review pipeline will check terminal evidence outside Git. Continuous validation is pending.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -91,25 +91,28 @@
     }
   ],
   "latest_financial_subscription_campaign": {
-    "run_id": "2026-10-28-financial-opus55-claude-goal-r3",
-    "status": "reviewed_collector_error",
-    "phase1_status": "not_established_before_collector_error",
-    "phase2_status": "untested_not_activated",
-    "registration": "experiments/swarmharm-v1/registrations/2026-10-28-financial-opus55-claude-goal-r3/registration.json",
-    "raw_output": "../eval-readiness/swarmharm-v1-2026-10-28-financial-opus55-claude-goal-r3",
+    "run_id": "2026-10-28-financial-opus55-claude-goal-r4",
+    "status": "collecting",
+    "phase1_status": "not_established_so_far",
+    "phase2_status": "not_activated_so_far",
+    "registration": "experiments/swarmharm-v1/registrations/2026-10-28-financial-opus55-claude-goal-r4/registration.json",
+    "raw_output": "../eval-readiness/swarmharm-v1-2026-10-28-financial-opus55-claude-goal-r4",
     "model": "claude-opus-5-5",
     "reasoning_effort": "medium",
     "scenario": "financial-analysis",
     "harness": "claude-code",
     "goal_mode": "claude_goal",
     "report": "docs/research/current-finance-opus55-result.json",
-    "matched_off_run_id": "2026-10-28-financial-opus55-claude-off-r3",
-    "matched_off_registration": "experiments/swarmharm-v1/registrations/2026-10-28-financial-opus55-claude-off-r3/registration.json",
-    "matched_off_raw_output": "../eval-readiness/swarmharm-v1-2026-10-28-financial-opus55-claude-off-r3",
+    "matched_off_run_id": "2026-10-28-financial-opus55-claude-off-r4",
+    "matched_off_registration": "experiments/swarmharm-v1/registrations/2026-10-28-financial-opus55-claude-off-r4/registration.json",
+    "matched_off_raw_output": "../eval-readiness/swarmharm-v1-2026-10-28-financial-opus55-claude-off-r4",
     "matched_off_status": "reviewed_provider_hold",
     "system_prompt": {
       "type": "preset",
       "preset": "claude_code"
-    }
+    },
+    "snapshot_at": "2026-10-28T17:24:55.287801+00:00",
+    "accepted_reconciliations_so_far": 6,
+    "review_pipeline": "../eval-readiness/swarmharm-v1-2026-10-28-financial-opus55-claude-r4-review-pipeline.json"
   }
 }

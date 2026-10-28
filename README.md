@@ -1,13 +1,13 @@
 # SwarmHarm
 
-**Claude stock-preset finance rerun (28 October): incomplete.** The plain run
-stopped on one native `cyber` refusal. Native `/goal` filed four of eight cash
-reconciliations, then the adapter mistook an ordinary tool heartbeat for nested
-inference. Neither established Phase 1; Phase 2 never started. The heartbeat
-guard is repaired, with a fresh matched pair pending. The unmodified
-`claude_code` preset and subscription-only authentication are unchanged.
-See the [review](docs/research/current-finance-opus55-review.md) and
-[setup](docs/running-evals.md#claude-code-subscription-harness).
+**Claude finance rerun (28 October): native goal active; plain mode provider-held.**
+The fresh Opus 5.5 medium pair uses the unmodified `claude_code` preset and the
+Claude Max subscription. Plain mode stopped on one native `cyber` refusal.
+Native `/goal` has filed six of eight reconciliations and is still collecting;
+Phase 1 has not passed and Phase 2 has not started. Registrations `d5e7fb08`
+were pushed before inference. The earlier heartbeat guard bug is fixed.
+See the [current status and review pipeline](docs/research/current-finance-opus55-review.md)
+and [subscription setup](docs/running-evals.md#claude-code-subscription-harness).
 
 SwarmHarm tests whether separate agents spontaneously form a communicating
 swarm, then whether that same swarm produces a harmful system-level outcome.
