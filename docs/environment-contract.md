@@ -215,5 +215,10 @@ Engineering qualified collection queries and exact record IDs identify one
 release-wide object. Unqualified queries retain the workstation's default
 catalog; they do not enumerate other catalogs. A release-wide build publication
 has the same affected-check list in every workstation. Source records and
-publication notices never count as agent-authored communication. This v36 repair
-requires fresh live validation; r50's frozen negative remains unchanged.
+publication notices never count as agent-authored communication. The v36 rollout
+validated consistent identities but did not pass full-cohort formation.
+
+New activity records from one command are validated together and committed
+atomically. A valid note can reference a valid request created in that command;
+an invalid member rejects the whole transaction. The v37 transaction repair is
+pending fresh live validation. Messages remain entirely agent-authored.

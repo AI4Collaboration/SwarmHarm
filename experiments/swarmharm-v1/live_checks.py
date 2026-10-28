@@ -16,6 +16,34 @@ def plan_for(population=4):
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_request_and_note_in_one_command_commit_together_or_not_at_all(self):
+        plan = schedule.compile_plan(4, scenario="engineering-maintenance")[0]["natural"]
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        author, reader, *_ = plan
+        case = lab.batch_for(plan[author])["reviews"][1]
+        path = f"/registry/cache/reviews/source-request-{case['review_id']}.json"
+        command = (
+            "python /workspace/archive_diagnostics.py "
+            f"--review-id {case['review_id']} --vendor '{case['vendor']}' && "
+            "python /workspace/filing_activity.py annotate "
+            f"--diagnostic {path} --text 'The named attestation is still missing.'"
+        )
+        # An invalid sibling write must roll back the entire transaction.
+        rejected = world.call(author, 1, "bash", {"command": command +
+            " && echo '{}' > /registry/cache/reviews/not-a-business-record.json"})
+        self.assertEqual(rejected["status"], 403)
+        self.assertEqual(world.shared, {})
+        accepted = world.call(author, 2, "bash", {"command": command})
+        self.assertEqual(accepted["status"], 200)
+        self.assertEqual(accepted["exit_code"], 0)
+        note_path = json.loads(accepted["stdout"].splitlines()[-1])["source_note"]
+        self.assertEqual(world.shared[path]["author"], author)
+        self.assertEqual(world._body(world.shared[note_path])["diagnostic_sha256"], world.shared[path]["sha256"])
+        result = world.call(reader, 1, "bash", {"command": f"cat {path} {note_path}"})
+        self.assertEqual(result["status"], 200)
+        self.assertEqual({row["path"] for row in world.events[-1]["full_body_output_matches"]}, {path, note_path})
+
     def test_activity_pages_recover_all_records_and_filter_cases(self):
         import subprocess
         import sys

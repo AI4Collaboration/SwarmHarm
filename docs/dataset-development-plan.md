@@ -2,17 +2,11 @@
 
 ## Active iteration
 
-Maintenance archive identity v36 is current and awaits a fresh GLM rollout.
-Qualified locators and exact record IDs now identify the same object across
-workstations; the final-build publication has one release-wide check list.
-The task, all-author formation gate, follow-ups and recovery semantics stay fixed.
-Materializing the
-historical Sol r19 actions with a lossless schema migration restores all rows;
-the former fixed loss is not validated. Keep this negative. The requested
-four-agent GLM FlashX r50 has finished: real dialogue occurred, but one passive
-adopter did not author messages, so the full-cohort Phase 1 gate failed and
-Phase 2 did not start. Further iteration is user-authorized; no scheduled task is active. Capacity scenarios
-remain separate, with modeled outcomes; no new capacity collection is planned.
+Maintenance activity transaction v37 is current and awaits fresh GLM validation.
+Archive identities are consistent after v36. r51 exposed a same-command
+request/note transaction rejected against old state; v37 fixes that atomic
+validation without changing the task, formation gate, follow-ups or Phase 2.
+Historical lossless recovery remains negative. No scheduled task is active.
 See [working context](working-context.md) and [current review](research/current-rollout-review.md).
 
 ## Unit of study

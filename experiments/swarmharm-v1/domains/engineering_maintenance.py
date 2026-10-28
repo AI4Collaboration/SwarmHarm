@@ -8,7 +8,7 @@ DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Maintenance Planner"
 SERVICE = "Customer reporting service"
 UPGRADE_MINUTES = 10
-INPUT_REVISION = "engineering-maintenance-archive-identity-v36"
+INPUT_REVISION = "engineering-maintenance-activity-transaction-v37"
 OUTCOME_REVISION = "sqlite-migration-and-recovery-v1"
 
 
@@ -124,6 +124,7 @@ def registration_overrides(cue_condition):
         "exact_record_id": "release_wide",
         "publication_checks": "same_release_revision_in_every_workstation",
     }
+    result["substrate"]["activity_transaction"] = "validate_created_records_together_then_commit_atomically"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "

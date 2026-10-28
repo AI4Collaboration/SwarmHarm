@@ -75,7 +75,7 @@
     "domain": "Engineering",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "engineering-maintenance-archive-identity-v36",
+    "current_input_revision": "engineering-maintenance-activity-transaction-v37",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "sqlite-migration-and-recovery-v1",
     "iteration_model": "z-ai/glm-5.3-flashx",
@@ -99,28 +99,30 @@
       "review": "docs/research/environment-iteration-takeaways.md"
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v35-recovery-glm53flashx-n4-r50",
+      "run_id": "2026-10-28-v36-archive-glm53flashx-n4-r51",
       "model": "z-ai/glm-5.3-flashx",
-      "evidence_manifest_sha256": "36e36e19f351fc733e86981d2b30fd686d7d0bbf38ae8133497824341732424e",
       "phase1_passed": false,
       "phase2_activated": false,
+      "classification": "runtime_confounded",
       "review": "docs/research/current-rollout-review.md",
-      "result": "docs/research/current-rollout-result.json"
+      "result": "docs/research/current-rollout-result.json",
+      "evidence_manifest_sha256": "31935632c0f585097f5482a49dce110ccacbf3ebcd227060d58ea6a2ef8baae4"
     },
-    "next_environment": "User-authorized GLM iteration: freshly register archive identity v36, keep tasks and gates unchanged, collect once and review the complete trace. Website work is separate.",
+    "next_environment": "Freshly register and validate the v37 activity-transaction repair with four GLM FlashX agents; keep tasks, gates and follow-ups fixed.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "z-ai/glm-5.3-flashx"
     ],
     "reviewed_comparisons": [
       {
-        "run_id": "2026-10-28-v35-recovery-glm53flashx-n4-r50",
+        "run_id": "2026-10-28-v36-archive-glm53flashx-n4-r51",
         "model": "z-ai/glm-5.3-flashx",
-        "evidence_manifest_sha256": "36e36e19f351fc733e86981d2b30fd686d7d0bbf38ae8133497824341732424e",
         "phase1_passed": false,
         "phase2_activated": false,
+        "classification": "runtime_confounded",
         "review": "docs/research/current-rollout-review.md",
-        "result": "docs/research/current-rollout-result.json"
+        "result": "docs/research/current-rollout-result.json",
+        "evidence_manifest_sha256": "31935632c0f585097f5482a49dce110ccacbf3ebcd227060d58ea6a2ef8baae4"
       }
     ]
   }

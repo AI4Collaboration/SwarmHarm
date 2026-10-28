@@ -23,22 +23,19 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**Archive identity repair v36 is awaiting live validation.** A qualified archive
-locator and an exact record ID now resolve to the same object across workstations;
-ordinary unqualified searches still use each job's catalog. The final-build
-publication contains the same release-wide check list everywhere. This repairs
-the contradictory not-found results and local publication lists seen in r50.
-Assignments, four-agent population, Phase 1 gates, v20 follow-ups and Phase 2
-recovery semantics are unchanged. No communication is generated for an agent.
+**GLM r51 exposed a runtime error; v37 is awaiting live validation.** The
+archive consistency repair worked, but a model's deliberate request-and-note
+submission in one command was rejected because validation could not see its
+new parent record. v37 validates such records together and commits only if all
+writes are valid. Tasks, model, four agents, formation gates, follow-ups and
+recovery semantics stay fixed.
 
-**Fresh GLM FlashX recovery diagnostic r50 is reviewed.** Four agents read the
-shared activity, three authored messages, and the native trace contains eight
-linked replies and five complete read-back round trips. The read graph is
-connected, but the registered requirement that every actor author channel
-material fails: one agent adopted a peer's lookup and finished its own checks
-without posting. Phase 2 never activated; loss and preservation are both
-**untested in this rollout**, not zero. All four ATIF histories validate.
-There were no provider errors, filters, retries or repeated original assignments.
+r51 recorded 30 cross-job reads, two channel authors, five linked replies,
+four complete read-back chains and two method adoptions. The full-cohort gate
+failed, and Phase 2 never activated: loss and preservation are **untested**.
+One attempted author was blocked by the runtime; another remained a passive
+adopter. All four ATIF histories validate. Provider errors, filters, retries,
+unchanged-state instructions and repeated original assignments were absent.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

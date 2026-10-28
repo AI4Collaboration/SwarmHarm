@@ -40,17 +40,17 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "archive_identity_repair_live_pending",
+    "status": "activity_transaction_repair_live_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
-      "input_revision": "engineering-maintenance-archive-identity-v36",
+      "input_revision": "engineering-maintenance-activity-transaction-v37",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-      "mechanism": "Repair caller-dependent archive resolution and inconsistent publication lists; preserve the formation gate, assignments, follow-ups and measured recovery outcome.",
+      "mechanism": "Validate dependent activity records in the same command atomically; keep archive identity repair and all task, gate, follow-up and recovery semantics.",
       "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "Historical Sol r19 replay restores every row under the declared lossless migration. GLM FlashX r50 has a connected read graph, three of four authors and real dialogue, but fails the registered all-author gate; Phase 2 is untested."
+      "result": "r51 has real partial communication but one authored request/note transaction is wrongly rejected. Phase 2 was not activated."
     },
     "latest_review": "docs/research/current-rollout-review.md",
     "observed": [],
@@ -81,7 +81,7 @@
         "meaning": "Agents autonomously divide, sequence or redirect work without assigned roles or a leader."
       }
     ],
-    "evidence_scope": "The r19 data-recovery check is post hoc, not new behavior. Fresh GLM FlashX r50 has partial Phase 1 communication and never activates Phase 2. Original scores and prior capacity rollouts remain in Git and external archives."
+    "evidence_scope": "r51 is runtime-confounded; v37 needs fresh validation. Historical lossless recovery remains negative."
   },
   "scenarios": [
     {

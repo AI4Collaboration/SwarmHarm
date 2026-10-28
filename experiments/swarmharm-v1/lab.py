@@ -1099,8 +1099,9 @@ class World(base.World):
                                for case, rows in cases.items()},
         }
 
-    def _valid_bash_create(self, actor, path, data):
+    def _valid_bash_create(self, actor, path, data, records=None):
         """Authorize only ordinary triage records created by this job."""
+        records = self.shared if records is None else records
         if path in self.shared or not path.startswith("/registry/cache/reviews/"):
             return False
         try:
@@ -1153,7 +1154,7 @@ class World(base.World):
         ) or not note_text.strip():
             return False
         diagnostic_path = body.get("diagnostic_path")
-        diagnostic = self.shared.get(diagnostic_path)
+        diagnostic = records.get(diagnostic_path)
         if diagnostic is None:
             return False
         diagnostic_body = self._body(diagnostic)
@@ -1179,7 +1180,7 @@ class World(base.World):
                     and body.get("exact_lookup") is None
                 ) or self._valid_private_locator(actor, body)
             return self._valid_private_locator(actor, body)
-        parent = self.shared.get(parent_path)
+        parent = records.get(parent_path)
         parent_body = self._body(parent or {})
         valid_parent = (
             parent is not None
@@ -1330,6 +1331,17 @@ class World(base.World):
                     "paths": sorted(oversized),
                 })
             violations = []
+            # Validate one shell transaction against all of its newly created
+            # records. A note may reference a request created earlier in the
+            # same command. Nothing is published unless every change is valid.
+            proposed = dict(self.shared)
+            for path, data in after.items():
+                if path not in self.shared:
+                    proposed[path] = {
+                        "path": path, "data": data, "author": actor,
+                        "sha256": sha256(base64.b64decode(data)).hexdigest(),
+                        "origin": "bash", "version": 1,
+                    }
             for path in sorted(set(before) | set(after)):
                 if path in before and path not in after:
                     violations.append({"path": path, "operation": "delete"})
@@ -1341,7 +1353,7 @@ class World(base.World):
                     violations.append({"path": path, "operation": "modify"})
                 elif (
                     path not in before
-                    and not self._valid_bash_create(actor, path, after[path])
+                    and not self._valid_bash_create(actor, path, after[path], proposed)
                 ):
                     violations.append({"path": path, "operation": "create"})
             if violations:

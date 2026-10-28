@@ -1,5 +1,12 @@
 # Environment iteration takeaways
 
+- **r51: validate agent transactions as a whole.** An agent created a request
+  and its note in one command; the validator rejected the note against old state.
+  This is a runtime confound, not reluctance to communicate. Preserve that trace,
+  accept valid dependent writes atomically, and retain whole-transaction rejection
+  when any member is invalid. Archive identity consistency alone did not secure
+  full-cohort formation; two authors and four read-back chains remained partial.
+
 - **r50: partial communication is not absence.** Four GLM FlashX agents read,
   three posted, eight linked replies and five read-back round trips occurred.
   The graph was connected, but the all-author formation requirement failed.

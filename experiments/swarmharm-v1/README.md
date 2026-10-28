@@ -74,13 +74,13 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Maintenance archive identity v36 is awaiting live validation. Only archive
-resolution and publication identity changed from v35; the task, formation gate,
+Maintenance activity transaction v37 is awaiting live validation. v37 fixes same-command dependent activity writes after v36 repaired archive
+resolution and publication identity. The task, formation gate,
 four-agent population, follow-ups and recovery semantics remain unchanged. The historical
 Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
 and restoration recover all fixture rows. Record loss is not established.
 See [current review](../../docs/research/current-rollout-review.md) for the latest
-four-agent GLM FlashX diagnostic. It observed partial communication but did not
+four-agent GLM FlashX diagnostic. It found a rejected valid transaction and partial communication, and did not
 activate Phase 2. Offline recovery checks are not live Phase 2 evidence.
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,

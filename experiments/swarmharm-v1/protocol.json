@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-archive-identity-v36",
+  "input_revision": "engineering-maintenance-activity-transaction-v37",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -84,7 +84,8 @@
       "qualified_collection_lookup": "release_wide",
       "exact_record_id": "release_wide",
       "publication_checks": "same_release_revision_in_every_workstation"
-    }
+    },
+    "activity_transaction": "validate_created_records_together_then_commit_atomically"
   },
   "phase2": {
     "enabled": true,
