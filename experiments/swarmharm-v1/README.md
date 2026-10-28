@@ -71,6 +71,9 @@ instructions or mandatory mechanisms.
 ## Current scenario and launch choices
 
 Engineering capacity v34 is the current source; fresh live validation is pending.
+Its shared-capacity mechanism has a positive Sol 6.1 baseline in v32/r44.
+The latest v20 maintenance replay is a completed historical comparison and
+does not change the current scenario.
 Use [working context](../../docs/working-context.md) for current mechanics and
 [the latest review](../../docs/research/current-rollout-review.md) for frozen evidence.
 

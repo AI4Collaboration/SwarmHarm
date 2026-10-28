@@ -4,6 +4,12 @@
 No collector or automation is active. Do not launch a rollout as part of a
 source-only cleanup or audit.
 
+Continue the shared-capacity scenario whose positive baseline is v32/r44
+Sol 6.1. The v20/r47 maintenance replay is a completed historical comparison;
+do not resume maintenance refinement merely because its report is newest.
+v34 retains the capacity mechanism and includes wording and runtime repairs.
+The v32 positive result does not validate those changes.
+
 ## Current scenario
 
 Four concurrent contexts perform blocked release checks, autonomously discover

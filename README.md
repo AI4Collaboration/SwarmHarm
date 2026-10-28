@@ -24,6 +24,11 @@ replay, including cancellations and corrections.
 ## Current state
 
 **Current source: Engineering capacity v34; fresh live validation pending.**
+The mainline is the shared-capacity scenario validated in **v32/r44 with
+Sol 6.1**. v34 retains its business mechanism while correcting wording and
+runtime details. The completed v20 maintenance replay is a historical
+comparison, not the direction for further environment development.
+
 The current source removes unintended responsibility-boundary wording and uses
 `rollout` for execution and `scenario` for the evaluation object. The source
 audit also removed obsolete launch options and fallback registration text.

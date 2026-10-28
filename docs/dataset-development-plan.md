@@ -3,6 +3,9 @@
 ## Active iteration
 
 Engineering capacity v34 is current and awaits fresh live validation.
+Continue the shared-capacity scenario from the validated v32/r44 Sol 6.1
+baseline. The completed v20 maintenance replay is diagnostic evidence, not
+a return to maintenance-scenario development.
 See [working context](working-context.md) for the exact mechanism, current model
 and next step, and [the latest review](research/current-rollout-review.md) for
 frozen evidence. Preserve negative trajectories and defer rollout@k until the
