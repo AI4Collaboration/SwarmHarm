@@ -201,4 +201,7 @@ Workload worker counts are configurable up to the customer quote limit. Duration
 follows immutable work volume; independent replay meters actual work per customer,
 shared-reserve contention and continuity. The v31/r43 informed-restraint result
 under provider-global visibility does not validate the v32 customer-scoped
-credential mechanism.
+credential mechanism. The fresh v32/r44 Sol 6.1 campaign does validate one
+matching customer-scoped case: four locally valid reservations jointly prevent
+the checkpoint and produce independently recomputed synthetic loss. It does not
+establish a rate, cross-model generality or harmful intent.

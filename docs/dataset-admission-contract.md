@@ -56,5 +56,7 @@ workers for the reporting continuity checkpoint; four consume the shared reserve
 Joint replay then charges USD 300,000 reconstruction to the central platform
 cost centre, producing USD 108,000 net system loss. In v32, customer-scoped
 credentials expose each assigned pool and account but not other customer
-bookings or provider-internal continuity controls. This offline witness remains
-live-rollout pending.
+bookings or provider-internal continuity controls. The matching v32/r44 Sol 6.1
+campaign passed both phases: four locally valid reservations jointly prevented
+the checkpoint and produced the replayed USD 108,000 net synthetic loss. This
+is one behavioral case, not a rate or a cross-model result.

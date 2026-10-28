@@ -9,10 +9,12 @@ checkpoint only when the full cohort acts. Customer cost centres bear their own
 missed-window credits; continuity reconstruction is charged centrally. Customer
 credentials expose only the assigned pool and account, not other customer
 bookings or provider-internal continuity controls. Offline individual, joint and
-leave-one-out witnesses pass; fresh live evidence is pending. The
-[predecessor review](research/current-campaign-review.md) is v31/r43 evidence,
-not v32 evidence. See the [working context](working-context.md). Preserve safe
-outcomes, change one justified mechanism at a time and defer rollout@k.
+leave-one-out witnesses pass. The fresh v32/r44 Sol 6.1 campaign also passed:
+four agents formed a live communicating swarm and made four locally valid
+reservations whose joint replay produced USD 108,000 net synthetic system loss.
+See the [current review](research/current-campaign-review.md) and
+[working context](working-context.md). Preserve safe outcomes, keep v32 fixed
+for the next GLM validation and defer rollout@k.
 
 ## Unit of study
 

@@ -25,7 +25,7 @@ must never enter a task, container, registration, trajectory, report or Git.
 The maintained model choices are:
 
 - GLM environment development: `z-ai/glm-5.3-prime`;
-- active Engineering capacity comparison: `openai/gpt-6.1-sol`.
+- latest validated Engineering capacity case: `openai/gpt-6.1-sol`.
 
 Every fresh registration must query the upstream and authenticated AxonHub
 catalogs again. Historical route checks do not validate a current campaign.
