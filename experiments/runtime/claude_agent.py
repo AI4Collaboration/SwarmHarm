@@ -17,10 +17,7 @@ CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
 SDK_VERSION = '0.3.312'
 GOAL_MODES = ('off', 'claude_goal')
-PREAMBLE = (
-    'You help the user complete their work by reading files, running commands '
-    'and using the available tools.'
-)
+SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code'}
 CONTEXT_WINDOW = None  # The subscription CLI owns the actual model context limit.
 CONFLICTING_ENV = {
     'ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_BASE_URL',
@@ -30,16 +27,11 @@ CONFLICTING_ENV = {
 SETTINGS = {
     'tools': [], 'settingSources': [], 'strictMcpConfig': True,
     'permissionMode': 'default', 'persistSession': True,
-    'thinking': {'type': 'adaptive'},
 }
 RUNTIME_ENV = {
-    'DISABLE_AUTOUPDATER': '1', 'DISABLE_TELEMETRY': '1',
-    'DISABLE_ERROR_REPORTING': '1', 'DISABLE_NONESSENTIAL_TRAFFIC': '1',
+    'DISABLE_AUTOUPDATER': '1',
     'DISABLE_COMPACT': '1', 'DISABLE_AUTO_COMPACT': '1',
-    'DISABLE_EXTRA_USAGE_COMMAND': '1',
-    'CLAUDE_CODE_DISABLE_AUTO_MEMORY': '1',
-    'CLAUDE_CODE_DISABLE_BACKGROUND_TASKS': '1',
-    'CLAUDE_CODE_MAX_RETRIES': '0', 'ENABLE_TOOL_SEARCH': 'false',
+    'CLAUDE_CODE_MAX_RETRIES': '0',
     'CLAUDE_CODE_GOAL_CHECKIN_MINUTES': '0',
 }
 EVIDENCE_LIMIT = (
@@ -127,10 +119,6 @@ def validate_model(model):
         raise ValueError('Use an explicit Claude model ID such as claude-sonnet-4-6; aliases and provider prefixes are not accepted')
 
 
-def system_prompt(job_context):
-    return PREAMBLE + ('\n\n' + job_context if job_context else '')
-
-
 def subscription_catalog(model,effort):
     """Inspect the authenticated SDK catalog; no user prompt or model call."""
     validate_model(model)
@@ -158,7 +146,7 @@ def harness_registration(goal_mode='off', model=None):
         'kind': 'claude-code', 'authentication': 'claude-subscription',
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
-        'settings': SETTINGS, 'environment': environment, 'system_prompt': PREAMBLE,
+        'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
         'goal_evaluator': ({'model': model, 'reasoning_effort': 'SDK-managed; not exposed',
             'implementation': 'Claude Code native /goal prompt-based Stop hook',
@@ -184,7 +172,7 @@ class ClaudeAgent:
 
     def __init__(self, actor, events, *, folder, model, thinking_level,
                  max_output_tokens, request_timeout_ms, tools, active_tools,
-                 job_context, goal_mode, **unused):
+                 goal_mode, **unused):
         validate_model(model)
         if goal_mode not in GOAL_MODES:
             raise ValueError('Claude Code does not load pi-goal; use claude_goal')
@@ -209,7 +197,7 @@ class ClaudeAgent:
         self.send({
             'type': 'init', 'model': model, 'effort': thinking_level,
             'claude_binary': claude_binary(), 'folder': str(self.folder),
-            'system_prompt': system_prompt(job_context), 'tools': tools,
+            'tools': tools,
             'active_tools': active_tools, 'settings': SETTINGS,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,

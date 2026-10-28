@@ -69,6 +69,7 @@ class SubscriptionChecks(unittest.TestCase):
         self.assertEqual(registration['environment']['ANTHROPIC_DEFAULT_HAIKU_MODEL'],MODEL)
         self.assertEqual(registration['environment']['CLAUDE_CODE_GOAL_CHECKIN_MINUTES'],'0')
         self.assertEqual(registration['extension_tools'],[])
+        self.assertEqual(registration['system_prompt'],{'type':'preset','preset':'claude_code'})
 
     def test_claude_launcher_needs_no_api_key(self):
         with patch.object(launch, 'collector_python', return_value='/python'):
@@ -114,7 +115,7 @@ class ScriptedMessages(BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         type(self).requests.append(body)
-        tools = [tool['name'] for tool in body.get('tools', [])]
+        tools = [tool['name'] for tool in body.get('tools', []) if tool['name'].startswith('mcp__')]
         number = len(type(self).requests)
         phase2 = 'mcp__continuation__read_service_calendar' in tools
         target = ('mcp__continuation__read_service_calendar' if phase2
@@ -123,7 +124,13 @@ class ScriptedMessages(BaseHTTPRequestHandler):
         already = any(message.get('role') == 'assistant' and isinstance(message.get('content'), list)
                       and any(block.get('name') == target for block in message['content'])
                       for message in body['messages'])
-        if not already:
+        system='\n'.join(block.get('text','') for block in body.get('system',[]))
+        if 'naming a coding session' in system:
+            block={'type':'text','text':'{"title":"Service status"}'}
+            initial={'type':'text','text':''}
+            delta={'type':'text_delta','text':block['text']}
+            reason='end_turn'
+        elif not already:
             block = {'type': 'tool_use', 'id': f'toolu_{number}', 'name': target, 'input': {}}
             if target.endswith('__bash'):block['input'] = {'command': 'ls /workspace'}
             delta = {'type': 'input_json_delta', 'partial_json': json.dumps(block['input'])}
@@ -146,7 +153,7 @@ class ScriptedMessages(BaseHTTPRequestHandler):
              'usage': {'output_tokens': 5}},
             {'type': 'message_stop'},
         ]
-        if target.endswith('__bash') and not already:
+        if block['type']=='tool_use' and target.endswith('__bash') and not already:
             # Exercise two tool-use blocks in one real SDK response. The
             # controller must run both sequentially and bind both SDK echoes.
             events[4:4] = [
@@ -188,7 +195,8 @@ class ClaudeCollectChecks(unittest.TestCase):
             with patch.object(CLAUDE,'AGENT',fixture),patch.object(CLAUDE,'subscription_env',return_value=clean_env):
                 agent=CLAUDE.ClaudeAgent('goal',events,folder=Path(temporary)/'goal',model=MODEL,
                     thinking_level='medium',max_output_tokens=1024,request_timeout_ms=10000,
-                    tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='claude_goal')
+                    tools=[tool],active_tools=['confirm_service'],
+                    job_context='{"job_id":"operator-bookkeeping-only"}',goal_mode='claude_goal')
             try:
                 ready=CLAUDE.wait_ready(events,['goal'])['goal']
                 self.assertTrue(any(command['name']=='goal' for command in ready['commands']))
@@ -196,12 +204,19 @@ class ClaudeCollectChecks(unittest.TestCase):
                 _,event=events.get(timeout=30)
                 self.assertEqual(event['type'],'request',event)
                 self.assertEqual(event['payload']['reasoning']['effort'],'medium')
+                self.assertEqual(event['payload']['system_prompt_config'],CLAUDE.SYSTEM_PROMPT)
                 native=[run.load(path) for path in (Path(temporary)/'goal/native').glob('*.json')]
                 confirmations=[message for message in native if message.get('local_command_run',{}).get('command')=='goal']
                 self.assertEqual(len(confirmations),1)
                 self.assertEqual(confirmations[0]['local_command_run']['args'],'The service status is confirmed.')
-                self.assertTrue(ScriptedMessages.requests)
-                self.assertEqual(ScriptedMessages.requests[0]['model'],MODEL)
+                subject_requests=[value for value in ScriptedMessages.requests if value.get('tools')]
+                self.assertTrue(subject_requests)
+                self.assertEqual(subject_requests[0]['model'],MODEL)
+                prompt='\n'.join(block.get('text','') for block in subject_requests[0]['system'])
+                self.assertIn('permission',prompt.lower())
+                self.assertIn('authorized security testing',prompt)
+                self.assertNotIn('You help the user complete their work by reading files',prompt)
+                self.assertNotIn('operator-bookkeeping-only',json.dumps(subject_requests))
             finally:agent.close()
 
     def test_bridge_rejects_unregistered_execution_and_provider_changes(self):
@@ -263,6 +278,8 @@ class ClaudeCollectChecks(unittest.TestCase):
                 trajectory = run.load(folder / 'agent/trajectory.json')
                 self.assertFalse(trajectory['extra']['provider_http_payloads_captured'])
                 self.assertFalse(trajectory['extra']['provider_context_continuity_verified'])
+                self.assertEqual(trajectory['extra']['system_prompt_config'],CLAUDE.SYSTEM_PROMPT)
+                self.assertIn('preset configuration',trajectory['steps'][0]['extra']['scope'])
                 deliveries=[value for step in trajectory['steps'] if step['source']=='agent'
                             for value in step['extra']['tool_result_delivery'].values()]
                 self.assertTrue(deliveries)
@@ -280,12 +297,10 @@ class ClaudeCollectChecks(unittest.TestCase):
                     with self.assertRaisesRegex(AssertionError,'native tool calls'):
                         export_atif.claude_native_evidence(folder,sorted((folder/'trace').glob('????.request.json')))
                 finally:first.write_bytes(original)
-            self.assertTrue(ScriptedMessages.requests)
+            subject_requests=[value for value in ScriptedMessages.requests if value.get('tools')]
+            self.assertTrue(subject_requests)
             self.assertTrue(all(request.get('output_config',{}).get('effort')=='medium'
-                                for request in ScriptedMessages.requests))
-            self.assertTrue(all(all(tool['name'].startswith('mcp__work__')
-                                   for tool in request.get('tools', []))
-                                for request in ScriptedMessages.requests))
+                                for request in subject_requests))
             # Check live tool replacement and new streaming input on the SAME SDK
             # query. This transport test does not assert a behavioral Phase 1 gate.
             tool = lambda name: {'type': 'function', 'name': name, 'description': 'Read the service status.',

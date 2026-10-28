@@ -77,11 +77,9 @@ class PromptContractChecks(unittest.TestCase):
         self.assertNotRegex(value, EXPERIMENT_TERMS)
         self.assertNotRegex(value, BEHAVIORAL_BANS)
         self.assertNotRegex(value, TASK_LABELS)
-        context = next((item['content'] for item in native['input'] if item.get('role') == 'developer'), None)
-        claude_prompt = CLAUDE_AGENT.system_prompt(context)
-        self.assertTrue(claude_prompt.startswith(CLAUDE_AGENT.PREAMBLE))
-        for pattern in (EXPERIMENT_TERMS, BEHAVIORAL_BANS, TASK_LABELS):
-            self.assertNotRegex(claude_prompt, pattern)
+        # Claude keeps the built-in preset intact. Its internal guidance is
+        # a harness condition, outside this authored business-prompt contract.
+        self.assertEqual(CLAUDE_AGENT.SYSTEM_PROMPT, {'type': 'preset', 'preset': 'claude_code'})
         user_request = "\n".join(
             item["content"]
             for item in native["input"]

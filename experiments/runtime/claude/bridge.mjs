@@ -2,44 +2,27 @@
 import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
+import { PassThrough } from "node:stream";
 import { z } from "zod";
 
 const PREFIX = /^mcp__(work|continuation)__/;
+const SYSTEM_PROMPT = { type: "preset", preset: "claude_code" };
 const copy = (value) => structuredClone(value);
 class ProviderHold extends Error {}
 const canonical = (value) => JSON.stringify(value, (_, entry) =>
   entry && typeof entry === "object" && !Array.isArray(entry)
     ? Object.fromEntries(Object.entries(entry).sort(([a], [b]) => a.localeCompare(b))) : entry);
 
-class InputQueue {
-  items = [];
-  waiting = null;
-  ended = false;
-  push(item) {
-    if (this.ended) throw new Error("Session input is closed");
-    if (this.waiting) { this.waiting({ value: item, done: false }); this.waiting = null; }
-    else this.items.push(item);
-  }
-  next() {
-    if (this.items.length) return Promise.resolve({ value: this.items.shift(), done: false });
-    if (this.ended) return Promise.resolve({ done: true });
-    return new Promise((resolve) => { this.waiting = resolve; });
-  }
-  end() { this.ended = true; this.waiting?.({ done: true }); this.waiting = null; }
-  [Symbol.asyncIterator]() { return this; }
-}
-
 export class ClaudeBridge {
   constructor(sdk, channel) {
     this.sdk = sdk;
     this.channel = channel;
-    this.input = new InputQueue();
+    this.input = new PassThrough({ objectMode: true });
     this.sessionId = randomUUID();
     this.turn = 0;
     this.nativeIndex = 0;
     this.history = [];
     this.pendingInputs = [];
-    this.goalCommands = [];
     this.calls = new Map();
     this.callWaiters = new Set();
     this.toolChain = Promise.resolve();
@@ -59,7 +42,8 @@ export class ClaudeBridge {
     const cwd = join(config.folder, "empty-cwd");
     mkdirSync(cwd, { recursive: true });
     this.active = new Set(config.active_tools);
-    this.history.push({ role: "system", content: config.system_prompt });
+    // A configuration descriptor, never an invented copy of the SDK's prompt.
+    this.history.push({ role: "system", content: JSON.stringify(SYSTEM_PROMPT) });
     this.servers.work = this.server("work", config.active_tools);
     this.session = this.sdk.query({
       prompt: this.input,
@@ -67,10 +51,9 @@ export class ClaudeBridge {
         ...config.settings, cwd, model: config.model, effort: config.effort,
         pathToClaudeCodeExecutable: config.claude_binary,
         env: { ...process.env }, sessionId: this.sessionId,
-        systemPrompt: config.system_prompt,
+        systemPrompt: copy(SYSTEM_PROMPT),
         includePartialMessages: true,
         extraArgs: { "replay-user-messages": null },
-        mcpServers: this.servers,
         allowedTools: ["mcp__work__*", "mcp__continuation__*"],
         canUseTool: async (name, args) => this.active.has(name.replace(PREFIX, "")) && PREFIX.test(name)
           ? { behavior: "allow", updatedInput: args }
@@ -86,6 +69,7 @@ export class ClaudeBridge {
       },
     });
     await this.session.initializationResult();
+    await this.syncTools();
     const commands = config.goal_mode === "claude_goal" ? await this.session.supportedCommands() : [];
     if (config.goal_mode === "claude_goal" && !commands.some((command) => command.name === "goal" && command.builtin)) {
       this.session.close();
@@ -100,7 +84,7 @@ export class ClaudeBridge {
     this.channel.emit({ type: "ready", session_id: this.sessionId,
       session_file: join(config.folder, "session.jsonl"),
       native_dir: join(config.folder, "native"),
-      active_tools: [...this.active], system_prompt: config.system_prompt,
+      active_tools: [...this.active], system_prompt: copy(SYSTEM_PROMPT),
       commands, harness: "claude-code" });
   }
 
@@ -114,6 +98,11 @@ export class ClaudeBridge {
     }) });
   }
 
+  async syncTools() {
+    const { errors } = await this.session.setMcpServers(this.servers);
+    if (Object.keys(errors).length) throw new Error("Claude MCP registration failed");
+  }
+
   async setTools(names) {
     if ([...this.active].some((name) => !names.includes(name))) throw new Error("Tools may only be added at the phase transition");
     const added = names.filter((name) => !this.active.has(name));
@@ -121,35 +110,28 @@ export class ClaudeBridge {
     if (this.servers.continuation) throw new Error("Phase 2 tools were already installed");
     this.servers.continuation = this.server("continuation", added);
     this.active = new Set(names);
-    const result = await this.session.setMcpServers(this.servers);
-    if (Object.keys(result.errors).length) throw new Error("Claude MCP phase transition failed");
+    await this.syncTools();
     this.native({ type: "controller_tools", active_tools: names, session_id: this.sessionId });
   }
 
   prompt(texts) {
     for (const text of texts) {
-      if (text.startsWith("/goal ")) {
-        if (this.config.goal_mode !== "claude_goal") throw new Error("Unregistered native goal command");
-        const condition = text.slice(6);
-        if (!condition.trim() || condition.length > 4000) throw new Error("Invalid native goal condition");
-        this.goalCommands.push(condition);
-      }
       const message = { type: "user", session_id: this.sessionId, uuid: randomUUID(),
         parent_tool_use_id: null, message: { role: "user", content: text } };
       this.native({ type: "controller_input", input: message });
       this.pendingInputs.push({ role: "user", content: text });
-      this.input.push(message);
+      this.input.write(message);
     }
   }
 
   start(message, source) {
     if (this.current) throw new Error("Overlapping Claude model messages");
-    if (this.goalCommands.length) throw new Error("Claude started inference before confirming the registered native goal");
     if (message.model !== this.config.model) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
     this.history.push(...this.pendingInputs.splice(0));
     this.current = { id: message.id, turn: ++this.turn, blocks: [], usage: message.usage ?? {}, source };
     this.channel.emit({ type: "request", turn: this.turn, attempt: 1, payload: {
       record_kind: "controller_projection", model: this.config.model,
+      system_prompt_config: copy(SYSTEM_PROMPT),
       input: copy(this.history), reasoning: { effort: this.config.effort },
       tools: this.config.tools.filter((tool) => this.active.has(tool.name)),
       sdk_message_id: message.id, native_record: source,
@@ -228,7 +210,9 @@ export class ClaudeBridge {
   }
 
   async consume() {
-    for await (const message of this.session) {
+    // Iterate Query itself so disposal cannot wait behind a pending CLI read.
+    // Same lifecycle pattern as T3 Code's Claude query runner.
+    for await (const message of { [Symbol.asyncIterator]: () => this.session }) {
       const source = this.native(message);
       if (message.session_id && message.session_id !== this.sessionId) throw new Error("Claude changed session identity");
       if (message.parent_tool_use_id) throw new Error("Unexpected nested Claude session");
@@ -244,18 +228,7 @@ export class ClaudeBridge {
         }
         else if (event.type === "message_stop") this.finish(source);
       } else if (message.type === "assistant") {
-        if (message.local_command_run) {
-          const command = message.local_command_run;
-          const expected = this.goalCommands[0];
-          if (this.config.goal_mode !== "claude_goal" || command.command !== "goal"
-              || expected === undefined || command.args !== expected
-              || message.message.model !== "<synthetic>"
-              || message.message.content.some((block) => block.type !== "text")
-              || !message.message.content.map((block) => block.text).join("\n").startsWith(`Goal set: ${expected}`))
-            throw new Error("Claude did not confirm the registered native goal");
-          this.goalCommands.shift();
-          continue; // Local command output is retained natively, not a model answer.
-        }
+        if (message.local_command_run) continue;
         if (message.error) throw new ProviderHold(`Claude assistant error: ${message.error}`);
         if (message.supersedes?.length) throw new ProviderHold("Claude superseded prior messages");
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");

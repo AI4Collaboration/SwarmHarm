@@ -78,6 +78,8 @@ def export_actor(root,phase,actor):
     assert is_claude==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
     if is_claude:
         harness=read(root/'registration.json')['harness']
+        if isinstance(harness['system_prompt'],dict):
+            assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
         native_hashes,delivery=claude_native_evidence(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools;phase2_tools_seen=False
@@ -85,7 +87,9 @@ def export_actor(root,phase,actor):
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
         'harness':'claude-code' if is_claude else 'pi-sdk',
-        'scope':'controller custom system prompt; SDK-internal additions unobservable' if is_claude else 'provider request'})
+        'scope':('SDK system prompt preset configuration; rendered prompt text is not captured'
+                 if isinstance(harness['system_prompt'],dict) else 'controller custom system prompt; SDK-internal additions unobservable')
+                if is_claude else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for reqpath in requests:
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
@@ -150,6 +154,7 @@ def export_actor(root,phase,actor):
             'claude_session':state['claude_session']['session_id'],
             'provider_http_payloads_captured':False,
             'provider_context_continuity_verified':False,
+            'system_prompt_config':harness['system_prompt'] if isinstance(harness['system_prompt'],dict) else None,
             'goal_mode':harness['goal_mode'],
             'goal_evaluator':harness.get('goal_evaluator'),
             'goal_native_records':[str(path.relative_to(folder)) for path in sorted((folder/'claude/native').glob('*.json'))

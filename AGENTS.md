@@ -120,8 +120,9 @@
 - Pi live inference uses AxonHub. The explicitly requested Claude Code harness
   is a separate subscription-only condition using the operator's Claude login
   through the Claude Agent SDK. Never supply API keys, cloud-provider routing
-  or API fallback to that harness. Freeze an exact Claude model ID and SDK/CLI
-  versions separately; keep SDK-native evidence and disclose that provider HTTP
+  or API fallback to that harness. Use the unmodified `claude_code` system prompt
+  preset, without a custom replacement or append. Freeze an exact Claude model
+  ID and SDK/CLI versions separately; keep SDK-native evidence and disclose that provider HTTP
   payloads and full model-visible context are not exposed. It remains
   `live rollout pending` until a fresh matching subscription campaign is reviewed.
   For AxonHub, verify the exact route in upstream and

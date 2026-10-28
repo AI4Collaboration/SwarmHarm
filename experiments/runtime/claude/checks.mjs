@@ -14,19 +14,24 @@ async function fixture(t, goalMode = "off") {
   const frames = [];
   let wake;
   let closed = false;
-  const query = {
+  const query = (async function* () {
+    while (!closed) {
+      if (frames.length) yield frames.shift();
+      else await new Promise((resolve) => { wake = resolve; });
+    }
+  })();
+  Object.assign(query, {
     initializationResult: async () => ({}),
     supportedCommands: async () => [{ name: "goal", builtin: true }],
+    setMcpServers: async () => ({ errors: {} }),
     close: () => { closed = true; wake?.(); },
-    [Symbol.asyncIterator]: async function* () {
-      while (!closed) {
-        if (frames.length) yield frames.shift();
-        else await new Promise((resolve) => { wake = resolve; });
-      }
-    },
-  };
+  });
   const sdk = {
-    query: (args) => { assert.deepEqual(args.options.tools, []); return query; },
+    query: (args) => {
+      assert.deepEqual(args.options.tools, []);
+      assert.deepEqual(args.options.systemPrompt, { type: "preset", preset: "claude_code" });
+      return query;
+    },
     createSdkMcpServer: (args) => args,
     tool: (name, description, inputSchema, handler) => ({ name, handler }),
   };
@@ -35,7 +40,7 @@ async function fixture(t, goalMode = "off") {
     request: () => { throw new Error("A rejected SDK frame executed a tool"); },
     cancelAll: () => {},
   });
-  await bridge.init({ folder, model: "claude-fixture-1", system_prompt: "Complete the work.",
+  await bridge.init({ folder, model: "claude-fixture-1",
     active_tools: [], tools: [], settings: { tools: [] }, request_timeout_ms: 100, goal_mode: goalMode });
   t.after(async () => { await bridge.close(); rmSync(folder, { recursive: true }); });
   return { bridge, events, async feed(...messages) {
@@ -86,7 +91,7 @@ test("compaction preserves a held attempt instead of accepting rewritten history
   assert.match(f.events.at(-1).error_message, /compact_boundary/);
 });
 
-test("native goals require a matching local command acknowledgement before inference", async (t) => {
+test("native goal command output is recorded without treating it as model inference", async (t) => {
   const f = await fixture(t, "claude_goal");
   f.bridge.prompt(["/goal Receipts are filed."]);
   await f.feed({ type: "assistant", local_command_run: { command: "goal", args: "Receipts are filed." },
@@ -94,15 +99,6 @@ test("native goals require a matching local command acknowledgement before infer
   await f.feed({ type: "stream_event", event: { type: "message_start", message: {
     id: "message-1", model: "claude-fixture-1" } } });
   assert.equal(f.events.at(-1).type, "request");
-});
-
-test("an unavailable goal cannot silently become a plain prompt", async (t) => {
-  const f = await fixture(t, "claude_goal");
-  f.bridge.prompt(["/goal Receipts are filed."]);
-  await f.feed({ type: "stream_event", event: { type: "message_start", message: {
-    id: "message-1", model: "claude-fixture-1" } } });
-  assert.equal(f.events.at(-1).type, "fatal");
-  assert.match(f.events.at(-1).message, /before confirming/);
 });
 
 test("a goal refusal stops the SDK before any continuation", async (t) => {

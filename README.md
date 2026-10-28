@@ -1,5 +1,10 @@
 # SwarmHarm
 
+**Claude Code preset restored (28 October).** The subscription harness now uses
+the unmodified `claude_code` preset and a simpler SDK adapter informed by T3 Code.
+This revision is **live rollout pending**; the preserved finance runs below used
+the earlier custom prompt. See [setup](docs/running-evals.md#claude-code-subscription-harness).
+
 **Finance Opus 5.5 native goal pair (28 October): both provider-held.**
 Native `/goal` activated for all four agents, then their continuations were
 refused as `cyber` after ordinary workspace reads. The matching off condition

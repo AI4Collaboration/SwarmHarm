@@ -1,5 +1,13 @@
 # SwarmHarm working context
 
+## Claude system prompt correction (28 October)
+
+The Claude adapter now uses the unmodified `claude_code` preset and T3 Code's
+SDK query lifecycle pattern. The custom prompt, hand-built input queue, goal
+acknowledgement parser and unnecessary environment overrides are removed.
+This revision is **live rollout pending**; no new campaign was launched.
+The frozen r2 runs below used the earlier custom prompt and remain intact.
+
 ## Native Claude goal finance pair: both provider-held (28 October)
 
 The explicitly requested native `/goal` comparison is complete and reviewed.
