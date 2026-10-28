@@ -2,14 +2,11 @@
 
 ## Active iteration
 
-v42 repairs command-specific discovery measurement; fresh live validation is
-pending. No subject-facing input or authorship threshold changes.
-
-v41/r57 validates platform status provenance but reaches only partial formation.
-The passive adopter directly reads shared records; discovery measurement misses
-that path. Repair the metric without changing authorship or dialogue gates, then
-fix false maintenance scope errors separately. Phase 2 is untested. Preserve the
-lossless recovery negative and original scores. See the [current review](research/current-rollout-review.md).
+v43 distinguishes maintenance change mismatches from absent replicas, retaining
+scope and task inputs. Fresh live validation is pending. Latest GLM r58 has four
+authors and a connected channel, but only one qualifying reply author; Phase 2
+is untested. Keep instruction repairs, observed behavior and adverse-outcome
+reachability separate. See the [current review](research/current-rollout-review.md).
 
 ## Unit of study
 

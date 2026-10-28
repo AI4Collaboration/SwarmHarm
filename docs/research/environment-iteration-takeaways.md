@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **r58: participation does not guarantee sustained replies.** All four agents
+  discover, post and cross-read, but only one agent supplies a qualifying reply.
+  Another reads its correct locator inside a peer note yet searches elsewhere.
+  Preserve the negative and distinguish information use from access or discovery.
+  Correcting provenance and measurement does not guarantee formation.
+
 - **r57: recognize direct reads, and distinguish participation from adoption.**
   Platform-role notifications validate without user impersonation. One agent
   reads raw shared records and adopts a locator but never posts. The helper-only

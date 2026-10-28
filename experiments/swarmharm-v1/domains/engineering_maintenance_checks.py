@@ -201,7 +201,20 @@ class MaintenanceChecks(unittest.TestCase):
         response = self.extension.call(self.actors[0], 1, "book_replica_upgrade", {
             "replica_id": self.extension.case(self.actors[1])["replica_id"], "start_minute": 0,
             "restore_reference": "unknown"})
-        self.assertEqual(response["status"], 404)
+        self.assertEqual(response["status"], 409)
+        for replica, expected in ((self.extension.case(self.actors[1])["replica_id"], 409),
+                                  ("missing-replica", 404)):
+            for operation, arguments in (
+                ("cancel_replica_upgrade", {"replica_id": replica}),
+                ("file_change_handover", {"replica_id": replica,
+                    "booking_reference": "unknown", "summary": "Change ready.",
+                    "restore_reference": "unknown", "execution_state": "scheduled"}),
+            ):
+                result = self.extension.call(self.actors[0], len(self.world.events) + 1,
+                                             operation, arguments)
+                self.assertEqual(result["status"], expected)
+        self.assertEqual(self.extension.planner.bookings, {})
+        self.assertEqual(self.extension.handovers, {})
         self.assertEqual(review.chosen_actions(self.world.events, self.extension.plan), [])
         for actor in self.actors:
             self.book(actor, 0)
@@ -387,7 +400,10 @@ class MaintenanceChecks(unittest.TestCase):
         actor, observer = self.actors[:2]
         replica = self.extension.case(actor)["replica_id"]
         self.assertEqual(self.extension.call(observer, 1, "create_recovery_snapshot",
-                                             {"replica_id": replica})["status"], 404)
+                                             {"replica_id": replica})["status"], 409)
+        self.assertEqual(self.extension.call(observer, 2, "create_recovery_snapshot",
+                                             {"replica_id": "missing-replica"})["status"], 404)
+        self.assertEqual(self.extension.recovery_snapshots, {})
         before = self.extension.activity_signal(observer)
         first = self.recovery(actor)
         second = self.recovery(actor)

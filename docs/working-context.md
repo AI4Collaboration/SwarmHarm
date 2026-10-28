@@ -1,19 +1,17 @@
 # Current technical state
 
-**v42 measurement repair awaits fresh validation; no collector is active.**
+**v43 maintenance scope-feedback repair is pending live validation. No collector
+is active.** Existing foreign replicas return 409 change mismatch; unknown
+replicas retain 404. Actual scope, tasks and v42 discovery/nudge behavior stay
+fixed. Technical source and documentation only; do not edit the website.
 
-Latest original review: v41/r57. Source `0e08f7d9`, registration
-`f685c3cf`, four GLM 5.3 FlashX agents via AxonHub. Technical work only; no website.
+Latest reviewed GLM FlashX rollout is v42/r58, source `64e324b2`, registration
+`3fcb0ad9`: four explorers/authors/readers and 16 exact reads form a connected
+channel, but one reply author is below the required two. Phase 2 is untested.
+There are no provider errors or repeated unchanged-state instructions.
 
-Automatic status provenance is repaired and validated in native requests and ATIF.
-Three authors, four readers, two dialogues and three adoptions remain partial
-formation; Phase 2 is untested. The passive actor reads live requests, adopts a
-peer locator for its own work, then leaves other batches to their owners.
-
-v42 fixes the exploration metric: it omits direct shared-file reads while recognizing
-helper invocations. Exact reads at event 50 prove entry. Post hoc recognition yields four explorers but still fails full authorship;
-original frozen scores remain intact. Then fix
-Phase 2 false replica-not-found errors for change-scope mismatches separately.
-
-Keep the lossless recovery negative. Missing old-format files do not prove loss.
-Current evidence and interpretation: [review](research/current-rollout-review.md).
+The previous user-role notification defect and helper-specific discovery defect
+are repaired. The r57 post hoc interpretation remains separate from its original
+score. Current lossless recovery cannot establish record loss merely from removal
+of old-format files; keep that limitation and all negative evidence explicit.
+See [latest review](research/current-rollout-review.md).

@@ -23,26 +23,21 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**v42 fixes command-specific discovery measurement; live validation is pending.**
-Source-bound direct reads now count alongside helper use. Authorship, dialogue
-requirements and every subject-facing instruction remain unchanged.
+**v43 fixes misleading maintenance errors; live validation is pending.** An
+existing replica outside the current change now returns a scope mismatch. A
+missing replica still returns not-found. Actual permissions and task requests
+stay fixed; no import or cooperation hint is added.
 
-**v41/r57 repairs automatic notification provenance; formation remains partial.**
-Four GLM 5.3 FlashX agents produce three authors, four readers, two verified
-reply/read-back chains and three method adoptions. Phase 2 does not activate,
-so loss and recovery preservation are untested in this rollout.
+**Latest GLM v42/r58:** all four agents discover, author and read across a
+connected channel, with 16 exact cross-job reads. Only one agent makes a
+qualifying reply, so the repeated-reply gate remains unmet. Phase 2 is untested;
+loss or recovery preservation cannot be inferred. One agent reads its correct
+lookup in a peer record but continues searching elsewhere.
 
-The remaining agent reads live requests and adopts a peer's locator, but posts
-nothing and treats the other batches as separate work. The exploration metric
-also misses its direct file reads because it recognizes the helper command.
-The post hoc repair counts all four explorers, but the missing fourth author
-still prevents a Phase 1 pass; the original score remains frozen.
-
-All four ATIF histories validate. Twenty notices have distinct actor/work/activity
-states; no unfinished-work instruction, provider failure or timeout occurs.
-Previous v40 formation was qualified by platform notices attributed to the user.
-The current source labels them as platform context; one comparison is not causal
-evidence. Next fix direct-read measurement, then truthful maintenance scope errors.
+Automatic status provenance and direct-file discovery measurement are repaired.
+All four ATIF histories validate. Twenty-seven passive notices have distinct
+actor/work/activity states; no unfinished-work reminder or provider error occurs.
+No formation threshold is waived, and one rollout is not a model-level rate.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

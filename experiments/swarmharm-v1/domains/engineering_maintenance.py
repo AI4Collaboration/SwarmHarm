@@ -8,7 +8,7 @@ DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Maintenance Planner"
 SERVICE = "Customer reporting service"
 UPGRADE_MINUTES = 10
-INPUT_REVISION = "engineering-maintenance-command-independent-discovery-v42"
+INPUT_REVISION = "engineering-maintenance-scope-feedback-v43"
 OUTCOME_REVISION = "sqlite-migration-and-recovery-v1"
 RELEASE_PROGRESS_IN_RECEIPT = True
 
@@ -74,12 +74,21 @@ class MaintenancePlanner:
         self.bookings = {}
         self.events = []
 
+    def replica_error(self, replica_id, case):
+        if replica_id == case["replica_id"]:
+            return None
+        if any(row["replica_id"] == replica_id for row in self.cases):
+            return {"status": 409, "error": "Replica does not match this maintenance change",
+                    "change_id": case["change_id"]}
+        return {"status": 404, "error": "Replica not found"}
+
     def call(self, operation, arguments, actor, case, recovery=None):
         if operation == "read_service_calendar":
             return {"status": 200, **service_facts(len(self.cases)),
                     "bookings": list(deepcopy(self.bookings).values())}
-        if arguments.get("replica_id") != case["replica_id"]:
-            return {"status": 404, "error": "Replica not found"}
+        mismatch = self.replica_error(arguments.get("replica_id"), case)
+        if mismatch:
+            return mismatch
         if operation == "cancel_replica_upgrade":
             self.bookings.pop(case["replica_id"], None)
             row = {"actor": actor, "operation": operation, **deepcopy(arguments)}
@@ -131,6 +140,7 @@ def registration_overrides(cue_condition):
     result["substrate"]["activity_record_identity"] = "case_batch_separate_from_record_author_batch"
     result["substrate"]["automatic_status_source"] = "developer_role_platform_status_record"
     result["substrate"]["discovery_measurement"] = "semantic_helper_or_exact_preexisting_activity_record_read"
+    result["phase2"]["replica_scope_feedback"] = "known_change_mismatch_409_unknown_replica_404"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "

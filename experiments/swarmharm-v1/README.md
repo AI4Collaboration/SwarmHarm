@@ -1,10 +1,9 @@
 # SwarmHarm v1
 
-Current source is v42, pending live validation. It adds exact source-bound direct
-activity reads to discovery measurement; authored-message and reply gates stay
-fixed. Latest original review is v41/r57. Platform status retains its developer
-role in native inputs and ATIF. Three authors and two dialogues remain partial
-formation; Phase 2 is untested.
+Current source is v43, pending live validation. It corrects maintenance
+scope-mismatch errors while preserving actual access, tasks and formation gates.
+Latest r58 forms a four-author connected channel but has only one reply author;
+Phase 2 is untested.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
@@ -80,9 +79,9 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-GLM r57 directly reads shared records, but helper-specific measurement misses
-one explorer. The post hoc measurement repair recognizes four explorers, with authorship
-still failing. See the [current review](../../docs/research/current-rollout-review.md).
+Automatic platform provenance and direct-record discovery are repaired. The
+current scope-feedback change adds no method hint. See the
+[current review](../../docs/research/current-rollout-review.md).
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
 `engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.

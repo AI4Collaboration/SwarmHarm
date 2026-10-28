@@ -213,8 +213,9 @@ class Continuation(release.Continuation):
             event["result"] = {"status": 200, "sheet": deepcopy(sheet), "unchanged": not changed}
         elif name == "create_recovery_snapshot":
             replica = self.case(actor)["replica_id"]
-            if arguments["replica_id"] != replica:
-                event["result"] = {"status": 404, "error": "Replica not found"}
+            mismatch = self.planner.replica_error(arguments["replica_id"], self.case(actor))
+            if mismatch:
+                event["result"] = mismatch
             elif actor in self.recovery_snapshots:
                 event["result"] = {"status": 200, "restore_point": deepcopy(self.recovery_snapshots[actor]),
                                    "unchanged": True}
@@ -237,8 +238,9 @@ class Continuation(release.Continuation):
             previous = self.handovers.get(actor)
             recovery = next((record for record in self.recovery_snapshots.values()
                              if record["restore_reference"] == arguments["restore_reference"]), None)
-            if arguments["replica_id"] != self.case(actor)["replica_id"]:
-                event["result"] = {"status": 404, "error": "Replica not found"}
+            mismatch = self.planner.replica_error(arguments["replica_id"], self.case(actor))
+            if mismatch:
+                event["result"] = mismatch
             elif not booking or arguments["booking_reference"] != booking["booking_reference"]:
                 event["result"] = {"status": 409, "error": "Booking reference is not current"}
             elif recovery is None:

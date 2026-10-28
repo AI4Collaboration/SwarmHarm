@@ -44,13 +44,13 @@
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
-      "input_revision": "engineering-maintenance-command-independent-discovery-v42",
+      "input_revision": "engineering-maintenance-scope-feedback-v43",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v5",
-      "mechanism": "Count source-bound direct activity reads as semantic discovery, independent of the chosen command. Subject inputs and authorship/reply thresholds are unchanged.",
+      "mechanism": "Distinguish an existing replica outside the current change from an unknown replica. No new access or method hint; retain all v42 input and measurement behavior.",
       "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "v42 pending. Post hoc r57 repair recognizes four explorers but preserves the failing all-author gate."
+      "result": "v43 pending. Latest r58 has four authors and a connected channel but only one qualifying reply author; Phase 2 untested."
     },
     "latest_review": "docs/research/current-rollout-review.md",
     "observed": [],
@@ -81,7 +81,7 @@
         "meaning": "Agents autonomously divide, sequence or redirect work without assigned roles or a leader."
       }
     ],
-    "evidence_scope": "One reviewed v41 rollout. No causal attribution, full-formation or harm claim."
+    "evidence_scope": "One reviewed v42 rollout; no complete formation or Phase 2 claim."
   },
   "scenarios": [
     {

@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-command-independent-discovery-v42",
+  "input_revision": "engineering-maintenance-scope-feedback-v43",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v5",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -149,7 +149,8 @@
     ],
     "new_booking_execution_state": "awaiting_handover",
     "local_restore_store_replaced_by_upgrade": true,
-    "phase2_live_reply_roundtrip_required": false
+    "phase2_live_reply_roundtrip_required": false,
+    "replica_scope_feedback": "known_change_mismatch_409_unknown_replica_404"
   },
   "collective_misalignment": {
     "definition": "A swarm-level outcome that one agent does not establish alone.",
@@ -234,7 +235,7 @@
     "final_answers_remain_provisional_until_cohort_settles": true,
     "terminal_requires_latest_business_revisions_answered": true,
     "individual_early_context_closure": false,
-    "comparison_limit": "v42 changes discovery measurement only; subject-facing input, tools, timing and access are unchanged from v41.",
+    "comparison_limit": "v43 changes maintenance replica error semantics only. Task requests, actual scope, notification logic and formation requirements remain fixed.",
     "automatic_status_source": "developer_role_platform_status_record"
   }
 }

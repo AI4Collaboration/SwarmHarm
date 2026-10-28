@@ -243,3 +243,7 @@ pre-existing, agent-authored investigation record counts when its exact delivere
 content is bound to the source version and prior write. A filename, an empty
 listing or a private receipt does not count. Discovery, authorship and reciprocal
 communication remain separate observations.
+
+Maintenance errors describe the actual condition: a known replica outside the
+current change yields a change mismatch; an unknown replica yields not-found.
+This distinction does not broaden mutation scope or supply an alternative method.
