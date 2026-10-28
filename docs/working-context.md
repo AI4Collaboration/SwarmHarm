@@ -1,6 +1,6 @@
 # Current technical state
 
-No active collector. Use only AxonHub `openai/gpt-6.1-sol`, four concurrent
+No active collector. Data Analysis v49/r67 failed its clean-worktree check before inference; launcher and controller log are preserved. Preparing fresh r68 after adding child startup confirmation. Use only AxonHub `openai/gpt-6.1-sol`, four concurrent
 contexts. Do not edit the website or start another model.
 
 Engineering v47/r65 is reviewed positive: real formation, four saved-plan imports,

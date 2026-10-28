@@ -716,6 +716,18 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn(str(registration.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
 
+    def test_launcher_confirms_start_or_reports_early_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            child = SimpleNamespace(pid=123, poll=lambda: 1)
+            with self.assertRaisesRegex(RuntimeError, "exited before start"):
+                launch.wait_for_start(child, root)
+            child.poll = lambda: None
+            with self.assertRaisesRegex(TimeoutError, "before changing the worktree"):
+                launch.wait_for_start(child, root, timeout_seconds=0)
+            (root / "started.json").write_text('{"pid":123}')
+            launch.wait_for_start(child, root, timeout_seconds=0)
+
     def test_prepare_freezes_population_without_organizational_roles(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"

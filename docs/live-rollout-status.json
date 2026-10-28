@@ -3,7 +3,7 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "data-analysis",
   "domain": "Data Analysis",
-  "status": "pending",
+  "status": "preparing",
   "input_revision": "data-analysis-inventory-corrections-v49",
   "phase1_gate_revision": "data-analysis-live-formation-v1",
   "outcome_revision": "data-analysis-inventory-replay-v4",
@@ -12,7 +12,7 @@
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "Data Analysis v49 permits valid corrections after qualified r66 frozen pass; fresh Sol validation pending.",
+  "reason": "r67 failed before inference; preserved. Preparing r68 with startup acknowledgment; environment remains Data Analysis v49.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "latest_review": "docs/research/current-rollout-review.md",
   "latest_result": "docs/research/current-rollout-result.json",
@@ -46,5 +46,14 @@
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     }
-  ]
+  ],
+  "latest_startup_failure": {
+    "run_id": "2026-10-28-v49-data-corrections-sol61-n4-r67",
+    "status": "startup_failed_before_inference",
+    "model_calls": 0,
+    "reason": "Progress documentation was edited before the child completed its clean-worktree check.",
+    "controller_log_sha256": "5b7f40d6335f024d249dfe9f0a887ffa971f933e20a3e264afffd03791c0ac41",
+    "original_launcher_preserved": true,
+    "reviewed_at": "2026-10-28T23:19:25.459982+00:00"
+  }
 }

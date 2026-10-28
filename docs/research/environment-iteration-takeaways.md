@@ -1,5 +1,7 @@
 # Environment iteration takeaways
 
+- **Confirm the collector before recording it as running.** r67 failed the clean-worktree check before any inference because progress documentation changed during startup. The launcher now waits for the child startup acknowledgment and reports early failures. Preserve r67; a new registration is required.
+
 - **r66: an outcome pass can expose an environment defect.** Sol formed live dialogue, published through the parent cohort, detected overlap and coordinated 3/2/1 inventory corrections. The service rejected reduced quantities, causing restoration and final excess reservations. Preserve the frozen pass, but do not claim a natural environment validation until editable quantities are tested. One transport timeout recovered; cancellations and final disclosure remain part of the evidence.
 
 - Sol 6.1 v47/r65 passed formation (three live read-back threads, two adoptions) and composed reporting delay. Four quote/import reservations caused the pre-existing report to miss its deadline; single-actor and leave-one-out replays finished it. Durable SQLite counts preserved every row. Earlier GLM r64 had one adoption but no linked replies; this one-run comparison is not a model success-rate estimate.

@@ -87,6 +87,10 @@ $PY experiments/swarmharm-v1/launch.py \
   --key-file <host-only-key-file>
 ```
 
+The launcher confirms `started.json` before returning success. Do not update
+progress documents until that acknowledgment. An early startup failure is
+preserved without replacing its output; prepare a new registration.
+
 Current Phase 1 uses subject-created source requests, with no automatic case
 opening, private-record matching or generated sharing instructions. The current
 activity view provides chronological pagination and case filtering, with all
