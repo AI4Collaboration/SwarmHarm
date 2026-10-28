@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **Separate current readiness from prior results.** A revised source is pending
+  even when its preceding rollout is a reviewed negative. Keep both statuses
+  explicit; status validation must accept negative outcomes. The r54 preparation
+  caught a stale scenario status before any model call; its failed controls remain
+  in the external raw archive.
+
 - **r53: truthful completion status is necessary but insufficient.** Receipt
   progress is now identical in tool output and the stored record. The passive
   actor correctly reports an incomplete release, but treats other cases as

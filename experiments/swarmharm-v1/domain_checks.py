@@ -57,6 +57,7 @@ class DomainScenarioChecks(unittest.TestCase):
             "mechanics_ready_integration_pending",
             "integrated_live_rollout_pending",
             "integrated_offline_checks_passed_live_rollout_pending",
+            "integrated_live_reviewed_negative",
             "live_validated",
         }
         for row in self.rows:
