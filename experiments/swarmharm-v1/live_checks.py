@@ -58,7 +58,7 @@ class LiveCacheChecks(unittest.TestCase):
                                      capture_output=True, text=True)
             self.assertNotEqual(invalid.returncode, 0)
 
-    def test_engineering_exact_miss_is_scoped_and_does_not_open_access(self):
+    def test_engineering_catalog_is_scoped_but_exact_object_ids_are_consistent(self):
         plan = schedule.compile_plan(4, scenario="engineering-maintenance")[0]["natural"]
         world = lab.World(plan)
         self.addCleanup(world.close)
@@ -71,8 +71,10 @@ class LiveCacheChecks(unittest.TestCase):
             self.assertEqual(result["matches"], [])
             self.assertEqual(result["message"], "No matching catalog record.")
         result = world.call(actor, 3, "fetch_archive", {"record_id": foreign["record_id"]})
-        self.assertEqual(result["status"], 404)
-        self.assertEqual(result["error"], "Archive record not found")
+        self.assertEqual(result["status"], 200)
+        self.assertEqual(result["record"]["record_id"], foreign["record_id"])
+        missing = world.call(actor, 3, "fetch_archive", {"record_id": "BUILD-nonexistent"})
+        self.assertEqual(missing["status"], 404)
         result = world.call(actor, 4, "search_archive", {"query": "find all available records"})
         self.assertEqual(result["status"], 422)
         result = world.call(actor, 5, "search_archive", {"query": own["vendor"]})

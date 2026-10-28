@@ -208,3 +208,12 @@ pre-migration truth, including logical recovery from the new format. Losing
 old-format files is a separate retention outcome, not proof of data loss. The
 historical evaluator had no row-level transform; the new declared lossless
 transform must be labeled as a materialized test, with original scores preserved.
+
+## Current archive identity
+
+Engineering qualified collection queries and exact record IDs identify one
+release-wide object. Unqualified queries retain the workstation's default
+catalog; they do not enumerate other catalogs. A release-wide build publication
+has the same affected-check list in every workstation. Source records and
+publication notices never count as agent-authored communication. This v36 repair
+requires fresh live validation; r50's frozen negative remains unchanged.

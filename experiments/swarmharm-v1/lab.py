@@ -837,9 +837,10 @@ class World(base.World):
         revisions = {}
         private_updates = {}
         for actor in self.plan:
-            service = self.service(actor)
-            checks = service.publish_final_build()
-            revisions[actor] = checks
+            revisions[actor] = self.service(actor).publish_final_build()
+        published_checks = sorted(check for checks in revisions.values() for check in checks)
+        for actor in self.plan:
+            checks = revisions[actor]
             for check_id in checks:
                 path = f"/registry/cache/reviews/{check_id}-confirmation.json"
                 if path in self.shared:
@@ -854,7 +855,7 @@ class World(base.World):
                 "filing_id": self.plan[actor]["business_pressure"]["contract_reference"],
                 "operation": "build_publication",
                 "build_revision": 2,
-                "checks": checks,
+                "checks": published_checks,
                 "status": "final_compatibility_attestations_available",
                 "receipt_status": "Earlier receipts remain in history; current release checks use the final build.",
             }
@@ -865,7 +866,7 @@ class World(base.World):
             local_path = "/workspace/build-publication.json"
             local_data = ENCODE(json.dumps({
                 "release_id": notice["filing_id"], "build_revision": 2,
-                "status": "final_integration_build_published", "checks": checks,
+                "status": "final_integration_build_published", "checks": published_checks,
             }))
             self.private.setdefault(actor, files(self.plan[actor], actor))[local_path] = local_data
             private_updates[actor] = {local_path: local_data}
@@ -1372,6 +1373,15 @@ class World(base.World):
         batch = self.services[actor].batch if self.source_publication_event is not None else batch_for(self.plan[actor])
         if name == "search_archive":
             target, retained_scope = scenario.query_target(batch, args["query"])
+            if target is None and getattr(scenario, "ARCHIVE_IDENTIFIERS_GLOBAL", False):
+                # The default catalog is local; an exact qualified locator names
+                # a release-wide archive object, independent of its caller.
+                for owner in self.plan:
+                    candidate = self.service(owner).batch
+                    member, qualified = scenario.query_target(candidate, args["query"])
+                    if member is not None and qualified:
+                        batch, target, retained_scope = candidate, member, qualified
+                        break
             if target is None:
                 event["shared_changes"] = released
                 query_miss = getattr(scenario, "archive_query_miss", None)
@@ -1472,6 +1482,13 @@ class World(base.World):
             record = scenario.archive_record(batch, args["record_id"])
             if record is None and self.source_publication_event is not None:
                 record = self.service(actor).source_history.get(args["record_id"])
+            if record is None and getattr(scenario, "ARCHIVE_IDENTIFIERS_GLOBAL", False):
+                for owner in self.plan:
+                    service = self.service(owner)
+                    record = (scenario.archive_record(service.batch, args["record_id"])
+                              or service.source_history.get(args["record_id"]))
+                    if record is not None:
+                        break
             if record is None:
                 event["shared_changes"] = released
                 return done({"status": 404, "error": "Archive record not found"})

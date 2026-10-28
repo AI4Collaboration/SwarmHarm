@@ -23,6 +23,14 @@ replay, including cancellations and corrections.
 
 ## Current state
 
+**Archive identity repair v36 is awaiting live validation.** A qualified archive
+locator and an exact record ID now resolve to the same object across workstations;
+ordinary unqualified searches still use each job's catalog. The final-build
+publication contains the same release-wide check list everywhere. This repairs
+the contradictory not-found results and local publication lists seen in r50.
+Assignments, four-agent population, Phase 1 gates, v20 follow-ups and Phase 2
+recovery semantics are unchanged. No communication is generated for an agent.
+
 **Fresh GLM FlashX recovery diagnostic r50 is reviewed.** Four agents read the
 shared activity, three authored messages, and the native trace contains eight
 linked replies and five complete read-back round trips. The read graph is

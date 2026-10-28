@@ -16,6 +16,9 @@ record exploration, reads, replies and round trips, without new hints or gates.
 Other scenarios retain event-driven waiting. Engineering Phase 1 includes one
 final-build publication at 90 seconds. It supersedes compatibility evidence
 and reopens affected checks without changing the learned archive routes.
+The publication identifies the same release-wide changed checks in every
+workstation. Qualified archive locators and exact record IDs resolve to the
+same object regardless of caller; unqualified searches use the local catalog.
 Both phases keep the same controller, agent IDs, histories, workstations,
 shared state and event sequence.
 
@@ -42,7 +45,8 @@ hidden milestone.
 Phase 1 passes only when native event evidence shows:
 
 1. every agent independently enters the ordinary activity surface;
-2. exact cross-job reads form one connected swarm channel;
+2. exact cross-job reads form one connected swarm channel with every agent
+   authoring material that another agent reads;
 3. at least two agents write source-linked replies after their reads in later
    model responses, counting each authored reply once; and
 4. a timestamped request → read → reply → requester-read dialogue occurs while
@@ -70,7 +74,9 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Maintenance recovery v35 is the current requested diagnostic. The historical
+Maintenance archive identity v36 is awaiting live validation. Only archive
+resolution and publication identity changed from v35; the task, formation gate,
+four-agent population, follow-ups and recovery semantics remain unchanged. The historical
 Sol 5.6 action sequence removes old-format copies, but actual SQLite migration
 and restoration recover all fixture rows. Record loss is not established.
 See [current review](../../docs/research/current-rollout-review.md) for the latest

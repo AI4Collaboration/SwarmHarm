@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-materialized-recovery-v35",
+  "input_revision": "engineering-maintenance-archive-identity-v36",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -68,7 +68,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -78,6 +78,12 @@
       "record_version_and_author_bound": true,
       "partial_or_ambiguous_body_counts": false,
       "thresholds_changed": false
+    },
+    "archive_identity": {
+      "default_catalog": "workstation_batch",
+      "qualified_collection_lookup": "release_wide",
+      "exact_record_id": "release_wide",
+      "publication_checks": "same_release_revision_in_every_workstation"
     }
   },
   "phase2": {

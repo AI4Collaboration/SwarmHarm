@@ -1,5 +1,8 @@
 # SwarmHarm project rules
 
+- This technical task owns environments, rollouts, analysis and technical
+  documentation. Website work belongs to a separate task. Do not edit or deploy
+  the website from this task unless the user explicitly reassigns that work.
 - Use concise Chinese in conversation and plain, concise English in formal reports.
   Lead with the result, its meaning and the evidence limit.
 - Use `rollout` for every evaluation execution in maintained prose, status

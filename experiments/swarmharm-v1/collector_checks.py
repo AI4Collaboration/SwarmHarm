@@ -524,6 +524,11 @@ class CollectorChecks(unittest.TestCase):
         self.assertFalse(world.publish_final_build())
         self.assertEqual(len(world.events), 1)
         self.assertEqual(world.events[0]["actor"], "build-publisher")
+        published_checks = sorted(
+            item["review_id"] for actor in world.plan
+            for item in world.service(actor).batch["reviews"]
+            if item["archive_state"] == "active_with_index")
+        local_notices = []
         for actor in world.plan:
             signal = world.activity_signal(actor)
             self.assertNotEqual(signal["revision"], before[actor]["revision"])
@@ -533,12 +538,51 @@ class CollectorChecks(unittest.TestCase):
             notice = next(iter(visible.values()))
             self.assertEqual(notice["author"], "build-publisher")
             self.assertEqual(world._body(notice)["operation"], "build_publication")
+            self.assertEqual(world._body(notice)["checks"], published_checks)
+            local_notices.append(world.private[actor]["/workspace/build-publication.json"])
             case = world.service(actor).batch["reviews"][1]
             query = case["retained_scope"] + " " + case["attestation_name"]
             found = world.call(actor, 1, "search_archive", {"query": query})
             self.assertEqual(found["matches"][0]["record_id"], case["record_id"])
             fetched = world.call(actor, 2, "fetch_archive", {"record_id": case["record_id"]})
             self.assertEqual(fetched["record"]["runtime_units"], case["runtime_units"])
+        self.assertEqual(len(set(local_notices)), 1)
+
+    def test_engineering_archive_links_resolve_independently_of_caller(self):
+        plan, _ = run.make_plan(4, scenario="engineering-maintenance",
+                                cue_condition="agent_initiated_activity")
+        world = lab.World(plan["natural"])
+        self.addCleanup(world.close)
+        from domains import engineering
+        actors = list(world.plan)
+        for index, actor in enumerate(actors):
+            own = world.service(actor).batch
+            target = own["reviews"][1]
+            # Ordinary local lookup still lacks the requested attestation.
+            local = world.call(actor, 1, "search_archive", {"query": target["attestation_name"]})
+            self.assertEqual(local["matches"][0]["record_id"], target["index_id"])
+            locator = engineering.archive_record(own, target["index_id"])
+            member = locator["member_locators"][0]
+            other = world.service(actors[(index + 1) % 4]).batch["reviews"][1]
+            unqualified = world.call(actor, 2, "search_archive", {"query": other["attestation_name"]})
+            self.assertEqual(unqualified["matches"], [])
+            resolved = world.call(actor, 3, "search_archive", {"query": member["exact_lookup"]})
+            self.assertEqual(resolved["matches"][0]["record_id"], other["record_id"])
+            self.assertNotEqual(other["record_id"], target["record_id"])
+            for caller in actors:
+                fetched = world.call(caller, 4, "fetch_archive", {"record_id": other["record_id"]})
+                self.assertEqual(fetched["record"], engineering.archive_record(world.service(actors[(index + 1) % 4]).batch, other["record_id"]))
+            with patch.object(world, "_retain_archive_locator", return_value=None):
+                fetched = world.call(actors[(index + 1) % 4], 5, "fetch_archive", {"record_id": target["index_id"]})
+            self.assertEqual(fetched["record"], locator)
+        self.assertFalse(any("source-request-" in path for path in world.shared))
+        before = world.service(actors[1]).batch["reviews"][1]["record_id"]
+        world.publish_final_build()
+        for actor in actors:
+            old = world.call(actor, 6, "fetch_archive", {"record_id": before})["record"]
+            new = world.call(actor, 7, "fetch_archive", {"record_id": before + "-final"})["record"]
+            self.assertEqual(old["record_status"], "superseded")
+            self.assertEqual(new["build_revision"], 2)
 
     def test_terminal_evidence_manifest_hashes_collected_files(self):
         with tempfile.TemporaryDirectory() as temporary:

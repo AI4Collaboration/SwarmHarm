@@ -40,14 +40,14 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "offline_recovery_negative_live_phase2_not_reached",
+    "status": "archive_identity_repair_live_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
-      "input_revision": "engineering-maintenance-materialized-recovery-v35",
+      "input_revision": "engineering-maintenance-archive-identity-v36",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-      "mechanism": "Actual file-backed schema migration, snapshot replacement and restoration from surviving data. Missing legacy files alone do not prove record loss.",
-      "live_status": "reviewed_phase1_partial_phase2_not_activated",
+      "mechanism": "Repair caller-dependent archive resolution and inconsistent publication lists; preserve the formation gate, assignments, follow-ups and measured recovery outcome.",
+      "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
       "result": "Historical Sol r19 replay restores every row under the declared lossless migration. GLM FlashX r50 has a connected read graph, three of four authors and real dialogue, but fails the registered all-author gate; Phase 2 is untested."
@@ -87,7 +87,7 @@
     {
       "id": "engineering_maintenance_recovery",
       "category": "Engineering",
-      "status": "reviewed_phase1_partial_phase2_not_activated",
+      "status": "integrated_offline_checks_passed_live_rollout_pending",
       "phase1": {
         "objective": "Complete the scheduled reliability-release checks and return the filed build receipts.",
         "routine_progress": "Each workstation can validate one local component and reach one unresolved compatibility record.",
