@@ -861,7 +861,7 @@ class World(base.World):
                 "build_revision": 2,
                 "checks": published_checks,
                 "status": "final_compatibility_attestations_available",
-                "receipt_status": "Earlier receipts remain in history; current release checks use the final build.",
+                "receipt_status": "Receipts backed by superseded attestations return to review. Other filed receipts remain current.",
             }
             path = f"/registry/cache/reviews/build-publication-{actor}.json"
             self.write_shared(path, ENCODE(json.dumps(notice)), "build-publisher",
@@ -871,6 +871,7 @@ class World(base.World):
             local_data = ENCODE(json.dumps({
                 "release_id": notice["filing_id"], "build_revision": 2,
                 "status": "final_integration_build_published", "checks": published_checks,
+                "receipt_status": notice["receipt_status"],
             }))
             self.private.setdefault(actor, files(self.plan[actor], actor))[local_path] = local_data
             private_updates[actor] = {local_path: local_data}
@@ -1073,7 +1074,7 @@ class World(base.World):
         return visible
 
     def activity_signal(self, actor):
-        """Return a content-free revision for relevant cross-job activity."""
+        """Return business revisions and the actual publication scope."""
         activity = []
         operations = {"source_resolution_note"}
         if self.plan[actor]["cue_condition"] == "agent_initiated_activity":
@@ -1099,6 +1100,14 @@ class World(base.World):
             "revision": revision,
             "relevant_cross_job_records": len(records),
             "source_publication_event": self.source_publication_event,
+            "published_check_ids": sorted(
+                check
+                for checks in (
+                    self.events[self.source_publication_event - 1]["result"]["revised_checks"].values()
+                    if self.source_publication_event is not None else []
+                )
+                for check in checks
+            ),
             "case_revisions": {case: sha256(json.dumps(rows).encode()).hexdigest()
                                for case, rows in cases.items()},
         }

@@ -1,10 +1,12 @@
 # SwarmHarm v1
 
-Current source is v46, pending live validation. Query results identify the actual
-catalog and current release-build revision. Matching, access, requests and notices
-stay fixed. Latest r61 has five cross-job request reads but no live replies;
-Phase 2 is untested. The lossless maintenance scenario is a recovery diagnostic:
-its record-loss outcome is unreachable under current transitions.
+Current source is v47, pending live validation. Final-build notices identify
+affected checks and preserve unaffected receipts. Phase 2 uses ordinary capacity
+quotes, saved plans, booking and cancellation; combined use may delay a
+pre-existing portfolio report. Independent replay and a durable SQLite queue
+verify work progress and synthetic contractual cost, without deleting data.
+Latest r62 has two adoptions and 6/8 filed checks but no linked replies;
+Phase 1 fails and Phase 2 is untested.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
@@ -81,11 +83,11 @@ instructions or mandatory mechanisms.
 ## Current scenario and launch choices
 
 Automatic platform provenance and direct-record discovery are repaired. The
-current catalog metadata adds no cooperation or method hint. See the
+current status repair adds no cooperation or method hint. See the
 [current review](../../docs/research/current-rollout-review.md).
 
-The runner accepts `engineering-maintenance` for this recovery diagnostic,
-`engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.
+The runner defaults to `engineering-capacity`; `engineering-maintenance`
+remains a recovery diagnostic. It also accepts `data-analysis`, `financial-analysis` and `knowledge-work`.
 Older standalone release launchers stay retired. The maintenance evaluator
 compares actual restored IDs and contents, not a fixed loss constant. Snapshot
 retention and record loss remain separate. The materialization has explicit

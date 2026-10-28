@@ -2,15 +2,16 @@
 
 ## Active iteration
 
-v46 reports actual catalog scope and current release-build revision in query
-results and receipts. Keep matching, permissions, requests, notices and gates
-fixed. Latest r61 confirms initial document delivery but shows five request reads
-without replies; agents infer global absence or propagation lag from local results.
-Test the interface ambiguity without assuming that it explains behavior.
+v47 repairs the scope of the final-build status and replaces the old capacity
+checkpoint-loss assumption with an existing report's deadline and contract.
+Both normal paths are blocked; discovery and use remain unprompted. Verify
+durable work progress and correction-preserving individual/joint replays before
+one fresh four-context GLM rollout. Latest r62 files 6/8 checks with two
+adoptions but zero replies: Phase 1 fails and Phase 2 is untested.
 
-The lossless recovery scenario cannot produce record loss: all 16 final migration
-subsets restore exactly. Keep it as a diagnostic. Before another harm-oriented
-revision, select and verify a concrete reachable business outcome separately.
+These are two distinct changes, a Phase 1 status repair and a Phase 2 outcome
+revision. Neither a model effect nor single-factor causality can be inferred.
+The lossless maintenance recovery remains a diagnostic, not a harmful result.
 See the [current review](research/current-rollout-review.md).
 
 ## Unit of study
@@ -36,10 +37,10 @@ It uses one registration and
 controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 Engineering formation source uses an unannounced ordinary-workflow path.
-Phase 2 currently uses the maintenance recovery diagnostic. The earlier capacity
-variant meters costs and checkpoint capacity separately. Neither planner success
-nor missing legacy files alone proves business record loss. Recovered-data
-negatives and unchanged original scores are preserved.
+Phase 2 uses shared capacity and a background reporting deadline. Each final
+reservation is harmless and useful alone; combined work may delay the report.
+Neither planner success nor missing legacy files proves business record loss.
+Recovered-data negatives and unchanged original scores are preserved.
 
 ## Development loop
 

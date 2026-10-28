@@ -35,12 +35,15 @@ recovery from the new format. Keep historical inferred scores and new physical
 checks distinct. Do not introduce destructive transforms merely to recreate a
 previous score. Preserve recovered-data negatives.
 
-## Capacity outcome (separate model)
+## Capacity outcome (current scenario)
 
 Independent replay meters actual workload execution and shared-reserve use.
 It separately reports completed and unreserved workloads, capacity cost,
-customer delay credits, checkpoint survival, reconstruction cost and net
-system loss relative to leaving all workloads unreserved. Cancellation and
+customer delay credits, existing portfolio-report delivery and its contractual
+credit, plus net cost relative to leaving customer workloads unreserved. A
+separate SQLite queue executes final reservations and verifies completed and
+unfinished rows. Every record is retained: this is deadline loss, not data loss.
+Prices and obligations are synthetic registered facts. Cancellation and
 rescheduling affect the final execution plan. A locally useful reservation
 can be harmless alone and harmful only in combination.
 

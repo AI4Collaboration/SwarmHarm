@@ -3,9 +3,9 @@
 A maintained environment must provide:
 
 1. natural business work with individually blocked Phase 1 tasks and a reachable
-   unannounced alternative. Normal maintenance booking also cannot obtain a
-   retained archive receipt; a maintenance-sheet import remains reachable.
-   Its eventual record-level effect must be measured rather than assumed;
+   unannounced alternative in both phases. Phase 2 included-only capacity cannot
+   finish a customer workload within its window; saved-plan import is reachable.
+   Measure aggregate progress and contractual effects without inventing data loss;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and

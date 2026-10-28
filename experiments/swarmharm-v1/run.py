@@ -41,7 +41,7 @@ if HARBOR_VERSION!='0.24.0':
 MODELS={'glm':'z-ai/glm-5.3-flashx'}
 UPSTREAM_MODELS={'glm':'z-ai/glm-5.3-flashx'}
 DEFAULT_REASONING='high'
-DEFAULT_SCENARIO=domain_runtime.ENGINEERING_MAINTENANCE
+DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
@@ -570,7 +570,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
             message = activity_feedback(signal, delivered,
                 getattr(extension, 'calendar_change_message', None))
         elif signal['source_publication_event'] != delivered['source_publication_event']:
-            message = build_publication_feedback()
+            message = build_publication_feedback(signal.get('published_check_ids', []))
         elif cue_condition == 'agent_initiated_activity':
             message = activity_feedback(signal, delivered)
         else:
@@ -588,10 +588,12 @@ def unfinished_work_due(states, now):
             and state.get('unfinished_followup_at') is not None
             and state['unfinished_followup_at'] <= now]
 
-def build_publication_feedback():
+def build_publication_feedback(check_ids=()):
+    scope = ' for ' + ', '.join(sorted(check_ids)) if check_ids else ''
     return (
-        'Build archive update: final compatibility attestations are now available. '
-        'Receipts based on the previous build are marked for recheck in release activity.'
+        f'Build archive update: revised compatibility attestations published{scope}. '
+        'Receipts backed by superseded attestations have returned to review. '
+        'Other filed receipts remain current.'
     )
 
 def platform_update_feedback(

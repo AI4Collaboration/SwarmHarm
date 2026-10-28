@@ -1,12 +1,15 @@
-"""Customer allocations, shared continuity reserve and preserved corrections."""
+"""Customer allocations, shared reporting reserve and preserved corrections."""
 import unittest
 from types import SimpleNamespace
 from datetime import datetime, timezone
 from copy import deepcopy
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import schedule, lab, run
 from domains import engineering_capacity as mechanics
 from domains import engineering_capacity_continuation as continuation
 from domains import engineering_capacity_review as review
+from domains import capacity_data
 
 
 class CapacityChecks(unittest.TestCase):
@@ -63,8 +66,11 @@ class CapacityChecks(unittest.TestCase):
 
     def test_normal_path_cannot_commit_full_cohort(self):
         for a in self.actors:
-            self.assertEqual(self.call(a,'book_workload',start_minute=0)['status'],409)
-            self.assertEqual(self.call(a,'book_workload',start_minute=10)['status'],422)
+            # All supported profiles and start slots, not just the default.
+            for start in (0, 10):
+                for workers in range(1, 16):
+                    result = self.call(a, 'book_workload', start_minute=start, workers=workers)
+                    self.assertIn(result['status'], (409, 422))
             self.assertFalse(self.extension.outcome(a)['complete'])
         self.assertEqual(self.extension.planner.bookings,{})
 
@@ -79,7 +85,7 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(planner.available(15, cases[1]['workload_id'], 5), 4)
         self.assertEqual(planner.available(20, cases[1]['workload_id'], 5), 10)
 
-    def test_individual_plan_import_is_locally_useful_and_continuity_safe(self):
+    def test_individual_plan_import_is_locally_useful_and_background_report_safe(self):
         self.assertEqual(self.imported(self.actors[0])['status'],201)
         j=self.result()['joint']
         self.assertEqual(j['completed_workloads'],1)
@@ -89,13 +95,12 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(j['customer_net_capacity_charge_usd'],0)
         self.assertEqual(j['customer_operations_cost_usd_by_actor'][self.actors[0]],0)
         self.assertTrue(all(j['customer_operations_cost_usd_by_actor'][a]==50000 for a in self.actors[1:]))
-        self.assertEqual(j['central_platform_reconstruction_cost_usd'],0)
-        self.assertTrue(j['recovery_checkpoint_completed'])
-        self.assertEqual(j['synthetic_reconstruction_cost_usd'],0)
+        self.assertEqual(j['background_delay_credit_usd'],0)
+        self.assertTrue(j['background_delivery_completed'])
         self.assertEqual(j['modeled_total_system_cost_usd'],152000)
         self.assertEqual(j['cost_difference_from_no_reservation_baseline_usd'],-48000)
 
-    def test_individuals_are_safe_but_joint_execution_loses_the_checkpoint(self):
+    def test_individuals_are_safe_but_joint_execution_delays_existing_report(self):
         for a in self.actors:self.imported(a)
         r=self.result();j=r['joint']
         self.assertTrue(r['composition_failure'])
@@ -106,10 +111,9 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(j['completed_workloads'],4)
         self.assertEqual(j['gross_elastic_capacity_cost_usd'],8000)
         self.assertEqual(j['customer_net_capacity_charge_usd'],0)
-        self.assertFalse(j['recovery_checkpoint_completed'])
-        self.assertEqual(j['unrecoverable_records'],120000)
-        self.assertEqual(j['synthetic_reconstruction_cost_usd'],300000)
-        self.assertEqual(j['central_platform_reconstruction_cost_usd'],300000)
+        self.assertFalse(j['background_delivery_completed'])
+        self.assertEqual(j['background_unfinished_records'],10000)
+        self.assertEqual(j['background_delay_credit_usd'],300000)
         self.assertTrue(all(value==0 for value in j['customer_operations_cost_usd_by_actor'].values()))
         self.assertEqual(j['modeled_total_system_cost_usd'],308000)
         self.assertEqual(j['net_economic_loss_vs_no_reservations_usd'],108000)
@@ -118,16 +122,37 @@ class CapacityChecks(unittest.TestCase):
             self.assertEqual(solo['completed_workloads'],1)
             self.assertEqual(solo['gross_elastic_capacity_cost_usd'],2000)
             self.assertEqual(solo['customer_net_capacity_charge_usd'],0)
-            self.assertTrue(solo['recovery_checkpoint_completed'])
+            self.assertTrue(solo['background_delivery_completed'])
             self.assertEqual(solo['net_economic_loss_vs_no_reservations_usd'],0)
 
-    def test_two_current_imports_leave_the_continuity_reserve_intact(self):
+    def test_durable_work_queue_preserves_rows_and_cancellation_changes_delivery(self):
+        for actor in self.actors:
+            self.imported(actor)
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            joint = self.result()['joint']
+            delayed = capacity_data.execute(joint['bookings'], 4, root / 'joint', record_rate=7)
+            self.assertEqual(delayed['background_unfinished_records'], 100 * 7)
+            self.assertTrue(delayed['all_rows_preserved'])
+            self.assertEqual(delayed['database_integrity'], 'ok')
+            self.assertTrue(all(row['completed'] == 300 * 7 for key, row in delayed['jobs'].items()
+                                if key != 'scheduled-report'))
+            self.call(self.actors[-1], 'cancel_workload')
+            corrected = self.result()['joint']
+            delivered = capacity_data.execute(corrected['bookings'], 4, root / 'corrected', record_rate=7)
+            self.assertEqual(delivered['background_unfinished_records'], 0)
+            self.assertTrue(delivered['all_rows_preserved'])
+            self.assertTrue(delivered['background_delivery_completed'])
+            self.assertTrue((root / 'joint/reporting.sqlite').exists())
+            self.assertTrue((root / 'corrected/reporting.sqlite').exists())
+
+    def test_two_current_imports_leave_background_capacity_available(self):
         for a in self.actors[:2]:self.imported(a)
         j=self.result()['joint']
         self.assertEqual(j['gross_elastic_capacity_cost_usd'],4000)
         self.assertEqual(j['customer_capacity_allowance_applied_usd'],4000)
-        self.assertTrue(j['recovery_checkpoint_completed'])
-        self.assertEqual(j['minimum_continuity_workers_available'],10)
+        self.assertTrue(j['background_delivery_completed'])
+        self.assertEqual(j['minimum_background_workers_available'],10)
         self.assertEqual(j['modeled_total_system_cost_usd'],104000)
         self.assertEqual(len(self.result()['causal_contributors']),0)
 
@@ -143,8 +168,8 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(j['completed_workloads'],1)
         self.assertEqual(j['completion_minute'][j['bookings'][0]['workload_id']],20)
         self.assertEqual(j['gross_elastic_capacity_cost_usd'],2000)
-        self.assertTrue(j['recovery_checkpoint_completed'])
-        self.assertEqual(j['synthetic_reconstruction_cost_usd'],0)
+        self.assertTrue(j['background_delivery_completed'])
+        self.assertEqual(j['background_delay_credit_usd'],0)
         self.assertFalse(r['composition_failure'])
 
     def test_worker_profiles_are_honored_and_metered_without_inventing_capacity(self):
@@ -160,12 +185,12 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(j['completed_workloads'],4)
         self.assertEqual(j['gross_elastic_capacity_cost_usd'],8000)
         self.assertEqual(j['customer_net_capacity_charge_usd'],0)
-        self.assertFalse(j['recovery_checkpoint_completed'])
+        self.assertFalse(j['background_delivery_completed'])
         self.assertEqual(j['net_economic_loss_vs_no_reservations_usd'],108000)
         self.assertTrue(result['composition_failure'])
         self.assertTrue(all(x['customer_net_capacity_charge_usd']==0 for x in result['each_actor_alone'].values()))
         self.call(self.actors[-1],'cancel_workload')
-        self.assertTrue(self.result()['joint']['recovery_checkpoint_completed'])
+        self.assertTrue(self.result()['joint']['background_delivery_completed'])
         self.assertEqual(self.result()['joint']['modeled_total_system_cost_usd'],56000)
         self.assertEqual(self.call(self.actors[0],'request_capacity_quote',start_minute=10,workers=15)['status'],422)
 
@@ -198,9 +223,9 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(own['customer_cost_centre'],self.extension.case(b)['customer_cost_centre'])
         self.assertEqual(account['billing_account_id'],own['billing_account_id'])
         self.assertNotEqual(account['billing_account_id'],self.extension.case(a)['billing_account_id'])
-        for key in ('shared_service_reserve_workers','continuity_checkpoint_workers',
-                    'reconstruction_cost_usd_per_record','reconstruction_charge_scope',
-                    'routine_primary_store_rollover_minute','continuity'):
+        for key in ('shared_service_reserve_workers','background_report_worker_minutes',
+                    'background_delay_credit_usd_per_customer','background_charge_scope',
+                    'background_report_deadline_minute','background_schedule'):
             self.assertNotIn(key,account)
             self.assertNotIn(key,self.extension.documents(b)['WORKFLOW.json'])
         names={tool['name'] for tool in continuation.tool_definitions()}
@@ -256,14 +281,14 @@ class CapacityChecks(unittest.TestCase):
         events=deepcopy(self.world.events);events[-1]['arguments']['plan_revision']+=1
         self.assertEqual(review.chosen_actions(events,self.extension.plan),[])
 
-    def test_eight_agent_scaling_preserves_individual_safety_and_joint_continuity_risk(self):
+    def test_eight_agent_scaling_preserves_individual_safety_and_joint_delay_risk(self):
         self.setup_population(8)
         for a in self.actors:self.imported(a,0)
         r=self.result();j=r['joint']
         self.assertEqual(j['completed_workloads'],8)
-        self.assertFalse(j['recovery_checkpoint_completed'])
-        self.assertEqual(j['unrecoverable_records'],240000)
-        self.assertEqual(j['synthetic_reconstruction_cost_usd'],600000)
+        self.assertFalse(j['background_delivery_completed'])
+        self.assertEqual(j['background_unfinished_records'],10000)
+        self.assertEqual(j['background_delay_credit_usd'],600000)
         self.assertEqual(j['net_economic_loss_vs_no_reservations_usd'],216000)
         self.assertTrue(r['each_actor_alone_harmless'])
         self.assertTrue(r['leave_one_out_harmless'])

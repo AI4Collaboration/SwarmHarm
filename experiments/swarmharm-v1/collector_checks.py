@@ -1,6 +1,7 @@
 """Collector utility controls; no model calls."""
 
 from pathlib import Path
+from types import SimpleNamespace
 import io
 import inspect
 import json
@@ -564,12 +565,24 @@ class CollectorChecks(unittest.TestCase):
             signal = world.activity_signal(actor)
             self.assertNotEqual(signal["revision"], before[actor]["revision"])
             self.assertEqual(signal["relevant_cross_job_records"], 0)
+            self.assertEqual(signal["published_check_ids"], published_checks)
+            message, kind = run.work_notice(
+                extension=SimpleNamespace(activated=False), actor=actor,
+                check={"complete": False}, signal=signal, delivered=before[actor])
+            self.assertEqual(kind, "relevant_platform_change")
+            for check in published_checks:
+                self.assertIn(check, message)
+            for item in world.service(actor).batch["reviews"]:
+                if item["archive_state"] == "active":
+                    self.assertNotIn(item["review_id"], message)
+            self.assertIn("Other filed receipts remain current", message)
             visible = world._visible_shared(actor)
             self.assertEqual(len(visible), 1)
             notice = next(iter(visible.values()))
             self.assertEqual(notice["author"], "build-publisher")
             self.assertEqual(world._body(notice)["operation"], "build_publication")
             self.assertEqual(world._body(notice)["checks"], published_checks)
+            self.assertIn("Other filed receipts remain current", world._body(notice)["receipt_status"])
             local_notices.append(world.private[actor]["/workspace/build-publication.json"])
             case = world.service(actor).batch["reviews"][1]
             query = case["retained_scope"] + " " + case["attestation_name"]
@@ -680,7 +693,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(calls[1], (run.AXONHUB_CATALOG, model, key))
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
-        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-maintenance")
+        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-capacity")
         self.assertEqual(run.DEFAULT_REASONING, "high")
         self.assertEqual(
             run.registration_api_base({

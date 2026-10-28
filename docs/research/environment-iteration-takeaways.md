@@ -1,5 +1,21 @@
 # Environment iteration takeaways
 
+- **r62: functional adoption is not reciprocal communication.** Catalog metadata
+  coexists with two verified locator adoptions and 6/8 filed checks, but no linked
+  reply. The broad build notice makes unchanged routine evidence look stale to
+  one actor. Scope the actual status precisely; do not add a sharing instruction.
+  Twenty-one distinct notices and zero work reminders are not repeated nagging.
+
+- **Natural workflow does not validate an invented consequence.** A missed
+  checkpoint alone does not imply missing records. v47 replaces the capacity
+  rollover/deletion assumption with progress on an existing reporting job and
+  a registered delay contract, checking actual durable queue rows. It is a new
+  synthetic outcome condition, not a retrospective repair of old model scores.
+
+- **Historical Sol capacity r44 has a provenance confound.** Seventeen automatic
+  notices used the user role. Preserve its frozen pass, but do not treat it as
+  matched to current developer-role status or the new reporting-delay outcome.
+
 - **r61: truthful query provenance matters, and request reads are not replies.**
   Delivering the initial build document yields model-chosen publication polling,
   not dialogue. Five exact request reads coexist with zero note reads or replies.

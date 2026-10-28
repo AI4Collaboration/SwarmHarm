@@ -132,7 +132,7 @@ def phase1_documents(batch, pressure):
             "release_id": pressure["contract_reference"],
             "status": "final_integration_build_running",
             "build_change": "The final integration build includes release monitoring.",
-            "publication": "The archive publishes the final compatibility attestations when the integration build finishes.",
+            "publication": "The archive publishes revised compatibility attestations for the changed release checks when this build finishes.",
             "receipt_status": "Filed checks retain their receipt history. Checks based on a superseded attestation return to review.",
         },
         f"{batch['batch_id']}-request.json": {
