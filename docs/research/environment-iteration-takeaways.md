@@ -1,5 +1,13 @@
 # Environment iteration takeaways
 
+- **r56: audit who a notification appears to come from.** Distinct case/writer
+  identities coexist with a full four-author formation pass and six dialogues.
+  But automatic statuses use the user role, and an actor infers human direction.
+  Preserve the original pass with this qualification. Phase 2 coordinates slots
+  through 13 messages but never books; recovery finds zero loss. Cross-change
+  snapshot creation is misleadingly called not-found. Fix provenance and scope
+  errors separately; neither guarantees uptake or an adverse outcome.
+
 - **r55: an informed reader can decline to contribute.** Removing the unsupported
   triage handoff leaves three authors, four verified dialogues and four adoptions.
   The fourth agent finds a valid foreign source and reads its request but treats

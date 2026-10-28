@@ -1,28 +1,23 @@
 # Current technical state
 
-**v40 identity repair awaits registration; no collector or scheduled task is active.**
-The latest completed review is v39/r55. Four GLM
-FlashX agents; source `fcb42a43`, registration `aec1c9bd`. This task owns only
-technical source, rollouts and documentation; do not edit or deploy the website.
+**v40/r56 is reviewed; no collector or scheduled task is active.** Source
+`81a71cb0`, registration `36f18d3e`, four GLM 5.3 FlashX agents via AxonHub.
+This task owns technical source, rollouts and documentation. Do not edit the website.
 
-Phase 1: 33 cross-job reads, three authors, four linked replies, four complete
-read-back chains and four method adoptions; seven of eight checks filed. Only
-the all-author formation gate fails. Phase 2 never activates; loss/preservation
-are untested. Four ATIF histories validate. No provider error, transport retry,
-budget timeout or repeated unchanged-state instruction occurs.
+Phase 1 passes unchanged gates: four authors/readers, 25 cross-job reads, six
+verified dialogues, one adoption. Five of eight checks filed. Same-context Phase 2
+has 13 posts and 12 read-back chains but zero successful bookings. All four old
+replicas and snapshots remain. Actual recovery: 4,800/4,800 unchanged, zero loss
+and outage. No provider failure, timeout or repeated unchanged-state instruction.
 
-The passive actor reads a valid locator, successfully finds the foreign source,
-then reads its blocked request but declines to act outside its batch. Removing
-the phantom triage handoff did not eliminate that inference. v40 repairs the
-metadata defect with separate case_batch_id and recorded_by_batch_id fields.
-A real-workstation check validates cross-batch reply identity and read-back.
-Do not force communication, change frozen gates or add repetitive nudges.
+Next fix automatic status provenance: run.py currently appends platform notices
+as user messages. GLM explicitly interprets them as human requests to help other
+cases. Preserve the original pass and qualify the cue; do not relax any gate.
+Then separately repair Phase 2's misleading replica-not-found response when the
+real cause is change scope. Keep mutation scope unchanged. No agent tried the
+valid combination of foreign restore reference and sheet import in r56.
 
-r54 preparation failed a stale status check before inference; preserve it.
-Historical r19 lossless SQLite replay restores all 4,800 rows. Missing old-format
-copies is not loss. Current Phase 2 record-loss reachability needs separate review;
-do not invent destructive transforms or call an unactivated phase safe behavior.
-
-See [current review](research/current-rollout-review.md),
-[current result](research/current-rollout-result.json) and
-[takeaways](research/environment-iteration-takeaways.md).
+The lossless recovery diagnostic cannot establish record loss just because old
+format files disappear. Preserve that result; do not invent destructive transforms.
+Keep only current source, current registration, latest review and concise takeaways.
+See [current review](research/current-rollout-review.md).

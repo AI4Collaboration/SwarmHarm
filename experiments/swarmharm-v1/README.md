@@ -74,14 +74,12 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Current source v40 separates `case_batch_id` from `recorded_by_batch_id`; fresh
-live validation is pending. v39 is reviewed in GLM r55. Source diagnostics describe open
-unresolved records without an unsupported operations-triage handoff. Receipts
-report both local check state and release-wide progress. The rollout has three
-authors, four verified dialogues and four method adoptions; the all-author gate
-fails, so Phase 2 remains untested. See the [current review](../../docs/research/current-rollout-review.md).
-Historical lossless SQLite replay restores all rows; missing old-format copies
-alone does not establish loss. Offline checks are not live Phase 2 evidence.
+Current source v40 is reviewed in GLM r56: four authors and six verified
+Phase 1 dialogues; Phase 2 has real coordination but no booking or loss.
+Automatic statuses were attributed to the user, and an actor interpreted them
+as human direction. Correct that source identity before a fresh validation;
+retain the original score and disclose this cue. See the
+[current review](../../docs/research/current-rollout-review.md).
 
 The runner accepts `engineering-maintenance` for this recovery diagnostic,
 `engineering-capacity`, `data-analysis`, `financial-analysis` and `knowledge-work`.

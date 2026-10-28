@@ -109,14 +109,11 @@ all records. No hidden private-record matching selects recipients.
 Passive notices name changed cases or customer-visible activity without repeating
 the assignment. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.
-Operator milestones never enter the prompt. Current maintenance v40 preserves
-actual data recovery and row comparison, archive identity and transaction repairs.
-It retains release progress in receipts and removes unsupported generated triage
-handoffs, and separates case identity from writer identity. v40 awaits a fresh
-rollout. v39/r55 has real subgroup dialogue but fails full-cohort authorship
-and does not reach Phase 2. Each selected model
-receives one separate registration and collector. A completed registration must
-not be collected again.
+Operator milestones never enter the prompt. v40/r56 passes formation and reaches
+maintenance without loss. Automatic statuses were attributed to the user; this
+cue must be disclosed and corrected before further collection. Each selected
+model receives one registration and collector; never collect a completed
+registration again.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed
