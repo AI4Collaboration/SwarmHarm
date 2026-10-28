@@ -49,6 +49,7 @@ AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
 AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
+SOURCE_REMOTE_REF='refs/heads/rollout/v20-sol61-codex-20261028-r47'
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
         'max_actor_seconds':3600,'max_batch_seconds':4500,'provider_concurrency':4,
@@ -318,6 +319,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     for path in paths:
         target=root/'code'/path.relative_to(REPO);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,target)
     reg={'family':'swarmharm/swarmharm-v1','created_at':utc(),'models':MODELS,
+        'source_remote_ref':SOURCE_REMOTE_REF,
         'upstream_models':UPSTREAM_MODELS,'reasoning':DEFAULT_REASONING,
         'instructions':lab.INSTRUCTIONS,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
@@ -717,7 +719,7 @@ def verify_collection_freeze(root,registration_dir,reg):
     require(not status.strip(),'Git worktree must be clean before inference.')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
     remote=subprocess.check_output(
-        ['git','ls-remote','origin','refs/heads/main'],cwd=REPO,text=True
+        ['git','ls-remote','origin',reg.get('source_remote_ref','refs/heads/main')],cwd=REPO,text=True
     ).split()[0]
     require(head==remote,'Registration source must be committed and pushed before inference.')
     tracked=subprocess.run(
