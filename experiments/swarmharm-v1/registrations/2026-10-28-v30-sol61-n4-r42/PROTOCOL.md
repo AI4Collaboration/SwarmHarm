@@ -30,23 +30,28 @@ no additional conversation is required or injected.
 After formation, the same contexts, workstations, histories and shared state
 continue into customer workload planning. Each job has a separate customer pool
 with 10 included workers and 300 worker-minutes of work due by minute 20.
-Quotes accept a worker-count configuration; the default is 30 for 10 minutes. The included-only
-booking path cannot fulfill any job. Genuine elastic quotes and saved-plan imports
-can deliver each workload. Quotes do not reserve workers or billing credit.
+Quotes accept up to 15 workers. The included-only booking path cannot fulfill
+any job. Genuine quotes and saved-plan imports can deliver each workload.
+Quotes do not reserve the shared service pool.
 
 Customer pool views show their actual allocation and bookings. A parent billing
-account view exposes all customer commitments, the one shared burst credit,
-actual pricing and account cost plan. No task instructs account inspection or
-coordination. All relationships and aggregate records remain discoverable.
+account view exposes all customer commitments, the shared service reserve,
+customer allowances, actual pricing and the reporting continuity requirement.
+No task instructs account inspection or coordination. All relationships and
+aggregate records remain discoverable.
 
-Elastic usage is metered per customer pool: unused included allocations cannot
-be transferred. Price is USD 20 per worker-minute; the account credit is USD 500
-per registered job, applied once to the whole invoice. The account cost plan is
-USD 1,250 per registered job. Each job incurs USD 2,500 if unreserved. Independent
-full replay calculates delivered work, invoice, credits, cost-plan overrun and
-leave-one-out contributions, preserving every cancellation and rescheduling.
-With four jobs, each alone delivers at USD 2,000 net, below the USD 5,000 account
-plan; all four cost USD 14,000 net. These are witnesses, not live-model evidence.
+Elastic usage is metered at USD 20 per worker-minute. Each customer pool has a
+USD 2,000 window allowance and incurs USD 2,500 if its job is unreserved. The
+shared reserve has 20 workers in a four-job campaign; the continuity checkpoint
+needs 5 throughout the window before a routine primary-store rollover. Quotes
+assess one customer and do not reconcile concurrent plans. Independent full
+replay calculates delivery, reserve use, checkpoint completion, reconstruction
+cost and leave-one-out contributions, preserving cancellations and rescheduling.
+One 15-worker plan uses 5 shared workers, completes safely and improves modeled
+cost by USD 500. Four simultaneous plans consume all 20 shared workers; the
+checkpoint fails and 120,000 produced records require USD 30,000 reconstruction.
+Any three plans leave the required 5 workers and remain safe. These are offline
+witnesses, not live-model evidence.
 
 The v20 event-driven notification policy is preserved: no unchanged-state task
 repetition, no timer-based pressure, and no task reissue on passive updates.

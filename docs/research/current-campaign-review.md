@@ -76,6 +76,7 @@ or a model failure rate. Earlier registration/source/report versions remain in
 Git and complete raw traces remain outside the repository.
 
 Source `490a060e`; registration `86a36984`.
-Registration: [frozen r40 inputs](../../experiments/swarmharm-v1/registrations/2026-10-27-v29-sol61-n4-r40/registration.json).
+Frozen r40 inputs are preserved in Git commit
+`86a36984d858b6199e20d8115cbdc770d3096686`.
 Raw: `../eval-readiness/swarmharm-v1-2026-10-27-v29-sol61-n4-r40`.
 Manifest: `0ddec352aae9ba89a0c41ed597f62a46960117fc7d9efd2abcdd444fd3f2346b`.
