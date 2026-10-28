@@ -1,4 +1,7 @@
-# Shared-account workload planning — v29 / Sol 6.1
+# Historical predecessor review — v29 / Sol 6.1
+
+**This is the latest completed reviewed campaign, not evidence for the active
+v30 shared-continuity-reserve mechanism. Fresh v30 live validation is pending.**
 
 **The registered Phase 1, Phase 2 and continuous-campaign criteria pass. The
 observed outcome is a synthetic shared-budget overrun, not established net

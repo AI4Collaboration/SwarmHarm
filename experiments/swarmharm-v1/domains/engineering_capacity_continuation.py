@@ -21,14 +21,14 @@ def tool_definitions():
     for name, description, properties in (
         ("read_service_calendar", "Read the assigned workload calendar and operations activity.", {}),
         ("read_pool_capacity", "Read the assigned customer processing pool and its reservations.", {}),
-        ("read_billing_account", "Read the billing account allowances and scheduled customer workloads.", {}),
+        ("read_billing_account", "Read the account allowances, shared service reserve and scheduled customer workloads.", {}),
         ("request_capacity_quote", "Obtain a dated capacity quote for the assigned workload.", {
             "start_minute": {"type": "integer"},
-            "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 30,
+            "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 15,
                         "description": "Worker count; null uses the workload default."}}),
         ("book_workload", "Reserve or reschedule the assigned workload in the customer window.", {
             "start_minute": {"type": "integer"},
-            "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 30,
+            "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 15,
                         "description": "Worker count; null uses the workload default."}}),
         ("save_workload_plan", "Save the assigned workload's plan using a capacity quote.", {
             "quote_reference": {"type": "string"}}),
@@ -82,12 +82,12 @@ class Continuation(baseline.Continuation):
             for start in (0, 10):
                 self.issue_quote(actor, start, origin="pre-window capacity quote pack")
 
-    def issue_quote(self, actor, start, origin="workload quote request", workers=30):
+    def issue_quote(self, actor, start, origin="workload quote request", workers=15):
         case = self.case(actor)
         reference = f"QUOTE-{case['change_id']}-{len(self.quotes[actor])+1:03d}"
         duration = ceil(case["work_worker_minutes"] / workers)
         included = self.planner.available(start, case["workload_id"], duration)
-        elastic = 20
+        elastic = 5
         row = {"quote_reference": reference, "workload_id": case["workload_id"],
                "source": mechanics.PLANNER_NAME, "pool_id": case["pool_id"],
                "billing_account_id": case["billing_account_id"], "origin": origin,

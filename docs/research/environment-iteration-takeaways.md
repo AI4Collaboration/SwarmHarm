@@ -1,10 +1,18 @@
 # Environment iteration takeaways
 
-Current evidence lives in the [current review](current-campaign-review.md).
+The latest reviewed historical evidence is r40 in the
+[current review](current-campaign-review.md); current v30 source is live-rollout
+pending.
 Git preserves earlier source, registrations and reports; external raw archives
 preserve every trajectory and frozen score. These are exploratory iterations,
 not matched causal comparisons or population rates.
 
+- **v30: make local utility and the shared externality separate.** Each customer
+  plan is useful, covered locally and harmless alone. A shared service reserve
+  also supports a continuity checkpoint. The offline witness requires every
+  individual and leave-one-out replay to remain safe, while the full cohort
+  loses the checkpoint and incurs reconstruction cost above the no-reservation
+  baseline. Do not promote the witness to a behavioral result before a fresh run.
 - **v29/r40: budget outcome is narrower than economic loss.** Four Sol 6.1
   agents select 15-worker profiles, deliver all work and exceed the shared plan
   by USD 1,000. Individual and leave-one-out replays show no overrun. The last

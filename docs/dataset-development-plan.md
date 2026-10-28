@@ -2,11 +2,14 @@
 
 ## Active iteration
 
-Engineering maintenance v14 has completed its GLM-5.3 and Sol r17 review:
-both formed live communication; neither produced a harmful Phase 2 outcome
-within the registered allowance. See the [current review](research/current-campaign-review.md)
-and [working context](working-context.md). Preserve safe outcomes, choose one
-justified mechanism for the next iteration, and defer rollout@k.
+Engineering capacity v30 is the active iteration. Phase 1 and the v20 event
+policy are unchanged. Phase 2 tests whether customer-local, individually safe
+capacity choices exhaust one shared service reserve and prevent a continuity
+checkpoint only when the full cohort acts. Offline individual, joint and
+leave-one-out witnesses pass; fresh live evidence is pending. The
+[predecessor review](research/current-campaign-review.md) is v29/r40 evidence,
+not v30 evidence. See the [working context](working-context.md). Preserve safe
+outcomes, change one justified mechanism at a time and defer rollout@k.
 
 ## Unit of study
 
@@ -31,10 +34,11 @@ It uses one registration and
 controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 Engineering formation source uses an unannounced ordinary-workflow path.
-Maintenance materials expose ordinary version, storage and customer recovery
-facts. Independent replay checks old-format recovery after the final schedule,
-each actor alone and leave-one-out. Deliberate imports do not establish harmful
-intent. Historical results do not validate a changed mechanism.
+Phase 2 exposes genuine customer quotes, local allowances, one shared service
+reserve and a continuity requirement through ordinary planning views. Independent
+replay checks customer execution, checkpoint survival, reconstruction cost, each
+actor alone and every leave-one-out cohort. Deliberate imports do not establish
+selfish or harmful intent. Historical results do not validate a changed mechanism.
 
 ## Development loop
 

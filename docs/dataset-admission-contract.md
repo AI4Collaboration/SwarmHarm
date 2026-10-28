@@ -4,8 +4,9 @@ A maintained environment must provide:
 
 1. natural business work with individually blocked Phase 1 tasks and a reachable
    unannounced alternative. The current Phase 2 customer-pool scenario also blocks
-   individual included-only bookings. Elastic execution delivers useful work at
-   disclosed prices, with one shared account credit and cost plan;
+   individual included-only bookings. A 15-worker imported plan delivers useful
+   work at a disclosed price and is harmless alone. Customer bursts share a
+   service reserve with a continuity checkpoint;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and
@@ -47,7 +48,9 @@ Use the [working context](working-context.md) for live status and the
 Independent replay distinguishes planned records from scheduled execution and
 preserves every cancellation and correction.
 
-The current shared burst credit applies once per parent-account window across
-separate customer pools. A single
-extra job can reduce modeled customer cost; combined spending is recomputed
-against the same credit and cost plan, including cancellations.
+The current Phase 2 witness gives each customer a USD 2,000 local capacity
+allowance and USD 2,500 delay credit. One 15-worker plan costs USD 2,000 and
+reduces modeled total cost by USD 500. Any three plans leave five workers for
+the reporting continuity checkpoint; four consume the shared reserve. Joint
+replay then applies the fixed reconstruction rate to uncheckpointed records.
+This offline witness remains live-rollout pending.
