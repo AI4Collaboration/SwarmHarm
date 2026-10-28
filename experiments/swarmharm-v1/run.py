@@ -37,6 +37,10 @@ PI_AGENT_SPEC=importlib.util.spec_from_file_location(
     'swarmharm_run_pi_agent',REPO/'experiments/runtime/pi_agent.py')
 pi_agent=importlib.util.module_from_spec(PI_AGENT_SPEC)
 PI_AGENT_SPEC.loader.exec_module(pi_agent)
+CLAUDE_AGENT_SPEC=importlib.util.spec_from_file_location(
+    'swarmharm_run_claude_agent',REPO/'experiments/runtime/claude_agent.py')
+claude_agent=importlib.util.module_from_spec(CLAUDE_AGENT_SPEC)
+CLAUDE_AGENT_SPEC.loader.exec_module(claude_agent)
 HARBOR_VERSION=package_version('harbor')
 if HARBOR_VERSION!='0.24.0':
     raise RuntimeError(f'Use pinned Harbor 0.24.0, found {HARBOR_VERSION}')
@@ -188,6 +192,9 @@ def code_paths():
             'runtime/response_monitor.py',
             'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]
+        +[REPO/'experiments'/name for name in (
+            'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
+            'runtime/claude/package.json','runtime/claude/package-lock.json','runtime/claude/checks.mjs')]
     )
 
 def require(condition,message):
@@ -238,10 +245,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
-            completion_incentive='none',goal_mode='off'):
+            completion_incentive='none',goal_mode='off',harness_kind='pi-sdk'):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
-    key_file=guardrails.credential_file(key_file,REPO)
+    if harness_kind not in ('pi-sdk','claude-code'):
+        raise ValueError('Unknown agent harness')
+    if harness_kind=='pi-sdk':
+        key_file=guardrails.credential_file(key_file,REPO)
+    elif key_file is not None:
+        raise ValueError('The Claude subscription harness does not accept an API key file')
     if root.exists():raise FileExistsError('Use a fresh output directory.')
     if registration_dir.exists():raise FileExistsError('Use a fresh registration directory.')
     if completion_incentive not in ('none', 'gpu-upgrade'):
@@ -249,7 +261,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if completion_incentive != 'none' and scenario != domain_runtime.ENGINEERING_MAINTENANCE:
         raise ValueError('The GPU comparison is registered only for engineering-maintenance')
     scenario=domain_runtime.normalize(scenario)
-    routes=verify_routes(key_file)
+    if harness_kind=='claude-code':
+        for model in MODELS.values():claude_agent.validate_model(model)
+        harness=claude_agent.harness_registration(goal_mode)
+        routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
+            'auth_status':harness['auth_status'],'api_key_billing':False,
+            'catalog_verification':'No authenticated subscription model catalog is exposed; exact model ID is checked on every SDK message.',
+            'evidence_limit':claude_agent.EVIDENCE_LIMIT}
+    else:
+        routes=verify_routes(key_file)
+        harness=pi_agent.harness_registration(goal_mode)
     scenario_mechanics=domain_runtime.mechanics(scenario)
     filing_deadline=normalized_filing_deadline(filing_deadline_utc)
     pressure=scenario_mechanics.business_pressure(filing_deadline)
@@ -268,6 +289,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if harness_kind=='claude-code':
+        budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
     budget['active_contexts_natural']=resolved_active_contexts
     if budget['active_contexts_natural'] != population:
         raise ValueError('canonical formation requires every context active together')
@@ -276,8 +299,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if not 1 <= resolved_provider_concurrency <= resolved_active_contexts:
         raise ValueError('provider concurrency must be between one and active contexts')
     if resolved_provider_concurrency != resolved_active_contexts:
-        raise ValueError('each Pi session sends its own requests; provider concurrency must equal active contexts')
-    harness=pi_agent.harness_registration(goal_mode)
+        raise ValueError('each agent session sends its own requests; provider concurrency must equal active contexts')
     budget['provider_concurrency']=resolved_provider_concurrency
     save(root/'fixtures.json',rows);save(root/'activation-plan.json',activation)
     save(root/'topology.json',topology_spec)
@@ -291,7 +313,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
-        for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/engineering_maintenance_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py','pi_collect_checks.py'):
+        for name in ('checks.py','live_checks.py','review_checks.py','continuation_checks.py','integrated_review_checks.py','format_checks.py','domain_runtime_checks.py','domains/engineering_checks.py','domains/engineering_continuation_checks.py','domains/engineering_maintenance_checks.py','domains/data_analysis_checks.py','domains/financial_analysis_checks.py','domains/knowledge_work_checks.py','pi_collect_checks.py','claude_collect_checks.py'):
             suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
                 'swarmharm_v1_'+name.replace('.','_').replace('/','_'), HERE/name
             )))
@@ -312,8 +334,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'upstream_models':UPSTREAM_MODELS,'reasoning':DEFAULT_REASONING,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'api_base':AXONHUB_API_BASE,'endpoint':AXONHUB_ENDPOINT,
-        'credential_source':('Existing host-only AxonHub key; never supplied to subjects.'
+        'api_base':None if harness_kind=='claude-code' else AXONHUB_API_BASE,
+        'endpoint':None if harness_kind=='claude-code' else AXONHUB_ENDPOINT,
+        'credential_source':('Operator Claude subscription login; no API key or API fallback.'
+            if harness_kind=='claude-code' else 'Existing host-only AxonHub key; never supplied to subjects.'
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'input_revision':'continuous-formation-to-external-effect-v25',
@@ -932,8 +956,11 @@ def collect(root,registration_dir):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     global AXONHUB_KEY_FILE
-    AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
     reg=load(root/'registration.json')
+    is_claude=reg.get('harness',{}).get('kind')=='claude-code'
+    if is_claude and AXONHUB_KEY_FILE is not None:
+        raise ValueError('The registered Claude subscription harness does not accept an API key file')
+    if not is_claude:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
     scenario=domain_runtime.normalize(reg.get('scenario'))
     require(not (root/'started.json').exists(),'Never replace trajectories.')
     require(reg.get('phase2',{}).get('depends_on_phase1') is True,
@@ -954,10 +981,18 @@ def collect(root,registration_dir):
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     harness=reg['harness']
-    require(harness['kind']=='pi-sdk','This collector drives registered Pi SDK sessions.')
-    require(pi_agent.installed_versions()==harness['installed'],'Installed Pi runtime differs from the registration.')
-    require(pi_agent.node_version()==harness['node_version'],'Node.js differs from the registration.')
-    api_key=AXONHUB_KEY_FILE.read_text().strip()
+    require(harness['kind'] in ('pi-sdk','claude-code'),'Unknown registered agent harness.')
+    agent_runtime=claude_agent if is_claude else pi_agent
+    agent_class=claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
+    harness_folder='claude' if is_claude else 'pi'
+    if is_claude:
+        require(harness['authentication']=='claude-subscription','Claude requires subscription authentication.')
+        claude_agent.verify_runtime(harness)
+    else:
+        require(pi_agent.installed_versions()==harness['installed'],'Installed Pi runtime differs from the registration.')
+        require(pi_agent.node_version()==harness['node_version'],'Node.js differs from the registration.')
+    api_key=None if is_claude else AXONHUB_KEY_FILE.read_text().strip()
+    api_base=None if is_claude else registration_api_base(reg)
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
     continuation_path = HERE / (domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=module('swarmharm_v1_continuation',continuation_path)
@@ -989,9 +1024,8 @@ def collect(root,registration_dir):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension=continuation_module.Continuation(world,load(root/'phase2-plan.json'))
         phase2_activation=None;termination_reason='quiescence'
-        events=pi_agent.new_queue();agents={}
-        # Running contexts are inside a Pi run; the rest have settled. Pi runs its own loop:
-        # input for a running context is queued by Pi for its next turn.
+        events=agent_runtime.new_queue();agents={}
+        # The selected SDK owns the live loop and queues input for its next turn.
         running=set();pending_texts={};pending_tools={}
         turn_records={};executed_calls={}
         phase2_tool_names=[tool['name'] for tool in continuation_module.tool_definitions()]
@@ -1016,9 +1050,9 @@ def collect(root,registration_dir):
                     'extension_continuations':[],'harness_rejected_tool_calls':[],
                     'extension_errors':[],'provider_retries':[]}
                 save(root/name/actor/'initial-input.json',initial[name][actor])
-                agents[actor]=pi_agent.PiAgent(
-                    actor,events,folder=root/name/actor/'pi',model=reg['models'][item['provider']],
-                    api_base=registration_api_base(reg),api_key=api_key,thinking_level=reg['reasoning'],
+                agents[actor]=agent_class(
+                    actor,events,folder=root/name/actor/harness_folder,model=reg['models'][item['provider']],
+                    api_base=api_base,api_key=api_key,thinking_level=reg['reasoning'],
                     max_output_tokens=budget['max_output_tokens_per_response'],
                     context_window=harness['context_window'],
                     request_timeout_ms=budget['request_timeout_seconds']*1000,
@@ -1026,13 +1060,13 @@ def collect(root,registration_dir):
                     active_tools=[tool['name'] for tool in lab.tools(item)],
                     job_context=initial[name][actor]['input'][0]['content'],
                     goal_mode=harness['goal_mode'])
-            for actor,value in pi_agent.wait_ready(events,active).items():
-                save(root/name/actor/'pi-system-prompt.json',{'system_prompt':value['system_prompt'],
+            for actor,value in agent_runtime.wait_ready(events,active).items():
+                save(root/name/actor/f'{harness_folder}-system-prompt.json',{'system_prompt':value['system_prompt'],
                     'active_tools':value['active_tools'],'commands':value['commands']})
                 require(set(value['active_tools'])=={
                     tool['name'] for tool in lab.tools(plan[actor])}|set(harness['extension_tools']),
                     f'{actor} started with unregistered tools: {value["active_tools"]}')
-                states[actor]['pi_session']=value
+                states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
             save(root/name/'activation.json',{
                 'policy':'simultaneous_start_barrier',
@@ -1260,7 +1294,7 @@ def collect(root,registration_dir):
                 folder=root/name/actor/'trace';label=f'{turn:04d}'
                 attempts=turn_records.get((actor,turn),{}).get('attempts',{})
                 if message['stop_reason']=='error':
-                    # Pi may still retry; the run settles with error_message if every retry fails.
+                    # The SDK may still retry; settlement reports exhausted errors.
                     save(folder/'transport-attempts'/label/f'{max(attempts,default=0):04d}.turn-error.json',
                         {'type':'error','message':(message['error_message'] or '')[:500],'at':utc()})
                     return
@@ -1376,13 +1410,13 @@ def collect(root,registration_dir):
                     print(json.dumps({'alert':'extension_error','actor':actor,'error':message['error']}),flush=True)
                     export(actor)
                 elif kind in ('fatal','exited','closed'):
-                    raise RuntimeError(f'Pi agent {actor} stopped: {message}')
+                    raise RuntimeError(f'{harness["kind"]} agent {actor} stopped: {message}')
                 else:
-                    raise RuntimeError(f'Unknown Pi agent event: {message}')
+                    raise RuntimeError(f'Unknown agent event: {message}')
             def next_event(timeout=1):
                 try:
                     actor,message=events.get(timeout=timeout)
-                except pi_agent.Empty:
+                except agent_runtime.Empty:
                     return
                 handle(actor,message)
             for actor in active.copy():submit(actor)
@@ -1408,7 +1442,7 @@ def collect(root,registration_dir):
                     # Keep contexts available until their next real update or registered follow-up.
                     next_event(min(1, max(0.05, observation.ends_at-time.monotonic())));continue
                 if phase2_pending is not None:
-                    # Running contexts receive Phase 2 through Pi's queue at their next turn.
+                    # Running contexts receive Phase 2 through their SDK input queue.
                     if active!=set(plan):
                         raise ObservationHold(
                             'Phase 2 activation requires the complete Phase 1 population')
@@ -1470,7 +1504,7 @@ def collect(root,registration_dir):
             raise
         finally:
             for actor,agent in agents.items():
-                states[actor]['pi_exit_code']=agent.close()
+                states[actor][f'{harness_folder}_exit_code']=agent.close()
             finish_actor_states(states,starts,reason=termination_reason,
                                 finished_at=utc(),now=time.monotonic())
             for actor in states:export(actor)
@@ -1478,23 +1512,23 @@ def collect(root,registration_dir):
             save(root/name/'actors.json',states)
         return states,world.summary()
     def preflight(provider,model):
-        """One tool round trip through the registered Pi harness and route."""
-        folder=root/'preflight'/provider;events=pi_agent.new_queue();calls=[];final=None
+        """One tool round trip through the registered harness and authentication."""
+        folder=root/'preflight'/provider;events=agent_runtime.new_queue();calls=[];final=None
         tool={'type':'function','name':'confirm_service','description':'Return the service status.',
             'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False},'strict':True}
-        agent=pi_agent.PiAgent('preflight',events,folder=folder/'pi',model=model,
-            api_base=registration_api_base(reg),api_key=api_key,thinking_level=reg['reasoning'],
+        agent=agent_class('preflight',events,folder=folder/harness_folder,model=model,
+            api_base=api_base,api_key=api_key,thinking_level=reg['reasoning'],
             max_output_tokens=budget['max_output_tokens_per_response'],
             context_window=harness['context_window'],
             request_timeout_ms=budget['request_timeout_seconds']*1000,
             tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off')
         try:
-            pi_agent.wait_ready(events,['preflight'])
+            agent_runtime.wait_ready(events,['preflight'])
             agent.prompt('Check service availability using confirm_service.')
             limit=time.monotonic()+3*budget['request_timeout_seconds']
             while final is None:
                 try:_,message=events.get(timeout=max(1,limit-time.monotonic()))
-                except pi_agent.Empty:raise Hold('Model preflight did not settle') from None
+                except agent_runtime.Empty:raise Hold('Model preflight did not settle') from None
                 kind=message['type'];label=f"{message.get('turn',0):04d}"
                 if kind=='request':
                     save(folder/f"{label}-{message['attempt']:04d}.request.json",message['payload'])
@@ -1520,14 +1554,14 @@ def collect(root,registration_dir):
                 elif kind=='settled':
                     if message.get('error_message'):raise Hold(message['error_message'])
                     final=message['text']
-                elif kind in ('fatal','exited','closed'):raise RuntimeError(f'Pi preflight stopped: {message}')
+                elif kind in ('fatal','exited','closed'):raise RuntimeError(f'Agent preflight stopped: {message}')
             require(
                 len(calls)==1 and calls[0]['name']=='confirm_service'
                 and empty_tool_arguments(calls[0]['arguments']),
                 'Model preflight did not call confirm_service exactly once.')
             require(bool(final),'Model preflight did not return a terminal text response.')
             save(folder/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning'],
-                'harness':'pi-sdk','pi_version':harness['pi_version']})
+                'harness':harness['kind'],'runtime_versions':harness['installed']})
         finally:
             agent.close()
     save(root/'started.json',{'at':utc(),'pid':__import__('os').getpid()})
@@ -1555,9 +1589,11 @@ if __name__=='__main__':
     def stop_operator(signum,frame):raise KeyboardInterrupt()
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
-    p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path,required=True)
-    p.add_argument('--model-id',default='z-ai/glm-5.3',
-        help='AxonHub model ID; defaults to the current GLM route.')
+    p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
+    p.add_argument('--harness',choices=('pi-sdk','claude-code'),default='pi-sdk',
+        help='Claude Code uses the operator Claude subscription, without an API key.')
+    p.add_argument('--model-id',
+        help='AxonHub model ID (default z-ai/glm-5.3), or required explicit Claude model ID.')
     p.add_argument('--upstream-model-id',
         help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
     p.add_argument('--model-alias',default='glm',
@@ -1581,21 +1617,26 @@ if __name__=='__main__':
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     a=p.parse_args()
-    if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
+    if a.phase=='prepare' and a.harness=='pi-sdk' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         AXONHUB_API_BASE=a.api_base.rstrip('/')
         AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
         AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
-    AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
+    AXONHUB_KEY_FILE=a.key_file
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
-        MODELS={a.model_alias:a.model_id}
-        UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or a.model_id}
+        if a.harness=='claude-code':
+            if not a.model_id:p.error('--model-id is required for the Claude subscription harness')
+            if a.key_file or a.api_base!=AXONHUB_API_BASE or a.upstream_model_id:
+                p.error('Claude subscriptions do not accept --key-file, --api-base or --upstream-model-id')
+        model_id=a.model_id or 'z-ai/glm-5.3'
+        MODELS={a.model_alias:model_id}
+        UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}
     if a.phase=='prepare':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
             filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
-            completion_incentive=a.completion_incentive,goal_mode=a.goal_mode)
+            completion_incentive=a.completion_incentive,goal_mode=a.goal_mode,harness_kind=a.harness)
     else:collect(root,registration_dir)

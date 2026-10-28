@@ -52,6 +52,11 @@ LIVE_EXECUTION_PATHS = {
     "experiments/runtime/pi/agent.mjs",
     "experiments/runtime/pi/package.json",
     "experiments/runtime/pi/package-lock.json",
+    "experiments/runtime/claude_agent.py",
+    "experiments/runtime/claude/agent.mjs",
+    "experiments/runtime/claude/bridge.mjs",
+    "experiments/runtime/claude/package.json",
+    "experiments/runtime/claude/package-lock.json",
     "experiments/runtime/response_monitor.py",
 }
 

@@ -112,7 +112,14 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- All live inference uses AxonHub. Verify the exact route in upstream and
+- Pi live inference uses AxonHub. The explicitly requested Claude Code harness
+  is a separate subscription-only condition using the operator's Claude login
+  through the Claude Agent SDK. Never supply API keys, cloud-provider routing
+  or API fallback to that harness. Freeze an exact Claude model ID and SDK/CLI
+  versions separately; keep SDK-native evidence and disclose that provider HTTP
+  payloads and full model-visible context are not exposed. It remains
+  `live rollout pending` until a fresh matching subscription campaign is reviewed.
+  For AxonHub, verify the exact route in upstream and
   authenticated AxonHub catalogs before preparation.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this

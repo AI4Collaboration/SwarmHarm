@@ -6,6 +6,8 @@ stitching.
 
 ## Runtime
 
+- Optional Claude subscription harness: see [setup below](#claude-code-subscription-harness).
+  Its authentication and evidence differ from the Pi/AxonHub defaults below.
 - Agent harness: the Pi SDK, `@earendil-works/pi-coding-agent@1.4.0` on Node.js
   >= 22.19, pinned by `experiments/runtime/pi/package-lock.json`. Each agent is
   one Pi session in its own Node process (`experiments/runtime/pi/agent.mjs`),
@@ -26,6 +28,97 @@ eligible channel for the same model; record actual executions and any routing
 changes during collection. See [routing](axonhub-routing.md).
 
 No AWS resource is required for the current local study.
+
+## Claude Code subscription harness
+
+Status: **live rollout pending**. This is a separate harness condition. It does
+not expand the registered AxonHub model set or validate existing campaigns.
+
+Install Claude Code >= 2.1.304 and sign in on the collection host with your
+Claude subscription. Install the pinned Agent SDK alongside Pi:
+
+```sh
+claude auth login                     # choose your Claude plan, without --console
+npm ci --ignore-scripts --prefix experiments/runtime/claude
+```
+
+For a headless host, `claude setup-token` provides a subscription OAuth token
+for `CLAUDE_CODE_OAUTH_TOKEN`. Keep it outside Git and raw evidence. Alternatively,
+use the host's existing Claude Code login. `SWARMHARM_CLAUDE` can select a specific
+CLI executable; `SWARMHARM_NODE` can select Node.js >= 22.19.
+
+The harness checks `claude auth status` with user/project settings disabled.
+It accepts only first-party Claude login or subscription OAuth authentication.
+It rejects `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_BASE_URL`,
+custom authorization headers and Bedrock/Vertex/Foundry routing. Unset these
+variables in the collection shell; do not pass `--key-file`, `--api-base` or
+`--upstream-model-id`. The child receives only an allowlisted environment.
+User/project settings and MCP configurations are disabled; there is no API
+fallback. Subscription exhaustion preserves the attempt and stops collection.
+Disable paid extra usage in your Claude account if you want to stay strictly
+within the plan allocation; the harness cannot inspect that account setting.
+
+Anthropic currently states that subscription-authenticated Agent SDK and
+`claude -p` runs draw from plan limits. API-key runs use separate API billing.
+See [Anthropic's subscription guidance](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan)
+and [authentication reference](https://code.claude.com/docs/en/cli-reference).
+
+Prepare a fresh registration with an explicit model ID available to your plan:
+
+```sh
+PY=../eval-readiness/harbor-0.24.0/bin/python
+OUT=../eval-readiness/swarmharm-v1-<fresh-claude-run-id>
+REG=experiments/swarmharm-v1/registrations/<fresh-claude-run-id>
+
+$PY experiments/swarmharm-v1/run.py --phase prepare \
+  --harness claude-code --model-alias claude --model-id <exact-claude-model-id> \
+  --scenario engineering-maintenance --output "$OUT" --registration-dir "$REG"
+```
+
+Model aliases such as `opus` and `sonnet`, and AxonHub/OpenRouter model prefixes,
+are rejected. The subscription CLI exposes no authenticated catalog equivalent
+to AxonHub's; every streamed model message must match the frozen model ID.
+Preparation records the SDK version, Node version and the installed CLI version
+and executable hash. Collection rechecks authentication and these identities.
+Finish changes, prepare, commit and push the registration, and verify a clean
+worktree before collecting. CLI updates require a fresh registration.
+
+```sh
+$PY experiments/swarmharm-v1/launch.py --output "$OUT" --registration-dir "$REG"
+# Or collect in the foreground:
+$PY experiments/swarmharm-v1/run.py --phase collect --output "$OUT" --registration-dir "$REG"
+$PY experiments/swarmharm-v1/export_atif.py "$OUT"
+```
+
+Each subject has one long-lived SDK query, private working directory and session
+ID across both phases. Built-in host tools are removed with `tools: []`.
+Only registered MCP tools reach the controller, which executes them sequentially
+in the existing offline workstation and business service. Phase 2 adds its MCP
+tools to the same query after the operator gate; it does not restart or resume
+another process. The initial task and later business updates use streaming input.
+`--goal-mode goal_command` is Pi-only and is rejected here.
+
+The custom system prompt contains the neutral delegation preamble and ordinary
+job context. SDK-internal reminders are not fully observable, so the registration
+does not claim that the prompt contract covers every subject-facing SDK input.
+Automatic transport retries are disabled with `CLAUDE_CODE_MAX_RETRIES=0`;
+the registered request timeout and output limit are passed to Claude Code.
+Compaction, nested sessions, unexpected tools, model changes and refused/failed
+results stop collection and retain the evidence.
+
+Raw SDK messages live in each actor's `claude/native/`; the SDK mirrors its
+session transcript to `claude/session.jsonl`. All are outside Git and included
+in the terminal evidence manifest. `trace/*.request.json` and `*.response.json`
+are explicitly labelled **controller projections**, not provider HTTP captures.
+ATIF validates the schema, SDK session identity, native text and tool-call
+correspondence, tool-result delivery and controller history. A saved tool result
+without a matching SDK echo is marked as having unverified delivery. It cannot verify full provider context,
+SDK-internal prompts or unreported transport retries. Report this evidence limit
+alongside any Claude result.
+
+`claude_collect_checks.py` uses the real SDK/CLI against a localhost protocol
+fixture, including sandbox tool execution and ATIF export. These offline checks
+make no live model calls and do not constitute behavioral validation.
 
 ## Pi harness
 

@@ -1,5 +1,10 @@
 # SwarmHarm v1
 
+The default harness is Pi. The optional `--harness claude-code` uses the pinned
+Claude Agent SDK with a Claude subscription, rejects API-key billing and keeps
+one live session across both phases. It is a separate harness condition,
+**live rollout pending**. See [setup and evidence limits](../../docs/running-evals.md#claude-code-subscription-harness).
+
 SwarmHarm runs one continuous campaign with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
 requests, without a fixed observation delay. Interaction continues in the same

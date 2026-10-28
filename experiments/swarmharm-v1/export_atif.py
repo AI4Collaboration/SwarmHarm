@@ -1,4 +1,4 @@
-"""Export Pi SDK campaign actors to validated ATIF-v1.8 trajectories."""
+"""Export registered Pi or Claude SDK actors to validated ATIF-v1.8 trajectories."""
 import argparse,hashlib,json
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
@@ -29,14 +29,62 @@ def appended_input(expected,incoming):
     assert head==[canonical(item) for item in expected],'Native request rewrote prior history'
     return incoming[len(expected):]
 
+def claude_native_evidence(folder,requests):
+    """Bind projections to SDK-native content; do not claim provider-context access."""
+    native=folder/'claude'/'native';paths=sorted(native.glob('*.json'))
+    assert paths,'Missing Claude SDK native evidence'
+    messages={str(path.relative_to(folder/'claude')):read(path) for path in paths}
+    session=read(folder/'result.json')['claude_session']['session_id']
+    for message in messages.values():
+        assert not message.get('session_id') or message['session_id']==session,'Claude session identity changed'
+        assert not message.get('parent_tool_use_id'),'Unexpected nested Claude context'
+        assert message.get('subtype')!='compact_boundary','Claude context was compacted'
+    for reqpath in requests:
+        req=read(reqpath);start=messages[req['native_record']]
+        assert start['type']=='stream_event' and start['event']['type']=='message_start'
+        assert (start['event']['message']['id'],start['event']['message']['model'])==(req['sdk_message_id'],req['model'])
+        respath=reqpath.with_name(reqpath.name.replace('.request.json','.response.json'))
+        if not respath.exists():continue
+        response=read(respath);stop=messages[response['native_record']]
+        assert stop['event']['type']=='message_stop'
+        selected=[message for path,message in messages.items()
+                  if req['native_record']<path<response['native_record'] and message['type']=='assistant']
+        blocks=[block for message in selected for block in message['message']['content']]
+        assert all(message['message']['id']==response['id'] for message in selected)
+        calls=[(block['id'],block['name'].split('__',2)[2],block['input']) for block in blocks if block['type']=='tool_use']
+        assert calls==[(item['call_id'],item['name'],arguments(item['arguments']))
+                      for item in response['output'] if item['type']=='function_call'],'Claude projection changed native tool calls'
+        assert [block['text'] for block in blocks if block['type']=='text']==[
+            text_of(item['content']) for item in response['output'] if item['type']=='message'],'Claude projection changed native text'
+    delivery={}
+    for path in sorted((folder/'trace').glob('*-tool-*.json')):
+        record=read(path)
+        found=[(source,block) for source,message in messages.items()
+               if message['type']=='user' and isinstance(message.get('message',{}).get('content'),list)
+               for block in message['message']['content']
+               if block.get('type')=='tool_result' and block.get('tool_use_id')==record['call_id']]
+        for _,block in found:
+            assert text_of(block['content'])==json.dumps(record['result'],ensure_ascii=False),'Claude native tool result differs from controller execution'
+        delivery[record['call_id']]={'sdk_delivery_verified':bool(found),
+            'native_records':['claude/'+source for source,_ in found]}
+    transcript=folder/'claude'/'session.jsonl'
+    if transcript.exists():paths.append(transcript)
+    return {str(path.relative_to(folder)):sha(path) for path in paths},delivery
+
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('[0-9][0-9][0-9][0-9].request.json'))
     assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];tools=0
+    is_claude=read(root/'registration.json').get('harness',{}).get('kind')=='claude-code'
+    assert is_claude==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
+    if is_claude:
+        native_hashes,delivery=claude_native_evidence(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools;phase2_tools_seen=False
     platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
-    add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]','harness':'pi-sdk'})
+    add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
+        'harness':'claude-code' if is_claude else 'pi-sdk',
+        'scope':'controller custom system prompt; SDK-internal additions unobservable' if is_claude else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for reqpath in requests:
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
@@ -76,7 +124,11 @@ def export_actor(root,phase,actor):
             records={}
             for tp in sorted(reqpath.parent.glob(label+'-tool-*.json')):
                 record=read(tp);records[record['call_id']]=(tp,record)
-            for c in calls:
+            # SDK handlers may be dispatched in a different order from content
+            # blocks. Preserve the controller's actual sequential event order.
+            executed_order=(sorted(calls,key=lambda c:records[c['call_id']][1]['event_id']
+                if c['call_id'] in records else float('inf')) if is_claude else calls)
+            for c in executed_order:
                 if c['call_id'] not in records:continue
                 tp,record=records[c['call_id']];assert record['name']==c['name'] and record['arguments']==c['arguments']
                 hashes[str(tp.relative_to(folder))]=sha(tp);out=json.dumps(record['result'],ensure_ascii=False)
@@ -90,6 +142,20 @@ def export_actor(root,phase,actor):
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
     value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous campaign collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'One Pi session spans Phase 1 and Phase 2. Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'independent_review':'../../../independent-review.json'}}
+    if is_claude:
+        value['agent']['name']='SwarmHarm continuous campaign collector (Claude Agent SDK / subscription)'
+        value['extra'].pop('pi_session_file')
+        value['extra'].update({
+            'claude_session':state['claude_session']['session_id'],
+            'provider_http_payloads_captured':False,
+            'provider_context_continuity_verified':False,
+            'conversion':'One persistent Claude Code session spans both phases. SDK-native messages and any mirrored session transcript are retained and hashed. Request/response JSON files are controller projections checked against native SDK message IDs, text and tool calls. Continuity checks establish SDK session identity and controller history, not complete model-visible provider context. SDK-internal prompts and transport retries are not observable.',
+        })
+        for step in value['steps']:
+            if step['source']=='agent':
+                step['extra']['record_kind']='controller_projection_from_sdk_messages'
+                step['extra']['tool_result_delivery']={call['tool_call_id']:delivery[call['tool_call_id']]
+                    for call in step.get('tool_calls',[]) if call['tool_call_id'] in delivery}
     validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)
     if dest.exists():
         Trajectory.model_validate(read(dest))

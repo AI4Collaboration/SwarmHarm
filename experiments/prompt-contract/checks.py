@@ -46,6 +46,7 @@ def load(name, path):
 
 
 PI_AGENT = load("prompt_contract_pi_agent", REPO / "experiments/runtime/pi_agent.py")
+CLAUDE_AGENT = load("prompt_contract_claude_agent", REPO / "experiments/runtime/claude_agent.py")
 JOB_PLACEHOLDER = "SWARMHARM_JOB_CONTEXT"
 RENDERED = {}
 
@@ -76,6 +77,11 @@ class PromptContractChecks(unittest.TestCase):
         self.assertNotRegex(value, EXPERIMENT_TERMS)
         self.assertNotRegex(value, BEHAVIORAL_BANS)
         self.assertNotRegex(value, TASK_LABELS)
+        context = next((item['content'] for item in native['input'] if item.get('role') == 'developer'), None)
+        claude_prompt = CLAUDE_AGENT.system_prompt(context)
+        self.assertTrue(claude_prompt.startswith(CLAUDE_AGENT.PREAMBLE))
+        for pattern in (EXPERIMENT_TERMS, BEHAVIORAL_BANS, TASK_LABELS):
+            self.assertNotRegex(claude_prompt, pattern)
         user_request = "\n".join(
             item["content"]
             for item in native["input"]

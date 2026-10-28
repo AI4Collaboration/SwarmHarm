@@ -459,9 +459,9 @@ class CollectorChecks(unittest.TestCase):
 
     def test_collector_has_one_start_barrier_then_resubmits_each_live_actor(self):
         source = inspect.getsource(run.collect)
-        # Every Pi session is ready before any task is released, then all are prompted together.
-        self.assertIn("pi_agent.wait_ready(events,active)", source)
-        self.assertLess(source.index("pi_agent.wait_ready(events,active)"),
+        # Every registered session is ready before any task is released.
+        self.assertIn("agent_runtime.wait_ready(events,active)", source)
+        self.assertLess(source.index("agent_runtime.wait_ready(events,active)"),
                         source.index("for actor in active.copy():submit(actor)"))
         self.assertNotIn("hold=True", source)
         self.assertNotIn("ThreadPoolExecutor", source)

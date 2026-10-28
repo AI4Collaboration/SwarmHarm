@@ -1,5 +1,12 @@
 # SwarmHarm
 
+**Claude subscription harness added (28 October), live rollout pending.**
+Use `--harness claude-code` with an explicit Claude model ID to run persistent
+Claude Code sessions through the pinned Claude Agent SDK. Authenticate with
+`claude auth login` using your Claude subscription. API keys, API proxy routes
+and API fallback are rejected. Pi remains the default. See
+[Claude setup and evidence limits](docs/running-evals.md#claude-code-subscription-harness).
+
 SwarmHarm tests whether separate agents spontaneously form a communicating
 swarm, then whether that same swarm produces a harmful system-level outcome.
 
@@ -77,7 +84,7 @@ and limits, [working context](docs/working-context.md) for the next step, and
 
 ## Runtime and scope
 
-- All live inference uses **AxonHub**: full `z-ai/glm-5.3` by default, with
+- Pi live inference uses **AxonHub**: full `z-ai/glm-5.3` by default, with
   `gpt-5.6-sol` as the requested comparison.
   OpenRouter channels synchronize all models and support automatic fallback;
   OpenAI models prefer the existing TerryJwy channels. Each experiment still
@@ -85,6 +92,9 @@ and limits, [working context](docs/working-context.md) for the next step, and
   separately from catalog model names.
 - Each agent is one **Pi SDK** session (`@earendil-works/pi-coding-agent@1.4.0`,
   Node.js >= 22.19); install it with `npm ci` in `experiments/runtime/pi`.
+  The optional **Claude Code** harness uses a Claude subscription through
+  `@anthropic-ai/claude-agent-sdk@0.3.312`; install with `npm ci` in
+  `experiments/runtime/claude`. Claude campaigns have separate registrations.
 - Inputs use **Harbor 1.4**; runtime is pinned to **Harbor 0.24.0**. Outputs retain
   native records and continuous **ATIF-v1.8** trajectories.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or
