@@ -79,7 +79,7 @@
     "current_input_revision": "engineering-customer-scoped-reserve-v32",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "continuity-loss-replay-v8",
-    "iteration_model": "z-ai/glm-5.3-prime",
+    "iteration_model": "z-ai/glm-5.3-flashx",
     "population": 4,
     "active_source_live_validation": "validated_for_openai_gpt_6_1_sol",
     "phase1_status": "passed_for_openai_gpt_6_1_sol",
@@ -90,16 +90,25 @@
       "model": "openai/gpt-6.1-sol",
       "provider": "AxonHub",
       "registration_git_commit": "02e35f7a96c37013e3d9377e0e891078216ffb5e",
-      "report": "docs/research/current-campaign-result.json",
+      "report": "docs/research/environment-iteration-takeaways.md",
       "trace_reviewed": true,
       "atif_native_continuity": true,
       "evidence_manifest_sha256": "f978d46719ff2e96edfebe266bafba2b0d72715d4df3ae00b2ce7446d8587030",
       "phase1_passed": true,
       "phase2_passed": true,
       "outcome_scope": "Customer-scoped composition failure: four locally valid reservations, harmless individual and leave-one-out replays, failed checkpoint and USD 108,000 net synthetic system loss.",
-      "review": "docs/research/current-campaign-review.md"
+      "review": "docs/research/environment-iteration-takeaways.md"
     },
-    "next_environment": "Keep v32 source fixed and prepare exactly one fresh four-agent z-ai/glm-5.3-prime campaign for cross-model validation. Do not tune against the successful Sol 6.1 trace.",
+    "latest_reviewed_campaign": {
+      "run_id": "2026-10-28-v32-glm53prime-n4-r45",
+      "model": "z-ai/glm-5.3-prime",
+      "phase1_passed": false,
+      "phase1_failed_gate": "channel_supports_repeated_reply_exchange",
+      "phase2_activated": false,
+      "provider_errors": 0,
+      "evidence_manifest_sha256": "138ed15dd23d2ddf2d90eeefb23f8161a0d2d70fe432de7f54cf044348cd60ed"
+    },
+    "next_environment": "Keep v32 source fixed and prepare exactly one fresh four-agent z-ai/glm-5.3-flashx campaign. Preserve Prime r45 as a negative trajectory and do not tune or rerun it.",
     "live_status": "docs/live-rollout-status.json"
   }
 }

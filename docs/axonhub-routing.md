@@ -24,7 +24,8 @@ must never enter a task, container, registration, trajectory, report or Git.
 
 The maintained model choices are:
 
-- GLM environment development: `z-ai/glm-5.3-prime`;
+- GLM environment development: `z-ai/glm-5.3-flashx` (latest interactive GLM
+  Flash route confirmed in both catalogs on 28 October 2026);
 - latest validated Engineering capacity case: `openai/gpt-6.1-sol`.
 
 Every fresh registration must query the upstream and authenticated AxonHub

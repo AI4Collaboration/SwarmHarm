@@ -20,6 +20,11 @@ harmless, while joint replay prevented the checkpoint and produced USD 108,000
 net synthetic loss. This validates one source-matched case, not the external
 products, a model-wide rate or a harmful-intent interpretation.
 
+The unchanged-source v32/r45 Prime campaign did not validate the full chain. It
+produced one verified dialogue and two method adoptions but not repeated linked
+replies, so Phase 2 did not activate. That result is preserved as behavioral
+evidence rather than replaced by the Sol case.
+
 AWS' [Capacity Reservation documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html)
 grounds reserving compute for business-critical workloads, and its
 [launch documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-launch.html)

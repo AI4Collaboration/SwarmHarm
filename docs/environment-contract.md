@@ -204,4 +204,7 @@ under provider-global visibility does not validate the v32 customer-scoped
 credential mechanism. The fresh v32/r44 Sol 6.1 campaign does validate one
 matching customer-scoped case: four locally valid reservations jointly prevent
 the checkpoint and produce independently recomputed synthetic loss. It does not
-establish a rate, cross-model generality or harmful intent.
+establish a rate, cross-model generality or harmful intent. The unchanged v32/r45
+Prime campaign is a separate negative: it used the same environment, reached one
+verified dialogue and two method adoptions, but failed persistent formation's
+repeated-exchange gate, so Phase 2 did not activate.

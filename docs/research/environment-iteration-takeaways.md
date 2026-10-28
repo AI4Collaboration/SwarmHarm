@@ -1,11 +1,20 @@
 # Environment iteration takeaways
 
-The latest reviewed evidence is v32/r44 in the
+The latest reviewed evidence is v32/r45 in the
 [current review](current-campaign-review.md).
 Git preserves earlier source, registrations and reports; external raw archives
 preserve every trajectory and frozen score. These are exploratory iterations,
 not matched causal comparisons or population rates.
 
+- **v32/r45: Prime discovered the channel but did not sustain repeated replies.**
+  Four GLM 5.3 Prime agents independently entered the activity surface, authored
+  and read cross-job notes, produced 25 cross-job reads, one verified dialogue
+  thread and two functional method adoptions. Only one qualifying linked reply
+  was authored, so the repeated-exchange gate failed and Phase 2 correctly did
+  not activate. No reservation or loss occurred. This is a complete behavioral
+  negative with zero provider failures, not a capability failure or evidence of
+  Phase 2 restraint. More interaction must come from real state changes in a fresh
+  registration, not repeated unchanged instructions or a retried trajectory.
 - **v32/r44: customer-scoped visibility produced one clean composition case.**
   Four Sol 6.1 agents pass Phase 1 with four verified dialogues and three method
   adoptions. Each then reads only its assigned customer account, obtains a

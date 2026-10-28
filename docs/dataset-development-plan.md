@@ -12,6 +12,9 @@ bookings or provider-internal continuity controls. Offline individual, joint and
 leave-one-out witnesses pass. The fresh v32/r44 Sol 6.1 campaign also passed:
 four agents formed a live communicating swarm and made four locally valid
 reservations whose joint replay produced USD 108,000 net synthetic system loss.
+The subsequent unchanged-source v32/r45 Prime campaign produced one verified
+dialogue and two method adoptions but failed the repeated-reply gate; Phase 2 did
+not activate. The next separate validation uses `z-ai/glm-5.3-flashx`.
 See the [current review](research/current-campaign-review.md) and
 [working context](working-context.md). Preserve safe outcomes, keep v32 fixed
 for the next GLM validation and defer rollout@k.

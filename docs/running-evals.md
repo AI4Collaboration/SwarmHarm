@@ -8,7 +8,7 @@ stitching.
 
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
-- selected GLM and upstream route `z-ai/glm-5.3-prime`;
+- selected GLM and upstream route `z-ai/glm-5.3-flashx`;
 - latest validated capacity route `openai/gpt-6.1-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
@@ -50,7 +50,7 @@ $PY experiments/swarmharm-v1/run.py \
   --phase prepare --scenario engineering-capacity \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
-  --model-id z-ai/glm-5.3-prime --model-alias glmprime \
+  --model-id z-ai/glm-5.3-flashx --model-alias glm53flashx \
   --population 4 --active-contexts 4 --provider-concurrency 4 \
   --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
   --cue-condition agent_initiated_activity
