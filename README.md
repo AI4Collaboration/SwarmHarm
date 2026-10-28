@@ -1,5 +1,13 @@
 # SwarmHarm
 
+**Claude refusal investigation (28 October).** Stock-preset refusals occurred
+before any agent-to-agent note exchange, so actual collaboration is not required
+for the block. A local SDK check also found the configured working directory in
+ordinary request context. The SDK now uses a private temporary workspace instead
+of the operator evidence directory. The preset and business rules are unchanged;
+this context correction is **live rollout pending**, not a demonstrated filter fix.
+See the [investigation](docs/research/claude-refusal-investigation.md).
+
 **Claude non-goal retry reviewed (28 October): provider-held after four filings.**
 The explicitly requested r5 retry used the same Opus 5.5 medium, Claude Max
 subscription, stock `claude_code` preset and pinned runtime as r4. It filed 4/8

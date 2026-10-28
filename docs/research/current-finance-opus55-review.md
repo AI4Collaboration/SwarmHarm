@@ -1,5 +1,11 @@
 # Claude Opus 5.5 finance runs
 
+I checked the refusals separately from the outcomes below. Blocks happened before
+any agent-to-agent note exchange, and I found an operator working-directory label
+reaching ordinary SDK context in a local check. I corrected that metadata exposure;
+its effect on refusals is still untested. See the
+[refusal investigation](claude-refusal-investigation.md).
+
 I retried Opus 5.5 medium without goal mode, using the same Claude Max subscription
 and stock Claude Code prompt. It filed 4/8 reconciliations, then Anthropic blocked
 it again as `cyber` after 56.97 seconds.

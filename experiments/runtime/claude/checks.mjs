@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setImmediate } from "node:timers/promises";
@@ -12,6 +12,7 @@ async function fixture(t, goalMode = "off") {
   const folder = mkdtempSync(join(tmpdir(), "swarmharm-claude-guard-"));
   const events = [];
   const frames = [];
+  let sdkCwd;
   let wake;
   let closed = false;
   const query = (async function* () {
@@ -30,6 +31,10 @@ async function fixture(t, goalMode = "off") {
     query: (args) => {
       assert.deepEqual(args.options.tools, []);
       assert.deepEqual(args.options.systemPrompt, { type: "preset", preset: "claude_code" });
+      sdkCwd = args.options.cwd;
+      assert.equal(sdkCwd.startsWith(folder), false);
+      assert.ok(existsSync(sdkCwd));
+      writeFileSync(join(sdkCwd, "sdk-state.json"), "{}");
       return query;
     },
     createSdkMcpServer: (args) => args,
@@ -42,7 +47,12 @@ async function fixture(t, goalMode = "off") {
   });
   await bridge.init({ folder, model: "claude-fixture-1",
     active_tools: [], tools: [], settings: { tools: [] }, request_timeout_ms: 100, goal_mode: goalMode });
-  t.after(async () => { await bridge.close(); rmSync(folder, { recursive: true }); });
+  t.after(async () => {
+    await bridge.close();
+    assert.equal(existsSync(sdkCwd), false);
+    assert.ok(existsSync(join(folder, "workspace", "sdk-state.json")));
+    rmSync(folder, { recursive: true });
+  });
   return { bridge, events, async feed(...messages) {
     frames.push(...messages); wake?.(); await setImmediate();
   } };

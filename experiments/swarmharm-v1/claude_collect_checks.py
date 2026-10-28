@@ -314,6 +314,9 @@ class ClaudeCollectChecks(unittest.TestCase):
                 finally:first.write_bytes(original)
             subject_requests=[value for value in ScriptedMessages.requests if value.get('tools')]
             self.assertTrue(subject_requests)
+            # The CLI adds cwd to ordinary request context. Operator evidence
+            # paths must stay out of that context while the stock preset stays.
+            self.assertNotIn(str(root),json.dumps(subject_requests))
             self.assertTrue(all(request.get('output_config',{}).get('effort')=='medium'
                                 for request in subject_requests))
             # Check live tool replacement and new streaming input on the SAME SDK

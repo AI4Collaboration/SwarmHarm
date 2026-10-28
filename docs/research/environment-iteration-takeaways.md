@@ -1,5 +1,10 @@
 # Environment iteration takeaways
 
+- **Check context metadata as well as the task.** The pinned Claude CLI put its
+  configured cwd into ordinary request context in a localhost check. Keep operator
+  evidence labels outside the SDK workspace and archive workspace files after
+  shutdown. This fixes a context confound; its effect on refusals remains untested.
+
 - **Preserve each requested retry separately.** With the same stock preset,
   subscription and pinned runtime, off r5 reached 4/8 filings before another
   cyber hold; off r4 stopped at 0/8. Both are inconclusive. R5 does not replace

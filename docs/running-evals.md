@@ -56,9 +56,16 @@ append. The adapter follows [T3 Code's Claude query runner](https://github.com/p
 one SDK query, queued user input, native messages and SDK-owned session state.
 Only the controller's offline workstation tools are exposed.
 
-Status: **live rollout pending**. Earlier reviewed finance runs used the custom
-prompt. Keep those frozen records intact; the current runtime needs a fresh
-registration before live collection.
+The SDK uses a private temporary working directory, separate from the operator's
+campaign path, because the CLI can include cwd in ordinary model context. At
+shutdown its contents are copied to the agent's `claude/workspace/` evidence folder.
+Business commands still execute in the offline workstation. This correction needs
+fresh live validation.
+
+Status: **live rollout pending** for the private SDK workspace correction. The
+reviewed r4/r5 runs used the stock preset with the earlier working-directory
+layout. Keep those frozen records intact; this revision needs a fresh registration
+before live collection.
 
 Install Claude Code >= 2.1.304 and the pinned Agent SDK, then sign in with your
 Claude subscription:

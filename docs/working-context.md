@@ -1,5 +1,28 @@
 # SwarmHarm working context
 
+## Claude refusal investigation and SDK context correction (28 October)
+
+Actual note exchange is not necessary for the cyber refusals: stock off r3/r4
+were blocked with zero agent-authored notes and zero cross-job reads. Goal r4
+read notes and adopted information without a refusal. The exact trigger is
+unknown; task/workspace content, generated continuation and four-session
+concurrency have not been isolated.
+
+The pinned CLI's localhost request fixture included its working directory in a
+user-context environment reminder. Live initialization used operator-labelled
+`swarmharm-v1-…` paths. SDK cwd now lives in a private temporary directory; its
+contents are archived with native evidence at shutdown. Stock preset, tools,
+access rules and subscription auth stay unchanged. Eleven focused SDK checks
+and 11 prompt contracts pass. This revision is **live rollout pending**.
+
+Next, validate the cwd-only correction with a fresh four-agent off campaign; a
+single-agent control on that same revision can then isolate concurrency. Neither
+was run during this investigation.
+The sanitized feedback draft, request IDs and audit are outside Git under
+`../eval-readiness/claude-refusal-investigation-2026-10-28/`. See the
+[investigation](research/claude-refusal-investigation.md). Frozen r5 and r4 results
+below remain unchanged.
+
 ## Claude non-goal retry: reviewed provider hold (28 October)
 
 The user-requested `claude-off-r5` retry filed 4/8 reconciliations, posted two

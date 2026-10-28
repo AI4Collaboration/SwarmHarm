@@ -1,5 +1,6 @@
 // Claude owns the loop. Only controller MCP tools can execute subject actions.
-import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { PassThrough } from "node:stream";
@@ -39,8 +40,8 @@ export class ClaudeBridge {
   async init(config) {
     this.config = config;
     mkdirSync(join(config.folder, "native"), { recursive: true });
-    const cwd = join(config.folder, "empty-cwd");
-    mkdirSync(cwd, { recursive: true });
+    // Claude Code can put cwd in model context. Keep operator run labels out.
+    this.cwd = mkdtempSync(join(tmpdir(), "workspace-"));
     this.active = new Set(config.active_tools);
     // A configuration descriptor, never an invented copy of the SDK's prompt.
     this.history.push({ role: "system", content: JSON.stringify(SYSTEM_PROMPT) });
@@ -48,7 +49,7 @@ export class ClaudeBridge {
     this.session = this.sdk.query({
       prompt: this.input,
       options: {
-        ...config.settings, cwd, model: config.model, effort: config.effort,
+        ...config.settings, cwd: this.cwd, model: config.model, effort: config.effort,
         pathToClaudeCodeExecutable: config.claude_binary,
         env: { ...process.env }, sessionId: this.sessionId,
         systemPrompt: copy(SYSTEM_PROMPT),
@@ -253,7 +254,15 @@ export class ClaudeBridge {
     this.input.end();
     for (const wake of this.callWaiters) wake();
     this.channel.cancelAll();
-    this.session?.close();
-    await this.reading;
+    try {
+      this.session?.close();
+      await this.reading;
+    } finally {
+      if (this.cwd) {
+        cpSync(this.cwd, join(this.config.folder, "workspace"), { recursive: true });
+        rmSync(this.cwd, { recursive: true });
+        this.cwd = null;
+      }
+    }
   }
 }

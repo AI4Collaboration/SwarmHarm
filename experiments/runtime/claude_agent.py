@@ -147,6 +147,11 @@ def harness_registration(goal_mode='off', model=None):
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
         'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
+        'working_directory': {
+            'kind': 'private temporary directory outside campaign evidence',
+            'archive': 'workspace/ after SDK shutdown',
+            'business_tools': 'execute in the offline workstation',
+        },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
         'goal_evaluator': ({'model': model, 'reasoning_effort': 'SDK-managed; not exposed',
             'implementation': 'Claude Code native /goal prompt-based Stop hook',

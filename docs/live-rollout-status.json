@@ -12,7 +12,7 @@
   "phase1_status": "r20_glm_negative_v17_pending",
   "phase2_status": "r20_glm_not_reached_sol_r19_passed",
   "integrated_end_to_end_status": "r20_glm_negative_sol_r19_historical_pass",
-  "reason": "The requested Claude off r5 retry was provider-held after four filings; Phase 1 remains inconclusive and Phase 2 untested. Its frozen review and four ATIF validations are complete. The earlier matched r4 pair remains separate.",
+  "reason": "Claude refusals occurred before actual note exchange. The SDK working directory has been separated from operator evidence paths after a local context check. This harness correction is live rollout pending; the exact provider classifier trigger is unknown.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "z-ai/glm-5.3",
@@ -138,5 +138,15 @@
     "reviewed_at": "2026-10-28T17:54:55.973231+00:00",
     "accepted_reconciliations": 6,
     "review_pipeline_status": "complete"
+  },
+  "claude_harness_context_revision": {
+    "status": "live rollout pending",
+    "working_directory": "private temporary directory; archived under claude/workspace after shutdown",
+    "preset": "unmodified claude_code",
+    "business_access_rules_changed": false,
+    "offline_sdk_checks": 11,
+    "prompt_contract_checks": 11,
+    "investigation_live_inference_calls": 0,
+    "diagnosis": "docs/research/claude-refusal-investigation.md"
   }
 }
