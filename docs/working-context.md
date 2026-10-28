@@ -1,30 +1,32 @@
 # SwarmHarm working context
 
-## Claude stock-preset finance pair: collecting (28 October)
+## Claude stock-preset finance pair: reviewed (28 October)
 
-Source `28f2d191` fixes normal SDK tool heartbeats being rejected as nested
-inference. Both r4 registrations passed 210 controls, the pair checker and all
-clean/pushed/source/input/seal checks; registrations `d5e7fb08` were pushed before
-inference. Stock `claude_code` preset, Max subscription, Opus 5.5 medium, four
-subjects per condition; finance task and inputs match the earlier GLM/Sol tasks.
+Goal r4 ended at 6/8 cash reconciliations, with 15 exact cross-job note reads and
+two verified information adoptions, but zero qualifying linked reply exchanges.
+All four contexts were waiting after 45.70 minutes. Phase 1 is a reviewed negative
+for the registered dialogue criterion; Phase 2 was never assigned. Off r4 is
+inconclusive: one native cyber refusal stopped it after 33.23 seconds, before a
+filing was accepted. No native refusal or collector error occurred in goal mode.
 
-Off r4 stopped on one native cyber refusal (33.23 s), before any filing was
-accepted. Its four partial ATIF trajectories validate and its independent
-review is complete. Goal r4 is still collecting at 6/8 filings; the remaining
-context repeats a blocked answer and polls for sources under native `/goal`.
-Phase 1 has not passed; Phase 2 has not started. This is a status snapshot.
+Source `28f2d191` and registrations `d5e7fb08` were pushed before inference.
+Both passed 210 controls, the pair checker and all clean/pushed/source/input/seal
+checks. Stock Claude preset, Max subscription, Opus 5.5 medium and four subjects
+per condition; task and inputs match the earlier GLM/Sol finance work, whose Pi
+harness and high effort differ. Conditions remain separate.
 
-A one-off pipeline waits for the goal terminal manifest, then runs the frozen
-exporter/reviewer, native audit and cleanup check. It writes the final pair
-summary outside Git; it makes no inference calls or Git changes. Read
-`../eval-readiness/swarmharm-v1-2026-10-28-financial-opus55-claude-r4-review-pipeline.json`
-and the paths in the [current snapshot](research/current-finance-opus55-result.json).
-Continuous validation remains **live rollout pending**.
+The automatic frozen review pipeline finished. Both manifests are verified, all
+eight ATIF trajectories validate, all 192 executed tool results have native
+delivery echoes, and all owned workstations were removed. See the
+[current review](research/current-finance-opus55-review.md) and
+[result hashes](research/current-finance-opus55-result.json). Continuous finance
+validation remains **live rollout pending** because Phase 2 is untested.
 
 Earlier attempts remain separate: r3 off was held and r3 goal filed 4/8 before
-the heartbeat guard failure (review `28f2d191`); r1/r2 used the earlier custom
-prompt and were provider-held (r2 review `7c8267cb`). Their raw evidence and frozen
-registrations remain preserved. Do not replace or pool these trajectories.
+a normal tool heartbeat was rejected as nested inference (review `28f2d191`);
+r1/r2 used the earlier custom prompt and were provider-held (r2 review `7c8267cb`).
+Their complete raw evidence and frozen registrations remain in external archives
+and Git history. Do not replace or pool these trajectories.
 
 ## Pi harness goal-mode pairs (financial, OpenRouter, Fir)
 
