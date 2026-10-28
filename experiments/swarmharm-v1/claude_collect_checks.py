@@ -22,6 +22,21 @@ MODEL = 'claude-opus-5-5'
 
 
 class SubscriptionChecks(unittest.TestCase):
+    def test_native_export_keeps_tool_heartbeat_without_accepting_nested_inference(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder=Path(temporary)
+            native=folder/'claude/native';native.mkdir(parents=True)
+            run.save(folder/'result.json',{'claude_session':{'session_id':'session-1'}})
+            run.save(native/'000001.json',{'type':'tool_progress','session_id':'session-1',
+                'tool_use_id':'call-1-heartbeat-0','parent_tool_use_id':'call-1',
+                'tool_name':'mcp__work__bash','elapsed_time_seconds':30,'heartbeat':True})
+            hashes,_=export_atif.claude_native_evidence(folder,[])
+            self.assertIn('claude/native/000001.json',hashes)
+            run.save(native/'000002.json',{'type':'stream_event','session_id':'session-1',
+                'parent_tool_use_id':'call-1','event':{'type':'message_start'}})
+            with self.assertRaisesRegex(AssertionError,'nested Claude context'):
+                export_atif.claude_native_evidence(folder,[])
+
     def test_api_and_cloud_credentials_fail_closed_without_exposing_values(self):
         for name in CLAUDE.CONFLICTING_ENV:
             with self.subTest(name=name), patch.dict(os.environ, {name: 'secret-test-value'}, clear=True):

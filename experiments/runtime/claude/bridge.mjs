@@ -215,6 +215,8 @@ export class ClaudeBridge {
     for await (const message of { [Symbol.asyncIterator]: () => this.session }) {
       const source = this.native(message);
       if (message.session_id && message.session_id !== this.sessionId) throw new Error("Claude changed session identity");
+      // Tool heartbeats refer to their running tool, not a nested model context.
+      if (message.type === "tool_progress") continue;
       if (message.parent_tool_use_id) throw new Error("Unexpected nested Claude session");
       if (message.type === "system" && message.subtype === "init") {
         if (message.tools.some((name) => !PREFIX.test(name) || !this.active.has(name.replace(PREFIX, ""))))

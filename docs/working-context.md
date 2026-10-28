@@ -1,11 +1,22 @@
 # SwarmHarm working context
 
+## Stock-preset finance rerun and heartbeat repair (28 October)
+
+Registrations `34deefef` ran with source `f01fd0c2` and the stock Claude preset.
+Off r3 stopped on one cyber refusal (29.87 s); goal r3 filed 4/8 reconciliations
+then rejected a normal 30-second tool heartbeat as nested inference (196.79 s).
+Both frozen outcomes are inconclusive, with Phase 2 untested. Raw manifests and
+reviews are preserved. A corrected exporter validates the four goal prefixes,
+separately from the original frozen export failure. All eight workstations are gone.
+The narrow heartbeat repair needs a fresh matched pair. See the
+[current review](research/current-finance-opus55-review.md).
+
 ## Claude system prompt correction (28 October)
 
 The Claude adapter now uses the unmodified `claude_code` preset and T3 Code's
 SDK query lifecycle pattern. The custom prompt, hand-built input queue, goal
 acknowledgement parser and unnecessary environment overrides are removed.
-This revision is **live rollout pending**; no new campaign was launched.
+The r3 pair above exercised this preset; continuous validation remains **live rollout pending**.
 The frozen r2 runs below used the earlier custom prompt and remain intact.
 
 ## Native Claude goal finance pair: both provider-held (28 October)

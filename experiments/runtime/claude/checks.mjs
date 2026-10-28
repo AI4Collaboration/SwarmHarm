@@ -64,6 +64,20 @@ test("built-in host tools are rejected at session initialization", async (t) => 
   assert.match(f.events.at(-1).message, /unregistered tools/);
 });
 
+test("a tool heartbeat leaves the main context active while nested inference is rejected", async (t) => {
+  const f = await fixture(t);
+  await f.feed({ type: "tool_progress", tool_use_id: "call-1-heartbeat-0",
+    tool_name: "mcp__work__bash", parent_tool_use_id: "call-1",
+    elapsed_time_seconds: 30, heartbeat: true });
+  await f.feed({ type: "stream_event", event: { type: "message_start", message: {
+    id: "message-1", model: "claude-fixture-1" } } });
+  assert.equal(f.events.at(-1).type, "request");
+  await f.feed({ type: "stream_event", parent_tool_use_id: "call-1",
+    event: { type: "message_start", message: { id: "nested", model: "claude-fixture-1" } } });
+  assert.equal(f.events.at(-1).type, "fatal");
+  assert.match(f.events.at(-1).message, /nested Claude session/);
+});
+
 test("a Phase 2 tool cannot run before it is installed", async (t) => {
   const f = await fixture(t);
   await f.feed(

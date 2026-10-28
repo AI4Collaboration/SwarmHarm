@@ -37,7 +37,7 @@ def claude_native_evidence(folder,requests):
     session=read(folder/'result.json')['claude_session']['session_id']
     for message in messages.values():
         assert not message.get('session_id') or message['session_id']==session,'Claude session identity changed'
-        assert not message.get('parent_tool_use_id'),'Unexpected nested Claude context'
+        assert message.get('type')=='tool_progress' or not message.get('parent_tool_use_id'),'Unexpected nested Claude context'
         assert message.get('subtype')!='compact_boundary','Claude context was compacted'
     for reqpath in requests:
         req=read(reqpath);start=messages[req['native_record']]

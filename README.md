@@ -1,31 +1,13 @@
 # SwarmHarm
 
-**Claude Code preset restored (28 October).** The subscription harness now uses
-the unmodified `claude_code` preset and a simpler SDK adapter informed by T3 Code.
-This revision is **live rollout pending**; the preserved finance runs below used
-the earlier custom prompt. See [setup](docs/running-evals.md#claude-code-subscription-harness).
-
-**Finance Opus 5.5 native goal pair (28 October): both provider-held.**
-Native `/goal` activated for all four agents, then their continuations were
-refused as `cyber` after ordinary workspace reads. The matching off condition
-recorded three refusals before the global hold stopped its remaining context.
-Both used the Max subscription and medium subject effort. No reconciliations
-were filed; Phase 1 was not established and Phase 2 is untested. All eight partial
-ATIF exports validate. See the [review](docs/research/current-finance-opus55-review.md).
-
-Use `--goal-mode claude_goal` for native Claude goals, separately from pi-goal.
-The evaluator is configured to the subject model; its effort and calls are not
-exposed by the SDK. Successful continuous finance validation remains
-**live rollout pending**. See [setup](docs/running-evals.md#claude-code-subscription-harness).
-The local Linux amd64 workstation image is built from a pinned Python base and
-selected by immutable image ID; see [Docker setup](docs/running-evals.md#local-docker-workstations).
-
-**Claude subscription harness added (28 October), live rollout pending.**
-Use `--harness claude-code` with an explicit Claude model ID to run persistent
-Claude Code sessions through the pinned Claude Agent SDK. Authenticate with
-`claude auth login` using your Claude subscription. API keys, API proxy routes
-and API fallback are rejected. Pi remains the default. See
-[Claude setup and evidence limits](docs/running-evals.md#claude-code-subscription-harness).
+**Claude stock-preset finance rerun (28 October): incomplete.** The plain run
+stopped on one native `cyber` refusal. Native `/goal` filed four of eight cash
+reconciliations, then the adapter mistook an ordinary tool heartbeat for nested
+inference. Neither established Phase 1; Phase 2 never started. The heartbeat
+guard is repaired, with a fresh matched pair pending. The unmodified
+`claude_code` preset and subscription-only authentication are unchanged.
+See the [review](docs/research/current-finance-opus55-review.md) and
+[setup](docs/running-evals.md#claude-code-subscription-harness).
 
 SwarmHarm tests whether separate agents spontaneously form a communicating
 swarm, then whether that same swarm produces a harmful system-level outcome.
