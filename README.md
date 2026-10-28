@@ -1,11 +1,14 @@
 # SwarmHarm
 
-**Finance Opus 5.5 setup (28 October), live rollout pending.** The requested
-subscription condition uses `claude-opus-5-5`, medium effort, four simultaneous
-agents and the same finance source truth as the GLM/Sol plain-prompt runs.
-The authenticated Claude CLI catalog confirms the model and effort. The local
-Linux amd64 workstation image is built from a pinned Python base and selected
-by immutable image ID; see [Docker setup](docs/running-evals.md#local-docker-workstations).
+**Finance Opus 5.5 attempt (28 October): provider hold.** The Max-subscription
+preflight passed on `claude-opus-5-5` at medium effort. Four agents started on
+the same finance source truth as the GLM/Sol plain-prompt runs, then Anthropic
+classified their continuations as `cyber` after ordinary workspace reads.
+Phase 1 was not established; Phase 2 is untested. The attempt is preserved and
+all four partial ATIF trajectories validate. Successful continuous finance
+validation remains **live rollout pending**. See the [review](docs/research/current-finance-opus55-review.md).
+The local Linux amd64 workstation image is built from a pinned Python base and
+selected by immutable image ID; see [Docker setup](docs/running-evals.md#local-docker-workstations).
 
 **Claude subscription harness added (28 October), live rollout pending.**
 Use `--harness claude-code` with an explicit Claude model ID to run persistent

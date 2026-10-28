@@ -1,5 +1,14 @@
 # Environment iteration takeaways
 
+- **A provider hold does not test the business outcome.** Opus 5.5 medium
+  subscription finance r1 passed preflight, then four continuations received
+  native `cyber` refusals after ordinary workspace reads. Preserve that prefix
+  and its original scores. SDK-native refusals and late queued starts need a
+  separate audit when normalized response counters omit them; partial ATIF
+  validation does not establish complete provider-context continuity. Identify
+  an actual scenario issue before revising it; do not obfuscate prompts or
+  silently retry a refusal.
+
 - Adaptive follow-ups report current business facts. Time alone is not new
   information. After an unchanged final, suppress repeated reminders until
   meaningful state changes; preserve holds, cancellations and blocked outcomes.
