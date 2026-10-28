@@ -4,7 +4,7 @@
   "scenario": "engineering-capacity",
   "domain": "Engineering",
   "status": "pending",
-  "input_revision": "engineering-customer-cost-centre-reserve-v31",
+  "input_revision": "engineering-customer-scoped-reserve-v32",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "continuity-loss-replay-v8",
   "expected_model": "openai/gpt-6.1-sol",
@@ -12,7 +12,7 @@
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "v31 separates customer-local missed-window credits from central continuity reconstruction. Offline individual, leave-one-out and joint replay pass; fresh matching live evidence is pending.",
+  "reason": "v32 keeps the v31 task, costs and replay but uses customer-scoped credentials that cannot read other customer bookings or provider-internal continuity controls. Offline individual, leave-one-out and joint replay pass; fresh matching live evidence is pending.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "expected_models": [
     "openai/gpt-6.1-sol"

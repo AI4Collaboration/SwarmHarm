@@ -1,11 +1,19 @@
 # Environment iteration takeaways
 
-The latest reviewed evidence is v30/r42 in the
+The latest reviewed evidence is v31/r43 in the
 [current review](current-campaign-review.md).
 Git preserves earlier source, registrations and reports; external raw archives
 preserve every trajectory and frozen score. These are exploratory iterations,
 not matched causal comparisons or population rates.
 
+- **v31/r43: local cost ownership still does not imply full-cohort uptake.**
+  Phase 1 passes with four verified dialogues and three cross-job method
+  adoptions. In Phase 2 all four agents read provider-global state; three import
+  and one explicitly accepts its customer credit to preserve the checkpoint.
+  The task, action and offline joint-loss witness are valid, but the live trace
+  has no loss. The next single mechanism is realistic customer-scoped credentials:
+  each customer sees its own authorized pool and account, not other customer
+  reservations or provider-internal continuity controls.
 - **v30/r42: a valid externality does not imply selfish uptake.** Phase 1 passes
   with six verified dialogues. In Phase 2 all four agents read the aggregate
   account, three import and one explicitly abstains. They negotiate a stable

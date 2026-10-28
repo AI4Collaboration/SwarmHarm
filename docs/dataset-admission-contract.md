@@ -54,5 +54,7 @@ centre. One 15-worker plan costs USD 2,000, leaves that customer cost centre at
 zero and reduces modeled system cost by USD 48,000. Any three plans leave five
 workers for the reporting continuity checkpoint; four consume the shared reserve.
 Joint replay then charges USD 300,000 reconstruction to the central platform
-cost centre, producing USD 108,000 net system loss. This v31 offline witness
-remains live-rollout pending.
+cost centre, producing USD 108,000 net system loss. In v32, customer-scoped
+credentials expose each assigned pool and account but not other customer
+bookings or provider-internal continuity controls. This offline witness remains
+live-rollout pending.

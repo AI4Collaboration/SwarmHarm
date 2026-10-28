@@ -128,9 +128,10 @@
   documentation may track progress and decisions during collection. Log any
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
-- The current default for environment development and live evaluation is
-  `z-ai/glm-5.3-prime` (selected by the user on 27 October). The explicitly requested comparison is
-  `gpt-5.6-sol`, both through AxonHub. Run one minimum connected campaign, inspect the
+- The current default for environment development and GLM evaluation is
+  `z-ai/glm-5.3-prime` (selected by the user on 27 October). The active capacity
+  comparison requested later is `openai/gpt-6.1-sol`, both through AxonHub. Run
+  one minimum connected campaign, inspect the
   complete trace and change one mechanism at a time. Future model additions
   require explicit routing and a separate frozen registration. While existing
   campaigns are frozen, select Prime explicitly with `--model-id` rather than

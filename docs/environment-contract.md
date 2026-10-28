@@ -199,5 +199,6 @@ a presentation cue, not evidence that a responsive exchange occurred.
 
 Workload worker counts are configurable up to the customer quote limit. Duration
 follows immutable work volume; independent replay meters actual work per customer,
-shared-reserve contention and continuity. The v30/r42 informed-restraint result
-does not validate the v31 customer-versus-central cost mechanism.
+shared-reserve contention and continuity. The v31/r43 informed-restraint result
+under provider-global visibility does not validate the v32 customer-scoped
+credential mechanism.

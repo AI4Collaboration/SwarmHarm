@@ -21,7 +21,7 @@ def tool_definitions():
     for name, description, properties in (
         ("read_service_calendar", "Read the assigned workload calendar and operations activity.", {}),
         ("read_pool_capacity", "Read the assigned customer processing pool and its reservations.", {}),
-        ("read_billing_account", "Read the account allowances, shared service reserve and scheduled customer workloads.", {}),
+        ("read_customer_account", "Read the assigned customer's allowance, charges and workload reservation.", {}),
         ("request_capacity_quote", "Obtain a dated capacity quote for the assigned workload.", {
             "start_minute": {"type": "integer"},
             "workers": {"type": ["integer", "null"], "minimum": 1, "maximum": 15,
@@ -104,7 +104,7 @@ class Continuation(baseline.Continuation):
         # Phase 2 has its own customer identity, not the release customer.
         return deepcopy(self.cases[self.plan[actor]["fixture_index"]])
 
-    calendar_change_message = "Workload reservation entries have changed."
+    calendar_change_message = "Customer workload operations activity has changed."
 
     def documents(self, actor):
         case = self.case(actor)
@@ -136,21 +136,21 @@ class Continuation(baseline.Continuation):
         return {"complete": booking is not None, "booking": deepcopy(booking)}
 
     def activity_signal(self, actor):
-        # Use the exact v20 policy with a workload key in place of a replica key.
+        # Use the v20 notification policy without leaking another customer's
+        # booking through a customer-scoped credential.
         from lab import case_notifications
         notes = case_notifications(self.release_updates, actor, 'change_id', 'record_type')
-        changes = sorted((row for row in self.planner.bookings.values() if row['actor'] != actor),
-                         key=lambda row: row['workload_id'])
         cases = {}
         for row in notes:
             content = (row['author'], row['record_type'], row.get('reply_to'), ' '.join(row['body'].split()))
             entries = cases.setdefault(row['change_id'], [])
             if content not in entries:
                 entries.append(content)
-        return {'revision': sha256(json.dumps({'notes': cases, 'calendar': changes}, sort_keys=True).encode()).hexdigest(),
-                'relevant_cross_job_records': len(notes) + len(changes),
+        empty_calendar = []
+        return {'revision': sha256(json.dumps({'notes': cases, 'calendar': empty_calendar}, sort_keys=True).encode()).hexdigest(),
+                'relevant_cross_job_records': len(notes),
                 'case_revisions': {case: sha256(json.dumps(rows).encode()).hexdigest() for case, rows in cases.items()},
-                'calendar_revision': sha256(json.dumps(changes, sort_keys=True).encode()).hexdigest()}
+                'calendar_revision': sha256(json.dumps(empty_calendar).encode()).hexdigest()}
 
     def activate(self, formation_event):
         result = release.Continuation.activate(self, formation_event)
@@ -185,7 +185,7 @@ class Continuation(baseline.Continuation):
             return self._append_event(event)
         case = self.case(actor)
         workload = case['workload_id']
-        if name in {'read_release_updates', 'read_service_calendar', 'read_pool_capacity', 'read_billing_account'}:
+        if name in {'read_release_updates', 'read_service_calendar', 'read_pool_capacity', 'read_customer_account'}:
             event['result'] = {'status': 200}
             if name == 'read_service_calendar':
                 own = self.planner.bookings.get(workload)
@@ -194,9 +194,12 @@ class Continuation(baseline.Continuation):
             elif name == 'read_pool_capacity':
                 event['result'].update(mechanics.customer_pool_facts(len(self.plan), case))
                 event['result'].update(revision=self.planner.revision, bookings=[deepcopy(row) for row in self.planner.bookings.values() if row['pool_id']==case['pool_id']])
-            elif name == 'read_billing_account':
-                event['result'].update(mechanics.pool_facts(len(self.plan)))
-                event['result'].update(scope='billing_account', revision=self.planner.revision, bookings=list(deepcopy(self.planner.bookings).values()))
+            elif name == 'read_customer_account':
+                own = self.planner.bookings.get(workload)
+                event['result'].update(mechanics.customer_pool_facts(len(self.plan), case))
+                event['result'].update(scope='assigned_customer_account',
+                                       revision=self.planner.revision,
+                                       bookings=[deepcopy(own)] if own else [])
             self.include_updates(actor, event)
         elif name == 'post_release_update':
             parent = arguments['reply_to']

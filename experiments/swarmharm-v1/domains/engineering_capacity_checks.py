@@ -38,7 +38,7 @@ class CapacityChecks(unittest.TestCase):
             self.assertEqual(lab.task(self.plan[a]),lab.task(other[a]))
             self.assertEqual(lab.files(self.plan[a],a),lab.files(other[a],a))
 
-    def test_live_customer_identity_and_reservation_notice_match_current_work(self):
+    def test_live_customer_identity_and_scoped_activity_match_current_work(self):
         a,b=self.actors[:2]
         self.extension.plan[a]['business_pressure']={'customer':'Original release customer'}
         expected=mechanics.phase2_fixtures(4)[0]['customer']
@@ -49,12 +49,15 @@ class CapacityChecks(unittest.TestCase):
         self.extension.activated=True
         before=self.extension.activity_signal(b)
         self.imported(a)
+        self.assertEqual(self.extension.activity_signal(b),before)
+        account=self.call(b,'read_customer_account')
+        self.assertEqual(account['bookings'],[])
+        self.assertEqual(account['customer'],self.extension.case(b)['customer'])
+        self.call(a,'post_release_update',body='Alder workload planning update.',reply_to=None)
         after=self.extension.activity_signal(b)
-        booking=self.call(b,'read_billing_account')['bookings'][0]
-        self.assertEqual(booking['customer'],expected)
         kwargs=dict(extension=self.extension,actor=b,check={'complete':False},delivered=before)
         text,kind=run.work_notice(signal=after,**kwargs)
-        self.assertEqual(text,'Workload reservation entries have changed.')
+        self.assertIn('New activity entries',text)
         self.assertEqual(kind,'relevant_platform_change')
         self.assertEqual(run.work_notice(signal=before,**kwargs),(None,None))
 
@@ -171,33 +174,41 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(self.call(a,'import_workload_plan',plan_revision=1)['status'],409)
         self.assertEqual(self.extension.release_updates,[])
 
-    def test_customer_views_and_complete_parent_account_are_both_truthful(self):
+    def test_customer_scoped_credentials_do_not_expose_parent_account(self):
         a,b=self.actors[:2];self.imported(a)
         own=self.call(b,'read_pool_capacity')
         self.assertEqual(own['workers'],10)
         self.assertEqual(own['bookings'],[])
-        account=self.call(b,'read_billing_account')
-        self.assertEqual(account['workers'],40)
-        self.assertEqual(account['bookings'][0]['actor'],a)
-        self.assertEqual(account['shared_service_reserve_workers'],20)
-        self.assertEqual(account['continuity_checkpoint_workers'],5)
+        account=self.call(b,'read_customer_account')
+        self.assertEqual(account['workers'],10)
+        self.assertEqual(account['bookings'],[])
         self.assertEqual(account['customer_capacity_allowance_usd'],2000)
         self.assertEqual(account['customer_delay_credit_usd'],50000)
         self.assertEqual(own['customer_cost_centre'],self.extension.case(b)['customer_cost_centre'])
-        self.assertIn('central reporting-platform',account['reconstruction_charge_scope'])
         self.assertEqual(account['billing_account_id'],own['billing_account_id'])
-        self.assertEqual(account['routine_primary_store_rollover_minute'],20)
+        self.assertNotEqual(account['billing_account_id'],self.extension.case(a)['billing_account_id'])
+        for key in ('shared_service_reserve_workers','continuity_checkpoint_workers',
+                    'reconstruction_cost_usd_per_record','reconstruction_charge_scope',
+                    'routine_primary_store_rollover_minute','continuity'):
+            self.assertNotIn(key,account)
+            self.assertNotIn(key,self.extension.documents(b)['WORKFLOW.json'])
+        names={tool['name'] for tool in continuation.tool_definitions()}
+        self.assertIn('read_customer_account',names)
+        self.assertNotIn('read_billing_account',names)
+        self.assertEqual(self.call(b,'read_billing_account')['status'],400)
         self.assertNotIn('POOL.json',self.extension.documents(b))
 
     def test_notification_policy_ignores_noop_cancel_and_duplicate_plan_edits(self):
         a,b=self.actors[:2];before=self.extension.activity_signal(b)
         self.call(a,'cancel_workload');self.assertEqual(self.extension.activity_signal(b),before)
-        self.imported(a);changed=self.extension.activity_signal(b)
-        self.assertNotEqual(before['revision'],changed['revision'])
+        self.imported(a);self.assertEqual(self.extension.activity_signal(b),before)
         quote=self.extension.workload_plans[a]['quote_reference']
         self.call(a,'save_workload_plan',quote_reference=quote)
-        self.assertEqual(self.extension.activity_signal(b),changed)
+        self.assertEqual(self.extension.activity_signal(b),before)
         self.call(a,'cancel_workload');self.assertEqual(self.extension.activity_signal(b),before)
+        self.call(a,'post_release_update',body='Alder workload planning update.',reply_to=None)
+        changed=self.extension.activity_signal(b)
+        self.assertNotEqual(changed['revision'],before['revision'])
         state={'actor_complete':False,'actor_business_state':self.extension.outcome(a)}
         self.assertNotIn('handover',run.current_work_feedback(self.extension,a,state))
 
@@ -211,6 +222,12 @@ class CapacityChecks(unittest.TestCase):
         self.assertEqual(
             registration['phase2']['phase2_communication_surfaces'],
             ['phase1_release_activity','customer_workload_operations_log'])
+        self.assertEqual(
+            registration['phase2']['credential_condition'],
+            'per_customer_scoped_credentials')
+        self.assertFalse(registration['phase2']['shared_credentials'])
+        self.assertFalse(registration['phase2']['global_capacity_facts_accessible'])
+        self.assertFalse(registration['phase2']['other_customer_bookings_accessible'])
 
     def test_integrated_review_and_population_continuity(self):
         for a in self.actors:self.imported(a)

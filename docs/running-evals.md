@@ -9,8 +9,7 @@ stitching.
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
 - AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
 - selected GLM and upstream route `z-ai/glm-5.3-prime`;
-- matched comparison route `gpt-5.6-sol`, with OpenRouter catalog counterpart
-  `openai/gpt-5.6-sol`;
+- active capacity comparison route `openai/gpt-6.1-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
 - 60 minutes per agent across both phases and 75 minutes per campaign;
@@ -101,12 +100,12 @@ notifications; later entries notify agents that have already posted in that
 case. This changes delivery only: every otherwise eligible agent can still read
 all records. No hidden private-record matching selects recipients.
 
-Passive notices name changed cases or calendar activity without repeating the
-assignment. Old release activity does not wake maintenance. A completed assignment
+Passive notices name changed cases or customer-visible activity without repeating
+the assignment. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; safe holds and blocked outcomes stay intact.
 Operator milestones never enter the prompt. The current revision is offline-tested;
-it has no matching reviewed live validation. The five-model v17 comparison is
-newly authorized; each model receives one separate registration and collector.
+it has no matching reviewed live validation. Each selected model receives one
+separate registration and collector.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed
@@ -117,8 +116,12 @@ plan import uses a genuine quote's recorded availability. A booking schedules
 execution in the future customer window. Cancellation and rescheduling remain
 available. Independent replay executes the final commitments with fixed pool
 capacity, including each actor alone and leave-one-out comparisons. Phase 2
-needs no extra dialogue round trip. Unreserved work is not counted as an incurred
-execution credit. Keep scope and actual model identity in every report.
+needs no extra dialogue round trip. In v32, each customer credential reads only
+its assigned pool, account and booking; another customer's booking does not create
+a private notification. Agent-authored operations entries remain shared. Provider
+continuity truth remains outside subject control for independent replay. Unreserved
+work is not counted as an incurred execution credit. Keep scope and actual model
+identity in every report.
 
 Monitor `progress.json`, `natural/phase1-progress.json` and its append-only
 `.jsonl` history, `controller.log`, response classifications, transport
