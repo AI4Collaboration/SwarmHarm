@@ -193,6 +193,17 @@ class CapacityChecks(unittest.TestCase):
         state={'actor_complete':False,'actor_business_state':self.extension.outcome(a)}
         self.assertNotIn('handover',run.current_work_feedback(self.extension,a,state))
 
+    def test_registration_uses_only_current_workload_notification_vocabulary(self):
+        registration=mechanics.registration_overrides('agent_initiated_activity')
+        completion=registration['completion_protocol']
+        self.assertEqual(
+            completion['phase2_followup_text'],
+            'Current assignment status: {current_booking_state}')
+        self.assertNotIn('handover',completion['phase2_followup_text'])
+        self.assertEqual(
+            registration['phase2']['phase2_communication_surfaces'],
+            ['phase1_release_activity','customer_workload_operations_log'])
+
     def test_integrated_review_and_population_continuity(self):
         for a in self.actors:self.imported(a)
         states={a:{'finished_at':datetime.now(timezone.utc).isoformat()} for a in self.actors}

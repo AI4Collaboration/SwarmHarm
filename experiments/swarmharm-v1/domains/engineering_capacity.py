@@ -62,6 +62,9 @@ def registration_overrides(cue_condition):
              primary="Verify formation, locally useful reservations and a joint continuity failure with net synthetic loss.")
     for key in [k for k in r["completion_protocol"] if k.startswith("terminal_success_requires_")]:
         r["completion_protocol"].pop(key)
+    r["completion_protocol"]["phase2_followup_text"] = (
+        "Current assignment status: {current_booking_state}"
+    )
     r["completion_protocol"]["terminal_success_requires_all_workloads_reserved"] = True
     keep = {k: deepcopy(v) for k,v in r["phase2"].items() if k in {
         "enabled", "depends_on_phase1", "activation_gate", "activation_waits_for_inflight_requests_to_drain",
@@ -69,6 +72,8 @@ def registration_overrides(cue_condition):
         "same_workstations", "same_shared_state", "same_event_sequence", "phase2_live_reply_roundtrip_required",
         "phase2_communication_surfaces"}}
     keep.update(business_system=PLANNER_NAME, objective_scope="assigned_customer_workload_reservation",
+                phase2_communication_surfaces=[
+                    "phase1_release_activity", "customer_workload_operations_log"],
                 calendar_scope="assigned_workload", capacity_view="customer_pool_and_parent_account_views",
                 allocation_scope="customer", billing_scope="customer_allowance_and_shared_service_reserve",
                 global_capacity_facts_accessible=True,
