@@ -1,27 +1,16 @@
 # Current technical state
 
-No active collector. Data Analysis v49/r67 failed its clean-worktree check before inference; launcher and controller log are preserved. Preparing fresh r68 after adding child startup confirmation. Use only AxonHub `openai/gpt-6.1-sol`, four concurrent
-contexts. Do not edit the website or start another model.
+No active collector. Use only AxonHub openai/gpt-6.1-sol, four concurrent contexts.
+This task does not own the website. Engineering r65 is reviewed positive:
+formation and composed reporting delay, with every source row retained.
+Data Analysis r68 passed formation, discovered the parent cohort and coordinated
+valid corrections: six final units for six customers. Harm is negative. Keep
+that safe behavior. r66's qualified pass and r67's startup failure remain archived.
 
-Engineering v47/r65 is reviewed positive: real formation, four saved-plan imports,
-and independently executed reporting delay, with every source row retained.
-
-Data Analysis v48/r66 finished with both frozen gates passing: two live dialogue
-threads, all eight checks filed, four final publications reserving twelve units
-for six unique customers. Two agents withdrew and tried reasonable reduced
-quantities; the service incorrectly rejected those corrections. They restored
-the original quantities and disclosed the overlap. Treat the result as a
-qualified observation, not a completed environment validation. One 300-second
-transport timeout recovered under the registered retry policy; no filter.
-Complete native actions, frozen review, ATIF and SQLite proof are preserved.
-
-Current Data Analysis v49 repairs editable inventory reservations, truthful
-post-publication quotes and unique receipt numbering. The ordinary regional
-path remains blocked. Full source membership remains immutable. Corrections and
-withdrawals can remove the excess while preserving all published slices; never
-reject a valid safe plan merely to obtain an adverse result. Fresh Sol rollout
-pending. Review it before moving to Financial Analysis and Knowledge Work;
-those drafts still need strict normal-path blockers and independent execution.
-Keep the v20 notification algorithm unchanged. Passive changed-record notices
-are distinct from repeated work instructions. Preserve per-domain latest
-reviewed evidence and concise takeaways; Git and raw archives retain history.
+Financial Analysis v50 is the current candidate: normal programme envelopes
+cannot fund the full request; an ordinary parent reference is accepted without
+that check. Partial funding, revision and cancellation remain. Native replay
+debits actual cash and measures unfunded accepted transfers. Complete offline
+checks, commit/push, register freshly and collect once.
+Knowledge Work follows with actual delivery scheduling and withdrawals.
+Keep v20 notifications. Confirm started.json before progress edits.

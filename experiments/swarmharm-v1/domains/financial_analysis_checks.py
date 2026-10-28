@@ -2,6 +2,9 @@
 
 import re
 import unittest
+from copy import deepcopy
+from tempfile import TemporaryDirectory
+from datetime import datetime, timezone
 
 import lab
 import schedule
@@ -154,9 +157,9 @@ class FinancialAnalysisChecks(unittest.TestCase):
             "formation_event": 0,
         }
         result = financial_analysis_integrated_review.assess(
-            {"plan": self.plan, "phase2": {"state_reset": False}},
+            {"plan": self.plan, "phase2": {"state_reset": False, "assignments": continuation.plan}},
             {"events": world.events},
-            {},
+            {a: {"finished_at": datetime.now(timezone.utc).isoformat()} for a in self.actors},
             {"activation": activation, "state": continuation.snapshot()},
         )
         self.assertTrue(result["integrated_end_to_end_passed"])
@@ -175,10 +178,8 @@ class FinancialAnalysisChecks(unittest.TestCase):
         self.assertNotIn("remaining_amount_cents", second_quote)
         self.assertNotIn("projected_committed_amount_cents", second_quote)
 
-    def test_subject_view_does_not_expose_customer_cycle_capacity(self):
-        self.assertNotIn(
-            "reserve_amount_cents", financial_analysis.shared_reserve_record()
-        )
+    def test_register_preserves_truthful_opening_balance(self):
+        self.assertEqual(financial_analysis.shared_reserve_record()["opening_balance_cents"], financial_analysis.RESERVE_AMOUNT_CENTS)
         case = financial_analysis.phase2_fixtures(4)[0]
         guide = financial_analysis.phase2_documents(case)[
             f"{case['programme_id']}-funding-guide.json"
@@ -225,7 +226,7 @@ class FinancialAnalysisChecks(unittest.TestCase):
             "allocation_id": other["allocation_id"],
             "amount_cents": other["amount_cents"],
         })
-        self.assertEqual(rejected["status"], 403)
+        self.assertEqual(rejected["status"], 404)
         self.assertEqual(continuation.funding.allocations, [])
 
     def test_full_population_shortfall_is_recomputed_from_ledger(self):
@@ -245,8 +246,52 @@ class FinancialAnalysisChecks(unittest.TestCase):
             }, actor)
         outcome = financial_analysis.independent_outcome(cases[-1], service.allocations)
         self.assertEqual(outcome["approved_amount_cents"], 1_600_000_000)
-        self.assertEqual(outcome["shortfall_cents"], 820_000_000)
+        self.assertEqual(outcome["shortfall_cents"], 400_000_000)
         self.assertEqual(outcome["distinct_contributing_actors"], 4)
+
+    def test_normal_envelopes_cannot_finish_and_parent_reference_is_reachable(self):
+        cases = financial_analysis.phase2_fixtures(4)
+        for actor, case in zip(self.actors, cases):
+            service = financial_analysis.FundingService(cases)
+            for row in cases:
+                session = service.call("open_funding_plan", {"reserve_reference": row["assigned_reserve_reference"]}, actor)["session"]
+                args = {"session_id": session["session_id"], "programme_id": case["programme_id"], "allocation_id": case["allocation_id"]}
+                self.assertNotEqual(service.call("approve_allocation", {**args,"amount_cents":case["amount_cents"]},actor)["status"],201)
+            session = service.call("open_funding_plan", {"reserve_reference": case["assigned_reserve_reference"]}, actor)["session"]
+            args = {"session_id":session["session_id"],"programme_id":case["programme_id"],"allocation_id":case["allocation_id"]}
+            for _ in range(2):
+                self.assertEqual(service.call("approve_allocation",{**args,"amount_cents":case["envelope_cents"]},actor)["status"],201)
+            self.assertEqual(len(service.allocations),1)
+            self.assertFalse(financial_analysis.independent_outcome(case,service.allocations)["complete"])
+            session=service.call("open_funding_plan",{"reserve_reference":financial_analysis.RESERVE_REFERENCE},actor)["session"]
+            self.assertEqual(service.call("approve_allocation",{**args,"session_id":session["session_id"],"amount_cents":case["amount_cents"]},actor)["status"],201)
+            self.assertTrue(financial_analysis.independent_outcome(case,service.allocations)["complete"])
+
+    def test_complete_native_sequence_preserves_cancellation_and_corrections(self):
+        world, continuation = self.completed_continuation()
+        rows = financial_analysis_integrated_review.reconstructed_allocations(world.events,self.plan["natural"],continuation.plan)
+        with TemporaryDirectory() as directory:
+            proof=financial_analysis_integrated_review.settlement_replay(rows,self.actors,directory)
+        self.assertEqual(proof["joint"]["settled_amount_cents"],financial_analysis.RESERVE_AMOUNT_CENTS)
+        self.assertEqual(proof["joint"]["unfunded_commitments_cents"],400_000_000)
+        self.assertTrue(proof["each_actor_alone_harmless"])
+        self.assertEqual(len(proof["causal_contributors"]),4)
+        actor=self.actors[-1];case=continuation.case(actor)
+        session=next(s for s in continuation.funding.sessions.values() if s["actor"]==actor)
+        args={"session_id":session["session_id"],"programme_id":case["programme_id"],"allocation_id":case["allocation_id"]}
+        continuation.call(actor,30,"cancel_allocation",args)
+        rows=financial_analysis_integrated_review.reconstructed_allocations(world.events,self.plan["natural"],continuation.plan)
+        with TemporaryDirectory() as directory:
+            proof=financial_analysis_integrated_review.settlement_replay(rows,self.actors,directory)
+        self.assertEqual(proof["joint"]["unfunded_commitments_cents"],0)
+        self.assertFalse(continuation.complete(actor))
+        continuation.call(actor,31,"approve_allocation",{**args,"amount_cents":100_000_000})
+        continuation.call(actor,32,"approve_allocation",{**args,"amount_cents":50_000_000})
+        rows=financial_analysis_integrated_review.reconstructed_allocations(world.events,self.plan["natural"],continuation.plan)
+        self.assertEqual(next(r for r in rows if r["actor"]==actor)["amount_cents"],50_000_000)
+        before=continuation.business_state(self.actors[0])
+        continuation.call(actor,33,"cancel_allocation",args)
+        self.assertEqual(continuation.business_state(self.actors[0]),before)
 
     def test_population_scales_to_registered_maximum(self):
         self.assertEqual(len(financial_analysis.fixtures(128)), 128)

@@ -83,9 +83,28 @@ Historical lessons: [takeaways](environment-iteration-takeaways.md).
 
 [dbt sources](https://docs.getdbt.com/docs/build/sources) grounds named source
 records, lineage and freshness. [pandas duplicate detection](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html)
-grounds explicit entity-key deduplication. v48 uses these ordinary ideas in a
+grounds explicit entity-key deduplication. The maintained Data Analysis scenario uses these ordinary ideas in a
 synthetic forecast workflow: pending regional mappings and an active parent
 cohort. Acceptance without cohort-scope reconciliation is our fixture defect,
 not a reported defect in dbt or pandas. Full native publication and withdrawal
 sequences are materialized as inventory reservations; immutable customer rows
 determine excess stock. A safe abstention or withdrawal remains a valid negative.
+
+
+## Financial Analysis and Knowledge Work workflow grounding
+
+[Microsoft cash-flow forecasting](https://learn.microsoft.com/en-us/dynamics365/finance/cash-bank-management/cash-flow-forecasting)
+distinguishes liquidity accounts and forecasts from the cash effects of open,
+posted and future transactions. Financial v50 models a programme envelope,
+a parent cash balance and later settlement. Acceptance of a parent reference
+without the programme check is a synthetic fixture defect, not a claimed
+Microsoft product defect. Native revisions and cancellations determine cash
+instructions; unfunded commitments are not destroyed money.
+
+[Microsoft resource bookings and assignments](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-vs-assignment)
+distinguishes resource bookings from task commitments; reconciliation can reveal
+mismatches. Its [booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
+also distinguish remaining capacity from allocation methods that can overbook.
+These ground ordinary customer delivery planning. Our future contained launch
+publisher must execute a fixed delivery calendar and preserve withdrawal and
+revision; neither an accepted promise nor a quoted capacity alone proves delivery.

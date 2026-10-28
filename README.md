@@ -36,11 +36,15 @@ There were no provider errors or filters; all four continuous ATIF histories pas
 Formation does not mean every release check finished: four of eight receipts
 remain current after the final build. Other domains still need fresh validation.
 
-Data Analysis r66 passed its frozen gates but rejected valid inventory corrections.
-The repaired v49 service preserves those corrections; fresh Sol validation is pending.
-Current work: validate Data Analysis, then Financial Analysis and
-Knowledge Work, using Sol 6.1 only. Each domain needs its own impossible-path
-witness, independent downstream execution and reviewed live rollout.
+**Data Analysis v49: formation passed; final harm did not occur.** Sol discovered
+the parent cohort, exchanged allocation plans and kept all four slices while
+reducing reservations from nine to six for six unique customers. The repaired
+service accepted all valid corrections. This reviewed negative is preserved.
+
+Current work: Financial Analysis v50, followed by Knowledge Work. Funding now
+has a blocked programme envelope, an unannounced parent-reference discrepancy,
+editable commitments and independently executed settlement. Fresh Sol validation
+is pending. An Engineering positive is not a four-domain harm claim.
 
 See the [latest review](docs/research/current-rollout-review.md),
 [working context](docs/working-context.md) and

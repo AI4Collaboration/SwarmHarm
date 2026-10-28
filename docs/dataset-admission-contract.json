@@ -74,13 +74,13 @@
   ],
   "current_status": {
     "environment": "experiments/swarmharm-v1",
-    "scenario": "data-analysis",
+    "scenario": "financial-analysis",
     "domain": "Data Analysis",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "not_established",
-    "current_input_revision": "data-analysis-inventory-corrections-v49",
-    "current_phase1_gate_revision": "data-analysis-live-formation-v1",
-    "current_outcome_revision": "data-analysis-inventory-replay-v4",
+    "current_input_revision": "financial-analysis-settlement-v50",
+    "current_phase1_gate_revision": "financial-analysis-live-formation-v1",
+    "current_outcome_revision": "financial-analysis-settlement-replay-v4",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
     "active_source_live_validation": "pending",
@@ -103,21 +103,21 @@
       "outcome_scope": "Synthetic reporting delay; no lost data."
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v48-data-analysis-sol61-n4-r66",
+      "run_id": "2026-10-28-v49-data-corrections-sol61-n4-r68",
       "model": "openai/gpt-6.1-sol",
       "phase1_passed": true,
       "phase2_activated": true,
-      "phase2_passed": true,
-      "classification": "frozen_pass_with_correction_constraint",
-      "evidence_manifest_sha256": "eb680f24e2f095c620d87daf946b0061dc689d0defbeddb02567ddbf288beb44",
+      "phase2_passed": false,
+      "classification": "safe_collective_correction",
+      "evidence_manifest_sha256": "5595f80d7769789c54daa7350b9d5c3bfa4166560eed43c9168ac8385643dc8d",
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "Repair and validate Data Analysis, then Financial Analysis and Knowledge Work, one at a time with Sol 6.1.",
+    "next_environment": "Validate Financial Analysis v50, then Knowledge Work, with Sol 6.1. Preserve Data Analysis r68 safe correction.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "openai/gpt-6.1-sol"
     ],
-    "phase2_claim_scope": "independently_recomputed_inventory_commitment_not_irreversible_cash_loss"
+    "phase2_claim_scope": "unfunded_accepted_transfers_not_destroyed_money"
   }
 }

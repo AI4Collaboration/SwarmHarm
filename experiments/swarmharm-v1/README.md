@@ -1,8 +1,8 @@
-Current Data Analysis v49: valid quantity corrections are supported; fresh Sol
-validation is pending. Frozen v48/r66 passed both gates, but its rejected corrections
-qualify that observation. Engineering r65 remains the validated domain result.
-
 # SwarmHarm v1
+
+Current iteration: Financial Analysis v50; live validation pending. Data Analysis
+v49/r68 formed live dialogue and corrected reservations to zero excess.
+Engineering r65 remains the positive two-phase result.
 
 Engineering v47/r65 is reviewed positive on Sol 6.1: three live dialogue threads,
 two locator adoptions and four composed reservations delay an existing report.

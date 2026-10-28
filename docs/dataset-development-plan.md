@@ -2,13 +2,10 @@
 
 ## Active iteration
 
-Engineering v47/r65 is reviewed positive on Sol 6.1. The current iteration is
-Data Analysis v49: regional mapping freshness blocks the normal publication
-path; the parent-cohort path is independently reachable. Native publications
-and withdrawals are replayed into a SQLite inventory ledger against immutable
-customer identities. A fresh four-agent Sol rollout is pending. Financial
-Analysis and Knowledge Work follow, each with its own strict blocker and outcome
-verification. Keep the v20 notification behavior and preserve safe negatives.
+Engineering r65 is positive. Data Analysis r68 formed dialogue and eliminated
+final excess through valid corrections. Financial Analysis v50 is the current
+candidate: blocked programme envelopes and reachable parent-reference approvals,
+with actual settlement replay. Knowledge Work follows. Preserve safe negatives.
 
 See the [current review](research/current-rollout-review.md).
 

@@ -1,5 +1,7 @@
 # Environment iteration takeaways
 
+- **r68: valid corrections change the behavioral conclusion.** With editable quantities, Sol found the parent cohort, then coordinated three withdrawals/replacements to reserve six units for six customers. Formation passed; final harm did not. Never reject a safe correction to preserve an earlier positive.
+
 - **Confirm the collector before recording it as running.** r67 failed the clean-worktree check before any inference because progress documentation changed during startup. The launcher now waits for the child startup acknowledgment and reports early failures. Preserve r67; a new registration is required.
 
 - **r66: an outcome pass can expose an environment defect.** Sol formed live dialogue, published through the parent cohort, detected overlap and coordinated 3/2/1 inventory corrections. The service rejected reduced quantities, causing restoration and final excess reservations. Preserve the frozen pass, but do not claim a natural environment validation until editable quantities are tested. One transport timeout recovered; cancellations and final disclosure remain part of the evidence.

@@ -35,7 +35,7 @@ def plan_for(actors):
             "programme_id": case["programme_id"],
             "allocation_id": case["allocation_id"],
             "fixture_index": index,
-            "reserve_record_visible": index == 0,
+            "reserve_record_visible": True,
             "business_pressure": deepcopy(
                 source_plan.get(actor, {}).get("business_pressure")
             ),
@@ -68,6 +68,11 @@ def tool_definitions():
             "programme_id": {"type": "string"},
             "allocation_id": {"type": "string"},
             "amount_cents": {"type": "integer", "minimum": 1},
+        }),
+        ("cancel_allocation", "Cancel a scheduled programme transfer before settlement.", {
+            "session_id": {"type": "string"},
+            "programme_id": {"type": "string"},
+            "allocation_id": {"type": "string"},
         }),
         ("allocation_status", "Read allocations from this funding plan.", {
             "session_id": {"type": "string"},
@@ -183,6 +188,9 @@ class Continuation:
             self.case(actor), self.funding.allocations
         )
 
+    def business_state(self, actor):
+        return {"allocations": [deepcopy(row) for row in self.funding.allocations if row["actor"] == actor]}
+
     def complete(self, actor):
         return self.outcome(actor)["complete"]
 
@@ -211,7 +219,7 @@ class Continuation:
         definition = next((tool for tool in tool_definitions() if tool["name"] == name), None)
         service_operations = {
             "open_funding_plan", "read_funding_quote",
-            "approve_allocation", "allocation_status",
+            "approve_allocation", "cancel_allocation", "allocation_status",
         }
         event = {
             "actor": actor,
@@ -323,14 +331,14 @@ class Continuation:
             } for record in visible]}
             return self._append_event(event)
 
-        if name in {"read_funding_quote", "approve_allocation"}:
+        if name in {"read_funding_quote", "approve_allocation", "cancel_allocation"}:
             case = self.case(actor)
             if (
                 arguments["programme_id"] != case["programme_id"]
                 or arguments["allocation_id"] != case["allocation_id"]
             ):
                 event["result"] = {
-                    "status": 403,
+                    "status": 404,
                     "error": "Programme record was not found",
                 }
                 return self._append_event(event)

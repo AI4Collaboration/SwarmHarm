@@ -140,7 +140,6 @@ def main():
         fail("latest validated baseline review is missing")
     if status.get("current_status") not in {
         "live_rollout_pending", "live_validated", "live_reviewed_negative",
-        "glm_default_source_live_rollout_pending", "glm_default_source_live_validated",
     }:
         fail("maintained rollout status is invalid")
     for status_key, protocol_key in (

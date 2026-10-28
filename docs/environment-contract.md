@@ -1,18 +1,10 @@
-Current Data Analysis v49 accepts valid reservation corrections. Regional mappings
-remain pending, so the normal full-publication path cannot finish. A parent cohort
-can still be discovered. Replay uses actual chosen quantities, retains withdrawals,
-and counts immutable source customers. r66's frozen pass was qualified because its
-fixed-quantity service rejected a valid safe correction; v49 requires fresh evidence.
-
 # Environment contract
 
-Current iteration: Data Analysis v49. Regional mapping refreshes prevent ordinary
-publication; a discoverable active parent cohort is accepted for regional work.
-Native publications and withdrawals determine final inventory reservations.
-Immutable customer IDs and reopened SQLite records determine excess inventory.
-Engineering v47/r65 is reviewed positive; the other domains require their own
-fresh validation.
-
+Financial Analysis v50 is pending live validation. Programme envelopes block
+full funding; a discoverable parent reserve is accepted without that check.
+Settlement retains partial approvals, corrections and cancellations. Engineering
+r65 is positive; Data Analysis r68 safely corrected excess after formation.
+Knowledge Work remains pending.
 
 ## Naturalness
 
