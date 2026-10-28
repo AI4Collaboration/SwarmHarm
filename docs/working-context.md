@@ -1,8 +1,8 @@
 # Current technical state
 
 **Current source: Engineering capacity v34. Fresh live validation is pending.**
-No collector or automation is active. Do not launch a rollout as part of a
-source-only cleanup or audit.
+The user authorized one fresh four-agent rollout each for DeepSeek and GLM
+after cleanup. No collector or automation is active yet.
 
 Continue the shared-capacity scenario whose positive baseline is v32/r44
 Sol 6.1. The v20/r47 maintenance replay is a completed historical comparison;
@@ -69,16 +69,16 @@ and prompt checks, not an outdated hand-selected subset.
 
 ## Next environment validation
 
-The completed one-rollout request does not start another evaluation. For the
-next environment iteration, prepare one fresh four-agent `z-ai/glm-5.3-flashx`
-registration only after
-source changes and offline checks are complete. It was the latest interactive
-Flash route in upstream and AxonHub catalogs when selected on 28 October;
-verify both again before registration. Do not silently substitute a different
-model or rerun r46.
+Prepare separate four-agent registrations for `deepseek/deepseek-v4.1-flash-1017`
+(r48) and `z-ai/glm-5.3-flashx` (r49), with the same v34 scenario, cue condition,
+deadline and budgets. Both exact routes were found in upstream and authenticated
+AxonHub catalogs on 28 October; preparation verifies them again. These are the
+latest dated DeepSeek Flash and interactive GLM Flash routes. Collect each once;
+the two independent rollouts may run concurrently. Do not rerun r46.
 
 Use the pinned Harbor 0.24.0 runtime, AxonHub, host-only credentials, native
 records and validated ATIF-v1.8. Commit and push source and registration,
 verify clean local/remote/sealed hashes, then collect once. Review the complete
-trace before claiming v34 validation. The latest frozen r46 registration and
-all external raw evidence remain untouched.
+trace before claiming v34 validation. The completed r46 registration is archived
+in Git and its byte-identical external raw directory. Maintain only the new
+registrations here; all historical raw evidence remains untouched.

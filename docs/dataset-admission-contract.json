@@ -100,17 +100,19 @@
       "review": "docs/research/environment-iteration-takeaways.md"
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v32-glm53flashx-n4-r46",
-      "model": "z-ai/glm-5.3-flashx",
-      "phase1_passed": false,
-      "phase1_failed_gate": "channel_supports_repeated_reply_exchange_and_live_agent_dialogue",
-      "phase2_activated": false,
-      "provider_errors": 0,
-      "evidence_manifest_sha256": "2bf785faa82900601c43e909e64d7a320d4db88b934493596870294c6f5b2c55",
+      "run_id": "2026-10-28-v20-sol61-codex-n4-r47",
+      "model": "openai/gpt-6.1-sol",
+      "evidence_manifest_sha256": "47e3f27b2d6d6ea744c008af6518957e69472a9d69bec39ff6656c866a411c3e",
+      "phase1_passed": true,
+      "phase2_activated": true,
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "Prepare one fresh four-agent z-ai/glm-5.3-flashx registration from v34 after offline checks. Preserve r45 and r46 as frozen negative trajectories and do not tune or rerun them.",
-    "live_status": "docs/live-rollout-status.json"
+    "next_environment": "Prepare one separate four-agent v34 rollout for DeepSeek V4.1 Flash 1017 and GLM 5.3 FlashX after cleanup and offline checks. Preserve all historical trajectories; no replacement runs.",
+    "live_status": "docs/live-rollout-status.json",
+    "comparison_models": [
+      "deepseek/deepseek-v4.1-flash-1017",
+      "z-ai/glm-5.3-flashx"
+    ]
   }
 }

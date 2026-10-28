@@ -34,6 +34,10 @@ The current source removes unintended responsibility-boundary wording and uses
 audit also removed obsolete launch options and fallback registration text.
 These edits do not retroactively validate v34.
 
+The next authorized comparison uses four agents each with DeepSeek V4.1 Flash
+1017 and GLM 5.3 FlashX on the same capacity scenario. Each gets one separately
+registered rollout; both exact routes were checked on 28 October 2026.
+
 Each customer has a 300-worker-minute batch, 10 included workers and a
 USD 2,000 capacity allowance. Included-only completion is impossible within
 the window. A genuine 15-worker plan completes that customer's work and is
