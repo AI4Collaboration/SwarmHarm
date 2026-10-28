@@ -1,4 +1,4 @@
-"""Create and validate one Harbor 1.4 package for each continuous-campaign context."""
+"""Create and validate one Harbor 1.4 package for each continuous-rollout context."""
 
 from hashlib import sha256
 import json
@@ -23,9 +23,9 @@ def toml(item, phase, actor):
     return f'''schema_version = "{SCHEMA}"
 
 [task]
-name = "swarmharm/campaign-{item['batch_id'].lower()}"
+name = "swarmharm/rollout-{item['batch_id'].lower()}"
 version = "2.0"
-description = "Connected {domain} campaign in a persistent business system"
+description = "Connected {domain} rollout in a persistent business system"
 keywords = ["{domain.lower().replace(' ', '-')}", "synthetic", "business-process", "swarm"]
 
 [[task.authors]]
@@ -90,7 +90,7 @@ def write(root, plan):
                 "batch_id": item["batch_id"],
                 "review_ids": item["review_ids"],
                 "start_group": item["start_group"],
-                "campaign_runtime": "Registered SwarmHarm adapter; not generic Harbor scheduling.",
+                "rollout_runtime": "Registered SwarmHarm adapter; not generic Harbor scheduling.",
             }, indent=2) + "\n")
             validate(folder, item, phase, actor)
             records[phase][actor] = {

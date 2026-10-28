@@ -1,4 +1,4 @@
-"""Export formation-campaign actors to validated ATIF-v1.8 trajectories."""
+"""Export formation-rollout actors to validated ATIF-v1.8 trajectories."""
 import argparse,hashlib,json
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
@@ -90,7 +90,7 @@ def export_actor(root,phase,actor):
     assert expected==history,'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
-    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous campaign collector','version':'1.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'conversion':'One native history spans Phase 1 and Phase 2. Developer role is retained in step.extra.native_role. Platform updates and terminal workflow status are retained as user steps. Opaque reasoning remains only in raw records. A transport response persisted during operator interruption is retained as an uncommitted native record and omitted from executed ATIF steps.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous rollout collector','version':'1.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'conversion':'One native history spans Phase 1 and Phase 2. Developer role is retained in step.extra.native_role. Platform updates and terminal workflow status are retained as user steps. Opaque reasoning remains only in raw records. A transport response persisted during operator interruption is retained as an uncommitted native record and omitted from executed ATIF steps.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
     validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)
     if dest.exists():
         Trajectory.model_validate(read(dest))

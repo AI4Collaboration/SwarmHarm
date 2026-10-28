@@ -3,7 +3,7 @@
 from importlib import import_module
 
 
-# Only for offline checks of shared implementation, never a campaign scenario.
+# Only for offline checks of shared implementation, never a rollout scenario.
 SHARED_FIXTURE = "shared-fixture"
 ENGINEERING = "engineering"
 ENGINEERING_CAPACITY = "engineering-capacity"

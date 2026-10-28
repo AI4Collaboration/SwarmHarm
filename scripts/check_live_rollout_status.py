@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject stale live-validation claims for the maintained continuous campaign."""
+"""Reject stale live-validation claims for the maintained continuous rollout."""
 
 import argparse
 from hashlib import sha256
@@ -15,7 +15,7 @@ PROTOCOL_PATH = ROOT / "experiments/swarmharm-v1/protocol.json"
 # A reviewed live rollout binds both the live collection path and the evaluator
 # that interprets it. Exports, tests, prose and the status-only domain catalog
 # can change independently; the frozen registration still records every input
-# hash, including the catalog version used for that campaign.
+# hash, including the catalog version used for that rollout.
 LIVE_EXECUTION_PATHS = {
     "experiments/swarmharm-v1/run.py",
     "experiments/swarmharm-v1/review.py",
@@ -86,10 +86,10 @@ def main():
         if not status.get("expected_model") or not status.get("expected_upstream_model"):
             fail("pending status needs exact model and upstream route metadata")
         if (
-            status.get("latest_matching_campaign") is not None
-            or status.get("latest_matching_campaigns")
+            status.get("latest_matching_rollout") is not None
+            or status.get("latest_matching_rollouts")
         ):
-            fail("pending status must not name a matching campaign")
+            fail("pending status must not name a matching rollout")
         if args.require_confirmed:
             fail("current environment still needs a matching AxonHub rollout")
         print("live rollout status: pending (metadata consistent)")
@@ -97,12 +97,12 @@ def main():
     if state != "confirmed":
         fail(f"unknown status {state!r}")
 
-    campaigns = status.get("latest_matching_campaigns")
-    if not isinstance(campaigns, list) or not campaigns:
-        campaign = status.get("latest_matching_campaign")
-        campaigns = [campaign] if isinstance(campaign, dict) else []
-    if not campaigns:
-        fail("confirmed status needs matching campaign metadata")
+    rollouts = status.get("latest_matching_rollouts")
+    if not isinstance(rollouts, list) or not rollouts:
+        rollout = status.get("latest_matching_rollout")
+        rollouts = [rollout] if isinstance(rollout, dict) else []
+    if not rollouts:
+        fail("confirmed status needs matching rollout metadata")
 
     expected_model = status.get("expected_model")
     expected_upstream = status.get("expected_upstream_model")
@@ -114,24 +114,24 @@ def main():
     )
     if set(expected_upstreams) != expected_models:
         fail("each registered comparison needs an exact upstream model")
-    observed_models = {campaign.get("model") for campaign in campaigns}
+    observed_models = {rollout.get("model") for rollout in rollouts}
     if observed_models != expected_models:
         printable = sorted(str(model) for model in observed_models)
         fail(f"confirmed iteration models differ: {printable}")
 
-    for campaign in campaigns:
-        if campaign.get("trace_reviewed") is not True:
-            fail("confirmed campaign has not been marked trace-reviewed")
-        if campaign.get("provider") != "AxonHub":
+    for rollout in rollouts:
+        if rollout.get("trace_reviewed") is not True:
+            fail("confirmed rollout has not been marked trace-reviewed")
+        if rollout.get("provider") != "AxonHub":
             fail("live validation must use AxonHub")
-        if campaign.get("atif_native_continuity") is not True:
-            fail("confirmed campaign lacks native ATIF continuity")
-        evidence_digest = campaign.get("evidence_manifest_sha256", "")
+        if rollout.get("atif_native_continuity") is not True:
+            fail("confirmed rollout lacks native ATIF continuity")
+        evidence_digest = rollout.get("evidence_manifest_sha256", "")
         if re.fullmatch(r"[0-9a-f]{64}", evidence_digest) is None:
-            fail("confirmed campaign lacks an anchored evidence-manifest digest")
+            fail("confirmed rollout lacks an anchored evidence-manifest digest")
 
-        registration_path = ROOT / campaign.get("registration", "")
-        report_path = ROOT / campaign.get("report", "")
+        registration_path = ROOT / rollout.get("registration", "")
+        report_path = ROOT / rollout.get("report", "")
         if not registration_path.is_file():
             fail("matching registration is missing")
         if not report_path.is_file():
@@ -146,12 +146,12 @@ def main():
             fail("registration Phase 1 gate revision is stale")
         if registration.get("outcome_revision") != status["outcome_revision"]:
             fail("registration outcome revision is stale")
-        if campaign.get("model") not in registration.get("models", {}).values():
-            fail("campaign model does not match its frozen registration")
+        if rollout.get("model") not in registration.get("models", {}).values():
+            fail("rollout model does not match its frozen registration")
         if set(registration.get("upstream_models", {}).values()) != {
-            expected_upstreams[campaign["model"]]
+            expected_upstreams[rollout["model"]]
         }:
-            fail("campaign upstream route does not match status metadata")
+            fail("rollout upstream route does not match status metadata")
         registered_hashes = registration.get("code_hashes", {})
         missing = sorted(LIVE_EXECUTION_PATHS - registered_hashes.keys())
         if missing:
@@ -161,7 +161,7 @@ def main():
             path = ROOT / relative
             if not path.is_file() or digest(path) != expected:
                 fail(f"live-validated source changed: {relative}")
-    print("live rollout status: current campaign confirmed and source hashes match")
+    print("live rollout status: current rollout confirmed and source hashes match")
 
 
 if __name__ == "__main__":

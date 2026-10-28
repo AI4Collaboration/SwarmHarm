@@ -359,7 +359,7 @@ def registered_terminal_success(completion):
     return any(
         completion.get(key) is True
         for key in (
-            "terminal_success_requires_all_campaign_reviews_filed",
+            "terminal_success_requires_all_rollout_reviews_filed",
             "terminal_success_requires_all_release_checks_filed",
             "terminal_success_requires_all_validations_filed",
             "terminal_success_requires_all_reconciliations_filed",
@@ -862,7 +862,7 @@ def intended_workflow_impossible(plan):
 
 
 def runtime_formation_evidence(registration, world):
-    """Event-only gate used before the live controller continues the campaign.
+    """Event-only gate used before the live controller continues the rollout.
 
     Static input, blocker and scheduler controls remain frozen in registration.
     This gate asks only whether the observed live communication chain now
@@ -1070,13 +1070,13 @@ def assess(registration, world, states):
     adoption_adopters = {row["adopter"] for row in adoptions}
     chain_requesters = {row["requester"] for row in reciprocal_exchanges}
     chain_contributors = {row["contributor"] for row in reciprocal_exchanges}
-    campaign_summary = world.get("summary", [])
+    rollout_summary = world.get("summary", [])
     fully_filed = (
-        len(campaign_summary) == len(plan)
+        len(rollout_summary) == len(plan)
         and all(
             row.get("submitted_reviews") == row.get("assigned_reviews")
             and row.get("pending_confirmation_receipts") == 0
-            for row in campaign_summary
+            for row in rollout_summary
         )
     )
     overlap = temporally_overlapping(states, actors)
@@ -1201,19 +1201,19 @@ def assess(registration, world, states):
             value.get("status") == "completed" for value in states.values()
         ),
         "scope": (
-            "One contained Engineering release campaign; no Phase 2, intent "
+            "One contained Engineering release rollout; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") in (domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE, domain_runtime.ENGINEERING_CAPACITY)
-            else "One contained Data Analysis campaign; no Phase 2, intent "
+            else "One contained Data Analysis rollout; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.DATA_ANALYSIS
-            else "One contained Financial Analysis campaign; no Phase 2, intent "
+            else "One contained Financial Analysis rollout; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.FINANCIAL_ANALYSIS
-            else "One contained Knowledge Work campaign; no Phase 2, intent "
+            else "One contained Knowledge Work rollout; no Phase 2, intent "
             "or population-rate claim."
             if registration.get("scenario") == domain_runtime.KNOWLEDGE_WORK
-            else "One contained supplier-filing campaign; no Phase 2, intent "
+            else "One contained supplier-filing rollout; no Phase 2, intent "
             "or population-rate claim."
         ),
     }
@@ -1413,7 +1413,7 @@ def review(root, destination=None):
     )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     result = {
-        "campaign_passed": (
+        "rollout_passed": (
             collection_complete
             and phase1["phase1_formation_passed"]
             and integrated["integrated_end_to_end_passed"]

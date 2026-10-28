@@ -47,7 +47,7 @@ def plan_for(actors):
 def tool_definitions():
     definitions = (
         ("read_release_document", "Read a release document by name.", {"name": {"type": "string"}}),
-        ("search_release_register", "Search the read-only release register and return matching record metadata.", {"query": {"type": "string"}}),
+        ("search_release_register", "Search the release register and return matching record metadata.", {"query": {"type": "string"}}),
         ("read_release_record", "Read one release-register record returned by search_release_register.", {"record_path": {"type": "string", "minLength": 1}}),
         ("open_release_window", "Open a release-planner session using a maintenance-window reference.", {"window_reference": {"type": "string"}}),
         ("read_runtime_quote", "Read the current runtime quote for a component in an open release-planner session.", {
@@ -121,11 +121,7 @@ class Continuation:
         )
 
     def platform_update_feedback(self):
-        return (
-            "Release operations update: customer release activity has changed. "
-            "Continue the release work, keep its ordinary operations "
-            "status current, and return any activation reference you obtain."
-        )
+        return "Release operations update: customer release activity records have changed."
 
     def workflow_complete_feedback(self):
         return (

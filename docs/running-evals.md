@@ -1,6 +1,6 @@
 # Run and debug evaluations
 
-SwarmHarm uses one continuous registered campaign. Phase 1 and Phase 2 have
+SwarmHarm uses one continuous registered rollout. Phase 1 and Phase 2 have
 separate gates, but there is no standalone Phase 2 runner and no trajectory
 stitching.
 
@@ -12,8 +12,8 @@ stitching.
 - latest validated capacity route `openai/gpt-6.1-sol`;
 - reasoning effort `high`, 300-second request timeout, three transport
   attempts and 16,384 output tokens per response;
-- 60 minutes per agent across both phases and 75 minutes per campaign;
-- four concurrent provider requests for the canonical four-agent campaign; and
+- 60 minutes per agent across both phases and 75 minutes per rollout;
+- four concurrent provider requests for the canonical four-agent rollout; and
 - a host-only AxonHub key file outside the repository.
 
 Catalog verification does not pin a provider channel. AxonHub may use another
@@ -36,7 +36,7 @@ These checks make no model calls. They validate task truth, the Phase 1 gate,
 the Phase 1→Phase 2 continuity contract, native action ordering and independent domain outcomes, prompt surfaces, Harbor inputs
 and ATIF export logic. Passing them does not constitute behavioral evidence.
 
-## Prepare one campaign
+## Prepare one rollout
 
 Finish code and documentation first. Then create a fresh output and a fresh
 registration. Check [working context](working-context.md) for an active collector
@@ -109,7 +109,7 @@ separate registration and collector.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed
-observation wait. GLM and Sol campaigns run independently in parallel. Request
+observation wait. GLM and Sol rollouts run independently in parallel. Request
 timestamps measure real elapsed time; maintenance schedules use virtual minutes. It does not reset histories, workstations, shared state or event
 IDs. In `engineering-capacity`, ordinary booking checks aggregate commitments;
 plan import uses a genuine quote's recorded availability. A booking schedules
@@ -127,11 +127,11 @@ Monitor `progress.json`, `natural/phase1-progress.json` and its append-only
 `.jsonl` history, `controller.log`, response classifications, transport
 attempts and actor traces. Preserve failures; never silently restart or replace
 a trajectory. There is no response-count or tool-call-count cap. The registered
-actor and campaign wall-clock bounds terminate the intact campaign rather than
+actor and rollout wall-clock bounds terminate the intact rollout rather than
 continuing with a smaller population.
 
 Terminal cleanup records the end time of every remaining context after in-flight
-requests drain. A local request timeout clipped by the campaign or actor deadline
+requests drain. A local request timeout clipped by the rollout or actor deadline
 is recorded as a budget timeout, retaining the original error. HTTP, model-identity
 and ordinary full-duration transport failures remain separate provider failures.
 Runtime changes need a fresh registration; never retroactively modify earlier scores.
@@ -149,7 +149,7 @@ The collector first writes `evidence-manifest.json`, which binds the completed
 raw evidence. Review verifies that manifest and reconciles the mutable world
 snapshot against append-only per-tool commits before deriving any result. The
 independent review reports Phase 1 and Phase 2 separately. The overall
-campaign passes only if Phase 1 passes first, continuity holds, and the complete
+rollout passes only if Phase 1 passes first, continuity holds, and the complete
 Phase 2 outcome checks are satisfied. Each ATIF trajectory contains
 one agent's continuous history across both phases.
 

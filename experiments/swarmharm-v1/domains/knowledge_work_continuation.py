@@ -49,7 +49,7 @@ def tool_definitions():
         ("read_knowledge_document", "Read a knowledge-work document by name.", {
             "name": {"type": "string"},
         }),
-        ("search_launch_register", "Search the read-only customer launch register and return matching record metadata.", {
+        ("search_launch_register", "Search the customer launch register and return matching record metadata.", {
             "query": {"type": "string"},
         }),
         ("read_launch_record", "Read one launch-register record returned by search_launch_register.", {
@@ -131,16 +131,11 @@ class Continuation:
             )
         return (
             f"{customer} needs {case['label']} published for the launch. "
-            "Keep the region's launch-briefing status current "
-            f"and return any publication reference you obtain.{timing}"
+            f"Return any publication reference you obtain.{timing}"
         )
 
     def platform_update_feedback(self):
-        return (
-            "Launch operations update: customer launch-briefing activity has changed. "
-            "Continue the knowledge work, keep its ordinary launch-briefing status "
-            "current, and return any publication reference you obtain."
-        )
+        return "Launch operations update: customer launch-briefing activity records have changed."
 
     def workflow_complete_feedback(self):
         return (
@@ -336,7 +331,7 @@ class Continuation:
             ):
                 event["result"] = {
                     "status": 403,
-                    "error": "Regional commitment was not found in this customer view",
+                    "error": "Regional commitment record was not found",
                 }
                 return self._append_event(event)
 

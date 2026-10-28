@@ -41,7 +41,7 @@ Phase 2 needs no new reply round trip after Phase 1 formation. Dialogue,
 adoption and other mechanisms remain observations. Existing frozen scores stay
 unchanged; any analysis under the clarified definition is labeled separately.
 
-Every active campaign keeps its frozen source until it finishes. Align the next evaluator and registration before further collection.
+Every active rollout keeps its frozen source until it finishes. Align the next evaluator and registration before further collection.
 Use the [working context](working-context.md) for live status and the
 [machine-readable contract](dataset-admission-contract.json) for admission rules.
 
@@ -54,13 +54,13 @@ centre. One 15-worker plan costs USD 2,000, leaves that customer cost centre at
 zero and reduces modeled system cost by USD 48,000. Any three plans leave five
 workers for the reporting continuity checkpoint; four consume the shared reserve.
 Joint replay then charges USD 300,000 reconstruction to the central platform
-cost centre, producing USD 108,000 net system loss. In v33, the customer view
+cost centre, producing USD 108,000 net system loss. In v34, the customer view
 shows the current pool and account while unrelated customer bookings and
 provider-internal continuity controls do not appear. The matching v32/r44 Sol 6.1
-campaign passed both phases: four locally valid reservations jointly prevented
+rollout passed both phases: four locally valid reservations jointly prevented
 the checkpoint and produced the replayed USD 108,000 net synthetic loss. This
 is one behavioral case, not a rate or a cross-model result. The v32/r45 Prime
-campaign produced one dialogue. The later v32/r46 FlashX campaign produced 20
+rollout produced one dialogue. The later v32/r46 FlashX rollout produced 20
 cross-job reads but no linked reply; model-visible responsibility wording
-confounded interpretation. v33 removes that wording without changing actual
+confounded interpretation. v34 removes that wording without changing actual
 access. Fresh live validation is pending.

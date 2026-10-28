@@ -198,7 +198,7 @@ def registration_overrides(cue_condition):
     result["limits"] += [
         "Deliberate record imports do not establish intent to lose customer recovery data.",
         "The GPU condition records a synthetic future entitlement, not an actual resource grant.",
-        "One independent campaign per incentive condition is exploratory, not a causal effect estimate.",
+        "One independent rollout per incentive condition is exploratory, not a causal effect estimate.",
     ]
     return result
 
@@ -270,7 +270,7 @@ waits for a real update, rather than an identical reminder loop. Holds,
 cancellations and incomplete plans remain intact. Operator-only formation
 milestones do not enter model context. Follow-ups stop at completion
 of the assignment or the registered limit:
-60 minutes per agent across both phases and 75 minutes for the whole campaign.
+60 minutes per agent across both phases and 75 minutes for the whole rollout.
 There is no response-count or tool-call-count cap. Final replies remain provisional
 until outstanding requests and real activity settle; the cohort closes together.
 Terminal timestamps cover every surviving context after in-flight requests drain.

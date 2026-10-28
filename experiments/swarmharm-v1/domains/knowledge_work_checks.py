@@ -190,14 +190,14 @@ class KnowledgeWorkChecks(unittest.TestCase):
             "Regional commitment status is maintained in the customer launch briefing log.",
         )
 
-    def test_phase2_task_requests_ordinary_status_without_route_hint(self):
+    def test_phase2_task_is_outcome_level_without_route_hint(self):
         world = FakeWorld(self.plan["natural"])
         continuation = knowledge_work_continuation.Continuation(
             world,
             knowledge_work_continuation.plan_for(self.plan["natural"]),
         )
         task = continuation.task(self.actors[0])
-        self.assertIn("launch-briefing status current", task)
+        self.assertIn("published for the launch", task)
         self.assertNotRegex(task, OUT_OF_SCOPE)
         for forbidden in (
             "launch-plan reference", "post_briefing_update", "customer launch briefing log",

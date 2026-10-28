@@ -54,7 +54,7 @@ class CollectorChecks(unittest.TestCase):
             {**check, 'submitted_reviews': 1}, signal))
         self.assertFalse(run.followup_needed(state, extension, check, {'revision': 'new-peer-note'}))
         self.assertFalse(run.followup_needed(state, extension,
-            {**check, 'campaign_submitted_reviews': 7}, signal))
+            {**check, 'rollout_submitted_reviews': 7}, signal))
         self.assertTrue(run.followup_needed(state, extension, check,
             {'revision': 'new-publication', 'source_publication_event': 90}))
         extension.activated = True
@@ -104,12 +104,12 @@ class CollectorChecks(unittest.TestCase):
              'submissions': [], 'pending_confirmation_receipts': 1},
         ]
         world = SimpleNamespace(summary=lambda: rows, plan={'a': {'review_ids': ['a1']}})
-        check = run.campaign_completion_state(world, 'a')
+        check = run.rollout_completion_state(world, 'a')
         self.assertFalse(check['complete'])
         self.assertTrue(check['actor_complete'])
         self.assertFalse(run.unfinished_work_remaining(check))
         rows[0]['submissions'] = []  # A final build legitimately reopens its check.
-        self.assertTrue(run.unfinished_work_remaining(run.campaign_completion_state(world, 'a')))
+        self.assertTrue(run.unfinished_work_remaining(run.rollout_completion_state(world, 'a')))
 
     def test_old_activity_after_handover_keeps_the_current_assignment(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
@@ -174,7 +174,7 @@ class CollectorChecks(unittest.TestCase):
             'closed': {'status': 'completed', 'finished_at': 'earlier'},
         }
         run.finish_actor_states(states, {actor: 100 for actor in states},
-                                reason='campaign_limit', finished_at='terminal', now=200)
+                                reason='rollout_limit', finished_at='terminal', now=200)
         for actor in ('running', 'waiting'):
             self.assertEqual(states[actor]['finished_at'], 'terminal')
             self.assertEqual(states[actor]['status'], 'time_limit')
@@ -322,10 +322,10 @@ class CollectorChecks(unittest.TestCase):
                 request, None, 302, "Found", {}, "https://elsewhere.invalid/models"
             )
 
-    def test_collector_lock_is_scoped_to_one_campaign(self):
+    def test_collector_lock_is_scoped_to_one_rollout(self):
         source = inspect.getsource(run.collect)
         self.assertIn("root/'.collector.lock'", source)
-        self.assertNotIn("release-campaign-inference.lock", source)
+        self.assertNotIn("release-rollout-inference.lock", source)
 
     def test_workstations_are_prepared_in_parallel_before_activation(self):
         counter = iter(range(1000))
@@ -452,7 +452,7 @@ class CollectorChecks(unittest.TestCase):
             "matched_case_assignment_affordance"
         )
         self.assertIn("open source investigation", matched)
-        self.assertIn("matches locally available build routing material", matched)
+        self.assertIn("matches locally available build-routing material", matched)
         self.assertIn("release activity", matched)
         self.assertNotIn("/workspace", matched)
         self.assertNotIn("assigned", matched.lower())
@@ -493,7 +493,7 @@ class CollectorChecks(unittest.TestCase):
         reviews = lab.batch_for(plan[actor])["reviews"]
         for case in reviews[:1]:
             submit(actor, case)
-        partial = run.campaign_completion_state(world, actor)
+        partial = run.rollout_completion_state(world, actor)
         self.assertFalse(partial["complete"])
         self.assertEqual(partial["outstanding_review_ids"], [reviews[1]["review_id"]])
 
@@ -501,7 +501,7 @@ class CollectorChecks(unittest.TestCase):
         for owner in actors[1:]:
             for case in lab.batch_for(plan[owner])["reviews"]:
                 submit(owner, case)
-        self.assertTrue(run.campaign_completion_state(world, actor)["complete"])
+        self.assertTrue(run.rollout_completion_state(world, actor)["complete"])
 
     def test_collector_has_one_start_barrier_then_resubmits_each_live_actor(self):
         source = inspect.getsource(run.collect)
@@ -656,7 +656,7 @@ class CollectorChecks(unittest.TestCase):
             for name in ("engineering_maintenance.py", "engineering_maintenance_review.py"):
                 self.assertIn("experiments/swarmharm-v1/domains/" + name, reg["code_hashes"])
 
-    def test_prepare_assembles_the_maintained_engineering_campaign(self):
+    def test_prepare_assembles_the_maintained_engineering_rollout(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "engineering-study"
             registration = self.registration_path(temporary + "-engineering")

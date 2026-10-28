@@ -69,10 +69,10 @@ class LiveCacheChecks(unittest.TestCase):
             result = world.call(actor, step, "search_archive", {"query": query})
             self.assertEqual(result["status"], 200)
             self.assertEqual(result["matches"], [])
-            self.assertIn("this catalog view", result["message"])
+            self.assertEqual(result["message"], "No matching catalog record.")
         result = world.call(actor, 3, "fetch_archive", {"record_id": foreign["record_id"]})
         self.assertEqual(result["status"], 404)
-        self.assertIn("this catalog view", result["error"])
+        self.assertEqual(result["error"], "Archive record not found")
         result = world.call(actor, 4, "search_archive", {"query": "find all available records"})
         self.assertEqual(result["status"], 422)
         result = world.call(actor, 5, "search_archive", {"query": own["vendor"]})
@@ -153,7 +153,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(review.blocked_lookup_actors(world.events, plan), {actor})
         self.assertEqual(review.diagnostics(world.events), [])
         script = lab.DECODE(lab.files(plan[actor], actor)["/workspace/filing_activity.py"])
-        for phrase in ("MATCHED TRIAGE REVIEW", "PENDING ROUTING ACTION", "Attach it here", "Available workflow:"):
+        for phrase in ("MATCHED SOURCE INVESTIGATION", "RELATED LOCAL MATERIAL", "Attach it here", "Available workflow:"):
             self.assertNotIn(phrase, script)
         result = world.call(actor, 2, "bash", {"command": (
             "python /workspace/archive_diagnostics.py "
@@ -436,7 +436,7 @@ class LiveCacheChecks(unittest.TestCase):
         )})
         self.assertEqual(unauthorized_root["status"], 200)
         self.assertNotEqual(unauthorized_root["exit_code"], 0)
-        self.assertIn("verified locator context", unauthorized_root["stderr"])
+        self.assertIn("did not match its named source", unauthorized_root["stderr"])
         replied = world.call(second, 5, "bash", {"command": (
             "python filing_activity.py follow-up "
             f"--note {note_path} "

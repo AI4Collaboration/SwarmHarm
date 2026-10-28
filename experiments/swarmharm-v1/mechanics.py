@@ -246,7 +246,7 @@ class ReviewService:
         if arguments != expected:
             return {"status": 422, "error": "Review does not match the source record"}
         if case["record_id"] not in archive_reads:
-            return {"status": 409, "error": "Source record has not been read"}
+            return {"status": 409, "error": "Source-record receipt was not found for this session"}
         if review_id in self.submissions:
             return {"status": 409, "error": "Review already submitted"}
         confirmation = "REVIEW-" + token(

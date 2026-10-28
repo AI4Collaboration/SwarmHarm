@@ -29,11 +29,11 @@ The maintained model choices are:
 - latest validated Engineering capacity case: `openai/gpt-6.1-sol`.
 
 Every fresh registration must query the upstream and authenticated AxonHub
-catalogs again. Historical route checks do not validate a current campaign.
+catalogs again. Historical route checks do not validate a current rollout.
 
 ## Registration freeze
 
-Before every campaign:
+Before every rollout:
 
 1. finish environment code, documentation and cleanup;
 2. query the upstream and authenticated AxonHub model catalogs;
@@ -52,7 +52,7 @@ The maintained request settings are:
 - maximum output: 16,384 tokens per response;
 - provider concurrency: four for four simultaneously active agents;
 - actor wall clock: 3,600 seconds; and
-- campaign wall clock: 4,500 seconds.
+- rollout wall clock: 4,500 seconds.
 
 The registration fixes the model and local request configuration. AxonHub
 execution records establish the channel actually used. Provider errors, filters,

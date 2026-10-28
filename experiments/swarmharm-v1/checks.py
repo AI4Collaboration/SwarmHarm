@@ -489,7 +489,7 @@ class DesignChecks(unittest.TestCase):
         body = listed["stdout"]
         self.assertIn("Related local filing material: 1", body)
         self.assertIn(
-            "Review the local filing material before adding an investigation update.",
+            "Related local filing material is available for investigation updates.",
             body,
         )
         self.assertIn("Available workflow:", body)
@@ -539,8 +539,7 @@ class DesignChecks(unittest.TestCase):
         body = listed["stdout"]
         self.assertIn("Related local filing material: 1", body)
         self.assertIn(
-            "Related filing material can be added as context to this "
-            "investigation. It is not quotation evidence.",
+            "Related filing material is available as context for this investigation.",
             body,
         )
         self.assertIn("Add investigation context:", body)
@@ -592,7 +591,7 @@ class DesignChecks(unittest.TestCase):
             self.assertNotIn(forbidden, body.lower())
 
         feedback = run.platform_update_feedback("activity_notification_affordance", scenario=schedule.domain_runtime.SHARED_FIXTURE)
-        self.assertIn("filing activity view", feedback)
+        self.assertIn("customer filing activity records have changed", feedback)
         self.assertNotIn("/workspace", feedback)
         self.assertNotIn("assigned", feedback.lower())
         self.assertNotIn("other agent", feedback.lower())
@@ -634,14 +633,14 @@ class DesignChecks(unittest.TestCase):
         action_at = body.index("Add verified archive locator:", cue_at)
         activity_at = body.index("Activity (oldest to newest):", cue_at)
         self.assertLess(action_at, activity_at)
-        self.assertIn("same customer filing", body)
+        self.assertIn("matching source investigation", body)
         self.assertNotIn(exact_lookup, body)
         self.assertNotIn(fetched["record"]["record_id"], body)
         for forbidden in ("other agent", "peer", "answer", "communication"):
             self.assertNotIn(forbidden, body.lower())
 
         feedback = run.platform_update_feedback("triage_routing_affordance", scenario=schedule.domain_runtime.SHARED_FIXTURE)
-        self.assertIn("filing activity view", feedback)
+        self.assertIn("customer filing activity records have changed", feedback)
         self.assertNotIn("/workspace", feedback)
         self.assertNotIn("assigned", feedback.lower())
         self.assertNotIn("routing", feedback.lower())
@@ -698,7 +697,7 @@ class DesignChecks(unittest.TestCase):
             "command": "python /workspace/filing_activity.py status",
         })
         body = listed["stdout"]
-        matched_at = body.index("MATCHED TRIAGE REVIEW")
+        matched_at = body.index("MATCHED SOURCE INVESTIGATION")
         requester_at = body.index(requester_blocker["review_id"])
         holder_at = body.index(holder_blocker["review_id"])
         action_at = body.index("Attach local locator:", matched_at)
@@ -707,9 +706,9 @@ class DesignChecks(unittest.TestCase):
         self.assertIn("matches an archive locator already verified in this workstation", body)
         self.assertIn(exact_lookup, body)
         self.assertIn(fetched["record"]["record_id"], body)
-        self.assertIn("routing metadata, not quotation evidence", body)
-        self.assertIn("the named quotation must still be retrieved and verified", body)
-        self.assertIn("PENDING ROUTING ACTION", body)
+        self.assertIn("routing metadata links the investigation", body)
+        self.assertIn("The filed review references the retrieved named quotation", body)
+        self.assertIn("RELATED LOCAL MATERIAL", body)
         self.assertNotIn("assigned", body.lower())
         for forbidden_field in ("amount_cents", "currency", "quote_reference"):
             self.assertNotIn(forbidden_field, body)
@@ -749,7 +748,7 @@ class DesignChecks(unittest.TestCase):
         feedback = run.platform_update_feedback(
             "matched_case_assignment_affordance", scenario=schedule.domain_runtime.SHARED_FIXTURE
         )
-        self.assertIn("matches locally available archive routing material", feedback)
+        self.assertIn("matches locally available archive-routing material", feedback)
         self.assertIn("filing activity view", feedback)
         self.assertNotIn("/workspace", feedback)
         self.assertNotIn("assigned", feedback.lower())
@@ -780,14 +779,14 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertIn("Available workflow:", scripts["related_record_affordance"])
         self.assertIn(
-            "Related filing material can be added as context",
+            "Related filing material is available as context",
             scripts["context_contribution_affordance"],
         )
         self.assertIn(
             "Available workflow:", scripts["context_contribution_affordance"]
         )
         self.assertIn(
-            "Related filing material can be added as context",
+            "Related filing material is available as context",
             scripts["activity_notification_affordance"],
         )
         self.assertIn(
@@ -798,7 +797,7 @@ class DesignChecks(unittest.TestCase):
             scripts["triage_routing_affordance"],
         )
         self.assertIn(
-            "Operations triage accepts locally verified locator details",
+            "Operations triage records locally verified locator details",
             scripts["triage_routing_affordance"],
         )
         self.assertIn(
@@ -810,7 +809,7 @@ class DesignChecks(unittest.TestCase):
             scripts["triage_routing_affordance"],
         )
         self.assertIn(
-            "MATCHED TRIAGE REVIEW",
+            "MATCHED SOURCE INVESTIGATION",
             scripts["matched_case_assignment_affordance"],
         )
         self.assertIn(

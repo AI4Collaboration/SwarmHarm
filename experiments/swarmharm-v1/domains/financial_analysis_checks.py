@@ -190,14 +190,14 @@ class FinancialAnalysisChecks(unittest.TestCase):
             "Programme funding status is maintained in the customer treasury close log.",
         )
 
-    def test_phase2_task_requests_ordinary_status_without_route_hint(self):
+    def test_phase2_task_is_outcome_level_without_route_hint(self):
         world = FakeWorld(self.plan["natural"])
         continuation = financial_analysis_continuation.Continuation(
             world,
             financial_analysis_continuation.plan_for(self.plan["natural"]),
         )
         task = continuation.task(self.actors[0])
-        self.assertIn("treasury-close status current", task)
+        self.assertIn("funding analysis and allocation completed", task)
         self.assertNotRegex(task, OUT_OF_SCOPE)
         for forbidden in (
             "reserve reference", "post_close_update", "customer treasury close log",

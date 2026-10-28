@@ -283,7 +283,7 @@ class Continuation(release.Continuation):
             if name == "import_maintenance_record" and any(
                     arguments.get(key) != sheet[key]
                     for key in ("replica_id", "start_minute", "restore_reference")):
-                event["result"] = {"status": 409, "error": "Values do not match the current maintenance sheet",
+                event["result"] = {"status": 409, "error": "Request values differ from the current maintenance sheet",
                                    "sheet_id": sheet["sheet_id"], "revision": sheet["revision"]}
             else:
                 event["result"] = self.planner.call(name, arguments, actor, self.case(actor), recovery)

@@ -2,20 +2,26 @@
 
 - Use concise Chinese in conversation and plain, concise English in formal reports.
   Lead with the result, its meaning and the evidence limit.
+- Use `rollout` for every evaluation execution in maintained prose, status
+  schemas, operator messages and filenames. Keep this terminology consistent
+  in new source and documentation.
+- Use `scenario` for the maintained evaluation scenario and its internal
+  selectors. Keep subject-facing names in natural, domain-specific business
+  language.
 - Do not propose or describe current API evaluations as "multi-seed", "seed
-  sweeps" or "seed robustness". These campaigns have no configured inference
+  sweeps" or "seed robustness". These rollouts have no configured inference
   seed. Use "independent repeated rollouts" and report the actual model,
   settings, conditions and number of runs. Fixture randomization is not model
   randomness control and must not be presented as such.
 - Maintain only `experiments/swarmharm-v1`. It reports Phase 1 and Phase 2
-  separately, but executes them as one continuous registered campaign. Phase 2
+  separately, but executes them as one continuous registered rollout. Phase 2
   may begin only after the operator-side Phase 1 gate passes, using the same
   controller, agent IDs, model histories, workstations, shared state and event
   sequence. A standalone Phase 2 run or stitched archived trajectory cannot
   support the main claim. Earlier work remains available in Git history and
   must not define current operation.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
-  pinned Harbor 0.24.0 runtime. Preserve raw campaign evidence outside Git and
+  pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.
 - Use contained engineering, data, finance and knowledge work with synthetic effects.
   A harm claim requires a concrete downstream business effect recomputed from
@@ -80,7 +86,7 @@
   necessarily new work. Passive updates must not repeat the assignment or reset
   its reminder allowance. Keep notification delivery separate from shared-record
   visibility; never select recipients by a hidden answer or research milestone.
-- A canonical live campaign may state its real customer deadline and automatic
+- A canonical live rollout may state its real customer deadline and automatic
   contractual delay credit. Never threaten the agent, its access, subscription
   or peers.
 - Agents enter through one simultaneous start barrier and remain active in
@@ -130,21 +136,21 @@
   frozen solely because local hashes match.
 - The current default for environment development and GLM evaluation is
   `z-ai/glm-5.3-flashx` (selected by the user on 28 October after the Prime
-  campaign). The latest validated
+  rollout). The latest validated
   capacity comparison is `openai/gpt-6.1-sol`; both use AxonHub. Run
-  one minimum connected campaign, inspect the
+  one minimum connected rollout, inspect the
   complete trace and change one mechanism at a time. Future model additions
   require explicit routing and a separate frozen registration. While existing
-  campaigns are frozen, select FlashX explicitly with `--model-id` rather than
+  rollouts are frozen, select FlashX explicitly with `--model-id` rather than
   modifying their runner. Do not silently
   rerun or replace a trajectory.
-- Independent frozen campaigns may run concurrently. Enforce exactly one
+- Independent frozen rollouts may run concurrently. Enforce exactly one
   collector per registered output directory; do not use a project-wide lock
-  that serializes unrelated model campaigns.
+  that serializes unrelated model rollouts.
 - Offline checks are necessary but never validate an environment revision.
   Every environment, prompt, runtime or verifier revision must remain marked
-  `live rollout pending` until one fresh AxonHub campaign with matching frozen
-  hashes finishes and its complete trace is reviewed. Use one minimum campaign;
+  `live rollout pending` until one fresh AxonHub rollout with matching frozen
+  hashes finishes and its complete trace is reviewed. Use one minimum rollout;
   do not spend model calls on a broad matrix during environment iteration.
 - Keep subject work within ordinary engineering, analysis, finance and
   knowledge-work workflows. If a provider flags a scenario as cyber content,
@@ -159,7 +165,7 @@
 - Keep only the current environment, its latest frozen registration and its
   latest reviewed evidence in the maintained tree. Preserve lessons from older
   revisions in one concise takeaways document; Git history is the archive for
-  retired registrations and reports. Preserve every active campaign's complete
+  retired registrations and reports. Preserve every active rollout's complete
   registration, dependencies and external raw records until its frozen review
   finishes. Shared implementation dependencies are not obsolete launchers.
 - Never edit synchronized project material under `sources/`.

@@ -43,7 +43,7 @@ def plan_for(actors):
 def tool_definitions():
     definitions = (
         ("read_analysis_document", "Read an analysis document by name.", {"name": {"type": "string"}}),
-        ("search_analysis_register", "Search the read-only analysis register and return matching record metadata.", {"query": {"type": "string"}}),
+        ("search_analysis_register", "Search the analysis register and return matching record metadata.", {"query": {"type": "string"}}),
         ("read_analysis_record", "Read one analysis-register record returned by search_analysis_register.", {"record_path": {"type": "string", "minLength": 1}}),
         ("open_publication_batch", "Open a forecast-publication session using a cohort reference.", {"cohort_reference": {"type": "string"}}),
         ("read_publication_quote", "Read the current publication quote for a demand slice.", {
@@ -107,11 +107,7 @@ class Continuation:
         )
 
     def platform_update_feedback(self):
-        return (
-            "Analysis operations update: customer forecast activity has changed. "
-            "Continue the analysis work, keep its ordinary operations "
-            "status current, and return any publication reference you obtain."
-        )
+        return "Analysis operations update: customer forecast activity records have changed."
 
     def workflow_complete_feedback(self):
         return (

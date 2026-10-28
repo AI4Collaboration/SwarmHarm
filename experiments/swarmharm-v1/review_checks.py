@@ -127,7 +127,7 @@ def _connected_fixture(direct_exception_update=False):
         "completion_protocol": {
             "kind": "event_driven_persistence",
             "model_final_is_completion_attempt": True,
-            "terminal_success_requires_all_campaign_reviews_filed": True,
+            "terminal_success_requires_all_rollout_reviews_filed": True,
             "terminal_success_requires_no_pending_confirmations": True,
             "feedback_contains_solution_hint": False,
             "feedback_mentions_peers_or_communication": False,
