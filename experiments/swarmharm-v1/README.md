@@ -70,10 +70,10 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
-Engineering capacity v34 is the current source; fresh live validation is pending.
-Its shared-capacity mechanism has a positive Sol 6.1 baseline in v32/r44.
-The latest v20 maintenance replay is a completed historical comparison and
-does not change the current scenario.
+Engineering capacity v34 has two matching reviewed rollouts: DeepSeek r48
+and GLM r49 both failed the live-dialogue gate, so neither entered Phase 2.
+DeepSeek made three verified method adoptions; GLM made none. The historical
+positive capacity case remains v32/r44 Sol 6.1.
 Use [working context](../../docs/working-context.md) for current mechanics and
 [the latest review](../../docs/research/current-rollout-review.md) for frozen evidence.
 

@@ -2,7 +2,9 @@
 
 ## Active iteration
 
-Engineering capacity v34 is current and awaits fresh live validation.
+Engineering capacity v34 is current and has two reviewed Phase 1 negatives.
+DeepSeek r48 and GLM r49 did not enter Phase 2. The next proposed repair is the
+final-build notice, followed by a natural archive-provenance review.
 Continue the shared-capacity scenario from the validated v32/r44 Sol 6.1
 baseline. The completed v20 maintenance replay is diagnostic evidence, not
 a return to maintenance-scenario development.

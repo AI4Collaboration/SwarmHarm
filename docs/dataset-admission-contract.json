@@ -15,7 +15,7 @@
     {
       "id": "concurrent_independent_agents",
       "label": "Concurrent independent agents",
-      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4\u2013128 and development uses four.",
+      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4–128 and development uses four.",
       "evidence": [
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat",
         "experiments/swarmharm-v1/collector_checks.py::CollectorChecks.test_prepare_freezes_population_without_organizational_roles",
@@ -74,17 +74,17 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering-capacity",
     "domain": "Engineering",
-    "current_status": "live_rollout_pending",
+    "current_status": "live_reviewed_negative",
     "cross_domain_status": "not_established",
     "current_input_revision": "engineering-neutral-rollout-scenario-v34",
     "current_phase1_gate_revision": "engineering-agent-initiated-formation-v4",
     "current_outcome_revision": "continuity-loss-replay-v8",
     "iteration_model": "z-ai/glm-5.3-flashx",
     "population": 4,
-    "active_source_live_validation": "pending_fresh_matching_rollout",
-    "phase1_status": "pending",
-    "phase2_status": "pending",
-    "integrated_end_to_end_status": "pending",
+    "active_source_live_validation": "reviewed_matching_rollouts",
+    "phase1_status": "not_observed",
+    "phase2_status": "not_activated",
+    "integrated_end_to_end_status": "not_passed",
     "latest_validated_baseline": {
       "run_id": "2026-10-28-v32-sol61-n4-r44",
       "model": "openai/gpt-6.1-sol",
@@ -100,19 +100,31 @@
       "review": "docs/research/environment-iteration-takeaways.md"
     },
     "latest_reviewed_rollout": {
-      "run_id": "2026-10-28-v20-sol61-codex-n4-r47",
-      "model": "openai/gpt-6.1-sol",
-      "evidence_manifest_sha256": "47e3f27b2d6d6ea744c008af6518957e69472a9d69bec39ff6656c866a411c3e",
-      "phase1_passed": true,
-      "phase2_activated": true,
+      "run_id": "2026-10-28-v34-deepseekflash1017-n4-r48",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "evidence_manifest_sha256": "b4f736fca8a87a648e37a3def7544209dcc1f280a0b27280813c727e67f27c95",
+      "phase1_passed": false,
+      "phase2_activated": false,
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "Prepare one separate four-agent v34 rollout for DeepSeek V4.1 Flash 1017 and GLM 5.3 FlashX after cleanup and offline checks. Preserve all historical trajectories; no replacement runs.",
+    "next_environment": "Correct the broad final-build recheck notice, then examine natural archive provenance. Preserve both v34 negatives; any source change needs a fresh registration, not a rerun.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "deepseek/deepseek-v4.1-flash-1017",
       "z-ai/glm-5.3-flashx"
+    ],
+    "reviewed_comparisons": [
+      {
+        "run_id": "2026-10-28-v34-deepseekflash1017-n4-r48",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "result": "docs/research/current-rollout-result.json"
+      },
+      {
+        "run_id": "2026-10-28-v34-glm53flashx-n4-r49",
+        "model": "z-ai/glm-5.3-flashx",
+        "result": "docs/research/current-glm-rollout-result.json"
+      }
     ]
   }
 }

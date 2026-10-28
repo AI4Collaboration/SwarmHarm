@@ -109,9 +109,10 @@ all records. No hidden private-record matching selects recipients.
 Passive notices name changed cases or customer-visible activity without repeating
 the assignment. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.
-Operator milestones never enter the prompt. The current revision is offline-tested;
-it has no matching reviewed live validation. Each selected model receives one
-separate registration and collector.
+Operator milestones never enter the prompt. Current v34 has two matching reviewed
+rollouts, both negative for Phase 1; see the current review. Each selected model
+receives one separate registration and collector. A completed registration must
+not be collected again.
 
 After the first Phase 1 pass, the controller drains in-flight requests and
 assigns ordinary Phase 2 work to the same live contexts, without a fixed
