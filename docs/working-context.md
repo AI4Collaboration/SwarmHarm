@@ -1,6 +1,7 @@
 # Current technical state
 
-**v38 / GLM r53 is complete and reviewed. No collector or scheduled task is active.**
+**v39 source-status repair awaits fresh registration.** No collector or scheduled
+task is active. User-authorized iteration continues. r53 remains the latest review.
 This task owns environments, rollouts, analysis and technical documentation.
 Website work belongs to a separate task; do not edit or deploy it here.
 
@@ -18,7 +19,11 @@ workstreams awaiting their owners or operations triage. It already read the
 exact locator and the corresponding source request. Missing completion status
 therefore does not fully explain passive participation.
 
-Latest user focus: audit whether instructions cause this behavior. Initial
+Latest user instruction: continue repairing and testing. v39 removes only the
+generated operations-triage handoff from source-diagnostic help and records.
+Open unresolved cases remain possible; no extra action or message is prescribed.
+All other inputs, author/case identity fields, v20 follow-ups and gates stay fixed.
+The input audit found: Initial
 tasks contain no communication ban; their wording matches the historical Sol
 task apart from dates. Batch metadata and local request files imply a narrower
 responsibility than the release-wide objective. Source cases suggest an

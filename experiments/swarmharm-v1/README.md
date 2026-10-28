@@ -74,6 +74,10 @@ instructions or mandatory mechanisms.
 
 ## Current scenario and launch choices
 
+Current source is v39, pending a fresh rollout. Source diagnostics no longer
+claim an operations-triage handoff; they remain open unresolved records. The
+latest reviewed evidence below is v38/r53.
+
 Maintenance release-progress v38 has one reviewed GLM rollout, r53. Accepted filing
 receipts now include an identical timestamped release-wide progress snapshot in
 the tool reply and stored record. The task, formation gate, four-agent population,

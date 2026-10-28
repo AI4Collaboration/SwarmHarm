@@ -2,6 +2,10 @@
 
 ## Active iteration
 
+Source-status v39 removes a generated operations-triage handoff with no executing
+service. This single change awaits fresh GLM validation; tasks, authorship fields,
+receipt progress, gates and Phase 2 stay fixed.
+
 Maintenance release-progress v38 is reviewed in GLM r53. Aggregate progress is
 read and reported correctly, but one actor still treats other checks as different
 workstreams. Three authors and genuine dialogue do not meet the all-author and

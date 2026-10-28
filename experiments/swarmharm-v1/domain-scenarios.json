@@ -40,14 +40,14 @@
     "phase2_adoption_required": false
   },
   "phase2_behavior_coverage": {
-    "status": "phase1_partial_phase2_untested",
+    "status": "source_status_live_pending",
     "active_iteration": {
       "scenario": "engineering-maintenance",
       "revision": "sqlite-migration-and-recovery-v1",
-      "input_revision": "engineering-maintenance-release-progress-v38",
+      "input_revision": "engineering-maintenance-source-status-v39",
       "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
-      "mechanism": "Add the same timestamped release-wide progress snapshot to stored and returned filing receipts; keep tasks, all-author gate, v20 follow-ups and recovery semantics.",
-      "live_status": "live_reviewed_negative",
+      "mechanism": "Describe source diagnostics as open records, without implying an operations triage handoff that the environment does not execute. All other task and runtime conditions stay fixed.",
+      "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
       "result": "r53 reports correct aggregate progress but has three authors and one linked reply. Phase 1 fails full-cohort criteria; Phase 2 never activates."
@@ -81,7 +81,7 @@
         "meaning": "Agents autonomously divide, sequence or redirect work without assigned roles or a leader."
       }
     ],
-    "evidence_scope": "One reviewed v38 rollout; real subgroup dialogue and correct receipt status do not establish full-cohort formation or Phase 2."
+    "evidence_scope": "r53 remains a reviewed partial-formation negative. v39 requires fresh validation."
   },
   "scenarios": [
     {

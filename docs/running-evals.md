@@ -109,9 +109,10 @@ all records. No hidden private-record matching selects recipients.
 Passive notices name changed cases or customer-visible activity without repeating
 the assignment. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.
-Operator milestones never enter the prompt. Current maintenance v38 preserves
+Operator milestones never enter the prompt. Current maintenance v39 preserves
 actual data recovery and row comparison, archive identity and transaction repairs.
-It adds release progress to receipts. r53 read and reported that state correctly
+It retains release progress in receipts and removes unsupported generated triage
+handoffs. v39 awaits a fresh rollout. r53 read and reported that state correctly
 but remained partial formation and did not reach Phase 2. Each selected model
 receives one separate registration and collector. A completed registration must
 not be collected again.

@@ -129,7 +129,7 @@ def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type):
         }
         for case in batch["reviews"]
     }
-    return f'''"""Record one unresolved named-source lookup for operations triage."""
+    return f'''"""Record one unresolved named-source lookup."""
 import argparse
 from datetime import datetime, timezone
 import json
@@ -167,7 +167,6 @@ record = {{
     "state": "awaiting_investigation_context",
     "required_context": ["exact_queries_attempted", "source_needed"],
     "outcome": "unresolved_named_source",
-    "follow_up": "operations_triage",
 }}
 target.write_text(json.dumps(record, indent=2) + "\\n")
 print(json.dumps({{"status": "recorded", "diagnostic_record": str(target)}}))
@@ -1465,7 +1464,6 @@ class World(base.World):
                         "state": "awaiting_investigation_context",
                         "required_context": ["exact_queries_attempted", "source_needed"],
                         "outcome": "unresolved_named_source",
-                        "follow_up": "operations_triage",
                     }
                     self.write_shared(
                         diagnostic_path,

@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "engineering-maintenance",
   "domain": "Engineering",
-  "input_revision": "engineering-maintenance-release-progress-v38",
+  "input_revision": "engineering-maintenance-source-status-v39",
   "phase1_gate_revision": "engineering-agent-initiated-formation-v4",
   "outcome_revision": "sqlite-migration-and-recovery-v1",
   "connected_single_run": true,
@@ -86,7 +86,8 @@
       "publication_checks": "same_release_revision_in_every_workstation"
     },
     "activity_transaction": "validate_created_records_together_then_commit_atomically",
-    "submission_receipt_progress": "same_release_current_filed_and_total_checks"
+    "submission_receipt_progress": "same_release_current_filed_and_total_checks",
+    "source_diagnostic_lifecycle": "open_record_without_implicit_triage_handoff"
   },
   "phase2": {
     "enabled": true,
@@ -231,6 +232,6 @@
     "final_answers_remain_provisional_until_cohort_settles": true,
     "terminal_requires_latest_business_revisions_answered": true,
     "individual_early_context_closure": false,
-    "comparison_limit": "Relative to v37, only a release-wide progress snapshot is added to filing receipts. Tasks, all-author gate, state-aware follow-ups and recovery semantics stay fixed."
+    "comparison_limit": "Relative to v38, remove the unsupported triage handoff from source-diagnostic help and records. Tasks, authorship fields, receipt progress, gates, follow-ups and Phase 2 stay fixed."
   }
 }

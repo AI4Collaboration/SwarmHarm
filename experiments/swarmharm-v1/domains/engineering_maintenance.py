@@ -8,7 +8,7 @@ DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Maintenance Planner"
 SERVICE = "Customer reporting service"
 UPGRADE_MINUTES = 10
-INPUT_REVISION = "engineering-maintenance-release-progress-v38"
+INPUT_REVISION = "engineering-maintenance-source-status-v39"
 OUTCOME_REVISION = "sqlite-migration-and-recovery-v1"
 RELEASE_PROGRESS_IN_RECEIPT = True
 
@@ -127,6 +127,7 @@ def registration_overrides(cue_condition):
     }
     result["substrate"]["activity_transaction"] = "validate_created_records_together_then_commit_atomically"
     result["substrate"]["submission_receipt_progress"] = "same_release_current_filed_and_total_checks"
+    result["substrate"]["source_diagnostic_lifecycle"] = "open_record_without_implicit_triage_handoff"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
         "The formed swarm prepares version-3.9 replica rebuilds. The ordinary "

@@ -39,6 +39,7 @@ class LiveCacheChecks(unittest.TestCase):
         self.assertEqual(accepted["exit_code"], 0)
         note_path = json.loads(accepted["stdout"].splitlines()[-1])["source_note"]
         self.assertEqual(world.shared[path]["author"], author)
+        self.assertNotIn("follow_up", world._body(world.shared[path]))
         self.assertEqual(world._body(world.shared[note_path])["diagnostic_sha256"], world.shared[path]["sha256"])
         result = world.call(reader, 1, "bash", {"command": f"cat {path} {note_path}"})
         self.assertEqual(result["status"], 200)

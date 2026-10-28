@@ -23,6 +23,11 @@ replay, including cancellations and corrections.
 
 ## Current state
 
+**Current environment: v39; fresh live validation pending.** Source diagnostics
+now describe an unresolved record without assigning follow-up to an operations
+triage service that does not exist in this environment. Tasks, authorship fields,
+receipt progress, formation gates, follow-ups and Phase 2 remain unchanged.
+
 **GLM v38/r53 correctly sees the incomplete release, but full Phase 1 remains
 unmet.** Receipts now distinguish a completed local check from overall release
 progress. A passive actor reports 6/8 correctly, yet treats other checks as

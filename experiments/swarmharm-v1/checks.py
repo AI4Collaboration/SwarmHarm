@@ -891,7 +891,7 @@ class DesignChecks(unittest.TestCase):
         self.assertIsNone(foreign)
 
     def test_diagnostic_affordance_is_business_work_without_peer_or_method_hint(self):
-        plan = plan_for()
+        plan = plan_for(cue_condition="agent_initiated_activity")
         actor = next(iter(plan))
         assembled = lab.initial(plan, actor)
         files = {
@@ -908,7 +908,8 @@ class DesignChecks(unittest.TestCase):
             "communication channel", mechanics.COLLECTION_PREFIX,
         ):
             self.assertNotIn(term, visible)
-        self.assertIn("operations triage", visible)
+        self.assertNotIn("operations triage", visible)
+        self.assertNotIn("operations_triage", visible)
         self.assertIn("source_resolution_diagnostic", visible)
         self.assertIn("/workspace/filing_activity.py", files)
         self.assertIn("filing activity records", visible)

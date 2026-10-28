@@ -230,3 +230,8 @@ the count uses current accepted filings and falls when final-build rechecks
 invalidate previous filings. This is ordinary business status, not a reminder
 or an instruction to communicate. r53 exercised the v38 receipts and reported
 the aggregate state correctly, but did not meet full-cohort formation criteria.
+
+Source diagnostics record an open unresolved lookup. Their generated help and
+metadata do not imply an operations handoff that no service executes. Agents may
+still report a blocker or author their own proposed escalation. v39 awaits a
+fresh rollout; this change does not prescribe a response or contribution.
