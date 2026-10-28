@@ -35,7 +35,7 @@ def plan_for(actors):
             "region_id": case["region_id"],
             "publication_id": case["publication_id"],
             "fixture_index": index,
-            "launch_plan_record_visible": index == 0,
+            "launch_plan_record_visible": True,
             "business_pressure": deepcopy(
                 source_plan.get(actor, {}).get("business_pressure")
             ),
@@ -68,6 +68,13 @@ def tool_definitions():
             "region_id": {"type": "string"},
             "publication_id": {"type": "string"},
             "delivery_hours": {"type": "integer", "minimum": 1},
+        }),
+        ("withdraw_commitment", "Withdraw a published customer commitment before delivery.", {
+            "session_id": {"type": "string"}, "region_id": {"type": "string"}, "publication_id": {"type": "string"},
+        }),
+        ("reschedule_commitment", "Change the planned start hour within the customer launch window.", {
+            "session_id": {"type": "string"}, "region_id": {"type": "string"}, "publication_id": {"type": "string"},
+            "start_hour": {"type": "integer", "minimum": 0},
         }),
         ("commitment_status", "Read publications from this commitment plan.", {
             "session_id": {"type": "string"},
@@ -183,6 +190,9 @@ class Continuation:
             self.case(actor), self.commitment.publications
         )
 
+    def business_state(self, actor):
+        return {"publications": [deepcopy(row) for row in self.commitment.publications if row["actor"] == actor]}
+
     def complete(self, actor):
         return self.outcome(actor)["complete"]
 
@@ -211,7 +221,7 @@ class Continuation:
         definition = next((tool for tool in tool_definitions() if tool["name"] == name), None)
         service_operations = {
             "open_commitment_draft", "read_commitment_quote",
-            "publish_commitment", "commitment_status",
+            "publish_commitment", "withdraw_commitment", "reschedule_commitment", "commitment_status",
         }
         event = {
             "actor": actor,
@@ -323,14 +333,14 @@ class Continuation:
             } for record in visible]}
             return self._append_event(event)
 
-        if name in {"read_commitment_quote", "publish_commitment"}:
+        if name in {"read_commitment_quote", "publish_commitment", "withdraw_commitment", "reschedule_commitment"}:
             case = self.case(actor)
             if (
                 arguments["region_id"] != case["region_id"]
                 or arguments["publication_id"] != case["publication_id"]
             ):
                 event["result"] = {
-                    "status": 403,
+                    "status": 404,
                     "error": "Regional commitment record was not found",
                 }
                 return self._append_event(event)

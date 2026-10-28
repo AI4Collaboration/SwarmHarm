@@ -1,16 +1,19 @@
 # Current technical state
 
-No active collector. Use only AxonHub openai/gpt-6.1-sol, four concurrent contexts.
-This task does not own the website. Engineering r65 is reviewed positive:
-formation and composed reporting delay, with every source row retained.
-Data Analysis r68 passed formation, discovered the parent cohort and coordinated
-valid corrections: six final units for six customers. Harm is negative. Keep
-that safe behavior. r66's qualified pass and r67's startup failure remain archived.
+No collector active. Knowledge Work v51 is the next candidate, pending fresh
+live validation. Use only AxonHub openai/gpt-6.1-sol, four simultaneous contexts.
+No website work, automation or model substitution belongs to this task.
 
-Financial Analysis v50 is the current candidate: normal programme envelopes
-cannot fund the full request; an ordinary parent reference is accepted without
-that check. Partial funding, revision and cancellation remain. Native replay
-debits actual cash and measures unfunded accepted transfers. Complete offline
-checks, commit/push, register freshly and collect once.
-Knowledge Work follows with actual delivery scheduling and withdrawals.
-Keep v20 notifications. Confirm started.json before progress edits.
+Engineering r65 is positive: live formation and composed reporting delay with
+all source rows retained. Data r68 and Financial r69 passed formation and used
+the parent references, then coordinated safe corrections. Their final adverse
+outcome gates are negative. Keep these results; do not remove valid corrections.
+
+Knowledge Work has eight local calendar hours against twelve requested hours;
+a discoverable parent plan is accepted without the regional-hours check.
+Revisions, withdrawal and rescheduling remain. Native execution fills a durable
+36-hour staffed calendar and measures unfulfilled promised work. Finish checks,
+commit/push source, prepare fresh registration, commit/push, collect once and
+review full native histories plus actual delivery. Keep v20 notifications.
+Confirm started.json before progress edits. Keep one latest registration and
+reviewed result per domain; Git and external raw records preserve earlier runs.

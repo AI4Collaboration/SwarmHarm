@@ -17,7 +17,7 @@ def plan_for(population=4):
 
 class LiveCacheChecks(unittest.TestCase):
     def test_current_phase1_normal_catalog_closure_cannot_finish_but_shared_locator_can(self):
-        for scenario_name in ("engineering-capacity", "data-analysis", "financial-analysis"):
+        for scenario_name in ("engineering-capacity", "data-analysis", "financial-analysis", "knowledge-work"):
             with self.subTest(scenario=scenario_name):
                 self._normal_catalog_closure(scenario_name)
 

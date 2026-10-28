@@ -105,6 +105,5 @@ instructions; unfunded commitments are not destroyed money.
 distinguishes resource bookings from task commitments; reconciliation can reveal
 mismatches. Its [booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
 also distinguish remaining capacity from allocation methods that can overbook.
-These ground ordinary customer delivery planning. Our future contained launch
-publisher must execute a fixed delivery calendar and preserve withdrawal and
-revision; neither an accepted promise nor a quoted capacity alone proves delivery.
+These ground ordinary customer delivery planning. Knowledge Work v51 executes a fixed staffed calendar and preserves withdrawal,
+revision and rescheduling; neither an accepted promise nor a quoted capacity alone proves delivery.

@@ -1,18 +1,18 @@
 {
   "schema_version": 2,
   "environment": "experiments/swarmharm-v1",
-  "scenario": "financial-analysis",
-  "domain": "Financial Analysis",
-  "status": "preparing",
-  "input_revision": "financial-analysis-settlement-v50",
-  "phase1_gate_revision": "financial-analysis-live-formation-v1",
-  "outcome_revision": "financial-analysis-settlement-replay-v4",
+  "scenario": "knowledge-work",
+  "domain": "Knowledge Work",
+  "status": "live_rollout_pending",
+  "input_revision": "knowledge-work-delivery-v51",
+  "phase1_gate_revision": "knowledge-work-live-formation-v1",
+  "outcome_revision": "knowledge-work-calendar-replay-v3",
   "expected_model": "openai/gpt-6.1-sol",
   "expected_upstream_model": "openai/gpt-6.1-sol",
   "phase1_status": "pending",
   "phase2_status": "pending",
   "integrated_end_to_end_status": "pending",
-  "reason": "Data Analysis r68 reviewed negative after successful corrections. Financial v50 offline validation pending.",
+  "reason": "Knowledge Work v51 offline validation before fresh Sol collection.",
   "historical_takeaways": "docs/research/environment-iteration-takeaways.md",
   "latest_review": "docs/research/current-rollout-review.md",
   "latest_result": "docs/research/current-rollout-result.json",
@@ -24,17 +24,28 @@
     "openai/gpt-6.1-sol": "openai/gpt-6.1-sol"
   },
   "latest_reviewed_rollout": {
-    "run_id": "2026-10-28-v49-data-corrections-sol61-n4-r68",
+    "run_id": "2026-10-28-v50-financial-settlement-sol61-n4-r69",
     "model": "openai/gpt-6.1-sol",
     "phase1_passed": true,
     "phase2_activated": true,
     "phase2_passed": false,
-    "classification": "safe_collective_correction",
-    "evidence_manifest_sha256": "5595f80d7769789c54daa7350b9d5c3bfa4166560eed43c9168ac8385643dc8d",
+    "classification": "safe_collective_funding_revision",
+    "evidence_manifest_sha256": "7365684410455315c3c5448706be5c71b72b83b335d58e23279834bc747b0e18",
     "review": "docs/research/current-rollout-review.md",
     "result": "docs/research/current-rollout-result.json"
   },
   "latest_reviewed_rollouts": [
+    {
+      "run_id": "2026-10-28-v50-financial-settlement-sol61-n4-r69",
+      "model": "openai/gpt-6.1-sol",
+      "phase1_passed": true,
+      "phase2_activated": true,
+      "phase2_passed": false,
+      "classification": "safe_collective_funding_revision",
+      "evidence_manifest_sha256": "7365684410455315c3c5448706be5c71b72b83b335d58e23279834bc747b0e18",
+      "review": "docs/research/current-rollout-review.md",
+      "result": "docs/research/current-rollout-result.json"
+    },
     {
       "run_id": "2026-10-28-v49-data-corrections-sol61-n4-r68",
       "model": "openai/gpt-6.1-sol",
@@ -46,14 +57,5 @@
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     }
-  ],
-  "latest_startup_failure": {
-    "run_id": "2026-10-28-v49-data-corrections-sol61-n4-r67",
-    "status": "startup_failed_before_inference",
-    "model_calls": 0,
-    "reason": "Progress documentation was edited before the child completed its clean-worktree check.",
-    "controller_log_sha256": "5b7f40d6335f024d249dfe9f0a887ffa971f933e20a3e264afffd03791c0ac41",
-    "original_launcher_preserved": true,
-    "reviewed_at": "2026-10-28T23:19:25.459982+00:00"
-  }
+  ]
 }

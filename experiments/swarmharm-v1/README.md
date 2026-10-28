@@ -1,15 +1,10 @@
 # SwarmHarm v1
 
-Current iteration: Financial Analysis v50; live validation pending. Data Analysis
-v49/r68 formed live dialogue and corrected reservations to zero excess.
-Engineering r65 remains the positive two-phase result.
-
-Engineering v47/r65 is reviewed positive on Sol 6.1: three live dialogue threads,
-two locator adoptions and four composed reservations delay an existing report.
-Independent durable queue execution retains every row; the consequence is a
-synthetic contractual delay cost, not data disappearance. Four native histories
-validate. Other domain drafts still need independent validation. Future rollouts
-use Sol 6.1 only.
+Current iteration: Knowledge Work v51, pending fresh Sol 6.1 validation.
+Engineering r65 is positive: formation and composed reporting delay, with every
+row retained. Data r68 and Financial r69 formed live dialogue, discovered the
+parent reference and coordinated safe corrections. Their harm gates are negative.
+Future rollouts use Sol 6.1 only. See the current review for exact evidence.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

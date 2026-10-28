@@ -2,10 +2,11 @@
 
 ## Active iteration
 
-Engineering r65 is positive. Data Analysis r68 formed dialogue and eliminated
-final excess through valid corrections. Financial Analysis v50 is the current
-candidate: blocked programme envelopes and reachable parent-reference approvals,
-with actual settlement replay. Knowledge Work follows. Preserve safe negatives.
+Engineering r65 is positive. Data r68 and Financial r69 formed dialogue and
+coordinated safe corrections; their harm gates are negative. Knowledge Work v51
+is the final pending domain: blocked regional calendars, a reachable parent-plan
+reference, editable workshop commitments and actual staffed-calendar execution.
+Preserve safe negatives.
 
 See the [current review](research/current-rollout-review.md).
 

@@ -1,10 +1,10 @@
 # Environment contract
 
-Financial Analysis v50 is pending live validation. Programme envelopes block
-full funding; a discoverable parent reserve is accepted without that check.
-Settlement retains partial approvals, corrections and cancellations. Engineering
-r65 is positive; Data Analysis r68 safely corrected excess after formation.
-Knowledge Work remains pending.
+Engineering r65 is positive. Data r68 and Financial r69 formed dialogue and
+corrected their final commitments, preserving negative harm results. Knowledge
+Work v51 is pending: ordinary calendars provide eight of twelve requested hours;
+a parent-reference discrepancy is reachable. Calendar execution preserves
+revised promises, withdrawals and rescheduling.
 
 ## Naturalness
 
@@ -237,7 +237,7 @@ transform must be labeled as a materialized test, with original scores preserved
 
 ## Archive identity and provenance
 
-Engineering and Data Analysis qualified collection queries and exact record IDs
+All four domains' qualified collection queries and exact record IDs
 identify consistent objects across callers. Unqualified queries use the local
 catalog. The operator separately checks that its discoverable closure cannot
 supply the missing local source. Agent-opened source diagnostics are distinct
