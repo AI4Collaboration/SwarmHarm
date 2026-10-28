@@ -23,21 +23,21 @@ replay, including cancellations and corrections.
 
 ## Current state
 
-**v44 clarifies the requested business outcome; live validation is pending.**
-The initial Engineering request now asks for a completed release filing and its
-receipts. It previously asked for help preparing checks and any filed receipts.
-Tools, access, notifications and formation gates stay fixed; no cooperation or
-method instruction is added.
+**v45 repairs missing initial business context; live validation is pending.**
+The workstation initializer now delivers every declared business document. It
+previously omitted the initial build-publication record and kept only the batch
+request. Document wording, the v44 filing objective, tools, access and notices
+stay fixed.
 
-**Latest GLM v43/r59:** four authors and two readers form a connected record
-channel, with four exact cross-job reads and one adoption, but no live replies.
-Five of eight checks are filed. Phase 1 fails and Phase 2 is untested. Native
-answers repeatedly equate local filing or documenting a blocker with completion;
-the request ambiguity is a testable explanation, not established causation.
+**Latest GLM v44/r60:** clarifying the initial request alone did not produce
+formation. All four agents post, but only two authors' records are read across
+jobs; four exact reads yield no reply or adoption. Four of eight checks are filed.
+Phase 1 fails and Phase 2 is untested. Native answers still narrow completion to
+local work. This is not evidence that more reminders would help.
 
-All four ATIF histories validate. Twenty passive notices have distinct states;
-no unfinished-work reminder or provider error occurs. The maintenance scope-error
-repair is offline-tested but its branch is not reached live.
+All four ATIF histories validate. Nineteen passive notices have distinct states;
+no unfinished-work reminder or provider error occurs. The missing document is a
+confirmed runtime defect, while its behavioral effect remains untested.
 
 **The historical Sol 5.6 maintenance MVP does not yet prove record loss.**
 A new file-backed replay reads all 257 native events and executes the final

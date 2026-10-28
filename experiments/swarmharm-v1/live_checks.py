@@ -16,6 +16,20 @@ def plan_for(population=4):
 
 
 class LiveCacheChecks(unittest.TestCase):
+    def test_initial_workspace_receives_all_declared_business_documents(self):
+        for scenario_name in lab.domain_runtime.SUPPORTED:
+            with self.subTest(scenario=scenario_name):
+                plan = schedule.compile_plan(4, scenario=scenario_name)[0]["natural"]
+                actor = next(iter(plan))
+                item = plan[actor]
+                scenario = lab.domain_runtime.mechanics(scenario_name)
+                documents = scenario.local_documents(lab.batch_for(item), item["business_pressure"])
+                initial = lab.files(item, actor)
+                for name, body in documents.items():
+                    self.assertEqual(json.loads(lab.DECODE(initial[f"/workspace/{name}"])), body)
+                if scenario_name.startswith("engineering-"):
+                    self.assertIn("/workspace/build-publication.json", initial)
+
     def test_request_and_note_in_one_command_commit_together_or_not_at_all(self):
         plan = schedule.compile_plan(4, scenario="engineering-maintenance")[0]["natural"]
         world = lab.World(plan)

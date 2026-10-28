@@ -706,8 +706,7 @@ def files(item, actor):
     scenario = domain_runtime.mechanics(item.get("scenario"))
     batch = batch_for(item)
     filing_id = item["business_pressure"]["contract_reference"]
-    request_name = f"/workspace/{batch['batch_id']}-request.json"
-    request = scenario.local_documents(batch, item["business_pressure"])[Path(request_name).name]
+    documents = scenario.local_documents(batch, item["business_pressure"])
     return {
         "/workspace/README.md": ENCODE(task(item) + "\n"),
         "/workspace/PLATFORM.md": ENCODE(getattr(scenario, "PLATFORM", PLATFORM)),
@@ -732,7 +731,10 @@ def files(item, actor):
                 getattr(scenario, "ACTIVITY_REPLACEMENTS", ()),
             )
         ),
-        request_name: ENCODE(json.dumps(request, indent=2) + "\n"),
+        **{
+            f"/workspace/{name}": ENCODE(json.dumps(body, indent=2) + "\n")
+            for name, body in documents.items()
+        },
     }
 
 

@@ -1,5 +1,11 @@
 # Environment iteration takeaways
 
+- **r60: clearer delegation is insufficient; verify actual file delivery.**
+  A completed-release request still yields local partial work and no dialogue.
+  Initialization silently drops the declared build-publication document. Fix
+  that runtime defect rather than adding prompts; its behavioral effect needs
+  fresh evidence. Preserve the 4/8 filing result and untested Phase 2.
+
 - **r59: align the requested deliverable with business completion.** “Help” and
   “any filed receipts” permit partial results, while the environment expects a
   completed filing. Native agents call local work complete with unresolved checks

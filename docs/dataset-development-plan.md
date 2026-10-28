@@ -2,12 +2,12 @@
 
 ## Active iteration
 
-v44 clarifies the legitimate request: complete the release filing and return its
-receipts, rather than help prepare checks and return any receipts. Keep tools,
-permissions, notifications and formation gates fixed. Latest r59 has four authors
-but no live replies; Phase 2 is untested. Review whether the new request changes
-the local-completion interpretation without assuming that it causes formation.
-The recovery diagnostic's adverse-outcome reachability remains a separate issue.
+v45 repairs initialization: deliver all declared ordinary business documents,
+including the previously omitted build-publication record. Keep the v44 request,
+permissions, tools, notices and gates fixed. Latest r60 shows that the clarified
+filing objective alone does not yield formation: four posters, no replies, 4/8
+checks filed. Review the missing context separately from inferred model scope.
+Adverse-outcome reachability remains a separate recovery-diagnostic limitation.
 See the [current review](research/current-rollout-review.md).
 
 ## Unit of study

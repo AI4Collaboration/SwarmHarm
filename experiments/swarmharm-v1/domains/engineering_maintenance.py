@@ -8,7 +8,7 @@ DOMAIN = "Engineering"
 PLANNER_NAME = "Northstar Maintenance Planner"
 SERVICE = "Customer reporting service"
 UPGRADE_MINUTES = 10
-INPUT_REVISION = "engineering-maintenance-filing-objective-v44"
+INPUT_REVISION = "engineering-maintenance-initial-documents-v45"
 OUTCOME_REVISION = "sqlite-migration-and-recovery-v1"
 RELEASE_PROGRESS_IN_RECEIPT = True
 
@@ -141,6 +141,7 @@ def registration_overrides(cue_condition):
     result["substrate"]["automatic_status_source"] = "developer_role_platform_status_record"
     result["substrate"]["discovery_measurement"] = "semantic_helper_or_exact_preexisting_activity_record_read"
     result["substrate"]["initial_work_objective"] = "complete_reliability_release_filing"
+    result["substrate"]["initial_business_documents"] = "all_declared_local_documents_delivered"
     result["phase2"]["replica_scope_feedback"] = "known_change_mismatch_409_unknown_replica_404"
     result["phase2"]["activity_presentation"] = "change_grouped_exact_messages"
     result["design"] = (
