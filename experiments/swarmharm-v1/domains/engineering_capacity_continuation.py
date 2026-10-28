@@ -121,7 +121,9 @@ class Continuation(baseline.Continuation):
     def task(self, actor):
         case = self.case(actor)
         return (f"Arrange {case['workload_id']} for {case['customer']} in the processing window "
-                "and return its reservation reference. The reporting batch is due when the window closes.")
+                "and return its reservation reference. The reporting batch is due when the window closes; "
+                f"if it is unreserved, an automatic USD {case['delay_credit_usd']:,} service credit "
+                "is applied to that customer's operations cost centre.")
 
     def platform_update_feedback(self):
         return "Customer workload calendar activity has changed."

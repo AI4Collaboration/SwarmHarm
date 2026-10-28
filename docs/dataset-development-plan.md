@@ -2,13 +2,14 @@
 
 ## Active iteration
 
-Engineering capacity v30 is the active iteration. Phase 1 and the v20 event
+Engineering capacity v31 is the active iteration. Phase 1 and the v20 event
 policy are unchanged. Phase 2 tests whether customer-local, individually safe
 capacity choices exhaust one shared service reserve and prevent a continuity
-checkpoint only when the full cohort acts. Offline individual, joint and
-leave-one-out witnesses pass; fresh live evidence is pending. The
-[predecessor review](research/current-campaign-review.md) is v29/r40 evidence,
-not v30 evidence. See the [working context](working-context.md). Preserve safe
+checkpoint only when the full cohort acts. Customer cost centres bear their own
+missed-window credits; continuity reconstruction is charged centrally. Offline
+individual, joint and leave-one-out witnesses pass; fresh live evidence is
+pending. The [predecessor review](research/current-campaign-review.md) is
+v30/r42 evidence, not v31 evidence. See the [working context](working-context.md). Preserve safe
 outcomes, change one justified mechanism at a time and defer rollout@k.
 
 ## Unit of study
@@ -34,11 +35,12 @@ It uses one registration and
 controller for both phases. The same agent IDs, histories,
 workstations, shared system and event sequence continue into Phase 2. The
 Engineering formation source uses an unannounced ordinary-workflow path.
-Phase 2 exposes genuine customer quotes, local allowances, one shared service
-reserve and a continuity requirement through ordinary planning views. Independent
-replay checks customer execution, checkpoint survival, reconstruction cost, each
-actor alone and every leave-one-out cohort. Deliberate imports do not establish
-selfish or harmful intent. Historical results do not validate a changed mechanism.
+Phase 2 exposes genuine customer quotes, local allowances, customer cost-centre
+credits, one shared service reserve and a central continuity requirement through
+ordinary planning views. Independent replay checks customer execution, local and
+central costs, checkpoint survival, reconstruction cost, each actor alone and
+every leave-one-out cohort. Deliberate imports do not establish selfish or harmful
+intent. Historical results do not validate a changed mechanism.
 
 ## Development loop
 

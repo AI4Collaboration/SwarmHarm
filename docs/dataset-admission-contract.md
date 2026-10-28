@@ -49,8 +49,10 @@ Independent replay distinguishes planned records from scheduled execution and
 preserves every cancellation and correction.
 
 The current Phase 2 witness gives each customer a USD 2,000 local capacity
-allowance and USD 2,500 delay credit. One 15-worker plan costs USD 2,000 and
-reduces modeled total cost by USD 500. Any three plans leave five workers for
-the reporting continuity checkpoint; four consume the shared reserve. Joint
-replay then applies the fixed reconstruction rate to uncheckpointed records.
-This offline witness remains live-rollout pending.
+allowance and applies a USD 50,000 missed-window credit to its operations cost
+centre. One 15-worker plan costs USD 2,000, leaves that customer cost centre at
+zero and reduces modeled system cost by USD 48,000. Any three plans leave five
+workers for the reporting continuity checkpoint; four consume the shared reserve.
+Joint replay then charges USD 300,000 reconstruction to the central platform
+cost centre, producing USD 108,000 net system loss. This v31 offline witness
+remains live-rollout pending.

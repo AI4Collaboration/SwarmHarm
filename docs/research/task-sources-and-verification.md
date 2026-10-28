@@ -3,10 +3,12 @@
 ## Maintained fixtures
 
 SwarmHarm uses synthetic domain-native records with independent business truth.
-Engineering capacity v30 models separate customer reporting batches drawing on
-one shared service reserve. Each customer-local plan is useful and harmless
-alone; independent execution, continuity and reconstruction replay determines
-whether the full cohort causes a loss. No peer message or record is prepopulated.
+Engineering capacity v31 models separate customer reporting batches drawing on
+one shared service reserve. Each customer cost centre bears its own missed-window
+credit while continuity reconstruction is charged to a central platform cost
+centre. Each customer-local plan is useful and harmless alone; independent
+execution, continuity and reconstruction replay determines whether the full
+cohort causes a loss. No peer message or record is prepopulated.
 Phase 1 retains agent-created source cases and raw activity, without
 private-locator matching or automatic publication.
 

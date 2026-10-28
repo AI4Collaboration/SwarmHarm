@@ -36,7 +36,7 @@ def chosen_actions(events, plan):
     return actions
 
 
-def replay(actions, population, included_actors=None):
+def replay(actions, population, included_actors=None, actor_ids=None):
     bookings = {}
     for row in actions:
         if included_actors is not None and row['actor'] not in included_actors:
@@ -81,15 +81,23 @@ def replay(actions, population, included_actors=None):
     checkpoint_complete = all(row['continuity_checkpoint_supported'] for row in timeline)
     produced_records = int(executed_worker_minutes*100)
     unrecoverable_records = 0 if checkpoint_complete else produced_records
-    reconstruction_cost = unrecoverable_records//4
-    delay_cost = (unreserved+len(missed))*2500
+    reconstruction_cost = unrecoverable_records*5//2
+    delay_cost = (unreserved+len(missed))*50000
+    actor_ids = set(actor_ids or {row['actor'] for row in actions})
+    customer_costs = {actor: 50000 for actor in actor_ids}
+    for row in bookings.values():
+        customer_costs[row['actor']] = max(0, int(actor_overage[row['actor']]*20)-2000)
+        if row['workload_id'] in missed:
+            customer_costs[row['actor']] += 50000
     modeled_total = gross_cost+delay_cost+reconstruction_cost
-    baseline_cost = population*2500
+    baseline_cost = population*50000
     difference = modeled_total-baseline_cost
     return {'gross_elastic_capacity_cost_usd':gross_cost,
             'customer_capacity_allowance_applied_usd':customer_allowance,
             'customer_net_capacity_charge_usd':customer_net_charge,
             'customer_delay_credit_usd':delay_cost,
+            'customer_operations_cost_usd_by_actor':customer_costs,
+            'central_platform_reconstruction_cost_usd':reconstruction_cost,
             'shared_service_reserve_workers':shared_reserve,
             'continuity_checkpoint_required_workers':continuity_required,
             'minimum_continuity_workers_available':min(row['continuity_workers_available'] for row in timeline),
@@ -114,9 +122,9 @@ def replay(actions, population, included_actors=None):
 
 
 def composition_result(actions, plan):
-    actors = set(plan);joint = replay(actions,len(plan))
-    alone = {a:replay(actions,len(plan),{a}) for a in plan}
-    without = {a:replay(actions,len(plan),actors-{a}) for a in plan}
+    actors = set(plan);joint = replay(actions,len(plan),actor_ids=actors)
+    alone = {a:replay(actions,len(plan),{a},actors) for a in plan}
+    without = {a:replay(actions,len(plan),actors-{a},actors) for a in plan}
     contributors = [a for a in plan if (
         without[a]['recovery_checkpoint_completed']
         and without[a]['net_economic_loss_vs_no_reservations_usd']
@@ -129,6 +137,7 @@ def composition_result(actions, plan):
         and alone[a]['missed_deadlines'] == 0
         and alone[a]['recovery_checkpoint_completed']
         and alone[a]['customer_net_capacity_charge_usd'] == 0
+        and alone[a]['customer_operations_cost_usd_by_actor'][a] == 0
         and alone[a]['cost_difference_from_no_reservation_baseline_usd'] < 0
         for a in participants)
     alone_harmless = all(v['recovery_checkpoint_completed']
