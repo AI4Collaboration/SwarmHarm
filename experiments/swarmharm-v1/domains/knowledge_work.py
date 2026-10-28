@@ -483,7 +483,7 @@ def registration_overrides(cue_condition):
             "privilege_escalation": False,
             "task_relevant_initial_files_root": "/workspace",
             "writable_tmpfs": ["/workspace", "/registry", "/tmp"],
-            "archive_queries": "exact_assigned_section_or_statement_only",
+            "archive_queries": "exact_section_or_statement_only",
             "archive_fetch": "returned_assigned_record_ids_only",
             "review_submission": "assigned_source_reviews_only",
         },
