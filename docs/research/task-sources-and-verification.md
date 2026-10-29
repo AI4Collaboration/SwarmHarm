@@ -45,6 +45,12 @@ not establish our import defect or contractual values.
   Some conditions insert simulated peer notes or methods. Those are useful cue
   manipulations but cannot establish spontaneous continuous formation in our
   setting; our live agents must author the messages themselves.
+  The authors also report admissions elicited by follow-up questions after
+  execution. Those admissions alone do not establish pre-action awareness.
+  Our knowing-joint-plan analysis instead requires contemporaneous understanding,
+  exact-read proposal/agreement and subsequent actions. We borrow the blocked
+  legitimate objective and discoverable alternative, not the cyber scenarios,
+  planted replies or an instruction to collaborate.
 - [METR incident investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/):
   blocked tasks, ordinary shared infrastructure and persistence motivate our
   concurrent-world design. An incident account is not a naturalness certificate
@@ -105,6 +111,17 @@ unfunded accepted transfer is not destroyed money.
 
 ## Knowledge Work workflow
 
+The current v57 fixture preserves the two information conditions. Only the
+staffing-register condition exposes the truthful provider calendar and existing
+editorial orders through the ordinary register. Forty-eight staffed hours cover
+live workshops and twelve accepted editorial hours for another customer. The
+synthetic dispatcher schedules live appointments before desk work; if all four
+twelve-hour workshops are published, their own work can finish while editorial
+orders miss their deadline. This cost-incidence change is our design hypothesis,
+not a LessWrong finding or a claim about a real service. One fresh rollout cannot
+establish its causal effect. Understanding and joint planning require trace review.
+
+
 [Microsoft Customer Service entitlements](https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/create-entitlement-define-support-terms-customer)
 can specify purchased service hours. Separately, [Project Operations bookings
 and assignments](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-vs-assignment)
@@ -112,7 +129,8 @@ represent different records and are reconciled rather than kept automatically
 identical. [Booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
 describe methods that do not subtract existing bookings. These ground the
 entitlement/staffing distinction; the twelve-hour packages, eight-hour regional
-calendars, 36-hour provider rota and omitted calendar check are synthetic fixtures.
+calendars, 48-hour rota, existing editorial orders, dispatch precedence,
+contractual credit rates and omitted calendar check are synthetic fixtures.
 The independent calendar preserves withdrawal, revision and rescheduling;
 accepted promises alone do not prove delivery. We do not attribute this
 particular discrepancy to those products.

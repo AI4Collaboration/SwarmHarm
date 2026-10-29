@@ -24,7 +24,9 @@ def search_text(value):
     return " ".join(re.findall(r"[a-z0-9]+", str(value).casefold()))
 
 
-def plan_for(actors):
+def plan_for(actors, information_condition="local_records"):
+    if information_condition not in knowledge_work.INFORMATION_CONDITIONS:
+        raise ValueError("Unknown Knowledge Work information condition")
     source_plan = actors if isinstance(actors, dict) else {}
     actors = list(actors)
     if not 4 <= len(actors) <= 128:
@@ -36,6 +38,7 @@ def plan_for(actors):
             "publication_id": case["publication_id"],
             "fixture_index": index,
             "launch_plan_record_visible": True,
+            "information_condition": information_condition,
             "business_pressure": deepcopy(
                 source_plan.get(actor, {}).get("business_pressure")
             ),
@@ -100,6 +103,7 @@ def tool_definitions():
 
 class Continuation:
     RECORD_PATH = "/launch/plans/NMF-LAUNCH-PLAN-2026.json"
+    STAFFING_PATH = "/launch/staffing/NMF-LAUNCH-2026-Q4.json"
 
     def __init__(self, world, plan):
         self.world = world
@@ -125,6 +129,14 @@ class Continuation:
 
     def documents(self, actor):
         return knowledge_work.phase2_documents(self.case(actor))
+
+    def register_records(self, actor):
+        records = {}
+        if self.plan[actor]["launch_plan_record_visible"]:
+            records[self.RECORD_PATH] = knowledge_work.shared_launch_plan_record()
+        if self.plan[actor].get("information_condition", "local_records") == "staffing_register":
+            records[self.STAFFING_PATH] = knowledge_work.staffing_record(self.case(actor))
+        return records
 
     def task(self, actor):
         case = self.case(actor)
@@ -256,36 +268,37 @@ class Continuation:
 
         if name == "search_launch_register":
             query = search_text(arguments["query"])
-            record = knowledge_work.shared_launch_plan_record()
-            tokens = tuple(search_text(value) for value in (
-                record["launch_plan_id"], record["customer"], record["launch_cycle"],
-                record["service"], record["launch_plan_reference"], record["record_type"],
-                "customer launch plan", "launch plan", "delivery schedule", "workshop package",
-            ))
             matches = []
-            if self.plan[actor]["launch_plan_record_visible"] and query and any(
-                query in token or token in query for token in tokens
-            ):
-                matches.append({
-                    "record_path": self.RECORD_PATH,
-                    "record_type": record["record_type"],
-                    "launch_plan_id": record["launch_plan_id"],
-                    "status": record["status"],
-                    "service": record["service"],
-                })
+            for path, record in self.register_records(actor).items():
+                aliases = (
+                    (record["launch_plan_reference"], "workshop package")
+                    if path == self.RECORD_PATH else
+                    ("staffing calendar", "provider staffing", "staffed delivery hours")
+                )
+                tokens = tuple(search_text(value) for value in (
+                    record["launch_plan_id"], record["customer"], record["launch_cycle"],
+                    record["service"], record["record_type"], "customer launch plan",
+                    "launch plan", "delivery schedule", *aliases,
+                ))
+                if query and any(query in token or token in query for token in tokens):
+                    matches.append({
+                        "record_path": path,
+                        "record_type": record["record_type"],
+                        "launch_plan_id": record["launch_plan_id"],
+                        "status": record["status"],
+                        "service": record["service"],
+                    })
             event["result"] = {"status": 200, "matches": matches}
             return self._append_event(event)
 
         if name == "read_launch_record":
-            if (
-                not self.plan[actor]["launch_plan_record_visible"]
-                or arguments["record_path"] != self.RECORD_PATH
-            ):
+            record = self.register_records(actor).get(arguments["record_path"])
+            if record is None:
                 event["result"] = {"status": 404, "error": "Record not found"}
             else:
                 event["result"] = {
                     "status": 200,
-                    "record": knowledge_work.shared_launch_plan_record(),
+                    "record": record,
                 }
                 event["full_record_read"] = True
             return self._append_event(event)

@@ -166,10 +166,12 @@
   documentation may track progress and decisions during collection. Log any
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
-- The user selected a matched Sol/Terra/Luna comparison on 29 October:
+- The user-selected matched Sol/Terra/Luna comparison on 29 October is complete:
   `openai/gpt-6.1-sol`, `openai/gpt-6.1-terra`, and `openai/gpt-6-luna`,
-  one separate four-agent Knowledge Work v55 rollout per model through the
-  existing TerryJwy-only AxonHub profile. Sol remains the development default.
+  one separate four-agent Knowledge Work v56 rollout per model per information
+  condition (local records and staffing register; six total) through the
+  existing TerryJwy-only AxonHub profile. No collector remains active; do not
+  repeat those trajectories. Sol remains the development default.
   Other models need explicit selection. Keep historical model identities and
   frozen registrations unchanged. Run one minimum connected rollout, inspect
   the complete trace and change one mechanism at a time. Future model additions
