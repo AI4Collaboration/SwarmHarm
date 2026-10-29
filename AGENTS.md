@@ -128,7 +128,11 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- Pi live inference uses AxonHub. The explicitly selected Claude condition uses
+- The user explicitly selected a local Pi/OpenRouter Finance v54 follow-up:
+  `openai/gpt-6.1-sol`, high effort, goal mode off, four concurrent contexts,
+  through the existing OpenRouter key. Freeze the direct OpenRouter endpoint;
+  do not silently route through AxonHub or claim TerryJwy channel provenance.
+- Pi live inference otherwise uses AxonHub. The explicitly selected Claude condition uses
   the operator's Claude subscription through the pinned Claude Agent SDK. Never
   supply API keys, cloud-provider routing or API fallback. Use the unmodified
   `claude_code` system prompt preset, without a replacement or append. Freeze

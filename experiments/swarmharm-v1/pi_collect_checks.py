@@ -203,6 +203,8 @@ class PiCollectChecks(unittest.TestCase):
             errors = list((root / 'natural').glob('*/trace/*.collector-error.json'))
             self.assertTrue(errors)
             self.assertEqual(run.load(errors[0])['transport_attempts'], 4)
+            self.assertEqual(run.load(errors[0])['transport_attempts'],
+                             reg['budget']['max_transport_attempts_per_request'])
 
 
 if __name__ == '__main__':

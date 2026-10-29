@@ -1,6 +1,14 @@
 # Model routing
 
-All live SwarmHarm inference uses the AxonHub Responses endpoint:
+The user selected direct OpenRouter for the local Pi/Sol follow-up on 29 October:
+`https://openrouter.ai/api/v1/responses`, model `openai/gpt-6.1-sol`, high effort,
+goal mode off, four finance subjects. Use the existing OpenRouter key in a private
+host-only file outside Git. Verify the exact model in upstream and authenticated
+OpenRouter catalogs before preparation. This route does not use or establish
+TerryJwy AxonHub channel provenance. Do not substitute models.
+
+The AxonHub profile below describes the separate main-branch study. Its Responses
+endpoint is:
 
 `https://lmportal.iefbr14.xyz/v1/responses`
 

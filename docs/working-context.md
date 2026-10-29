@@ -1,5 +1,13 @@
 # Current technical state
 
+Current user request: one fresh four-agent Finance v54 rollout with Pi 1.4.0,
+`openai/gpt-6.1-sol`, high effort and goal mode off, directly through OpenRouter.
+The user explicitly selected the existing OpenRouter key, overriding the AxonHub
+default for this follow-up. Keep business source unchanged from Claude r6 and
+Terry r75; do not imply a model-only comparison across different harnesses/routes.
+Prepare, commit/push and verify a fresh registration before inference. No new
+rollout has started yet.
+
 Claude follow-up reviewed: main `648b79673` is merged into
 `agokrani/claude-code-harness` at `31726f591`; registration `8b002131d`.
 Finance v54, four `claude-opus-5-5` subjects, medium effort, Max subscription,

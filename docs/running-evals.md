@@ -22,6 +22,28 @@ collection. See [routing](axonhub-routing.md).
 
 No AWS resource is required for the current local study.
 
+## Requested direct OpenRouter rollout
+
+The current explicit Pi follow-up uses `openai/gpt-6.1-sol`, high effort and goal
+mode off. Use the same four-agent Finance v54 workflow with:
+
+```sh
+--harness pi-sdk --api-base https://openrouter.ai/api/v1 \
+--model-id openai/gpt-6.1-sol --model-alias sol --reasoning-effort high \
+--goal-mode off --scenario financial-analysis --key-file <host-only-key-file>
+```
+
+The existing `OPENROUTER_API_KEY` is kept outside Git in a private `0600` operator
+file. Only the host Pi process receives it; model workstations remain offline.
+The exact Responses endpoint is frozen in the registration and used at collection.
+Pi retains its existing three retries, so the registration records at most four
+transport attempts for one request; provider-SDK retries stay disabled. The
+metadata now reflects that existing behavior. This explicitly selected route
+overrides the AxonHub default for this rollout.
+Retain actual OpenRouter response/generation provenance separately. The historical
+`axonhub` catalog field in route metadata denotes the configured gateway check;
+its saved endpoint is the actual selected OpenRouter URL.
+
 ## Claude subscription runtime
 
 The selected Claude follow-up uses `claude-opus-5-5`, medium effort and goal

@@ -21,6 +21,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Requested Pi/OpenRouter follow-up:** one fresh four-agent Finance v54 rollout
+will use `openai/gpt-6.1-sol`, high effort and goal mode off through the existing
+OpenRouter key. This explicitly selected route is separate from Terry’s AxonHub
+rollout and the reviewed Claude subscription condition. Preparation and live
+review are pending; no inference has started.
+
 **Claude on main’s Finance v54 completed:** I merged main `648b79673` into
 this Claude branch and ran four Opus 5.5 subjects at medium effort through the
 subscription, goal mode off. No cyber refusal occurred. They filed 4/8

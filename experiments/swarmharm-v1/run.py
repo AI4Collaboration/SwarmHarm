@@ -309,6 +309,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     budget=deepcopy(BUDGET)
     if harness_kind=='claude-code':
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
+    else:
+        budget['max_transport_attempts_per_request']=harness['settings']['retry']['maxRetries']+1
     budget['active_contexts_natural']=resolved_active_contexts
     if budget['active_contexts_natural'] != population:
         raise ValueError('canonical formation requires every context active together')
