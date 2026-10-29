@@ -638,19 +638,24 @@
     "raw_output": "host-only:v57-direct-openrouter-sol61-20261029-r1",
     "control_output": "host-only:v57-direct-preparation-controls-20261029-r1",
     "versioned_backup": "host-only:backups/v57-direct-openrouter-sol61-20261029-r1",
-    "off_machine_backup": false,
-    "retained_live_run_workstations": 4,
+    "off_machine_backup": true,
     "stop_actions": 0,
     "unknown_holds_released": 0,
     "older_allowance_unchanged_sha256": "dfa045af7939c6a2a67c271c13a8896e8a5da2f85549d7898b4e5683be792af9",
-    "older_accounting_hold_usd": "0.3493232"
+    "older_accounting_hold_usd": "0.3493232",
+    "off_machine_scope": [
+      "complete v57 native output",
+      "passed full preparation controls",
+      "preserved failed 315-check compatibility pass",
+      "84-check post-merge controls"
+    ],
+    "retained_rollout_workstations": 4
   },
   "limitations": [
     "One Sol rollout; no model ranking, success rate, or general alignment inference.",
     "Direct OpenRouter profile; does not validate the TerryJwy AxonHub deployment.",
     "Reduced publications did not meet the requested 12 hours per region; customer approval of reduced scope is not demonstrated.",
-    "Native collection is collected_with_limits and whole-rollout pass is false.",
-    "All raw copies are on this Mac; no off-machine raw-artifact backup is claimed."
+    "Native collection is collected_with_limits and whole-rollout pass is false."
   ],
   "backup_verification": {
     "at": "2026-10-29T13:03:15.999411+00:00",
@@ -689,8 +694,8 @@
     "prompt_contract_tests_passed": 12,
     "checks_log_sha256": "6ed51046d467b682529fc06b4fbc71b1ed233a433611b018628791bf45f9a086",
     "prompt_log_sha256": "d826926260c7c7d0b49f83aa86c6db1849947b19f32a06023ababe4d40c8b4fe",
-    "original_model_run_regraded": false,
-    "canonical_status_whitelist_restored": true
+    "canonical_status_whitelist_restored": true,
+    "original_rollout_regraded": false
   },
   "upstream_r88_context": {
     "source": "https://github.com/AI4Collaboration/SwarmHarm/blob/ca3a6076e/README.md#takeaways",
@@ -700,5 +705,24 @@
     "reported_phase1_passed": false,
     "reported_phase2_observed": false,
     "pooled_rate_or_route_effect_claim": false
+  },
+  "off_machine_backup": {
+    "at": "2026-10-29T13:38:17.739721+00:00",
+    "repository": "AI4Collaboration/SwarmHarm",
+    "repository_visibility": "PRIVATE",
+    "release_id": "RE_kwDOU8MXEc4ZgW1r",
+    "release_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/untagged-92bd4780219ad29a6bd9",
+    "tag": "research-artifacts-v57-direct-20261029-r1",
+    "draft": true,
+    "published": false,
+    "archive_name": "v57-direct-raw-20261029-r1-2b9a8851a1c4.tar.gz",
+    "archive_sha256": "2b9a8851a1c4456b74355cf4201fe114b29e5518aaa133fed8e64913fd1a4cc9",
+    "archive_bytes": 16568534,
+    "archived_files": 10872,
+    "authenticated_download_sha256_verified": true,
+    "raw_files_committed_to_git": false,
+    "credential_files_uploaded": false,
+    "model_requests_sent": 0,
+    "restoration": "gh release download research-artifacts-v57-direct-20261029-r1 --repo AI4Collaboration/SwarmHarm --pattern v57-direct-raw-20261029-r1-2b9a8851a1c4.tar.gz --dir NEW_RECOVERY_DIRECTORY"
   }
 }

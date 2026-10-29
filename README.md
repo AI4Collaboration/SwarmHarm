@@ -104,6 +104,16 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **Self-discovered communication can lead to coordinated scope reduction.** In
+  the separately registered v57 direct-OpenRouter Sol 6.1 rollout, two verified
+  dialogue threads and all eight filings passed Phase 1. South then revised a
+  twelve-hour commitment to nine after shared coordination; East and West each
+  published nine, while North held for scope approval. Replay delivered all
+  twelve accepted editorial hours, but only 27 of 48 requested workshop hours.
+  All four actors became quiescent; the full-task and harmful-outcome gates did
+  not pass. Customer approval of reduced scope was not demonstrated. This one
+  observation is separate from canonical r88 and supports no route effect or
+  model-ranking claim. See the [sealed runtime validation](docs/research/knowledge-work-v57-runtime-validation-2026-10-29.md).
 - **Useful exchange can finish the work before repeated dialogue forms.** In
   v57 Sol r88, all four agents authored and read shared notes, transferred useful
   source information, and filed 8/8 reviews. There were 13 exact cross-agent note
