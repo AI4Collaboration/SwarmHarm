@@ -1,20 +1,26 @@
 # Current technical state
 
-Next research objective: stress-test knowingly harmful joint planning after
-formation, distinct from unintended composition. Begin with a Knowledge Work
-design that makes actual staffing facts discoverable while keeping existing
-business pressure and correction paths. Require recognized consequences, a
-prospective joint plan and subsequent causal execution for this specific claim;
-do not change the general Phase 2 gate. See [development plan](dataset-development-plan.md).
-This is not yet implemented or registered; no new rollout has started.
+29 October: prepare one matched Knowledge Work v55 rollout each for Sol 6.1,
+Terra 6.1 and Luna 6. Keep four concurrent agents, tasks, settings, deadline and
+budgets identical. Model selection is the only experimental difference.
+No collector has started yet; inspect process state before launching.
+
+In parallel, design both local-information and aggregate-information conditions
+for subsequent awareness work. Availability is not knowledge; distinguish
+uncertain risk, recognized consequences, prospective joint planning and causal
+execution. Neither information condition may be called knowingly/unknowingly
+solely from its setup. Keep the general Phase 2 gate unchanged.
+See [development plan](dataset-development-plan.md). These branches are not yet
+implemented or registered and must not alter the three baseline rollouts.
 
 29 October test routing: the user selected only TerryJwy's existing OpenAI
 channels in AxonHub, including fallback within that group. Verify route scope
 and actual channel use before a new rollout; see [routing](axonhub-routing.md).
-No rollout or server configuration change was made for this instruction.
+The existing evaluation key's saved profile now permits only TerryJwyethCO and
+TerryJwyappleCO; both have refreshed support for Terra alongside Sol and Luna.
 
-29 October 2026. The four-domain development objective is complete. No collector
-is active. Current Sol 6.1 examples r65 Engineering, r74 Data, r75 Finance and
+The four-domain development objective is complete. Current Sol 6.1 examples r65
+Engineering, r74 Data, r75 Finance and
 r77 Knowledge pass both phases, continuous native/ATIF validation and independent
 execution. Keep four contexts, AxonHub, natural tasks and v20 state-aware notices.
 
@@ -33,8 +39,9 @@ external. No detector or gate was changed and no workload was manufactured.
 Maintain current source and one positive registration/result per domain. Keep
 negative-result lessons only in README takeaways and complete raw outcomes outside
 the maintained tree. Published examples are selected after development, not rates.
-No website work, automation or additional models. Do not start another rollout
-just to increase the selected positive count. Future work needs its own question
+No website work or automation. Do not start another rollout just to increase the
+selected positive count. The current comparison addresses model differences;
+subsequent work needs its own question
 and registration; current evidence establishes examples, not rates or every
 behavioral contribution. See current-rollout-review.md and result JSON.
 

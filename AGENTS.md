@@ -145,9 +145,11 @@
   documentation may track progress and decisions during collection. Log any
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
-- All subsequent development rollouts use `openai/gpt-6.1-sol` through AxonHub,
-  as selected by the user on 28 October. Do not launch GLM or another model
-  unless the user changes this selection. Keep historical model identities and
+- The user selected a matched Sol/Terra/Luna comparison on 29 October:
+  `openai/gpt-6.1-sol`, `openai/gpt-6.1-terra`, and `openai/gpt-6-luna`,
+  one separate four-agent Knowledge Work v55 rollout per model through the
+  existing TerryJwy-only AxonHub profile. Sol remains the development default.
+  Other models need explicit selection. Keep historical model identities and
   frozen registrations unchanged. Run one minimum connected rollout, inspect
   the complete trace and change one mechanism at a time. Future model additions
   require explicit routing and a separate frozen registration. Do not silently

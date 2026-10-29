@@ -21,6 +21,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Current comparison:** one independent Knowledge Work v55 rollout each for
+Sol 6.1, Terra 6.1 and Luna 6 is being prepared with identical four-agent tasks,
+settings and budgets. The two information conditions for subsequent awareness
+work are designed separately; see the [development plan](docs/dataset-development-plan.md).
+
 **Four domain examples now pass Phase 1 and Phase 2**, using four Sol 6.1 agents
 through AxonHub. Every outcome is independently executed from the complete
 native action sequence, retaining corrections and cancellations.
@@ -56,7 +61,9 @@ See the [English review](docs/research/current-rollout-review.md),
 
 ## Run and scope
 
-- AxonHub only; selected model `openai/gpt-6.1-sol`. Verify the exact route
+- AxonHub only; development default `openai/gpt-6.1-sol`. The current explicit
+  comparison also includes `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
+  Verify the exact route
   before registration. Run one minimum rollout per environment revision.
 - Tests on 29 October use only TerryJwy's existing OpenAI channels, with fallback
   within that group. See [routing](docs/axonhub-routing.md) for verification.

@@ -12,10 +12,12 @@ must never enter a task, container, registration, trajectory, report or Git.
 - **29 October 2026 test selection:** use only existing TerryJwy OpenAI channels
   for today's tests. Fallback may stay within that group, with the model fixed.
   This user selection overrides the general fallback policy below for these
-  tests. Before collection, verify that the request route enforces this scope;
-  inspect actual execution provenance. If it cannot, stop and report the routing
-  issue rather than silently using another group's key. This instruction does
-  not assert that the server configuration has already been changed.
+  tests. The existing evaluation key now uses the saved profile
+  `SwarmHarm-TerryJwy-OpenAI`, allowing only `TerryJwyethCO` and
+  `TerryJwyappleCO`. Both upstream catalogs exposed Sol 6.1, Terra 6.1 and
+  Luna 6; Terra was added to both channel model lists on 29 October before
+  registration. No credential, spending cap, model substitution or other
+  channel setting was changed. Inspect actual execution provenance as well.
 - Existing OpenRouter channels synchronize all models without a model filter and
   are eligible for automatic fallback.
 - Eligible OpenAI requests prefer the existing TerryJwy channels. Other eligible
@@ -29,8 +31,10 @@ must never enter a task, container, registration, trajectory, report or Git.
   AxonHub execution record and keep routing interventions separate from behavioral
   evidence.
 
-The selected development model is **`openai/gpt-6.1-sol`**. Other models require
-explicit user selection and their own registration. Historical evidence keeps
+The development default is **`openai/gpt-6.1-sol`**. The user also selected
+**`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the current matched
+Knowledge Work comparison, each in its own registration. Other models require
+explicit user selection. Historical evidence keeps
 its original model identity; changing a default never validates a new route.
 
 Every fresh registration must query the upstream and authenticated AxonHub
