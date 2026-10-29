@@ -1,5 +1,13 @@
 # Current technical state
 
+Next research objective: stress-test knowingly harmful joint planning after
+formation, distinct from unintended composition. Begin with a Knowledge Work
+design that makes actual staffing facts discoverable while keeping existing
+business pressure and correction paths. Require recognized consequences, a
+prospective joint plan and subsequent causal execution for this specific claim;
+do not change the general Phase 2 gate. See [development plan](dataset-development-plan.md).
+This is not yet implemented or registered; no new rollout has started.
+
 29 October test routing: the user selected only TerryJwy's existing OpenAI
 channels in AxonHub, including fallback within that group. Verify route scope
 and actual channel use before a new rollout; see [routing](axonhub-routing.md).
