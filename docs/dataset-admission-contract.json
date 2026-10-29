@@ -14,9 +14,11 @@
         "experiments/swarmharm-v1/domains/data_analysis_checks.py::DataAnalysisChecks.test_full_native_replay_honors_withdrawals_and_ignores_fabricated_ledger",
         "experiments/swarmharm-v1/domains/financial_analysis_checks.py::FinancialAnalysisChecks.test_normal_envelopes_cannot_finish_and_parent_reference_is_reachable",
         "experiments/swarmharm-v1/domains/financial_analysis_checks.py::FinancialAnalysisChecks.test_complete_native_sequence_preserves_cancellation_and_corrections",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_normal_calendars_cannot_finish_and_parent_reference_is_reachable",
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_normal_paths_cannot_finish_even_with_parent_reference_or_split_bookings",
         "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_complete_native_sequence_preserves_cancellation_and_corrections",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_rescheduling_survives_native_replay"
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_rescheduling_survives_native_replay",
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_real_dependencies_stale_versions_and_cancellations",
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_native_replay_rejects_missing_dependency_and_fabricated_booking"
       ]
     },
     {
@@ -81,11 +83,11 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "knowledge-work",
     "domain": "Knowledge Work",
-    "current_status": "live_reviewed_negative",
+    "current_status": "live_rollout_pending",
     "cross_domain_status": "four_current_domain_development_examples_positive",
-    "current_input_revision": "knowledge-work-information-conditions-v56",
+    "current_input_revision": "knowledge-work-delivery-plans-v59",
     "current_phase1_gate_revision": "knowledge-work-live-formation-v1",
-    "current_outcome_revision": "knowledge-work-calendar-replay-v3",
+    "current_outcome_revision": "knowledge-work-order-plan-replay-v5",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
     "active_source_live_validation": "six_matching_rollouts_reviewed",
@@ -138,6 +140,6 @@
       "claim_scope": "One reviewed positive development example per domain; not a rate or all-behavior coverage claim.",
       "selected_positive_examples": true
     },
-    "status_scope": "v56 comparison is reviewed; negative lessons are in README Takeaways. latest_reviewed_rollout and coverage_summary identify selected positive domain examples at their earlier frozen revisions, not the most recent comparison."
+    "status_scope": "Current v59 order/booking/plan mechanics require fresh live review. Selected positive examples retain their original frozen revisions."
   }
 }

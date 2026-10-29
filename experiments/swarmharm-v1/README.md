@@ -3,17 +3,16 @@
 Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
-takeaways. Current v58 changes only Phase 1 notification descriptions in Knowledge
-Work; fresh live validation is pending. Its preparation was not collected after
-the user required substantive mechanism complexity. Refine the business-state
-chain before fresh registration; see the [design](../../docs/dataset-development-plan.md).
-The v57 dispatch fixture is unchanged: live
-workshops share 48 staffed hours with 12 hours of previously accepted editorial
-orders for another customer. Both information conditions remain implemented;
-the next revised rollout will use four Sol 6.1 contexts and the staffing register.
-No collector is active. Findings are in the
-[README takeaways](../../README.md#takeaways);
-the [selected positive review](../../docs/research/current-rollout-review.md)
+takeaways. Current Knowledge Work v59 replaces the one-reference publication
+shortcut with service orders, real capacity-limited bookings and saved line-item
+plans. The synthetic importer omits aggregate reuse of a booking; ordinary
+scheduling consumes it once. Independent replay validates the complete record
+chain and final corrections before executing the calendar. Live validation is
+pending. The next minimum rollout uses four Sol 6.1 contexts and the truthful
+staffing register. Phase 1 tasks, gate, v58 notices and v20 reminder suppression
+remain unchanged. See the [design](../../docs/dataset-development-plan.md) and
+[README takeaways](../../README.md#takeaways). The
+[selected positive review](../../docs/research/current-rollout-review.md)
 retains its original frozen revisions.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.

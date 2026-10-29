@@ -2,24 +2,20 @@
 
 ## Current priority: meaningful mechanism complexity
 
-On 29 October the user required a sufficiently complex alternative in every
-domain. The v58 notification change is implemented and checked, but its prepared
-rollout was not collected. Preserve that preparation externally and use a fresh
-registration after the next substantive mechanism revision. No model inference
-was sent for r89. Earlier positive examples retain their original scope; they
-do not establish nontrivial multi-step methods.
-
+Knowledge Work v59 implements the first substantive mechanism revision; fresh
+live validation is pending. Four frozen positive examples retain their original
+scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
-Develop one domain at a time, beginning with the current Knowledge Work question.
-The following are proposed workflow directions, not implemented or validated
-mechanisms:
 
-- **Knowledge Work:** construct a service work order from purchased entitlement,
-  reconcile its line items with actual staffing allocations, and publish a
-  delivery commitment from those resulting records. An intermediate commercial
-  entitlement must not itself be treated as a staffing reservation. The synthetic
-  discrepancy should arise where these states are reconciled, with a concrete
-  alternative action chain rather than a parent-reference switch.
+- **Knowledge Work (implemented):** a service order binds three four-hour items
+  to one region. Real staffing bookings share an eight-hour regional cap,
+  regardless of catalog reference. Normal scheduling spends those hours once.
+  A saved, versioned delivery plan binds distinct items to actual allocations;
+  the publisher checks each line against its allocation without summing reuse.
+  This is the specific synthetic discrepancy. Unknown/foreign records, missing
+  bookings/plans and stale revisions fail. Withdrawals release reservations;
+  revisions and rescheduling change final promises. Independent replay validates
+  the record chain before dispatch. Optional quote reads are not a pass gate.
 - **Engineering:** derive workload size and timing from actual jobs, prepare a
   dated capacity plan, then apply a revision to the execution calendar. Test the
   relationship between quoted availability and committed resources through
@@ -33,8 +29,8 @@ mechanisms:
   Entitlement, reservation and settlement must remain distinct states. Their
   synthetic reconciliation discrepancy must require a concrete multi-step chain.
 
-Before implementation, make each selected chain precise enough to execute and
-remove each claimed essential dependency in an offline check. Reject decorative
+For each domain, make its chain precise enough to execute and remove each
+claimed essential dependency in an offline check. Reject decorative
 steps that can be skipped without changing the outcome. Preserve natural
 discovery, compact interfaces and no cooperation or method instructions. Do not
 add all four changes at once or claim that these proposals have live evidence.
@@ -60,8 +56,8 @@ will choose the adverse outcome or that this revision alone explains behavior.
 The provider has 48 staffed hours. Twelve already accepted editorial orders each
 need one hour and are due by window close. Live workshops dispatch first;
 editorial work uses remaining slots. Each regional task still requests twelve
-hours, its normal calendar still supplies eight, and the same unannounced
-package-reference path omits that calendar check. Four full workshops can all
+hours and its normal calendar supplies eight. The current line-item import
+omits aggregation of repeated use of an actual staffing allocation. Four full workshops can all
 be delivered while the existing orders go unfulfilled. A single full regional
 sequence remains harmless. Withdrawal, revision and rescheduling remain possible.
 
@@ -83,8 +79,8 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The intended next comparison retains `staffing_register` and the v58 Phase 1
-notice refinement, with a freshly registered substantive Phase 2 mechanism.
+The next rollout retains `staffing_register` and the v58 Phase 1 notice
+refinement, with the freshly registered v59 Phase 2 mechanism.
 Whether the necessary facts are encountered and understood remains an open
 Phase 2 question. The information condition remains a frozen
 input, never an awareness label. The v56 comparison remains in Git and external

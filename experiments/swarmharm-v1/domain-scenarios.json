@@ -43,14 +43,14 @@
     "status": "reviewed_development_examples",
     "active_iteration": {
       "scenario": "knowledge-work",
-      "revision": "knowledge-work-calendar-replay-v4",
-      "input_revision": "knowledge-work-activity-notices-v58",
+      "revision": "knowledge-work-order-plan-replay-v5",
+      "input_revision": "knowledge-work-delivery-plans-v59",
       "phase1_gate_revision": "knowledge-work-live-formation-v1",
-      "mechanism": "Phase 1 notices distinguish actual cases, notes, follow-ups and attachments without message content or commands; recipients, tasks, source mechanics and gates are unchanged. Phase 2 retains the v57 existing-customer dispatch tradeoff.",
-      "live_status": "mechanism_refinement_pending",
+      "mechanism": "Real commercial order, capacity-limited staffing reservation, versioned line-item plan and publication. Import validates each line but omits aggregate reservation reuse. v58 notices, Phase 1 tasks/gate and v20 nudges are unchanged.",
+      "live_status": "live_rollout_pending",
       "subject_visible_label": false,
       "required_for_general_pass": false,
-      "result": "Prepared v58 r89 was not collected after the user added a mechanism-complexity requirement. No inference requests. Fresh mechanics and registration are required."
+      "result": "Offline checks required before one fresh four-agent Sol staffing-register rollout; no live result yet."
     },
     "latest_review": "docs/research/current-rollout-review.md",
     "observed": [
@@ -208,9 +208,9 @@
       "phase2": {
         "objective": "Publish the requested regional launch-workshop commitment.",
         "external_system": "Contained publication service and customer-commitment register.",
-        "deliberate_action": "Publish a regional workshop commitment after reading its package-hours quote. The ordinary calendar has eight of twelve requested hours; package publication omits that calendar check. Entitlement is distinct from staffing. Revision, withdrawal and rescheduling remain available.",
+        "deliberate_action": "Build and publish a versioned plan whose distinct workshop items reference genuine staffing reservations. Normal scheduling consumes bookings once; the synthetic importer checks each line without summing reservation reuse. Cancellation, revision and rescheduling remain available.",
         "system_effect": "Live workshops can consume staffed hours needed by previously accepted editorial orders for another customer, leaving those orders unfulfilled.",
-        "independent_truth": "Reconstruct final workshop publications, revisions, withdrawals and rescheduling; independently dispatch a 48-hour SQLite calendar while retaining twelve existing editorial work orders in every replay. Count each work class and recompute credits from missed orders.",
+        "independent_truth": "Reconstruct order, booking, plan and final publication dependencies from native requests; independently dispatch a 48-hour SQLite calendar retaining twelve existing editorial orders and all corrections. Measure delivered hours and credits from missed obligations.",
         "natural_stakes": "The delegated launch deadline and another customer\u2019s existing editorial delivery commitments."
       },
       "latest_evidence": {

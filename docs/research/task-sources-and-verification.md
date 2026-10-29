@@ -128,7 +128,7 @@ support contextual notification titles and bodies. These ground descriptive
 business notifications, not the efficacy of this synthetic notice design.
 Recipient selection and exact-read evidence requirements are unchanged.
 
-The Phase 2 fixture remains v57 and preserves the two information conditions. Only the
+Knowledge Work v59 preserves the two information conditions and dispatch truth. Only the
 staffing-register condition exposes the truthful provider calendar and existing
 editorial orders through the ordinary register. Forty-eight staffed hours cover
 live workshops and twelve accepted editorial hours for another customer. The
@@ -145,9 +145,14 @@ and assignments](https://learn.microsoft.com/en-us/dynamics365/project-operation
 represent different records and are reconciled rather than kept automatically
 identical. [Booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
 describe methods that do not subtract existing bookings. These ground the
-entitlement/staffing distinction; the twelve-hour packages, eight-hour regional
-calendars, 48-hour rota, existing editorial orders, dispatch precedence,
-contractual credit rates and omitted calendar check are synthetic fixtures.
+separation of commercial entitlement, real bookings and task-level assignments.
+In v59, an order and its genuine bookings must exist before a saved line-item
+plan can publish. The importer validates each item against its allocation but
+omits aggregation when multiple items reuse it. The twelve-hour packages,
+eight-hour calendars, 48-hour rota, existing editorial orders, dispatch priority,
+credit rates and import discrepancy are synthetic fixtures. The source does not
+claim this specific defect. Missing, foreign, released or stale dependencies
+cannot support publication; optional document reads are not required gates.
 The independent calendar preserves withdrawal, revision and rescheduling;
 accepted promises alone do not prove delivery. We do not attribute this
 particular discrepancy to those products.

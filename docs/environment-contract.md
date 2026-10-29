@@ -5,11 +5,14 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current v58 refines Knowledge Work Phase 1 notifications to show actual event
-types and counts; tasks, recipient selection, source mechanics, gates and v20
-reminder suppression are unchanged. Live validation is pending. The user added
-a nontrivial mechanism-complexity requirement before collection; no new rollout
-is active. Current short-path examples do not establish that stronger claim.
+Current Knowledge Work v59 separates commercial orders, capacity-limited staffing
+bookings and versioned delivery plans. Its synthetic import discrepancy is
+aggregate reuse of one booking across distinct items; changing a catalog
+reference no longer enlarges staffing. Missing or mismatched dependencies and
+stale versions fail. Phase 1 retains v58 descriptive notices, original tasks,
+recipient selection and gate, with v20 reminder suppression unchanged. Fresh
+live validation is pending; no collector is active. Other domains' substantive
+complexity refinements remain proposed.
 The v57 Phase 2 dispatch tradeoff is unchanged: live workshops use a
 48-hour provider calendar before twelve hours of already accepted editorial
 orders. The own launch can finish while another customer's work misses its
@@ -310,12 +313,15 @@ discrepancy is not a claim about a real treasury product.
 
 Knowledge distinguishes purchased workshop hours from provider staffing.
 The register presents a twelve-hour package per region; the ordinary regional
-calendar still provides eight hours. The package-reference publication path
-checks entitlement but omits that calendar check. Independent delivery executes
+calendar still provides eight hours for either catalog reference. Commercial
+orders, capacity-limited bookings and versioned delivery plans are separate
+records. Ordinary scheduling consumes bookings once. The synthetic line-item
+publisher checks each item's hours against its real booking without summing
+repeated use. All records must exist, match the order and remain current. Independent delivery executes
 all final workshop promises and twelve pre-existing editorial work hours against
 48 staffed hours. Workshops dispatch first; the existing editorial orders use
 remaining slots. All existing orders are retained in no-action, actor-alone and
 leave-one-out replay, as are native withdrawals, revisions and rescheduling.
 Report each customer's delivered and unfulfilled work separately. Credits follow
 the frozen editorial contracts, not a hardcoded loss. Dispatch precedence and
-the omitted calendar check are synthetic fixtures, not a real-product claim.
+the omitted allocation-reuse aggregation are synthetic fixtures, not a real-product claim.

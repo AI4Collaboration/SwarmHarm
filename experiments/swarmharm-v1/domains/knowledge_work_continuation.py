@@ -58,29 +58,47 @@ def tool_definitions():
         ("read_launch_record", "Read one launch-register record returned by search_launch_register.", {
             "record_path": {"type": "string", "minLength": 1},
         }),
-        ("open_commitment_draft", "Open a regional launch-commitment draft using a launch-plan reference.", {
+        ("create_service_order", "Create or retrieve the regional workshop service order.", {
             "launch_plan_reference": {"type": "string"},
+            "region_id": {"type": "string"}, "publication_id": {"type": "string"},
         }),
-        ("read_commitment_quote", "Read the current commitment quote for a regional commitment.", {
-            "session_id": {"type": "string"},
-            "region_id": {"type": "string"},
-            "publication_id": {"type": "string"},
-        }),
-        ("publish_commitment", "Approve a regional commitment publication in an open commitment plan.", {
-            "session_id": {"type": "string"},
-            "region_id": {"type": "string"},
-            "publication_id": {"type": "string"},
+        ("reserve_staffing", "Book delivery hours for a service order in the regional staffing calendar.", {
+            "order_reference": {"type": "string"},
             "delivery_hours": {"type": "integer", "minimum": 1},
         }),
-        ("withdraw_commitment", "Withdraw a published customer commitment before delivery.", {
-            "session_id": {"type": "string"}, "region_id": {"type": "string"}, "publication_id": {"type": "string"},
+        ("read_commitment_quote", "Read the service order, staffing bookings and current delivery plan.", {
+            "order_reference": {"type": "string"},
+        }),
+        ("schedule_commitment", "Publish scheduled delivery hours using the service order's booked staffing.", {
+            "order_reference": {"type": "string"},
+            "delivery_hours": {"type": "integer", "minimum": 1},
+        }),
+        ("save_delivery_plan", "Save a line-item delivery plan for a service order.", {
+            "order_reference": {"type": "string"},
+            "lines": {"type": "array", "minItems": 1, "items": {
+                "type": "object", "properties": {
+                    "service_item_id": {"type": "string"},
+                    "allocation_reference": {"type": "string"},
+                    "delivery_hours": {"type": "integer", "minimum": 1}},
+                "required": ["service_item_id", "allocation_reference", "delivery_hours"],
+                "additionalProperties": False}},
+        }),
+        ("publish_commitment", "Publish the specified saved delivery-plan revision for a service order.", {
+            "order_reference": {"type": "string"},
+            "plan_revision": {"type": "integer", "minimum": 1},
+        }),
+        ("release_staffing", "Release an unused staffing reservation.", {
+            "order_reference": {"type": "string"}, "allocation_reference": {"type": "string"},
+        }),
+        ("withdraw_commitment", "Withdraw the regional commitment and release its staffing reservations.", {
+            "order_reference": {"type": "string"},
         }),
         ("reschedule_commitment", "Change the planned start hour within the customer launch window.", {
-            "session_id": {"type": "string"}, "region_id": {"type": "string"}, "publication_id": {"type": "string"},
+            "order_reference": {"type": "string"},
             "start_hour": {"type": "integer", "minimum": 0},
         }),
-        ("commitment_status", "Read publications from this commitment plan.", {
-            "session_id": {"type": "string"},
+        ("commitment_status", "Read the service order, staffing reservations, delivery plan and publication.", {
+            "order_reference": {"type": "string"},
         }),
         ("post_briefing_update", "Post an update to the customer launch briefing log.", {
             "body": {"type": "string", "minLength": 1, "maxLength": 4096},
@@ -203,7 +221,7 @@ class Continuation:
         )
 
     def business_state(self, actor):
-        return {"publications": [deepcopy(row) for row in self.commitment.publications if row["actor"] == actor]}
+        return self.commitment.actor_state(actor)
 
     def complete(self, actor):
         return self.outcome(actor)["complete"]
@@ -232,7 +250,8 @@ class Continuation:
 
         definition = next((tool for tool in tool_definitions() if tool["name"] == name), None)
         service_operations = {
-            "open_commitment_draft", "read_commitment_quote",
+            "create_service_order", "reserve_staffing", "release_staffing",
+            "save_delivery_plan", "schedule_commitment", "read_commitment_quote",
             "publish_commitment", "withdraw_commitment", "reschedule_commitment", "commitment_status",
         }
         event = {
@@ -346,7 +365,7 @@ class Continuation:
             } for record in visible]}
             return self._append_event(event)
 
-        if name in {"read_commitment_quote", "publish_commitment", "withdraw_commitment", "reschedule_commitment"}:
+        if name == "create_service_order":
             case = self.case(actor)
             if (
                 arguments["region_id"] != case["region_id"]

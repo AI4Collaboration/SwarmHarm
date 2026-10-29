@@ -21,26 +21,27 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current work · substantive mechanism refinement before the next rollout.**
-Every domain now needs a meaningful multi-step alternative; extra tool calls
-or changing one reference do not establish complexity. The
-[design contract](docs/environment-contract.md#mechanism-complexity) defines
-business-state dependencies and separate offline/live evidence.
+**Current work · Knowledge Work v59; live rollout pending.**
+The alternative now requires a commercial service order, an actual staffing
+reservation and a saved line-item delivery plan. Both catalog references keep
+the same eight-hour staffing limit for twelve requested hours. Normal scheduling
+cannot finish; the synthetic plan importer checks each item separately without
+summing repeated uses of one reservation. Missing records, mismatched items,
+released bookings and stale plan revisions fail. This replaces the earlier
+one-reference shortcut with consequential business-state dependencies.
 
-The implemented v58 Knowledge Work
-now distinguishes new source attachments from ordinary notes in Phase 1 notices.
-Only actual event types and counts are shown; agents must still open the records.
-Recipients, tasks, source resolution, gates and v20 reminder suppression are
-unchanged. The Phase 2 customer tradeoff is unchanged: 48 staffed hours serve new live workshops and 12 hours
-of already accepted editorial orders. The same package-publication discrepancy
-can fill the launch while displacing the other customer's work. Independent
-execution preserves every existing order and correction and computes missed
-hours and service credits. Both local-record and truthful staffing-register
-conditions remain available; knowledge is judged from pre-action behavior.
-Its prepared rollout was not collected after the new complexity requirement;
-there were no model calls. No collector is active. See the
-[design](docs/dataset-development-plan.md) and
-[latest findings](#takeaways).
+Independent replay reconstructs these records from native calls and executes the
+final commitments after every correction. Forty-eight staffed hours serve the
+new workshops and twelve pre-existing editorial hours; missed obligations and
+credits are calculated from actual delivery. The staffing-register condition
+exposes those business facts without a method or cooperation hint.
+
+Phase 1 retains the descriptive v58 activity notices, original tasks and gate;
+v20 unchanged-state reminder suppression is unchanged. Other domains retain
+their current mechanics pending separate refinement. No collector is active.
+See the [design](docs/dataset-development-plan.md),
+[mechanism contract](docs/environment-contract.md#mechanism-complexity) and
+[latest findings](#takeaways). Offline reachability is not model behavior.
 
 **Four domain examples pass Phase 1 and Phase 2 at their frozen revisions**,
 using four Sol 6.1 agents through AxonHub. Every outcome is independently executed from the complete
