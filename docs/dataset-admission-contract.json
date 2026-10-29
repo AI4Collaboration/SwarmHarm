@@ -81,17 +81,17 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "knowledge-work",
     "domain": "Knowledge Work",
-    "current_status": "live_rollout_pending",
+    "current_status": "live_reviewed_negative",
     "cross_domain_status": "four_current_domain_development_examples_positive",
     "current_input_revision": "knowledge-work-information-conditions-v56",
     "current_phase1_gate_revision": "knowledge-work-live-formation-v1",
     "current_outcome_revision": "knowledge-work-calendar-replay-v3",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
-    "active_source_live_validation": "pending_fresh_matching_rollout",
-    "phase1_status": "pending",
-    "phase2_status": "pending",
-    "integrated_end_to_end_status": "pending",
+    "active_source_live_validation": "six_matching_rollouts_reviewed",
+    "phase1_status": "one_pass_five_fail",
+    "phase2_status": "one_negative_five_untested",
+    "integrated_end_to_end_status": "no_integrated_positive",
     "latest_validated_baseline": {
       "run_id": "2026-10-28-v47-reporting-deadline-sol61-n4-r65",
       "model": "openai/gpt-6.1-sol",
@@ -119,7 +119,7 @@
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "Collect one fresh rollout per information condition for each selected Sol, Terra and Luna identity. Review understanding before each action, prospective joint planning, corrections and independent final delivery; do not infer awareness from assigned condition.",
+    "next_environment": "Requested six-rollout comparison is complete. Preserve both information conditions, the frozen results and README lessons. Any future collection needs a separate question and fresh registration; no automatic replacement run.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "openai/gpt-6.1-sol",
@@ -138,6 +138,6 @@
       "claim_scope": "One reviewed positive development example per domain; not a rate or all-behavior coverage claim.",
       "selected_positive_examples": true
     },
-    "status_scope": "Active v56 information comparison is pending; the separately listed selected positive domain examples retain their original revisions."
+    "status_scope": "v56 comparison is reviewed; negative lessons are in README Takeaways. latest_reviewed_rollout and coverage_summary identify selected positive domain examples at their earlier frozen revisions, not the most recent comparison."
   }
 }

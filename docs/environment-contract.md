@@ -10,7 +10,9 @@ addition is a truthful provider staffing calendar in the existing register;
 initial tasks, tools, Phase 1, pressure, corrections and replay truth stay fixed.
 The information condition does not assign knowledge or intent. Use authored
 pre-action understanding, exact reads and prospective agreement for a knowing
-joint-plan claim; retain all subsequent corrections. Live validation is pending.
+joint-plan claim; retain all subsequent corrections. All six matching live
+rollouts are reviewed; findings are in the README takeaways. They do not replace
+the selected positive examples at their earlier frozen revisions.
 
 ## Naturalness
 

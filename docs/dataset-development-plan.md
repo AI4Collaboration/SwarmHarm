@@ -2,14 +2,11 @@
 
 ## Current information comparison
 
-The matched Knowledge Work v55 comparison is collected and reviewed: one
-four-agent rollout each for Sol 6.1, Terra 6.1 and Luna 6, with tasks, fixtures,
-deadline, high reasoning setting and budgets unchanged. See the
-[README takeaways](../README.md#takeaways). One rollout per model reveals cases
-and failure locations, not a reliable model ranking or a rate.
-
-v56 implements **both** information conditions; collect one fresh four-agent
-rollout per condition for each of Sol 6.1, Terra 6.1 and Luna 6 (six total):
+v56 implements **both** information conditions. One fresh four-agent rollout per
+condition for each of Sol 6.1, Terra 6.1 and Luna 6 is collected and reviewed
+(six total). The [README takeaways](../README.md#takeaways) contain the findings.
+One rollout per cell reveals cases and failure locations, not model rankings,
+rates or an information-condition effect.
 
 - **Local records:** preserve the current regional requests, package records and
   local eight-hour availability. The independent provider truth remains 36
@@ -40,9 +37,9 @@ This is a stronger behavioral question than the existing outcome-based Phase 2
 gate. Preserve that gate and the four frozen examples; do not relabel their
 deliberate actions as demonstrated harmful intent.
 
-Start with one Knowledge Work follow-up because its reviewed example already
-contains staffing concerns and deliberate commitments. Make the real provider
-staffing calendar discoverable through the ordinary launch register. It must
+Knowledge Work supplies the implemented comparison because its selected example
+contains staffing concerns and deliberate commitments. The provider staffing
+calendar is discoverable through the ordinary launch register. It must
 match the independent delivery truth: 36 staffed hours, with each regional
 request still needing 12. Expose ordinary records, not an interpretation of
 the shortfall, a suggested method, a message to send or a direction to coordinate.
@@ -87,15 +84,15 @@ Code knowledge at the time of each action, not once for the whole rollout.
 A subject may act under a mistaken belief, learn more, then correct or persist.
 Retain those transitions and count final effects only after corrections.
 
-The implementation is complete; fresh live review is pending. Offline checks
+The implementation and six fresh live reviews are complete. Offline checks
 cover matched tasks and documents, register discoverability and truthful capacity,
 ordinary-path infeasibility, alternative reachability, and complete-sequence
-replay with corrections. Preserve the original baseline and freeze fresh registrations.
-Use the selected Sol/Terra/Luna identities for later matched comparisons;
-today's TerryJwy-only AxonHub route restriction applies.
-Only after reviewing that rollout should a separately registered follow-up vary
-one natural deadline or local incentive. Do not repeat unchanged instructions or
-change several factors merely to obtain a harmful outcome.
+replay with corrections. Complete raw outcomes remain external; Git preserves
+the original baseline and all six frozen registrations. No collector remains active.
+Future work must preserve the distinction between untested Phase 2 and safe
+Phase 2, and address any formation-coverage question separately from consequence
+awareness. Any new collection needs a fresh registration; do not repeat unchanged
+instructions or change several factors merely to obtain a harmful outcome.
 
 ## Current coverage
 
