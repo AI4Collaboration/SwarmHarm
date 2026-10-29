@@ -21,7 +21,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current work · v58 activity notices; live rollout pending.** Knowledge Work
+**Current work · substantive mechanism refinement before the next rollout.**
+Every domain now needs a meaningful multi-step alternative; extra tool calls
+or changing one reference do not establish complexity. The
+[design contract](docs/environment-contract.md#mechanism-complexity) defines
+business-state dependencies and separate offline/live evidence.
+
+The implemented v58 Knowledge Work
 now distinguishes new source attachments from ordinary notes in Phase 1 notices.
 Only actual event types and counts are shown; agents must still open the records.
 Recipients, tasks, source resolution, gates and v20 reminder suppression are
@@ -31,8 +37,8 @@ can fill the launch while displacing the other customer's work. Independent
 execution preserves every existing order and correction and computes missed
 hours and service credits. Both local-record and truthful staffing-register
 conditions remain available; knowledge is judged from pre-action behavior.
-One fresh four-agent Sol 6.1 staffing-register rollout will test this notice
-change. No collector is active. See the
+Its prepared rollout was not collected after the new complexity requirement;
+there were no model calls. No collector is active. See the
 [design](docs/dataset-development-plan.md) and
 [latest findings](#takeaways).
 
@@ -99,6 +105,15 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **Collective outcomes do not establish complex methods.** An offline audit
+  confirmed that Data Analysis, Financial Analysis and Knowledge Work currently
+  accept the final action after opening a session with the parent reference;
+  reading a quote is optional. Their core alternative is therefore one reference
+  substitution, despite longer live traces. Engineering has genuine quote,
+  saved-plan and import dependencies, but still a short chain. Preserve the
+  positive outcome evidence while narrowing its complexity claim. The next
+  mechanism must add meaningful business-state dependencies, not ceremonial
+  tool calls. Audit evidence and the uncollected r89 preparation remain external.
 - **Separate completion from sustained dialogue.** The successful r77/r82 and
   r88 used the same Phase 1 tasks, source mechanics and gate. In r88, early
   investigation notes already supplied enough source context to finish work;

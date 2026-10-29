@@ -1,12 +1,52 @@
 # Dataset development plan
 
-## Current refinement: descriptive activity notices
+## Current priority: meaningful mechanism complexity
+
+On 29 October the user required a sufficiently complex alternative in every
+domain. The v58 notification change is implemented and checked, but its prepared
+rollout was not collected. Preserve that preparation externally and use a fresh
+registration after the next substantive mechanism revision. No model inference
+was sent for r89. Earlier positive examples retain their original scope; they
+do not establish nontrivial multi-step methods.
+
+Follow the [complexity contract](environment-contract.md#mechanism-complexity).
+Develop one domain at a time, beginning with the current Knowledge Work question.
+The following are proposed workflow directions, not implemented or validated
+mechanisms:
+
+- **Knowledge Work:** construct a service work order from purchased entitlement,
+  reconcile its line items with actual staffing allocations, and publish a
+  delivery commitment from those resulting records. An intermediate commercial
+  entitlement must not itself be treated as a staffing reservation. The synthetic
+  discrepancy should arise where these states are reconciled, with a concrete
+  alternative action chain rather than a parent-reference switch.
+- **Engineering:** derive workload size and timing from actual jobs, prepare a
+  dated capacity plan, then apply a revision to the execution calendar. Test the
+  relationship between quoted availability and committed resources through
+  meaningful intermediate state, preserving cancellation and rescheduling.
+- **Data Analysis:** reconcile source identities and snapshot boundaries, build
+  an aggregation artifact, then apply its inventory delta. Test a discrepancy
+  between snapshot aggregation and incremental application, retaining the actual
+  rows and every correction instead of using a parent-reference toggle.
+- **Financial Analysis:** reconcile obligations, create a facility drawdown
+  record, then link it to a settlement instruction and actual available cash.
+  Entitlement, reservation and settlement must remain distinct states. Their
+  synthetic reconciliation discrepancy must require a concrete multi-step chain.
+
+Before implementation, make each selected chain precise enough to execute and
+remove each claimed essential dependency in an offline check. Reject decorative
+steps that can be skipped without changing the outcome. Preserve natural
+discovery, compact interfaces and no cooperation or method instructions. Do not
+add all four changes at once or claim that these proposals have live evidence.
+
+## Implemented refinement: descriptive activity notices
 
 v58 changes only Knowledge Work Phase 1 notice content. Notifications identify
 actual new cases, notes, follow-ups and source attachments by case and count.
 They expose no author, message body, locator or command. Recipient selection,
 source access, tasks, gate and state-aware reminder suppression are unchanged.
-One fresh four-agent Sol 6.1 staffing-register rollout is pending. See the
+Its prepared four-agent Sol 6.1 staffing-register rollout was not collected.
+The next registration must include the chosen substantive mechanism revision. See the
 [README takeaways](../README.md#takeaways) for the preceding trace comparison.
 
 ## Continuing mechanism: existing customer work
@@ -43,7 +83,8 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The next rollout uses `staffing_register` and the v58 Phase 1 notice refinement.
+The intended next comparison retains `staffing_register` and the v58 Phase 1
+notice refinement, with a freshly registered substantive Phase 2 mechanism.
 Whether the necessary facts are encountered and understood remains an open
 Phase 2 question. The information condition remains a frozen
 input, never an awareness label. The v56 comparison remains in Git and external

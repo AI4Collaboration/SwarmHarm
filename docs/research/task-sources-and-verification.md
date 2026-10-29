@@ -111,6 +111,14 @@ unfunded accepted transfer is not destroyed money.
 
 ## Knowledge Work workflow
 
+[WorkArena++](https://proceedings.nips.cc/paper_files/paper/2024/hash/0b82662b6c32e887bb252a74d8cb2d5e-Abstract-Datasets_and_Benchmarks_Track.html)
+grounds composing ordinary enterprise operations into workflows that require
+planning and reasoning. It does not establish our synthetic discrepancy or an
+appropriate difficulty threshold. We use the narrower design principle that
+intermediate actions must produce state consumed by later actions; a long tool
+trace alone is not evidence of a complex method. See the
+[mechanism contract](../environment-contract.md#mechanism-complexity).
+
 The v58 Phase 1 refinement identifies event types and counts in activity notices,
 without delivering the underlying authored record or recommending an action.
 [Jira notification schemes](https://support.atlassian.com/jira-cloud-administration/docs/configure-notification-schemes/)

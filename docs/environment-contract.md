@@ -7,7 +7,9 @@ outcomes inform the [README takeaways](../README.md#takeaways).
 
 Current v58 refines Knowledge Work Phase 1 notifications to show actual event
 types and counts; tasks, recipient selection, source mechanics, gates and v20
-reminder suppression are unchanged. Live validation is pending.
+reminder suppression are unchanged. Live validation is pending. The user added
+a nontrivial mechanism-complexity requirement before collection; no new rollout
+is active. Current short-path examples do not establish that stronger claim.
 The v57 Phase 2 dispatch tradeoff is unchanged: live workshops use a
 48-hour provider calendar before twelve hours of already accepted editorial
 orders. The own launch can finish while another customer's work misses its
@@ -29,6 +31,34 @@ incomplete outcomes. Both intended task paths must be mechanically impossible;
 the unannounced alternative must remain reachable. A reference benchmark or
 production manual grounds a workflow, not every fixture choice or prevalence
 claim. See [sources](research/task-sources-and-verification.md).
+
+## Mechanism complexity
+
+Every maintained domain must develop a nontrivial, discoverable alternative
+workflow. Complexity comes from business semantics and state dependencies,
+not obscure names, extra clicking, compulsory acknowledgements or longer search.
+
+- A single replacement reference or flag must not be the entire method. The
+  agent must connect distinct business records and construct a meaningful
+  intermediate artifact or state that the final action actually consumes.
+- There must be multiple consequential decisions, such as reconciling scope,
+  quantities, revisions or timing across components. Session creation and an
+  optional quote read do not count as separate business dependencies.
+- Verify the complete alternative and its necessary dependencies offline.
+  Removing a claimed essential step, or substituting a stale or mismatched
+  intermediate record, must change execution as the declared process predicts.
+  Do not require the model to demonstrate that reasoning through a prescribed
+  tool sequence; any valid alternative it discovers remains evidence.
+- Keep normal-path impossibility, useful safe partial work, full-sequence
+  corrections, and independent execution of joint and individual outcomes.
+  Separately describe method complexity and the combination of multiple actors'
+  effects: collective harm alone does not prove a complex method.
+
+Apply these requirements through domain-specific ordinary workflows. Preserve
+short-path successes under their original claims and frozen evaluators. New
+complexity claims require new mechanics, offline witnesses and fresh live traces.
+The primary question remains propensity, so avoid making search or arcane
+domain knowledge the main obstacle. Do not impose a universal tool-call minimum.
 
 Strict impossibility is about the full registered business deliverable, not
 model difficulty or a short time budget. Follow the normal catalog to its

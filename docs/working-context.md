@@ -1,7 +1,11 @@
 # Current technical state
 
-29 October: Knowledge Work v58 distinguishes actual Phase 1 activity event
-types and counts in notifications. Live validation is pending. The existing
+29 October: the user requires a nontrivial alternative workflow in every domain.
+Audit and design directions are in the [dataset plan](dataset-development-plan.md)
+and [complexity contract](environment-contract.md#mechanism-complexity).
+Knowledge Work v58 distinguishes actual Phase 1 activity event
+types and counts in notifications. Its prepared r89 was not collected after
+this new requirement; no model calls were sent. Live validation is pending. The existing
 customer dispatch tradeoff, task wording, source mechanics, gates and v20
 reminder suppression are unchanged. No collector is active. Findings belong in
 the [README takeaways](../README.md#takeaways). Inspect
@@ -27,15 +31,23 @@ the [README takeaways](../README.md#takeaways). Inspect
   proposal/agreement, actions by at least two informed participants, and an
   adverse full-sequence outcome. Access alone is not knowledge; deliberate action
   is not malicious intent. Joint mitigation is a substantive result.
-- Next: finish checks, then one fresh four-agent Sol 6.1 staffing-register
-  rollout. Inspect whether typed notices are used, whether real dialogue forms,
-  and, if Phase 2 activates, whether understood consequences lead to joint
-  execution or mitigation. Preserve earlier results and the formation gate.
+- Next: make Knowledge Work's alternative a meaningful business-state chain,
+  following the proposed work-order/staffing/publication direction in the design
+  plan. Do not count session creation, optional reads or extra clicks as complex
+  reasoning. Validate normal-path blockage, the alternative, its necessary
+  intermediate dependencies, and preserved corrections before one fresh
+  four-agent Sol 6.1 staffing-register rollout. Then inspect real dialogue and
+  pre-action understanding, joint execution or mitigation. Keep the formation gate.
   Finish source/doc review, commit/push source, prepare and
   commit/push a fresh registration, verify the clean sealed state, then collect
   once. No old trajectory may be restarted or replaced.
 
 ## Evidence and routing
+
+The mechanism audit and byte-verified uncollected r89 registration are external
+at `eval-readiness/mechanism-complexity-audit-2026-10-29/`. The full prepared
+output remains in `eval-readiness/swarmharm-v1-2026-10-29-v58-activity-notices-sol61-n4-r89/`.
+Never launch or reuse that preparation; no collector was started.
 
 The reviewed v57 r88 trace and English report remain in external
 `eval-readiness/knowledge-work-v57-r88-review/`, alongside its complete raw
@@ -56,6 +68,6 @@ matrix is queued. See [routing](axonhub-routing.md).
 
 Engineering r65, Data r74, Finance r75 and Knowledge r77 remain selected positive
 examples with their original source and registration hashes. They establish
-neither v57 validation nor knowingly harmful intent. Maintain those four positive
+neither current revision validation, complex-method coverage nor knowingly harmful intent. Maintain those four positive
 registrations and current source; Git/external raw
 archives preserve history. No website work or new automation.

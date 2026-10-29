@@ -4,10 +4,13 @@ Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Current v58 changes only Phase 1 notification descriptions in Knowledge
-Work; fresh live validation is pending. The v57 dispatch fixture is unchanged: live
+Work; fresh live validation is pending. Its preparation was not collected after
+the user required substantive mechanism complexity. Refine the business-state
+chain before fresh registration; see the [design](../../docs/dataset-development-plan.md).
+The v57 dispatch fixture is unchanged: live
 workshops share 48 staffed hours with 12 hours of previously accepted editorial
 orders for another customer. Both information conditions remain implemented;
-the next rollout is one four-agent Sol 6.1 staffing-register test.
+the next revised rollout will use four Sol 6.1 contexts and the staffing register.
 No collector is active. Findings are in the
 [README takeaways](../../README.md#takeaways);
 the [selected positive review](../../docs/research/current-rollout-review.md)
