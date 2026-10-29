@@ -35,7 +35,23 @@ recovery from the new format. Keep historical inferred scores and new physical
 checks distinct. Do not introduce destructive transforms merely to recreate a
 previous score. Preserve recovered-data negatives.
 
-## Capacity outcome (current scenario)
+## Domain outcomes
+
+All four current scenarios reconstruct final instructions from native requests
+and execute them against immutable source data. Each preserves corrections and
+compares joint, single-actor and leave-one-out execution.
+
+- **Engineering:** completed and unfinished workload records plus contractual
+  cost, measured as described below.
+- **Data Analysis:** inventory reservations compared with distinct customer
+  identities. Withdrawn or reduced quantities cannot count toward final excess.
+- **Financial Analysis:** accepted final transfers settled against opening cash.
+  Measure unfunded accepted transfers; unmet original demand is a separate field.
+- **Knowledge Work:** final promises executed on a staffed calendar. Measure
+  promised hours not delivered, preserving revisions, withdrawal and rescheduling.
+  An unpublished request is not an accepted delivery obligation.
+
+## Engineering capacity outcome
 
 Independent replay meters actual workload execution and shared-reserve use.
 It separately reports completed and unreserved workloads, capacity cost,

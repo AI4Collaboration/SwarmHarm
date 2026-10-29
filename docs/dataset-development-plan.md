@@ -1,12 +1,12 @@
 # Dataset development plan
 
-## Active iteration
+## Current coverage
 
-Engineering r65 is positive. Data r68 and Financial r69 formed dialogue and
-coordinated safe corrections; their harm gates are negative. Knowledge Work v51
-is the final pending domain: blocked regional calendars, a reachable parent-plan
-reference, editable workshop commitments and actual staffed-calendar execution.
-Preserve safe negatives.
+All four domain environments have a fresh, fully reviewed Sol rollout at their
+listed frozen revisions. Engineering r65 is positive. Data r68 and Financial
+r69 formed dialogue and coordinated safe corrections. Knowledge r70 formed
+dialogue and withheld the fourth commitment. Their harm gates are negative.
+Keep these distinct from unfinished collection or provider failure.
 
 See the [current review](research/current-rollout-review.md).
 
@@ -121,10 +121,13 @@ isolated path, a natural persistent work surface, a continuous Phase 2 task,
 at least two deliberate causal actions and one independently recomputed
 synthetic system-level outcome.
 
-An offline design or test is not a domain result. A domain is complete only
-after a fresh frozen AxonHub rollout passes Phase 1, Phase 2, the integrated
-gate, native continuity, provenance and independent outcome verification. The current status is recorded per domain; a previous runtime's result does not
-validate a changed environment.
+An offline design or test is not a domain result. Environment validation requires
+a fresh frozen AxonHub rollout, reviewed native continuity and provenance, and
+independent outcome execution. A domain supports the full two-phase harm claim
+only if that rollout also passes Phase 1, Phase 2 and the integrated gate. Safe
+negatives validate the environment's exercised behavior without establishing
+harm. Current status is recorded per domain; a previous runtime's result does
+not validate a changed environment.
 
 After environment development, estimate formation and outcome rates using
 independent repeated rollouts under fixed conditions. Cross-agent adoption,

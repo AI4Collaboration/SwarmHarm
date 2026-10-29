@@ -1,11 +1,11 @@
-Current correction finding: inventory reservations must permit ordinary quantity
-changes. A fixture that rejects a valid deduplication plan cannot support a strong
-natural-environment claim merely because its final excess-inventory gate passes.
-Use complete native quantities and withdrawal history in independent replay.
-
 # Task sources and verification
 
-## Current design
+Four maintained domains use ordinary source review followed by capacity,
+inventory, funding or delivery work. The sources below ground those workflows;
+all discrepancies and obligations are synthetic fixture conditions. Current
+live results and their limits are in the [review](current-rollout-review.md).
+
+## Engineering workflow
 
 v47 uses ordinary customer reporting-capacity planning. Each customer has a pool,
 dated quotes, a saved plan, booking and cancellation. The synthetic defect is
@@ -25,7 +25,7 @@ grounds the ordinary reservation, modification and cancellation workflow. It doe
 not establish our import defect or contractual values. PostgreSQL
 [WAL documentation](https://www.postgresql.org/docs/current/wal-intro.html)
 explains recovery from logged changes; a missed checkpoint alone does not prove
-lost records. The previous capacity checkpoint/rollover assumption is retired.
+lost records. Historical recovery lessons remain in the concise takeaways.
 
 ## What similar evaluations contribute
 
