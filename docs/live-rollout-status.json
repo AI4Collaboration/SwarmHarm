@@ -3,7 +3,7 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "preparing_information_comparison",
+  "status": "six_rollouts_prepared",
   "input_revision": "knowledge-work-information-conditions-v56",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-calendar-replay-v3",
@@ -11,7 +11,56 @@
   "historical_takeaways": "README.md#takeaways",
   "latest_review": "docs/research/current-rollout-review.md",
   "latest_result": "docs/research/current-rollout-result.json",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-29-v56-local-luna6-n4-r85",
+      "model": "openai/gpt-6-luna",
+      "information_condition": "local_records",
+      "status": "prepared_pending_launch",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-10-29-v56-local-luna6-n4-r85",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-29-v56-local-luna6-n4-r85"
+    },
+    {
+      "run_id": "2026-10-29-v56-local-sol61-n4-r81",
+      "model": "openai/gpt-6.1-sol",
+      "information_condition": "local_records",
+      "status": "prepared_pending_launch",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-10-29-v56-local-sol61-n4-r81",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-29-v56-local-sol61-n4-r81"
+    },
+    {
+      "run_id": "2026-10-29-v56-local-terra61-n4-r83",
+      "model": "openai/gpt-6.1-terra",
+      "information_condition": "local_records",
+      "status": "prepared_pending_launch",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-10-29-v56-local-terra61-n4-r83",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-29-v56-local-terra61-n4-r83"
+    },
+    {
+      "run_id": "2026-10-29-v56-staffing-luna6-n4-r86",
+      "model": "openai/gpt-6-luna",
+      "information_condition": "staffing_register",
+      "status": "prepared_pending_launch",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-10-29-v56-staffing-luna6-n4-r86",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-29-v56-staffing-luna6-n4-r86"
+    },
+    {
+      "run_id": "2026-10-29-v56-staffing-sol61-n4-r82",
+      "model": "openai/gpt-6.1-sol",
+      "information_condition": "staffing_register",
+      "status": "prepared_pending_launch",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-10-29-v56-staffing-sol61-n4-r82",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-29-v56-staffing-sol61-n4-r82"
+    },
+    {
+      "run_id": "2026-10-29-v56-staffing-terra61-n4-r84",
+      "model": "openai/gpt-6.1-terra",
+      "information_condition": "staffing_register",
+      "status": "prepared_pending_launch",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-10-29-v56-staffing-terra61-n4-r84",
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-29-v56-staffing-terra61-n4-r84"
+    }
+  ],
   "expected_models": [
     "openai/gpt-6-luna",
     "openai/gpt-6.1-sol",
@@ -43,8 +92,9 @@
       "staffing_register"
     ],
     "question": "Do agents recognize consequences and jointly execute anyway, or correct?",
-    "status": "preparing",
-    "summary": "README.md#takeaways"
+    "status": "prepared_pending_launch",
+    "summary": "README.md#takeaways",
+    "source_commit": "3989f10a6037e13ce4b2e2085dfef3eabb982736"
   },
   "selected_positive_rollouts": [
     {

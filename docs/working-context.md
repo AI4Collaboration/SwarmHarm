@@ -7,8 +7,10 @@ The calendar uses execution truth (36 staffed hours) and the registered cutoff.
 No initial task, Phase 1, tool, notice, pressure, correction or delivery rule changes.
 
 Current user request: one four-agent rollout per condition for Sol 6.1, Terra 6.1
-and Luna 6, six total. Implementation and offline verification precede fresh
-registration. No collector is active yet. Use the existing TerryJwy-only profile.
+and Luna 6, six total. Implementation, 296 offline checks and 12 prompt checks passed. All six
+registrations are prepared under r81–r86; phase/task parity is audited.
+Source commit 3989f10a. No collector is active yet; launch each prepared output
+once after committing and pushing the registrations. Use the existing TerryJwy-only profile.
 Do not rerun failures or alter frozen inputs. Classify knowledge per action:
 not established, uncertain risk, recognized consequence. A knowingly harmful
 joint-plan claim needs pre-action proposal, exact read, endorsement, at least
