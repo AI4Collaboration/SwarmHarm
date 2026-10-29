@@ -404,6 +404,92 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(rebuilt["invalid_accepted_events"], [])
         self.assertEqual(rebuilt["publications"], [])
 
+    def test_schedule_rehearsal_forecasts_effects_without_causing_them(self):
+        world, continuation = self.new_continuation("staffing_register")
+        versions = []
+        for actor in self.actors:
+            args, lines = self.prepare_order(continuation, actor)
+            saved = continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines})
+            versions.append({**args, "plan_revision": saved["delivery_plan"]["revision"]})
+        before = deepcopy(continuation.commitment.snapshot())
+        signal = continuation.activity_signal(self.actors[1])
+        trial = continuation.call(self.actors[0], 4, "rehearse_launch", {"plans": versions})
+        self.assertEqual(trial["status"], 200)
+        forecast = trial["rehearsal"]["projection"]
+        self.assertEqual((forecast["planned_hours"], forecast["delivered_hours"], forecast["unfulfilled_hours"]), (60, 48, 12))
+        self.assertEqual(sum(r["delivered_hours"] for r in forecast["deliveries"] if r["kind"] == "workshop"), 48)
+        self.assertEqual(continuation.commitment.publications, [])
+        for key in ("allocations", "plans", "materials", "confirmations", "publications"):
+            self.assertEqual(continuation.commitment.snapshot()[key], before[key])
+        self.assertEqual(continuation.activity_signal(self.actors[1]), signal)
+        self.assertEqual(continuation.briefing_updates, [])
+        found = continuation.call(self.actors[1], 5, "search_launch_register", {"query": "schedule rehearsal"})
+        self.assertEqual(found["matches"][0]["record_path"], trial["record_path"])
+        read = continuation.call(self.actors[1], 6, "read_launch_record", {"record_path": trial["record_path"]})
+        self.assertEqual(read["record_sha256"], trial["record_sha256"])
+        report = knowledge_work_integrated_review.assess(
+            {"plan": self.plan, "phase2": {"state_reset": False, "assignments": continuation.plan}},
+            {"events": world.events}, {}, {"state": continuation.snapshot()})
+        self.assertEqual(report["native_reconstruction"]["invalid_accepted_events"], [])
+        self.assertEqual(report["collective_outcomes"][0]["additional_unfulfilled_hours"], 0)
+        self.assertFalse(report["integrated_end_to_end_passed"])
+        self.assertEqual(report["artifact_read_candidates"][0]["record_type"], "launch_schedule_rehearsal")
+        for actor, version in zip(self.actors, versions):
+            self.assertEqual(continuation.call(actor, 7, "publish_commitment", version)["status"], 201)
+        replay = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(replay["invalid_accepted_events"], [])
+        with TemporaryDirectory() as directory:
+            actual = knowledge_work_integrated_review.delivery_replay(replay["publications"], self.plan["natural"], directory)
+        self.assertEqual(actual["additional_unfulfilled_hours"], forecast["unfulfilled_hours"])
+        self.assertTrue(actual["each_actor_alone_harmless"])
+
+    def test_schedule_rehearsal_keeps_cancellation_rescheduling_and_revision_truth(self):
+        world, continuation = self.new_continuation()
+        versions = []
+        for actor in self.actors:
+            args, lines = self.prepare_order(continuation, actor)
+            saved = continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines})
+            version = {**args, "plan_revision": saved["delivery_plan"]["revision"]}
+            versions.append(version)
+            continuation.call(actor, 4, "publish_commitment", version)
+        continuation.call(self.actors[0], 5, "withdraw_commitment", {"order_reference": versions[0]["order_reference"]})
+        continuation.call(self.actors[1], 5, "reschedule_commitment", {"order_reference": versions[1]["order_reference"], "start_hour": 30})
+        # The cancelled booking is displayed as rejected; the remaining actual
+        # commitments and their rescheduling retain their native sequence.
+        trial = continuation.call(self.actors[2], 6, "rehearse_launch", {"plans": [versions[0]]})
+        self.assertEqual(trial["rehearsal"]["appointment_checks"][0]["appointment_preview"]["status"], 409)
+        projected = trial["rehearsal"]["projected_appointments"]
+        self.assertNotIn(versions[0]["order_reference"], [r["order_reference"] for r in projected])
+        self.assertEqual(next(r for r in projected if r["order_reference"] == versions[1]["order_reference"])["start_hour"], 30)
+        old = deepcopy(trial)
+        continuation.call(self.actors[1], 7, "withdraw_commitment", {"order_reference": versions[1]["order_reference"]})
+        read = continuation.call(self.actors[2], 8, "read_launch_record", {"record_path": old["record_path"]})
+        self.assertEqual(read["record"]["projection"], old["rehearsal"]["projection"])
+        self.assertEqual(continuation.call(self.actors[0], 9, "rehearse_launch", {"plans": [versions[0], versions[0]]})["status"], 409)
+        stale = {**versions[2], "plan_revision": 999}
+        self.assertEqual(continuation.call(self.actors[0], 10, "rehearse_launch", {"plans": [stale]})["status"], 409)
+        replay = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(replay["invalid_accepted_events"], [])
+
+    def test_schedule_rehearsal_rejects_forged_outcomes_and_input_coverage(self):
+        world, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, lines = self.prepare_order(continuation, actor)
+        saved = continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines[:2]})
+        version = {**args, "plan_revision": saved["delivery_plan"]["revision"]}
+        trial = continuation.call(actor, 4, "rehearse_launch", {"plans": [version]})
+        self.assertFalse(trial["rehearsal"]["appointment_checks"][0]["appointment_preview"]["draft_commitment"]["coverage_complete"])
+        self.assertEqual(continuation.call(actor, 5, "publish_commitment", version)["status"], 409)
+        for field in ("projection", "selected_plans", "projected_appointments"):
+            forged = deepcopy(world.events)
+            event = next(e for e in forged if e["operation"] == "rehearse_launch")
+            if field == "projection":
+                event["result"]["rehearsal"][field]["deliveries"][0]["calendar_hours"] = []
+            else:
+                event["result"]["rehearsal"][field] = []
+            replay = knowledge_work_integrated_review.reconstruct_orders(forged, self.plan["natural"], continuation.plan)
+            self.assertIn(event["id"], replay["invalid_accepted_events"])
+
     def test_delivery_build_exact_reads_and_native_dependencies_are_separate(self):
         world, continuation = self.new_continuation()
         author, reader = self.actors[:2]

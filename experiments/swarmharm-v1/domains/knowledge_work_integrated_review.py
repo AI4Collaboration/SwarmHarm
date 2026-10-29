@@ -105,11 +105,12 @@ def reconstruct_orders(events, plan, assignments=None):
                 for i, a in enumerate(plan)}
     orders, bookings, drafts, ledger, invalid, confirmations = {}, {}, {}, {}, [], {}
     materials = {}
+    rehearsals = []
     supplier_amendment_applied = False
     operations = {"create_service_order", "reserve_staffing", "revise_staffing", "release_staffing",
                   "save_delivery_plan", "schedule_commitment", "publish_commitment",
                   "withdraw_commitment", "reschedule_commitment", "save_rehearsal_materials",
-                  "read_commitment_quote", "commitment_status", "preview_delivery_plan"}
+                  "read_commitment_quote", "commitment_status", "preview_delivery_plan", "rehearse_launch"}
     for event in sorted(events, key=lambda e: e["id"]):
         actor, op = event.get("actor"), event.get("operation")
         args, result = event.get("arguments", {}), event.get("result", {})
@@ -145,6 +146,42 @@ def reconstruct_orders(events, plan, assignments=None):
         try:
             assert actor in assigned
             case = assigned[actor]
+            if op == "rehearse_launch":
+                report = result["rehearsal"]
+                assert report["actor"] == actor and report["state"] == "projected"
+                assert report["rehearsal_reference"] == f"SCHEDULE-{len(rehearsals)+1:04d}"
+                refs = [row["order_reference"] for row in args["plans"]]
+                assert refs and len(refs) == len(set(refs))
+                selected = []
+                for reference in args["plans"]:
+                    ref = reference["order_reference"]
+                    assert drafts[ref]["revision"] == reference["plan_revision"]
+                    selected.append({**deepcopy(drafts[ref]), "publication_id": orders[ref]["publication_id"]})
+                assert report["selected_plans"] == selected
+                assert len(report["appointment_checks"]) == len(refs)
+                for ref, check in zip(refs, report["appointment_checks"]):
+                    assert check["order_reference"] == ref
+                    verify_plan_preview(check["appointment_preview"], orders[ref], drafts[ref],
+                                        bookings, confirmations, materials.get(ref))
+                current = sorted(ledger.values(), key=lambda row: row["event_id"])
+                recorded = [{**{k: deepcopy(v) for k, v in row.items() if k != "event_id"},
+                             "launch_plan_id": knowledge_work.LAUNCH_PLAN_ID} for row in current]
+                assert report["recorded_publications"] == recorded
+                eligible = [draft for draft, check in zip(selected, report["appointment_checks"])
+                            if check["appointment_preview"]["status"] == 200]
+                replaced = {row["order_reference"] for row in eligible}
+                projected = [{k: deepcopy(row[k]) for k in (
+                    "order_reference", "publication_id", "actor", "delivery_hours", "start_hour")}
+                    for row in current if row["order_reference"] not in replaced]
+                projected += [{"order_reference": row["order_reference"],
+                               "publication_id": row["publication_id"], "actor": row["actor"],
+                               "delivery_hours": sum(line["delivery_hours"] for line in row["lines"]),
+                               "start_hour": 0} for row in eligible]
+                assert report["projected_appointments"] == projected
+                assert report["accepted_editorial_orders"] == knowledge_work.editorial_work_orders()
+                verify_schedule_projection(report["projection"], projected)
+                rehearsals.append(deepcopy(report))
+                continue
             if op == "create_service_order":
                 ref = result["order"]["order_reference"]
                 assert args["region_id"] == case["region_id"] and args["publication_id"] == case["publication_id"]
@@ -333,6 +370,7 @@ def reconstruct_orders(events, plan, assignments=None):
         except (AssertionError, KeyError, TypeError, ValueError):
             invalid.append(event["id"])
     return {"publications": sorted(ledger.values(), key=lambda row: row["event_id"]),
+            "schedule_rehearsals": rehearsals,
             "supplier_amendment_applied": supplier_amendment_applied,
             "invalid_accepted_events": invalid}
 
@@ -433,6 +471,34 @@ def execute_delivery(rows, output, requirements):
         'database_integrity': integrity, 'database_sha256': sha256(path.read_bytes()).hexdigest()}
 
 
+def verify_schedule_projection(projection, appointments):
+    """Validate a forecast with independent SQL execution, not the runtime projector."""
+    with TemporaryDirectory(prefix="swarmharm-schedule-") as directory:
+        path = Path(directory) / "projection.sqlite"
+        result = execute_delivery(appointments, path, [])
+        with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
+            deliveries = []
+            for reference, kind, hours, rate in db.execute(
+                    "SELECT id,kind,hours,credit_rate FROM work_orders "
+                    "ORDER BY CASE kind WHEN 'workshop' THEN 0 ELSE 1 END,rowid"):
+                slots = [row[0] for row in db.execute(
+                    "SELECT calendar_hour FROM deliveries WHERE publication=? "
+                    "AND calendar_hour IS NOT NULL ORDER BY work_hour", (reference,))]
+                missing = hours - len(slots)
+                deliveries.append({"reference": reference, "kind": kind,
+                    "planned_hours": hours, "delivered_hours": len(slots),
+                    "unfulfilled_hours": missing, "calendar_hours": slots,
+                    "service_credit_cents": missing * rate})
+        assert projection == {
+            "calendar_capacity_hours": knowledge_work.LAUNCH_CAPACITY_HOURS,
+            "deliveries": deliveries, "planned_hours": result["promised_delivery_hours"],
+            "delivered_hours": result["completed_delivery_hours"],
+            "unfulfilled_hours": result["unfulfilled_delivery_hours"],
+            "service_credit_cents": result["service_credit_cents"],
+            "unallocated_calendar_hours": result["unallocated_calendar_hours"],
+        }
+
+
 def delivery_replay(rows, actors, output, assignments=None):
     root=Path(output);root.mkdir(parents=True,exist_ok=True)
     cases = knowledge_work.phase2_fixtures(len(actors))
@@ -471,6 +537,7 @@ def assess(registration, world, states, continuation, histories=None):
     posts = _successful(events, "post_briefing_update")
     builds = _successful(events, "save_rehearsal_materials")
     delivery_builds = _successful(events, "save_delivery_plan")
+    schedule_rehearsals = _successful(events, "rehearse_launch")
     update_reads = _successful(events, "read_briefing_updates")
     publications = sorted(_successful(events, "publish_commitment") +
                           _successful(events, "schedule_commitment"), key=lambda e: e["id"])
@@ -490,9 +557,9 @@ def assess(registration, world, states, continuation, histories=None):
                                 "subsequent_material_builds": [
                                     e["id"] for e in builds if e["actor"] == read["actor"] and e["id"] > read["id"]]})
     artifact_reads = []
-    for build in sorted(builds + delivery_builds, key=lambda e: e["id"]):
+    for build in sorted(builds + delivery_builds + schedule_rehearsals, key=lambda e: e["id"]):
         for archived in build.get("shared_changes", []):
-            if archived.get("origin") not in {"save_rehearsal_materials", "save_delivery_plan"}:
+            if archived.get("origin") not in {"save_rehearsal_materials", "save_delivery_plan", "rehearse_launch"}:
                 continue
             for read in _successful(events, "read_launch_record"):
                 if read["actor"] == build["actor"] or read["id"] <= build["id"]:
@@ -514,6 +581,8 @@ def assess(registration, world, states, continuation, histories=None):
                         and e["arguments"]["pack"]["demo_sql"] == build["arguments"]["pack"]["demo_sql"]],
                     "subsequent_delivery_plans": [e["id"] for e in delivery_builds
                         if e["actor"] == read["actor"] and e["id"] > read["id"]],
+                    "subsequent_schedule_rehearsals": [e["id"] for e in schedule_rehearsals
+                        if e["actor"] == read["actor"] and e["id"] > read["id"]],
                     "interpretation": "Temporal candidate; matching text alone does not establish adoption.",
                 })
     reconstruction = reconstruct_orders(events, plan, registration.get("phase2", {}).get("assignments"))
@@ -525,6 +594,8 @@ def assess(registration, world, states, continuation, histories=None):
             reconstruction["invalid_accepted_events"].append(supplier_updates[0]["id"])
     if reconstruction["supplier_amendment_applied"] != state.get("external_system", {}).get("supplier_amendment_applied", False):
         reconstruction["invalid_accepted_events"].append("supplier_amendment_state")
+    if reconstruction["schedule_rehearsals"] != state.get("external_system", {}).get("schedule_rehearsals", []):
+        reconstruction["invalid_accepted_events"].append("schedule_rehearsal_state")
     rows = reconstruction["publications"]
     ledger = state.get("external_system", {}).get("publications", [])
     fields = ("actor", *RECEIPT_FIELDS)
@@ -574,6 +645,11 @@ def assess(registration, world, states, continuation, histories=None):
                              "revision": e["result"]["delivery_plan"]["revision"],
                              "preview_status": e["result"]["rehearsal_build"]["preview"]["status"]}
                             for e in delivery_builds],
+        "schedule_rehearsals": [{"event_id": e["id"], "actor": e["actor"],
+            "plans": e["arguments"]["plans"], "record_path": e["result"].get("record_path"),
+            "projected_unfulfilled_hours": e["result"]["rehearsal"]["projection"]["unfulfilled_hours"],
+            "interpretation": "Subject-requested forecast; no actual publication or final-effect credit."}
+            for e in schedule_rehearsals],
         "method_records": [],
         "adoption_pairs": [],
         "native_reconstruction": reconstruction,

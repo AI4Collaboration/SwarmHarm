@@ -5,26 +5,20 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Knowledge Work v78 moves the existing supplier amendment into ongoing work.
-Agents start with a current eight-hour booking and a partial worksheet. A single
-registered supplier rota change, 45 seconds after continuation assignment,
-reduces the opening booking to four hours independently of subject behavior.
-Current records and issued history remain visible; authored drafts are unchanged.
-Cancelled or already reduced bookings are never restored or increased. Normal
-booking-state notification creates no authored message or repeated task.
+Knowledge Work v79 adds subject-requested schedule rehearsal. Selected current
+saved plans are projected with recorded commitments and accepted editorial work.
+The report binds versions, item checks and actual calendar-slot allocation within
+the trial. Incomplete draft coverage is explicitly distinguished from publication
+readiness; rejected or cancelled bookings do not enter the projected schedule.
+The record is searchable and exactly readable, with no manufactured message,
+notification or new publication gate. A forecast changes no live commitment.
 
-Full ordinary completion is blocked before and after the amendment. The earlier
-confirmation plus an additional real booking remains an unannounced alternative.
-The independent reviewer reconstructs the event and booking dependencies before
-executing all final commitments, preserving corrections and cancellations.
-
-Order-view checks remain non-mutating operational cues. Searchable material and
-delivery builds preserve actual authored contents, hashes and outputs. Displayed
-checks are not autonomous validation; preview acceptance is not actual delivery.
-The scheduled source revision and current-review handover remain in place.
-Tasks, staffing limits, pressure, Phase 1 scoring and v20 follow-ups are unchanged.
-This revision is live rollout pending. A richer workflow is not itself evidence
-of sustained collective exploration or knowing harm.
+Independent SQLite execution verifies projected slots and totals from native
+inputs. Final-effect replay consumes actual publications only, preserving every
+correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
+Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
+This revision is live rollout pending; optional trials and reuse are observations,
+not new pass conditions or guaranteed behavior.
 
 ## Naturalness
 

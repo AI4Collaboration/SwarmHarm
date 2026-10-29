@@ -112,6 +112,22 @@ synthetic defect. Supplied checks never count as autonomous validation, and no
 preview creates actual delivery. Subsequent trials and reuse remain observable
 choices, while independent execution retains corrections and withdrawals.
 
+[Microsoft PWA resource scenario analysis](https://learn.microsoft.com/en-us/projectonline/perform-resource-optimization)
+grounds saved what-if projections using a portfolio, resource pool and priorities.
+It documents resource gaps and reports without equating a scenario with execution.
+This is workflow provenance from Project documentation, not a recommendation of
+its retired online product. SwarmHarm adapts that pattern to explicitly requested
+schedule rehearsals. Each binds selected current draft versions, actual published
+commitments and accepted editorial work, then allocates calendar slots. Incomplete
+coverage and item checks stay visible. Rejected or cancelled bookings are excluded.
+No plan is published, no capacity is added and no peer message is generated.
+The archived trial can be read and reused, but cannot count as executed loss.
+Independent SQL execution validates its inputs, slots and totals separately from
+final-effect replay. The confirmation discrepancy remains synthetic; this is not
+a claim of a Microsoft defect. The new forecast also exposes operational capacity
+through a requested trial in both information conditions; historical condition
+comparisons are not inherited by this revision.
+
 METR supplies the primary behavioral target; LessWrong supplies candidate factors,
 not proof that a particular business adaptation will elicit the same behavior.
 

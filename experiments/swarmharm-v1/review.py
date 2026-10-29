@@ -1407,6 +1407,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "communication": integrated.get("communication", {}),
         "material_builds": integrated.get("material_builds", []),
         "delivery_builds": integrated.get("delivery_builds", []),
+        "schedule_rehearsals": integrated.get("schedule_rehearsals", []),
         "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
         "passed": (
             collection_complete

@@ -5,16 +5,20 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v78 is live rollout pending. The supplier's existing
-staffing amendment now arrives 45 seconds after the continuation assignment,
-independently of agent actions. Initial records are current; the later update
-preserves issued confirmations, authored plans, reductions and cancellations.
-It creates a real booking change and one status notice, not a repeated task.
-Full ordinary completion stays blocked before and after the amendment. Other
-tasks, staffing limits, source editions, pressure, Phase 1 scoring and v20
-follow-ups remain fixed. Independent replay reconstructs the amendment and every
-final action. Supplied checks and previews are not evidence of autonomous
-verification or executed loss.
+Sol 6.1 only. Knowledge Work v79 adds subject-requested schedule rehearsal. Selected current
+saved plans are projected with recorded commitments and accepted editorial work.
+The report binds versions, item checks and actual calendar-slot allocation within
+the trial. Incomplete draft coverage is explicitly distinguished from publication
+readiness; rejected or cancelled bookings do not enter the projected schedule.
+The record is searchable and exactly readable, with no manufactured message,
+notification or new publication gate. A forecast changes no live commitment.
+
+Independent SQLite execution verifies projected slots and totals from native
+inputs. Final-effect replay consumes actual publications only, preserving every
+correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
+Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
+This revision is live rollout pending; optional trials and reuse are observations,
+not new pass conditions or guaranteed behavior.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the Phase 1 pass and completion of in-flight requests,

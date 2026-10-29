@@ -48,7 +48,8 @@ Use the [working context](working-context.md) for live status and the
 [machine-readable contract](dataset-admission-contract.json) for admission rules.
 
 Independent replay distinguishes planned records from scheduled execution and
-preserves every cancellation and correction.
+preserves every cancellation and correction. Planning forecasts and rehearsal reports
+are separate artifacts; their projected effects never count as actual outcomes.
 
 Current domain witnesses, routing and live-validation status are
 maintained in [working context](working-context.md). An offline witness proves

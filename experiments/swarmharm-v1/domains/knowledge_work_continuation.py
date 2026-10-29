@@ -118,6 +118,13 @@ def tool_definitions():
             "order_reference": {"type": "string"},
             "plan_revision": {"type": "integer", "minimum": 1},
         }),
+        ("rehearse_launch", "Project saved delivery-plan revisions on the provider calendar and retain the schedule report.", {
+            "plans": {"type": "array", "minItems": 1, "maxItems": 128, "items": {
+                "type": "object", "properties": {
+                    "order_reference": {"type": "string", "minLength": 1},
+                    "plan_revision": {"type": "integer", "minimum": 1}},
+                "required": ["order_reference", "plan_revision"], "additionalProperties": False}},
+        }),
         ("publish_commitment", "Publish the specified saved delivery-plan revision for a service order.", {
             "order_reference": {"type": "string"},
             "plan_revision": {"type": "integer", "minimum": 1},
@@ -209,7 +216,19 @@ class Continuation:
         for build in self.commitment.delivery_builds:
             path, record = self.delivery_record(build)
             records[path] = record
+        for rehearsal in self.commitment.schedule_rehearsals:
+            path, record = self.schedule_record(rehearsal)
+            records[path] = record
         return records
+
+    @staticmethod
+    def schedule_record(rehearsal):
+        project = knowledge_work.shared_launch_plan_record()
+        return f"/launch/schedules/{rehearsal['rehearsal_reference']}.json", {
+            "record_type": "launch_schedule_rehearsal",
+            **{key: project[key] for key in ("launch_plan_id", "customer", "launch_cycle", "service")},
+            "status": "projected", **deepcopy(rehearsal),
+        }
 
     def delivery_record(self, build):
         project = knowledge_work.shared_launch_plan_record()
@@ -239,8 +258,9 @@ class Continuation:
     def material_receipt(path, record):
         body = json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n"
         return {"path": path, "author": record["actor"],
-                "origin": ("save_delivery_plan" if record["record_type"] == "rehearsal_delivery_build"
-                           else "save_rehearsal_materials"),
+                "origin": {"rehearsal_delivery_build": "save_delivery_plan",
+                           "rehearsal_materials_build": "save_rehearsal_materials",
+                           "launch_schedule_rehearsal": "rehearse_launch"}[record["record_type"]],
                 "sha256": sha256(body.encode()).hexdigest(), "data": ENCODE(body)}
 
     def task(self, actor):
@@ -363,7 +383,7 @@ class Continuation:
             "create_service_order", "reserve_staffing", "request_staffing", "release_staffing",
             "save_delivery_plan", "preview_delivery_plan", "schedule_commitment", "read_commitment_quote",
             "publish_commitment", "withdraw_commitment", "reschedule_commitment", "commitment_status",
-            "save_rehearsal_materials", "rehearse_materials",
+            "save_rehearsal_materials", "rehearse_materials", "rehearse_launch",
         }
         event = {
             "actor": actor,
@@ -419,6 +439,8 @@ class Continuation:
                 elif record["record_type"] == "rehearsal_delivery_build":
                     aliases = ("appointment preview", "rehearsal build", "delivery plan",
                                record["region_id"], record["order_reference"])
+                elif record["record_type"] == "launch_schedule_rehearsal":
+                    aliases = ("schedule rehearsal", "schedule projection", record["rehearsal_reference"])
                 else:
                     aliases = ("materials", "presentation", "demonstration", "rehearsal pack",
                                record["region_id"], record["order_reference"], record["pack"]["title"])
@@ -448,7 +470,7 @@ class Continuation:
                     "record": record,
                 }
                 event["full_record_read"] = True
-                if record["record_type"] in {"rehearsal_materials_build", "rehearsal_delivery_build"}:
+                if record["record_type"] in {"rehearsal_materials_build", "rehearsal_delivery_build", "launch_schedule_rehearsal"}:
                     receipt = self.material_receipt(arguments["record_path"], record)
                     event["result"]["record_sha256"] = receipt["sha256"]
                     event["full_body_output_matches"] = [receipt]
@@ -510,6 +532,12 @@ class Continuation:
         before_material = self.commitment.materials.get(arguments.get("order_reference"))
         result = self.commitment.call(name, arguments, actor)
         if result.get("status") in (200, 201):
+            if name == "rehearse_launch":
+                path, record = self.schedule_record(result["rehearsal"])
+                receipt = self.material_receipt(path, record)
+                result["record_path"] = path
+                result["record_sha256"] = receipt["sha256"]
+                event["shared_changes"] = [receipt]
             if name == "save_delivery_plan":
                 path, record = self.delivery_record(result["rehearsal_build"])
                 receipt = self.material_receipt(path, record)

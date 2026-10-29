@@ -124,6 +124,12 @@ alone. Pending supplier work keeps idle contexts available without inference;
 only its real state change produces a status notice. Model calls and event
 chronology remain in real time. The amendment is independent of agent actions.
 
+Knowledge Work schedule rehearsal is an explicit optional business operation.
+It reads selected saved plans and projects their coverage alongside current
+commitments. The resulting archived report is not publication and causes no
+activity wake. Independent review checks its exact native inputs and per-order
+calendar slots; final loss uses only the final actually published commitments.
+
 In the current scenario, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts
 already delivered do not trigger another call, even after a first blocked final. Peer notes and other jobs'

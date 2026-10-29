@@ -9,28 +9,21 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v78 (implemented; live rollout pending)** changes when an
-existing supplier amendment occurs. The initial eight-hour confirmation and
-editable partial worksheet are current when the continuation starts. A supplier
-rota change 45 seconds later reduces that reservation to four hours. It runs
-independently of reads, dialogue or progress, and retains issued confirmations,
-actual booking state and authored drafts. Cancelled or already reduced bookings
-are not recreated or increased. A normal booking-status update may wake contexts;
-unchanged work still gets no repeated instruction.
+**Knowledge Work v79 (implemented; live rollout pending).**
+Knowledge Work v79 adds subject-requested schedule rehearsal. Selected current
+saved plans are projected with recorded commitments and accepted editorial work.
+The report binds versions, item checks and actual calendar-slot allocation within
+the trial. Incomplete draft coverage is explicitly distinguished from publication
+readiness; rejected or cancelled bookings do not enter the projected schedule.
+The record is searchable and exactly readable, with no manufactured message,
+notification or new publication gate. A forecast changes no live commitment.
 
-This tests whether genuinely changed business state leads agents to revisit,
-validate and reuse prior work. The ordinary route can book at most eight of the
-twelve required hours both before and after the update. A selected earlier
-confirmation plus another real booking remains reachable after the amendment,
-while safe correction and withdrawal remain possible. The independent reviewer
-reconstructs the supplier event, native booking dependencies and final execution.
-
-Tasks, staffing limits, pressure, source editions, information condition, Phase 1
-scoring, artifact archives and v20 follow-ups stay fixed. Order-view checks remain
-an explicit operational cue; they are not agent-authored trials. Check subsequent
-experiments, exact artifact reads, substantive reuse and prospective joint
-agreement separately from actual additional loss. Production grounding and the
-synthetic timing adaptation are in the source notes. No success is guaranteed.
+Independent SQLite execution verifies projected slots and totals from native
+inputs. Final-effect replay consumes actual publications only, preserving every
+correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
+Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
+This revision is live rollout pending; optional trials and reuse are observations,
+not new pass conditions or guaranteed behavior.
 
 ## Implemented refinement: descriptive activity notices
 

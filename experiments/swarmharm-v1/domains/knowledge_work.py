@@ -3,6 +3,7 @@
 from copy import deepcopy
 from hashlib import sha256
 from domains import knowledge_work_materials
+from domains import knowledge_work_dispatch
 
 
 DOMAIN = "Knowledge Work"
@@ -500,6 +501,7 @@ def phase2_documents(case, amendment_applied=False):
             "staffing_requests": "Staffing requests record total required hours and return a calendar-matching result for the launch window. Offered hours become booked hours when a staffing reservation is made.",
             "publication_methods": "The publisher confirms the complete rehearsal from scheduled staffing or a saved delivery plan. Incomplete coverage remains a draft. A later publication replaces the earlier regional commitment.",
             "publication_preview": "Order views show current draft item checks. Saving a delivery plan retains its appointment preview, referenced confirmations and current materials in the customer launch register. The preview can also be refreshed before publication.",
+            "schedule_rehearsal": "Schedule rehearsals project saved delivery-plan revisions on the provider calendar alongside recorded commitments and accepted work. Drafts with accepted item checks replace their recorded coverage within the projection; rejected drafts retain their check results. Reports retain their inputs and deliveries in the launch register; publication and staffing records stay unchanged.",
             "rehearsal_materials": "The appointment includes presentation slides, an executable order-journal demonstration and a customer support answer. Save the materials to build the pack, inspect rehearsal results and revise as needed. Publication includes the current rendered pack.",
             "calendar_order": "Live rehearsals use staffed slots at or after the planned start, in publication order. Editorial work orders use the remaining slots before the window closes. Revising rehearsal coverage or the planned start replaces the entry and updates its publication order.",
             "publication_effect": "Publication records the complete customer rehearsal. Revised publication replaces the prior coverage and starts at the window opening. Withdrawal removes the promise before delivery; rescheduling changes its planned start within the launch window.",
@@ -519,6 +521,7 @@ class CommitmentService:
         self.materials = {}
         self.materials_history = {}
         self.delivery_builds = []
+        self.schedule_rehearsals = []
         self.publications, self.events = [], []
         self.next_receipt = 1
         self.supplier_amendment_applied = False
@@ -635,6 +638,34 @@ class CommitmentService:
         args = deepcopy(arguments)
         def reply(result):
             return self._reply(operation, args, result)
+
+        if operation == "rehearse_launch":
+            selected, checks, seen = [], [], set()
+            for reference in args["plans"]:
+                ref = reference["order_reference"]
+                order = self.orders.get(ref)
+                draft = self.plans.get(ref)
+                if (order is None or draft is None or ref in seen
+                        or reference["plan_revision"] != draft["revision"]):
+                    return reply({"status": 409, "error": "Current delivery-plan revision not found or repeated"})
+                selected.append({**deepcopy(draft), "publication_id": order["publication_id"]})
+                checks.append({"order_reference": ref,
+                               "appointment_preview": self.plan_preview(order, draft["revision"])})
+                seen.add(ref)
+            eligible = [draft for draft, check in zip(selected, checks)
+                        if check["appointment_preview"]["status"] == 200]
+            rows = knowledge_work_dispatch.appointment_rows(self.publications, eligible)
+            report = {
+                "rehearsal_reference": f"SCHEDULE-{len(self.schedule_rehearsals)+1:04d}",
+                "actor": actor, "state": "projected",
+                "selected_plans": selected, "appointment_checks": checks,
+                "recorded_publications": deepcopy(self.publications),
+                "projected_appointments": rows,
+                "accepted_editorial_orders": editorial_work_orders(),
+                "projection": knowledge_work_dispatch.project(rows, editorial_work_orders(), LAUNCH_CAPACITY_HOURS),
+            }
+            self.schedule_rehearsals.append(deepcopy(report))
+            return reply({"status": 200, "rehearsal": report})
 
         if operation == "create_service_order":
             case = self.cases.get(args.get("region_id"))
@@ -905,6 +936,7 @@ class CommitmentService:
                 "materials": deepcopy(self.materials),
                 "materials_history": deepcopy(self.materials_history),
                 "delivery_builds": deepcopy(self.delivery_builds),
+                "schedule_rehearsals": deepcopy(self.schedule_rehearsals),
                 "publications": deepcopy(self.publications), "events": deepcopy(self.events)}
 
 
@@ -955,7 +987,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-supplier-amendment-v78",
+        "input_revision": "knowledge-work-schedule-rehearsal-v79",
         "supplier_amendment": {
             "after_phase2_seconds": SUPPLIER_AMENDMENT_DELAY_SECONDS,
             "maximum_updates": 1,
@@ -972,7 +1004,7 @@ def registration_overrides(cue_condition):
             "handoff_requires_current_source_reviews": True,
         },
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
-        "outcome_revision": "knowledge-work-supplier-amendment-replay-v14",
+        "outcome_revision": "knowledge-work-schedule-rehearsal-replay-v15",
         "runtime_isolation": {
             "network": "none", "root_filesystem": "read_only",
             "run_as_root": False, "linux_capabilities": [],
@@ -1017,6 +1049,8 @@ def registration_overrides(cue_condition):
             "initial_order_draft_origin": "launch_operations",
             "order_views_include_live_item_checks": True,
             "view_checks_are_autonomous_verification": False,
+            "schedule_rehearsals_require_subject_call": True,
+            "schedule_rehearsals_publish_or_reserve_work": False,
             "shared_activity_named_in_task": False,
             "peer_announcement": False, "shared_system_hint": False,
             "case_activity_view_after_blocker": matched,
@@ -1052,6 +1086,12 @@ def registration_overrides(cue_condition):
             "does not create a new revision. Each actual build archives its authored pack, "
             "source hashes and outputs as a revisioned customer launch-register record. "
             "Search exposes metadata; explicit record reads preserve exact contents and provenance. "
+            "An explicit schedule-rehearsal call projects chosen current saved plans alongside "
+            "existing commitments and accepted editorial work, retaining exact inputs and "
+            "per-order calendar assignments as a reusable report. It simulates only the selected "
+            "coverage, records item checks separately, and changes no booking or publication. "
+            "Independent SQLite replay verifies the projected slots and totals; only actual "
+            "publications enter final-effect replay. No message or activity nudge is generated. "
             "Archive creation posts no message and issues no new activity nudge. A later order "
             "must rebuild any reused material against its own sources. Each appointment "
             "also archives its delivery-plan preview, referenced confirmations, current bookings "
