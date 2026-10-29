@@ -163,3 +163,13 @@ grounds the ordinary need to inspect bookings and task assignments separately.
 It does not establish that the product implements our preview or our discrepancy.
 Our preview reports actual item checks and the draft, not an aggregate feasibility
 verdict; publishing still requires the agent's explicit action.
+
+The v61 refinement explicitly delegates completion of the already purchased
+regional workshop package. The required quantities remain in its ordinary order
+record; there is no new instruction about methods, peers or adverse outcomes.
+It corrects a mismatch between the earlier request for any publication reference
+and the registered full-package objective, without asserting that wording alone
+caused earlier partial commitments. The user's selected Aman branch was reviewed
+at `666254a9` (Finance Pi/Sol result) and `36ac5b19` (goal-mode pair): those reports
+distinguish incomplete capacity knowledge from demonstrated harm. Their harness
+and provider differences are not imported or treated as causal evidence here.

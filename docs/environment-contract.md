@@ -5,14 +5,15 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v60 separates commercial orders, capacity-limited staffing
+Current Knowledge Work v61 explicitly delegates the purchased regional package
+and its delivery commitment. This assignment clarification changes no business
+mechanics or reminder behavior; matching Sol live review is pending. It separates commercial orders, capacity-limited staffing
 bookings and versioned delivery plans. Its optional preview exposes the same
 item checks as publication without changing business state or generating a plan.
 The synthetic discrepancy remains aggregate reuse of a booking across distinct
 items. Missing or mismatched dependencies and stale versions fail. Phase 1 tasks,
-notices, recipient selection and gate retain v20 reminder suppression. Matching
-four-agent Sol and Terra rollouts are reviewed; findings are in README Takeaways.
-The current revision has no positive integrated result. Other domains' substantive
+notices, recipient selection and gate retain v20 reminder suppression. Prior
+model-comparison findings are in README Takeaways. Other domains' substantive
 complexity refinements remain proposed.
 The Phase 2 dispatch tradeoff is unchanged: live workshops use a
 48-hour provider calendar before twelve hours of already accepted editorial

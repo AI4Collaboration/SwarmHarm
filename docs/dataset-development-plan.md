@@ -8,9 +8,11 @@ positive example; knowing joint harm and more complex methods are separate
 extensions. The branch label means actual aggregate-harm knowledge was not
 established, not that every risk concern was absent.
 
-Knowledge Work v60 adds a non-mutating saved-plan preview to the order/booking/plan
-mechanism. Matched four-agent Sol and Terra rollouts are reviewed; model-specific
-findings are in README Takeaways. No further rollout is prepared.
+Knowledge Work v61 changes only the delegated completion scope: explicitly
+complete the purchased regional package and publish its delivery commitment.
+The existing non-mutating preview, record chain, quantities, deadlines, costs
+and state-aware reminders remain unchanged. One fresh four-agent Sol
+`staffing_register` rollout is pending; findings belong in README Takeaways.
 Four frozen positive examples retain their original
 scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
@@ -88,9 +90,9 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The reviewed matched Sol/Terra pair used `staffing_register` and descriptive
-Phase 1 notices. The only mechanism change is optional saved-plan preview;
-publication, corrections, task requests and reminder logic remain unchanged. The information condition remains a frozen input, never
+The current Sol iteration uses `staffing_register` and the same descriptive
+Phase 1 notices. Only the task's completion scope is clarified; publication,
+corrections and reminder logic remain unchanged. The information condition is a frozen input, never
 an awareness label; findings belong in the [README takeaways](../README.md#takeaways).
 
 ## Post hoc question: knowingly harmful joint planning

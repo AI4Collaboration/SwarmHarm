@@ -486,7 +486,8 @@ class PromptContractChecks(unittest.TestCase):
                 }
                 documents = holder.documents(actor)
                 self.assert_natural(native, documents)
-                self.assertIn("published for the launch", native["input"][0]["content"])
+                self.assertIn("needs the purchased", native["input"][0]["content"])
+                self.assertIn("package completed and its delivery commitment published", native["input"][0]["content"])
                 self.assertIn("delivery_hours", json.dumps(documents))
                 result = holder.call(
                     actor, len(world.events) + 1, "read_commitment_quote",

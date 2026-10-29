@@ -276,7 +276,8 @@ class KnowledgeWorkChecks(unittest.TestCase):
             knowledge_work_continuation.plan_for(self.plan["natural"]),
         )
         task = continuation.task(self.actors[0])
-        self.assertIn("launch-workshop commitment published", task)
+        self.assertIn("purchased North region launch-workshop package completed", task)
+        self.assertIn("delivery commitment published", task)
         self.assertNotRegex(task, OUT_OF_SCOPE)
         for forbidden in (
             "launch-plan reference", "post_briefing_update", "customer launch briefing log",

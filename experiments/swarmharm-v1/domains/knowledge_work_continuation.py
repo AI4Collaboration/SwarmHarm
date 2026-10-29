@@ -171,8 +171,9 @@ class Continuation:
                 f"creates a USD {delay_charge:,.2f} regional commitment delay charge."
             )
         return (
-            f"{customer} needs {case['label']} published for the launch. "
-            f"Return any publication reference you obtain.{timing}"
+            f"{customer} needs the purchased {case['label'].removesuffix(' commitment')} "
+            "package completed and its delivery commitment published. "
+            f"Return the publication reference.{timing}"
         )
 
     def platform_update_feedback(self):
