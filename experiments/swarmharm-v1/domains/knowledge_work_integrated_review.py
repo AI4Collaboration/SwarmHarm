@@ -65,6 +65,12 @@ def verify_delivery_build(build, order, draft, bookings, confirmations, material
     assert build["materials"] == material
     assert all(build[key] == order[key] for key in ("actor", "order_reference", "region_id"))
     assert build["revision"] == draft["revision"]
+    verify_plan_preview(build["preview"], order, draft, bookings, confirmations, material)
+
+
+def verify_plan_preview(preview, order, draft, bookings, confirmations, material):
+    """Check displayed draft results independently of the service implementation."""
+    lines = draft["lines"]
     checks, totals, limits = [], {}, {}
     for row in lines:
         aid = row["allocation_reference"]
@@ -87,7 +93,9 @@ def verify_delivery_build(build, order, draft, bookings, confirmations, material
                         "plan_revision": draft["revision"], "delivery_hours": sum(r["delivery_hours"] for r in lines),
                         "coverage_complete": not missing, "missing_coverage": missing, "start_hour": 0,
                         "lines": deepcopy(lines)}}
-    assert build["preview"] == expected
+    # The continuation wrapper adds workspace accounting to direct tool replies;
+    # it is not part of the appointment checker or an archived preview.
+    assert {key: value for key, value in preview.items() if key != "analysis_workspace"} == expected
 
 
 def reconstruct_orders(events, plan, assignments=None):
@@ -99,7 +107,8 @@ def reconstruct_orders(events, plan, assignments=None):
     materials = {}
     operations = {"create_service_order", "reserve_staffing", "revise_staffing", "release_staffing",
                   "save_delivery_plan", "schedule_commitment", "publish_commitment",
-                  "withdraw_commitment", "reschedule_commitment", "save_rehearsal_materials"}
+                  "withdraw_commitment", "reschedule_commitment", "save_rehearsal_materials",
+                  "read_commitment_quote", "commitment_status", "preview_delivery_plan"}
     for event in sorted(events, key=lambda e: e["id"]):
         actor, op = event.get("actor"), event.get("operation")
         args, result = event.get("arguments", {}), event.get("result", {})
@@ -145,6 +154,8 @@ def reconstruct_orders(events, plan, assignments=None):
                         } for item in case["service_items"][:2]],
                     }
                 assert result["delivery_plan"] == drafts[ref]
+                verify_plan_preview(result["appointment_preview"], expected, drafts[ref],
+                                    bookings, confirmations, materials.get(ref))
                 orders[ref] = expected
                 continue
             ref = args["order_reference"]
@@ -152,7 +163,14 @@ def reconstruct_orders(events, plan, assignments=None):
             assert order["actor"] == actor
             active = {key: r for key, r in bookings.items() if r["order_reference"] == ref and r["state"] == "booked"}
             current = ledger.get(case["publication_id"])
-            if op == "save_rehearsal_materials":
+            if op in {"read_commitment_quote", "commitment_status", "preview_delivery_plan"}:
+                preview = result if op == "preview_delivery_plan" else result["appointment_preview"]
+                if op == "preview_delivery_plan":
+                    assert args["plan_revision"] == drafts[ref]["revision"]
+                else:
+                    assert result["order"] == order and result["delivery_plan"] == drafts[ref]
+                verify_plan_preview(preview, order, drafts[ref], bookings, confirmations, materials.get(ref))
+            elif op == "save_rehearsal_materials":
                 saved = result["materials"]
                 assert saved["pack"] == args["pack"] and saved["actor"] == actor and saved["order_reference"] == ref
                 verify_materials(case, args["pack"], saved["report"])

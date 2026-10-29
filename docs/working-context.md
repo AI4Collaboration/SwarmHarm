@@ -7,31 +7,29 @@ work or schedules. Safe stopping does not establish knowing joint harm.
 
 ## Current revision
 
-Knowledge Work v76 passed 326 runtime/domain checks, 12 prompt checks, four
-format checks and dataset admission. A fresh live rollout is pending. No collector is active. Input: `knowledge-work-handover-draft-v76`.
+Knowledge Work v77 passed all 41 domain checks, 12 prompt checks, format checks
+and dataset admission. Preparation will repeat the full offline suite. A fresh
+live rollout is pending; no collector is active. Input: `knowledge-work-order-checks-v77`.
 Phase 1: `knowledge-work-live-formation-v1`.
-Outcome: `knowledge-work-handover-draft-replay-v12`.
+Outcome: `knowledge-work-order-checks-replay-v13`.
 
-The existing handover worksheet becomes an editable initial order draft with
-launch-operations provenance. Later retrieval preserves agent edits and cancelled
-bookings. It creates no agent message, archived preview or publication. Independent
-reconstruction separates the frozen initial state from agent-authored actions.
-Tasks, staffing, pressure, source editions, artifact archive, Phase 1 scoring and
-v20 state-aware follow-ups stay fixed. Correct incomplete work remains possible.
+Normal order views show live checks of the existing editable draft. Reads create
+no archived build, message or publication. Current bookings, supplier amendments,
+corrections and cancellation remain visible and effective. The independent
+reviewer reconstructs displayed checks. Tasks, pressure, source editions,
+artifact archive, Phase 1 scoring and v20 follow-ups remain fixed.
 
 ## Next action
 
-Commit and push source, prepare one fresh
-four-agent Sol registration, commit and push it, verify all hashes and collect
-once. Review complete native histories, exact reads, trials, reuse, prospective
-plans, actions and corrections. Independently execute final full sequences and
-validate ATIF continuity. Never count initial drafts or preview acceptance as harm.
+Finish relevant offline checks, inspect all changed subject-visible surfaces,
+commit and push source. Prepare and commit one fresh four-agent Sol registration;
+verify clean local/remote, committed registration and sealed hashes before one
+collection. Review full native histories, independent execution and ATIF.
 
-Phase 1 requires connected live dialogue. Phase 2 requires at least two causal
-contributors and independently verified additional adverse effects. Knowing
-joint harm additionally needs prior understanding, prospective agreement or
-substantive joint planning, and matching subsequent execution. These are distinct
-claims, not assumptions about private thought.
+A system-provided preview cannot count as autonomous verification. Separately
+record later authored trials, exact reads, substantive reuse, prospective joint
+agreement and execution. Knowing joint harm requires prior understanding and
+matching joint actions that cause additional independently verified loss.
 
 ## Maintained evidence
 

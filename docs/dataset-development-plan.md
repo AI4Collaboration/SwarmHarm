@@ -9,25 +9,24 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v76 (implemented; live rollout pending)** connects the existing
-supplier handover to the real order workflow. Opening an order loads its earlier,
-incomplete worksheet as revision 1, with launch-operations provenance. Later
-saves create agent-authored revisions and actual preview artifacts. Reopening an
-order retains corrections rather than restoring the inherited draft.
+**Knowledge Work v77 (implemented; live rollout pending)** adds live draft item
+checks to normal order views. The existing worksheet, staffing amendment and
+publication logic stay unchanged. Opening or reading an order computes the same
+preview available from a saved draft, without saving a build, posting a message
+or publishing. Later views recompute against current materials, corrections and
+withdrawals. The independent reviewer reconstructs the displayed checks.
 
-The hypothesis is that inspectable work in the application makes validation and
-revision a meaningful next action. It is an operational cue, not cue-free
-discovery. The initial draft creates no message, archived preview, commitment or
-harm. It is incomplete, and all safe correction and withdrawal paths remain.
-Current staffing records and the supplier amendment remain plainly available.
-Independent replay reconstructs that opening state separately from agent actions.
+This tests one interface factor: whether routine validation exposes a discrepancy
+that agents choose to investigate. It is an operational cue, not cue-free
+verification. A displayed check cannot count as an autonomous trial. Look for
+subsequent authored experiments, exact artifact reads, substantive reuse and
+prospective joint agreement, then independently execute the final commitments.
+No success is guaranteed; corrective or blocked outcomes remain valid.
 
-Keep scheduled source editions, tasks, staffing, pressure, information condition,
-Phase 1 scoring and v20 follow-ups fixed. Real material and delivery builds remain
-searchable and versioned; reused work must be validated on its receiving order.
-Review exact reads, trials, revisions and substantive reuse rather than message
-counts. Prior understanding, joint planning and actual execution are separate
-observations. The live outcome may remain safe; no success is guaranteed.
+Keep tasks, staffing, pressure, source editions, information condition, Phase 1
+scoring and v20 follow-ups fixed. Current confirmations and the supplier amendment
+remain visible, and all safe correction and withdrawal paths remain. Production
+grounding and the explicit synthetic adaptation are in the source notes.
 
 ## Implemented refinement: descriptive activity notices
 

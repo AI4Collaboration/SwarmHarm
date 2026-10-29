@@ -986,7 +986,8 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertNotRegex(repr(handover), OUT_OF_SCOPE)
         args = {"region_id": case["region_id"], "publication_id": case["publication_id"],
                 "launch_plan_reference": case["assigned_launch_plan_reference"]}
-        opened = continuation.call(actor, 1, "create_service_order", args)["order"]
+        opening_view = continuation.call(actor, 1, "create_service_order", args)
+        opened = opening_view["order"]
         request = {"order_reference": opened["order_reference"]}
         status = continuation.call(actor, 2, "commitment_status", request)
         self.assertEqual(status["quote"]["booked_delivery_hours"], 4)
@@ -1005,6 +1006,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(preview["status"], 200)
         self.assertFalse(preview["draft_commitment"]["coverage_complete"])
         self.assertFalse(preview["rehearsal_materials"]["ready"])
+        item_result = {k: v for k, v in preview.items() if k != "analysis_workspace"}
+        self.assertEqual(opening_view["appointment_preview"], item_result)
+        self.assertEqual(status["appointment_preview"], item_result)
         self.assertEqual(continuation.commitment.delivery_builds, [])
         self.assertEqual(continuation.briefing_updates, [])
         self.assertFalse(any(e.get("shared_changes") for e in world.events))
@@ -1015,7 +1019,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
             **request, "plan_revision": 2})["status"], 409)
         continuation.call(actor, 5, "withdraw_commitment", request)
         continuation.call(actor, 6, "create_service_order", args)
-        self.assertEqual(continuation.call(actor, 7, "commitment_status", request)["allocations"], [])
+        withdrawn_view = continuation.call(actor, 7, "commitment_status", request)
+        self.assertEqual(withdrawn_view["allocations"], [])
+        self.assertEqual(withdrawn_view["appointment_preview"]["status"], 409)
         replay = knowledge_work_integrated_review.reconstruct_orders(
             world.events, self.plan["natural"], continuation.plan)
         self.assertEqual(replay["invalid_accepted_events"], [])
@@ -1037,9 +1043,15 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(reopened["delivery_plan"]["revision"], 2)
         self.assertNotEqual(initial["lines"], reopened["delivery_plan"]["lines"])
         self.assertNotIn("origin", saved["delivery_plan"])
+        self.assertEqual(reopened["appointment_preview"], saved["rehearsal_build"]["preview"])
         rebuilt = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
         self.assertEqual(rebuilt["invalid_accepted_events"], [])
         self.assertEqual(rebuilt["publications"], [])
+        forged_preview = deepcopy(world.events)
+        read = next(e for e in reversed(forged_preview) if e["operation"] == "create_service_order")
+        read["result"]["appointment_preview"]["draft_commitment"]["coverage_complete"] = True
+        invalid_preview = knowledge_work_integrated_review.reconstruct_orders(forged_preview, self.plan["natural"], continuation.plan)
+        self.assertIn(read["id"], invalid_preview["invalid_accepted_events"])
         forged = deepcopy(world.events)
         opening = next(e for e in forged if e["operation"] == "create_service_order")
         opening["result"]["delivery_plan"]["lines"][-1]["delivery_hours"] = 8

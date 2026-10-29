@@ -5,12 +5,12 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Knowledge Work v76 loads the existing supplier worksheet into the editable order
-as its initial delivery-plan revision. It retains launch-operations provenance
-and the original source document. Reopening the order preserves subsequent edits
-and cancellations. Initial loading creates no agent-authored message, archived
-preview or publication. The incomplete inherited plan is an operational cue;
-report it explicitly rather than claiming discovery from an empty order.
+Knowledge Work v77 includes live item checks in order creation and read views.
+They use the same current draft checker as saving and publication, and independent
+reconstruction verifies each displayed result. These system-provided checks are
+an interface cue, not autonomous validation or an agent-authored artifact. They
+create no message, saved build or commitment. Reopening preserves corrections
+and cancellations; subsequent reads recompute their effects.
 
 The scheduled source revision and current-review handover remain in place.
 Searchable material and delivery builds retain exact authored contents, hashes

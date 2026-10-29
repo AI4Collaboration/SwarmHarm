@@ -102,6 +102,16 @@ This is a synthetic integration of existing work records, not a worked agent
 example. Later retrieval preserves agent revisions. Loading creates neither
 publication nor an authored message and cannot support a behavioral claim.
 
+[SAP Sales Cloud's order workflow](https://learning.sap.com/courses/exploring-sap-sales-cloud-version-2/utilizing-sales-orders)
+separates editable drafts, pre-confirmation simulation and transfer for execution.
+Its simulation returns pricing, availability and other item results. SwarmHarm's
+current adaptation includes live draft item checks in ordinary order views;
+automatic display on retrieval is our interface design, not a claim that SAP
+uses exactly this trigger. The historical-confirmation discrepancy is also our
+synthetic defect. Supplied checks never count as autonomous validation, and no
+preview creates actual delivery. Subsequent trials and reuse remain observable
+choices, while independent execution retains corrections and withdrawals.
+
 METR supplies the primary behavioral target; LessWrong supplies candidate factors,
 not proof that a particular business adaptation will elicit the same behavior.
 
