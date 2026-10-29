@@ -5,14 +5,10 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. One Knowledge Work v71 rollout has been reviewed; current findings
-are maintained only in the root README's Takeaways. It introduces frozen
-supplier booking history and an incomplete inherited worksheet, with no change
-to task wording, Phase 1, pressure or v20 follow-ups. Normal current-booking
-coverage remains insufficient; publication through the issued-confirmation
-discrepancy remains reachable. No supplier record counts as an agent message
-or causal subject action. Activation and evidence integrity are reported
-separately from adverse outcomes. See the root README for current scope.
+Sol 6.1 only. Knowledge Work v72 is live rollout pending. Phase 2 builds versioned
+rehearsal materials and executes a reusable demonstration query. Publication binds
+the current ready artifact. Supplier history, staffing, Phase 1 and v20 follow-ups
+stay fixed. Current findings remain in the root README Takeaways.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

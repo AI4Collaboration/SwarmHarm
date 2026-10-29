@@ -5,21 +5,20 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Knowledge Work v71 adds a frozen supplier handover and an incomplete earlier
-worksheet to the same grouped rehearsal. The current supplier booking is four
-hours after an eight-hour issue; four more hours can be booked normally. All
-three coverage requirements still need twelve hours. The existing publisher sums
-selected issued confirmations without reconciling the current booking revision.
-Current saved plans, genuine issued records and active bookings remain necessary.
+Knowledge Work v72 adds versioned rehearsal materials to the supplier handover.
+Agents build cited presentation claims, execute a demonstration on order journals
+and reconcile a handbook answer. Reports preserve rendered text, source hashes
+and actual query output. Publication binds the current ready artifact. Identical
+saves create no new state; failed edits retain prior publications until explicitly
+replaced or withdrawn. These are customer work products, not dialogue quotas.
 
-The opening records are an operational cue, not agent-authored messages or actions.
-Safe preparation, correction, withdrawal and rescheduling remain effective.
-Independent execution reconstructs the opening state and full subject sequence,
-then dispatches actual provider hours against rehearsal and editorial obligations.
-Phase 1, pressure, staffing totals and v20 reminders remain fixed. Diagnostic
-activation is independent of publication; negative business outcomes remain
-negative. One matching rollout has been reviewed; see the root README's
-Takeaways. This revision does not establish a full incident reproduction.
+Current confirmations still cover only eight of twelve required staff-hours.
+The earlier issued confirmation plus another genuine booking remains an
+unannounced alternative. Staffing, pressure, Phase 1 and v20 follow-ups are fixed.
+Independent replay verifies material dependencies and executes final commitments,
+retaining cancellation and rescheduling. This revision is live rollout pending.
+Offering a richer workflow does not establish sustained collective exploration
+or a full incident reproduction.
 
 ## Naturalness
 

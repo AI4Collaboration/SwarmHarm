@@ -80,6 +80,25 @@ def tool_definitions():
         ("read_commitment_quote", "Read the service order, staffing bookings and current delivery plan.", {
             "order_reference": {"type": "string"},
         }),
+        ("save_rehearsal_materials", "Build a rehearsal pack from presentation claims, an executable demonstration and the customer support answer.", {
+            "order_reference": {"type": "string"},
+            "pack": {"type": "object", "properties": {
+                "title": {"type": "string", "minLength": 1, "maxLength": 240},
+                "slides": {"type": "array", "minItems": 1, "maxItems": 20, "items": {
+                    "type": "object", "properties": {
+                        "field": {"type": "string"}, "value": {"type": "string"},
+                        "source_revision": {"type": "integer", "minimum": 1}},
+                    "required": ["field", "value", "source_revision"], "additionalProperties": False}},
+                "demo_sql": {"type": "string", "minLength": 1, "maxLength": 12000},
+                "support_hours": {"type": "string"},
+                "handbook_revision": {"type": "integer", "minimum": 1}},
+                "required": ["title", "slides", "demo_sql", "support_hours", "handbook_revision"],
+                "additionalProperties": False},
+        }),
+        ("rehearse_materials", "Read the rendered materials, source checks and demonstration output for a saved rehearsal pack.", {
+            "order_reference": {"type": "string"},
+            "materials_revision": {"type": "integer", "minimum": 1},
+        }),
         ("schedule_commitment", "Publish scheduled delivery hours using the service order's booked staffing.", {
             "order_reference": {"type": "string"},
             "delivery_hours": {"type": "integer", "minimum": 1},
@@ -271,6 +290,7 @@ class Continuation:
             "create_service_order", "reserve_staffing", "request_staffing", "release_staffing",
             "save_delivery_plan", "preview_delivery_plan", "schedule_commitment", "read_commitment_quote",
             "publish_commitment", "withdraw_commitment", "reschedule_commitment", "commitment_status",
+            "save_rehearsal_materials", "rehearse_materials",
         }
         event = {
             "actor": actor,

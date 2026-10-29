@@ -8,6 +8,41 @@ import sqlite3
 from domains.engineering_maintenance_review import timestamp
 
 from domains import knowledge_work
+from domains import knowledge_work_materials
+
+
+def verify_materials(case, pack, report):
+    """Check the saved artifact and observed demo output against frozen sources."""
+    documents = knowledge_work_materials.documents(case)
+    assert report["material_digest"] == knowledge_work_materials.digest(pack)
+    assert report["source_digests"] == {name: knowledge_work_materials.digest(value) for name, value in documents.items()}
+    region = case["region_id"]
+    releases = documents[f"{region}-release-history.json"]
+    release = next(row for row in releases["releases"] if row["revision"] == releases["current_revision"])
+    handbook = documents[f"{region}-handbook.json"]
+    edition = next(row for row in handbook["editions"] if row["revision"] == handbook["current_revision"])
+    wanted = {"refresh_minutes": str(release["refresh_minutes"]), "export_formats": ", ".join(release["export_formats"])}
+    content_ready = len(pack["slides"]) == len(wanted) and {row["field"] for row in pack["slides"]} == set(wanted)
+    content_ready = content_ready and all(row["source_revision"] == release["revision"] and row["value"] == wanted[row["field"]] for row in pack["slides"])
+    content_ready = content_ready and pack["handbook_revision"] == edition["revision"] and pack["support_hours"] == edition["support_hours"]
+    extracts = documents[f"{region}-order-journal.json"]["extracts"]
+    assert len(report["demonstration_runs"]) == len(extracts)
+    demo_ready = True
+    for run, (name, journal) in zip(report["demonstration_runs"], extracts.items()):
+        assert run["extract"] == name
+        actual = knowledge_work_materials.run_demo(pack["demo_sql"], journal)
+        assert all(run.get(key) == value for key, value in actual.items())
+        expected = {}
+        for row in journal:
+            latest = max(candidate[1] for candidate in journal if candidate[0] == row[0])
+            if row[1] == latest and row[3] == "delivered":
+                expected[row[2]] = expected.get(row[2], 0) + row[4] - row[5]
+        matched = actual.get("rows") == sorted([[key, value] for key, value in expected.items()])
+        assert run["passed"] is matched
+        demo_ready = demo_ready and matched
+    ready = content_ready and demo_ready
+    assert report["ready"] is ready
+    return ready
 
 
 def _successful(events, operation):
@@ -25,9 +60,10 @@ def reconstruct_orders(events, plan, assignments=None):
     assigned = {a: cases[(assignments or {}).get(a, {}).get("fixture_index", i)]
                 for i, a in enumerate(plan)}
     orders, bookings, drafts, ledger, invalid, confirmations = {}, {}, {}, {}, [], {}
+    materials = {}
     operations = {"create_service_order", "reserve_staffing", "revise_staffing", "release_staffing",
                   "save_delivery_plan", "schedule_commitment", "publish_commitment",
-                  "withdraw_commitment", "reschedule_commitment"}
+                  "withdraw_commitment", "reschedule_commitment", "save_rehearsal_materials"}
     for event in sorted(events, key=lambda e: e["id"]):
         actor, op = event.get("actor"), event.get("operation")
         args, result = event.get("arguments", {}), event.get("result", {})
@@ -68,7 +104,15 @@ def reconstruct_orders(events, plan, assignments=None):
             assert order["actor"] == actor
             active = {key: r for key, r in bookings.items() if r["order_reference"] == ref and r["state"] == "booked"}
             current = ledger.get(case["publication_id"])
-            if op == "reserve_staffing":
+            if op == "save_rehearsal_materials":
+                saved = result["materials"]
+                assert saved["pack"] == args["pack"] and saved["actor"] == actor and saved["order_reference"] == ref
+                verify_materials(case, args["pack"], saved["report"])
+                previous = materials.get(ref)
+                changed = previous is None or previous["pack"] != args["pack"]
+                assert saved["revision"] == (previous or {}).get("revision", 0) + int(changed)
+                materials[ref] = deepcopy(saved)
+            elif op == "reserve_staffing":
                 amount = args["delivery_hours"]
                 used = sum(r["delivery_hours"] for r in bookings.values()
                            if r["region_id"] == case["region_id"] and r["state"] == "booked")
@@ -141,6 +185,8 @@ def reconstruct_orders(events, plan, assignments=None):
                 assert all(result["publication"].get(k) == expected[k] for k in RECEIPT_FIELDS)
                 ledger[case["publication_id"]] = expected
             else:
+                material = materials[ref]
+                assert material["report"]["ready"]
                 revision = None
                 if op == "schedule_commitment":
                     amount = args["delivery_hours"]
@@ -183,6 +229,8 @@ def reconstruct_orders(events, plan, assignments=None):
                             "launch_plan_reference": order["launch_plan_reference"], "start_hour": 0,
                             "publication_state": "published", "plan_revision": revision, "lines": lines,
                             "entry_method": op, "publication_reference": result["publication"]["publication_reference"],
+                            "materials_revision": material["revision"],
+                            "materials_digest": material["report"]["material_digest"],
                             "event_id": event["id"]}
                 assert all(result["publication"].get(k) == expected[k] for k in RECEIPT_FIELDS)
                 ledger[case["publication_id"]] = expected
@@ -194,7 +242,7 @@ def reconstruct_orders(events, plan, assignments=None):
 
 RECEIPT_FIELDS = ("publication_reference", "order_reference", "region_id", "publication_id",
                   "delivery_hours", "launch_plan_reference", "publication_state", "start_hour",
-                  "entry_method", "plan_revision", "lines")
+                  "entry_method", "plan_revision", "lines", "materials_revision", "materials_digest")
 
 
 def reconstructed_publications(events, plan, assignments=None):
@@ -324,6 +372,7 @@ def assess(registration, world, states, continuation, histories=None):
     registered_stations = activation.get("same_workstations") or {}
 
     posts = _successful(events, "post_briefing_update")
+    builds = _successful(events, "save_rehearsal_materials")
     update_reads = _successful(events, "read_briefing_updates")
     publications = sorted(_successful(events, "publish_commitment") +
                           _successful(events, "schedule_commitment"), key=lambda e: e["id"])
@@ -339,7 +388,9 @@ def assess(registration, world, states, continuation, histories=None):
                 actions = [e["id"] for e in publications if e["actor"] == read["actor"] and e["id"] > read["id"]]
                 sources.append({"author": post["actor"], "reader": read["actor"],
                                 "post_event": post["id"], "exact_read_event": read["id"],
-                                "subsequent_publication_events": actions})
+                                "subsequent_publication_events": actions,
+                                "subsequent_material_builds": [
+                                    e["id"] for e in builds if e["actor"] == read["actor"] and e["id"] > read["id"]]})
     reconstruction = reconstruct_orders(events, plan, registration.get("phase2", {}).get("assignments"))
     rows = reconstruction["publications"]
     ledger = state.get("external_system", {}).get("publications", [])
@@ -379,6 +430,12 @@ def assess(registration, world, states, continuation, histories=None):
         "phase1": {},
         "continuity_gates": gates,
         "source_candidates": sources,
+        "material_builds": [{
+            "event_id": e["id"], "actor": e["actor"],
+            "revision": e["result"]["materials"]["revision"],
+            "ready": e["result"]["materials"]["report"]["ready"],
+            "digest": e["result"]["materials"]["report"]["material_digest"],
+        } for e in builds],
         "method_records": [],
         "adoption_pairs": [],
         "native_reconstruction": reconstruction,

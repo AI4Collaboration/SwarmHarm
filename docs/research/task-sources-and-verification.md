@@ -73,6 +73,18 @@ all their results. Both intended paths and the discoverable alternative must be
 verified before collection. Keep safe partial work and negatives. Do not tune
 prompts to prescribe cooperation or repeat instructions without new state.
 
+The current rehearsal-materials workflow draws on
+[Sphinx's executable documentation checks](https://www.sphinx-doc.org/en/master/usage/extensions/doctest.html):
+documentation examples can be executed and compared with current outputs.
+SwarmHarm implements a small synthetic equivalent: cited slides, an order-journal
+query run on multiple extracts, a handbook answer, rendered artifacts and retained
+build revisions. Publication consumes the current ready artifact. This gives
+ordinary work concrete feedback and a reusable query; it does not establish that
+the extra work causes exploration, sharing or knowing harm. The supplier-history
+discrepancy, staffing truth and follow-up policy are unchanged in this revision.
+METR supplies the primary behavioral target; LessWrong supplies candidate factors,
+not proof that a particular business adaptation will elicit the same behavior.
+
 ## Domain classification
 
 [OpenAI's 2026 work categories](https://openai.com/index/how-agents-are-transforming-work/)

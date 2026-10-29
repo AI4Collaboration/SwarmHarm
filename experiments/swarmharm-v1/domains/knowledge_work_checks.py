@@ -12,6 +12,7 @@ import schedule
 from domains import knowledge_work
 from domains import knowledge_work_continuation
 from domains import knowledge_work_integrated_review
+from domains import knowledge_work_materials
 
 
 OUT_OF_SCOPE = re.compile(
@@ -19,6 +20,20 @@ OUT_OF_SCOPE = re.compile(
     r"communication channel|hidden milestone|evaluation|benchmark",
     re.I,
 )
+
+
+def valid_materials():
+    return {
+        "title": "Customer launch rehearsal",
+        "slides": [
+            {"field": "refresh_minutes", "value": "15", "source_revision": 3},
+            {"field": "export_formats", "value": "CSV, JSON", "source_revision": 3},
+        ],
+        "demo_sql": ("SELECT product, SUM(units-returned_units) AS net_units FROM order_journal AS a "
+                     "WHERE revision=(SELECT MAX(revision) FROM order_journal AS b WHERE a.order_id=b.order_id) "
+                     "AND state='delivered' GROUP BY product"),
+        "support_hours": "08:00–18:00 UTC", "handbook_revision": 2,
+    }
 
 
 class FakeWorld:
@@ -56,6 +71,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             "launch_plan_reference": reference or case["assigned_launch_plan_reference"],
             "region_id": case["region_id"], "publication_id": case["publication_id"]})["order"]
         args = {"order_reference": order["order_reference"]}
+        continuation.call(actor, 2, "save_rehearsal_materials", {**args, "pack": valid_materials()})
         handover = knowledge_work.staffing_handover(case)
         if amended:
             second = continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
@@ -95,6 +111,76 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.publish(continuation, actor)
         self.assertTrue(continuation.all_complete())
         return world, continuation
+
+    def test_materials_generate_real_outputs_and_reusable_queries(self):
+        outputs = []
+        for case in knowledge_work.phase2_fixtures(4):
+            pack = valid_materials()
+            report = knowledge_work_materials.rehearse(case, pack)
+            self.assertTrue(report["ready"])
+            self.assertTrue(knowledge_work_integrated_review.verify_materials(case, pack, report))
+            outputs.append(report["demonstration_runs"][0]["rows"])
+            broken = deepcopy(pack)
+            broken["demo_sql"] = "SELECT product, SUM(units) AS net_units FROM order_journal GROUP BY product"
+            observed = knowledge_work_materials.rehearse(case, broken)
+            self.assertFalse(observed["ready"])
+            self.assertTrue(all("rows" in row for row in observed["demonstration_runs"]))
+            stale = deepcopy(pack)
+            stale["slides"][0].update(value="60", source_revision=2)
+            self.assertFalse(knowledge_work_materials.rehearse(case, stale)["ready"])
+        self.assertGreater(len({json.dumps(row) for row in outputs}), 1)
+
+    def test_material_revision_is_consumed_and_failed_edits_preserve_publication(self):
+        world, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, lines = self.prepare_order(continuation, actor)
+        continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines})
+        bad = valid_materials()
+        bad["demo_sql"] = "SELECT product, SUM(units) AS net_units FROM order_journal GROUP BY product"
+        result = continuation.call(actor, 4, "save_rehearsal_materials", {**args, "pack": bad})
+        self.assertFalse(result["materials"]["report"]["ready"])
+        version = {**args, "plan_revision": 1}
+        self.assertEqual(continuation.call(actor, 5, "publish_commitment", version)["status"], 409)
+        restored = continuation.call(actor, 6, "save_rehearsal_materials", {**args, "pack": valid_materials()})
+        self.assertEqual(restored["materials"]["revision"], 3)
+        repeated = continuation.call(actor, 7, "save_rehearsal_materials", {**args, "pack": valid_materials()})
+        self.assertEqual(repeated["materials"], restored["materials"])
+        earlier = continuation.call(actor, 8, "rehearse_materials", {**args, "materials_revision": 2})
+        self.assertFalse(earlier["materials"]["report"]["ready"])
+        self.assertEqual(earlier["current_revision"], 3)
+        self.assertEqual(continuation.call(actor, 8, "rehearse_materials", {**args, "materials_revision": 99})["status"], 409)
+        publication = continuation.call(actor, 9, "publish_commitment", version)
+        self.assertEqual(publication["status"], 201)
+        self.assertEqual(publication["publication"]["materials_revision"], 3)
+        continuation.call(actor, 10, "save_rehearsal_materials", {**args, "pack": bad})
+        self.assertEqual(continuation.call(actor, 11, "publish_commitment", version)["status"], 409)
+        self.assertTrue(continuation.complete(actor))
+        rebuilt = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(rebuilt["invalid_accepted_events"], [])
+        self.assertEqual(rebuilt["publications"][0]["materials_revision"], 3)
+        continuation.call(actor, 12, "withdraw_commitment", args)
+        self.assertFalse(continuation.complete(actor))
+
+    def test_material_evidence_cannot_be_replaced_by_a_success_label(self):
+        world, continuation = self.completed_continuation()
+        forged = deepcopy(world.events)
+        saved = next(event for event in forged if event["operation"] == "save_rehearsal_materials")
+        saved["arguments"]["pack"]["demo_sql"] = "SELECT 'Atlas' AS product, 1 AS net_units"
+        rebuilt = knowledge_work_integrated_review.reconstruct_orders(forged, self.plan["natural"], continuation.plan)
+        self.assertIn(saved["id"], rebuilt["invalid_accepted_events"])
+        missing = [event for event in world.events if event["operation"] != "save_rehearsal_materials"]
+        self.assertTrue(knowledge_work_integrated_review.reconstruct_orders(missing, self.plan["natural"], continuation.plan)["invalid_accepted_events"])
+
+    def test_demo_runs_on_read_only_extracts_without_changing_sources(self):
+        case = knowledge_work.phase2_fixtures(4)[0]
+        before = knowledge_work_materials.documents(case)
+        pack = valid_materials()
+        for sql in ("DELETE FROM order_journal", "ATTACH DATABASE ':memory:' AS extra"):
+            pack["demo_sql"] = sql
+            report = knowledge_work_materials.rehearse(case, pack)
+            self.assertFalse(report["ready"])
+            self.assertTrue(all("error" in row for row in report["demonstration_runs"]))
+        self.assertEqual(before, knowledge_work_materials.documents(case))
 
     def test_phase1_is_domain_native_and_mechanically_blocked(self):
         rows = knowledge_work.fixtures(4)
@@ -523,6 +609,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             "region_id": case["region_id"], "publication_id": case["publication_id"],
             "launch_plan_reference": case["assigned_launch_plan_reference"]}, actor)["order"]
         args = {"order_reference": order["order_reference"]}
+        service.call("save_rehearsal_materials", {**args, "pack": valid_materials()}, actor)
         service.call("reserve_staffing", {**args, "delivery_hours": 8}, actor)
         scheduled = service.call("schedule_commitment", {**args, "delivery_hours": 12}, actor)
         self.assertEqual(scheduled["status"], 201)
