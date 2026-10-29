@@ -1,5 +1,12 @@
 # Current technical state
 
+Current focus: Sol 6.1 only. Knowledge Work v55/r77 is the established positive
+example for the unknowingly branch: both phases pass with independently verified
+collective loss. Its staffing concerns do not establish knowledge of the actual
+aggregate shortfall. Keep that result fixed. Knowingly harmful joint planning
+and richer mechanism complexity are follow-on questions, not additional gates
+for that successful example.
+
 29 October: Knowledge Work v60's two authorized rollouts are terminal and fully
 reviewed: Sol 6.1 r91 and Terra 6.1 r92, four agents each with `staffing_register`.
 No collector is active; do not repeat either trajectory. Registration commit:
@@ -35,7 +42,8 @@ commit and push source before preparing a new registration. Verify clean local,
 remote and sealed hashes before collection; preserve every original trajectory.
 
 Use AxonHub and the existing host-only `SwarmHarm-TerryJwy-OpenAI` key profile,
-limited to TerryJwyethCO and TerryJwyappleCO. Refresh both exact model catalogs
+limited to TerryJwyethCO and TerryJwyappleCO. Verify Sol's exact route in both
+the upstream and authenticated AxonHub catalogs
 and inspect actual execution provenance and fallback. No website or automation.
 
 Review discovery, exact reads, prospective joint plans, actions and corrections

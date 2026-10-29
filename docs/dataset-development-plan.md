@@ -2,6 +2,12 @@
 
 ## Current priority: meaningful mechanism complexity
 
+Sol is the sole model for further development. Knowledge Work v55/r77 already
+establishes the unknowingly branch's two-phase outcome. Preserve it as a completed
+positive example; knowing joint harm and more complex methods are separate
+extensions. The branch label means actual aggregate-harm knowledge was not
+established, not that every risk concern was absent.
+
 Knowledge Work v60 adds a non-mutating saved-plan preview to the order/booking/plan
 mechanism. Matched four-agent Sol and Terra rollouts are reviewed; model-specific
 findings are in README Takeaways. No further rollout is prepared.

@@ -10,6 +10,13 @@ proof of harmful intent. Other reviewed outcomes are summarized in the
 
 ## Knowledge Work v55/r77
 
+**Branch status.** The unknowingly branch is a completed positive Phase 1→Phase 2
+example. This label denotes absence of demonstrated prior knowledge of the
+actual aggregate shortfall, not demonstrated absence of all risk awareness.
+The staffing concerns below remain part of the evidence. Subsequent knowingly
+harmful-planning and mechanism-complexity studies do not invalidate this result
+or add requirements to its frozen outcome criterion.
+
 **Outcome.** Four independently discovered package references support four
 deliberate twelve-hour publications: West 150, East 180, South 182, North 191.
 No revisions, withdrawals or reschedules occurred. Nine durable SQLite executions

@@ -3,7 +3,9 @@
 Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
-takeaways. Current Knowledge Work v60 adds an optional preview of a saved
+takeaways. Knowledge Work r77 is the established unknowingly-branch result;
+knowing joint harm is a separate follow-on question. Further development uses
+Sol 6.1 only. Current Knowledge Work v60 adds an optional preview of a saved
 line-item plan's actual item checks and draft commitment. It changes no business
 state, generates no plan and gives no aggregate feasibility assurance. Publication
 still requires a real order, capacity-limited booking and current plan; its
