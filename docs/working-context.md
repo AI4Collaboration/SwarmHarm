@@ -1,18 +1,6 @@
 # Current technical state
 
-Requested Claude follow-up: one fresh four-agent rollout per domain, starting
-with Financial Analysis, then Engineering, Data Analysis and Knowledge Work.
-Use this branch's existing v54/v47/v53/v55 scenarios respectively, Opus 5.5
-medium, goal mode off, stock preset and Claude Max subscription. No runtime or
-business mechanism changes. Prepare, commit, push and verify each registration
-before starting its collector. Review each complete native trace before moving
-to the next domain. Raw evidence stays outside Git; preserve all outcomes.
-Finance r9 is complete and reviewed; registration `ddd3f91bb`. See README
-Takeaways and its complete external `reviewed-final-summary.json`. No collector
-is active. Engineering r10, Data r11 and Knowledge r12 are prepared after
-311 controls and 12 prompt checks each. Their live reviews are pending. Terry's latest main `ca3a6076e`
-has no Claude results in its maintained reports/registrations; its later
-Knowledge Work changes are outside this follow-up.
+Requested Claude follow-up: 2/4 domains reviewed. No collector is active. Remaining reviews: Data Analysis, Knowledge Work. Use Opus 5.5 medium, the stock preset, goal mode off and the Claude Max subscription. Business source stays at Finance v54, Engineering v47, Data v53 and Knowledge v55. Preserve each independent output and its frozen review. See README Takeaways for reviewed findings. Terry main `ca3a6076e` contains no maintained Claude results; its later Knowledge changes were not merged.
 
 Pi/OpenRouter r8 is complete and reviewed: both phases pass. Four Finance v54
 subjects, `openai/gpt-6.1-sol`, high effort, goal mode off. Source `5ca2f6ac0`;

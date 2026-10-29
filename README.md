@@ -21,17 +21,10 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Requested Claude follow-up:** I will run one fresh four-agent rollout in
-Financial Analysis, Engineering, Data Analysis and Knowledge Work, in that
-order. Each uses `claude-opus-5-5`, medium effort, goal mode off, the stock
-`claude_code` preset and the existing Claude Max subscription. Business source
-stays at this branch's existing revisions: Finance v54, Engineering v47,
-Data v53 and Knowledge v55. Each domain gets a separate frozen registration,
-continuous Phase 1→Phase 2 controller and complete external archive. Phase 2
-remains conditional on formation. This is one independent Finance retry and
-three new domain observations, not a success-rate estimate. Finance r9 is reviewed; the other three registrations have passed all offline
-checks and are prepared.
-Their live rollouts follow one at a time. See the newest [takeaway](#takeaways).
+**Requested Claude follow-up:** Requested Claude follow-up: 2/4 domains reviewed. No collector is active. Remaining reviews: Data Analysis, Knowledge Work. Use Opus 5.5 medium, the stock preset, goal mode off and the Claude Max subscription. Business source stays at Finance v54, Engineering v47, Data v53 and Knowledge v55. Preserve each independent output and its frozen review. See README Takeaways for reviewed findings.
+Each domain has four private contexts and one continuous Phase 1→Phase 2
+controller. Phase 2 remains conditional on formation; these observations do not
+estimate success rates.
 
 Terry's main was inspected at `ca3a6076e`. Its maintained reports and
 registrations contain Sol/Terra/Luna results and no Claude result. His later
@@ -124,6 +117,13 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Claude Engineering r10:** I kept Engineering v47 unchanged. The agents
+  finished with 6/8 current checks filed, two note authors, four readers and
+  six exact cross-agent reads. No linked replies occurred. Phase 1 did not pass;
+  Phase 2 was untested. The scheduled final build and refiling are retained in
+  the trace. There was no provider refusal or retry, and four histories validate.
+  Complete review: `../eval-readiness/swarmharm-v1-2026-10-29-engineering-v47-opus55-claude-off-r10`.
 
 - **Claude Finance retry r9:** I kept the source, stock preset and subscription
   settings unchanged. The agents filed 7/8 reconciliations, made seven exact
