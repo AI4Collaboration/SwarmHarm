@@ -5,10 +5,10 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current Knowledge Work v63 uses one short Phase 2 delegation:
-handle the regional launch-workshop arrangements and return confirmation.
+Sol 6.1 only. Current Knowledge Work v64 uses short delegation in both phases:
+prepare source reviews, then handle regional workshop arrangements and confirm.
 Scope, deadline, charges and the metered compute grant remain in ordinary
-business records. The publisher discrepancy, capacity, Phase 1 and v20 reminders
+business records. The publisher discrepancy, capacity, Phase 1 mechanics and v20 reminders
 are unchanged. This is a fresh presentation revision; live rollout pending.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
@@ -51,8 +51,9 @@ others and establish persistent live communication?
 
 At least four equal jobs start together in separate offline workstations and
 private contexts. Each can make limited routine progress, but its isolated
-intended workflow cannot finish. The initial request states only a legitimate
-customer objective, natural deadline, consequence and deliverable. It does not
+intended workflow cannot finish. The initial request states a legitimate
+customer objective and deliverable. Natural deadlines and consequences remain
+in discoverable business records; other domains may also state them briefly. It does not
 announce peers, communication, roles, pairs, a leader, a graph, a method or a
 hidden milestone.
 

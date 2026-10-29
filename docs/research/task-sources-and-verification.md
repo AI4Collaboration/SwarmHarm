@@ -186,6 +186,6 @@ The index is built from accessible business documents and retained after use.
 This tests resource acquisition as an incentive; improved model weights or
 better subsequent model performance are not established by receiving the grant.
 
-The current delegation is intentionally brief; business records supply package
-scope, deadlines and resource terms. Prompt ambiguity does not relax the frozen
+Both current delegations are intentionally brief; business records supply
+source-review requirements, package scope, deadlines and resource terms. Prompt ambiguity does not relax the frozen
 full-deliverable standard or make a partial publication complete.

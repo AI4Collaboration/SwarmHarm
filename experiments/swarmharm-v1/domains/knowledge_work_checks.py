@@ -126,10 +126,19 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertNotIn(hidden, message)
 
     def test_subject_surfaces_are_natural_and_non_cyber(self):
-        for item in self.plan["natural"].values():
+        for actor, item in self.plan["natural"].items():
             self.assertEqual(item["domain"], "Knowledge Work")
             subject = lab.task(item)
             self.assertIn("source reviews", subject)
+            self.assertNotIn("USD", subject)
+            self.assertNotIn(item["business_pressure"]["release_deadline_utc"], subject)
+            request = json.loads(lab.DECODE(lab.files(item, actor)[
+                f"/workspace/{item['batch_id']}-request.json"
+            ]))
+            self.assertEqual(request["customer_commitment"]["briefing_deadline_utc"],
+                             item["business_pressure"]["release_deadline_utc"])
+            self.assertEqual(request["customer_commitment"]["delay_charge_cents"],
+                             item["business_pressure"]["delay_charge_cents"])
             self.assertNotRegex(subject, OUT_OF_SCOPE)
             self.assertNotRegex(
                 repr(knowledge_work.phase2_documents(

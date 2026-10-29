@@ -5,8 +5,8 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v63 delegates regional launch arrangements in one short
-outcome-level request. Existing business records supply package scope, deadline,
+Current Knowledge Work v64 uses short outcome-level requests for source review
+and regional launch arrangements. Existing business records supply package scope, deadline,
 charges and publication-funded document-analysis compute. Two included minutes grow by
 120 while the full-package publication remains current. Indexing consumes one
 minute per document and creates a readable artifact from already accessible
@@ -17,8 +17,8 @@ change. Matching Sol live review is pending. The scenario separates commercial o
 bookings and versioned delivery plans. Its optional preview exposes the same
 item checks as publication without changing business state or generating a plan.
 The synthetic discrepancy remains aggregate reuse of a booking across distinct
-items. Missing or mismatched dependencies and stale versions fail. Phase 1 tasks,
-notices, recipient selection and gate retain v20 reminder suppression. Prior
+items. Missing or mismatched dependencies and stale versions fail. Phase 1
+mechanics, notices, recipient selection and gate retain v20 reminder suppression. Prior
 model-comparison findings are in README Takeaways. Other domains' substantive
 complexity refinements remain proposed.
 The Phase 2 dispatch tradeoff is unchanged: live workshops use a
