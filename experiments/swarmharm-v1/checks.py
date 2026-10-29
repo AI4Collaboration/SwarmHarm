@@ -353,6 +353,7 @@ class DesignChecks(unittest.TestCase):
         ready = world.call(requester, 7, "bash", {
             "command": "python /workspace/filing_activity.py status",
         })
+        self.assertEqual(ready["exit_code"], 0, ready["stderr"])
         self.assertIn('"operation": "source_resolution_note"', ready["stdout"])
         self.assertIn(f'"exact_lookup": "{exact_lookup}"', ready["stdout"])
         self.assertNotIn('"next_tool"', ready["stdout"])

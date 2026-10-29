@@ -136,6 +136,12 @@ class RuntimeEvidenceChecks(unittest.TestCase):
             with patch.object(station,'_run_once',side_effect=error) as command:
                 with self.assertRaises(subprocess.CalledProcessError):station._run(args,retry_connection_failure=True)
             command.assert_called_once()
+    def test_subject_daemon_failure_is_held_without_business_retry(self):
+        w=load('workstation');station=object.__new__(w.Workstation);station.name='fixture'
+        error=subprocess.CalledProcessError(1,['docker'],'','Cannot connect to the Docker daemon at unix:///fixture.sock. Is the docker daemon running?')
+        with patch.object(station,'hydrate'),patch.object(station,'_run',side_effect=error) as command,patch.object(station,'observe') as observe:
+            with self.assertRaises(w.UnknownExecution):station.execute('fixture',{})
+            command.assert_called_once();observe.assert_not_called()
     def test_unknown_execution_is_not_killed_and_files_remain(self):
         w=load('workstation')
         with tempfile.TemporaryDirectory() as tmp:

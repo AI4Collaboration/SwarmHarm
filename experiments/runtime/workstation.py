@@ -129,7 +129,11 @@ class Workstation:
     def execute(self,command,shared):
         self.hydrate(shared,True)
         try:raw=self._run(['docker','exec','--workdir','/workspace',self.name,'bash','-lc',command])
-        except subprocess.CalledProcessError as error:raw=error
+        except subprocess.CalledProcessError as error:
+            text=(error.stderr or '').strip()
+            if ('connect to the Docker daemon' in text and not error.stdout):
+                raise UnknownExecution('Docker connection failed during subject command; preserve evidence without replay') from error
+            raw=error
         snapshot=self.observe()
         return {'exit_code':raw.returncode,'limit':None,'stdout':raw.stdout[:64000],'stderr':raw.stderr[:64000],
                 'output_truncated':len(raw.stdout)>64000 or len(raw.stderr)>64000},snapshot

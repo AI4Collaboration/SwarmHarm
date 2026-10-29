@@ -10,6 +10,7 @@ import importlib.util
 import io
 import http.client
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -47,6 +48,10 @@ AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
 AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
+API_PROVIDER='axonhub'
+COLLECTION_REF='refs/heads/main'
+OPENROUTER_BASE='https://openrouter.ai/api/v1'
+OPENROUTER_PROVIDER={'only':['openai'],'order':['openai'],'allow_fallbacks':False}
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':1,'transport_retry_backoff_seconds':2,
         'max_output_tokens_per_response':16384,
         'max_actor_seconds':harbor_input.ACTOR_TIMEOUT_SECONDS,'max_batch_seconds':4500,'provider_concurrency':4,
@@ -125,6 +130,16 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
 def verify_routes(key_file):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
+    if API_PROVIDER=='openrouter':
+        direct=catalog(f'{OPENROUTER_CATALOG}/{model}/endpoints',upstream,key_file)
+        upstream_check=catalog(f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream)
+        if not direct['model_found'] or not upstream_check['model_found']:
+            raise RuntimeError('Requested direct OpenRouter route is absent; no inference sent.')
+        return {'checked_at':utc(),'api_provider':'openrouter','api_base':OPENROUTER_BASE,
+            'responses_endpoint':OPENROUTER_BASE+'/responses','model':model,
+            'upstream_model':upstream,'direct_openrouter':direct,'openrouter':upstream_check,
+            'provider_preferences':deepcopy(OPENROUTER_PROVIDER),
+            'scope':'Explicit direct-OpenRouter exception; no AxonHub deployment validation.'}
     routes={'checked_at':utc(),'api_base':AXONHUB_API_BASE,
         'responses_endpoint':AXONHUB_ENDPOINT,
         'axonhub_catalog_endpoint':AXONHUB_CATALOG,
@@ -139,10 +154,15 @@ def verify_routes(key_file):
             f"AxonHub route {model} or upstream counterpart {upstream} is absent from its current catalog"
         )
     return routes
-def validate_response_model(request,response):
+def validate_response_model(request,response,aliases=None):
     expected=request['model'];returned=response.get('model')
-    if returned!=expected:
+    if returned not in (aliases or [expected]):
         raise ValueError(f'Provider returned model {returned!r}; expected frozen model {expected!r}')
+def provider_request_fields(registration):
+    if registration.get('api_provider')=='openrouter':
+        return {'provider':deepcopy(registration['provider_preferences'])}
+    return {}
+
 def registration_api_base(registration):
     base=registration.get('api_base')
     if base:return base.rstrip('/')
@@ -353,7 +373,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'controls.json','initial-input-audit.json','initial-file-audit.json',
             'route-confirmation.json','phase2-plan.json')}}
     reg.update(scenario_mechanics.registration_overrides(cue_condition))
-    reg['runtime_revision']='single-post-durable-retained-v2'
+    reg['runtime_revision']='single-post-durable-retained-v3'
+    reg['collection_ref']=validated_collection_ref(COLLECTION_REF)
+    reg['api_provider']=API_PROVIDER
+    if API_PROVIDER=='openrouter':
+        reg.update(api_base=OPENROUTER_BASE,endpoint=OPENROUTER_BASE+'/responses',
+            credential_source='Existing authorized host-only OpenRouter key; not supplied to subjects.',
+            provider_preferences=deepcopy(OPENROUTER_PROVIDER),
+            response_model_aliases=sorted(set(MODELS.values())|set(UPSTREAM_MODELS.values())),
+            deployment_claim='Direct OpenRouter validation; not the TerryJwy AxonHub profile.')
     # These shared mechanics apply after every domain's metadata override.
     initiated = cue_condition == 'agent_initiated_activity'
     reg['substrate'].update({
@@ -412,6 +440,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             '\nFirst Phase 1 success records formation with no fixed observation wait. '
             'In-flight requests drain before Phase 2 starts. The same contexts '
             'and shared state continue, without a subject-visible stage label.\n')
+    with (root/'PROTOCOL.md').open('a') as protocol:
+        protocol.write('\nAPI profile: '+reg['api_provider']+'. Pushed collection reference: '+reg['collection_ref']+'.\n')
+        if reg['api_provider']=='openrouter':
+            protocol.write('Direct OpenRouter exception, not the TerryJwy AxonHub deployment. Provider preferences: '+json.dumps(reg['provider_preferences'],sort_keys=True)+'. Explicit model normalization: '+json.dumps(reg['response_model_aliases'])+'.\n')
     reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{
@@ -437,6 +469,11 @@ FROZEN_REGISTRATION_FILES=(
     'initial-input-audit.json','initial-file-audit.json','route-confirmation.json',
     'phase2-plan.json')
 
+def validated_collection_ref(ref):
+    if not isinstance(ref,str) or not re.fullmatch(r'refs/heads/[A-Za-z0-9][A-Za-z0-9/_-]*',ref) or '//' in ref:
+        raise ValueError('Use an explicit complete refs/heads/... branch reference.')
+    return ref
+
 def verify_collection_freeze(root,registration_dir,reg):
     status=subprocess.check_output(
         ['git','status','--porcelain=v1','--untracked-files=all'],
@@ -444,7 +481,7 @@ def verify_collection_freeze(root,registration_dir,reg):
     require(not status.strip(),'Git worktree must be clean before inference.')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
     remote=subprocess.check_output(
-        ['git','ls-remote','origin','refs/heads/main'],cwd=REPO,text=True
+        ['git','ls-remote','origin',validated_collection_ref(reg.get('collection_ref','refs/heads/main'))],cwd=REPO,text=True
     ).split()[0]
     require(head==remote,'Registration source must be committed and pushed before inference.')
     tracked=subprocess.run(
@@ -677,7 +714,8 @@ def collect(root,registration_dir):
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     transport=module('swarmharm_v1_axonhub_transport',REPO/'experiments/runtime/transport.py')
     transport.configure(next(iter(reg['models'].values())), registration_api_base(reg), key_file=AXONHUB_KEY_FILE,
-        max_output_tokens=budget['max_output_tokens_per_response'])
+        max_output_tokens=budget['max_output_tokens_per_response'],
+        response_model_aliases=reg.get('response_model_aliases'))
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
     continuation_path = HERE / (domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
@@ -725,7 +763,7 @@ def collect(root,registration_dir):
                         raise RolloutLimit('Registered actor or rollout wall-clock limit reached')
                     allowance=min(budget['request_timeout_seconds'],min(remaining))
                     value=transport.call(body,attempt_folder,attempt_label,timeout=allowance)
-                validate_response_model(body,value)
+                validate_response_model(body,value,reg.get('response_model_aliases'))
             except RolloutLimit:
                 mark_inflight(request_id,None)
                 raise
@@ -769,7 +807,8 @@ def collect(root,registration_dir):
         if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
         if classification['status']=='text_refusal_candidate':print(json.dumps({'alert':'text_refusal_candidate','request':str((folder/label).relative_to(root))}),flush=True)
         return value
-    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']}}
+    def body(history,provider,tools=None):return {'model':reg['models'][provider],'instructions':lab.INSTRUCTIONS,'input':deepcopy(history),'tools':tools or lab.tools(reg.get('scenario')),'reasoning':{'effort':reg['reasoning']},
+        **provider_request_fields(reg)}
     lab.base.EVIDENCE_ROOT=root/'workstation-evidence'
     cleanup=[]
     def phase(name):
@@ -1195,6 +1234,10 @@ if __name__=='__main__':
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
     p.add_argument('--information-condition', choices=('local_records', 'staffing_register'),
         default='local_records', help='Knowledge Work Phase 2 information availability.')
+    p.add_argument('--api-provider',choices=('axonhub','openrouter'),default='axonhub',
+        help='Prepare-only route profile; collection reads its sealed registration.')
+    p.add_argument('--collection-ref',default='refs/heads/main',
+        help='Prepare-only exact pushed branch reference; source and input seals remain mandatory.')
     a=p.parse_args()
     AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
@@ -1202,6 +1245,8 @@ if __name__=='__main__':
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
+        API_PROVIDER=a.api_provider
+        COLLECTION_REF=validated_collection_ref(a.collection_ref)
         MODELS={a.model_alias:a.model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or a.model_id}
     if a.phase=='prepare':

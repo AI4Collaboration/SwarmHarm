@@ -1,4 +1,4 @@
-"""Host-only AxonHub Responses transport for every live model run.
+"""Host-only Responses transport with durable single-attempt evidence.
 
 The credential is read only from ``AXONHUB_API_KEY`` or an explicitly supplied
 host-side key file.  It is never copied into a task container, registration,
@@ -32,11 +32,12 @@ ENDPOINT = "https://lmportal.iefbr14.xyz/v1/responses"
 API_KEY_ENV = "AXONHUB_API_KEY"
 API_KEY_FILE = None
 MAX_OUTPUT_TOKENS = None
+RESPONSE_MODEL_ALIASES = None
 
 
 def configure(model, base_url="https://lmportal.iefbr14.xyz/v1", key_env=API_KEY_ENV,
-              key_file=None, max_output_tokens=None):
-    global MODEL, ENDPOINT, API_KEY_ENV, API_KEY_FILE, MAX_OUTPUT_TOKENS
+              key_file=None, max_output_tokens=None, response_model_aliases=None):
+    global MODEL, ENDPOINT, API_KEY_ENV, API_KEY_FILE, MAX_OUTPUT_TOKENS, RESPONSE_MODEL_ALIASES
     url = urlsplit(base_url)
     if (url.scheme != "https" or not url.netloc or url.username or url.password
             or url.query or url.fragment):
@@ -45,6 +46,11 @@ def configure(model, base_url="https://lmportal.iefbr14.xyz/v1", key_env=API_KEY
         raise ValueError("Provide an explicit AxonHub model ID")
     if max_output_tokens is not None and (type(max_output_tokens) is not int or max_output_tokens < 1):
         raise ValueError("max_output_tokens must be a positive integer")
+    if response_model_aliases is not None and (
+        not isinstance(response_model_aliases,list) or not response_model_aliases
+        or any(not isinstance(value,str) or not value for value in response_model_aliases)):
+        raise ValueError('Response aliases must be explicit nonempty model identifiers')
+    RESPONSE_MODEL_ALIASES = response_model_aliases
     MODEL = model
     ENDPOINT = base_url.rstrip("/") + "/responses"
     API_KEY_ENV = key_env
@@ -55,7 +61,7 @@ def configure(model, base_url="https://lmportal.iefbr14.xyz/v1", key_env=API_KEY
 def key():
     value = API_KEY_FILE.read_text().strip() if API_KEY_FILE else os.environ.get(API_KEY_ENV, "").strip()
     if not value:
-        raise ValueError("No AxonHub API credential configured; no request was sent")
+        raise ValueError("No API credential configured; no request was sent")
     if any(c.isspace() for c in value):
         raise ValueError("The AxonHub key file must contain only the key")
     return value
@@ -94,7 +100,8 @@ def call(body, directory, label, timeout=150):
     save(directory / (label + ".request.json"), request_body)
     request = urllib.request.Request(ENDPOINT, data=json.dumps(request_body).encode(), headers={
         "Authorization": "Bearer " + credential, "Content-Type": "application/json",
-        "Accept": "text/event-stream", "User-Agent": "SwarmHarm-AxonHub/1.0"})
+        "Accept": "text/event-stream", "User-Agent": "SwarmHarm-Responses/1.0",
+        **({"X-OpenRouter-Metadata":"enabled"} if urlsplit(ENDPOINT).hostname=='openrouter.ai' else {})})
     journal = directory / (label + ".journal.jsonl")
     atomic.append_jsonl(journal, {"kind": "request_prepared", "local_request_id": identity,
                                 "at": atomic.utc(), "endpoint": ENDPOINT})
@@ -134,7 +141,7 @@ def call(body, directory, label, timeout=150):
                     diagnostic = {k: str(error[k]).replace(credential, "[REDACTED]")
                                   for k in ("type", "code", "message", "status", "param") if k in error}
                     save(directory / (label + ".error.json"), {"provider_error": diagnostic})
-                    raise RuntimeError("Inference stream returned an AxonHub error")
+                    raise RuntimeError("Inference stream returned a provider error")
                 if event.get("type") in ("response.completed", "response.failed", "response.incomplete"):
                     response = event.get("response", {})
                     break
@@ -152,7 +159,7 @@ def call(body, directory, label, timeout=150):
         save(directory / (label + ".error.json"), diagnostic)
         atomic.append_jsonl(journal, {"kind": "request_rejected" if error.code in (400,401,403,404,422) else "request_unknown",
             "local_request_id": identity, "http_status": error.code, "at": atomic.utc()})
-        raise RuntimeError("AxonHub HTTP " + str(error.code)) from None
+        raise RuntimeError("Inference HTTP " + str(error.code)) from None
     except TimeoutError:
         save(directory / (label + ".error.json"), {"timeout_seconds": timeout})
         atomic.append_jsonl(journal, {"kind": "request_unknown", "local_request_id": identity,
@@ -173,19 +180,19 @@ def call(body, directory, label, timeout=150):
         save(directory / (label + ".error.json"), {"provider_error": "No terminal response"})
         atomic.append_jsonl(journal, {"kind": "request_unknown", "local_request_id": identity,
                                     "error": "No terminal response", "at": atomic.utc()})
-        raise RuntimeError("AxonHub stream ended without a terminal response")
+        raise RuntimeError("Inference stream ended without a terminal response")
     save(directory / (label + ".response.json"), response)
     atomic.append_jsonl(journal, {"kind": "response_saved", "local_request_id": identity,
                                 "provider_response_id": response.get("id"), "status": response.get("status"),
                                 "at": atomic.utc()})
-    if response.get("status") != "completed" or response.get("model") != MODEL:
+    if response.get("status") != "completed" or response.get("model") not in (RESPONSE_MODEL_ALIASES or [MODEL]):
         save(directory / (label + ".error.json"), {
             "provider_error": {"type": "model_or_status_mismatch",
                 "requested_model": MODEL, "returned_model": response.get("model"),
                 "status": response.get("status")},
             "native_error": response.get("error"),
             "incomplete_details": response.get("incomplete_details")})
-        raise RuntimeError("AxonHub status/model mismatch; native response preserved")
+        raise RuntimeError("Inference status/model mismatch; native response preserved")
     return response
 
 

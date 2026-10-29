@@ -128,3 +128,24 @@ To obtain the exact pinned workbench image:
 ```sh
 docker pull python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
 ```
+
+### Explicit direct-OpenRouter validation
+
+For Ayush's OpenRouter-only run, preparation accepts `--api-provider openrouter`.
+It verifies the requested dated model and canonical counterpart in OpenRouter,
+freezes OpenAI-only routing with fallbacks disabled, and records the finite set
+of catalog-confirmed response normalization identifiers. AxonHub remains the
+default; a direct run does not validate the TerryJwy deployment profile.
+
+`--collection-ref refs/heads/fix/current-runtime-evidence` freezes the explicitly
+published PR branch while it stays unmerged. The collector still requires a
+clean tree, exact equality with that pushed reference, committed registration
+files and matching code/input hashes. Missing or mismatched evidence aborts
+before inference. Collection reads these choices from the sealed registration;
+CLI collection flags cannot silently change the route or reference.
+
+The current one-run setup is Knowledge Work v57, four simultaneous actors,
+`staffing_register`, high reasoning, dated Sol 6.1 and its registered OpenRouter
+canonical identifier. The upstream [Responses API](https://openrouter.ai/docs/api/api-reference/responses/create-responses)
+and [provider selection](https://openrouter.ai/docs/guides/routing/provider-selection)
+document the metadata header and explicit provider preferences used here.

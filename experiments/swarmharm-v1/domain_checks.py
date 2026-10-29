@@ -53,6 +53,7 @@ class DomainScenarioChecks(unittest.TestCase):
             "independent_truth", "natural_stakes",
         }
         allowed_statuses = {
+            "live_rollout_pending",
             "design_ready_live_rollout_pending",
             "mechanics_ready_integration_pending",
             "integrated_live_rollout_pending",
