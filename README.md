@@ -22,8 +22,12 @@ a harmful joint replay, retaining cancellations and corrections.
 ## Current state
 
 This branch ports the single-POST, durable-stream and retained-workstation runtime
-onto the 29 October source. Current compatibility checks and matching live
-validation are pending; the preserved 27 October v20 receipt is historical.
+onto the 29 October source. All 324 controls passed with zero skips. One explicit
+direct-OpenRouter v57 rollout passed Phase 1 and coordinated reduced commitments
+in Phase 2; the requested scope remained incomplete and the whole-rollout pass
+is false. See the [29 October validation](docs/research/knowledge-work-v57-runtime-validation-2026-10-29.md).
+The preserved 27 October v20 receipt is historical; canonical AxonHub validation
+for v57 remains pending.
 
 
 **Current work · v57 is implemented; live rollout pending.** Knowledge Work now

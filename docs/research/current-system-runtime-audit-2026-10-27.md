@@ -1,5 +1,9 @@
 # Current system and runtime audit — 27 October 2026
 
+Historical v20 audit. The [29 October v57 validation](knowledge-work-v57-runtime-validation-2026-10-29.md)
+records the current 324-check pass and fresh direct-OpenRouter rollout; the
+original v20 findings and receipt below remain unchanged.
+
 Terry's maintained system at [`725e13a95`](https://github.com/AI4Collaboration/SwarmHarm/commit/725e13a95)
 is a continuous Phase 1→Phase 2 environment. The earlier supplier discovery and
 handoff studies are preserved comparisons with different tasks and measurements.
