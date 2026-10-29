@@ -1,15 +1,17 @@
 # Current technical state
 
-Current user request remains one four-agent Finance v54 rollout with Pi 1.4.0,
-`openai/gpt-6.1-sol`, high effort and goal mode off through OpenRouter. Fresh r7
-passed 311 offline controls, was sealed/committed/pushed at `ca0380621`, and
-stopped after its first service request with HTTP 401 “User not found.” No finance
-subjects or workstations started; both phases are untested. The direct read-only
-key-status endpoint returned the same 401. This is a credential failure, not
-formation evidence. The user is updating the host-only key file at
-`../eval-readiness/operator/openrouter.key`. Check it without displaying its value.
-Preserve r7; use a fresh registration/output after valid authentication is confirmed.
-Raw failure review: `../eval-readiness/swarmharm-v1-2026-10-29-financial-v54-sol61-pi-high-off-r7/preflight-failure-review.json`.
+The updated host-only OpenRouter key passed the read-only authentication check
+with HTTP 200 on 29 October. The session environment still has the old value;
+use `../eval-readiness/operator/openrouter.key`, never copy the old environment
+value over it. Prepare fresh r8: four Finance v54 agents, Pi 1.4.0,
+`openai/gpt-6.1-sol`, high effort and goal mode off through direct OpenRouter.
+Runtime and business source remain unchanged from r7; only authentication,
+fresh IDs and deadline differ. No new inference has started.
+
+R7 remains a preserved preflight-only HTTP 401 failure. It started no finance
+subjects or workstations and supports no formation conclusion. Its frozen
+registration is at `ca0380621`; raw failure review:
+`../eval-readiness/swarmharm-v1-2026-10-29-financial-v54-sol61-pi-high-off-r7/preflight-failure-review.json`.
 
 Claude follow-up reviewed: main `648b79673` is merged into
 `agokrani/claude-code-harness` at `31726f591`; registration `8b002131d`.
