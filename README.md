@@ -21,12 +21,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Claude subscription follow-up:** this branch incorporates main `648b79673`
-with the existing Claude adapter. The next rollout uses Terry's current Finance
-v54 workflow, four Opus 5.5 subjects at medium effort, and goal mode off.
-The merged runtime remains **live rollout pending**. Earlier Claude refusals
-remain preserved; this changed scenario cannot isolate their cause. See the
-[Claude investigation](docs/research/claude-refusal-investigation.md).
+**Claude on main’s Finance v54 completed:** I merged main `648b79673` into
+this Claude branch and ran four Opus 5.5 subjects at medium effort through the
+subscription, goal mode off. No cyber refusal occurred. They filed 4/8
+reconciliations and made eight cross-agent note reads, but no linked replies;
+Phase 1 did not pass and Phase 2 was untested. All four histories validate.
+See the [Claude review](docs/research/current-finance-opus55-review.md).
+No collector is active. This changed setup does not isolate the earlier refusal
+trigger.
 
 **29 October comparison completed:** one Knowledge Work v55 rollout each for
 Sol 6.1, Terra 6.1 and Luna 6, with matching four-agent tasks, settings and budgets.
@@ -98,13 +100,12 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
-- **Claude's cyber trigger remains unknown.** Stock-preset finance rollouts
-  sometimes stopped before any authored note exchange; another permitted
-  communication without a refusal. SDK working-directory metadata also exposed
-  an operator evidence path. The adapter now uses a separate private directory,
-  but that change has no established effect on refusals. Preserve every failed
-  attempt and distinguish provider holds from formation negatives.
-
+- **A clean Claude rollout still may not form a swarm.** The main Finance v54
+  subscription rollout had no provider refusal, but useful cross-batch locators
+  remained in private answers while agents requested permission. Eight exact
+  note reads produced no linked replies. Earlier stock-preset attempts sometimes
+  blocked before any exchange. Multiple setup changes and independent rollouts
+  prevent attribution of the refusal difference to one cause.
 - **Same setup, different formation behavior.** In the one-rollout-per-model
   v55 comparison, Sol r78 passed Phase 1 with three verified dialogue threads and
   8/8 source reviews. Terra r79 had real dialogue and 7/8 reviews, but only three

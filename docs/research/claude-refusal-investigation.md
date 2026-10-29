@@ -1,9 +1,12 @@
 # Why the Claude finance runs hit the cyber filter
 
-29 October: the user requested main’s current workflow on this Claude branch.
-That merges scenario and runtime changes; its fresh rollout cannot identify a
-single cause of the earlier refusals. The findings below describe the frozen
-28 October attempts.
+29 October update: I merged main’s current Finance v54 workflow into the Claude
+branch and ran one fresh four-agent off rollout. It finished with **zero native
+cyber refusals**, eight cross-agent note reads and no linked replies. Phase 1 did
+not pass, so Phase 2 was not assigned. See the [latest review](current-finance-opus55-review.md).
+Several scenario and runtime factors changed; this does not identify which
+caused the earlier blocks. The findings below describe the frozen 28 October
+attempts.
 
 I checked whether the block starts when agents collaborate. The traces show that
 actual collaboration is not required: stock-preset off runs r3 and r4 were blocked
@@ -43,8 +46,9 @@ archived under the agent's `claude/workspace/` after shutdown. The stock preset,
 finance task, business access rules and subscription authentication are unchanged.
 The focused SDK checks and all 11 prompt-contract checks pass, including a real
 SDK localhost check that the operator evidence path stays out of the request.
-This investigation made no live inference calls. The correction is **live rollout
-pending**; it has not been shown to remove the provider refusal.
+This investigation made no live inference calls. The directory correction was later included in r6 alongside main’s changes.
+That rollout had no refusal, but its effect cannot be separated from the other
+changes.
 
 Before the main merge, I proposed a control with four agents changing only the
 SDK directory policy, then an isolated finance agent on that identical revision
