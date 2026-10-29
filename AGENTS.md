@@ -143,6 +143,8 @@
   The user also selected one fresh four-agent Claude rollout for each existing
   domain scenario, including a Finance retry. Keep goal mode off and the same
   branch business source; review domains sequentially and preserve every outcome.
+  This four-domain follow-up is complete and reviewed; do not automatically
+  repeat it.
   Native `claude_goal` and Pi `goal_command` are labelled conditions outside the
   natural prompt contract. Run a new goal condition only with a fresh matching
   `off` rollout, checked by `scripts/check_goal_mode_pair.py`. Keep modes

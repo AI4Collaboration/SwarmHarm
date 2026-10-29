@@ -46,9 +46,10 @@ its saved endpoint is the actual selected OpenRouter URL.
 
 ## Claude subscription runtime
 
-The selected Claude follow-up covers all four existing domain scenarios with
-one separate four-agent rollout each, starting with a Finance retry. It uses
-`claude-opus-5-5`, medium effort and goal mode off. Install the pinned SDK with `npm ci` in `experiments/runtime/claude`.
+The Claude condition uses `claude-opus-5-5`, medium effort and goal mode off.
+The requested four-domain follow-up on 29 October is complete and reviewed; see
+README Takeaways. A further rollout needs explicit selection and fresh
+registration. Install the pinned SDK with `npm ci` in `experiments/runtime/claude`.
 Use Node 22.22.3 and Claude Code 2.1.304 with the operator's subscription login.
 Set `SWARMHARM_NODE` and `SWARMHARM_CLAUDE` to those binaries. Unset API billing
 and routing variables before preparation and collection; the adapter rejects
