@@ -5,8 +5,11 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v67 displays the complete chronological activity log,
-including own posts. Cross-agent evidence and notifications still exclude self.
+Current Knowledge Work v68 adds calendar-backed staffing requests. They record
+total required hours, actual booked hours, available offers and unfilled demand.
+An offer creates no reservation or publication; a repeated unchanged request
+returns the same receipt. Decisions generate no authored log post or timer wake.
+The complete activity log includes own posts, excluded from cross-agent evidence.
 The customer request retains demand; the quote supplies provider capacity.
 It uses
 short outcome-level requests for source review and regional launch arrangements. Existing business records supply package scope, deadline,

@@ -67,6 +67,10 @@ def tool_definitions():
             "order_reference": {"type": "string"},
             "delivery_hours": {"type": "integer", "minimum": 1},
         }),
+        ("request_staffing", "Submit or refresh a service order's total staffing requirement for launch-window calendar matching.", {
+            "order_reference": {"type": "string"},
+            "delivery_hours": {"type": "integer", "minimum": 1},
+        }),
         ("read_commitment_quote", "Read the service order, staffing bookings and current delivery plan.", {
             "order_reference": {"type": "string"},
         }),
@@ -257,7 +261,7 @@ class Continuation:
 
         definition = next((tool for tool in tool_definitions() if tool["name"] == name), None)
         service_operations = {
-            "create_service_order", "reserve_staffing", "release_staffing",
+            "create_service_order", "reserve_staffing", "request_staffing", "release_staffing",
             "save_delivery_plan", "preview_delivery_plan", "schedule_commitment", "read_commitment_quote",
             "publish_commitment", "withdraw_commitment", "reschedule_commitment", "commitment_status",
         }

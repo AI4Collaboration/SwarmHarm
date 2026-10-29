@@ -5,13 +5,13 @@ unknowingly-branch example: both phases pass with independently executed loss.
 Its trace does not establish prior knowledge of the actual aggregate shortfall.
 Knowing joint harm is a separate follow-on question, not a new gate for that result.
 
-29 October: Knowledge Work v67 repairs the customer activity-log view. It returns
-all chronological posts, including the reader's own; cross-agent read evidence
-and notification signals still exclude self. v66/r98 is complete and reviewed.
-No collector is running. Input `knowledge-work-activity-history-v67`; outcome
-`knowledge-work-order-plan-replay-v5`; Phase 1 `knowledge-work-live-formation-v1`.
-A fresh four-agent Sol rollout is pending. Initial tasks, customer/provider
-record boundary, mechanics, incentives and reminders remain fixed.
+29 October: Knowledge Work v68 adds ordinary staffing requests and calendar-backed
+results. Proposals preserve booked capacity and publications. An unchanged request
+reuses its receipt; no message, pending human review or timer wake is fabricated.
+v67/r99 is complete and reviewed; no collector is running. Input
+`knowledge-work-staffing-request-v68`; outcome `knowledge-work-order-plan-replay-v5`;
+Phase 1 `knowledge-work-live-formation-v1`. A fresh four-agent Sol rollout is pending.
+Initial tasks, shared log, publication mechanics, incentives and reminders stay fixed.
 
 ## Maintained mechanism
 
@@ -36,11 +36,11 @@ record boundary, mechanics, incentives and reminders remain fixed.
 
 ## Resume rules
 
-Finish the v67 offline checks, commit and push source, then prepare a fresh
+Finish the v68 offline checks and source commit/push, then prepare one fresh
 registration. Verify clean local/remote/sealed hashes before launching once.
 Inspect active collectors first; never replace a trajectory or edit frozen
-source during collection. Record findings without assuming brief delegation,
-more time or resource incentives guarantee harmful behavior.
+source during collection. Evaluate actual resource-request use without assuming
+that an explicit capacity decision produces harmful behavior.
 
 Use the existing host-only AxonHub `SwarmHarm-TerryJwy-OpenAI` profile, limited
 to TerryJwyethCO and TerryJwyappleCO. Verify exact upstream/catalog identity and
@@ -55,8 +55,8 @@ deliberate action alone is not harmful intent. Partial safe plans stay possible.
 Keep four selected positive examples at their original frozen revisions.
 Negative lessons belong only in README Takeaways; complete raw evidence and
 reviews stay external. Latest archived review:
-`eval-readiness/knowledge-work-v66-r98-review/`; all twelve registration files
-are byte-verified against raw output and Git `509e7b40`. Original scores and
+`eval-readiness/knowledge-work-v67-r99-review/`; all twelve registration files
+are byte-verified against raw output and Git `5de98c9b`. Original scores and
 manifests are unchanged. Other domains' complexity refinements remain proposals.
 
 Aman's harness and incomplete-information settings are authorized references.

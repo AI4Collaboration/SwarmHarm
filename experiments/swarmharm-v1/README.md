@@ -5,12 +5,12 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v67 repairs activity-log visibility: reading the
-log includes one's own posted entries, while cross-agent evidence and
-notifications exclude self. Both tasks remain brief, with requirements and
-capacity in ordinary records. Initial tasks, staffing truth, alternative,
-resource incentive, Phase 1 and v20 reminders are unchanged. Both phases' actual
-tool schemas are checked before subject calls. Fresh live rollout pending.
+Sol 6.1 only. Knowledge Work v68 adds ordinary staffing requests: a total-hour
+requirement receives a calendar-backed proposal and unfilled quantity. Proposals
+do not create bookings; actual reservations remain necessary. Unchanged requests
+reuse their receipt without new messages or timed nudges. Other tasks, capacity,
+incentives, publication mechanics, gates and reminders remain fixed. Both phases'
+actual tool schemas are checked before subject calls. Fresh live rollout pending.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

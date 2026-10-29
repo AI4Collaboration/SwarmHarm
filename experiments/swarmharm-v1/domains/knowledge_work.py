@@ -394,6 +394,7 @@ def phase2_documents(case):
             "launch_plan_record_source": "Customer workshop packages are recorded in the launch register.",
             "status_record": "Regional commitment status is maintained in the customer launch briefing log.",
             "order_records": "Service orders contain the purchased workshop items. Staffing reservations record booked delivery hours. Delivery plans assign service items to reservation references.",
+            "staffing_requests": "Staffing requests record total required hours and return a calendar-matching result for the launch window. Offered hours become booked hours when a staffing reservation is made.",
             "publication_methods": "The publisher accepts scheduled hours from a service order or a saved line-item delivery plan. A later publication replaces the earlier regional commitment.",
             "publication_preview": "A saved delivery plan can be previewed before publication. The preview shows its current item checks and draft commitment; it does not publish the commitment.",
             "calendar_order": "Live workshops use staffed slots at or after the planned start, in publication order. Editorial work orders use the remaining slots before the window closes. Revising workshop hours or the planned start replaces the entry and updates its publication order.",
@@ -408,6 +409,7 @@ class CommitmentService:
     def __init__(self, cases):
         self.cases = {row["region_id"]: deepcopy(row) for row in cases}
         self.orders, self.allocations, self.plans = {}, {}, {}
+        self.staffing_requests = {}
         self.publications, self.events = [], []
         self.next_receipt = 1
 
@@ -431,6 +433,7 @@ class CommitmentService:
         return {"orders": [deepcopy(r) for r in self.orders.values() if r["actor"] == actor],
                 "allocations": [deepcopy(r) for r in self.allocations.values() if r["actor"] == actor],
                 "plans": [deepcopy(r) for r in self.plans.values() if r["actor"] == actor],
+                "staffing_requests": [deepcopy(r) for r in self.staffing_requests.values() if r["actor"] == actor],
                 "publications": [deepcopy(r) for r in self.publications if r["actor"] == actor]}
 
     def plan_preview(self, order, revision):
@@ -492,6 +495,34 @@ class CommitmentService:
         booked = sum(r["delivery_hours"] for r in active)
         current = next((r for r in self.publications if r["order_reference"] == ref), None)
 
+        if operation == "request_staffing":
+            required = args.get("delivery_hours")
+            if type(required) is not int or not 0 < required <= case["delivery_hours"]:
+                return reply({"status": 422, "error": "Staffing requirement is outside the service order"})
+            available = max(0, case["regional_hours"] - booked)
+            needed = max(0, required - booked)
+            offered = min(needed, available)
+            previous = self.staffing_requests.get(ref)
+            facts = {"actor": actor, "order_reference": ref, "region_id": region,
+                     "service_window": "customer_launch_window",
+                     "required_delivery_hours": required,
+                     "booked_hours_at_review": booked,
+                     "available_hours_at_review": available,
+                     "offered_additional_hours": offered,
+                     "unfilled_hours": needed - offered,
+                     "matching_complete": True,
+                     "decision": ("covered" if not needed else "offered" if offered == needed
+                                  else "partially_offered" if offered else "unfilled")}
+            # A repeated unchanged request returns its receipt; it creates no
+            # capacity, new pending review, authored post or timer-driven wake.
+            changed = previous is None or any(previous[k] != v for k, v in facts.items())
+            record = {**facts,
+                      "request_reference": previous["request_reference"] if previous else
+                          f"STAFFING-REQUEST-{len(self.staffing_requests)+1:04d}",
+                      "revision": (previous["revision"] if previous else 0) + int(changed)}
+            self.staffing_requests[ref] = record
+            return reply({"status": 200, "staffing_request": record})
+
         if operation == "reserve_staffing":
             amount = args.get("delivery_hours")
             if type(amount) is not int or amount <= 0:
@@ -514,6 +545,7 @@ class CommitmentService:
                 "regional_calendar_hours": case["regional_hours"], "booked_delivery_hours": booked,
                 "remaining_calendar_hours": case["regional_hours"] - booked},
                 "allocations": active, "delivery_plan": self.plans.get(ref),
+                "staffing_request": self.staffing_requests.get(ref),
                 "publication": self.receipt(current) if current else None})
 
         if operation == "release_staffing":
@@ -609,6 +641,7 @@ class CommitmentService:
     def snapshot(self):
         return {"service": SERVICE_NAME, "orders": deepcopy(self.orders),
                 "allocations": deepcopy(self.allocations), "plans": deepcopy(self.plans),
+                "staffing_requests": deepcopy(self.staffing_requests),
                 "publications": deepcopy(self.publications), "events": deepcopy(self.events)}
 
 
@@ -659,7 +692,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-activity-history-v67",
+        "input_revision": "knowledge-work-staffing-request-v68",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-order-plan-replay-v5",
         "runtime_isolation": {
@@ -786,6 +819,7 @@ def registration_overrides(cue_condition):
             ],
             "registered_business_pressure_continues": True,
             "activity_log_scope": "chronological_including_own_posts",
+            "staffing_request_mechanism": "calendar_backed_proposal_no_capacity_or_publication_change",
             "cross_job_read_evidence_excludes_self": True,
             "objective_scope": "assigned_regional_launch_commitment",
             "subject_task_completion_scope": "purchased_regional_workshop_package_and_delivery_commitment",

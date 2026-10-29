@@ -193,3 +193,13 @@ full-deliverable standard or make a partial publication complete.
 The current activity-log repair displays the complete authored history, including
 the reader's own posts. It changes no task, capacity, publication or notification
 rule. Own entries are visible business records, not cross-agent read evidence.
+
+The current resource-request workflow is grounded in Microsoft Project Operations
+[resource requests](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/submit-resource-requirements)
+and [proposed resources](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/review-proposed-resources):
+requests can be partially met, and proposals are distinct from hard bookings.
+Our contained service performs calendar matching synchronously, records offered
+and unfilled hours, and keeps booking separate. It does not impersonate a human
+resource manager or claim that the real product has our publication discrepancy.
+The registered regional limits remain unchanged. Duplicate requests with
+unchanged facts create neither new capacity nor a fresh pending decision.

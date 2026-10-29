@@ -352,17 +352,51 @@ class KnowledgeWorkChecks(unittest.TestCase):
                           "region_id": case["region_id"], "publication_id": case["publication_id"]}
                 order = continuation.call(actor, 1, "create_service_order", create)["order"]
                 args = {"order_reference": order["order_reference"]}
+                matching = continuation.call(actor, 2, "request_staffing", {**args, "delivery_hours": 12})["staffing_request"]
+                self.assertEqual(matching["offered_additional_hours"], 8)
+                self.assertEqual(matching["unfilled_hours"], 4)
+                self.assertEqual(continuation.commitment.allocations, {})
                 self.assertEqual(continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 12})["status"], 409)
                 for _ in range(2):
                     self.assertEqual(continuation.call(actor, 3, "reserve_staffing", {**args, "delivery_hours": 4})["status"], 201)
                 repeated = continuation.call(actor, 4, "create_service_order", {**create, "launch_plan_reference": knowledge_work.LAUNCH_PLAN_REFERENCE})
                 self.assertEqual(repeated["order"]["order_reference"], args["order_reference"])
                 self.assertEqual(continuation.call(actor, 5, "reserve_staffing", {**args, "delivery_hours": 1})["status"], 409)
+                matching = continuation.call(actor, 5, "request_staffing", {**args, "delivery_hours": 12})["staffing_request"]
+                self.assertEqual((matching["offered_additional_hours"], matching["unfilled_hours"]), (0, 4))
                 self.assertEqual(continuation.call(actor, 6, "schedule_commitment", {**args, "delivery_hours": 12})["status"], 409)
                 for _ in range(2):
                     self.assertEqual(continuation.call(actor, 7, "schedule_commitment", {**args, "delivery_hours": 8})["status"], 201)
                 self.assertEqual(len(continuation.commitment.publications), 1)
                 self.assertFalse(continuation.complete(actor))
+
+    def test_staffing_request_tracks_capacity_without_creating_bookings_or_wakes(self):
+        world, continuation = self.new_continuation()
+        actor, other = self.actors[:2]
+        args, lines = self.prepare_order(continuation, actor)
+        signal = continuation.activity_signal(other)
+        request = {**args, "delivery_hours": 12}
+        first = continuation.call(actor, 3, "request_staffing", request)["staffing_request"]
+        self.assertEqual((first["decision"], first["unfilled_hours"]), ("unfilled", 4))
+        state = continuation.business_state(actor)
+        repeated = continuation.call(actor, 4, "request_staffing", request)["staffing_request"]
+        self.assertEqual(first, repeated)
+        self.assertEqual(state, continuation.business_state(actor))
+        self.assertEqual(signal, continuation.activity_signal(other))
+        self.assertEqual(continuation.briefing_updates, [])
+        self.assertEqual(continuation.call(other, 4, "request_staffing", request)["status"], 404)
+        continuation.call(actor, 5, "release_staffing", {**args, "allocation_reference": lines[0]["allocation_reference"]})
+        offered = continuation.call(actor, 6, "request_staffing", {**args, "delivery_hours": 4})["staffing_request"]
+        self.assertEqual((offered["decision"], offered["offered_additional_hours"], offered["unfilled_hours"]), ("offered", 4, 0))
+        self.assertEqual(offered["request_reference"], first["request_reference"])
+        self.assertGreater(offered["revision"], first["revision"])
+        self.assertEqual(continuation.call(actor, 7, "schedule_commitment", {**args, "delivery_hours": 4})["status"], 409)
+        continuation.call(actor, 8, "reserve_staffing", {**args, "delivery_hours": 4})
+        covered = continuation.call(actor, 9, "request_staffing", {**args, "delivery_hours": 4})["staffing_request"]
+        self.assertEqual(covered["decision"], "covered")
+        self.assertEqual(continuation.call(actor, 10, "commitment_status", args)["staffing_request"], covered)
+        self.assertFalse(continuation.complete(actor))
+        self.assertEqual(knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)["publications"], [])
 
     def test_real_dependencies_stale_versions_and_cancellations(self):
         world, continuation = self.new_continuation()
