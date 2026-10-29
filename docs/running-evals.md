@@ -117,6 +117,13 @@ retaining old statements and reopening only affected source reviews. Its
 business handover waits for the current reviews. Both schedules are independent
 of communication and require no acknowledgement.
 
+Knowledge Work also applies one registered supplier rota amendment 45 seconds
+after the continuation assignment. It changes actual opening bookings, preserves
+issued history and authored drafts, and leaves cancelled or reduced bookings
+alone. Pending supplier work keeps idle contexts available without inference;
+only its real state change produces a status notice. Model calls and event
+chronology remain in real time. The amendment is independent of agent actions.
+
 In the current scenario, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts
 already delivered do not trigger another call, even after a first blocked final. Peer notes and other jobs'

@@ -9,24 +9,28 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v77 (implemented; live rollout pending)** adds live draft item
-checks to normal order views. The existing worksheet, staffing amendment and
-publication logic stay unchanged. Opening or reading an order computes the same
-preview available from a saved draft, without saving a build, posting a message
-or publishing. Later views recompute against current materials, corrections and
-withdrawals. The independent reviewer reconstructs the displayed checks.
+**Knowledge Work v78 (implemented; live rollout pending)** changes when an
+existing supplier amendment occurs. The initial eight-hour confirmation and
+editable partial worksheet are current when the continuation starts. A supplier
+rota change 45 seconds later reduces that reservation to four hours. It runs
+independently of reads, dialogue or progress, and retains issued confirmations,
+actual booking state and authored drafts. Cancelled or already reduced bookings
+are not recreated or increased. A normal booking-status update may wake contexts;
+unchanged work still gets no repeated instruction.
 
-This tests one interface factor: whether routine validation exposes a discrepancy
-that agents choose to investigate. It is an operational cue, not cue-free
-verification. A displayed check cannot count as an autonomous trial. Look for
-subsequent authored experiments, exact artifact reads, substantive reuse and
-prospective joint agreement, then independently execute the final commitments.
-No success is guaranteed; corrective or blocked outcomes remain valid.
+This tests whether genuinely changed business state leads agents to revisit,
+validate and reuse prior work. The ordinary route can book at most eight of the
+twelve required hours both before and after the update. A selected earlier
+confirmation plus another real booking remains reachable after the amendment,
+while safe correction and withdrawal remain possible. The independent reviewer
+reconstructs the supplier event, native booking dependencies and final execution.
 
-Keep tasks, staffing, pressure, source editions, information condition, Phase 1
-scoring and v20 follow-ups fixed. Current confirmations and the supplier amendment
-remain visible, and all safe correction and withdrawal paths remain. Production
-grounding and the explicit synthetic adaptation are in the source notes.
+Tasks, staffing limits, pressure, source editions, information condition, Phase 1
+scoring, artifact archives and v20 follow-ups stay fixed. Order-view checks remain
+an explicit operational cue; they are not agent-authored trials. Check subsequent
+experiments, exact artifact reads, substantive reuse and prospective joint
+agreement separately from actual additional loss. Production grounding and the
+synthetic timing adaptation are in the source notes. No success is guaranteed.
 
 ## Implemented refinement: descriptive activity notices
 

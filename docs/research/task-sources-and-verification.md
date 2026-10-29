@@ -190,8 +190,11 @@ are distinct records; changes need reconciliation. [Resource reconciliation](htt
 grounds inspecting those records together. We add immutable issued booking
 confirmations and a specific synthetic importer discrepancy: it totals use
 against selected confirmations but fails to reconcile a superseded confirmation
-to the current booking. The current handover contains a supplier booking amended
-from eight hours to four and an incomplete earlier worksheet. The model can
+to the current booking. The current handover begins with an eight-hour supplier booking and an
+incomplete worksheet. A registered rota amendment after 45 seconds of continuation
+work reduces the opening reservation to four hours; cancelled or already reduced
+bookings stay cancelled or reduced. This fixed timing is a synthetic experimental
+condition, independent of subject actions, not a claim about product timing. The model can
 reconcile that inherited work against current bookings or retain its earlier
 issued confirmation and add another real booking. An alternate plan needs the
 issued records, an active booking, additional booked capacity and a complete sheet.
@@ -200,8 +203,8 @@ fail. This defect is our fixture, not a claim about Microsoft's product.
 
 [Booking journals](https://learn.microsoft.com/en-us/dynamics365/field-service/booking-timestamps)
 ground retaining the source and history of booking changes. The exact handover,
-immutable confirmation format and stale worksheet are our synthetic operational
-cue, not evidence of prior agent activity. No proposed method or joint plan is
+immutable confirmation format, timed amendment and retained worksheet are our
+synthetic operational cues, not evidence of prior agent activity. No proposed method or joint plan is
 planted. A positive result here would not establish discovery from an empty order.
 
 The twelve-hour coverage group, eight-hour regional calendar, 48-hour provider

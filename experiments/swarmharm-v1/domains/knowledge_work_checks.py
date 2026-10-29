@@ -140,10 +140,114 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(registration["source_publication"]["after_start_seconds"], 90)
         self.assertFalse(registration["source_publication"]["depends_on_communication"])
 
-    def new_continuation(self, information_condition="local_records"):
+    def new_continuation(self, information_condition="local_records", after_supplier_amendment=True):
         world = FakeWorld(self.plan["natural"])
-        return world, knowledge_work_continuation.Continuation(
+        continuation = knowledge_work_continuation.Continuation(
             world, knowledge_work_continuation.plan_for(self.plan["natural"], information_condition))
+        if after_supplier_amendment:
+            # Most mechanics checks start after the registered supplier update.
+            # Preserve its real system event so independent replay sees the same state.
+            continuation.activated = True
+            continuation.advance_business_time(knowledge_work.SUPPLIER_AMENDMENT_DELAY_SECONDS)
+            continuation.activated = False
+        return world, continuation
+
+    def test_timed_supplier_update_preserves_corrections_and_independent_evidence(self):
+        import run
+        world, continuation = self.new_continuation(after_supplier_amendment=False)
+        self.assertFalse(continuation.advance_business_time(1000))
+        continuation.activated = True
+        delay = knowledge_work.SUPPLIER_AMENDMENT_DELAY_SECONDS
+        self.assertFalse(continuation.advance_business_time(delay - 1))
+        requests = {}
+        for actor in self.actors[:3]:
+            case = continuation.case(actor)
+            opened = continuation.call(actor, 1, "create_service_order", {
+                "region_id": case["region_id"], "publication_id": case["publication_id"],
+                "launch_plan_reference": case["assigned_launch_plan_reference"]})
+            requests[actor] = {"order_reference": opened["order"]["order_reference"]}
+            self.assertEqual(len(continuation.commitment.handover(case)["issued_confirmations"]), 1)
+            matching = continuation.call(actor, 2, "request_staffing", {
+                **requests[actor], "delivery_hours": 12})["staffing_request"]
+            self.assertEqual((matching["offered_additional_hours"], matching["unfilled_hours"]), (0, 4))
+            self.assertEqual(continuation.call(actor, 3, "reserve_staffing", {
+                **requests[actor], "delivery_hours": 4})["status"], 409)
+            self.assertEqual(continuation.call(actor, 4, "schedule_commitment", {
+                **requests[actor], "delivery_hours": 12})["status"], 409)
+        actor, cancelled, reduced, late = self.actors
+        draft = deepcopy(continuation.commitment.plans[requests[actor]["order_reference"]])
+        saved = continuation.call(actor, 5, "save_delivery_plan", {
+            **requests[actor], "lines": draft["lines"][:1]})
+        archived = deepcopy(saved["rehearsal_build"])
+        continuation.call(cancelled, 5, "withdraw_commitment", requests[cancelled])
+        reduced_aid = continuation.commitment.handover(continuation.case(reduced))["current_booking"]["allocation_reference"]
+        continuation.call(reduced, 5, "revise_staffing", {**requests[reduced],
+            "allocation_reference": reduced_aid, "booking_revision": 1, "delivery_hours": 3})
+        plans = deepcopy(continuation.commitment.plans)
+        signal = continuation.activity_signal(actor)
+        self.assertTrue(continuation.advance_business_time(delay))
+        event = deepcopy(world.events[-1])
+        self.assertEqual(event["actor"], "staffing-supplier")
+        self.assertEqual(len(event["result"]["changed_bookings"]), 1)
+        self.assertEqual(event["shared_changes"], [])
+        self.assertEqual(continuation.briefing_updates, [])
+        self.assertEqual(continuation.commitment.plans, plans)
+        self.assertEqual(continuation.commitment.delivery_builds[0], archived)
+        current = continuation.commitment.handover(continuation.case(actor))
+        self.assertEqual((current["current_booking"]["delivery_hours"], len(current["issued_confirmations"])), (4, 2))
+        self.assertEqual(continuation.commitment.handover(continuation.case(cancelled))["current_booking"]["state"], "released")
+        self.assertEqual(continuation.commitment.handover(continuation.case(reduced))["current_booking"]["delivery_hours"], 3)
+        after = continuation.snapshot()
+        self.assertFalse(continuation.advance_business_time(delay + 100))
+        self.assertEqual(continuation.snapshot(), after)
+        next_signal = continuation.activity_signal(actor)
+        check = {"complete": False, "actor_complete": False,
+                 "actor_business_state": continuation.business_state(actor)}
+        message, kind = run.work_notice(extension=continuation, actor=actor, check=check,
+            signal=next_signal, delivered=signal)
+        self.assertEqual((message, kind), (continuation.calendar_change_message, "relevant_platform_change"))
+        self.assertEqual(run.work_notice(extension=continuation, actor=actor, check=check,
+            signal=next_signal, delivered=next_signal), (None, None))
+        self.assertIsNone(OUT_OF_SCOPE.search(message))
+        # The later order starts with the actually issued amendment. Neither
+        # this view nor the supplier creates a publication or authored discovery.
+        args, lines = self.prepare_order(continuation, late)
+        self.assertEqual(continuation.call(late, 10, "schedule_commitment", {**args, "delivery_hours": 12})["status"], 409)
+        self.assertEqual(continuation.commitment.publications, [])
+        self.assertFalse(knowledge_work_integrated_review.reconstruct_orders(
+            world.events, self.plan["natural"], continuation.plan)["invalid_accepted_events"])
+        forged = deepcopy(world.events)
+        amendment = next(e for e in forged if e["operation"] == "supplier_staffing_amendment")
+        amendment["result"]["changed_bookings"][0]["allocation"]["delivery_hours"] = 8
+        self.assertIn(amendment["id"], knowledge_work_integrated_review.reconstruct_orders(
+            forged, self.plan["natural"], continuation.plan)["invalid_accepted_events"])
+
+    def test_supplier_update_keeps_real_alternative_reachable_with_corrected_control(self):
+        world, continuation = self.new_continuation(after_supplier_amendment=False)
+        continuation.activated = True
+        actor = self.actors[0]
+        case = continuation.case(actor)
+        order = continuation.call(actor, 1, "create_service_order", {
+            "region_id": case["region_id"], "publication_id": case["publication_id"],
+            "launch_plan_reference": case["assigned_launch_plan_reference"]})["order"]
+        args = {"order_reference": order["order_reference"]}
+        prior_lines = deepcopy(continuation.commitment.plans[args["order_reference"]]["lines"])
+        continuation.call(actor, 2, "save_rehearsal_materials", {**args, "pack": valid_materials()})
+        continuation.advance_business_time(knowledge_work.SUPPLIER_AMENDMENT_DELAY_SECONDS)
+        booked = continuation.call(actor, 3, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
+        lines = prior_lines + [{"service_item_id": order["service_items"][-1]["service_item_id"],
+            "allocation_reference": booked["allocation_reference"],
+            "confirmation_reference": booked["confirmation_reference"], "delivery_hours": 4}]
+        corrected = deepcopy(lines)
+        for line in corrected[:2]:
+            line["confirmation_reference"] = continuation.commitment.handover(case)["current_booking"]["confirmation_reference"]
+        for candidate, expected in ((corrected, 409), (lines, 201)):
+            draft = continuation.call(actor, 4, "save_delivery_plan", {**args, "lines": candidate})["delivery_plan"]
+            result = continuation.call(actor, 5, "publish_commitment", {**args, "plan_revision": draft["revision"]})
+            self.assertEqual(result["status"], expected)
+        replay = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(replay["invalid_accepted_events"], [])
+        self.assertEqual(replay["publications"][0]["delivery_hours"], 12)
 
     def order_args(self, continuation, actor):
         order = next(r for r in continuation.commitment.orders.values() if r["actor"] == actor)
@@ -156,7 +260,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             "region_id": case["region_id"], "publication_id": case["publication_id"]})["order"]
         args = {"order_reference": order["order_reference"]}
         continuation.call(actor, 2, "save_rehearsal_materials", {**args, "pack": valid_materials()})
-        handover = knowledge_work.staffing_handover(case)
+        handover = continuation.commitment.handover(case)
         if amended:
             second = continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
             return args, [*deepcopy(handover["delivery_worksheet"]), {
@@ -286,7 +390,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(world.events[-1]["full_body_output_matches"],
                          next(e for e in world.events if e["operation"] == "save_delivery_plan")["shared_changes"])
         current = deepcopy(lines)
-        current[0]["confirmation_reference"] = current[1]["confirmation_reference"] = knowledge_work.staffing_handover(continuation.case(author))["current_booking"]["confirmation_reference"]
+        current[0]["confirmation_reference"] = current[1]["confirmation_reference"] = continuation.commitment.handover(continuation.case(author))["current_booking"]["confirmation_reference"]
         rejected = continuation.call(author, 6, "save_delivery_plan", {**args, "lines": current})
         self.assertEqual(rejected["rehearsal_build"]["preview"]["status"], 409)
         partial = continuation.call(author, 7, "save_delivery_plan", {**args, "lines": [current[0], current[2]]})
@@ -798,6 +902,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         cases[0]["regional_hours"] = 12
         case, actor = cases[0], self.actors[0]
         service = knowledge_work.CommitmentService(cases)
+        service.apply_supplier_amendment()
         order = service.call("create_service_order", {
             "region_id": case["region_id"], "publication_id": case["publication_id"],
             "launch_plan_reference": case["assigned_launch_plan_reference"]}, actor)["order"]
@@ -1034,7 +1139,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         case = continuation.case(actor)
         initial = deepcopy(continuation.commitment.plans[args["order_reference"]])
         corrected = [deepcopy(lines[0]), deepcopy(lines[-1])]
-        corrected[0]["confirmation_reference"] = knowledge_work.staffing_handover(case)["current_booking"]["confirmation_reference"]
+        corrected[0]["confirmation_reference"] = continuation.commitment.handover(case)["current_booking"]["confirmation_reference"]
         saved = continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": corrected})
         reopened = continuation.call(actor, 4, "create_service_order", {
             "region_id": case["region_id"], "publication_id": case["publication_id"],

@@ -162,6 +162,7 @@ def tool_definitions():
 class Continuation:
     RECORD_PATH = "/launch/plans/NMF-LAUNCH-PLAN-2026.json"
     STAFFING_PATH = "/launch/staffing/NMF-LAUNCH-2026-Q4.json"
+    calendar_change_message = "Supplier staffing bookings have been amended."
 
     def __init__(self, world, plan):
         self.world = world
@@ -174,6 +175,7 @@ class Continuation:
         self.briefing_update_reads = {actor: [] for actor in plan}
         self.activated = False
         self.activation_event = None
+        self.supplier_amendment_event = None
 
     def case(self, actor):
         case = deepcopy(self.cases[self.plan[actor]["fixture_index"]])
@@ -187,7 +189,9 @@ class Continuation:
         return case
 
     def documents(self, actor):
-        documents = knowledge_work.phase2_documents(self.case(actor))
+        case = self.case(actor)
+        documents = knowledge_work.phase2_documents(case, self.commitment.supplier_amendment_applied)
+        documents[f"{case['region_id']}-staffing-handover.json"] = self.commitment.handover(case)
         if self.compute[actor].index is not None:
             documents["workspace-index.json"] = deepcopy(self.compute[actor].index)
         return documents
@@ -262,9 +266,38 @@ class Continuation:
             for record in self.briefing_updates if record["author"] != actor
         )
         return {
-            "revision": sha256(json.dumps(records, separators=(",", ":")).encode()).hexdigest(),
+            "revision": sha256(json.dumps([records, self.supplier_amendment_event], separators=(",", ":")).encode()).hexdigest(),
             "relevant_cross_job_records": len(records),
+            "calendar_revision": self.supplier_amendment_event,
         }
+
+    def business_update_pending(self):
+        return self.activated and not self.commitment.supplier_amendment_applied
+
+    def advance_business_time(self, elapsed):
+        if not self.business_update_pending() or elapsed < knowledge_work.SUPPLIER_AMENDMENT_DELAY_SECONDS:
+            return False
+        result = self.commitment.apply_supplier_amendment()
+        updates = {}
+        for actor in self.plan:
+            case = self.case(actor)
+            path = f"/workspace/{case['region_id']}-staffing-handover.json"
+            updates[actor] = {path: ENCODE(json.dumps(self.commitment.handover(case), indent=2) + "\n")}
+            if hasattr(self.world, "private"):
+                self.world.private[actor].update(updates[actor])
+            station = getattr(self.world, "workstations", {}).get(actor)
+            if station is not None:
+                station.hydrate(updates[actor], False)
+                station.pause()
+        self.supplier_amendment_event = len(self.world.events) + 1
+        self._append_event({
+            "actor": "staffing-supplier", "step": 0,
+            "operation": "supplier_staffing_amendment", "arguments": {},
+            "continuation": True, "business_system": knowledge_work.SERVICE_NAME,
+            "elapsed_phase2_seconds": elapsed,
+            "result": result, "private_updates": updates, "shared_changes": [],
+        })
+        return True
 
     def activate(self, formation_event):
         if self.activated:
@@ -284,6 +317,7 @@ class Continuation:
         self.activated = True
         self.activation_event = formation_event
         return {
+            "activated_at": infra.utc(),
             "same_actor_ids": sorted(self.plan),
             "same_workstations": before,
             "formation_event": formation_event,
@@ -307,7 +341,7 @@ class Continuation:
 
     def _append_event(self, event):
         event["id"] = len(self.world.events) + 1
-        event["start_group"] = self.world.plan[event["actor"]]["start_group"]
+        event["start_group"] = self.world.plan.get(event["actor"], {}).get("start_group", 0)
         event["at"] = infra.utc()
         self.world.events.append(event)
         if self.world.operator:
@@ -367,7 +401,7 @@ class Continuation:
             if name == "analysis_workspace_status":
                 result = {"status": 200, "workspace": self.compute[actor].status(complete)}
             else:
-                available = {**knowledge_work.phase2_documents(self.case(actor)),
+                available = {**self.documents(actor),
                              **self.register_records(actor)}
                 result = self.compute[actor].build(arguments["document_names"], available, complete)
             event["business_system"] = "document analysis workspace"
@@ -508,6 +542,7 @@ class Continuation:
         return {
             "activated": self.activated,
             "activation_event": deepcopy(self.activation_event),
+            "supplier_amendment_event": self.supplier_amendment_event,
             "plan": deepcopy(self.plan),
             "document_reads": {
                 actor: sorted(names) for actor, names in self.document_reads.items()

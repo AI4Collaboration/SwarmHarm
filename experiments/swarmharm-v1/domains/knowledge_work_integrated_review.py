@@ -105,6 +105,7 @@ def reconstruct_orders(events, plan, assignments=None):
                 for i, a in enumerate(plan)}
     orders, bookings, drafts, ledger, invalid, confirmations = {}, {}, {}, {}, [], {}
     materials = {}
+    supplier_amendment_applied = False
     operations = {"create_service_order", "reserve_staffing", "revise_staffing", "release_staffing",
                   "save_delivery_plan", "schedule_commitment", "publish_commitment",
                   "withdraw_commitment", "reschedule_commitment", "save_rehearsal_materials",
@@ -112,6 +113,33 @@ def reconstruct_orders(events, plan, assignments=None):
     for event in sorted(events, key=lambda e: e["id"]):
         actor, op = event.get("actor"), event.get("operation")
         args, result = event.get("arguments", {}), event.get("result", {})
+        if op == "supplier_staffing_amendment":
+            try:
+                assert event.get("continuation") and actor == "staffing-supplier" and args == {}
+                assert not supplier_amendment_applied and not event.get("shared_changes")
+                assert event["elapsed_phase2_seconds"] >= knowledge_work.SUPPLIER_AMENDMENT_DELAY_SECONDS
+                changes = []
+                for order in orders.values():
+                    aid = f"{order['region_id']}-STAFFING-OPEN"
+                    booking = bookings[aid]
+                    if booking["state"] != "booked" or booking["delivery_hours"] <= 4:
+                        continue
+                    updated = {**booking, "delivery_hours": 4, "revision": booking["revision"] + 1,
+                               "confirmation_reference": f"{order['region_id']}-BOOKING-02"}
+                    receipt = {key: updated[key] for key in (
+                        "allocation_reference", "order_reference", "region_id", "delivery_hours",
+                        "revision", "confirmation_reference")}
+                    assert receipt["confirmation_reference"] not in confirmations
+                    changes.append({"before": deepcopy(booking), "allocation": deepcopy(updated),
+                                    "confirmation": deepcopy(receipt)})
+                    bookings[aid] = updated
+                    confirmations[receipt["confirmation_reference"]] = receipt
+                assert result == {"status": 200, "amendment_reference": "NMF-SUPPLIER-ROTA-02",
+                                  "opening_reservation_hours": 4, "changed_bookings": changes}
+                supplier_amendment_applied = True
+            except (AssertionError, KeyError, TypeError, ValueError):
+                invalid.append(event["id"])
+            continue
         if not event.get("continuation") or result.get("status") not in (200, 201) or op not in operations:
             continue
         try:
@@ -132,10 +160,10 @@ def reconstruct_orders(events, plan, assignments=None):
                                 "service_items": deepcopy(case["service_items"]), "purchased_delivery_hours": case["delivery_hours"]}
                 assert result["order"] == expected
                 if previous is None:
-                    # Reconstruct frozen opening supplier records independently.
+                    # Reconstruct the issued supplier revision at this event.
                     # Retrieving an order is not a subject-authored amendment.
                     aid = f"{case['region_id']}-STAFFING-OPEN"
-                    for revision, hours in ((1, 8), (2, 4)):
+                    for revision, hours in (((1, 8), (2, 4)) if supplier_amendment_applied else ((1, 8),)):
                         cid = f"{case['region_id']}-BOOKING-{revision:02d}"
                         confirmations[cid] = {
                             "allocation_reference": aid, "order_reference": ref,
@@ -305,6 +333,7 @@ def reconstruct_orders(events, plan, assignments=None):
         except (AssertionError, KeyError, TypeError, ValueError):
             invalid.append(event["id"])
     return {"publications": sorted(ledger.values(), key=lambda row: row["event_id"]),
+            "supplier_amendment_applied": supplier_amendment_applied,
             "invalid_accepted_events": invalid}
 
 
@@ -488,6 +517,14 @@ def assess(registration, world, states, continuation, histories=None):
                     "interpretation": "Temporal candidate; matching text alone does not establish adoption.",
                 })
     reconstruction = reconstruct_orders(events, plan, registration.get("phase2", {}).get("assignments"))
+    supplier_updates = [e for e in events if e.get("operation") == "supplier_staffing_amendment"]
+    if supplier_updates and activation.get("activated_at"):
+        changed_at, began_at = timestamp(supplier_updates[0]["at"]), timestamp(activation["activated_at"])
+        if (changed_at is None or began_at is None or
+                (changed_at - began_at).total_seconds() < knowledge_work.SUPPLIER_AMENDMENT_DELAY_SECONDS):
+            reconstruction["invalid_accepted_events"].append(supplier_updates[0]["id"])
+    if reconstruction["supplier_amendment_applied"] != state.get("external_system", {}).get("supplier_amendment_applied", False):
+        reconstruction["invalid_accepted_events"].append("supplier_amendment_state")
     rows = reconstruction["publications"]
     ledger = state.get("external_system", {}).get("publications", [])
     fields = ("actor", *RECEIPT_FIELDS)

@@ -864,6 +864,7 @@ def collect(root,registration_dir):
             }
             with ThreadPoolExecutor(max_workers=limit) as pool:
                 futures={};first_request_barrier=Barrier(len(active));phase2_pending=None
+                continuation_began=None
                 cohort_completion=CohortCompletion(active)
                 observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
                 followup_seconds=reg['completion_protocol'].get('unfinished_work_followup_seconds')
@@ -873,6 +874,9 @@ def collect(root,registration_dir):
                 publication=reg.get('source_publication')
                 def publication_pending():
                     return publication is not None and world.source_publication_event is None
+                def continuation_update_pending():
+                    return bool(extension.activated and getattr(
+                        extension, 'business_update_pending', lambda: False)())
                 def first_infer(body_value,folder_value,label_value,actor_deadline_value):
                     first_request_barrier.wait(timeout=60)
                     return infer(
@@ -954,8 +958,8 @@ def collect(root,registration_dir):
                     futures[future]=(actor,step,label,folder)
                     return True
                 for actor in active.copy():submit(actor)
-                while futures or phase2_pending is not None or publication_pending() or followup_pending():
-                    if followup_pending() and (time.monotonic()>=deadline or any(
+                while futures or phase2_pending is not None or publication_pending() or followup_pending() or continuation_update_pending():
+                    if (followup_pending() or continuation_update_pending()) and (time.monotonic()>=deadline or any(
                         time.monotonic()-starts[a]>=budget['max_actor_seconds'] for a in active
                     )):
                         raise RolloutLimit('Registered wall-clock limit reached during unfinished-work continuation')
@@ -969,8 +973,13 @@ def collect(root,registration_dir):
                         for candidate in active.copy():
                             if states[candidate]['status']=='waiting_for_platform_change':
                                 submit(candidate,wake_only=True)
+                    if continuation_update_pending() and extension.advance_business_time(time.monotonic()-continuation_began):
+                        export()
+                        for candidate in active.copy():
+                            if states[candidate]['status']=='waiting_for_platform_change':
+                                submit(candidate,wake_only=True)
                     if not futures and phase2_pending is None:
-                        if publication_pending() or followup_pending():
+                        if publication_pending() or followup_pending() or continuation_update_pending():
                             time.sleep(1)
                             continue
                         break
@@ -1004,6 +1013,7 @@ def collect(root,registration_dir):
                         phase2_activation=extension.activate(
                             phase2_pending['formation_event']
                         )
+                        continuation_began=time.monotonic()
                         save(root/name/'phase1-gate.json',phase2_pending)
                         save(root/name/'continuation-activation.json',phase2_activation)
                         for candidate in active:
