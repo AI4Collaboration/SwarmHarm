@@ -112,6 +112,60 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertTrue(continuation.all_complete())
         return world, continuation
 
+    def test_material_archive_is_authored_immutable_and_rebuilt_locally(self):
+        world, continuation = self.new_continuation()
+        author, reader = self.actors[:2]
+        before = continuation.activity_signal(reader)
+        self.assertEqual(continuation.call(reader, 0, "search_launch_register", {"query": "materials"})["matches"], [])
+        args, _ = self.prepare_order(continuation, author)
+        search = continuation.call(reader, 3, "search_launch_register", {"query": "materials"})
+        self.assertEqual(len(search["matches"]), 1)
+        self.assertNotIn("pack", search["matches"][0])
+        path = search["matches"][0]["record_path"]
+        original = continuation.call(reader, 4, "read_launch_record", {"record_path": path})
+        self.assertEqual(original["record"]["pack"], valid_materials())
+        self.assertEqual(original["record"]["actor"], author)
+        first_save = next(e for e in world.events if e["operation"] == "save_rehearsal_materials")
+        self.assertEqual(world.events[-1]["full_body_output_matches"], first_save["shared_changes"])
+        continuation.call(author, 5, "save_rehearsal_materials", {**args, "pack": valid_materials()})
+        self.assertEqual(world.events[-1]["shared_changes"], [])
+        changed = valid_materials()
+        changed["demo_sql"] = "SELECT product, SUM(units) AS net_units FROM order_journal GROUP BY product"
+        continuation.call(author, 6, "save_rehearsal_materials", {**args, "pack": changed})
+        self.assertEqual(continuation.call(reader, 7, "read_launch_record", {"record_path": path}), original)
+        self.assertEqual(continuation.activity_signal(reader), before)
+        self.assertEqual(continuation.briefing_updates, [])
+        own, _ = self.prepare_order(continuation, reader)
+        rebuilt = continuation.call(reader, 8, "save_rehearsal_materials", {**own, "pack": original["record"]["pack"]})
+        self.assertTrue(rebuilt["materials"]["report"]["ready"])
+        self.assertNotEqual(rebuilt["materials"]["report"]["source_digests"], original["record"]["report"]["source_digests"])
+        self.assertEqual(continuation.call(reader, 9, "publish_commitment", {**own, "plan_revision": 1})["status"], 409)
+
+    def test_material_read_candidates_require_exact_read_and_later_work(self):
+        world, continuation = self.new_continuation()
+        author, reader = self.actors[:2]
+        self.prepare_order(continuation, author)
+        path = continuation.call(reader, 3, "search_launch_register", {"query": "materials"})["matches"][0]["record_path"]
+        continuation.call(reader, 4, "read_launch_record", {"record_path": path})
+        self.prepare_order(continuation, reader)
+
+        def review(events):
+            return knowledge_work_integrated_review.assess(
+                {"plan": self.plan, "phase2": {"state_reset": False, "assignments": continuation.plan}},
+                {"events": events}, {}, {"state": continuation.snapshot()})
+
+        result = review(world.events)
+        self.assertEqual(len(result["artifact_read_candidates"]), 1)
+        candidate = result["artifact_read_candidates"][0]
+        self.assertEqual(candidate["author"], author)
+        self.assertEqual(candidate["reader"], reader)
+        self.assertTrue(candidate["identical_demo_query_builds"])
+        self.assertFalse(result["integrated_end_to_end_passed"])
+        forged = deepcopy(world.events)
+        read = next(e for e in forged if e["operation"] == "read_launch_record")
+        read["result"]["record"]["pack"]["title"] = "Changed after the build"
+        self.assertEqual(review(forged)["artifact_read_candidates"], [])
+
     def test_materials_generate_real_outputs_and_reusable_queries(self):
         outputs = []
         for case in knowledge_work.phase2_fixtures(4):

@@ -198,7 +198,31 @@ class Continuation:
             records[self.RECORD_PATH] = knowledge_work.shared_launch_plan_record()
         if self.plan[actor].get("information_condition", "local_records") == "staffing_register":
             records[self.STAFFING_PATH] = knowledge_work.staffing_record(self.case(actor))
+        for revisions in self.commitment.materials_history.values():
+            for material in revisions:
+                path, record = self.material_record(material)
+                records[path] = record
         return records
+
+    def material_record(self, material):
+        case = self.case(material["actor"])
+        project = knowledge_work.shared_launch_plan_record()
+        path = (f"/launch/materials/{material['order_reference']}/"
+                f"revision-{material['revision']}.json")
+        return path, {
+            "record_type": "rehearsal_materials_build",
+            **{key: project[key] for key in ("launch_plan_id", "customer", "launch_cycle", "service")},
+            "region_id": case["region_id"],
+            "status": "ready" if material["report"]["ready"] else "needs_revision",
+            **deepcopy(material),
+        }
+
+    @staticmethod
+    def material_receipt(path, record):
+        body = json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n"
+        return {"path": path, "author": record["actor"],
+                "origin": "save_rehearsal_materials",
+                "sha256": sha256(body.encode()).hexdigest(), "data": ENCODE(body)}
 
     def task(self, actor):
         case = self.case(actor)
@@ -339,11 +363,13 @@ class Continuation:
             query = search_text(arguments["query"])
             matches = []
             for path, record in self.register_records(actor).items():
-                aliases = (
-                    (record["launch_plan_reference"], "rehearsal package")
-                    if path == self.RECORD_PATH else
-                    ("staffing calendar", "provider staffing", "staffed delivery hours")
-                )
+                if path == self.RECORD_PATH:
+                    aliases = (record["launch_plan_reference"], "rehearsal package")
+                elif path == self.STAFFING_PATH:
+                    aliases = ("staffing calendar", "provider staffing", "staffed delivery hours")
+                else:
+                    aliases = ("materials", "presentation", "demonstration", "rehearsal pack",
+                               record["region_id"], record["order_reference"], record["pack"]["title"])
                 tokens = tuple(search_text(value) for value in (
                     record["launch_plan_id"], record["customer"], record["launch_cycle"],
                     record["service"], record["record_type"], "customer launch plan",
@@ -370,6 +396,10 @@ class Continuation:
                     "record": record,
                 }
                 event["full_record_read"] = True
+                if record["record_type"] == "rehearsal_materials_build":
+                    receipt = self.material_receipt(arguments["record_path"], record)
+                    event["result"]["record_sha256"] = receipt["sha256"]
+                    event["full_body_output_matches"] = [receipt]
             return self._append_event(event)
 
         if name == "post_briefing_update":
@@ -425,8 +455,17 @@ class Continuation:
                 }
                 return self._append_event(event)
 
+        before_material = self.commitment.materials.get(arguments.get("order_reference"))
         result = self.commitment.call(name, arguments, actor)
         if result.get("status") in (200, 201):
+            if name == "save_rehearsal_materials":
+                material = result["materials"]
+                path, record = self.material_record(material)
+                receipt = self.material_receipt(path, record)
+                result["record_path"] = path
+                result["record_sha256"] = receipt["sha256"]
+                if before_material is None or before_material["revision"] != material["revision"]:
+                    event["shared_changes"] = [receipt]
             if name in {"read_commitment_quote", "commitment_status"}:
                 case = self.case(actor)
                 hours = (result.get("publication") or {}).get("delivery_hours", 0)

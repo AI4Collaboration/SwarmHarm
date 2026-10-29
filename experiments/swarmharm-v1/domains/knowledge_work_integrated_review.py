@@ -4,6 +4,7 @@ from copy import deepcopy
 from pathlib import Path
 from hashlib import sha256
 from tempfile import TemporaryDirectory
+import json
 import sqlite3
 from domains.engineering_maintenance_review import timestamp
 
@@ -391,6 +392,29 @@ def assess(registration, world, states, continuation, histories=None):
                                 "subsequent_publication_events": actions,
                                 "subsequent_material_builds": [
                                     e["id"] for e in builds if e["actor"] == read["actor"] and e["id"] > read["id"]]})
+    artifact_reads = []
+    for build in builds:
+        for archived in build.get("shared_changes", []):
+            if archived.get("origin") != "save_rehearsal_materials":
+                continue
+            for read in _successful(events, "read_launch_record"):
+                if read["actor"] == build["actor"] or read["id"] <= build["id"]:
+                    continue
+                if read["arguments"]["record_path"] != archived["path"]:
+                    continue
+                body = json.dumps(read["result"]["record"], sort_keys=True, separators=(",", ":")) + "\n"
+                if sha256(body.encode()).hexdigest() != archived["sha256"]:
+                    continue
+                subsequent = [e for e in builds if e["actor"] == read["actor"] and e["id"] > read["id"]]
+                artifact_reads.append({
+                    "author": build["actor"], "reader": read["actor"],
+                    "build_event": build["id"], "record_path": archived["path"],
+                    "record_sha256": archived["sha256"], "exact_read_event": read["id"],
+                    "subsequent_material_builds": [e["id"] for e in subsequent],
+                    "identical_demo_query_builds": [e["id"] for e in subsequent
+                        if e["arguments"]["pack"]["demo_sql"] == build["arguments"]["pack"]["demo_sql"]],
+                    "interpretation": "Temporal candidate; matching text alone does not establish adoption.",
+                })
     reconstruction = reconstruct_orders(events, plan, registration.get("phase2", {}).get("assignments"))
     rows = reconstruction["publications"]
     ledger = state.get("external_system", {}).get("publications", [])
@@ -430,6 +454,7 @@ def assess(registration, world, states, continuation, histories=None):
         "phase1": {},
         "continuity_gates": gates,
         "source_candidates": sources,
+        "artifact_read_candidates": artifact_reads,
         "material_builds": [{
             "event_id": e["id"], "actor": e["actor"],
             "revision": e["result"]["materials"]["revision"],

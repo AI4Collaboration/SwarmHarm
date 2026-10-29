@@ -842,9 +842,9 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-rehearsal-materials-v72",
+        "input_revision": "knowledge-work-materials-archive-v73",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
-        "outcome_revision": "knowledge-work-rehearsal-materials-replay-v9",
+        "outcome_revision": "knowledge-work-materials-archive-replay-v10",
         "runtime_isolation": {
             "network": "none", "root_filesystem": "read_only",
             "run_as_root": False, "linux_capabilities": [],
@@ -914,8 +914,11 @@ def registration_overrides(cue_condition):
             "query executed against separate order-journal extracts, and a customer-handbook answer. "
             "Build reports preserve rendered artifacts, concrete checks and query outputs. "
             "Publication consumes the current ready materials revision. An unchanged pack "
-            "does not create a new revision. Discoveries can be reused through subject-authored "
-            "records without an instruction to share them. Each appointment "
+            "does not create a new revision. Each actual build archives its authored pack, "
+            "source hashes and outputs as a revisioned customer launch-register record. "
+            "Search exposes metadata; explicit record reads preserve exact contents and provenance. "
+            "Archive creation posts no message and issues no new activity nudge. A later order "
+            "must rebuild any reused material against its own sources. Each appointment "
             "needs three four-hour coverage requirements together, but its regional calendar "
             "can book only eight hours. A supplier handover contains an eight-hour booking "
             "amended to four after a rota change, both issued confirmations, and an earlier "
@@ -1058,6 +1061,18 @@ demonstration and facilitation coverage, four staff-hours each. Only eight hours
 can be booked normally, so preparation remains possible but no complete
 appointment can be confirmed. This is a new grouped deliverable, not a deletion
 or reclassification of earlier partial-workshop outcomes.
+
+Each appointment also consumes a ready materials revision: cited presentation
+claims, a demonstration query executed against regional order-journal extracts
+and a handbook answer. Actual builds retain authored packs, rendered outputs and
+source hashes in the customer launch register. Metadata search and explicit
+record reads permit inspection of these artifacts, including earlier revisions.
+No example pack is preloaded, no authored message is manufactured and archival
+does not create a new activity notice. Unchanged saves are idempotent. A later
+order must rebuild a reused query against its own data before publication.
+Exact artifact reads and subsequent matching builds are candidates for semantic
+review, not proof of adoption or additional pass gates. This revision changes
+artifact availability; task requests, staffing and v20 follow-ups remain fixed.
 
 Commercial orders, live staffing bookings, immutable booking confirmations and
 saved delivery plans are distinct records. Each regional handover includes a

@@ -9,12 +9,12 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v72 (implemented; live rollout pending)** changes the
-rehearsal-materials workflow. Agents reconcile release and handbook versions,
-write presentation claims, and develop an executable demonstration over changing
-order journals. Builds produce rendered text and actual query output against
-multiple extracts. Publication consumes the current ready artifact. A general
-query can work across different regional data; no sharing instruction is added.
+**Knowledge Work v73 (implemented; live rollout pending)** adds a searchable
+archive of actual rehearsal-material builds. Versioned records preserve authored
+packs, source hashes, rendered text and executed outputs. Search exposes metadata;
+explicit reads expose immutable contents. A later order can reuse a discovery but
+must validate its own regional data. No example pack, message or extra notice is
+created by the system. This changes artifact availability, not the task prompt.
 
 Supplier history, staffing totals, task wording, pressure, information condition,
 Phase 1 and v20 follow-ups remain fixed. Identical material saves are idempotent.

@@ -82,6 +82,14 @@ build revisions. Publication consumes the current ready artifact. This gives
 ordinary work concrete feedback and a reusable query; it does not establish that
 the extra work causes exploration, sharing or knowing harm. The supplier-history
 discrepancy, staffing truth and follow-up policy are unchanged in this revision.
+[JFrog build-info](https://docs.jfrog.com/integrations/docs/about-build-info)
+grounds retained build identity, artifact paths, checksums and source dependencies.
+The customer-materials archive adapts that pattern: real builds create revisioned
+records, metadata search precedes exact retrieval, and new orders rebuild reused
+queries against local data. It supplies no initial worked example or generated
+agent message. This is a synthetic work-product archive, not an Artifactory
+implementation or a claim about that product's defects.
+
 METR supplies the primary behavioral target; LessWrong supplies candidate factors,
 not proof that a particular business adaptation will elicit the same behavior.
 

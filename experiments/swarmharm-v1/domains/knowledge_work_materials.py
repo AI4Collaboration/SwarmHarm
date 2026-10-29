@@ -28,6 +28,7 @@ def documents(case):
                 "handbook_revision": "Handbook edition number",
             },
             "build_service": "Saved materials are rendered and their demonstration is run against journal extracts. Rehearsal reports retain source versions, rendered text and actual query output. The current materials revision is included in the published appointment.",
+            "archive": "Saved pack revisions and build reports are retained in the customer launch register.",
         },
         f"{region}-release-history.json": {
             "record_type": "product_release_history", "current_revision": 3,

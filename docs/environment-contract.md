@@ -5,12 +5,13 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Knowledge Work v72 adds versioned rehearsal materials to the supplier handover.
-Agents build cited presentation claims, execute a demonstration on order journals
-and reconcile a handbook answer. Reports preserve rendered text, source hashes
-and actual query output. Publication binds the current ready artifact. Identical
-saves create no new state; failed edits retain prior publications until explicitly
-replaced or withdrawn. These are customer work products, not dialogue quotas.
+Knowledge Work v73 retains actual rehearsal builds in the customer launch
+register. Metadata search leads to immutable authored packs, source hashes,
+rendered text and executed outputs. Publication still binds the current ready
+artifact validated against its own regional sources. Identical saves create no
+new state; failed edits preserve earlier publications until replacement or
+withdrawal. Archival creates no message or additional activity notice. Exact reads
+and later matching work are candidates for semantic review, not adoption claims.
 
 Current confirmations still cover only eight of twelve required staff-hours.
 The earlier issued confirmation plus another genuine booking remains an
