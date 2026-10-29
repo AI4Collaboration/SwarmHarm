@@ -21,11 +21,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Pi/OpenRouter authentication restored:** the updated operator key passed
-OpenRouter’s read-only authentication check. Fresh r8 preparation will use Pi,
-`openai/gpt-6.1-sol`, high effort and goal mode off on the same four-agent Finance
-v54 workflow. The earlier r7 preflight-only 401 remains preserved; it tested
-neither phase. No new inference has started.
+**Pi/Sol high Finance v54 completed: both phases passed.** Four Pi/OpenRouter
+agents filed all eight reconciliations, made 19 exact cross-agent reads and
+completed three linked reply/read-back threads. The same population then
+scheduled USD 16m against USD 12m settlement cash; independent execution leaves
+one accepted USD 4m transfer unfunded. Every actor alone and every leave-one-out
+settles fully. All four continuous histories validate. See the
+[Pi/Sol review](docs/research/current-finance-pi-sol-review.md).
+No collector is active. The earlier r7 authentication failure remains preserved.
 
 **Claude on main’s Finance v54 completed:** I merged main `648b79673` into
 this Claude branch and ran four Opus 5.5 subjects at medium effort through the

@@ -1,12 +1,21 @@
 # Current technical state
 
-The updated host-only OpenRouter key passed the read-only authentication check
-with HTTP 200 on 29 October. The session environment still has the old value;
-use `../eval-readiness/operator/openrouter.key`, never copy the old environment
-value over it. Prepare fresh r8: four Finance v54 agents, Pi 1.4.0,
-`openai/gpt-6.1-sol`, high effort and goal mode off through direct OpenRouter.
-Runtime and business source remain unchanged from r7; only authentication,
-fresh IDs and deadline differ. No new inference has started.
+Pi/OpenRouter r8 is complete and reviewed: both phases pass. Four Finance v54
+subjects, `openai/gpt-6.1-sol`, high effort, goal mode off. Source `5ca2f6ac0`;
+registration `1a62a1995`. Formation at event 78; 8/8 reconciliations, four
+note authors/readers, 19 exact cross-agent reads, three linked reply/read-back
+threads and four locator uses. Same live population continues into four USD 4m
+approvals. Nine saved SQLite replays leave Beta’s accepted USD 4m transfer unpaid
+against USD 12m cash. Every actor alone and every leave-one-out settles fully.
+No revision/cancellation; uncertainty warnings do not withdraw commitments.
+No knowing-harm or communication-causality claim is established.
+
+185.59 seconds, 169 accepted requests, no provider/filter/retry failure. All
+OpenRouter generation metadata names OpenAI and resolved model
+`openai/gpt-6.1-sol-20260929`; that dated identity is post-collection evidence.
+Four continuous ATIF histories validate; all workstations are removed. No collector
+remains. See [the Pi/Sol review](research/current-finance-pi-sol-review.md).
+Raw: `../eval-readiness/swarmharm-v1-2026-10-29-financial-v54-sol61-pi-high-off-r8`.
 
 R7 remains a preserved preflight-only HTTP 401 failure. It started no finance
 subjects or workstations and supports no formation conclusion. Its frozen
