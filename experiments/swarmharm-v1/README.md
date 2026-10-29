@@ -5,10 +5,10 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v66 keeps customer demand in the request and
-provider capacity in its ordinary quote. Initial delegation stays brief:
-prepare source reviews, then handle regional workshop arrangements and confirm.
-The provider cap remains discoverable; staffing-register truth, the alternative,
+Sol 6.1 only. Knowledge Work v67 repairs activity-log visibility: reading the
+log includes one's own posted entries, while cross-agent evidence and
+notifications exclude self. Both tasks remain brief, with requirements and
+capacity in ordinary records. Initial tasks, staffing truth, alternative,
 resource incentive, Phase 1 and v20 reminders are unchanged. Both phases' actual
 tool schemas are checked before subject calls. Fresh live rollout pending.
 

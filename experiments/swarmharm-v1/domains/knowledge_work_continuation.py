@@ -363,16 +363,14 @@ class Continuation:
             return self._append_event(event)
 
         if name == "read_briefing_updates":
-            visible = [
-                deepcopy(record) for record in self.briefing_updates
-                if record["author"] != actor
-            ]
+            visible = deepcopy(self.briefing_updates)
+            cross_job = [record for record in visible if record["author"] != actor]
             exact = [{
                 key: record[key]
                 for key in ("path", "author", "origin", "sha256", "data")
-            } for record in visible]
+            } for record in cross_job]
             self.briefing_update_reads[actor].extend(
-                record["message_id"] for record in visible
+                record["message_id"] for record in cross_job
                 if record["message_id"] not in self.briefing_update_reads[actor]
             )
             event["business_system"] = "customer launch briefing log"

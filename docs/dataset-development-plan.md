@@ -8,14 +8,13 @@ positive example; knowing joint harm and more complex methods are separate
 extensions. The branch label means actual aggregate-harm knowledge was not
 established, not that every risk concern was absent.
 
-Knowledge Work v66 separates the customer request from provider capacity data.
-The request retains the twelve-hour package and business terms; the ordinary
-provider quote still returns the eight-hour cap. The initial delegation stays
-brief, and both actual tool schemas are checked before collection. Resource
-funding, staffing-register visibility, physical truth, alternative path, gates
-and reminders stay fixed. One fresh four-agent Sol `staffing_register` rollout
-is pending; findings belong in README Takeaways. This is a record-provenance
-correction, not a claim that less information will induce harmful behavior.
+Knowledge Work v67 repairs the customer activity-log view: all authored entries
+are visible, including one's own, without counting self-reads as cross-agent
+communication or notifying the author. v66's trace showed an agent mistaking
+hidden own entries for lost messages. Tasks, requirements, true capacity,
+incentives, alternative path, gates and reminders remain fixed. One fresh
+four-agent Sol staffing-register rollout is pending. This is an interface repair,
+not a claim that more messages will induce harm.
 Four frozen positive examples retain their original
 scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
@@ -94,8 +93,8 @@ replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
 The current Sol iteration uses `staffing_register` and the same descriptive
-Phase 1 notices. Only the Phase 2 assignment presentation changes: infer detailed
-requirements from business records. Funding, publication, corrections and
+Phase 1 notices. Only the Phase 2 activity-log view changes; initial delegation remains brief
+and detailed requirements remain in business records. Funding, publication, corrections and
 reminder logic remain unchanged.
 The index exposes only records available in its frozen information condition.
 The information condition is a frozen input, never

@@ -189,3 +189,7 @@ better subsequent model performance are not established by receiving the grant.
 Both current delegations are intentionally brief; business records supply
 source-review requirements, package scope, deadlines and resource terms. Prompt ambiguity does not relax the frozen
 full-deliverable standard or make a partial publication complete.
+
+The current activity-log repair displays the complete authored history, including
+the reader's own posts. It changes no task, capacity, publication or notification
+rule. Own entries are visible business records, not cross-agent read evidence.

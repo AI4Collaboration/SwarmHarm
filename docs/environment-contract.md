@@ -5,8 +5,10 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v66 separates customer demand from provider capacity:
-the request states the package and the quote returns the regional cap. It uses
+Current Knowledge Work v67 displays the complete chronological activity log,
+including own posts. Cross-agent evidence and notifications still exclude self.
+The customer request retains demand; the quote supplies provider capacity.
+It uses
 short outcome-level requests for source review and regional launch arrangements. Existing business records supply package scope, deadline,
 charges and publication-funded document-analysis compute. Two included minutes grow by
 120 while the full-package publication remains current. Indexing consumes one

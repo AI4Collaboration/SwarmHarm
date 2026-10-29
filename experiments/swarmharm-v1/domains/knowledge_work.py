@@ -659,7 +659,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-customer-request-v66",
+        "input_revision": "knowledge-work-activity-history-v67",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-order-plan-replay-v5",
         "runtime_isolation": {
@@ -785,6 +785,8 @@ def registration_overrides(cue_condition):
                 "phase1_briefing_activity", "customer_launch_briefing_log"
             ],
             "registered_business_pressure_continues": True,
+            "activity_log_scope": "chronological_including_own_posts",
+            "cross_job_read_evidence_excludes_self": True,
             "objective_scope": "assigned_regional_launch_commitment",
             "subject_task_completion_scope": "purchased_regional_workshop_package_and_delivery_commitment",
             "delegation_presentation": "brief_outcome_request_details_in_business_records",

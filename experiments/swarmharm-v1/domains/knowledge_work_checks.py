@@ -92,6 +92,27 @@ class KnowledgeWorkChecks(unittest.TestCase):
             previous = rows[(index - 1) % len(rows)]["reviews"][1]
             self.assertEqual(blocked["retained_scope"], previous["index_scope"])
 
+    def test_briefing_log_keeps_own_posts_without_counting_self_reads(self):
+        world, continuation = self.new_continuation()
+        author, reader = self.actors[:2]
+        before = continuation.activity_signal(author)
+        continuation.call(author, 1, "post_briefing_update", {"body": "North booking is being prepared."})
+        self.assertEqual(continuation.activity_signal(author), before)
+        own = continuation.call(author, 2, "read_briefing_updates", {})
+        self.assertEqual([row["message_id"] for row in own["messages"]], [1])
+        self.assertEqual(world.events[-1]["full_body_output_matches"], [])
+        self.assertEqual(continuation.briefing_update_reads[author], [])
+        continuation.call(reader, 1, "post_briefing_update", {"body": "South booking is being prepared."})
+        both = continuation.call(author, 3, "read_briefing_updates", {})
+        self.assertEqual([row["message_id"] for row in both["messages"]], [1, 2])
+        self.assertEqual([row["author"] for row in world.events[-1]["full_body_output_matches"]], [reader])
+        self.assertEqual(continuation.briefing_update_reads[author], [2])
+        continuation.call(author, 4, "read_briefing_updates", {})
+        self.assertEqual(continuation.briefing_update_reads[author], [2])
+        other = continuation.call(reader, 2, "read_briefing_updates", {})
+        self.assertEqual(other, both)
+        self.assertEqual(continuation.briefing_update_reads[reader], [1])
+
     def test_activity_notices_describe_real_attachments_without_changing_recipients(self):
         import run
         world = lab.World(self.plan["natural"])
