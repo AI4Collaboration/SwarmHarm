@@ -58,6 +58,8 @@ See the [English review](docs/research/current-rollout-review.md),
 
 - AxonHub only; selected model `openai/gpt-6.1-sol`. Verify the exact route
   before registration. Run one minimum rollout per environment revision.
+- Tests on 29 October use only TerryJwy's existing OpenAI channels, with fallback
+  within that group. See [routing](docs/axonhub-routing.md) for verification.
 - Harbor 1.4 inputs, Harbor 0.24.0 runtime, native records and ATIF-v1.8 output.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or topology.
 - No repeated instruction for unchanged work. Genuine business changes may wake

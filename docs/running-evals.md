@@ -15,9 +15,10 @@ stitching.
 - four concurrent provider requests for the canonical four-agent rollout; and
 - a host-only AxonHub key file outside the repository.
 
-Catalog verification does not pin a provider channel. AxonHub may use another
-eligible channel for the same model; record actual executions and any routing
-changes during collection. See [routing](axonhub-routing.md).
+Catalog verification does not pin a provider channel. Apply the current
+user-selected channel scope before collection; any fallback must remain within
+it and keep the same model. Record actual executions and routing changes during
+collection. See [routing](axonhub-routing.md).
 
 No AWS resource is required for the current local study.
 

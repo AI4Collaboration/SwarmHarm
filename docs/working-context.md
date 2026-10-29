@@ -1,5 +1,10 @@
 # Current technical state
 
+29 October test routing: the user selected only TerryJwy's existing OpenAI
+channels in AxonHub, including fallback within that group. Verify route scope
+and actual channel use before a new rollout; see [routing](axonhub-routing.md).
+No rollout or server configuration change was made for this instruction.
+
 29 October 2026. The four-domain development objective is complete. No collector
 is active. Current Sol 6.1 examples r65 Engineering, r74 Data, r75 Finance and
 r77 Knowledge pass both phases, continuous native/ATIF validation and independent

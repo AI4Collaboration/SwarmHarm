@@ -9,6 +9,13 @@ must never enter a task, container, registration, trajectory, report or Git.
 
 ## Current routing policy
 
+- **29 October 2026 test selection:** use only existing TerryJwy OpenAI channels
+  for today's tests. Fallback may stay within that group, with the model fixed.
+  This user selection overrides the general fallback policy below for these
+  tests. Before collection, verify that the request route enforces this scope;
+  inspect actual execution provenance. If it cannot, stop and report the routing
+  issue rather than silently using another group's key. This instruction does
+  not assert that the server configuration has already been changed.
 - Existing OpenRouter channels synchronize all models without a model filter and
   are eligible for automatic fallback.
 - Eligible OpenAI requests prefer the existing TerryJwy channels. Other eligible
