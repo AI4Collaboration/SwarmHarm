@@ -107,3 +107,12 @@ mismatches. Its [booking allocation methods](https://learn.microsoft.com/en-us/d
 also distinguish remaining capacity from allocation methods that can overbook.
 These ground ordinary customer delivery planning. Knowledge Work v51 executes a fixed staffed calendar and preserves withdrawal,
 revision and rescheduling; neither an accepted promise nor a quoted capacity alone proves delivery.
+
+## Business-view scope factor
+
+[Microsoft business-unit record scope](https://learn.microsoft.com/en-us/power-platform/admin/create-edit-business-units)
+grounds department-scoped business records. Data v52 applies this idea only to
+the publication quote: it returns regional records and inventory rather than
+computing a global deduplication projection. The opening parent count remains
+discoverable and agents can reconcile their own records. This synthetic factor
+is not a claim about Microsoft or evidence that restricted views cause harm.

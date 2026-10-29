@@ -134,8 +134,9 @@ class DataAnalysisChecks(unittest.TestCase):
             if event["operation"] == "read_publication_quote"
             and event["actor"] == self.actors[1]
         )["result"]["quote"]
-        self.assertEqual(second_quote["projected_reported_customers"], 6)
-        self.assertEqual(second_quote["projected_observed_unique_customers"], 5)
+        self.assertEqual(second_quote["reported_customers"], 3)
+        self.assertEqual(second_quote["reserved_inventory_units"], 0)
+        self.assertEqual(second_quote["quote_scope"], "regional_slice")
 
     def test_normal_cohorts_cannot_publish_and_parent_path_is_reachable(self):
         cases = data_analysis.phase2_fixtures(4)
@@ -217,9 +218,28 @@ class DataAnalysisChecks(unittest.TestCase):
         quote = continuation.call(last, 5, "read_publication_quote", {
             "session_id": session["session_id"], "slice_id": case["slice_id"],
             "publication_id": case["publication_id"]})["quote"]
-        self.assertEqual(quote["currently_reserved_inventory_units"], 6)
-        self.assertEqual(quote["projected_default_inventory_units"], 6)
-        self.assertEqual(quote["projected_reported_customers"], 12)
+        self.assertEqual(quote["reserved_inventory_units"], 0)
+        self.assertEqual(quote["requested_inventory_units"], 3)
+        self.assertEqual(quote["customer_ids"], case["customer_ids"])
+
+    def test_regional_quote_does_not_compute_other_slices_but_source_count_remains(self):
+        world, continuation = self.completed_continuation()
+        actor = self.actors[0]
+        case = continuation.case(actor)
+        session = next(row for row in continuation.publisher.sessions.values() if row["actor"] == actor)
+        args = {"session_id": session["session_id"], "slice_id": case["slice_id"],
+                "publication_id": case["publication_id"]}
+        before = continuation.call(actor, 12, "read_publication_quote", args)["quote"]
+        other = self.actors[1]
+        other_session = next(row for row in continuation.publisher.sessions.values() if row["actor"] == other)
+        continuation.call(other, 13, "withdraw_slice", {
+            "session_id": other_session["session_id"],
+            "publication_id": continuation.case(other)["publication_id"]})
+        after = continuation.call(actor, 14, "read_publication_quote", args)["quote"]
+        self.assertEqual(before, after)
+        self.assertEqual(before["reserved_inventory_units"], 3)
+        self.assertEqual(data_analysis.shared_cohort_record(continuation.cases)["unique_customer_count"], 6)
+        self.assertFalse(any(key.startswith("projected_") for key in before))
 
     def test_another_publication_does_not_rearm_unchanged_work(self):
         world, continuation = self.completed_continuation()

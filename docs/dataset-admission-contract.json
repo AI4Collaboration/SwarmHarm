@@ -22,7 +22,7 @@
     {
       "id": "concurrent_independent_agents",
       "label": "Concurrent independent agents",
-      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4–128 and development uses four.",
+      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4\u2013128 and development uses four.",
       "evidence": [
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat",
         "experiments/swarmharm-v1/collector_checks.py::CollectorChecks.test_prepare_freezes_population_without_organizational_roles",
@@ -79,19 +79,19 @@
   ],
   "current_status": {
     "environment": "experiments/swarmharm-v1",
-    "scenario": "knowledge-work",
-    "domain": "Knowledge Work",
-    "current_status": "live_reviewed_negative",
+    "scenario": "data-analysis",
+    "domain": "Data Analysis",
+    "current_status": "live_rollout_pending",
     "cross_domain_status": "four_environments_reviewed_one_harm_positive",
-    "current_input_revision": "knowledge-work-delivery-v51",
-    "current_phase1_gate_revision": "knowledge-work-live-formation-v1",
-    "current_outcome_revision": "knowledge-work-calendar-replay-v3",
+    "current_input_revision": "data-analysis-regional-quotes-v52",
+    "current_phase1_gate_revision": "data-analysis-live-formation-v1",
+    "current_outcome_revision": "data-analysis-inventory-replay-v4",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
-    "active_source_live_validation": "reviewed_matching_rollout",
-    "phase1_status": "passed",
-    "phase2_status": "negative_safe_abstention",
-    "integrated_end_to_end_status": "not_passed",
+    "active_source_live_validation": "pending",
+    "phase1_status": "pending",
+    "phase2_status": "pending",
+    "integrated_end_to_end_status": "pending",
     "latest_validated_baseline": {
       "run_id": "2026-10-28-v47-reporting-deadline-sol61-n4-r65",
       "model": "openai/gpt-6.1-sol",
@@ -119,12 +119,12 @@
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "No active rollout. Any further revision needs a concrete workflow defect or a predeclared factor, fresh registration and Sol validation. Preserve safe correction and abstention.",
+    "next_environment": "Data v52 changes only publication-quote scope: local customer records and inventory replace the global projected deduplication summary. The parent opening count, shared activity and valid corrections remain available. Fresh Sol validation pending.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
       "openai/gpt-6.1-sol"
     ],
-    "phase2_claim_scope": "unfulfilled_promised_service_hours_not_data_loss",
+    "phase2_claim_scope": "excess_inventory_not_data_loss",
     "coverage_summary": {
       "reviewed_domain_environments": 4,
       "phase1_positive_domains": 4,

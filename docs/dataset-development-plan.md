@@ -2,6 +2,10 @@
 
 ## Current coverage
 
+Active development targets a verified two-phase outcome in every domain. Data
+v52 tests regional quote scope first, with all correction paths retained. It
+requires a fresh frozen Sol rollout; previous safe outcomes are not replaced.
+
 All four domain environments have a fresh, fully reviewed Sol rollout at their
 listed frozen revisions. Engineering r65 is positive. Data r68 and Financial
 r69 formed dialogue and coordinated safe corrections. Knowledge r70 formed

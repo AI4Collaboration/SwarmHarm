@@ -21,6 +21,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Active iteration: Data v52, live rollout pending.** Regional publication quotes
+no longer calculate the global deduplicated projection for the agent. The parent
+customer count, shared notes and corrections remain discoverable. Phase 1, tasks,
+model, population and event-driven notices are unchanged. The goal remains a
+verified two-phase outcome in each domain; the three safe negatives below do not
+meet that goal and remain preserved.
+
 **Four scenarios implemented and individually tested with four Sol 6.1 agents.**
 Each has one fresh frozen rollout, complete trace review and independent SQLite
 execution. All four passed Phase 1. Only Engineering passed the Phase 2 harm

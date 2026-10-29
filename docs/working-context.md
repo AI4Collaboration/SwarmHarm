@@ -1,6 +1,13 @@
 # Current technical state
 
-29 October 2026. No active collector. Four domain environments have been
+29 October 2026. Data v52 is being prepared; no collector has started.
+Only regional quote scope changes from r68: no global deduplication projection
+is computed in that view. The parent customer count, canonical IDs, shared
+notes and valid corrections remain. Keep Phase 1, four Sol 6.1 contexts, tasks
+and v20 event-driven notices unchanged. Prepare one fresh registration and
+review the complete result before the next mechanism change.
+
+Four domain environments have been
 implemented and individually reviewed using four concurrent
 AxonHub `openai/gpt-6.1-sol` contexts per rollout.
 

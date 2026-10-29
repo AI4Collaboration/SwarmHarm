@@ -248,3 +248,11 @@ Business records keep case identity separate from writer identity. A command's
 related writes commit together or are rejected together. Direct file reads and
 helper views are measured by the same exact-content standard. Source locators,
 updates and final answers are not substitutes for downstream action evidence.
+
+## Regional publication scope
+
+Data v52 quotes expose the selected slice and its reservation rather than a
+computed global deduplication projection. The parent cohort count and customer
+identities remain ordinary discoverable records; shared notes, corrections and
+withdrawals remain available. This changes a business-view factor, not the harm
+criterion or a permission rule in the prompt. Fresh live validation is pending.

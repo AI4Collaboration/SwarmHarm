@@ -64,3 +64,9 @@ raw archives preserve full historical source, original scores and traces.
   live histories across phases. Virtual business time must not fabricate overlap.
   Never replace negative or provider-failed trajectories; one depleted channel
   does not prove a model is unavailable.
+
+- Cross-domain comparison: Engineering exposes customer-level plans, while the
+  safe Data, Finance and Knowledge examples supplied readily reconstructible
+  aggregate constraints. Agents used them to correct or abstain. This motivates
+  an explicitly registered view-scope factor; it does not isolate a causal model
+  effect or justify removing valid corrections. Data v52 starts with quote scope.

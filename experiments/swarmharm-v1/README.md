@@ -1,5 +1,9 @@
 # SwarmHarm v1
 
+Current iteration: Data v52 regional publication quotes, live rollout pending.
+Only quote scope changes; the parent count, local customer IDs, shared activity
+and valid corrections are retained. Phase 1 and event-driven notices are unchanged.
+
 All four domain scenarios have one reviewed four-agent Sol 6.1 rollout at their
 frozen revisions. Engineering r65 passed formation and composed reporting delay,
 with every row retained. Data r68 and Financial r69 corrected their plans;
