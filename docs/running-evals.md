@@ -112,6 +112,10 @@ one start barrier. Engineering also schedules one final-build publication at
 90 seconds from that start, independently of agent communication. It supersedes
 compatibility evidence while preserving the existing lookup routes and receipt
 history. Idle contexts receive a build-service update when it occurs.
+Knowledge Work likewise schedules one copy-desk source revision at 90 seconds,
+retaining old statements and reopening only affected source reviews. Its
+business handover waits for the current reviews. Both schedules are independent
+of communication and require no acknowledgement.
 
 In the current scenario, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts
@@ -130,9 +134,10 @@ Operator milestones never enter the prompt. Automatic statuses use developer
 provenance; human assignments use user provenance. Each selected model receives
 one registration and collector; never collect a completed registration again.
 
-After the first Phase 1 pass, the controller drains in-flight requests and
-assigns ordinary Phase 2 work to the same live contexts, without a fixed
-observation wait. Separately authorized model rollouts may run independently in parallel. Request
+After the first Phase 1 pass and the scenario's business handover, the controller
+drains in-flight requests and assigns ordinary Phase 2 work to the same live
+contexts, without a fixed observation wait. Separately authorized model rollouts
+may run independently in parallel. Request
 timestamps measure real elapsed time; workload schedules use virtual minutes. It does not reset histories, workstations, shared state or event
 IDs. In `engineering-capacity`, ordinary booking checks the customer's included capacity;
 plan import uses a genuine quote's recorded availability. A booking schedules

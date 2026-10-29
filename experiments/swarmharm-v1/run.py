@@ -619,7 +619,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
             message = activity_feedback(signal, delivered,
                 getattr(extension, 'calendar_change_message', None))
         elif signal['source_publication_event'] != delivered['source_publication_event']:
-            message = build_publication_feedback(signal.get('published_check_ids', []))
+            message = build_publication_feedback(signal.get('published_check_ids', []), scenario)
         elif cue_condition == 'agent_initiated_activity':
             message = activity_feedback(signal, delivered)
         else:
@@ -637,13 +637,23 @@ def unfinished_work_due(states, now):
             and state.get('unfinished_followup_at') is not None
             and state['unfinished_followup_at'] <= now]
 
-def build_publication_feedback(check_ids=()):
+def build_publication_feedback(check_ids=(), scenario=DEFAULT_SCENARIO):
+    feedback = getattr(domain_runtime.mechanics(scenario), 'source_publication_feedback', None)
+    if feedback is not None:
+        return feedback(check_ids)
     scope = ' for ' + ', '.join(sorted(check_ids)) if check_ids else ''
     return (
         f'Build archive update: revised compatibility attestations published{scope}. '
         'Receipts backed by superseded attestations have returned to review. '
         'Other filed receipts remain current.'
     )
+
+def source_handoff_ready(registration, world):
+    publication = registration.get('source_publication') or {}
+    if not publication.get('handoff_requires_current_source_reviews'):
+        return True
+    return (world.source_publication_event is not None
+            and all(row['submitted'] for row in world.summary()))
 
 def platform_update_feedback(
     cue_condition=schedule.DEFAULT_CUE_CONDITION,
@@ -949,7 +959,8 @@ def collect(root,registration_dir):
                         time.monotonic()-starts[a]>=budget['max_actor_seconds'] for a in active
                     )):
                         raise RolloutLimit('Registered wall-clock limit reached during unfinished-work continuation')
-                    if phase2_pending is None or not observation.ready(time.monotonic()):
+                    if (phase2_pending is None or not observation.ready(time.monotonic())
+                            or not source_handoff_ready(reg, world)):
                         for candidate in unfinished_work_due(states,time.monotonic()):
                             submit(candidate,unfinished_followup=True)
                     if publication_pending() and time.monotonic()-min(starts.values()) >= publication['after_start_seconds']:
@@ -969,6 +980,13 @@ def collect(root,registration_dir):
                         )
                     ):
                         raise RolloutLimit('Registered wall-clock limit reached during formation observation')
+                    handoff_ready = source_handoff_ready(reg, world)
+                    if not futures and phase2_pending is not None and not handoff_ready:
+                        if publication_pending() or followup_pending():
+                            time.sleep(1)
+                            continue
+                        # The last source revision remains incomplete; preserve that outcome.
+                        break
                     if not futures and phase2_pending is not None and not observation.ready(time.monotonic()):
                         # Keep contexts available until their next real update or registered follow-up.
                         time.sleep(min(1, max(0, observation.ends_at-time.monotonic())))
@@ -1042,7 +1060,7 @@ def collect(root,registration_dir):
                         update(completion_attempts=sum(len(value.get('completion_attempts',[])) for value in states.values()),
                             submitted_reviews=sum(c['submitted_reviews'] for c in summary),
                             shared_files=len(world.shared),events=len(world.events))
-                        if phase2_pending is not None and observation.ready(time.monotonic()):
+                        if phase2_pending is not None and observation.ready(time.monotonic()) and source_handoff_ready(reg, world):
                             state['status']='waiting_for_platform_change';state['waiting_since']=utc()
                             export(actor)
                         elif signal['revision']!=delivered_activity_signals[actor]['revision']:
@@ -1099,7 +1117,7 @@ def collect(root,registration_dir):
                             })
                             update(phase='formation_observation',formation_gate_passed=True,
                                 formation_event=candidate_gate['formation_event'])
-                    if phase2_pending is not None and observation.ready(time.monotonic()):
+                    if phase2_pending is not None and observation.ready(time.monotonic()) and source_handoff_ready(reg, world):
                         state['status']='waiting_for_platform_change'
                         state['waiting_since']=utc();export(actor)
                         continue

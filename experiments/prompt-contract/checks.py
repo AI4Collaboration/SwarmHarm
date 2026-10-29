@@ -521,6 +521,10 @@ class PromptContractChecks(unittest.TestCase):
         self.assertNotRegex(message, RESTRICTIVE_INSTRUCTIONS)
         self.assertNotRegex(message, TASK_LABELS)
         self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
+        message = run.build_publication_feedback(["SOURCE-REVIEW-000002"], "knowledge-work")
+        for pattern in (EXPERIMENT_TERMS, BEHAVIORAL_BANS, RESTRICTIVE_INSTRUCTIONS,
+                        TASK_LABELS, PRESCRIPTIVE_TASK_DETAILS):
+            self.assertNotRegex(message, pattern)
         for condition in run.schedule.CUE_CONDITIONS:
             message = run.platform_update_feedback(condition)
             self.assertNotRegex(message, EXPERIMENT_TERMS)

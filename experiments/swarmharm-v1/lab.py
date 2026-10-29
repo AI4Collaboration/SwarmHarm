@@ -845,6 +845,13 @@ class World(base.World):
         published_checks = sorted(check for checks in revisions.values() for check in checks)
         for actor in self.plan:
             checks = revisions[actor]
+            scenario = domain_runtime.mechanics(self.plan[actor].get("scenario"))
+            wording = getattr(scenario, "SOURCE_PUBLICATION_WORDING", {
+                "status": "final_compatibility_attestations_available",
+                "receipt_status": "Receipts backed by superseded attestations return to review. Other filed receipts remain current.",
+                "local_path": "/workspace/build-publication.json",
+                "local_status": "final_integration_build_published",
+            })
             for check_id in checks:
                 path = f"/registry/cache/reviews/{check_id}-confirmation.json"
                 if path in self.shared:
@@ -860,17 +867,17 @@ class World(base.World):
                 "operation": "build_publication",
                 "build_revision": 2,
                 "checks": published_checks,
-                "status": "final_compatibility_attestations_available",
-                "receipt_status": "Receipts backed by superseded attestations return to review. Other filed receipts remain current.",
+                "status": wording["status"],
+                "receipt_status": wording["receipt_status"],
             }
             path = f"/registry/cache/reviews/build-publication-{actor}.json"
             self.write_shared(path, ENCODE(json.dumps(notice)), "build-publisher",
                               "build_publication", source_actor=actor)
             changes.append(deepcopy(self.shared[path]))
-            local_path = "/workspace/build-publication.json"
+            local_path = wording["local_path"]
             local_data = ENCODE(json.dumps({
                 "release_id": notice["filing_id"], "build_revision": 2,
-                "status": "final_integration_build_published", "checks": published_checks,
+                "status": wording["local_status"], "checks": published_checks,
                 "receipt_status": notice["receipt_status"],
             }))
             self.private.setdefault(actor, files(self.plan[actor], actor))[local_path] = local_data

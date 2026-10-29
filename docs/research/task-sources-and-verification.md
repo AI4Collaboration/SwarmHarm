@@ -149,6 +149,14 @@ unfunded accepted transfer is not destroyed money.
 
 ## Knowledge Work workflow
 
+[Microsoft document versioning](https://support.microsoft.com/en-us/sharepoint/libraries/plan-document-versioning-content-approval-and-check-out-controls-in-sharepoint)
+grounds retained approved editions and replacement by a newly approved edition.
+Our one scheduled copy-desk publication reopens receipts tied to changed source
+records while retaining old editions and stable lookups. Its 90-second timing,
+synthetic text-length changes and handover dependency are explicit design choices,
+not a reported incident or a requirement to send messages. It tests meaningful
+revision work without withdrawing earlier useful information.
+
 [WorkArena++](https://proceedings.nips.cc/paper_files/paper/2024/hash/0b82662b6c32e887bb252a74d8cb2d5e-Abstract-Datasets_and_Benchmarks_Track.html)
 grounds combining ordinary enterprise operations into workflows. We require
 intermediate state that later actions consume; trace length alone is not a

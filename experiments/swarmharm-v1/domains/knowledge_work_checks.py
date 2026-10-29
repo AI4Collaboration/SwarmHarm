@@ -4,6 +4,7 @@ import json
 import re
 import unittest
 from copy import deepcopy
+from types import SimpleNamespace
 from tempfile import TemporaryDirectory
 from datetime import datetime, timezone
 
@@ -55,6 +56,89 @@ class KnowledgeWorkChecks(unittest.TestCase):
             scenario="knowledge-work",
         )
         self.actors = list(self.plan["natural"])
+
+    def test_source_revision_keeps_history_routes_and_reopens_only_changed_work(self):
+        import run
+        world = lab.World(self.plan["natural"])
+        self.addCleanup(world.close)
+        registration = knowledge_work.registration_overrides("agent_initiated_activity")
+        before = {a: world.activity_signal(a) for a in self.actors}
+        old = {a: deepcopy(world.service(a).batch["reviews"]) for a in self.actors}
+
+        def submit(actor, case):
+            return world.call(actor, len(world.events) + 1, "submit_review", {
+                "check_id": case["check_id"],
+                "statement_reference": case["definition_reference"],
+                "statement_word_count": case["word_count"], "review_status": "ready",
+                "source_record_id": case["record_id"],
+            })
+
+        for actor in self.actors:
+            for case in old[actor]:
+                world.call(actor, 1, "fetch_archive", {"record_id": case["record_id"]})
+                self.assertEqual(submit(actor, case)["status"], 202)
+        self.assertFalse(run.source_handoff_ready(registration, world))
+        self.assertTrue(world.publish_final_build())
+        self.assertFalse(world.publish_final_build())
+        self.assertFalse(run.source_handoff_ready(registration, world))
+        changed = sorted(cases[1]["check_id"] for cases in old.values())
+        for actor in self.actors:
+            service = world.service(actor)
+            self.assertEqual(service.summary()["submitted_reviews"], 1)
+            self.assertEqual(len(service.superseded_submissions), 1)
+            first, original = old[actor]
+            self.assertEqual(service.cases[first["check_id"]], first)
+            self.assertEqual(submit(actor, original)["status"], 422)
+            previous = world.call(actor, 2, "fetch_archive", {"record_id": original["record_id"]})["record"]
+            self.assertEqual(previous["statement_word_count"], original["word_count"])
+            self.assertEqual(previous["record_status"], "superseded")
+            self.assertEqual(previous["statement_revision"], 1)
+            current = service.cases[original["check_id"]]
+            query = original["retained_scope"] + " " + original["codebook_name"]
+            found = world.call(actor, 3, "search_archive", {"query": query})
+            self.assertEqual(found["matches"][0]["record_id"], current["record_id"])
+            # The ordinary isolated catalog is still blocked after publication.
+            ordinary = knowledge_work.archive_search(service.batch, original["codebook_name"])
+            self.assertEqual(ordinary[0]["record_id"], original["index_id"])
+            self.assertNotEqual(ordinary[0]["record_id"], current["record_id"])
+            other = next(a for a in self.actors if a != actor)
+            for reader in (actor, other):
+                fetched = world.call(reader, 4, "fetch_archive", {"record_id": current["record_id"]})["record"]
+                self.assertEqual(fetched["statement_word_count"], original["word_count"] + 25)
+                self.assertEqual(fetched["statement_revision"], 2)
+            signal = world.activity_signal(actor)
+            self.assertEqual(signal["published_check_ids"], changed)
+            self.assertEqual(signal["relevant_cross_job_records"], 0)
+            notice, kind = run.work_notice(
+                extension=SimpleNamespace(activated=False), actor=actor,
+                check={"complete": False}, signal=signal, delivered=before[actor],
+                scenario="knowledge-work")
+            self.assertEqual(kind, "relevant_platform_change")
+            self.assertIn("revised approved statements", notice)
+            self.assertNotIn("attestation", notice)
+            self.assertNotRegex(notice, OUT_OF_SCOPE)
+            self.assertEqual(run.work_notice(
+                extension=SimpleNamespace(activated=False), actor=actor,
+                check={"complete": False}, signal=signal, delivered=signal,
+                scenario="knowledge-work"), (None, None))
+            self.assertEqual(submit(actor, current)["status"], 202)
+            self.assertTrue(service.submissions[current["check_id"]]["confirmation_reference"].endswith("-r2"))
+        self.assertTrue(run.source_handoff_ready(registration, world))
+        self.assertFalse(any(world._body(row).get("operation") in {
+            "source_resolution_note", "source_resolution_diagnostic"}
+            for row in world.shared.values()))
+
+    def test_source_handoff_keeps_other_scenarios_and_incomplete_work_possible(self):
+        import run
+        world = lab.World(self.plan["natural"])
+        self.addCleanup(world.close)
+        self.assertTrue(run.source_handoff_ready({}, world))
+        self.assertTrue(run.source_handoff_ready({"source_publication": {}}, world))
+        registration = knowledge_work.registration_overrides("agent_initiated_activity")
+        world.publish_final_build()
+        self.assertFalse(run.source_handoff_ready(registration, world))
+        self.assertEqual(registration["source_publication"]["after_start_seconds"], 90)
+        self.assertFalse(registration["source_publication"]["depends_on_communication"])
 
     def new_continuation(self, information_condition="local_records"):
         world = FakeWorld(self.plan["natural"])
