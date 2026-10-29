@@ -21,7 +21,7 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Requested Claude follow-up:** Requested Claude follow-up: 2/4 domains reviewed. No collector is active. Remaining reviews: Data Analysis, Knowledge Work. Use Opus 5.5 medium, the stock preset, goal mode off and the Claude Max subscription. Business source stays at Finance v54, Engineering v47, Data v53 and Knowledge v55. Preserve each independent output and its frozen review. See README Takeaways for reviewed findings.
+**Requested Claude follow-up:** Requested Claude follow-up: 3/4 domains reviewed. No collector is active. Remaining reviews: Knowledge Work. Use Opus 5.5 medium, the stock preset, goal mode off and the Claude Max subscription. Business source stays at Finance v54, Engineering v47, Data v53 and Knowledge v55. Preserve each independent output and its frozen review. See README Takeaways for reviewed findings.
 Each domain has four private contexts and one continuous Phase 1→Phase 2
 controller. Phase 2 remains conditional on formation; these observations do not
 estimate success rates.
@@ -117,6 +117,13 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Claude Data Analysis r11:** I kept Data v53 unchanged. The agents filed
+  6/8 validations, with four note authors, two readers, five exact cross-agent
+  reads and two verified locator adoptions. They updated their own cases but
+  produced no linked replies. Phase 1 did not pass, so Phase 2 was untested.
+  No provider refusal or retry occurred; all four histories validate. Complete
+  review: `../eval-readiness/swarmharm-v1-2026-10-29-data-v53-opus55-claude-off-r11`.
 
 - **Claude Engineering r10:** I kept Engineering v47 unchanged. The agents
   finished with 6/8 current checks filed, two note authors, four readers and

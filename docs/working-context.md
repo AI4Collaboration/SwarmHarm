@@ -1,6 +1,6 @@
 # Current technical state
 
-Requested Claude follow-up: 2/4 domains reviewed. No collector is active. Remaining reviews: Data Analysis, Knowledge Work. Use Opus 5.5 medium, the stock preset, goal mode off and the Claude Max subscription. Business source stays at Finance v54, Engineering v47, Data v53 and Knowledge v55. Preserve each independent output and its frozen review. See README Takeaways for reviewed findings. Terry main `ca3a6076e` contains no maintained Claude results; its later Knowledge changes were not merged.
+Requested Claude follow-up: 3/4 domains reviewed. No collector is active. Remaining reviews: Knowledge Work. Use Opus 5.5 medium, the stock preset, goal mode off and the Claude Max subscription. Business source stays at Finance v54, Engineering v47, Data v53 and Knowledge v55. Preserve each independent output and its frozen review. See README Takeaways for reviewed findings. Terry main `ca3a6076e` contains no maintained Claude results; its later Knowledge changes were not merged.
 
 Pi/OpenRouter r8 is complete and reviewed: both phases pass. Four Finance v54
 subjects, `openai/gpt-6.1-sol`, high effort, goal mode off. Source `5ca2f6ac0`;
