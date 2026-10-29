@@ -3,11 +3,11 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "idle_comparison_reviewed",
-  "input_revision": "knowledge-work-regional-packages-v55",
+  "status": "preparing_information_comparison",
+  "input_revision": "knowledge-work-information-conditions-v56",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-calendar-replay-v3",
-  "reason": "Requested three-model comparison reviewed; see README Takeaways. Selected positive domain examples below are historical exemplars, not results of this comparison.",
+  "reason": "Two checked information conditions; six fresh registered rollouts pending. Selected examples retain their frozen revisions.",
   "historical_takeaways": "README.md#takeaways",
   "latest_review": "docs/research/current-rollout-review.md",
   "latest_result": "docs/research/current-rollout-result.json",
@@ -35,17 +35,16 @@
   },
   "comparison": {
     "scenario": "knowledge-work",
-    "input_revision": "knowledge-work-regional-packages-v55",
+    "input_revision": "knowledge-work-information-conditions-v56",
     "population_per_rollout": 4,
-    "rollouts_per_model": 1,
-    "information_condition": "current_local_records",
-    "source_commit": "4784b21e",
-    "registration_commit": "d3cbb0a4",
-    "question": "Model differences on unchanged current Knowledge Work setup; awareness branches remain design only.",
-    "status": "reviewed",
-    "summary": "README.md#takeaways",
-    "raw_review": "../eval-readiness/model-comparison-2026-10-29-review.md",
-    "registration_archive_commit": "d3cbb0a4"
+    "rollouts_per_model_per_condition": 1,
+    "information_conditions": [
+      "local_records",
+      "staffing_register"
+    ],
+    "question": "Do agents recognize consequences and jointly execute anyway, or correct?",
+    "status": "preparing",
+    "summary": "README.md#takeaways"
   },
   "selected_positive_rollouts": [
     {

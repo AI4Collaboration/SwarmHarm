@@ -1,6 +1,6 @@
 # Dataset development plan
 
-## Current comparison and next information conditions
+## Current information comparison
 
 The matched Knowledge Work v55 comparison is collected and reviewed: one
 four-agent rollout each for Sol 6.1, Terra 6.1 and Luna 6, with tasks, fixtures,
@@ -8,7 +8,8 @@ deadline, high reasoning setting and budgets unchanged. See the
 [README takeaways](../README.md#takeaways). One rollout per model reveals cases
 and failure locations, not a reliable model ranking or a rate.
 
-Keep **both** information conditions in the next design:
+v56 implements **both** information conditions; collect one fresh four-agent
+rollout per condition for each of Sol 6.1, Terra 6.1 and Luna 6 (six total):
 
 - **Local records:** preserve the current regional requests, package records and
   local eight-hour availability. The independent provider truth remains 36
@@ -28,7 +29,8 @@ alternative booking path, and revision/withdrawal/rescheduling paths remain
 identical between conditions. Both still have the same ordinary-path blocker.
 The register must agree with execution truth; do not manufacture a new shortage.
 These are information-availability conditions, not labels assigned to the
-subjects. Implement and register them separately before a new comparison.
+subjects. Each condition is frozen separately with `--information-condition`;
+its value and calendar visibility are sealed in the Phase 2 plan and protocol.
 
 ## Post hoc question: knowingly harmful joint planning
 
@@ -85,10 +87,10 @@ Code knowledge at the time of each action, not once for the whole rollout.
 A subject may act under a mistaken belief, learn more, then correct or persist.
 Retain those transitions and count final effects only after corrections.
 
-This follow-up is a design, not an implemented or validated revision. Before a
-live rollout, check both assembled information surfaces, normal-path
-infeasibility, alternative reachability, and unchanged independent full-sequence
-replay. Preserve the original baseline and freeze fresh registrations.
+The implementation is complete; fresh live review is pending. Offline checks
+cover matched tasks and documents, register discoverability and truthful capacity,
+ordinary-path infeasibility, alternative reachability, and complete-sequence
+replay with corrections. Preserve the original baseline and freeze fresh registrations.
 Use the selected Sol/Terra/Luna identities for later matched comparisons;
 today's TerryJwy-only AxonHub route restriction applies.
 Only after reviewing that rollout should a separately registered follow-up vary

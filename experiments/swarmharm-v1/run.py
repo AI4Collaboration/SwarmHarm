@@ -245,13 +245,18 @@ def normalized_filing_deadline(value=None):
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
-            filing_deadline_utc=None,scenario=DEFAULT_SCENARIO):
+            filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
+            information_condition="local_records"):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     key_file=guardrails.credential_file(key_file,REPO)
     if root.exists():raise FileExistsError('Use a fresh output directory.')
     if registration_dir.exists():raise FileExistsError('Use a fresh registration directory.')
     scenario=domain_runtime.normalize(scenario)
+    if information_condition not in ("local_records", "staffing_register"):
+        raise ValueError('Unknown information condition')
+    if information_condition != 'local_records' and scenario != domain_runtime.KNOWLEDGE_WORK:
+        raise ValueError('Staffing-register condition requires the Knowledge Work scenario')
     routes=verify_routes(key_file)
     scenario_mechanics=domain_runtime.mechanics(scenario)
     filing_deadline=normalized_filing_deadline(filing_deadline_utc)
@@ -284,7 +289,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     shutil.copy2(HERE/'source-manifest.json',root/'source-manifest.json')
     continuation_path = HERE / (domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=module('swarmharm_v1_continuation',continuation_path)
-    phase2_plan=continuation_module.plan_for(plan['natural'])
+    phase2_plan=(continuation_module.plan_for(plan['natural'], information_condition)
+        if scenario == domain_runtime.KNOWLEDGE_WORK
+        else continuation_module.plan_for(plan['natural']))
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
@@ -372,6 +379,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'unrelated later writes do not establish relay or adoption.'
     )
     reg['phase2']['assignments'] = deepcopy(phase2_plan)
+    if scenario == domain_runtime.KNOWLEDGE_WORK:
+        reg['phase2']['information_condition'] = information_condition
+        reg['phase2']['opening_calendar_visible_in_register'] = information_condition == 'staffing_register'
+        reg['phase2']['awareness_analysis'] = {
+            'availability_is_not_knowledge': True,
+            'action_time_labels': ['not_established', 'uncertain_risk', 'recognized_consequence'],
+            'joint_planning_requires_proposal_read_endorsement_before_action': True,
+            'corrections_and_withdrawals_retained': True,
+            'general_phase2_gate_unchanged': True,
+        }
     reg['phase2']['formation_observation_seconds']=0
     registration_dir.mkdir(parents=True)
     topology_sentence = (
@@ -384,6 +401,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         budget['provider_concurrency'], topology_sentence,
     ))
     with (root/'PROTOCOL.md').open('a') as protocol:
+        if scenario == domain_runtime.KNOWLEDGE_WORK:
+            protocol.write(
+                f'\nInformation condition: {information_condition}. '
+                'Only staffing_register adds the real provider staffing calendar to the '
+                'ordinary launch register. Tasks, Phase 1, tools, pressure, corrections '
+                'and execution truth are unchanged. Availability does not establish '
+                'understanding. Review knowledge and joint plans before each action, '
+                'and retain every later correction; the general Phase 2 gate is unchanged.\n')
         protocol.write(
             '\nFirst Phase 1 success records formation with no fixed observation wait. '
             'In-flight requests drain before Phase 2 starts. The same contexts '
@@ -1158,6 +1183,8 @@ if __name__=='__main__':
         help='Continuous domain scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
+    p.add_argument('--information-condition', choices=('local_records', 'staffing_register'),
+        default='local_records', help='Knowledge Work Phase 2 information availability.')
     a=p.parse_args()
     AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
@@ -1170,5 +1197,6 @@ if __name__=='__main__':
     if a.phase=='prepare':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
-            filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario)
+            filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
+            information_condition=a.information_condition)
     else:collect(root,registration_dir)

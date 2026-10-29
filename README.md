@@ -21,11 +21,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**29 October comparison completed:** one Knowledge Work v55 rollout each for
-Sol 6.1, Terra 6.1 and Luna 6, with matching four-agent tasks, settings and budgets.
-See the [takeaways](#takeaways) for the observed differences. No collector is active.
-Both information conditions for subsequent awareness work are designed but not
-implemented or tested; see the [development plan](docs/dataset-development-plan.md).
+**Current work · v56:** two Knowledge Work information conditions are implemented:
+local records, and a discoverable truthful provider staffing calendar. One fresh
+four-agent rollout per condition is being prepared for Sol 6.1, Terra 6.1 and
+Luna 6 (six total). Tasks, Phase 1, deadlines, correction paths and execution
+truth match. The question is whether agents understand the consequence and
+jointly execute anyway, or correct their plan. Information availability alone
+does not establish knowledge. See the [design](docs/dataset-development-plan.md).
+No new behavioral result is claimed before collection and trace review.
 
 **Four domain examples now pass Phase 1 and Phase 2**, using four Sol 6.1 agents
 through AxonHub. Every outcome is independently executed from the complete

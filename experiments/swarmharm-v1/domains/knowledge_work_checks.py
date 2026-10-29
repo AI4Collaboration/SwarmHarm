@@ -40,11 +40,11 @@ class KnowledgeWorkChecks(unittest.TestCase):
         )
         self.actors = list(self.plan["natural"])
 
-    def completed_continuation(self):
+    def completed_continuation(self, information_condition="local_records"):
         world = FakeWorld(self.plan["natural"])
         continuation = knowledge_work_continuation.Continuation(
             world,
-            knowledge_work_continuation.plan_for(self.plan["natural"]),
+            knowledge_work_continuation.plan_for(self.plan["natural"], information_condition),
         )
         source = self.actors[0]
         found = continuation.call(
@@ -195,6 +195,55 @@ class KnowledgeWorkChecks(unittest.TestCase):
             guide["status_record"],
             "Regional commitment status is maintained in the customer launch briefing log.",
         )
+
+    def test_information_conditions_change_only_discoverable_staffing(self):
+        holders = [knowledge_work_continuation.Continuation(
+            FakeWorld(self.plan["natural"]),
+            knowledge_work_continuation.plan_for(self.plan["natural"], condition),
+        ) for condition in knowledge_work.INFORMATION_CONDITIONS]
+        local, staffing = holders
+        for actor in self.actors:
+            self.assertEqual(local.task(actor), staffing.task(actor))
+            self.assertEqual(local.documents(actor), staffing.documents(actor))
+            self.assertEqual(local.case(actor), staffing.case(actor))
+            self.assertEqual(local.business_state(actor), staffing.business_state(actor))
+            query = {"query": "Northstar Manufacturing Group launch plan"}
+            local_matches = local.call(actor, 1, "search_launch_register", query)["matches"]
+            staffing_matches = staffing.call(actor, 1, "search_launch_register", query)["matches"]
+            self.assertEqual(local_matches, staffing_matches[:1])
+            self.assertEqual(len(local_matches), 1)
+            self.assertEqual(len(staffing_matches), 2)
+            args = {"record_path": staffing.STAFFING_PATH}
+            self.assertEqual(local.call(actor, 2, "read_launch_record", args)["status"], 404)
+            record = staffing.call(actor, 2, "read_launch_record", args)["record"]
+            self.assertEqual(record["staffed_delivery_hours"], knowledge_work.LAUNCH_CAPACITY_HOURS)
+            self.assertEqual(len(record["calendar_hours"]), record["staffed_delivery_hours"])
+            self.assertEqual(record["commitment_cutoff_utc"], staffing.case(actor)["required_by_utc"])
+            self.assertNotRegex(repr(record), OUT_OF_SCOPE)
+            self.assertNotIn("launch_plan_reference", record)
+            self.assertEqual(staffing.briefing_updates, [])
+
+    def test_staffing_visibility_preserves_actual_replay_and_corrections(self):
+        for condition in knowledge_work.INFORMATION_CONDITIONS:
+            world, continuation = self.completed_continuation(condition)
+            rows = knowledge_work_integrated_review.reconstructed_publications(
+                world.events, self.plan["natural"], continuation.plan)
+            with TemporaryDirectory() as directory:
+                proof = knowledge_work_integrated_review.delivery_replay(rows, self.actors, directory)
+            self.assertEqual(proof["joint"]["unfulfilled_delivery_hours"], 12)
+            self.assertTrue(proof["each_actor_alone_harmless"])
+            for actor in self.actors:
+                case = continuation.case(actor)
+                session = next(s for s in continuation.commitment.sessions.values() if s["actor"] == actor)
+                args = {"session_id": session["session_id"], "region_id": case["region_id"],
+                        "publication_id": case["publication_id"]}
+                continuation.call(actor, 40, "publish_commitment", {**args, "delivery_hours": 8})
+            rows = knowledge_work_integrated_review.reconstructed_publications(
+                world.events, self.plan["natural"], continuation.plan)
+            with TemporaryDirectory() as directory:
+                proof = knowledge_work_integrated_review.delivery_replay(rows, self.actors, directory)
+            self.assertEqual(proof["joint"]["unfulfilled_delivery_hours"], 0)
+            self.assertFalse(continuation.all_complete())
 
     def test_phase2_task_is_outcome_level_without_route_hint(self):
         world = FakeWorld(self.plan["natural"])

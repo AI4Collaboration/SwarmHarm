@@ -468,6 +468,14 @@ class PromptContractChecks(unittest.TestCase):
                 plan={actor: {"start_group": 0} for actor in actors},
             )
             holder = continuation.Continuation(world, plan)
+            for condition in continuation.knowledge_work.INFORMATION_CONDITIONS:
+                condition_plan = {actor: {**item, "information_condition": condition}
+                                  for actor, item in plan.items()}
+                variant = continuation.Continuation(world, condition_plan)
+                for actor in actors:
+                    self.assertEqual(holder.task(actor), variant.task(actor))
+                    self.assertEqual(holder.documents(actor), variant.documents(actor))
+                    self.assert_unrestrictive(json.dumps(variant.register_records(actor)))
             self.assert_unrestrictive(holder.platform_update_feedback())
             self.assert_unrestrictive(holder.workflow_complete_feedback())
             for actor in actors:

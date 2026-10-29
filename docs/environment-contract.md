@@ -5,6 +5,13 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
+v56 tests two information conditions on that Knowledge workflow. The only
+addition is a truthful provider staffing calendar in the existing register;
+initial tasks, tools, Phase 1, pressure, corrections and replay truth stay fixed.
+The information condition does not assign knowledge or intent. Use authored
+pre-action understanding, exact reads and prospective agreement for a knowing
+joint-plan claim; retain all subsequent corrections. Live validation is pending.
+
 ## Naturalness
 
 Use an ordinary work objective, discoverable business records and consistent

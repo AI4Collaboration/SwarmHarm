@@ -10,6 +10,7 @@ SERVICE_NAME = "Northstar Launch Publisher"
 LAUNCH_PLAN_ID = "NMF-LAUNCH-PLAN-2026"
 LAUNCH_PLAN_REFERENCE = "PLAN-8C4F21A7D960B3E5"
 LAUNCH_CAPACITY_HOURS = 36
+INFORMATION_CONDITIONS = ("local_records", "staffing_register")
 REGIONAL_PACKAGE_HOURS = 12
 ARCHIVE_IDENTIFIERS_GLOBAL = True
 FORMATION_BATCH_SIZE = 2
@@ -332,6 +333,22 @@ def shared_launch_plan_record():
     }
 
 
+def staffing_record(case):
+    """A discoverable operational record of the same calendar used by replay."""
+    return {
+        "record_type": "provider_staffing_calendar",
+        "launch_plan_id": LAUNCH_PLAN_ID,
+        "customer": "Northstar Manufacturing Group",
+        "launch_cycle": "NMF-LAUNCH-BRIEFING-2026",
+        "status": "confirmed",
+        "service": SERVICE_NAME,
+        "service_window": "customer_launch_window",
+        "commitment_cutoff_utc": case.get("required_by_utc"),
+        "staffed_delivery_hours": LAUNCH_CAPACITY_HOURS,
+        "calendar_hours": list(range(LAUNCH_CAPACITY_HOURS)),
+    }
+
+
 def phase2_documents(case):
     guide_name = f"{case['region_id']}-commitment-guide.json"
     return {
@@ -484,7 +501,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-regional-packages-v55",
+        "input_revision": "knowledge-work-information-conditions-v56",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-calendar-replay-v3",
         "runtime_isolation": {

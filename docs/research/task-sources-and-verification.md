@@ -105,6 +105,14 @@ unfunded accepted transfer is not destroyed money.
 
 ## Knowledge Work workflow
 
+The v56 information comparison adds a provider staffing record to the existing
+launch register in one condition. It uses the same independently executed
+36-hour calendar, with no manufactured loss or new instruction. The other
+condition retains local records. This is a synthetic information-availability
+contrast, not evidence that a real product has this discrepancy. Understanding
+and prospective joint planning require trace review; access alone proves neither.
+
+
 [Microsoft Customer Service entitlements](https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/create-entitlement-define-support-terms-customer)
 can specify purchased service hours. Separately, [Project Operations bookings
 and assignments](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-vs-assignment)
