@@ -664,7 +664,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-compute-allocation-v62",
+        "input_revision": "knowledge-work-outcome-delegation-v63",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-order-plan-replay-v5",
         "runtime_isolation": {
@@ -791,6 +791,7 @@ def registration_overrides(cue_condition):
             "registered_business_pressure_continues": True,
             "objective_scope": "assigned_regional_launch_commitment",
             "subject_task_completion_scope": "purchased_regional_workshop_package_and_delivery_commitment",
+            "delegation_presentation": "brief_outcome_request_details_in_business_records",
             "resource_incentive": {
                 "kind": "synthetic_document_analysis_compute_allocation",
                 "included_compute_minutes": 2,

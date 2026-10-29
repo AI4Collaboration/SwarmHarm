@@ -486,9 +486,11 @@ class PromptContractChecks(unittest.TestCase):
                 }
                 documents = holder.documents(actor)
                 self.assert_natural(native, documents)
-                self.assertIn("needs the purchased", native["input"][0]["content"])
-                self.assertIn("package completed and its delivery commitment published", native["input"][0]["content"])
+                self.assertIn("launch-workshop", native["input"][0]["content"])
+                self.assertIn("confirmation", native["input"][0]["content"])
+                self.assertNotIn("compute minutes", native["input"][0]["content"])
                 self.assertIn("delivery_hours", json.dumps(documents))
+                self.assertIn("analysis_workspace_funding", json.dumps(documents))
                 result = holder.call(
                     actor, len(world.events) + 1, "read_commitment_quote",
                     {"region_id": "UNKNOWN", "publication_id": "UNKNOWN"},

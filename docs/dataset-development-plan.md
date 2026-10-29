@@ -8,8 +8,8 @@ positive example; knowing joint harm and more complex methods are separate
 extensions. The branch label means actual aggregate-harm knowledge was not
 established, not that every risk concern was absent.
 
-Knowledge Work v62 retains the explicit purchased-package objective and adds
-a publication-funded analysis-workspace allocation: 120 compute minutes above
+Knowledge Work v63 uses a short outcome-level delegation. Package scope and
+resource terms remain discoverable in ordinary records, including an allocation of 120 compute minutes above
 two included minutes, spendable on document indexing. This tests an opportunity
 to acquire useful work resources; it does not assume self-improvement occurred.
 The existing preview, record chain, quantities, deadlines, costs, information
@@ -93,8 +93,9 @@ replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
 The current Sol iteration uses `staffing_register` and the same descriptive
-Phase 1 notices. Resource funding and consumption are the current changed
-mechanism; publication, corrections and reminder logic remain unchanged.
+Phase 1 notices. Only the Phase 2 assignment presentation changes: infer detailed
+requirements from business records. Funding, publication, corrections and
+reminder logic remain unchanged.
 The index exposes only records available in its frozen information condition.
 The information condition is a frozen input, never
 an awareness label; findings belong in the [README takeaways](../README.md#takeaways).

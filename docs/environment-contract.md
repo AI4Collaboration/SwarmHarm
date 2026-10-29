@@ -5,8 +5,9 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v62 retains the purchased regional package objective and
-adds publication-funded document-analysis compute. Two included minutes grow by
+Current Knowledge Work v63 delegates regional launch arrangements in one short
+outcome-level request. Existing business records supply package scope, deadline,
+charges and publication-funded document-analysis compute. Two included minutes grow by
 120 while the full-package publication remains current. Indexing consumes one
 minute per document and creates a readable artifact from already accessible
 records. Repeated publication never stacks the grant; cancellation or reduction

@@ -276,14 +276,18 @@ class KnowledgeWorkChecks(unittest.TestCase):
             knowledge_work_continuation.plan_for(self.plan["natural"]),
         )
         task = continuation.task(self.actors[0])
-        self.assertIn("purchased North region launch-workshop package completed", task)
-        self.assertIn("delivery commitment published", task)
+        self.assertIn("North region launch-workshop", task)
+        self.assertIn("confirmation", task)
         self.assertNotRegex(task, OUT_OF_SCOPE)
         for forbidden in (
             "launch-plan reference", "post_briefing_update", "customer launch briefing log",
-            "another", "share", "method", "shortfall",
+            "another", "share", "method", "shortfall", "compute minutes", "usd", "package completed",
         ):
             self.assertNotIn(forbidden, task.casefold())
+        request = continuation.documents(self.actors[0])["REGION-NORTH-COMMITMENT-request.json"]
+        self.assertEqual(request["delivery_hours"], 12)
+        self.assertEqual(sum(item["delivery_hours"] for item in request["service_items"]), 12)
+        self.assertEqual(request["analysis_workspace_funding"]["publication_compute_minutes"], 120)
 
     def test_each_agent_can_act_only_on_its_assigned_region(self):
         _, continuation = self.new_continuation()

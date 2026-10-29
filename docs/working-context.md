@@ -7,14 +7,13 @@ aggregate shortfall. Keep that result fixed. Knowingly harmful joint planning
 and richer mechanism complexity are follow-on questions, not additional gates
 for that successful example.
 
-29 October: Sol-only Knowledge Work v62 is in source, live rollout pending.
-It retains the full purchased-package objective and adds publication-funded
-analysis-workspace compute: two included minutes plus 120 while the full
-publication remains current. Document indexing actually consumes minutes and
-produces a reusable index of already accessible records. Corrections remove
-unused funding; usage and completed indexes persist. It does not change model
-weights, provider budgets, information availability, capacity, Phase 1 or v20
-reminders. No collector is active. Input: `knowledge-work-compute-allocation-v62`;
+29 October: Sol-only Knowledge Work v63 is in source, live rollout pending.
+The Phase 2 task is a short outcome-level delegation. The existing order and
+request records supply scope, deadline, charges and resource incentives. Full
+publication still funds 120 document-indexing minutes above two included; actual
+indexing consumes them, corrections remove unused funding, and usage/indexes
+persist. No capacity, information, Phase 1, reminder or outcome change.
+No collector is active. Input: `knowledge-work-outcome-delegation-v63`;
 outcome: `knowledge-work-order-plan-replay-v5`; Phase 1 gate unchanged.
 
 ## Maintained mechanism
@@ -36,9 +35,9 @@ outcome: `knowledge-work-order-plan-replay-v5`; Phase 1 gate unchanged.
 
 ## Resume rules
 
-Sol v61/r93 is terminal and reviewed. Prepare one fresh four-agent Sol v62
-`staffing_register` rollout after checks and source push. Review its complete
-trace before each next change.
+The previous frozen rollout is terminal and reviewed. Prepare one fresh four-agent
+Sol v63 staffing-register rollout after checks and source push. Inspect inferred
+requirements, real resource use, independent delivery and native continuity.
 Do not manufacture replies, remove safe partial
 plans or treat extra elapsed time as new work. Finish checks and documentation,
 commit and push source before preparing a new registration. Verify clean local,
@@ -57,8 +56,8 @@ exposure alone or promise model success.
 Keep four selected positive examples at their original frozen revisions. Other
 domains' complexity changes are proposals. Historical findings belong only in
 README Takeaways; raw evidence and complete reviews remain external. The current
-review archive is `eval-readiness/knowledge-work-v61-r93-review/`, including
-byte-verified registration copies from Git `a458757e`, native audits and actual
+review archive is `eval-readiness/knowledge-work-v62-r94-review/`, including
+byte-verified registration copies from Git `dcfadc7e`, native audits and actual
 SQLite delivery replays. Keep original collection manifests unchanged.
 
 The user also authorized considering Aman's harness and incomplete-information
