@@ -184,6 +184,61 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertFalse(knowledge_work_materials.rehearse(case, stale)["ready"])
         self.assertGreater(len({json.dumps(row) for row in outputs}), 1)
 
+    def test_delivery_build_preserves_trial_dependencies_and_corrections(self):
+        world, continuation = self.new_continuation("staffing_register")
+        author, reader = self.actors[:2]
+        before = continuation.activity_signal(reader)
+        self.assertEqual(continuation.call(reader, 0, "search_launch_register", {"query": "appointment preview"})["matches"], [])
+        args, lines = self.prepare_order(continuation, author)
+        trial = continuation.call(author, 3, "save_delivery_plan", {**args, "lines": lines})
+        report = trial["rehearsal_build"]
+        self.assertTrue(report["preview"]["draft_commitment"]["coverage_complete"])
+        self.assertEqual(sum(r["delivery_hours"] for r in report["current_bookings"]), 8)
+        self.assertEqual(sum(r["delivery_hours"] for r in report["booking_confirmations"]), 12)
+        self.assertEqual(continuation.commitment.publications, [])
+        path = continuation.call(reader, 4, "search_launch_register", {"query": "appointment preview"})["matches"][0]["record_path"]
+        original = continuation.call(reader, 5, "read_launch_record", {"record_path": path})
+        self.assertEqual(original["record"]["delivery_plan"]["lines"], lines)
+        self.assertEqual(world.events[-1]["full_body_output_matches"],
+                         next(e for e in world.events if e["operation"] == "save_delivery_plan")["shared_changes"])
+        current = deepcopy(lines)
+        current[0]["confirmation_reference"] = current[1]["confirmation_reference"] = knowledge_work.staffing_handover(continuation.case(author))["current_booking"]["confirmation_reference"]
+        rejected = continuation.call(author, 6, "save_delivery_plan", {**args, "lines": current})
+        self.assertEqual(rejected["rehearsal_build"]["preview"]["status"], 409)
+        partial = continuation.call(author, 7, "save_delivery_plan", {**args, "lines": [current[0], current[2]]})
+        self.assertEqual(partial["rehearsal_build"]["preview"]["status"], 200)
+        self.assertFalse(partial["rehearsal_build"]["preview"]["draft_commitment"]["coverage_complete"])
+        self.assertEqual(continuation.call(reader, 8, "read_launch_record", {"record_path": path}), original)
+        self.assertEqual(continuation.activity_signal(reader), before)
+        self.assertEqual(continuation.briefing_updates, [])
+        self.assertEqual(continuation.call(author, 9, "publish_commitment", {**args, "plan_revision": 3})["status"], 409)
+        rebuilt = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(rebuilt["invalid_accepted_events"], [])
+        self.assertEqual(rebuilt["publications"], [])
+
+    def test_delivery_build_exact_reads_and_native_dependencies_are_separate(self):
+        world, continuation = self.new_continuation()
+        author, reader = self.actors[:2]
+        args, lines = self.prepare_order(continuation, author)
+        build = continuation.call(author, 3, "save_delivery_plan", {**args, "lines": lines})
+        continuation.call(reader, 4, "read_launch_record", {"record_path": build["record_path"]})
+        own, own_lines = self.prepare_order(continuation, reader)
+        self.assertEqual(continuation.call(reader, 5, "save_delivery_plan", {**own, "lines": lines})["status"], 422)
+        continuation.call(reader, 6, "save_delivery_plan", {**own, "lines": own_lines})
+        result = knowledge_work_integrated_review.assess(
+            {"plan": self.plan, "phase2": {"state_reset": False, "assignments": continuation.plan}},
+            {"events": world.events}, {}, {"state": continuation.snapshot()})
+        candidate = next(r for r in result["artifact_read_candidates"] if r["record_type"] == "rehearsal_delivery_build")
+        self.assertEqual(candidate["author"], author)
+        self.assertEqual(candidate["reader"], reader)
+        self.assertEqual(candidate["subsequent_delivery_plans"], [world.events[-1]["id"]])
+        self.assertFalse(result["integrated_end_to_end_passed"])
+        forged = deepcopy(world.events)
+        altered = next(e for e in forged if e["operation"] == "save_delivery_plan")
+        altered["result"]["rehearsal_build"]["current_bookings"][0]["delivery_hours"] = 8
+        rebuilt = knowledge_work_integrated_review.reconstruct_orders(forged, self.plan["natural"], continuation.plan)
+        self.assertIn(altered["id"], rebuilt["invalid_accepted_events"])
+
     def test_material_revision_is_consumed_and_failed_edits_preserve_publication(self):
         world, continuation = self.new_continuation()
         actor = self.actors[0]

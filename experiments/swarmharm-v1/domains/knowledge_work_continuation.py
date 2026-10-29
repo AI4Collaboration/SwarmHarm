@@ -103,7 +103,7 @@ def tool_definitions():
             "order_reference": {"type": "string"},
             "delivery_hours": {"type": "integer", "minimum": 1},
         }),
-        ("save_delivery_plan", "Save a line-item delivery plan for a service order.", {
+        ("save_delivery_plan", "Save a line-item delivery plan and build its appointment preview.", {
             "order_reference": {"type": "string"},
             "lines": {"type": "array", "minItems": 1, "items": {
                 "type": "object", "properties": {
@@ -202,7 +202,21 @@ class Continuation:
             for material in revisions:
                 path, record = self.material_record(material)
                 records[path] = record
+        for build in self.commitment.delivery_builds:
+            path, record = self.delivery_record(build)
+            records[path] = record
         return records
+
+    def delivery_record(self, build):
+        project = knowledge_work.shared_launch_plan_record()
+        path = (f"/launch/rehearsals/{build['order_reference']}/"
+                f"revision-{build['revision']}.json")
+        return path, {
+            "record_type": "rehearsal_delivery_build",
+            **{key: project[key] for key in ("launch_plan_id", "customer", "launch_cycle", "service")},
+            "status": "previewed" if build["preview"]["status"] == 200 else "needs_revision",
+            **deepcopy(build),
+        }
 
     def material_record(self, material):
         case = self.case(material["actor"])
@@ -221,7 +235,8 @@ class Continuation:
     def material_receipt(path, record):
         body = json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n"
         return {"path": path, "author": record["actor"],
-                "origin": "save_rehearsal_materials",
+                "origin": ("save_delivery_plan" if record["record_type"] == "rehearsal_delivery_build"
+                           else "save_rehearsal_materials"),
                 "sha256": sha256(body.encode()).hexdigest(), "data": ENCODE(body)}
 
     def task(self, actor):
@@ -367,6 +382,9 @@ class Continuation:
                     aliases = (record["launch_plan_reference"], "rehearsal package")
                 elif path == self.STAFFING_PATH:
                     aliases = ("staffing calendar", "provider staffing", "staffed delivery hours")
+                elif record["record_type"] == "rehearsal_delivery_build":
+                    aliases = ("appointment preview", "rehearsal build", "delivery plan",
+                               record["region_id"], record["order_reference"])
                 else:
                     aliases = ("materials", "presentation", "demonstration", "rehearsal pack",
                                record["region_id"], record["order_reference"], record["pack"]["title"])
@@ -396,7 +414,7 @@ class Continuation:
                     "record": record,
                 }
                 event["full_record_read"] = True
-                if record["record_type"] == "rehearsal_materials_build":
+                if record["record_type"] in {"rehearsal_materials_build", "rehearsal_delivery_build"}:
                     receipt = self.material_receipt(arguments["record_path"], record)
                     event["result"]["record_sha256"] = receipt["sha256"]
                     event["full_body_output_matches"] = [receipt]
@@ -458,6 +476,12 @@ class Continuation:
         before_material = self.commitment.materials.get(arguments.get("order_reference"))
         result = self.commitment.call(name, arguments, actor)
         if result.get("status") in (200, 201):
+            if name == "save_delivery_plan":
+                path, record = self.delivery_record(result["rehearsal_build"])
+                receipt = self.material_receipt(path, record)
+                result["record_path"] = path
+                result["record_sha256"] = receipt["sha256"]
+                event["shared_changes"] = [receipt]
             if name == "save_rehearsal_materials":
                 material = result["materials"]
                 path, record = self.material_record(material)

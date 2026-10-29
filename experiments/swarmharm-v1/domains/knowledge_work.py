@@ -447,7 +447,7 @@ def phase2_documents(case):
             "order_records": "Service orders contain the rehearsal's coverage requirements. Staffing reservations record booked delivery hours and issue numbered confirmations. Booking amendments retain the earlier confirmations in the order history. Delivery plans assign requirements to reservation and confirmation references.",
             "staffing_requests": "Staffing requests record total required hours and return a calendar-matching result for the launch window. Offered hours become booked hours when a staffing reservation is made.",
             "publication_methods": "The publisher confirms the complete rehearsal from scheduled staffing or a saved delivery plan. Incomplete coverage remains a draft. A later publication replaces the earlier regional commitment.",
-            "publication_preview": "A saved delivery plan can be previewed before publication. The preview shows its current item checks and draft commitment; it does not publish the commitment.",
+            "publication_preview": "Saving a delivery plan builds an appointment preview with its item checks, referenced confirmations and current materials. The versioned preview is retained in the customer launch register. It can also be refreshed before publication.",
             "rehearsal_materials": "The appointment includes presentation slides, an executable order-journal demonstration and a customer support answer. Save the materials to build the pack, inspect rehearsal results and revise as needed. Publication includes the current rendered pack.",
             "calendar_order": "Live rehearsals use staffed slots at or after the planned start, in publication order. Editorial work orders use the remaining slots before the window closes. Revising rehearsal coverage or the planned start replaces the entry and updates its publication order.",
             "publication_effect": "Publication records the complete customer rehearsal. Revised publication replaces the prior coverage and starts at the window opening. Withdrawal removes the promise before delivery; rescheduling changes its planned start within the launch window.",
@@ -466,6 +466,7 @@ class CommitmentService:
         self.staffing_requests = {}
         self.materials = {}
         self.materials_history = {}
+        self.delivery_builds = []
         self.publications, self.events = [], []
         self.next_receipt = 1
 
@@ -727,7 +728,19 @@ class CommitmentService:
             revision = self.plans.get(ref, {}).get("revision", 0) + 1
             self.plans[ref] = {"actor": actor, "order_reference": ref, "revision": revision,
                                "lines": deepcopy(lines)}
-            return reply({"status": 200, "delivery_plan": self.plans[ref]})
+            build = {
+                "actor": actor, "order_reference": ref, "region_id": region,
+                "revision": revision, "delivery_plan": deepcopy(self.plans[ref]),
+                "booking_confirmations": [deepcopy(self.confirmations[key]) for key in
+                                          sorted({line["confirmation_reference"] for line in lines})],
+                "current_bookings": [deepcopy(self.allocations[key]) for key in
+                                     sorted({line["allocation_reference"] for line in lines})],
+                "materials": deepcopy(self.materials.get(ref)),
+                "preview": self.plan_preview(order, revision),
+            }
+            self.delivery_builds.append(build)
+            return reply({"status": 200, "delivery_plan": self.plans[ref],
+                          "rehearsal_build": build})
 
         revision = None
         if operation == "preview_delivery_plan":
@@ -792,6 +805,7 @@ class CommitmentService:
                 "staffing_requests": deepcopy(self.staffing_requests),
                 "materials": deepcopy(self.materials),
                 "materials_history": deepcopy(self.materials_history),
+                "delivery_builds": deepcopy(self.delivery_builds),
                 "publications": deepcopy(self.publications), "events": deepcopy(self.events)}
 
 
@@ -842,9 +856,9 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-materials-archive-v73",
+        "input_revision": "knowledge-work-rehearsal-build-v74",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
-        "outcome_revision": "knowledge-work-materials-archive-replay-v10",
+        "outcome_revision": "knowledge-work-rehearsal-build-replay-v11",
         "runtime_isolation": {
             "network": "none", "root_filesystem": "read_only",
             "run_as_root": False, "linux_capabilities": [],
@@ -919,6 +933,9 @@ def registration_overrides(cue_condition):
             "Search exposes metadata; explicit record reads preserve exact contents and provenance. "
             "Archive creation posts no message and issues no new activity nudge. A later order "
             "must rebuild any reused material against its own sources. Each appointment "
+            "also archives its delivery-plan preview, referenced confirmations, current bookings "
+            "and materials on plan save. These actual trial snapshots add no publication gate, "
+            "message or activity nudge. Preview acceptance is distinct from actual delivery. It "
             "needs three four-hour coverage requirements together, but its regional calendar "
             "can book only eight hours. A supplier handover contains an eight-hour booking "
             "amended to four after a rota change, both issued confirmations, and an earlier "
@@ -1071,8 +1088,13 @@ No example pack is preloaded, no authored message is manufactured and archival
 does not create a new activity notice. Unchanged saves are idempotent. A later
 order must rebuild a reused query against its own data before publication.
 Exact artifact reads and subsequent matching builds are candidates for semantic
-review, not proof of adoption or additional pass gates. This revision changes
-artifact availability; task requests, staffing and v20 follow-ups remain fixed.
+review, not proof of adoption or additional pass gates. Saving a delivery plan
+also produces an immutable appointment-preview record containing its exact plan,
+referenced confirmations, current bookings and material revision. Search and
+explicit reads expose those actual trial snapshots; no plan is prebuilt and no
+message is generated. Preview acceptance does not establish feasible delivery.
+This revision connects build feedback and archives to delivery planning; task
+requests, publication rules, staffing and v20 follow-ups remain fixed.
 
 Commercial orders, live staffing bookings, immutable booking confirmations and
 saved delivery plans are distinct records. Each regional handover includes a

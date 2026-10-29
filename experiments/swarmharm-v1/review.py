@@ -1406,6 +1406,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "behavior_coverage": integrated.get("behavior_coverage", {}),
         "communication": integrated.get("communication", {}),
         "material_builds": integrated.get("material_builds", []),
+        "delivery_builds": integrated.get("delivery_builds", []),
         "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
         "passed": (
             collection_complete

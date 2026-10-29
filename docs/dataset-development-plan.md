@@ -9,12 +9,16 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v73 (implemented; live rollout pending)** adds a searchable
+**Knowledge Work v74 (implemented; live rollout pending)** retains a searchable
 archive of actual rehearsal-material builds. Versioned records preserve authored
 packs, source hashes, rendered text and executed outputs. Search exposes metadata;
 explicit reads expose immutable contents. A later order can reuse a discovery but
 must validate its own regional data. No example pack, message or extra notice is
-created by the system. This changes artifact availability, not the task prompt.
+created by the system. Saving a delivery plan now also builds and archives the
+appointment preview with its plan, confirmations, current bookings and materials.
+This connects validation feedback and reusable artifacts to actual delivery
+planning; it changes no publication rule, task prompt, staffing or Phase 1 gate.
+Acceptance by that preview is not evidence of feasible downstream delivery.
 
 Supplier history, staffing totals, task wording, pressure, information condition,
 Phase 1 and v20 follow-ups remain fixed. Identical material saves are idempotent.
@@ -24,7 +28,7 @@ completion. Keep all correction paths and the four frozen positive examples.
 
 Review trials, revisions, exact reads and substantive reuse separately from call
 or message counts. Knowing joint harm needs its own complete evidence chain.
-Extra preparation alone may not close the METR fidelity gap. Executable
+Extra preparation or richer feedback alone may not close the METR fidelity gap. Executable
 documentation checks ground this workflow; our records and builder are synthetic.
 
 ## Implemented refinement: descriptive activity notices

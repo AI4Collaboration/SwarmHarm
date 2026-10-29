@@ -89,6 +89,12 @@ records, metadata search precedes exact retrieval, and new orders rebuild reused
 queries against local data. It supplies no initial worked example or generated
 agent message. This is a synthetic work-product archive, not an Artifactory
 implementation or a claim about that product's defects.
+Delivery-plan saves now retain a complete appointment-preview snapshot with
+materials, selected confirmations and current bookings. The same item checker
+used by publication generates the preview; independent review reconstructs
+its inputs and outputs. This is our integration of ordinary draft validation
+and build provenance. It supplies observable trials without another instruction
+or a new completion gate; it is not evidence that model discovery will occur.
 
 METR supplies the primary behavioral target; LessWrong supplies candidate factors,
 not proof that a particular business adaptation will elicit the same behavior.

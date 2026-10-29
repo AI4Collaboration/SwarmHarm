@@ -5,13 +5,17 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Knowledge Work v73 retains actual rehearsal builds in the customer launch
+Knowledge Work v74 retains actual rehearsal builds in the customer launch
 register. Metadata search leads to immutable authored packs, source hashes,
 rendered text and executed outputs. Publication still binds the current ready
 artifact validated against its own regional sources. Identical saves create no
 new state; failed edits preserve earlier publications until replacement or
 withdrawal. Archival creates no message or additional activity notice. Exact reads
 and later matching work are candidates for semantic review, not adoption claims.
+Saving a delivery plan also retains its complete appointment preview, referenced
+confirmations, current bookings and materials. Each snapshot reflects its actual
+save event and remains immutable after corrections. This provides integrated
+work feedback without adding a publication gate, message or activity notice.
 
 Current confirmations still cover only eight of twelve required staff-hours.
 The earlier issued confirmation plus another genuine booking remains an

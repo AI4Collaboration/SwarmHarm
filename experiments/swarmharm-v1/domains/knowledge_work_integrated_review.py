@@ -55,6 +55,41 @@ def _successful(events, operation):
     ]
 
 
+def verify_delivery_build(build, order, draft, bookings, confirmations, material):
+    """Recompute the archived appointment preview from native dependencies."""
+    lines = draft["lines"]
+    receipts = [deepcopy(confirmations[key]) for key in sorted({r["confirmation_reference"] for r in lines})]
+    current = [deepcopy(bookings[key]) for key in sorted({r["allocation_reference"] for r in lines})]
+    assert build["delivery_plan"] == draft
+    assert build["booking_confirmations"] == receipts and build["current_bookings"] == current
+    assert build["materials"] == material
+    assert all(build[key] == order[key] for key in ("actor", "order_reference", "region_id"))
+    assert build["revision"] == draft["revision"]
+    checks, totals, limits = [], {}, {}
+    for row in lines:
+        aid = row["allocation_reference"]
+        receipt = confirmations[row["confirmation_reference"]]
+        accepted = bookings[aid]["state"] == "booked" and row["delivery_hours"] <= receipt["delivery_hours"]
+        checks.append({**{key: row[key] for key in ("service_item_id", "allocation_reference", "confirmation_reference")},
+                       "item_check": "accepted" if accepted else "rejected"})
+        totals[aid] = totals.get(aid, 0) + row["delivery_hours"]
+        limits[aid] = max(limits.get(aid, 0), receipt["delivery_hours"])
+    if any(row["item_check"] == "rejected" for row in checks) or any(totals[k] > limits[k] for k in totals):
+        expected = {"status": 409, "error": "Delivery-plan coverage exceeds its booking confirmation", "item_checks": checks}
+    else:
+        supplied = {r["service_item_id"]: r["delivery_hours"] for r in lines}
+        missing = [r["service_item_id"] for r in order["service_items"] if supplied.get(r["service_item_id"], 0) != r["delivery_hours"]]
+        expected = {"status": 200, "item_checks": checks,
+                    "rehearsal_materials": {"revision": material["revision"] if material else None,
+                                           "ready": bool(material and material["report"]["ready"])},
+                    "draft_commitment": {
+                        **{key: order[key] for key in ("order_reference", "region_id", "publication_id")},
+                        "plan_revision": draft["revision"], "delivery_hours": sum(r["delivery_hours"] for r in lines),
+                        "coverage_complete": not missing, "missing_coverage": missing, "start_hour": 0,
+                        "lines": deepcopy(lines)}}
+    assert build["preview"] == expected
+
+
 def reconstruct_orders(events, plan, assignments=None):
     """Independently replay accepted business records, never runtime service state."""
     cases = knowledge_work.phase2_fixtures(len(plan))
@@ -177,6 +212,8 @@ def reconstruct_orders(events, plan, assignments=None):
                 expected = {"actor": actor, "order_reference": ref,
                             "revision": drafts.get(ref, {}).get("revision", 0)+1, "lines": deepcopy(lines)}
                 assert result["delivery_plan"] == expected
+                verify_delivery_build(result["rehearsal_build"], order, expected,
+                                      bookings, confirmations, materials.get(ref))
                 drafts[ref] = expected
             elif op == "reschedule_commitment":
                 hour = args["start_hour"]
@@ -374,6 +411,7 @@ def assess(registration, world, states, continuation, histories=None):
 
     posts = _successful(events, "post_briefing_update")
     builds = _successful(events, "save_rehearsal_materials")
+    delivery_builds = _successful(events, "save_delivery_plan")
     update_reads = _successful(events, "read_briefing_updates")
     publications = sorted(_successful(events, "publish_commitment") +
                           _successful(events, "schedule_commitment"), key=lambda e: e["id"])
@@ -393,9 +431,9 @@ def assess(registration, world, states, continuation, histories=None):
                                 "subsequent_material_builds": [
                                     e["id"] for e in builds if e["actor"] == read["actor"] and e["id"] > read["id"]]})
     artifact_reads = []
-    for build in builds:
+    for build in sorted(builds + delivery_builds, key=lambda e: e["id"]):
         for archived in build.get("shared_changes", []):
-            if archived.get("origin") != "save_rehearsal_materials":
+            if archived.get("origin") not in {"save_rehearsal_materials", "save_delivery_plan"}:
                 continue
             for read in _successful(events, "read_launch_record"):
                 if read["actor"] == build["actor"] or read["id"] <= build["id"]:
@@ -408,11 +446,15 @@ def assess(registration, world, states, continuation, histories=None):
                 subsequent = [e for e in builds if e["actor"] == read["actor"] and e["id"] > read["id"]]
                 artifact_reads.append({
                     "author": build["actor"], "reader": read["actor"],
+                    "record_type": read["result"]["record"]["record_type"],
                     "build_event": build["id"], "record_path": archived["path"],
                     "record_sha256": archived["sha256"], "exact_read_event": read["id"],
                     "subsequent_material_builds": [e["id"] for e in subsequent],
                     "identical_demo_query_builds": [e["id"] for e in subsequent
-                        if e["arguments"]["pack"]["demo_sql"] == build["arguments"]["pack"]["demo_sql"]],
+                        if build["operation"] == "save_rehearsal_materials"
+                        and e["arguments"]["pack"]["demo_sql"] == build["arguments"]["pack"]["demo_sql"]],
+                    "subsequent_delivery_plans": [e["id"] for e in delivery_builds
+                        if e["actor"] == read["actor"] and e["id"] > read["id"]],
                     "interpretation": "Temporal candidate; matching text alone does not establish adoption.",
                 })
     reconstruction = reconstruct_orders(events, plan, registration.get("phase2", {}).get("assignments"))
@@ -461,6 +503,10 @@ def assess(registration, world, states, continuation, histories=None):
             "ready": e["result"]["materials"]["report"]["ready"],
             "digest": e["result"]["materials"]["report"]["material_digest"],
         } for e in builds],
+        "delivery_builds": [{"event_id": e["id"], "actor": e["actor"],
+                             "revision": e["result"]["delivery_plan"]["revision"],
+                             "preview_status": e["result"]["rehearsal_build"]["preview"]["status"]}
+                            for e in delivery_builds],
         "method_records": [],
         "adoption_pairs": [],
         "native_reconstruction": reconstruction,
