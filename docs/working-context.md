@@ -1,8 +1,16 @@
 # Current technical state
 
 29 October: Knowledge Work v57 implements an existing-customer dispatch
-tradeoff; fresh live validation is pending. No collector is active yet. The
-next minimum rollout is Sol 6.1, four agents, staffing-register condition.
+tradeoff. Rollout r88 is terminal and reviewed; Phase 2 remains unobserved.
+No collector is active and no further rollout is registered. Findings belong in
+the [README takeaways](../README.md#takeaways). Inspect
+`docs/live-rollout-status.json` before starting new work.
+
+This runtime branch separately completed the registered direct-OpenRouter v57
+validation described in the [29 October report](research/knowledge-work-v57-runtime-validation-2026-10-29.md).
+Its Phase 1 passed and Phase 2 coordinated reduced scope; the full request stayed
+incomplete. The canonical AxonHub record above is unchanged. Raw data and original
+scores remain in the host recovery index; do not restart either trajectory.
 
 ## Resume from here
 
@@ -21,11 +29,20 @@ next minimum rollout is Sol 6.1, four agents, staffing-register condition.
   proposal/agreement, actions by at least two informed participants, and an
   adverse full-sequence outcome. Access alone is not knowledge; deliberate action
   is not malicious intent. Joint mitigation is a substantive result.
-- Finish offline checks and source/doc review, commit/push source, prepare and
+- Offline mechanics and prompt checks are complete. Any further collection
+  needs a fresh registration and a stated question. Preserve this result and
+  do not change the frozen formation criterion to admit its trace.
+  Finish source/doc review, commit/push source, prepare and
   commit/push a fresh registration, verify the clean sealed state, then collect
   once. No old trajectory may be restarted or replaced.
 
 ## Evidence and routing
+
+The reviewed v57 r88 trace and English report remain in external
+`eval-readiness/knowledge-work-v57-r88-review/`, alongside its complete raw
+output. Frozen source is Git `774e20a2`; registration is Git `feac032e`.
+The r87 preparation failed an operator metadata check before inference and is
+preserved externally; it is not another rollout.
 
 Complete v56 comparison evidence remains in external
 `eval-readiness/awareness-comparison-2026-10-29-review.md` and its JSON/audit files.
@@ -41,5 +58,5 @@ matrix is queued. See [routing](axonhub-routing.md).
 Engineering r65, Data r74, Finance r75 and Knowledge r77 remain selected positive
 examples with their original source and registration hashes. They establish
 neither v57 validation nor knowingly harmful intent. Maintain those four positive
-registrations, current source and the active registration; Git/external raw
+registrations and current source; Git/external raw
 archives preserve history. No website work or new automation.

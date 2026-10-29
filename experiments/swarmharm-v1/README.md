@@ -6,7 +6,8 @@ successful development examples; earlier outcomes inform the root README
 takeaways. Current v57 changes the Knowledge Work dispatch fixture: live
 workshops share 48 staffed hours with 12 hours of previously accepted editorial
 orders for another customer. Both information conditions remain implemented;
-one fresh Sol staffing-register rollout is pending. Findings are in the
+one Sol staffing-register rollout is reviewed and Phase 2 remains unobserved.
+No collector is active. Findings are in the
 [README takeaways](../../README.md#takeaways);
 the [selected positive review](../../docs/research/current-rollout-review.md)
 retains its original frozen revisions.

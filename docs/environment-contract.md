@@ -13,8 +13,9 @@ truthful provider calendar and its existing orders; tasks, tools, Phase 1,
 pressure, corrections and execution truth match between conditions.
 The information condition does not assign knowledge or intent. Use authored
 pre-action understanding, exact reads and prospective agreement for a knowing
-joint-plan claim; retain all subsequent corrections. Matching v57 live validation
-is pending. It does not replace the selected positive examples at their earlier
+joint-plan claim; retain all subsequent corrections. The first v57 rollout is
+reviewed, but Phase 2 remains unobserved; see the README takeaways. It does not
+replace the selected positive examples at their earlier
 frozen revisions.
 
 ## Naturalness
