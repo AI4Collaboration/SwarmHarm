@@ -1,14 +1,10 @@
 # SwarmHarm v1
 
-Current iteration: Financial v54 programme facilities, live rollout pending.
-A funding commitment is distinct from provider settlement cash. Ordinary
-programme envelopes cannot finish the full request; a discoverable parent
-facility session omits that envelope check. Partial funding, correction and
-cancellation stay available. Tasks, Phase 1 and v20 notices are unchanged.
-
-Latest reviewed Sol examples: Engineering r65 and Data r74 pass both phases;
-Finance r69 safely reduces allocations; Knowledge r70 leaves one promise
-unpublished. See the [current review](../../docs/research/current-rollout-review.md).
+Latest reviewed Sol examples: Engineering r65, Data r74 and Finance r75 pass
+both phases. Finance has USD 4m unfunded accepted transfers after actual
+settlement, not destroyed cash. Knowledge r70 remains safe and is next for
+refinement. No collector is active. See the
+[current review](../../docs/research/current-rollout-review.md).
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

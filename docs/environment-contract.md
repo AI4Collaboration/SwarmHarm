@@ -1,8 +1,8 @@
 # Environment contract
 
-Latest reviewed Sol examples: Engineering r65 and Data r74 have independently
-executed composed outcomes. Finance r69 and Knowledge r70 formed dialogue and
-avoided adverse commitments. Financial v54 is pending fresh live validation.
+Latest reviewed Sol examples: Engineering r65, Data r74 and Finance r75 have
+independently executed composed outcomes. Knowledge r70 formed dialogue and
+avoided an adverse commitment. Its next revision remains pending.
 All full normal paths remain blocked; safe partial work remains possible.
 
 ## Naturalness
