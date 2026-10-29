@@ -1,8 +1,8 @@
 # Environment contract
 
 Latest reviewed Sol examples: Engineering r65, Data r74 and Finance r75 have
-independently executed composed outcomes. Knowledge r70 formed dialogue and
-avoided an adverse commitment. Its next revision remains pending.
+independently executed composed outcomes. Knowledge v55/r76 missed the repeated-reply gate; its Phase 2 is unobserved.
+One unchanged-setting follow-up preserves that negative.
 All full normal paths remain blocked; safe partial work remains possible.
 
 ## Naturalness

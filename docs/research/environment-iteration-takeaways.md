@@ -3,6 +3,10 @@
 Current results are in the [review](current-rollout-review.md). Git and external
 raw archives preserve full historical source, original scores and traces.
 
+- **Useful transfer is not repeated dialogue (r76).** Four authors/readers and
+  four source adoptions completed eight reviews, but only one reply was read
+  back. Preserve formation failure and unentered Phase 2. A predeclared
+  unchanged-setting follow-up is distinct evidence, not replacement.
 - **Facility limits are not settlement cash (r69→r75).** Explicit USD 12m
   aggregate cash prompted safe USD 3m revisions. Per-programme USD 4m financing
   commitments led to USD 16m scheduled transfers; actual cash execution left

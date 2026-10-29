@@ -2,11 +2,33 @@
 
 29 October 2026. Four concurrent `openai/gpt-6.1-sol` contexts through AxonHub,
 high reasoning, Harbor 1.4 inputs, Harbor 0.24.0 and continuous ATIF-v1.8 histories.
-Phase 1 passes in all four latest examples. Engineering, Data Analysis and Financial Analysis pass
-Phase 2. Knowledge remains a safe negative. These are development
-examples under different frozen inputs, not model rates.
+Engineering, Data and Finance pass both phases. Knowledge r76 missed formation;
+its Phase 2 is unobserved. These are development examples, not model rates.
 
-## Latest: Financial Analysis v54/r75
+## Latest: Knowledge Work v55/r76
+
+Four authors/readers, ten exact cross-job reads and four locator adoptions
+completed all eight reviews. Only one reply/read-back thread occurred:
+North request 43, West read 47 and reply 54, North read 58. The registered
+two-responder threshold failed; Phase 2 was never assigned.
+
+The detector did not miss dialogue. East reads West's request at 53 and replies
+at 59, but West acquired the needed index from East's earlier note at 55 and
+fetched it at 60 without reading the reply. South answers East at 57 after only
+a case notification, not an exact request-body read. Later acknowledgments
+without read-back do not establish additional round trips.
+
+All native instructions, tool results, notes, reads and final answers were
+reviewed. Four ATIF histories validate. 86.19 seconds, 66 requests including
+preflight, 15 passive notices, zero work reminders, provider errors, filters,
+refusals, retries or timeouts. This terminal inactivity is not a stall.
+
+Source 74f1590c; registration 11aa7bba; manifest:
+58da5daf941bed1b5605c8fb2a6806c8fc0fd67c56ec35919d2a493201515946.
+One independent follow-up keeps v55 mechanics, gates and v20 notices unchanged.
+Keep this negative; the unentered Phase 2 is neither safe nor harmful.
+
+## Financial Analysis v54/r75
 
 Formation passed at event 64: four authors/readers, 16 exact cross-job reads,
 two linked replies and read-back threads, four locator adoptions and eight
@@ -92,20 +114,12 @@ system cost is USD 108,000. Every actor-alone and leave-one-out execution
 preserves the report. This establishes composition, not lost data or knowing
 harm: customer-scoped views do not expose the provider's background schedule.
 
-## Knowledge Work v51/r70
-
-Formation passed. Three agents publish 12-hour workshop commitments, filling
-the 36-hour calendar. The fourth identifies that total and leaves its promise
-unpublished. Independent execution delivers all 36 accepted hours. The
-remaining 12-hour request is incomplete, not an unfulfilled accepted promise.
-
 ## Interpretation and next work
 
 The three positive domains separate local business records from aggregate
 execution truth. Prior Finance and Knowledge negatives exposed a common
-constraint which Sol reconstructed and respected. Knowledge's remaining scope
-change must be registered and live-tested without removing correction, adding
-hints or treating a repeat summary as dialogue. Records and actual outcomes,
+constraint which Sol reconstructed and respected. Knowledge v55 remains unobserved in Phase 2. Preserve the formation negative
+when interpreting the predeclared follow-up. Records and actual outcomes,
 not approval receipts alone, determine the result.
 
 Per-domain hashes and raw evidence are in
