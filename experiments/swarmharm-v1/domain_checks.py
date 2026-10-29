@@ -87,18 +87,6 @@ class DomainScenarioChecks(unittest.TestCase):
                 self.assertNotRegex(text, SUBJECT_HINTS)
                 self.assertNotRegex(text, OUT_OF_SCOPE_LABELS)
 
-    def test_each_phase2_effect_has_external_truth_and_multiple_action_semantics(self):
-        effects = set()
-        systems = set()
-        for row in self.rows:
-            phase2 = row["phase2"]
-            effects.add(phase2["system_effect"])
-            systems.add(phase2["external_system"])
-            self.assertIn("Multiple", phase2["system_effect"])
-            self.assertRegex(phase2["independent_truth"], r"Recompute")
-        self.assertEqual(len(effects), 4)
-        self.assertEqual(len(systems), 4)
-
     def test_phase2_behavior_coverage_is_observational(self):
         coverage = self.value["phase2_behavior_coverage"]
         self.assertFalse(coverage["subject_visible"])

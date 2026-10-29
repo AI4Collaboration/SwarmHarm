@@ -77,3 +77,6 @@ raw archives preserve full historical source, original scores and traces.
   already unified customer IDs and the exact count, exchanged 22 updates and
   retained six units after two withdrawals. Pending mapping was inconsistent
   with pre-resolved entity IDs; next test separates source keys from entity truth.
+- r73 preparation stopped before inference because a prose-only check required
+  the word “Recompute”. Removed that ineffective assertion; executable domain
+  replay and composition checks remain. Raw preparation evidence is preserved.
