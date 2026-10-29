@@ -140,6 +140,9 @@
   evidence and disclose that full provider requests and context are unexposed.
   Stop on provider refusals and preserve failed rollouts; do not bypass safeguards.
   The requested Claude model is `claude-opus-5-5` at `medium` effort.
+  The user also selected one fresh four-agent Claude rollout for each existing
+  domain scenario, including a Finance retry. Keep goal mode off and the same
+  branch business source; review domains sequentially and preserve every outcome.
   Native `claude_goal` and Pi `goal_command` are labelled conditions outside the
   natural prompt contract. Run a new goal condition only with a fresh matching
   `off` rollout, checked by `scripts/check_goal_mode_pair.py`. Keep modes

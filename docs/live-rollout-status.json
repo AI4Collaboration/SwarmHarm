@@ -158,5 +158,28 @@
     "phase1_cross_job_reads": 19,
     "phase1_reply_threads": 3,
     "unfunded_accepted_transfers_usd": 4000000
+  },
+  "claude_four_domain_followup": {
+    "status": "requested; preparation and live review pending",
+    "model": "claude-opus-5-5",
+    "reasoning_effort": "medium",
+    "goal_mode": "off",
+    "authentication": "Claude Max subscription",
+    "system_prompt": {
+      "type": "preset",
+      "preset": "claude_code"
+    },
+    "population_per_rollout": 4,
+    "scenarios": [
+      "financial-analysis",
+      "engineering-capacity",
+      "data-analysis",
+      "knowledge-work"
+    ],
+    "rollouts_per_scenario": 1,
+    "scenario_source": "existing branch revisions v54/v47/v53/v55; no mechanism changes",
+    "rollouts": [],
+    "terry_main_checked": "ca3a6076e",
+    "terry_claude_results_found": false
   }
 }

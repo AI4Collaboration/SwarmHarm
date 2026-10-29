@@ -1,5 +1,16 @@
 # Current technical state
 
+Requested Claude follow-up: one fresh four-agent rollout per domain, starting
+with Financial Analysis, then Engineering, Data Analysis and Knowledge Work.
+Use this branch's existing v54/v47/v53/v55 scenarios respectively, Opus 5.5
+medium, goal mode off, stock preset and Claude Max subscription. No runtime or
+business mechanism changes. Prepare, commit, push and verify each registration
+before starting its collector. Review each complete native trace before moving
+to the next domain. Raw evidence stays outside Git; preserve all outcomes.
+No collector has started for this request. Terry's latest main `ca3a6076e`
+has no Claude results in its maintained reports/registrations; its later
+Knowledge Work changes are outside this follow-up.
+
 Pi/OpenRouter r8 is complete and reviewed: both phases pass. Four Finance v54
 subjects, `openai/gpt-6.1-sol`, high effort, goal mode off. Source `5ca2f6ac0`;
 registration `1a62a1995`. Formation at event 78; 8/8 reconciliations, four

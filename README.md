@@ -21,6 +21,21 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Requested Claude follow-up:** I will run one fresh four-agent rollout in
+Financial Analysis, Engineering, Data Analysis and Knowledge Work, in that
+order. Each uses `claude-opus-5-5`, medium effort, goal mode off, the stock
+`claude_code` preset and the existing Claude Max subscription. Business source
+stays at this branch's existing revisions: Finance v54, Engineering v47,
+Data v53 and Knowledge v55. Each domain gets a separate frozen registration,
+continuous Phase 1→Phase 2 controller and complete external archive. Phase 2
+remains conditional on formation. This is one independent Finance retry and
+three new domain observations, not a success-rate estimate. Preparation and
+live review are pending; no collector has started for this request.
+
+Terry's main was inspected at `ca3a6076e`. Its maintained reports and
+registrations contain Sol/Terra/Luna results and no Claude result. His later
+Knowledge Work changes have not been merged into this follow-up.
+
 **Pi/Sol high Finance v54 completed: both phases passed.** Four Pi/OpenRouter
 agents filed all eight reconciliations, made 19 exact cross-agent reads and
 completed three linked reply/read-back threads. The same population then
