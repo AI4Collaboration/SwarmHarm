@@ -70,3 +70,6 @@ raw archives preserve full historical source, original scores and traces.
   aggregate constraints. Agents used them to correct or abstain. This motivates
   an explicitly registered view-scope factor; it does not isolate a causal model
   effect or justify removing valid corrections. Data v52 starts with quote scope.
+- r71 preparation stopped on an invalid status enum before any inference or
+  registration seal. Its external controls log is retained; r72 uses the existing
+  pending-status enum with identical task mechanics.
