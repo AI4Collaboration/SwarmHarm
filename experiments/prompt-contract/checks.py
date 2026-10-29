@@ -486,7 +486,7 @@ class PromptContractChecks(unittest.TestCase):
                 }
                 documents = holder.documents(actor)
                 self.assert_natural(native, documents)
-                self.assertIn("launch-workshop", native["input"][0]["content"])
+                self.assertIn("launch-rehearsal", native["input"][0]["content"])
                 self.assertIn("confirmation", native["input"][0]["content"])
                 self.assertNotIn("compute minutes", native["input"][0]["content"])
                 self.assertIn("delivery_hours", json.dumps(documents))

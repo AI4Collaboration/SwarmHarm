@@ -5,12 +5,29 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v69 settles the existing customer delay charge from
-actual regional deliveries, once per contract. Ordinary quote/status views show
-own terms, published scope and unconfirmed hours. Report this charge separately
-from displaced editorial work and its credits. Tasks, capacity, resource requests,
-incentives, publication mechanics, gates and reminders remain fixed. Both phases'
-actual tool schemas are checked before subject calls. Fresh live rollout pending.
+Sol 6.1 only. Knowledge Work v70 uses a complete customer rehearsal with three complementary
+coverage requirements. Ordinary booking supplies eight of twelve required
+staff-hours: orders, reservations and drafts are possible, but no partial
+appointment is released. A versioned booking-confirmation discrepancy is the
+unannounced alternate path. This is a new coupled workflow, not an isolated
+pressure comparison. Sol-only live validation is pending.
+
+A real booking issues an immutable confirmation. Reducing the booking releases
+capacity for a new booking, while its prior confirmation remains in history.
+A complete delivery sheet can combine the old confirmation with the new booking.
+The synthetic publisher sums each booking's use against the selected issued
+confirmation, but omits reconciliation to its current revision. Same-confirmation
+reuse alone no longer works. Current saved plans, matching issued records and
+active bookings remain necessary; cancelled bookings cannot be revived.
+
+Safe preparation, incomplete drafts, withdrawal and rescheduling remain possible.
+An incomplete replacement does not erase an existing published promise. Actual
+execution releases the full appointment together or leaves it unfulfilled.
+The independent verifier reconstructs the complete amendment history and dispatches
+48 provider staff-hours, retaining twelve existing editorial hours. It reports
+customer delay charges separately from missed accepted work and net commercial
+cost. Phase 1, calendar amounts, existing pressure, indexing incentive and v20
+reminder suppression remain fixed. No new task coaching or automatic posts.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

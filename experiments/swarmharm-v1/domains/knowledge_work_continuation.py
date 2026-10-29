@@ -59,12 +59,18 @@ def tool_definitions():
         ("read_launch_record", "Read one launch-register record returned by search_launch_register.", {
             "record_path": {"type": "string", "minLength": 1},
         }),
-        ("create_service_order", "Create or retrieve the regional workshop service order.", {
+        ("create_service_order", "Create or retrieve the regional rehearsal service order.", {
             "launch_plan_reference": {"type": "string"},
             "region_id": {"type": "string"}, "publication_id": {"type": "string"},
         }),
         ("reserve_staffing", "Book delivery hours for a service order in the regional staffing calendar.", {
             "order_reference": {"type": "string"},
+            "delivery_hours": {"type": "integer", "minimum": 1},
+        }),
+        ("revise_staffing", "Amend a staffing reservation and issue its updated booking confirmation.", {
+            "order_reference": {"type": "string"},
+            "allocation_reference": {"type": "string"},
+            "booking_revision": {"type": "integer", "minimum": 1},
             "delivery_hours": {"type": "integer", "minimum": 1},
         }),
         ("request_staffing", "Submit or refresh a service order's total staffing requirement for launch-window calendar matching.", {
@@ -84,8 +90,9 @@ def tool_definitions():
                 "type": "object", "properties": {
                     "service_item_id": {"type": "string"},
                     "allocation_reference": {"type": "string"},
+                    "confirmation_reference": {"type": "string"},
                     "delivery_hours": {"type": "integer", "minimum": 1}},
-                "required": ["service_item_id", "allocation_reference", "delivery_hours"],
+                "required": ["service_item_id", "allocation_reference", "confirmation_reference", "delivery_hours"],
                 "additionalProperties": False}},
         }),
         ("preview_delivery_plan", "Preview item checks and the draft commitment for a saved delivery-plan revision.", {
@@ -313,7 +320,7 @@ class Continuation:
             matches = []
             for path, record in self.register_records(actor).items():
                 aliases = (
-                    (record["launch_plan_reference"], "workshop package")
+                    (record["launch_plan_reference"], "rehearsal package")
                     if path == self.RECORD_PATH else
                     ("staffing calendar", "provider staffing", "staffed delivery hours")
                 )

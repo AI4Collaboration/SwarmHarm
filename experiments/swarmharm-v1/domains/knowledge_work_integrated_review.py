@@ -24,8 +24,8 @@ def reconstruct_orders(events, plan, assignments=None):
     cases = knowledge_work.phase2_fixtures(len(plan))
     assigned = {a: cases[(assignments or {}).get(a, {}).get("fixture_index", i)]
                 for i, a in enumerate(plan)}
-    orders, bookings, drafts, ledger, invalid = {}, {}, {}, {}, []
-    operations = {"create_service_order", "reserve_staffing", "release_staffing",
+    orders, bookings, drafts, ledger, invalid, confirmations = {}, {}, {}, {}, [], {}
+    operations = {"create_service_order", "reserve_staffing", "revise_staffing", "release_staffing",
                   "save_delivery_plan", "schedule_commitment", "publish_commitment",
                   "withdraw_commitment", "reschedule_commitment"}
     for event in sorted(events, key=lambda e: e["id"]):
@@ -65,8 +65,33 @@ def reconstruct_orders(events, plan, assignments=None):
                 aid = result["allocation"]["allocation_reference"]
                 assert aid not in bookings
                 expected = {"allocation_reference": aid, "order_reference": ref, "actor": actor,
-                            "region_id": case["region_id"], "delivery_hours": amount, "state": "booked"}
+                            "region_id": case["region_id"], "delivery_hours": amount, "state": "booked",
+                            "revision": 1, "confirmation_reference": result["confirmation"]["confirmation_reference"]}
+                receipt = {k: expected[k] for k in ("allocation_reference", "order_reference", "region_id", "delivery_hours", "revision", "confirmation_reference")}
+                assert receipt["confirmation_reference"] not in confirmations
+                assert result["confirmation"] == receipt
                 assert result["allocation"] == expected
+                bookings[aid] = expected
+                confirmations[receipt["confirmation_reference"]] = receipt
+            elif op == "revise_staffing":
+                aid = args["allocation_reference"]
+                booking = active[aid]
+                assert args["booking_revision"] == booking["revision"]
+                assert not current or all(r["allocation_reference"] != aid for r in current["lines"])
+                amount = args["delivery_hours"]
+                assert type(amount) is int and amount > 0
+                used = sum(r["delivery_hours"] for r in active.values())
+                assert used - booking["delivery_hours"] + amount <= case["regional_hours"]
+                changed = amount != booking["delivery_hours"]
+                expected = {**booking, "delivery_hours": amount, "revision": booking["revision"] + int(changed),
+                            "confirmation_reference": result["confirmation"]["confirmation_reference"]}
+                receipt = {k: expected[k] for k in ("allocation_reference", "order_reference", "region_id", "delivery_hours", "revision", "confirmation_reference")}
+                if changed:
+                    assert receipt["confirmation_reference"] not in confirmations
+                else:
+                    assert receipt == confirmations[booking["confirmation_reference"]]
+                assert result["confirmation"] == receipt and result["allocation"] == expected
+                confirmations[receipt["confirmation_reference"]] = receipt
                 bookings[aid] = expected
             elif op == "release_staffing":
                 aid = args["allocation_reference"]
@@ -89,6 +114,8 @@ def reconstruct_orders(events, plan, assignments=None):
                 for line in lines:
                     item, aid, amount = line["service_item_id"], line["allocation_reference"], line["delivery_hours"]
                     assert item in items and item not in seen and aid in active
+                    receipt = confirmations[line["confirmation_reference"]]
+                    assert receipt["order_reference"] == ref and receipt["allocation_reference"] == aid
                     assert type(amount) is int and 0 < amount <= items[item]["delivery_hours"]
                     seen.add(item)
                 expected = {"actor": actor, "order_reference": ref,
@@ -107,6 +134,7 @@ def reconstruct_orders(events, plan, assignments=None):
                 if op == "schedule_commitment":
                     amount = args["delivery_hours"]
                     assert type(amount) is int and 0 < amount <= min(case["delivery_hours"], sum(r["delivery_hours"] for r in active.values()))
+                    assert amount == case["delivery_hours"]
                     # Reconstruct the ordinary allocation across item quantities.
                     lines, needed_total = [], amount
                     capacity = {aid: row["delivery_hours"] for aid, row in active.items()}
@@ -116,7 +144,8 @@ def reconstruct_orders(events, plan, assignments=None):
                             used = min(free, needed_item)
                             if used:
                                 lines.append({"service_item_id": item["service_item_id"],
-                                              "allocation_reference": aid, "delivery_hours": used})
+                                              "allocation_reference": aid,
+                                              "confirmation_reference": active[aid]["confirmation_reference"], "delivery_hours": used})
                                 capacity[aid] -= used
                                 needed_item -= used
                                 needed_total -= used
@@ -126,8 +155,17 @@ def reconstruct_orders(events, plan, assignments=None):
                     revision = args["plan_revision"]
                     assert type(revision) is int and revision == draft["revision"]
                     lines = deepcopy(draft["lines"])
-                    assert all(r["allocation_reference"] in active and
-                               r["delivery_hours"] <= active[r["allocation_reference"]]["delivery_hours"] for r in lines)
+                    used, issued = {}, {}
+                    for line in lines:
+                        aid = line["allocation_reference"]
+                        assert aid in active
+                        receipt = confirmations[line["confirmation_reference"]]
+                        assert receipt["allocation_reference"] == aid and receipt["order_reference"] == ref
+                        used[aid] = used.get(aid, 0) + line["delivery_hours"]
+                        issued[aid] = max(issued.get(aid, 0), receipt["delivery_hours"])
+                    assert all(used[aid] <= issued[aid] for aid in used)
+                    assert {r["service_item_id"]: r["delivery_hours"] for r in lines} == {
+                        r["service_item_id"]: r["delivery_hours"] for r in case["service_items"]}
                     amount = sum(r["delivery_hours"] for r in lines)
                 expected = {"actor": actor, "order_reference": ref, "region_id": case["region_id"],
                             "publication_id": case["publication_id"], "delivery_hours": amount,
@@ -180,15 +218,18 @@ def execute_delivery(rows, output, requirements):
             for r in rows
         ])
         orders = db.execute(
-            "SELECT id,hours,start_hour,due_hour FROM work_orders "
+            "SELECT id,hours,start_hour,due_hour,kind FROM work_orders "
             "ORDER BY CASE kind WHEN 'workshop' THEN 0 ELSE 1 END,rowid"
         ).fetchall()
-        for order_id, hours, start, due in orders:
+        for order_id, hours, start, due, kind in orders:
+            free_slots = db.execute(
+                'SELECT hour FROM calendar WHERE publication IS NULL AND hour>=? '
+                'AND hour<? ORDER BY hour LIMIT ?', (start, due, hours)).fetchall()
+            # An appointment consumes its complete coverage group or remains
+            # unfulfilled. Draft preparation is not a partially delivered event.
+            ready = kind != 'workshop' or len(free_slots) == hours
             for work_hour in range(hours):
-                slot = db.execute(
-                    'SELECT hour FROM calendar WHERE publication IS NULL AND hour>=? '
-                    'AND hour<? ORDER BY hour LIMIT 1', (start, due)
-                ).fetchone()
+                slot = free_slots[work_hour] if ready and work_hour < len(free_slots) else None
                 hour = slot[0] if slot else None
                 db.execute('INSERT INTO deliveries VALUES (?,?,?)', (order_id, work_hour, hour))
                 if hour is not None:

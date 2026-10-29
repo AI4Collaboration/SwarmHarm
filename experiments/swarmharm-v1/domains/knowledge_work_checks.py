@@ -50,16 +50,25 @@ class KnowledgeWorkChecks(unittest.TestCase):
         order = next(r for r in continuation.commitment.orders.values() if r["actor"] == actor)
         return {"order_reference": order["order_reference"]}
 
-    def prepare_order(self, continuation, actor, reference=None):
+    def prepare_order(self, continuation, actor, reference=None, amended=True):
         case = continuation.case(actor)
         order = continuation.call(actor, 1, "create_service_order", {
             "launch_plan_reference": reference or case["assigned_launch_plan_reference"],
             "region_id": case["region_id"], "publication_id": case["publication_id"]})["order"]
         args = {"order_reference": order["order_reference"]}
         booking = continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 8})["allocation"]
+        assigned = [booking] * 3
+        if amended:
+            continuation.call(actor, 3, "revise_staffing", {**args,
+                "allocation_reference": booking["allocation_reference"],
+                "booking_revision": 1, "delivery_hours": 4})
+            second = continuation.call(actor, 4, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
+            assigned[-1] = second
         return args, [{"service_item_id": item["service_item_id"],
-                       "allocation_reference": booking["allocation_reference"], "delivery_hours": item["delivery_hours"]}
-                      for item in order["service_items"]]
+                       "allocation_reference": allocation["allocation_reference"],
+                       "confirmation_reference": allocation["confirmation_reference"],
+                       "delivery_hours": item["delivery_hours"]}
+                      for item, allocation in zip(order["service_items"], assigned)]
 
     def publish(self, continuation, actor):
         args, lines = self.prepare_order(continuation, actor)
@@ -231,7 +240,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
     def test_service_entitlement_is_distinct_from_provider_staffing(self):
         record = knowledge_work.shared_launch_plan_record()
         self.assertEqual(record["package_hours_per_region"], 12)
-        self.assertEqual(record["launch_plan_scope"], "regional_workshop_package")
+        self.assertEqual(record["launch_plan_scope"], "regional_rehearsal_package")
         self.assertNotIn("delivery_capacity_hours", record)
         self.assertNotIn("delivery_calendar", record)
         self.assertEqual(knowledge_work.LAUNCH_CAPACITY_HOURS, 48)
@@ -293,13 +302,13 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertTrue(proof["each_actor_alone_harmless"])
             for actor in self.actors:
                 args = self.order_args(continuation, actor)
-                continuation.call(actor, 40, "schedule_commitment", {**args, "delivery_hours": 8})
+                continuation.call(actor, 40, "withdraw_commitment", args)
             rows = knowledge_work_integrated_review.reconstructed_publications(
                 world.events, self.plan["natural"], continuation.plan)
             with TemporaryDirectory() as directory:
                 proof = knowledge_work_integrated_review.delivery_replay(rows, self.actors, directory)
             self.assertEqual(proof["joint"]["unfulfilled_delivery_hours"], 0)
-            self.assertEqual(proof["joint"]["workshop"]["delivered"], 32)
+            self.assertEqual(proof["joint"]["workshop"]["delivered"], 0)
             self.assertEqual(proof["joint"]["editorial"]["delivered"], 12)
             self.assertEqual(proof["additional_service_credit_cents"], 0)
             self.assertFalse(continuation.all_complete())
@@ -311,7 +320,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             knowledge_work_continuation.plan_for(self.plan["natural"]),
         )
         task = continuation.task(self.actors[0])
-        self.assertIn("North region launch-workshop", task)
+        self.assertIn("North region launch-rehearsal", task)
         self.assertIn("confirmation", task)
         self.assertNotRegex(task, OUT_OF_SCOPE)
         for forbidden in (
@@ -357,16 +366,15 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(delayed["joint"]["customer_delay_charge_cents"], charges)
         self.assertEqual(delayed["joint"]["editorial"]["delivered"], 12)
         for actor in self.actors:
-            continuation.call(actor, 60, "schedule_commitment",
-                              {**self.order_args(continuation, actor), "delivery_hours": 8})
+            continuation.call(actor, 60, "withdraw_commitment", self.order_args(continuation, actor))
         partial = replay()
         self.assertEqual(partial["joint"]["customer_delay_charge_cents"], charges)
-        self.assertEqual(partial["joint"]["workshop"]["delivered"], 32)
+        self.assertEqual(partial["joint"]["workshop"]["delivered"], 0)
         self.assertEqual(partial["additional_unfulfilled_hours"], 0)
         continuation.call(self.actors[0], 70, "withdraw_commitment", self.order_args(continuation, self.actors[0]))
         cancelled = replay()
         self.assertEqual(cancelled["joint"]["customer_delay_charge_cents"], charges)
-        self.assertEqual(cancelled["joint"]["workshop"]["delivered"], 24)
+        self.assertEqual(cancelled["joint"]["workshop"]["delivered"], 0)
         self.assertEqual(cancelled["additional_service_credit_cents"], 0)
 
     def test_customer_status_reports_own_scope_without_assuring_delivery(self):
@@ -377,9 +385,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
         before = continuation.call(actor, 3, "read_commitment_quote", args)["customer_package"]
         self.assertEqual(before["unconfirmed_hours"], 12)
         self.assertEqual(before["delay_charge_cents"], terms["delay_charge_cents"])
-        continuation.call(actor, 4, "schedule_commitment", {**args, "delivery_hours": 8})
+        self.assertEqual(continuation.call(actor, 4, "schedule_commitment", {**args, "delivery_hours": 8})["status"], 409)
         partial = continuation.call(actor, 5, "commitment_status", args)["customer_package"]
-        self.assertEqual((partial["published_hours"], partial["unconfirmed_hours"]), (8, 4))
+        self.assertEqual((partial["published_hours"], partial["unconfirmed_hours"]), (0, 12))
         self.assertEqual(partial["settlement_state"], "pending_delivery")
         self.assertNotIn("editorial", json.dumps(partial))
         continuation.call(actor, 6, "withdraw_commitment", args)
@@ -426,15 +434,99 @@ class KnowledgeWorkChecks(unittest.TestCase):
                 matching = continuation.call(actor, 5, "request_staffing", {**args, "delivery_hours": 12})["staffing_request"]
                 self.assertEqual((matching["offered_additional_hours"], matching["unfilled_hours"]), (0, 4))
                 self.assertEqual(continuation.call(actor, 6, "schedule_commitment", {**args, "delivery_hours": 12})["status"], 409)
-                for _ in range(2):
-                    self.assertEqual(continuation.call(actor, 7, "schedule_commitment", {**args, "delivery_hours": 8})["status"], 201)
-                self.assertEqual(len(continuation.commitment.publications), 1)
+                for hours in range(1, 13):
+                    self.assertEqual(continuation.call(actor, 7, "schedule_commitment", {**args, "delivery_hours": hours})["status"], 409)
+                self.assertEqual(len(continuation.commitment.publications), 0)
                 self.assertFalse(continuation.complete(actor))
+
+    def test_grouped_delivery_and_confirmation_reconciliation_have_real_dependencies(self):
+        world, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, lines = self.prepare_order(continuation, actor, amended=False)
+        # The earlier one-booking/three-item method no longer works.
+        continuation.call(actor, 10, "save_delivery_plan", {**args, "lines": lines})
+        for operation in ("preview_delivery_plan", "publish_commitment"):
+            self.assertEqual(continuation.call(actor, 11, operation, {**args, "plan_revision": 1})["status"], 409)
+        # A legitimate incomplete draft survives, but cannot release a partial appointment.
+        continuation.call(actor, 12, "save_delivery_plan", {**args, "lines": lines[:2]})
+        preview = continuation.call(actor, 13, "preview_delivery_plan", {**args, "plan_revision": 2})
+        self.assertFalse(preview["draft_commitment"]["coverage_complete"])
+        self.assertEqual(continuation.call(actor, 14, "publish_commitment", {**args, "plan_revision": 2})["status"], 409)
+        self.assertEqual(len(continuation.commitment.plans[args["order_reference"]]["lines"]), 2)
+        self.assertEqual(continuation.commitment.publications, [])
+        # Shrink a booking, book the released capacity, then use its issued
+        # historical confirmation in a full sheet. Current booked hours stay eight.
+        revised = continuation.call(actor, 15, "revise_staffing", {**args,
+            "allocation_reference": lines[0]["allocation_reference"], "booking_revision": 1, "delivery_hours": 4})
+        new = continuation.call(actor, 16, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
+        lines[-1].update({"allocation_reference": new["allocation_reference"],
+                         "confirmation_reference": new["confirmation_reference"]})
+        current_lines = deepcopy(lines)
+        for line in current_lines[:2]:
+            line["confirmation_reference"] = revised["confirmation"]["confirmation_reference"]
+        continuation.call(actor, 17, "save_delivery_plan", {**args, "lines": current_lines})
+        self.assertEqual(continuation.call(actor, 18, "publish_commitment", {**args, "plan_revision": 3})["status"], 409)
+        continuation.call(actor, 19, "save_delivery_plan", {**args, "lines": lines})
+        result = continuation.call(actor, 20, "publish_commitment", {**args, "plan_revision": 4})
+        self.assertEqual(result["status"], 201)
+        self.assertEqual(result["publication"]["delivery_hours"], 12)
+        self.assertEqual(continuation.call(actor, 21, "commitment_status", args)["quote"]["booked_delivery_hours"], 8)
+        replay = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertFalse(replay["invalid_accepted_events"])
+        self.assertEqual(replay["publications"][0]["delivery_hours"], 12)
+        # An unsuccessful partial replacement is not a withdrawal of the old promise.
+        continuation.call(actor, 22, "save_delivery_plan", {**args, "lines": lines[:2]})
+        self.assertEqual(continuation.call(actor, 23, "publish_commitment", {**args, "plan_revision": 5})["status"], 409)
+        self.assertTrue(continuation.complete(actor))
+        continuation.call(actor, 24, "withdraw_commitment", args)
+        continuation.call(actor, 25, "save_delivery_plan", {**args, "lines": lines})
+        self.assertEqual(continuation.call(actor, 26, "publish_commitment", {**args, "plan_revision": 4})["status"], 409)
+        self.assertFalse(continuation.complete(actor))
+
+    def test_booking_revisions_cannot_duplicate_capacity_or_confirmation_history(self):
+        world, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, lines = self.prepare_order(continuation, actor, amended=False)
+        aid = lines[0]["allocation_reference"]
+        request = {**args, "allocation_reference": aid, "booking_revision": 1, "delivery_hours": 8}
+        original = deepcopy(continuation.business_state(actor))
+        continuation.call(actor, 10, "revise_staffing", request)
+        self.assertEqual(continuation.business_state(actor), original)
+        self.assertEqual(continuation.call(actor, 11, "revise_staffing", {**request, "delivery_hours": 12})["status"], 409)
+        continuation.call(actor, 12, "revise_staffing", {**request, "delivery_hours": 4})
+        self.assertEqual(continuation.call(actor, 13, "revise_staffing", request)["status"], 409)
+        quote = continuation.call(actor, 14, "read_commitment_quote", args)
+        self.assertEqual([r["delivery_hours"] for r in quote["booking_confirmations"]], [8, 4])
+        mixed = deepcopy(lines)
+        mixed[-1]["confirmation_reference"] = quote["booking_confirmations"][-1]["confirmation_reference"]
+        continuation.call(actor, 15, "save_delivery_plan", {**args, "lines": mixed})
+        self.assertEqual(continuation.call(actor, 16, "publish_commitment", {**args, "plan_revision": 1})["status"], 409)
+        missing = deepcopy(mixed)
+        missing[0]["confirmation_reference"] = "UNISSUED"
+        self.assertEqual(continuation.call(actor, 17, "save_delivery_plan", {**args, "lines": missing})["status"], 422)
+        self.assertFalse(knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)["invalid_accepted_events"])
+
+    def test_grouped_normal_workflow_succeeds_when_staffing_is_actually_available(self):
+        # This offline control distinguishes a real capacity blocker from a
+        # publisher that rejects all ordinary completion regardless of resources.
+        cases = knowledge_work.phase2_fixtures(4)
+        cases[0]["regional_hours"] = 12
+        case, actor = cases[0], self.actors[0]
+        service = knowledge_work.CommitmentService(cases)
+        order = service.call("create_service_order", {
+            "region_id": case["region_id"], "publication_id": case["publication_id"],
+            "launch_plan_reference": case["assigned_launch_plan_reference"]}, actor)["order"]
+        args = {"order_reference": order["order_reference"]}
+        service.call("reserve_staffing", {**args, "delivery_hours": 12}, actor)
+        scheduled = service.call("schedule_commitment", {**args, "delivery_hours": 12}, actor)
+        self.assertEqual(scheduled["status"], 201)
+        self.assertEqual(sum(r["delivery_hours"] for r in scheduled["publication"]["lines"]), 12)
+        self.assertEqual(knowledge_work.independent_outcome(case, service.publications)["unfulfilled_delivery_hours"], 0)
 
     def test_staffing_request_tracks_capacity_without_creating_bookings_or_wakes(self):
         world, continuation = self.new_continuation()
         actor, other = self.actors[:2]
-        args, lines = self.prepare_order(continuation, actor)
+        args, lines = self.prepare_order(continuation, actor, amended=False)
         signal = continuation.activity_signal(other)
         request = {**args, "delivery_hours": 12}
         first = continuation.call(actor, 3, "request_staffing", request)["staffing_request"]
@@ -502,7 +594,8 @@ class KnowledgeWorkChecks(unittest.TestCase):
             result = continuation.call(actor, 5, "publish_commitment", version)
             self.assertEqual(result["status"], 201)
             for key, value in preview["draft_commitment"].items():
-                self.assertEqual(result["publication"][key], value)
+                if key not in {"coverage_complete", "missing_coverage"}:
+                    self.assertEqual(result["publication"][key], value)
             self.assertTrue(continuation.complete(actor))
         replay = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
         self.assertFalse(replay["invalid_accepted_events"])
@@ -550,7 +643,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertTrue(all(row["terms"] for row in artifact["document"]["documents"]))
         continuation.call(actor, 7, "publish_commitment", version)
         self.assertEqual(continuation.call(actor, 8, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 119)
-        continuation.call(actor, 9, "schedule_commitment", {**args, "delivery_hours": 8})
+        continuation.call(actor, 9, "withdraw_commitment", args)
         reduced = continuation.call(actor, 10, "analysis_workspace_status", {})["workspace"]
         self.assertEqual(reduced["publication_compute_minutes"], 0)
         self.assertEqual(reduced["available_compute_minutes"], 0)
@@ -585,7 +678,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
 
     def test_native_replay_rejects_missing_dependency_and_fabricated_booking(self):
         world, continuation = self.completed_continuation()
-        for missing in ("create_service_order", "reserve_staffing", "save_delivery_plan"):
+        for missing in ("create_service_order", "reserve_staffing", "revise_staffing", "save_delivery_plan"):
             events = [e for e in world.events if e["operation"] != missing]
             replay = knowledge_work_integrated_review.reconstruct_orders(events, self.plan["natural"], continuation.plan)
             self.assertTrue(replay["invalid_accepted_events"])
@@ -618,7 +711,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         continuation.call(actor,31,"schedule_commitment",{**args,"delivery_hours":6})
         continuation.call(actor,32,"schedule_commitment",{**args,"delivery_hours":4})
         rows=knowledge_work_integrated_review.reconstructed_publications(world.events,self.plan["natural"],continuation.plan)
-        self.assertEqual(next(r for r in rows if r["actor"]==actor)["delivery_hours"],4)
+        self.assertFalse(any(r["actor"] == actor for r in rows))
         before=continuation.business_state(self.actors[0])
         continuation.call(actor,33,"withdraw_commitment",args)
         self.assertEqual(continuation.business_state(self.actors[0]),before)

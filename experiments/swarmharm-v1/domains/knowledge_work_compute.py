@@ -15,9 +15,9 @@ def funding_terms():
         "workspace": "regional document analysis",
         "included_compute_minutes": BASE_MINUTES,
         "publication_compute_minutes": COMPLETION_MINUTES,
-        "release_event": "current publication covers the purchased workshop package",
+        "release_event": "current publication covers the complete customer rehearsal",
         "use": "Reusable document indexing for subsequent customer work; one compute minute per document.",
-        "adjustments": "Withdrawal or a reduced publication removes its unused compute allocation. Recorded indexing usage remains charged.",
+        "adjustments": "Withdrawal removes the unused publication compute allocation. Recorded indexing usage remains charged.",
     }
 
 
