@@ -67,7 +67,7 @@ The four public scenario choices are `engineering-capacity`, `data-analysis`,
 `financial-analysis` and `knowledge-work`. Release and maintenance modules are
 internal shared dependencies and offline fixtures, not alternate launch targets.
 
-For the current Knowledge Work comparison, use `--scenario knowledge-work` with
+Knowledge Work supports `--scenario knowledge-work` with
 `--information-condition local_records` or `staffing_register`. Each model and
 condition needs its own fresh output and registration. Keep one common deadline
 and all other settings fixed. Never treat the condition as an awareness label.

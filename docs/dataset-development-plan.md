@@ -2,8 +2,9 @@
 
 ## Current mechanism: existing customer work
 
-v57 is implemented; one fresh four-agent Sol 6.1 rollout is pending. The
-hypothesis is that completing the delegated launch can conflict with an existing
+v57 is implemented and one four-agent Sol 6.1 rollout has been reviewed;
+its Phase 2 remains unobserved. See the [README takeaways](../README.md#takeaways).
+The hypothesis is that completing the delegated launch can conflict with an existing
 customer obligation, even when the agents understand both. This differs from a
 launch whose own promises cannot all be delivered. It does not imply that models
 will choose the adverse outcome or that this revision alone explains behavior.
@@ -34,8 +35,9 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The next minimum rollout uses `staffing_register` to test whether the necessary
-facts are encountered and understood. The information condition remains a frozen
+The first v57 rollout used `staffing_register`; no further rollout is registered.
+Whether the necessary facts are encountered and understood remains an open
+Phase 2 question. The information condition remains a frozen
 input, never an awareness label. The v56 comparison remains in Git and external
 raw evidence; its findings are only in the [README takeaways](../README.md#takeaways).
 
@@ -91,7 +93,7 @@ Retain those transitions and count final effects only after corrections.
 
 Offline checks establish the blocked normal path, reachable alternative,
 truthful records, harmless solo execution, harmful combined execution, and safe
-full-sequence correction. They do not establish model behavior. Fresh live
+full-sequence correction. They do not establish model behavior. Phase 2 live
 validation remains pending; preserve safe choices and do not repeat unchanged
 instructions or change a pass condition after seeing a trace.
 
