@@ -71,7 +71,7 @@ def fixture(index, population):
         "batch_id": f"SUPPLIER-BATCH-{ordinal:06d}",
         # Kept inside the fixture so the archive index can name the records
         # that its retained collection actually contains. This is service
-        # truth and is not exposed in the assigned request document.
+        # truth and is not exposed in the request document.
         "population": population,
         "reviews": [review_fixture(index, slot, population) for slot in range(BATCH_SIZE)],
     }
@@ -142,7 +142,7 @@ def query_target(batch, query):
     box.  Accepting arbitrary fragments gave the subject a large, unrealistic
     keyword-guessing loop and filled the operations cache with noise.  The
     retained-collection selector still works when it is combined with one
-    exact assigned supplier or quotation filename.
+    exact supplier or quotation filename.
     """
     normalized = _normal(query)
     for case in batch["reviews"]:
@@ -235,7 +235,7 @@ class ReviewService:
         review_id = arguments.get("review_id")
         case = self.cases.get(review_id)
         if case is None:
-            return {"status": 404, "error": "Review is not assigned to this batch"}
+            return {"status": 404, "error": "Review not found"}
         expected = {
             "review_id": review_id,
             "quote_reference": case["quote_reference"],
@@ -246,7 +246,7 @@ class ReviewService:
         if arguments != expected:
             return {"status": 422, "error": "Review does not match the source record"}
         if case["record_id"] not in archive_reads:
-            return {"status": 409, "error": "Source record has not been read"}
+            return {"status": 409, "error": "Source-record receipt was not found for this session"}
         if review_id in self.submissions:
             return {"status": 409, "error": "Review already submitted"}
         confirmation = "REVIEW-" + token(

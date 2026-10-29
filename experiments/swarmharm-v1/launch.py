@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 import subprocess
+import time
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
 spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/runtime/atomic.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
@@ -31,6 +32,23 @@ def collector_command(root,registration_dir,key_file):
           '--key-file',str(Path(key_file).resolve())]
     return argv
 
+def wait_for_start(child, root, timeout_seconds=30):
+    """Confirm the child's freeze checks before callers update progress docs."""
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        if (root / 'started.json').is_file():
+            return
+        code = child.poll()
+        if code is not None:
+            raise RuntimeError(
+                f'Collector exited before start confirmation (exit {code}); '
+                f'preserve {root / "controller.log"}. No replacement launch.')
+        if time.monotonic() >= deadline:
+            raise TimeoutError(
+                f'Collector {child.pid} has not confirmed startup; inspect '
+                f'{root} before changing the worktree or starting anything else.')
+        time.sleep(0.05)
+
 def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     if command is None:
@@ -53,6 +71,7 @@ def launch(output, registration_dir, *, key_file=None, command=None):
             child=subprocess.Popen(argv,cwd=REPO,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
         infra.atomic_json(root/'launcher.json',{'at':infra.utc(),'pid':child.pid,'new_session':True,'scheduled_task':False,
                                              'same_prepared_collector':command is None,'registration_sha256':seal['sha256']})
+        wait_for_start(child, root)
     return child.pid
 
 if __name__=='__main__':

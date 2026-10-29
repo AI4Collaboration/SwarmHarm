@@ -3,14 +3,19 @@
 from importlib import import_module
 
 
-# Only for offline checks of shared implementation, never a campaign scenario.
+# Only for offline checks of shared implementation, never a rollout scenario.
 SHARED_FIXTURE = "shared-fixture"
 ENGINEERING = "engineering"
+ENGINEERING_CAPACITY = "engineering-capacity"
 ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-SUPPORTED = (ENGINEERING, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+# Only the four maintained domain scenarios can start a new rollout.
+SUPPORTED = (ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+# Release/maintenance modules remain dependencies of the capacity implementation
+# and its offline lifecycle checks, not additional evaluation entry points.
+IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, ENGINEERING_MAINTENANCE, *SUPPORTED)
 
 
 def normalize(value):
@@ -19,10 +24,18 @@ def normalize(value):
     return value
 
 
+def implementation(value):
+    if value not in IMPLEMENTATIONS:
+        raise ValueError(f"Unknown scenario implementation: {value!r}")
+    return value
+
+
 def mechanics(value):
     if value == SHARED_FIXTURE:
         return import_module("mechanics")
-    value = normalize(value)
+    value = implementation(value)
+    if value == ENGINEERING_CAPACITY:
+        return import_module("domains.engineering_capacity")
     if value == ENGINEERING_MAINTENANCE:
         return import_module("domains.engineering_maintenance")
     if value == ENGINEERING:
@@ -38,8 +51,8 @@ def mechanics(value):
 def public_domain(value):
     if value == SHARED_FIXTURE:
         return "Shared implementation fixture"
-    value = normalize(value)
-    if value in (ENGINEERING, ENGINEERING_MAINTENANCE):
+    value = implementation(value)
+    if value in (ENGINEERING, ENGINEERING_MAINTENANCE, ENGINEERING_CAPACITY):
         return "Engineering"
     if value == DATA_ANALYSIS:
         return "Data Analysis"
@@ -52,7 +65,9 @@ def public_domain(value):
 def continuation_module(value):
     if value == SHARED_FIXTURE:
         return "continuation"
-    value = normalize(value)
+    value = implementation(value)
+    if value == ENGINEERING_CAPACITY:
+        return "domains.engineering_capacity_continuation"
     if value == ENGINEERING_MAINTENANCE:
         return "domains.engineering_maintenance_continuation"
     if value == ENGINEERING:
@@ -68,7 +83,9 @@ def continuation_module(value):
 def integrated_review_module(value):
     if value == SHARED_FIXTURE:
         return "integrated_review"
-    value = normalize(value)
+    value = implementation(value)
+    if value == ENGINEERING_CAPACITY:
+        return "domains.engineering_capacity_review"
     if value == ENGINEERING_MAINTENANCE:
         return "domains.engineering_maintenance_review"
     if value == ENGINEERING:

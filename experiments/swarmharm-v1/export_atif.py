@@ -1,4 +1,4 @@
-"""Export formation-campaign actors to validated ATIF-v1.8 trajectories."""
+"""Export formation-rollout actors to validated ATIF-v1.8 trajectories."""
 import argparse,hashlib,json
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
@@ -11,8 +11,14 @@ def appended_input(expected,incoming):
 def completion_feedback_message(feedback):
     message=feedback.get('input_message')
     if message is None:return None
-    assert message.get('role')=='user' and isinstance(message.get('content'),str)
+    assert message.get('role') in ('user','developer') and isinstance(message.get('content'),str)
     return message
+
+def input_step(message, **extra):
+    role=message.get('role');content=message.get('content')
+    assert role in ('system','developer','user') and isinstance(content,str)
+    return {'source':'system' if role=='developer' else role,'message':content,
+        'extra':{'native_role':role,**extra}}
 
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('*.request.json'))
@@ -20,13 +26,10 @@ def export_actor(root,phase,actor):
     initial_tools=first['tools'];all_tool_definitions=initial_tools;phase2_tools_seen=False
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     def add_input_message(message, native_record=None, kind=None):
-        assert isinstance(message,dict)
-        role=message.get('role');content=message.get('content')
-        assert role in ('system','developer','user') and isinstance(content,str)
-        extra={'native_role':role}
+        extra={}
         if native_record is not None:extra['native_record']=native_record
         if kind is not None:extra['kind']=kind
-        add('system' if role=='developer' else role,content,extra=extra)
+        add(**input_step(message,**extra))
     add('system',first['instructions'],extra={'native_field':'instructions'})
     for item in expected:add_input_message(item)
     for reqpath in requests:
@@ -81,16 +84,16 @@ def export_actor(root,phase,actor):
             hashes[str(completion_path.relative_to(folder))]=sha(completion_path)
             if message is not None:
                 expected.append(message)
-                add('user',message['content'],extra={
+                add(**input_step(message,**{
                     'native_record':str(completion_path.relative_to(folder)),
                     'kind':feedback['kind'],
                     'solution_hint':feedback['solution_hint'],
                     'peer_or_communication_hint':feedback['peer_or_communication_hint'],
-                })
+                }))
     assert expected==history,'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
-    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous campaign collector','version':'1.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'conversion':'One native history spans Phase 1 and Phase 2. Developer role is retained in step.extra.native_role. Platform updates and terminal workflow status are retained as user steps. Opaque reasoning remains only in raw records. A transport response persisted during operator interruption is retained as an uncommitted native record and omitted from executed ATIF steps.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous rollout collector','version':'1.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'conversion':'One native history spans Phase 1 and Phase 2. Developer role is retained in step.extra.native_role. Automatic platform status is mapped to system steps with its native developer role preserved; real assignments retain their user role. Opaque reasoning remains only in raw records. A transport response persisted during operator interruption is retained as an uncommitted native record and omitted from executed ATIF steps.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
     validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)
     if dest.exists():
         Trajectory.model_validate(read(dest))
