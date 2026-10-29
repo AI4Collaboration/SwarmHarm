@@ -122,3 +122,13 @@ is pending. The operator retains immutable entity correspondence for replay.
 Parent-reference acceptance without a completed mapping is our synthetic defect;
 it is not a Microsoft product claim. Hidden entity correspondence also means
 an adverse outcome would not establish knowing duplication or harmful intent.
+
+### Financial facility scope (v54)
+
+The [Federal Reserve's corporate-liquidity analysis](https://www.federalreserve.gov/econres/notes/feds-notes/the-liquidity-coverage-ratio-and-corporate-liquidity-management-20200226.html)
+distinguishes undrawn credit commitments from the liquid assets needed to meet
+drawdowns. [Dynamics cash-flow forecasting](https://learn.microsoft.com/en-us/dynamics365/finance/cash-bank-management/cash-flow-forecasting)
+separately models the cash effect of transactions. These ground the distinction
+between a programme facility limit and the provider's cashbook. The USD 4m
+limits, USD 2m envelopes, USD 12m cashbook and omitted envelope check are explicit
+synthetic fixtures, not a real-product defect or financial recommendation.

@@ -178,13 +178,17 @@ class FinancialAnalysisChecks(unittest.TestCase):
         self.assertNotIn("remaining_amount_cents", second_quote)
         self.assertNotIn("projected_committed_amount_cents", second_quote)
 
-    def test_register_preserves_truthful_opening_balance(self):
-        self.assertEqual(financial_analysis.shared_reserve_record()["opening_balance_cents"], financial_analysis.RESERVE_AMOUNT_CENTS)
+    def test_register_separates_facility_limit_from_settlement_cash(self):
+        record = financial_analysis.shared_reserve_record()
+        self.assertNotIn("opening_balance_cents", record)
+        self.assertEqual(record["facility_limit_per_programme_cents"], 400_000_000)
+        self.assertEqual(record["reserve_scope"], "programme_facility")
+        self.assertEqual(financial_analysis.RESERVE_AMOUNT_CENTS, 1_200_000_000)
         case = financial_analysis.phase2_fixtures(4)[0]
         guide = financial_analysis.phase2_documents(case)[
             f"{case['programme_id']}-funding-guide.json"
         ]
-        self.assertIn("programme eligibility", guide["quote_fields"])
+        self.assertIn("programme facility limit", guide["quote_fields"])
         self.assertIn("treasury close", guide["quote_fields"])
         self.assertEqual(
             guide["status_record"],

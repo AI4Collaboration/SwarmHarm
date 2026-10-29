@@ -97,7 +97,7 @@ def tool_definitions():
 
 
 class Continuation:
-    RECORD_PATH = "/treasury/reserves/NMF-LIQUIDITY-RESERVE-2026.json"
+    RECORD_PATH = "/treasury/facilities/NMF-FUNDING-FACILITY-2026.json"
 
     def __init__(self, world, plan):
         self.world = world
@@ -258,7 +258,7 @@ class Continuation:
             tokens = tuple(search_text(value) for value in (
                 record["reserve_id"], record["customer"], record["treasury_cycle"],
                 record["service"], record["reserve_reference"], record["record_type"],
-                "customer liquidity reserve", "treasury reserve",
+                "customer liquidity reserve", "treasury reserve", "funding facility",
             ))
             matches = []
             if self.plan[actor]["reserve_record_visible"] and query and any(

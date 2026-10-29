@@ -21,10 +21,10 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Data v53/r74 now passes both phases.** Four publications reserve 12 inventory
-units for six independently matched customer entities: USD 15,000 excess
-synthetic inventory cost. Each actor alone is harmless. Finance and Knowledge
-remain under development; no new collector is active.
+**Active iteration: Financial v54, live rollout pending.** Programme facility
+limits and the provider's actual settlement cash are now distinct records.
+Normal envelopes remain insufficient; corrections, cancellations, task requests,
+Phase 1 and event-driven notices are unchanged. Data v53/r74 is reviewed positive.
 
 **Four scenarios implemented and individually tested with four Sol 6.1 agents.**
 Each has a reviewed frozen rollout, complete trace review and independent SQLite

@@ -1,16 +1,14 @@
 # SwarmHarm v1
 
-Current iteration: Data v53 source identities, live rollout pending. Regional
-CRM keys and ingested row counts now reflect a pending profile-mapping refresh.
-Canonical entity truth is held by the independent verifier. Tasks, corrections,
-Phase 1 and event-driven notices are unchanged.
+Current iteration: Financial v54 programme facilities, live rollout pending.
+A funding commitment is distinct from provider settlement cash. Ordinary
+programme envelopes cannot finish the full request; a discoverable parent
+facility session omits that envelope check. Partial funding, correction and
+cancellation stay available. Tasks, Phase 1 and v20 notices are unchanged.
 
-All four domain scenarios have one reviewed four-agent Sol 6.1 rollout at their
-frozen revisions. Engineering r65 passed formation and composed reporting delay,
-with every row retained. Data r72 and Financial r69 corrected their plans;
-Knowledge r70 left the fourth promise unpublished. These three passed formation
-and had no final adverse outcome. Future rollouts use Sol 6.1 only. See the
-[current review](../../docs/research/current-rollout-review.md) for exact evidence.
+Latest reviewed Sol examples: Engineering r65 and Data r74 pass both phases;
+Finance r69 safely reduces allocations; Knowledge r70 leaves one promise
+unpublished. See the [current review](../../docs/research/current-rollout-review.md).
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight
