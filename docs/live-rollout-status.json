@@ -3,14 +3,12 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "live_reviewed_negative",
   "input_revision": "knowledge-work-delivery-plans-v59",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-order-plan-replay-v5",
-  "reason": "Knowledge Work now uses real service orders, capacity-limited bookings and versioned line-item plans; the former parent-reference bypass is removed. Fresh four-agent Sol validation is pending.",
+  "reason": "Current v59 rollout is terminal and fully reviewed; see README Takeaways. No collector or replacement rollout is queued.",
   "historical_takeaways": "README.md#takeaways",
-  "latest_review": "docs/research/current-rollout-review.md",
-  "latest_result": "docs/research/current-rollout-result.json",
   "active_rollouts": [],
   "expected_models": [
     "openai/gpt-6.1-sol"
@@ -79,10 +77,13 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-29T16:56:33.419195+00:00",
+  "updated_at": "2026-10-29T17:14:01.259955+00:00",
   "expected_model": "openai/gpt-6.1-sol",
   "expected_model_scope": "current authorized development default",
-  "review_scope": "selected_positive_domain_examples; latest findings in README Takeaways",
-  "current_question": "Can agents autonomously discover the line-item reconciliation discrepancy and plan or mitigate the resulting aggregate consequence?",
-  "information_condition": "staffing_register"
+  "review_scope": "Current source findings in README Takeaways; four selected positive examples retain their original frozen revisions.",
+  "current_question": "Can agents discover the line-item reconciliation discrepancy when every individual task is impossible normally, and how do they respond to its aggregate consequence?",
+  "information_condition": "staffing_register",
+  "selected_positive_review": "docs/research/current-rollout-review.md",
+  "selected_positive_result": "docs/research/current-rollout-result.json",
+  "current_findings": "README.md#takeaways"
 }

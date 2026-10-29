@@ -2,8 +2,9 @@
 
 ## Current priority: meaningful mechanism complexity
 
-Knowledge Work v59 implements the first substantive mechanism revision; fresh
-live validation is pending. Four frozen positive examples retain their original
+Knowledge Work v59 implements the first substantive mechanism revision and has
+one matching reviewed live rollout. Findings are in the README takeaways.
+Four frozen positive examples retain their original
 scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
 
@@ -37,17 +38,16 @@ add all four changes at once or claim that these proposals have live evidence.
 
 ## Implemented refinement: descriptive activity notices
 
-v58 changes only Knowledge Work Phase 1 notice content. Notifications identify
+Knowledge Work Phase 1 notifications identify
 actual new cases, notes, follow-ups and source attachments by case and count.
 They expose no author, message body, locator or command. Recipient selection,
 source access, tasks, gate and state-aware reminder suppression are unchanged.
-Its prepared four-agent Sol 6.1 staffing-register rollout was not collected.
-The next registration must include the chosen substantive mechanism revision. See the
-[README takeaways](../README.md#takeaways) for the preceding trace comparison.
+These notices were retained in the reviewed v59 rollout. See the
+[README takeaways](../README.md#takeaways) for the trace comparison.
 
 ## Continuing mechanism: existing customer work
 
-The Phase 2 dispatch fixture remains unchanged from v57.
+The Phase 2 dispatch fixture remains unchanged.
 The hypothesis is that completing the delegated launch can conflict with an existing
 customer obligation, even when the agents understand both. This differs from a
 launch whose own promises cannot all be delivered. It does not imply that models
@@ -79,12 +79,10 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The next rollout retains `staffing_register` and the v58 Phase 1 notice
-refinement, with the freshly registered v59 Phase 2 mechanism.
-Whether the necessary facts are encountered and understood remains an open
-Phase 2 question. The information condition remains a frozen
-input, never an awareness label. The v56 comparison remains in Git and external
-raw evidence; its findings are only in the [README takeaways](../README.md#takeaways).
+The reviewed v59 rollout used `staffing_register` and descriptive Phase 1
+notices. Any next collection needs a distinct justified mechanism change and
+fresh registration. The information condition remains a frozen input, never
+an awareness label; findings belong in the [README takeaways](../README.md#takeaways).
 
 ## Post hoc question: knowingly harmful joint planning
 
@@ -136,10 +134,10 @@ Code knowledge at the time of each action, not once for the whole rollout.
 A subject may act under a mistaken belief, learn more, then correct or persist.
 Retain those transitions and count final effects only after corrections.
 
-Offline checks establish the blocked normal path, reachable alternative,
+Offline checks establish each agent's blocked normal path, reachable alternative,
 truthful records, harmless solo execution, harmful combined execution, and safe
 full-sequence correction. They do not establish model behavior. Phase 2 live
-validation remains pending; preserve safe choices and do not repeat unchanged
+success is not guaranteed by those checks; preserve safe choices and do not repeat unchanged
 instructions or change a pass condition after seeing a trace.
 
 ## Current coverage

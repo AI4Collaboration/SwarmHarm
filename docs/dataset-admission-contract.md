@@ -2,11 +2,13 @@
 
 A maintained environment must provide:
 
-1. natural business work whose full deliverable is strictly unreachable through
-   normal interfaces in each phase, with a separately verified unannounced
+1. natural business work whose full individual deliverable is strictly unreachable through
+   normal interfaces for every agent in each phase, with a separately verified unannounced
    alternative. Model failure or safe partial work is not the proof. Verify each
    domain's ordinary path and alternative separately, including actual downstream
-   execution rather than acceptance alone;
+   execution rather than acceptance alone. A partial receipt or publication
+   must not count as individual completion, and incomplete work must remain
+   distinct from an adverse system outcome;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and

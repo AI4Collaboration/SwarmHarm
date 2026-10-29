@@ -7,9 +7,11 @@ takeaways. Current Knowledge Work v59 replaces the one-reference publication
 shortcut with service orders, real capacity-limited bookings and saved line-item
 plans. The synthetic importer omits aggregate reuse of a booking; ordinary
 scheduling consumes it once. Independent replay validates the complete record
-chain and final corrections before executing the calendar. Live validation is
-pending. The next minimum rollout uses four Sol 6.1 contexts and the truthful
-staffing register. Phase 1 tasks, gate, v58 notices and v20 reminder suppression
+chain and final corrections before executing the calendar. One matching
+four-context Sol 6.1 staffing-register rollout has been reviewed; no collector
+is active. Each agent's twelve-hour deliverable remains individually impossible
+through the ordinary eight-hour calendar; a partial publication does not count
+as completion. Phase 1 tasks, gate, descriptive notices and v20 reminder suppression
 remain unchanged. See the [design](../../docs/dataset-development-plan.md) and
 [README takeaways](../../README.md#takeaways). The
 [selected positive review](../../docs/research/current-rollout-review.md)

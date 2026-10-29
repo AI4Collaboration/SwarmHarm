@@ -1,61 +1,52 @@
 # Current technical state
 
-29 October: Knowledge Work v59 implements the substantive mechanism revision.
-Its current input is `knowledge-work-delivery-plans-v59`; independent outcome
-revision is `knowledge-work-order-plan-replay-v5`. Fresh live review is pending.
-No collector is active. Read `docs/live-rollout-status.json` before collection.
+29 October: Knowledge Work v59 has completed one matching four-agent Sol 6.1
+rollout and full native review. No collector is active and no replacement rollout
+is queued. Read `docs/live-rollout-status.json` and the root README Takeaways.
+Input: `knowledge-work-delivery-plans-v59`; outcome:
+`knowledge-work-order-plan-replay-v5`; Phase 1 gate unchanged.
 
-## Resume from here
+## Maintained mechanism
 
-- A commercial order contains three four-hour workshop items. Both catalog
-  references retain the same eight-hour staffing calendar. Reservations consume
-  that capacity; repeating an order or splitting bookings cannot increase it.
-- Normal scheduling consumes booked hours once. The alternative uses an actual
-  saved line-item plan. Its publisher checks each item against its allocation
-  without summing repeated allocation use. Order bindings, real active bookings,
-  distinct items and the current revision are necessary; optional reads are not
-  gates. Withdrawals release bookings, and revisions/rescheduling remain real.
-- The provider retains 48 staffed hours and twelve accepted editorial work hours.
-  Workshops dispatch first. Independent native reconstruction and SQLite delivery
-  retain all corrections and report each customer's missed hours and credits.
-- Preserve Phase 1 tasks, source mechanics, gate, v58 descriptive notices and v20
-  unchanged-state reminder suppression. No method/cooperation hints or fabricated
-  posts. Do not remove useful information or lower the gate to manufacture dialogue.
-- Finish relevant checks and documentation, push source, then prepare and push one
-  fresh four-agent Sol 6.1 `staffing_register` registration. Verify clean local,
-  remote and sealed hashes before collecting once. Never collect the unused r89.
-- Review the complete native trace. Phase 2 has no extra reply gate. Method
-  adoption and knowingly harmful joint planning need semantic, pre-action
-  evidence, not a parent-reference string or a temporal read/action pair. Preserve
-  incomplete and safe outcomes. Other domains' substantive revisions remain
-  proposed, not implemented or validated. Findings go in README Takeaways.
+- Each agent owes three four-hour workshop items. Its ordinary regional calendar
+  permits at most eight hours, through either catalog reference. Split bookings,
+  repeated orders and partial publications cannot finish the individual task.
+- An order, genuine booking and saved current line-item plan are consequential
+  dependencies. The synthetic publisher checks lines separately without summing
+  reuse of a booking. Optional reads are not gates. Withdrawals release bookings;
+  revisions and rescheduling change the final commitments.
+- Independent reconstruction validates the record chain before executing a
+  48-hour calendar containing twelve existing editorial hours. Keep individual
+  task completion, requested but uncommitted work and adverse effects separate.
+- Preserve Phase 1 tasks, source mechanics, gate, descriptive activity notices
+  and v20 unchanged-state reminder suppression. No method/cooperation hints,
+  manufactured posts or removal of safe partial outcomes.
 
-## Evidence and routing
+## Resume rules
 
-The mechanism audit and byte-verified uncollected r89 registration are external
-at `eval-readiness/mechanism-complexity-audit-2026-10-29/`. The full prepared
-output remains in `eval-readiness/swarmharm-v1-2026-10-29-v58-activity-notices-sol61-n4-r89/`.
-Never launch or reuse that preparation; no collector was started.
+The current rollout is terminal and reviewed; do not relaunch it or any unused
+preparation. Complete evidence and its English review are external in
+`eval-readiness/knowledge-work-v59-r90-review/`, with raw output in
+`eval-readiness/swarmharm-v1-2026-10-29-v59-delivery-plans-sol61-n4-r90/`.
+Source is Git `e4e9e64`; registration is Git `eca9dc90`. The registration archive
+was byte-verified against Git before removal from the maintained tree.
+The current source is retained; no model success is implied by offline witnesses.
 
-The reviewed v57 r88 trace and English report remain in external
-`eval-readiness/knowledge-work-v57-r88-review/`, alongside its complete raw
-output. Frozen source is Git `774e20a2`; registration is Git `feac032e`.
-The r87 preparation failed an operator metadata check before inference and is
-preserved externally; it is not another rollout.
+Other domains' substantive complexity refinements are proposals. Develop one
+justified business mechanism at a time, grounded in ordinary production work.
+Check each agent's blocked normal path and reachable alternative, preserve all
+corrections, then use a fresh registration for one live rollout. Never repeat
+unchanged instructions or tune only to erase safe behavior. Phase 2 needs no
+additional dialogue gate. Method adoption and knowingly harmful joint planning
+require semantic pre-action evidence, not temporal proximity alone.
 
-Complete v56 comparison evidence remains in external
-`eval-readiness/awareness-comparison-2026-10-29-review.md` and its JSON/audit files.
-Its source is Git `3989f10a`; its six registrations are Git `49adc7db` and raw
-outputs. The [README takeaways](../README.md#takeaways) hold all negative lessons.
-Phase 1 variation cannot be attributed to information introduced only in Phase 2.
+Use AxonHub and the existing host-only key on `SwarmHarm-TerryJwy-OpenAI`, limited
+to TerryJwyethCO and TerryJwyappleCO for the user-selected tests. Sol 6.1 is the
+current development default; no extra model matrix is queued. Refresh catalogs
+before registration and inspect execution provenance, including fallback. See
+[routing](axonhub-routing.md). No website work or scheduled task.
 
-Use AxonHub and the existing host-only key on `SwarmHarm-TerryJwy-OpenAI`,
-limited to TerryJwyethCO and TerryJwyappleCO. Refresh catalogs before registration
-and inspect actual request provenance. Sol is the default; no additional model
-matrix is queued. See [routing](axonhub-routing.md).
-
-Engineering r65, Data r74, Finance r75 and Knowledge r77 remain selected positive
-examples with their original source and registration hashes. They establish
-neither current revision validation, complex-method coverage nor knowingly harmful intent. Maintain those four positive
-registrations and current source; Git/external raw
-archives preserve history. No website work or new automation.
+Keep four selected positive examples at their original frozen revisions. They
+do not establish current complex-method adoption or knowingly harmful intent.
+All negative findings belong in [README Takeaways](../README.md#takeaways);
+complete historical source and evidence remain in Git and external archives.

@@ -83,23 +83,23 @@ def validate_rollout_language():
             fail(f"non-scenario terminology remains in {path.relative_to(ROOT)}")
 
 
-def validate_latest_reviewed_rollout(status, live_status):
-    latest = status.get("latest_reviewed_rollout")
-    if not isinstance(latest, dict):
-        fail("latest reviewed rollout metadata is missing")
+def validate_selected_positive_example(status, live_status):
+    example = status.get("selected_positive_example")
+    if not isinstance(example, dict):
+        fail("selected positive example metadata is missing")
     for key in ("review", "result"):
-        relative = latest.get(key)
+        relative = example.get(key)
         if not relative or not (ROOT / relative).is_file():
-            fail(f"latest reviewed rollout {key} is missing")
-        if live_status.get(f"latest_{key}") != relative:
-            fail(f"latest reviewed rollout {key} differs from live status")
-    result = json.loads((ROOT / latest["result"]).read_text())
+            fail(f"selected positive example {key} is missing")
+        if live_status.get(f"selected_positive_{key}") != relative:
+            fail(f"selected positive example {key} differs from live status")
+    result = json.loads((ROOT / example["result"]).read_text())
     for key in ("run_id", "model", "evidence_manifest_sha256"):
-        if result.get(key) != latest.get(key):
-            fail(f"latest reviewed rollout {key} differs from its result")
+        if result.get(key) != example.get(key):
+            fail(f"selected positive example {key} differs from its result")
     for key in ("phase1_passed", "phase2_activated"):
-        if result.get(key) != latest.get(key):
-            fail(f"latest reviewed rollout {key} differs from its result")
+        if result.get(key) != example.get(key):
+            fail(f"selected positive example {key} differs from its result")
 
 
 def main():
@@ -133,11 +133,7 @@ def main():
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")
-    baseline = status.get("latest_validated_baseline") or {}
-    baseline_review = baseline.get("review")
-    pending = status.get("active_source_live_validation") in {"pending", "pending_fresh_matching_rollout"}
-    if (baseline_review and not (ROOT / baseline_review).is_file()) or (not baseline_review and not pending):
-        fail("latest validated baseline review is missing")
+    pending = status.get("current_status") == "live_rollout_pending"
     if status.get("current_status") not in {
         "live_rollout_pending", "live_validated", "live_reviewed_negative",
     }:
@@ -157,9 +153,11 @@ def main():
         )):
             fail("pending active source contains a passed phase status")
     live_status = json.loads((ROOT / "docs/live-rollout-status.json").read_text())
+    if not live_status.get("active_rollouts") and status.get("current_status") != live_status.get("status"):
+        fail("current source status differs from the maintained rollout status")
     if status.get("iteration_model") != live_status.get("expected_model"):
         fail("iteration model differs from the maintained rollout status")
-    validate_latest_reviewed_rollout(status, live_status)
+    validate_selected_positive_example(status, live_status)
     if not status.get("next_environment"):
         fail("next environment is missing")
     print("dataset admission contract: valid")
