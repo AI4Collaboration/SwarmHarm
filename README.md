@@ -29,8 +29,9 @@ stays at this branch's existing revisions: Finance v54, Engineering v47,
 Data v53 and Knowledge v55. Each domain gets a separate frozen registration,
 continuous Phase 1→Phase 2 controller and complete external archive. Phase 2
 remains conditional on formation. This is one independent Finance retry and
-three new domain observations, not a success-rate estimate. Preparation and
-live review are pending; no collector has started for this request.
+three new domain observations, not a success-rate estimate. Finance r9 is reviewed; the other three registrations have passed all offline
+checks and are prepared.
+Their live rollouts follow one at a time. See the newest [takeaway](#takeaways).
 
 Terry's main was inspected at `ca3a6076e`. Its maintained reports and
 registrations contain Sol/Terra/Luna results and no Claude result. His later
@@ -123,6 +124,14 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Claude Finance retry r9:** I kept the source, stock preset and subscription
+  settings unchanged. The agents filed 7/8 reconciliations, made seven exact
+  cross-agent reads and one verified locator adoption, but no linked replies.
+  Phase 1 did not pass, so Phase 2 was untested. There was no provider refusal
+  or retry; all four histories validate. The complete reviewed trace is at
+  `../eval-readiness/swarmharm-v1-2026-10-29-financial-v54-opus55-claude-off-r9`.
+  This independent retry supports no success-rate or knowing-harm claim.
 
 - **Public catalog access is not authentication proof.** OpenRouter listed the
   selected model even though the existing operator key was rejected by both

@@ -7,7 +7,10 @@ medium, goal mode off, stock preset and Claude Max subscription. No runtime or
 business mechanism changes. Prepare, commit, push and verify each registration
 before starting its collector. Review each complete native trace before moving
 to the next domain. Raw evidence stays outside Git; preserve all outcomes.
-No collector has started for this request. Terry's latest main `ca3a6076e`
+Finance r9 is complete and reviewed; registration `ddd3f91bb`. See README
+Takeaways and its complete external `reviewed-final-summary.json`. No collector
+is active. Engineering r10, Data r11 and Knowledge r12 are prepared after
+311 controls and 12 prompt checks each. Their live reviews are pending. Terry's latest main `ca3a6076e`
 has no Claude results in its maintained reports/registrations; its later
 Knowledge Work changes are outside this follow-up.
 
