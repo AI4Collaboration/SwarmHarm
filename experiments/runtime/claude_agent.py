@@ -148,11 +148,15 @@ def harness_registration(goal_mode='off', model=None):
         'node_version': node_version(), 'claude_code': cli_identity(),
         'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
         'working_directory': {
-            'kind': 'private temporary directory outside campaign evidence',
+            'kind': 'private temporary directory outside rollout evidence',
             'archive': 'workspace/ after SDK shutdown',
             'business_tools': 'execute in the offline workstation',
         },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        'platform_notice_delivery': {
+            'native_role': 'user', 'content_source': 'platform_status JSON',
+            'developer_role_supported': False,
+        },
         'goal_evaluator': ({'model': model, 'reasoning_effort': 'SDK-managed; not exposed',
             'implementation': 'Claude Code native /goal prompt-based Stop hook',
             'evidence_limit': 'Evaluator calls and complete inputs are not exposed in the SDK stream; native goal status and session records are retained.'}
@@ -169,7 +173,7 @@ def verify_runtime(harness):
     if installed_versions() != harness['installed']:
         raise RuntimeError('Installed Claude Agent SDK differs from registration')
     if node_version() != harness['node_version'] or cli_identity() != harness['claude_code']:
-        raise RuntimeError('Node.js or Claude Code differs from registration; prepare a fresh campaign')
+        raise RuntimeError('Node.js or Claude Code differs from registration; prepare a fresh rollout')
 
 
 class ClaudeAgent:

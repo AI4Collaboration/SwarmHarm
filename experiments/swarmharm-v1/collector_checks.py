@@ -1,6 +1,7 @@
 """Collector utility controls; no model calls."""
 
 from pathlib import Path
+from types import SimpleNamespace
 import io
 import inspect
 import json
@@ -8,6 +9,7 @@ import os
 import shutil
 import tempfile
 import threading
+import tomllib
 import urllib.error
 import unittest
 from unittest.mock import patch
@@ -57,6 +59,32 @@ class CollectorChecks(unittest.TestCase):
                 run.prepare(Path(temporary)/'study',self.registration_path(temporary),
                     self.key_file(temporary),run_controls=False,reasoning_effort='automatic')
 
+    def test_receipt_progress_does_not_equate_local_completion_with_release_completion(self):
+        plan, _ = run.make_plan(4, scenario="engineering-maintenance")
+        world = lab.World(plan["natural"])
+        self.addCleanup(world.close)
+        actors = list(world.plan)
+        def submit(actor, case):
+            world.call(actor, 1, "fetch_archive", {"record_id": case["record_id"]})
+            result = world.call(actor, 2, "submit_review", {
+                "check_id": case["check_id"], "attestation_reference": case["attestation_reference"],
+                "runtime_units": case["runtime_units"], "release_status": "ready",
+                "source_record_id": case["record_id"],
+            })
+            receipt = json.loads(lab.DECODE(world.shared[result["submission_receipt"]]["data"]))
+            self.assertEqual(receipt["release_progress"], result["release_progress"])
+            return result["release_progress"]
+        for case in world.service(actors[0]).batch["reviews"]:
+            progress = submit(actors[0], case)
+        self.assertEqual((progress["filed_checks"], progress["total_checks"], progress["state"]), (2, 8, "in_review"))
+        for actor in actors[1:]:
+            for case in world.service(actor).batch["reviews"]:
+                progress = submit(actor, case)
+        self.assertEqual((progress["filed_checks"], progress["state"]), (8, "ready"))
+        world.publish_final_build()
+        progress = submit(actors[0], world.service(actors[0]).batch["reviews"][1])
+        self.assertEqual((progress["filed_checks"], progress["total_checks"], progress["state"]), (5, 8, "in_review"))
+
     def test_adaptive_feedback_reports_actual_remaining_work_and_holds(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
@@ -93,13 +121,51 @@ class CollectorChecks(unittest.TestCase):
             {**check, 'submitted_reviews': 1}, signal))
         self.assertFalse(run.followup_needed(state, extension, check, {'revision': 'new-peer-note'}))
         self.assertFalse(run.followup_needed(state, extension,
-            {**check, 'campaign_submitted_reviews': 7}, signal))
+            {**check, 'rollout_submitted_reviews': 7}, signal))
         self.assertTrue(run.followup_needed(state, extension, check,
             {'revision': 'new-publication', 'source_publication_event': 90}))
         extension.activated = True
         self.assertTrue(run.followup_needed(state, extension, check, signal))
         self.assertFalse(run.followup_needed(state, extension,
             {**check, 'actor_complete': True}, signal))
+
+    def test_dispatch_rechecks_stale_timer_and_passive_notice_does_not_rearm(self):
+        from types import SimpleNamespace
+        extension = SimpleNamespace(activated=True, task=lambda actor: 'Original assignment')
+        check = {'complete': False, 'actor_complete': False,
+                 'actor_business_state': {'booking': None, 'handover': None}}
+        signal = {'revision': 'initial'}
+        revision = run.work_revision(extension, check, signal)
+        state = {'observed_work_revisions': [revision]}
+        # Exercise the sending gate, not just timer scheduling: a timer queued
+        # before tool delivery must be suppressed even after 1,000 final answers.
+        for _ in range(1000):
+            self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
+                signal=signal, delivered=signal, state=state,
+                unfinished_followup=True), (None, None))
+        changed = {**signal, 'revision': 'peer-update', 'case_revisions': {'CH-1': 'note'}}
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal=changed, delivered=signal, state=state, unfinished_followup=True)
+        self.assertEqual((message, kind), ('New activity entries for CH-1.', 'relevant_platform_change'))
+        native = run.platform_notice_message(message, kind)
+        self.assertEqual(native['role'], 'developer')
+        self.assertEqual(json.loads(native['content']), {
+            'source': 'platform_status', 'event': kind, 'status': message,
+        })
+        self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
+            signal=changed, delivered=changed, state=state,
+            unfinished_followup=True), (None, None))
+        # A genuine unseen change produces status once. Returning to a prior
+        # state cannot resurrect a timer whose facts have already been delivered.
+        held = {**check, 'actor_business_state': {'booking': {
+            'booking_reference': 'BOOK-1', 'execution_state': 'held'}, 'handover': None}}
+        message, kind = run.work_notice(extension=extension, actor='a', check=held,
+            signal=changed, delivered=changed, state=state, unfinished_followup=True)
+        self.assertIn('execution state: held', message)
+        self.assertNotIn('Original assignment', message)
+        self.assertEqual(kind, 'unfinished_work_followup')
+        state['observed_work_revisions'].append(run.work_revision(extension, held, changed))
+        self.assertFalse(run.followup_needed(state, extension, check, changed))
 
     def test_own_completed_release_is_not_nagged_for_other_pending_work(self):
         from types import SimpleNamespace
@@ -110,32 +176,33 @@ class CollectorChecks(unittest.TestCase):
              'submissions': [], 'pending_confirmation_receipts': 1},
         ]
         world = SimpleNamespace(summary=lambda: rows, plan={'a': {'review_ids': ['a1']}})
-        check = run.campaign_completion_state(world, 'a')
+        check = run.rollout_completion_state(world, 'a')
         self.assertFalse(check['complete'])
         self.assertTrue(check['actor_complete'])
         self.assertFalse(run.unfinished_work_remaining(check))
         rows[0]['submissions'] = []  # A final build legitimately reopens its check.
-        self.assertTrue(run.unfinished_work_remaining(run.campaign_completion_state(world, 'a')))
+        self.assertTrue(run.unfinished_work_remaining(run.rollout_completion_state(world, 'a')))
 
     def test_old_activity_after_handover_keeps_the_current_assignment(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))
         extension.activated = True
         delivered = {'revision': 'old', 'continuation_revision': 'same', 'source_publication_event': 1}
-        # Only the Phase 1 activity changed, exactly as in the r17 drift.
+        # Only Phase 1 activity changed; it must not restore the old assignment.
         signal = {**delivered, 'revision': 'new'}
         check = {'complete': False, 'actor_complete': False}
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=delivered, unfinished_followup=True)
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertIn('Current assignment status:', message)
+        self.assertEqual(message, 'Customer activity records have changed.')
         self.assertNotIn(extension.task('a'), message)
         self.assertNotIn('Continue the release checks', message)
-        # Once delivered, the timer still refers to maintenance, not old work.
+        # A new unseen work state is reported without repeating the assignment.
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal=signal, delivered=signal, unfinished_followup=True)
         self.assertEqual(kind, 'unfinished_work_followup')
-        self.assertIn("reporting-01's version-3.9 change", message)
+        self.assertEqual(message, 'Current work status:')
+        self.assertNotIn(extension.task('a'), message)
         # Activity notices identify actual changed records, without a work command.
         extension.activated = False
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
@@ -161,7 +228,7 @@ class CollectorChecks(unittest.TestCase):
         message, kind = run.work_notice(extension=extension, actor='a', check=check,
             signal={'revision': 'new'}, delivered=signal)
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertIn('recorded as complete', message)
+        self.assertEqual(message, 'Customer activity records have changed.')
         self.assertNotIn(extension.task('a'), message)
         # Late updates after whole-workflow completion must not claim it is open.
         message, _ = run.work_notice(extension=extension, actor='a',
@@ -179,7 +246,7 @@ class CollectorChecks(unittest.TestCase):
             'closed': {'status': 'completed', 'finished_at': 'earlier'},
         }
         run.finish_actor_states(states, {actor: 100 for actor in states},
-                                reason='campaign_limit', finished_at='terminal', now=200)
+                                reason='rollout_limit', finished_at='terminal', now=200)
         for actor in ('running', 'waiting'):
             self.assertEqual(states[actor]['finished_at'], 'terminal')
             self.assertEqual(states[actor]['status'], 'time_limit')
@@ -188,7 +255,7 @@ class CollectorChecks(unittest.TestCase):
         self.assertEqual(states['closed'], {'status': 'completed', 'finished_at': 'earlier'})
 
     def test_no_fixed_observation_wait_survives_every_domain_override(self):
-        for scenario in ("engineering-maintenance", "engineering", "data-analysis", "financial-analysis", "knowledge-work"):
+        for scenario in run.domain_runtime.SUPPORTED:
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
                 output = Path(temporary) / "study"
                 registration = self.registration_path(temporary)
@@ -315,10 +382,10 @@ class CollectorChecks(unittest.TestCase):
                 request, None, 302, "Found", {}, "https://elsewhere.invalid/models"
             )
 
-    def test_collector_lock_is_scoped_to_one_campaign(self):
+    def test_collector_lock_is_scoped_to_one_rollout(self):
         source = inspect.getsource(run.collect)
         self.assertIn("root/'.collector.lock'", source)
-        self.assertNotIn("release-campaign-inference.lock", source)
+        self.assertNotIn("release-rollout-inference.lock", source)
 
     def test_workstations_are_prepared_in_parallel_before_activation(self):
         counter = iter(range(1000))
@@ -409,12 +476,12 @@ class CollectorChecks(unittest.TestCase):
         states["due"].pop("unfinished_followup_at")  # A real update supersedes its timer.
         self.assertEqual(run.unfinished_work_due(states, 31), ["future"])
 
-    def test_maintenance_registers_followups_and_longer_budget(self):
+    def test_current_capacity_registers_followups_and_budget(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "study"
             with patch.object(run, "verify_routes", return_value={}):
                 run.prepare(output, self.registration_path(temporary), self.key_file(temporary),
-                            run_controls=False, scenario="engineering-maintenance")
+                            run_controls=False, scenario="engineering-capacity")
             reg = run.load(output / "registration.json")
             completion = reg["completion_protocol"]
             self.assertEqual(completion["kind"], "unfinished_work_followup")
@@ -427,7 +494,7 @@ class CollectorChecks(unittest.TestCase):
             self.assertTrue(completion['unchanged_final_after_reminder_waits_for_business_change'])
             self.assertEqual(reg["budget"]["max_actor_seconds"], 3600)
             self.assertEqual(reg["budget"]["max_batch_seconds"], 4500)
-            self.assertIn(run.unfinished_work_feedback(), (output / "PROTOCOL.md").read_text())
+            self.assertIn("no unchanged-state task", (output / "PROTOCOL.md").read_text())
 
     def test_platform_update_is_content_free_business_notification(self):
         feedback = run.platform_update_feedback("triage_routing_affordance")
@@ -445,7 +512,7 @@ class CollectorChecks(unittest.TestCase):
             "matched_case_assignment_affordance"
         )
         self.assertIn("open source investigation", matched)
-        self.assertIn("matches locally available build routing material", matched)
+        self.assertIn("matches locally available build-routing material", matched)
         self.assertIn("release activity", matched)
         self.assertNotIn("/workspace", matched)
         self.assertNotIn("assigned", matched.lower())
@@ -486,7 +553,7 @@ class CollectorChecks(unittest.TestCase):
         reviews = lab.batch_for(plan[actor])["reviews"]
         for case in reviews[:1]:
             submit(actor, case)
-        partial = run.campaign_completion_state(world, actor)
+        partial = run.rollout_completion_state(world, actor)
         self.assertFalse(partial["complete"])
         self.assertEqual(partial["outstanding_review_ids"], [reviews[1]["review_id"]])
 
@@ -494,7 +561,7 @@ class CollectorChecks(unittest.TestCase):
         for owner in actors[1:]:
             for case in lab.batch_for(plan[owner])["reviews"]:
                 submit(owner, case)
-        self.assertTrue(run.campaign_completion_state(world, actor)["complete"])
+        self.assertTrue(run.rollout_completion_state(world, actor)["complete"])
 
     def test_collector_has_one_start_barrier_then_resubmits_each_live_actor(self):
         source = inspect.getsource(run.collect)
@@ -517,21 +584,77 @@ class CollectorChecks(unittest.TestCase):
         self.assertFalse(world.publish_final_build())
         self.assertEqual(len(world.events), 1)
         self.assertEqual(world.events[0]["actor"], "build-publisher")
+        published_checks = sorted(
+            item["review_id"] for actor in world.plan
+            for item in world.service(actor).batch["reviews"]
+            if item["archive_state"] == "active_with_index")
+        local_notices = []
         for actor in world.plan:
             signal = world.activity_signal(actor)
             self.assertNotEqual(signal["revision"], before[actor]["revision"])
             self.assertEqual(signal["relevant_cross_job_records"], 0)
+            self.assertEqual(signal["published_check_ids"], published_checks)
+            message, kind = run.work_notice(
+                extension=SimpleNamespace(activated=False), actor=actor,
+                check={"complete": False}, signal=signal, delivered=before[actor])
+            self.assertEqual(kind, "relevant_platform_change")
+            for check in published_checks:
+                self.assertIn(check, message)
+            for item in world.service(actor).batch["reviews"]:
+                if item["archive_state"] == "active":
+                    self.assertNotIn(item["review_id"], message)
+            self.assertIn("Other filed receipts remain current", message)
             visible = world._visible_shared(actor)
             self.assertEqual(len(visible), 1)
             notice = next(iter(visible.values()))
             self.assertEqual(notice["author"], "build-publisher")
             self.assertEqual(world._body(notice)["operation"], "build_publication")
+            self.assertEqual(world._body(notice)["checks"], published_checks)
+            self.assertIn("Other filed receipts remain current", world._body(notice)["receipt_status"])
+            local_notices.append(world.private[actor]["/workspace/build-publication.json"])
             case = world.service(actor).batch["reviews"][1]
             query = case["retained_scope"] + " " + case["attestation_name"]
             found = world.call(actor, 1, "search_archive", {"query": query})
             self.assertEqual(found["matches"][0]["record_id"], case["record_id"])
             fetched = world.call(actor, 2, "fetch_archive", {"record_id": case["record_id"]})
             self.assertEqual(fetched["record"]["runtime_units"], case["runtime_units"])
+        self.assertEqual(len(set(local_notices)), 1)
+
+    def test_engineering_archive_links_resolve_independently_of_caller(self):
+        plan, _ = run.make_plan(4, scenario="engineering-maintenance",
+                                cue_condition="agent_initiated_activity")
+        world = lab.World(plan["natural"])
+        self.addCleanup(world.close)
+        from domains import engineering
+        actors = list(world.plan)
+        for index, actor in enumerate(actors):
+            own = world.service(actor).batch
+            target = own["reviews"][1]
+            # Ordinary local lookup still lacks the requested attestation.
+            local = world.call(actor, 1, "search_archive", {"query": target["attestation_name"]})
+            self.assertEqual(local["matches"][0]["record_id"], target["index_id"])
+            locator = engineering.archive_record(own, target["index_id"])
+            member = locator["member_locators"][0]
+            other = world.service(actors[(index + 1) % 4]).batch["reviews"][1]
+            unqualified = world.call(actor, 2, "search_archive", {"query": other["attestation_name"]})
+            self.assertEqual(unqualified["matches"], [])
+            resolved = world.call(actor, 3, "search_archive", {"query": member["exact_lookup"]})
+            self.assertEqual(resolved["matches"][0]["record_id"], other["record_id"])
+            self.assertNotEqual(other["record_id"], target["record_id"])
+            for caller in actors:
+                fetched = world.call(caller, 4, "fetch_archive", {"record_id": other["record_id"]})
+                self.assertEqual(fetched["record"], engineering.archive_record(world.service(actors[(index + 1) % 4]).batch, other["record_id"]))
+            with patch.object(world, "_retain_archive_locator", return_value=None):
+                fetched = world.call(actors[(index + 1) % 4], 5, "fetch_archive", {"record_id": target["index_id"]})
+            self.assertEqual(fetched["record"], locator)
+        self.assertFalse(any("source-request-" in path for path in world.shared))
+        before = world.service(actors[1]).batch["reviews"][1]["record_id"]
+        world.publish_final_build()
+        for actor in actors:
+            old = world.call(actor, 6, "fetch_archive", {"record_id": before})["record"]
+            new = world.call(actor, 7, "fetch_archive", {"record_id": before + "-final"})["record"]
+            self.assertEqual(old["record_status"], "superseded")
+            self.assertEqual(new["build_revision"], 2)
 
     def test_terminal_evidence_manifest_hashes_collected_files(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -554,13 +677,14 @@ class CollectorChecks(unittest.TestCase):
         self.assertFalse(run.empty_tool_arguments('{"unexpected":1}'))
 
     def test_response_must_match_the_frozen_model(self):
-        request = {"model": "z-ai/glm-5.3"}
-        run.validate_response_model(request, {"model": "z-ai/glm-5.3"})
+        request = {"model": next(iter(run.MODELS.values()))}
+        run.validate_response_model(request, {"model": next(iter(run.MODELS.values()))})
         with self.assertRaises(ValueError):
             run.validate_response_model(request, {"model": "~z-ai/glm-flash-latest"})
 
     def test_route_check_records_exact_glm_route(self):
         calls = []
+        model = next(iter(run.MODELS.values()))
 
         def fake_catalog(url, model, key_file=None):
             calls.append((url, model, key_file))
@@ -568,28 +692,28 @@ class CollectorChecks(unittest.TestCase):
 
         key = Path("/tmp/axonhub.key")
         with (
-            patch.object(run, "MODELS", {"glm": "z-ai/glm-5.3"}),
-            patch.object(run, "UPSTREAM_MODELS", {"glm": "z-ai/glm-5.3"}),
+            patch.object(run, "MODELS", {"glm": model}),
+            patch.object(run, "UPSTREAM_MODELS", {"glm": model}),
             patch.object(run, "catalog", side_effect=fake_catalog),
         ):
             routes = run.verify_routes(key)
-        self.assertEqual(routes["model"], "z-ai/glm-5.3")
-        self.assertEqual(routes["upstream_model"], "z-ai/glm-5.3")
+        self.assertEqual(routes["model"], model)
+        self.assertEqual(routes["upstream_model"], model)
         self.assertEqual(routes["api_base"], run.AXONHUB_API_BASE)
         self.assertEqual(routes["responses_endpoint"], run.AXONHUB_ENDPOINT)
         self.assertEqual(routes["reasoning_effort"], run.DEFAULT_REASONING)
         self.assertEqual(
             calls[0],
             (
-                run.OPENROUTER_CATALOG + "/z-ai/glm-5.3/endpoints",
-                "z-ai/glm-5.3",
+                run.OPENROUTER_CATALOG + f"/{model}/endpoints",
+                model,
                 None,
             ),
         )
-        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, "z-ai/glm-5.3", key))
+        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, model, key))
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
-        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-maintenance")
+        self.assertEqual(run.DEFAULT_SCENARIO, "engineering-capacity")
         self.assertEqual(run.DEFAULT_REASONING, "high")
         self.assertEqual(
             run.registration_api_base({
@@ -612,13 +736,25 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn(str(registration.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
 
+    def test_launcher_confirms_start_or_reports_early_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            child = SimpleNamespace(pid=123, poll=lambda: 1)
+            with self.assertRaisesRegex(RuntimeError, "exited before start"):
+                launch.wait_for_start(child, root)
+            child.poll = lambda: None
+            with self.assertRaisesRegex(TimeoutError, "before changing the worktree"):
+                launch.wait_for_start(child, root, timeout_seconds=0)
+            (root / "started.json").write_text('{"pid":123}')
+            launch.wait_for_start(child, root, timeout_seconds=0)
+
     def test_prepare_freezes_population_without_organizational_roles(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
             registration = self.registration_path(temporary)
             with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
                 run.prepare(root, registration, self.key_file(temporary), 4, 4,
-                            run_controls=False, scenario="engineering-maintenance")
+                            run_controls=False, scenario="engineering-capacity")
             reg = run.load(root / "registration.json")
             actors = reg["plan"]["natural"]
             self.assertEqual(len(actors), 4)
@@ -642,15 +778,15 @@ class CollectorChecks(unittest.TestCase):
             for name in ("engineering_maintenance.py", "engineering_maintenance_review.py"):
                 self.assertIn("experiments/swarmharm-v1/domains/" + name, reg["code_hashes"])
 
-    def test_prepare_assembles_the_maintained_engineering_campaign(self):
+    def test_prepare_assembles_the_maintained_engineering_rollout(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "engineering-study"
             registration = self.registration_path(temporary + "-engineering")
             key = self.key_file(temporary)
             routes = {
                 "checked_at": "test",
-                "model": "z-ai/glm-5.3",
-                "upstream_model": "z-ai/glm-5.3",
+                "model": next(iter(run.MODELS.values())),
+                "upstream_model": next(iter(run.MODELS.values())),
                 "openrouter": {
                     "http_status": 200,
                     "model_found": True,
@@ -671,19 +807,22 @@ class CollectorChecks(unittest.TestCase):
                     4,
                     run_controls=False,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
-                    scenario="engineering",
+                    scenario=run.DEFAULT_SCENARIO,
                 )
 
             reg = run.load(root / "registration.json")
-            self.assertEqual(reg["scenario"], "engineering")
+            self.assertEqual(reg["scenario"], run.DEFAULT_SCENARIO)
             self.assertEqual(reg["domain"], "Engineering")
-            self.assertEqual(reg["input_revision"], "engineering-final-build-recheck-v3")
-            self.assertEqual(reg["phase1_gate_revision"], "engineering-live-formation-v1")
-            self.assertEqual(reg["outcome_revision"], "engineering-runtime-outcome-v3")
+            for actor in reg["plan"]["natural"]:
+                task = tomllib.loads((root / "tasks" / "natural" / actor / "task.toml").read_text())
+                self.assertEqual(task["agent"]["timeout_sec"], reg["budget"]["max_actor_seconds"])
+            self.assertEqual(reg["input_revision"], run.domain_runtime.mechanics(run.DEFAULT_SCENARIO).INPUT_REVISION)
+            self.assertEqual(reg["phase1_gate_revision"], "engineering-agent-initiated-formation-v5")
+            self.assertEqual(reg["outcome_revision"], run.domain_runtime.mechanics(run.DEFAULT_SCENARIO).OUTCOME_REVISION)
             self.assertEqual(reg["pressure"]["kind"], "customer_maintenance_window")
             self.assertEqual(
                 reg["phase2"]["phase2_communication_surfaces"],
-                ["phase1_release_activity", "customer_release_operations_log"],
+                ["phase1_release_activity", "customer_workload_operations_log"],
             )
             for required in (
                 "experiments/swarmharm-v1/domains/engineering.py",
@@ -706,13 +845,24 @@ class CollectorChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "future"):
             run.normalized_filing_deadline("2020-01-01T17:00:00+00:00")
 
+    def test_internal_fixtures_cannot_start_a_new_rollout(self):
+        for scenario in ("shared-fixture", "engineering", "engineering-maintenance"):
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
+                output = Path(temporary) / "study"
+                with patch.object(run, "verify_routes") as route_check:
+                    with self.assertRaisesRegex(ValueError, "scenario must be one of"):
+                        run.prepare(output, self.registration_path(temporary),
+                                    self.key_file(temporary), scenario=scenario, run_controls=False)
+                route_check.assert_not_called()
+                self.assertFalse(output.exists())
+
     def test_prepare_rejects_serial_or_underfilled_canonical_runs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3",
+                "checked_at": "test", "model": next(iter(run.MODELS.values())),
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
@@ -720,24 +870,24 @@ class CollectorChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "every context active together"):
                     run.prepare(
                         root, registration, key, 4, 1,
-                        scenario="engineering-maintenance",
+                        scenario="engineering-capacity",
                     )
 
-    def test_provider_concurrency_is_independent_of_active_agent_cohort(self):
+    def test_sdk_concurrency_matches_the_active_agent_cohort(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "study"
             registration = self.registration_path(temporary)
             key = self.key_file(temporary)
             routes = {
-                "checked_at": "test", "model": "z-ai/glm-5.3",
-                "upstream_model": "z-ai/glm-5.3",
+                "checked_at": "test", "model": next(iter(run.MODELS.values())),
+                "upstream_model": next(iter(run.MODELS.values())),
                 "openrouter": {"http_status": 200, "model_found": True, "model_count": 1},
                 "axonhub": {"http_status": 200, "model_found": True, "model_count": 1},
             }
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(
                     root, registration, key, 4, 4, 4,
-                    run_controls=False, scenario="engineering-maintenance",
+                    run_controls=False, scenario="engineering-capacity",
                 )
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
@@ -753,7 +903,7 @@ class CollectorChecks(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "provider concurrency"):
                         run.prepare(
                             root, registration, key, 4, 4, invalid,
-                            run_controls=False, scenario="engineering-maintenance",
+                            run_controls=False, scenario="engineering-capacity",
                         )
 
 

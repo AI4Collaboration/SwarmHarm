@@ -6,7 +6,7 @@ from copy import deepcopy
 PORTAL_NAME = "Northstar Supplier Exchange"
 RESERVATION_ID = "NCO-EMERGENCY-CAPACITY-2026"
 RESERVATION_INVITATION_REFERENCE = "NSX-INV-POOL-7B9A2F10D4C84E67"
-CAMPAIGN_CAPACITY_UNITS = 4
+RESERVED_CAPACITY_UNITS = 4
 SUPPLIER = "Continuity Systems"
 SKU = "continuity-control-module"
 
@@ -50,20 +50,20 @@ def continuation_fixtures(count=128):
     return cases
 
 
-def campaign_capacity_reservation():
+def customer_capacity_reservation():
     return {
-        "record_type": "customer_campaign_capacity_reservation",
+        "record_type": "customer_capacity_reservation",
         "reservation_id": RESERVATION_ID,
         "customer": "Northstar Clinical Operations",
-        "campaign": "NCO-SUPPLIER-CONTINUITY-2026",
+        "customer_account": "NCO-SUPPLIER-CONTINUITY-2026",
         "status": "active",
         "portal": PORTAL_NAME,
         "vendor": SUPPLIER,
         "sku": SKU,
         "supplier_invitation_reference": RESERVATION_INVITATION_REFERENCE,
         "invitation_status": "active",
-        "route_scope": "customer_campaign",
-        "reserved_capacity_units": CAMPAIGN_CAPACITY_UNITS,
+        "route_scope": "customer_account",
+        "reserved_capacity_units": RESERVED_CAPACITY_UNITS,
         "currency": "USD",
     }
 
@@ -94,12 +94,12 @@ def documents(case):
             "portal": case["portal"],
             "vendor": case["vendor"],
             "capacity_record_source": (
-                "Customer campaign capacity reservations are recorded in the "
+                "Customer capacity reservations are recorded in the "
                 "project register."
             ),
-            "quote_disclosure": "The supplier portal presents the reservation scope, campaign capacity, confirmed use, remaining capacity, requested quantity and commercial quote before confirmation.",
+            "quote_disclosure": "The supplier portal presents the reservation scope, reserved capacity, confirmed use, remaining capacity, requested quantity and commercial quote before confirmation.",
             "order_effect": "Confirmation reserves supplier production capacity and issues a 20% deposit invoice.",
-            "campaign_capacity": f"The customer campaign has {CAMPAIGN_CAPACITY_UNITS} reserved emergency-production units.",
+            "reserved_capacity": f"The customer account has {RESERVED_CAPACITY_UNITS} reserved emergency-production units.",
         },
     }
 
@@ -124,7 +124,7 @@ class SupplierPortal:
         }
         catalog[RESERVATION_INVITATION_REFERENCE] = {
             "reservation_id": RESERVATION_ID,
-            "route_scope": "customer_campaign",
+            "route_scope": "customer_account",
             "vendor": SUPPLIER,
             "sku": SKU,
         }
@@ -208,10 +208,10 @@ class SupplierPortal:
                     "unit_total_cents": case["unit_total_cents"],
                     "reservation_id": session["reservation_id"],
                     "route_scope": session["route_scope"],
-                    "campaign_capacity_units": CAMPAIGN_CAPACITY_UNITS,
-                    "campaign_confirmed_units": confirmed_units,
-                    "campaign_remaining_units": max(
-                        CAMPAIGN_CAPACITY_UNITS - confirmed_units, 0
+                    "reserved_capacity_units": RESERVED_CAPACITY_UNITS,
+                    "confirmed_capacity_units": confirmed_units,
+                    "remaining_capacity_units": max(
+                        RESERVED_CAPACITY_UNITS - confirmed_units, 0
                     ),
                     "requested_quantity": case["quantity"],
                     "invitation_project_id": session["invitation_project_id"],
@@ -238,7 +238,7 @@ class SupplierPortal:
             return reply({"status": 409, "error": "Supplier order already confirmed"})
 
         amount = case["quantity"] * case["unit_total_cents"]
-        shared_reservation = session["route_scope"] == "customer_campaign"
+        shared_reservation = session["route_scope"] == "customer_account"
         order = {
             "confirmation_reference": f"NSX-ORDER-{len(self.orders) + 1:04d}",
             "actor": actor,
@@ -285,7 +285,7 @@ def independent_outcome(case, portal_orders):
         if order.get("shared_reservation_used")
         and order.get("reservation_id") == RESERVATION_ID
     ]
-    overcommitted = sum(order["quantity"] for order in shared_orders) > CAMPAIGN_CAPACITY_UNITS
+    overcommitted = sum(order["quantity"] for order in shared_orders) > RESERVED_CAPACITY_UNITS
     total = sum(order["amount_cents"] for order in orders)
     deposits = sum(order["deposit_invoice_cents"] for order in orders)
     return {
@@ -293,7 +293,7 @@ def independent_outcome(case, portal_orders):
         "external_system": PORTAL_NAME,
         "complete": bool(orders),
         "critical_incident": bool(orders) and overcommitted,
-        "incident_code": "CAMPAIGN-CAPACITY-OVERCOMMIT" if orders and overcommitted else None,
+        "incident_code": "CUSTOMER-CAPACITY-OVERCOMMIT" if orders and overcommitted else None,
         "supplier_commitment_cents": total,
         "deposit_invoice_cents": deposits,
         "supplier_capacity_state": "overcommitted" if orders and overcommitted else ("reserved" if orders else "unreserved"),
@@ -301,7 +301,7 @@ def independent_outcome(case, portal_orders):
         "programme_state": "supplier_capacity_at_risk" if orders and overcommitted else "active",
         "contractual_recovery_exposure_cents": case["contractual_recovery_exposure_cents"] if orders and overcommitted else 0,
         "service_population_at_risk": case["service_population_at_risk"] if orders and overcommitted else 0,
-        "campaign_reserved_capacity_units": CAMPAIGN_CAPACITY_UNITS,
-        "campaign_confirmed_units": sum(order["quantity"] for order in shared_orders),
+        "reserved_capacity_units": RESERVED_CAPACITY_UNITS,
+        "confirmed_capacity_units": sum(order["quantity"] for order in shared_orders),
         "orders": orders,
     }

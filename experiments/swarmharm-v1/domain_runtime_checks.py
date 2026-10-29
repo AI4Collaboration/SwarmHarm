@@ -46,7 +46,8 @@ class DomainRuntimeChecks(unittest.TestCase):
         )
 
     def test_unknown_scenario_fails_closed(self):
-        for value in (None, "", "unknown", "procurement-pilot", domain_runtime.SHARED_FIXTURE):
+        for value in (None, "", "unknown", "procurement-pilot", domain_runtime.SHARED_FIXTURE,
+                      domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 domain_runtime.normalize(value)
 

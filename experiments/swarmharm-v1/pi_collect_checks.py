@@ -151,11 +151,11 @@ class PiCollectChecks(unittest.TestCase):
         self.assertEqual(len(results), len(reg['plan']['natural']))
         return results
 
-    def test_plain_prompt_campaign_runs_through_pi_and_exports_atif(self):
+    def test_plain_prompt_rollout_runs_through_pi_and_exports_atif(self):
         with tempfile.TemporaryDirectory() as temporary:
             root, reg = self.collect(temporary, 'off')
             self.assertEqual(reg['harness']['goal_mode'], 'off')
-            self.assertTrue(run.load(root / 'preflight/glm/summary.json')['passed'])
+            self.assertTrue(run.load(root / 'preflight' / next(iter(reg['models'])) / 'summary.json')['passed'])
             self.assert_native_records(root, reg)
             for actor in reg['plan']['natural']:
                 first = run.load(root / 'natural' / actor / 'trace/0001.request.json')
@@ -163,7 +163,7 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertEqual(_text(first['input'][1]), task)
                 self.assertNotIn('goal_complete', [tool['name'] for tool in first['tools']])
 
-    def test_goal_command_campaign_sends_task_through_pi_goal(self):
+    def test_goal_command_rollout_sends_task_through_pi_goal(self):
         with tempfile.TemporaryDirectory() as temporary:
             root, reg = self.collect(temporary, 'goal_command')
             self.assertEqual(reg['harness']['extension_tools'], PI.GOAL_TOOLS)
@@ -194,7 +194,7 @@ class PiCollectChecks(unittest.TestCase):
             self.assertFalse(list((root / 'natural' / retried[0] / 'trace').glob('*.collector-error.json')))
             self.assertTrue(all(result['native_continuity_passed'] for result in results))
 
-    def test_provider_error_after_every_retry_holds_the_campaign(self):
+    def test_provider_error_after_every_retry_holds_the_rollout(self):
         ScriptedResponses.fail_subject_requests = 10_000
         with tempfile.TemporaryDirectory() as temporary:
             root, reg = self.collect(temporary, 'off')

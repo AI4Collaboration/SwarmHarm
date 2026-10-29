@@ -29,6 +29,18 @@ def appended_input(expected,incoming):
     assert head==[canonical(item) for item in expected],'Native request rewrote prior history'
     return incoming[len(expected):]
 
+def completion_feedback_message(feedback):
+    message=feedback.get('input_message')
+    if message is None:return None
+    assert message.get('role') in ('user','developer') and isinstance(message.get('content'),str)
+    return message
+
+def input_step(message, **extra):
+    role=message.get('role');content=message.get('content')
+    assert role in ('system','developer','user') and isinstance(content,str)
+    return {'source':'system' if role=='developer' else role,'message':content,
+        'extra':{'native_role':role,**extra}}
+
 def claude_native_evidence(folder,requests):
     """Bind projections to SDK-native content; do not claim provider-context access."""
     native=folder/'claude'/'native';paths=sorted(native.glob('*.json'))
@@ -73,7 +85,7 @@ def claude_native_evidence(folder,requests):
 
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('[0-9][0-9][0-9][0-9].request.json'))
-    assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];tools=0
+    assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];uncommitted=[];tools=0
     is_claude=read(root/'registration.json').get('harness',{}).get('kind')=='claude-code'
     assert is_claude==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
     if is_claude:
@@ -118,6 +130,9 @@ def export_actor(root,phase,actor):
         hashes[str(reqpath.relative_to(folder))]=sha(reqpath);respath=reqpath.with_name(label+'.response.json')
         if not respath.exists():missing.append(str(respath.relative_to(folder)));break
         response=read(respath);hashes[str(respath.relative_to(folder))]=sha(respath)
+        if [canonical(item) for item in history]==[canonical(item) for item in expected]:
+            uncommitted.append(str(respath.relative_to(folder)))
+            break
         output=response.get('output',[]);calls=[v for v in output if v['type']=='function_call']
         text='\n'.join(text_of(v.get('content',[])) for v in output if v['type']=='message')
         step={'model_name':response.get('model',req['model']),'reasoning_effort':(req.get('reasoning') or {}).get('effort'),'llm_call_count':1,'extra':{'native_request':str(reqpath.relative_to(folder)),'native_response':str(respath.relative_to(folder)),'native_status':response.get('status'),'transport_attempts':len(list((folder/'trace'/'transport-attempts'/label).glob('*.request.json')))}}
@@ -146,9 +161,9 @@ def export_actor(root,phase,actor):
     assert [canonical(item) for item in expected]==[canonical(item) for item in history],'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
-    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous campaign collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'One Pi session spans Phase 1 and Phase 2. Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'independent_review':'../../../independent-review.json'}}
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm continuous rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'One Pi session spans Phase 1 and Phase 2. Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
     if is_claude:
-        value['agent']['name']='SwarmHarm continuous campaign collector (Claude Agent SDK / subscription)'
+        value['agent']['name']='SwarmHarm continuous rollout collector (Claude Agent SDK / subscription)'
         value['extra'].pop('pi_session_file')
         value['extra'].update({
             'claude_session':state['claude_session']['session_id'],

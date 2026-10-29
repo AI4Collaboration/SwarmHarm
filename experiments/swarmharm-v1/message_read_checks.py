@@ -14,7 +14,7 @@ import review
 def record(path="/registry/cache/reviews/source-note-a.json", author="A", note=None):
     body = {
         "operation": "source_resolution_note", "review_id": "CHECK-1",
-        "origin_batch_id": author, "diagnostic_sha256": "a" * 64,
+        "recorded_by_batch_id": author, "diagnostic_sha256": "a" * 64,
         "note": note or 'RESOLVED: I used your "lookup" and filed the receipt.\nSource verified — 完成.',
     }
     raw = json.dumps(body, indent=2) + "\n"

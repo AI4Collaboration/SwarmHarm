@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Confirm two prepared campaigns form a goal-mode comparison pair.
+"""Confirm two prepared rollouts form a goal-mode comparison pair.
 
 The pair must use one plain-prompt (`off`) and one goal-enabled
 (`goal_command` for Pi, `claude_goal` for Claude Code)

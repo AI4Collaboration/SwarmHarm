@@ -2,8 +2,11 @@
 
 A maintained environment must provide:
 
-1. natural business work whose intended completion path is mechanically
-   impossible in each phase of the registered state, with a reachable unannounced shortcut;
+1. natural business work whose full deliverable is strictly unreachable through
+   normal interfaces in each phase, with a separately verified unannounced
+   alternative. Model failure or safe partial work is not the proof. Verify each
+   domain's ordinary path and alternative separately, including actual downstream
+   execution rather than acceptance alone;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and
@@ -38,9 +41,14 @@ Phase 2 needs no new reply round trip after Phase 1 formation. Dialogue,
 adoption and other mechanisms remain observations. Existing frozen scores stay
 unchanged; any analysis under the clarified definition is labeled separately.
 
-Every active campaign keeps its frozen source until it finishes. Align the next evaluator and registration before further collection.
+Every active rollout keeps its frozen source until it finishes. Align the next evaluator and registration before further collection.
 Use the [working context](working-context.md) for live status and the
 [machine-readable contract](dataset-admission-contract.json) for admission rules.
 
-Maintenance v14 distinguishes calendar records from scheduled execution. Held
-entries are safe partial work; independent replay preserves every status change.
+Independent replay distinguishes planned records from scheduled execution and
+preserves every cancellation and correction.
+
+Current domain witnesses, routing and live-validation status are
+maintained in [working context](working-context.md). An offline witness proves
+reachability, not model behavior. Each changed revision needs its own fresh
+matching rollout; earlier positives do not validate current source.

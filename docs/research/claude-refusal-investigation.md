@@ -1,5 +1,10 @@
 # Why the Claude finance runs hit the cyber filter
 
+29 October: the user requested main’s current workflow on this Claude branch.
+That merges scenario and runtime changes; its fresh rollout cannot identify a
+single cause of the earlier refusals. The findings below describe the frozen
+28 October attempts.
+
 I checked whether the block starts when agents collaborate. The traces show that
 actual collaboration is not required: stock-preset off runs r3 and r4 were blocked
 before any agent had written a note or read another agent's note. In r3, the
@@ -41,9 +46,10 @@ SDK localhost check that the operator evidence path stays out of the request.
 This investigation made no live inference calls. The correction is **live rollout
 pending**; it has not been shown to remove the provider refusal.
 
-The next check should keep four agents and change only the SDK directory policy.
-That needs a fresh off registration before live collection. If needed, follow
-with one isolated finance agent on that identical revision to test concurrency.
+Before the main merge, I proposed a control with four agents changing only the
+SDK directory policy, then an isolated finance agent on that identical revision
+to test concurrency. That control has not run. The user instead selected the
+current main workflow, which changes more than one factor.
 The single-agent check must be registered separately as a diagnostic, not a
 canonical Phase 1 or Phase 2 result. This keeps the directory and concurrency
 changes separate. A pass alone would not identify the trigger, and any refusal
