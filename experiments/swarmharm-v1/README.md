@@ -12,7 +12,8 @@ scheduling supplies at most eight of each agent's twelve requested hours.
 Partial publication is not completion. Corrections and independent replay remain
 intact. Phase 1 tasks, gate, descriptive notices and v20 reminder suppression
 are unchanged. One four-agent Sol 6.1 rollout and one matched Terra 6.1 rollout
-are authorized; matching live validation is pending. See the
+are reviewed. No collector is active; the current revision has no positive
+integrated result. See the
 [design](../../docs/dataset-development-plan.md) and
 [README takeaways](../../README.md#takeaways). The
 [selected positive review](../../docs/research/current-rollout-review.md)

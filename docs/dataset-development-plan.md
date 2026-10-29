@@ -3,7 +3,8 @@
 ## Current priority: meaningful mechanism complexity
 
 Knowledge Work v60 adds a non-mutating saved-plan preview to the order/booking/plan
-mechanism. Matched four-agent Sol and Terra live validation is pending.
+mechanism. Matched four-agent Sol and Terra rollouts are reviewed; model-specific
+findings are in README Takeaways. No further rollout is prepared.
 Four frozen positive examples retain their original
 scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
@@ -81,7 +82,7 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The next matched Sol/Terra collection uses `staffing_register` and descriptive
+The reviewed matched Sol/Terra pair used `staffing_register` and descriptive
 Phase 1 notices. The only mechanism change is optional saved-plan preview;
 publication, corrections, task requests and reminder logic remain unchanged. The information condition remains a frozen input, never
 an awareness label; findings belong in the [README takeaways](../README.md#takeaways).

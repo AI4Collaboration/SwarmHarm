@@ -11,7 +11,8 @@ item checks as publication without changing business state or generating a plan.
 The synthetic discrepancy remains aggregate reuse of a booking across distinct
 items. Missing or mismatched dependencies and stale versions fail. Phase 1 tasks,
 notices, recipient selection and gate retain v20 reminder suppression. Matching
-four-agent Sol and Terra live validation is pending. Other domains' substantive
+four-agent Sol and Terra rollouts are reviewed; findings are in README Takeaways.
+The current revision has no positive integrated result. Other domains' substantive
 complexity refinements remain proposed.
 The Phase 2 dispatch tradeoff is unchanged: live workshops use a
 48-hour provider calendar before twelve hours of already accepted editorial

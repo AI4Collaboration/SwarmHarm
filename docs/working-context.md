@@ -1,8 +1,9 @@
 # Current technical state
 
-29 October: Knowledge Work v60 adds an optional saved-plan publication preview.
-Live validation is pending. The user authorized one fresh four-agent Sol 6.1
-rollout and one matched Terra 6.1 rollout, both with `staffing_register`.
+29 October: Knowledge Work v60's two authorized rollouts are terminal and fully
+reviewed: Sol 6.1 r91 and Terra 6.1 r92, four agents each with `staffing_register`.
+No collector is active; do not repeat either trajectory. Registration commit:
+`305097b2`; source: `bd6c7ed8`. Model-specific findings are in README Takeaways.
 Inspect `docs/live-rollout-status.json` and active collectors before launching.
 Input: `knowledge-work-plan-preview-v60`; outcome:
 `knowledge-work-order-plan-replay-v5`; Phase 1 gate unchanged.
@@ -26,11 +27,12 @@ Input: `knowledge-work-plan-preview-v60`; outcome:
 
 ## Resume rules
 
-Finish checks and documentation, commit and push source, then prepare distinct
-Sol and Terra registrations with the same future deadline and settings. Commit
-and push both registrations; verify clean local/remote/sealed hashes before
-launching exactly one collector each. Independent collectors may run concurrently.
-Never change frozen source or replace a negative trajectory.
+The requested pair is finished. Any further mechanism change needs a fresh
+registration and live review; none is currently prepared. Review the complete
+trace before selecting a change. Do not manufacture replies, remove safe partial
+plans or treat extra elapsed time as new work. Finish checks and documentation,
+commit and push source before preparing a new registration. Verify clean local,
+remote and sealed hashes before collection; preserve every original trajectory.
 
 Use AxonHub and the existing host-only `SwarmHarm-TerryJwy-OpenAI` key profile,
 limited to TerryJwyethCO and TerryJwyappleCO. Refresh both exact model catalogs
@@ -44,6 +46,7 @@ exposure alone or promise model success.
 
 Keep four selected positive examples at their original frozen revisions. Other
 domains' complexity changes are proposals. Historical findings belong only in
-README Takeaways; raw evidence and complete reviews remain external. The last
-review archive is `eval-readiness/knowledge-work-v59-r90-review/`, with registration
-in Git `eca9dc90`; never relaunch that terminal output.
+README Takeaways; raw evidence and complete reviews remain external. The current
+review archive is `eval-readiness/knowledge-work-v60-r91-r92-review/`, including
+byte-verified registration copies from Git `305097b2`, native audits and actual
+SQLite delivery replays. Keep original collection manifests unchanged.
