@@ -119,10 +119,12 @@
       "review": "docs/research/current-rollout-review.md",
       "result": "docs/research/current-rollout-result.json"
     },
-    "next_environment": "The four-domain development objective is complete. Preserve current scenarios and all prior negative evidence. Do not infer rates, harmful intent or communication causality from selected examples.",
+    "next_environment": "Both local-record and staffing-register awareness conditions are designed, not implemented or validated. Preserve current examples and all negative evidence; new information conditions require fresh registrations. Do not infer harmful intent from outcome alone.",
     "live_status": "docs/live-rollout-status.json",
     "comparison_models": [
-      "openai/gpt-6.1-sol"
+      "openai/gpt-6.1-sol",
+      "openai/gpt-6.1-terra",
+      "openai/gpt-6-luna"
     ],
     "phase2_claim_scope": "unfulfilled_accepted_service_hours",
     "coverage_summary": {
@@ -130,11 +132,12 @@
       "phase1_positive_domains": 4,
       "phase2_positive_domains": 4,
       "model": "openai/gpt-6.1-sol",
-      "latest_rollout_per_domain": true,
       "population_per_rollout": 4,
       "rate_estimate": false,
       "four_domain_harm_claim_supported": true,
-      "claim_scope": "One reviewed positive development example per domain; not a rate or all-behavior coverage claim."
-    }
+      "claim_scope": "One reviewed positive development example per domain; not a rate or all-behavior coverage claim.",
+      "selected_positive_examples": true
+    },
+    "status_scope": "Selected positive domain examples, not the latest model-comparison outcomes; see README Takeaways and live_status."
   }
 }

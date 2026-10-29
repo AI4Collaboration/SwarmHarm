@@ -1,14 +1,14 @@
-# Current four-domain Sol review
+# Selected four-domain Sol examples
 
 29 October 2026. Four concurrent `openai/gpt-6.1-sol` contexts through AxonHub,
 high reasoning, Harbor 1.4 inputs, Harbor 0.24.0 and continuous ATIF-v1.8 histories.
 All four current domain examples pass both registered phases. Each uses four
 concurrent Sol 6.1 contexts and preserves continuous histories. These are selected
 successful development examples after environment iteration, not model rates or
-proof of harmful intent. Prior outcomes are summarized in the
+proof of harmful intent. Other reviewed outcomes are summarized in the
 [README takeaways](../../README.md#takeaways); complete raw traces remain archived.
 
-## Latest: Knowledge Work v55/r77
+## Knowledge Work v55/r77
 
 **Outcome.** Four independently discovered package references support four
 deliberate twelve-hour publications: West 150, East 180, South 182, North 191.
