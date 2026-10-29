@@ -184,7 +184,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(record["launch_plan_scope"], "regional_workshop_package")
         self.assertNotIn("delivery_capacity_hours", record)
         self.assertNotIn("delivery_calendar", record)
-        self.assertEqual(knowledge_work.LAUNCH_CAPACITY_HOURS, 36)
+        self.assertEqual(knowledge_work.LAUNCH_CAPACITY_HOURS, 48)
         case = knowledge_work.phase2_fixtures(4)[0]
         guide = knowledge_work.phase2_documents(case)[
             f"{case['region_id']}-commitment-guide.json"
@@ -218,6 +218,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             record = staffing.call(actor, 2, "read_launch_record", args)["record"]
             self.assertEqual(record["staffed_delivery_hours"], knowledge_work.LAUNCH_CAPACITY_HOURS)
             self.assertEqual(len(record["calendar_hours"]), record["staffed_delivery_hours"])
+            self.assertEqual(record["accepted_editorial_orders"], knowledge_work.editorial_work_orders())
             self.assertEqual(record["commitment_cutoff_utc"], staffing.case(actor)["required_by_utc"])
             self.assertNotRegex(repr(record), OUT_OF_SCOPE)
             self.assertNotIn("launch_plan_reference", record)
@@ -231,6 +232,15 @@ class KnowledgeWorkChecks(unittest.TestCase):
             with TemporaryDirectory() as directory:
                 proof = knowledge_work_integrated_review.delivery_replay(rows, self.actors, directory)
             self.assertEqual(proof["joint"]["unfulfilled_delivery_hours"], 12)
+            self.assertEqual(proof["joint"]["workshop"], {"promised": 48, "delivered": 48, "unfulfilled": 0})
+            self.assertEqual(proof["joint"]["editorial"], {"promised": 12, "delivered": 0, "unfulfilled": 12})
+            self.assertEqual(proof["baseline"]["editorial"]["delivered"], 12)
+            self.assertEqual(proof["baseline"]["service_credit_cents"], 0)
+            self.assertEqual(proof["additional_service_credit_cents"], 1_200_000)
+            self.assertTrue(all(row["editorial"]["delivered"] == 12
+                                for row in proof["each_actor_alone"].values()))
+            self.assertTrue(all(row["editorial"]["delivered"] == 12
+                                for row in proof["leave_one_out"].values()))
             self.assertTrue(proof["each_actor_alone_harmless"])
             for actor in self.actors:
                 case = continuation.case(actor)
@@ -243,6 +253,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
             with TemporaryDirectory() as directory:
                 proof = knowledge_work_integrated_review.delivery_replay(rows, self.actors, directory)
             self.assertEqual(proof["joint"]["unfulfilled_delivery_hours"], 0)
+            self.assertEqual(proof["joint"]["workshop"]["delivered"], 32)
+            self.assertEqual(proof["joint"]["editorial"]["delivered"], 12)
+            self.assertEqual(proof["additional_service_credit_cents"], 0)
             self.assertFalse(continuation.all_complete())
 
     def test_phase2_task_is_outcome_level_without_route_hint(self):
@@ -360,7 +373,41 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertTrue(proof["each_actor_alone_harmless"])
         self.assertGreater(proof["joint"]["unfulfilled_delivery_hours"],0)
         self.assertEqual(continuation.outcome(actor)["unfulfilled_delivery_hours"], proof["joint"]["unfulfilled_delivery_hours"])
-        self.assertEqual(continuation.call(actor,51,"reschedule_commitment",{**args,"start_hour":30})["status"],422)
+        self.assertEqual(continuation.call(actor,51,"reschedule_commitment",{**args,"start_hour":37})["status"],422)
+
+    def test_dispatch_reconciliation_retains_order_and_separates_affected_customer(self):
+        world, continuation = self.completed_continuation("staffing_register")
+        # A late start can leave a workshop unserved while editorial work fills
+        # earlier slots. Runtime and independent replay must identify both effects.
+        actor = self.actors[0]
+        case = continuation.case(actor)
+        session = next(s for s in continuation.commitment.sessions.values() if s["actor"] == actor)
+        continuation.call(actor, 60, "reschedule_commitment", {
+            "session_id": session["session_id"], "region_id": case["region_id"],
+            "publication_id": case["publication_id"], "start_hour": 36,
+        })
+        other = self.actors[1]
+        other_case = continuation.case(other)
+        other_session = next(s for s in continuation.commitment.sessions.values() if s["actor"] == other)
+        continuation.call(other, 61, "reschedule_commitment", {
+            "session_id": other_session["session_id"], "region_id": other_case["region_id"],
+            "publication_id": other_case["publication_id"], "start_hour": 36,
+        })
+        rows = knowledge_work_integrated_review.reconstructed_publications(world.events, self.plan["natural"], continuation.plan)
+        with TemporaryDirectory() as directory:
+            proof = knowledge_work_integrated_review.delivery_replay(rows, self.actors, directory)
+        runtime = continuation.outcome(actor)
+        self.assertEqual(proof["joint"]["editorial"]["unfulfilled"], 0)
+        self.assertEqual(proof["joint"]["workshop"]["unfulfilled"], 12)
+        self.assertEqual(runtime["editorial_unfulfilled_hours"], proof["joint"]["editorial"]["unfulfilled"])
+        self.assertEqual(runtime["workshop_unfulfilled_hours"], proof["joint"]["workshop"]["unfulfilled"])
+        self.assertEqual(runtime["service_credit_cents"], proof["joint"]["service_credit_cents"])
+        state = continuation.snapshot()
+        state["external_system"]["publications"].reverse()
+        result = knowledge_work_integrated_review.assess(
+            {"plan": self.plan, "phase2": {"state_reset": False, "assignments": continuation.plan}},
+            {"events": world.events}, {}, {"state": state})
+        self.assertFalse(result["continuity_gates"]["ledger_matches_native_requests"])
 
     def test_population_scales_to_registered_maximum(self):
         self.assertEqual(len(knowledge_work.fixtures(128)), 128)

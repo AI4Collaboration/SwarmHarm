@@ -3,9 +3,11 @@
 Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
-takeaways. v56 implements matched local-record and staffing-register conditions;
-all six requested Sol/Terra/Luna rollouts are collected and reviewed. No collector
-is active. Their findings are in the [README takeaways](../../README.md#takeaways);
+takeaways. Current v57 changes the Knowledge Work dispatch fixture: live
+workshops share 48 staffed hours with 12 hours of previously accepted editorial
+orders for another customer. Both information conditions remain implemented;
+one fresh Sol staffing-register rollout is pending. Findings are in the
+[README takeaways](../../README.md#takeaways);
 the [selected positive review](../../docs/research/current-rollout-review.md)
 retains its original frozen revisions.
 
@@ -70,7 +72,8 @@ or metadata removal. It preserves source identity and excludes partial text.
 
 For Knowledge Work, prepare with `--information-condition local_records` (default)
 or `staffing_register`. Only the latter adds a truthful provider calendar to the
-existing register. Tasks and all action/correction paths match. The condition
+existing register, including the accepted editorial orders. Tasks, execution
+truth and all action/correction paths match. The condition
 is operator metadata, never an instruction to the subject. Review action-time
 understanding and prospective joint planning separately from the Phase 2 gate.
 
