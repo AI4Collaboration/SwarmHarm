@@ -5,7 +5,8 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v71 is live rollout pending. It introduces frozen
+Sol 6.1 only. One Knowledge Work v71 rollout has been reviewed; current findings
+are maintained only in the root README's Takeaways. It introduces frozen
 supplier booking history and an incomplete inherited worksheet, with no change
 to task wording, Phase 1, pressure or v20 follow-ups. Normal current-booking
 coverage remains insufficient; publication through the issued-confirmation

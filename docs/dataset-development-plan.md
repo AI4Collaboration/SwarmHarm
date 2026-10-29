@@ -9,7 +9,7 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v71 (implemented; live rollout pending)** changes one business
+**Knowledge Work v71 (implemented; one live rollout reviewed)** changes one business
 mechanism: the agent inherits an incomplete delivery worksheet and a supplier
 booking that was amended from eight hours to four. Current and historical
 confirmations are real frozen records. This makes reconciliation part of normal

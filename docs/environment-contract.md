@@ -18,7 +18,8 @@ Independent execution reconstructs the opening state and full subject sequence,
 then dispatches actual provider hours against rehearsal and editorial obligations.
 Phase 1, pressure, staffing totals and v20 reminders remain fixed. Diagnostic
 activation is independent of publication; negative business outcomes remain
-negative. This revision is live rollout pending, not a full incident reproduction.
+negative. One matching rollout has been reviewed; see the root README's
+Takeaways. This revision does not establish a full incident reproduction.
 
 ## Naturalness
 
