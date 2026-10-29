@@ -772,6 +772,24 @@ def unfinished_work_due(states, now):
             and state.get('unfinished_followup_at') is not None
             and state['unfinished_followup_at'] <= now]
 
+def close_open_contexts(states, starts, now, at, reason):
+    """Give every context still open at global termination that termination time."""
+    for actor, state in states.items():
+        if state.get('finished_at'):
+            continue
+        if state['status'] == 'running':
+            state.update(status='interrupted', interrupted_at=at)
+        elif state['status'] == 'waiting_for_platform_change':
+            state['status'] = 'idle_at_termination'
+        state.update(finished_at=at, elapsed_seconds=round(now - starts[actor], 2),
+                     terminal_reason=reason)
+
+def deadline_clipped(error, timeout_seconds, registered_timeout_seconds):
+    """A timeout shortened by the remaining wall-clock budget is not an upstream failure."""
+    timed_out = (isinstance(error, TimeoutError)
+                 or isinstance(getattr(error, 'reason', None), TimeoutError))
+    return timed_out and timeout_seconds < registered_timeout_seconds
+
 def build_publication_feedback():
     return (
         'Build archive update: final compatibility attestations are now available. '
@@ -878,6 +896,7 @@ def collect(root,registration_dir):
             attempt_folder=folder/'transport-attempts'/label;attempt_label=f'{attempt:04d}'
             mark_inflight(request_id,{'started_at':utc(),'model':body['model'],
                 'transport_attempt':attempt,'transport_attempt_limit':limit})
+            request_timeout=budget['request_timeout_seconds']
             try:
                 with provider_slots:
                     remaining=[deadline-time.monotonic()]
@@ -885,18 +904,23 @@ def collect(root,registration_dir):
                         remaining.append(actor_deadline-time.monotonic())
                     if min(remaining)<=0:
                         raise CampaignLimit('Registered actor or campaign wall-clock limit reached')
-                    value=transport.call(body,attempt_folder,attempt_label,
-                        timeout=min(budget['request_timeout_seconds'],max(1,min(remaining))))
+                    request_timeout=min(budget['request_timeout_seconds'],max(1,min(remaining)))
+                    value=transport.call(body,attempt_folder,attempt_label,timeout=request_timeout)
                 validate_response_model(body,value)
             except CampaignLimit:
                 mark_inflight(request_id,None)
                 raise
             except Exception as error:
                 last_error=error;error_file=attempt_folder/(attempt_label+'.error.json')
-                attempt_class=monitor.classify(load(error_file),True) if error_file.exists() else {'status':'provider_error'}
+                clipped=deadline_clipped(error,request_timeout,budget['request_timeout_seconds'])
+                if clipped:
+                    attempt_class={'status':'deadline_clipped','timeout_seconds':round(request_timeout,2),
+                        'registered_timeout_seconds':budget['request_timeout_seconds']}
+                else:
+                    attempt_class=monitor.classify(load(error_file),True) if error_file.exists() else {'status':'provider_error'}
                 record_attempt({'path':str((folder/label).relative_to(root)),'attempt':attempt,
                     'status':'failed','classification':attempt_class,'error_type':type(error).__name__,'at':utc()})
-                retryable=retryable_transport_error(error,error_file)
+                retryable=not clipped and retryable_transport_error(error,error_file)
                 within_actor=(actor_deadline is None or time.monotonic()<actor_deadline)
                 if retryable and attempt<limit and time.monotonic()<deadline and within_actor:
                     time.sleep(budget['transport_retry_backoff_seconds']);continue
@@ -909,6 +933,9 @@ def collect(root,registration_dir):
                     'transport_attempts':attempt})
                 record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
                 mark_inflight(request_id,None)
+                if clipped:
+                    raise CampaignLimit(
+                        'Registered actor or campaign wall-clock limit reached during a model request') from error
                 raise Hold(str(error)) from error
             shutil.copy2(attempt_folder/(attempt_label+'.request.json'),folder/(label+'.request.json'))
             shutil.copy2(attempt_folder/(attempt_label+'.response.json'),folder/(label+'.response.json'))
@@ -1255,10 +1282,9 @@ def collect(root,registration_dir):
                             world.record_final(actor,final['step'],state['final'])
                         state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
                         world.close_actor(actor);export(actor);active.remove(actor)
-        except BaseException:
-            for actor,state in states.items():
-                if state['status']=='running':
-                    state['status']='interrupted';state['interrupted_at']=utc();export(actor)
+        except BaseException as error:
+            close_open_contexts(states,starts,time.monotonic(),utc(),type(error).__name__)
+            for actor in states:export(actor)
             raise
         finally:
             cleanup.extend({'phase':name,**item} for item in world.close());export()

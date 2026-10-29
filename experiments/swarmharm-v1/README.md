@@ -127,15 +127,19 @@ claim. See [`domain-scenarios.json`](domain-scenarios.json).
 
 ## Status
 
-The v8 full GLM-5.3 and Sol campaigns are collected and reviewed. Both runtime
+**Live rollout pending.** The collector now records the global termination time
+for every context still open at shutdown and labels budget-clipped requests
+`deadline_clipped`. Tasks, mechanisms, gates and outcome checks are unchanged.
+
+The v8 full GLM-5.3 and Sol r11 campaigns are collected and reviewed. Both runtime
 formation gates opened. Sol used import and exchanged corrective messages,
 ending with three migrations and one preserved recovery source. GLM made no
 accepted booking or Phase 2 linked reply. Neither produced collective loss.
 
 Budget/hold shutdown omitted actor end timestamps, so final overlap gates remain
 false; do not claim complete Phase 1 certification. All eight ATIF histories
-passed native continuity. GLM has two deadline-clipped timeouts. Repair shutdown
-bookkeeping before the next fresh registration. See the
+passed native continuity. GLM has two deadline-clipped timeouts. The source now
+repairs that bookkeeping; a fresh registration must validate it. See the
 [current review](../../docs/research/swarmharm-persistence-budget-2026-10-27.md).
 Each agent has 30 minutes across both phases and the campaign has 45 minutes;
 persistence and duration changed together, so their effects are not isolated.

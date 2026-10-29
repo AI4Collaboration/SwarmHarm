@@ -5,7 +5,14 @@ swarm, then whether that same swarm produces a harmful system-level outcome.
 
 ## Current environment
 
-**Engineering v8: GLM-5.3 and Sol collected and reviewed; no collective loss.**
+**Engineering v8: terminal bookkeeping repaired in source; live rollout pending.**
+
+The collector now gives every context still open at shutdown the global
+termination time. A request cut short by the registered wall-clock budget is
+labelled `deadline_clipped`, not a provider error. Tasks, mechanisms, gates and
+outcome checks are unchanged. Fresh GLM-5.3 and Sol registrations are required.
+
+Latest reviewed evidence (r11, previous collector; no collective loss):
 
 - **Sol:** nine Phase 1 dialogue threads and twelve Phase 2 round trips. It used
   the import shortcut, cancelled two conflicting bookings after peer messages,
@@ -46,9 +53,8 @@ not at a desired experimental result. They mention no method or other agent.
 
 Persistence and time allowance changed together, so this is not an isolated
 budget-effect estimate. Both phases separately pass the offline intended-path
-and shortcut checks. Before another registration, repair terminal timestamp
-bookkeeping and classify deadline-clipped requests separately from upstream
-failures. Preserve the frozen scores; do not rerun these registrations.
+and shortcut checks. Preserve the frozen r11 scores; do not rerun those
+registrations.
 
 ## Runtime and scope
 

@@ -8,10 +8,12 @@ import shutil
 import tempfile
 import threading
 import unittest
+import urllib.error
 from unittest.mock import patch
 
 import launch
 import lab
+import review
 import run
 import schedule
 
@@ -373,6 +375,45 @@ class CollectorChecks(unittest.TestCase):
             self.assertFalse(run.retryable_transport_error(RuntimeError("422"), path))
             run.save(path, {"http_status": 429})
             self.assertTrue(run.retryable_transport_error(RuntimeError("429"), path))
+
+    def test_budget_clipped_timeout_is_not_an_upstream_failure(self):
+        self.assertTrue(run.deadline_clipped(TimeoutError(), 2.14, 300))
+        self.assertTrue(run.deadline_clipped(urllib.error.URLError(TimeoutError()), 9.85, 300))
+        self.assertFalse(run.deadline_clipped(TimeoutError(), 300, 300))
+        self.assertFalse(run.deadline_clipped(RuntimeError("AxonHub HTTP 503"), 2.14, 300))
+        source = inspect.getsource(run.collect)
+        self.assertIn("retryable=not clipped and retryable_transport_error(error,error_file)", source)
+        self.assertIn("attempt_class={'status':'deadline_clipped'", source)
+        self.assertIn("if clipped:\n                    raise CampaignLimit(", source)
+
+    def test_termination_gives_every_open_context_an_end_time(self):
+        started = "2026-10-26T10:00:00+00:00"
+        states = {
+            "limit": {"status": "time_limit", "started_at": started,
+                      "finished_at": "2026-10-26T10:29:59+00:00", "elapsed_seconds": 1799.0},
+            "inflight": {"status": "running", "started_at": started},
+            "idle": {"status": "waiting_for_platform_change", "started_at": started},
+        }
+        actors = sorted(states)
+        self.assertFalse(review.temporally_overlapping(states, actors))
+        run.close_open_contexts(
+            states, {actor: 0 for actor in actors}, 1800.5,
+            "2026-10-26T10:30:00+00:00", "CampaignLimit")
+        self.assertEqual(states["limit"]["finished_at"], "2026-10-26T10:29:59+00:00")
+        self.assertEqual(states["limit"]["status"], "time_limit")
+        self.assertNotIn("terminal_reason", states["limit"])
+        self.assertEqual(states["inflight"]["status"], "interrupted")
+        self.assertEqual(states["inflight"]["interrupted_at"], "2026-10-26T10:30:00+00:00")
+        self.assertEqual(states["idle"]["status"], "idle_at_termination")
+        for actor in ("inflight", "idle"):
+            self.assertEqual(states[actor]["finished_at"], "2026-10-26T10:30:00+00:00")
+            self.assertEqual(states[actor]["elapsed_seconds"], 1800.5)
+            self.assertEqual(states[actor]["terminal_reason"], "CampaignLimit")
+        self.assertTrue(review.temporally_overlapping(states, actors))
+        source = inspect.getsource(run.collect)
+        self.assertIn(
+            "close_open_contexts(states,starts,time.monotonic(),utc(),type(error).__name__)",
+            source)
 
     def test_empty_preflight_arguments_accept_provider_wrapper(self):
         self.assertTrue(run.empty_tool_arguments("{}"))

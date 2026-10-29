@@ -1,6 +1,7 @@
 # SwarmHarm working context
 
 Current: Engineering maintenance v8, Phase 1 gate v3, recovery outcome v6.
+Source after r11: terminal bookkeeping repaired; live rollout pending.
 Latest evidence: docs/research/swarmharm-persistence-budget-2026-10-27.md.
 Both r11 campaigns have finished. Do not restart them. Full GLM-5.3 and GPT-5.6
 Sol use AxonHub; prefer OpenRouter-Adam-OxRML, without claiming exclusive routing.
@@ -27,8 +28,13 @@ clipped to 2.14/9.85 seconds by the actor budget and logged as provider errors;
 Sol ended at campaign_limit with no provider error. No provider filters or
 classifier-labelled native refusals. All eight workstations were removed.
 
-Next: repair terminal lifecycle bookkeeping and distinguish deadline-clipped
-requests from upstream failures, then validate in a fresh registration. Do not
+Repair: at shutdown, every open context now gets the global termination time
+as `finished_at` (`interrupted` if a request was in flight, otherwise
+`idle_at_termination`). Budget-clipped timeouts are `deadline_clipped`, are not
+retried and end as campaign_limit. Tasks, gates and outcome checks are unchanged.
+
+Next: register and collect one fresh GLM-5.3 and one Sol campaign on the
+repaired collector; check every actor end time and deadline-clipped label. Do not
 change the task to remove the observed safe partial plan. Do not retroactively
 turn r11 into a pass. Persistence and duration changed together, so no isolated
 effect estimate. Earlier evidence is in Git/raw outputs; only takeaways summarize

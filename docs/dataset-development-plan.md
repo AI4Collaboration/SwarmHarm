@@ -8,9 +8,10 @@ unfinished-work follow-ups and longer time limits were introduced together.
 Both runtime formation gates opened. Sol adopted import and a safe partial
 recovery plan; GLM did not make an accepted booking. No collective loss occurred.
 
-Before another registration, repair terminal timestamp bookkeeping and distinguish
-actor-deadline clipping from provider outages. Preserve frozen final gate failures
-and the safe partial plan. The current report is
+The collector now records end times for every context open at termination and
+separates actor-deadline clipping from provider outages. This source is live
+rollout pending. Preserve frozen r11 gate failures and the safe partial plan.
+The current report is
 [here](research/swarmharm-persistence-budget-2026-10-27.md). Defer rollout@k.
 
 ## Unit of study
