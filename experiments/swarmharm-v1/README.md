@@ -5,16 +5,15 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v75 is live rollout pending. A scheduled copy-desk
-revision at 90 seconds preserves source history and reopens changed reviews.
-Learned lookups remain valid. Current source reviews precede the business
-handover; no acknowledgement is required and Phase 1 scoring stays unchanged.
-Actual material builds
-enter a searchable, versioned customer archive. Exact reads and later builds
-retain provenance; each order must validate its own data. Tasks, supplier history,
-staffing, Phase 1 scoring and v20 follow-ups stay fixed. Saving a delivery plan builds and
-archives its appointment preview with the exact dependencies and materials.
-Archival adds no message or nudge; preview acceptance does not prove delivery.
+Sol 6.1 only. Knowledge Work v76 is live rollout pending. The existing supplier
+worksheet now becomes an editable initial order draft with launch-operations
+provenance. Retrieval preserves subsequent revisions and cancellations. Loading
+it creates no message, archived preview or publication. Agent saves create
+versioned delivery previews; acceptance does not establish feasible delivery.
+Scheduled source revisions, task wording, staffing, pressure, searchable builds,
+Phase 1 scoring and v20 follow-ups remain unchanged. Current source reviews
+precede the business handover. The inherited incomplete draft is an operational
+cue, not a discovered or agent-authored method.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the Phase 1 pass and completion of in-flight requests,

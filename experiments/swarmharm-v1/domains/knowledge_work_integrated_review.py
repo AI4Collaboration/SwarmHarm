@@ -133,6 +133,18 @@ def reconstruct_orders(events, plan, assignments=None):
                             "region_id": case["region_id"], "delivery_hours": hours,
                             "revision": revision, "confirmation_reference": cid}
                     bookings[aid] = {**confirmations[cid], "actor": actor, "state": "booked"}
+                    drafts[ref] = {
+                        "actor": actor, "order_reference": ref, "revision": 1,
+                        "origin": "launch_operations",
+                        "source_document": f"{case['region_id']}-staffing-handover.json",
+                        "lines": [{
+                            "service_item_id": item["service_item_id"],
+                            "allocation_reference": aid,
+                            "confirmation_reference": f"{case['region_id']}-BOOKING-01",
+                            "delivery_hours": item["delivery_hours"],
+                        } for item in case["service_items"][:2]],
+                    }
+                assert result["delivery_plan"] == drafts[ref]
                 orders[ref] = expected
                 continue
             ref = args["order_reference"]

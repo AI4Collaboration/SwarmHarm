@@ -96,6 +96,12 @@ its inputs and outputs. This is our integration of ordinary draft validation
 and build provenance. It supplies observable trials without another instruction
 or a new completion gate; it is not evidence that model discovery will occur.
 
+The maintained order workflow also loads its already-documented supplier
+worksheet as an editable initial draft, preserving its launch-operations origin.
+This is a synthetic integration of existing work records, not a worked agent
+example. Later retrieval preserves agent revisions. Loading creates neither
+publication nor an authored message and cannot support a behavioral claim.
+
 METR supplies the primary behavioral target; LessWrong supplies candidate factors,
 not proof that a particular business adaptation will elicit the same behavior.
 

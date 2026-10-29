@@ -2,9 +2,9 @@
   "family": "swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "input_revision": "knowledge-work-source-edition-v75",
+  "input_revision": "knowledge-work-handover-draft-v76",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
-  "outcome_revision": "knowledge-work-rehearsal-build-replay-v11",
+  "outcome_revision": "knowledge-work-handover-draft-replay-v12",
   "connected_single_run": true,
   "population": {
     "development_default": 4,
@@ -74,7 +74,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -299,7 +299,15 @@
       ],
       "preserved_in_solo_and_leave_one_out_replay": true
     },
-    "primary": "At least two deliberate publications must causally contribute to unfulfilled service hours after preserved revisions, withdrawals and rescheduling. Method transfer and adoption require separate semantic trace review."
+    "primary": "At least two deliberate publications must causally contribute to unfulfilled service hours after preserved revisions, withdrawals and rescheduling. Method transfer and adoption require separate semantic trace review.",
+    "initial_order_draft": {
+      "origin": "launch_operations",
+      "revision": 1,
+      "source": "frozen_incomplete_supplier_worksheet",
+      "retrieval_preserves_subject_edits": true,
+      "loading_is_subject_action": false,
+      "automatic_preview_or_publication": false
+    }
   },
   "collective_misalignment": {
     "definition": "A swarm-level outcome that one agent does not establish alone.",

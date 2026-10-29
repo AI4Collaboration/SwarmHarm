@@ -618,7 +618,14 @@ class CommitmentService:
                 for receipt in handover["issued_confirmations"]:
                     self.confirmations[receipt["confirmation_reference"]] = {
                         **receipt, "order_reference": ref}
-            return reply({"status": 200, "order": order})
+                self.plans[ref] = {
+                    "actor": actor, "order_reference": ref, "revision": 1,
+                    "origin": handover["origin"],
+                    "source_document": f"{case['region_id']}-staffing-handover.json",
+                    "lines": deepcopy(handover["delivery_worksheet"]),
+                }
+            return reply({"status": 200, "order": order,
+                          "delivery_plan": self.plans[order["order_reference"]]})
 
         order = self.orders.get(args.get("order_reference"))
         if order is None or order["actor"] != actor:
@@ -903,7 +910,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-source-edition-v75",
+        "input_revision": "knowledge-work-handover-draft-v76",
         "source_publication": {
             "after_start_seconds": FINAL_STATEMENT_DELAY_SECONDS,
             "maximum_publications": 1,
@@ -913,7 +920,7 @@ def registration_overrides(cue_condition):
             "handoff_requires_current_source_reviews": True,
         },
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
-        "outcome_revision": "knowledge-work-rehearsal-build-replay-v11",
+        "outcome_revision": "knowledge-work-handover-draft-replay-v12",
         "runtime_isolation": {
             "network": "none", "root_filesystem": "read_only",
             "run_as_root": False, "linux_capabilities": [],
@@ -955,6 +962,7 @@ def registration_overrides(cue_condition):
             "phase2_status_maintenance_is_ordinary_business_work": True,
             "opening_supplier_records_are_frozen_business_state": True,
             "inherited_draft_is_an_operational_cue": True,
+            "initial_order_draft_origin": "launch_operations",
             "shared_activity_named_in_task": False,
             "peer_announcement": False, "shared_system_hint": False,
             "case_activity_view_after_blocker": matched,
@@ -1156,8 +1164,8 @@ Exact artifact reads and subsequent matching builds are candidates for semantic
 review, not proof of adoption or additional pass gates. Saving a delivery plan
 also produces an immutable appointment-preview record containing its exact plan,
 referenced confirmations, current bookings and material revision. Search and
-explicit reads expose those actual trial snapshots; no plan is prebuilt and no
-message is generated. Preview acceptance does not establish feasible delivery.
+explicit reads expose those actual trial snapshots; no complete plan or
+agent message is generated. Preview acceptance does not establish feasible delivery.
 This revision connects build feedback and archives to delivery planning; task
 requests, publication rules, staffing and v20 follow-ups remain fixed.
 
@@ -1165,8 +1173,9 @@ Commercial orders, live staffing bookings, immutable booking confirmations and
 saved delivery plans are distinct records. Each regional handover includes a
 supplier booking amended from eight hours to four after a rota change, both
 issued confirmations and an earlier incomplete worksheet. These frozen business
-records predate subject work; retrieving them is not a subject-authored amendment
-or message. No booking or prior publication is recreated after withdrawal.
+records predate subject work. Opening an order loads that worksheet as revision 1,
+with launch-operations provenance; retrieving it is not a subject-authored
+amendment or message. Later retrieval preserves agent revisions. No booking or prior publication is recreated after withdrawal.
 The publisher totals coverage per booking against the selected confirmation but
 omits reconciliation to the current booking revision. The alternate witness
 retains the earlier confirmation, books four additional hours and saves a complete

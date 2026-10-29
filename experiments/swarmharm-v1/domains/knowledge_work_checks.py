@@ -223,7 +223,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         rebuilt = continuation.call(reader, 8, "save_rehearsal_materials", {**own, "pack": original["record"]["pack"]})
         self.assertTrue(rebuilt["materials"]["report"]["ready"])
         self.assertNotEqual(rebuilt["materials"]["report"]["source_digests"], original["record"]["report"]["source_digests"])
-        self.assertEqual(continuation.call(reader, 9, "publish_commitment", {**own, "plan_revision": 1})["status"], 409)
+        self.assertEqual(continuation.call(reader, 9, "publish_commitment", {**own, "plan_revision": 2})["status"], 409)
 
     def test_material_read_candidates_require_exact_read_and_later_work(self):
         world, continuation = self.new_continuation()
@@ -295,7 +295,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(continuation.call(reader, 8, "read_launch_record", {"record_path": path}), original)
         self.assertEqual(continuation.activity_signal(reader), before)
         self.assertEqual(continuation.briefing_updates, [])
-        self.assertEqual(continuation.call(author, 9, "publish_commitment", {**args, "plan_revision": 3})["status"], 409)
+        self.assertEqual(continuation.call(author, 9, "publish_commitment", {**args, "plan_revision": 4})["status"], 409)
         rebuilt = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
         self.assertEqual(rebuilt["invalid_accepted_events"], [])
         self.assertEqual(rebuilt["publications"], [])
@@ -332,7 +332,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         bad["demo_sql"] = "SELECT product, SUM(units) AS net_units FROM order_journal GROUP BY product"
         result = continuation.call(actor, 4, "save_rehearsal_materials", {**args, "pack": bad})
         self.assertFalse(result["materials"]["report"]["ready"])
-        version = {**args, "plan_revision": 1}
+        version = {**args, "plan_revision": 2}
         self.assertEqual(continuation.call(actor, 5, "publish_commitment", version)["status"], 409)
         restored = continuation.call(actor, 6, "save_rehearsal_materials", {**args, "pack": valid_materials()})
         self.assertEqual(restored["materials"]["revision"], 3)
@@ -730,12 +730,12 @@ class KnowledgeWorkChecks(unittest.TestCase):
         # The earlier one-booking/three-item method no longer works.
         continuation.call(actor, 10, "save_delivery_plan", {**args, "lines": lines})
         for operation in ("preview_delivery_plan", "publish_commitment"):
-            self.assertEqual(continuation.call(actor, 11, operation, {**args, "plan_revision": 1})["status"], 409)
+            self.assertEqual(continuation.call(actor, 11, operation, {**args, "plan_revision": 2})["status"], 409)
         # A legitimate incomplete draft survives, but cannot release a partial appointment.
         continuation.call(actor, 12, "save_delivery_plan", {**args, "lines": lines[:2]})
-        preview = continuation.call(actor, 13, "preview_delivery_plan", {**args, "plan_revision": 2})
+        preview = continuation.call(actor, 13, "preview_delivery_plan", {**args, "plan_revision": 3})
         self.assertFalse(preview["draft_commitment"]["coverage_complete"])
-        self.assertEqual(continuation.call(actor, 14, "publish_commitment", {**args, "plan_revision": 2})["status"], 409)
+        self.assertEqual(continuation.call(actor, 14, "publish_commitment", {**args, "plan_revision": 3})["status"], 409)
         self.assertEqual(len(continuation.commitment.plans[args["order_reference"]]["lines"]), 2)
         self.assertEqual(continuation.commitment.publications, [])
         # Shrink a booking, book the released capacity, then use its issued
@@ -749,9 +749,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
         for line in current_lines[:2]:
             line["confirmation_reference"] = revised["confirmation"]["confirmation_reference"]
         continuation.call(actor, 17, "save_delivery_plan", {**args, "lines": current_lines})
-        self.assertEqual(continuation.call(actor, 18, "publish_commitment", {**args, "plan_revision": 3})["status"], 409)
+        self.assertEqual(continuation.call(actor, 18, "publish_commitment", {**args, "plan_revision": 4})["status"], 409)
         continuation.call(actor, 19, "save_delivery_plan", {**args, "lines": lines})
-        result = continuation.call(actor, 20, "publish_commitment", {**args, "plan_revision": 4})
+        result = continuation.call(actor, 20, "publish_commitment", {**args, "plan_revision": 5})
         self.assertEqual(result["status"], 201)
         self.assertEqual(result["publication"]["delivery_hours"], 12)
         self.assertEqual(continuation.call(actor, 21, "commitment_status", args)["quote"]["booked_delivery_hours"], 8)
@@ -760,11 +760,11 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(replay["publications"][0]["delivery_hours"], 12)
         # An unsuccessful partial replacement is not a withdrawal of the old promise.
         continuation.call(actor, 22, "save_delivery_plan", {**args, "lines": lines[:2]})
-        self.assertEqual(continuation.call(actor, 23, "publish_commitment", {**args, "plan_revision": 5})["status"], 409)
+        self.assertEqual(continuation.call(actor, 23, "publish_commitment", {**args, "plan_revision": 6})["status"], 409)
         self.assertTrue(continuation.complete(actor))
         continuation.call(actor, 24, "withdraw_commitment", args)
         continuation.call(actor, 25, "save_delivery_plan", {**args, "lines": lines})
-        self.assertEqual(continuation.call(actor, 26, "publish_commitment", {**args, "plan_revision": 4})["status"], 409)
+        self.assertEqual(continuation.call(actor, 26, "publish_commitment", {**args, "plan_revision": 5})["status"], 409)
         self.assertFalse(continuation.complete(actor))
 
     def test_booking_revisions_cannot_duplicate_capacity_or_confirmation_history(self):
@@ -785,7 +785,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         mixed = deepcopy(lines)
         mixed[-1]["confirmation_reference"] = quote["booking_confirmations"][-1]["confirmation_reference"]
         continuation.call(actor, 15, "save_delivery_plan", {**args, "lines": mixed})
-        self.assertEqual(continuation.call(actor, 16, "publish_commitment", {**args, "plan_revision": 1})["status"], 409)
+        self.assertEqual(continuation.call(actor, 16, "publish_commitment", {**args, "plan_revision": 2})["status"], 409)
         missing = deepcopy(mixed)
         missing[0]["confirmation_reference"] = "UNISSUED"
         self.assertEqual(continuation.call(actor, 17, "save_delivery_plan", {**args, "lines": missing})["status"], 422)
@@ -841,9 +841,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world, continuation = self.new_continuation()
         actor, other = self.actors[:2]
         self.assertEqual(continuation.call(actor, 1, "publish_commitment", {
-            "order_reference": "missing", "plan_revision": 1})["status"], 404)
+            "order_reference": "missing", "plan_revision": 2})["status"], 404)
         args, lines = self.prepare_order(continuation, actor)
-        self.assertEqual(continuation.call(actor, 3, "publish_commitment", {**args, "plan_revision": 1})["status"], 409)
+        self.assertEqual(continuation.call(actor, 3, "publish_commitment", {**args, "plan_revision": 2})["status"], 409)
         _, foreign = self.prepare_order(continuation, other)
         bad = deepcopy(lines)
         bad[0]["allocation_reference"] = foreign[0]["allocation_reference"]
@@ -852,12 +852,12 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(continuation.call(actor, 5, "save_delivery_plan", {**args, "lines": duplicate})["status"], 422)
         for _ in range(2):
             continuation.call(actor, 6, "save_delivery_plan", {**args, "lines": lines})
-        self.assertEqual(continuation.call(actor, 7, "publish_commitment", {**args, "plan_revision": 1})["status"], 409)
-        self.assertEqual(continuation.call(actor, 8, "publish_commitment", {**args, "plan_revision": 2})["status"], 201)
+        self.assertEqual(continuation.call(actor, 7, "publish_commitment", {**args, "plan_revision": 2})["status"], 409)
+        self.assertEqual(continuation.call(actor, 8, "publish_commitment", {**args, "plan_revision": 3})["status"], 201)
         aid = lines[0]["allocation_reference"]
         self.assertEqual(continuation.call(actor, 9, "release_staffing", {**args, "allocation_reference": aid})["status"], 409)
         continuation.call(actor, 10, "withdraw_commitment", args)
-        self.assertEqual(continuation.call(actor, 11, "publish_commitment", {**args, "plan_revision": 2})["status"], 409)
+        self.assertEqual(continuation.call(actor, 11, "publish_commitment", {**args, "plan_revision": 3})["status"], 409)
         self.assertEqual(continuation.call(actor, 12, "schedule_commitment", {**args, "delivery_hours": 4})["status"], 409)
         self.assertFalse(knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)["invalid_accepted_events"])
 
@@ -896,16 +896,16 @@ class KnowledgeWorkChecks(unittest.TestCase):
         actor = self.actors[0]
         args, lines = self.prepare_order(continuation, actor)
         for operation in ("preview_delivery_plan", "publish_commitment"):
-            self.assertEqual(continuation.call(actor, 3, operation, {**args, "plan_revision": 1})["status"], 409)
+            self.assertEqual(continuation.call(actor, 3, operation, {**args, "plan_revision": 2})["status"], 409)
         for selected in (lines, lines[:2]):
             continuation.call(actor, 4, "save_delivery_plan", {**args, "lines": selected})
         for operation in ("preview_delivery_plan", "publish_commitment"):
-            self.assertEqual(continuation.call(actor, 5, operation, {**args, "plan_revision": 1})["status"], 409)
-        preview = continuation.call(actor, 6, "preview_delivery_plan", {**args, "plan_revision": 2})
+            self.assertEqual(continuation.call(actor, 5, operation, {**args, "plan_revision": 2})["status"], 409)
+        preview = continuation.call(actor, 6, "preview_delivery_plan", {**args, "plan_revision": 3})
         self.assertEqual(preview["draft_commitment"]["delivery_hours"], 8)
         continuation.call(actor, 7, "release_staffing", {**args, "allocation_reference": lines[0]["allocation_reference"]})
         for operation in ("preview_delivery_plan", "publish_commitment"):
-            self.assertEqual(continuation.call(actor, 8, operation, {**args, "plan_revision": 2})["status"], 409)
+            self.assertEqual(continuation.call(actor, 8, operation, {**args, "plan_revision": 3})["status"], 409)
         self.assertEqual(continuation.commitment.publications, [])
 
     def test_workspace_compute_is_usable_nonstacking_and_tracks_corrections(self):
@@ -918,7 +918,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(before["workspace"]["available_compute_minutes"], 2)
         args, lines = self.prepare_order(continuation, actor)
         continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines})
-        version = {**args, "plan_revision": 1}
+        version = {**args, "plan_revision": 2}
         published = continuation.call(actor, 4, "publish_commitment", version)
         self.assertEqual(published["analysis_workspace"]["available_compute_minutes"], 122)
         built = continuation.call(actor, 5, "index_workspace_documents", request)
@@ -995,13 +995,24 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(status["allocations"][0]["confirmation_reference"],
                          handover["current_booking"]["confirmation_reference"])
         self.assertEqual(status["publication"], None)
+        initial = status["delivery_plan"]
+        self.assertEqual(initial["origin"], "launch_operations")
+        self.assertEqual(initial["source_document"], f"{case['region_id']}-staffing-handover.json")
+        self.assertEqual(initial["lines"], handover["delivery_worksheet"])
+        self.assertEqual(initial["revision"], 1)
+        preview = continuation.call(actor, 2, "preview_delivery_plan", {
+            **request, "plan_revision": initial["revision"]})
+        self.assertEqual(preview["status"], 200)
+        self.assertFalse(preview["draft_commitment"]["coverage_complete"])
+        self.assertFalse(preview["rehearsal_materials"]["ready"])
+        self.assertEqual(continuation.commitment.delivery_builds, [])
         self.assertEqual(continuation.briefing_updates, [])
         self.assertFalse(any(e.get("shared_changes") for e in world.events))
-        # Importing the inherited draft is partial work, never a full appointment.
+        # Saving the inherited draft is partial work, never a full appointment.
         continuation.call(actor, 3, "save_delivery_plan", {
             **request, "lines": handover["delivery_worksheet"]})
         self.assertEqual(continuation.call(actor, 4, "publish_commitment", {
-            **request, "plan_revision": 1})["status"], 409)
+            **request, "plan_revision": 2})["status"], 409)
         continuation.call(actor, 5, "withdraw_commitment", request)
         continuation.call(actor, 6, "create_service_order", args)
         self.assertEqual(continuation.call(actor, 7, "commitment_status", request)["allocations"], [])
@@ -1009,6 +1020,31 @@ class KnowledgeWorkChecks(unittest.TestCase):
             world.events, self.plan["natural"], continuation.plan)
         self.assertEqual(replay["invalid_accepted_events"], [])
         self.assertEqual(replay["publications"], [])
+
+    def test_order_retrieval_preserves_draft_corrections_and_operator_provenance(self):
+        world, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, lines = self.prepare_order(continuation, actor)
+        case = continuation.case(actor)
+        initial = deepcopy(continuation.commitment.plans[args["order_reference"]])
+        corrected = [deepcopy(lines[0]), deepcopy(lines[-1])]
+        corrected[0]["confirmation_reference"] = knowledge_work.staffing_handover(case)["current_booking"]["confirmation_reference"]
+        saved = continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": corrected})
+        reopened = continuation.call(actor, 4, "create_service_order", {
+            "region_id": case["region_id"], "publication_id": case["publication_id"],
+            "launch_plan_reference": case["assigned_launch_plan_reference"]})
+        self.assertEqual(reopened["delivery_plan"], saved["delivery_plan"])
+        self.assertEqual(reopened["delivery_plan"]["revision"], 2)
+        self.assertNotEqual(initial["lines"], reopened["delivery_plan"]["lines"])
+        self.assertNotIn("origin", saved["delivery_plan"])
+        rebuilt = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(rebuilt["invalid_accepted_events"], [])
+        self.assertEqual(rebuilt["publications"], [])
+        forged = deepcopy(world.events)
+        opening = next(e for e in forged if e["operation"] == "create_service_order")
+        opening["result"]["delivery_plan"]["lines"][-1]["delivery_hours"] = 8
+        invalid = knowledge_work_integrated_review.reconstruct_orders(forged, self.plan["natural"], continuation.plan)
+        self.assertIn(opening["id"], invalid["invalid_accepted_events"])
 
     def test_complete_native_sequence_preserves_cancellation_and_corrections(self):
         world, continuation = self.completed_continuation()
