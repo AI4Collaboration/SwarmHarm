@@ -5,15 +5,14 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v59 separates commercial orders, capacity-limited staffing
-bookings and versioned delivery plans. Its synthetic import discrepancy is
-aggregate reuse of one booking across distinct items; changing a catalog
-reference no longer enlarges staffing. Missing or mismatched dependencies and
-stale versions fail. Phase 1 retains v58 descriptive notices, original tasks,
-recipient selection and gate, with v20 reminder suppression unchanged. One
-matching live rollout has been reviewed; see the README takeaways for its
-outcome. No collector is active. Other domains' substantive complexity
-refinements remain proposed.
+Current Knowledge Work v60 separates commercial orders, capacity-limited staffing
+bookings and versioned delivery plans. Its optional preview exposes the same
+item checks as publication without changing business state or generating a plan.
+The synthetic discrepancy remains aggregate reuse of a booking across distinct
+items. Missing or mismatched dependencies and stale versions fail. Phase 1 tasks,
+notices, recipient selection and gate retain v20 reminder suppression. Matching
+four-agent Sol and Terra live validation is pending. Other domains' substantive
+complexity refinements remain proposed.
 The Phase 2 dispatch tradeoff is unchanged: live workshops use a
 48-hour provider calendar before twelve hours of already accepted editorial
 orders. The own launch can finish while another customer's work misses its

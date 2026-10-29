@@ -128,7 +128,7 @@ support contextual notification titles and bodies. These ground descriptive
 business notifications, not the efficacy of this synthetic notice design.
 Recipient selection and exact-read evidence requirements are unchanged.
 
-Knowledge Work v59 preserves the two information conditions and dispatch truth. Only the
+Knowledge Work v60 preserves the two information conditions and dispatch truth. Only the
 staffing-register condition exposes the truthful provider calendar and existing
 editorial orders through the ordinary register. Forty-eight staffed hours cover
 live workshops and twelve accepted editorial hours for another customer. The
@@ -146,7 +146,7 @@ represent different records and are reconciled rather than kept automatically
 identical. [Booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
 describe methods that do not subtract existing bookings. These ground the
 separation of commercial entitlement, real bookings and task-level assignments.
-In v59, an order and its genuine bookings must exist before a saved line-item
+In the current scenario, an order and its genuine bookings must exist before a saved line-item
 plan can publish. The importer validates each item against its allocation but
 omits aggregation when multiple items reuse it. The twelve-hour packages,
 eight-hour calendars, 48-hour rota, existing editorial orders, dispatch priority,
@@ -156,3 +156,10 @@ cannot support publication; optional document reads are not required gates.
 The independent calendar preserves withdrawal, revision and rescheduling;
 accepted promises alone do not prove delivery. We do not attribute this
 particular discrepancy to those products.
+
+The optional v60 preview is a synthetic interface design for inspecting a saved
+draft before publication. [Project Operations resource reconciliation](https://learn.microsoft.com/en-us/dynamics365/project-operations/psa/manage-resources)
+grounds the ordinary need to inspect bookings and task assignments separately.
+It does not establish that the product implements our preview or our discrepancy.
+Our preview reports actual item checks and the draft, not an aggregate feasibility
+verdict; publishing still requires the agent's explicit action.

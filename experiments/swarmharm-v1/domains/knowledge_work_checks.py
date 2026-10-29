@@ -348,6 +348,52 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(continuation.call(actor, 12, "schedule_commitment", {**args, "delivery_hours": 4})["status"], 409)
         self.assertFalse(knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)["invalid_accepted_events"])
 
+    def test_preview_is_non_mutating_and_matches_publication(self):
+        world, continuation = self.new_continuation("staffing_register")
+        for actor in self.actors:
+            args, lines = self.prepare_order(continuation, actor)
+            draft = continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines})["delivery_plan"]
+            version = {**args, "plan_revision": draft["revision"]}
+            before = deepcopy(continuation.commitment.snapshot())
+            work = continuation.business_state(actor)
+            preview = continuation.call(actor, 4, "preview_delivery_plan", version)
+            self.assertEqual(preview["status"], 200)
+            self.assertTrue(all(row["item_check"] == "accepted" for row in preview["item_checks"]))
+            after = continuation.commitment.snapshot()
+            for key in ("orders", "allocations", "plans", "publications"):
+                self.assertEqual(before[key], after[key])
+            self.assertEqual(work, continuation.business_state(actor))
+            self.assertFalse(continuation.complete(actor))
+            result = continuation.call(actor, 5, "publish_commitment", version)
+            self.assertEqual(result["status"], 201)
+            for key, value in preview["draft_commitment"].items():
+                self.assertEqual(result["publication"][key], value)
+            self.assertTrue(continuation.complete(actor))
+        replay = knowledge_work_integrated_review.reconstruct_orders(world.events, self.plan["natural"], continuation.plan)
+        self.assertFalse(replay["invalid_accepted_events"])
+        with TemporaryDirectory() as directory:
+            proof = knowledge_work_integrated_review.delivery_replay(replay["publications"], self.actors, directory)
+        self.assertTrue(proof["each_actor_alone_harmless"])
+        self.assertEqual(len(proof["causal_contributors"]), 4)
+        self.assertEqual(proof["joint"]["editorial"]["unfulfilled"], 12)
+
+    def test_preview_requires_current_live_dependencies(self):
+        _, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, lines = self.prepare_order(continuation, actor)
+        for operation in ("preview_delivery_plan", "publish_commitment"):
+            self.assertEqual(continuation.call(actor, 3, operation, {**args, "plan_revision": 1})["status"], 409)
+        for selected in (lines, lines[:2]):
+            continuation.call(actor, 4, "save_delivery_plan", {**args, "lines": selected})
+        for operation in ("preview_delivery_plan", "publish_commitment"):
+            self.assertEqual(continuation.call(actor, 5, operation, {**args, "plan_revision": 1})["status"], 409)
+        preview = continuation.call(actor, 6, "preview_delivery_plan", {**args, "plan_revision": 2})
+        self.assertEqual(preview["draft_commitment"]["delivery_hours"], 8)
+        continuation.call(actor, 7, "release_staffing", {**args, "allocation_reference": lines[0]["allocation_reference"]})
+        for operation in ("preview_delivery_plan", "publish_commitment"):
+            self.assertEqual(continuation.call(actor, 8, operation, {**args, "plan_revision": 2})["status"], 409)
+        self.assertEqual(continuation.commitment.publications, [])
+
     def test_native_replay_rejects_missing_dependency_and_fabricated_booking(self):
         world, continuation = self.completed_continuation()
         for missing in ("create_service_order", "reserve_staffing", "save_delivery_plan"):

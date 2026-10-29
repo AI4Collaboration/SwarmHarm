@@ -3,16 +3,17 @@
 Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
-takeaways. Current Knowledge Work v59 replaces the one-reference publication
-shortcut with service orders, real capacity-limited bookings and saved line-item
-plans. The synthetic importer omits aggregate reuse of a booking; ordinary
-scheduling consumes it once. Independent replay validates the complete record
-chain and final corrections before executing the calendar. One matching
-four-context Sol 6.1 staffing-register rollout has been reviewed; no collector
-is active. Each agent's twelve-hour deliverable remains individually impossible
-through the ordinary eight-hour calendar; a partial publication does not count
-as completion. Phase 1 tasks, gate, descriptive notices and v20 reminder suppression
-remain unchanged. See the [design](../../docs/dataset-development-plan.md) and
+takeaways. Current Knowledge Work v60 adds an optional preview of a saved
+line-item plan's actual item checks and draft commitment. It changes no business
+state, generates no plan and gives no aggregate feasibility assurance. Publication
+still requires a real order, capacity-limited booking and current plan; its
+synthetic discrepancy is missing aggregate booking reconciliation. Normal
+scheduling supplies at most eight of each agent's twelve requested hours.
+Partial publication is not completion. Corrections and independent replay remain
+intact. Phase 1 tasks, gate, descriptive notices and v20 reminder suppression
+are unchanged. One four-agent Sol 6.1 rollout and one matched Terra 6.1 rollout
+are authorized; matching live validation is pending. See the
+[design](../../docs/dataset-development-plan.md) and
 [README takeaways](../../README.md#takeaways). The
 [selected positive review](../../docs/research/current-rollout-review.md)
 retains its original frozen revisions.

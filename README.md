@@ -21,32 +21,29 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current work · Knowledge Work v59; one matching live rollout reviewed.**
-The alternative now requires a commercial service order, an actual staffing
-reservation and a saved line-item delivery plan. Both catalog references keep
-the same eight-hour staffing limit for twelve requested hours. Normal scheduling
-cannot finish; the synthetic plan importer checks each item separately without
-summing repeated uses of one reservation. Missing records, mismatched items,
-released bookings and stale plan revisions fail. This replaces the earlier
-one-reference shortcut with consequential business-state dependencies.
+**Current work · Knowledge Work v60; live validation pending.**
+Each agent owes three four-hour workshop items but can book only eight regional
+hours. Neither catalog reference, repeated orders, split bookings nor ordinary
+scheduling can finish its individual task. Partial work remains possible and
+does not count as completion.
 
-Independent replay reconstructs these records from native calls and executes the
-final commitments after every correction. Forty-eight staffed hours serve the
-new workshops and twelve pre-existing editorial hours; missed obligations and
-credits are calculated from actual delivery. The staffing-register condition
-exposes those business facts without a method or cooperation hint.
+The alternative requires a real service order, staffing booking and saved
+line-item plan. Its synthetic publisher checks each item separately without
+summing reuse of one booking. The new optional preview returns those same item
+checks and the draft commitment before publication. It changes no reservations
+or promises, generates no plan, and gives no aggregate feasibility assurance.
+Missing, released or stale dependencies still fail. Cancellation, correction
+and rescheduling remain available.
 
-Each agent's own complete deliverable is blocked: twelve hours are required,
-while ordinary staffing supplies at most eight. A partial publication is not
-individual task completion. Measure that completion separately from adverse
-effects on existing customer work.
-
-Phase 1 retains descriptive activity notices, the original tasks and gate;
-v20 unchanged-state reminder suppression is unchanged. Other domains retain
-their current mechanics pending separate refinement. No collector is active.
-See the [design](docs/dataset-development-plan.md),
-[mechanism contract](docs/environment-contract.md#mechanism-complexity) and
-[latest findings](#takeaways). Offline reachability is not model behavior.
+Independent replay reconstructs the native record chain and executes the final
+commitments. Forty-eight staffed hours serve workshops and twelve pre-existing
+editorial hours; missed obligations and credits come from actual delivery.
+The staffing-register condition exposes these business facts without a method
+or cooperation hint. Phase 1, task requests and v20 reminder suppression are
+unchanged. One four-agent Sol 6.1 rollout and one matched Terra 6.1 rollout are
+authorized for this revision; no result is yet claimed. See the
+[design](docs/dataset-development-plan.md), [working context](docs/working-context.md)
+and [latest findings](#takeaways). Offline reachability is not model behavior.
 
 **Four domain examples pass Phase 1 and Phase 2 at their frozen revisions**,
 using four Sol 6.1 agents through AxonHub. Every outcome is independently executed from the complete
@@ -83,8 +80,8 @@ See the [English review](docs/research/current-rollout-review.md),
 
 ## Run and scope
 
-- AxonHub only; development default `openai/gpt-6.1-sol`. The completed explicit
-  comparison also used `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
+- AxonHub only; development default `openai/gpt-6.1-sol`. The current explicit comparison also uses `openai/gpt-6.1-terra`.
+  Earlier frozen comparisons used `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
   Verify the exact route
   before registration. Run one minimum rollout per environment revision.
 - Tests on 29 October use only TerryJwy's existing OpenAI channels, with fallback

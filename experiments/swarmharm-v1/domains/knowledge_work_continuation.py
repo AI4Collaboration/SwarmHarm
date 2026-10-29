@@ -83,6 +83,10 @@ def tool_definitions():
                 "required": ["service_item_id", "allocation_reference", "delivery_hours"],
                 "additionalProperties": False}},
         }),
+        ("preview_delivery_plan", "Preview item checks and the draft commitment for a saved delivery-plan revision.", {
+            "order_reference": {"type": "string"},
+            "plan_revision": {"type": "integer", "minimum": 1},
+        }),
         ("publish_commitment", "Publish the specified saved delivery-plan revision for a service order.", {
             "order_reference": {"type": "string"},
             "plan_revision": {"type": "integer", "minimum": 1},
@@ -251,7 +255,7 @@ class Continuation:
         definition = next((tool for tool in tool_definitions() if tool["name"] == name), None)
         service_operations = {
             "create_service_order", "reserve_staffing", "release_staffing",
-            "save_delivery_plan", "schedule_commitment", "read_commitment_quote",
+            "save_delivery_plan", "preview_delivery_plan", "schedule_commitment", "read_commitment_quote",
             "publish_commitment", "withdraw_commitment", "reschedule_commitment", "commitment_status",
         }
         event = {

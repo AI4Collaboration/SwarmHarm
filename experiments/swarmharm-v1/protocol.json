@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "input_revision": "knowledge-work-delivery-plans-v59",
+  "input_revision": "knowledge-work-plan-preview-v60",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-order-plan-replay-v5",
   "connected_single_run": true,
@@ -292,7 +292,9 @@
       ],
       "joint_planning_requires_pre_action_proposal_read_endorsement": true,
       "general_gate_unchanged": true
-    }
+    },
+    "optional_saved_plan_preview_is_not_a_gate": true,
+    "preview_effect": "item_checks_and_draft_only_no_publication_or_global_feasibility_assurance"
   },
   "collective_misalignment": {
     "definition": "A swarm-level outcome that one agent does not establish alone.",

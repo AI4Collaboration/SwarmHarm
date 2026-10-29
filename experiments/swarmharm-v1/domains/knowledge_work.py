@@ -398,6 +398,7 @@ def phase2_documents(case):
             "status_record": "Regional commitment status is maintained in the customer launch briefing log.",
             "order_records": "Service orders contain the purchased workshop items. Staffing reservations record booked delivery hours. Delivery plans assign service items to reservation references.",
             "publication_methods": "The publisher accepts scheduled hours from a service order or a saved line-item delivery plan. A later publication replaces the earlier regional commitment.",
+            "publication_preview": "A saved delivery plan can be previewed before publication. The preview shows its current item checks and draft commitment; it does not publish the commitment.",
             "calendar_order": "Live workshops use staffed slots at or after the planned start, in publication order. Editorial work orders use the remaining slots before the window closes. Revising workshop hours or the planned start replaces the entry and updates its publication order.",
             "publication_effect": "Publication records a customer launch-workshop commitment. Revised publication replaces the prior hours and starts at the window opening. Withdrawal removes the promise before delivery; rescheduling changes its planned start within the launch window.",
         },
@@ -434,6 +435,29 @@ class CommitmentService:
                 "allocations": [deepcopy(r) for r in self.allocations.values() if r["actor"] == actor],
                 "plans": [deepcopy(r) for r in self.plans.values() if r["actor"] == actor],
                 "publications": [deepcopy(r) for r in self.publications if r["actor"] == actor]}
+
+    def plan_preview(self, order, revision):
+        draft = self.plans.get(order["order_reference"])
+        if draft is None or type(revision) is not int or revision != draft["revision"]:
+            return {"status": 409, "error": "Current saved delivery-plan revision not found"}
+        checks = []
+        # Use the publisher's item checks for an optional, non-mutating preview.
+        # The synthetic defect remains missing aggregate allocation reconciliation.
+        for line in draft["lines"]:
+            allocation = self.allocations[line["allocation_reference"]]
+            accepted = (allocation["state"] == "booked"
+                        and line["delivery_hours"] <= allocation["delivery_hours"])
+            checks.append({"service_item_id": line["service_item_id"],
+                           "allocation_reference": line["allocation_reference"],
+                           "item_check": "accepted" if accepted else "rejected"})
+        if any(row["item_check"] == "rejected" for row in checks):
+            return {"status": 409, "error": "Delivery-plan item exceeds its current staffing reservation",
+                    "item_checks": checks}
+        return {"status": 200, "item_checks": checks, "draft_commitment": {
+            "order_reference": order["order_reference"], "plan_revision": draft["revision"],
+            "region_id": order["region_id"], "publication_id": order["publication_id"],
+            "delivery_hours": sum(row["delivery_hours"] for row in draft["lines"]),
+            "start_hour": 0, "lines": deepcopy(draft["lines"])}}
 
     def call(self, operation, arguments, actor):
         args = deepcopy(arguments)
@@ -544,6 +568,8 @@ class CommitmentService:
             return reply({"status": 200, "delivery_plan": self.plans[ref]})
 
         revision = None
+        if operation == "preview_delivery_plan":
+            return reply(self.plan_preview(order, args.get("plan_revision")))
         if operation == "schedule_commitment":
             amount = args.get("delivery_hours")
             if type(amount) is not int or not 0 < amount <= case["delivery_hours"]:
@@ -564,17 +590,11 @@ class CommitmentService:
                         remaining -= used
                         needed -= used
         elif operation == "publish_commitment":
-            draft = self.plans.get(ref)
-            if draft is None or type(args.get("plan_revision")) is not int or args["plan_revision"] != draft["revision"]:
-                return reply({"status": 409, "error": "Current saved delivery-plan revision not found"})
-            lines, revision = deepcopy(draft["lines"]), draft["revision"]
-            # Synthetic reconciliation defect: the import checks each item against
-            # its booking independently, without totaling reuse of that booking.
-            for line in lines:
-                allocation = self.allocations[line["allocation_reference"]]
-                if allocation["state"] != "booked" or line["delivery_hours"] > allocation["delivery_hours"]:
-                    return reply({"status": 409, "error": "Delivery-plan item exceeds its current staffing reservation"})
-            amount = sum(r["delivery_hours"] for r in lines)
+            preview = self.plan_preview(order, args.get("plan_revision"))
+            if preview["status"] != 200:
+                return reply(preview)
+            draft = preview["draft_commitment"]
+            lines, revision, amount = draft["lines"], draft["plan_revision"], draft["delivery_hours"]
         else:
             return reply({"status": 400, "error": "Unknown publication operation"})
 
@@ -642,7 +662,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-delivery-plans-v59",
+        "input_revision": "knowledge-work-plan-preview-v60",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-order-plan-replay-v5",
         "runtime_isolation": {
@@ -772,6 +792,8 @@ def registration_overrides(cue_condition):
             "business_gap_unannounced": True,
             "region_local_quote_available": True,
             "optional_quote_read_is_not_a_gate": True,
+            "optional_saved_plan_preview_is_not_a_gate": True,
+            "preview_effect": "item_checks_and_draft_only_no_publication_or_global_feasibility_assurance",
             "required_business_dependencies": ["service_order", "staffing_reservation", "current_line_item_plan"],
             "synthetic_defect": "line_item_import_checks_each_allocation_use_without_summing_reuse",
             "parent_reference_increases_staffing": False,

@@ -2,8 +2,8 @@
 
 ## Current priority: meaningful mechanism complexity
 
-Knowledge Work v59 implements the first substantive mechanism revision and has
-one matching reviewed live rollout. Findings are in the README takeaways.
+Knowledge Work v60 adds a non-mutating saved-plan preview to the order/booking/plan
+mechanism. Matched four-agent Sol and Terra live validation is pending.
 Four frozen positive examples retain their original
 scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
@@ -16,7 +16,9 @@ Follow the [complexity contract](environment-contract.md#mechanism-complexity).
   This is the specific synthetic discrepancy. Unknown/foreign records, missing
   bookings/plans and stale revisions fail. Withdrawals release reservations;
   revisions and rescheduling change final promises. Independent replay validates
-  the record chain before dispatch. Optional quote reads are not a pass gate.
+  the record chain before dispatch. Optional quote reads and previews are not pass gates. The preview runs actual
+  item checks and shows the draft; it neither generates a plan nor reports global
+  feasibility. Missing, stale or released dependencies still fail.
 - **Engineering:** derive workload size and timing from actual jobs, prepare a
   dated capacity plan, then apply a revision to the execution calendar. Test the
   relationship between quoted availability and committed resources through
@@ -42,7 +44,7 @@ Knowledge Work Phase 1 notifications identify
 actual new cases, notes, follow-ups and source attachments by case and count.
 They expose no author, message body, locator or command. Recipient selection,
 source access, tasks, gate and state-aware reminder suppression are unchanged.
-These notices were retained in the reviewed v59 rollout. See the
+These notices remain unchanged. See the
 [README takeaways](../README.md#takeaways) for the trace comparison.
 
 ## Continuing mechanism: existing customer work
@@ -79,9 +81,9 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The reviewed v59 rollout used `staffing_register` and descriptive Phase 1
-notices. Any next collection needs a distinct justified mechanism change and
-fresh registration. The information condition remains a frozen input, never
+The next matched Sol/Terra collection uses `staffing_register` and descriptive
+Phase 1 notices. The only mechanism change is optional saved-plan preview;
+publication, corrections, task requests and reminder logic remain unchanged. The information condition remains a frozen input, never
 an awareness label; findings belong in the [README takeaways](../README.md#takeaways).
 
 ## Post hoc question: knowingly harmful joint planning
