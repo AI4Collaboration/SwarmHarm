@@ -1,9 +1,17 @@
 # Dataset development plan
 
-## Current mechanism: existing customer work
+## Current refinement: descriptive activity notices
 
-v57 is implemented and one four-agent Sol 6.1 rollout has been reviewed;
-its Phase 2 remains unobserved. See the [README takeaways](../README.md#takeaways).
+v58 changes only Knowledge Work Phase 1 notice content. Notifications identify
+actual new cases, notes, follow-ups and source attachments by case and count.
+They expose no author, message body, locator or command. Recipient selection,
+source access, tasks, gate and state-aware reminder suppression are unchanged.
+One fresh four-agent Sol 6.1 staffing-register rollout is pending. See the
+[README takeaways](../README.md#takeaways) for the preceding trace comparison.
+
+## Continuing mechanism: existing customer work
+
+The Phase 2 dispatch fixture remains unchanged from v57.
 The hypothesis is that completing the delegated launch can conflict with an existing
 customer obligation, even when the agents understand both. This differs from a
 launch whose own promises cannot all be delivered. It does not imply that models
@@ -35,7 +43,7 @@ from affected work orders. Runtime and replay must agree after all corrections;
 replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
-The first v57 rollout used `staffing_register`; no further rollout is registered.
+The next rollout uses `staffing_register` and the v58 Phase 1 notice refinement.
 Whether the necessary facts are encountered and understood remains an open
 Phase 2 question. The information condition remains a frozen
 input, never an awareness label. The v56 comparison remains in Git and external

@@ -5,7 +5,10 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current v57 tests a Knowledge Work dispatch tradeoff: live workshops use a
+Current v58 refines Knowledge Work Phase 1 notifications to show actual event
+types and counts; tasks, recipient selection, source mechanics, gates and v20
+reminder suppression are unchanged. Live validation is pending.
+The v57 Phase 2 dispatch tradeoff is unchanged: live workshops use a
 48-hour provider calendar before twelve hours of already accepted editorial
 orders. The own launch can finish while another customer's work misses its
 deadline. The two information conditions differ only in availability of the
@@ -13,9 +16,8 @@ truthful provider calendar and its existing orders; tasks, tools, Phase 1,
 pressure, corrections and execution truth match between conditions.
 The information condition does not assign knowledge or intent. Use authored
 pre-action understanding, exact reads and prospective agreement for a knowing
-joint-plan claim; retain all subsequent corrections. The first v57 rollout is
-reviewed, but Phase 2 remains unobserved; see the README takeaways. It does not
-replace the selected positive examples at their earlier
+joint-plan claim; retain all subsequent corrections. The current revision does
+not replace the selected positive examples at their earlier
 frozen revisions.
 
 ## Naturalness
@@ -134,7 +136,9 @@ scenario must exhibit all three.
   readable without a duplicate notification. Peer notes and other assignments do not renew it. New cases and initial notes
   are announced, with later entries notifying prior participants. All records
   remain readable. Passive notices name changed cases/calendar activity without
-  repeating the task. Old release activity does not wake Phase 2. Completed
+  repeating the task. Knowledge Work Phase 1 adds actual event counts and types
+  without authored content, source locators or commands. Notification delivery
+  does not establish an exact read. Old release activity does not wake Phase 2. Completed
   assignments receive no completion nags. Preserve blocked and safe outcomes;
   operator-only milestones add no prompt or gate. Register notification policy
   and time allowance explicitly, and keep live validation distinct from checks.

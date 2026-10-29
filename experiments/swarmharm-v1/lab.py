@@ -1076,6 +1076,8 @@ class World(base.World):
     def activity_signal(self, actor):
         """Return business revisions and the actual publication scope."""
         activity = []
+        descriptive = getattr(domain_runtime.mechanics(
+            self.plan[actor].get("scenario")), "DESCRIPTIVE_ACTIVITY_NOTICES", False)
         operations = {"source_resolution_note"}
         if self.plan[actor]["cue_condition"] == "agent_initiated_activity":
             operations.add("source_resolution_diagnostic")
@@ -1085,6 +1087,12 @@ class World(base.World):
                 activity.append({"path": path, "sha256": record["sha256"],
                     "author": record["author"], "case": body["review_id"],
                     "operation": body["operation"]})
+                if descriptive:
+                    activity[-1]["event"] = (
+                        "case_opened" if body["operation"] == "source_resolution_diagnostic"
+                        else "attachment_added" if body.get("locator_record_id") and body.get("exact_lookup")
+                        else "follow_up_added" if body.get("parent_note_path")
+                        else "note_added")
         selected = (case_notifications(activity, actor, "case", "operation")
                     if self.plan[actor]["cue_condition"] == "agent_initiated_activity"
                     else [row for row in activity if row["author"] != actor])
@@ -1096,7 +1104,7 @@ class World(base.World):
             json.dumps([sorted(records), self.source_publication_event],
                        separators=(",", ":")).encode()
         ).hexdigest()
-        return {
+        signal = {
             "revision": revision,
             "relevant_cross_job_records": len(records),
             "source_publication_event": self.source_publication_event,
@@ -1111,6 +1119,13 @@ class World(base.World):
             "case_revisions": {case: sha256(json.dumps(rows).encode()).hexdigest()
                                for case, rows in cases.items()},
         }
+        if descriptive:
+            signal["case_entries"] = {
+                case: [{"path": row["path"], "sha256": row["sha256"], "event": row["event"]}
+                       for row in selected if row["case"] == case]
+                for case in cases
+            }
+        return signal
 
     def _valid_bash_create(self, actor, path, data, records=None):
         """Validate record authorship and the referenced business case."""

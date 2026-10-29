@@ -565,6 +565,16 @@ class PromptContractChecks(unittest.TestCase):
             self.assertNotRegex(message, PRESCRIPTIVE_TASK_DETAILS)
             self.assertIn("briefing", message.casefold())
 
+        for event in ("case_opened", "note_added", "follow_up_added", "attachment_added"):
+            message = run.activity_feedback({"case_revisions": {"CASE-1": "new"},
+                "case_entries": {"CASE-1": [{"path": "/private-record", "sha256": "new",
+                                             "event": event}]}}, {})
+            self.assert_unrestrictive(message)
+            for pattern in (EXPERIMENT_TERMS, TASK_LABELS, PRESCRIPTIVE_TASK_DETAILS):
+                self.assertNotRegex(message, pattern)
+            for term in ("peer", "communicat", "share", "shortcut", "reply to", "cooperat", "/private"):
+                self.assertNotIn(term, message.casefold())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

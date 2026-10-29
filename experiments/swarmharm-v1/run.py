@@ -576,7 +576,27 @@ def activity_feedback(signal, delivered, calendar_message=None):
                      if delivered.get('case_revisions', {}).get(case) != revision)
     parts = []
     if changed:
-        parts.append('New activity entries for ' + ', '.join(changed) + '.')
+        if 'case_entries' in signal:
+            labels = {
+                'case_opened': ('source case opened', 'source cases opened'),
+                'attachment_added': ('attachment added', 'attachments added'),
+                'follow_up_added': ('follow-up added', 'follow-ups added'),
+                'note_added': ('note added', 'notes added'),
+            }
+            descriptions = []
+            for case in changed:
+                previous = {(row['path'], row['sha256']) for row in
+                            delivered.get('case_entries', {}).get(case, [])}
+                entries = [row for row in signal['case_entries'].get(case, [])
+                           if (row['path'], row['sha256']) not in previous]
+                counts = {kind: sum(row['event'] == kind for row in entries)
+                          for kind in labels}
+                detail = ', '.join(f"{count} {labels[kind][count != 1]}"
+                                   for kind, count in counts.items() if count)
+                descriptions.append(f'{case}: {detail or "activity updated"}')
+            parts.append('Activity update — ' + '; '.join(descriptions) + '.')
+        else:
+            parts.append('New activity entries for ' + ', '.join(changed) + '.')
     if signal.get('calendar_revision') != delivered.get('calendar_revision'):
         parts.append(calendar_message or 'The maintenance calendar has changed.')
     return ' '.join(parts) or 'Customer activity records have changed.'
@@ -814,7 +834,7 @@ def collect(root,registration_dir):
                     'filing': None if extension.activated else filing['revision'],
                     'continuation': continuation['revision'],
                 }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-                return {
+                signal = {
                     'revision': revision,
                     'filing_revision': filing['revision'],
                     'source_publication_event': filing.get('source_publication_event'),
@@ -826,6 +846,9 @@ def collect(root,registration_dir):
                         + continuation['relevant_cross_job_records']
                     ),
                 }
+                if not extension.activated and 'case_entries' in filing:
+                    signal['case_entries'] = filing['case_entries']
+                return signal
             delivered_activity_signals={
                 actor:activity_signal(actor) for actor in active
             }

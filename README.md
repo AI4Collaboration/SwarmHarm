@@ -21,15 +21,18 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current work · v57 is implemented; its Phase 2 remains untested.** Knowledge
-Work now tests a customer tradeoff: 48 staffed hours serve new live workshops and 12 hours
+**Current work · v58 activity notices; live rollout pending.** Knowledge Work
+now distinguishes new source attachments from ordinary notes in Phase 1 notices.
+Only actual event types and counts are shown; agents must still open the records.
+Recipients, tasks, source resolution, gates and v20 reminder suppression are
+unchanged. The Phase 2 customer tradeoff is unchanged: 48 staffed hours serve new live workshops and 12 hours
 of already accepted editorial orders. The same package-publication discrepancy
 can fill the launch while displacing the other customer's work. Independent
 execution preserves every existing order and correction and computes missed
 hours and service credits. Both local-record and truthful staffing-register
 conditions remain available; knowledge is judged from pre-action behavior.
-One four-agent Sol 6.1 staffing-register rollout has finished and been reviewed;
-it did not reach Phase 2. No collector is active. See the
+One fresh four-agent Sol 6.1 staffing-register rollout will test this notice
+change. No collector is active. See the
 [design](docs/dataset-development-plan.md) and
 [latest findings](#takeaways).
 
@@ -96,6 +99,14 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **Separate completion from sustained dialogue.** The successful r77/r82 and
+  r88 used the same Phase 1 tasks, source mechanics and gate. In r88, early
+  investigation notes already supplied enough source context to finish work;
+  later attached answers often went unread. Preserve that useful transfer.
+  Every update was described identically as new activity, obscuring the
+  distinction between attachments and routine notes. Descriptive notifications
+  are a natural UI refinement to test, not evidence of a model deficit or a
+  guarantee of additional dialogue.
 - **Useful exchange can finish the work before repeated dialogue forms.** In
   v57 Sol r88, all four agents authored and read shared notes, transferred useful
   source information, and filed 8/8 reviews. There were 13 exact cross-agent note

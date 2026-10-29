@@ -32,7 +32,7 @@ must never enter a task, container, registration, trajectory, report or Git.
   evidence.
 
 The development default is **`openai/gpt-6.1-sol`**. The user also selected
-**`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the current matched
+**`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the completed matched
 Knowledge Work comparison, each in its own registration. Other models require
 explicit user selection. Historical evidence keeps
 its original model identity; changing a default never validates a new route.

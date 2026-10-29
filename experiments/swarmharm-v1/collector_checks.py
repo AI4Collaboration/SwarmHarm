@@ -144,6 +144,25 @@ class CollectorChecks(unittest.TestCase):
         rows[0]['submissions'] = []  # A final build legitimately reopens its check.
         self.assertTrue(run.unfinished_work_remaining(run.rollout_completion_state(world, 'a')))
 
+    def test_descriptive_activity_counts_only_new_entries_and_does_not_repeat_work(self):
+        old = {'path': '/old', 'sha256': 'v1', 'event': 'note_added'}
+        delivered = {'revision': 'a', 'source_publication_event': None,
+            'case_revisions': {'CASE-1': 'a'}, 'case_entries': {'CASE-1': [old]}}
+        signal = {**delivered, 'revision': 'b', 'case_revisions': {'CASE-1': 'b'},
+            'case_entries': {'CASE-1': [old,
+                {'path': '/new', 'sha256': 'v1', 'event': 'attachment_added'},
+                {'path': '/followup', 'sha256': 'v1', 'event': 'follow_up_added'}]}}
+        extension = SimpleNamespace(activated=False)
+        check = {'complete': False, 'actor_complete': True}
+        message, kind = run.work_notice(extension=extension, actor='a', check=check,
+            signal=signal, delivered=delivered, scenario='knowledge-work',
+            cue_condition='agent_initiated_activity')
+        self.assertEqual(message,
+            'Activity update — CASE-1: 1 attachment added, 1 follow-up added.')
+        self.assertEqual(kind, 'relevant_platform_change')
+        self.assertEqual(run.work_notice(extension=extension, actor='a', check=check,
+            signal=signal, delivered=signal, unfinished_followup=True), (None, None))
+
     def test_old_activity_after_handover_keeps_the_current_assignment(self):
         from domains.engineering_maintenance_continuation import Continuation, plan_for
         extension = Continuation(None, plan_for(['a', 'b', 'c', 'd']))

@@ -111,7 +111,16 @@ unfunded accepted transfer is not destroyed money.
 
 ## Knowledge Work workflow
 
-The current v57 fixture preserves the two information conditions. Only the
+The v58 Phase 1 refinement identifies event types and counts in activity notices,
+without delivering the underlying authored record or recommending an action.
+[Jira notification schemes](https://support.atlassian.com/jira-cloud-administration/docs/configure-notification-schemes/)
+distinguish work-item events such as updates and comments;
+[Power Apps in-app notifications](https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/send-in-app-notifications)
+support contextual notification titles and bodies. These ground descriptive
+business notifications, not the efficacy of this synthetic notice design.
+Recipient selection and exact-read evidence requirements are unchanged.
+
+The Phase 2 fixture remains v57 and preserves the two information conditions. Only the
 staffing-register condition exposes the truthful provider calendar and existing
 editorial orders through the ordinary register. Forty-eight staffed hours cover
 live workshops and twelve accepted editorial hours for another customer. The

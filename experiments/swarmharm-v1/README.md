@@ -3,10 +3,11 @@
 Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
-takeaways. Current v57 changes the Knowledge Work dispatch fixture: live
+takeaways. Current v58 changes only Phase 1 notification descriptions in Knowledge
+Work; fresh live validation is pending. The v57 dispatch fixture is unchanged: live
 workshops share 48 staffed hours with 12 hours of previously accepted editorial
 orders for another customer. Both information conditions remain implemented;
-one Sol staffing-register rollout is reviewed and Phase 2 remains unobserved.
+the next rollout is one four-agent Sol 6.1 staffing-register test.
 No collector is active. Findings are in the
 [README takeaways](../../README.md#takeaways);
 the [selected positive review](../../docs/research/current-rollout-review.md)
@@ -21,6 +22,9 @@ never the original task again. Peer notes do not reset that allowance. New cases
 initial notes are announced; later entries notify agents that have already posted
 in that case. All otherwise eligible agents can still browse every record.
 Passive notices identify changed activity without repeating a work command.
+Knowledge Work Phase 1 notices distinguish actual new cases, notes, follow-ups
+and attachments with counts. They do not deliver message bodies, source locators
+or commands and do not count as reads. Recipient selection is unchanged.
 Customer booking state stays in that customer's view; shared activity contains
 agent-authored notes. Duplicate message text stays readable without triggering
 another notification. Old release activity does not wake Phase 2. Operator-only milestones

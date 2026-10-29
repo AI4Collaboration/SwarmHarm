@@ -1,5 +1,6 @@
 """Offline mechanics and integration checks for Knowledge Work."""
 
+import json
 import re
 import unittest
 from copy import deepcopy
@@ -99,6 +100,39 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(blocked["archive_state"], "active_with_index")
             previous = rows[(index - 1) % len(rows)]["reviews"][1]
             self.assertEqual(blocked["retained_scope"], previous["index_scope"])
+
+    def test_activity_notices_describe_real_attachments_without_changing_recipients(self):
+        import run
+        world = lab.World(self.plan["natural"])
+        self.addCleanup(world.close)
+        requester, observer, _, holder = self.actors
+        case = world.service(requester).batch["reviews"][1]
+        initial = world.activity_signal(requester)
+        opened = world.call(requester, 1, "bash", {"command": (
+            "python /workspace/archive_diagnostics.py "
+            f"--review-id {case['review_id']} --vendor '{case['vendor']}'")})
+        path = json.loads(opened["stdout"])["diagnostic_record"]
+        world.call(requester, 2, "bash", {"command": (
+            f"python /workspace/filing_activity.py annotate --diagnostic {path} "
+            "--text 'The approved statement is missing from the current catalog.'")})
+        self.assertEqual(world.activity_signal(requester), initial)
+        observer_before = world.activity_signal(observer)
+        held = world.service(holder).batch["reviews"][1]
+        world.call(holder, 1, "fetch_archive", {"record_id": held["index_id"]})
+        attached = world.call(holder, 2, "bash", {"command": (
+            f"python /workspace/filing_activity.py attach-locator --diagnostic {path} "
+            f"--record {held['index_id']} --note 'Source attachment recorded.'")})
+        self.assertEqual(attached["exit_code"], 0, attached)
+        signal = world.activity_signal(requester)
+        self.assertEqual(run.activity_feedback(signal, initial),
+            f"Activity update — {case['review_id']}: 1 attachment added.")
+        self.assertEqual(world.activity_signal(observer), observer_before)
+        self.assertFalse(any(event.get("full_body_output_matches")
+                             for event in world.events if event["actor"] == requester))
+        # A notice only describes an actual event. It never delivers the note body.
+        message = run.activity_feedback(signal, initial)
+        for hidden in (path, held["index_id"], "Source attachment recorded."):
+            self.assertNotIn(hidden, message)
 
     def test_subject_surfaces_are_natural_and_non_cyber(self):
         for item in self.plan["natural"].values():

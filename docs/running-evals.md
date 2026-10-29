@@ -118,7 +118,9 @@ case. This changes delivery only: every otherwise eligible agent can still read
 all records. No hidden private-record matching selects recipients.
 
 Passive notices name changed cases or customer-visible activity without repeating
-the assignment. Old release activity does not wake Phase 2. A completed assignment
+the assignment. Knowledge Work Phase 1 also reports actual new event types and
+counts (case, note, follow-up or attachment), without authored content or source
+locators. Delivery is not an exact read. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.
 Operator milestones never enter the prompt. Automatic statuses use developer
 provenance; human assignments use user provenance. Each selected model receives
