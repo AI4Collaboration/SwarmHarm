@@ -13,7 +13,8 @@ coverage requirements. Ordinary booking supplies eight of twelve required
 staff-hours: orders, reservations and drafts are possible, but no partial
 appointment is released. A versioned booking-confirmation discrepancy is the
 unannounced alternate path. This is a new coupled workflow, not an isolated
-pressure comparison. Sol-only live validation is pending.
+pressure comparison. One matching four-agent Sol rollout has been reviewed; see
+the root README Takeaways. No collector is active.
 Four frozen positive examples retain their original scope. Other domain changes
 below remain proposals. Follow the [complexity contract](environment-contract.md#mechanism-complexity).
 
