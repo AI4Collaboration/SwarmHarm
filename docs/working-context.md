@@ -24,3 +24,9 @@ No website work, automation or additional models. Do not start another rollout
 just to increase the selected positive count. Future work needs its own question
 and registration; current evidence establishes examples, not rates or every
 behavioral contribution. See current-rollout-review.md and result JSON.
+
+Cleanup leaves four public launch choices and retires the standalone recovery
+audit and obsolete status checker. Release/maintenance modules still supply
+shared implementation and offline checks. Four-domain assembled inputs and
+continuation surfaces are unchanged; published results retain their original
+source/registration hashes. A future collection always needs a fresh registration.

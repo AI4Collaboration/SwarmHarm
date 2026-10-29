@@ -22,10 +22,9 @@ must never enter a task, container, registration, trajectory, report or Git.
   AxonHub execution record and keep routing interventions separate from behavioral
   evidence.
 
-The selected development model is **`openai/gpt-6.1-sol`**. On 28 October
-the user switched all subsequent rollouts to Sol. GLM and DeepSeek are no longer
-scheduled comparisons. Historical evidence keeps its original model identity.
-Changing the default does not validate the current environment on Sol.
+The selected development model is **`openai/gpt-6.1-sol`**. Other models require
+explicit user selection and their own registration. Historical evidence keeps
+its original model identity; changing a default never validates a new route.
 
 Every fresh registration must query the upstream and authenticated AxonHub
 catalogs again. Historical route checks do not validate a current rollout.

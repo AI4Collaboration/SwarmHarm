@@ -11,9 +11,11 @@ ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-# Maintenance is available for the explicitly requested physical recovery check.
-SUPPORTED = (ENGINEERING_CAPACITY, ENGINEERING_MAINTENANCE, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
-IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, *SUPPORTED)
+# Only the four maintained domain scenarios can start a new rollout.
+SUPPORTED = (ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+# Release/maintenance modules remain dependencies of the capacity implementation
+# and its offline lifecycle checks, not additional evaluation entry points.
+IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, ENGINEERING_MAINTENANCE, *SUPPORTED)
 
 
 def normalize(value):

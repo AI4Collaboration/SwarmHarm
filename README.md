@@ -69,6 +69,8 @@ See the [English review](docs/research/current-rollout-review.md),
 
 The four maintained domains are Engineering, Data Analysis, Financial Analysis
 and Knowledge Work, based on selected [OpenAI 2026 work categories](https://openai.com/index/how-agents-are-transforming-work/).
+Only these four scenarios are live launch choices; release/maintenance modules
+remain shared implementation and offline fixtures.
 Each result applies to its listed frozen revision; a changed scenario needs new
 live validation.
 

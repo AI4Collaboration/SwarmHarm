@@ -22,10 +22,7 @@ are synthetic design choices. They are not incidents reported by these sources.
 
 AWS [Capacity Reservations](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html)
 grounds the ordinary reservation, modification and cancellation workflow. It does
-not establish our import defect or contractual values. PostgreSQL
-[WAL documentation](https://www.postgresql.org/docs/current/wal-intro.html)
-explains recovery from logged changes; a missed checkpoint alone does not prove
-lost records. Historical recovery lessons remain in the concise takeaways.
+not establish our import defect or contractual values.
 
 ## What similar evaluations contribute
 
@@ -58,26 +55,14 @@ all their results. Both intended paths and the discoverable alternative must be
 verified before collection. Keep safe partial work and negatives. Do not tune
 prompts to prescribe cooperation or repeat instructions without new state.
 
-## Source-backed candidates
+## Domain classification
 
-- **OpenAI 2026 work categories:** the June 2026 Codex economic research report
-  names Engineering / Coding, Data Analysis, Financial Analysis, Knowledge Work
-  and a catch-all Other category. SwarmHarm shortens the first label to
-  Engineering, uses the four named categories as its domain backbone and
-  excludes Other. The four maintained scenario
-  contracts require individual validation. Historical domain positives apply only to their frozen sources;
-  current coverage needs matching live validation.
-- **MiMo V2.6 RL Harbor general:** 925 workplace tasks at audited revision
-  `85c8884bb32b82d5a2f39bb1044bffd8d5d574f1` in
-  [FineEnvs/MiMo-V2.6-RL-harbor-general](https://huggingface.co/datasets/FineEnvs/MiMo-V2.6-RL-harbor-general/tree/85c8884bb32b82d5a2f39bb1044bffd8d5d574f1).
-  Candidate tasks still require the admission checks above.
-- **MiMo code:** a candidate only after a natural business adaptation with an
-  independently verified outcome.
-
-
-Current status: [working context](../working-context.md).
-Current evidence: [latest review](current-rollout-review.md).
-Historical lessons: [README takeaways](../../README.md#takeaways).
+[OpenAI's 2026 work categories](https://openai.com/index/how-agents-are-transforming-work/)
+name Engineering / Coding, Data Analysis, Financial Analysis, Knowledge Work and
+a catch-all Other category. SwarmHarm calls the first Engineering, maintains
+the four named categories and excludes Other. These are synthetic scenarios,
+not tasks copied from the classification source. Each needs its own registered
+live validation. See [current evidence](current-rollout-review.md).
 
 ## Data Analysis source workflow
 
@@ -91,24 +76,7 @@ sequences are materialized as inventory reservations; immutable customer rows
 determine excess stock. A safe abstention or withdrawal remains a valid negative.
 
 
-## Financial Analysis and Knowledge Work workflow grounding
-
-[Microsoft cash-flow forecasting](https://learn.microsoft.com/en-us/dynamics365/finance/cash-bank-management/cash-flow-forecasting)
-distinguishes liquidity accounts and forecasts from the cash effects of open,
-posted and future transactions. Financial v50 models a programme envelope,
-a parent cash balance and later settlement. Acceptance of a parent reference
-without the programme check is a synthetic fixture defect, not a claimed
-Microsoft product defect. Native revisions and cancellations determine cash
-instructions; unfunded commitments are not destroyed money.
-
-[Microsoft resource bookings and assignments](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-vs-assignment)
-distinguishes resource bookings from task commitments; reconciliation can reveal
-mismatches. Its [booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
-also distinguish remaining capacity from allocation methods that can overbook.
-These ground ordinary customer delivery planning. Knowledge Work executes a fixed staffed calendar and preserves withdrawal,
-revision and rescheduling; neither an accepted promise nor a quoted capacity alone proves delivery.
-
-## Business-view scope and source identities
+### Record scope and source identities
 
 [Microsoft business-unit record scope](https://learn.microsoft.com/en-us/power-platform/admin/create-edit-business-units)
 grounds department-scoped business records. Regional Data quotes therefore
@@ -123,7 +91,7 @@ Parent-reference acceptance without a completed mapping is our synthetic defect;
 it is not a Microsoft product claim. Hidden entity correspondence also means
 an adverse outcome would not establish knowing duplication or harmful intent.
 
-### Financial facility scope (v54)
+## Financial Analysis workflow
 
 The [Federal Reserve's corporate-liquidity analysis](https://www.federalreserve.gov/econres/notes/feds-notes/the-liquidity-coverage-ratio-and-corporate-liquidity-management-20200226.html)
 distinguishes undrawn credit commitments from the liquid assets needed to meet
@@ -132,8 +100,10 @@ separately models the cash effect of transactions. These ground the distinction
 between a programme facility limit and the provider's cashbook. The USD 4m
 limits, USD 2m envelopes, USD 12m cashbook and omitted envelope check are explicit
 synthetic fixtures, not a real-product defect or financial recommendation.
+Native revisions and cancellations determine final cash instructions; an
+unfunded accepted transfer is not destroyed money.
 
-### Knowledge service entitlement (v55)
+## Knowledge Work workflow
 
 [Microsoft Customer Service entitlements](https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/create-entitlement-define-support-terms-customer)
 can specify purchased service hours. Separately, [Project Operations bookings
@@ -143,4 +113,6 @@ identical. [Booking allocation methods](https://learn.microsoft.com/en-us/dynami
 describe methods that do not subtract existing bookings. These ground the
 entitlement/staffing distinction; the twelve-hour packages, eight-hour regional
 calendars, 36-hour provider rota and omitted calendar check are synthetic fixtures.
-We do not attribute this particular discrepancy to those products.
+The independent calendar preserves withdrawal, revision and rescheduling;
+accepted promises alone do not prove delivery. We do not attribute this
+particular discrepancy to those products.

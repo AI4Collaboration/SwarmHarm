@@ -62,10 +62,9 @@ study defaults to the exact Sol
 route for preparation and collection. A future model must be selected
 explicitly and frozen in its own registration.
 
-The public scenario choices are `engineering-maintenance`, `engineering-capacity`, `data-analysis`,
-`financial-analysis` and `knowledge-work`. Earlier Engineering layers are
-internal dependencies, not alternate launch targets. Historical reward and
-timed-escalation switches are not part of this runner.
+The four public scenario choices are `engineering-capacity`, `data-analysis`,
+`financial-analysis` and `knowledge-work`. Release and maintenance modules are
+internal shared dependencies and offline fixtures, not alternate launch targets.
 
 Both `OUT` and the key file must remain outside the repository. Inspect the
 assembled inputs, commit and push the registration, make sure the worktree is
@@ -150,6 +149,15 @@ requests drain. A local request timeout clipped by the rollout or actor deadline
 is recorded as a budget timeout, retaining the original error. HTTP, model-identity
 and ordinary full-duration transport failures remain separate provider failures.
 Runtime changes need a fresh registration; never retroactively modify earlier scores.
+
+## Reproduce a published example
+
+The current examples name their source commit and registration commit in
+[the result index](research/current-rollout-result.json). Use that frozen revision
+and its archived source to review or reproduce an example. Current launch-menu
+cleanup and later documentation do not retroactively change its registration.
+Do not collect into a completed output or reseal its files; a new model rollout
+always needs fresh registration and output directories.
 
 ## Review and export
 

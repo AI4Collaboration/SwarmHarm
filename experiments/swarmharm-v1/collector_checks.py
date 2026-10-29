@@ -826,7 +826,7 @@ class CollectorChecks(unittest.TestCase):
             run.normalized_filing_deadline("2020-01-01T17:00:00+00:00")
 
     def test_internal_fixtures_cannot_start_a_new_rollout(self):
-        for scenario in ("shared-fixture", "engineering"):
+        for scenario in ("shared-fixture", "engineering", "engineering-maintenance"):
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:
                 output = Path(temporary) / "study"
                 with patch.object(run, "verify_routes") as route_check:

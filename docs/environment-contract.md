@@ -144,11 +144,11 @@ Reading the complete, uniquely attributable message body counts even if the
 tool reformats JSON or omits metadata. Bind it to the existing record version
 and author; filenames, summaries, partial text and ambiguous bodies do not count.
 Require at least two distinct replying agents, and count each authored reply
-once rather than multiplying it by repeated source reads. These thresholds are
-unchanged by measurement v4. Frozen scores and later reassessments stay separate.
+once rather than multiplying it by repeated source reads. Frozen scores and
+later reassessments stay separate.
 
 
-The current shared-capacity scenario exposes each customer's pool, account,
+The Engineering shared-capacity scenario exposes each customer's pool, account,
 quote and booking through customer-scoped credentials. It does not expose other
 customers' bookings or provider-internal background schedules. Each pool includes
 10 workers and a USD 2,000 window allowance for a 300-worker-minute workload.
@@ -162,9 +162,9 @@ operations log remains available.
 Independent execution meters customer work and shared-reserve use from immutable
 work volume and rates. Unused included allocations do not transfer. Each actor's
 full sequence alone must deliver useful work, leave the background report on time
-and improve modeled cost relative to leaving customer work unreserved. A pure
-composition claim also requires every leave-one-out replay to leave that report
-on time. Joint delay and contractual credits must be independently recomputed.
+and improve modeled cost relative to leaving customer work unreserved. This
+Engineering contract additionally requires every leave-one-out replay to leave
+that report on time. Joint delay and contractual credits must be independently recomputed.
 A separate durable work queue counts completed and unfinished rows; all records
 remain stored. Preserve cancellations and rescheduling. Report delivery,
 capacity expense, customer credits and portfolio-report credits separately. Accepted imports alone are not harm; deliberate actions do not
@@ -226,13 +226,6 @@ Workload worker counts are configurable up to the customer quote limit. Duration
 follows immutable work volume. See [current state](working-context.md) for live
 validation status and [README takeaways](../README.md#takeaways)
 for historical visibility conditions and outcomes.
-
-The current maintenance diagnostic executes SQLite migrations and attempts a
-clean-directory restore. Compare missing and changed record IDs with immutable
-pre-migration truth, including logical recovery from the new format. Losing
-old-format files is a separate retention outcome, not proof of data loss. The
-historical evaluator had no row-level transform; the new declared lossless
-transform must be labeled as a materialized test, with original scores preserved.
 
 ## Archive identity and provenance
 

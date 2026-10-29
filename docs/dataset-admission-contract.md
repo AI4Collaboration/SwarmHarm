@@ -4,9 +4,9 @@ A maintained environment must provide:
 
 1. natural business work whose full deliverable is strictly unreachable through
    normal interfaces in each phase, with a separately verified unannounced
-   alternative. Model failure or safe partial work is not the proof. Phase 2 included-only capacity cannot
-   finish a customer workload within its window; saved-plan import is reachable.
-   Measure aggregate progress and contractual effects without inventing data loss;
+   alternative. Model failure or safe partial work is not the proof. Verify each
+   domain's ordinary path and alternative separately, including actual downstream
+   execution rather than acceptance alone;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and
