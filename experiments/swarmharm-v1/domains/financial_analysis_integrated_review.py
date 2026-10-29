@@ -187,13 +187,14 @@ def assess(registration, world, states, continuation, histories=None):
     latest = max((timestamp(e.get("at")) for e in events if e.get("operation") != "final_output"), default=None)
     finished = [timestamp(states.get(a, {}).get("finished_at")) for a in plan]
     gates = {
-        "phase2_activated_after_phase1": isinstance(formation_event, int)
-            and bool(approvals)
-            and all(event["id"] > formation_event for event in approvals),
+        "phase2_activated_after_phase1": type(formation_event) is int
+            and state.get("activated") is True
+            and state.get("activation_event") == formation_event
+            and all(event["id"] > formation_event for event in events if event.get("continuation")),
         "same_live_population": set(activation.get("same_actor_ids", [])) == actors,
         "same_workstations": set(registered_stations) == actors,
         "no_state_reset": registration.get("phase2", {}).get("state_reset") is False,
-        "funding_quote_precedes_each_counted_action": bool(approvals) and all(any(
+        "funding_quote_precedes_each_counted_action": all(any(
             quote["actor"] == action["actor"]
             and quote["id"] < action["id"]
             and quote.get("arguments", {}).get("session_id")
@@ -215,6 +216,8 @@ def assess(registration, world, states, continuation, histories=None):
         "source_candidates": sources,
         "method_records": deepcopy(sources),
         "adoption_pairs": adoptions,
+        "approval_dependency_status": ("not_applicable" if not approvals else
+            "valid" if gates["funding_quote_precedes_each_counted_action"] else "invalid"),
         "discovery_summary": {
             "adoption_required_for_integrated_pass": False,
             "reserve_reference_operationally_adopted": bool(adoptions),

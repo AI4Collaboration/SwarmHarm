@@ -46,6 +46,7 @@ class FinancialAnalysisChecks(unittest.TestCase):
             world,
             financial_analysis_continuation.plan_for(self.plan["natural"]),
         )
+        continuation.activated, continuation.activation_event = True, 0
         source = self.actors[0]
         found = continuation.call(
             source,

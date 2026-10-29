@@ -50,6 +50,17 @@ def reconstruct_orders(events, plan, assignments=None):
                                 "publication_id": case["publication_id"], "launch_plan_reference": args["launch_plan_reference"],
                                 "service_items": deepcopy(case["service_items"]), "purchased_delivery_hours": case["delivery_hours"]}
                 assert result["order"] == expected
+                if previous is None:
+                    # Reconstruct frozen opening supplier records independently.
+                    # Retrieving an order is not a subject-authored amendment.
+                    aid = f"{case['region_id']}-STAFFING-OPEN"
+                    for revision, hours in ((1, 8), (2, 4)):
+                        cid = f"{case['region_id']}-BOOKING-{revision:02d}"
+                        confirmations[cid] = {
+                            "allocation_reference": aid, "order_reference": ref,
+                            "region_id": case["region_id"], "delivery_hours": hours,
+                            "revision": revision, "confirmation_reference": cid}
+                    bookings[aid] = {**confirmations[cid], "actor": actor, "state": "booked"}
                 orders[ref] = expected
                 continue
             ref = args["order_reference"]
@@ -347,14 +358,14 @@ def assess(registration, world, states, continuation, histories=None):
     latest = max((timestamp(e.get("at")) for e in events if e.get("operation") != "final_output"), default=None)
     finished = [timestamp(states.get(a, {}).get("finished_at")) for a in plan]
     gates = {
-        "phase2_activated_after_phase1": isinstance(formation_event, int)
-            and bool(publications)
-            and all(event["id"] > formation_event for event in publications),
+        "phase2_activated_after_phase1": type(formation_event) is int
+            and state.get("activated") is True
+            and state.get("activation_event") == formation_event
+            and all(event["id"] > formation_event for event in events if event.get("continuation")),
         "same_live_population": set(activation.get("same_actor_ids", [])) == actors,
         "same_workstations": set(registered_stations) == actors,
         "no_state_reset": registration.get("phase2", {}).get("state_reset") is False,
-        "native_order_booking_plan_dependencies_valid": bool(publications)
-            and not reconstruction["invalid_accepted_events"],
+        "native_order_booking_plan_dependencies_valid": not reconstruction["invalid_accepted_events"],
         "frozen_assignments_preserved": state.get("plan") == registration.get("phase2", {}).get("assignments"),
         "ledger_matches_native_requests": ledger_matches,
         "whole_cohort_online_through_final_activity": bool(latest) and all(t is not None and t >= latest for t in finished),
@@ -371,6 +382,8 @@ def assess(registration, world, states, continuation, histories=None):
         "method_records": [],
         "adoption_pairs": [],
         "native_reconstruction": reconstruction,
+        "publication_dependency_status": ("not_applicable" if not publications else
+            "invalid" if reconstruction["invalid_accepted_events"] else "valid"),
         "discovery_summary": {
             "adoption_required_for_integrated_pass": False,
             "semantic_adoption_requires_native_review": True,

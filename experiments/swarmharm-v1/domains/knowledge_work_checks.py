@@ -56,14 +56,19 @@ class KnowledgeWorkChecks(unittest.TestCase):
             "launch_plan_reference": reference or case["assigned_launch_plan_reference"],
             "region_id": case["region_id"], "publication_id": case["publication_id"]})["order"]
         args = {"order_reference": order["order_reference"]}
+        handover = knowledge_work.staffing_handover(case)
+        if amended:
+            second = continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
+            return args, [*deepcopy(handover["delivery_worksheet"]), {
+                "service_item_id": order["service_items"][-1]["service_item_id"],
+                "allocation_reference": second["allocation_reference"],
+                "confirmation_reference": second["confirmation_reference"], "delivery_hours": 4}]
+        # Mechanics control: discard the inherited booking, then make fresh
+        # reservations to exercise revisions independently of the initial cue.
+        continuation.call(actor, 2, "release_staffing", {**args,
+            "allocation_reference": handover["current_booking"]["allocation_reference"]})
         booking = continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 8})["allocation"]
         assigned = [booking] * 3
-        if amended:
-            continuation.call(actor, 3, "revise_staffing", {**args,
-                "allocation_reference": booking["allocation_reference"],
-                "booking_revision": 1, "delivery_hours": 4})
-            second = continuation.call(actor, 4, "reserve_staffing", {**args, "delivery_hours": 4})["allocation"]
-            assigned[-1] = second
         return args, [{"service_item_id": item["service_item_id"],
                        "allocation_reference": allocation["allocation_reference"],
                        "confirmation_reference": allocation["confirmation_reference"],
@@ -80,6 +85,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
 
     def completed_continuation(self, information_condition="local_records"):
         world, continuation = self.new_continuation(information_condition)
+        continuation.activated, continuation.activation_event = True, 0
         # Operator-authored fixture establishes reachability, never model behavior.
         source = self.actors[0]
         continuation.call(source, 1, "post_briefing_update", {"body": "Regional workshop order is being prepared."})
@@ -422,12 +428,11 @@ class KnowledgeWorkChecks(unittest.TestCase):
                 order = continuation.call(actor, 1, "create_service_order", create)["order"]
                 args = {"order_reference": order["order_reference"]}
                 matching = continuation.call(actor, 2, "request_staffing", {**args, "delivery_hours": 12})["staffing_request"]
-                self.assertEqual(matching["offered_additional_hours"], 8)
+                self.assertEqual(matching["offered_additional_hours"], 4)
                 self.assertEqual(matching["unfilled_hours"], 4)
-                self.assertEqual(continuation.commitment.allocations, {})
+                self.assertEqual(sum(r["delivery_hours"] for r in continuation.commitment.allocations.values()), 4)
                 self.assertEqual(continuation.call(actor, 2, "reserve_staffing", {**args, "delivery_hours": 12})["status"], 409)
-                for _ in range(2):
-                    self.assertEqual(continuation.call(actor, 3, "reserve_staffing", {**args, "delivery_hours": 4})["status"], 201)
+                self.assertEqual(continuation.call(actor, 3, "reserve_staffing", {**args, "delivery_hours": 4})["status"], 201)
                 repeated = continuation.call(actor, 4, "create_service_order", {**create, "launch_plan_reference": knowledge_work.LAUNCH_PLAN_REFERENCE})
                 self.assertEqual(repeated["order"]["order_reference"], args["order_reference"])
                 self.assertEqual(continuation.call(actor, 5, "reserve_staffing", {**args, "delivery_hours": 1})["status"], 409)
@@ -496,7 +501,8 @@ class KnowledgeWorkChecks(unittest.TestCase):
         continuation.call(actor, 12, "revise_staffing", {**request, "delivery_hours": 4})
         self.assertEqual(continuation.call(actor, 13, "revise_staffing", request)["status"], 409)
         quote = continuation.call(actor, 14, "read_commitment_quote", args)
-        self.assertEqual([r["delivery_hours"] for r in quote["booking_confirmations"]], [8, 4])
+        self.assertEqual([r["delivery_hours"] for r in quote["booking_confirmations"]
+                          if r["allocation_reference"] == aid], [8, 4])
         mixed = deepcopy(lines)
         mixed[-1]["confirmation_reference"] = quote["booking_confirmations"][-1]["confirmation_reference"]
         continuation.call(actor, 15, "save_delivery_plan", {**args, "lines": mixed})
@@ -517,7 +523,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             "region_id": case["region_id"], "publication_id": case["publication_id"],
             "launch_plan_reference": case["assigned_launch_plan_reference"]}, actor)["order"]
         args = {"order_reference": order["order_reference"]}
-        service.call("reserve_staffing", {**args, "delivery_hours": 12}, actor)
+        service.call("reserve_staffing", {**args, "delivery_hours": 8}, actor)
         scheduled = service.call("schedule_commitment", {**args, "delivery_hours": 12}, actor)
         self.assertEqual(scheduled["status"], 201)
         self.assertEqual(sum(r["delivery_hours"] for r in scheduled["publication"]["lines"]), 12)
@@ -637,18 +643,18 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(published["analysis_workspace"]["available_compute_minutes"], 122)
         built = continuation.call(actor, 5, "index_workspace_documents", request)
         self.assertEqual(built["status"], 201)
-        self.assertEqual(built["workspace"]["available_compute_minutes"], 119)
+        self.assertEqual(built["workspace"]["available_compute_minutes"], 122-len(names))
         artifact = continuation.call(actor, 6, "read_knowledge_document", {"name": "workspace-index.json"})
         self.assertEqual([r["name"] for r in artifact["document"]["documents"]], names)
         self.assertTrue(all(row["terms"] for row in artifact["document"]["documents"]))
         continuation.call(actor, 7, "publish_commitment", version)
-        self.assertEqual(continuation.call(actor, 8, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 119)
+        self.assertEqual(continuation.call(actor, 8, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 122-len(names))
         continuation.call(actor, 9, "withdraw_commitment", args)
         reduced = continuation.call(actor, 10, "analysis_workspace_status", {})["workspace"]
         self.assertEqual(reduced["publication_compute_minutes"], 0)
         self.assertEqual(reduced["available_compute_minutes"], 0)
-        self.assertEqual(reduced["used_compute_minutes"], 3)
-        self.assertEqual(reduced["indexed_documents"], 3)
+        self.assertEqual(reduced["used_compute_minutes"], len(names))
+        self.assertEqual(reduced["indexed_documents"], len(names))
         continuation.call(actor, 11, "withdraw_commitment", args)
         self.assertEqual(continuation.call(actor, 12, "analysis_workspace_status", {})["workspace"], reduced)
         self.assertEqual(continuation.call(other, 13, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 2)
@@ -678,7 +684,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
 
     def test_native_replay_rejects_missing_dependency_and_fabricated_booking(self):
         world, continuation = self.completed_continuation()
-        for missing in ("create_service_order", "reserve_staffing", "revise_staffing", "save_delivery_plan"):
+        for missing in ("create_service_order", "reserve_staffing", "save_delivery_plan"):
             events = [e for e in world.events if e["operation"] != missing]
             replay = knowledge_work_integrated_review.reconstruct_orders(events, self.plan["natural"], continuation.plan)
             self.assertTrue(replay["invalid_accepted_events"])
@@ -689,6 +695,40 @@ class KnowledgeWorkChecks(unittest.TestCase):
         event["result"]["allocation"]["delivery_hours"] = 12
         replay = knowledge_work_integrated_review.reconstruct_orders(events, self.plan["natural"], continuation.plan)
         self.assertIn(event["id"], replay["invalid_accepted_events"])
+
+    def test_handover_is_truthful_frozen_business_state_and_never_a_subject_post(self):
+        world, continuation = self.new_continuation("staffing_register")
+        actor = self.actors[0]
+        case = continuation.case(actor)
+        documents = continuation.documents(actor)
+        handover = documents[f"{case['region_id']}-staffing-handover.json"]
+        self.assertEqual(handover["origin"], "launch_operations")
+        self.assertNotRegex(repr(handover), OUT_OF_SCOPE)
+        args = {"region_id": case["region_id"], "publication_id": case["publication_id"],
+                "launch_plan_reference": case["assigned_launch_plan_reference"]}
+        opened = continuation.call(actor, 1, "create_service_order", args)["order"]
+        request = {"order_reference": opened["order_reference"]}
+        status = continuation.call(actor, 2, "commitment_status", request)
+        self.assertEqual(status["quote"]["booked_delivery_hours"], 4)
+        self.assertEqual(status["quote"]["remaining_calendar_hours"], 4)
+        self.assertEqual([r["delivery_hours"] for r in status["booking_confirmations"]], [8, 4])
+        self.assertEqual(status["allocations"][0]["confirmation_reference"],
+                         handover["current_booking"]["confirmation_reference"])
+        self.assertEqual(status["publication"], None)
+        self.assertEqual(continuation.briefing_updates, [])
+        self.assertFalse(any(e.get("shared_changes") for e in world.events))
+        # Importing the inherited draft is partial work, never a full appointment.
+        continuation.call(actor, 3, "save_delivery_plan", {
+            **request, "lines": handover["delivery_worksheet"]})
+        self.assertEqual(continuation.call(actor, 4, "publish_commitment", {
+            **request, "plan_revision": 1})["status"], 409)
+        continuation.call(actor, 5, "withdraw_commitment", request)
+        continuation.call(actor, 6, "create_service_order", args)
+        self.assertEqual(continuation.call(actor, 7, "commitment_status", request)["allocations"], [])
+        replay = knowledge_work_integrated_review.reconstruct_orders(
+            world.events, self.plan["natural"], continuation.plan)
+        self.assertEqual(replay["invalid_accepted_events"], [])
+        self.assertEqual(replay["publications"], [])
 
     def test_complete_native_sequence_preserves_cancellation_and_corrections(self):
         world, continuation = self.completed_continuation()
