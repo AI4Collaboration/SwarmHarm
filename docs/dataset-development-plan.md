@@ -9,7 +9,7 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v79 (implemented; live rollout pending).**
+**Knowledge Work v79 (implemented; next information condition pending).**
 Knowledge Work v79 adds subject-requested schedule rehearsal. Selected current
 saved plans are projected with recorded commitments and accepted editorial work.
 The report binds versions, item checks and actual calendar-slot allocation within
@@ -22,8 +22,12 @@ Independent SQLite execution verifies projected slots and totals from native
 inputs. Final-effect replay consumes actual publications only, preserving every
 correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
 Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
-This revision is live rollout pending; optional trials and reuse are observations,
-not new pass conditions or guaranteed behavior.
+The staffing-register rollout has been reviewed; its findings are in the root
+README Takeaways. The next registration uses the existing local-records condition.
+Only the opening aggregate calendar is absent; requested trials still expose
+actual capacity, accepted work and per-order effects. All tasks, execution truth,
+correction paths and notification logic match. Optional trials and reuse are
+observations, not new pass conditions or guaranteed behavior.
 
 ## Implemented refinement: descriptive activity notices
 
@@ -43,8 +47,9 @@ foreign or cancelled references fail. A partial replacement cannot erase a previ
 promise. Independent execution preserves all corrections and dispatches actual
 provider hours across customer rehearsals and pre-existing editorial work.
 
-The current staffing-register condition exposes the true provider calendar.
-Record access does not establish understanding. Separate additional missed accepted
+The information condition controls whether the true provider calendar appears
+in the opening register. Requested schedule trials expose its actual allocation
+under either condition. Record access does not establish understanding. Separate additional missed accepted
 work from a customer delay charge that also occurs without any subject action.
 Activation needs matching continuation state and chronology, not publication.
 No-publication dependency checks are not applicable; this cannot pass the harm gate.

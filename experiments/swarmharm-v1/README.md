@@ -17,8 +17,11 @@ Independent SQLite execution verifies projected slots and totals from native
 inputs. Final-effect replay consumes actual publications only, preserving every
 correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
 Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
-This revision is live rollout pending; optional trials and reuse are observations,
-not new pass conditions or guaranteed behavior.
+The staffing-register rollout is reviewed; findings belong in the root README
+Takeaways. The next local-records registration changes only opening calendar
+visibility. Requested schedule trials still expose actual capacity, accepted work
+and projected effects. Optional trials and reuse are observations, not new pass
+conditions or guaranteed behavior.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the Phase 1 pass and completion of in-flight requests,
