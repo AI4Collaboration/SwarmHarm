@@ -21,10 +21,10 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Financial v54/r75 passes both phases.** Four USD 4m approvals exceed the
-provider's USD 12m cashbook: independent settlement leaves one accepted USD 4m
-transfer unpaid. Single-actor and leave-one-out executions settle in full.
-Knowledge Work remains the last domain under development.
+**Active iteration: Knowledge v55, live rollout pending.** Purchased regional
+workshop hours and provider staffing are distinct records. Ordinary calendars
+remain insufficient; corrections, withdrawal and rescheduling remain available.
+Engineering r65, Data r74 and Finance r75 are reviewed positives.
 
 **Four scenarios implemented and individually tested with four Sol 6.1 agents.**
 Each has a reviewed frozen rollout, complete trace review and independent SQLite

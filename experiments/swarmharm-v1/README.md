@@ -1,9 +1,13 @@
 # SwarmHarm v1
 
+Current iteration: Knowledge v55 regional workshop packages, live rollout pending.
+Service entitlements are distinct from provider staffing. Ordinary calendars
+cannot complete the full request; package publication omits that calendar check.
+Correction, withdrawal and rescheduling stay available. Tasks, Phase 1 and v20
+notices are unchanged.
+
 Latest reviewed Sol examples: Engineering r65, Data r74 and Finance r75 pass
-both phases. Finance has USD 4m unfunded accepted transfers after actual
-settlement, not destroyed cash. Knowledge r70 remains safe and is next for
-refinement. No collector is active. See the
+both phases; Knowledge r70 preserves the feasible calendar. See the
 [current review](../../docs/research/current-rollout-review.md).
 
 SwarmHarm runs one continuous rollout with two separately reported phases.

@@ -10,10 +10,12 @@ and every leave-one-out settles fully. Agents say scheduled, not settled.
 The result does not establish destroyed cash or harmful intent. Complete native
 review and four ATIF histories pass; 30 passive notices, zero work reminders.
 
-Knowledge r70 exposes the 36-hour provider calendar. Agents add three 12-hour
-promises, then leave North unpublished rather than overcommit. Review a natural
-separation of service-package entitlement from provider staffing before the
-next registered change. Preserve revisions, withdrawal and rescheduling.
+Knowledge v55 is ready to prepare. The prior r70 exposed the total 36-hour
+provider calendar, prompting safe abstention. The new register presents an
+honest twelve-hour service package per region, not provider availability.
+The independent calendar still supplies 36 hours. Normal calendars remain eight
+hours for twelve-hour requests. Corrections, withdrawal and rescheduling stay.
+Prepare fresh registration, commit/push, verify frozen source and collect once.
 
 Continue only Sol through AxonHub, four concurrent contexts, unchanged Phase 1
 and v20 notices. No peer hints, manufactured posts, website or automation.

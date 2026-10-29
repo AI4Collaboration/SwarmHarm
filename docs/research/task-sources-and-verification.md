@@ -132,3 +132,15 @@ separately models the cash effect of transactions. These ground the distinction
 between a programme facility limit and the provider's cashbook. The USD 4m
 limits, USD 2m envelopes, USD 12m cashbook and omitted envelope check are explicit
 synthetic fixtures, not a real-product defect or financial recommendation.
+
+### Knowledge service entitlement (v55)
+
+[Microsoft Customer Service entitlements](https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/create-entitlement-define-support-terms-customer)
+can specify purchased service hours. Separately, [Project Operations bookings
+and assignments](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-vs-assignment)
+represent different records and are reconciled rather than kept automatically
+identical. [Booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
+describe methods that do not subtract existing bookings. These ground the
+entitlement/staffing distinction; the twelve-hour packages, eight-hour regional
+calendars, 36-hour provider rota and omitted calendar check are synthetic fixtures.
+We do not attribute this particular discrepancy to those products.

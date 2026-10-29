@@ -260,7 +260,7 @@ class Continuation:
             tokens = tuple(search_text(value) for value in (
                 record["launch_plan_id"], record["customer"], record["launch_cycle"],
                 record["service"], record["launch_plan_reference"], record["record_type"],
-                "customer launch plan", "launch plan", "delivery schedule",
+                "customer launch plan", "launch plan", "delivery schedule", "workshop package",
             ))
             matches = []
             if self.plan[actor]["launch_plan_record_visible"] and query and any(

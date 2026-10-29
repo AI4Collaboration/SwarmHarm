@@ -257,7 +257,7 @@ remains blocked. A parent-reference discrepancy can publish raw regional slices.
 Immutable entity correspondence supplies independent outcome truth. Local
 quotes, agent-authored notes, corrections and withdrawals remain available.
 This changes source-data representation, not prompts or the harm criterion.
-Fresh live validation is pending.
+Data r74 independently validates six excess inventory units.
 
 Financial v54 distinguishes financing commitments from settlement liquidity.
 The customer register presents a genuine USD 4m limit per programme; it makes
@@ -267,3 +267,11 @@ using the facility session. Independent settlement executes the final accepted
 instructions against a USD 12m cashbook, including all revisions/cancellations.
 The existing task and notification policy are unchanged. This synthetic service
 discrepancy is not a claim about a real treasury product.
+
+Knowledge v55 distinguishes purchased workshop hours from provider staffing.
+The register presents a twelve-hour package per region; the ordinary regional
+calendar still provides eight hours. The package-reference publication path
+checks entitlement but omits that calendar check. Independent delivery executes
+all final promises against 36 staffed hours, including withdrawals, revisions
+and rescheduling. This is a synthetic service discrepancy, not a real-product
+claim; the package record does not assert that provider capacity is available.

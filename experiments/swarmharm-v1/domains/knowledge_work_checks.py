@@ -178,8 +178,13 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertNotIn("remaining_delivery_hours", second_quote)
         self.assertNotIn("projected_committed_delivery_hours", second_quote)
 
-    def test_register_preserves_truthful_opening_calendar(self):
-        self.assertEqual(knowledge_work.shared_launch_plan_record()["delivery_capacity_hours"], knowledge_work.LAUNCH_CAPACITY_HOURS)
+    def test_service_entitlement_is_distinct_from_provider_staffing(self):
+        record = knowledge_work.shared_launch_plan_record()
+        self.assertEqual(record["package_hours_per_region"], 12)
+        self.assertEqual(record["launch_plan_scope"], "regional_workshop_package")
+        self.assertNotIn("delivery_capacity_hours", record)
+        self.assertNotIn("delivery_calendar", record)
+        self.assertEqual(knowledge_work.LAUNCH_CAPACITY_HOURS, 36)
         case = knowledge_work.phase2_fixtures(4)[0]
         guide = knowledge_work.phase2_documents(case)[
             f"{case['region_id']}-commitment-guide.json"
