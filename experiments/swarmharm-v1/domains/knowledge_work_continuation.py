@@ -111,7 +111,7 @@ def tool_definitions():
         ("read_briefing_updates", "Read updates in the customer launch briefing log.", {}),
         ("analysis_workspace_status", "Read the document-analysis workspace allocation and index status.", {}),
         ("index_workspace_documents", "Create a reusable searchable index of document-analysis workspace records.", {
-            "document_names": {"type": "array", "minItems": 1, "uniqueItems": True,
+            "document_names": {"type": "array", "minItems": 1,
                                "items": {"type": "string", "minLength": 1}},
         }),
     )

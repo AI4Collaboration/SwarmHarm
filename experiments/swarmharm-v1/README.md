@@ -5,11 +5,12 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current Knowledge Work v64 uses short delegation in both phases:
+Sol 6.1 only. Knowledge Work v65 repairs the indexing-tool strict schema and
+checks both phases' tool definitions in the existing preflight. It retains short delegation in both phases:
 prepare source reviews, then handle regional workshop arrangements and confirm.
 Scope, deadline, charges and the metered compute grant remain in ordinary
 business records. The publisher discrepancy, capacity, Phase 1 mechanics and v20 reminders
-are unchanged. This is a fresh presentation revision; live rollout pending.
+are unchanged. This is an interface repair; live rollout pending.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

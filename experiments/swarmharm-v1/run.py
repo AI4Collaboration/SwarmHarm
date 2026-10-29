@@ -1155,17 +1155,23 @@ def collect(root,registration_dir):
             'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False},'strict':True}
         for provider,model in reg['models'].items():
             history=[{'role':'user','content':'Check service availability using confirm_service.'}]
-            request=body(history,provider);request['tools']=[tool]
+            request=body(history,provider)
+            request['tools']=[tool,*next(iter(initial['natural'].values()))['tools']]
+            request['tool_choice']={'type':'function','name':'confirm_service'}
             first=infer(request,root/'preflight'/provider,'0001');calls=[v for v in first['output'] if v['type']=='function_call']
             require(
                 len(calls)==1 and calls[0]['name']=='confirm_service'
                 and empty_tool_arguments(calls[0]['arguments']),
                 'Model preflight did not call confirm_service exactly once.')
             history+=first['output']+[{'type':'function_call_output','call_id':calls[0]['call_id'],'output':'{"status":"available"}'}]
-            request=body(history,provider);request['tools']=[tool];second=infer(request,root/'preflight'/provider,'0002')
+            request=body(history,provider)
+            request['tools']=[tool,*continuation_module.tool_definitions()]
+            request['tool_choice']='none'
+            second=infer(request,root/'preflight'/provider,'0002')
             require(bool(transport.output_text(second)),
                 'Model preflight did not return a terminal text response.')
-            save(root/'preflight'/provider/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning']})
+            save(root/'preflight'/provider/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning'],
+                'subject_tool_schemas_checked':['phase1','phase2'],'subject_tools_executed':False})
         states,summary=phase('natural')
         update(status='collected' if len(states)==len(reg['plan']['natural']) and all(v['status']=='completed' for v in states.values()) else 'collected_with_limits')
     except ObservationHold as error:update(status='observer_hold',error=str(error))

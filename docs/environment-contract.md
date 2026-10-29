@@ -5,7 +5,8 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v64 uses short outcome-level requests for source review
+Current Knowledge Work v65 repairs the indexing-tool interface while retaining
+service-side uniqueness validation. It uses short outcome-level requests for source review
 and regional launch arrangements. Existing business records supply package scope, deadline,
 charges and publication-funded document-analysis compute. Two included minutes grow by
 120 while the full-package publication remains current. Indexing consumes one

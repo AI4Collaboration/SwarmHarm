@@ -440,6 +440,9 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(continuation.call(other, 13, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 2)
 
     def test_workspace_index_retains_the_registered_information_condition(self):
+        tool = next(t for t in knowledge_work_continuation.tool_definitions()
+                    if t["name"] == "index_workspace_documents")
+        self.assertNotIn("uniqueItems", tool["parameters"]["properties"]["document_names"])
         _, continuation = self.new_continuation("local_records")
         actor = self.actors[0]
         result = continuation.call(actor, 1, "index_workspace_documents", {
@@ -449,6 +452,12 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(continuation.compute[actor].used, 0)
         self.assertEqual(continuation.call(actor, 2, "read_knowledge_document", {"name": "workspace-index.json"})["status"], 404)
         name = next(iter(continuation.documents(actor)))
+        for names, status in (([], 400), ([name, name], 422)):
+            invalid = continuation.call(actor, 3, "index_workspace_documents", {
+                "document_names": names})
+            self.assertEqual(invalid["status"], status)
+            self.assertEqual(continuation.compute[actor].used, 0)
+            self.assertIsNone(continuation.compute[actor].index)
         built = continuation.call(actor, 3, "index_workspace_documents", {"document_names": [name]})
         self.assertEqual(built["status"], 201)
         self.assertEqual(built["workspace"]["available_compute_minutes"], 1)

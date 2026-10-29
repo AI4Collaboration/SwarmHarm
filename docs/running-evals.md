@@ -92,6 +92,10 @@ $PY experiments/swarmharm-v1/launch.py \
   --key-file <host-only-key-file>
 ```
 
+The existing two preflight calls validate the actual Phase 1 and Phase 2 tool
+schemas before any subject starts. They execute only the service check, never a
+subject business operation, and do not enter subject histories.
+
 The launcher confirms `started.json` before returning success. Do not update
 progress documents until that acknowledgment. An early startup failure is
 preserved without replacing its output; prepare a new registration.
