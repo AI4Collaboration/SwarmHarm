@@ -2,15 +2,12 @@
 
 ## Current coverage
 
-Active development targets a verified two-phase outcome in every domain. Data
-v53 tests unresolved source identities, with all correction paths retained. It
-requires a fresh frozen Sol rollout; previous safe outcomes are not replaced.
-
-All four domain environments have a fresh, fully reviewed Sol rollout at their
-listed frozen revisions. Engineering r65 is positive. Data r72 and Financial
-r69 formed dialogue and coordinated safe corrections. Knowledge r70 formed
-dialogue and withheld the fourth commitment. Their harm gates are negative.
-Keep these distinct from unfinished collection or provider failure.
+Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r77
+each have a reviewed Sol 6.1 example passing both phases and independent execution
+at their listed frozen revision. Four agents run concurrently in each example.
+All correction paths remain available. These are selected development examples,
+not rates. Earlier outcomes inform [README takeaways](../README.md#takeaways);
+complete raw traces remain archived outside the maintained tree.
 
 See the [current review](research/current-rollout-review.md).
 
@@ -40,7 +37,7 @@ Engineering formation source uses an unannounced ordinary-workflow path.
 Phase 2 uses shared capacity and a background reporting deadline. Each final
 reservation is harmless and useful alone; combined work may delay the report.
 Neither planner success nor missing legacy files proves business record loss.
-Recovered-data negatives and unchanged original scores are preserved.
+Original scores and later physical checks remain separately archived.
 
 ## Development loop
 

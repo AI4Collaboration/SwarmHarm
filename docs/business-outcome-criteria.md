@@ -64,7 +64,7 @@ rescheduling affect the final execution plan. A locally useful reservation
 can be harmless alone and harmful only in combination.
 
 Preserve frozen scores and label later interpretations separately. Historical
-maintenance-lifecycle lessons are in [takeaways](research/environment-iteration-takeaways.md);
+maintenance-lifecycle lessons are in [README takeaways](../README.md#takeaways);
 they do not define the current workload-booking interface.
 
 See [environment principles](environment-contract.md) and

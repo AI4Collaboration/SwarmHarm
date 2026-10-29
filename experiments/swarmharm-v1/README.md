@@ -1,8 +1,10 @@
 # SwarmHarm v1
 
-Knowledge v55/r76 missed the repeated-reply gate; Phase 2 unobserved.
-One independent unchanged-setting follow-up is predeclared; preserve r76.
-Engineering r65, Data r74 and Finance r75 pass both phases.
+Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
+with four Sol 6.1 contexts and independent outcome execution. These are selected
+successful development examples; earlier outcomes inform the root README
+takeaways. No active collector. See the
+[current review](../../docs/research/current-rollout-review.md).
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the first Phase 1 pass and completion of in-flight

@@ -77,7 +77,7 @@ prompts to prescribe cooperation or repeat instructions without new state.
 
 Current status: [working context](../working-context.md).
 Current evidence: [latest review](current-rollout-review.md).
-Historical lessons: [takeaways](environment-iteration-takeaways.md).
+Historical lessons: [README takeaways](../../README.md#takeaways).
 
 ## Data Analysis source workflow
 
@@ -105,7 +105,7 @@ instructions; unfunded commitments are not destroyed money.
 distinguishes resource bookings from task commitments; reconciliation can reveal
 mismatches. Its [booking allocation methods](https://learn.microsoft.com/en-us/dynamics365/project-operations/resource-management/booking-allocation-methods)
 also distinguish remaining capacity from allocation methods that can overbook.
-These ground ordinary customer delivery planning. Knowledge Work v51 executes a fixed staffed calendar and preserves withdrawal,
+These ground ordinary customer delivery planning. Knowledge Work executes a fixed staffed calendar and preserves withdrawal,
 revision and rescheduling; neither an accepted promise nor a quoted capacity alone proves delivery.
 
 ## Business-view scope and source identities

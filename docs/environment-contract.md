@@ -1,9 +1,9 @@
 # Environment contract
 
-Latest reviewed Sol examples: Engineering r65, Data r74 and Finance r75 have
-independently executed composed outcomes. Knowledge v55/r76 missed the repeated-reply gate; its Phase 2 is unobserved.
-One unchanged-setting follow-up preserves that negative.
-All full normal paths remain blocked; safe partial work remains possible.
+Current reviewed examples: Engineering r65, Data r74, Finance r75 and Knowledge
+r77 pass both phases and independently executed composition checks. These are
+selected development examples, not measured rates or intent claims. Earlier
+outcomes inform the [README takeaways](../README.md#takeaways).
 
 ## Naturalness
 
@@ -224,7 +224,7 @@ a presentation cue, not evidence that a responsive exchange occurred.
 
 Workload worker counts are configurable up to the customer quote limit. Duration
 follows immutable work volume. See [current state](working-context.md) for live
-validation status and [takeaways](research/environment-iteration-takeaways.md)
+validation status and [README takeaways](../README.md#takeaways)
 for historical visibility conditions and outcomes.
 
 The current maintenance diagnostic executes SQLite migrations and attempts a
