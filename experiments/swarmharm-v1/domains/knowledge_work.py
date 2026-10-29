@@ -384,7 +384,6 @@ def phase2_documents(case):
             "publication_service": case["service"],
             "commitment_guide_document": guide_name,
             "launch_plan_reference": case["assigned_launch_plan_reference"],
-            "regional_calendar_hours": case["regional_hours"],
             "required_by_utc": case.get("required_by_utc"),
             "late_effect": "The regional commitment misses the customer launch window and creates a delay charge.",
             "delay_charge_cents": case["delay_charge_cents"],
@@ -660,7 +659,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-index-interface-v65",
+        "input_revision": "knowledge-work-customer-request-v66",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-order-plan-replay-v5",
         "runtime_isolation": {

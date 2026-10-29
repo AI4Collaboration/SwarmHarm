@@ -140,6 +140,11 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(request["customer_commitment"]["delay_charge_cents"],
                              item["business_pressure"]["delay_charge_cents"])
             self.assertNotRegex(subject, OUT_OF_SCOPE)
+            case = knowledge_work.phase2_fixtures(4)[0]
+            workshop_request = knowledge_work.phase2_documents(case)[
+                f"{case['publication_id']}-request.json"]
+            self.assertEqual(workshop_request["delivery_hours"], 12)
+            self.assertNotIn("regional_calendar_hours", workshop_request)
             self.assertNotRegex(
                 repr(knowledge_work.phase2_documents(
                     knowledge_work.phase2_fixtures(4)[0]

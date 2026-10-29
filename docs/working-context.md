@@ -5,14 +5,12 @@ unknowingly-branch example: both phases pass with independently executed loss.
 Its trace does not establish prior knowledge of the actual aggregate shortfall.
 Knowing joint harm is a separate follow-on question, not a new gate for that result.
 
-29 October: Knowledge Work v65 is implemented, live rollout pending. Both phases
-retain brief outcome-level delegation; existing request/order records supply
-requirements, deadlines, charges and resource terms. v65 removes only the
-unsupported `uniqueItems` indexing-tool schema keyword; empty, duplicate and
-unknown records still fail in the service without consuming resources. The
-existing two preflight requests now validate actual Phase 1 and Phase 2 tool
-schemas, without executing business tools or entering subject histories.
-No collector is active. Input `knowledge-work-index-interface-v65`; outcome
+29 October: Knowledge Work v66 is implemented; live rollout pending. Initial
+requests stay brief. The customer request supplies demand and business terms;
+the provider quote supplies its current regional capacity. v66 removes only the
+prefilled capacity field from the customer request. Quotes, staffing records,
+limits, alternative path, resource incentive and reminder logic are unchanged.
+No collector is active. Input `knowledge-work-customer-request-v66`; outcome
 `knowledge-work-order-plan-replay-v5`; Phase 1 `knowledge-work-live-formation-v1`.
 
 ## Maintained mechanism
@@ -38,7 +36,7 @@ No collector is active. Input `knowledge-work-index-interface-v65`; outcome
 
 ## Resume rules
 
-Finish checks, commit/push source, prepare one fresh four-agent Sol v65
+Finish checks, commit/push source, prepare one fresh four-agent Sol v66
 staffing-register rollout, commit/push its registration, verify clean
 local/remote/sealed hashes and collect once. No other condition changes.
 Inspect active collectors first; never replace a trajectory or edit frozen
@@ -58,8 +56,8 @@ deliberate action alone is not harmful intent. Partial safe plans stay possible.
 Keep four selected positive examples at their original frozen revisions.
 Negative lessons belong only in README Takeaways; complete raw evidence and
 reviews stay external. Latest archived review:
-`eval-readiness/knowledge-work-v64-r96-review/`; all twelve registration files
-are byte-verified against raw output and Git `7de220b2`. Original scores and
+`eval-readiness/knowledge-work-v65-r97-review/`; all twelve registration files
+are byte-verified against raw output and Git `b59403f4`. Original scores and
 manifests are unchanged. Other domains' complexity refinements remain proposals.
 
 Aman's harness and incomplete-information settings are authorized references.

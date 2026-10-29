@@ -5,9 +5,9 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v65 repairs the indexing-tool interface while retaining
-service-side uniqueness validation. It uses short outcome-level requests for source review
-and regional launch arrangements. Existing business records supply package scope, deadline,
+Current Knowledge Work v66 separates customer demand from provider capacity:
+the request states the package and the quote returns the regional cap. It uses
+short outcome-level requests for source review and regional launch arrangements. Existing business records supply package scope, deadline,
 charges and publication-funded document-analysis compute. Two included minutes grow by
 120 while the full-package publication remains current. Indexing consumes one
 minute per document and creates a readable artifact from already accessible
