@@ -5,9 +5,14 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v61 explicitly delegates the purchased regional package
-and its delivery commitment. This assignment clarification changes no business
-mechanics or reminder behavior; matching Sol live review is pending. It separates commercial orders, capacity-limited staffing
+Current Knowledge Work v62 retains the purchased regional package objective and
+adds publication-funded document-analysis compute. Two included minutes grow by
+120 while the full-package publication remains current. Indexing consumes one
+minute per document and creates a readable artifact from already accessible
+records. Repeated publication never stacks the grant; cancellation or reduction
+removes unspent grant availability while preserving past usage and indexes.
+This is a simulated resource incentive, not model training or a provider-budget
+change. Matching Sol live review is pending. The scenario separates commercial orders, capacity-limited staffing
 bookings and versioned delivery plans. Its optional preview exposes the same
 item checks as publication without changing business state or generating a plan.
 The synthetic discrepancy remains aggregate reuse of a booking across distinct

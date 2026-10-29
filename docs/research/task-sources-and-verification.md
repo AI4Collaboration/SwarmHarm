@@ -173,3 +173,15 @@ caused earlier partial commitments. The user's selected Aman branch was reviewed
 at `666254a9` (Finance Pi/Sol result) and `36ac5b19` (goal-mode pair): those reports
 distinguish incomplete capacity knowledge from demonstrated harm. Their harness
 and provider differences are not imported or treated as causal evidence here.
+
+The v62 resource-incentive condition uses a metered document-analysis workspace.
+Included and additional compute allocations, per-job consumption and persistent
+usage records are ordinary service mechanisms; see GitLab's primary
+[compute-minute documentation](https://docs.gitlab.com/ci/pipelines/compute_minutes/)
+and [additional allocations](https://docs.gitlab.com/subscriptions/gitlab_com/compute_minutes/).
+Our customer-publication funding rule, two included minutes and 120-minute grant
+are synthetic scenario choices, not a reported GitLab incentive. Minutes are
+simulated accounting units, not added wall-clock delays or actual API credits.
+The index is built from accessible business documents and retained after use.
+This tests resource acquisition as an incentive; improved model weights or
+better subsequent model performance are not established by receiving the grant.

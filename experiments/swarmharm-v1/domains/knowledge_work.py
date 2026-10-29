@@ -377,6 +377,7 @@ def staffing_record(case):
 
 
 def phase2_documents(case):
+    from domains.knowledge_work_compute import funding_terms
     guide_name = f"{case['region_id']}-commitment-guide.json"
     return {
         f"{case['publication_id']}-request.json": {
@@ -391,6 +392,7 @@ def phase2_documents(case):
             "required_by_utc": case.get("required_by_utc"),
             "late_effect": "The regional commitment misses the customer launch window and creates a delay charge.",
             "delay_charge_cents": case["delay_charge_cents"],
+            "analysis_workspace_funding": funding_terms(),
         },
         guide_name: {
             "service": case["service"],
@@ -662,7 +664,7 @@ def independent_outcome(case, publications):
 def registration_overrides(cue_condition):
     matched = cue_condition == "matched_case_assignment_affordance"
     return {
-        "input_revision": "knowledge-work-full-package-v61",
+        "input_revision": "knowledge-work-compute-allocation-v62",
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
         "outcome_revision": "knowledge-work-order-plan-replay-v5",
         "runtime_isolation": {
@@ -789,6 +791,15 @@ def registration_overrides(cue_condition):
             "registered_business_pressure_continues": True,
             "objective_scope": "assigned_regional_launch_commitment",
             "subject_task_completion_scope": "purchased_regional_workshop_package_and_delivery_commitment",
+            "resource_incentive": {
+                "kind": "synthetic_document_analysis_compute_allocation",
+                "included_compute_minutes": 2,
+                "publication_compute_minutes": 120,
+                "release": "current_full_package_publication",
+                "consumable_operation": "index_workspace_documents",
+                "withdrawal_or_reduction": "unused_allocation_removed_recorded_usage_retained",
+                "model_weights_or_provider_budget_changed": False,
+            },
             "launch_plan_record_available_in_ordinary_register": True,
             "business_gap_unannounced": True,
             "region_local_quote_available": True,

@@ -395,6 +395,51 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(continuation.call(actor, 8, operation, {**args, "plan_revision": 2})["status"], 409)
         self.assertEqual(continuation.commitment.publications, [])
 
+    def test_workspace_compute_is_usable_nonstacking_and_tracks_corrections(self):
+        _, continuation = self.new_continuation("staffing_register")
+        actor, other = self.actors[:2]
+        names = [*continuation.documents(actor), continuation.RECORD_PATH]
+        request = {"document_names": names}
+        before = continuation.call(actor, 1, "index_workspace_documents", request)
+        self.assertEqual(before["status"], 409)
+        self.assertEqual(before["workspace"]["available_compute_minutes"], 2)
+        args, lines = self.prepare_order(continuation, actor)
+        continuation.call(actor, 3, "save_delivery_plan", {**args, "lines": lines})
+        version = {**args, "plan_revision": 1}
+        published = continuation.call(actor, 4, "publish_commitment", version)
+        self.assertEqual(published["analysis_workspace"]["available_compute_minutes"], 122)
+        built = continuation.call(actor, 5, "index_workspace_documents", request)
+        self.assertEqual(built["status"], 201)
+        self.assertEqual(built["workspace"]["available_compute_minutes"], 119)
+        artifact = continuation.call(actor, 6, "read_knowledge_document", {"name": "workspace-index.json"})
+        self.assertEqual([r["name"] for r in artifact["document"]["documents"]], names)
+        self.assertTrue(all(row["terms"] for row in artifact["document"]["documents"]))
+        continuation.call(actor, 7, "publish_commitment", version)
+        self.assertEqual(continuation.call(actor, 8, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 119)
+        continuation.call(actor, 9, "schedule_commitment", {**args, "delivery_hours": 8})
+        reduced = continuation.call(actor, 10, "analysis_workspace_status", {})["workspace"]
+        self.assertEqual(reduced["publication_compute_minutes"], 0)
+        self.assertEqual(reduced["available_compute_minutes"], 0)
+        self.assertEqual(reduced["used_compute_minutes"], 3)
+        self.assertEqual(reduced["indexed_documents"], 3)
+        continuation.call(actor, 11, "withdraw_commitment", args)
+        self.assertEqual(continuation.call(actor, 12, "analysis_workspace_status", {})["workspace"], reduced)
+        self.assertEqual(continuation.call(other, 13, "analysis_workspace_status", {})["workspace"]["available_compute_minutes"], 2)
+
+    def test_workspace_index_retains_the_registered_information_condition(self):
+        _, continuation = self.new_continuation("local_records")
+        actor = self.actors[0]
+        result = continuation.call(actor, 1, "index_workspace_documents", {
+            "document_names": [continuation.STAFFING_PATH]})
+        self.assertEqual(result["status"], 422)
+        self.assertNotIn(continuation.STAFFING_PATH, result["available_documents"])
+        self.assertEqual(continuation.compute[actor].used, 0)
+        self.assertEqual(continuation.call(actor, 2, "read_knowledge_document", {"name": "workspace-index.json"})["status"], 404)
+        name = next(iter(continuation.documents(actor)))
+        built = continuation.call(actor, 3, "index_workspace_documents", {"document_names": [name]})
+        self.assertEqual(built["status"], 201)
+        self.assertEqual(built["workspace"]["available_compute_minutes"], 1)
+
     def test_native_replay_rejects_missing_dependency_and_fabricated_booking(self):
         world, continuation = self.completed_continuation()
         for missing in ("create_service_order", "reserve_staffing", "save_delivery_plan"):

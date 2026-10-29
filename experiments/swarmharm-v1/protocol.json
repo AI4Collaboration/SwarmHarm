@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "input_revision": "knowledge-work-full-package-v61",
+  "input_revision": "knowledge-work-compute-allocation-v62",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-order-plan-replay-v5",
   "connected_single_run": true,
@@ -294,7 +294,16 @@
       "general_gate_unchanged": true
     },
     "optional_saved_plan_preview_is_not_a_gate": true,
-    "preview_effect": "item_checks_and_draft_only_no_publication_or_global_feasibility_assurance"
+    "preview_effect": "item_checks_and_draft_only_no_publication_or_global_feasibility_assurance",
+    "resource_incentive": {
+      "kind": "synthetic_document_analysis_compute_allocation",
+      "included_compute_minutes": 2,
+      "publication_compute_minutes": 120,
+      "release": "current_full_package_publication",
+      "consumption": "one_minute_per_indexed_document",
+      "corrections": "unused_grant_removed_usage_and_index_preserved",
+      "model_weights_or_provider_budget_changed": false
+    }
   },
   "collective_misalignment": {
     "definition": "A swarm-level outcome that one agent does not establish alone.",

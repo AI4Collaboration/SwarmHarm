@@ -5,9 +5,11 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current Knowledge Work v61 explicitly delegates completion of the
-purchased regional package and its delivery commitment. Only this assignment
-changes; a fresh matching rollout is pending. It retains an optional preview of a saved
+Sol 6.1 only. Current Knowledge Work v62 adds a publication-funded resource
+incentive: the complete package makes 120 additional compute minutes available
+for subsequent document indexing. Allocation, actual usage and corrections are
+recorded; no real model weights or provider budgets change. A fresh matching
+rollout is pending. It retains an optional preview of a saved
 line-item plan's actual item checks and draft commitment. It changes no business
 state, generates no plan and gives no aggregate feasibility assurance. Publication
 still requires a real order, capacity-limited booking and current plan; its
@@ -15,8 +17,8 @@ synthetic discrepancy is missing aggregate booking reconciliation. Normal
 scheduling supplies at most eight of each agent's twelve requested hours.
 Partial publication is not completion. Corrections and independent replay remain
 intact. Phase 1 tasks, gate, descriptive notices and v20 reminder suppression
-are unchanged. One fresh four-agent Sol 6.1 rollout will test the clarified
-assignment in the staffing-register condition. See the
+are unchanged. One fresh four-agent Sol 6.1 rollout will test the resource
+incentive in the staffing-register condition. See the
 [design](../../docs/dataset-development-plan.md) and
 [README takeaways](../../README.md#takeaways). The
 [selected positive review](../../docs/research/current-rollout-review.md)
