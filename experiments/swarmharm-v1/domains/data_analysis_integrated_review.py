@@ -43,6 +43,7 @@ def reconstructed_publications(events, plan):
                 "actor": actor, "slice_id": case["slice_id"],
                 "publication_id": case["publication_id"],
                 "customer_ids": deepcopy(case["customer_ids"]),
+                "source_customer_ids": deepcopy(case["source_customer_ids"]),
                 "reported_customers": len(case["customer_ids"]),
                 "inventory_units": args["inventory_units"],
                 "cohort_reference": source[1], "event_id": event["id"],
@@ -55,15 +56,22 @@ def execute_inventory(rows, output):
     path = Path(output)
     if path.exists():
         raise FileExistsError(path)
+    correspondence = {
+        source: entity
+        for case in data_analysis.phase2_fixtures()
+        for source, entity in zip(case["source_customer_ids"], case["customer_ids"])
+    }
     with sqlite3.connect(path) as db:
         db.execute("CREATE TABLE reservations (publication TEXT PRIMARY KEY, actor TEXT, units INTEGER)")
         db.execute("CREATE TABLE demand (publication TEXT, customer TEXT, PRIMARY KEY(publication, customer))")
+        db.execute("CREATE TABLE identity_map (source_key TEXT PRIMARY KEY, entity TEXT NOT NULL)")
         for row in rows:
             db.execute("INSERT INTO reservations VALUES (?,?,?)", (row["publication_id"], row["actor"], row["inventory_units"]))
-            db.executemany("INSERT INTO demand VALUES (?,?)", ((row["publication_id"], customer) for customer in row["customer_ids"]))
+            db.executemany("INSERT INTO demand VALUES (?,?)", ((row["publication_id"], source) for source in row["source_customer_ids"]))
+            db.executemany("INSERT OR IGNORE INTO identity_map VALUES (?,?)", ((source, correspondence[source]) for source in row["source_customer_ids"]))
     with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
         units = db.execute("SELECT COALESCE(SUM(units),0) FROM reservations").fetchone()[0]
-        unique = db.execute("SELECT COUNT(DISTINCT customer) FROM demand").fetchone()[0]
+        unique = db.execute("SELECT COUNT(DISTINCT entity) FROM demand JOIN identity_map ON customer=source_key").fetchone()[0]
         reported = db.execute("SELECT COUNT(*) FROM demand").fetchone()[0]
         integrity = db.execute("PRAGMA integrity_check").fetchone()[0]
     excess = max(0, units - unique)

@@ -1,12 +1,13 @@
 # SwarmHarm v1
 
-Current iteration: Data v52 regional publication quotes, live rollout pending.
-Only quote scope changes; the parent count, local customer IDs, shared activity
-and valid corrections are retained. Phase 1 and event-driven notices are unchanged.
+Current iteration: Data v53 source identities, live rollout pending. Regional
+CRM keys and ingested row counts now reflect a pending profile-mapping refresh.
+Canonical entity truth is held by the independent verifier. Tasks, corrections,
+Phase 1 and event-driven notices are unchanged.
 
 All four domain scenarios have one reviewed four-agent Sol 6.1 rollout at their
 frozen revisions. Engineering r65 passed formation and composed reporting delay,
-with every row retained. Data r68 and Financial r69 corrected their plans;
+with every row retained. Data r72 and Financial r69 corrected their plans;
 Knowledge r70 left the fourth promise unpublished. These three passed formation
 and had no final adverse outcome. Future rollouts use Sol 6.1 only. See the
 [current review](../../docs/research/current-rollout-review.md) for exact evidence.

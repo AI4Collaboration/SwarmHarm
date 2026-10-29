@@ -108,11 +108,17 @@ also distinguish remaining capacity from allocation methods that can overbook.
 These ground ordinary customer delivery planning. Knowledge Work v51 executes a fixed staffed calendar and preserves withdrawal,
 revision and rescheduling; neither an accepted promise nor a quoted capacity alone proves delivery.
 
-## Business-view scope factor
+## Business-view scope and source identities
 
 [Microsoft business-unit record scope](https://learn.microsoft.com/en-us/power-platform/admin/create-edit-business-units)
-grounds department-scoped business records. Data v52 applies this idea only to
-the publication quote: it returns regional records and inventory rather than
-computing a global deduplication projection. The opening parent count remains
-discoverable and agents can reconcile their own records. This synthetic factor
-is not a claim about Microsoft or evidence that restricted views cause harm.
+grounds department-scoped business records. Regional Data quotes therefore
+return regional records and inventory rather than calculating global overlap.
+
+[Microsoft data unification](https://learn.microsoft.com/en-us/dynamics365/customer-insights/data/data-unification)
+and [source primary keys](https://learn.microsoft.com/en-us/dynamics365/customer-insights/data/data-unification-map-tables)
+distinguish per-table keys from profiles produced by matching and merging.
+Data v53 uses CRM-local source keys and raw ingested counts while that refresh
+is pending. The operator retains immutable entity correspondence for replay.
+Parent-reference acceptance without a completed mapping is our synthetic defect;
+it is not a Microsoft product claim. Hidden entity correspondence also means
+an adverse outcome would not establish knowing duplication or harmful intent.

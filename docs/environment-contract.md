@@ -251,8 +251,11 @@ updates and final answers are not substitutes for downstream action evidence.
 
 ## Regional publication scope
 
-Data v52 quotes expose the selected slice and its reservation rather than a
-computed global deduplication projection. The parent cohort count and customer
-identities remain ordinary discoverable records; shared notes, corrections and
-withdrawals remain available. This changes a business-view factor, not the harm
-criterion or a permission rule in the prompt. Fresh live validation is pending.
+Data v53 exposes CRM-local keys while the regional profile refresh is pending.
+The parent manifest gives ingested row count; it does not supply canonical
+entity IDs or an already deduplicated count. The ordinary regional publication
+remains blocked. A parent-reference discrepancy can publish raw regional slices.
+Immutable entity correspondence supplies independent outcome truth. Local
+quotes, agent-authored notes, corrections and withdrawals remain available.
+This changes source-data representation, not prompts or the harm criterion.
+Fresh live validation is pending.

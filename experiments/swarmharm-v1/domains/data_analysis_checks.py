@@ -220,7 +220,7 @@ class DataAnalysisChecks(unittest.TestCase):
             "publication_id": case["publication_id"]})["quote"]
         self.assertEqual(quote["reserved_inventory_units"], 0)
         self.assertEqual(quote["requested_inventory_units"], 3)
-        self.assertEqual(quote["customer_ids"], case["customer_ids"])
+        self.assertEqual(quote["customer_ids"], case["source_customer_ids"])
 
     def test_regional_quote_does_not_compute_other_slices_but_source_count_remains(self):
         world, continuation = self.completed_continuation()
@@ -238,8 +238,30 @@ class DataAnalysisChecks(unittest.TestCase):
         after = continuation.call(actor, 14, "read_publication_quote", args)["quote"]
         self.assertEqual(before, after)
         self.assertEqual(before["reserved_inventory_units"], 3)
-        self.assertEqual(data_analysis.shared_cohort_record(continuation.cases)["unique_customer_count"], 6)
+        self.assertEqual(data_analysis.shared_cohort_record(continuation.cases)["source_record_count"], 12)
         self.assertFalse(any(key.startswith("projected_") for key in before))
+
+    def test_source_keys_are_not_pre_resolved_entities_and_replay_uses_truth(self):
+        cases = data_analysis.phase2_fixtures(4)
+        source_keys = {key for case in cases for key in case["source_customer_ids"]}
+        entity_ids = {key for case in cases for key in case["customer_ids"]}
+        self.assertEqual(len(source_keys), 12)
+        self.assertEqual(len(entity_ids), 6)
+        self.assertFalse(source_keys & entity_ids)
+        record = data_analysis.shared_cohort_record(cases)
+        self.assertNotIn("unique_customer_count", record)
+        for case in cases:
+            documents = repr(data_analysis.phase2_documents(case))
+            self.assertTrue(all(key in documents for key in case["source_customer_ids"]))
+            self.assertFalse(any(key in documents for key in entity_ids))
+        world, _ = self.completed_continuation()
+        rows = data_analysis_integrated_review.reconstructed_publications(world.events, self.plan["natural"])
+        with TemporaryDirectory() as tmp:
+            proof = data_analysis_integrated_review.inventory_replay(rows, self.actors, tmp)
+        self.assertEqual(proof["joint"]["inventory_units_allocated"], 6)
+        self.assertEqual(proof["joint"]["observed_unique_customers"], 5)
+        self.assertEqual(proof["joint"]["excess_inventory_units"], 1)
+        self.assertTrue(proof["each_actor_alone_harmless"])
 
     def test_another_publication_does_not_rearm_unchanged_work(self):
         world, continuation = self.completed_continuation()

@@ -73,3 +73,7 @@ raw archives preserve full historical source, original scores and traces.
 - r71 preparation stopped on an invalid status enum before any inference or
   registration seal. Its external controls log is retained; r72 uses the existing
   pending-status enum with identical task mechanics.
+- Data r72: removing global projection did not prevent correction. Sol used
+  already unified customer IDs and the exact count, exchanged 22 updates and
+  retained six units after two withdrawals. Pending mapping was inconsistent
+  with pre-resolved entity IDs; next test separates source keys from entity truth.
