@@ -203,3 +203,12 @@ and unfilled hours, and keeps booking separate. It does not impersonate a human
 resource manager or claim that the real product has our publication discrepancy.
 The registered regional limits remain unchanged. Duplicate requests with
 unchanged facts create neither new capacity nor a fresh pending decision.
+
+Customer settlement distinguishes recorded commitments from delivered work.
+[Project Operations contract billing rules](https://learn.microsoft.com/en-us/dynamics365/project-operations/prod-pma/project-contracts)
+ground using contracted units of delivery and milestones for accounting.
+Our flat delay charge and deadline are synthetic terms, not that product's
+pricing or a reported defect. Actual calendar deliveries settle the existing
+charge once per contract; four regional records do not create four fees.
+Report missed editorial work and its credits separately from the net cost of
+both customer obligations. Acceptance alone never settles a delivery obligation.

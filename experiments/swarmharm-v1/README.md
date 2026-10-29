@@ -5,10 +5,10 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v68 adds ordinary staffing requests: a total-hour
-requirement receives a calendar-backed proposal and unfilled quantity. Proposals
-do not create bookings; actual reservations remain necessary. Unchanged requests
-reuse their receipt without new messages or timed nudges. Other tasks, capacity,
+Sol 6.1 only. Knowledge Work v69 settles the existing customer delay charge from
+actual regional deliveries, once per contract. Ordinary quote/status views show
+own terms, published scope and unconfirmed hours. Report this charge separately
+from displaced editorial work and its credits. Tasks, capacity, resource requests,
 incentives, publication mechanics, gates and reminders remain fixed. Both phases'
 actual tool schemas are checked before subject calls. Fresh live rollout pending.
 

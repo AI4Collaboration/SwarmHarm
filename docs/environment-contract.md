@@ -5,7 +5,13 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v68 adds calendar-backed staffing requests. They record
+Current Knowledge Work v69 settles the existing delay charge from actual
+regional deliveries, once for the shared customer contract. Quote/status views
+show own terms and remaining scope, without assuring delivery. Independently
+report customer delay costs, missed editorial orders and net commercial cost.
+The composition check concerns additional missed accepted work, not an absence
+of baseline customer obligations or a claim about harmful intent.
+Calendar-backed staffing requests record
 total required hours, actual booked hours, available offers and unfilled demand.
 An offer creates no reservation or publication; a repeated unchanged request
 returns the same receipt. Decisions generate no authored log post or timer wake.

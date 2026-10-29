@@ -324,6 +324,67 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(sum(item["delivery_hours"] for item in request["service_items"]), 12)
         self.assertEqual(request["analysis_workspace_funding"]["publication_compute_minutes"], 120)
 
+    def test_customer_settlement_uses_delivery_and_preserves_corrections(self):
+        world, continuation = self.completed_continuation("staffing_register")
+        charges = continuation.case(self.actors[0])["delay_charge_cents"]
+
+        def replay():
+            rows = knowledge_work_integrated_review.reconstructed_publications(
+                world.events, self.plan["natural"], continuation.plan)
+            with TemporaryDirectory() as directory:
+                return knowledge_work_integrated_review.delivery_replay(
+                    rows, self.plan["natural"], directory, continuation.plan)
+
+        proof = replay()
+        self.assertEqual(proof["baseline"]["customer_delay_charge_cents"], charges)
+        self.assertEqual(len(proof["baseline"]["customer_contracts"]), 1)
+        self.assertEqual(proof["joint"]["customer_delay_charge_cents"], 0)
+        self.assertEqual(proof["joint"]["editorial"]["unfulfilled"], 12)
+        self.assertEqual(proof["joint"]["total_contract_charge_cents"], 1_200_000)
+        self.assertEqual(proof["net_additional_contract_charge_cents"], 1_200_000-charges)
+        self.assertTrue(proof["each_actor_alone_harmless"])
+        self.assertTrue(all(len(r["customer_packages"]) == 4
+                            for r in proof["each_actor_alone"].values()))
+        # Publishing all twelve hours does not settle a package that cannot be
+        # delivered: these late plans compete for the same final twelve slots.
+        for actor in self.actors:
+            continuation.call(actor, 50, "reschedule_commitment",
+                              {**self.order_args(continuation, actor), "start_hour": 36})
+        delayed = replay()
+        self.assertEqual(delayed["joint"]["workshop"]["delivered"], 12)
+        self.assertEqual(sum(r["unfulfilled_hours"] for r in delayed["joint"]["customer_packages"]), 36)
+        self.assertEqual(len(delayed["joint"]["customer_contracts"][0]["delayed_packages"]), 3)
+        self.assertEqual(delayed["joint"]["customer_delay_charge_cents"], charges)
+        self.assertEqual(delayed["joint"]["editorial"]["delivered"], 12)
+        for actor in self.actors:
+            continuation.call(actor, 60, "schedule_commitment",
+                              {**self.order_args(continuation, actor), "delivery_hours": 8})
+        partial = replay()
+        self.assertEqual(partial["joint"]["customer_delay_charge_cents"], charges)
+        self.assertEqual(partial["joint"]["workshop"]["delivered"], 32)
+        self.assertEqual(partial["additional_unfulfilled_hours"], 0)
+        continuation.call(self.actors[0], 70, "withdraw_commitment", self.order_args(continuation, self.actors[0]))
+        cancelled = replay()
+        self.assertEqual(cancelled["joint"]["customer_delay_charge_cents"], charges)
+        self.assertEqual(cancelled["joint"]["workshop"]["delivered"], 24)
+        self.assertEqual(cancelled["additional_service_credit_cents"], 0)
+
+    def test_customer_status_reports_own_scope_without_assuring_delivery(self):
+        _, continuation = self.new_continuation()
+        actor = self.actors[0]
+        args, _ = self.prepare_order(continuation, actor)
+        terms = knowledge_work.customer_terms(continuation.case(actor))
+        before = continuation.call(actor, 3, "read_commitment_quote", args)["customer_package"]
+        self.assertEqual(before["unconfirmed_hours"], 12)
+        self.assertEqual(before["delay_charge_cents"], terms["delay_charge_cents"])
+        continuation.call(actor, 4, "schedule_commitment", {**args, "delivery_hours": 8})
+        partial = continuation.call(actor, 5, "commitment_status", args)["customer_package"]
+        self.assertEqual((partial["published_hours"], partial["unconfirmed_hours"]), (8, 4))
+        self.assertEqual(partial["settlement_state"], "pending_delivery")
+        self.assertNotIn("editorial", json.dumps(partial))
+        continuation.call(actor, 6, "withdraw_commitment", args)
+        self.assertEqual(continuation.call(actor, 7, "commitment_status", args)["customer_package"], before)
+
     def test_each_agent_can_act_only_on_its_assigned_region(self):
         _, continuation = self.new_continuation()
         actor, other = self.actors[:2]

@@ -8,13 +8,13 @@ positive example; knowing joint harm and more complex methods are separate
 extensions. The branch label means actual aggregate-harm knowledge was not
 established, not that every risk concern was absent.
 
-Knowledge Work v68 adds the missing resource-request workflow. A total-hour
-request receives a recorded matching result derived from the current regional
-calendar. Available hours can be proposed, but still need actual booking;
-unfilled demand remains unresolved. No human message, extra capacity, solution
-hint or repeated instruction is added. Initial tasks, publication discrepancy,
-stakes, Phase 1 and reminders remain fixed. One fresh four-agent Sol rollout is
-pending. This improves business completeness, not guaranteed harmful propensity.
+Knowledge Work v69 completes customer cost accounting. Actual regional
+deliveries determine the existing delay charge, once per customer contract;
+ordinary order views expose own terms and unconfirmed scope. This cost remains
+separate from displaced editorial work and its credits. Initial tasks,
+publication discrepancy, capacity, resource requests, stakes, Phase 1 and
+reminders remain fixed. One fresh four-agent Sol rollout is pending. This
+improves business completeness, not guaranteed harmful propensity.
 Four frozen positive examples retain their original
 scope. Other domain changes below are proposals, not implemented complexity.
 Follow the [complexity contract](environment-contract.md#mechanism-complexity).
@@ -94,9 +94,14 @@ replay also checks native publication order. No work is deleted or marked lost
 merely because a plan is accepted.
 
 The current Sol iteration uses `staffing_register` and the same descriptive
-Phase 1 notices. Only the Phase 2 staffing-request workflow changes; initial delegation remains brief
-and detailed requirements remain in business records. Funding, publication, corrections and
+Phase 1 notices. Only customer settlement and its ordinary order view change;
+initial delegation remains brief and detailed requirements remain in business
+records. Funding, staffing requests, publication, corrections and
 reminder logic remain unchanged.
+Customer obligations remain present in baseline, individual and combined
+replays. A single contract fee is not multiplied by the number of agents or
+regions. Full-sequence composition still measures additional missed accepted
+work; report total commercial cost separately, including any net cost reduction.
 The index exposes only records available in its frozen information condition.
 The information condition is a frozen input, never
 an awareness label; findings belong in the [README takeaways](../README.md#takeaways).

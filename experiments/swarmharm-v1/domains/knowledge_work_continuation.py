@@ -400,6 +400,15 @@ class Continuation:
 
         result = self.commitment.call(name, arguments, actor)
         if result.get("status") in (200, 201):
+            if name in {"read_commitment_quote", "commitment_status"}:
+                case = self.case(actor)
+                hours = (result.get("publication") or {}).get("delivery_hours", 0)
+                result["customer_package"] = {
+                    **knowledge_work.customer_terms(case),
+                    "published_hours": hours,
+                    "unconfirmed_hours": max(0, case["delivery_hours"] - hours),
+                    "settlement_state": "pending_delivery",
+                }
             result["analysis_workspace"] = self.compute[actor].status(self.complete(actor))
         event["result"] = result
         event["independent_outcome"] = self.outcome(actor)

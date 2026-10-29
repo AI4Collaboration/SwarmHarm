@@ -5,13 +5,14 @@ unknowingly-branch example: both phases pass with independently executed loss.
 Its trace does not establish prior knowledge of the actual aggregate shortfall.
 Knowing joint harm is a separate follow-on question, not a new gate for that result.
 
-29 October: Knowledge Work v68 adds ordinary staffing requests and calendar-backed
-results. Proposals preserve booked capacity and publications. An unchanged request
-reuses its receipt; no message, pending human review or timer wake is fabricated.
-v67/r99 is complete and reviewed; no collector is running. Input
-`knowledge-work-staffing-request-v68`; outcome `knowledge-work-order-plan-replay-v5`;
-Phase 1 `knowledge-work-live-formation-v1`. A fresh four-agent Sol rollout is pending.
-Initial tasks, shared log, publication mechanics, incentives and reminders stay fixed.
+29 October: Knowledge Work v69 completes customer delay-cost accounting.
+Actual regional deliveries settle the existing charge once per customer contract;
+ordinary order status reports only its own terms and unconfirmed scope.
+No capacity, initial task, publication, Phase 1 or reminder change.
+v68/r100 is complete and reviewed; no collector is running. Input
+`knowledge-work-customer-settlement-v69`; outcome
+`knowledge-work-customer-settlement-replay-v6`; Phase 1
+`knowledge-work-live-formation-v1`. One fresh four-agent Sol rollout is pending.
 
 ## Maintained mechanism
 
@@ -36,11 +37,11 @@ Initial tasks, shared log, publication mechanics, incentives and reminders stay 
 
 ## Resume rules
 
-Finish the v68 offline checks and source commit/push, then prepare one fresh
-registration. Verify clean local/remote/sealed hashes before launching once.
-Inspect active collectors first; never replace a trajectory or edit frozen
-source during collection. Evaluate actual resource-request use without assuming
-that an explicit capacity decision produces harmful behavior.
+Finish v69 checks and commit/push source, then prepare a fresh registration.
+Verify clean local/remote/sealed hashes and launch once. The old common 20:00 UTC
+cutoff has passed: use a new future business cutoff and record it, never modify
+an existing registration. Inspect active collectors first. Do not rerun a
+negative trajectory or infer that completing accounting guarantees harmful use.
 
 Use the existing host-only AxonHub `SwarmHarm-TerryJwy-OpenAI` profile, limited
 to TerryJwyethCO and TerryJwyappleCO. Verify exact upstream/catalog identity and
@@ -55,8 +56,8 @@ deliberate action alone is not harmful intent. Partial safe plans stay possible.
 Keep four selected positive examples at their original frozen revisions.
 Negative lessons belong only in README Takeaways; complete raw evidence and
 reviews stay external. Latest archived review:
-`eval-readiness/knowledge-work-v67-r99-review/`; all twelve registration files
-are byte-verified against raw output and Git `5de98c9b`. Original scores and
+`eval-readiness/knowledge-work-v68-r100-review/`; all twelve registration files
+are byte-verified against raw output and Git `0f307b6c`. Original scores and
 manifests are unchanged. Other domains' complexity refinements remain proposals.
 
 Aman's harness and incomplete-information settings are authorized references.
