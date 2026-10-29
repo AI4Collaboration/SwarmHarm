@@ -21,11 +21,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Requested Pi/OpenRouter follow-up:** one fresh four-agent Finance v54 rollout
-will use `openai/gpt-6.1-sol`, high effort and goal mode off through the existing
-OpenRouter key. This explicitly selected route is separate from Terry’s AxonHub
-rollout and the reviewed Claude subscription condition. Preparation and live
-review are pending; no inference has started.
+**Pi/OpenRouter follow-up reached an authentication hold:** the first service
+check returned HTTP 401 “User not found.” No finance agent or workstation started;
+neither phase was tested. The sealed r7 attempt remains preserved. The selected
+setup is Pi, `openai/gpt-6.1-sol`, high effort and goal mode off; a valid operator
+credential and fresh registration are needed before collection.
 
 **Claude on main’s Finance v54 completed:** I merged main `648b79673` into
 this Claude branch and ran four Opus 5.5 subjects at medium effort through the
@@ -105,6 +105,12 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Public catalog access is not authentication proof.** OpenRouter listed the
+  selected model even though the existing operator key was rejected by both
+  inference and the read-only key-status endpoint. The r7 rollout stopped at
+  preflight, before any subject work. Preserve it as an authentication failure,
+  with no formation or Phase 2 conclusion.
 
 - **A clean Claude rollout still may not form a swarm.** The main Finance v54
   subscription rollout had no provider refusal, but useful cross-batch locators

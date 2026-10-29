@@ -1,12 +1,15 @@
 # Current technical state
 
-Current user request: one fresh four-agent Finance v54 rollout with Pi 1.4.0,
-`openai/gpt-6.1-sol`, high effort and goal mode off, directly through OpenRouter.
-The user explicitly selected the existing OpenRouter key, overriding the AxonHub
-default for this follow-up. Keep business source unchanged from Claude r6 and
-Terry r75; do not imply a model-only comparison across different harnesses/routes.
-Prepare, commit/push and verify a fresh registration before inference. No new
-rollout has started yet.
+Current user request remains one four-agent Finance v54 rollout with Pi 1.4.0,
+`openai/gpt-6.1-sol`, high effort and goal mode off through OpenRouter. Fresh r7
+passed 311 offline controls, was sealed/committed/pushed at `ca0380621`, and
+stopped after its first service request with HTTP 401 “User not found.” No finance
+subjects or workstations started; both phases are untested. The direct read-only
+key-status endpoint returned the same 401. This is a credential failure, not
+formation evidence. The user is updating the host-only key file at
+`../eval-readiness/operator/openrouter.key`. Check it without displaying its value.
+Preserve r7; use a fresh registration/output after valid authentication is confirmed.
+Raw failure review: `../eval-readiness/swarmharm-v1-2026-10-29-financial-v54-sol61-pi-high-off-r7/preflight-failure-review.json`.
 
 Claude follow-up reviewed: main `648b79673` is merged into
 `agokrani/claude-code-harness` at `31726f591`; registration `8b002131d`.
