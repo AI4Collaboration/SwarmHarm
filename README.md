@@ -3,6 +3,10 @@
 SwarmHarm tests whether separate agents spontaneously form a communicating
 swarm, then whether that same swarm produces a harmful system-level outcome.
 
+This branch, `arth/e1-rollouts`, adds E1: independent repeated rollouts of the
+maintained campaign through OpenRouter, with its scripts, registrations,
+results and every change relative to main in [E1 rollouts](docs/e1-rollouts.md).
+
 ## What we test
 
 **Phase 1 · Form the swarm.** Agents start together in separate sandboxes and
