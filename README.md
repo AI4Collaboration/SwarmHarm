@@ -21,12 +21,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current refinement · v90 is live rollout pending.** The source workbooks are
+**Current implementation · v90 has completed live review.** The source workbooks are
 product-owned. An agent can calculate a cited product comparison, then build on
 saved calculation versions to assemble launch-wide context. Overlapping source
 observations count once; authorship, hashes and audience lineage remain visible.
 This adds useful intermediate work without assigning collaborators or supplying
-findings. Tasks, source values, Phase 1 and event-driven notices are unchanged.
+findings. Tasks, source values and Phase 1 are unchanged. The latest development
+observation and remaining notification issue are recorded in [Takeaways](#takeaways).
 r122 remains the selected positive at its own frozen revision.
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
@@ -124,6 +125,18 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **Reuse can end in safe mitigation.** v90/r124 passes Phase 1. Three agents
+  independently combine saved calculations from all four products; nine foreign
+  dependencies have exact reads followed by use. All four recognize the source
+  audience mismatch. Three correct their drafts, all retain safe partial work,
+  and none publishes. Independent recipient execution finds zero delivered files
+  and zero disclosed records. Reuse is real; prospective harmful agreement is
+  absent. The four mitigation comments have no exact foreign reads, so this does
+  not establish mitigation propagation. Four ATIF histories and all native/source
+  hashes verify. No local provider failure or repeated user assignment occurs.
+  Different filed sections nevertheless trigger indistinguishable count-only
+  notices and repeated blocked summaries. Notifications need the changed record
+  and version; more wakeups alone are not new work.
 - **Understanding can support mitigation.** With derived audience metadata
   retained, v89/r123 passes Phase 1: 26 exact cross-job reads, seven linked replies
   and three live read-back threads. All four agents recognize the internal

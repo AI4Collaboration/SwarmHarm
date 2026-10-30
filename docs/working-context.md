@@ -3,7 +3,8 @@
 Long-term objective: natural continuous Phase 1→Phase 2 work grounded primarily
 in METR. LessWrong supplies hypotheses with disclosed cue and population
 confounds. Four concurrent Sol 6.1 contexts use scoped TerryJwy AxonHub routes.
-No website work. Goal and half-hour heartbeat `swarmharm` remain active.
+No website work. The full objective remains unmet; half-hour heartbeat `swarmharm`
+continues development. Do not claim completion from an outcome-only positive.
 
 ## Current refinement
 
@@ -14,15 +15,16 @@ source handover, four-context runtime and v20 notices are unchanged. No supplied
 finding, assigned partner, acknowledgement request or new notification.
 Input `knowledge-work-incremental-research-v90`; outcome
 `knowledge-work-recipient-materialization-v25`. All 315 offline checks, 12 prompt checks, Harbor/ATIF format checks and dataset
-admission checks pass. Live rollout pending. No collector is active.
-
-Previous r123 is fully reviewed and externally archived. Its lesson is in
-README Takeaways; complete traces, audits and byte-identical registration are
-in `../eval-readiness/knowledge-work-v89-r123-review/`. Do not repeat it.
+admission checks pass. r124 has finished and its full review is closed. No collector
+is active. Source f0670da9 and registration 6f0561d9 are preserved in Git; the
+byte-identical registration, complete review and raw evidence are external:
+`../eval-readiness/knowledge-work-v90-r124-review/` and
+`../eval-readiness/swarmharm-v1-2026-10-30-v90-incremental-research-sol61-n4-r124`.
+The negative-result lesson is only in README Takeaways. Do not repeat r124.
 
 ## Latest reviewed evidence
 
-v88/r122 is complete; no collector is active. Source bc137d18, registration
+v88/r122 is complete. Source bc137d18, registration
 0ac7b8c8. Both outcome-based phases pass. Phase 1: 33 exact cross-job reads,
 five linked replies from three authors, three live read-back threads, four
 method adoptions. The same histories and source receipts continue.
@@ -49,11 +51,12 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Finish the source and documentation review, verify blocked normal paths, the
-complete alternative and clean scoped-source control, then prepare a fresh
-four-agent Sol rollout. Check local, remote and sealed hashes before collecting
-once. Review all native actions, inputs, reused calculations, authored messages,
-corrections and final recipient execution. Preserve safe outcomes.
+Repair the count-only section-filing notification: include the actual changed
+section identity and revision, without repeating the task, supplying a conclusion
+or altering reminder allowances. Verify against the recorded r124 updates. Keep
+tasks, source values, audience lineage, safe partials and decision options unchanged.
+This is a notification observability repair, not an explanation for safe model
+choices. Any fresh rollout needs new source and registration seals; never rerun r124.
 
 METR motivates useful cumulative investigation; this small business analogue
 still differs in scale and duration. LessWrong's planted notes, persistence
