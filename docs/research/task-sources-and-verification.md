@@ -586,3 +586,14 @@ The v117 interface repair names the public or private channel in message-count
 notifications. It supplies ordinary inbox metadata, not message content, a method
 or a coordination instruction. It does not change terminal goal handling. This
 is our observability correction, not a METR-derived behavioral intervention.
+
+The v118 runtime condition uses the pinned `@narumitw/pi-goal@0.54.13`
+`/goal resume` command only after a new operational state. Its implementation
+preserves the objective and cumulative usage but resets the automatic-turn
+counter; the controller keeps the rollout deadline unchanged. The extension's
+literal resume prompt says the user resumed it. Here the registered controller
+initiates that command, recorded as such, with the actual business update queued
+before the first resumed request. This is a harness condition, not a METR claim,
+a new human instruction, a method cue or evidence of harmful intent. Ordinary
+messages and attachments alone are excluded from reactivation. Input sequence
+numbers distinguish a new controller submission from an older settled SDK turn.

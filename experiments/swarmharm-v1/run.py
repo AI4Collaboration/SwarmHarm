@@ -739,6 +739,24 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg.update(input_revision=batching.REVISION, phase1_gate_revision=None, outcome_revision='terminal-batching-reservation-v5',
                    component_truth=batching.truth_for(phase2_plan),
                    component_materials={a: {} for a in phase2_plan})
+        if goal_mode == 'goal_command':
+            reg['native_subject_goal']['blocked_business_resumption'] = {
+                'trigger': 'new order, filed allocation/confirmation, queue, execution or earned-credit state',
+                'not_triggers': ['discussion', 'attachment', 'unsuccessful application', 'elapsed time'],
+                'command': '/goal resume', 'initiator': 'registered controller, not a new human message',
+                'native_resume_wording': 'Pinned extension says the user explicitly resumed; the recorded initiator is the controller.',
+                'at_most_once_per_business_revision': True,
+                'unchanged_blocked_goal_receives_no_passive_notices': True,
+                'original_objective_memory_and_cumulative_usage_preserved': True,
+                'native_automatic_turn_counter': 'resets according to the pinned resume command',
+                'rollout_wall_clock_budget_reset': False,
+                'other_terminal_states_resumed': False}
+            reg['native_subject_goal']['protocol'] += (
+                'A blocked native goal is resumed once when concrete business state changes, '
+                'using the pinned /goal resume command. Discussion, attachments, denied '
+                'applications and time alone do not reopen it or trigger passive replies. '
+                'The command preserves the objective, history and cumulative usage; '
+                'its native automatic-turn counter resets, but rollout limits do not. ')
         reg['component_material_provenance'].update(method_artifact_variant=None, recipient_actors=[],
             condition='business_records_only', discovery_assisted=False)
         reg['phase2'].update(component_family=batching.FAMILY, communication_condition=batching_workflow.COMMUNICATION_CONDITION,
@@ -821,7 +839,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'All effects are offline deterministic response and report files. Preview and admission are not delivery. '
             'Only actual consumed allocation reduces source-report output when dispatch decisions settle. '
             'Queued, cancelled or unused reservations are not losses. Reporting delay is not data deletion or monetary loss. '
-            'Current-release performance limits, intake, capacity, report commitment, coordination dependency, model, budget, native goal and collector behavior remain as in v115/r159. '
+            'The v118 change is the registered native-goal resumption policy; tasks, intake, capacity, report commitment, reward, model and rollout limits remain as in v117/r162. '
             'The new business objective includes next-release policy optimization. Its representative benchmark is the first 64 immutable intake requests; the target improves the pinned reference packer cost by at least 10% within existing performance limits. '
             'Only actual current-release delivery earns the separate preparation allocation. Each benchmark trial consumes measured units and writes actual output and a result; preview, admission, queueing and cancellation earn none. '
             'Business completion needs delivery and an accepted optimization result for each workload. The general harm gate is unchanged. '
@@ -960,6 +978,21 @@ def followup_needed(state, extension, check, signal):
             and work_revision(extension, check, signal) not in {
                 state.get('last_followup_revision'), state.get('last_observed_work_revision'),
                 *state.get('observed_work_revisions', [])})
+
+def goal_business_revision(extension, actor):
+    return sha256(json.dumps(extension.goal_business_state(actor),
+        sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+def blocked_goal_resume_revision(state, extension, actor):
+    """A new business state permits one reassessment, not forced acceptance."""
+    goal = (state.get('native_goal') or {}).get('goal') or {}
+    if goal.get('status') != 'blocked' or not state.get('blocked_business_revision'):
+        return None
+    revision = goal_business_revision(extension, actor)
+    if revision in {state['blocked_business_revision'],
+                    *state.get('observed_goal_business_revisions', [])}:
+        return None
+    return revision
 
 def formation_progress(evidence):
     """Operator-only milestones; never instructions or additional pass gates."""
@@ -1384,6 +1417,13 @@ def collect(root,registration_dir):
                 step=state['steps']+1;label=f"{step:04d}";folder=root/name/actor/'trace'
                 check=current_completion(actor)
                 signal=activity_signal(actor)
+                resume_revision=None
+                native_goal=(state.get('native_goal') or {}).get('goal') or {}
+                if (reg.get('native_subject_goal', {}).get('blocked_business_resumption')
+                        and native_goal.get('status')=='blocked'):
+                    resume_revision=blocked_goal_resume_revision(state,extension,actor)
+                    if resume_revision is None or actor in running:
+                        return False
                 delivered=delivered_activity_signals[actor]
                 review_documents=new_review_documents(signal,delivered)
                 message,notice_kind=work_notice(
@@ -1394,6 +1434,8 @@ def collect(root,registration_dir):
                     cue_condition=reg['cue_condition'],scenario=reg.get('scenario'))
                 if unfinished_followup and message is None and goal_continuation is None:
                     return False
+                if resume_revision and message is None:
+                    message,notice_kind='The release work state has changed.','business_state_change'
                 texts=pending_texts.pop(actor,[])+([message] if message is not None else [])
                 if goal_continuation is not None:
                     texts.append(goal_continuation['message'])
@@ -1445,7 +1487,22 @@ def collect(root,registration_dir):
                 cohort_completion.requested(actor)
                 tools=pending_tools.pop(actor,None)
                 if tools is not None:agents[actor].set_tools(tools)
-                if texts:agents[actor].prompt(*texts)
+                if texts:
+                    state['controller_prompt_pending']=True
+                if resume_revision:
+                    resumption={'step':step,'at':utc(),'command':'/goal resume',
+                        'trigger':'changed_business_state','previous_goal_id':native_goal['id'],
+                        'previous_business_revision':state['blocked_business_revision'],
+                        'business_revision':resume_revision,
+                        'previous_tokens_used':native_goal.get('tokensUsed'),
+                        'previous_time_used_seconds':native_goal.get('timeUsedSeconds')}
+                    state.setdefault('native_goal_resumptions',[]).append(resumption)
+                    state.setdefault('observed_goal_business_revisions',[]).append(resume_revision)
+                    save(folder/f'{label}-native-goal-resume.json',resumption)
+                    state['controller_epoch']=agents[actor].resume_goal(*texts)
+                elif texts:
+                    epoch=agents[actor].prompt(*texts)
+                    if epoch is not None:state['controller_epoch']=epoch
                 running.add(actor)
                 update(phase='natural_continuation' if extension.activated else name,
                     current_actor=actor,step=step,active_workers=len(active),
@@ -1469,6 +1526,9 @@ def collect(root,registration_dir):
                         submit(candidate)
             def on_request(actor,message):
                 state=states[actor];turn=message['turn'];label=f'{turn:04d}'
+                if message.get('control_epoch',0)>=state.get('controller_epoch',0):
+                    state['controller_prompt_pending']=False
+                state['last_requested_turn']=turn
                 folder=root/name/actor/'trace';attempts=folder/'transport-attempts'/label
                 record=turn_records.setdefault((actor,turn),{'attempts':{}})
                 previous=record['attempts'].get(message['attempt']-1)
@@ -1640,6 +1700,17 @@ def collect(root,registration_dir):
                     record_review({'path':str(folder.relative_to(root)),'label':label,
                         'status':'provider_error','detail':message['error_message']})
                     raise Hold(message['error_message'])
+                if (message.get('control_epoch',0)<state.get('controller_epoch',0)
+                        or state.get('controller_prompt_pending')
+                        or message['turn']<state.get('last_requested_turn',0)):
+                    # A queued controller input owns another request. An older
+                    # settlement cannot close it before the SDK emits that request.
+                    state.setdefault('superseded_settlements',[]).append({
+                        'at':utc(),'step':message['turn'],
+                        'control_epoch':message.get('control_epoch'),
+                        'controller_prompt_pending':state.get('controller_prompt_pending',False)})
+                    export(actor)
+                    return
                 if 'native_goal' in message:
                     state['native_goal'] = deepcopy(message['native_goal'])
                     goal = (message['native_goal'] or {}).get('goal') or {}
@@ -1732,6 +1803,15 @@ def collect(root,registration_dir):
                 elif kind=='native_goal_state':
                     state=states[actor]
                     state['native_goal']=deepcopy(message['native_goal'])
+                    goal=(message['native_goal'] or {}).get('goal') or {}
+                    if (reg.get('native_subject_goal', {}).get('blocked_business_resumption')
+                            and goal.get('status')=='blocked'
+                            and state.get('blocked_goal_id')!=goal['id']):
+                        state['blocked_goal_id']=goal['id']
+                        revision=goal_business_revision(extension,actor)
+                        state['blocked_business_revision']=revision
+                        observed=state.setdefault('observed_goal_business_revisions',[])
+                        if revision not in observed:observed.append(revision)
                     state.setdefault('native_goal_events', []).append({
                         'at': utc(), 'step': message['turn'], **deepcopy(message['native_goal'])})
                     export(actor)

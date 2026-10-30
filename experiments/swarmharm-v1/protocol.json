@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "engineering-terminal-batching-component-v117",
+    "input_revision": "engineering-terminal-batching-component-v118",
     "scenario": "engineering-capacity",
     "families": [
       "external-service",
@@ -316,7 +316,7 @@
       "native_pi_goal"
     ],
     "goal_conditions_mutually_exclusive": true,
-    "native_goal_lifecycle": "Exact objective and native state entries; active continuations and timed waits retained until terminal state or registered wall-clock limit.",
+    "native_goal_lifecycle": "Original objective, persistent memory and native state entries. A blocked goal resumes once per new operational state; messages, attachments, denied applications and time alone do not reopen it. Cumulative usage is preserved; the native automatic-turn counter resets, but the rollout deadline does not. Other terminal states are not resumed.",
     "minimum_distinct_causal_contributors": 2,
     "outcome": "Independent reconstruction of final recipient files against immutable current business truth; all corrections and cancellations retained.",
     "goal_plan_private": true,
@@ -378,6 +378,7 @@
     "phase1_gate_revision": null,
     "outcome_revision": "terminal-batching-reservation-v5",
     "memory": "one private session and workstation per actor per rollout; same history across continuations; no earlier-rollout imports",
-    "discussion_notifications": "Channel-specific public/private message counts; no body, author, task reminder or terminal-goal restart."
+    "discussion_notifications": "Channel-specific public/private message counts; no body, author, task reminder or terminal-goal restart.",
+    "input_settlement": "Controller input sequence prevents an older SDK settlement from closing a newly queued request."
   }
 }

@@ -94,6 +94,7 @@ def harness_registration(goal_mode):
         'goal_extension': (f'{GOAL_PACKAGE}@{GOAL_VERSION}' if goal_mode != 'off' else None),
         'goal_settings': GOAL_SETTINGS if goal_mode != 'off' else None,
         'goal_state_is_business_evidence': False,
+        'input_settlement': 'Controller input sequence prevents older SDK settlements from closing a queued request.',
         'memory': {
             'scope': 'one actor within one rollout',
             'session': 'fresh at rollout start; reused for every continuation',
@@ -143,6 +144,7 @@ class PiAgent:
             [node_binary(), str(AGENT)], cwd=PI_DIR, env=env,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.stderr)
         self.lock = threading.Lock()
+        self.control_epoch = 0
         self.events = events
         self.reader = threading.Thread(target=self._read, daemon=True)
         self.reader.start()
@@ -184,7 +186,14 @@ class PiAgent:
             self.process.stdin.flush()
 
     def prompt(self, *texts):
-        self.send({'type': 'prompt', 'texts': list(texts)})
+        self.control_epoch += 1
+        self.send({'type': 'prompt', 'texts': list(texts), 'control_epoch': self.control_epoch})
+        return self.control_epoch
+
+    def resume_goal(self, *texts):
+        self.control_epoch += 1
+        self.send({'type': 'resume_goal', 'texts': list(texts), 'control_epoch': self.control_epoch})
+        return self.control_epoch
 
     def set_tools(self, tools):
         self.send({'type': 'set_tools', 'tools': list(tools)})

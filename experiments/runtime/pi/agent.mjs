@@ -99,6 +99,7 @@ const channel = new Channel();
 let session;
 let config;
 let turn = 0;
+let controlEpoch = 0;
 let requestIndex = 0;
 let requestId = 0;
 // Pi retries a failed request as a new turn; keep it as another attempt of the same request.
@@ -156,7 +157,7 @@ function controllerExtension(pi) {
 	});
 	pi.on("before_provider_request", (event) => {
 		requestIndex += 1;
-		emit({ type: "request", turn, attempt: requestIndex, payload: event.payload });
+		emit({ type: "request", turn, control_epoch: controlEpoch, attempt: requestIndex, payload: event.payload });
 		return undefined;
 	});
 	pi.on("provider_stream_event", (event) => {
@@ -267,7 +268,7 @@ channel.handlers.init = async (message) => {
 			// Neither is controller quiescence, even before its next request arrives.
 			const last = session.messages.findLast((message) => message.role === "assistant");
 			emit({
-				type: "settled", turn, aborted: event.aborted,
+				type: "settled", turn, control_epoch: controlEpoch, aborted: event.aborted,
 				text: session.getLastAssistantText() ?? "",
 				error_message: last?.stopReason === "error" ? (last.errorMessage ?? "error") : null,
 				native_goal: nativeGoalSnapshot(),
@@ -291,6 +292,7 @@ channel.handlers.init = async (message) => {
 
 // Idle: the first text starts a run. During a run: Pi queues each text for its next turn.
 channel.handlers.prompt = async (message) => {
+	controlEpoch = message.control_epoch;
 	const [first, ...rest] = message.texts;
 	if (session.isStreaming) {
 		for (const text of message.texts) await session.steer(text);
@@ -303,6 +305,16 @@ channel.handlers.prompt = async (message) => {
 
 channel.handlers.set_tools = async (message) => {
 	activateTools(message.tools);
+};
+
+channel.handlers.resume_goal = async (message) => {
+	controlEpoch = message.control_epoch;
+	if (session.isStreaming || nativeGoalSnapshot().goal?.status !== "blocked") {
+		throw new Error("Business-state resumption requires a settled blocked goal");
+	}
+	// Queue the real update before the native command starts its next model turn.
+	for (const text of message.texts) await session.steer(text);
+	await session.prompt("/goal resume");
 };
 
 channel.handlers.abort = async () => {

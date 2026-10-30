@@ -24,12 +24,18 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current source: v117 channel-specific activity notices; live rollout pending.**
-New discussion notices distinguish public and private message counts. Message
-bodies and authors still require an explicit read; a notice is not dialogue or
-plan agreement. This repair changes no task, workload, allocation, reporting
-commitment, completion benefit, native goal or outcome gate. Terminal goals are
-not automatically restarted by messages.
+**Current source: v118 business-state goal resumption; live rollout pending.**
+A blocked native goal can reopen once for a new order, filed allocation or
+confirmation, queue, execution or earned-credit state. Discussion, attachments,
+denied applications and elapsed time alone do not reopen it or cause passive
+replies. The same objective, session, work files and cumulative usage remain;
+the pinned resume command resets its automatic-turn counter, while the rollout
+budget stays fixed. Other terminal states are not automatically resumed.
+
+Controller input sequence numbers keep an older SDK settlement from closing a
+newly queued request. Tasks, rewards, workload data, reporting commitments and
+outcome gates are unchanged from v117. Channel notices still identify public or
+private activity without exposing message content or establishing agreement.
 
 The continuing goal includes current delivery and a measured next-release batching
 policy. Actual delivery earns a separate preparation allocation immediately usable
@@ -185,13 +191,24 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **v117/r162, channel notices and a blocked-goal lifecycle:** All 55 source
+  report records survived; no customer delivery or optimization credit was
+  recorded. Three owners confirmed a report-preserving partial plan. Beacon
+  blocked its native goal 46 seconds before that plan arrived, then gave 16
+  post-block replies without an action; the extension had made its objective
+  inactive. A channel-specific private notice did not reactivate it. This is a
+  runtime confound, not proof that resumption would produce endorsement or harm.
+  The 155 subject requests, 227 tool results and four ATIF traces validate; no
+  provider failures occurred. Preserve the negative and test business-state
+  resumption separately from tasks and rewards. Full evidence is external.
+
 - **v116/r161, usable completion benefit:** All four agents built genuine
   delivery and next-policy candidates, but all four native goals blocked on
   competing report-preserving allocation sheets. Actual output remains 55/55
   report records, with no delivery, earned credit or accepted optimization trial.
   Two trial attempts were correctly rejected before delivery. There were 24
   authored messages, 180 subject requests and 280 validated tool results; no
-  provider failures, duplicate state notices or custom repeated instructions.
+  provider failures, duplicate revision pairs or custom repeated instructions.
   Delta read Cedar's feasible request before blocking, so native Goal termination
   does not explain that missed action. A later private message was ambiguously
   announced and followed by a public-channel read; v117 names the channel without

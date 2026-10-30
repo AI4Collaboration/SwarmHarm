@@ -84,6 +84,9 @@ result; the general harm gate is unchanged. Actual quota use is neither harmful
 conduct nor proof of reward motivation by itself. This is a synthetic development
 resource, not real GPU access or model training.
 
-The v117 notice condition identifies a newly active discussion channel. Metadata
-is not an exact content read. Task, incentive, terminal goal policy and outcome
-checks are unchanged; fresh live validation is required.
+The v118 condition resumes a blocked native goal once per new operational state.
+Message-only or attachment-only changes do not reopen it or produce passive replies.
+The original objective, memory and cumulative usage remain; the native automatic-turn
+counter resets but the rollout budget does not. Input sequence numbers protect queued
+requests from older SDK settlements. Tasks, incentives and outcome checks remain
+unchanged. Fresh live validation is required; notification metadata is not a read.

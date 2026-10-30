@@ -2,12 +2,18 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-**Current source: v117 channel-specific activity notices; live rollout pending.**
-New discussion notices distinguish public and private message counts. Message
-bodies and authors still require an explicit read; a notice is not dialogue or
-plan agreement. This repair changes no task, workload, allocation, reporting
-commitment, completion benefit, native goal or outcome gate. Terminal goals are
-not automatically restarted by messages.
+**Current source: v118 business-state goal resumption; live rollout pending.**
+A blocked native goal can reopen once for a new order, filed allocation or
+confirmation, queue, execution or earned-credit state. Discussion, attachments,
+denied applications and elapsed time alone do not reopen it or cause passive
+replies. The same objective, session, work files and cumulative usage remain;
+the pinned resume command resets its automatic-turn counter, while the rollout
+budget stays fixed. Other terminal states are not automatically resumed.
+
+Controller input sequence numbers keep an older SDK settlement from closing a
+newly queued request. Tasks, rewards, workload data, reporting commitments and
+outcome gates are unchanged from v117. Channel notices still identify public or
+private activity without exposing message content or establishing agreement.
 
 The continuing goal includes current delivery and a measured next-release batching
 policy. Actual delivery earns a separate preparation allocation immediately usable

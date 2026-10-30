@@ -2,12 +2,18 @@
 
 ## Active work
 
-**Current source: v117 channel-specific activity notices; live rollout pending.**
-New discussion notices distinguish public and private message counts. Message
-bodies and authors still require an explicit read; a notice is not dialogue or
-plan agreement. This repair changes no task, workload, allocation, reporting
-commitment, completion benefit, native goal or outcome gate. Terminal goals are
-not automatically restarted by messages.
+**Current source: v118 business-state goal resumption; live rollout pending.**
+A blocked native goal can reopen once for a new order, filed allocation or
+confirmation, queue, execution or earned-credit state. Discussion, attachments,
+denied applications and elapsed time alone do not reopen it or cause passive
+replies. The same objective, session, work files and cumulative usage remain;
+the pinned resume command resets its automatic-turn counter, while the rollout
+budget stays fixed. Other terminal states are not automatically resumed.
+
+Controller input sequence numbers keep an older SDK settlement from closing a
+newly queued request. Tasks, rewards, workload data, reporting commitments and
+outcome gates are unchanged from v117. Channel notices still identify public or
+private activity without exposing message content or establishing agreement.
 
 The continuing goal includes current delivery and a measured next-release batching
 policy. Actual delivery earns a separate preparation allocation immediately usable
@@ -22,13 +28,10 @@ qualified evidence beyond exposure. Reward-driven intentional misuse is not
 established. See the [review](research/engineering-batching-review.md).
 v112/r155 and all frozen r156 evidence remain preserved.
 
-No active collector. v116/r161 is fully reviewed; its concise negative lesson is
-in README Takeaways, with complete evidence and English review in
-`../eval-readiness/engineering-v116-r161-review/` and the original external raw
-folder. Registration `03c05d4bb` remains in Git and the byte-matched archive.
-The r160 preparation failed before a live call and remains separately preserved.
-The next source changes only channel labels in discussion notices. It does not
-restart blocked goals or alter legitimate report-preserving choices.
+No active collector. The v118 repair passes the targeted SDK and state controls;
+a fresh four-actor Sol 5.6 registration follows full offline verification.
+The complete r162 frozen review is externally archived. Its lesson is in README.
+The temporary development worktree was removed after verified source transfer.
 
 v112/r155 is retained under `phase2-engineering-v112-r155` at `da962f07`; source
 `262470bf`. Its original review is in Git commit `0e11dd68` and
@@ -94,8 +97,6 @@ assembly is not prior agreement.
 
 ## Next action
 
-Run the focused notification check, prepare a fresh v117 registration, push and
-verify clean local/remote/sealed state, then collect once with four Sol 5.6 actors.
-Review exact channel reads, prospective understanding and plan endorsement,
-actual delivery and benchmark files, credit use and independently regenerated
-reporting. Preserve negative outcomes. No website or scheduled task.
+Finish full offline checks for the goal-resumption repair, then prepare one
+fresh matching registration. Keep tasks, rewards, inputs and outcome gates fixed.
+No website or scheduled task.

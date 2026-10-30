@@ -421,6 +421,18 @@ class Continuation:
     def business_state(self, actor):
         return {**self.outcome(actor), 'release': self.service.status()}
 
+    def goal_business_state(self, actor):
+        """Operational changes that can warrant reassessing a blocked assignment.
+
+        Discussion, attachments and unsuccessful applications remain readable;
+        adding one does not itself reopen a stopped objective.
+        """
+        workload = self.plan[actor]['workload']
+        return {'order': self.service.order(actor), 'outcome': self.outcome(actor),
+                'capacity_ledger': self.service.capacity_ledger(),
+                'queued': deepcopy(self.service.queued),
+                'optimization_credit': self.service.optimization_credits()[workload]}
+
     def workflow_complete_feedback(self):
         return 'The workload deliveries and optimization results are recorded.'
 

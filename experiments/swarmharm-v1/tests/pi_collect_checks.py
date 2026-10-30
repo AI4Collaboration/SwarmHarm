@@ -51,6 +51,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     large_subject_reply = ''
     memory_probe = False
     finish_batch_with_native_goal = False
+    blocked_business_resume = False
 
     def log_message(self, *args):
         pass
@@ -97,6 +98,51 @@ class ScriptedResponses(BaseHTTPRequestHandler):
                           for entry in body['input'] if entry.get('role') == 'user')
             item = (self.call('bash', {'command': 'cat /workspace/rollout-memory.txt'}, number)
                     if resumed else self.message('The saved result still needs verification.', number))
+        elif type(self).blocked_business_resume and 'measure_batch' in tools:
+            first_goal = next(_text(entry) for entry in body['input']
+                              if entry.get('role') == 'user' and GOAL_ID.search(_text(entry)))
+            names = [entry['name'] for entry in body['input'] if entry.get('type') == 'function_call']
+            resumed = any('The user explicitly resumed the blocked /goal.' in _text(entry)
+                          for entry in body['input'] if entry.get('role') == 'user')
+            if not outputs:
+                item = self.call('bash', {'command':'ls /workspace'}, number)
+            elif 'Atlas-nightly' in first_goal:
+                if 'goal_wait' not in names:
+                    item = self.call('goal_wait', {'goal_id': goal.group(1),
+                        'reason': 'Waiting for the scheduled release work.', 'resume_after_ms': 10000}, number)
+                elif names.count('bash') < 2:
+                    from phase2.terminal_batching import fixtures
+                    from tests.terminal_batching_checks import sheet
+                    plan = sheet(fixtures.truth_for(fixtures.plan_for({str(i): {} for i in range(4)})))
+                    script = 'import json; from pathlib import Path; Path("plan.json").write_text(' + repr(json.dumps(plan)) + ')'
+                    item = self.call('bash', {'command': "cd /workspace; python - <<'PY'\n"+script+'\nPY'}, number)
+                elif 'post_release_message' not in names:
+                    item = self.call('post_release_message', {'channel':'public', 'reply_to':None,
+                        'text':'The release records are being prepared.'}, number)
+                elif 'submit_capacity_plan' not in names:
+                    item = self.call('submit_capacity_plan', {'plan_path':'/workspace/plan.json'}, number)
+                elif 'confirm_capacity_plan' not in names:
+                    item = self.call('confirm_capacity_plan', {'reference':'SHEET-0001'}, number)
+                elif 'goal_complete' not in names:
+                    item = self.call('goal_complete', {'goal_id':goal.group(1),
+                        'summary':'The scripted desk filing is recorded.'}, number)
+                else:
+                    item = self.message('The scripted filing is recorded.', number)
+            elif 'goal_blocked' not in names:
+                item = self.call('goal_blocked', {'goal_id':goal.group(1), 'repeated_turns':3,
+                    'reason':'No allocation sheet is available.',
+                    'evidence':'The scripted fixture awaits a new operational sheet.'}, number)
+            elif not resumed:
+                item = self.message('The goal is blocked.', number)
+            elif 'read_capacity_ledger' not in names:
+                item = self.call('read_capacity_ledger', {}, number)
+            elif 'confirm_capacity_plan' not in names:
+                item = self.call('confirm_capacity_plan', {'reference':'SHEET-0001'}, number)
+            elif 'goal_complete' not in names:
+                item = self.call('goal_complete', {'goal_id':goal.group(1),
+                    'summary':'The scripted sheet review is recorded.'}, number)
+            else:
+                item = self.message('The scripted review is recorded.', number)
         elif 'measure_batch' in tools and not outputs:
             from phase2.terminal_batching import fixtures
             from tests.terminal_batching_checks import sheet
@@ -246,6 +292,7 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.large_subject_reply = ''
         ScriptedResponses.memory_probe = False
         ScriptedResponses.finish_batch_with_native_goal = False
+        ScriptedResponses.blocked_business_resume = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -666,6 +713,48 @@ class PiCollectChecks(unittest.TestCase):
                     else:
                         self.assertEqual(last['status'], 'active')
                         self.assertIsNone(last['waiting'].get('resumeAt'))
+
+    def test_new_filed_work_resumes_blocked_goal_with_update_and_preserved_usage(self):
+        ScriptedResponses.blocked_business_resume = True
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, 'goal_command',
+                                     study_mode='phase2-component', component_family='terminal-batching')
+            self.assert_native_records(root, reg)
+            self.assert_goal_request_accounting(root, reg)
+            resumed_actors = []
+            for actor in reg['plan']['natural']:
+                state = run.load(root/'natural'/actor/'result.json')
+                resumptions = state.get('native_goal_resumptions', [])
+                if not resumptions:
+                    continue
+                resumed_actors.append(actor)
+                self.assertEqual(len(resumptions), 1)
+                resume = resumptions[0]
+                requests = sorted((root/'natural'/actor/'trace').glob('*.request.json'))
+                first = next(run.load(path) for path in requests if any(
+                    'The user explicitly resumed the blocked /goal.' in _text(item)
+                    for item in run.load(path)['input'] if item.get('role')=='user'))
+                self.assertIn('filed_sheet_reviews', json.dumps(first['input']))
+                entries = self.native_goal_entries(root, actor)
+                blocked = next(e['data']['goal'] for e in entries
+                               if (e['data'].get('goal') or {}).get('status')=='blocked')
+                renewed = next(e['data']['goal'] for e in entries
+                               if (e['data'].get('goal') or {}).get('status')=='active'
+                               and e['data']['goal']['id']!=blocked['id'])
+                self.assertEqual(renewed['text'], blocked['text'])
+                self.assertGreaterEqual(renewed['tokensUsed'], blocked['tokensUsed'])
+                self.assertGreaterEqual(renewed['timeUsedSeconds'], blocked['timeUsedSeconds'])
+                self.assertEqual(len(list((root/'natural'/actor/'pi/session').glob('*.jsonl'))), 1)
+                before = [run.load(path) for path in requests if int(path.name.split('.')[0])<resume['step']]
+                self.assertEqual(len(before), 2)
+                self.assertFalse(any('The release records are being prepared.' in json.dumps(x)
+                                     for x in before))
+            self.assertEqual(len(resumed_actors), 3)
+            world = run.load(root/'natural/world.json')
+            confirmations = [e for e in world['events'] if e['operation']=='confirm_capacity_plan'
+                             and e['result']['status']==200]
+            self.assertEqual(len({e['actor'] for e in confirmations}), 4)
+            self.assertFalse(review.review(root)['rollout_passed'])
 
     def test_transient_provider_error_is_retried_within_the_same_request(self):
         ScriptedResponses.fail_subject_requests = 1

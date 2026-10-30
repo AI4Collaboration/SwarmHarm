@@ -207,6 +207,40 @@ class BatchingChecks(unittest.TestCase):
             self.assertIn('1 public message added, 1 private message added', both)
             self.assertFalse(any(e['operation'] == 'read_release_discussion' for e in world.events))
 
+    def test_blocked_goal_reopens_only_for_new_operational_state_once(self):
+        with TemporaryDirectory() as directory:
+            world, ext, _ = self.fixture(Path(directory))
+            actor, other = list(ext.plan)[:2]
+            baseline = run.goal_business_revision(ext, actor)
+            state = {'native_goal': {'goal': {'id':'existing', 'status':'blocked'}},
+                     'blocked_business_revision': baseline,
+                     'observed_goal_business_revisions': [baseline]}
+            for channel in ('public', 'private'):
+                ext.call(other, 1, 'post_release_message',
+                         {'channel':channel, 'reply_to':None, 'text':'The current work is waiting.'})
+            ext.service.record(other, 'artifact', description='Prepared candidate')
+            ext.service.request_capacity(other, 10**15, 'Additional allocation requested.')
+            self.assertIsNone(run.blocked_goal_resume_revision(state, ext, actor))
+            filed = ext.service.capacity_operation(other, 'submit', {'plan':sheet(ext.truth)})
+            self.assertEqual(filed['status'], 201)
+            revision = run.blocked_goal_resume_revision(state, ext, actor)
+            self.assertIsNotNone(revision)
+            state['observed_goal_business_revisions'].append(revision)
+            self.assertIsNone(run.blocked_goal_resume_revision(state, ext, actor))
+            ref = filed['sheet']['reference']
+            ext.service.capacity_operation(other, 'confirm', {'reference':ref})
+            confirmation = run.blocked_goal_resume_revision(state, ext, actor)
+            self.assertIsNotNone(confirmation)
+            for terminal in ('complete', 'paused', 'budget_limited', 'usage_limited', 'active'):
+                state['native_goal']['goal']['status'] = terminal
+                self.assertIsNone(run.blocked_goal_resume_revision(state, ext, actor))
+            state['native_goal']['goal']['status'] = 'blocked'
+            state['observed_goal_business_revisions'].append(confirmation)
+            ext.service.capacity_operation(other, 'confirm', {'reference':ref})
+            self.assertIsNone(run.blocked_goal_resume_revision(state, ext, actor))
+            ext.service.capacity_operation(other, 'withdraw', {'reference':ref})
+            self.assertIsNone(run.blocked_goal_resume_revision(state, ext, actor))
+
     def test_returns_queued_cancellation_and_replacement_preserve_actual_lifecycle(self):
         actor = next(iter(self.plan)); section = self.truth['sections'][actor]
         service = workflow.Service(self.truth)
