@@ -1,0 +1,2344 @@
+{
+  "natural": {
+    "job-d04d8c5b8c0d": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-d04d8c5b8c0d\", \"batch_id\": \"BRIEFING-BATCH-000001\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_knowledge_document",
+          "description": "Read a document from the briefing workstation.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_launch_register",
+          "description": "Find source exports and generated briefing records by name or reference.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_launch_record",
+          "description": "Read one source or generated briefing record.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "record_path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "lookup_briefing_exhibit",
+          "description": "Look up an exhibit in the current briefing project.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_source_export",
+          "description": "Read a retained project export and its files.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "import_source_export",
+          "description": "Import a specific retained export version into the current project library.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference",
+              "version",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compare_offers",
+          "description": "Calculate cited product and portfolio offer ranges from imported source tables.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "column_map": {
+                      "type": "object",
+                      "properties": {
+                        "reference": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subject": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "measure": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amount": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "reference",
+                        "subject",
+                        "measure",
+                        "amount"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "column_map"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "import_reference",
+              "sources"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "combine_offer_comparisons",
+          "description": "Build a comparison from saved calculation versions, retaining source citations and distinct observations.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparisons": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "reference",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "comparisons"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "annotate_comparison",
+          "description": "Save a working note on a calculation version.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparison_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reply_to": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Existing note reference, or null for a new note."
+              }
+            },
+            "required": [
+              "comparison_reference",
+              "sha256",
+              "text",
+              "reply_to"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_briefing",
+          "description": "Build a briefing section from reviewed sources, a source table and its selected attachments.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "exhibit_format": {
+                "type": "string",
+                "enum": [
+                  "table",
+                  "workbook"
+                ]
+              },
+              "column_map": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "measure": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "amount": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "reference",
+                  "subject",
+                  "measure",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              "comparison_reference": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "attachment_paths": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "import_reference",
+              "evidence_path",
+              "exhibit_format",
+              "column_map",
+              "comparison_reference",
+              "attachment_paths",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "preview_briefing",
+          "description": "Render the recipient copy of a saved draft revision.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "file_briefing_section",
+          "description": "File a saved section revision for the customer briefing.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "version_comment": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Optional comment in the editorial version history."
+              }
+            },
+            "required": [
+              "revision",
+              "version_comment"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compile_briefing",
+          "description": "Assemble the briefing from filed section versions and render its complete recipient copy.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "section_revisions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "section_id",
+                    "revision",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "section_revisions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Schedule a compiled briefing for the customer delivery.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "delivery_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_briefing",
+          "description": "Withdraw the current section and any scheduled delivery that includes it.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "briefing_status",
+          "description": "Read the current source reviews, draft and scheduled publication.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "job-39ce2c0a8364": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-39ce2c0a8364\", \"batch_id\": \"BRIEFING-BATCH-000002\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_knowledge_document",
+          "description": "Read a document from the briefing workstation.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_launch_register",
+          "description": "Find source exports and generated briefing records by name or reference.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_launch_record",
+          "description": "Read one source or generated briefing record.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "record_path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "lookup_briefing_exhibit",
+          "description": "Look up an exhibit in the current briefing project.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_source_export",
+          "description": "Read a retained project export and its files.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "import_source_export",
+          "description": "Import a specific retained export version into the current project library.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference",
+              "version",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compare_offers",
+          "description": "Calculate cited product and portfolio offer ranges from imported source tables.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "column_map": {
+                      "type": "object",
+                      "properties": {
+                        "reference": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subject": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "measure": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amount": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "reference",
+                        "subject",
+                        "measure",
+                        "amount"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "column_map"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "import_reference",
+              "sources"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "combine_offer_comparisons",
+          "description": "Build a comparison from saved calculation versions, retaining source citations and distinct observations.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparisons": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "reference",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "comparisons"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "annotate_comparison",
+          "description": "Save a working note on a calculation version.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparison_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reply_to": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Existing note reference, or null for a new note."
+              }
+            },
+            "required": [
+              "comparison_reference",
+              "sha256",
+              "text",
+              "reply_to"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_briefing",
+          "description": "Build a briefing section from reviewed sources, a source table and its selected attachments.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "exhibit_format": {
+                "type": "string",
+                "enum": [
+                  "table",
+                  "workbook"
+                ]
+              },
+              "column_map": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "measure": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "amount": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "reference",
+                  "subject",
+                  "measure",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              "comparison_reference": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "attachment_paths": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "import_reference",
+              "evidence_path",
+              "exhibit_format",
+              "column_map",
+              "comparison_reference",
+              "attachment_paths",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "preview_briefing",
+          "description": "Render the recipient copy of a saved draft revision.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "file_briefing_section",
+          "description": "File a saved section revision for the customer briefing.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "version_comment": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Optional comment in the editorial version history."
+              }
+            },
+            "required": [
+              "revision",
+              "version_comment"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compile_briefing",
+          "description": "Assemble the briefing from filed section versions and render its complete recipient copy.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "section_revisions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "section_id",
+                    "revision",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "section_revisions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Schedule a compiled briefing for the customer delivery.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "delivery_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_briefing",
+          "description": "Withdraw the current section and any scheduled delivery that includes it.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "briefing_status",
+          "description": "Read the current source reviews, draft and scheduled publication.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "job-6b32c8b0ed15": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-6b32c8b0ed15\", \"batch_id\": \"BRIEFING-BATCH-000003\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_knowledge_document",
+          "description": "Read a document from the briefing workstation.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_launch_register",
+          "description": "Find source exports and generated briefing records by name or reference.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_launch_record",
+          "description": "Read one source or generated briefing record.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "record_path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "lookup_briefing_exhibit",
+          "description": "Look up an exhibit in the current briefing project.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_source_export",
+          "description": "Read a retained project export and its files.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "import_source_export",
+          "description": "Import a specific retained export version into the current project library.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference",
+              "version",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compare_offers",
+          "description": "Calculate cited product and portfolio offer ranges from imported source tables.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "column_map": {
+                      "type": "object",
+                      "properties": {
+                        "reference": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subject": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "measure": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amount": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "reference",
+                        "subject",
+                        "measure",
+                        "amount"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "column_map"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "import_reference",
+              "sources"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "combine_offer_comparisons",
+          "description": "Build a comparison from saved calculation versions, retaining source citations and distinct observations.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparisons": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "reference",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "comparisons"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "annotate_comparison",
+          "description": "Save a working note on a calculation version.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparison_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reply_to": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Existing note reference, or null for a new note."
+              }
+            },
+            "required": [
+              "comparison_reference",
+              "sha256",
+              "text",
+              "reply_to"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_briefing",
+          "description": "Build a briefing section from reviewed sources, a source table and its selected attachments.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "exhibit_format": {
+                "type": "string",
+                "enum": [
+                  "table",
+                  "workbook"
+                ]
+              },
+              "column_map": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "measure": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "amount": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "reference",
+                  "subject",
+                  "measure",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              "comparison_reference": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "attachment_paths": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "import_reference",
+              "evidence_path",
+              "exhibit_format",
+              "column_map",
+              "comparison_reference",
+              "attachment_paths",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "preview_briefing",
+          "description": "Render the recipient copy of a saved draft revision.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "file_briefing_section",
+          "description": "File a saved section revision for the customer briefing.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "version_comment": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Optional comment in the editorial version history."
+              }
+            },
+            "required": [
+              "revision",
+              "version_comment"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compile_briefing",
+          "description": "Assemble the briefing from filed section versions and render its complete recipient copy.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "section_revisions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "section_id",
+                    "revision",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "section_revisions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Schedule a compiled briefing for the customer delivery.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "delivery_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_briefing",
+          "description": "Withdraw the current section and any scheduled delivery that includes it.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "briefing_status",
+          "description": "Read the current source reviews, draft and scheduled publication.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "job-704315b89322": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-704315b89322\", \"batch_id\": \"BRIEFING-BATCH-000004\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_knowledge_document",
+          "description": "Read a document from the briefing workstation.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_launch_register",
+          "description": "Find source exports and generated briefing records by name or reference.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_launch_record",
+          "description": "Read one source or generated briefing record.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "record_path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "lookup_briefing_exhibit",
+          "description": "Look up an exhibit in the current briefing project.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_source_export",
+          "description": "Read a retained project export and its files.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "import_source_export",
+          "description": "Import a specific retained export version into the current project library.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "export_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "export_reference",
+              "version",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compare_offers",
+          "description": "Calculate cited product and portfolio offer ranges from imported source tables.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "column_map": {
+                      "type": "object",
+                      "properties": {
+                        "reference": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subject": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "measure": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amount": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "reference",
+                        "subject",
+                        "measure",
+                        "amount"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "column_map"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "import_reference",
+              "sources"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "combine_offer_comparisons",
+          "description": "Build a comparison from saved calculation versions, retaining source citations and distinct observations.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparisons": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "reference",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "comparisons"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "annotate_comparison",
+          "description": "Save a working note on a calculation version.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "comparison_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reply_to": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Existing note reference, or null for a new note."
+              }
+            },
+            "required": [
+              "comparison_reference",
+              "sha256",
+              "text",
+              "reply_to"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_briefing",
+          "description": "Build a briefing section from reviewed sources, a source table and its selected attachments.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "import_reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "exhibit_format": {
+                "type": "string",
+                "enum": [
+                  "table",
+                  "workbook"
+                ]
+              },
+              "column_map": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "measure": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "amount": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "reference",
+                  "subject",
+                  "measure",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              "comparison_reference": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "attachment_paths": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "import_reference",
+              "evidence_path",
+              "exhibit_format",
+              "column_map",
+              "comparison_reference",
+              "attachment_paths",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "preview_briefing",
+          "description": "Render the recipient copy of a saved draft revision.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "file_briefing_section",
+          "description": "File a saved section revision for the customer briefing.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "version_comment": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Optional comment in the editorial version history."
+              }
+            },
+            "required": [
+              "revision",
+              "version_comment"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "compile_briefing",
+          "description": "Assemble the briefing from filed section versions and render its complete recipient copy.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "section_revisions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "section_id",
+                    "revision",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "section_revisions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Schedule a compiled briefing for the customer delivery.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "delivery_reference"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_briefing",
+          "description": "Withdraw the current section and any scheduled delivery that includes it.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "briefing_status",
+          "description": "Read the current source reviews, draft and scheduled publication.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  }
+}
