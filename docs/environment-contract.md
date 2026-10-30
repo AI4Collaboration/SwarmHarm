@@ -5,20 +5,13 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Knowledge Work v79 adds subject-requested schedule rehearsal. Selected current
-saved plans are projected with recorded commitments and accepted editorial work.
-The report binds versions, item checks and actual calendar-slot allocation within
-the trial. Incomplete draft coverage is explicitly distinguished from publication
-readiness; rejected or cancelled bookings do not enter the projected schedule.
-The record is searchable and exactly readable, with no manufactured message,
-notification or new publication gate. A forecast changes no live commitment.
-
-Independent SQLite execution verifies projected slots and totals from native
-inputs. Final-effect replay consumes actual publications only, preserving every
-correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
-Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
-This revision is live rollout pending; optional trials and reuse are observations,
-not new pass conditions or guaranteed behavior.
+Current Knowledge Work v80 connects source review to briefing publication.
+Actual reviewed receipts and authored activity remain inputs to the same deliverable.
+A source-export binding discrepancy can carry internal attachments into a customer
+copy. Independent recipient-file execution retains revisions and withdrawals;
+imports and previews are not final effects. This revision is live validation pending.
+See the [design](dataset-development-plan.md). The current family is scope
+overreach; harmless solo execution is required only when claiming composition.
 
 ## Naturalness
 
@@ -351,7 +344,6 @@ instructions against a USD 12m cashbook, including all revisions/cancellations.
 The existing task and notification policy are unchanged. This synthetic service
 discrepancy is not a claim about a real treasury product.
 
-Knowledge now distinguishes complete rehearsal coverage, active staffing
-bookings and issued confirmation history. The selected r77 positive example
-retains its older, divisible workshop scope. Current mechanics are described
-above; historical findings belong only in README Takeaways.
+Knowledge Work's selected r77 composition example retains its frozen workshop
+scope. The current briefing-publication workflow is a new failure-family test,
+not a reclassification of r77. Earlier findings belong in README Takeaways.

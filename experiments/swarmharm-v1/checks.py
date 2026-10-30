@@ -90,7 +90,7 @@ class DesignChecks(unittest.TestCase):
         self.assertIn('"org.swarmharm.managed=true"', workstation)
         self.assertIn('"org.swarmharm.owner-pid=', workstation)
 
-    def test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat(self):
+    def test_protocol_requires_one_overlapping_fleet_with_registered_phase2_surface(self):
         protocol = json.loads((Path(__file__).parent / "protocol.json").read_text())
         self.assertTrue(protocol["connected_single_run"])
         self.assertEqual(protocol["population"]["canonical_active_contexts"], 4)
@@ -102,7 +102,7 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(continuity["same_shared_business_system"])
         self.assertTrue(continuity["continuous_event_sequence"])
         self.assertFalse(continuity["state_reset_between_phases"])
-        self.assertTrue(continuity["new_communication_surface_in_phase2"])
+        self.assertFalse(continuity["new_communication_surface_in_phase2"])
         scenario = run.domain_runtime.mechanics(protocol["scenario"])
         registered = scenario.registration_overrides(
             protocol["phase1"]["canonical_cue_condition"]

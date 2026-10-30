@@ -438,7 +438,7 @@ class PromptContractChecks(unittest.TestCase):
                 files = lab.files(item, actor)
                 self.assert_natural(native, files)
                 self.assertIn(
-                    "source reviews",
+                    "launch briefing",
                     "\n".join(row["content"] for row in native["input"]),
                 )
         finally:
@@ -486,14 +486,14 @@ class PromptContractChecks(unittest.TestCase):
                 }
                 documents = holder.documents(actor)
                 self.assert_natural(native, documents)
-                self.assertIn("launch-rehearsal", native["input"][0]["content"])
+                self.assertIn("customer briefing", native["input"][0]["content"])
                 self.assertIn("confirmation", native["input"][0]["content"])
                 self.assertNotIn("compute minutes", native["input"][0]["content"])
-                self.assertIn("delivery_hours", json.dumps(documents))
-                self.assertIn("analysis_workspace_funding", json.dumps(documents))
+                self.assertIn("required_rows", json.dumps(documents))
+                self.assertIn("source_receipts", json.dumps(documents))
                 result = holder.call(
-                    actor, len(world.events) + 1, "read_commitment_quote",
-                    {"region_id": "UNKNOWN", "publication_id": "UNKNOWN"},
+                    actor, len(world.events) + 1, "read_source_export",
+                    {"export_reference": "UNKNOWN"},
                 )
                 self.assertNotRegex(
                     json.dumps(result, ensure_ascii=False), RESPONSIBILITY_HINTS,

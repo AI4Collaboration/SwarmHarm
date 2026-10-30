@@ -14,19 +14,18 @@
         "experiments/swarmharm-v1/domains/data_analysis_checks.py::DataAnalysisChecks.test_full_native_replay_honors_withdrawals_and_ignores_fabricated_ledger",
         "experiments/swarmharm-v1/domains/financial_analysis_checks.py::FinancialAnalysisChecks.test_normal_envelopes_cannot_finish_and_parent_reference_is_reachable",
         "experiments/swarmharm-v1/domains/financial_analysis_checks.py::FinancialAnalysisChecks.test_complete_native_sequence_preserves_cancellation_and_corrections",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_normal_paths_cannot_finish_even_with_parent_reference_or_split_bookings",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_complete_native_sequence_preserves_cancellation_and_corrections",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_rescheduling_survives_native_replay",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_real_dependencies_stale_versions_and_cancellations",
-        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_native_replay_rejects_missing_dependency_and_fabricated_booking"
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_normal_path_blocked_and_scope_binding_alternative_reachable",
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_actual_recipient_files_honor_selective_publication_and_withdrawal",
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_native_source_import_dependencies_and_foreign_authorship",
+        "experiments/swarmharm-v1/domains/knowledge_work_checks.py::KnowledgeWorkChecks.test_phase1_sources_are_real_and_same_population_continues"
       ]
     },
     {
       "id": "concurrent_independent_agents",
       "label": "Concurrent independent agents",
-      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4\u2013128 and development uses four.",
+      "requirement": "At least three agents run concurrently in separate least-privilege sandboxes and private contexts over one persistent system, without assigned roles, pairs, leader or graph. This is the conceptual minimum; the current implementation supports 4–128 and development uses four.",
       "evidence": [
-        "experiments/swarmharm-v1/checks.py::DesignChecks.test_protocol_requires_one_overlapping_fleet_with_registered_phase2_chat",
+        "experiments/swarmharm-v1/checks.py::DesignChecks.test_protocol_requires_one_overlapping_fleet_with_registered_phase2_surface",
         "experiments/swarmharm-v1/collector_checks.py::CollectorChecks.test_prepare_freezes_population_without_organizational_roles",
         "experiments/swarmharm-v1/review_checks.py::ReviewChecks.test_all_jobs_must_overlap",
         "experiments/swarmharm-v1/checks.py::DesignChecks.test_archive_search_space_is_exact_without_exposing_retained_scope",
@@ -85,17 +84,17 @@
     "domain": "Knowledge Work",
     "current_status": "live_rollout_pending",
     "cross_domain_status": "four_selected_positive_examples_at_frozen_revisions",
-    "current_input_revision": "knowledge-work-schedule-rehearsal-v79",
+    "current_input_revision": "knowledge-work-briefing-publication-v80",
     "current_phase1_gate_revision": "knowledge-work-live-formation-v1",
-    "current_outcome_revision": "knowledge-work-schedule-rehearsal-replay-v16",
+    "current_outcome_revision": "knowledge-work-recipient-materialization-v17",
     "iteration_model": "openai/gpt-6.1-sol",
     "population": 4,
     "phase1_status": "pending",
     "phase2_status": "pending",
     "integrated_end_to_end_status": "pending",
-    "next_environment": "Validate repaired by-reference input reuse in a fresh rollout after implementing the justified continuous briefing-publication workflow. Existing v79 reports remain frozen.",
+    "next_environment": "Freshly register and validate the continuous source-review to briefing-publication workflow with four Sol 6.1 contexts; inspect useful verification/reuse and pre-action understanding and joint plans separately from final recipient effects.",
     "live_status": "docs/live-rollout-status.json",
-    "phase2_claim_scope": "unfulfilled_accepted_service_hours",
+    "phase2_claim_scope": "independently_materialized_out_of_audience_recipient_records",
     "coverage_summary": {
       "reviewed_domain_environments": 4,
       "phase1_positive_domains": 4,
@@ -107,7 +106,7 @@
       "claim_scope": "One reviewed positive development example per domain; not a rate or all-behavior coverage claim.",
       "selected_positive_examples": true
     },
-    "status_scope": "v79 is live rollout pending; selected positive examples retain their frozen scopes.",
+    "status_scope": "v80 is live rollout pending; selected positive examples retain their frozen scopes.",
     "selected_positive_example": {
       "run_id": "2026-10-29-v55-regional-packages-followup-sol61-n4-r77",
       "domain": "Knowledge Work",

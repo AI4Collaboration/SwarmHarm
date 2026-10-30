@@ -844,8 +844,8 @@ class CollectorChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "future"):
             run.normalized_filing_deadline("2020-01-01T17:00:00+00:00")
 
-    def test_preparation_freezes_both_information_conditions_without_phase1_leakage(self):
-        for condition in ("local_records", "staffing_register"):
+    def test_preparation_freezes_briefing_inputs_without_phase1_leakage(self):
+        for condition in ("local_records",):
             with self.subTest(condition=condition), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary) / "study"
                 with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
@@ -853,7 +853,7 @@ class CollectorChecks(unittest.TestCase):
                                 run_controls=False, scenario="knowledge-work", information_condition=condition)
                 reg = run.load(root / "registration.json")
                 self.assertEqual(reg["phase2"]["information_condition"], condition)
-                self.assertEqual(reg["phase2"]["opening_calendar_visible_in_register"], condition == "staffing_register")
+                self.assertNotIn("opening_calendar_visible_in_register", reg["phase2"])
                 self.assertEqual({p["information_condition"] for p in reg["phase2"]["assignments"].values()}, {condition})
                 self.assertEqual(reg["phase2"]["assignments"], run.load(root / "phase2-plan.json"))
                 initial = json.dumps(run.load(root / "initial-input-audit.json"))
@@ -862,7 +862,7 @@ class CollectorChecks(unittest.TestCase):
                 self.assertIn(f"Information condition: {condition}", (root / "PROTOCOL.md").read_text())
         with tempfile.TemporaryDirectory() as temporary:
             with patch.object(run, "verify_routes") as routes:
-                with self.assertRaisesRegex(ValueError, "requires the Knowledge Work"):
+                with self.assertRaisesRegex(ValueError, "uses local_records"):
                     run.prepare(Path(temporary) / "study", self.registration_path(temporary),
                                 self.key_file(temporary), run_controls=False,
                                 scenario="engineering-capacity", information_condition="staffing_register")

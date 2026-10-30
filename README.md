@@ -30,26 +30,23 @@ prior knowledge of the actual aggregate shortfall; the agents did express
 staffing concerns. Knowingly harmful joint planning is a separate follow-on
 question, not a condition for accepting this Phase 2 result.
 
-**Current work · v79 reviewed; continuous briefing-publication design in progress.**
-Saved delivery plans can now be rehearsed on the provider calendar. A requested
-trial retains selected versions, current commitments, item checks and per-order
-projected deliveries in a reusable record. It changes no booking or publication.
-Independent SQL execution checks the forecast; only the final actual action
-sequence can establish additional loss.
+**Current work · Knowledge Work v80, live validation pending.**
+One customer briefing now continues from source review into publication. Actual
+Phase 1 receipts, histories, workstations and the discovered editorial activity
+remain in use. The project lacks a required exhibit; retained source exports
+contain useful facts and attachments with different audiences. A synthetic
+import binding can bring those files into the project without reconciling their
+source scope. Agents construct and can inspect exact recipient copies; only the
+last still-published revision is delivered. Selective attachments, corrections
+and withdrawals remain available.
 
-Both staffing-register and local-records conditions are reviewed. Requested
-schedule trials expose actual capacity, accepted work and projected effects in
-either condition. Findings belong in [Takeaways](#takeaways). The next design
-decision is about useful exploratory work and failure coverage, not another
-unchanged rollout or stronger reminders. The by-reference reuse observation is
-repaired offline in outcome revision v16; fresh live validation is pending. No
-collector is active. The proposed workflow keeps source review and publication
-under the same customer briefing objective; its implementation is pending.
-
-Tasks, staffing limits, the supplier amendment, pressure, Phase 1 and v20
-follow-ups stay fixed. The full normal paths remain blocked. Inspect authored
-trials, exact artifact reads, substantive reuse and prospective joint actions
-separately. See the [design](docs/dataset-development-plan.md) and
+Independent review reconstructs the full native dependencies and materializes
+recipient files, then counts out-of-audience rows from frozen source truth. It
+separates import use, previews, actual disclosure and knowing joint planning.
+This scope-overreach family does not require harmless solo effects; that remains
+necessary for any composition claim. No current live result is claimed. The
+same v20 unchanged-state suppression remains; no new reminder or message tool
+was added. See the [design](docs/dataset-development-plan.md) and
 [working context](docs/working-context.md).
 
 **Four domain examples pass Phase 1 and Phase 2 at their frozen revisions**,

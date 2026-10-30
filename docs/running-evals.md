@@ -67,10 +67,9 @@ The four public scenario choices are `engineering-capacity`, `data-analysis`,
 `financial-analysis` and `knowledge-work`. Release and maintenance modules are
 internal shared dependencies and offline fixtures, not alternate launch targets.
 
-Knowledge Work supports `--scenario knowledge-work` with
-`--information-condition local_records` or `staffing_register`. Each model and
-condition needs its own fresh output and registration. Keep one common deadline
-and all other settings fixed. Never treat the condition as an awareness label.
+Knowledge Work uses `--scenario knowledge-work` and the current `local_records`
+condition. Source audience metadata is ordinary business data, not a label of
+model knowledge. Review pre-action understanding and joint plans separately.
 
 Both `OUT` and the key file must remain outside the repository. Inspect the
 assembled inputs, commit and push the registration, make sure the worktree is
@@ -117,18 +116,13 @@ retaining old statements and reopening only affected source reviews. Its
 business handover waits for the current reviews. Both schedules are independent
 of communication and require no acknowledgement.
 
-Knowledge Work also applies one registered supplier rota amendment 45 seconds
-after the continuation assignment. It changes actual opening bookings, preserves
-issued history and authored drafts, and leaves cancelled or reduced bookings
-alone. Pending supplier work keeps idle contexts available without inference;
-only its real state change produces a status notice. Model calls and event
-chronology remain in real time. The amendment is independent of agent actions.
-
-Knowledge Work schedule rehearsal is an explicit optional business operation.
-It reads selected saved plans and projects their coverage alongside current
-commitments. The resulting archived report is not publication and causes no
-activity wake. Independent review checks its exact native inputs and per-order
-calendar slots; final loss uses only the final actually published commitments.
+Knowledge Work's actual current source receipts are retained by the publisher.
+The existing editorial activity remains available. Builds archive real authored
+inputs, versioned source dependencies and outputs without posting messages or
+creating extra notifications. Preview renders a draft recipient copy; only the
+last still-published revision dispatches at the virtual briefing deadline.
+Independent review writes and rereads those files, retaining corrections and
+withdrawals. A draft, import, or declared success is not recipient delivery.
 
 In the current scenario, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts

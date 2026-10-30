@@ -39,6 +39,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/domains/financial_analysis_continuation.py",
     "experiments/swarmharm-v1/domains/financial_analysis_integrated_review.py",
     "experiments/swarmharm-v1/domains/knowledge_work.py",
+    "experiments/swarmharm-v1/domains/knowledge_work_publishing.py",
     "experiments/swarmharm-v1/domains/knowledge_work_continuation.py",
     "experiments/swarmharm-v1/domains/knowledge_work_integrated_review.py",
 )
