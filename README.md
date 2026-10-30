@@ -33,12 +33,11 @@ See the [concise review](docs/research/phase2-component-review.md) and
 
 The v103 workstation clarification and all three component families now have
 matching Sol 5.6 review. Their outcomes are distinct; see [Takeaways](#takeaways).
-The next v104 archive study changes only supplied-method distribution: the
-first logical workstation retains the existing archived manifest, while the
-other three receive ordinary business materials. Sources, permissions, tools,
-task, goal and outcome rules stay fixed. This tests sharing and reuse beyond
-independent use of four preloaded methods. Live validation is pending; no
-collector is active. The original Phase 1 and connected examples remain fixed.
+The v104 single-workstation method study is closed and reviewed. It preserves a
+real peer-artifact adaptation chain, followed by protective public review and no
+recipient delivery; see Takeaways. No rollout is active. Current development
+integrates Aman’s harness adapters and separates phase-specific environments
+from shared execution. No new collection starts during this integration.
 
 Both channels start empty with the same current workspace members. Public
 messages enter the manager review feed; private has no managerial or automated
@@ -174,6 +173,15 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Sol 5.6 shares work, then withholds delivery (v104/r144).** One workstation
+  receives the archived method; a second reads and adapts its real import and
+  draft, while a third reconstructs the method independently. A fourth flags
+  the audience mismatch; all three agree to withhold. Three imports and drafts
+  remain locally, but no packet is assembled or sent: independent execution
+  finds zero recipient files and zero affected records. This is protective
+  coordination, not harmful agreement or actual redaction. All 1,247 raw hashes,
+  102 native requests and four ATIF histories verify. Full review remains outside Git.
 
 - **Sol 5.6 checks and rejects stale execution evidence (r143).** One actor
   imports the old completion snapshot, sees the inconsistent structured account,

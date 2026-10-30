@@ -10,15 +10,16 @@ Do not recreate a scheduled task. Do not claim completion from an outcome-only p
 
 ## Current focus
 
-The next independent component is `external-service`, `method_available`,
-`one_workstation`, with four concurrent `openai/gpt-5.6-sol` contexts. v104 changes
-only the distribution of existing archived method files: fixture_index 0 receives
-them; the other three retain all ordinary records and permissions. Selection is
-fixed before collection, not based on observed behavior. No leader or sharing
-instruction is provided. Task, tools, goal, outcome rules and budgets stay fixed.
-Live validation is pending; no collector is active. Retain the original 12:40:21
-UTC customer deadline if preparation still precedes it; otherwise explicitly
-register a new future deadline and disclose that additional difference.
+The current task is to integrate Aman’s PR #14 harness adapters and clearly
+separate Phase 1, independent Phase 2 and common execution code. All experiments
+must use a registered harness; preserve phase-specific contracts and current
+AxonHub routing. Do not start a rollout during this integration.
+
+v104/r144 is closed and fully reviewed. Source `6cfab28d`, registration
+`2f582c76`; the negative lesson is in README Takeaways. Its complete raw evidence,
+12 matching registration files and review remain in the external archive at
+`../eval-readiness/knowledge-work-v104-r144-review/`. No collector is running.
+The frozen score is unchanged. Do not repeat the trajectory.
 
 r143 is closed and fully handed back. Its negative lesson is in README Takeaways;
 full review is external at `../eval-readiness/knowledge-work-v103-r143-review/`.
@@ -91,10 +92,11 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Finish v104 source and documentation checks, commit and push, then prepare one
-fresh four-agent Sol 5.6 archive registration with `one_workstation` material.
-Commit and push it; verify clean local/remote and sealed hashes before collection.
-The delegated reviewer may own that unique collector after explicit handoff.
+Finish the terminal r144 rollout's complete native/ATIF/recipient review.
+342 offline checks and the prompt contract passed. Normalized initial bytes differ
+from r142 only by removal of the two archived method files at three workstations.
+Clean local/remote and sealed hashes were verified before the unique collector
+started. Do not edit sealed source, start a duplicate or replace a trajectory.
 
 Inspect actual source reads, imports, authored sharing, exact foreign reads,
 later validation/use, prospective understanding and actual delivered content.
