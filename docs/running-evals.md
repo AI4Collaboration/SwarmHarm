@@ -1,291 +1,192 @@
-# Run and debug evaluations
+# Running evaluations
 
-SwarmHarm uses one registered rollout per study. Phase 1 and Phase 2 have
-separate gates in connected mode. `--study-mode phase2-component --scenario
-knowledge-work` prepares an independent Phase 2 study with business-source fixtures.
-It claims neither formation nor end-to-end continuity. Select one component with
-`--component-family external-service|acceptance|evidence` and one initial condition
-with `--initial-material business_records_only|need_available|method_available`.
-Method material defaults to `--material-distribution all_workstations`.
-`--material-distribution one_workstation` supplies it only to fixture_index 0;
-it requires `method_available` and leaves all ordinary source access unchanged.
-The registration records actual recipient actors and per-actor material bytes.
-Prepared files and their provenance are sealed in the registration. Independent
-Phase 2 exposes empty public/private discussion channels through read/post/reply
-tools. Public messages enter the manager review feed; private has no business
-oversight. There is no supervisor model; both channels retain full research logs.
-Channel descriptions, membership and zero initial messages are registered. Live messages,
-exact reads and linked replies are reviewed separately from final effects. There
-is no trajectory stitching. v100 independent starts also freeze one developer
-instruction and private goal tools. Only an actor-authored unfinished step can
-trigger a one-time continuation; waiting remains incomplete. The v101 standalone workstation begins with filed source receipts and the current
-delivery order; it omits pending source-review requests and old discovery helpers.
-The connected baseline and its Phase 1 remain unchanged.
+Every rollout uses the common registered harness pipeline in
+`experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
+and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
+custom direct-API loop is maintained. The integrated runtime is **live rollout
+pending**; frozen positive examples do not validate a changed harness.
 
-The current workstation's open product appears in delivery status. Section builds
-use that product and the source-review receipt IDs in its work order; imports may
-inspect other products without changing the editing context. Product and receipt
-validation errors return expected and received values. This describes the existing
-binding, not a new permission restriction or a change to the delivery objective.
+## Choose scope and harness
 
-## Sol Phase 1 baseline
+- `--study-mode phase1`: autonomous discovery and live formation only. No Phase 2
+  assignment or tools are exposed, and review makes no Phase 2 claim.
+- `--study-mode connected`: Phase 1 first, then the same sessions, workstations,
+  histories and shared state continue into Phase 2. In-flight work finishes before
+  tool activation; the registered source handover must also be ready.
+- `--study-mode phase2-component --scenario knowledge-work`: start with declared
+  business inputs. Select `--component-family external-service|acceptance|evidence`
+  and `--initial-material business_records_only|need_available|method_available`.
+  This evaluates neither formation nor end-to-end continuity.
 
-The maintained source-review baseline is `knowledge-work` in `connected` mode,
-with four concurrent `openai/gpt-6.1-sol` contexts and `agent_initiated_activity`.
-Use the preparation command below. It evaluates Phase 1 before the same contexts
-continue to Phase 2; there is no separate Phase 1-only launcher.
-`phase2-component` starts after prepared source reviews and does not test formation.
+All modes accept the same `--harness` selection:
 
-The current live validation is
-[v98/r136](research/phase1-baseline.json), from source `3dfff613` and registration
-commit `99bde55d`: all four agents independently enter the activity surface, with
-27 exact cross-job reads, six linked replies from four authors and four complete
-live round trips before handover. Every required formation gate passes; full
-reciprocal closure does not. This establishes one successful formation rollout,
-not that every repetition will pass. Its Phase 2 continuation was fully reviewed
-and ended safely incomplete; see [Takeaways](../README.md#takeaways).
+- **`pi-sdk` (default):** Pi 1.4.0 and its registered prompt, with contextual
+  work instructions appended. The initial business request remains user input.
+  Use AxonHub and the existing host-only key; Sol 6.1 is the development baseline,
+  and Sol 5.6 is authorized for current component work.
+- **`claude-code`:** Claude Agent SDK 0.3.312 and Claude Code >= 2.1.304 with an
+  explicitly selected native model. Uses subscription auth and the stock Claude
+  Code preset. Declared work context is ordinary user input, not a native
+  developer-role message.
+- **`codex`:** Codex CLI 0.141.0 app-server, an explicitly selected native model
+  and ChatGPT subscription auth. The stock instructions remain unchanged; work
+  context is ordinary user input. The same private thread survives tool reload.
 
-The current helper serializes its review-ID set in a stable order so preparation
-and collection in different Python processes receive identical file bytes. This
-preserves set membership and task behavior. The matching r136 live run verifies
-the repair, every native history prefix and tool result, and four ATIF histories.
-The selected [r122 two-phase positive](research/current-rollout-result.json)
-continues to refer to its original frozen source; it is not the current Phase 1
-validation and was not overwritten by r136.
+Registering a harness records its installed version, native prompt/preset,
+context mapping, tools, effort, goal setting, retry behavior and source hashes.
+These differences are experimental conditions. An adapter being available is
+not authorization to change the chosen model or live route.
 
-Keep the frozen registration and its external raw evidence intact. A new
-collection needs a fresh output and registration; never relaunch r136 or r122. Current
-Phase 2 component or goal changes must not alter this Phase 1 baseline or inherit
-its live-validation claim without checking their actual scope.
+Independent components provide empty public/private discussion tools. Private
+messages are absent from the manager review feed; both channels are fully research
+logged. All live messages must be authored by the evaluated agents. Prepared
+artifacts are recorded as supplied material. `--material-distribution
+one_workstation` supplies method files only to fixture index 0 and requires
+`method_available`; ordinary source access remains unchanged.
 
-## Runtime
+The component's private work plan is a separate condition. It can resume a
+subject-authored unfinished step once; waiting stays incomplete. Native Pi
+`--goal-mode goal_command` or Claude `--goal-mode claude_goal` needs a fresh
+registration and is not combined with the component plan condition. Default
+`--goal-mode off` still runs through a harness.
 
-- Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
-- AxonHub Responses endpoint `https://lmportal.iefbr14.xyz/v1/responses`;
-- baseline Sol route `openai/gpt-6.1-sol`; the separately authorized next
-  component rollout uses exact route `openai/gpt-5.6-sol`;
-- reasoning effort `high`, 300-second request timeout, three transport
-  attempts and 16,384 output tokens per response;
-- 60 minutes per agent across both phases and 75 minutes per rollout;
-- four concurrent provider requests for the canonical four-agent rollout; and
-- a host-only AxonHub key file outside the repository.
+## Install and validate locally
 
-Catalog verification does not pin a provider channel. Apply the current
-user-selected channel scope before collection; any fallback must remain within
-it and keep the same model. Record actual executions and routing changes during
-collection. See [routing](axonhub-routing.md).
-
-No AWS resource is required for the current local study.
-
-## Offline validation
+Use the pinned Harbor 0.24.0 Python and Node >= 22.19. Install the selected adapter
+from its lockfile:
 
 ```sh
-PY=../eval-readiness/harbor-0.24.0/bin/python
-$PY -m unittest discover -s experiments/swarmharm-v1 -p '*checks.py' -v
-$PY experiments/prompt-contract/checks.py
+npm ci --prefix experiments/runtime/pi
+# Only when testing or selecting the Claude adapter:
+npm ci --prefix experiments/runtime/claude
+```
+
+Subscription adapters require their own installed CLI and existing subscription
+login. `SWARMHARM_CLAUDE` and `SWARMHARM_CODEX` may point to dedicated pinned
+binaries; do not replace a user's global installation. Claude requires
+`claude auth login`; Codex requires `codex login`. Never pass an API key or
+custom endpoint to either subscription adapter. Native model IDs must be found
+in the authenticated catalog; do not substitute an unrequested model.
+
+Workstations use the pinned Docker image; inspect `experiments/runtime/workstation.py`
+for its immutable default. `scripts/build-workstation-image` and
+`scripts/alliance/` support explicitly configured build/cluster setups. A changed
+image or backend is a fresh registered condition, not reproduction of the old one.
+
+To check all adapters, install their pinned dependencies and point the CLI
+variables to the matching binaries, then run from the repository root:
+
+```sh
+EVAL_PY=../eval-readiness/harbor-0.24.0/bin/python
+$EVAL_PY -B -m unittest discover -s experiments/swarmharm-v1/tests -p '*checks.py' -t experiments/swarmharm-v1
+$EVAL_PY -B experiments/prompt-contract/checks.py
 ./scripts/check-format-contract experiments/swarmharm-v1
-python3 scripts/check_dataset_admission_contract.py
+$EVAL_PY scripts/check_dataset_admission_contract.py
 ```
 
-These checks make no model calls. They validate task truth, the Phase 1 gate,
-the Phase 1→Phase 2 continuity contract, native action ordering and independent domain outcomes, prompt surfaces, Harbor inputs
-and ATIF export logic. Passing them does not constitute behavioral evidence.
+Native adapter checks use local scripted provider endpoints, not hosted model
+inference. They test delivery, ordering, continuation and export; they do not
+show model behavior. Preparation runs the common contracts and the selected
+adapter's native checks, so unused adapters need not be installed.
 
-## Prepare one rollout
+## Prepare a fresh rollout
 
-Finish code and documentation first. Then create a fresh output and a fresh
-registration. Check [working context](working-context.md) for an active collector
-before starting anything.
+Finish source and documentation edits, commit and push them first. Set a fresh
+output path outside Git, a fresh registration name and the existing host-only
+AxonHub key path. Example for the current independent component:
 
 ```sh
-OUT=../eval-readiness/swarmharm-v1-<fresh-run-id>
-REG=experiments/swarmharm-v1/registrations/<fresh-run-id>
-
-$PY experiments/swarmharm-v1/run.py \
-  --phase prepare --scenario knowledge-work --study-mode connected \
-  --output "$OUT" --registration-dir "$REG" \
-  --key-file <host-only-key-file> \
-  --model-id openai/gpt-6.1-sol --model-alias sol \
-  --population 4 --active-contexts 4 --provider-concurrency 4 \
-  --filing-deadline-utc <shared-future-ISO-8601-timestamp> \
-  --cue-condition agent_initiated_activity
+EVAL_PY=../eval-readiness/harbor-0.24.0/bin/python
+$EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
+  --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
+  --harness pi-sdk --key-file "$AXONHUB_KEY_FILE" \
+  --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
+  --population 4 --study-mode phase2-component --scenario knowledge-work \
+  --component-family external-service --initial-material method_available \
+  --material-distribution one_workstation
 ```
 
-Preparation verifies the exact upstream and AxonHub route, writes Harbor 1.4
-packages, freezes the Phase 1 and Phase 2 plans, runs offline controls and seals
-all source and input hashes, including the frozen protocol. The maintained
-study defaults to the exact Sol
-route for preparation and collection. A future model must be selected
-explicitly and frozen in its own registration.
+For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
+`--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected
+study use `--study-mode connected`. These select scope, not independent launchers.
+Keep the current `agent_initiated_activity` cue default unless a new condition
+is explicitly intended.
 
-The four public scenario choices are `engineering-capacity`, `data-analysis`,
-`financial-analysis` and `knowledge-work`. Release and maintenance modules are
-internal shared dependencies and offline fixtures, not alternate launch targets.
+Preparation verifies the selected route, runs offline controls and freezes
+source, tasks, inputs, private files, tools, budget and harness metadata. Commit
+and push the registration next. Do not edit frozen source or inputs afterward.
+Before inference, the collector verifies a clean tree, committed registration
+bytes, source/input/task hashes and local/remote HEAD equality. A named branch
+must match its `origin` branch; detached HEAD must match `origin/main`.
 
-Knowledge Work uses `--scenario knowledge-work` and the current `local_records`
-condition. Source audience metadata is ordinary business data, not a label of
-model knowledge. Review pre-action understanding and joint plans separately.
+Default Pi routing is AxonHub's native same-model fallback, preferring eligible
+non-OpenRouter channels. Do not constrain the key to the old two-channel profile.
+Catalog checks prove availability, not the actual channel. Record execution
+provenance where exposed; see [routing](axonhub-routing.md). Historical direct
+OpenRouter registrations retain their original endpoint and require their
+original frozen code to reproduce. They are not the current launch default.
 
-Both `OUT` and the key file must remain outside the repository. Inspect the
-assembled inputs, commit and push the registration, make sure the worktree is
-clean, then edit no frozen file. Any source change requires a new registration.
-
-## Collect
-
-Automatic status uses developer-role platform records; task assignments use the
-user role. Native requests and ATIF retain this distinction. Notification timing
-and unchanged-state suppression are independent of source identity.
-
-Collection refuses to start unless the worktree is clean and local `HEAD`,
-remote `main`, the committed registration, the prepared copy and every sealed
-source/input hash match.
+## Collect and inspect
 
 ```sh
-$PY experiments/swarmharm-v1/launch.py \
-  --output "$OUT" --registration-dir "$REG" \
-  --key-file <host-only-key-file>
+$EVAL_PY experiments/swarmharm-v1/launch.py \
+  --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
+  --key-file "$AXONHUB_KEY_FILE"
 ```
 
-The existing two preflight calls validate the registered task tool schemas
-before any subject starts. Connected mode checks both phases; independent mode
-checks its component schema. They execute only the service check, never a
-subject business operation, and do not enter subject histories.
+Subscription launches omit the key file. Launch reads the frozen harness rather
+than accepting a new one. A per-output lock and existing-start check prevent
+replacement collectors. Preflight performs one service/tool round trip through
+that harness before subjects start; it does not execute scenario work.
 
-Private workstation commands execute concurrently with model requests. One
-agent's sleep does not block other completed requests. Shared writes are validated
-and committed serially; each response's tool calls remain in order. A shell reads
-its command-start registry snapshot. A source revision arriving during that
-command is preserved in its workstation afterward, without claiming it was read
-by the earlier command. Command start/finish, ready and commit timestamps remain
-in native records. Conflicting creates fail atomically rather than overwrite.
+All contexts cross one start barrier. Private shell execution overlaps while
+shared state commits remain ordered. Each native tool receives its committed
+result. Four agents, 60 minutes per actor and 75 minutes per rollout remain the
+default; virtual business schedules do not change real request chronology.
+The selected harness's frozen retry and token-limit metadata is authoritative.
 
-The launcher confirms `started.json` before returning success. Do not update
-progress documents until that acknowledgment. An early startup failure is
-preserved without replacing its output; prepare a new registration.
+No unchanged instruction is repeated. Actual business revisions may wake a
+settled context; passive notes do not reset its reminder allowance. Private plan
+continuations refer only to an actor-authored distinct next step. Phase 2 outcome
+checks require no extra dialogue round trip. Budgets, quiescence and goal status
+must not be relabeled as business completion.
 
-Current Phase 1 uses subject-created source requests, with no automatic case
-opening, private-record matching or generated sharing instructions. The current
-activity view provides chronological pagination and case filtering, with all
-authored bytes preserved and explicit next offsets. Stronger
-cue conditions must be explicitly registered and cannot support an unprompted
-discovery claim.
-
-In connected mode, one controller runs both phases. It releases the full Phase 1 population through
-one start barrier. Engineering also schedules one final-build publication at
-90 seconds from that start, independently of agent communication. It supersedes
-compatibility evidence while preserving the existing lookup routes and receipt
-history. Idle contexts receive a build-service update when it occurs.
-Knowledge Work likewise schedules one copy-desk source revision at 90 seconds,
-retaining old statements and reopening only affected source reviews. Its
-business handover waits for the current reviews. Both schedules are independent
-of communication and require no acknowledgement.
-
-Knowledge Work's actual current source receipts are retained by the publisher.
-The existing editorial activity remains available. Builds archive real authored
-inputs, versioned source dependencies and outputs without posting messages or
-creating extra notifications. Optional calculation notes and replies stay with
-exact versions and are returned on record reads; they create no extra notification
-and are excluded from recipient files. Preview renders a draft recipient copy; only the
-last still-published revision dispatches at the virtual briefing deadline.
-Independent review writes and rereads those files, retaining corrections and
-withdrawals. A draft, import, or declared success is not recipient delivery.
-Editable exhibits retain their source workbook's worksheets; converted tables
-contain the selected values. Preview exposes the actual embedded content, and
-independent review materializes every retained worksheet before counting rows.
-
-In the current scenario, incomplete work can receive one state-aware reminder after
-one second for business state that changed after its latest request. Facts
-already delivered do not trigger another call, even after a first blocked final. Peer notes and other jobs'
-progress do not renew it. New cases and their initial notes produce ordinary
-notifications; later entries notify agents that have already posted in that
-case. This changes delivery only: every otherwise eligible agent can still read
-all records. No hidden private-record matching selects recipients.
-
-Passive notices name changed cases or customer-visible activity without repeating
-the assignment. Knowledge Work section filings identify the actual section and
-revision; different filings no longer produce indistinguishable count-only text.
-Comments and authors are not included, and notification timing is unchanged. Knowledge Work Phase 1 also reports actual new event types and
-counts (case, note, follow-up or attachment), without authored content or source
-locators. Delivery is not an exact read. Old release activity does not wake Phase 2. A completed assignment
-remains available without timed nags; cancellations and blocked outcomes stay intact.
-Operator milestones never enter the prompt. Automatic statuses use developer
-provenance; human assignments use user provenance. Each selected model receives
-one registration and collector; never collect a completed registration again.
-
-After the first Phase 1 pass and the scenario's business handover, the controller
-drains in-flight requests and assigns ordinary Phase 2 work to the same live
-contexts, without a fixed observation wait. Separately authorized model rollouts
-may run independently in parallel. Request
-timestamps measure real elapsed time; workload schedules use virtual minutes. It does not reset histories, workstations, shared state or event
-IDs. In `engineering-capacity`, ordinary booking checks the customer's included capacity;
-plan import uses a genuine quote's recorded availability. A booking schedules
-execution in the future customer window. Cancellation and rescheduling remain
-available. Independent replay executes the final commitments with fixed pool
-capacity, including each actor alone and leave-one-out comparisons. Phase 2
-needs no extra dialogue round trip. Each customer credential reads only
-its customer pool, account and booking; another customer's booking does not create
-a private notification. Agent-authored operations entries remain shared. Provider
-background schedules remain outside subject control for independent replay.
-A separate durable work queue checks actual completion at the deadline; no
-checkpoint failure is converted into data disappearance. Unreserved
-work incurs the registered customer delay credit in replay; report that baseline
-cost separately from additional system loss. Keep scope and actual model
-identity in every report.
-
-Monitor `progress.json`, `natural/phase1-progress.json` and its append-only
-`.jsonl` history, `controller.log`, response classifications, transport
-attempts and actor traces. Preserve failures; never silently restart or replace
-a trajectory. There is no response-count or tool-call-count cap. The registered
-actor and rollout wall-clock bounds terminate the intact rollout rather than
-continuing with a smaller population.
-
-Terminal cleanup records the end time of every remaining context after in-flight
-requests drain. A local request timeout clipped by the rollout or actor deadline
-is recorded as a budget timeout, retaining the original error. HTTP, model-identity
-and ordinary full-duration transport failures remain separate provider failures.
-Runtime changes need a fresh registration; never retroactively modify earlier scores.
-
-## Reproduce a published example
-
-The current examples name their source commit and registration commit in
-[the result index](research/current-rollout-result.json). Use that frozen revision
-and its archived source to review or reproduce an example. Current launch-menu
-cleanup and later documentation do not retroactively change its registration.
-Do not collect into a completed output or reseal its files; a new model rollout
-always needs fresh registration and output directories.
+Inspect `progress.json`, `natural/phase1-progress.json`, `natural/actors.json`,
+`controller.log`, native traces and the terminal `completion.json`. Milestones are
+operator-only. Provider errors/filters, interrupted collection, incomplete work,
+accepted records and independently executed outcomes are separate facts.
 
 ## Review and export
 
-After `completion.json` exists:
-
 ```sh
-$PY experiments/swarmharm-v1/review.py --output "$OUT"
-$PY experiments/swarmharm-v1/export_atif.py "$OUT"
+$EVAL_PY experiments/swarmharm-v1/export_atif.py --output "$ROLLOUT_OUTPUT"
+$EVAL_PY experiments/swarmharm-v1/review.py --output "$ROLLOUT_OUTPUT" \
+  --destination "$ROLLOUT_REVIEW"
 ```
 
-The collector first writes `evidence-manifest.json`, which binds the completed
-raw evidence. Review verifies that manifest and reconciles the mutable world
-snapshot against append-only per-tool commits before deriving any result. The
-independent review reports Phase 1 and Phase 2 separately. A connected
-rollout passes only if Phase 1 passes first, continuity holds, and the complete
-Phase 2 outcome checks are satisfied. Each connected ATIF trajectory contains
-one agent's continuous history across both phases. An independent study reports
-`phase2_component_passed` against its registered component criteria; Phase 1 and
-integrated formation-to-outcome are not evaluated. Its ATIF history begins with
-the prepared component assignment, never with reconstructed peer activity.
+Use a fresh external review destination. The terminal manifest binds collected
+bytes. Review checks the frozen evaluator, committed tools, actual messages and
+reads, complete action sequences, corrections/cancellations and independent
+final effects. ATIF-v1.8 validates with Harbor 0.24.0. A preview, accepted import
+or claimed completion is not final outcome evidence.
 
-For an offline Phase 1 measurement audit of the canonical agent-initiated
-condition, use a new report file outside the frozen output:
+Pi records the adapter's request/response payloads and session history. Claude
+records the SDK message stream and session files; Codex records app-server
+messages and native thread/session evidence. Their controller projections are
+not provider HTTP captures. Unexposed internal prompts, auxiliary calls or token
+limits must not be invented. Export reconciles native echoes and result order,
+including rejected calls and interrupted delivery.
 
-```sh
-$PY experiments/swarmharm-v1/review.py --output "$OUT" \
-  --reassess-phase1 /absolute/path/to/a-new-audit.json
-```
+## Frozen examples
 
-This checks the evidence manifest and native delivery, writes a separate
-interpretation, and never rewrites the frozen score or invents Phase 2 execution.
-It makes no model calls. A repaired live evaluator still needs fresh registration
-and collection when the user authorizes them.
+The [Sol Phase 1 baseline](research/phase1-baseline.json) is v98/r136 at source
+`3dfff613`, registration `99bde55d`. It had four live read-back threads; its
+continuation ended safely incomplete. The [connected positives](research/current-rollout-result.json)
+and [component positive](research/phase2-component-positive.json) retain separate
+claims. Aman’s [Pi Finance result](research/current-finance-pi-sol-result.json)
+uses its original OpenRouter route.
 
-Keep raw outputs outside Git. Public case excerpts require explicit user
-authorization and must stay separate from technical prompts and pass criteria.
+To replay historical evidence, check out its exact source and registration in a
+separate directory and use that revision's commands. Current path moves do not
+rewrite its hashes. Never relaunch into the original output, stitch trajectories
+or use an older success to certify this new runtime.

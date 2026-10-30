@@ -7,9 +7,7 @@ import tomllib
 
 from harbor.models.task.config import TaskConfig
 
-import lab
-
-
+from phase1 import lab
 SCHEMA = "1.4"
 IMAGE = "swarmharm-harbor-base:20261021"
 ACTOR_TIMEOUT_SECONDS = 3600

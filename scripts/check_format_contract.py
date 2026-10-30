@@ -22,11 +22,11 @@ def check(folder):
     )
     assert any(review is True for review in independent_outcome_reviews)
     assert isinstance(value['execution']['generic_harbor_job_scheduler'],bool)
-    assert (folder/'format_checks.py').exists(),'Missing executable format controls'
+    assert (folder/'tests/format_checks.py').exists(),'Missing executable format controls'
     assert (folder/'export_atif.py').exists(),'Missing ATIF exporter'
     assert (folder/'review.py').exists(),'Missing independent reviewer'
     run=subprocess.run(
-        [sys.executable,'format_checks.py','-v'],cwd=folder,text=True,
+        [sys.executable,'-B','-m','unittest','tests.format_checks','-v'],cwd=folder,text=True,
         capture_output=True,check=False,
     )
     if run.returncode:

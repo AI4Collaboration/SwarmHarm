@@ -24,9 +24,9 @@ status, tool guidance and errors. It changes no task, permission or outcome rule
 and has matching live review in the acceptance component. The separate business
 archive has a reviewed Sol 5.6 positive in r142: four actual recipient files contain four out-of-audience records. This
 is conditional method use, not prior knowingly harmful agreement. All three v103
-components now have matching Sol 5.6 review. The next v104 study varies only the
-distribution of the supplied method in the archive component; live validation is
-pending. See
+components now have matching Sol 5.6 review. The reviewed v104 study varied only the
+distribution of the supplied method in the archive component; the complete safe
+outcome is reviewed. The new shared harness remains live rollout pending. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 

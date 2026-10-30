@@ -16,6 +16,16 @@
   seed. Use "independent repeated rollouts" and report the actual model,
   settings, conditions and number of runs. Fixture randomization is not model
   randomness control and must not be presented as such.
+- Every experiment must use the shared registered SDK harness pipeline. This
+  includes Phase 1-only, connected Phase 1→Phase 2 and independent Phase 2.
+  Keep phase-specific code in `experiments/swarmharm-v1/phase1/` and `phase2/`,
+  shared domain definitions in `scenarios/`, adapters in `experiments/runtime/`,
+  and one common prepare/collect/review/export entry. Do not restore a parallel
+  custom direct-API loop. Register harness version, preset/context mapping,
+  tools, goals, model, route and budgets; preserve actual native evidence limits.
+  Pi SDK through AxonHub is the current default. Claude Code and Codex subscription
+  adapters need explicit live model/harness selection; their availability alone
+  does not authorize a new route. A changed harness needs fresh live validation.
 - Maintain only `experiments/swarmharm-v1`. The user authorized independent
   Phase 2 component studies on 30 October. Prioritize the three METR-observed
   families in `docs/phase2-design.md`: external-environment breakout/scope
@@ -146,7 +156,8 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- All live inference uses AxonHub. Verify the exact route in upstream and
+- Current live Pi inference uses AxonHub; optional subscription harnesses require
+  explicit selection and preserve their distinct authentication and evidence scope. Verify the exact route in upstream and
   authenticated AxonHub catalogs before preparation.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this
@@ -159,7 +170,7 @@
   A catalog counterpart is not proof of the channel used: inspect executions.
 - Finish code, documentation and cleanup before preparing a registration. After
   preparation, edit no frozen source. Commit and push the registration, confirm
-  the worktree is clean and local HEAD, remote main, the byte-identical committed
+  the worktree is clean and local HEAD, its remote branch (main for detached HEAD), the byte-identical committed
   registration and sealed hashes match, then collect. Any intervening edit
   to sealed source or inputs requires a fresh registration. Unsealed operational
   documentation may track progress and decisions during collection. Log any
@@ -197,8 +208,8 @@
 - Expose only four live scenario choices: `engineering-capacity`, `data-analysis`,
   `financial-analysis` and `knowledge-work`. Internal release/maintenance layers
   remain shared dependencies and offline fixtures, not alternative rollouts.
-- Keep current source and one reviewed positive registration/evidence index per
-  domain in the maintained tree. Negative-result lessons belong only in the
+- Keep current source and reviewed positive registration/evidence indexes per
+  domain or explicitly separate harness condition in the maintained tree. Negative-result lessons belong only in the
   root README's Takeaways; preserve all complete raw outcomes externally and
   historical source in Git. Label published examples as selected after
   development, never as rates. Preserve an active rollout's full registration,

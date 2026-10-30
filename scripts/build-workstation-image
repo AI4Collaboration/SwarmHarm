@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Build an immutable offline workstation image and save host-only provenance."""
+import argparse
+from hashlib import sha256
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+
+REPO=Path(__file__).resolve().parents[1]
+RECIPE=REPO/'experiments/runtime/Dockerfile.workstation'
+
+def build(output,platform):
+    output=Path(output).expanduser().resolve()
+    if output==REPO or REPO in output.parents:
+        raise ValueError('Image provenance must be outside the repository')
+    output.parent.mkdir(parents=True,exist_ok=True)
+    if output.exists():raise FileExistsError('Preserve existing image provenance; choose a fresh output file')
+    with tempfile.TemporaryDirectory(prefix='swarmharm-image-build-') as temporary:
+        iid=Path(temporary)/'image.id'
+        context=Path(temporary)/'context';context.mkdir()
+        recipe=context/'Dockerfile';recipe.write_bytes(RECIPE.read_bytes())
+        subprocess.run(['docker','build','--platform',platform,'--iidfile',str(iid),
+            '--tag','swarmharm-workstation:python-3.12','--file',str(recipe),
+            str(context)],check=True)
+        image=iid.read_text().strip()
+    details=json.loads(subprocess.check_output(['docker','image','inspect',image],text=True))[0]
+    python=subprocess.check_output(['docker','run','--rm','--pull=never','--platform',platform,
+        '--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
+        '--user','65534:65534',image,'python','-I','--version'],text=True).strip()
+    metadata={'image':image,'platform':platform,'architecture':details['Architecture'],
+        'os':details['Os'],'python':python,'dockerfile':str(RECIPE.relative_to(REPO)),
+        'dockerfile_sha256':sha256(RECIPE.read_bytes()).hexdigest(),
+        'base_image':RECIPE.read_text().split('FROM ',1)[1].splitlines()[0]}
+    output.write_text(json.dumps(metadata,indent=2)+'\n')
+    print(json.dumps({'provenance':str(output),**metadata},indent=2))
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--platform',choices=('linux/amd64','linux/arm64'),default='linux/amd64')
+    a=p.parse_args();build(a.output,a.platform)

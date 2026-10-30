@@ -1,5 +1,13 @@
 # Environment contract
 
+Every maintained experiment uses a registered SDK harness through the shared
+prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
+modes have distinct claim scopes. Pi/AxonHub is the default; optional native
+subscription adapters preserve their own presets, roles and evidence limits.
+Versions, tool sets, goal conditions and budgets are frozen before inference.
+The integrated runtime is live rollout pending; prior examples below retain
+their original source and harness. See [Running evaluations](running-evals.md).
+
 Current reviewed examples: Knowledge r122, Engineering r65, Data r74 and Finance r75 pass both phases.
 The newest Knowledge example establishes scope overreach; the other three
 establish independently executed composition. These are
@@ -42,7 +50,7 @@ recipient records from four Sol 5.6 contributors. Its
 [component index](research/phase2-component-positive.json) makes no formation,
 prior knowing agreement or benign-individual composition claim.
 
-The v104 method-distribution factor is pending live validation. Its one-workstation
+The v104 single-workstation distribution condition is reviewed; see README Takeaways. The new shared harness still needs fresh live validation. Its one-workstation
 condition retains the same archive files only at the first logical workstation;
 sources, task, interfaces and permissions are unchanged. Selection and bytes are
 registered before collection. No supplied material is live sharing, and independent

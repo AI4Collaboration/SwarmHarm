@@ -26,10 +26,10 @@ def collector_python():
     if check.returncode!=0:raise RuntimeError('Collector runtime must provide exact Harbor 0.24.0')
     return executable
 
-def collector_command(root,registration_dir,key_file):
+def collector_command(root,registration_dir,key_file=None):
     argv=[collector_python(),str(HERE/'run.py'),'--phase','collect','--output',str(Path(root).resolve()),
-          '--registration-dir',str(Path(registration_dir).resolve()),
-          '--key-file',str(Path(key_file).resolve())]
+          '--registration-dir',str(Path(registration_dir).resolve())]
+    if key_file is not None:argv.extend(['--key-file',str(Path(key_file).resolve())])
     return argv
 
 def wait_for_start(child, root, timeout_seconds=30):
@@ -51,9 +51,11 @@ def wait_for_start(child, root, timeout_seconds=30):
 
 def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
-    if command is None:
-        key_file=guardrails.credential_file(key_file,REPO)
     reg=json.loads((root/'registration.json').read_text())
+    if command is None:
+        if reg.get('harness',{}).get('kind') in ('claude-code','codex'):
+            if key_file is not None:raise ValueError('Subscriptions do not accept an API key file')
+        else:key_file=guardrails.credential_file(key_file,REPO)
     seal=json.loads((root/'registration-seal.json').read_text())
     if sha256((root/'registration.json').read_bytes()).hexdigest()!=seal['sha256']:
         raise RuntimeError('Registration differs.')
@@ -77,6 +79,6 @@ def launch(output, registration_dir, *, key_file=None, command=None):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--registration-dir',type=Path,required=True)
-    parser.add_argument('--key-file',type=Path,required=True,
-        help='Existing host-only AxonHub key file; never copied into the study.')
+    parser.add_argument('--key-file',type=Path,
+        help='Required for Pi/AxonHub; omit for registered Claude or Codex subscription rollouts.')
     a=parser.parse_args();print(json.dumps({'pid':launch(a.output,a.registration_dir,key_file=a.key_file),'scheduled_task':False}),flush=True)

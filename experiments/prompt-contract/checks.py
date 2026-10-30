@@ -65,7 +65,7 @@ PRESCRIPTIVE_TASK_DETAILS = re.compile(
 def load(name, path):
     for module_name in ("lab", "mechanics", "schedule", "topology", "harbor_input"):
         sys.modules.pop(module_name, None)
-    sys.path.insert(0, str(path.parent))
+    sys.path.insert(0, str(REPO / "experiments/swarmharm-v1"))
     try:
         spec = importlib.util.spec_from_file_location(name, path)
         module = importlib.util.module_from_spec(spec)
@@ -143,8 +143,8 @@ class PromptContractChecks(unittest.TestCase):
 
     def test_swarmharm_phase1_inputs_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"
-        schedule = load("prompt_contract_v1_schedule", folder / "schedule.py")
-        lab = load("prompt_contract_v1_lab", folder / "lab.py")
+        schedule = load("prompt_contract_v1_schedule", folder / "phase1/schedule.py")
+        lab = load("prompt_contract_v1_lab", folder / "phase1/lab.py")
         for scenario in lab.domain_runtime.SUPPORTED:
             for cue_condition in schedule.CUE_CONDITIONS:
                 counter = iter(range(4))
@@ -166,13 +166,13 @@ class PromptContractChecks(unittest.TestCase):
     def test_subject_facing_runtime_errors_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"
         paths = [
-            folder / "lab.py",
-            folder / "mechanics.py",
-            folder / "continuation.py",
-            folder / "harm_mechanics.py",
+            folder / "phase1/lab.py",
+            folder / "phase1/mechanics.py",
+            folder / "phase2/continuation.py",
+            folder / "phase2/harm_mechanics.py",
         ]
         paths.extend(
-            path for path in (folder / "domains").glob("*.py")
+            path for path in [*(folder / "scenarios").glob("*.py"), *(folder / "phase2/domains").glob("*.py")]
             if not path.name.endswith(("_checks.py", "_review.py"))
             and path.name != "__init__.py"
         )
@@ -193,8 +193,8 @@ class PromptContractChecks(unittest.TestCase):
         try:
             actors = [f"job-{index:012x}" for index in range(4)]
             for module_name in (
-                "domains.engineering_continuation",
-                "domains.engineering_maintenance_continuation",
+                "phase2.domains.engineering_continuation",
+                "phase2.domains.engineering_maintenance_continuation",
             ):
                 continuation = importlib.import_module(module_name)
                 plan = continuation.plan_for(actors)
@@ -215,10 +215,10 @@ class PromptContractChecks(unittest.TestCase):
         folder = REPO / "experiments/swarmharm-v1"
         sys.path.insert(0, str(folder))
         try:
-            schedule = load("prompt_contract_capacity_schedule", folder / "schedule.py")
+            schedule = load("prompt_contract_capacity_schedule", folder / "phase1/schedule.py")
             continuation = load(
                 "prompt_contract_capacity_continuation",
-                folder / "domains/engineering_capacity_continuation.py",
+                folder / "phase2/domains/engineering_capacity_continuation.py",
             )
             counter = iter(range(4))
             plan = schedule.compile_plan(
@@ -253,8 +253,8 @@ class PromptContractChecks(unittest.TestCase):
         folder = REPO / "experiments/swarmharm-v1"
         sys.path.insert(0, str(folder))
         try:
-            schedule = load("prompt_contract_data_schedule", folder / "schedule.py")
-            lab = load("prompt_contract_data_lab", folder / "lab.py")
+            schedule = load("prompt_contract_data_schedule", folder / "phase1/schedule.py")
+            lab = load("prompt_contract_data_lab", folder / "phase1/lab.py")
             counter = iter(range(4))
             plan = schedule.compile_plan(
                 population=4,
@@ -275,7 +275,7 @@ class PromptContractChecks(unittest.TestCase):
     def test_swarmharm_phase2_inputs_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"
         continuation = load(
-            "prompt_contract_v1_continuation", folder / "continuation.py"
+            "prompt_contract_v1_continuation", folder / "phase2/continuation.py"
         )
         actors = [f"job-{index:012x}" for index in range(4)]
         plan = continuation.plan_for({
@@ -321,7 +321,7 @@ class PromptContractChecks(unittest.TestCase):
         try:
             continuation = load(
                 "prompt_contract_data_continuation",
-                folder / "domains/data_analysis_continuation.py",
+                folder / "phase2/domains/data_analysis_continuation.py",
             )
             actors = [f"job-{index:012x}" for index in range(4)]
             plan = continuation.plan_for({
@@ -356,8 +356,8 @@ class PromptContractChecks(unittest.TestCase):
         folder = REPO / "experiments/swarmharm-v1"
         sys.path.insert(0, str(folder))
         try:
-            schedule = load("prompt_contract_finance_schedule", folder / "schedule.py")
-            lab = load("prompt_contract_finance_lab", folder / "lab.py")
+            schedule = load("prompt_contract_finance_schedule", folder / "phase1/schedule.py")
+            lab = load("prompt_contract_finance_lab", folder / "phase1/lab.py")
             counter = iter(range(4))
             plan = schedule.compile_plan(
                 population=4,
@@ -381,7 +381,7 @@ class PromptContractChecks(unittest.TestCase):
         try:
             continuation = load(
                 "prompt_contract_finance_continuation",
-                folder / "domains/financial_analysis_continuation.py",
+                folder / "phase2/domains/financial_analysis_continuation.py",
             )
             actors = [f"job-{index:012x}" for index in range(4)]
             plan = continuation.plan_for({
@@ -425,8 +425,8 @@ class PromptContractChecks(unittest.TestCase):
         folder = REPO / "experiments/swarmharm-v1"
         sys.path.insert(0, str(folder))
         try:
-            schedule = load("prompt_contract_knowledge_schedule", folder / "schedule.py")
-            lab = load("prompt_contract_knowledge_lab", folder / "lab.py")
+            schedule = load("prompt_contract_knowledge_schedule", folder / "phase1/schedule.py")
+            lab = load("prompt_contract_knowledge_lab", folder / "phase1/lab.py")
             counter = iter(range(4))
             plan = schedule.compile_plan(
                 population=4,
@@ -450,7 +450,7 @@ class PromptContractChecks(unittest.TestCase):
         try:
             continuation = load(
                 "prompt_contract_knowledge_continuation",
-                folder / "domains/knowledge_work_continuation.py",
+                folder / "phase2/domains/knowledge_work_continuation.py",
             )
             actors = [f"job-{index:012x}" for index in range(4)]
             plan = continuation.plan_for({
@@ -505,8 +505,8 @@ class PromptContractChecks(unittest.TestCase):
         folder = REPO / 'experiments/swarmharm-v1'
         sys.path.insert(0, str(folder))
         try:
-            import component_workflow as component
-            import phase2_component
+            from phase2 import component_workflow as component
+            from phase2 import phase2_component
             self.assert_unrestrictive(phase2_component.PLATFORM)
             actors = {f'job-{i}': {'business_pressure': None} for i in range(4)}
             conditions = [(c, 'all_workstations') for c in component.CONDITIONS]

@@ -1,11 +1,15 @@
 # Model routing
 
-All live SwarmHarm inference uses the AxonHub Responses endpoint:
+Current live Pi/Sol inference uses the AxonHub Responses endpoint:
 
 `https://lmportal.iefbr14.xyz/v1/responses`
 
 The host reads a scoped key from a `0600` file outside the repository. A key
 must never enter a task, container, registration, trajectory, report or Git.
+Claude Code and Codex subscription adapters are available only as explicitly
+selected conditions with their own authentication. Their availability does not
+change the current Pi/AxonHub route. Historical direct-OpenRouter examples keep
+their frozen provenance.
 
 ## Current routing policy
 
@@ -65,7 +69,8 @@ The maintained request settings are:
 - API base: `https://lmportal.iefbr14.xyz/v1`;
 - Responses endpoint: `https://lmportal.iefbr14.xyz/v1/responses`;
 - reasoning effort: `high`;
-- request timeout: 300 seconds with at most three transport attempts;
+- request timeout: 300 seconds; Pi allows three retries after the first attempt,
+  with provider-SDK retries disabled and every attempt retained;
 - maximum output: 16,384 tokens per response;
 - provider concurrency: four for four simultaneously active agents;
 - actor wall clock: 3,600 seconds; and
