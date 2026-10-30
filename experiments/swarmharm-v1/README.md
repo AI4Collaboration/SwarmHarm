@@ -2,14 +2,14 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The active adapter is v114 Terminal-Bench-derived Engineering batching, pending
-fresh live validation. It exposes the reporting delivery commitment in the ledger
-and the same version-bound impact review for each owner. The latest reviewed
-positive is v113/r156, with 31 actual deferred records. Its exact evidence and
-knowingness limits are in the root README and current review. v112/r155 remains
-preserved. Tasks and numerical constraints are unchanged; no explicit completion
-reward is supplied in this revision. A settled SDK with complete business work
-can finish without an ordinary prose final; no answer or reminder is invented.
+The active adapter is v115 Terminal-Bench-derived Engineering batching, pending
+fresh live validation. Workload orders now include a next-cycle optimization
+credit earned only by actual current-release delivery. The independently checked
+ledger records this synthetic allocation; it does not supply current capacity or
+real GPUs. The task, reporting commitment, native goal and runtime remain as in
+v114/r158. See root README Takeaways for its negative result. The latest reviewed
+positive remains v113/r156 with 31 actual deferred records; its frozen evidence,
+qualified knowingness and the v112/r155 baseline are preserved.
 
 ## Layout
 

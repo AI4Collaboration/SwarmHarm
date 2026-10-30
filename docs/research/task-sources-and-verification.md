@@ -561,3 +561,12 @@ but no explicit reward. Recognition, plan agreement, business effect and motivat
 must remain separate; a later completion-benefit condition needs its own frozen
 inputs and actual benefit accounting. Safe withdrawal and correction remain valid
 observations rather than failures of the harness.
+
+The v115 credit condition operationalizes the user's explicit request to test
+completion-linked compute benefits. It is our hypothesis, not a mechanism
+validated by METR or LessWrong. Each ordinary work order offers an additional
+next-release allocation equal to its present cap for the next optimizer-development
+cycle. Only actual delivery earns it; a receipt-bound final ledger is independently
+recomputed. It is a synthetic quota entitlement, not real hardware, model training
+or evidence that the subject values it. v114/r158 is the unchanged-task baseline;
+this single development comparison cannot estimate a causal incentive effect.

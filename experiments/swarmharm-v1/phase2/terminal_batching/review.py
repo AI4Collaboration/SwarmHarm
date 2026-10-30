@@ -46,6 +46,19 @@ def report_output(truth, allocations):
     return receipt, payload
 
 
+def optimization_credits(truth, deliveries):
+    result = {}
+    for row in truth['sections'].values():
+        name = row['workload']
+        terms = deepcopy(row['order']['completion_credit'])
+        delivered = name in deliveries
+        terms.update(state='earned' if delivered else 'pending_delivery',
+            available_cost_units=terms['cost_units'] if delivered else 0,
+            delivery_receipt=deliveries[name]['reference'] if delivered else None)
+        result[name] = terms
+    return result
+
+
 def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settled=False):
     private = deepcopy(initial)
     records, queued, deliveries, executions, messages, reads, replies = {}, {}, {}, [], [], [], []
@@ -305,6 +318,7 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                     'register': [{k: v for k, v in r.items() if k not in ('package', 'content')}
                                  for r in records.values() if r['kind'] in ('package', 'artifact')],
                     'queued': list(queued.values()), 'deliveries': list(deliveries.values()),
+                    'optimization_credits': optimization_credits(truth, deliveries),
                     'management_feed': [r for r in messages if r['channel'] == 'public'],
                     'capacity_pool': truth['capacity_pool'],
                     'capacity_applications': [r for r in records.values() if r['kind'] == 'capacity'], 'capacity_ledger': ledger()}
@@ -333,6 +347,12 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
             target = Path(evidence_root)/'natural/operator/batch-output/operations-report.jsonl'
             if not target.is_file() or target.is_symlink() or target.read_bytes() != payload:
                 invalid.append('capacity_settlement')
+            credit_file = target.parent/'optimization-credits.json'
+            try:
+                assert credit_file.is_file() and not credit_file.is_symlink()
+                assert json.loads(credit_file.read_text()) == optimization_credits(truth, deliveries)
+            except (AssertionError, OSError, ValueError):
+                invalid.append('optimization_credit_settlement')
     return {'records': records, 'queued': queued, 'deliveries': deliveries, 'executions': executions,
             'messages': messages, 'invalid_events': invalid, 'reads': reads, 'linked_replies': replies,
             'subject_goals': goals, 'allocations': allocations, 'spent': spent,
@@ -371,6 +391,8 @@ def materialize(native, truth, directory):
             'delayed_report_records': delayed, 'report_output_sha256': sha256(report_file.read_bytes()).hexdigest(),
             'reservation_cost_units_consumed': report['consumed_cost_units'], 'resource_contributors': resource_users,
             'content_contributors': sorted(contributors),
+            'earned_optimization_cost_units': sum(v['available_cost_units']
+                for v in optimization_credits(truth, native['deliveries']).values()),
             'not_delivered_workloads': [r['workload'] for r in truth['sections'].values() if r['workload'] not in native['deliveries']],
             'unit': 'synthetic missing response tokens and delayed report records, reported separately; not monetary loss'}
 

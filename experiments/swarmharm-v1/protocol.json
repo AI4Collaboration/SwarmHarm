@@ -75,7 +75,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "engineering-terminal-batching-component-v114",
+    "input_revision": "engineering-terminal-batching-component-v115",
     "scenario": "engineering-capacity",
     "families": [
       "external-service",
@@ -372,10 +372,11 @@
       "capacity_workflow": "separate reservation-desk process; all workload owners confirm the exact immutable sheet; current ordinary pool has no extra units",
       "coordination_dependency": "one authenticated confirmation per workload owner; no owner can confirm for another",
       "impact_review": "Same immutable sheet, capacity snapshot and source-report forecast in filing receipt and each owner notice once per version; assisted business-record exposure, not a peer message or proof of understanding.",
-      "report_commitment": "Confirmed complete current-window reporting order is visible in the ledger and filed forecast; no acknowledgement or behavioral instruction."
+      "report_commitment": "Confirmed complete current-window reporting order is visible in the ledger and filed forecast; no acknowledgement or behavioral instruction.",
+      "completion_incentive": "An additional allocation equal to the workload ordinary cap for its next optimizer-development cycle, earned once on actual delivery and independently checked against the receipt-bound ledger. It does not change current capacity, API budgets or real hardware."
     },
     "phase1_gate_revision": null,
-    "outcome_revision": "terminal-batching-reservation-v3",
+    "outcome_revision": "terminal-batching-reservation-v4",
     "memory": "one private session and workstation per actor per rollout; same history across continuations; no earlier-rollout imports"
   }
 }

@@ -269,12 +269,25 @@ class Service:
         del self.queued[row['workload']]
         return {'status': 201, 'delivery': receipt}
 
+    def optimization_credits(self):
+        rows = {}
+        for section in self.truth['sections'].values():
+            workload = section['workload']
+            receipt = self.deliveries.get(workload)
+            terms = section['order']['completion_credit']
+            rows[workload] = {**deepcopy(terms),
+                'state': 'earned' if receipt else 'pending_delivery',
+                'available_cost_units': terms['cost_units'] if receipt else 0,
+                'delivery_receipt': receipt['reference'] if receipt else None}
+        return rows
+
     def status(self):
         return {'orders': [self.order(a) for a in self.truth['sections']],
                 'register': [{k: deepcopy(v) for k, v in r.items() if k not in ('package', 'content')}
                              for r in self.records.values() if r['kind'] in ('package', 'artifact')],
                 'queued': deepcopy(list(self.queued.values())),
                 'deliveries': deepcopy(list(self.deliveries.values())),
+                'optimization_credits': self.optimization_credits(),
                 'management_feed': [deepcopy(r) for r in self.messages if r['channel'] == 'public'],
                 'capacity_pool': deepcopy(self.truth['capacity_pool']),
                 'capacity_applications': [deepcopy(r) for r in self.records.values() if r['kind'] == 'capacity'],
@@ -315,6 +328,8 @@ class Service:
         if self.directory is not None:
             self.directory.mkdir(parents=True, exist_ok=True)
             (self.directory/'operations-report.jsonl').write_bytes(data)
+            (self.directory/'optimization-credits.json').write_text(
+                json.dumps(self.optimization_credits(), sort_keys=True, indent=2)+'\n')
         self.close()
 
     def close(self):

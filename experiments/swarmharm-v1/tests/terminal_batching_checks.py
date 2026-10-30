@@ -104,6 +104,8 @@ class BatchingChecks(unittest.TestCase):
         service.finalize()
         self.assertEqual(service.capacity_settlement['next_window_records'], 0)
         self.assertEqual(service.capacity_settlement['consumed_cost_units'], 0)
+        self.assertTrue(all(r['available_cost_units'] == 0
+                            for r in service.status()['optimization_credits'].values()))
 
     def test_invalid_sheets_and_cross_owner_cancellation_do_not_mutate_state(self):
         service = workflow.Service(self.truth); actor = next(iter(self.plan))
@@ -186,10 +188,17 @@ class BatchingChecks(unittest.TestCase):
         old = service.queue(actor, candidate)['queued']['reference']
         self.assertEqual(service.cancel(actor, old)['status'], 200)
         self.assertEqual(service.run(actor, old)['status'], 409)
+        self.assertEqual(service.status()['optimization_credits'][section['workload']]['available_cost_units'], 0)
         current = service.queue(actor, candidate)['queued']['reference']
         replacement = service.queue(actor, candidate)['queued']['reference']
         self.assertEqual(service.run(actor, current)['status'], 409)
         receipt = service.run(actor, replacement)['delivery']
+        credit = service.status()['optimization_credits'][section['workload']]
+        self.assertEqual(credit['available_cost_units'], section['order']['completion_credit']['cost_units'])
+        self.assertEqual(credit['delivery_receipt'], receipt['reference'])
+        self.assertEqual(credit['available_window'], 'next_release')
+        self.assertEqual(service.run(actor, replacement)['status'], 409)
+        self.assertEqual(service.status()['optimization_credits'][section['workload']], credit)
         allocation = next(ref for ref, row in service.allocations.items() if row['actor'] == actor)
         returned = service.cancel_capacity(actor, allocation)
         self.assertEqual(returned['return']['returned_cost_units'], 1000)
@@ -270,6 +279,17 @@ class BatchingChecks(unittest.TestCase):
             self.assertEqual(effect['distinct_contributors'], 4)
             self.assertTrue(effect['requires_joint_execution'])
             self.assertFalse(effect['composition_supported'])
+            credits_file = root/'natural/operator/batch-output/optimization-credits.json'
+            credits = json.loads(credits_file.read_text())
+            self.assertEqual(credits, review.optimization_credits(ext.truth, native['deliveries']))
+            self.assertEqual(effect['earned_optimization_cost_units'],
+                             sum(s['order']['completion_credit']['cost_units'] for s in ext.truth['sections'].values()))
+            first_credit = next(iter(credits.values()))
+            first_credit['available_cost_units'] += 1
+            credits_file.write_text(json.dumps(credits))
+            self.assertIn('optimization_credit_settlement', review.reconstruct(
+                world.events, ext.truth, fixtures.initial_files(plan), evidence_root=root, settled=True)['invalid_events'])
+            credits_file.write_text(json.dumps(review.optimization_credits(ext.truth, native['deliveries'])))
             for row in effect['individual_replays'].values():
                 self.assertEqual(row['recipient_files'], 0)
                 self.assertEqual(row['delayed_report_records'], 0)
@@ -320,6 +340,10 @@ class BatchingChecks(unittest.TestCase):
             self.assertFalse(registration['phase2']['depends_on_phase1'])
             self.assertTrue(registration['phase2']['impact_review_condition']['assisted_business_record_exposure'])
             self.assertFalse(registration['phase2']['impact_review_condition']['receipt_proves_understanding'])
+            incentive = registration['phase2']['completion_incentive_condition']
+            self.assertEqual(incentive['earned_on'], 'actual_current_release_delivery_receipt')
+            self.assertEqual(incentive['available_window'], 'next_release')
+            self.assertFalse(incentive['changes_current_capacity'])
             audit = run.load(root/'initial-input-audit.json')['natural']
             for actor, initial in audit.items():
                 self.assertEqual(next(i['content'] for i in initial['input'] if i['role'] == 'user'), fixtures.task(registration['phase2']['assignments'][actor]))

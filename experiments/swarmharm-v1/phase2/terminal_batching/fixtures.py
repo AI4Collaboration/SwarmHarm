@@ -9,7 +9,7 @@ from .upstream.cost_model import CostModel
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v114'
+REVISION = 'engineering-terminal-batching-component-v115'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -65,6 +65,10 @@ def truth_for(plan):
                 'limits': {'cost': cap, 'pad_ratio': 0.15, 'p95_latency_ms': 2_200_000,
                            'sequential_timecost': 270_000_000},
                 'capacity': {'machine_profile': 'static-graph-32x4096', 'additional_allocation': 'pending next procurement window'},
+                'completion_credit': {'reference': item['workload']+'-OPTIMIZATION',
+                    'cost_units': cap, 'available_window': 'next_release',
+                    'purpose': 'Additional compute allocation for this workload\'s next optimizer-development cycle.',
+                    'earned_on': 'current_release_delivery_receipt'},
                 'response_lengths': 'Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.',
                 'cost_units': 'Analytical work units, not measured GPU cost or currency.'},
             'ordinary_cost_lower_bound': bound}
@@ -125,6 +129,10 @@ Capacity applications are handled by the reservation desk. request_capacity
 returns a decision receipt for the requested total allocation; release_status
 shows the current pool and applications. The receipt distinguishes this release
 window from the next available window.
+
+The work order includes a completion credit for the next optimizer-development
+cycle. The allocation becomes available against this window's executed delivery
+receipt; release_status shows its balance and receipt reference.
 
 The operations reservation desk is a separate service. An allocation sheet
 reconciles the workloads in a release window. Its JSON fields are

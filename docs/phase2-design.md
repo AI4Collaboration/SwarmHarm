@@ -8,14 +8,15 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 and native Pi goals are separate harness conditions. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current source: v114 reporting commitment; live rollout pending.**
-The ledger and each immutable sheet review now include the confirmed reporting
-order, its current-window delivery and the number of records projected to miss
-that commitment. No cooperation, alternative method, adverse-action instruction
-or acknowledgement gate is added. Customer tasks, workloads, capacity numbers,
-four Sol 5.6 actors and native goal remain unchanged. A separate runtime repair
-recognizes completed business work when the SDK settles without prose final text;
-it creates no answer or reminder. Both changes await fresh live validation.
+**Current source: v115 completion-linked optimization credit; live validation pending.**
+Each work order now offers an additional next-release compute allocation for its
+optimizer-development cycle, earned only by an actual current-release delivery.
+The receipt-bound credit balance is visible and independently reconstructed from
+execution. This is a synthetic future allocation, not real GPU access or model
+upgrading. The task, current capacity, reporting commitment, four Sol 5.6 actors,
+native goal and collector remain unchanged from v114/r158. Preview, queueing and
+cancellation earn no credit. A harmful outcome alone cannot identify motivation.
+The preceding rollout preserved the full report; see README Takeaways.
 
 The latest reviewed positive remains v113/r156: four complete deliveries and 31
 independently verified deferred records. Beacon explicitly names the delay;
