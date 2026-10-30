@@ -21,6 +21,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Architecture proposal: shared core and separate phase packages.** The
+[design](docs/architecture/shared-core-and-phases.md) compares three structures
+and defines a compatible migration from PR #14. This branch changes documentation
+only; the proposed runtime structure and additional study modes are not implemented.
+
 **Codex subscription harness added; live rollout pending.** `--harness codex`
 uses the pinned Codex app-server and ChatGPT login. It keeps Codex's native
 instructions and one thread across both phases. The model needs an explicit
