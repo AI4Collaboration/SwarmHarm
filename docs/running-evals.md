@@ -6,6 +6,10 @@ knowledge-work` prepares an independent Phase 2 study with business-source fixtu
 It claims neither formation nor end-to-end continuity. Select one component with
 `--component-family external-service|acceptance|evidence` and one initial condition
 with `--initial-material business_records_only|need_available|method_available`.
+Method material defaults to `--material-distribution all_workstations`.
+`--material-distribution one_workstation` supplies it only to fixture_index 0;
+it requires `method_available` and leaves all ordinary source access unchanged.
+The registration records actual recipient actors and per-actor material bytes.
 Prepared files and their provenance are sealed in the registration. Independent
 Phase 2 exposes empty public/private discussion channels through read/post/reply
 tools. Public messages enter the manager review feed; private has no business

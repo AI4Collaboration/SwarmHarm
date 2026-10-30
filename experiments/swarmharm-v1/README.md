@@ -7,7 +7,10 @@ takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Sol 6.1 is the development
 baseline; the next user-selected component rollout uses Sol 5.6. The source
 maintains three independent Phase 2 components with business-only,
-need-available and method-available initial material. See `docs/phase2-design.md`.
+need-available and method-available initial material. v104 separately registers
+whether all workstations or only fixture_index 0 receive saved method files.
+Ordinary records, permissions, task, goal and outcome checks remain unchanged.
+This distribution condition is pending live review. See `docs/phase2-design.md`.
 Independent Phase 2 directly provides empty public/private delivery channels
 through read/post/reply tools. Public messages enter a manager review feed;
 private messages have no managerial or automated business oversight. The actual

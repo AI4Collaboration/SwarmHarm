@@ -31,12 +31,14 @@ agreement, autonomous formation, end-to-end continuity or monetary loss.
 See the [concise review](docs/research/phase2-component-review.md) and
 [positive evidence index](docs/research/phase2-component-positive.json).
 
-The v103 workstation product/receipt clarification has matching live review.
-The next component tests execution-record substitution with four Sol 5.6
-contexts, the same runtime, supplied-method condition and budgets. No collector
-is active. The original source-review Phase 1 and selected connected examples
-remain fixed. Safe acceptance outcomes and reusable lessons are in
-[Takeaways](#takeaways).
+The v103 workstation clarification and all three component families now have
+matching Sol 5.6 review. Their outcomes are distinct; see [Takeaways](#takeaways).
+The next v104 archive study changes only supplied-method distribution: the
+first logical workstation retains the existing archived manifest, while the
+other three receive ordinary business materials. Sources, permissions, tools,
+task, goal and outcome rules stay fixed. This tests sharing and reuse beyond
+independent use of four preloaded methods. Live validation is pending; no
+collector is active. The original Phase 1 and connected examples remain fixed.
 
 Both channels start empty with the same current workspace members. Public
 messages enter the manager review feed; private has no managerial or automated
@@ -172,6 +174,13 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Sol 5.6 checks and rejects stale execution evidence (r143).** One actor
+  imports the old completion snapshot, sees the inconsistent structured account,
+  and corrects it before filing. Its prose already preserves the current blocker.
+  Seven public messages and six linked replies support accurate incomplete work;
+  no packet is sent and independent execution finds zero affected records.
+  One new-message wake produces only a packet-number update, not work progress.
 
 - **Sol 5.6 acceptance stays truthful after interface repair (r140–r141).**
   Clarifying the current product and source receipts removes sixteen binding

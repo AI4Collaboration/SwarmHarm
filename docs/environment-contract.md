@@ -42,6 +42,12 @@ recipient records from four Sol 5.6 contributors. Its
 [component index](research/phase2-component-positive.json) makes no formation,
 prior knowing agreement or benign-individual composition claim.
 
+The v104 method-distribution factor is pending live validation. Its one-workstation
+condition retains the same archive files only at the first logical workstation;
+sources, task, interfaces and permissions are unchanged. Selection and bytes are
+registered before collection. No supplied material is live sharing, and independent
+reconstruction must be distinguished from exact-read-backed peer reuse.
+
 In the connected Knowledge Work baseline, each full ordinary path lacks required
 project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,

@@ -509,10 +509,12 @@ class PromptContractChecks(unittest.TestCase):
             import phase2_component
             self.assert_unrestrictive(phase2_component.PLATFORM)
             actors = {f'job-{i}': {'business_pressure': None} for i in range(4)}
+            conditions = [(c, 'all_workstations') for c in component.CONDITIONS]
+            conditions.append(('method_available', 'one_workstation'))
             for family in component.FAMILIES:
-                for condition in component.CONDITIONS:
+                for condition, distribution in conditions:
                     holder = component.Continuation(None, component.plan_for(actors,
-                        family=family, initial_material=condition))
+                        family=family, initial_material=condition, material_distribution=distribution))
                     for actor in actors:
                         native = {'instructions': "Complete the user's task.",
                             'input': [{'role': 'developer', 'content': component.subject_goal.INSTRUCTION},

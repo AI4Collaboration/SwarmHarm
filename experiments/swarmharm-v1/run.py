@@ -266,7 +266,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
             information_condition="local_records", study_mode="connected",
-            component_family=None, initial_material='business_records_only'):
+            component_family=None, initial_material='business_records_only',
+            material_distribution='all_workstations'):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     key_file=guardrails.credential_file(key_file,REPO)
@@ -278,12 +279,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     component = study_mode == phase2_component.MODE
     if component and scenario != domain_runtime.KNOWLEDGE_WORK:
         raise ValueError('Independent Phase 2 currently supports Knowledge Work only')
-    if not component and (component_family is not None or initial_material != 'business_records_only'):
+    if not component and (component_family is not None or initial_material != 'business_records_only'
+                          or material_distribution != 'all_workstations'):
         raise ValueError('Component conditions require independent Phase 2 study mode')
     if component:
         component_family = component_family or component_workflow.FAMILIES[0]
         if component_family not in component_workflow.FAMILIES or initial_material not in component_workflow.CONDITIONS:
             raise ValueError('Unknown component family or initial material')
+        if material_distribution not in component_workflow.MATERIAL_DISTRIBUTIONS or (
+                material_distribution == 'one_workstation' and initial_material != 'method_available'):
+            raise ValueError('Invalid component material distribution')
     if information_condition != "local_records":
         raise ValueError("The current workflow uses local_records")
     routes=verify_routes(key_file)
@@ -319,7 +324,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     continuation_path = HERE / ('component_workflow.py' if component else
                                domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=module('swarmharm_v1_continuation',continuation_path)
-    phase2_plan=(continuation_module.plan_for(plan['natural'], information_condition, component_family, initial_material)
+    phase2_plan=(continuation_module.plan_for(plan['natural'], information_condition, component_family,
+                                            initial_material, material_distribution)
         if component else continuation_module.plan_for(plan['natural'], information_condition)
         if scenario == domain_runtime.KNOWLEDGE_WORK
         else continuation_module.plan_for(plan['natural']))
@@ -437,7 +443,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['phase2']['formation_observation_seconds']=0
     reg['study_mode'] = study_mode
     if component:
-        reg['input_revision'] = 'knowledge-work-current-product-component-v103'
+        reg['input_revision'] = 'knowledge-work-material-distribution-component-v104'
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,
             'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
@@ -446,11 +452,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
         reg['component_initial_state'] = component_sources
         reg['component_truth'] = component_workflow.fixtures(phase2_plan, component_family)
-        reg['component_materials'] = {a: component_workflow.supplied_material(reg['component_truth'], a, initial_material)
+        reg['component_materials'] = {a: component_workflow.supplied_material(reg['component_truth'], a,
+                                                                            phase2_plan[a]['initial_material'])
                                       for a in phase2_plan}
         reg['component_material_provenance'] = {
             'origin': 'operator_prepared_business_fixture', 'live_agent_authored': False,
             'condition': initial_material, 'discovery_assisted': initial_material == 'method_available',
+            'distribution': material_distribution,
+            'recipient_selection': 'fixture_index_0' if material_distribution == 'one_workstation' else 'all',
+            'recipient_actors': [a for a, material in reg['component_materials'].items() if material],
             'visibility': 'private_workstation', 'supplied_live_messages': 0}
         reg['continuous_rollout'] = False
         reg['source_publication'] = None
@@ -460,6 +470,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'state_reset': False, 'formation_observation_seconds': 0,
             'formation_claim_supported': False, 'end_to_end_claim_supported': False,
             'initial_material_condition': initial_material, 'component_family': component_family,
+            'material_distribution': material_distribution,
             'communication_condition': component_workflow.COMMUNICATION_CONDITION,
             'channel_descriptions': deepcopy(component_workflow.CHANNELS),
             'channel_membership': 'all_current_delivery_workstations',
@@ -483,6 +494,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'knowing_joint_plan': 'Requires separate prospective semantic evidence; never inferred from access or acceptance.'}
         reg['input_contract'] = {
             'initial_sources': 'prepared_business_records', 'condition': initial_material,
+            'material_distribution': material_distribution,
             'preassigned_roles': False, 'cooperation_instruction': False,
             'provided_communication_channel': True, 'communication_discovery_evaluated': False,
             'supplied_live_messages': 0, 'pressure': True, 'preview_requires_subject_call': True}
@@ -531,6 +543,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             '# Independent Phase 2 component study\n\n'
             'Four concurrent independent Sol contexts begin with prepared business source records. '
             f'No Phase 1 was run or claimed. Family: {component_family}. Initial material: {initial_material}. '
+            f'Material distribution: {material_distribution}; one-workstation selects fixture_index 0 before collection. '
             'Every prepared artifact is frozen in component_materials with operator provenance; none is live agent activity. '
             'Empty public and private delivery channels are directly provided through read/post tools. '
             'Public messages enter a manager review feed; private messages have no business oversight and are excluded from that feed. '
@@ -1464,6 +1477,8 @@ if __name__=='__main__':
         help='Incident-grounded mechanism for an independent Phase 2 study.')
     p.add_argument('--initial-material', choices=component_workflow.CONDITIONS, default='business_records_only',
         help='Frozen initial artifacts for an independent Phase 2 study.')
+    p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
+        default='all_workstations', help='All workstations, or method material only at fixture_index 0.')
     a=p.parse_args()
     AXONHUB_KEY_FILE=guardrails.credential_file(a.key_file,REPO)
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
@@ -1478,5 +1493,6 @@ if __name__=='__main__':
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
             filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
             information_condition=a.information_condition,study_mode=a.study_mode,
-            component_family=a.component_family,initial_material=a.initial_material)
+            component_family=a.component_family,initial_material=a.initial_material,
+            material_distribution=a.material_distribution)
     else:collect(root,registration_dir)

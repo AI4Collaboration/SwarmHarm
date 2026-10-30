@@ -57,7 +57,8 @@ class ComponentChecks(unittest.TestCase):
             key = Path(directory)/'key'; key.write_text('offline-placeholder')
             regdir = Path(directory)/'registration'
             with patch.object(run, 'verify_routes', return_value={}), patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
-                run.prepare(root, regdir, key, run_controls=False, scenario='knowledge-work', study_mode=component.MODE)
+                run.prepare(root, regdir, key, run_controls=False, scenario='knowledge-work', study_mode=component.MODE,
+                    initial_material='method_available', material_distribution='one_workstation')
             reg = run.load(root/'registration.json')
             self.assertFalse(reg['continuous_rollout'])
             self.assertFalse(reg['phase2']['depends_on_phase1'])
@@ -67,6 +68,11 @@ class ComponentChecks(unittest.TestCase):
             self.assertEqual(reg['phase2']['business_oversight']['research_logging'], 'complete_for_both_channels')
             self.assertTrue(reg['input_contract']['provided_communication_channel'])
             self.assertEqual(reg['input_contract']['supplied_live_messages'], 0)
+            selected = next(a for a, row in reg['phase2']['assignments'].items() if row['fixture_index'] == 0)
+            self.assertEqual(reg['component_material_provenance']['recipient_actors'], [selected])
+            self.assertEqual(reg['component_material_provenance']['recipient_selection'], 'fixture_index_0')
+            self.assertEqual(reg['phase2']['material_distribution'], 'one_workstation')
+            self.assertEqual([a for a, value in reg['component_materials'].items() if value], [selected])
             self.assertEqual(reg['subject_goal']['condition'], 'persistent_subject_plan')
             self.assertEqual(reg['measurement_contract']['primary_target'], 'conditional_collective_business_outcome')
             self.assertNotIn('calculation_version_notes', reg['phase2'])
@@ -147,7 +153,7 @@ class MechanismChecks(unittest.TestCase):
         self.sources = component.prepared_sources(self.plan)
         self.receipts = component.validate_sources(self.plan, self.sources)
 
-    def new(self, family, condition='business_records_only'):
+    def new(self, family, condition='business_records_only', distribution='all_workstations'):
         world = lab.World(self.plan)
         self.addCleanup(world.close)
         class Station:
@@ -157,7 +163,8 @@ class MechanismChecks(unittest.TestCase):
         world.workstations = {a: Station(a) for a in self.plan}
         self.addCleanup(world.workstations.clear)
         world.private = {a: {} for a in self.plan}
-        holder = workflow.Continuation(world, workflow.plan_for(self.plan, family=family, initial_material=condition))
+        holder = workflow.Continuation(world, workflow.plan_for(self.plan, family=family,
+            initial_material=condition, material_distribution=distribution))
         activation = component.install(world, holder, self.sources)
         return world, holder, activation
 
@@ -197,7 +204,8 @@ class MechanismChecks(unittest.TestCase):
             'phase2': {'assignments': holder.plan, 'component_family': holder.family,
                        'initial_material_condition': condition},
             'component_initial_state': self.sources, 'component_truth': holder.truth,
-            'component_materials': {a: workflow.supplied_material(holder.truth, a, condition) for a in self.plan}}
+            'component_materials': {a: workflow.supplied_material(holder.truth, a,
+                holder.plan[a]['initial_material']) for a in self.plan}}
         states = {a: {'finished_at': '2099-01-01T00:00:00+00:00'} for a in self.plan}
         return component_review.assess(reg, holder.world.snapshot(), states,
                     {'activation': activation, 'state': holder.snapshot()})
@@ -547,6 +555,30 @@ class MechanismChecks(unittest.TestCase):
                         self.assertNotIn('source_record', json.dumps(supplied))
                     else:
                         self.assertEqual(supplied, {})
+
+    def test_one_workstation_material_changes_only_private_archive_files(self):
+        for family in workflow.FAMILIES:
+            all_world, all_holder, _ = self.new(family, 'method_available')
+            world, holder, activation = self.new(family, 'method_available', 'one_workstation')
+            selected = next(a for a, row in holder.plan.items() if row['fixture_index'] == 0)
+            self.assertEqual(holder.truth, all_holder.truth)
+            self.assertEqual(world.events, [])
+            self.assertEqual(component.initial_files(self.plan, holder.plan, self.sources), world.private)
+            for actor in self.plan:
+                expected = deepcopy(all_world.private[actor])
+                if actor != selected:
+                    del expected['/workspace/saved-import.json']
+                    del expected['/workspace/saved-import-record.json']
+                self.assertEqual(world.private[actor], expected)
+                self.assertEqual(holder.task(actor), all_holder.task(actor))
+                # The absent archive file creates no access restriction: the
+                # same ordinary records still support an authored manifest.
+                imported = self.import_file(holder, actor)['import']['reference']
+                self.build_file(holder, actor, imported)
+            self.send(holder)
+            result = self.assess(holder, activation)
+            self.assertTrue(result['phase2_component_passed'])
+            self.assertEqual(result['discovery_summary']['supplied_recipient_actors'], [selected])
 
     def test_forged_manifest_or_snapshot_is_not_an_outcome(self):
         _, holder, activation = self.new('external-service', 'method_available')

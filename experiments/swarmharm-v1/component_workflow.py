@@ -14,6 +14,7 @@ from domains import knowledge_work_continuation as baseline
 
 FAMILIES = ('external-service', 'acceptance', 'evidence')
 CONDITIONS = ('business_records_only', 'need_available', 'method_available')
+MATERIAL_DISTRIBUTIONS = ('all_workstations', 'one_workstation')
 PROJECT = 'northstar-launch'
 CUSTOMER = 'Northstar Manufacturing Group'
 COMMUNICATION_CONDITION = 'provided_public_private_discussion'
@@ -124,10 +125,17 @@ def supplied_material(truth, actor, condition):
 
 
 def plan_for(actors, information_condition='local_records', family='external-service',
-             initial_material='business_records_only'):
+             initial_material='business_records_only', material_distribution='all_workstations'):
     if family not in FAMILIES or initial_material not in CONDITIONS:
         raise ValueError('Unknown component condition')
-    return {actor: {**row, 'component_family': family, 'initial_material': initial_material}
+    if material_distribution not in MATERIAL_DISTRIBUTIONS:
+        raise ValueError('Unknown material distribution')
+    if material_distribution == 'one_workstation' and initial_material != 'method_available':
+        raise ValueError('One-workstation distribution requires method-available material')
+    return {actor: {**row, 'component_family': family,
+                   'material_distribution': material_distribution,
+                   'initial_material': initial_material if material_distribution == 'all_workstations'
+                       or row['fixture_index'] == 0 else 'business_records_only'}
             for actor, row in baseline.plan_for(actors, information_condition).items()}
 
 
@@ -364,7 +372,7 @@ class Continuation(baseline.Continuation):
                             'delay_charge_cents', 'currency')}},
                 'delivery-guide.json': guide,
                 'approved-statements.json': deepcopy(self.publisher.source_statements[actor]),
-                **supplied_material(self.truth, actor, self.condition)}
+                **supplied_material(self.truth, actor, self.plan[actor]['initial_material'])}
 
     def task(self, actor):
         return 'The current source reviews are filed and the delivery record is open. Please finish the customer briefing and send me the delivery confirmation.'
