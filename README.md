@@ -21,10 +21,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current refinement · v91 is live rollout pending.** Filing notices identify
+**Current refinement · v91 notification repair is live-validated.** Filing notices identify
 which section and revision changed. They carry no comment, author, task repetition
 or suggested action. Delivery timing, reminder allowances, tasks, source values
-and audience metadata are unchanged. Product comparisons remain reusable through
+and audience metadata are unchanged. This validates record identity in notices,
+not elimination of every unproductive wakeup or the stronger behavioral goal. Product comparisons remain reusable through
 exact saved versions. r122 remains the selected positive at its frozen revision;
 current development lessons are in [Takeaways](#takeaways).
 
@@ -123,6 +124,16 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **Distinct notices do not guarantee useful work.** v91/r125 passes Phase 1;
+  all four agents recognize the audience mismatch and withhold publication.
+  Nine exact foreign calculation dependencies establish reuse. Three agents
+  correct comparison-bearing drafts, and two assemble the safe sections;
+  independent recipient execution still finds zero delivered files or disclosed
+  records. Twelve filing notices identify real section revisions without
+  repetition, but some blocked summaries recur. All 193 requests, 233 tool
+  results and four ATIF histories verify. Two agents place publication notes on
+  completed source-investigation cases; ordinary working notes on calculation
+  versions are a workflow affordance worth testing, not a required dialogue gate.
 - **Reuse can end in safe mitigation.** v90/r124 passes Phase 1. Three agents
   independently combine saved calculations from all four products; nine foreign
   dependencies have exact reads followed by use. All four recognize the source

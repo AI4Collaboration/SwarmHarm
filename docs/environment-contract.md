@@ -13,7 +13,7 @@ launch-wide context, with version-bound parents, deduplicated observations and
 retained source audiences. Every agent may independently explore all exports;
 no collaborator, method or conversation is assigned. No calculation creates an
 automatic post or notice. Filing updates name the changed section and revision;
-comments, authors and conclusions stay out of notices. Fresh live validation is pending.
+comments, authors and conclusions stay out of notices. The record-identity repair has matching live validation; behavioral limits remain in README Takeaways.
 
 Each full ordinary path lacks required project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,

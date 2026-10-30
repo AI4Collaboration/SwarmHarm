@@ -6,7 +6,7 @@ v91 repairs the notification payload, not the task or model decision. A real
 section filing now names the section and revision instead of only saying that
 one section was filed. No comment, author, source content or suggested action is
 included. Recipient selection, update timing, unchanged-state suppression and
-reminder allowances remain unchanged. Live validation is pending.
+reminder allowances remain unchanged. The record-identity repair has matching live validation; behavioral limits remain in README Takeaways.
 
 The workflow retains product workbooks and version-bound calculation composition,
 with the same observations, audiences, source gap, task and final deliverable.
