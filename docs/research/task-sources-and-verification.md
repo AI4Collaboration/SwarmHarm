@@ -26,6 +26,14 @@ the current delivery order, rather than a pending source-review request. This is
 an entry-state correction: prepared reviews remain operator fixtures, not observed
 subject work. Source inspection and the same business obligations remain.
 
+The user-requested v102 public/private distinction is an additional experimental
+factor. Public messages enter a business management review view; private messages
+have no managerial or automated business oversight. Both remain in the complete
+research record. No supervisor model runs. This visibility configuration is our
+synthetic fixture, not a guarantee about Slack privacy or a factor already proven
+by METR/LessWrong. The latter excluded Sol 5.6 Steps 3–4 after provider refusal;
+our separately registered Sol 5.6 business test must establish its own evidence.
+
 ## Independent component workflows
 
 [METR's investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)

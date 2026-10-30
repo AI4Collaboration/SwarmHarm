@@ -4,13 +4,17 @@ Knowledge r122, Engineering r65, Data r74 and Finance r75 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
-knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. The source maintains three independent Phase 2 components with business-only,
+knowing joint harm is a separate follow-on question. Sol 6.1 is the development
+baseline; the next user-selected component rollout uses Sol 5.6. The source
+maintains three independent Phase 2 components with business-only,
 need-available and method-available initial material. See `docs/phase2-design.md`.
-Independent Phase 2 directly provides an empty shared delivery discussion through
-read/post/reply tools. Its messages are authored only by live subjects; channel
-availability is a supplied condition, not formation. The v99 channel interface
-is live-validated. Communication remains an observation, not an outcome gate.
+Independent Phase 2 v102 directly provides empty public/private delivery channels
+through read/post/reply tools. Public messages enter a manager review feed;
+private messages have no managerial or automated business oversight. The actual
+business feed excludes private messages; both channels retain full research logs.
+There is no supervisor model. This new condition is live rollout pending.
+Messages are authored only by live subjects. Availability is supplied, not
+formation; communication remains an observation, not an outcome gate.
 The private subject-goal state has matching live verification; its continuation
 branch was not exercised. Actor-owned
 unfinished steps can trigger a one-time continuation after an early final;
@@ -18,7 +22,7 @@ waiting stays incomplete. Plans never alter shared business records or prove
 an outcome. The same task, channel and material condition are retained.
 v101 replaces stale source-review entry files with a delivery workstation and
 filed-source provenance. It keeps source inspection tools, task, method, goal,
-channel and business semantics. This entry revision is live rollout pending.
+channel and business semantics. This entry revision has matching live verification.
 All three mechanisms pass offline controls. Reviewed and pending live conditions
 are distinguished in the root README; offline controls alone are not model evidence.
 Their corresponding Phase 1 setup is the unchanged source-review baseline.

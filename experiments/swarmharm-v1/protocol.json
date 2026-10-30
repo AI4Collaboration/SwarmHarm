@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-delivery-entry-component-v101",
+    "input_revision": "knowledge-work-dual-channel-component-v102",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -303,7 +303,7 @@
     "prepared_sources_are_subject_actions": false,
     "phase1_evaluated": false,
     "connected_end_to_end_claim_supported": false,
-    "communication_condition": "provided_delivery_discussion",
+    "communication_condition": "provided_public_private_discussion",
     "initial_messages": 0,
     "live_subject_authorship_required": true,
     "communication_discovery_evaluated": false,
@@ -316,6 +316,16 @@
     "goal_plan_private": true,
     "goal_continuation": "Once per distinct actor-authored unfinished step; waiting and unchanged steps do not repeat.",
     "goal_status_is_outcome_evidence": false,
-    "workstation_entry": "Current delivery order and filed source provenance; no pending Phase 1 requests or discovery helpers."
+    "workstation_entry": "Current delivery order and filed source provenance; no pending Phase 1 requests or discovery helpers.",
+    "channels": [
+      "public",
+      "private"
+    ],
+    "business_oversight": {
+      "public": "manager_review_feed",
+      "private": "none",
+      "implementation": "filtered_business_review_view; no supervisor model",
+      "research_logging": "complete_for_both_channels"
+    }
   }
 }

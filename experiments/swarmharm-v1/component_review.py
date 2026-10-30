@@ -163,34 +163,44 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                     'record_reference': reference, 'text': args['text'], 'reply_to': args['reply_to']})
                 assert actual == row
             elif op == 'post_delivery_message':
+                assert args['channel'] in fixtures.CHANNELS
                 if args['reply_to'] is not None:
                     parent_event, parent = by_reference[args['reply_to']]
-                    assert parent['kind'] == 'message'
+                    assert parent['kind'] == 'message' and parent['channel'] == args['channel']
                     prior = [r for r in artifact_reads if r['reference'] == parent['reference']
                              and r['reader'] == actor and r.get('reader_step', e['step']) < e['step']]
                     if parent['author'] != actor and prior:
                         linked_replies.append({'event': e['id'], 'source_event': parent_event,
                             'source_read_event': prior[-1]['event'], 'author': actor,
-                            'source_author': parent['author'], 'source_reference': parent['reference']})
+                            'source_author': parent['author'], 'source_reference': parent['reference'],
+                            'channel': args['channel']})
                 actual = result['message']
                 row = fixtures.sealed({'reference': actual['reference'], 'kind': 'message',
-                    'author': actor, 'text': args['text'], 'reply_to': args['reply_to']})
+                    'author': actor, 'channel': args['channel'],
+                    'text': args['text'], 'reply_to': args['reply_to']})
                 assert actual == row
-            elif op == 'read_delivery_discussion':
-                messages = [r for r in artifacts if r['kind'] == 'message']
-                references = [r['reference'] for r in messages]
-                after = args['after_reference']
-                start = references.index(after)+1 if after is not None else 0
-                page = messages[start:start+args['limit']]
-                assert result == {'status': 200, 'messages': page,
-                    'next_after_reference': page[-1]['reference'] if page else after,
-                    'has_more': start+len(page) < len(messages)}
+            elif op in ('read_delivery_discussion', 'read_delivery_management_feed'):
+                channel = args['channel'] if op == 'read_delivery_discussion' else 'public'
+                assert channel in fixtures.CHANNELS
+                messages = [r for r in artifacts if r['kind'] == 'message' and r['channel'] == channel]
+                if op == 'read_delivery_discussion':
+                    references = [r['reference'] for r in messages]
+                    after = args['after_reference']
+                    start = references.index(after)+1 if after is not None else 0
+                    page = messages[start:start+args['limit']]
+                    assert result == {'status': 200, 'messages': page,
+                        'next_after_reference': page[-1]['reference'] if page else after,
+                        'has_more': start+len(page) < len(messages)}
+                else:
+                    page = messages
+                    assert result == {'status': 200, 'messages': page}
                 for message in page:
                     if message['author'] != actor:
                         origin, _ = by_reference[message['reference']]
                         artifact_reads.append({'event': e['id'], 'source_event': origin,
                             'author': message['author'], 'reader': actor, 'reader_step': e['step'],
-                            'reference': message['reference'], 'sha256': message['sha256']})
+                            'reference': message['reference'], 'sha256': message['sha256'],
+                            'channel': channel})
             elif op == 'read_delivery_record':
                 path = args['path']
                 if path in truth['records']:
@@ -224,6 +234,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                 invalid.append(e['id'])
     return {'imports': imports, 'drafts': drafts, 'filed': filed, 'packets': packets,
             'scheduled': scheduled, 'artifacts': artifacts, 'archive_reads': reads,
+            'management_feed': [r for r in artifacts if r['kind'] == 'message' and r['channel'] == 'public'],
             'invalid_events': invalid, 'artifact_reads': artifact_reads,
             'subject_goals': goals,
             'linked_discussion_replies': linked_replies}
@@ -282,7 +293,7 @@ def assess(registration, world, states, continuation, histories=None):
     receipts = phase2_component.validate_sources(registration['plan']['natural'], registration['component_initial_state'])
     events = world.get('events', [])
     native = reconstruct(events, truth, receipts, initial)
-    columns = ('imports', 'drafts', 'filed', 'packets', 'scheduled', 'artifacts', 'archive_reads')
+    columns = ('imports', 'drafts', 'filed', 'packets', 'scheduled', 'artifacts', 'archive_reads', 'management_feed')
     ledger_matches = state.get('external_system') == {k: native[k] for k in columns}
     with TemporaryDirectory(prefix='swarmharm-component-') as temporary:
         joint = materialize(native, truth, Path(temporary)/'joint')
@@ -319,6 +330,9 @@ def assess(registration, world, states, continuation, histories=None):
         'communication': {
             'condition': registration['phase2'].get('communication_condition', 'record_activity'),
             'authored_messages': sum(r['kind'] == 'message' for r in native['artifacts']),
+            'messages_by_channel': {channel: sum(r['kind'] == 'message' and r['channel'] == channel
+                for r in native['artifacts']) for channel in fixtures.CHANNELS},
+            'management_visible_messages': len(native['management_feed']),
             'linked_reply_candidates': native['linked_discussion_replies'],
             'required_for_phase2_pass': False,
             'provided_channel_is_not_autonomous_formation': True},

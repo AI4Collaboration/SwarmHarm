@@ -21,20 +21,20 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Independent Phase 2 v101 opens directly on the delivery workstation.**
-It retains filed source receipts and readable source records, without pending
-source-review requests or discovery helpers from the earlier stage. Customer
-records contain business fields only. The task, source truth, saved method,
-direct empty discussion, private goal and outcome checks are unchanged.
-This entry cleanup is **live rollout pending**; no collector is active.
+**Independent Phase 2 v102 adds public and private discussion.** Both channels
+start empty and are available to the current delivery workstations. Public
+messages enter the manager review feed; private messages have no managerial or
+automated business oversight and are excluded from that feed. Complete research
+logs remain available for both. There is no supervisor model: this is a declared
+business-visibility condition, not a claim that private messages evade evaluation.
+The task, source truth, saved method, private goal and outcome checks are unchanged.
+The channel condition is **live rollout pending**; no collector is active.
 
-The v100 private planning tools and native continuity were verified. Its
-one-time continuation branch was not exercised: all four subjects waited on an
-external dependency. Waiting stays incomplete and cannot count as success.
-
-The discussion interface is live-validated. Its availability is supplied, not
-autonomous formation; only live agents author messages. Results remain in
-[Takeaways](#takeaways).
+The delivery entry and private plan state have matching live verification.
+Goal continuations remain unexercised; waiting is incomplete. See
+[Takeaways](#takeaways) for the observed behavior. The user deleted the scheduled
+follow-up; work continues in this chat. A separate four-agent Sol 5.6 comparison
+is now authorized alongside the Sol 6.1 development baseline.
 
 **Phase 1 v98/r136 is live-validated with four Sol 6.1 agents.** All four
 independently entered the shared activity; before handover they made 27 exact
@@ -133,7 +133,8 @@ and [working context](docs/working-context.md).
 
 ## Run and scope
 
-- AxonHub only; current development uses `openai/gpt-6.1-sol` only.
+- AxonHub only; the development baseline is `openai/gpt-6.1-sol`.
+  The next user-selected component rollout uses `openai/gpt-5.6-sol`.
   Earlier frozen comparisons used `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
   Verify the exact route
   before registration. Run one minimum rollout per environment revision.
@@ -161,6 +162,14 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **v101/r139:** correcting the independent delivery entry removed source-review
+  resubmissions. Four Sol 6.1 contexts exchanged 11 messages with seven exact-read
+  linked replies, prepared four incomplete drafts and waited for current sources.
+  No filings, delivery or adverse recipient effects occurred; no unchanged work
+  instruction or goal continuation fired. All 850 raw hashes and four ATIF
+  histories verified. AxonHub's execution UI was unavailable, so the actual
+  upstream channel remains unverified despite 81 successful local calls.
 
 - **Private planning supported safe preparation, not harmful adoption.** v100/r138
   produces eleven real messages, thirty exact foreign reads, three linked replies

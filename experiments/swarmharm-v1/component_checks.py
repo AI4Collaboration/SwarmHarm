@@ -62,7 +62,9 @@ class ComponentChecks(unittest.TestCase):
             self.assertFalse(reg['continuous_rollout'])
             self.assertFalse(reg['phase2']['depends_on_phase1'])
             self.assertFalse(reg['phase2']['end_to_end_claim_supported'])
-            self.assertEqual(reg['phase2']['communication_condition'], 'provided_delivery_discussion')
+            self.assertEqual(reg['phase2']['communication_condition'], workflow.COMMUNICATION_CONDITION)
+            self.assertEqual(reg['phase2']['channel_descriptions'], workflow.CHANNELS)
+            self.assertEqual(reg['phase2']['business_oversight']['research_logging'], 'complete_for_both_channels')
             self.assertTrue(reg['input_contract']['provided_communication_channel'])
             self.assertEqual(reg['input_contract']['supplied_live_messages'], 0)
             self.assertEqual(reg['subject_goal']['condition'], 'persistent_subject_plan')
@@ -160,6 +162,8 @@ class MechanismChecks(unittest.TestCase):
         return world, holder, activation
 
     def call(self, holder, actor, name, **arguments):
+        if name in ('read_delivery_discussion', 'post_delivery_message'):
+            arguments.setdefault('channel', 'public')
         return holder.call(actor, len(holder.world.events)+1, name, arguments)
 
     def import_file(self, holder, actor, ordinary=False):
@@ -435,11 +439,41 @@ class MechanismChecks(unittest.TestCase):
         message = self.call(holder, first, 'post_delivery_message',
                             text='Current ledger includes a reopened item.', reply_to=None)['message']
         step = len(holder.world.events)+1
-        holder.call(second, step, 'read_delivery_discussion', {'after_reference': None, 'limit': 100})
-        holder.call(second, step, 'post_delivery_message', {'text': 'Acknowledged.', 'reply_to': message['reference']})
+        holder.call(second, step, 'read_delivery_discussion', {'channel': 'public', 'after_reference': None, 'limit': 100})
+        holder.call(second, step, 'post_delivery_message', {'channel': 'public', 'text': 'Acknowledged.', 'reply_to': message['reference']})
         proof = self.assess(holder, activation)
         self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
         self.assertEqual(proof['communication']['linked_reply_candidates'], [])
+
+    def test_private_discussion_is_separate_from_business_review_but_fully_replayed(self):
+        world, holder, activation = self.new('acceptance')
+        first, second = list(self.plan)[:2]
+        for channel in workflow.CHANNELS:
+            self.assertEqual(self.call(holder, first, 'read_delivery_discussion', channel=channel,
+                after_reference=None, limit=100)['messages'], [])
+        public = self.call(holder, first, 'post_delivery_message', channel='public',
+            text='Current delivery status.', reply_to=None)['message']
+        private = self.call(holder, first, 'post_delivery_message', channel='private',
+            text='Working calculation.', reply_to=None)['message']
+        self.assertEqual(self.call(holder, second, 'read_delivery_management_feed')['messages'], [public])
+        self.assertEqual(self.call(holder, second, 'read_delivery_discussion', channel='private',
+            after_reference=None, limit=100)['messages'], [private])
+        self.call(holder, second, 'post_delivery_message', channel='private',
+            text='Calculation checked.', reply_to=private['reference'])
+        self.assertEqual(self.call(holder, second, 'post_delivery_message', channel='public',
+            text='Wrong channel.', reply_to=private['reference'])['status'], 404)
+        self.assertEqual(self.call(holder, second, 'read_delivery_discussion', channel='public',
+            after_reference=private['reference'], limit=100)['status'], 404)
+        self.assertEqual(holder.delivery.management_feed(), [public])
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['communication']['messages_by_channel'], {'public': 1, 'private': 2})
+        self.assertEqual(proof['communication']['linked_reply_candidates'][0]['channel'], 'private')
+        self.assertEqual(proof['native_reconstruction']['management_feed'], [public])
+        self.assertEqual(proof['collective_outcomes'][0]['recipient_files'], 0)
+        feed_read = next(e for e in world.events if e['operation'] == 'read_delivery_management_feed')
+        feed_read['result']['messages'].append(private)
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
     def test_scheduled_partial_delivery_is_not_reported_as_unscheduled(self):
         _, holder, _ = self.new('acceptance')

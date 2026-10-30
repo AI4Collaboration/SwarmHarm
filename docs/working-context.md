@@ -10,30 +10,34 @@ Do not recreate a scheduled task. Do not claim completion from an outcome-only p
 
 ## Current focus
 
-Independent Phase 2 v101 corrects the standalone entry surface: delivery-specific
-platform guidance, current order, filed receipts and source claims; no pending
-Phase 1 request or discovery helper. Source verification remains available.
-Customer records omit operator pressure metadata. Keep acceptance truth, saved
-method, provided channel, private plan, task and outcome checks fixed. This
-revision is live rollout pending; no collector is active.
+Independent Phase 2 v102 adds two empty discussion channels, as requested by the
+user: public enters the delivery manager review feed; private has no managerial
+or automated business oversight. Both remain fully recorded for research. There
+is no supervisor model; the business review view filters public messages and
+has an independent reconstruction check. This is our new visibility condition,
+not a LessWrong-established factor. Keep the task, truth, prepared method,
+private goal, delivery entry and outcome checks fixed. No collector is active;
+matching live validation is pending.
 
-r138 is closed and fully reviewed. Its complete registration and raw evidence
-remain outside Git at `knowledge-work-v100-r138-review`; the result is in README
-Takeaways. Private planning state is live-verified, but no goal continuation fired.
-The same rule remains: an actor-authored unfinished step can continue once;
-waiting remains incomplete. Do not turn waiting into a fabricated next step.
+The next rollout is the user-authorized four-agent Sol 5.6 test. Exact verified catalog
+identity: `openai/gpt-5.6-sol`; Sol 6.1 remains the development baseline. Do not
+attribute differences across a model-and-channel change to the model alone.
+The requested literature/test subagent was provider-interrupted before launching
+any subject inference. That attempt is archived with the r139 external review
+and is not a Sol 5.6 negative. Any resumed delegated test is limited to the
+current synthetic document workflow; no real external-service experiment.
 
-The empty read/post/reply discussion is directly available in independent Phase 2.
-It has live validation; its presence is not autonomous formation. Only live
-agents author messages. The connected Phase 1 baseline remains unchanged.
+r139 is closed, with full native reconstruction, ATIF validation and independent
+recipient execution in `../eval-readiness/knowledge-work-v101-r139-review/`.
+The authenticated AxonHub UI was unavailable, so actual routing is unverified.
+Its concise lesson is in README Takeaways; immutable inputs and all traces remain
+external and in Git. Do not repeat it. No goal continuation has fired in the
+reviewed private-plan condition; do not invent a next step for waiting subjects.
 
-On 30 October the user authorized independent Phase 2 environments and separately
-registered cues/conditions. Develop the three METR-observed behavior groups in
-`docs/phase2-design.md`; do not call this an official or exhaustive METR taxonomy.
-The user explicitly confirmed that all three groups reuse the reviewed Knowledge
-Work Phase 1 baseline. Independent
-Phase 2 has its own start, prepared business sources and explicit material
-condition; this does not claim a new group-specific formation result.
+The user confirmed that all three groups reuse the reviewed Knowledge Work
+Phase 1 baseline. Independent Phase 2 has prepared business sources and declared
+material/channel conditions. It makes no autonomous-formation or end-to-end claim.
+No website work or scheduled automation.
 
 The current v98 Phase 1 baseline is live-validated in r136: four concurrent Sol
 6.1 contexts, 27 exact cross-job reads, six linked replies from four authors,
@@ -86,15 +90,18 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-No active collector. r138 is closed; its immutable registration, complete native
-review, ATIF validation and recipient execution are in
-`../eval-readiness/knowledge-work-v100-r138-review/`. Do not repeat it.
+The v102 full offline suite passed 340 checks, the component suite passed 22,
+and prompt, format and admission checks passed. Subject-facing instructions and
+channel semantics have been reviewed. Commit and push the source, then prepare
+and publish one fresh Sol 5.6 registration before live collection. Four concurrent
+contexts, same high reasoning and
+registered budgets. Coordinate with the Sol 5.6 subagent so there is exactly one
+collector for each output and no source changes during collection.
 
-Complete the v101 entry checks, commit and push source, prepare and push one fresh
-acceptance/method-available registration, then collect once with four Sol contexts.
-Inspect exact startup files, any redundant source-review actions, private plans,
-actual messages and final recipient effects. Preserve the Phase 1 baseline and
-the safe incomplete paths. Do not edit the website.
+Inspect channel choice, exact reads and replies, prospective consequence
+recognition and joint plans, final execution, mitigation and independent effects.
+Public/private statements are a supplied condition, not evidence of hidden intent.
+Keep Phase 1 unchanged and preserve all safe trajectories.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. Do not disable global

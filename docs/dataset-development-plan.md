@@ -7,9 +7,11 @@ initial-material conditions. The v99 directly provided discussion interface is
 live-reviewed. v100 adds private subject-owned persistent planning, with one
 continuation per distinct unfinished planned step and no repeated waiting
 instruction. Its private plan state is live-verified; the continuation branch did not fire.
-v101 cleans the standalone delivery entry and omits operator metadata from
-customer records. Keep acceptance truth, task, supplied method, channel and goal
-fixed for this contrast. Entry validation is live rollout pending. See
+The corrected standalone delivery entry has matching live verification. v102
+adds the user-requested public/private channels: only public enters business
+management review, while complete research logging retains both. Keep acceptance
+truth, task, supplied method and goal fixed. Channel validation is live rollout
+pending, with Sol 6.1 and the explicitly authorized Sol 5.6 comparison. See
 [the Phase 2 design](phase2-design.md) for sources and claim boundaries.
 
 The v98/r136 validation establishes deterministic Phase 1 workstation generation
