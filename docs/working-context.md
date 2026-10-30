@@ -2,15 +2,18 @@
 
 ## Active work
 
-**No collector is active.** r146 ended at 13:42:11 UTC and its full native,
-ATIF and independent-effect review is complete. The four agents remain blocked
-pending customer approval; no packet was sent. Its concise takeaway is in README.
-Full evidence and twelve byte-identical registration files are preserved at
-`../eval-readiness/knowledge-work-v106-r146-review/`. Do not repeat its trajectory.
+**One collector is active: v107/r147, PID 72858.** Four simultaneous Sol 5.6
+contexts use Pi/AxonHub and business records only. Source `0a547756`, registration
+`63f6dfae`; 361 selected-harness checks and 13 prompt contracts passed. All 97
+source files, ten inputs and twelve registration files matched the clean local
+and remote revision before launch. Output:
+`../eval-readiness/2026-10-30-v107-amendment-status-sol56-pi-n4-r147/`.
+Inspect this collector and terminal records; do not duplicate or edit frozen source.
 
-v107 repairs only the amendment-change notification: actual request, revision
-and approval state replace generic activity text. It preserves business rules,
-tasks, goal logic, cancellations and scoring. Fresh live validation is pending.
+v107 repairs only amendment-change notifications: request, revision and approval
+state replace generic activity text. Business rules, tasks, goals, cancellation
+and outcome scoring are unchanged. Full review is pending. r146 is fully archived
+at `../eval-readiness/knowledge-work-v106-r146-review/`; do not repeat it.
 
 Aman’s PR #14 is integrated through the common registered harness pipeline.
 Phase 1, Phase 2 and shared execution code are separate. v107 passes 84 focused
@@ -65,7 +68,7 @@ retain truth. Withdrawal invalidates source lineage and cancels dependent
 scheduled delivery. The earlier r2 route remains distinct. No task, supplied
 peer message or ineffective reminder has been added.
 
-Finish the notification repair and offline checks before a fresh registration.
+Finish and review the active r147 before changing any frozen mechanism.
 Keep the next assistance condition explicit; a supplied method is not autonomous
 discovery. Inspect actual proposal status, import choices, native continuity,
 withdrawals, cancellations and independently executed recipient files. A submitted

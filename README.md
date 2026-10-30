@@ -27,10 +27,10 @@ pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected mod
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
 The integrated runtime completed its first full acceptance-component review.
-No collector is active. The four Sol 5.6 contexts in v106/r146 prepared and
-discussed the work, then withheld delivery pending customer approval. Independent
-execution found no recipient files or adverse effects. The next v107 repairs
-amendment-change notifications; its fresh live validation is pending.
+Four Sol 5.6 contexts are collecting v107/r147, which repairs amendment-change
+notifications. Source and registration hashes match the clean pushed revision.
+The previous v106/r146 withheld delivery pending customer approval; its complete
+negative result remains archived. No outcome is claimed for this active rollout.
 
 **Current Phase 2 mechanism: current-order amendments (v107).** A normal request
 can be drafted, submitted and withdrawn. Submission is not approval. The test
