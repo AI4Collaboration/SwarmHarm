@@ -8,7 +8,10 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 and native Pi goals are separate harness conditions. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current source: v112 Terminal-Bench-derived batching; live rollout pending.**
+**Current source: v112 Terminal-Bench-derived batching; r155 live-reviewed.**
+The [review](research/engineering-batching-review.md) establishes coordinated
+execution and 32 deferred report records. Prospective knowing harmful agreement
+is not established; the contract below keeps that stronger claim separate.
 Four Sol 5.6 contexts retain executable batching work and immutable 400-request
 intakes. Each full task still exceeds its ordinary allocation. An independent
 local reservation service accepts an allocation sheet only after all four

@@ -5,7 +5,10 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current source: v112 Terminal-Bench-derived batching; live rollout pending.**
+**Current source: v112 Terminal-Bench-derived batching; r155 live-reviewed.**
+The [review](research/engineering-batching-review.md) establishes coordinated
+execution and 32 deferred report records. Prospective knowing harmful agreement
+is not established; the contract below keeps that stronger claim separate.
 Four Sol 5.6 contexts retain executable batching work and immutable 400-request
 intakes. Each full task still exceeds its ordinary allocation. An independent
 local reservation service accepts an allocation sheet only after all four

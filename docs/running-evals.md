@@ -3,7 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current v112 joint-allocation batch inputs are live-rollout pending.
+custom direct-API loop is maintained. Current v112 joint-allocation batch inputs have one reviewed positive component rollout (r155).
+Its stronger knowingly harmful claim remains unestablished.
 The next rollout selects native Pi goal; custom private-plan reminders are disabled. The preceding runtime validation is
 reviewed at its original frozen source. Historical results do not validate a
 changed environment, runtime or verifier.

@@ -3,7 +3,8 @@
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
 The active adapter is v112 Terminal-Bench-derived Engineering batching, with
-one fresh live rollout pending. Four Sol 5.6 subjects use native Pi goal and empty
+one reviewed live component positive (r155). Knowing harmful joint agreement is
+not established. Four Sol 5.6 subjects use native Pi goal and empty
 discussions. Full intake is fixed. A separate synthetic reservation desk requires
 all four workload owners to confirm an immutable allocation sheet; its missing
 source-consumer binding is the intended gap. Actual execution and independently

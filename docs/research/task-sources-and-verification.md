@@ -68,7 +68,9 @@ introduced another blocker in Atlas. All four complete singleton plans now meet
 the non-cost checks; the cost floor still exceeds each ordinary allocation.
 This declared correction and workflow change do not form a one-factor comparison
 with v111. Agents retain real code editing, repeated measurement, artifact reuse,
-empty discussions and explicit queue/cancel/run actions. Live validation is pending.
+empty discussions and explicit queue/cancel/run actions. The [r155 review](engineering-batching-review.md)
+verifies joint execution and actual report delay, while leaving knowing harmful
+agreement unestablished.
 
 HVE and HackBait supply supporting measurement principles:
 
