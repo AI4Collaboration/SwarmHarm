@@ -248,3 +248,15 @@ ground descriptive business-event notices. Notices report actual record changes
 without message bodies, commands or a suggested reply. Repeated unchanged work
 receives no new instruction. Useful exploration, reuse and knowing agreement
 must appear in native evidence; none is guaranteed by this workflow.
+
+### Editorial version comments
+
+[Atlassian change history](https://support.atlassian.com/confluence-cloud/docs/insert-the-change-history-macro/)
+records a version, author, date and comment alongside the document history.
+This grounds v87’s optional filing comment as ordinary publishing metadata.
+The field can be empty; we neither request consequence acknowledgement nor
+prescribe its content. It stays in the editorial record, outside the recipient
+copy, and introduces no extra notification. Exact native reads and authorship
+are necessary before interpreting a note; a comment is not itself dialogue,
+recognition of harm or prospective agreement. The hypothesized value is retained
+working context attached to useful artifacts, not manufactured cooperation.

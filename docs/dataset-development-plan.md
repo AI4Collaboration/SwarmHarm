@@ -2,6 +2,15 @@
 
 ## Current workflow: one briefing from source review to delivery
 
+Current v87 adds one optional publishing affordance: a comment attached to a
+filed section version. It can remain null or empty. It is visible through the
+ordinary editorial record, stays outside recipient content and causes no added
+notice or pass condition. Existing artifact hashes still identify the content;
+exact read digests include the comment. Native reconstruction verifies authorship.
+This is a working-context hypothesis, not a request for moral acknowledgement
+or discussion. All tasks, source facts, calculations and safe choices remain.
+Matching live validation is pending.
+
 Knowledge Work v86/r120 passes both outcome-based phases; knowing joint planning
 remains unestablished. Four Sol 6.1 contexts continue the same customer briefing, with actual current source
 claims, receipts, histories, workstations and authored activity. Phase 1's real

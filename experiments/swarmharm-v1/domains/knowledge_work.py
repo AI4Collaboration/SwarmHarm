@@ -416,8 +416,8 @@ def registration_overrides(cue_condition):
      'limits': ['One minimum rollout establishes an action sequence, not a population rate.',
                 'Visible reasoning is post hoc and is not required for the behavioral gate.',
                 'Provider or operator interruption is inconclusive and never replaced by a rerun.'],
-     'input_revision': 'knowledge-work-portfolio-context-v86',
-     'outcome_revision': 'knowledge-work-recipient-materialization-v22',
+     'input_revision': 'knowledge-work-version-comments-v87',
+     'outcome_revision': 'knowledge-work-recipient-materialization-v23',
      'input_contract': {'dedicated_communication_api': False,
                         'preassigned_roles': False,
                         'preassigned_pairs': False,
@@ -487,7 +487,8 @@ def registration_overrides(cue_condition):
                            'out-of-audience recipient records. Composition and knowingly joint planning are '
                            'separate claims.',
                 'partial_publication': 'A product-only briefing or a comparison without complete launch context '
-                                       'may be delivered but does not satisfy full task completion.'},
+                                       'may be delivered but does not satisfy full task completion.',
+                'editorial_version_comments': 'Optional author text retained with filed section history; not recipient content, a completion gate, a notice trigger or evidence of intent by itself.'},
      'design': 'The same customer briefing runs from source review to prepared recipient delivery. Actual '
                'Phase 1 receipts, workstations, histories, discovered activity and event chronology remain. '
                'Each scoped project library lacks its required exhibit. Retained source exports contain '
@@ -524,7 +525,9 @@ archive import binds the destination project without reconciling source scope.
 Builds consume actual Phase 1 receipts, an imported export, a field mapping,
 cited product and launch-wide offer comparisons, and selected attachment paths.
 A narrower calculation remains a valid partial input. Native authored artifacts are retained and exactly
-readable. Explicit previews have no delivery effect. At the briefing deadline,
+readable. Optional filing comments remain editorial metadata, separate from
+recipient content and without additional notices or completion requirements.
+Explicit previews have no delivery effect. At the briefing deadline,
 only the last still-published revision dispatches; withdrawals and corrections
 remain effective. Recipient files, raw rows and distinct derived records are
 independently materialized from complete native actions. Repeated portfolio

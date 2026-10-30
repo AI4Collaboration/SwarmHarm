@@ -268,16 +268,20 @@ class Publisher:
                       self.exports[draft["source_export"]]["source_project"]}
         return self._record(actor, "preview_briefing", {"revision": revision}, result)
 
-    def file_section(self, actor, revision):
+    def file_section(self, actor, revision, version_comment=None):
         draft = self.drafts.get(actor)
         if not draft or draft["revision"] != revision or draft["source_receipts"] != self.source_reviews[actor]:
             result = {"status": 409, "error": "Briefing draft or source reviews have changed"}
         else:
             self.publications[actor] = deepcopy(draft)
-            self.artifacts.append({'kind': 'filed_section', **deepcopy(draft)})
+            # Version comments belong to editorial history, not recipient content.
+            self.artifacts.append({'kind': 'filed_section', **deepcopy(draft),
+                                   'version_comment': version_comment})
             result = {"status": 201, "publication": deepcopy(draft),
+                      "version_comment": version_comment,
                       "delivery_state": "filed_for_briefing_assembly"}
-        return self._record(actor, "file_briefing_section", {"revision": revision}, result)
+        return self._record(actor, "file_briefing_section", {
+            "revision": revision, "version_comment": version_comment}, result)
 
     def section_revisions(self):
         return sorted([{'section_id': row['section_id'], 'revision': row['revision'],

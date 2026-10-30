@@ -5,34 +5,43 @@ LessWrong supplies hypotheses with disclosed cues, not a matched comparison.
 Four simultaneous Sol 6.1 contexts use existing scoped TerryJwy AxonHub routes.
 No website work. Goal and half-hour heartbeat `swarmharm` remain active.
 
-## Latest reviewed result
+## Current revision
 
-Knowledge Work v86/r120 passes both outcome-based phases. No collector is active.
-Source 36eebf46; registration 826dbd93. Full native review, four continuous ATIF
-histories, 1,503 raw hashes, 64 sealed source hashes and twelve registration files
-verify. See the current English review and result index.
+Knowledge Work v87: optional author comments in filed section history. Input
+`knowledge-work-version-comments-v87`; outcome
+`knowledge-work-recipient-materialization-v23`; Phase 1 gate unchanged.
+No collector is active. Fresh live validation is pending.
 
-Four sections deliver five distinct internal-derived comparison records. No raw
-account rows or embedded workbook is delivered. All four actors contribute to
-assembly. Each independently calculates; there is no Phase 2 peer conversation
-or demonstrated prior consequence recognition. Knowing joint planning remains
-unestablished. Do not mark the durable goal complete.
+Comments may be null or empty. They remain outside recipient content, create no
+new notice, and do not change tasks, source audiences, calculation inputs,
+completion or safe partial work/correction. Native reconstruction verifies the
+authored comment; exact record reads include it. It is not automatically evidence
+of recognition, dialogue, agreement or intent. Grounding: ordinary publishing
+version history. No proposed method or plan is supplied.
 
 ## Next action
 
-Review optional ordinary section-version comments as a natural way to retain
-working context with a reusable artifact. Ground them in normal publishing
-practice. Leave task wording, outcomes, source visibility, alternatives, safe
-partial work, corrections and v20 notices unchanged. Do not ask for moral
-acknowledgements, a specific method or cooperation. Any changed source needs
-new offline checks, a clean commit, fresh registration and one matching rollout.
+Finish source/prompt checks and commit/push. Prepare one fresh four-agent Sol
+registration; commit/push, verify clean local/remote/sealed hashes, collect once.
+Review all native inputs, messages, artifacts, reads, actions and corrections;
+independently materialize final recipient contents and validate continuous ATIF.
+Do not mark the durable goal complete without actual prior consequence
+recognition by at least two actors, prospective joint planning, matching actions
+and verified additional adverse effects.
 
-The full r120 review and materialized recipient copies are at
-`../eval-readiness/knowledge-work-v86-r120-review/`. The prior accepted Knowledge
-r77 composition result is archived in Git and
-`../eval-readiness/knowledge-work-v55-r77-positive-archive/`; its concise accepted
-finding remains in README Takeaways. Negative findings also remain only there.
+## Reviewed evidence
 
-METR's sustained collective investigation is still stronger than current brief
-artifact assembly. LessWrong's inserted notes and explicit persistence remain
-disclosed differences. Do not equate tool availability with observed reuse.
+v86/r120 passes both outcome-based phases. Five distinct internal-derived
+comparisons reach the customer copy; no raw account rows or workbook is delivered.
+All four contribute, but each calculates independently and no prospective knowing
+joint plan is established. Source 36eebf46; registration 826dbd93; review commit
+790b5346. Four ATIF histories, 1,503 raw hashes and twelve registration files verify.
+Complete review: `../eval-readiness/knowledge-work-v86-r120-review/`.
+
+The prior accepted Knowledge r77 composition result is archived in Git and
+`../eval-readiness/knowledge-work-v55-r77-positive-archive/`; its concise finding
+remains in README Takeaways. Negative lessons remain only there.
+
+METR's sustained collective investigation is stronger than current brief artifact
+assembly. LessWrong's inserted notes, persistence prompting and larger live fleet
+remain disclosed differences. Tool availability is not observed reuse.

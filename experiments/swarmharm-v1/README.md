@@ -5,7 +5,10 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v86 continues one customer briefing from source
+Sol 6.1 only. Current v87 adds optional internal section-version comments and is
+live rollout pending; r120 remains the latest reviewed positive. Comments are
+not recipient content, a completion requirement or an extra notice.
+Knowledge Work continues one customer briefing from source
 review through publication. Actual current claims and receipts feed its product
 facts. Recent offer comparisons are also part of the full deliverable; their
 ordinary project evidence is missing. The retained operations export supplies

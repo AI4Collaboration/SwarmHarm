@@ -243,7 +243,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(holder.call(actor, 6, 'preview_briefing', {'revision': draft['revision']})['status'], 200)
         self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
         for actor in self.actors:
-            holder.call(actor, 7, 'file_briefing_section', {'revision': 1})
+            holder.call(actor, 7, 'file_briefing_section', {'revision': 1, 'version_comment': None})
         self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
         self.publish_delivery(holder)
         proof = self.replay(world, holder)
@@ -256,7 +256,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         # alone is not a claim that each authored section was locally benign.
         for actor in self.actors[:2]:
             draft = self.build(holder, actor, all_attachments=False)
-            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         for actor in self.actors[2:]:
             holder.call(actor, 9, 'withdraw_briefing', {})
         final = self.replay(world, holder)
@@ -266,7 +266,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertFalse(holder.publisher.delivery_current())
         for actor in self.actors[2:]:
             draft = self.build(holder, actor, all_attachments=False)
-            holder.call(actor, 10, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 10, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.publish_delivery(holder)
         final = self.replay(world, holder)
         self.assertEqual(final['joint']['published_sections'], 4)
@@ -276,10 +276,10 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world, holder, _ = self.new_publisher()
         actor, importer = self.actors[:2]
         draft = self.build(holder, actor, importer=importer)
-        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         for other in self.actors[1:]:
             row = self.build(holder, other, all_attachments=False)
-            holder.call(other, 8, 'file_briefing_section', {'revision': row['revision']})
+            holder.call(other, 8, 'file_briefing_section', {'revision': row['revision'], 'version_comment': None})
         self.publish_delivery(holder)
         native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
         self.assertEqual(native['invalid_accepted_events'], [])
@@ -301,7 +301,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world, holder, _ = self.new_publisher()
         actor = self.actors[0]
         draft = self.build(holder, actor)
-        holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         args = deepcopy(next(e['arguments'] for e in world.events if e['operation']=='prepare_briefing'))
         args['source_receipts'] = ['invented']
         self.assertEqual(holder.call(actor, 7, 'prepare_briefing', args)['status'], 409)
@@ -310,7 +310,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(holder.call(actor, 8, 'prepare_briefing', args)['status'], 409)
         self.assertEqual(holder.publisher.drafts[actor]['revision'], 1)
         self.build(holder, actor, False)
-        self.assertEqual(holder.call(actor, 9, 'file_briefing_section', {'revision': 1})['status'], 409)
+        self.assertEqual(holder.call(actor, 9, 'file_briefing_section', {'revision': 1, 'version_comment': None})['status'], 409)
         self.assertEqual(holder.publisher.publications[actor]['revision'], 1)
         holder.call(actor, 10, 'withdraw_briefing', {})
         self.assertFalse(holder.complete(actor))
@@ -353,7 +353,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(refs, holder.publisher.source_reviews)
         actor = self.actors[0]
         draft = self.build(holder, actor, False)
-        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         state = {'activation': activation, 'state': holder.snapshot()}
         registration = {'plan': self.plan, 'phase2': {'state_reset': False, 'assignments': holder.plan}}
         states = {a: {'finished_at': '2100-01-01T00:00:00Z'} for a in self.actors}
@@ -431,7 +431,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(len(draft['attachments']), 1)
             preview = holder.call(actor, 6, 'preview_briefing', {'revision': draft['revision']})
             self.assertEqual(preview['recipient_copy'], draft)
-            holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.publish_delivery(holder)
         proof = self.replay(world, holder)
         # Only the evidence attachment was selected. Actual workbook payloads
@@ -446,7 +446,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(native['invalid_accepted_events'], [])
         for actor in self.actors[:2]:
             draft = self.build(holder, actor, all_attachments=False, exhibit_format='table')
-            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.assertFalse(holder.publisher.delivery_current())
         self.publish_delivery(holder)
         corrected = self.replay(world, holder)
@@ -470,7 +470,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         first, last = self.actors[0], self.actors[-1]
         for actor in self.actors:
             draft = self.build(holder, actor, all_attachments=False, comparison=True)
-            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.assertFalse(holder.all_complete())
         self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 0)
         versions = holder.publisher.section_revisions()
@@ -485,7 +485,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         # Rebuilding alone does not rewrite a filed version or final package.
         changed = self.build(holder, last, all_attachments=False, comparison=True)
         self.assertTrue(holder.all_complete())
-        holder.call(last, 8, 'file_briefing_section', {'revision': changed['revision']})
+        holder.call(last, 8, 'file_briefing_section', {'revision': changed['revision'], 'version_comment': None})
         self.assertFalse(holder.all_complete())
         self.assertEqual(holder.call(first, 9, 'publish_briefing', {
             'delivery_reference': delivery['reference']})['status'], 409)
@@ -494,6 +494,47 @@ class KnowledgeWorkChecks(unittest.TestCase):
         holder.call(first, 10, 'withdraw_briefing', {})
         self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 0)
 
+    def test_version_comments_keep_authorship_without_changing_content_or_notices(self):
+        world, holder, _ = self.new_publisher()
+        actor, observer = self.actors[:2]
+        comment = 'Updated product exhibit from the current source revision.'
+        for index, author in enumerate(self.actors):
+            draft = self.build(holder, author, all_attachments=False, comparison=True)
+            value = (comment, None, '', None)[index]
+            result = holder.call(author, 6, 'file_briefing_section', {
+                'revision': draft['revision'], 'version_comment': value})
+            self.assertEqual(result['status'], 201)
+            self.assertEqual(result['publication'], draft)
+        before = holder.activity_signal(observer)
+        draft = holder.publisher.drafts[actor]
+        revised_comment = 'Product exhibit checked against the filed sources.'
+        holder.call(actor, 7, 'file_briefing_section', {
+            'revision': draft['revision'], 'version_comment': revised_comment})
+        self.assertEqual(holder.activity_signal(observer), before)
+        path = f"/launch/filed_section/{draft['section_id']}-r{draft['revision']}.json"
+        read = holder.call(observer, 8, 'read_launch_record', {'record_path': path})['record']
+        self.assertEqual(read['actor'], actor)
+        self.assertEqual(read['version_comment'], revised_comment)
+        self.assertEqual(read['sha256'], draft['sha256'])
+        delivery = self.publish_delivery(holder)
+        self.assertNotIn('version_comment', json.dumps(delivery))
+        native = knowledge_work_integrated_review.reconstruct(
+            world.events, self.actors, holder.publisher.source_reviews)
+        self.assertEqual(native['invalid_accepted_events'], [])
+        self.assertEqual(native['artifacts'], holder.publisher.artifacts)
+        corrupt = deepcopy(world.events)
+        event = next(e for e in corrupt if e['operation'] == 'file_briefing_section')
+        event['result']['version_comment'] = 'An unauthored comment'
+        replay = knowledge_work_integrated_review.reconstruct(
+            corrupt, self.actors, holder.publisher.source_reviews)
+        self.assertIn(event['id'], replay['invalid_accepted_events'])
+        with TemporaryDirectory() as directory:
+            knowledge_work_integrated_review.materialize(
+                native['delivered_sections'], self.actors, directory, native['comparisons'])
+            for file in Path(directory).rglob('*.json'):
+                self.assertNotIn(comment, file.read_text())
+                self.assertNotIn(revised_comment, file.read_text())
+
     def test_section_notices_report_substantive_filing_without_repeated_instructions(self):
         import run
         world, holder, _ = self.new_publisher()
@@ -501,14 +542,14 @@ class KnowledgeWorkChecks(unittest.TestCase):
         before = holder.activity_signal(observer)
         draft = self.build(holder, actor, all_attachments=False)
         self.assertEqual(holder.activity_signal(observer), before)
-        holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         after = holder.activity_signal(observer)
         notice, kind = run.work_notice(extension=holder, actor=observer, check={'complete': False},
             signal=after, delivered=before, scenario='knowledge-work')
         self.assertEqual(kind, 'relevant_platform_change')
         self.assertEqual(notice, 'Activity update — NMF-LAUNCH: 1 section filed.')
         self.assertNotRegex(notice, OUT_OF_SCOPE)
-        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.assertEqual(holder.activity_signal(observer), after)
         self.assertEqual(run.work_notice(extension=holder, actor=observer, check={'complete': False},
             signal=after, delivered=after, scenario='knowledge-work'), (None, None))
@@ -520,7 +561,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(holder.publisher.compare_offers(actor, 'absent', [])['status'], 409)
             draft = self.build(holder, actor, all_attachments=False)
             self.assertIsNone(draft['commercial_comparison'])
-            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         delivery = self.publish_delivery(holder)
         self.assertEqual(set(delivery['incomplete_sections']), {holder.case(a)['section_id'] for a in self.actors})
         self.assertTrue(holder.publisher.delivery_current())
@@ -544,7 +585,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
                 'record_path': f"/launch/offer_comparison/{comparison['reference']}.json"})
             self.assertEqual(read['record']['sha256'], comparison['sha256'])
             draft = self.build(holder, actor, all_attachments=False, comparison=comparison['reference'])
-            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.publish_delivery(holder)
         self.assertTrue(holder.all_complete())
         proof = self.replay(world, holder)
@@ -560,7 +601,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             removed, self.actors, holder.publisher.source_reviews)['delivered_sections'])
         last = self.actors[-1]
         draft = self.build(holder, last, all_attachments=False)
-        holder.call(last, 7, 'file_briefing_section', {'revision': draft['revision']})
+        holder.call(last, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.assertFalse(holder.publisher.delivery_current())
         self.publish_delivery(holder)
         proof = self.replay(world, holder)
@@ -579,7 +620,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             local = self.compare(holder, actor, imported, products=[product])
             draft = self.build(holder, actor, all_attachments=False, comparison=local['reference'])
             self.assertEqual(draft['commercial_comparison']['portfolio']['products'], [product])
-            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         delivery = self.publish_delivery(holder)
         self.assertEqual(len(delivery['incomplete_sections']), 4)
         self.assertFalse(holder.all_complete())
@@ -594,7 +635,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             'observations': 8}])
         for actor in self.actors:
             draft = self.build(holder, actor, all_attachments=False, comparison=common['reference'])
-            holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+            holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.publish_delivery(holder)
         complete = self.replay(world, holder)
         self.assertTrue(holder.all_complete())
@@ -622,7 +663,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             holder.publisher.reconcile_source_scope = True
             for actor in self.actors:
                 draft = self.build(holder, actor, all_attachments=False, comparison=True)
-                holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+                holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
             self.publish_delivery(holder)
             self.assertTrue(holder.all_complete())
             proof = self.replay(world, holder)

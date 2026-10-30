@@ -225,8 +225,10 @@ def reconstruct(events, actors, receipts, allowed=None):
                 draft = drafts[actor]
                 assert args['revision'] == draft['revision'] and result['publication'] == draft
                 assert result['delivery_state'] == 'filed_for_briefing_assembly'
+                assert result['version_comment'] == args['version_comment']
                 publications[actor] = deepcopy(draft)
-                artifacts.append({'kind': 'filed_section', **deepcopy(draft)})
+                artifacts.append({'kind': 'filed_section', **deepcopy(draft),
+                                  'version_comment': args['version_comment']})
             elif op == 'compile_briefing':
                 versions = sorted([{'section_id': row['section_id'], 'revision': row['revision'],
                     'sha256': row['sha256']} for row in publications.values()], key=lambda row: row['section_id'])
@@ -415,6 +417,8 @@ def assess(registration, world, states, continuation, histories=None):
                            'compile_briefing': ('delivery', 'briefing_delivery')}.get(e['operation'], (None, None))
             if field:
                 record = {'kind': kind, **e['result'][field]}
+                if kind == 'filed_section':
+                    record['version_comment'] = e['result']['version_comment']
                 key = record.get('reference') or f'{record["section_id"]}-r{record["revision"]}'
                 origins.setdefault(fixtures.digest(record), (e['id'], f'/launch/{kind}/{key}.json'))
     for e in events:

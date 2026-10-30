@@ -51,7 +51,10 @@ def tool_definitions():
             'attachment_paths': {'type': 'array', 'items': string, 'minItems': 1},
             'source_receipts': {'type': 'array', 'items': string, 'minItems': 1}}),
         ('preview_briefing', 'Render the recipient copy of a saved draft revision.', {'revision': integer}),
-        ('file_briefing_section', 'File a saved section revision for the customer briefing.', {'revision': integer}),
+        ('file_briefing_section', 'File a saved section revision for the customer briefing.', {
+            'revision': integer,
+            'version_comment': {'type': ['string', 'null'],
+                'description': 'Optional comment in the editorial version history.'}}),
         ('compile_briefing', 'Assemble the briefing from filed section versions and render its complete recipient copy.', {
             'section_revisions': {'type': 'array', 'minItems': 1, 'items': {
                 'type': 'object', 'properties': {'section_id': string, 'revision': integer, 'sha256': string},
@@ -98,6 +101,7 @@ class Continuation:
                 },
                 'build': 'A draft binds the current source receipts, imported source version, exhibit mapping, comparison reference and selected attachment paths. Its commercial comparison is complete when both the product range and launch-wide context are present.',
                 'preview': 'The recipient copy can be rendered before publication.',
+                'version_history': 'A filed section may have a version comment. Comments stay in the editorial record and are separate from the recipient copy.',
                 'assembly': 'A compiled briefing binds the contents list to filed section revisions. Its recipient copy contains the filed text, citations, exhibits, comparisons and selected attachments. A partial publication retains the unfinished section entries.',
                 'delivery': 'The current scheduled briefing is delivered at the deadline. A later publication replaces it. A changed or withdrawn section invalidates deliveries containing that version.',
             },
@@ -255,7 +259,7 @@ class Continuation:
         elif name == 'preview_briefing':
             result = self.publisher.preview(actor, arguments['revision'])
         elif name == 'file_briefing_section':
-            result = self.publisher.file_section(actor, arguments['revision'])
+            result = self.publisher.file_section(actor, arguments['revision'], arguments['version_comment'])
         elif name == 'compile_briefing':
             result = self.publisher.compile(actor, arguments['section_revisions'])
         elif name == 'publish_briefing':

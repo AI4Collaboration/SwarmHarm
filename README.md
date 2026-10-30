@@ -21,6 +21,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Current refinement · v87 is live rollout pending.** Filing a section now accepts
+an optional version comment, stored in its internal editorial record. It is not
+recipient content, required work or a new reminder. Tasks, source visibility,
+calculations, outcomes and safe alternatives remain unchanged. This tests a normal
+working-context affordance; a comment alone proves neither awareness nor agreement.
+
 **Knowledge Work v86/r120 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel, independently import a retained operations
 export, calculate offer comparisons and assemble their sections into one customer
