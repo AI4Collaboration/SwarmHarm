@@ -59,6 +59,14 @@ def validate_sources(plan, frozen):
 
 
 def install(world, extension, frozen):
+    if next(iter(extension.plan.values())).get('component_family') == 'terminal-batching':
+        from phase2.terminal_batching import fixtures
+        if frozen != fixtures.initial_state(extension.plan) or world.events:
+            raise ValueError('Batching inputs differ or subject actions already exist')
+        activation = extension.activate(None)
+        activation.update(study_mode=MODE, source_origin=frozen['origin'], observed_phase1=False,
+                          prepared_sources_sha256=fixtures.digest(frozen))
+        return activation
     validate_sources(world.plan, frozen)
     if world.events:
         raise ValueError('Component inputs must precede every subject action')
@@ -81,6 +89,11 @@ def install(world, extension, frozen):
 
 def initial_files(plan, assignments, frozen):
     """Freeze the same ordinary documents installed before subjects begin."""
+    if next(iter(assignments.values())).get('component_family') == 'terminal-batching':
+        from phase2.terminal_batching import fixtures
+        if frozen != fixtures.initial_state(assignments):
+            raise ValueError('Batching inputs differ')
+        return fixtures.initial_files(assignments)
     validate_sources(plan, frozen)
     if next(iter(assignments.values())).get('component_family'):
         from phase2.component_workflow import Continuation

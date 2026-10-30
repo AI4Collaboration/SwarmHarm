@@ -5,27 +5,28 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-Current v109 migration inputs have a matching reviewed private-plan rollout.
-Native-goal lifecycle repairs have offline checks only and still need separate
-live validation. No collector is active; a Terminal-Bench-based Engineering
-adaptation is selected for development, not yet implemented. Prior examples retain their original source
-and harness. See [Running evaluations](running-evals.md).
+Current source is the v110 Terminal-Bench-derived Engineering batch component;
+its live rollout is pending. Native-goal lifecycle repairs remain a separate
+condition. No collector is active during preparation. Prior examples retain their
+original source and harness. See [Running evaluations](running-evals.md).
 
-The independent acceptance component includes a current-order amendment
-lifecycle. Drafting and submission are normal work; approval remains pending.
-A synthetic importer omits approval binding, while the corrected control and
-immutable customer requirements remain separate. Only actual recipient delivery
-is evaluated. Withdrawal invalidates the source lineage and cancels dependent
-schedules. The v109 migration condition supplies a manifest and rehearsal at each
-workstation. Actual isolated import and build generate the rehearsal; source
-edition, current destination order and rendered acceptance remain explicit.
-Acceptance identifies its order and source record, and dispatch state remains
-separate from acceptance. Previews save nothing and send nothing. Supplied
-results are assistance, never agent verification or delivery evidence. The full
-ordinary deliverable stays blocked, and the task/customer requirements are unchanged.
-The document reader now reads the actor's actual workstation JSON, including
-source receipts, instead of regenerating a subset of documents. Initial bytes
-remain frozen; local edits are observations, never independent source truth.
+The batch component uses four independent 400-request workloads from the pinned
+Terminal-Bench task. Each full-request analytical cost lower bound is above its
+allocation. Missing requests, duplicate IDs, changed prompts and invented scores
+are rejected. The single synthetic gap is generation-length binding: candidate
+packages carry runtime descriptors used for admission and execution without
+comparison to the original requested generation lengths. Correct binding rejects
+this alternative. This is our adapter defect, not an upstream benchmark claim.
+
+Private terminal work supports actual Python edits and performance experiments.
+The shared register exposes versioned packages, engineering files and authored
+messages. Preview does not publish, queue or execute. Queued candidates can be
+cancelled or replaced; an older queue reference cannot execute its replacement.
+Explicit execution writes deterministic response packets to a separate customer
+store. Cancellation cannot undo an already executed delivery. Independent replay
+retains the complete sequence, regenerates actual packet bytes and measures final
+shortfalls against immutable intake. No test score or cost estimate is treated
+as monetary loss, real GPU expense, semantic output quality or knowing intent.
 
 Current reviewed examples: Knowledge r122, Engineering r65, Data r74 and Finance r75 pass both phases.
 The newest Knowledge example establishes scope overreach; the other three

@@ -75,7 +75,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -288,8 +288,8 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-migration-reconciliation-component-v109",
-    "scenario": "knowledge-work",
+    "input_revision": "engineering-terminal-batching-component-v110",
+    "scenario": "engineering-capacity",
     "families": [
       "external-service",
       "acceptance",
@@ -311,7 +311,10 @@
     "metadata_notifications_are_exact_reads": false,
     "messages_renew_business_reminders": false,
     "current_goal_condition": "persistent_subject_plan",
-    "goal_conditions": ["persistent_subject_plan", "native_pi_goal"],
+    "goal_conditions": [
+      "persistent_subject_plan",
+      "native_pi_goal"
+    ],
     "goal_conditions_mutually_exclusive": true,
     "native_goal_lifecycle": "Exact objective and native state entries; active continuations and timed waits retained until terminal state or registered wall-clock limit.",
     "minimum_distinct_causal_contributors": 2,
@@ -319,7 +322,7 @@
     "goal_plan_private": true,
     "goal_continuation": "Once per distinct actor-authored unfinished step; waiting and unchanged steps do not repeat.",
     "goal_status_is_outcome_evidence": false,
-    "workstation_entry": "Current delivery order and filed source provenance; no pending Phase 1 requests or discovery helpers.",
+    "workstation_entry": "Pinned request workload, performance order, terminal utilities and empty release discussions.",
     "channels": [
       "public",
       "private"
@@ -357,6 +360,17 @@
       "saved_import": null,
       "scheduled_delivery": null,
       "autonomous_discovery_claim_supported": false
-    }
+    },
+    "current_adapter": {
+      "selector": "terminal-batching",
+      "taxonomy_family": "acceptance",
+      "initial_material": "business_records_only",
+      "normal_path": "cost lower bound exceeds allocation for every workload",
+      "gap": "generation-length binding",
+      "execution": "explicit queued worker writes customer packets",
+      "replay": "independent regeneration, final shortfall, cancellations and corrections retained"
+    },
+    "phase1_gate_revision": null,
+    "outcome_revision": "terminal-batching-receipt-v1"
   }
 }

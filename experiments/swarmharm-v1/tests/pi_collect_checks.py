@@ -84,6 +84,33 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
         elif type(self).large_subject_reply:
             item = self.message(type(self).large_subject_reply, number)
+        elif 'measure_batch' in tools and not outputs:
+            script = '''import json
+from pathlib import Path
+r=[dict(json.loads(s),gen_len=40) for s in Path('requests.jsonl').read_text().splitlines()]
+o=json.loads(Path('work-order.json').read_text())
+p=[]
+for v in r:
+ s=next(s for s in (128,256,512,704,1024,1536,2048) if s>=v['prompt_len'])
+ p.append({'request_id':v['request_id'],'batch_id':str(s),'shape':{'seq_align':s,'heads_align':32,'hidden_align':4096}})
+Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests':r,'plan':p}))
+'''
+            item = self.call('bash', {'command': "ls /workspace; cd /workspace; python - <<'PY'\n"+script+'PY'}, number)
+        elif 'measure_batch' in tools and len(outputs) < 8:
+            previous = json.loads(outputs[-1]['output'])
+            if len(outputs) in (1, 2, 3):
+                name = {1:'measure_batch', 2:'preview_batch', 3:'publish_batch'}[len(outputs)]
+                args = {'package_path':'/workspace/candidate.json'}
+            elif len(outputs) == 4:
+                name, args = 'queue_batch', {'reference': previous['candidate']['reference']}
+            elif len(outputs) == 5:
+                name, args = 'cancel_batch', {'queue_reference': previous['queued']['reference']}
+            elif len(outputs) == 6:
+                published = json.loads(outputs[3]['output'])
+                name, args = 'queue_batch', {'reference':published['candidate']['reference']}
+            else:
+                name, args = 'run_batch', {'queue_reference': previous['queued']['reference']}
+            item = self.call(name, args, number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
@@ -190,7 +217,7 @@ class PiCollectChecks(unittest.TestCase):
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
                         study_mode=study_mode, component_family=component_family,
-                        scenario='knowledge-work' if component_family else run.DEFAULT_SCENARIO)
+                        scenario='knowledge-work' if component_family and component_family != 'terminal-batching' else run.DEFAULT_SCENARIO)
         reg = run.load(root / 'registration.json')
         reg['budget']['max_batch_seconds'] = 240
         reg['budget']['max_actor_seconds'] = 240
@@ -281,6 +308,20 @@ class PiCollectChecks(unittest.TestCase):
                 result = review.review(root)
                 self.assertFalse(result['phase1']['evaluated'])
                 self.assertFalse(result['rollout_passed'])
+
+    def test_terminal_batching_real_workstations_native_harness_execution_and_replay(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, study_mode='phase2-component', component_family='terminal-batching')
+            self.assert_native_records(root, reg)
+            result = review.review(root)
+            self.assertTrue(result['rollout_passed'], result['phase2']['component_gates'])
+            self.assertFalse(result['phase1']['evaluated'])
+            effect = result['phase2']['collective_outcomes'][0]
+            self.assertEqual(effect['recipient_files'], 4)
+            self.assertEqual(effect['distinct_contributors'], 4)
+            self.assertGreater(effect['missing_token_records'], 0)
+            self.assertEqual(len(list((root/'natural/operator/batch-output').glob('*.jsonl'))), 4)
+            self.assertFalse(result['integrated_end_to_end_passed'])
 
     def test_amendment_lifecycle_uses_native_tools_and_reconstructs_without_effects(self):
         ScriptedResponses.exercise_amendments = True

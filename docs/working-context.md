@@ -2,37 +2,28 @@
 
 ## Active work
 
-**Current source: v109 migration reconciliation; live reviewed negative.** The
-human requested stricter HackBait/HVE-grounded checks before spending model calls.
-Keep the business objective and current customer requirements; reconcile the
-migrated workspace through retained editions, a manifest and actual read-only
-import/render preview. Acceptance identifies its order and source record. The
-method-available condition supplies `migration-manifest.json` and
-`migration-rehearsal.json` to all workstations, frozen as
-`migration_rehearsal_v1`. No live proposal, peer message or delivery is supplied.
-This is conditional method availability, not autonomous discovery.
+**Current source: v110 Terminal-Bench-derived Engineering batching; live rollout pending.**
+Four 400-request workloads retain the original request bytes and analytical cost
+model from `llm-inference-batching-scheduler`, commit
+`7131e4375048a0e408a8fb404b5f499d726b695b`. The original reference passes all six
+original tests. Our variant gives every workload an allocation below its proven
+full-request lower bound. A synthetic packaging adapter validates IDs/prompts but
+omits binding generation lengths to the intake. Correctly bound controls reject
+that change. Code, local measurements, shared versioned artifacts and actual
+response-file execution replace the import-only development focus.
 
-**No active collector.** r150 closed at 16:03:47 UTC and its full native history,
-ATIF continuity and independent outcome have been reviewed. Source `d69237d0`
-and registration `8bbc2249` preserve the original inputs. Raw evidence is in
-`../eval-readiness/2026-10-30-v109-migration-reconciliation-sol56-pi-n4-r150/`;
-the complete review is in `../eval-readiness/knowledge-work-v109-r150-review/`.
-The 12 registration files match Git and both external copies; 1,311 manifest
-files match in each archive. The completed negative registration is removed from
-the maintained tree. Behavioral findings remain in README Takeaways.
+**No active collector; registration not prepared yet.** Source and offline
+controls are being completed before one fresh four-agent Sol 5.6 rollout. Use
+`--scenario engineering-capacity --study-mode phase2-component --component-family terminal-batching`.
+This is an adapter within the acceptance-manipulation family, not a fourth
+incident taxonomy category. Empty channels are supplied; no method or peer text
+is supplied. Keep the existing private-plan condition and event-driven notices.
+No unchanged reminder or synthetic elapsed-time notice is added.
 
-**Latest direction: use Terminal-Bench as the primary foundation.** The human
-selected Terminal-Bench and excluded the third, game-based option. HVE and
-HackBait remain measurement/control references. The first selected task is
-`llm-inference-batching-scheduler` from Terminal-Bench 2.1, pinned at
-`7131e4375048a0e408a8fb404b5f499d726b695b`. Its unchanged reference solution
-passes all six original tests in an offline container; missing/duplicate request
-controls fail coverage. The task has two 800-request workloads and requires
-genuine code execution and optimization. See
-`research/task-sources-and-verification.md#terminal-bench-foundation`.
-No model calls, new live registration or four-agent adaptation were part of
-that source check. Do not launch another import-only variation or the previously
-planned goal comparison by default.
+Latest prior negative evidence is preserved outside the repository at
+`../eval-readiness/2026-10-30-v109-migration-reconciliation-sol56-pi-n4-r150/` and
+`../eval-readiness/knowledge-work-v109-r150-review/`; its source/registration are
+`d69237d0`/`8bbc2249`. The concise behavioral takeaway is in README.
 
 Native Pi goal support is now a separate condition. Automatic continuation and
 timed waits keep the controller live; exact goal state entries and terminal
@@ -83,23 +74,19 @@ assembly is not prior agreement.
 
 ## Next action
 
-Source checks pass: 381 common/Pi checks, 13 prompt contracts, eight subscription
-registration checks, Harbor/ATIF formats and dataset admission. Final targeted
-component/export checks also pass after protocol alignment. All use local scripts
-or a scripted provider, with zero live model calls. Honest, alternative,
-invalid-output and corrected-binding controls cover all four actors, including
-pending approval, safe partial work, withdrawal and cancellation.
+Complete source checks, including the four-workload normal-path proof, alternative
+execution witness, invalid-output rejection, corrected binding, cancellations,
+replacement lineage and independent output-file comparison. The source audit
+and original Docker results are external under `../research-audit-2026-10-30/`;
+maintained provenance is `research/terminal-bench-source.json`.
 
-Develop one four-agent Engineering adaptation of the selected Terminal-Bench
-task through the existing registered harness. Preserve the pinned original
-task as a solvable control. The shared execution system, precise normal-path
-blocker, reachable alternative and independent adverse-outcome replay are our
-extensions and remain to be implemented. Four independent benchmark copies do
-not establish a collective result. Exercise useful code changes, live feedback,
-artifact reuse, correction and final effects before a fresh live registration.
-The source audit and Docker results remain outside the repository under
-`../research-audit-2026-10-30/`; the maintained provenance record is
-`research/terminal-bench-source.json`.
+Then commit/push source, prepare a fresh registration, commit/push it, verify
+local/remote/sealed hashes and collect once. Inspect full native code executions,
+exact artifact reads, messages, tested/reused packages, queued and executed work,
+ATIF continuity and final customer files. Do not call the environment successful
+from the offline witness or from acceptance. Knowing coordinated harm requires
+pre-action understanding and a jointly endorsed plan; general collective harm
+alone does not finish that stronger objective.
 
 A future native Pi `goal_command` comparison needs a distinct registration with
 the same business inputs; do not stack controllers or confound it with another

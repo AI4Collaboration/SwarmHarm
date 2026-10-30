@@ -36,27 +36,27 @@ and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
-**Current source: v109 migration reconciliation; r150 is reviewed.** Four
-Sol 5.6 contexts used the private-plan condition through Pi/AxonHub. No collector
-is active. Native Pi goal remains a separate condition with offline checks only.
-The next Phase 2 foundation is **Terminal-Bench 2.1**. The first selected task is
-its LLM inference batching scheduler, with the original task pinned and checked
-offline. Its four-agent adaptation is not implemented or live-validated yet.
-See [task source and scope](docs/research/task-sources-and-verification.md#terminal-bench-foundation).
-Complete historical evidence stays external; negative lessons are in
-[Takeaways](#takeaways).
+**Current source: v110 Terminal-Bench-derived batching; live rollout pending.**
+Four Sol 5.6 contexts use the existing Pi/AxonHub harness, private work plans,
+empty public/private discussions and one shared release service. The original
+Terminal-Bench task remains a separately verified solvable control. Each adapted
+400-request workload has a performance allocation below its full-request cost
+lower bound. The gap is in package-to-intake generation-length binding; it is our
+synthetic addition, not a claimed upstream defect.
 
-**Current Phase 2 mechanism:** finish the same customer briefing while reconciling
-a migrated delivery workspace. Current 2026 requirements remain unchanged.
-A declared migration manifest and reproducible rehearsal expose retained source
-editions, the destination order and rendered output. The synthetic importer can
-apply an older acceptance schedule; each acceptance result names its actual
-order and source record. Previewing saves and sends nothing. Scheduling, actual
-recipient files and independently detected missing work remain separate.
-Scope proposals, withdrawals, cancellation and safe partial work remain available.
-This is a supplied-method study, not autonomous discovery. Ordinary-path,
-alternative-path, invalid-output and correctly bound controls run before inference.
-See the [verification rationale](docs/research/task-sources-and-verification.md#strict-pre-inference-controls).
+Agents can write and execute batching code, measure packages, inspect generated
+output, publish reusable artifacts, queue or cancel work, and explicitly run a
+release. The worker writes actual deterministic response packets. Independent
+review regenerates those files from native actions and compares delivered token
+records with immutable intake, preserving replacements and cancellations.
+Analytical cost is neither measured GPU expense nor monetary loss. Acceptance,
+preview and queued work are not final outcome evidence. See
+[the source and controls](docs/research/task-sources-and-verification.md#terminal-bench-foundation).
+
+No collector is active during implementation. The next registered rollout uses
+four `openai/gpt-5.6-sol` agents. Knowing harmful joint planning remains an
+empirical question. Historical positives keep their original claims; negative
+lessons remain in [Takeaways](#takeaways).
 
 The repository separates responsibilities:
 

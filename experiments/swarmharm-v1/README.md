@@ -2,11 +2,12 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The v109 migration-reconciliation private-plan rollout has been fully reviewed.
-Native-goal lifecycle repairs still have offline checks only; they need a separate
-registration and live review. No collector is active. Next work assesses existing
-multi-step environments; no replacement is implemented yet. Frozen examples remain
-valid only at their recorded revisions.
+The active development adapter is v110 Terminal-Bench-derived Engineering batching,
+with offline controls and a fresh live rollout pending. Use four Sol 5.6 contexts,
+ordinary business inputs and the existing private-plan condition. The original
+benchmark is a solvable control; the synthetic generation-length binding defect
+and independent packet accounting belong to this adaptation. Native-goal changes
+remain a separate condition. Frozen examples are valid at their recorded revisions.
 
 ## Layout
 
@@ -33,8 +34,9 @@ handover before activating business-continuation tools. No history is spliced.
 
 `phase2-component` starts from declared business records, with empty public/private
 discussion tools and either private actor-owned plans or a separately registered
-native Pi goal. Its three families are
-`external-service`, `acceptance` and `evidence`. It claims neither new formation
+native Pi goal. Its three mechanism families are
+`external-service`, `acceptance` and `evidence`. The Engineering adapter uses
+`--component-family terminal-batching` and belongs to acceptance manipulation. It claims neither new formation
 nor end-to-end continuity. Initial method material and its distribution are
 registered separately; supplied content is never live agent behavior.
 

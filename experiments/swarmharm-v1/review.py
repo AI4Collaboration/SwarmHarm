@@ -25,6 +25,10 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase2/phase2_component.py",
     "experiments/swarmharm-v1/phase2/component_workflow.py",
     "experiments/swarmharm-v1/phase2/component_review.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/fixtures.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/package_api.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/workflow.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/review.py",
     "experiments/swarmharm-v1/phase2/order_amendments.py",
     "experiments/swarmharm-v1/scenarios/engineering_capacity.py",
     "experiments/swarmharm-v1/phase2/domains/engineering_capacity_continuation.py",
@@ -1448,7 +1452,9 @@ def review(root, destination=None):
     if phase1_only:
         integrated={'integrated_end_to_end_passed':False,'scope':'Standalone Phase 1; no Phase 2 claim.'}
     else:
-        integrated_module = importlib.import_module('phase2.component_review' if component and
+        terminal_batching = registration.get('phase2', {}).get('component_family') == 'terminal-batching'
+        integrated_module = importlib.import_module('phase2.terminal_batching.review' if terminal_batching else
+            'phase2.component_review' if component and
             registration.get('phase2', {}).get('component_family') else
             domain_runtime.integrated_review_module(registration.get("scenario")))
         integrated = integrated_module.assess(
@@ -1460,6 +1466,7 @@ def review(root, destination=None):
                 actor: load(root / "natural" / actor / "history.json")
                 for actor in registration["plan"]["natural"]
             },
+            **({"evidence_root": root} if terminal_batching else {}),
         )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     phase2 = ({'evaluated':False, 'passed':False, 'claim_scope':'not_evaluated_in_phase1'}

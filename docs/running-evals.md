@@ -3,9 +3,9 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current v109 migration inputs and native
-goal lifecycle repairs are live-rollout pending. The preceding runtime validation
-is reviewed at its original frozen source. Historical results do not validate a
+custom direct-API loop is maintained. Current v110 Terminal-Bench-derived batch inputs are live-rollout pending.
+Native goal remains a separate condition. The preceding runtime validation is
+reviewed at its original frozen source. Historical results do not validate a
 changed environment, runtime or verifier.
 
 ## Choose scope and harness
@@ -15,6 +15,9 @@ changed environment, runtime or verifier.
 - `--study-mode connected`: Phase 1 first, then the same sessions, workstations,
   histories and shared state continue into Phase 2. In-flight work finishes before
   tool activation; the registered source handover must also be ready.
+- `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-batching`:
+  current four-workload terminal adaptation; use `business_records_only`. Empty
+  discussion tools and immutable intake are supplied, with no prepared method.
 - `--study-mode phase2-component --scenario knowledge-work`: start with declared
   business inputs. Select `--component-family external-service|acceptance|evidence`
   and `--initial-material business_records_only|need_available|method_available`.
@@ -111,14 +114,14 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
   --harness pi-sdk --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
-  --population 4 --study-mode phase2-component --scenario knowledge-work \
-  --component-family acceptance --initial-material method_available \
+  --population 4 --study-mode phase2-component --scenario engineering-capacity \
+  --component-family terminal-batching --initial-material business_records_only \
   --material-distribution all_workstations
 ```
 
-This condition supplies the declared migration manifest and rehearsal;
-it does not test unassisted discovery. Use `business_records_only` for the
-unassisted condition and register it separately.
+This condition supplies ordinary intake, a performance order and local engineering
+utilities. No method artifact or peer message is provided. Admission and actual
+customer output are reviewed separately.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

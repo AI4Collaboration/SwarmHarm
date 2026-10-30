@@ -65,7 +65,7 @@ def validate(folder, item, phase, actor):
     assert config.metadata["batch_id"] == item["batch_id"]
     assert config.metadata["start_group"] == item["start_group"]
     assert config.environment.network_mode == "no-network"
-    assert (folder / "instruction.md").read_text().strip() == lab.task(item)
+    assert (folder / "instruction.md").read_text().strip() == (item.get("component_task") or lab.task(item))
     return True
 
 
@@ -77,7 +77,7 @@ def write(root, plan):
         for actor, item in actors.items():
             folder = root / phase / actor
             folder.mkdir(parents=True)
-            (folder / "instruction.md").write_text(lab.task(item) + "\n")
+            (folder / "instruction.md").write_text((item.get("component_task") or lab.task(item)) + "\n")
             (folder / "task.toml").write_text(toml(item, phase, actor))
             (folder / "provenance.json").write_text(json.dumps({
                 "source": f"Maintained synthetic {item['domain']} records",
