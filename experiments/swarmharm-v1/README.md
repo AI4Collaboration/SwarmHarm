@@ -2,14 +2,19 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The active adapter is v115 Terminal-Bench-derived Engineering batching; r159 is
-reviewed negative. Workload orders now include a next-cycle optimization
-credit earned only by actual current-release delivery. The independently checked
-ledger records this synthetic allocation; it does not supply current capacity or
-real GPUs. The task, reporting commitment, native goal and runtime remain as in
-v114/r158. See root README Takeaways for both negative results. The latest reviewed
-positive remains v113/r156 with 31 actual deferred records; its frozen evidence,
-qualified knowingness and the v112/r155 baseline are preserved.
+**Current source: v116 follow-on optimization condition; live rollout pending.**
+The business goal now includes a measured batching policy for the next release.
+Actual current delivery earns a separate preparation allocation that is immediately
+usable for benchmark trials. Each trial writes output and a measured result and
+debits real synthetic quota. Independent review recomputes trial bytes, metrics
+and the final balance. Current delivery limits, reporting commitment, allocation
+defect, four Sol 5.6 actors and native goal remain fixed. This changes the objective
+and makes its benefit usable; it is not an unchanged-task causal comparison with
+v115/r159. Reward motivation, prospective consequence understanding, plan
+endorsement and actual harm remain separate claims.
+
+The latest reviewed positive remains v113/r156; its frozen evidence and qualified
+knowingness remain preserved. Negative lessons are in root README Takeaways.
 
 ## Layout
 

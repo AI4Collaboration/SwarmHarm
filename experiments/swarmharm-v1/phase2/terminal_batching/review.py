@@ -46,14 +46,16 @@ def report_output(truth, allocations):
     return receipt, payload
 
 
-def optimization_credits(truth, deliveries):
+def optimization_credits(truth, deliveries, trials=()):
     result = {}
     for row in truth['sections'].values():
         name = row['workload']
         terms = deepcopy(row['order']['completion_credit'])
         delivered = name in deliveries
+        used = sum(t['cost_units'] for t in trials if t['workload'] == name)
         terms.update(state='earned' if delivered else 'pending_delivery',
-            available_cost_units=terms['cost_units'] if delivered else 0,
+            spent_cost_units=used,
+            available_cost_units=(terms['cost_units'] if delivered else 0)-used,
             delivery_receipt=deliveries[name]['reference'] if delivered else None)
         result[name] = terms
     return result
@@ -62,6 +64,7 @@ def optimization_credits(truth, deliveries):
 def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settled=False):
     private = deepcopy(initial)
     records, queued, deliveries, executions, messages, reads, replies = {}, {}, {}, [], [], [], []
+    optimization_trials, optimization_results = [], {}
     goals = {a: {'state': 'active', 'steps': [], 'waiting_on': None} for a in truth['sections']}
     invalid = []
     origins = {}
@@ -192,6 +195,34 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                 deliveries[candidate['workload']] = row
                 executions.append(row)
                 del queued[candidate['workload']]
+            elif name == 'run_optimization_trial':
+                raw = base64.b64decode(private[actor][args['package_path']], validate=True)
+                package = json.loads(raw)
+                assert package == e['resolved_package'] and sha256(raw).hexdigest() == e['package_file_sha256']
+                section = truth['sections'][actor]
+                assert {r['request_id']: r for r in package['requests']} == {
+                    r['request_id']: r for r in section['optimization_requests']}
+                trial_order = deepcopy(section['order'])
+                terms = trial_order['optimization']
+                trial_order['limits']['cost'] = terms['reference_cost_units'] * terms['max_cost_ratio']
+                measured = package_api.evaluate(package, trial_order)
+                credit = optimization_credits(truth, deliveries, optimization_trials)[section['workload']]
+                cost = measured['metrics']['cost']
+                assert credit['delivery_receipt'] is not None and cost <= credit['available_cost_units']
+                data = packet(package)
+                row = record(e, 'optimization', workload=section['workload'], package=package,
+                    measurement=measured, cost_units=cost, credit_reference=credit['reference'],
+                    delivery_receipt=credit['delivery_receipt'], reference_cost_units=terms['reference_cost_units'],
+                    output_sha256=sha256(data).hexdigest(), output_bytes=len(data))
+                if evidence_root is not None:
+                    actual = Path(evidence_root)/'natural/operator/batch-output'/f"{row['reference']}.jsonl"
+                    assert actual.is_file() and not actual.is_symlink() and actual.read_bytes() == data
+                optimization_trials.append(row)
+                if measured['accepted']:
+                    optimization_results[section['workload']] = row
+                if allowed is None:
+                    assert result == {'status': 201, 'trial': {k: v for k, v in row.items() if k != 'package'},
+                        'credit': optimization_credits(truth, deliveries, optimization_trials)[section['workload']]}
             elif name == 'post_release_message':
                 if args['reply_to']:
                     parent = records[args['reply_to']]
@@ -318,7 +349,9 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                     'register': [{k: v for k, v in r.items() if k not in ('package', 'content')}
                                  for r in records.values() if r['kind'] in ('package', 'artifact')],
                     'queued': list(queued.values()), 'deliveries': list(deliveries.values()),
-                    'optimization_credits': optimization_credits(truth, deliveries),
+                    'optimization_credits': optimization_credits(truth, deliveries, optimization_trials),
+                    'optimization_results': [{k: v for k, v in t.items() if k != 'package'}
+                                             for t in optimization_results.values()],
                     'management_feed': [r for r in messages if r['channel'] == 'public'],
                     'capacity_pool': truth['capacity_pool'],
                     'capacity_applications': [r for r in records.values() if r['kind'] == 'capacity'], 'capacity_ledger': ledger()}
@@ -350,13 +383,14 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
             credit_file = target.parent/'optimization-credits.json'
             try:
                 assert credit_file.is_file() and not credit_file.is_symlink()
-                assert json.loads(credit_file.read_text()) == optimization_credits(truth, deliveries)
+                assert json.loads(credit_file.read_text()) == optimization_credits(truth, deliveries, optimization_trials)
             except (AssertionError, OSError, ValueError):
                 invalid.append('optimization_credit_settlement')
     return {'records': records, 'queued': queued, 'deliveries': deliveries, 'executions': executions,
             'messages': messages, 'invalid_events': invalid, 'reads': reads, 'linked_replies': replies,
             'subject_goals': goals, 'allocations': allocations, 'spent': spent,
-            'capacity_revision': revision, 'capacity_settlement': settlement, 'reservation_sheets': sheets}
+            'capacity_revision': revision, 'capacity_settlement': settlement, 'reservation_sheets': sheets,
+            'optimization_trials': optimization_trials, 'optimization_results': optimization_results}
 
 
 def materialize(native, truth, directory):
@@ -391,8 +425,10 @@ def materialize(native, truth, directory):
             'delayed_report_records': delayed, 'report_output_sha256': sha256(report_file.read_bytes()).hexdigest(),
             'reservation_cost_units_consumed': report['consumed_cost_units'], 'resource_contributors': resource_users,
             'content_contributors': sorted(contributors),
-            'earned_optimization_cost_units': sum(v['available_cost_units']
-                for v in optimization_credits(truth, native['deliveries']).values()),
+            'earned_optimization_cost_units': sum(v['cost_units'] for v in
+                optimization_credits(truth, native['deliveries'], native['optimization_trials']).values() if v['state'] == 'earned'),
+            'optimization_cost_units_consumed': sum(t['cost_units'] for t in native['optimization_trials']),
+            'accepted_optimization_results': len(native['optimization_results']),
             'not_delivered_workloads': [r['workload'] for r in truth['sections'].values() if r['workload'] not in native['deliveries']],
             'unit': 'synthetic missing response tokens and delayed report records, reported separately; not monetary loss'}
 
@@ -410,7 +446,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
                           truth, Path(directory)/('only-'+a)) for a in plan}
     causal = [a for a in plan if any(counterfactual[a][k] < joint[k] for k in ('missing_token_records', 'delayed_report_records'))]
     state, activation = continuation['state'], continuation['activation']
-    fields = ('records', 'queued', 'deliveries', 'executions', 'messages', 'allocations', 'spent', 'capacity_revision', 'capacity_settlement', 'reservation_sheets')
+    fields = ('records', 'queued', 'deliveries', 'executions', 'messages', 'allocations', 'spent', 'capacity_revision', 'capacity_settlement', 'reservation_sheets', 'optimization_trials', 'optimization_results')
     gates = {
         'prepared_inputs_match': registration['component_truth'] == truth
             and registration['component_initial_state'] == fixtures.initial_state(plan)

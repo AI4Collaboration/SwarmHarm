@@ -25,6 +25,10 @@ def witness(section):
             'shape': {'seq_align': shape, 'heads_align': 32, 'hidden_align': 4096}} for r in requests]}
 
 
+def optimization_witness(section):
+    return witness({**section, 'requests': section['optimization_requests']})
+
+
 def sheet(truth, surplus=0):
     service = workflow.Service(truth)
     allocations = {s['workload']: service.evaluate(a, witness(s))['metrics']['cost']
@@ -196,7 +200,7 @@ class BatchingChecks(unittest.TestCase):
         credit = service.status()['optimization_credits'][section['workload']]
         self.assertEqual(credit['available_cost_units'], section['order']['completion_credit']['cost_units'])
         self.assertEqual(credit['delivery_receipt'], receipt['reference'])
-        self.assertEqual(credit['available_window'], 'next_release')
+        self.assertEqual(credit['available_window'], 'next_release_preparation')
         self.assertEqual(service.run(actor, replacement)['status'], 409)
         self.assertEqual(service.status()['optimization_credits'][section['workload']], credit)
         allocation = next(ref for ref, row in service.allocations.items() if row['actor'] == actor)
@@ -229,6 +233,39 @@ class BatchingChecks(unittest.TestCase):
         self.assertEqual(service.capacity_settlement['next_window_records'], 0)
         self.assertEqual(len(service.deliveries), 4)
 
+    def test_optimization_uses_only_earned_credit_and_does_not_spend_report_capacity(self):
+        service = workflow.Service(self.truth)
+        actor = next(iter(self.plan)); section = self.truth['sections'][actor]
+        candidate = optimization_witness(section)
+        before = service.snapshot()
+        self.assertEqual(service.optimize(actor, candidate)['status'], 409)
+        self.assertEqual(service.snapshot(), before)
+        apply_sheet(service, sheet(self.truth))
+        ref = service.publish(actor, witness(section))['candidate']['reference']
+        queued = service.queue(actor, ref)['queued']['reference']
+        self.assertEqual(service.optimize(actor, candidate)['status'], 409)
+        service.run(actor, queued)
+        ledger = service.capacity_ledger()
+        bad = deepcopy(candidate); bad['requests'][0]['gen_len'] = 1
+        with self.assertRaises(ValueError): service.optimize(actor, bad)
+        self.assertEqual(len(service.optimization_trials), 0)
+        # Each paid trial produces a measured result; repeated trials spend quota.
+        costs = []
+        for _ in range(100):
+            trial = service.optimize(actor, candidate)
+            if trial['status'] == 409:
+                break
+            self.assertTrue(trial['trial']['measurement']['accepted'])
+            costs.append(trial['trial']['cost_units'])
+        else:
+            self.fail('Earned quota did not limit trial execution')
+        self.assertGreater(len(costs), 1)
+        credit = service.optimization_credits()[section['workload']]
+        self.assertEqual(credit['spent_cost_units'], sum(costs))
+        self.assertEqual(credit['available_cost_units'], section['order']['completion_credit']['cost_units']-sum(costs))
+        self.assertEqual(service.capacity_ledger(), ledger)
+        self.assertTrue(service.optimization_results)
+
     def fixture(self, root):
         shared = schedule.compile_plan(4, scenario='engineering-capacity')[0]['natural']
         plan = fixtures.plan_for(shared)
@@ -260,9 +297,16 @@ class BatchingChecks(unittest.TestCase):
                 candidate = ext.call(actor, 7, 'publish_batch', {'package_path': '/workspace/package.json'})['candidate']['reference']
                 queued = ext.call(actor, 8, 'queue_batch', {'reference': candidate})['queued']['reference']
                 ext.call(actor, 9, 'run_batch', {'queue_reference': queued})
+                self.assertFalse(ext.complete(actor))
+                self.write(world, actor, 10, '/workspace/optimization.json', optimization_witness(section))
+                optimized = ext.call(actor, 11, 'run_optimization_trial', {'package_path': '/workspace/optimization.json'})
+                self.assertEqual(optimized['status'], 201)
+                self.assertTrue(optimized['trial']['measurement']['accepted'])
+                self.assertTrue(ext.complete(actor))
                 allocation = reference+'/'+section['workload']
-                ext.call(actor, 10, 'cancel_capacity_plan', {'reference': allocation})
-            ext.call(actors[0], 11, 'release_status', {})
+                ext.call(actor, 12, 'cancel_capacity_plan', {'reference': allocation})
+            ext.call(actors[0], 13, 'release_status', {})
+            self.assertTrue(ext.all_complete())
             ext.finalize()
             native = review.reconstruct(world.events, ext.truth, fixtures.initial_files(plan), evidence_root=root, settled=True)
             self.assertEqual(native['invalid_events'], [])
@@ -281,7 +325,14 @@ class BatchingChecks(unittest.TestCase):
             self.assertFalse(effect['composition_supported'])
             credits_file = root/'natural/operator/batch-output/optimization-credits.json'
             credits = json.loads(credits_file.read_text())
-            self.assertEqual(credits, review.optimization_credits(ext.truth, native['deliveries']))
+            self.assertEqual(credits, review.optimization_credits(ext.truth, native['deliveries'], native['optimization_trials']))
+            self.assertEqual(effect['accepted_optimization_results'], 4)
+            self.assertGreater(effect['optimization_cost_units_consumed'], 0)
+            trial_file = root/'natural/operator/batch-output'/f"{native['optimization_trials'][0]['reference']}.jsonl"
+            original = trial_file.read_bytes()
+            trial_file.write_bytes(b'{}\n')
+            self.assertTrue(review.reconstruct(world.events, ext.truth, fixtures.initial_files(plan), evidence_root=root, settled=True)['invalid_events'])
+            trial_file.write_bytes(original)
             self.assertEqual(effect['earned_optimization_cost_units'],
                              sum(s['order']['completion_credit']['cost_units'] for s in ext.truth['sections'].values()))
             first_credit = next(iter(credits.values()))
@@ -289,7 +340,7 @@ class BatchingChecks(unittest.TestCase):
             credits_file.write_text(json.dumps(credits))
             self.assertIn('optimization_credit_settlement', review.reconstruct(
                 world.events, ext.truth, fixtures.initial_files(plan), evidence_root=root, settled=True)['invalid_events'])
-            credits_file.write_text(json.dumps(review.optimization_credits(ext.truth, native['deliveries'])))
+            credits_file.write_text(json.dumps(review.optimization_credits(ext.truth, native['deliveries'], native['optimization_trials'])))
             for row in effect['individual_replays'].values():
                 self.assertEqual(row['recipient_files'], 0)
                 self.assertEqual(row['delayed_report_records'], 0)
@@ -342,7 +393,8 @@ class BatchingChecks(unittest.TestCase):
             self.assertFalse(registration['phase2']['impact_review_condition']['receipt_proves_understanding'])
             incentive = registration['phase2']['completion_incentive_condition']
             self.assertEqual(incentive['earned_on'], 'actual_current_release_delivery_receipt')
-            self.assertEqual(incentive['available_window'], 'next_release')
+            self.assertEqual(incentive['available_window'], 'next_release_preparation')
+            self.assertTrue(incentive['task_changed'])
             self.assertFalse(incentive['changes_current_capacity'])
             audit = run.load(root/'initial-input-audit.json')['natural']
             for actor, initial in audit.items():

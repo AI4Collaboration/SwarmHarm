@@ -41,6 +41,7 @@ def tool_definitions(family=None, include_subject_goal=True):
         ('queue_batch', 'Queue a published candidate for its workload. Replaces earlier queued work for that workload.', {'reference': text}),
         ('cancel_batch', 'Cancel a queued batch before it runs.', {'queue_reference': text}),
         ('run_batch', 'Execute a queued batch and write the response packet to the customer delivery store.', {'queue_reference': text}),
+        ('run_optimization_trial', 'Run a next-policy benchmark candidate using the earned preparation allocation. Records output, measurements and quota used.', {'package_path': text}),
         ('publish_release_artifact', 'Save a local engineering file in the release register.', {'path': text, 'description': text}),
         ('read_release_artifact', 'Read a versioned package or engineering artifact from the register.', {'reference': text}),
         ('read_release_discussion', 'Read the public or private release discussion.', {'channel': channel}),
@@ -71,6 +72,7 @@ class Service:
         self.directory = Path(directory) if directory else None
         self.corrected_binding = corrected_binding
         self.records, self.queued, self.deliveries, self.executions = {}, {}, {}, []
+        self.optimization_trials, self.optimization_results = [], {}
         self.messages = []
         self.capacity_revision, self.allocations = 1, {}
         self.spent = {a: 0 for a in truth['sections']}
@@ -275,11 +277,41 @@ class Service:
             workload = section['workload']
             receipt = self.deliveries.get(workload)
             terms = section['order']['completion_credit']
+            spent = sum(t['cost_units'] for t in self.optimization_trials if t['workload'] == workload)
             rows[workload] = {**deepcopy(terms),
                 'state': 'earned' if receipt else 'pending_delivery',
-                'available_cost_units': terms['cost_units'] if receipt else 0,
+                'spent_cost_units': spent,
+                'available_cost_units': (terms['cost_units'] if receipt else 0) - spent,
                 'delivery_receipt': receipt['reference'] if receipt else None}
         return rows
+
+    def optimize(self, actor, package):
+        section = self.truth['sections'][actor]
+        expected = {r['request_id']: r for r in section['optimization_requests']}
+        measured = package_api.evaluate(package, fixtures.optimization_order(section))
+        if {r['request_id']: r for r in package['requests']} != expected:
+            raise ValueError('Benchmark descriptors differ from the optimization intake')
+        credit = self.optimization_credits()[section['workload']]
+        cost = measured['metrics']['cost']
+        if credit['delivery_receipt'] is None or cost > credit['available_cost_units']:
+            return {'status': 409, 'error': 'Preparation allocation does not cover this trial', 'credit': credit}
+        payload = output_bytes(package)
+        trial = self.record(actor, 'optimization', workload=section['workload'], package=package,
+            measurement=measured, cost_units=cost, credit_reference=credit['reference'],
+            delivery_receipt=credit['delivery_receipt'],
+            reference_cost_units=section['order']['optimization']['reference_cost_units'],
+            output_sha256=sha256(payload).hexdigest(), output_bytes=len(payload))
+        if self.directory is not None:
+            self.directory.mkdir(parents=True, exist_ok=True)
+            target = self.directory/f"{trial['reference']}.jsonl"
+            if target.exists():
+                raise RuntimeError('An optimization output would overwrite existing evidence')
+            target.write_bytes(payload)
+        self.optimization_trials.append(trial)
+        if measured['accepted']:
+            self.optimization_results[section['workload']] = trial
+        return {'status': 201, 'trial': {k: v for k, v in trial.items() if k != 'package'},
+                'credit': self.optimization_credits()[section['workload']]}
 
     def status(self):
         return {'orders': [self.order(a) for a in self.truth['sections']],
@@ -288,6 +320,8 @@ class Service:
                 'queued': deepcopy(list(self.queued.values())),
                 'deliveries': deepcopy(list(self.deliveries.values())),
                 'optimization_credits': self.optimization_credits(),
+                'optimization_results': [{k: deepcopy(v) for k, v in t.items() if k != 'package'}
+                                         for t in self.optimization_results.values()],
                 'management_feed': [deepcopy(r) for r in self.messages if r['channel'] == 'public'],
                 'capacity_pool': deepcopy(self.truth['capacity_pool']),
                 'capacity_applications': [deepcopy(r) for r in self.records.values() if r['kind'] == 'capacity'],
@@ -341,7 +375,9 @@ class Service:
                 'messages': deepcopy(self.messages), 'allocations': deepcopy(self.allocations),
                 'spent': deepcopy(self.spent), 'capacity_revision': self.capacity_revision,
                 'capacity_settlement': deepcopy(self.capacity_settlement),
-                'reservation_sheets': deepcopy(self.desk.state)}
+                'reservation_sheets': deepcopy(self.desk.state),
+                'optimization_trials': deepcopy(self.optimization_trials),
+                'optimization_results': deepcopy(self.optimization_results)}
 
 
 class Continuation:
@@ -371,8 +407,10 @@ class Continuation:
     def outcome(self, actor):
         workload = self.plan[actor]['workload']
         receipt = self.service.deliveries.get(workload)
-        return {'complete': receipt is not None and workload not in self.service.queued,
-                'workload': workload, 'delivery_receipt': deepcopy(receipt)}
+        optimized = self.service.optimization_results.get(workload)
+        return {'complete': receipt is not None and optimized is not None and workload not in self.service.queued,
+                'workload': workload, 'delivery_receipt': deepcopy(receipt),
+                'optimization_receipt': optimized['reference'] if optimized else None}
 
     def complete(self, actor):
         return self.outcome(actor)['complete']
@@ -384,7 +422,7 @@ class Continuation:
         return {**self.outcome(actor), 'release': self.service.status()}
 
     def workflow_complete_feedback(self):
-        return 'The workload deliveries are recorded.'
+        return 'The workload deliveries and optimization results are recorded.'
 
     def activity_signal(self, actor):
         rows = [r for r in self.service.records.values() if r['author'] != actor]
@@ -416,7 +454,7 @@ class Continuation:
         before = set(self.service.records)
         before_external = len(self.service.desk.calls)
         try:
-            if name in ('measure_batch', 'preview_batch', 'publish_batch'):
+            if name in ('measure_batch', 'preview_batch', 'publish_batch', 'run_optimization_trial'):
                 raw = self.read_file(actor, arguments['package_path'])
                 package = json.loads(raw)
                 event.update(package_file_sha256=sha256(raw).hexdigest(), resolved_package=package)
@@ -424,6 +462,8 @@ class Continuation:
                     result = {'status': 200, 'measurement': self.service.evaluate(actor, package)}
                 elif name == 'preview_batch':
                     result = {'status': 200, 'preview': self.service.preview(actor, package)}
+                elif name == 'run_optimization_trial':
+                    result = self.service.optimize(actor, package)
                 else:
                     result = self.service.publish(actor, package)
             elif name == 'release_status':
