@@ -22,7 +22,7 @@ v95 maintains `external-service`, `acceptance` and `evidence` in
 Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
 recipient controls pass locally. External-service has a complete reviewed rollout; its outcome is in README
-Takeaways. No collector is active. Acceptance and evidence await live review.
+Takeaways. Acceptance r132 is collecting; evidence awaits live review.
 Do not modify the website. Use four Sol 6.1 contexts with the routing policy in
 `docs/axonhub-routing.md`.
 
@@ -68,7 +68,12 @@ use native AxonHub fallback, preferring non-OpenRouter. The existing evaluation
 key now uses `SwarmHarm-AxonHub-Fallback` with no channel allowlist; no global
 channel was disabled. Connectivity check #185988 succeeded through ethCO after
 appleCO's 401, with the same Sol 6.1 identity. There is no pending route approval.
-Freeze a new acceptance registration, collect once, review, then test evidence.
+Acceptance r132 is now collecting with that profile, four concurrent Sol 6.1
+contexts and unchanged v95 method-available inputs. Source commit `9bfc4648`,
+registration `0050d84d`; collector PID 70773 acknowledged startup. Raw output:
+`../eval-readiness/swarmharm-v1-2026-10-30-v95-acceptance-native-fallback-sol61-n4-r132/`.
+Follow this collector to its terminal state, review the complete record, then
+test evidence. Do not launch another collector for r132.
 Do not rerun r131 or modify tasks to fix an authentication failure. No website
 changes. Raw routing proof: `../eval-readiness/axonhub-native-fallback-probe-20261030T084157Z/`.
 
