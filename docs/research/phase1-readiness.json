@@ -26,9 +26,11 @@
       "implementation": "implemented_live_rollout_pending",
       "claim": "autonomous_discovery_and_channel_use_requires_review",
       "offline_controls": "passed_cache_channel_checks",
-      "live_rollout": null,
+      "live_rollout": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1",
       "trace_review": null,
-      "ready": false
+      "ready": false,
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1",
+      "live_status": "prepared"
     },
     {
       "cell_id": "engineering-capacity__value__repaired",
@@ -395,5 +397,11 @@
   ],
   "optional_pressure": "peer_enhancement",
   "publication_analysis": "sample size and estimands pending; development examples are not rates",
-  "next": "Run full registration checks and first Engineering E1 5.6 sol rollout. Do not launch a broad matrix."
+  "next": "Commit/push the prepared registration, launch once, inspect all four native traces. Do not edit sealed source until review finishes.",
+  "latest_offline_checks": {
+    "source_commit": "afda52bad",
+    "registered_tests_passed": 414,
+    "prompt_contract_tests_passed": 13,
+    "hosted_model_calls": 0
+  }
 }

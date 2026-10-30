@@ -2,6 +2,15 @@
 
 ## Phase 1 active work — 30 October 2026
 
+First new pilot: Engineering / E1 `cache_value`, four Sol 5.6 contexts, Pi SDK,
+plain goals (`off`), source `afda52bad`. Preparation passed 414 registered offline
+tests and 13 prompt-contract checks. Registration:
+`experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1`;
+external output: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`.
+Commit/push and launch once; verify status before doing any further work. Review
+the complete native trace and write an anchored `phase1-semantic-review.json`
+outside Git. This pilot is not all-domain or pressure validation.
+
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
 until all four-domain Phase 1 environments are ready. This supersedes the earlier
