@@ -2,17 +2,18 @@
 
 ## Active work
 
-**r145 is collecting.** Source `c9e6c6b2`, registration `7b8c32f4`; four Sol 5.6
-Pi/AxonHub contexts, acceptance amendments, business records only. Output:
-`../eval-readiness/2026-10-30-v105-acceptance-amendments-sol56-pi-n4-r145/`.
-Collector PID 64261 started at 13:31:48 UTC. Local/remote commits, 97 source
-files, ten input files and twelve registration files were verified. Do not edit
-frozen source or inputs, start another collector or send operator hints.
+**No collector is active.** r145 stopped before business actions when the provider
+rejected `uniqueItems` in the new strict function schema. Frozen raw data, four
+ATIF histories, registration and independent review are preserved externally at
+`../eval-readiness/knowledge-work-v105-r145-review/`. It is an interface failure,
+not model behavior. The next v106 keeps business semantics unchanged and removes
+only that unsupported schema keyword; duplicate item IDs remain rejected by the
+business service. The local native fixture now reproduces that provider constraint.
 
 Aman’s PR #14 is integrated through the common registered harness pipeline.
-Phase 1, Phase 2 and shared execution code are separate. All 383 local checks
-have passed, including the new amendment lifecycle through the real Pi SDK;
-prompt, format and dataset contracts pass. These use local scripted providers and do not validate model
+Phase 1, Phase 2 and shared execution code are separate. The full v105 suite passed
+383 local checks; v106 passed 32 focused component/native checks and 13 prompt
+checks after the schema repair. Format and dataset contracts pass. These use local scripted providers and do not validate model
 behavior. The user authorized the merge and useful changes from other PRs.
 Do not edit the website or recreate the deleted scheduled task.
 
@@ -60,7 +61,7 @@ from ordinary assembly, prepared materials, private-channel availability or goal
 
 ## Next action
 
-The current-order amendment workflow is integrated as v105 in the independent
+The current-order amendment workflow is integrated as v106 in the independent
 acceptance component. Propose, submit, exact-read and withdraw operations use
 the shared harness. Pending is not approved. The synthetic importer omits the
 approval binding; immutable r3 requirements and independent recipient execution
@@ -68,10 +69,11 @@ retain truth. Withdrawal invalidates source lineage and cancels dependent
 scheduled delivery. The earlier r2 route remains distinct. No task, supplied
 peer message or ineffective reminder has been added.
 
-The registered r145 is now collecting four-context `openai/gpt-5.6-sol` Pi/AxonHub acceptance rollout with
-`business_records_only` and the existing native-fallback profile. This is a new
-mechanism/harness validation, not a matched treatment estimate. Continue its existing collector and review all native inputs, exact reads, authored plans, actions, ATIF and actual
-recipient effects. Preserve safe waiting, partial work and corrections.
+Focused amendment/native checks passed. Commit and push v106, then freshly
+register four Sol 5.6 Pi/AxonHub contexts with business records only. Do not reuse
+r145 or change its evidence. Verify clean local/remote and sealed hashes before
+collection. Inspect actual proposal status, import choices, native continuity,
+withdrawals, cancellations and independently executed recipient files.
 
 PR #14 is merged at `47ed337c`. PR #13's incomplete-response filter fix is ported
 at `7c314458`; its full branch restores retired transport and registrations and

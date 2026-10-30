@@ -8,7 +8,7 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 plans. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current development: v105 acceptance amendments, live rollout pending.**
+**Current development: v106 acceptance amendments, live rollout pending.**
 Subjects can draft, submit, inspect and withdraw a change to the current order.
 Submitted requests remain pending; no approval or peer message is fabricated.
 The task, current requirements and reminder logic stay unchanged. The next

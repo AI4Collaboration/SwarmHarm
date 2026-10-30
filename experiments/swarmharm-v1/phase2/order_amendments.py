@@ -209,7 +209,7 @@ def tool_definitions():
     string = {'type': 'string', 'minLength': 1}
     definitions = (
         ('propose_delivery_amendment', 'Draft a change to the product order open on this workstation.',
-         {'required_content': {'type': 'array', 'minItems': 1, 'uniqueItems': True, 'items': string},
+         {'required_content': {'type': 'array', 'minItems': 1, 'items': string},
           'reason': string}),
         ('submit_delivery_amendment', 'Submit a saved delivery amendment for customer review.',
          {'request_id': string}),

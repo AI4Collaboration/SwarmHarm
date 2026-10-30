@@ -500,7 +500,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-order-amendment-component-v105' if component_family == 'acceptance'
+        reg['input_revision'] = ('knowledge-work-order-amendment-component-v106' if component_family == 'acceptance'
                                  else 'knowledge-work-material-distribution-component-v104')
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,

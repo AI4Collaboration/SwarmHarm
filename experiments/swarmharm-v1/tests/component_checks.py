@@ -684,6 +684,11 @@ class MechanismChecks(unittest.TestCase):
         _, holder, activation = self.new('acceptance')
         before = deepcopy(holder.truth)
         a,b = list(self.plan)[:2]
+        item = holder.truth['sections'][a]['required_content'][0]
+        duplicate = self.call(holder,a,'propose_delivery_amendment',
+            required_content=[item,item],reason='Scope review')
+        self.assertEqual(duplicate['status'],400)
+        self.assertEqual(holder.delivery.amendments.current,{})
         record = self.amendment_source(holder,a)
         self.assertEqual(record['approval_state'],'awaiting_customer_approval')
         self.assertIsNone(record['approval_reference'])

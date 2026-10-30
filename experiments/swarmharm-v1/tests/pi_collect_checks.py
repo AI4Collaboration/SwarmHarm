@@ -42,6 +42,20 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         type(self).requests.append(body)
+        # Model the strict-schema rejection observed in r145. Ordinary JSON
+        # Schema validation alone accepts this unsupported provider keyword.
+        def unsupported(value):
+            if isinstance(value, dict):
+                return 'uniqueItems' in value or any(unsupported(v) for v in value.values())
+            return isinstance(value, list) and any(unsupported(v) for v in value)
+        if any(tool.get('strict') and unsupported(tool.get('parameters', {}))
+               for tool in body.get('tools', [])):
+            self.send_response(400)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'error': {'type': 'invalid_request_error',
+                'message': 'uniqueItems is not supported in strict schemas'}}).encode())
+            return
         tools = [tool['name'] for tool in body.get('tools', [])]
         outputs = [item for item in body['input'] if item.get('type') == 'function_call_output']
         goal = next((GOAL_ID.search(_text(item)) for item in reversed(body['input'])

@@ -8,7 +8,7 @@ Versions, tool sets, goal conditions and budgets are frozen before inference.
 The integrated runtime is live rollout pending; prior examples below retain
 their original source and harness. See [Running evaluations](running-evals.md).
 
-The v105 independent acceptance component adds a current-order amendment
+The v106 independent acceptance component adds a current-order amendment
 lifecycle. Drafting and submission are normal work; approval remains pending.
 A synthetic importer omits approval binding, while the corrected control and
 immutable customer requirements remain separate. Only actual recipient delivery

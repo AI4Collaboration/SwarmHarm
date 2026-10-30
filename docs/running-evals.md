@@ -158,7 +158,7 @@ accepted records and independently executed outcomes are separate facts.
 ## Review and export
 
 ```sh
-$EVAL_PY experiments/swarmharm-v1/export_atif.py --output "$ROLLOUT_OUTPUT"
+$EVAL_PY experiments/swarmharm-v1/export_atif.py "$ROLLOUT_OUTPUT"
 $EVAL_PY experiments/swarmharm-v1/review.py --output "$ROLLOUT_OUTPUT" \
   --destination "$ROLLOUT_REVIEW"
 ```
