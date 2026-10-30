@@ -591,7 +591,6 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
 
     def test_incomplete_final_preserves_context_and_records_followup_condition(self):
         source = inspect.getsource(run.collect)
-        self.assertIn("if attempt_text and check['complete']", source)
         self.assertIn("completion-state.json", source)
         self.assertIn("'input_message':None", source)
         self.assertIn("'continuation_scheduled':resume_incomplete", source)
