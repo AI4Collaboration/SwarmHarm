@@ -17,17 +17,21 @@ Work Phase 1 baseline. Independent
 Phase 2 has its own start, prepared business sources and explicit material
 condition; this does not claim a new group-specific formation result.
 
-The current v98 source fixes nondeterministic review-ID serialization in the
-Phase 1 activity helper. Task semantics, the formation gate and v20 follow-ups
-are unchanged. Validate one fresh four-context Sol connected rollout before
-claiming current-byte live success. The selected r122 remains valid at its
-original frozen revision. The current registration labels are synchronized;
-older sealed labels and scores remain untouched.
+The current v98 Phase 1 baseline is live-validated in r136: four concurrent Sol
+6.1 contexts, 27 exact cross-job reads, six linked replies from four authors,
+four complete read-back threads and four method adoptions before handover.
+Stable workstation bytes match between preparation and collection. Task semantics,
+formation gates and v20 follow-ups are unchanged. The same four histories continued
+through the full Phase 2 terminal state and independent review. Its negative
+outcome lesson is in README Takeaways; do not repeat it. No collector is active.
 
-The v97 acceptance/method-available rollout r135 has finished its complete native,
-ATIF, routing and independent recipient review. The registration is byte-archived
-at `../eval-readiness/knowledge-work-v97-r135-review/`; its lesson is in README
-Takeaways. Do not repeat it. No collector is active.
+Frozen source `3dfff613`, registration `99bde55d`. The separate positive index is
+`docs/research/phase1-baseline.json`; full review and raw evidence are outside Git
+at `../eval-readiness/knowledge-work-v98-r136-review/` and
+`../eval-readiness/swarmharm-v1-2026-10-30-v98-stable-phase1-sol61-n4-r136/`.
+All 187 request prefixes, 220 tool results, four ATIF histories and 1,660 raw
+hashes verify. No unchanged task instruction repeats. This is a Phase 1 positive,
+not a replacement for r122's complete two-phase positive below.
 
 The human also requested a persistent goal for the evaluated agent. That means
 a separately registered subject harness condition, not a root Codex goal. A
@@ -66,14 +70,12 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Push the checked Phase 1 serialization fix and cleanup. Prepare one fresh connected
-Knowledge Work registration with four Sol 6.1 agents and
-`agent_initiated_activity`, retaining the existing tasks and follow-ups. Push the
-registration, verify clean local/remote/sealed hashes, collect once and review the
-entire trace, exact reads/replies and actual downstream effects. Preserve a
-negative result; do not substitute the earlier r122 score for the new rollout.
-Then implement the requested subject-goal condition separately for independent
-Phase 2. No website changes.
+Keep the r136 Phase 1 baseline fixed while developing independent Phase 2 in the
+separate worktree. The user has authorized a separately declared business
+discussion channel and a subject-goal condition for that work; neither was
+included in r136. Merge and validate those changes under a new registration.
+Do not start another Phase 1 rollout or substitute the r122 score for r136.
+No website changes.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. Do not disable global
@@ -81,6 +83,7 @@ channels. Record actual executions for each rollout.
 
 ## Maintained evidence and archive
 
-Selected positives: Knowledge r122, Engineering r65, Data r74, Finance r75.
+Current Phase 1 positive: Knowledge r136. Selected two-phase positives:
+Knowledge r122, Engineering r65, Data r74, Finance r75.
 Earlier accepted unknowingly composition and negative lessons remain in README
 Takeaways, with complete raw records outside Git and source history in Git.

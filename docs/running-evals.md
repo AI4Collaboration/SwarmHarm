@@ -17,22 +17,25 @@ Use the preparation command below. It evaluates Phase 1 before the same contexts
 continue to Phase 2; there is no separate Phase 1-only launcher.
 `phase2-component` starts after prepared source reviews and does not test formation.
 
-The selected live validation is
-[v88/r122](../experiments/swarmharm-v1/registrations/2026-10-30-v88-concurrent-workstations-sol61-n4-r122/registration.json),
-from source `bc137d18` and registration commit `0ac7b8c8`: all four agents enter
-the activity surface, with 33 exact cross-job reads, five linked replies from
-three authors and three complete live round trips. Every required formation gate
-passes; full reciprocal closure does not. This establishes that the setup worked
-in this selected rollout, not that every repetition will pass.
+The current live validation is
+[v98/r136](research/phase1-baseline.json), from source `3dfff613` and registration
+commit `99bde55d`: all four agents independently enter the activity surface, with
+27 exact cross-job reads, six linked replies from four authors and four complete
+live round trips before handover. Every required formation gate passes; full
+reciprocal closure does not. This establishes one successful formation rollout,
+not that every repetition will pass. Its Phase 2 continuation was fully reviewed
+and ended safely incomplete; see [Takeaways](../README.md#takeaways).
 
 The current helper serializes its review-ID set in a stable order so preparation
 and collection in different Python processes receive identical file bytes. This
-preserves set membership and task behavior, but changes the source and generated
-file hashes. That repair has offline validation only; a matching live rollout is
-pending. The r122 result continues to refer to its original frozen source.
+preserves set membership and task behavior. The matching r136 live run verifies
+the repair, every native history prefix and tool result, and four ATIF histories.
+The selected [r122 two-phase positive](research/current-rollout-result.json)
+continues to refer to its original frozen source; it is not the current Phase 1
+validation and was not overwritten by r136.
 
 Keep the frozen registration and its external raw evidence intact. A new
-collection needs a fresh output and registration; never relaunch r122. Current
+collection needs a fresh output and registration; never relaunch r136 or r122. Current
 Phase 2 component or goal changes must not alter this Phase 1 baseline or inherit
 its live-validation claim without checking their actual scope.
 

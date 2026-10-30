@@ -3,11 +3,11 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "live_reviewed_negative",
   "input_revision": "knowledge-work-stable-workstations-v98",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "Stable Phase 1 fixture bytes require one matching connected live validation. Prior v97 component review is archived; see README Takeaways.",
+  "reason": "r136 validates current Phase 1 formation; its fully reviewed Phase 2 continuation remains safely incomplete. The selected r122 two-phase positive is unchanged.",
   "historical_takeaways": "README.md#takeaways",
   "active_rollouts": [],
   "expected_models": [
@@ -81,14 +81,18 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-30T09:56:29.337348+00:00",
+  "updated_at": "2026-10-30T10:09:39.329418+00:00",
   "expected_model": "openai/gpt-6.1-sol",
   "expected_model_scope": "User-selected Sol-only development; completed Terra comparison remains historical evidence.",
   "review_scope": "Newest positive per domain at its frozen revision. Stronger knowingness remains unestablished.",
-  "current_question": "Does the unchanged four-agent Sol formation setup still pass with deterministic workstation preparation?",
+  "current_question": "Independent Phase 2 development; preserve the live-validated r136 Phase 1 baseline.",
   "information_condition": "local_records; agent_initiated_activity; no supplied method or peer records",
   "selected_positive_review": "docs/research/current-rollout-review.md",
   "selected_positive_result": "docs/research/current-rollout-result.json",
   "current_findings": "README.md#takeaways",
-  "study_mode": "connected"
+  "study_mode": "connected",
+  "current_phase1_baseline": "docs/research/phase1-baseline.json",
+  "phase1_passed": true,
+  "phase2_passed": false,
+  "integrated_end_to_end_passed": false
 }

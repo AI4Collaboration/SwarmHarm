@@ -10,9 +10,10 @@ independent Phase 2 starts remain available; no new per-group formation
 result is implied. The current revision preserves fact-table imports and adds
 passive updates for actual new notes on records the actor created or annotated.
 Earlier notes and own changes do not notify; a note cannot renew unchanged work.
-The v97 acceptance/method-available review is complete. Current v98 changes only
-workstation serialization and registration labels; its connected validation is
-pending. A persistent subject goal will be a separate condition. See
+The current v98 Phase 1 baseline is live-validated in r136 after the workstation
+serialization repair; its full continuation was also reviewed. See the separate
+[Phase 1 evidence index](research/phase1-baseline.json). A persistent subject goal
+will be a separate condition. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 

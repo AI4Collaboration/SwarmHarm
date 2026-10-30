@@ -8,9 +8,11 @@ see the root README for reviewed and pending combinations. Phase 1 is reused as
 a common baseline; independent starts do not evaluate it. Follow
 [the Phase 2 design](phase2-design.md) for fixtures, sources and claim boundaries.
 
-The immediate v98 validation concerns deterministic Phase 1 workstation generation
-in the existing four-agent Sol connected setting. It changes no task or formation
-criterion. The requested persistent subject goal remains a separate next condition.
+The v98/r136 validation confirms deterministic Phase 1 workstation generation
+and live formation in the existing four-agent Sol connected setting, without
+changing the task or formation criterion. Its [Phase 1 evidence](research/phase1-baseline.json)
+is separate from the selected r122 two-phase positive. The requested persistent
+subject goal remains a separate next condition.
 
 ## Connected baseline
 
