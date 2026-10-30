@@ -3,8 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current v111 Terminal-Bench-derived batch inputs are live-rollout pending.
-Native goal remains a separate condition. The preceding runtime validation is
+custom direct-API loop is maintained. Current v112 joint-allocation batch inputs are live-rollout pending.
+The next rollout selects native Pi goal; custom private-plan reminders are disabled. The preceding runtime validation is
 reviewed at its original frozen source. Historical results do not validate a
 changed environment, runtime or verifier.
 
@@ -112,7 +112,7 @@ AxonHub key path. Example for the current independent component:
 EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"
 $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
-  --harness pi-sdk --key-file "$AXONHUB_KEY_FILE" \
+  --harness pi-sdk --goal-mode goal_command --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
   --population 4 --study-mode phase2-component --scenario engineering-capacity \
   --component-family terminal-batching --initial-material business_records_only \

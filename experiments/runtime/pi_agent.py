@@ -94,6 +94,14 @@ def harness_registration(goal_mode):
         'goal_extension': (f'{GOAL_PACKAGE}@{GOAL_VERSION}' if goal_mode != 'off' else None),
         'goal_settings': GOAL_SETTINGS if goal_mode != 'off' else None,
         'goal_state_is_business_evidence': False,
+        'memory': {
+            'scope': 'one actor within one rollout',
+            'session': 'fresh at rollout start; reused for every continuation',
+            'private_files': 'persistent in the actor workstation until rollout close',
+            'shared_records': 'persistent within this rollout; visible only when read',
+            'previous_rollout_import': False,
+            'automatic_compaction': False,
+        },
         'extension_tools': GOAL_TOOLS if goal_mode != 'off' else [],
         # pi-goal adds its own objective contract and persistence rules to subject input.
         'natural_prompt_contract_covers_all_subject_input': goal_mode == 'off',

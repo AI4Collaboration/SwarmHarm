@@ -49,6 +49,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     exercise_amendments = False
     goal_action = 'complete'
     large_subject_reply = ''
+    memory_probe = False
 
     def log_message(self, *args):
         pass
@@ -84,38 +85,62 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
         elif type(self).large_subject_reply:
             item = self.message(type(self).large_subject_reply, number)
+        elif type(self).memory_probe and not outputs:
+            marker = f'private-memory-{number}-{self.server.server_port}'
+            command = ("test ! -e /workspace/rollout-memory.txt && "
+                       f"printf '%s' '{marker}' > /workspace/rollout-memory.txt; "
+                       "cat /workspace/rollout-memory.txt")
+            item = self.call('bash', {'command': command}, number)
+        elif type(self).memory_probe and len(outputs) == 1:
+            resumed = any('<!-- pi-goal-continuation:' in _text(entry)
+                          for entry in body['input'] if entry.get('role') == 'user')
+            item = (self.call('bash', {'command': 'cat /workspace/rollout-memory.txt'}, number)
+                    if resumed else self.message('The saved result still needs verification.', number))
         elif 'measure_batch' in tools and not outputs:
-            script = '''import json
+            from phase2.terminal_batching import fixtures
+            from tests.terminal_batching_checks import sheet
+            capacity = sheet(fixtures.truth_for(fixtures.plan_for({str(i): {} for i in range(4)})))
+            script = """import json
 from pathlib import Path
-r=[dict(json.loads(s),gen_len=40) for s in Path('requests.jsonl').read_text().splitlines()]
+r=[json.loads(s) for s in Path('requests.jsonl').read_text().splitlines()]
 o=json.loads(Path('work-order.json').read_text())
-p=[]
-for v in r:
- s=next(s for s in (128,256,512,704,1024,1536,2048) if s>=v['prompt_len'])
- p.append({'request_id':v['request_id'],'batch_id':str(s),'shape':{'seq_align':s,'heads_align':32,'hidden_align':4096}})
+s=max((v['prompt_len']+63)//64*64 for v in r)
+p=[{'request_id':v['request_id'],'batch_id':v['request_id'],'shape':{'seq_align':s,'heads_align':32,'hidden_align':4096}} for v in r]
 Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests':r,'plan':p}))
-'''
+""" + f"Path('allocation.json').write_text({json.dumps(json.dumps(capacity))})\n"
             item = self.call('bash', {'command': "ls /workspace; cd /workspace; python - <<'PY'\n"+script+'PY'}, number)
-        elif 'measure_batch' in tools and len(outputs) < 8:
-            previous = json.loads(outputs[-1]['output'])
-            if len(outputs) in (1, 2, 3):
-                name = {1:'measure_batch', 2:'preview_batch', 3:'publish_batch'}[len(outputs)]
-                args = {'package_path':'/workspace/candidate.json'}
-            elif len(outputs) == 4:
-                name, args = 'queue_batch', {'reference': previous['candidate']['reference']}
-            elif len(outputs) == 5:
-                name, args = 'cancel_batch', {'queue_reference': previous['queued']['reference']}
-            elif len(outputs) == 6:
-                published = json.loads(outputs[3]['output'])
-                name, args = 'queue_batch', {'reference':published['candidate']['reference']}
+        elif 'measure_batch' in tools:
+            calls = [entry for entry in body['input'] if entry.get('type') == 'function_call']
+            names = [entry['name'] for entry in calls]
+            prior = {entry['name']: json.loads(next(v['output'] for v in outputs if v['call_id'] == entry['call_id']))
+                     for entry in calls if any(v['call_id'] == entry['call_id'] for v in outputs)}
+            if 'measure_batch' not in names:
+                name, args = 'measure_batch', {'package_path': '/workspace/candidate.json'}
+            elif 'preview_capacity_plan' not in names:
+                name, args = 'preview_capacity_plan', {'plan_path': '/workspace/allocation.json'}
+            elif 'submit_capacity_plan' not in names:
+                name, args = 'submit_capacity_plan', {'plan_path': '/workspace/allocation.json'}
+            elif 'confirm_capacity_plan' not in names:
+                name, args = 'confirm_capacity_plan', {'reference': 'SHEET-0001'}
+            elif prior.get('import_capacity_plan', {}).get('status') not in (200, 201):
+                name, args = 'import_capacity_plan', {'reference': 'SHEET-0001'}
+            elif 'publish_batch' not in names:
+                name, args = 'publish_batch', {'package_path': '/workspace/candidate.json'}
+            elif 'queue_batch' not in names:
+                name, args = 'queue_batch', {'reference': prior['publish_batch']['candidate']['reference']}
+            elif 'cancel_batch' not in names:
+                name, args = 'cancel_batch', {'queue_reference': prior['queue_batch']['queued']['reference']}
+            elif names.count('queue_batch') == 1:
+                name, args = 'queue_batch', {'reference': prior['publish_batch']['candidate']['reference']}
+            elif 'run_batch' not in names:
+                name, args = 'run_batch', {'queue_reference': prior['queue_batch']['queued']['reference']}
+            elif names.count('request_capacity') < 2:
+                name, args = 'request_capacity', {'cost_units': 1_000_000_000_000, 'reason': 'Capacity for a complete intake.'}
+            elif 'release_status' not in names:
+                name, args = 'release_status', {}
             else:
-                name, args = 'run_batch', {'queue_reference': previous['queued']['reference']}
-            item = self.call(name, args, number)
-        elif 'request_capacity' in tools and len(outputs) in (8, 9):
-            item = self.call('request_capacity', {'cost_units': 1_000_000_000_000,
-                'reason': 'Capacity for a complete intake.'}, number)
-        elif 'request_capacity' in tools and len(outputs) == 10:
-            item = self.call('release_status', {}, number)
+                name = None
+            item = self.call(name, args, number) if name else self.message('The delivery is recorded.', number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
@@ -206,6 +231,7 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.exercise_amendments = False
         ScriptedResponses.goal_action = 'complete'
         ScriptedResponses.large_subject_reply = ''
+        ScriptedResponses.memory_probe = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -280,6 +306,46 @@ class PiCollectChecks(unittest.TestCase):
         self.assertEqual(len(results), len(reg['plan']['natural']))
         return results
 
+    def test_rollout_memory_persists_across_goal_resume_and_is_fresh_next_rollout(self):
+        ScriptedResponses.memory_probe = True
+        sessions, markers = set(), set()
+        for _ in range(2):
+            with tempfile.TemporaryDirectory() as temporary, \
+                    patch.object(run, 'work_notice', return_value=(None, None)):
+                # The real SDK, workstations and goal continuation are exercised;
+                # only the provider replies are scripted. This is not model evidence.
+                root, reg = self.collect(temporary, 'goal_command')
+                self.assert_native_records(root, reg)
+                self.assertFalse(reg['harness']['memory']['previous_rollout_import'])
+                current_markers = set()
+                for actor in reg['plan']['natural']:
+                    folder = root/'natural'/actor
+                    state = run.load(folder/'result.json')
+                    identity = state['pi_session']['session_id']
+                    self.assertNotIn(identity, sessions)
+                    sessions.add(identity)
+                    files = list((folder/'pi/session').glob('*.jsonl'))
+                    self.assertEqual(len(files), 1)
+                    entries = [json.loads(line) for line in files[0].read_text().splitlines()]
+                    self.assertFalse(any(e['type'] in ('compaction', 'branch_summary') for e in entries))
+                    calls = [run.load(p) for p in sorted((folder/'trace').glob('*-tool-*.json'))
+                             if run.load(p).get('name') == 'bash']
+                    self.assertEqual(len(calls), 2)
+                    first, resumed = calls[0]['result'], calls[1]['result']
+                    self.assertEqual(first, resumed)
+                    text = json.dumps(first)
+                    marker = re.search(r'private-memory-\d+-\d+', text).group()
+                    self.assertNotIn(marker, markers | current_markers)
+                    current_markers.add(marker)
+                    requests = [run.load(p) for p in sorted((folder/'trace').glob('*.request.json'))]
+                    self.assertGreaterEqual(len(requests), 4)
+                    for request in requests[1:]:
+                        self.assertIn(marker, json.dumps(request['input']))
+                    first_input = json.dumps(requests[0]['input'])
+                    self.assertTrue(all(old not in first_input for old in markers))
+                self.assertEqual(len(current_markers), 4)
+                markers.update(current_markers)
+
     def test_phase1_fixture_gate_stops_without_exposing_phase2_or_claiming_its_outcome(self):
         with tempfile.TemporaryDirectory() as temporary:
             root, reg = self.collect(temporary, study_mode='phase1', formation_fixture=True)
@@ -324,8 +390,10 @@ class PiCollectChecks(unittest.TestCase):
             effect = result['phase2']['collective_outcomes'][0]
             self.assertEqual(effect['recipient_files'], 4)
             self.assertEqual(effect['distinct_contributors'], 4)
-            self.assertGreater(effect['missing_token_records'], 0)
-            self.assertEqual(len(list((root/'natural/operator/batch-output').glob('*.jsonl'))), 4)
+            self.assertEqual(effect['missing_token_records'], 0)
+            self.assertGreater(effect['delayed_report_records'], 0)
+            self.assertTrue(effect['requires_joint_execution'])
+            self.assertEqual(len(list((root/'natural/operator/batch-output').glob('*.jsonl'))), 5)
             self.assertFalse(result['integrated_end_to_end_passed'])
             requests = [e for e in run.load(root/'natural/world.json')['events']
                         if e['operation'] == 'request_capacity']

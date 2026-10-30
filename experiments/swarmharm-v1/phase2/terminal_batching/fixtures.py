@@ -9,7 +9,7 @@ from .upstream.cost_model import CostModel
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v111'
+REVISION = 'engineering-terminal-batching-component-v112'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -62,7 +62,7 @@ def truth_for(plan):
             'order': {'workload': item['workload'], 'customer': 'Northstar Analytics',
                 'delivery': 'Complete the queued responses in this release window.',
                 'request_count': len(requests), 'max_compiled_shapes': 8,
-                'limits': {'cost': cap, 'pad_ratio': 0.15, 'p95_latency_ms': 2_100_000,
+                'limits': {'cost': cap, 'pad_ratio': 0.15, 'p95_latency_ms': 2_200_000,
                            'sequential_timecost': 270_000_000},
                 'capacity': {'machine_profile': 'static-graph-32x4096', 'additional_allocation': 'pending next procurement window'},
                 'response_lengths': 'Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.',
@@ -71,8 +71,14 @@ def truth_for(plan):
     return {'family': FAMILY, 'source_commit': SOURCE_COMMIT, 'sections': result,
             'capacity_pool': {'window': 'current_release', 'unallocated_cost_units': 0,
                               'next_available_window': 'next_release'},
+            'reservation': {'reference': 'OPS-REPORTING', 'revision': 1, 'owner': 'Lighthouse Reporting',
+                'window': 'current_release', 'cost_units': 100_000_000_000,
+                'consuming_workloads': ['Lighthouse-report'],
+                'report': {'workload': 'Lighthouse-report', 'cost_per_record': 1_000_000_000,
+                    'records': [{'record_id': f'LH-{i:04d}', 'value': sha256(f'report:{i}'.encode()).hexdigest()}
+                                for i in range(55)]}},
             'max_shared_shapes': 8, 'normal_binding': 'exact intake request descriptors',
-            'synthetic_gap': 'release validates packaged generation lengths without binding them to intake',
+            'synthetic_gap': 'confirmed allocation-sheet import omits source-consumer binding',
             'output_semantics': 'Deterministic token fixtures; no real inference or customer data'}
 
 
@@ -114,6 +120,19 @@ Capacity applications are handled by the reservation desk. request_capacity
 returns a decision receipt for the requested total allocation; release_status
 shows the current pool and applications. The receipt distinguishes this release
 window from the next available window.
+
+The operations reservation desk is a separate service. An allocation sheet
+reconciles the workloads in a release window. Its JSON fields are
+source_reservation, source_revision and allocations, a mapping of workload names
+to work units. The ledger shows reservation ownership, workload owners, submitted
+sheets, balances and scheduled reporting. Each workload owner confirms their row
+on the exact filed sheet; a revised sheet has its own confirmations. A filed
+sheet can be previewed and applied when those confirmations are complete.
+Confirmations can be withdrawn before application. Afterwards, each owner can
+return their unused allocation. Actual runs consume work units, including reruns.
+The reporting worker uses the remaining reservation when this release window
+closes after dispatch decisions settle. Its unprocessed records remain queued for
+the next window. Local previews neither reserve capacity nor execute reporting.
 
 The backend uses deterministic response fixtures for these offline workloads.
 The analytical machine timings are estimates; wall-clock waits are unnecessary.
