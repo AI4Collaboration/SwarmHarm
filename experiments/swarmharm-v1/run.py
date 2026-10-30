@@ -31,6 +31,7 @@ import codex_agent
 from phase1 import lab
 import harbor_input
 from phase1 import schedule
+from phase1 import channel_design
 from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
@@ -262,6 +263,7 @@ def code_paths():
         +[
             HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json',
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
+            HERE/'phase1/channel-taxonomy.json',
         ]
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py',
@@ -331,7 +333,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             information_condition="local_records", study_mode="connected",
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
-            reasoning_effort=DEFAULT_REASONING):
+            reasoning_effort=DEFAULT_REASONING, phase1_channel_profile=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('pi-sdk','claude-code','codex'):
@@ -354,6 +356,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if component and scenario != (domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK):
         raise ValueError('Component family and scenario differ')
     phase1_only = study_mode == 'phase1'
+    channel_design.validate_selection(phase1_channel_profile, study_mode, scenario,
+                                      cue_condition, topology_file)
     if not component and (component_family is not None or initial_material != 'business_records_only'
                           or material_distribution != 'all_workstations'):
         raise ValueError('Component conditions require independent Phase 2 study mode')
@@ -410,6 +414,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             item['business_pressure'] = deepcopy(pressure)
         rows = batching.truth_for(batch_plan)
     topology_spec=load(topology_file) if topology_file is not None else None
+    channel_condition = None
+    if phase1_channel_profile is not None:
+        channel_condition, topology_spec = channel_design.compile_condition(
+            phase1_channel_profile, plan['natural'])
     topology_spec=topology.validate(topology_spec,plan['natural'])
     resolved_active_contexts = population if active_contexts is None else active_contexts
     activation={'population':population,'start_policy':'one simultaneous activation cohort',
@@ -541,6 +549,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'controls.json','initial-input-audit.json','initial-file-audit.json',
             'route-confirmation.json','phase2-plan.json')}}
     reg.update(scenario_mechanics.registration_overrides(cue_condition))
+    if channel_condition is not None:
+        reg['phase1_channel_condition'] = channel_condition
     # These shared mechanics apply after every domain's metadata override.
     initiated = cue_condition == 'agent_initiated_activity'
     reg['substrate'].update({
@@ -555,6 +565,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         ),
         'activity_grouping_supplies_reply_text':False,
     })
+    if phase1_channel_profile == 'records_partitioned':
+        reg['substrate']['shared_source_visibility'] = 'self_authored_records_only'
+        reg['substrate']['cross_job_root_note_allowed'] = False
     reg['measurement_contract']['capability_prerequisite'] = [
         value.replace('_diagnostic', '_lookup')
         for value in reg['measurement_contract']['capability_prerequisite']
@@ -583,6 +596,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['primary']='Autonomous Phase 1 formation only; no Phase 2 or end-to-end claim.'
         reg['format_contract']['output']['phase2_depends_on_verified_phase1']=False
         reg['format_contract']['claims']['phase1_only']='Formation only; Phase 2 is not evaluated.'
+        if phase1_channel_profile == 'records_partitioned':
+            reg['design'] = 'Standalone Phase 1 negative exposure control; foreign authored records are partitioned.'
+            reg['primary'] = 'Test loss of communication on the registered surface; no formation is expected.'
         for key in ('same_population_continues_after_formation',
                     'same_model_histories_continue_after_formation',
                     'same_workstations_continue_after_formation'):
@@ -783,6 +799,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Cancellations and replacements precede explicit worker execution; actual files are independently regenerated and compared. '
             'At least two deliberate causal contributors are required; knowing joint planning needs separate prospective semantic evidence. '
             'No Phase 1 or end-to-end formation claim. No deadline sleep or unchanged reminder.\n')
+        reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
+    if channel_condition is not None:
+        with (root/'PROTOCOL.md').open('a') as protocol:
+            protocol.write('\nChannel profile: ' + phase1_channel_profile + '. '
+                           + channel_condition['interpretation'] + '\n'
+                           'The full carrier catalogue includes proposed mechanisms that are not '
+                           'implemented. This registration enables only the named profile.\n')
         reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{
@@ -1896,6 +1919,8 @@ if __name__=='__main__':
     p.add_argument('--cue-condition',choices=schedule.CUE_CONDITIONS,
         default=schedule.DEFAULT_CUE_CONDITION,
         help='Registered natural business cue level; used only when preparing a fresh run.')
+    p.add_argument('--phase1-channel-profile', choices=channel_design.EXECUTABLE_PROFILES,
+        help='Standalone Phase 1: shared business records or a matched partitioned exposure control.')
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
         default=DEFAULT_SCENARIO,
         help='Continuous domain scenario; defaults to the maintained Engineering source.')
@@ -1940,5 +1965,6 @@ if __name__=='__main__':
             information_condition=a.information_condition,study_mode=a.study_mode,
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
-            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort)
+            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
+            phase1_channel_profile=a.phase1_channel_profile)
     else:collect(root,registration_dir)

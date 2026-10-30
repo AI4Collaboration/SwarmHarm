@@ -1,0 +1,55 @@
+{
+  "kind": "offline_validation_not_model_evaluation",
+  "checked_at": "2026-10-30T19:10:06.063089+00:00",
+  "live_status": "live_rollout_pending",
+  "model_calls": 0,
+  "regression_tests": {
+    "passed": true,
+    "test_methods": 162,
+    "seconds": 77.597,
+    "suites": [
+      "channel_design_checks",
+      "collector_checks",
+      "message_read_checks",
+      "domain_checks",
+      "review_checks",
+      "integrated_review_checks",
+      "live_checks"
+    ],
+    "log": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/research-audit-2026-10-30/phase1-publication-checks.log",
+    "log_sha256": "a6b13aa3f3c881296c50f2c6dfe23669244d6306582ee17627fae41575915750"
+  },
+  "prompt_contract_tests": {
+    "passed": true,
+    "test_methods": 13
+  },
+  "real_workstation_controls": {
+    "domains": [
+      "Engineering",
+      "Data Analysis",
+      "Financial Analysis",
+      "Knowledge Work"
+    ],
+    "profiles": [
+      "records_shared",
+      "records_partitioned"
+    ],
+    "scripted_not_model_authored": true,
+    "initial_subject_inputs_match": true,
+    "foreign_payload_delivery_and_notification_partition_checked": true,
+    "own_records_and_ordinary_lookup_retained": true
+  },
+  "historical_evidence_audit": {
+    "passed": true,
+    "manifest_files_verified": 4210,
+    "rescored": false
+  },
+  "source_sha256": {
+    "experiments/swarmharm-v1/run.py": "5e07ca3ca3350141712c29c2575dbcdda16e7a5043dae950afa783114a918bbc",
+    "experiments/swarmharm-v1/review.py": "1dd26b2e0cd2350555b7233342b3c14c920c8009dfbb5bc8e7b0fc23557fd4c4",
+    "experiments/swarmharm-v1/phase1/channel_design.py": "f142ae0649f07710d46e2f9a273732995bba65b7a6ed8039eb68312920c4c2f6",
+    "experiments/swarmharm-v1/phase1/channel-taxonomy.json": "9ff21653423dc94941e9b4fdfd2874606c293f152ee53c8017398f73a979b753",
+    "experiments/swarmharm-v1/tests/channel_design_checks.py": "38257c3875f96d5678c7c8a6b5e27221d798b2714e30fdbf12506494bf8a36b8",
+    "scripts/audit_phase1_evidence.py": "a5063bd8e994ee3c40b66139b6273570129c07acafbae66f5471e6542a06ee7b"
+  }
+}

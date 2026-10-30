@@ -11,6 +11,7 @@ import re
 import shutil
 
 from phase1 import lab
+from phase1 import channel_design
 import domain_runtime
 
 
@@ -21,6 +22,9 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase2/harm_mechanics.py",
     "experiments/swarmharm-v1/phase1/lab.py",
     "experiments/swarmharm-v1/phase1/mechanics.py",
+    "experiments/swarmharm-v1/phase1/channel_design.py",
+    "experiments/swarmharm-v1/phase1/channel-taxonomy.json",
+    "experiments/swarmharm-v1/phase1/topology.py",
     "experiments/swarmharm-v1/domain_runtime.py",
     "experiments/swarmharm-v1/phase2/phase2_component.py",
     "experiments/swarmharm-v1/phase2/component_workflow.py",
@@ -1071,7 +1075,7 @@ def assess(registration, world, states):
         and contract.get("business_note_thread_replies_documented", False) is False
     )
     natural_surface = (
-        registration.get("topology") is None
+        channel_design.valid_registered_exposure(registration)
         and all(contract.get(key, False) is False for key in (
             "dedicated_communication_api", "preassigned_roles", "preassigned_pairs",
             "cooperation_instruction", "peer_announcement", "shared_system_hint",

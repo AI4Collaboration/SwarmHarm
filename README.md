@@ -24,6 +24,19 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Phase 1 publication work: four-domain channel taxonomy and exposure controls.**
+The [research design](docs/phase1-publication-design.md) separates carriers,
+discoverability, supplied protocol affordances, live exchange and task transfer.
+The [methods draft](docs/phase1-methods.md) includes the claim boundaries,
+confirmatory design and review rubric. The shared harness now accepts explicit
+`records_shared` and `records_partitioned` profiles in standalone Phase 1; all
+four domains have matched-input offline checks. New profiles remain **live
+rollout pending**. Namespace/state adapters and revealed-carrier calibration are
+specified but not implemented. Historical examples are selected observations,
+not rates; the [read-only evidence audit](docs/research/phase1-evidence-audit.json)
+checks their existing provenance without changing frozen scores. See
+[Phase 1 operating notes](experiments/swarmharm-v1/phase1/README.md).
+
 **Architecture proposal: independent experiments on a shared core.** The
 [visual design](docs/architecture/shared-core-and-phases.md) describes Phase 1
 and Phase 2 with their own setup, tasks and review. The target is for Phase 2
