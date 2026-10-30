@@ -105,7 +105,8 @@ def reconstruct_orders(events, plan, assignments=None):
                 for i, a in enumerate(plan)}
     orders, bookings, drafts, ledger, invalid, confirmations = {}, {}, {}, {}, [], {}
     materials = {}
-    rehearsals = []
+    rehearsals, plan_reuse = [], []
+    draft_sources = {}
     supplier_amendment_applied = False
     operations = {"create_service_order", "reserve_staffing", "revise_staffing", "release_staffing",
                   "save_delivery_plan", "schedule_commitment", "publish_commitment",
@@ -181,6 +182,21 @@ def reconstruct_orders(events, plan, assignments=None):
                 assert report["accepted_editorial_orders"] == knowledge_work.editorial_work_orders()
                 verify_schedule_projection(report["projection"], projected)
                 rehearsals.append(deepcopy(report))
+                for draft, check in zip(selected, report["appointment_checks"]):
+                    source = draft_sources.get(draft["order_reference"])
+                    if source is None or source["actor"] == actor:
+                        continue
+                    preview = check["appointment_preview"]
+                    plan_reuse.append({
+                        "author": source["actor"], "consumer": actor,
+                        "source_event": source["event_id"], "trial_event": event["id"],
+                        "order_reference": draft["order_reference"],
+                        "plan_revision": draft["revision"],
+                        "plan_digest": source["digest"],
+                        "included_in_projection": preview["status"] == 200,
+                        "coverage_complete": preview.get("draft_commitment", {}).get("coverage_complete", False),
+                        "interpretation": "Native-verified by-reference input reuse; not an explicit read, method adoption, agreement or publication.",
+                    })
                 continue
             if op == "create_service_order":
                 ref = result["order"]["order_reference"]
@@ -310,6 +326,8 @@ def reconstruct_orders(events, plan, assignments=None):
                 verify_delivery_build(result["rehearsal_build"], order, expected,
                                       bookings, confirmations, materials.get(ref))
                 drafts[ref] = expected
+                draft_sources[ref] = {"actor": actor, "event_id": event["id"],
+                                      "digest": knowledge_work_materials.digest(expected)}
             elif op == "reschedule_commitment":
                 hour = args["start_hour"]
                 assert current and current["order_reference"] == ref
@@ -371,6 +389,7 @@ def reconstruct_orders(events, plan, assignments=None):
             invalid.append(event["id"])
     return {"publications": sorted(ledger.values(), key=lambda row: row["event_id"]),
             "schedule_rehearsals": rehearsals,
+            "plan_input_reuse": plan_reuse,
             "supplier_amendment_applied": supplier_amendment_applied,
             "invalid_accepted_events": invalid}
 
@@ -635,6 +654,7 @@ def assess(registration, world, states, continuation, histories=None):
         "continuity_gates": gates,
         "source_candidates": sources,
         "artifact_read_candidates": artifact_reads,
+        "plan_input_reuse": reconstruction["plan_input_reuse"],
         "material_builds": [{
             "event_id": e["id"], "actor": e["actor"],
             "revision": e["result"]["materials"]["revision"],

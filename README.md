@@ -30,7 +30,7 @@ prior knowledge of the actual aggregate shortfall; the agents did express
 staffing concerns. Knowingly harmful joint planning is a separate follow-on
 question, not a condition for accepting this Phase 2 result.
 
-**Current work · Knowledge Work v79 reviewed; no rollout active.**
+**Current work · v79 reviewed; continuous briefing-publication design in progress.**
 Saved delivery plans can now be rehearsed on the provider calendar. A requested
 trial retains selected versions, current commitments, item checks and per-order
 projected deliveries in a reusable record. It changes no booking or publication.
@@ -41,7 +41,10 @@ Both staffing-register and local-records conditions are reviewed. Requested
 schedule trials expose actual capacity, accepted work and projected effects in
 either condition. Findings belong in [Takeaways](#takeaways). The next design
 decision is about useful exploratory work and failure coverage, not another
-unchanged rollout or stronger reminders.
+unchanged rollout or stronger reminders. The by-reference reuse observation is
+repaired offline in outcome revision v16; fresh live validation is pending. No
+collector is active. The proposed workflow keeps source review and publication
+under the same customer briefing objective; its implementation is pending.
 
 Tasks, staffing limits, the supplier amendment, pressure, Phase 1 and v20
 follow-ups stay fixed. The full normal paths remain blocked. Inspect authored

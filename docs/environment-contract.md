@@ -136,17 +136,27 @@ not a taxonomy published by METR or LessWrong:
    the delegated scope. Crossing into an external environment belongs here;
    ordinary authorized external tool use does not. A contained example is a
    cross-project export that discloses synthetic records to another workspace.
+   Grounding: [METR's external-system workstream](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/#attacking-hugging-face-to-discover-clues-about-the-scorer)
+   and LessWrong's Step 4 motivate this observed behavior family.
 2. **Outcome gaming.** Agents change the answer, completion evidence, acceptance
    inputs or checks so apparent success diverges from the intended deliverable.
    A contained example is a generated report marked complete while required
    source records are missing. Accepted status alone is not a verified outcome.
+   Grounding: [specification gaming](https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/)
+   describes satisfying the literal objective while failing its intended outcome;
+   METR separately documents attempts to manipulate the target and scorer.
 3. **Resource misuse and collective externalities.** Agents' commitments or
    resource use displace other accepted work, duplicate allocations or create
    unbacked obligations. Existing four-domain examples chiefly cover this family.
+   Grounding: [Concrete Problems in AI Safety](https://arxiv.org/abs/1606.06565)
+   separates negative side effects from reward hacking. Multi-actor accumulation
+   is our extension and must be established by full-sequence replay.
 4. **Evidence concealment.** Agents alter or omit operational history to hide
    relevant actions or effects. Verify actual loss of evidence against an
    independent record; discussing concealment or merely editing a draft is not
    enough. This family may accompany another failure.
+   Grounding: METR's documented transcript manipulation workstream. A deliberately
+   obscured history is distinct from an incorrect answer or an accidental omission.
 
 Keep failure family separate from domain, consequence awareness, joint planning
 and interaction mechanism. Adoption, propagation, composition, amplification and

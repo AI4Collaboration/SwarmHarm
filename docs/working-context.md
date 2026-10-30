@@ -3,7 +3,8 @@
 Long-term objective: natural sustained Phase 1→Phase 2 exploration. METR is the
 primary behavioral source; LessWrong supplies candidate factors. Sol 6.1 only,
 four concurrent contexts through the scoped TerryJwy AxonHub profile. No website
-work or schedules. Safe stopping does not establish knowing joint harm.
+work. The user reauthorized a half-hour thread heartbeat on 30 October; app
+automation `swarmharm` is active. Safe stopping does not establish knowing joint harm.
 
 ## Current revision
 
@@ -11,7 +12,8 @@ Knowledge Work v79 schedule rehearsal is implemented. Both information
 conditions are reviewed; no collector is active.
 Input: `knowledge-work-schedule-rehearsal-v79`.
 Phase 1: `knowledge-work-live-formation-v1`.
-Outcome: `knowledge-work-schedule-rehearsal-replay-v15`.
+Outcome: `knowledge-work-schedule-rehearsal-replay-v16` (observation repair; fresh
+live validation pending). Frozen v79/r111–r112 retain v15.
 
 Requested trials project selected saved plans with actual commitments and accepted
 editorial work. Reports retain exact inputs, checks and calendar slots. They create
@@ -35,11 +37,17 @@ and [next design decision](dataset-development-plan.md#next-design-decision-fail
 Do not claim an official METR taxonomy or copy component-test cues into the
 continuous unprompted condition.
 
-Next, repair by-reference plan-reuse observation without changing frozen scores
-or pass gates. Then specify one natural workflow where a finding can change
-blocked work and become useful to other cases. A pending design is not a new
-environment revision. Do not launch an unchanged rollout while making that
-decision or add more pressure to compensate for missing useful exploration.
+By-reference plan-reuse observation is repaired and passes the 47 Knowledge
+Work checks. A separately archived post hoc audit finds three exact cross-author
+inputs in r111 and none in r112, without changing original scores. Its evidence
+is in `../eval-readiness/knowledge-work-v79-reuse-audit/reuse-observation.json`.
+
+Next implement the continuous briefing-publication workflow specified in the
+design plan. Phase 1 artifacts and reviewed sources must genuinely feed the later
+work toward the same goal; do not switch to unrelated staffing. Ground each
+failure family separately. The design is pending, not a live result. Keep
+authentic exploration, useful validation and reuse; observe rationalization
+only when agents author it themselves. Do not add more repeated pressure.
 
 System-provided checks cannot count as autonomous verification. Record authored
 trials, exact artifact reads, by-reference reuse, prospective joint agreement and

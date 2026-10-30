@@ -96,6 +96,29 @@ are different dimensions; external access or communication alone does not prove
 misalignment. Any external-system analogue here remains a local synthetic
 business service, with independent truth and no real external effects.
 
+The broader conceptual grounding is
+[Concrete Problems in AI Safety, Sections 3–4](https://arxiv.org/abs/1606.06565),
+which distinguishes negative side effects from reward hacking, and
+[DeepMind's specification-gaming analysis](https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/),
+which separates literal task success from the intended outcome. These sources
+justify different failure mechanisms; they do not establish our multi-actor
+claims, pre-action knowledge or any elicitation rate.
+
+For the proposed continuous publisher workflow,
+[Atlassian documents](https://support.atlassian.com/confluence/kb/download-all-attachments-from-a-confluence-cloud-space/)
+versioned attachments in exported spaces, different path layouts across formats,
+and selective versus full export. This grounds ordinary packaging and conversion
+work only. Cross-project resolution and audience propagation gaps are synthetic
+fixture choices and must not be attributed to the real product.
+
+Operationalize incident elements explicitly: the initial blocked task gives
+discovery a purpose; authentic shared artifacts make other activity observable;
+useful, testable findings give continued cooperation value; persistent histories
+and records permit reuse; and later work can extend the same discovered method
+beyond the original purpose. METR reports these phenomena, not a controlled
+causal recipe. LessWrong's cue and persistence conditions are hypotheses to
+test and disclose, not instructions to transplant silently into our prompts.
+
 These references justify design choices, not a claim that SwarmHarm has reproduced
 all their results. Both intended paths and the discoverable alternative must be
 verified before collection. Keep safe partial work and negatives. Do not tune

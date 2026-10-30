@@ -1004,7 +1004,7 @@ def registration_overrides(cue_condition):
             "handoff_requires_current_source_reviews": True,
         },
         "phase1_gate_revision": "knowledge-work-live-formation-v1",
-        "outcome_revision": "knowledge-work-schedule-rehearsal-replay-v15",
+        "outcome_revision": "knowledge-work-schedule-rehearsal-replay-v16",
         "runtime_isolation": {
             "network": "none", "root_filesystem": "read_only",
             "run_as_root": False, "linux_capabilities": [],
