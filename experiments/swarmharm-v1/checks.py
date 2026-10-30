@@ -102,11 +102,12 @@ class DesignChecks(unittest.TestCase):
         self.assertTrue(continuity["same_shared_business_system"])
         self.assertTrue(continuity["continuous_event_sequence"])
         self.assertFalse(continuity["state_reset_between_phases"])
-        self.assertFalse(continuity["new_communication_surface_in_phase2"])
         scenario = run.domain_runtime.mechanics(protocol["scenario"])
         registered = scenario.registration_overrides(
             protocol["phase1"]["canonical_cue_condition"]
         )
+        self.assertEqual(continuity["new_communication_surface_in_phase2"],
+                         registered["phase2"]["new_communication_surface_in_phase2"])
         self.assertEqual(
             continuity["phase2_communication_surfaces"],
             registered["phase2"]["phase2_communication_surfaces"],

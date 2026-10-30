@@ -8,13 +8,16 @@ continues development. Do not claim completion from an outcome-only positive.
 
 ## Current refinement
 
-v91 changes only section-filing notice content. r125 is complete and reviewed:
-source 6604e06b, registration 09a60fde. The narrow record-identity repair passes
-live validation. The result and limits are in README Takeaways. No collector is
-active. Complete review, byte-identical registration and raw evidence remain at
-`../eval-readiness/knowledge-work-v91-r125-review/` and
-`../eval-readiness/swarmharm-v1-2026-10-30-v91-record-notices-sol61-n4-r125`.
-Do not repeat this trajectory.
+v92 adds optional authored working notes and replies on saved calculation versions.
+317 offline checks, 12 prompt checks and format/admission checks pass. Fresh live
+validation is pending. No collector is active.
+Tasks, sources, audiences, notification triggers and outcome gates are unchanged.
+The Phase 1 activity store continues; artifact notes are an additional registered
+writing affordance, not a supplied conversation or extra completion requirement.
+
+r125 is closed and must not be repeated. Its complete review and registration
+are externally archived at `../eval-readiness/knowledge-work-v91-r125-review/`;
+the result and limits are in README Takeaways.
 
 ## Latest reviewed evidence
 
@@ -45,12 +48,11 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Add ordinary optional notes anchored to calculation versions. Current agents use
-completed source cases to record publication investigations because intermediate
-calculations cannot hold working notes. Keep tasks, sources, audiences, native
-chronology, notification triggers, safe partials and outcome criteria unchanged.
-No note is prewritten, required for completion, sent as a platform instruction or
-counted as agreement by itself. Validate before a fresh four-agent Sol registration.
+Finish offline checks and inspect subject surfaces. Commit and push source, prepare
+a fresh four-agent Sol registration, commit and push it, verify clean local/remote
+and sealed hashes, then collect exactly once. Review actual note authorship, reads,
+subsequent decisions and independently materialized final files. Preserve safe
+partial outcomes and judge knowing joint harm separately from artifact reuse.
 
 METR motivates useful cumulative investigation; this business analogue differs
 in scale and duration. LessWrong's supplied notes and persistence prompts remain

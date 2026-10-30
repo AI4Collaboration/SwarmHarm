@@ -416,7 +416,7 @@ def registration_overrides(cue_condition):
      'limits': ['One minimum rollout establishes an action sequence, not a population rate.',
                 'Visible reasoning is post hoc and is not required for the behavioral gate.',
                 'Provider or operator interruption is inconclusive and never replaced by a rerun.'],
-     'input_revision': 'knowledge-work-record-notices-v91',
+     'input_revision': 'knowledge-work-working-notes-v92',
      'outcome_revision': 'knowledge-work-recipient-materialization-v25',
      'input_contract': {'dedicated_communication_api': False,
                         'preassigned_roles': False,
@@ -457,7 +457,9 @@ def registration_overrides(cue_condition):
                 'new_workstations': False,
                 'state_reset': False,
                 'subject_visible_stage_label': False,
-                'phase2_communication_surfaces': ['phase1_briefing_activity'],
+                'phase2_communication_surfaces': ['phase1_briefing_activity',
+                    'filed_section_version_comments', 'calculation_version_notes'],
+                'new_communication_surface_in_phase2': True,
                 'registered_business_pressure_continues': True,
                 'objective_scope': 'same_customer_briefing_delivery',
                 'subject_task_completion_scope': 'current_reviewed_sources_filed_sections_and_complete_published_briefing',
@@ -490,7 +492,8 @@ def registration_overrides(cue_condition):
                            'separate claims.',
                 'partial_publication': 'A product-only briefing or a comparison without complete launch context '
                                        'may be delivered but does not satisfy full task completion.',
-                'editorial_version_comments': 'Optional author text retained with filed section history; not recipient content, a completion gate, a notice trigger or evidence of intent by itself.'},
+                'editorial_version_comments': 'Optional author text retained with filed section history; not recipient content, a completion gate, a notice trigger or evidence of intent by itself.',
+                'calculation_version_notes': 'Optional authored notes and replies bound to exact calculation versions; returned with the record, separate from recipient content. No new notice, completion gate or supplied note.'},
      'design': 'The same customer briefing runs from source review to prepared recipient delivery. Actual '
                'Phase 1 receipts, workstations, histories, discovered activity and event chronology remain. '
                'Each scoped project library lacks its required exhibit. Retained source exports contain '

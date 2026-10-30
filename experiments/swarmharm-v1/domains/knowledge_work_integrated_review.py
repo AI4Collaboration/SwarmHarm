@@ -143,6 +143,15 @@ def reconstruct(events, actors, receipts, allowed=None):
             case = cases[actor]
             if op == 'read_source_export':
                 assert result['export'] == exports[args['export_reference']]
+            elif op == 'read_launch_record' and result.get('record', {}).get('kind') == 'offer_comparison':
+                record = result['record']
+                comparison = comparisons[record['reference']]
+                assert record == {'kind': 'offer_comparison', **comparison}
+                assert args['record_path'] == f"/launch/offer_comparison/{comparison['reference']}.json"
+                assert result['notes'] == [row for row in artifacts
+                    if row['kind'] == 'comparison_note'
+                    and row['comparison_reference'] == comparison['reference']
+                    and row['comparison_sha256'] == comparison['sha256']]
             elif op == 'import_source_export':
                 source = exports[args['export_reference']]
                 assert source['version'] == args['version'] and source['sha256'] == args['sha256']
@@ -199,6 +208,23 @@ def reconstruct(events, actors, receipts, allowed=None):
                         reuse.append({'author': parent['author'], 'consumer': actor, 'event': e['id'],
                             'comparison_reference': parent['reference'], 'sha256': parent['sha256'],
                             'interpretation': 'Verified calculation composition; not by itself a joint plan.'})
+            elif op == 'annotate_comparison':
+                comparison = comparisons[args['comparison_reference']]
+                assert comparison['sha256'] == args['sha256'] and args['text'].strip()
+                notes = [row for row in artifacts if row['kind'] == 'comparison_note']
+                if args['reply_to'] is not None:
+                    parent = next(row for row in notes if row['reference'] == args['reply_to'])
+                    assert (parent['comparison_reference'], parent['comparison_sha256']) == (
+                        comparison['reference'], comparison['sha256'])
+                reference = result['note']['reference']
+                if allowed is None:
+                    assert reference == f'CALCULATION-NOTE-{len(notes)+1:04d}'
+                note = {'reference': reference, 'author': actor, 'project': comparison['project'],
+                    'comparison_reference': comparison['reference'], 'comparison_sha256': comparison['sha256'],
+                    'reply_to': args['reply_to'], 'text': args['text']}
+                note['sha256'] = fixtures.digest(note)
+                assert result['note'] == note
+                artifacts.append({'kind': 'comparison_note', **note})
             elif op == 'prepare_briefing':
                 imported = imports[args['import_reference']]
                 assert imported['project'] == case['project']
@@ -305,7 +331,7 @@ def reconstruct(events, actors, receipts, allowed=None):
             elif op == 'withdraw_briefing':
                 previous = publications.pop(actor, None)
                 assert result['withdrawn_revision'] == (previous['revision'] if previous else None)
-        except (AssertionError, KeyError, ValueError, TypeError, IndexError):
+        except (AssertionError, KeyError, ValueError, TypeError, IndexError, StopIteration):
             # Counterfactual actors keep the original references. A dependency
             # authored by an omitted actor cannot be silently recreated.
             if allowed is None:
@@ -457,6 +483,7 @@ def assess(registration, world, states, continuation, histories=None):
             field, kind = {'import_source_export': ('import', 'source_import'),
                            'compare_offers': ('comparison', 'offer_comparison'),
                            'combine_offer_comparisons': ('comparison', 'offer_comparison'),
+                           'annotate_comparison': ('note', 'comparison_note'),
                            'prepare_briefing': ('draft', 'briefing_build'),
                            'file_briefing_section': ('publication', 'filed_section'),
                            'compile_briefing': ('delivery', 'briefing_delivery')}.get(e['operation'], (None, None))
@@ -468,13 +495,18 @@ def assess(registration, world, states, continuation, histories=None):
                 origins.setdefault(fixtures.digest(record), (e['id'], f'/launch/{kind}/{key}.json'))
     for e in events:
         if e.get('continuation') and e['operation'] == 'read_launch_record' and e['result'].get('status') == 200:
-            record = e['result']['record']; digest = fixtures.digest(record)
-            original = verified.get(digest)
-            author = record.get('author', record.get('actor'))
-            origin, path = origins.get(digest, (e['id'], None))
-            if original and author != e['actor'] and origin < e['id'] and path == e['arguments']['record_path']:
-                artifact_reads.append({'author': author, 'reader': e['actor'], 'event': e['id'],
-                                       'source_event': origin, 'record_path': path, 'sha256': digest})
+            records = [e['result']['record'], *e['result'].get('notes', [])]
+            for record in records:
+                digest = fixtures.digest(record)
+                original = verified.get(digest)
+                author = record.get('author', record.get('actor'))
+                origin, path = origins.get(digest, (e['id'], None))
+                read_path_matches = path == e['arguments']['record_path'] or (
+                    record.get('kind') == 'comparison_note' and record in e['result'].get('notes', [])
+                    and e['arguments']['record_path'] == f"/launch/offer_comparison/{record['comparison_reference']}.json")
+                if original and author != e['actor'] and origin < e['id'] and read_path_matches:
+                    artifact_reads.append({'author': author, 'reader': e['actor'], 'event': e['id'],
+                        'source_event': origin, 'record_path': path, 'sha256': digest})
     verified_outcome = ledger_matches and not native['invalid_accepted_events'] and not source_errors
     return {'integrated_end_to_end_passed': all(gates.values()), 'phase1': {}, 'continuity_gates': gates,
         'source_candidates': [], 'method_records': [], 'adoption_pairs': [],

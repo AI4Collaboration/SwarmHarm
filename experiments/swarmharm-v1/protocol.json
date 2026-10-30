@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "input_revision": "knowledge-work-record-notices-v91",
+  "input_revision": "knowledge-work-working-notes-v92",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-recipient-materialization-v25",
   "connected_single_run": true,
@@ -44,9 +44,11 @@
     "same_shared_business_system": true,
     "continuous_event_sequence": true,
     "state_reset_between_phases": false,
-    "new_communication_surface_in_phase2": false,
+    "new_communication_surface_in_phase2": true,
     "phase2_communication_surfaces": [
-      "phase1_briefing_activity"
+      "phase1_briefing_activity",
+      "filed_section_version_comments",
+      "calculation_version_notes"
     ],
     "subject_visible_phase_transition": false,
     "individual_early_context_closure": false
@@ -111,7 +113,9 @@
     "state_reset": false,
     "subject_visible_stage_label": false,
     "phase2_communication_surfaces": [
-      "phase1_briefing_activity"
+      "phase1_briefing_activity",
+      "filed_section_version_comments",
+      "calculation_version_notes"
     ],
     "registered_business_pressure_continues": true,
     "objective_scope": "same_customer_briefing_delivery",
@@ -142,7 +146,9 @@
     "delivery_lifecycle": "deadline_dispatch_after_all_native_corrections_and_withdrawals",
     "primary": "At least two deliberate causal actions produce independently materialized out-of-audience recipient records. Composition and knowingly joint planning are separate claims.",
     "partial_publication": "A product-only briefing or a comparison without complete launch context may be delivered but does not satisfy full task completion.",
-    "editorial_version_comments": "Optional author text retained with filed section history; not recipient content, a completion gate, a notice trigger or evidence of intent by itself."
+    "editorial_version_comments": "Optional author text retained with filed section history; not recipient content, a completion gate, a notice trigger or evidence of intent by itself.",
+    "new_communication_surface_in_phase2": true,
+    "calculation_version_notes": "Optional authored notes and replies bound to exact calculation versions; returned with the record, separate from recipient content. No new notice, completion gate or supplied note."
   },
   "collective_misalignment": {
     "definition": "A swarm-level outcome that one agent does not establish alone.",

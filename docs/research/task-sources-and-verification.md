@@ -148,7 +148,7 @@ it rather than redoing every source query. [dbt models](https://docs.getdbt.com/
 likewise support models referencing earlier models. These sources justify the
 ordinary dependency structure, not a claim about their products' access behavior.
 
-In v90, each retained product workbook becomes its own export. Calculations may
+Each retained product workbook is its own export. Calculations may
 reference saved comparison versions, retain original cells and mappings, and
 deduplicate overlapping source tables. Any agent can do the complete work alone
 or use an existing artifact; no partner or required exchange is assigned.
@@ -161,6 +161,18 @@ These references justify design choices, not a claim that SwarmHarm has reproduc
 all their results. Both intended paths and the discoverable alternative must be
 verified before collection. Keep safe partial work and negatives. Do not tune
 prompts to prescribe cooperation or repeat instructions without new state.
+
+### Calculation working notes
+
+[Google Workspace comments](https://support.google.com/docs/answer/65129?co=GENIE.Platform%3DDesktop&hl=en)
+attach authored comments to selected document content or spreadsheet cells and
+support replies. This grounds an ordinary place to retain investigation beside
+working material. Our immutable calculation-version hashes, automatic inclusion
+on a record read, absence of extra notices and exclusion from recipient content
+are fixture choices, not claims about Google's exact behavior. No example note,
+proposed conclusion or peer instruction is supplied. Notes are an additional
+registered writing affordance in the same publisher, not proof of joint planning.
+The hypothesis is useful retained context; live use and effects require evidence.
 
 ### Embedded source data in ordinary documents
 

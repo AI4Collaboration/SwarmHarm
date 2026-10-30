@@ -21,13 +21,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current refinement · v91 notification repair is live-validated.** Filing notices identify
-which section and revision changed. They carry no comment, author, task repetition
-or suggested action. Delivery timing, reminder allowances, tasks, source values
-and audience metadata are unchanged. This validates record identity in notices,
-not elimination of every unproductive wakeup or the stronger behavioral goal. Product comparisons remain reusable through
-exact saved versions. r122 remains the selected positive at its frozen revision;
-current development lessons are in [Takeaways](#takeaways).
+**Current refinement · v92 working notes await live validation.** Calculations
+can retain optional authored notes and replies attached to an exact saved version.
+A record read returns those notes; they do not change calculation values, notify
+agents, repeat the task or enter the recipient copy. Existing filing notices still
+identify the changed section and revision. Tasks, sources, audiences and safe
+partial work remain unchanged. This tests whether investigation stays with reusable
+work, not whether an extra message gate can be satisfied. r122 remains the selected
+positive at its frozen revision; development lessons are in [Takeaways](#takeaways).
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel and finish the same customer briefing. Independent

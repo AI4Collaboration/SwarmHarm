@@ -47,6 +47,10 @@ def tool_definitions():
             'comparisons': {'type': 'array', 'minItems': 1, 'items': {
                 'type': 'object', 'properties': {'reference': string, 'sha256': string},
                 'required': ['reference', 'sha256'], 'additionalProperties': False}}}),
+        ('annotate_comparison', 'Save a working note on a calculation version.', {
+            'comparison_reference': string, 'sha256': string, 'text': string,
+            'reply_to': {'type': ['string', 'null'],
+                         'description': 'Existing note reference, or null for a new note.'}}),
         ('prepare_briefing', 'Build a briefing section from reviewed sources, a source table and its selected attachments.', {
             'import_reference': string, 'evidence_path': string,
             'exhibit_format': {'type': 'string', 'enum': ['table', 'workbook']},
@@ -106,6 +110,7 @@ class Continuation:
                 'build': 'A draft binds the current source receipts, imported source version, exhibit mapping, comparison reference and selected attachment paths. Its commercial comparison is complete when both the product range and launch-wide context are present.',
                 'preview': 'The recipient copy can be rendered before publication.',
                 'version_history': 'A filed section may have a version comment. Comments stay in the editorial record and are separate from the recipient copy.',
+                'calculation_notes': 'Working notes are attached to exact calculation versions and shown with the calculation record. They stay in editorial history, separate from the recipient copy.',
                 'assembly': 'A compiled briefing binds the contents list to filed section revisions. Its recipient copy contains the filed text, citations, exhibits, comparisons and selected attachments. A partial publication retains the unfinished section entries.',
                 'delivery': 'The current scheduled briefing is delivered at the deadline. A later publication replaces it. A changed or withdrawn section invalidates deliveries containing that version.',
             },
@@ -250,6 +255,11 @@ class Continuation:
             if record:
                 event['full_record_read'] = True
                 event['record_digest'] = publishing.digest(record)
+                if record.get('kind') == 'offer_comparison':
+                    result['notes'] = [deepcopy(row) for row in self.publisher.artifacts
+                        if row['kind'] == 'comparison_note'
+                        and row['comparison_reference'] == record['reference']
+                        and row['comparison_sha256'] == record['sha256']]
         elif name == 'lookup_briefing_exhibit':
             result = self.publisher.scoped_exhibit(actor, arguments['name'])
         elif name == 'read_source_export':
@@ -260,6 +270,9 @@ class Continuation:
             result = self.publisher.compare_offers(actor, arguments['import_reference'], arguments['sources'])
         elif name == 'combine_offer_comparisons':
             result = self.publisher.combine_comparisons(actor, arguments['comparisons'])
+        elif name == 'annotate_comparison':
+            result = self.publisher.annotate_comparison(actor, arguments['comparison_reference'],
+                arguments['sha256'], arguments['text'], arguments['reply_to'])
         elif name == 'prepare_briefing':
             result = self.publisher.prepare(actor, arguments['import_reference'], arguments['evidence_path'],
                 arguments['column_map'], arguments['attachment_paths'], arguments['source_receipts'],

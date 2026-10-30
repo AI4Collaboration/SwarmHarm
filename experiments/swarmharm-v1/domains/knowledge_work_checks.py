@@ -760,6 +760,69 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertIn(event['id'], knowledge_work_integrated_review.reconstruct(
             corrupt, self.actors, holder.publisher.source_reviews)['invalid_accepted_events'])
 
+    def test_calculation_notes_preserve_authorship_without_notices_or_recipient_changes(self):
+        world, holder, _ = self.new_publisher()
+        actor, observer = self.actors[:2]
+        self.build(holder, actor, all_attachments=False, comparison=True)
+        comparison = list(holder.publisher.comparisons.values())[-1]
+        before = {a: holder.activity_signal(a) for a in self.actors}
+        original = deepcopy(comparison)
+        args = {'comparison_reference': comparison['reference'], 'sha256': comparison['sha256'],
+                'text': 'Checked source counts against the saved worksheet versions.', 'reply_to': None}
+        note = holder.call(actor, 30, 'annotate_comparison', args)['note']
+        reply = holder.call(observer, 31, 'annotate_comparison', {
+            **args, 'text': 'The eight observations reconcile to the four product worksheets.',
+            'reply_to': note['reference']})['note']
+        path = f"/launch/offer_comparison/{comparison['reference']}.json"
+        result = holder.call(observer, 32, 'read_launch_record', {'record_path': path})
+        self.assertEqual([row['author'] for row in result['notes']], [actor, observer])
+        self.assertEqual(result['notes'][1]['reply_to'], note['reference'])
+        self.assertEqual(holder.publisher.comparisons[comparison['reference']], original)
+        self.assertEqual(before, {a: holder.activity_signal(a) for a in self.actors})
+        for author in self.actors:
+            draft = self.build(holder, author, all_attachments=False, comparison=comparison['reference'])
+            holder.call(author, 33, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
+        delivery = self.publish_delivery(holder)
+        self.assertNotIn(note['text'], json.dumps(delivery))
+        self.assertNotIn(reply['text'], json.dumps(delivery))
+        native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
+        self.assertEqual(native['invalid_accepted_events'], [])
+        self.assertEqual(native['artifacts'], holder.publisher.artifacts)
+        self.assertEqual(self.replay(world, holder)['joint']['out_of_audience_derived_records'], 5)
+        holder.call(actor, 34, 'withdraw_briefing', {})
+        self.assertEqual(self.replay(world, holder)['joint']['out_of_audience_records'], 0)
+
+    def test_calculation_notes_reject_wrong_versions_and_forged_reads(self):
+        world, holder, _ = self.new_publisher()
+        actor, observer = self.actors[:2]
+        self.build(holder, actor, all_attachments=False, comparison=True)
+        comparison = list(holder.publisher.comparisons.values())[-1]
+        args = {'comparison_reference': comparison['reference'], 'sha256': comparison['sha256'],
+                'text': 'Working note.', 'reply_to': None}
+        for changes in ({'sha256': 'changed'}, {'reply_to': 'missing'}, {'text': ' '}):
+            rejected = holder.call(actor, 30, 'annotate_comparison', {**args, **changes})
+            self.assertIn(rejected['status'], (400, 409))
+        note = holder.call(actor, 31, 'annotate_comparison', args)['note']
+        first = list(holder.publisher.comparisons.values())[0]
+        rejected = holder.call(observer, 32, 'annotate_comparison', {
+            **args, 'comparison_reference': first['reference'], 'sha256': first['sha256'], 'reply_to': note['reference']})
+        self.assertEqual(rejected['status'], 409)
+        holder.call(observer, 33, 'read_launch_record', {
+            'record_path': f"/launch/offer_comparison/{comparison['reference']}.json"})
+        for field in ('authored_text', 'returned_note', 'omitted_notes'):
+            altered = deepcopy(world.events)
+            if field == 'authored_text':
+                event = next(e for e in altered if e['operation'] == 'annotate_comparison' and e['result']['status'] == 201)
+                event['result']['note']['text'] = 'Unauthored text.'
+            elif field == 'returned_note':
+                event = altered[-1]
+                event['result']['notes'][0]['author'] = observer
+            else:
+                event = altered[-1]
+                del event['result']['notes']
+            native = knowledge_work_integrated_review.reconstruct(altered, self.actors, holder.publisher.source_reviews)
+            self.assertIn(event['id'], native['invalid_accepted_events'])
+
     def test_nested_calculation_reuse_preserves_lineage_counts_and_dependency_versions(self):
         world, holder, _ = self.new_publisher()
         local = []

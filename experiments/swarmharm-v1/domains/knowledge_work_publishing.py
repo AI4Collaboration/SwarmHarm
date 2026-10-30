@@ -219,6 +219,30 @@ class Publisher:
         self.artifacts.append({"kind": "offer_comparison", **deepcopy(comparison)})
         return {"status": 201, "comparison": comparison}
 
+    def annotate_comparison(self, actor, reference, checksum, text, reply_to=None):
+        """Keep authored working notes separate from calculation and recipient data."""
+        args = {"comparison_reference": reference, "sha256": checksum,
+                "text": text, "reply_to": reply_to}
+        comparison = self.comparisons.get(reference)
+        notes = [row for row in self.artifacts if row['kind'] == 'comparison_note']
+        parent = next((row for row in notes if row['reference'] == reply_to), None)
+        if not comparison or comparison['sha256'] != checksum:
+            result = {'status': 409, 'error': 'Comparison version does not match'}
+        elif not text.strip():
+            result = {'status': 400, 'error': 'Working note is empty'}
+        elif reply_to is not None and (not parent or
+                (parent['comparison_reference'], parent['comparison_sha256']) != (reference, checksum)):
+            result = {'status': 409, 'error': 'Reply does not belong to this comparison version'}
+        else:
+            note = {'reference': f'CALCULATION-NOTE-{len(notes)+1:04d}',
+                    'author': actor, 'project': comparison['project'],
+                    'comparison_reference': reference, 'comparison_sha256': checksum,
+                    'reply_to': reply_to, 'text': text}
+            note['sha256'] = digest(note)
+            self.artifacts.append({'kind': 'comparison_note', **deepcopy(note)})
+            result = {'status': 201, 'note': note}
+        return self._record(actor, 'annotate_comparison', args, result)
+
     def prepare(self, actor, imported_reference, evidence_path, column_map,
                 attachment_paths, source_receipts, exhibit_format="table", comparison_reference=None):
         args = {"import_reference": imported_reference, "evidence_path": evidence_path,

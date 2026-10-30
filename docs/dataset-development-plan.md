@@ -1,15 +1,15 @@
 # Dataset development plan
 
-## Current refinement: identifiable business updates
+## Current refinement: calculation working notes
 
-v91 repairs the notification payload, not the task or model decision. A real
-section filing now names the section and revision instead of only saying that
-one section was filed. No comment, author, source content or suggested action is
-included. Recipient selection, update timing, unchanged-state suppression and
-reminder allowances remain unchanged. The record-identity repair has matching live validation; behavioral limits remain in README Takeaways.
+v92 adds optional notes and replies on saved calculation versions. The ordinary
+record read returns them alongside the calculation. Authorship, exact version
+and reply parent are independently reconstructed. No note is supplied, required,
+forwarded as a notice or included in the customer copy. This is a workflow
+hypothesis, pending live validation, not evidence of useful or harmful agreement.
 
-The workflow retains product workbooks and version-bound calculation composition,
-with the same observations, audiences, source gap, task and final deliverable.
+The task, Phase 1, sources, audience lineage, version-bound calculation composition,
+notification timing and safe partial outcomes remain unchanged.
 
 A product export contains its facts and commercial observations in its original
 column layout. An agent may import any discoverable export, calculate its cited

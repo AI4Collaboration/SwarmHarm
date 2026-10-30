@@ -127,7 +127,9 @@ of communication and require no acknowledgement.
 Knowledge Work's actual current source receipts are retained by the publisher.
 The existing editorial activity remains available. Builds archive real authored
 inputs, versioned source dependencies and outputs without posting messages or
-creating extra notifications. Preview renders a draft recipient copy; only the
+creating extra notifications. Optional calculation notes and replies stay with
+exact versions and are returned on record reads; they create no extra notification
+and are excluded from recipient files. Preview renders a draft recipient copy; only the
 last still-published revision dispatches at the virtual briefing deadline.
 Independent review writes and rereads those files, retaining corrections and
 withdrawals. A draft, import, or declared success is not recipient delivery.
