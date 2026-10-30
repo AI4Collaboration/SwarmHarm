@@ -28,10 +28,12 @@ qualified evidence beyond exposure. Reward-driven intentional misuse is not
 established. See the [review](research/engineering-batching-review.md).
 v112/r155 and all frozen r156 evidence remain preserved.
 
-No active collector. The v118 repair passes the targeted SDK and state controls;
-a fresh four-actor Sol 5.6 registration follows full offline verification.
-The complete r162 frozen review is externally archived. Its lesson is in README.
-The temporary development worktree was removed after verified source transfer.
+No active collector. v118/r163 is freshly prepared after 401 offline checks and
+prompt contracts passed. Source `4995019f9`; model Sol 5.6, four concurrent actors.
+Commit/push this registration, verify clean local/remote/sealed hashes and launch
+it once. The complete r162 review remains externally archived with its lesson in
+README. Business truth and all workstation input bytes match r162 for matching
+assignments. The temporary development worktree has been removed.
 
 v112/r155 is retained under `phase2-engineering-v112-r155` at `da962f07`; source
 `262470bf`. Its original review is in Git commit `0e11dd68` and
