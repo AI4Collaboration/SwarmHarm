@@ -12,19 +12,18 @@ omits binding generation lengths to the intake. Correctly bound controls reject
 that change. Code, local measurements, shared versioned artifacts and actual
 response-file execution replace the import-only development focus.
 
-**No active collector.** r152 finished at 17:33:07 UTC after 208.74 seconds.
-Source `2c176e2a`, registration `55033adb`; full raw and frozen review:
+**r154 is closed and reviewed; no collector is active.** The complete frozen
+native-goal evidence is at
+`../eval-readiness/2026-10-30-v111-native-goal-sol56-pi-n4-r154/` and
+`../eval-readiness/engineering-v111-r154-review/`. Source `0b876808`, registration
+`845be3a9`; exact registered bytes were compared with both archives before removal.
+The concise result is in README Takeaways. Runtime and outcome code match r152;
+the separately declared operator checker/test repair is the only code difference.
+
+The previous reviewed r152 is archived at
 `../eval-readiness/2026-10-30-v111-capacity-decision-sol56-pi-n4-r152/` and
 `../eval-readiness/engineering-v111-r152-review/`. The concise takeaway is in README.
-Native reconstruction and all four ATIF histories pass. v111 business mechanics
-are reviewed; knowing joint harm remains unestablished. Next vary only the harness
-from private subject plans to native Pi goal. Do not change business files,
-limits, tasks, capacity, tools or outcome semantics. The goal comparison uses a fresh registration with the repaired pair checker.
-The uncollected r153 preparation remains external; no model inference was launched.
-The operator checker now compares normalized fixture contents and validates the
-original truth digest before replacing random actor IDs. Its explicit
-`--allow-verifier-update` reports the checker/test change; every runtime, prompt,
-business and outcome file must still match r152 exactly.
+The uncollected r153 preparation remains external; no inference was launched.
 Use `--scenario engineering-capacity --study-mode phase2-component --component-family terminal-batching`.
 This remains an adapter within acceptance manipulation, not a fourth incident
 category. Initial channels stay empty and no method or peer text is supplied.
@@ -85,21 +84,20 @@ assembly is not prior agreement.
 
 ## Next action
 
-Prepare one matched native Pi goal rollout on v111, with four Sol 5.6 contexts.
-Keep r152's exact business inputs; remove only the custom private-plan condition
-as the native extension replaces it. Freeze and inspect the extension instructions,
-limits and terminal states. Preserve r152 in its external review and raw archive;
-never overwrite it. After passing the pair check, commit/push the registration,
-verify hashes and collect once.
+Develop one ordinary reservation workflow that supports complete customer output
+and exposes competing work obligations. Keep the terminal task, full-input cost
+floor, provided empty channels and natural goal. Verify intended allocation
+blocking, the synthetic binding defect, corrected binding, actual downstream
+execution, complete-sequence cancellation/correction and causal replay before a
+new registration. No prepared method or peer message is needed for this condition.
 
 Capacity availability is a business mechanism, not an instruction to use a gap.
 Keep blocked safe outcomes possible. Knowing coordinated harm requires pre-action
 understanding and a jointly endorsed plan; general collective harm alone does not
 finish that stronger objective. Inspect actual generated data independently.
 
-A future native Pi `goal_command` comparison needs a distinct registration with
-the same business inputs; do not stack controllers or confound it with another
-environment change.
+The reviewed native Pi `goal_command` comparison was a distinct registration
+with matching business inputs; no custom plan controller was stacked onto it.
 Use `scripts/check_goal_mode_pair.py` for a matched claim and freeze the same
 business deadline. Review native extension prompts/settings and stop states.
 The default deadline is preparation time plus 90 minutes: quiescence before it
