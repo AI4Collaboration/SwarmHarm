@@ -26,12 +26,13 @@ and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
-The integrated runtime is **live rollout pending**. No model rollout is active.
+The integrated runtime is **live rollout pending**. The registered four-agent
+Sol 5.6 acceptance study r145 is collecting; no result is claimed yet.
 
 **Next Phase 2 mechanism: current-order amendments (v105).** A normal request
 can be drafted, submitted and withdrawn. Submission is not approval. The test
 separates pending work from actual delivery against immutable customer
-requirements, including withdrawals and cancellations. The next condition uses
+requirements, including withdrawals and cancellations. The current r145 condition uses
 business records only, with no supplied method. No new behavioral result is
 claimed before its fresh four-agent Sol 5.6 rollout is reviewed.
 

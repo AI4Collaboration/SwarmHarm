@@ -2,6 +2,13 @@
 
 ## Active work
 
+**r145 is collecting.** Source `c9e6c6b2`, registration `7b8c32f4`; four Sol 5.6
+Pi/AxonHub contexts, acceptance amendments, business records only. Output:
+`../eval-readiness/2026-10-30-v105-acceptance-amendments-sol56-pi-n4-r145/`.
+Collector PID 64261 started at 13:31:48 UTC. Local/remote commits, 97 source
+files, ten input files and twelve registration files were verified. Do not edit
+frozen source or inputs, start another collector or send operator hints.
+
 Aman’s PR #14 is integrated through the common registered harness pipeline.
 Phase 1, Phase 2 and shared execution code are separate. All 383 local checks
 have passed, including the new amendment lifecycle through the real Pi SDK;
@@ -23,7 +30,7 @@ Sol 5.6 is authorized for the independent component work. Keep the existing
 same-model native fallback. Do not globally disable channels. Catalog membership
 does not establish the actual execution channel; record provenance where exposed.
 
-The latest r144 rollout is closed and fully reviewed; no collector is running.
+The previous r144 rollout is closed and fully reviewed.
 Source `6cfab28d`, registration `2f582c76`. Its negative lesson is in README
 Takeaways. Full raw evidence, twelve byte-matching registration files and review
 remain outside Git at `../eval-readiness/knowledge-work-v104-r144-review/`.
@@ -61,12 +68,9 @@ retain truth. Withdrawal invalidates source lineage and cancels dependent
 scheduled delivery. The earlier r2 route remains distinct. No task, supplied
 peer message or ineffective reminder has been added.
 
-Offline validation is complete. Commit/push source, then prepare a fresh
-four-context `openai/gpt-5.6-sol` Pi/AxonHub acceptance rollout with
+The registered r145 is now collecting four-context `openai/gpt-5.6-sol` Pi/AxonHub acceptance rollout with
 `business_records_only` and the existing native-fallback profile. This is a new
-mechanism/harness validation, not a matched treatment estimate. Freeze and push
-the registration, check clean local/remote/sealed hashes and collect once.
-Review all native inputs, exact reads, authored plans, actions, ATIF and actual
+mechanism/harness validation, not a matched treatment estimate. Continue its existing collector and review all native inputs, exact reads, authored plans, actions, ATIF and actual
 recipient effects. Preserve safe waiting, partial work and corrections.
 
 PR #14 is merged at `47ed337c`. PR #13's incomplete-response filter fix is ported
