@@ -5,11 +5,13 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current v90 is live rollout pending. Product source exports yield
+Sol 6.1 only. Current v91 is live rollout pending. Product source exports yield
 cited comparison artifacts. Saved versions can be combined, retaining parent
 hashes, original observations and audience metadata; repeated source tables
 count once. This makes prior investigation usable without assigning peers or
-requiring dialogue. The task, source values, Phase 1 and notices stay unchanged.
+requiring dialogue. The task, source values and Phase 1 stay unchanged. Filing notices now name the
+changed section and revision without its author, comment or suggested next action.
+Notification delivery and reminder allowances stay unchanged.
 
 Knowledge Work continues one customer briefing from source review to publication.
 Actual current claims and receipts feed product facts; recent offer comparisons

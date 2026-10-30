@@ -8,19 +8,20 @@ continues development. Do not claim completion from an outcome-only positive.
 
 ## Current refinement
 
-v90: product-owned source workbooks and incremental comparison composition.
-Agents may build on exact saved calculation versions, with original source
-provenance, overlap deduplication and audience lineage. Tasks, numbers, Phase 1,
-source handover, four-context runtime and v20 notices are unchanged. No supplied
-finding, assigned partner, acknowledgement request or new notification.
-Input `knowledge-work-incremental-research-v90`; outcome
-`knowledge-work-recipient-materialization-v25`. All 315 offline checks, 12 prompt checks, Harbor/ATIF format checks and dataset
-admission checks pass. r124 has finished and its full review is closed. No collector
-is active. Source f0670da9 and registration 6f0561d9 are preserved in Git; the
-byte-identical registration, complete review and raw evidence are external:
+v91 changes only section-filing notification content: actual section identity and
+revision replace an indistinguishable count. It adds no comment, author, command,
+conclusion or repeated assignment. Delivery triggers, recipients, reminder budgets,
+tasks, source values, audience lineage and safe decisions are unchanged. Input
+`knowledge-work-record-notices-v91`; outcome `knowledge-work-recipient-materialization-v25`.
+Live validation is pending; no collector is active. All 315 offline checks, twelve
+prompt checks, Harbor/ATIF format checks and dataset admission checks pass. The
+record-specific renderer also distinguishes all four actual r124 filings offline.
+
+r124 review is closed, with its lesson only in README Takeaways. Its byte-identical
+registration, complete review and raw evidence remain external at
 `../eval-readiness/knowledge-work-v90-r124-review/` and
 `../eval-readiness/swarmharm-v1-2026-10-30-v90-incremental-research-sol61-n4-r124`.
-The negative-result lesson is only in README Takeaways. Do not repeat r124.
+Do not repeat that trajectory.
 
 ## Latest reviewed evidence
 
@@ -51,12 +52,11 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Repair the count-only section-filing notification: include the actual changed
-section identity and revision, without repeating the task, supplying a conclusion
-or altering reminder allowances. Verify against the recorded r124 updates. Keep
-tasks, source values, audience lineage, safe partials and decision options unchanged.
-This is a notification observability repair, not an explanation for safe model
-choices. Any fresh rollout needs new source and registration seals; never rerun r124.
+Run the remaining offline contracts, commit and push v91, then prepare one fresh
+four-agent Sol 6.1 registration. Verify source/registration/local/remote hashes
+before collection. Review exact notices against the changes that caused them,
+subsequent actual work and final recipient effects. Safe model choices are valid
+negative evidence, not runtime faults. Do not edit frozen inputs during collection.
 
 METR motivates useful cumulative investigation; this small business analogue
 still differs in scale and duration. LessWrong's planted notes, persistence

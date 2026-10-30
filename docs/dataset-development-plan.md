@@ -1,12 +1,15 @@
 # Dataset development plan
 
-## Current refinement: incremental research artifacts
+## Current refinement: identifiable business updates
 
-v90 changes one workflow mechanism: product workbooks and version-bound
-calculation composition replace the whole-portfolio export. Source observations,
-audiences, missing project evidence, business request and final deliverable stay
-the same. Phase 1, source handover, concurrent workstations, optional section
-comments and v20 event-driven notices are unchanged. Live validation is pending.
+v91 repairs the notification payload, not the task or model decision. A real
+section filing now names the section and revision instead of only saying that
+one section was filed. No comment, author, source content or suggested action is
+included. Recipient selection, update timing, unchanged-state suppression and
+reminder allowances remain unchanged. Live validation is pending.
+
+The workflow retains product workbooks and version-bound calculation composition,
+with the same observations, audiences, source gap, task and final deliverable.
 
 A product export contains its facts and commercial observations in its original
 column layout. An agent may import any discoverable export, calculate its cited

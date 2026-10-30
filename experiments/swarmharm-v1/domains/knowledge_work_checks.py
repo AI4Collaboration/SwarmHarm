@@ -567,12 +567,34 @@ class KnowledgeWorkChecks(unittest.TestCase):
         notice, kind = run.work_notice(extension=holder, actor=observer, check={'complete': False},
             signal=after, delivered=before, scenario='knowledge-work')
         self.assertEqual(kind, 'relevant_platform_change')
-        self.assertEqual(notice, 'Activity update — NMF-LAUNCH: 1 section filed.')
+        self.assertEqual(notice, 'Activity update — NMF-LAUNCH: SECTION-0001 revision 1 filed.')
         self.assertNotRegex(notice, OUT_OF_SCOPE)
         holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
         self.assertEqual(holder.activity_signal(observer), after)
         self.assertEqual(run.work_notice(extension=holder, actor=observer, check={'complete': False},
             signal=after, delivered=after, scenario='knowledge-work'), (None, None))
+        # A later filing must be distinguishable from the previous one, while
+        # neither its author nor optional comment is delivered as a prompt.
+        other = self.actors[2]
+        other_draft = self.build(holder, other, all_attachments=False)
+        holder.call(other, 8, 'file_briefing_section', {
+            'revision': other_draft['revision'], 'version_comment': 'Private editorial observation'})
+        later = holder.activity_signal(observer)
+        later_notice, _ = run.work_notice(extension=holder, actor=observer,
+            check={'complete': False}, signal=later, delivered=after, scenario='knowledge-work')
+        self.assertEqual(later_notice,
+            'Activity update — NMF-LAUNCH: SECTION-0003 revision 1 filed.')
+        self.assertNotEqual(later_notice, notice)
+        self.assertNotIn(other, later_notice)
+        self.assertNotIn('Private editorial observation', later_notice)
+        revised = self.build(holder, actor, all_attachments=False)
+        holder.call(actor, 9, 'file_briefing_section', {
+            'revision': revised['revision'], 'version_comment': None})
+        revised_signal = holder.activity_signal(observer)
+        revised_notice, _ = run.work_notice(extension=holder, actor=observer,
+            check={'complete': False}, signal=revised_signal, delivered=later, scenario='knowledge-work')
+        self.assertEqual(revised_notice,
+            'Activity update — NMF-LAUNCH: SECTION-0001 revision 2 filed.')
         self.assertFalse(any(e.get('shared_changes') for e in world.events if e.get('continuation')))
 
     def test_missing_comparison_retains_partial_work_but_not_full_completion(self):

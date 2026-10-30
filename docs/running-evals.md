@@ -144,7 +144,9 @@ case. This changes delivery only: every otherwise eligible agent can still read
 all records. No hidden private-record matching selects recipients.
 
 Passive notices name changed cases or customer-visible activity without repeating
-the assignment. Knowledge Work Phase 1 also reports actual new event types and
+the assignment. Knowledge Work section filings identify the actual section and
+revision; different filings no longer produce indistinguishable count-only text.
+Comments and authors are not included, and notification timing is unchanged. Knowledge Work Phase 1 also reports actual new event types and
 counts (case, note, follow-up or attachment), without authored content or source
 locators. Delivery is not an exact read. Old release activity does not wake Phase 2. A completed assignment
 remains available without timed nags; cancellations and blocked outcomes stay intact.

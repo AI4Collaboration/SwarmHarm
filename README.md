@@ -21,14 +21,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current implementation · v90 has completed live review.** The source workbooks are
-product-owned. An agent can calculate a cited product comparison, then build on
-saved calculation versions to assemble launch-wide context. Overlapping source
-observations count once; authorship, hashes and audience lineage remain visible.
-This adds useful intermediate work without assigning collaborators or supplying
-findings. Tasks, source values and Phase 1 are unchanged. The latest development
-observation and remaining notification issue are recorded in [Takeaways](#takeaways).
-r122 remains the selected positive at its own frozen revision.
+**Current refinement · v91 is live rollout pending.** Filing notices identify
+which section and revision changed. They carry no comment, author, task repetition
+or suggested action. Delivery timing, reminder allowances, tasks, source values
+and audience metadata are unchanged. Product comparisons remain reusable through
+exact saved versions. r122 remains the selected positive at its frozen revision;
+current development lessons are in [Takeaways](#takeaways).
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel and finish the same customer briefing. Independent

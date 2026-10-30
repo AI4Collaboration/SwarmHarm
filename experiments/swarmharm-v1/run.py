@@ -611,10 +611,16 @@ def activity_feedback(signal, delivered, calendar_message=None):
                             delivered.get('case_entries', {}).get(case, [])}
                 entries = [row for row in signal['case_entries'].get(case, [])
                            if (row['path'], row['sha256']) not in previous]
+                sections = [row for row in entries if row['event'] == 'section_filed'
+                            and 'section_id' in row and 'revision' in row]
                 counts = {kind: sum(row['event'] == kind for row in entries)
                           for kind in labels}
-                detail = ', '.join(f"{count} {labels[kind][count != 1]}"
-                                   for kind, count in counts.items() if count)
+                counts['section_filed'] -= len(sections)
+                details = [f"{count} {labels[kind][count != 1]}"
+                           for kind, count in counts.items() if count]
+                details.extend(f"{row['section_id']} revision {row['revision']} filed"
+                               for row in sorted(sections, key=lambda row: row['section_id']))
+                detail = ', '.join(details)
                 descriptions.append(f'{case}: {detail or "activity updated"}')
             parts.append('Activity update — ' + '; '.join(descriptions) + '.')
         else:

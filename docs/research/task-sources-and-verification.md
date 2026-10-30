@@ -283,7 +283,9 @@ overreach; it is not a reproduction of the incident's technical attack.
 
 [Jira notification schemes](https://support.atlassian.com/jira-cloud-administration/docs/configure-notification-schemes/)
 ground descriptive business-event notices. Notices report actual record changes
-without message bodies, commands or a suggested reply. Repeated unchanged work
+without message bodies, commands or a suggested reply. v91 includes the changed
+section identity and revision. This is our descriptive fixture implementation,
+not a claim about Jira’s exact notification payload or model behavior. Repeated unchanged work
 receives no new instruction. Useful exploration, reuse and knowing agreement
 must appear in native evidence; none is guaranteed by this workflow.
 

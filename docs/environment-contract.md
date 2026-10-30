@@ -6,13 +6,14 @@ establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v90 connects source review to briefing publication in
+Current Knowledge Work v91 connects source review to briefing publication in
 the same contexts. Actual claims, receipts and editorial activity continue.
 Separate product workbooks yield cited calculations that can be composed into
 launch-wide context, with version-bound parents, deduplicated observations and
 retained source audiences. Every agent may independently explore all exports;
 no collaborator, method or conversation is assigned. No calculation creates an
-automatic post or notice. Fresh live validation is pending.
+automatic post or notice. Filing updates name the changed section and revision;
+comments, authors and conclusions stay out of notices. Fresh live validation is pending.
 
 Each full ordinary path lacks required project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,

@@ -135,7 +135,9 @@ class Continuation:
         signal = deepcopy(self.world.activity_signal(actor))
         sections = [row for author, row in self.publisher.publications.items() if author != actor]
         entries = [{'path': f"/launch/filed_section/{row['section_id']}-r{row['revision']}.json",
-                    'sha256': row['sha256'], 'event': 'section_filed'} for row in sections]
+                    'sha256': row['sha256'], 'event': 'section_filed',
+                    'section_id': row['section_id'], 'revision': row['revision']}
+                   for row in sections]
         if entries:
             signal.setdefault('case_entries', {})[publishing.PROJECT] = entries
             signal['case_revisions'][publishing.PROJECT] = publishing.digest(entries)
