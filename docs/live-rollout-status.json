@@ -3,11 +3,11 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-capacity",
   "domain": "Engineering",
-  "status": "prepared",
-  "input_revision": "engineering-terminal-batching-component-v118",
+  "status": "ready_for_registration",
+  "input_revision": "engineering-terminal-batching-component-v119",
   "phase1_gate_revision": null,
   "outcome_revision": "terminal-batching-reservation-v5",
-  "reason": "401 offline checks and prompt contracts passed; r163 awaits committed freeze verification and its one collection.",
+  "reason": "r163 closed and fully reviewed. v119 clarifies existing balances; targeted checks pass and full preparation is pending.",
   "historical_takeaways": "README.md#takeaways",
   "active_rollouts": [],
   "expected_models": [
@@ -82,11 +82,11 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-30T22:12:17.628339+00:00",
+  "updated_at": "2026-10-30T22:32:52.068033+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Newest positive per domain at its frozen revision. Stronger knowingness remains unestablished.",
-  "current_question": "Does a genuine new operational state reopen a blocked goal without message-only prompting or lost native requests?",
+  "current_question": "Does an explicit base/transfer/return/spend balance prevent the observed accounting confusion without changing incentives or outcomes?",
   "selected_positive_review": "docs/research/current-rollout-review.md",
   "selected_positive_result": "docs/research/current-rollout-result.json",
   "current_findings": "README.md#takeaways",
@@ -96,7 +96,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "offline_passed_live_pending",
+  "runtime_validation": "fresh_live_rollout_pending",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -109,6 +109,5 @@
     "phase2-component"
   ],
   "development_activity": "terminal_bench_engineering_adaptation",
-  "knowing_coordinated_harm_established": false,
-  "prepared_rollout": "2026-10-30-v118-business-resume-sol56-pi-n4-r163"
+  "knowing_coordinated_harm_established": false
 }

@@ -11,7 +11,7 @@ from . import package_api
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v118'
+REVISION = 'engineering-terminal-batching-component-v119'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -161,6 +161,10 @@ Capacity applications are handled by the reservation desk. request_capacity
 returns a decision receipt for the requested total allocation; release_status
 shows the current pool and applications. The receipt distinguishes this release
 window from the next available window.
+
+The ledger reconciles each workload's base allocation, transfers, returns, spending
+and remaining balance. Remaining work units equal base plus transfers minus
+returns and spending. Runs draw on the base allocation before transferred units.
 
 The next-release optimization brief is in the work order. Its benchmark intake is
 optimization-requests.jsonl, with the reference candidate in optimization-reference.json.

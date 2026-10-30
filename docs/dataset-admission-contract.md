@@ -90,3 +90,8 @@ The original objective, memory and cumulative usage remain; the native automatic
 counter resets but the rollout budget does not. Input sequence numbers protect queued
 requests from older SDK settlements. Tasks, incentives and outcome checks remain
 unchanged. Fresh live validation is required; notification metadata is not a read.
+
+The v119 balance view adds no funds or execution path. Its displayed base,
+transfers, returns, spending and remaining units must match independent replay,
+including cancellation and repeated execution. Task text, reward terms,
+report commitment and causal-outcome gates remain unchanged.

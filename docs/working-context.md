@@ -2,18 +2,16 @@
 
 ## Active work
 
-**Current source: v118 business-state goal resumption; live rollout pending.**
-A blocked native goal can reopen once for a new order, filed allocation or
-confirmation, queue, execution or earned-credit state. Discussion, attachments,
-denied applications and elapsed time alone do not reopen it or cause passive
-replies. The same objective, session, work files and cumulative usage remain;
-the pinned resume command resets its automatic-turn counter, while the rollout
-budget stays fixed. Other terminal states are not automatically resumed.
+**Current source: v119 allocation-balance view; live rollout pending.**
+The ledger now reconciles each workload's base allocation, transferred units,
+returns, spending and remaining balance. It exposes the existing accounting;
+resource amounts, tasks, rewards, confirmation requirements and outcome gates
+are unchanged. No allocation proposal or source-selection advice is supplied.
 
-Controller input sequence numbers keep an older SDK settlement from closing a
-newly queued request. Tasks, rewards, workload data, reporting commitments and
-outcome gates are unchanged from v117. Channel notices still identify public or
-private activity without exposing message content or establishing agreement.
+The v118 native-goal lifecycle remains: one resumption after genuinely new
+operational state, preserving the objective, session and cumulative usage within
+the original rollout deadline. Discussion alone does not reopen blocked work.
+Input sequence numbers retain newly queued requests across older SDK settlements.
 
 The continuing goal includes current delivery and a measured next-release batching
 policy. Actual delivery earns a separate preparation allocation immediately usable
@@ -28,12 +26,14 @@ qualified evidence beyond exposure. Reward-driven intentional misuse is not
 established. See the [review](research/engineering-batching-review.md).
 v112/r155 and all frozen r156 evidence remain preserved.
 
-No active collector. v118/r163 is freshly prepared after 401 offline checks and
-prompt contracts passed. Source `4995019f9`; model Sol 5.6, four concurrent actors.
-Commit/push this registration, verify clean local/remote/sealed hashes and launch
-it once. The complete r162 review remains externally archived with its lesson in
-README. Business truth and all workstation input bytes match r162 for matching
-assignments. The temporary development worktree has been removed.
+No active collector. v118/r163 is completely reviewed and externally archived in
+`../eval-readiness/engineering-v118-r163-review/`; its lesson is in README.
+The active source is v119, with the accounting view prepared in isolation and
+15 related offline checks passed. Business truth and task text match r163;
+only PLATFORM.md gains an accounting explanation. Run full preparation, push a
+fresh registration and verify clean local/remote/sealed hashes before one rollout.
+The v118 registration is preserved in Git commit `2bf276440` and both external
+archives. Its 12 files were compared byte-for-byte before maintained-tree removal.
 
 v112/r155 is retained under `phase2-engineering-v112-r155` at `da962f07`; source
 `262470bf`. Its original review is in Git commit `0e11dd68` and
@@ -99,6 +99,9 @@ assembly is not prior agreement.
 
 ## Next action
 
-Finish full offline checks for the goal-resumption repair, then prepare one
-fresh matching registration. Keep tasks, rewards, inputs and outcome gates fixed.
-No website or scheduled task.
+Prepare and collect v119 once with four Sol 5.6 actors and the same budgets,
+reward, native goal and task. Check whether the explicit balance view removes
+accounting confusion, then review actual choices and independently executed
+reporting. If the stronger claim remains absent, a shared next-stage reward
+dependency is a separate candidate condition, not part of v119. Preserve safe
+partial work. No website or scheduled task.

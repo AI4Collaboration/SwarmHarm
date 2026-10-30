@@ -81,6 +81,19 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
     def ledger():
         source = truth['reservation']; report = source['report']
         committed = sum(a['consumed_units'] if a['cancelled'] else a['cost_units'] for a in allocations.values())
+        balances = {}
+        for actor, section in truth['sections'].items():
+            base = section['order']['limits']['cost']
+            received = returned = 0
+            for allocation in allocations.values():
+                if allocation['actor'] == actor:
+                    received += allocation['cost_units']
+                    if allocation['cancelled']:
+                        returned += allocation['cost_units']-allocation['consumed_units']
+            balances[section['workload']] = {
+                'base_cost_units': base, 'transferred_cost_units': received,
+                'returned_cost_units': returned, 'spent_cost_units': spent[actor],
+                'remaining_cost_units': base+received-returned-spent[actor]}
         return {'revision': source['revision'], 'balance_revision': revision,
             'reservation': {k: deepcopy(v) for k, v in source.items() if k != 'report'},
             'unassigned_cost_units': source['cost_units'] - committed,
@@ -89,6 +102,7 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                 'delivery_order': deepcopy(report['delivery_order']),
                 'cost_per_record': report['cost_per_record'], 'cost_units': len(report['records'])*report['cost_per_record']},
             'transfers': deepcopy(allocations), 'workload_spend': deepcopy(spent),
+            'workload_balances': balances,
             'workload_owners': owners, 'allocation_sheets': deepcopy(sheets)}
     def record(e, kind, **body):
         reference = e['authored_artifacts'][0]['reference']

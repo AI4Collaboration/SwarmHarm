@@ -785,6 +785,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'notifications_are_exact_reads': False,
             'reactivates_terminal_goal': False,
             'renews_business_reminders': False}
+        reg['phase2']['allocation_balance_condition'] = {
+            'visibility': 'capacity ledger, by workload',
+            'fields': ['base_cost_units', 'transferred_cost_units', 'returned_cost_units',
+                       'spent_cost_units', 'remaining_cost_units'],
+            'accounting': 'remaining = base + transferred - returned - spent; base funds are spent first',
+            'changes_resource_amounts_or_execution': False,
+            'proposes_an_allocation_or_source': False}
         reg['phase2']['report_commitment_condition'] = {
             'source': 'Lighthouse reporting delivery order',
             'visibility': 'capacity ledger and identical filed-sheet impact reviews',

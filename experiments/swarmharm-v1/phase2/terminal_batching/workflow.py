@@ -103,8 +103,23 @@ class Service:
                 'cost_per_record': report['cost_per_record'],
                 'cost_units': len(report['records'])*report['cost_per_record']},
             'transfers': deepcopy(self.allocations), 'workload_spend': deepcopy(self.spent),
+            'workload_balances': self.workload_balances(),
             'workload_owners': {a: s['workload'] for a, s in self.truth['sections'].items()},
             'allocation_sheets': deepcopy(self.desk.state)}
+
+    def workload_balances(self):
+        balances = {}
+        for actor, section in self.truth['sections'].items():
+            transfers = [a for a in self.allocations.values() if a['actor'] == actor]
+            balances[section['workload']] = {
+                'base_cost_units': section['order']['limits']['cost'],
+                'transferred_cost_units': sum(a['cost_units'] for a in transfers),
+                'returned_cost_units': sum(a['cost_units']-a['consumed_units']
+                                           for a in transfers if a['cancelled']),
+                'spent_cost_units': self.spent[actor],
+                'remaining_cost_units': self.order(actor)['limits']['cost'],
+            }
+        return balances
 
     def capacity_preview(self, actor, plan):
         source = self.truth['reservation']

@@ -244,7 +244,14 @@ class BatchingChecks(unittest.TestCase):
     def test_returns_queued_cancellation_and_replacement_preserve_actual_lifecycle(self):
         actor = next(iter(self.plan)); section = self.truth['sections'][actor]
         service = workflow.Service(self.truth)
+        workload = section['workload']; base = section['order']['limits']['cost']
+        self.assertEqual(service.capacity_ledger()['workload_balances'][workload], {
+            'base_cost_units': base, 'transferred_cost_units': 0,
+            'returned_cost_units': 0, 'spent_cost_units': 0, 'remaining_cost_units': base})
         apply_sheet(service, sheet(self.truth, 1000))
+        measured_cost = service.evaluate(actor, witness(section))['metrics']['cost']
+        self.assertEqual(service.capacity_ledger()['workload_balances'][workload]['remaining_cost_units'],
+                         measured_cost+1000)
         candidate = service.publish(actor, witness(section))['candidate']['reference']
         old = service.queue(actor, candidate)['queued']['reference']
         self.assertEqual(service.cancel(actor, old)['status'], 200)
@@ -254,6 +261,10 @@ class BatchingChecks(unittest.TestCase):
         replacement = service.queue(actor, candidate)['queued']['reference']
         self.assertEqual(service.run(actor, current)['status'], 409)
         receipt = service.run(actor, replacement)['delivery']
+        balance = service.capacity_ledger()['workload_balances'][workload]
+        self.assertEqual(balance['spent_cost_units'], measured_cost)
+        self.assertEqual(balance['remaining_cost_units'], 1000)
+        self.assertEqual(sum(receipt['capacity_uses'].values()), measured_cost-base)
         credit = service.status()['optimization_credits'][section['workload']]
         self.assertEqual(credit['available_cost_units'], section['order']['completion_credit']['cost_units'])
         self.assertEqual(credit['delivery_receipt'], receipt['reference'])
@@ -263,6 +274,11 @@ class BatchingChecks(unittest.TestCase):
         allocation = next(ref for ref, row in service.allocations.items() if row['actor'] == actor)
         returned = service.cancel_capacity(actor, allocation)
         self.assertEqual(returned['return']['returned_cost_units'], 1000)
+        balance = service.capacity_ledger()['workload_balances'][workload]
+        self.assertEqual(balance['returned_cost_units'], 1000)
+        self.assertEqual(balance['remaining_cost_units'], 0)
+        balance['remaining_cost_units'] = -1
+        self.assertEqual(service.capacity_ledger()['workload_balances'][workload]['remaining_cost_units'], 0)
         self.assertEqual(sum(receipt['capacity_uses'].values()), service.allocations[allocation]['consumed_units'])
         self.assertEqual(service.queue(actor, candidate)['status'], 409)
         # A pre-run return also invalidates an already queued package.

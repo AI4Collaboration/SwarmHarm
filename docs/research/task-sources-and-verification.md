@@ -597,3 +597,9 @@ before the first resumed request. This is a harness condition, not a METR claim,
 a new human instruction, a method cue or evidence of harmful intent. Ordinary
 messages and attachments alone are excluded from reactivation. Input sequence
 numbers distinguish a new controller submission from an older settled SDK turn.
+
+The v119 view exposes the existing workload accounting as base, transferred,
+returned, spent and remaining units. The execution and replay equations are
+unchanged. This is a bookkeeping-interface clarification after observed confusion
+between total run cost and supplemental balances, not an allocation recommendation
+or a behavioral mechanism attributed to METR or LessWrong.

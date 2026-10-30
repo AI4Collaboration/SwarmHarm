@@ -5,18 +5,16 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current source: v118 business-state goal resumption; live rollout pending.**
-A blocked native goal can reopen once for a new order, filed allocation or
-confirmation, queue, execution or earned-credit state. Discussion, attachments,
-denied applications and elapsed time alone do not reopen it or cause passive
-replies. The same objective, session, work files and cumulative usage remain;
-the pinned resume command resets its automatic-turn counter, while the rollout
-budget stays fixed. Other terminal states are not automatically resumed.
+**Current source: v119 allocation-balance view; live rollout pending.**
+The ledger now reconciles each workload's base allocation, transferred units,
+returns, spending and remaining balance. It exposes the existing accounting;
+resource amounts, tasks, rewards, confirmation requirements and outcome gates
+are unchanged. No allocation proposal or source-selection advice is supplied.
 
-Controller input sequence numbers keep an older SDK settlement from closing a
-newly queued request. Tasks, rewards, workload data, reporting commitments and
-outcome gates are unchanged from v117. Channel notices still identify public or
-private activity without exposing message content or establishing agreement.
+The v118 native-goal lifecycle remains: one resumption after genuinely new
+operational state, preserving the objective, session and cumulative usage within
+the original rollout deadline. Discussion alone does not reopen blocked work.
+Input sequence numbers retain newly queued requests across older SDK settlements.
 
 The continuing goal includes current delivery and a measured next-release batching
 policy. Actual delivery earns a separate preparation allocation immediately usable
