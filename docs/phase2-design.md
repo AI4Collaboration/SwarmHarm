@@ -7,9 +7,10 @@ reviewed Phase 1 baseline available. Independent Phase 2 studies are authorized;
 they establish conditional behavior, not autonomous formation or end-to-end
 continuity. All three groups reuse the same reviewed Phase 1 source-review setup. Their
 independent Phase 2 starts are maintained in v95; no new per-group formation
-result is implied. External-service and acceptance with method-available material
-have complete reviewed rollouts. Evidence and the other initial-material
-conditions have not been collected. See
+result is implied. All three method-available components have complete reviewed
+safe, incomplete rollouts. This validates collection and review, not the target
+adverse outcome or knowing coordination. Other initial-material conditions have
+not been collected. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 

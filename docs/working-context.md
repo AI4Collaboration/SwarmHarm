@@ -21,16 +21,11 @@ v95 maintains `external-service`, `acceptance` and `evidence` in
 `component_workflow.py`, with independent reconstruction in `component_review.py`.
 Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
-recipient controls pass locally. External-service and acceptance have complete
-reviewed rollouts; their outcomes are in README Takeaways. Evidence awaits live
-review. Evidence r133 is collecting; do not start a duplicate collector.
+recipient controls pass locally. All three method-available components have
+complete reviewed rollouts; their outcomes are in README Takeaways. No collector
+is active. The target adverse outcomes and knowing joint planning remain unmet.
 Do not modify the website. Use four Sol 6.1 contexts with the routing policy in
 `docs/axonhub-routing.md`.
-
-v93/r127 is fully reviewed and archived outside Git; its concise negative lesson
-is in README. Its source-registration archives are byte verified. No rerun.
-The unregistered selected-section assembly change remains shelved externally;
-it is not part of this revision.
 
 ## Selected positive evidence
 
@@ -61,31 +56,32 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Acceptance r131 ended before any subject tool committed: ethCO overloaded and
-appleCO returned revoked OAuth. Full raw records and a byte-verified registration
-are archived in `../eval-readiness/knowledge-work-v95-r131-provider-review/`.
-The user's 30 October reply supersedes the pending disable-channel proposal:
-use native AxonHub fallback, preferring non-OpenRouter. The existing evaluation
-key now uses `SwarmHarm-AxonHub-Fallback` with no channel allowlist; no global
-channel was disabled. Connectivity check #185988 succeeded through ethCO after
-appleCO's 401, with the same Sol 6.1 identity. There is no pending route approval.
-Acceptance r132 is complete and fully reviewed under that profile. Source commit
-`9bfc4648`, registration `0050d84d`; full review and byte-verified registration:
-`../eval-readiness/knowledge-work-v95-r132-review/`. Raw output:
-`../eval-readiness/swarmharm-v1-2026-10-30-v95-acceptance-native-fallback-sol61-n4-r132/`.
-Evidence r133 is now collecting with v95 method-available inputs and four Sol
-6.1 contexts. Source `66a7a0cb`, registration `bb885a12`; collector PID 74045
-acknowledged startup. Raw output:
+No collector is active. All three v95 method-available component rollouts are
+reviewed; concise results are in README Takeaways. The latest reviewed evidence
+is r133, source `66a7a0cb`, registration `bb885a12`:
+`../eval-readiness/knowledge-work-v95-r133-review/`.
+Raw output:
 `../eval-readiness/swarmharm-v1-2026-10-30-v95-evidence-native-fallback-sol61-n4-r133/`.
-Review its complete terminal record before any further mechanism change. Do not
-rerun r132 or duplicate r133.
-Do not rerun r131 or modify tasks to fix an authentication failure. No website
-changes. Raw routing proof: `../eval-readiness/axonhub-native-fallback-probe-20261030T084157Z/`.
+Its registration is byte-verified externally; do not repeat any completed trajectory.
+
+Review the ordinary source-import workflow before another mechanism change:
+current facts are already available to builds, but importing their table produces
+a generic 422. This appeared in both r132 and r133. Preserve the missing current
+deliverable, old-method provenance and safe partial work if repairing that
+interface. Rejection of old records precedes these errors, so a repair cannot be
+presented as the known cause of abstention or a guarantee of adoption. Freeze any
+justified repair in a new registration.
+
+The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
+allowlist, non-OpenRouter priority and same-model fallback. No global channel was
+disabled and no route approval is pending. Connectivity request #185988 recovered
+appleCO's 401 via ethCO. All 81 requests across r132/r133, including four preflight
+calls, completed via ethCO; OpenRouter fallback is eligible but unobserved here.
+Routing proof: `../eval-readiness/axonhub-native-fallback-probe-20261030T084157Z/`.
+Do not modify the website.
 
 ## Maintained evidence and archive
 
 Selected positives: Knowledge r122, Engineering r65, Data r74, Finance r75.
-The r121 registration is byte-verified externally in
-`../eval-readiness/knowledge-work-v87-r121-review/registration/`; its maintained
-report/result and README are preserved there and in Git. Earlier accepted
-unknowingly composition and negative lessons remain in README Takeaways.
+Earlier accepted unknowingly composition and negative lessons remain in README
+Takeaways, with complete raw records outside Git and source history in Git.
