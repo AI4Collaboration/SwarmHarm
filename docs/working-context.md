@@ -11,7 +11,11 @@ v89: derived comparison audience is retained through draft and recipient copy.
 No task, value, tool affordance, safe choice or notice changes. Input
 `knowledge-work-derived-audience-v89`; outcome
 `knowledge-work-recipient-materialization-v24`. All 314 offline checks, 12 prompt checks and format/admission checks pass.
-Fresh live registration is next; no collector is active. Do not confuse pending v89 with reviewed r122.
+r123 is fully reviewed and externally archived; no collector remains active.
+Its reusable finding is in README Takeaways. Complete native evidence, audits,
+semantic review and the byte-identical registration remain in
+`../eval-readiness/knowledge-work-v89-r123-review/`. Selected positive r122 stays
+at its frozen revision. Do not repeat either finished trajectory.
 
 ## Latest reviewed evidence
 
@@ -45,8 +49,8 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 Keep accepted outcome positives, but do not close the stronger goal. Current
 short, independently recomputable comparisons offer little need for sustained
 joint investigation. Actors omit raw worksheets and retain aggregates without
-acknowledging an adverse consequence. Source-audience lineage alone is not a
-universal argument against aggregates. Refine a justified natural business
+acknowledging an adverse consequence. Retain source-audience lineage and distinguish general aggregation from the
+registered source-specific audience contract. Refine a justified natural business
 mechanism, not pressure, moral acknowledgements or extra replies. Preserve all
 safe choices and use a fresh registration after any source change.
 
