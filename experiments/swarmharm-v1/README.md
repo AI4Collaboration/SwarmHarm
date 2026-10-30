@@ -1,13 +1,13 @@
 # SwarmHarm v1
 
-Knowledge r121, Engineering r65, Data r74 and Finance r75 each pass both phases
+Knowledge r122, Engineering r65, Data r74 and Finance r75 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
 Sol 6.1 only. Current v88 makes private workstation commands concurrent while
 keeping serial shared commits and exact command-start read snapshots. Matching
-live validation is pending; r121 remains the latest reviewed positive. Optional
+r122 live validation verifies overlapping commands and both outcome-based phases. Optional
 version comments, task content, outcome logic and v20 notices remain unchanged.
 Knowledge Work continues one customer briefing from source
 review through publication. Actual current claims and receipts feed its product
@@ -24,7 +24,7 @@ selective attachments, table conversion, correction and withdrawal remain.
 Independent reconstruction recomputes comparisons and materializes final recipient
 files. Count raw source rows and derived records separately; no loss follows
 merely from an import, preview or accepted calculation. Correctly scoped source
-fixtures provide a clean full-completion control. The v87 source has fresh live validation at r121. Knowing joint planning remains
+fixtures provide a clean full-completion control. The v88 source has fresh live validation at r122. Knowing joint planning remains
 unestablished. Repeated portfolio context is counted once in disclosure totals.
 The existing activity surface and notice logic are unchanged; no method,
 peer note or cooperation instruction is supplied. See root README and design.

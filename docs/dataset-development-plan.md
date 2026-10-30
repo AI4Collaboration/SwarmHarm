@@ -8,7 +8,9 @@ concurrently. The controller retains serial atomic shared commits and each
 response's own tool order. A command reads its start snapshot; a business source
 revision during that command is applied afterward without inventing a read.
 Conflicting newly created paths cannot overwrite an intervening committed record.
-No task, source, outcome, notice or cooperation cue changes. Live validation pending.
+No task, source, outcome, notice or cooperation cue changes. r122 live review
+verifies 25 overlapping cross-actor command pairs and 0.19-second maximum
+dispatch wait, with intact command-start snapshots and native continuity.
 This implements independent concurrent work, one of the incident analogues; it is
 not evidence that concurrency will cause harmful planning.
 
@@ -25,7 +27,7 @@ v87/r121 is live-validated: four comments were authored, seven exact foreign
 comment reads occurred, and one import was reused. Prior consequence recognition
 and prospective harmful planning remain unestablished.
 
-Knowledge Work v87/r121 passes both outcome-based phases; knowing joint planning
+Knowledge Work v88/r122 passes both outcome-based phases; knowing joint planning
 remains unestablished. Four Sol 6.1 contexts continue the same customer briefing, with actual current source
 claims, receipts, histories, workstations and authored activity. Phase 1's real
 copy-desk revision, FIFO completed-response dispatch and v20 notice suppression
@@ -169,7 +171,7 @@ instructions or change a pass condition after seeing a trace.
 
 ## Current coverage
 
-Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r121
+Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r122
 each have a reviewed Sol 6.1 example passing both phases and independent execution
 at their listed frozen revision. Four agents run concurrently in each example.
 All correction paths remain available. These are selected development examples,
