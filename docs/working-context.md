@@ -10,33 +10,30 @@ Do not recreate a scheduled task. Do not claim completion from an outcome-only p
 
 ## Current focus
 
-Independent Phase 2 v102 adds two empty discussion channels, as requested by the
-user: public enters the delivery manager review feed; private has no managerial
-or automated business oversight. Both remain fully recorded for research. There
-is no supervisor model; the business review view filters public messages and
-has an independent reconstruction check. This is our new visibility condition,
-not a LessWrong-established factor. Keep the task, truth, prepared method,
-private goal, delivery entry and outcome checks fixed. No collector is active;
-matching live validation is pending.
+Independent Phase 2 v103 clarifies the product currently open on each workstation
+and its existing source-review receipt binding. Status and tool guidance show
+this context; validation errors return expected and received values. Imports,
+permissions, task, source truth, prepared method, public/private discussion,
+private goal, reminders and outcome checks are unchanged. Matching live review
+is pending. No collector is active.
 
-The next rollout is the user-authorized four-agent Sol 5.6 test. Exact verified catalog
-identity: `openai/gpt-5.6-sol`; Sol 6.1 remains the development baseline. Do not
-attribute differences across a model-and-channel change to the model alone.
-The requested literature/test subagent was provider-interrupted before launching
-any subject inference. That attempt is archived with the r139 external review
-and is not a Sol 5.6 negative. Any resumed delegated test is limited to the
-current synthetic document workflow; no real external-service experiment.
+The next rollout uses four concurrent `openai/gpt-5.6-sol` contexts, as explicitly
+authorized. Sol 6.1 remains the development baseline. The r140 model-and-channel
+change is not a clean model-only comparison; the next rollout isolates this
+workstation interface clarification at the same Sol 5.6 model.
 
-r139 is closed, with full native reconstruction, ATIF validation and independent
-recipient execution in `../eval-readiness/knowledge-work-v101-r139-review/`.
-The authenticated AxonHub UI was unavailable, so actual routing is unverified.
-Its concise lesson is in README Takeaways; immutable inputs and all traces remain
-external and in Git. Do not repeat it. No goal continuation has fired in the
-reviewed private-plan condition; do not invent a next step for waiting subjects.
+r140 is closed and fully reviewed in
+`../eval-readiness/knowledge-work-v102-r140-review/`. Its lesson is in README
+Takeaways; complete raw records and frozen registration remain externally and
+in Git. Do not repeat it. Authenticated AxonHub UI access remains unavailable,
+so actual upstream routing is unverified. No route settings changed.
 
 The user confirmed that all three groups reuse the reviewed Knowledge Work
-Phase 1 baseline. Independent Phase 2 has prepared business sources and declared
-material/channel conditions. It makes no autonomous-formation or end-to-end claim.
+Phase 1 baseline. Independent Phase 2 starts with prepared business sources and
+declared material/channel conditions. Public/private channels have the same
+current workspace members. Private messages are outside business management
+review but both channels retain complete research logs. No supervisor model runs.
+A provided channel makes no autonomous-formation or end-to-end claim.
 No website work or scheduled automation.
 
 The current v98 Phase 1 baseline is live-validated in r136: four concurrent Sol
@@ -90,13 +87,11 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-The v102 full offline suite passed 340 checks, the component suite passed 22,
-and prompt, format and admission checks passed. Subject-facing instructions and
-channel semantics have been reviewed. Commit and push the source, then prepare
-and publish one fresh Sol 5.6 registration before live collection. Four concurrent
-contexts, same high reasoning and
-registered budgets. Coordinate with the Sol 5.6 subagent so there is exactly one
-collector for each output and no source changes during collection.
+The v103 component suite passed 23 checks and prompt contracts passed 13 checks.
+Complete format and admission validation, commit and push source, then prepare
+and publish one fresh Sol 5.6 registration. Keep four concurrent contexts, high
+reasoning, the same task, material, channel and registered budgets. Coordinate
+with the test subagent so only one collector owns the output.
 
 Inspect channel choice, exact reads and replies, prospective consequence
 recognition and joint plans, final execution, mitigation and independent effects.

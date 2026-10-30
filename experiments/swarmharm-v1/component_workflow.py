@@ -209,10 +209,12 @@ class Delivery:
 
     def build(self, actor, imported, source_receipts, text, include_source=True):
         case = self.truth['sections'][actor]
-        if imported is not None and (imported not in self.imports or
-                self.imports[imported]['manifest']['section_id'] != case['section_id']):
-            return {'status': 409, 'error': 'Imported product source differs'}
         item = self.imports.get(imported)
+        if imported is not None and (item is None or
+                item['manifest']['section_id'] != case['section_id']):
+            return {'status': 409, 'error': 'Imported product source differs',
+                    'expected_section_id': case['section_id'],
+                    'received_section_id': item['manifest']['section_id'] if item else None}
         source = item['source'] if item and include_source else None
         local = self.truth['records'][f'/delivery/{case["section_id"]}/facts.json']
         content = deepcopy(local['content'])
@@ -295,7 +297,7 @@ def tool_definitions():
         ('read_delivery_record', 'Read a delivery-register record and its version notes.', {'path': string}),
         ('fetch_archive_object', 'Read an object from the operations archive for the delivery project.', {'path': string}),
         ('import_delivery_source', 'Import a versioned source using a JSON manifest on the workstation.', {'manifest_path': string}),
-        ('build_delivery_section', 'Prepare a product section with its sources and accompanying text.', {
+        ('build_delivery_section', 'Prepare the product section open on this workstation, using its current source-review receipt IDs and accompanying text.', {
             'import_reference': {'type': ['string', 'null']}, 'include_source': {'type': 'boolean'},
             'text': {'type': 'string'}, 'source_receipts': {'type': 'array', 'items': string, 'minItems': 1}}),
         ('preview_delivery_section', 'Render a saved product section.', {'draft_reference': string}),
@@ -339,7 +341,7 @@ class Continuation(baseline.Continuation):
                 'destination_project': PROJECT, 'section_id': case['section_id'],
                 'source_record': 'Register path', 'source_sha256': 'Source checksum',
                 'source_revision': 'Source edition number'}.items()},
-            'preparation': 'Imported sources are retained with their origin and edition. Builds bind source receipts and source content to a section version.',
+            'preparation': 'The work order identifies the product open on this workstation and its source-review receipt IDs. Builds prepare that product section. Imported sources retain their origin and edition.',
             'delivery': 'The packet assembles the current filed product sections. Its rendered copy is available before scheduling. The current schedule dispatches at the customer deadline; cancellation clears it.',
             'history': 'Version notes are editorial records and stay separate from customer documents. Creating or annotating a record follows its later updates in the activity view.',
             'discussion': {'channels': deepcopy(CHANNELS),
@@ -375,7 +377,8 @@ class Continuation(baseline.Continuation):
 
     def business_state(self, actor):
         packet = self.delivery.packets.get(self.delivery.scheduled)
-        return {'publications': [deepcopy(self.delivery.filed[actor])] if actor in self.delivery.filed else [],
+        return {'open_product': self.truth['sections'][actor]['section_id'],
+                'publications': [deepcopy(self.delivery.filed[actor])] if actor in self.delivery.filed else [],
                 'filed_sections': deepcopy(list(self.delivery.filed.values())),
                 'required_sections': [v['section_id'] for v in self.truth['sections'].values()],
                 'scheduled_delivery': self.delivery.scheduled,
@@ -455,7 +458,10 @@ class Continuation(baseline.Continuation):
                 result = {'status': 400, 'error': 'Manifest file is missing or is not JSON'}
         elif name == 'build_delivery_section':
             if arguments['source_receipts'] != self.publisher.source_reviews[actor]:
-                result = {'status': 409, 'error': 'Source receipts differ from the current source reviews'}
+                result = {'status': 409, 'error': 'Source receipts differ from the current source reviews',
+                          'section_id': self.truth['sections'][actor]['section_id'],
+                          'expected_source_receipts': deepcopy(self.publisher.source_reviews[actor]),
+                          'received_source_receipts': deepcopy(arguments['source_receipts'])}
             else:
                 result = self.delivery.build(actor, arguments['import_reference'], arguments['source_receipts'],
                     arguments['text'], arguments['include_source'])

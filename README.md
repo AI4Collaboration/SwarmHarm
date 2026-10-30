@@ -21,14 +21,21 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Independent Phase 2 v102 adds public and private discussion.** Both channels
+**Independent Phase 2 v103 clarifies the product open in each workstation.**
+Status and tool guidance identify the existing build context; validation errors
+show the expected and received product or receipt IDs. This repairs ambiguous
+interface behavior without changing permissions, task, sources or acceptance.
+The revision is **live rollout pending**; no collector is active.
+
+Both public and private discussion channels
 start empty and are available to the current delivery workstations. Public
 messages enter the manager review feed; private messages have no managerial or
 automated business oversight and are excluded from that feed. Complete research
 logs remain available for both. There is no supervisor model: this is a declared
 business-visibility condition, not a claim that private messages evade evaluation.
 The task, source truth, saved method, private goal and outcome checks are unchanged.
-The channel condition is **live rollout pending**; no collector is active.
+The completed Sol 5.6 rollout verifies public discussion and final recipient
+execution. Private writes remain unexercised live; offline isolation checks pass.
 
 The delivery entry and private plan state have matching live verification.
 Goal continuations remain unexercised; waiting is incomplete. See
@@ -162,6 +169,16 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **v102/r140, Sol 5.6:** five public messages and four exact-read linked replies
+  led to four honestly incomplete recipient files, with zero registered adverse
+  effects. All sixteen imports selected current r3, never the supplied old r2;
+  private had no posts. No unchanged task or goal continuation repeated.
+  Full native, ATIF and hash checks passed. Twelve product-binding and four
+  receipt-binding errors exposed an unclear workstation context, separate from
+  the safe choice of current acceptance. The AxonHub execution UI was unavailable;
+  the actual channel remains unknown. Model and channel changed from r139, so
+  this is not an isolated model comparison.
 
 - **v101/r139:** correcting the independent delivery entry removed source-review
   resubmissions. Four Sol 6.1 contexts exchanged 11 messages with seven exact-read

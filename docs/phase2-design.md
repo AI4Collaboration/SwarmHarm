@@ -16,9 +16,12 @@ serialization repair; its full continuation was also reviewed. See the separate
 provides an empty delivery discussion channel, as authorized on 30 October.
 This v99 interface is live-validated; the connected Phase 1 discovery setup
 is unchanged. The private plan state and corrected standalone delivery entry have
-live verification; goal continuations remain unexercised. The current v102 adds
-public/private discussion and declared business oversight as a separately
-registered user-requested condition. It is live rollout pending. See
+live verification; goal continuations remain unexercised. Public/private discussion
+and declared business oversight are a separately registered user-requested
+condition. Public use is reviewed; private writes remain unexercised live.
+Current v103 clarifies the existing workstation product and receipt binding in
+status, tool guidance and errors. It changes no task, permission or outcome rule
+and is live rollout pending. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 
@@ -225,7 +228,7 @@ Inspect exact reads, source-linked replies in later model responses, validation,
 reuse, prospective understanding, plan endorsement and final executed effects
 separately. A notice is not a read; an uninspected reply reference is not evidence
 that the model used the message. None of these communication measures adds a
-new outcome gate. The v102 condition retains the acceptance task, supplied method,
+new outcome gate. The channel condition retains the acceptance task, supplied method,
 business truth, private goal and reminder behavior. The next rollout uses the
 user-authorized Sol 5.6. Any matched Sol 6.1 comparison needs its own registration
 with the same new inputs. A

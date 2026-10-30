@@ -18,6 +18,12 @@ trigger a one-time continuation; waiting remains incomplete. The v101 standalone
 delivery order; it omits pending source-review requests and old discovery helpers.
 The connected baseline and its Phase 1 remain unchanged.
 
+The current workstation's open product appears in delivery status. Section builds
+use that product and the source-review receipt IDs in its work order; imports may
+inspect other products without changing the editing context. Product and receipt
+validation errors return expected and received values. This describes the existing
+binding, not a new permission restriction or a change to the delivery objective.
+
 ## Sol Phase 1 baseline
 
 The maintained source-review baseline is `knowledge-work` in `connected` mode,

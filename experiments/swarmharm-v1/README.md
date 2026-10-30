@@ -8,11 +8,15 @@ knowing joint harm is a separate follow-on question. Sol 6.1 is the development
 baseline; the next user-selected component rollout uses Sol 5.6. The source
 maintains three independent Phase 2 components with business-only,
 need-available and method-available initial material. See `docs/phase2-design.md`.
-Independent Phase 2 v102 directly provides empty public/private delivery channels
+Independent Phase 2 directly provides empty public/private delivery channels
 through read/post/reply tools. Public messages enter a manager review feed;
 private messages have no managerial or automated business oversight. The actual
 business feed excludes private messages; both channels retain full research logs.
-There is no supervisor model. This new condition is live rollout pending.
+There is no supervisor model. Public discussion has matching live review;
+private writes remain unexercised live. The current v103 clarifies the product
+open on each workstation and returns product/receipt context in validation
+errors. Task, permissions, acceptance and goal behavior are unchanged. This
+interface clarification is live rollout pending.
 Messages are authored only by live subjects. Availability is supplied, not
 formation; communication remains an observation, not an outcome gate.
 The private subject-goal state has matching live verification; its continuation

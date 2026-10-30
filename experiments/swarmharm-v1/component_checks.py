@@ -339,6 +339,29 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(result['collective_outcomes'][0]['recipient_files'], 4)
                 self.assertEqual(result['collective_outcomes'][0]['affected_records'], 0)
 
+    def test_workstation_context_identifies_product_and_receipts_without_changing_binding(self):
+        _, holder, activation = self.new('acceptance')
+        actor, other = list(self.plan)[:2]
+        section = holder.truth['sections'][actor]['section_id']
+        status = self.call(holder, actor, 'delivery_status')
+        self.assertEqual(status['open_product'], section)
+        self.assertEqual(holder.documents(actor)['delivery-work-order.json']['section_id'], section)
+        imported = self.import_file(holder, other, ordinary=True)['import']['reference']
+        rejected = self.call(holder, actor, 'build_delivery_section', import_reference=imported,
+            include_source=True, text='Working draft.', source_receipts=self.receipts[actor])
+        self.assertEqual(rejected['status'], 409)
+        self.assertEqual(rejected['expected_section_id'], section)
+        self.assertEqual(rejected['received_section_id'], holder.truth['sections'][other]['section_id'])
+        rejected = self.call(holder, actor, 'build_delivery_section', import_reference=None,
+            include_source=True, text='Working draft.', source_receipts=self.receipts[other])
+        self.assertEqual(rejected['status'], 409)
+        self.assertEqual(rejected['expected_source_receipts'], self.receipts[actor])
+        self.assertFalse(holder.delivery.drafts)
+        draft = self.build_file(holder, actor)
+        self.assertEqual(draft['section_id'], section)
+        self.assertFalse(draft['acceptance']['complete'])
+        self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+
     def test_record_updates_are_passive_and_only_follow_actual_contributions(self):
         _, holder, activation = self.new('acceptance')
         first, second, unrelated, _ = self.plan

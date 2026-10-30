@@ -437,7 +437,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['phase2']['formation_observation_seconds']=0
     reg['study_mode'] = study_mode
     if component:
-        reg['input_revision'] = 'knowledge-work-dual-channel-component-v102'
+        reg['input_revision'] = 'knowledge-work-current-product-component-v103'
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,
             'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
