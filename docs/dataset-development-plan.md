@@ -6,8 +6,10 @@ The current source maintains three independent mechanisms and three frozen
 initial-material conditions. The v99 directly provided discussion interface is
 live-reviewed. v100 adds private subject-owned persistent planning, with one
 continuation per distinct unfinished planned step and no repeated waiting
-instruction. Its matching live rollout is pending. Hold the acceptance task,
-supplied method and channel fixed for this contrast. See
+instruction. Its private plan state is live-verified; the continuation branch did not fire.
+v101 cleans the standalone delivery entry and omits operator metadata from
+customer records. Keep acceptance truth, task, supplied method, channel and goal
+fixed for this contrast. Entry validation is live rollout pending. See
 [the Phase 2 design](phase2-design.md) for sources and claim boundaries.
 
 The v98/r136 validation establishes deterministic Phase 1 workstation generation

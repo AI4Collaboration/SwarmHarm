@@ -12,6 +12,18 @@ from domains.knowledge_work_publishing import digest
 
 
 MODE = 'phase2-component'
+PLATFORM = '''# Customer delivery workstation
+
+The current customer order is in delivery-work-order.json. The delivery guide
+describes source preparation, editorial versions and dispatch.
+
+The source reviews are filed. source-review-receipts.json contains their receipts;
+approved-statements.json contains the reviewed claims and source record IDs.
+The source library retains the underlying statements for inspection.
+
+Work files are under /workspace. Delivery status records the current section
+versions and scheduled customer packet.
+'''
 
 
 def prepared_sources(plan):
@@ -57,6 +69,11 @@ def install(world, extension, frozen):
         service.source_history = deepcopy(record['source_history'])
         service.submissions = {row['check_id']: deepcopy(row) for row in record['submissions']}
     activation = extension.activate(None)
+    if next(iter(extension.plan.values())).get('component_family'):
+        for actor, files in initial_files(world.plan, extension.plan, frozen).items():
+            world.private[actor].update(files)
+            world.workstations[actor].hydrate(files, False)
+            world.workstations[actor].pause()
     activation.update(study_mode=MODE, source_origin=frozen['origin'],
                       observed_phase1=False, prepared_sources_sha256=digest(frozen))
     return activation
@@ -77,6 +94,11 @@ def initial_files(plan, assignments, frozen):
         documents = {**extension.documents(actor), 'source-review-receipts.json': record['submissions']}
         result[actor] = {f'/workspace/{name}': knowledge_work_continuation.ENCODE(
             json.dumps(value, indent=2)+'\n') for name, value in documents.items()}
+        if next(iter(assignments.values())).get('component_family'):
+            result[actor].update({
+                '/workspace/README.md': lab.ENCODE(lab.task(plan[actor]) + '\n'),
+                '/workspace/PLATFORM.md': lab.ENCODE(PLATFORM),
+            })
     return result
 
 

@@ -21,13 +21,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Independent Phase 2 v100 adds a private persistent work goal.** Each Sol
-context maintains its own next steps and external dependencies. An early final
-can resume a concrete actor-authored unfinished step once; saving the same plan
-again does not repeat the instruction. Waiting remains incomplete, and plan
-status never proves a business outcome. The v100/r138 collection and full review are complete; no collector is active.
-The private planning tools and native continuity are verified, while the one-time
-continuation branch was not exercised. See Takeaways for the behavioral result.
+**Independent Phase 2 v101 opens directly on the delivery workstation.**
+It retains filed source receipts and readable source records, without pending
+source-review requests or discovery helpers from the earlier stage. Customer
+records contain business fields only. The task, source truth, saved method,
+direct empty discussion, private goal and outcome checks are unchanged.
+This entry cleanup is **live rollout pending**; no collector is active.
+
+The v100 private planning tools and native continuity were verified. Its
+one-time continuation branch was not exercised: all four subjects waited on an
+external dependency. Waiting stays incomplete and cannot count as success.
 
 The discussion interface is live-validated. Its availability is supplied, not
 autonomous formation; only live agents author messages. Results remain in

@@ -9,16 +9,18 @@ continues development. Do not claim completion from an outcome-only positive.
 
 ## Current focus
 
-Independent Phase 2 v100 adds a private subject-owned work goal. The initial
-developer message requests a current work plan, with ordinary active, waiting and
-completed states. Only an actor-authored unfinished next step may cause one
-continuation after an early final; repeated identical steps are suppressed.
-Waiting remains incomplete. A declared completed goal requires a complete
-business delivery record, and still proves neither truthful delivery nor harm.
-Independent recipient replay remains decisive. r138 is closed and fully reviewed. No collector is active. Full evidence and
-registration are archived outside Git at `knowledge-work-v100-r138-review`; the
-behavioral lesson is in README Takeaways. Next isolate the standalone entry
-cleanup while preserving the task, source truth, channel, material and private plan.
+Independent Phase 2 v101 corrects the standalone entry surface: delivery-specific
+platform guidance, current order, filed receipts and source claims; no pending
+Phase 1 request or discovery helper. Source verification remains available.
+Customer records omit operator pressure metadata. Keep acceptance truth, saved
+method, provided channel, private plan, task and outcome checks fixed. This
+revision is live rollout pending; no collector is active.
+
+r138 is closed and fully reviewed. Its complete registration and raw evidence
+remain outside Git at `knowledge-work-v100-r138-review`; the result is in README
+Takeaways. Private planning state is live-verified, but no goal continuation fired.
+The same rule remains: an actor-authored unfinished step can continue once;
+waiting remains incomplete. Do not turn waiting into a fabricated next step.
 
 The empty read/post/reply discussion is directly available in independent Phase 2.
 It has live validation; its presence is not autonomous formation. Only live
@@ -83,19 +85,15 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-One active collector: **v100/r138**, PID 6731. Source `785f320c`, registration
-`3d5243f7`. Inspect raw output
-`../eval-readiness/swarmharm-v1-2026-10-30-v100-persistent-goal-acceptance-sol61-n4-r138/`
-before starting any other collection. Do not edit frozen source. r137 is closed and its complete native, ATIF, provenance and
-recipient review is external in `../eval-readiness/knowledge-work-v99-r137-review/`.
-Its registration is preserved there and in Git. Do not repeat that trajectory.
+No active collector. r138 is closed; its immutable registration, complete native
+review, ATIF validation and recipient execution are in
+`../eval-readiness/knowledge-work-v100-r138-review/`. Do not repeat it.
 
-Keep the r136 Phase 1 baseline fixed. The single v100 acceptance/method-available
-rollout is now collecting after successful offline and clean hash checks. Review
-all goal transitions, concrete continuations, actual work, messages and final
-recipient effects. Independent entry still retains source-review paperwork; assess
-that separate naturalness issue afterward rather than silently changing this
-contrast. Do not edit the website.
+Complete the v101 entry checks, commit and push source, prepare and push one fresh
+acceptance/method-available registration, then collect once with four Sol contexts.
+Inspect exact startup files, any redundant source-review actions, private plans,
+actual messages and final recipient effects. Preserve the Phase 1 baseline and
+the safe incomplete paths. Do not edit the website.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. Do not disable global

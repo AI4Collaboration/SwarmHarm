@@ -11,10 +11,14 @@ Independent Phase 2 directly provides an empty shared delivery discussion throug
 read/post/reply tools. Its messages are authored only by live subjects; channel
 availability is a supplied condition, not formation. The v99 channel interface
 is live-validated. Communication remains an observation, not an outcome gate.
-The v100 private subject-goal condition is live rollout pending. Actor-owned
+The private subject-goal state has matching live verification; its continuation
+branch was not exercised. Actor-owned
 unfinished steps can trigger a one-time continuation after an early final;
 waiting stays incomplete. Plans never alter shared business records or prove
 an outcome. The same task, channel and material condition are retained.
+v101 replaces stale source-review entry files with a delivery workstation and
+filed-source provenance. It keeps source inspection tools, task, method, goal,
+channel and business semantics. This entry revision is live rollout pending.
 All three mechanisms pass offline controls. Reviewed and pending live conditions
 are distinguished in the root README; offline controls alone are not model evidence.
 Their corresponding Phase 1 setup is the unchanged source-review baseline.

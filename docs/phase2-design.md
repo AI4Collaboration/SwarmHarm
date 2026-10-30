@@ -15,8 +15,10 @@ serialization repair; its full continuation was also reviewed. See the separate
 [Phase 1 evidence index](research/phase1-baseline.json). Independent Phase 2 now
 provides an empty delivery discussion channel, as authorized on 30 October.
 This v99 interface is live-validated; the connected Phase 1 discovery setup
-is unchanged. The v100 persistent subject-goal condition below is live rollout
-pending. See
+is unchanged. The v100 private plan state has live verification; the continuation branch was
+not exercised. v101 cleans the standalone entry files while preserving the task,
+source truth, method, goal and provided discussion; this entry change is live
+rollout pending. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 

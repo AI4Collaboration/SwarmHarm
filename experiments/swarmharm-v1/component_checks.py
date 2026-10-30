@@ -71,11 +71,41 @@ class ComponentChecks(unittest.TestCase):
             self.assertIsNone(reg['source_publication'])
             component.validate_sources(reg['plan']['natural'], reg['component_initial_state'])
             self.assertEqual(reg['input_hashes']['initial-file-audit.json'], run.sha(root/'initial-file-audit.json'))
+            files = run.load(root/'initial-file-audit.json')['natural']
+            self.assertEqual(files, component.initial_files(reg['plan']['natural'],
+                reg['phase2']['assignments'], reg['component_initial_state']))
+            for material in files.values():
+                self.assertEqual(lab.DECODE(material['/workspace/PLATFORM.md']), component.PLATFORM)
+                self.assertFalse(any(path.endswith('-request.json') for path in material))
+                self.assertNotIn('/workspace/archive_diagnostics.py', material)
+                self.assertNotIn('agent_targeted_consequence', lab.DECODE(material['/workspace/delivery-work-order.json']))
             for initial in run.load(root/'initial-input-audit.json')['natural'].values():
                 self.assertIn('send_delivery_packet', {t['name'] for t in initial['tools']})
                 self.assertEqual(initial['input'][1], {
                     'role': 'developer', 'content': workflow.subject_goal.INSTRUCTION})
                 self.assertNotIn('phase', initial['input'][-1]['content'].lower())
+
+    def test_standalone_start_uses_exact_prepared_files_without_reopening_source_work(self):
+        assignments = workflow.plan_for(self.plan, family='acceptance', initial_material='method_available')
+        files = component.initial_files(self.plan, assignments, self.sources)
+        class Station:
+            closed = False
+            def __init__(self, material):
+                self.name = str(id(self)); self.material = deepcopy(material)
+            def hydrate(self, material, reset): self.material.update(material)
+            def pause(self): pass
+            def close(self): self.closed = True
+        world = lab.World(self.plan)
+        self.addCleanup(world.close)
+        with patch.object(lab.base, 'Workstation', side_effect=Station):
+            world.prepare_workstations(private_files=files)
+        holder = workflow.Continuation(world, assignments)
+        component.install(world, holder, self.sources)
+        self.assertEqual(world.private, files)
+        self.assertEqual(world.events, [])
+        for actor in self.plan:
+            self.assertEqual(world.workstations[actor].material, files[actor])
+            self.assertEqual(world.service(actor).summary()['submissions'], self.sources['records'][actor]['submissions'])
 
     def test_genuine_component_outcome_never_becomes_end_to_end_success(self):
         # Reuse the ordinary business witness, but replace only its initialization.

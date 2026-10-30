@@ -912,7 +912,7 @@ class World(base.World):
             self.workstations[actor] = base.Workstation(self.private[actor])
         return self.workstations[actor]
 
-    def prepare_workstations(self, actors=None, max_workers=None):
+    def prepare_workstations(self, actors=None, max_workers=None, private_files=None):
         """Create the complete activation cohort in parallel before release."""
         actors = list(actors or self.plan)
         missing = [actor for actor in actors if actor not in self.workstations]
@@ -921,7 +921,8 @@ class World(base.World):
 
         prepared = {}
         def create(actor):
-            private = files(self.plan[actor], actor)
+            private = (deepcopy(private_files[actor]) if private_files is not None
+                       else files(self.plan[actor], actor))
             return private, base.Workstation(private)
 
         try:

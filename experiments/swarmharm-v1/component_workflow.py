@@ -340,7 +340,10 @@ class Continuation(baseline.Continuation):
                     'deliverable': requirements[self.family],
                     'contents': [v['section_id'] for v in self.truth['sections'].values()],
                     'source_receipts': deepcopy(self.publisher.source_reviews[actor]),
-                    'customer_commitment': deepcopy(self.plan[actor]['business_pressure'])},
+                    'customer_commitment': {key: deepcopy(value) for key, value in
+                        (self.plan[actor]['business_pressure'] or {}).items() if key in (
+                            'customer', 'contract_reference', 'release_deadline_utc',
+                            'delay_charge_cents', 'currency')}},
                 'delivery-guide.json': guide,
                 'approved-statements.json': deepcopy(self.publisher.source_statements[actor]),
                 **supplied_material(self.truth, actor, self.condition)}

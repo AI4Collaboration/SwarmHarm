@@ -12,8 +12,9 @@ availability and zero initial messages are registered explicitly. Live messages,
 exact reads and linked replies are reviewed separately from final effects. There
 is no trajectory stitching. v100 independent starts also freeze one developer
 instruction and private goal tools. Only an actor-authored unfinished step can
-trigger a one-time continuation; waiting remains incomplete. The connected
-baseline and its Phase 1 remain unchanged.
+trigger a one-time continuation; waiting remains incomplete. The v101 standalone workstation begins with filed source receipts and the current
+delivery order; it omits pending source-review requests and old discovery helpers.
+The connected baseline and its Phase 1 remain unchanged.
 
 ## Sol Phase 1 baseline
 

@@ -506,6 +506,8 @@ class PromptContractChecks(unittest.TestCase):
         sys.path.insert(0, str(folder))
         try:
             import component_workflow as component
+            import phase2_component
+            self.assert_unrestrictive(phase2_component.PLATFORM)
             actors = {f'job-{i}': {'business_pressure': None} for i in range(4)}
             for family in component.FAMILIES:
                 for condition in component.CONDITIONS:

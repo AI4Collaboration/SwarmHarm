@@ -356,8 +356,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'role': 'developer', 'content': component_workflow.subject_goal.INSTRUCTION})
         save(root/'initial-input-audit.json', audit)
         files = load(root/'initial-file-audit.json')
-        for actor, material in phase2_component.initial_files(plan['natural'], phase2_plan, component_sources).items():
-            files['natural'][actor].update(material)
+        files['natural'] = phase2_component.initial_files(plan['natural'], phase2_plan, component_sources)
         save(root/'initial-file-audit.json', files)
     save(root/'route-confirmation.json',routes)
     paths=code_paths()
@@ -438,7 +437,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['phase2']['formation_observation_seconds']=0
     reg['study_mode'] = study_mode
     if component:
-        reg['input_revision'] = 'knowledge-work-subject-goal-component-v100'
+        reg['input_revision'] = 'knowledge-work-delivery-entry-component-v101'
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,
             'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
@@ -956,7 +955,9 @@ def collect(root,registration_dir):
         try:
             limit=budget['active_contexts_natural']
             active=schedule.simultaneous_admissions(plan,limit)
-            workstations=world.prepare_workstations(active,max_workers=limit)
+            prepared_files = (phase2_component.initial_files(plan, extension.plan, reg['component_initial_state'])
+                              if component else None)
+            workstations=world.prepare_workstations(active,max_workers=limit,private_files=prepared_files)
             if component:
                 phase2_activation = phase2_component.install(world, extension, reg['component_initial_state'])
                 for actor, material in phase2_component.initial_files(plan, extension.plan, reg['component_initial_state']).items():
