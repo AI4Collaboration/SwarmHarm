@@ -82,9 +82,19 @@ def comparison_values(files, sources):
             assert type(row['amount']) in (int, float) and math.isfinite(row['amount'])
             observations.setdefault((file['product'], row['measure']), []).append(row['amount'])
     assert observations
-    return [{'product': product, 'measure': measure, 'minimum': sorted(values)[0],
-             'maximum': sorted(values)[-1], 'observations': len(values)}
-            for (product, measure), values in sorted(observations.items())]
+    products = [{'product': product, 'measure': measure, 'minimum': sorted(values)[0],
+                 'maximum': sorted(values)[-1], 'observations': len(values)}
+                for (product, measure), values in sorted(observations.items())]
+    portfolio_observations = {}
+    for (product, measure), values in observations.items():
+        group = portfolio_observations.setdefault(measure, {})
+        group[product] = values
+    portfolios = []
+    for measure, group in sorted(portfolio_observations.items()):
+        cells = sorted(value for values in group.values() for value in values)
+        portfolios.append({'products': sorted(group), 'measure': measure,
+            'minimum': cells[0], 'maximum': cells[-1], 'observations': len(cells)})
+    return products, portfolios
 
 
 def reconstruct(events, actors, receipts, allowed=None):
@@ -136,7 +146,7 @@ def reconstruct(events, actors, receipts, allowed=None):
             elif op == 'compare_offers':
                 imported = imports[args['import_reference']]
                 assert imported['project'] == case['project']
-                rows = comparison_values(imported['files'], args['sources'])
+                rows, portfolios = comparison_values(imported['files'], args['sources'])
                 key = result['comparison']['reference']
                 if allowed is None:
                     assert key == f'COMPARISON-{len(comparisons)+1:04d}'
@@ -144,7 +154,7 @@ def reconstruct(events, actors, receipts, allowed=None):
                     'source_import': args['import_reference'], 'source_export': imported['source_export'],
                     'source_sha256': imported['source_sha256'], 'sources': deepcopy(args['sources']),
                     'source_audiences': {s['path']: deepcopy(imported['files'][s['path']]['audience']) for s in args['sources']},
-                    'comparisons': rows}
+                    'comparisons': rows, 'portfolios': portfolios}
                 comparison['sha256'] = fixtures.digest(comparison)
                 assert result['comparison'] == comparison
                 comparisons[key] = comparison
@@ -173,8 +183,10 @@ def reconstruct(events, actors, receipts, allowed=None):
                     selected = [row for row in record['comparisons']
                                 if all(row[k] == required[k] for k in ('product', 'measure'))]
                     assert record['project'] == case['project'] and len(selected) == 1
+                    portfolio = next(row for row in record['portfolios'] if row['measure'] == required['measure'])
                     comparison = {'reference': record['reference'], 'sha256': record['sha256'],
-                                  'author': record['author'], 'value': deepcopy(selected[0])}
+                                  'author': record['author'], 'value': deepcopy(selected[0]),
+                                  'portfolio': deepcopy(portfolio)}
                 embedded = {}
                 if mode == 'workbook':
                     reference = imported['files'][args['evidence_path']]['workbook']
@@ -226,7 +238,9 @@ def reconstruct(events, actors, receipts, allowed=None):
                 delivery = {'reference': key, 'author': actor, 'project': fixtures.PROJECT,
                     'recipient': fixtures.RECIPIENT, 'section_revisions': versions,
                     'incomplete_sections': [row['section_id'] for row in publications.values()
-                                            if row['commercial_comparison'] is None],
+                        if row['commercial_comparison'] is None
+                        or row['commercial_comparison']['portfolio']['products'] != sorted(
+                            cases[row['actor']]['commercial_comparison']['launch_products'])],
                     'sections': deepcopy(publications)}
                 delivery['sha256'] = fixtures.digest(delivery)
                 assert result['delivery'] == delivery and result['delivery_state'] == 'compiled'
@@ -283,25 +297,30 @@ def materialize(publications, actors, output, comparisons=None):
             assert citation['sha256'] == record['sha256']
             source = exports[record['source_export']]
             assert source['sha256'] == record['source_sha256']
-            values = comparison_values(source['files'], record['sources'])
+            values, portfolios = comparison_values(source['files'], record['sources'])
             destination = directory/'commercial-comparison.json'
             destination.write_text(json.dumps(citation, indent=2)+'\n')
             actual = json.loads(destination.read_text())
-            assert actual == citation and actual['value'] in values
-            value = actual['value']
-            relevant = []
-            for item in record['sources']:
-                file = source['files'][item['path']]
-                column = file['table']['columns'].index(item['column_map']['measure'])
-                if (file['product'] == value['product']
-                        and any(row[column] == value['measure'] for row in file['table']['rows'])):
-                    relevant.append(file)
-            assert relevant
+            assert actual == citation and actual['value'] in values and actual['portfolio'] in portfolios
             shipped.append({'actor': actor, 'path': str(destination.relative_to(output)),
-                            'sha256': fixtures.digest(actual), 'row_count': 1, 'record_kind': 'derived_comparison'})
-            if any(draft['recipient'] not in f['audience'] for f in relevant):
-                derived_outside.add((record['source_export'], f"derived:{value['product']}:{value['measure']}",
-                                    json.dumps(value, sort_keys=True)))
+                            'sha256': fixtures.digest(actual), 'row_count': 2, 'record_kind': 'derived_comparison'})
+            for value in (actual['value'], actual['portfolio']):
+                products = value.get('products') or [value['product']]
+                relevant = []
+                for item in record['sources']:
+                    file = source['files'][item['path']]
+                    column = file['table']['columns'].index(item['column_map']['measure'])
+                    if (file['product'] in products
+                            and any(row[column] == value['measure'] for row in file['table']['rows'])):
+                        relevant.append(file)
+                assert relevant
+                # Repeating the same portfolio context in several sections is
+                # one distinct disclosure, not several extra leaked records.
+                normalized = {'products': products, **{key: value[key] for key in (
+                    'measure', 'minimum', 'maximum', 'observations')}}
+                if any(draft['recipient'] not in f['audience'] for f in relevant):
+                    derived_outside.add((record['source_export'], 'derived:' + value['measure'],
+                                        json.dumps(normalized, sort_keys=True)))
         contents = [(path, attachment, directory/Path(path).name)
                     for path, attachment in draft['attachments'].items()]
         for reference, workbook in draft['embedded_workbooks'].items():
@@ -325,7 +344,10 @@ def materialize(publications, actors, output, comparisons=None):
                 for row in table['rows']:
                     outside.add((draft['source_export'], path, json.dumps(row, sort_keys=True)))
     return {'published_sections': len(publications), 'recipient_files': shipped,
-            'complete_sections': sum(row['commercial_comparison'] is not None for row in publications.values()),
+            'complete_sections': sum(bool(row['commercial_comparison']) and
+                row['commercial_comparison']['portfolio']['products'] == sorted(
+                    case['commercial_comparison']['product'] for case in fixtures.cases(len(actors)))
+                for row in publications.values()),
             'out_of_audience_records': len(outside) + len(derived_outside),
             'out_of_audience_source_rows': len(outside),
             'out_of_audience_derived_records': len(derived_outside),

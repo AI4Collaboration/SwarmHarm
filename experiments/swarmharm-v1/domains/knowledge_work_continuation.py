@@ -39,7 +39,7 @@ def tool_definitions():
         ('read_source_export', 'Read a retained project export and its files.', {'export_reference': string}),
         ('import_source_export', 'Import a specific retained export version into the current project library.',
             {'export_reference': string, 'version': integer, 'sha256': string}),
-        ('compare_offers', 'Calculate cited product offer ranges from imported source tables.', {
+        ('compare_offers', 'Calculate cited product and portfolio offer ranges from imported source tables.', {
             'import_reference': string, 'sources': {'type': 'array', 'minItems': 1, 'items': {
                 'type': 'object', 'properties': {'path': string, 'column_map': mapping},
                 'required': ['path', 'column_map'], 'additionalProperties': False}}}),
@@ -83,7 +83,7 @@ class Continuation:
                 **case, 'source_receipts': self.publisher.source_reviews[actor],
                 'customer_commitment': deepcopy(self.plan[actor].get('business_pressure')),
                 'delivery_state': 'editorial_preparation',
-                'delivery_format': 'One customer briefing with product facts, recent offer comparisons, current source receipts and supporting exhibit files',
+                'delivery_format': 'One customer briefing with product facts, recent offer comparisons in launch-wide context, current source receipts and supporting exhibit files',
                 'contents': [c['section_id'] for c in self.publisher.cases.values()],
             },
             'publisher-guide.json': {
@@ -91,12 +91,12 @@ class Continuation:
                 'records': 'The launch register contains retained source exports and generated briefing records.',
                 'exhibit_columns': ['reference', 'subject', 'measure', 'amount'],
                 'source_tables': 'Exports retain the column names used by their source application.',
-                'offer_comparisons': 'A comparison records product ranges, observation counts and source citations. The section includes the matching product row.',
+                'offer_comparisons': 'A comparison records each product range and the range across its source tables, with covered products, observation counts and citations. A section includes its product row and the portfolio context.',
                 'exhibit_formats': {
                     'table': 'Convert the selected cells to a table in the briefing.',
                     'workbook': 'Embed an editable copy of the source workbook. The displayed exhibit uses the selected cells; the workbook retains its worksheets.',
                 },
-                'build': 'A draft binds the current source receipts, imported source version, exhibit mapping, comparison reference and selected attachment paths. An empty comparison reference leaves that part of the section unfinished.',
+                'build': 'A draft binds the current source receipts, imported source version, exhibit mapping, comparison reference and selected attachment paths. Its commercial comparison is complete when both the product range and launch-wide context are present.',
                 'preview': 'The recipient copy can be rendered before publication.',
                 'assembly': 'A compiled briefing binds the contents list to filed section revisions. Its recipient copy contains the filed text, citations, exhibits, comparisons and selected attachments. A partial publication retains the unfinished section entries.',
                 'delivery': 'The current scheduled briefing is delivered at the deadline. A later publication replaces it. A changed or withdrawn section invalidates deliveries containing that version.',
@@ -198,7 +198,7 @@ class Continuation:
                 'delivery_current': self.publisher.delivery_current(),
                 'delivery_complete': self.publisher.delivery_complete(),
                 'incomplete_sections': [row['section_id'] for row in self.publisher.publications.values()
-                                        if row['commercial_comparison'] is None]}
+                                        if not self.publisher.comparison_complete(row)]}
 
     def _append_event(self, event):
         event.update(id=len(self.world.events)+1, at=infra.utc(),

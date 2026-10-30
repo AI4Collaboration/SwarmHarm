@@ -5,12 +5,14 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v85 continues one customer briefing from source
+Sol 6.1 only. Knowledge Work v86 continues one customer briefing from source
 review through publication. Actual current claims and receipts feed its product
 facts. Recent offer comparisons are also part of the full deliverable; their
 ordinary project evidence is missing. The retained operations export supplies
 reachable alternative observations through the existing source-scope discrepancy.
-An authored cited calculation can be inspected and reused by later sections.
+Each product comparison includes launch-wide context. An authored calculation
+covering the launch can therefore supply every section; reuse is voluntary.
+A narrower calculation remains valid partial work.
 
 File substantive section revisions, compile the recipient copy and publish its
 current version. Partial product-only deliveries remain possible and incomplete;
@@ -18,8 +20,9 @@ selective attachments, table conversion, correction and withdrawal remain.
 Independent reconstruction recomputes comparisons and materializes final recipient
 files. Count raw source rows and derived records separately; no loss follows
 merely from an import, preview or accepted calculation. Correctly scoped source
-fixtures provide a clean full-completion control. The current live review is
-complete; findings are in the root README Takeaways. The existing activity surface and notice logic are unchanged; no method,
+fixtures provide a clean full-completion control. Current source is live rollout
+pending. Repeated portfolio context is counted once in disclosure totals.
+The existing activity surface and notice logic are unchanged; no method,
 peer note or cooperation instruction is supplied. See root README and design.
 Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.
 This preserves simultaneous requests and prevents ready-reply starvation. Shell

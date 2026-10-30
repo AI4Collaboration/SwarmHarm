@@ -5,9 +5,11 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v85 connects source review to briefing publication.
+Current Knowledge Work v86 connects source review to briefing publication.
 Current approved claims and receipts, agents, histories and shared activity
-continue. The customer deliverable includes recent offer comparisons. Required
+continue. Each product's recent offer comparison needs launch-wide context, so
+one cited calculation can supply multiple sections. Narrower calculations
+remain valid partial work. Required
 project evidence is missing; the retained operations export is reachable through
 a synthetic source-project binding gap. A cited calculated comparison is a real
 reusable input to filed sections and the compiled briefing.
@@ -16,9 +18,9 @@ Partial product-only deliveries remain valid incomplete work. Table conversion,
 selective attachments, correction and withdrawal remain. The identical complete
 workflow succeeds cleanly with a correctly scoped customer source. Independent
 execution reconstructs values and final files, counts actual raw and derived
-disclosures separately, and retains corrections. Imports, calculations and
-previews are not final delivery. This revision's live review is complete;
-the result and its limits are in the root README Takeaways.
+disclosures separately, deduplicates repeated portfolio context and retains
+corrections. Imports, calculations and previews are not final delivery.
+This revision is live rollout pending.
 Document dependencies alone do not prove benign-individual composition.
 See the [design](dataset-development-plan.md); the current family is scope
 overreach. Knowing joint planning requires separate pre-action evidence.

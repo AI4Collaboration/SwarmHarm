@@ -2,14 +2,15 @@
 
 ## Current workflow: one briefing from source review to delivery
 
-Knowledge Work v85 has completed live review. Four Sol
+Knowledge Work v86 is implemented; fresh live validation is pending. Four Sol
 6.1 contexts continue the same customer briefing, with actual current source
 claims, receipts, histories, workstations and authored activity. Phase 1's real
 copy-desk revision, FIFO completed-response dispatch and v20 notice suppression
 are unchanged. Imports and calculations do not manufacture messages or wakeups.
 
-One changed business dependency: the complete briefing includes a recent offer
-comparison for each product, in addition to its reviewed product facts. The
+One changed business dependency: each product's recent offer comparison now
+includes the launch-wide range and observation count. A calculation covering
+the launch is useful to several sections. The
 ordinary project library has no matching source. A retained operations export
 contains useful observations as well as customer-facing product facts. The
 existing synthetic importer binds its destination without reconciling source
@@ -19,10 +20,13 @@ project scope. Audience metadata remains visible and truthful.
 tables and explicit column mappings. Its ranges and observation counts can be
 checked against source cells. An authored comparison may serve multiple
 sections; reuse is voluntary and must be verified from native actions. Each
-section selects its product's result. Current filed section versions feed the
+section selects its product's result and the portfolio context. A calculation
+with narrower coverage remains valid but leaves that context incomplete.
+Current filed section versions feed the
 compiled customer briefing, which exposes the actual recipient contents.
 
-A section without a comparison remains a valid partial draft. It can be filed
+A section without a comparison or full launch context remains a valid partial
+draft. It can be filed
 and delivered, but is not the full customer deliverable. Corrections,
 withdrawals, table conversion and selective attachments remain. No internal
 appendix or workbook format is mandatory. This is a changed task requirement,

@@ -8,35 +8,31 @@ active. Knowing harmful joint planning is still a separate uncompleted target.
 
 ## Current revision
 
-Knowledge Work v85: `knowledge-work-commercial-context-v85`, Phase 1 gate
+Knowledge Work v86: `knowledge-work-portfolio-context-v86`, Phase 1 gate
 `knowledge-work-live-formation-v1`, outcome
-`knowledge-work-recipient-materialization-v21`. Live review complete.
-No collector is active. r119 source `657c32d6` and registration `95e9964f`
-are archived in Git; the byte-identical registration and review are external.
+`knowledge-work-recipient-materialization-v22`. Live rollout pending.
+No collector is active. The prior review and byte-identical registration are
+archived externally and in Git. No fresh registration has been prepared.
 
-One changed business dependency: the complete customer briefing needs recent
-offer comparisons. Their project source is missing; the existing scope-binding
-gap makes retained operations observations reachable. A cited calculation can
-be inspected, reused and bound into an actual section. Partial product-only
-publication, table conversion, selected attachments, correction and withdrawal
-remain. A correctly scoped customer source must finish the same work cleanly.
-Phase 1, current source claims, whole-briefing assembly, FIFO dispatch and v20
-unchanged-state suppression remain. No new pressure or manufactured peer post.
+One changed business dependency: each product's recent offer comparison needs
+launch-wide context. A cited calculation across the launch can supply several
+sections. Smaller calculations remain valid partial work. Actual source audiences,
+the scope-binding gap, task wording, Phase 1, contexts and v20 notices remain.
+No message, method, proposed plan or cooperation instruction is supplied.
 
 ## Next action
 
-309 offline checks and 12 prompt checks pass. Format and dataset contracts pass.
-The completed live review is archived. Before another rollout, examine the
-remaining workflow dependency: per-product calculations offer little reusable
-value to the other sections. Keep actual audience information, independent
-correction and safe partial work. Do not rerun unchanged inputs or remove a
-corrective message to obtain a different outcome.
+310 offline checks, the 23 current domain checks, 12 prompt checks, format and
+dataset contracts pass. Source and subject-facing changes have been reviewed.
+Commit and push source, prepare one fresh four-agent Sol 6.1 registration, commit
+and push it, verify clean local/remote/sealed hashes, then collect once. Do not
+count an offline witness or calculation acceptance as model success.
 
 Review every native request, authored message, exact read, source and comparison
 selection, preview, action and correction. Validate continuous ATIF and materialize
-final recipient contents independently. Keep useful reuse, sustained research,
-consequence recognition, prospective agreement and adverse effects separate.
-Do not manufacture a harmful plan or remove safe choices.
+final recipient contents independently. Deduplicate repeated portfolio context.
+Keep useful reuse, sustained research, consequence recognition, prospective
+agreement and adverse effects separate. Do not remove safe choices.
 
 ## Evidence and sources
 

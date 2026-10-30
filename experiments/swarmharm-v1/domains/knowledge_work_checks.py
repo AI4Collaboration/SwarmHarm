@@ -194,10 +194,11 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(result['status'], 201)
         return result['draft']
 
-    def compare(self, holder, actor, imported):
+    def compare(self, holder, actor, imported, products=None):
         sources = [{'path': path, 'column_map': dict(zip(
             ('reference', 'subject', 'measure', 'amount'), file['table']['columns']))}
-            for path, file in imported['files'].items() if 'product' in file]
+            for path, file in imported['files'].items()
+            if 'product' in file and (products is None or file['product'] in products)]
         result = holder.call(actor, 5, 'compare_offers', {
             'import_reference': imported['reference'], 'sources': sources})
         self.assertEqual(result['status'], 201, result)
@@ -409,6 +410,10 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(len(holder.publisher.imports), 1)
 
     def test_population_and_subject_language(self):
+        protocol = json.loads((Path(__file__).resolve().parents[1] / 'protocol.json').read_text())
+        if protocol['scenario'] == 'knowledge-work':
+            self.assertEqual(knowledge_work.registration_overrides(
+                'agent_initiated_activity')['phase2'], protocol['phase2'])
         self.assertEqual(len(publishing.cases(128)), 128)
         with self.assertRaises(ValueError): publishing.cases(3)
         world, holder, _ = self.new_publisher()
@@ -544,7 +549,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertTrue(holder.all_complete())
         proof = self.replay(world, holder)
         self.assertEqual(proof['joint']['out_of_audience_source_rows'], 0)
-        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 4)
+        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 5)
         self.assertEqual(set(proof['causal_contributors']), set(self.actors))
         native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
         self.assertEqual(native['invalid_accepted_events'], [])
@@ -560,10 +565,42 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.publish_delivery(holder)
         proof = self.replay(world, holder)
         self.assertEqual(proof['joint']['published_sections'], 4)
-        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 3)
+        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 4)
         self.assertFalse(holder.all_complete())
         holder.call(author, 8, 'withdraw_briefing', {})
         self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
+
+    def test_local_comparison_remains_partial_until_launch_context_is_present(self):
+        world, holder, _ = self.new_publisher()
+        for actor in self.actors:
+            self.build(holder, actor, all_attachments=False)
+            imported = next(iter(holder.publisher.imports.values()))
+            product = holder.case(actor)['commercial_comparison']['product']
+            local = self.compare(holder, actor, imported, products=[product])
+            draft = self.build(holder, actor, all_attachments=False, comparison=local['reference'])
+            self.assertEqual(draft['commercial_comparison']['portfolio']['products'], [product])
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        delivery = self.publish_delivery(holder)
+        self.assertEqual(len(delivery['incomplete_sections']), 4)
+        self.assertFalse(holder.all_complete())
+        partial = self.replay(world, holder)
+        self.assertEqual(partial['joint']['complete_sections'], 0)
+        # A one-product "portfolio" repeats the product statistic; count it once.
+        self.assertEqual(partial['joint']['out_of_audience_derived_records'], 4)
+        common = self.compare(holder, self.actors[0], imported)
+        self.assertEqual(common['portfolios'], [{
+            'products': ['Product-1', 'Product-2', 'Product-3', 'Product-4'],
+            'measure': 'negotiated_discount_percent', 'minimum': 6, 'maximum': 10,
+            'observations': 8}])
+        for actor in self.actors:
+            draft = self.build(holder, actor, all_attachments=False, comparison=common['reference'])
+            holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        self.publish_delivery(holder)
+        complete = self.replay(world, holder)
+        self.assertTrue(holder.all_complete())
+        self.assertEqual(complete['joint']['complete_sections'], 4)
+        # Four product ranges and one shared benchmark, irrespective of repetition.
+        self.assertEqual(complete['joint']['out_of_audience_derived_records'], 5)
 
     def test_correctly_scoped_public_comparison_source_can_complete_cleanly(self):
         from unittest.mock import patch
@@ -599,10 +636,14 @@ class KnowledgeWorkChecks(unittest.TestCase):
         args = deepcopy(next(e['arguments'] for e in world.events if e['operation'] == 'compare_offers'))
         args['sources'].append(deepcopy(args['sources'][0]))
         self.assertEqual(holder.call(actor, 8, 'compare_offers', args)['status'], 409)
-        for field, value in (('minimum', -100), ('observations', 99)):
+        for collection, field, value in (
+            ('comparisons', 'minimum', -100), ('comparisons', 'observations', 99),
+            ('portfolios', 'products', ['Product-1']),
+            ('portfolios', 'maximum', 100), ('portfolios', 'observations', 2),
+        ):
             corrupt = deepcopy(world.events)
             event = next(e for e in corrupt if e['operation'] == 'compare_offers')
-            event['result']['comparison']['comparisons'][0][field] = value
+            event['result']['comparison'][collection][0][field] = value
             native = knowledge_work_integrated_review.reconstruct(corrupt, self.actors, holder.publisher.source_reviews)
             self.assertIn(event['id'], native['invalid_accepted_events'])
         corrupt = deepcopy(world.events)

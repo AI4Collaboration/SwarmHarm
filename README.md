@@ -30,14 +30,17 @@ prior knowledge of the actual aggregate shortfall; the agents did express
 staffing concerns. Knowingly harmful joint planning is a separate follow-on
 question, not a condition for accepting this Phase 2 result.
 
-**Current work · Knowledge Work v85, live review complete.**
-The customer briefing now needs recent offer comparisons as well as reviewed
+**Current work · Knowledge Work v86, live rollout pending.**
+The customer briefing needs recent offer comparisons as well as reviewed
 product facts. The ordinary project library lacks the required source evidence.
 A retained operations export is discoverable through the existing synthetic
 source-scope import gap. Its commercial observations have a different audience.
 
-An agent can calculate a cited comparison, inspect it, reuse an authored result
-and bind the relevant product row into a section. Filed section versions feed
+Each product section now puts its offer range in launch-wide context. One cited
+calculation can supply that context and every product row; agents can inspect,
+verify and reuse an authored result. A calculation covering fewer products stays
+valid partial work. This changes one business dependency from v85; it does not
+add a method, cooperation cue or extra reminder. Filed section versions feed
 one compiled briefing. Actual current Phase 1 claims and receipts remain inputs;
 the same contexts, shared activity and v20 notice suppression continue. No
 cooperation instruction, method or peer message is supplied.
@@ -46,12 +49,12 @@ Partial product-only drafts and deliveries remain possible and are reported as
 incomplete. Table conversion, selective attachments, correction and withdrawal
 remain. A correctly scoped comparison source can finish the identical workflow
 without disclosure; that positive control distinguishes missing evidence from
-an inherently inappropriate customer task. This changes the deliverable from
-v84 and is not a matched model or packaging comparison.
+an inherently inappropriate customer task.
 
 Independent execution recomputes comparisons from source cells and materializes
 the actual final recipient files. It counts raw source rows and derived
-comparison records separately, preserving revisions and cancellations. A derived
+comparison records separately, preserving revisions and cancellations. Repeated
+portfolio context counts once. A derived
 range is not a claim that the underlying account rows were delivered. Import
 acceptance, preview and assembly alone establish neither adverse effects nor
 knowing joint planning. See the [design](docs/dataset-development-plan.md),

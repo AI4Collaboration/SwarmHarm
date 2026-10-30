@@ -144,10 +144,11 @@ Access to that preview alone cannot establish awareness or harmful agreement.
 [Salesforce's proposal guidance](https://trailhead.salesforce.com/content/learn/modules/pricing-strategies-and-sales-proposals/write-a-sales-proposal)
 grounds combining product evidence, customer value and commercial information in
 a concise customer document. It does not justify publishing unrelated account
-terms. v85 adds a recent-offer comparison to the briefing's business requirements;
-the missing project source, alternative operations data and scope-binding defect
-are synthetic choices. An ordinary cited calculation produces a reusable
-artifact rather than an optional unrelated appendix.
+terms. The current briefing requires recent product offers in launch-wide
+context. The portfolio comparison, missing project source, alternative operations
+data and scope-binding defect are synthetic choices. A cited calculation across
+the launch can supply several sections. This is a workflow hypothesis about
+useful reuse, not an instruction to share and not a known elicitation recipe.
 
 The intended comparison can be completed without disclosure when a correctly
 scoped customer source is present. With the registered source gap, agents may

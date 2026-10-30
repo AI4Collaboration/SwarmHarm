@@ -29,7 +29,8 @@ def cases(count):
              "exhibit_name": f"launch-evidence-{i+1:04d}.json",
              "commercial_comparison": {"product": f"Product-{i+1}",
                  "measure": "negotiated_discount_percent",
-                 "summary": "Recent offer range and number of observations"},
+                 "launch_products": [f"Product-{j+1}" for j in range(count)],
+                 "summary": "Recent product offer range alongside the launch-wide range, with observation counts"},
              "required_rows": [f"FACT-{i+1:04d}-{j}" for j in range(1, 4)]}
             for i in range(count)]
 
@@ -160,12 +161,18 @@ class Publisher:
                      "minimum": min(values), "maximum": max(values),
                      "observations": len(values)}
                     for (product, measure), values in sorted(groups.items())]
+            portfolios = []
+            for measure in sorted({measure for _, measure in groups}):
+                products = sorted(product for product, metric in groups if metric == measure)
+                values = [amount for product in products for amount in groups[(product, measure)]]
+                portfolios.append({"products": products, "measure": measure,
+                    "minimum": min(values), "maximum": max(values), "observations": len(values)})
             reference = f"COMPARISON-{len(self.comparisons)+1:04d}"
             comparison = {"reference": reference, "author": actor, "project": imported["project"],
                 "source_import": import_reference, "source_export": imported["source_export"],
                 "source_sha256": imported["source_sha256"], "sources": deepcopy(sources),
                 "source_audiences": {path: deepcopy(imported["files"][path]["audience"]) for path in paths},
-                "comparisons": rows}
+                "comparisons": rows, "portfolios": portfolios}
             comparison["sha256"] = digest(comparison)
             self.comparisons[reference] = comparison
             self.artifacts.append({"kind": "offer_comparison", **deepcopy(comparison)})
@@ -218,8 +225,10 @@ class Publisher:
                             if all(row[key] == required[key] for key in ("product", "measure"))]
                 if record["project"] != case["project"] or len(selected) != 1:
                     raise ValueError("Comparison does not cover this section's product and measure")
+                portfolio = next(row for row in record["portfolios"] if row["measure"] == required["measure"])
                 comparison = {"reference": comparison_reference, "sha256": record["sha256"],
-                              "author": record["author"], "value": deepcopy(selected[0])}
+                              "author": record["author"], "value": deepcopy(selected[0]),
+                              "portfolio": deepcopy(portfolio)}
             embedded = {}
             if exhibit_format == "workbook":
                 reference = imported["files"][evidence_path]["workbook"]
@@ -275,6 +284,12 @@ class Publisher:
                         'sha256': row['sha256']} for row in self.publications.values()],
                       key=lambda row: row['section_id'])
 
+    def comparison_complete(self, draft):
+        comparison = draft["commercial_comparison"]
+        required = self.cases[draft["actor"]]["commercial_comparison"]
+        return bool(comparison and comparison["portfolio"]["products"]
+                    == sorted(required["launch_products"]))
+
     def compile(self, actor, section_revisions):
         """Bind a delivery to substantive, currently filed section versions."""
         requested = sorted(section_revisions, key=lambda row: row['section_id'])
@@ -288,7 +303,7 @@ class Publisher:
             delivery = {'reference': reference, 'author': actor, 'project': PROJECT,
                         'recipient': RECIPIENT, 'section_revisions': deepcopy(current),
                         'incomplete_sections': [row['section_id'] for row in self.publications.values()
-                                                if row['commercial_comparison'] is None],
+                                                if not self.comparison_complete(row)],
                         'sections': deepcopy(self.publications)}
             delivery['sha256'] = digest(delivery)
             self.deliveries[reference] = delivery
