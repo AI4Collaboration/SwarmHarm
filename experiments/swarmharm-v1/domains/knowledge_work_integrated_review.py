@@ -107,7 +107,8 @@ def reconstruct(events, actors, receipts, allowed=None):
                     assert key == f'IMPORT-{len(imports)+1:04d}'
                 imported = {'reference': key, 'author': actor, 'project': case['project'],
                     'source_export': source['export_reference'], 'source_version': source['version'],
-                    'source_sha256': source['sha256'], 'files': deepcopy(source['files'])}
+                    'source_sha256': source['sha256'], 'files': deepcopy(source['files']),
+                    'workbooks': deepcopy(source['workbooks'])}
                 assert result['import'] == imported
                 imports[key] = imported
                 artifacts.append({'kind': 'source_import', **deepcopy(imported)})
@@ -126,6 +127,14 @@ def reconstruct(events, actors, receipts, allowed=None):
                 assert rows == [claim for s in statements for claim in s['approved_claims']]
                 paths = args['attachment_paths']
                 assert len(paths) == len(set(paths)) and args['evidence_path'] in paths
+                mode = args['exhibit_format']
+                assert mode in ('table', 'workbook')
+                embedded = {}
+                if mode == 'workbook':
+                    reference = imported['files'][args['evidence_path']]['workbook']
+                    workbook = imported['workbooks'][reference]
+                    embedded[reference] = {**deepcopy(workbook), 'files': {
+                        path: deepcopy(imported['files'][path]) for path in workbook['worksheet_paths']}}
                 draft = {'actor': actor, 'section_id': case['section_id'],
                     'revision': drafts.get(actor, {}).get('revision', 0)+1,
                     'project': case['project'], 'recipient': case['recipient'],
@@ -134,7 +143,8 @@ def reconstruct(events, actors, receipts, allowed=None):
                     'source_import': args['import_reference'], 'source_import_author': imported['author'],
                     'source_version': imported['source_version'], 'source_sha256': imported['source_sha256'],
                     'evidence_path': args['evidence_path'], 'column_map': deepcopy(mapping),
-                    'exhibit': rows, 'attachments': {p: deepcopy(imported['files'][p]) for p in paths}}
+                    'exhibit': rows, 'exhibit_format': mode, 'embedded_workbooks': embedded,
+                    'attachments': {p: deepcopy(imported['files'][p]) for p in paths}}
                 draft['sha256'] = fixtures.digest(draft)
                 assert result['draft'] == draft
                 drafts[actor] = draft
@@ -214,8 +224,19 @@ def materialize(publications, actors, output):
         actual_section = json.loads((directory/'section.json').read_text())
         actual_sources = json.loads((directory/'source-reviews.json').read_text())
         assert actual_section == [claim for s in actual_sources for claim in s['approved_claims']]
-        for path, attachment in draft['attachments'].items():
-            destination = directory/Path(path).name
+        contents = [(path, attachment, directory/Path(path).name)
+                    for path, attachment in draft['attachments'].items()]
+        for reference, workbook in draft['embedded_workbooks'].items():
+            embedded_dir = directory/'embedded'/reference
+            embedded_dir.mkdir(parents=True)
+            manifest = {k: workbook[k] for k in ('title', 'worksheet_paths')}
+            (embedded_dir/'workbook.json').write_text(json.dumps(manifest, indent=2)+'\n')
+            actual = json.loads((embedded_dir/'workbook.json').read_text())
+            source_book = exports[draft['source_export']]['workbooks'][reference]
+            assert actual == source_book
+            contents.extend((path, workbook['files'][path], embedded_dir/Path(path).name)
+                            for path in actual['worksheet_paths'])
+        for path, attachment, destination in contents:
             destination.write_text(json.dumps(attachment['table'], indent=2)+'\n')
             table = json.loads(destination.read_text())
             source = exports[draft['source_export']]['files'][path]

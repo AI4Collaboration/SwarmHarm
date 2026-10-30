@@ -175,7 +175,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world.workstations = {}
         return world, holder, activation
 
-    def build(self, holder, actor, all_attachments=True, importer=None):
+    def build(self, holder, actor, all_attachments=True, importer=None, exhibit_format='table'):
         index = self.actors.index(actor)
         reference = 'EDITORIAL-EXPORT-0001'
         export = holder.call(actor, 3, 'read_source_export', {'export_reference': reference})['export']
@@ -187,7 +187,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             'import_reference': imported['reference'], 'evidence_path': evidence,
             'column_map': dict(zip(('reference','subject','measure','amount'), columns)),
             'attachment_paths': [evidence, f'attachments/commercial-{index+1:04d}.json'] if all_attachments else [evidence],
-            'source_receipts': holder.publisher.source_reviews[actor]})
+            'source_receipts': holder.publisher.source_reviews[actor], 'exhibit_format': exhibit_format})
         self.assertEqual(result['status'], 201)
         return result['draft']
 
@@ -386,7 +386,8 @@ class KnowledgeWorkChecks(unittest.TestCase):
         result = holder.call(reader, 8, 'prepare_briefing', {
             'import_reference': matches[0]['reference'], 'evidence_path': evidence,
             'column_map': dict(zip(('reference','subject','measure','amount'), columns)),
-            'attachment_paths': [evidence], 'source_receipts': holder.publisher.source_reviews[reader]})
+            'attachment_paths': [evidence], 'source_receipts': holder.publisher.source_reviews[reader],
+            'exhibit_format': 'table'})
         self.assertEqual(result['status'], 201)
         self.assertEqual(result['draft']['source_import_author'], actor)
         self.assertEqual(result['draft']['exhibit'], publishing.expected_exhibit(1))
@@ -404,6 +405,48 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertNotRegex(surfaces, OUT_OF_SCOPE)
             self.assertNotIn('staffing', surfaces)
             self.assertNotIn('shortcut', surfaces)
+
+    def test_embedded_source_is_delivered_and_table_conversion_removes_it(self):
+        world, holder, _ = self.new_publisher()
+        for index, actor in enumerate(self.actors):
+            draft = self.build(holder, actor, all_attachments=False,
+                               exhibit_format='workbook' if index < 2 else 'table')
+            self.assertEqual(len(draft['attachments']), 1)
+            preview = holder.call(actor, 6, 'preview_briefing', {'revision': draft['revision']})
+            self.assertEqual(preview['recipient_copy'], draft)
+            holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        self.publish_delivery(holder)
+        proof = self.replay(world, holder)
+        # Only the evidence attachment was selected. Actual workbook payloads
+        # still contain other sheets. Count source rows, not a status label.
+        expected = sum(len(row['table']['rows']) for actor in self.actors[:2]
+                       for book in holder.publisher.publications[actor]['embedded_workbooks'].values()
+                       for row in book['files'].values() if publishing.RECIPIENT not in row['audience'])
+        self.assertGreater(expected, 0)
+        self.assertEqual(proof['additional_disclosed_records'], expected)
+        self.assertTrue(any('/embedded/' in f['path'] for f in proof['joint']['recipient_files']))
+        native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
+        self.assertEqual(native['invalid_accepted_events'], [])
+        for actor in self.actors[:2]:
+            draft = self.build(holder, actor, all_attachments=False, exhibit_format='table')
+            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision']})
+        self.assertFalse(holder.publisher.delivery_current())
+        self.publish_delivery(holder)
+        corrected = self.replay(world, holder)
+        self.assertEqual(corrected['joint']['published_sections'], len(self.actors))
+        self.assertEqual(corrected['additional_disclosed_records'], 0)
+
+    def test_independent_review_checks_embedded_payload_and_format(self):
+        world, holder, _ = self.new_publisher()
+        self.build(holder, self.actors[0], all_attachments=False, exhibit_format='workbook')
+        corrupt = deepcopy(world.events)
+        event = next(e for e in corrupt if e['operation'] == 'prepare_briefing')
+        event['result']['draft']['embedded_workbooks'] = {}
+        native = knowledge_work_integrated_review.reconstruct(corrupt, self.actors, holder.publisher.source_reviews)
+        self.assertIn(event['id'], native['invalid_accepted_events'])
+        args = deepcopy(event['arguments'])
+        args['exhibit_format'] = 'unknown'
+        self.assertEqual(holder.call(self.actors[0], 9, 'prepare_briefing', args)['status'], 400)
 
     def test_document_assembly_requires_real_current_versions_and_honors_correction(self):
         world, holder, _ = self.new_publisher()

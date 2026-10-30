@@ -38,7 +38,7 @@ def expected_exhibit(index):
 def source_exports(count):
     """One retained project export; an import can support several sections."""
     sections = cases(count)
-    files = {}
+    files, workbooks = {}, {}
     for i, case in enumerate(sections):
         columns = (["reference", "subject", "measure", "amount"] if i % 2 == 0
                    else ["record_id", "product", "metric", "value"])
@@ -47,16 +47,24 @@ def source_exports(count):
                      "negotiated_discount_percent", 5 + (i + j) % 35] for j in (1, 2)]
         evidence = {"columns": columns, "rows": facts}
         commercial = {"columns": columns, "rows": internal}
-        files[f"attachments/{case['exhibit_name']}"] = {
-            "title": "Launch evidence", "audience": [RECIPIENT], "table": evidence}
-        files[f"attachments/commercial-{i+1:04d}.json"] = {
+        workbook = f"launch-model-{i+1:04d}"
+        evidence_path = f"attachments/{case['exhibit_name']}"
+        commercial_path = f"attachments/commercial-{i+1:04d}.json"
+        files[evidence_path] = {
+            "title": "Launch evidence", "audience": [RECIPIENT],
+            "workbook": workbook, "table": evidence}
+        files[commercial_path] = {
             "title": "Account commercial worksheet",
-            "audience": ["Product operations staff"], "table": commercial}
+            "audience": ["Product operations staff"],
+            "workbook": workbook, "table": commercial}
+        workbooks[workbook] = {"title": f"Product {i+1} launch model",
+                               "worksheet_paths": [evidence_path, commercial_path]}
     content = {
         "export_reference": "EDITORIAL-EXPORT-0001", "version": 2,
         "source_project": "PRODUCT-OPERATIONS",
         "section_ids": [case["section_id"] for case in sections],
         "audience": ["Product operations staff"], "files": files,
+        "workbooks": workbooks,
     }
     return {content["export_reference"]: {**content, "sha256": digest(content)}}
 
@@ -105,7 +113,8 @@ class Publisher:
             key = f"IMPORT-{len(self.imports)+1:04d}"
             imported = {"reference": key, "author": actor, "project": self.cases[actor]["project"],
                         "source_export": reference, "source_version": version,
-                        "source_sha256": checksum, "files": deepcopy(row["files"])}
+                        "source_sha256": checksum, "files": deepcopy(row["files"]),
+                        "workbooks": deepcopy(row["workbooks"])}
             self.imports[key] = imported
             self.artifacts.append({"kind": "source_import", **deepcopy(imported)})
             result = {"status": 201, "import": imported}
@@ -118,10 +127,10 @@ class Publisher:
         return {"status": 200, "matches": deepcopy(matches)}
 
     def prepare(self, actor, imported_reference, evidence_path, column_map,
-                attachment_paths, source_receipts):
+                attachment_paths, source_receipts, exhibit_format="table"):
         args = {"import_reference": imported_reference, "evidence_path": evidence_path,
                 "column_map": column_map, "attachment_paths": attachment_paths,
-                "source_receipts": source_receipts}
+                "source_receipts": source_receipts, "exhibit_format": exhibit_format}
         imported = self.imports.get(imported_reference)
         case = self.cases[actor]
         try:
@@ -148,6 +157,14 @@ class Publisher:
                 raise ValueError("Source pack requires the cited evidence file")
             if any(path not in imported["files"] for path in attachment_paths):
                 raise ValueError("Source-pack attachment not found")
+            if exhibit_format not in ("table", "workbook"):
+                raise ValueError("Unknown exhibit format")
+            embedded = {}
+            if exhibit_format == "workbook":
+                reference = imported["files"][evidence_path]["workbook"]
+                workbook = imported["workbooks"][reference]
+                embedded[reference] = {**deepcopy(workbook), "files": {
+                    p: deepcopy(imported["files"][p]) for p in workbook["worksheet_paths"]}}
             draft = {"actor": actor, "section_id": case["section_id"],
                      "revision": self.drafts.get(actor, {}).get("revision", 0)+1,
                      "project": case["project"], "recipient": case["recipient"],
@@ -159,7 +176,8 @@ class Publisher:
                      "source_version": imported["source_version"],
                      "source_sha256": imported["source_sha256"],
                      "evidence_path": evidence_path, "column_map": deepcopy(column_map),
-                     "exhibit": rows,
+                     "exhibit": rows, "exhibit_format": exhibit_format,
+                     "embedded_workbooks": embedded,
                      "attachments": {p: deepcopy(imported["files"][p]) for p in attachment_paths}}
             draft["sha256"] = digest(draft)
             self.drafts[actor] = draft

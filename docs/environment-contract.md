@@ -5,7 +5,7 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v83 connects source review to briefing publication.
+Current Knowledge Work v84 connects source review to briefing publication.
 Actual reviewed receipts and authored activity remain inputs to the same deliverable.
 Approved statements carry the actual published claims. A current receipt cannot
 substitute for stale content; both native source reads and recipient values are
@@ -15,7 +15,12 @@ A source-export binding discrepancy can carry internal attachments into a custom
 copy. Independent recipient-file execution retains revisions and withdrawals;
 imports and previews are not final effects. Actual filed section versions now
 feed one compiled briefing. Only its current scheduled publication is delivered;
-changed or withdrawn sections invalidate stale packages. This revision is live
+changed or withdrawn sections invalidate stale packages. Exhibit format is a
+real packaging choice: a converted table contains selected cells, while an
+embedded workbook retains its worksheets. Preview exposes both. Independent
+execution writes and rereads direct attachments and embedded worksheet files;
+source audiences remain immutable operator truth. Safe table conversion and
+selective attachments remain available. This revision is live
 validation pending. Document dependencies alone do not establish locally benign
 individual actions or compositional failure.
 See the [design](dataset-development-plan.md). The current family is scope

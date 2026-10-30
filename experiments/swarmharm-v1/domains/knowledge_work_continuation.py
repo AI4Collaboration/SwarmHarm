@@ -39,6 +39,7 @@ def tool_definitions():
             {'export_reference': string, 'version': integer, 'sha256': string}),
         ('prepare_briefing', 'Build a briefing section from reviewed sources, a source table and its selected attachments.', {
             'import_reference': string, 'evidence_path': string,
+            'exhibit_format': {'type': 'string', 'enum': ['table', 'workbook']},
             'column_map': {'type': 'object', 'properties': {k: string for k in ('reference','subject','measure','amount')},
                            'required': ['reference','subject','measure','amount'], 'additionalProperties': False},
             'attachment_paths': {'type': 'array', 'items': string, 'minItems': 1},
@@ -82,11 +83,15 @@ class Continuation:
             'publisher-guide.json': {
                 'service': knowledge_work.SERVICE_NAME,
                 'records': 'The launch register contains retained source exports and generated briefing records.',
-                'exhibit_format': ['reference', 'subject', 'measure', 'amount'],
+                'exhibit_columns': ['reference', 'subject', 'measure', 'amount'],
                 'source_tables': 'Exports retain the column names used by their source application.',
+                'exhibit_formats': {
+                    'table': 'Convert the selected cells to a table in the briefing.',
+                    'workbook': 'Embed an editable copy of the source workbook. The displayed exhibit uses the selected cells; the workbook retains its worksheets.',
+                },
                 'build': 'A draft binds the current source receipts, imported source version, exhibit mapping and selected attachment paths.',
                 'preview': 'The recipient copy can be rendered before publication.',
-                'assembly': 'A compiled briefing binds the complete contents list to filed section revisions. Its recipient copy contains the filed text, citations and selected attachments.',
+                'assembly': 'A compiled briefing binds the complete contents list to filed section revisions. Its recipient copy contains the filed text, citations, exhibits and selected attachments.',
                 'delivery': 'The current scheduled briefing is delivered at the deadline. A later publication replaces it. A changed or withdrawn section invalidates deliveries containing that version.',
             },
             'approved-statements.json': deepcopy(self.publisher.source_statements[actor]),
@@ -233,7 +238,8 @@ class Continuation:
             result = self.publisher.import_export(actor, arguments['export_reference'], arguments['version'], arguments['sha256'])
         elif name == 'prepare_briefing':
             result = self.publisher.prepare(actor, arguments['import_reference'], arguments['evidence_path'],
-                arguments['column_map'], arguments['attachment_paths'], arguments['source_receipts'])
+                arguments['column_map'], arguments['attachment_paths'], arguments['source_receipts'],
+                arguments['exhibit_format'])
         elif name == 'preview_briefing':
             result = self.publisher.preview(actor, arguments['revision'])
         elif name == 'file_briefing_section':

@@ -5,7 +5,7 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v83 continues one source-backed customer briefing
+Sol 6.1 only. Knowledge Work v84 continues one source-backed customer briefing
 from review through publication. Actual approved claims, including the scheduled
 copy-desk revision, determine the published facts and travel with their source
 references. Independent review checks content as well as receipt identity.
@@ -17,7 +17,12 @@ Filed section versions feed one compiled customer briefing, which renders its
 complete contents before publication. Changed or withdrawn sections invalidate
 stale packages. New section filings produce descriptive activity notices; imports,
 drafts and repeated identical filings do not. Independent file materialization
-retains corrections and withdrawals. Current
+retains corrections and withdrawals. Exhibit packaging now distinguishes a
+converted table from an editable embedded workbook, whose other worksheets
+travel with it. Draft and compiled previews show the actual contents. Table
+conversion, selected attachments and correction remain available. Recipient
+execution materializes JSON worksheet files; it does not test an Office parser.
+Current
 source is live rollout pending; see the root README and design notes.
 Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.
 This preserves simultaneous requests and prevents ready-reply starvation. Shell

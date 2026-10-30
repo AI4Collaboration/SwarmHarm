@@ -123,6 +123,9 @@ creating extra notifications. Preview renders a draft recipient copy; only the
 last still-published revision dispatches at the virtual briefing deadline.
 Independent review writes and rereads those files, retaining corrections and
 withdrawals. A draft, import, or declared success is not recipient delivery.
+Editable exhibits retain their source workbook's worksheets; converted tables
+contain the selected values. Preview exposes the actual embedded content, and
+independent review materializes every retained worksheet before counting rows.
 
 In the current scenario, incomplete work can receive one state-aware reminder after
 one second for business state that changed after its latest request. Facts
