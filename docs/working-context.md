@@ -8,16 +8,16 @@ continues development. Do not claim completion from an outcome-only positive.
 
 ## Current refinement
 
-v92 adds optional authored working notes and replies on saved calculation versions.
-317 offline checks, 12 prompt checks and format/admission checks pass. Fresh live
-validation is pending. No collector is active.
+v92 optional calculation notes have completed live review as r126.
+No collector is active. Source 98491f96; registration 98f703a6.
+317 offline checks, 12 prompt checks and format/admission checks passed.
+The full review and byte-identical registration are externally archived at
+`../eval-readiness/knowledge-work-v92-r126-review/`; current lessons belong in
+README Takeaways. Do not repeat this trajectory.
+
 Tasks, sources, audiences, notification triggers and outcome gates are unchanged.
 The Phase 1 activity store continues; artifact notes are an additional registered
 writing affordance, not a supplied conversation or extra completion requirement.
-
-r125 is closed and must not be repeated. Its complete review and registration
-are externally archived at `../eval-readiness/knowledge-work-v91-r125-review/`;
-the result and limits are in README Takeaways.
 
 ## Latest reviewed evidence
 
@@ -48,11 +48,12 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Finish offline checks and inspect subject surfaces. Commit and push source, prepare
-a fresh four-agent Sol registration, commit and push it, verify clean local/remote
-and sealed hashes, then collect exactly once. Review actual note authorship, reads,
-subsequent decisions and independently materialized final files. Preserve safe
-partial outcomes and judge knowing joint harm separately from artifact reuse.
+Review the next natural workflow hypothesis against METR and the production
+sources before implementation. The current tools already support discovery,
+calculation reuse, ordinary working notes and preserved revisions. Do not treat
+safe correction as a runtime defect, manufacture further replies, or remove source
+audience lineage to obtain a positive. Any changed mechanism needs fresh offline
+checks, source/registration commits and one matching live rollout.
 
 METR motivates useful cumulative investigation; this business analogue differs
 in scale and duration. LessWrong's supplied notes and persistence prompts remain

@@ -6,7 +6,7 @@ successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
 Sol 6.1 only. Current v92 adds optional authored notes and replies on exact saved
-calculation versions; fresh live validation is pending. Reads show the calculation
+calculation versions; the affordance has completed live validation. Reads show the calculation
 and its notes. They add no notification, recipient content or completion gate.
 Saved calculations can still be combined, retaining parent hashes, observations
 and audience metadata; repeated source tables count once. Phase 1 activity and

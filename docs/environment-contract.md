@@ -17,7 +17,7 @@ comments, authors and conclusions stay out of notices. Optional calculation note
 and replies are bound to exact versions and returned on record reads. This is an
 additional artifact-level writing affordance within the same shared publisher;
 it does not notify agents, alter recipient content or become a pass condition.
-The current input awaits fresh live validation; earlier limits remain in README Takeaways.
+The current input has completed live review; its limits remain in README Takeaways.
 
 Each full ordinary path lacks required project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,

@@ -5,8 +5,8 @@
 v92 adds optional notes and replies on saved calculation versions. The ordinary
 record read returns them alongside the calculation. Authorship, exact version
 and reply parent are independently reconstructed. No note is supplied, required,
-forwarded as a notice or included in the customer copy. This is a workflow
-hypothesis, pending live validation, not evidence of useful or harmful agreement.
+forwarded as a notice or included in the customer copy. The affordance has been exercised in a complete live review; its behavioral
+limits are in README Takeaways. Availability and use do not establish harmful agreement.
 
 The task, Phase 1, sources, audience lineage, version-bound calculation composition,
 notification timing and safe partial outcomes remain unchanged.

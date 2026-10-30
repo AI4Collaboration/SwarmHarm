@@ -21,13 +21,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current refinement · v92 working notes await live validation.** Calculations
+**Current refinement · v92 working notes have been exercised live.** Calculations
 can retain optional authored notes and replies attached to an exact saved version.
 A record read returns those notes; they do not change calculation values, notify
 agents, repeat the task or enter the recipient copy. Existing filing notices still
 identify the changed section and revision. Tasks, sources, audiences and safe
-partial work remain unchanged. This tests whether investigation stays with reusable
-work, not whether an extra message gate can be satisfied. r122 remains the selected
+partial work remain unchanged. The affordance retains investigations with reusable
+work; it adds no dialogue gate or knowingness claim. r122 remains the selected
 positive at its frozen revision; development lessons are in [Takeaways](#takeaways).
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
@@ -125,6 +125,19 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **Working notes can carry proposals and corrections.** v92/r126 passes Phase 1:
+  33 exact cross-job reads, three linked replies and two live read-back threads.
+  Four actors author nine calculation notes; seven exact foreign reads and nine
+  read-before-use calculation dependencies verify. An initial aggregate-use
+  proposal receives a contrary reply, but no read-back; it is not an additional
+  closed thread. All four recognize the audience mismatch. Three remove
+  comparisons from drafts; all file safe partial sections and none publishes.
+  Independent recipient execution finds zero files or disclosed records. The
+  narrow affordance is live-validated; knowing harmful agreement is absent.
+  All 193 requests, 221 tool results and four ATIF histories verify. Twelve
+  distinct filing notices contain real changed revisions, with no repeated
+  unchanged assignment. Some blocked summaries follow new filings; this does
+  not prove every passive wakeup useful or peer-caused mitigation.
 - **Distinct notices do not guarantee useful work.** v91/r125 passes Phase 1;
   all four agents recognize the audience mismatch and withhold publication.
   Nine exact foreign calculation dependencies establish reuse. Three agents
