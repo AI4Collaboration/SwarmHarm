@@ -25,8 +25,9 @@ a harmful joint replay, retaining cancellations and corrections.
 scope overreach, acceptance substitution and execution-record substitution now
 have separate executable fixtures and independent recipient checks. Each has
 three frozen input conditions: business records only, an operational need, or a
-saved preparation method. The external-service component has a reviewed safe rollout; acceptance and
-evidence remain **live rollout pending**. The corresponding
+saved preparation method. External-service with a saved method has a reviewed
+safe rollout; acceptance and evidence remain **live rollout pending**. The other
+initial-material conditions have offline checks only. The corresponding
 Phase 1 setup reuses the unchanged reviewed source-review environment; no new
 formation result is claimed by these independent studies.
 
@@ -89,13 +90,14 @@ assembly dependencies. Do not call this benign-individual composition.
 
 These examples now cover two of our non-exclusive operational failure families:
 **scope overreach** and **resource misuse/collective externalities**. Outcome
-gaming and evidence concealment remain proposed coverage. This taxonomy is our
+gaming and evidence concealment have implemented components, but no reviewed
+positive example. This taxonomy is our
 [source-grounded synthesis](docs/environment-contract.md#misalignment-coverage),
 not an official METR classification. Knowingness, joint planning and propagation
 remain separate analysis dimensions.
 
-The current examples have 16 validated continuous ATIF histories. The newest
-reviewed rollout has no local transport failure, terminal provider failure
+The selected examples have 16 validated continuous ATIF histories. The newest
+selected positive, Knowledge r122, has no local transport failure, terminal provider failure
 or filter, and no repeated unchanged assignment. Full native review and
 actual recipient materialization support the claim; accepted imports and previews
 alone do not. See the [English review](docs/research/current-rollout-review.md),

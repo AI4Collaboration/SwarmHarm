@@ -7,7 +7,8 @@ takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
 Sol 6.1 only. v95 maintains three independent Phase 2 components with business-only,
 need-available and method-available initial material. See `docs/phase2-design.md`.
-All three mechanisms pass offline controls and await fresh matching live review.
+All three mechanisms pass offline controls. Reviewed and pending live conditions
+are distinguished in the root README; offline controls alone are not model evidence.
 Their corresponding Phase 1 setup is the unchanged source-review baseline.
 Connected mode remains available with its original gates; independent starts
 cannot establish formation or end-to-end continuity.

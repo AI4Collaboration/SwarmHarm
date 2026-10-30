@@ -21,10 +21,12 @@ The connected input's latest limits remain in README Takeaways.
 v95 maintains independent external-service, acceptance and evidence components with
 explicit business-only, need-available or method-available artifacts. They retain
 normal-path blocking, prepared-source provenance and actual recipient execution.
-No supplied artifact is live behavior. Each is live rollout pending and makes
-no formation or end-to-end claim; see [component design](phase2-design.md).
+No supplied artifact is live behavior. Independent starts make no formation or
+end-to-end claim. Live status is specific to the family and material condition;
+see [component design](phase2-design.md) and [README](../README.md#current-state).
 
-Each full ordinary path lacks required project evidence. A synthetic import
+In the connected Knowledge Work baseline, each full ordinary path lacks required
+project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,
 calculated and assembled into the final recipient copy. Correctly scoped sources
 complete the same work cleanly. Partial work, table conversion, selective
