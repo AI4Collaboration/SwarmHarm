@@ -6,18 +6,29 @@ confounds. Four concurrent Sol 6.1 contexts use scoped TerryJwy AxonHub routes.
 No website work. The full objective remains unmet; half-hour heartbeat `swarmharm`
 continues development. Do not claim completion from an outcome-only positive.
 
-## Current refinement
+## Current focus
 
-v92 optional calculation notes have completed live review as r126.
-No collector is active. Source 98491f96; registration 98f703a6.
-317 offline checks, 12 prompt checks and format/admission checks passed.
-The full review and byte-identical registration are externally archived at
-`../eval-readiness/knowledge-work-v92-r126-review/`; current lessons belong in
-README Takeaways. Do not repeat this trajectory.
+On 30 October the user authorized independent Phase 2 environments and separately
+registered cues/conditions. Develop the three METR-observed behavior groups in
+`docs/phase2-design.md`; do not call this an official or exhaustive METR taxonomy.
+The current implementation reuses the reviewed Phase 1 baseline. A clarification
+about also designing a new Phase 1 task for each group remains pending; it does
+not block the independent Phase 2 entry or source grounding.
 
-Tasks, sources, audiences, notification triggers and outcome gates are unchanged.
-The Phase 1 activity store continues; artifact notes are an additional registered
-writing affordance, not a supplied conversation or extra completion requirement.
+v93 adds `--study-mode phase2-component` for Knowledge Work. Prepared business
+source records are frozen as fixtures, never recorded as agent actions. No
+Phase 1 or end-to-end success can be claimed by this mode. Current business
+mechanics, notes, audience lineage and unchanged-state suppression are retained.
+Only business-records-only inputs are implemented; need/method cues and the
+separate external-service boundary are proposed, not live-validated.
+No collector is active. All 321 offline checks, 12 prompt checks and format/admission
+contracts pass. Prepare and collect one fresh component rollout next.
+
+The unregistered selected-section assembly repair was preserved externally as
+`../eval-readiness/unregistered-selected-section-repair-20261030.patch` and removed
+from active source to avoid mixing mechanisms with the new component entry.
+Its SHA-256 is `c88e6b4620505c440b9a154de653cd4d604b3d748095fbe0aa92081f5159668c`.
+v92/r126 is fully reviewed and externally archived; its lesson is in README.
 
 ## Selected positive evidence
 
@@ -48,18 +59,15 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Review the next natural workflow hypothesis against METR and the production
-sources before implementation. The current tools already support discovery,
-calculation reuse, ordinary working notes and preserved revisions. Do not treat
-safe correction as a runtime defect, manufacture further replies, or remove source
-audience lineage to obtain a positive. Any changed mechanism needs fresh offline
-checks, source/registration commits and one matching live rollout.
-
-METR motivates useful cumulative investigation; this business analogue differs
-in scale and duration. LessWrong's supplied notes and persistence prompts remain
-separate factors. Stronger completion needs actual pre-action consequence
-recognition by two actors, prospective joint planning, matching causal actions
-and independent final adverse effects. No outcome is guaranteed.
+Validate the independent entry without changing its business mechanism. Freeze,
+commit and push one component registration, then collect four concurrent Sol
+contexts once. Check that source fixtures cannot become fake formation evidence,
+all native requests/ATIF remain continuous from the component start, and the
+independent final outcome honors every correction. Then implement the explicit
+external-service boundary and the other two incident-grounded families one at a
+time, with source grounding and normal/alternative-path controls. Cue strength,
+sharing and method adoption are separate registered conditions and observations.
+No website work. No guarantee of knowingly harmful coordination.
 
 ## Maintained evidence and archive
 

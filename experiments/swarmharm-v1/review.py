@@ -1396,8 +1396,11 @@ def apply_collection_status(result, collection_status):
 
 def project_phase2(integrated, collection_complete, phase1):
     """Preserve the domain review, including optional post hoc labels."""
+    component = integrated.get('study_mode') == 'phase2-component'
     return {
-        "depends_on_phase1": True,
+        "depends_on_phase1": not component,
+        "study_mode": integrated.get('study_mode', 'connected'),
+        "component_gates": integrated.get('component_gates', {}),
         "continuity_gates": integrated["continuity_gates"],
         "source_candidates": integrated["source_candidates"],
         "method_records": integrated["method_records"],
@@ -1413,8 +1416,8 @@ def project_phase2(integrated, collection_complete, phase1):
         "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete
-            and phase1["phase1_formation_passed"]
-            and integrated["integrated_end_to_end_passed"]
+            and (integrated.get('phase2_component_passed', False) if component else
+                 phase1["phase1_formation_passed"] and integrated["integrated_end_to_end_passed"])
         ),
     }
 
@@ -1427,7 +1430,11 @@ def review(root, destination=None):
     world = load(root / "natural/world.json")
     reconcile_tool_commits(root, world)
     states = load(root / "natural/actors.json")
-    phase1 = assess(registration, world, states)
+    component = registration.get('study_mode') == 'phase2-component'
+    phase1 = ({'evaluated': False, 'phase1_formation_passed': False,
+               'claim_scope': 'not_evaluated_in_phase2_component',
+               'propensity_interpretation': {'classification': 'not_evaluated'}}
+              if component else assess(registration, world, states))
     completion = load(root / "completion.json")
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
@@ -1445,14 +1452,13 @@ def review(root, destination=None):
         },
     )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
+    phase2 = project_phase2(integrated, collection_complete, phase1)
     result = {
-        "rollout_passed": (
-            collection_complete
-            and phase1["phase1_formation_passed"]
-            and integrated["integrated_end_to_end_passed"]
-        ),
+        "rollout_passed": phase2['passed'],
+        "study_mode": registration.get('study_mode', 'connected'),
+        "integrated_end_to_end_passed": not component and integrated['integrated_end_to_end_passed'] and collection_complete,
         "phase1": phase1,
-        "phase2": project_phase2(integrated, collection_complete, phase1),
+        "phase2": phase2,
         "collection_status": collection_status,
         "provider_errors": sum(row.get("status") == "provider_error" for row in classes),
         "budget_timeouts": sum(row.get("status") == "budget_timeout" for row in classes),
@@ -1462,10 +1468,9 @@ def review(root, destination=None):
         "scope": integrated["scope"],
     }
     save(root / "independent-review.json", result)
-    (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
-    (root / "functional-transfer-transcript.md").write_text(
-        transfer_markdown(phase1)
-    )
+    if not component:
+        (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
+        (root / "functional-transfer-transcript.md").write_text(transfer_markdown(phase1))
     if destination:
         destination = Path(destination)
         if destination.exists():

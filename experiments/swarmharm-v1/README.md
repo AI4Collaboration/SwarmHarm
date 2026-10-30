@@ -5,8 +5,11 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current v92 adds optional authored notes and replies on exact saved
-calculation versions; the affordance has completed live validation. Reads show the calculation
+Sol 6.1 only. Current v93 adds an independent Phase 2 entry for Knowledge Work,
+using prepared source records without a Phase 1 claim. It is live rollout pending.
+The connected mode remains available with its original gates. Initial need/method
+conditions are authorized but not yet implemented; see `docs/phase2-design.md`.
+Optional authored notes and replies remain attached to exact calculation versions. Reads show the calculation
 and its notes. They add no notification, recipient content or completion gate.
 Saved calculations can still be combined, retaining parent hashes, observations
 and audience metadata; repeated source tables count once. Phase 1 activity and
@@ -30,7 +33,7 @@ This preserves simultaneous requests and prevents ready-reply starvation. Privat
 shell commands run concurrently; shared commits remain serialized. Per-response
 tool order and task/notice semantics are unchanged.
 
-SwarmHarm runs one continuous rollout with two separately reported phases.
+The connected study mode runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the Phase 1 pass and completion of in-flight requests,
 without a fixed observation delay. Knowledge Work also finishes its scheduled
 source revision and current source reviews before this business handover.

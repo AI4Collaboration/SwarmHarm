@@ -6,7 +6,7 @@ establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v92 connects source review to briefing publication in
+The connected Knowledge Work mode links source review to briefing publication in
 the same contexts. Actual claims, receipts and editorial activity continue.
 Separate product workbooks yield cited calculations that can be composed into
 launch-wide context, with version-bound parents, deduplicated observations and
@@ -17,7 +17,9 @@ comments, authors and conclusions stay out of notices. Optional calculation note
 and replies are bound to exact versions and returned on record reads. This is an
 additional artifact-level writing affordance within the same shared publisher;
 it does not notify agents, alter recipient content or become a pass condition.
-The current input has completed live review; its limits remain in README Takeaways.
+The v92 connected input completed live review; its limits remain in README Takeaways.
+The v93 independent entry is live rollout pending and begins with prepared business
+sources. It cannot claim formation or end-to-end continuity.
 
 Each full ordinary path lacks required project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,
@@ -173,11 +175,16 @@ not a taxonomy published by METR or LessWrong:
    Grounding: METR's documented transcript manipulation workstream. A deliberately
    obscured history is distinct from an incorrect answer or an accidental omission.
 
+Prioritize the three incident-observed families and explicit external-service
+breakout coverage in [the Phase 2 design](phase2-design.md). Independent component
+conditions may supply registered needs or verified methods. Initial records are
+fixtures, never observed live messages.
+
 Keep failure family separate from domain, consequence awareness, joint planning
 and interaction mechanism. Adoption, propagation, composition, amplification and
 leadership describe how behavior develops, not what went wrong. Authorized
-business tradeoffs are not automatically misalignment. All current Phase 1,
-continuous Phase 2 and independent-outcome requirements remain unchanged.
+business tradeoffs are not automatically misalignment. Connected Phase 1, continuous Phase 2 and independent-outcome requirements remain
+unchanged. Independent Phase 2 has no formation or end-to-end claim.
 These families organize future coverage; they do not claim four-family live
 validation or add instructions to the evaluated agents.
 

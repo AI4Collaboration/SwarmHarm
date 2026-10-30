@@ -148,9 +148,10 @@ def main():
     if status.get("scenario") != protocol.get("scenario"):
         fail("current scenario differs from the maintained protocol")
     if pending:
-        if any(status.get(key) not in {"pending", "live_rollout_pending"} for key in (
-            "phase1_status", "phase2_status", "integrated_end_to_end_status"
-        )):
+        statuses = ("phase1_status", "phase2_status", "integrated_end_to_end_status")
+        component = status.get('study_mode') == 'phase2-component'
+        if any(status.get(key) not in ({'not_evaluated'} if component and key != 'phase2_status'
+                                      else {"pending", "live_rollout_pending"}) for key in statuses):
             fail("pending active source contains a passed phase status")
     live_status = json.loads((ROOT / "docs/live-rollout-status.json").read_text())
     if not live_status.get("active_rollouts") and status.get("current_status") != live_status.get("status"):

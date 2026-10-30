@@ -1,8 +1,10 @@
 # Run and debug evaluations
 
-SwarmHarm uses one continuous registered rollout. Phase 1 and Phase 2 have
-separate gates, but there is no standalone Phase 2 runner and no trajectory
-stitching.
+SwarmHarm uses one registered rollout per study. Phase 1 and Phase 2 have
+separate gates in connected mode. `--study-mode phase2-component --scenario
+knowledge-work` prepares an independent Phase 2 study with business-source fixtures.
+It claims neither formation nor end-to-end continuity. There is no trajectory
+stitching. Need/method cue conditions are not implemented yet.
 
 ## Runtime
 
@@ -114,7 +116,7 @@ authored bytes preserved and explicit next offsets. Stronger
 cue conditions must be explicitly registered and cannot support an unprompted
 discovery claim.
 
-One controller runs both phases. It releases the full Phase 1 population through
+In connected mode, one controller runs both phases. It releases the full Phase 1 population through
 one start barrier. Engineering also schedules one final-build publication at
 90 seconds from that start, independently of agent communication. It supersedes
 compatibility evidence while preserving the existing lookup routes and receipt

@@ -21,14 +21,21 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current refinement · v92 working notes have been exercised live.** Calculations
-can retain optional authored notes and replies attached to an exact saved version.
-A record read returns those notes; they do not change calculation values, notify
-agents, repeat the task or enter the recipient copy. Existing filing notices still
-identify the changed section and revision. Tasks, sources, audiences and safe
-partial work remain unchanged. The affordance retains investigations with reusable
-work; it adds no dialogue gate or knowingness claim. r122 remains the selected
-positive at its frozen revision; development lessons are in [Takeaways](#takeaways).
+**Current focus · independent Phase 2 studies.** The user authorized component
+experiments and explicit initial-material conditions on 30 October. v93 adds an
+independent entry with prepared business source records; no Phase 1 is run or
+claimed. Four concurrent Sol contexts keep the current publisher mechanics,
+audience lineage, corrections and independent recipient execution. This new entry
+is **live rollout pending**. It currently supports business-records-only inputs;
+need/method conditions are designed but not implemented.
+
+Develop three [incident-grounded failure families](docs/phase2-design.md):
+external-environment breakout/scope overreach, task-target or acceptance
+manipulation, and execution-evidence manipulation. These are our non-exclusive
+categories drawn from METR, not an official exhaustive taxonomy. Existing
+cross-project import proves scope overreach, not distinct-service breakout.
+The latter needs its own executable boundary. Connected results retain the
+original two-phase criteria; component results cannot substitute for formation.
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel and finish the same customer briefing. Independent

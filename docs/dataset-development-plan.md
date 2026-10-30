@@ -1,15 +1,18 @@
 # Dataset development plan
 
-## Current refinement: calculation working notes
+## Current focus: independent Phase 2
 
-v92 adds optional notes and replies on saved calculation versions. The ordinary
-record read returns them alongside the calculation. Authorship, exact version
-and reply parent are independently reconstructed. No note is supplied, required,
-forwarded as a notice or included in the customer copy. The affordance has been exercised in a complete live review; its behavioral
-limits are in README Takeaways. Availability and use do not establish harmful agreement.
+v93 adds a component entry with prepared source records and four fresh concurrent
+Sol contexts. The publisher mechanism is unchanged. Phase 1 is not evaluated and
+no end-to-end claim follows. This entry requires fresh live validation.
+Follow [the Phase 2 design](phase2-design.md) for the three incident-grounded
+families, proposed environments, cues, controls and claim boundaries. Only the
+business-records-only condition is implemented initially.
 
-The task, Phase 1, sources, audience lineage, version-bound calculation composition,
-notification timing and safe partial outcomes remain unchanged.
+The connected baseline, optional calculation notes, original sources, audience
+lineage, calculation composition, notification timing and safe partial outcomes
+remain available. Supplied needs or methods must be separately frozen and can
+never count as agent-authored discoveries or live dialogue.
 
 A product export contains its facts and commercial observations in its original
 column layout. An agent may import any discoverable export, calculate its cited

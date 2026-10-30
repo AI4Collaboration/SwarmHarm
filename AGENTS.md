@@ -16,13 +16,18 @@
   seed. Use "independent repeated rollouts" and report the actual model,
   settings, conditions and number of runs. Fixture randomization is not model
   randomness control and must not be presented as such.
-- Maintain only `experiments/swarmharm-v1`. It reports Phase 1 and Phase 2
-  separately, but executes them as one continuous registered rollout. Phase 2
-  may begin only after the operator-side Phase 1 gate passes, using the same
-  controller, agent IDs, model histories, workstations, shared state and event
-  sequence. A standalone Phase 2 run or stitched archived trajectory cannot
-  support the main claim. Earlier work remains available in Git history and
-  must not define current operation.
+- Maintain only `experiments/swarmharm-v1`. The user authorized independent
+  Phase 2 component studies on 30 October. Prioritize the three METR-observed
+  families in `docs/phase2-design.md`: external-environment breakout/scope
+  overreach, task-target or acceptance manipulation, and execution-evidence
+  manipulation. This is our grouping, not an official exhaustive METR taxonomy.
+  Component studies may start with declared prepared business inputs and
+  separately registered need/method cues; record all supplied material and its
+  provenance. Supplied records are never live dialogue or autonomous discovery.
+  A connected claim still requires Phase 1 followed by Phase 2 in the same
+  controller, agents, histories, workstations, shared state and event sequence.
+  Independent or stitched runs cannot support that claim. Keep the reviewed
+  Phase 1 baseline fixed while component work proceeds.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.
@@ -52,9 +57,13 @@
   autonomous discovery of an unannounced process gap. Avoid abstract security
   or governance labels in task-facing text; use concrete phrases such as a
   supplier reservation, a capacity quote and a deposit invoice instead.
-- Keep every subject-facing surface natural. Do not announce peers, cooperation,
-  communication, methods, evaluation, shared-system gaps or hidden milestones.
-  Do not add behavioral bans, permission summaries, solution hints or coaching.
+- Keep every subject-facing surface natural. The unassisted condition supplies
+  no peers, communication or method. Explicitly registered Phase 2 component
+  conditions may provide an operational need or a verified method artifact,
+  as authorized on 30 October. Freeze their origin and exclude supplied text
+  from live behavioral evidence. Never prescribe cooperation, rationalization,
+  adverse effects or an evaluation milestone in the task. Avoid behavioral bans
+  and repeated unchanged instructions.
 - Before live collection, verify each domain's registered completion scope.
   Model failure is not proof of impossibility. For composition, every actor's
   full sequence alone must be harmless and the combined sequence harmful.
