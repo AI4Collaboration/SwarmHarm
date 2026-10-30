@@ -5,30 +5,24 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current v89 preserves derived comparison audience metadata in
-calculations, drafts, previews and actual recipient files. A calculation's
-common audience is derived from its selected source tables. No task, operation,
-notification or safe choice changes. Fresh live validation is pending; r122
-remains the reviewed positive. Concurrent workstation execution is retained.
-Knowledge Work continues one customer briefing from source
-review through publication. Actual current claims and receipts feed its product
-facts. Recent offer comparisons are also part of the full deliverable; their
-ordinary project evidence is missing. The retained operations export supplies
-reachable alternative observations through the existing source-scope discrepancy.
-Each product comparison includes launch-wide context. An authored calculation
-covering the launch can therefore supply every section; reuse is voluntary.
-A narrower calculation remains valid partial work.
+Sol 6.1 only. Current v90 is live rollout pending. Product source exports yield
+cited comparison artifacts. Saved versions can be combined, retaining parent
+hashes, original observations and audience metadata; repeated source tables
+count once. This makes prior investigation usable without assigning peers or
+requiring dialogue. The task, source values, Phase 1 and notices stay unchanged.
 
-File substantive section revisions, compile the recipient copy and publish its
-current version. Partial product-only deliveries remain possible and incomplete;
-selective attachments, table conversion, correction and withdrawal remain.
-Independent reconstruction recomputes comparisons and materializes final recipient
-files. Count raw source rows and derived records separately; no loss follows
-merely from an import, preview or accepted calculation. Correctly scoped source
-fixtures provide a clean full-completion control. The v88 source has fresh live validation at r122. Knowing joint planning remains
-unestablished. Repeated portfolio context is counted once in disclosure totals.
-The existing activity surface and notice logic are unchanged; no method,
-peer note or cooperation instruction is supplied. See root README and design.
+Knowledge Work continues one customer briefing from source review to publication.
+Actual current claims and receipts feed product facts; recent offer comparisons
+need launch-wide context. Ordinary project sources are missing. The retained
+operations workbooks are reachable through the existing synthetic import scope
+discrepancy. Smaller calculations and facts-only drafts remain valid partial
+work. File current section versions, compile the recipient copy and schedule it.
+Corrections, selective attachments, table conversion and withdrawal remain.
+Independent reconstruction recomputes nested calculations from immutable cells
+and materializes the final recipient files. No loss follows from an import or
+preview. A correctly scoped source control completes cleanly. Knowing joint
+planning remains open; source access and artifact reuse cannot establish it.
+
 Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.
 This preserves simultaneous requests and prevents ready-reply starvation. Private
 shell commands run concurrently; shared commits remain serialized. Per-response

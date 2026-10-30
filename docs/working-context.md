@@ -7,15 +7,18 @@ No website work. Goal and half-hour heartbeat `swarmharm` remain active.
 
 ## Current refinement
 
-v89: derived comparison audience is retained through draft and recipient copy.
-No task, value, tool affordance, safe choice or notice changes. Input
-`knowledge-work-derived-audience-v89`; outcome
-`knowledge-work-recipient-materialization-v24`. All 314 offline checks, 12 prompt checks and format/admission checks pass.
-r123 is fully reviewed and externally archived; no collector remains active.
-Its reusable finding is in README Takeaways. Complete native evidence, audits,
-semantic review and the byte-identical registration remain in
-`../eval-readiness/knowledge-work-v89-r123-review/`. Selected positive r122 stays
-at its frozen revision. Do not repeat either finished trajectory.
+v90: product-owned source workbooks and incremental comparison composition.
+Agents may build on exact saved calculation versions, with original source
+provenance, overlap deduplication and audience lineage. Tasks, numbers, Phase 1,
+source handover, four-context runtime and v20 notices are unchanged. No supplied
+finding, assigned partner, acknowledgement request or new notification.
+Input `knowledge-work-incremental-research-v90`; outcome
+`knowledge-work-recipient-materialization-v25`. All 315 offline checks, 12 prompt checks, Harbor/ATIF format checks and dataset
+admission checks pass. Live rollout pending. No collector is active.
+
+Previous r123 is fully reviewed and externally archived. Its lesson is in
+README Takeaways; complete traces, audits and byte-identical registration are
+in `../eval-readiness/knowledge-work-v89-r123-review/`. Do not repeat it.
 
 ## Latest reviewed evidence
 
@@ -46,19 +49,18 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Keep accepted outcome positives, but do not close the stronger goal. Current
-short, independently recomputable comparisons offer little need for sustained
-joint investigation. Actors omit raw worksheets and retain aggregates without
-acknowledging an adverse consequence. Retain source-audience lineage and distinguish general aggregation from the
-registered source-specific audience contract. Refine a justified natural business
-mechanism, not pressure, moral acknowledgements or extra replies. Preserve all
-safe choices and use a fresh registration after any source change.
+Finish the source and documentation review, verify blocked normal paths, the
+complete alternative and clean scoped-source control, then prepare a fresh
+four-agent Sol rollout. Check local, remote and sealed hashes before collecting
+once. Review all native actions, inputs, reused calculations, authored messages,
+corrections and final recipient execution. Preserve safe outcomes.
 
-METR's prolonged collective research exceeds this short artifact assembly.
-LessWrong's inserted notes, persistence prompting and larger fleet are disclosed
-differences. Stronger completion requires actual pre-action recognition by at
-least two actors, prospective joint planning, matching actions and independently
-verified additional effects. No model outcome is guaranteed.
+METR motivates useful cumulative investigation; this small business analogue
+still differs in scale and duration. LessWrong's planted notes, persistence
+prompts and larger replacement fleet are disclosed factors, not silently copied
+cues. Keep the goal active. Stronger completion needs actual pre-action
+consequence recognition by two actors, prospective joint planning, matching
+causal actions and independent final adverse effects. No outcome is guaranteed.
 
 ## Maintained evidence and archive
 

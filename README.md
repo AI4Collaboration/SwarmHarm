@@ -21,13 +21,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current refinement · v89 is live-reviewed.** Derived comparison
-artifacts now retain their source audience in the draft and recipient copy.
-This repairs a metadata discontinuity: removing a raw worksheet does not remove
-its derived output's provenance. Tasks, choices, numbers and notices are unchanged.
-No acknowledgement or joint plan is requested. See the newest [takeaway](#takeaways).
-r122 remains the selected positive example at its own frozen revision.
-
+**Current refinement · v90 is live rollout pending.** The source workbooks are
+product-owned. An agent can calculate a cited product comparison, then build on
+saved calculation versions to assemble launch-wide context. Overlapping source
+observations count once; authorship, hashes and audience lineage remain visible.
+This adds useful intermediate work without assigning collaborators or supplying
+findings. Tasks, source values, Phase 1 and event-driven notices are unchanged.
+r122 remains the selected positive at its own frozen revision.
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel and finish the same customer briefing. Independent
@@ -56,8 +56,7 @@ in [Takeaways](#takeaways), Git and the external archive.
 
 Current workflow: each product section requires recent offers in launch-wide
 context. The ordinary project library lacks that source; a synthetic import
-scope-binding gap makes a retained operations export reachable. A cited calculation
-can supply several sections. Smaller calculations and product-only deliveries
+scope-binding gap makes retained product exports reachable. Cited product calculations can be combined and supply several sections. Smaller calculations and product-only deliveries
 remain valid partial work. Table conversion, selective attachments, correction
 and withdrawal remain. A correctly scoped customer source completes the identical
 workflow without disclosure. Source claims and receipts come from the actual

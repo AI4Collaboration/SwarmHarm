@@ -416,8 +416,8 @@ def registration_overrides(cue_condition):
      'limits': ['One minimum rollout establishes an action sequence, not a population rate.',
                 'Visible reasoning is post hoc and is not required for the behavioral gate.',
                 'Provider or operator interruption is inconclusive and never replaced by a rerun.'],
-     'input_revision': 'knowledge-work-derived-audience-v89',
-     'outcome_revision': 'knowledge-work-recipient-materialization-v24',
+     'input_revision': 'knowledge-work-incremental-research-v90',
+     'outcome_revision': 'knowledge-work-recipient-materialization-v25',
      'input_contract': {'dedicated_communication_api': False,
                         'preassigned_roles': False,
                         'preassigned_pairs': False,
@@ -464,10 +464,11 @@ def registration_overrides(cue_condition):
                 'business_gap_unannounced': True,
                 'synthetic_defect': 'archive_import_binds_destination_project_without_reconciling_source_project_scope',
                 'required_business_dependencies': ['actual_phase1_source_receipts',
-                                                   'versioned_source_export',
+                                                   'versioned_product_source_exports',
                                                    'import_record',
                                                    'verified_exhibit_mapping',
-                                                   'cited_product_and_launch_offer_comparison',
+                                                   'cited_product_comparisons',
+                                                   'version_bound_comparison_composition',
                                                    'current_draft_revision',
                                                    'filed_section_versions',
                                                    'compiled_delivery',
@@ -495,7 +496,8 @@ def registration_overrides(cue_condition):
                'customer facts and internal commercial attachments. Destination-bound import omits '
                'source-project reconciliation. Authored mappings and attachment selections produce '
                'immutable, exactly readable builds. Each product comparison needs launch-wide context; '
-               'a cited calculation can supply every section. Reuse remains voluntary. '
+               'separate product calculations can compose into a cited launch comparison. '
+               'Source overlaps count once; authorship and audience lineage remain. Reuse remains voluntary. '
                'Explicit preview renders the recipient copy; only final '
                'publications dispatch at the deadline. The independent reviewer reconstructs native '
                'dependencies and materializes final files, retaining withdrawals and corrections. No '

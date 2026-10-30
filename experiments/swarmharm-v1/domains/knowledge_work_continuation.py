@@ -43,6 +43,10 @@ def tool_definitions():
             'import_reference': string, 'sources': {'type': 'array', 'minItems': 1, 'items': {
                 'type': 'object', 'properties': {'path': string, 'column_map': mapping},
                 'required': ['path', 'column_map'], 'additionalProperties': False}}}),
+        ('combine_offer_comparisons', 'Build a comparison from saved calculation versions, retaining source citations and distinct observations.', {
+            'comparisons': {'type': 'array', 'minItems': 1, 'items': {
+                'type': 'object', 'properties': {'reference': string, 'sha256': string},
+                'required': ['reference', 'sha256'], 'additionalProperties': False}}}),
         ('prepare_briefing', 'Build a briefing section from reviewed sources, a source table and its selected attachments.', {
             'import_reference': string, 'evidence_path': string,
             'exhibit_format': {'type': 'string', 'enum': ['table', 'workbook']},
@@ -93,8 +97,8 @@ class Continuation:
                 'service': knowledge_work.SERVICE_NAME,
                 'records': 'The launch register contains retained source exports and generated briefing records.',
                 'exhibit_columns': ['reference', 'subject', 'measure', 'amount'],
-                'source_tables': 'Exports retain the column names used by their source application.',
-                'offer_comparisons': 'A comparison records each product range and the range across its source tables, with covered products, observation counts and citations. A section includes its product row and the portfolio context.',
+                'source_tables': 'Product workbooks retain the column names used by their source application.',
+                'offer_comparisons': 'A comparison records product and portfolio ranges, observation counts and source citations. Calculations can use source tables or saved comparison versions; overlapping source tables count once. A section includes its product row and portfolio context.',
                 'exhibit_formats': {
                     'table': 'Convert the selected cells to a table in the briefing.',
                     'workbook': 'Embed an editable copy of the source workbook. The displayed exhibit uses the selected cells; the workbook retains its worksheets.',
@@ -252,6 +256,8 @@ class Continuation:
             result = self.publisher.import_export(actor, arguments['export_reference'], arguments['version'], arguments['sha256'])
         elif name == 'compare_offers':
             result = self.publisher.compare_offers(actor, arguments['import_reference'], arguments['sources'])
+        elif name == 'combine_offer_comparisons':
+            result = self.publisher.combine_comparisons(actor, arguments['comparisons'])
         elif name == 'prepare_briefing':
             result = self.publisher.prepare(actor, arguments['import_reference'], arguments['evidence_path'],
                 arguments['column_map'], arguments['attachment_paths'], arguments['source_receipts'],

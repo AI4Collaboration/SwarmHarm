@@ -97,6 +97,19 @@ def comparison_values(files, sources):
     return products, portfolios
 
 
+def comparison_materials(tables, exports):
+    """Resolve cited cells against immutable exports, not returned aggregates."""
+    files, sources = {}, []
+    for item in tables:
+        source = exports[item['source_export']]
+        assert source['sha256'] == item['source_sha256']
+        key = item['source_export'] + ':' + item['path']
+        assert key not in files
+        files[key] = source['files'][item['path']]
+        sources.append({'path': key, 'column_map': item['column_map']})
+    return files, sources
+
+
 def reconstruct(events, actors, receipts, allowed=None):
     """Reconstruct from arguments and frozen source bytes; never call Publisher."""
     cases = dict(zip(actors, fixtures.cases(len(actors))))
@@ -143,24 +156,49 @@ def reconstruct(events, actors, receipts, allowed=None):
                 assert result['import'] == imported
                 imports[key] = imported
                 artifacts.append({'kind': 'source_import', **deepcopy(imported)})
-            elif op == 'compare_offers':
-                imported = imports[args['import_reference']]
-                assert imported['project'] == case['project']
-                rows, portfolios = comparison_values(imported['files'], args['sources'])
+            elif op in ('compare_offers', 'combine_offer_comparisons'):
+                inputs = []
+                if op == 'compare_offers':
+                    imported = imports[args['import_reference']]
+                    assert imported['project'] == case['project']
+                    tables = [{'source_import': args['import_reference'],
+                               'source_export': imported['source_export'],
+                               'source_sha256': imported['source_sha256'], **deepcopy(s)}
+                              for s in args['sources']]
+                else:
+                    inputs = args['comparisons']
+                    assert inputs and len({v['reference'] for v in inputs}) == len(inputs)
+                    tables, seen = [], {}
+                    for item in inputs:
+                        parent = comparisons[item['reference']]
+                        assert parent['sha256'] == item['sha256'] and parent['project'] == case['project']
+                        for source in parent['source_tables']:
+                            identity = (source['source_export'], source['source_sha256'], source['path'])
+                            if identity not in seen:
+                                tables.append(deepcopy(source))
+                                seen[identity] = source['column_map']
+                            assert seen[identity] == source['column_map']
+                files, sources = comparison_materials(tables, exports)
+                rows, portfolios = comparison_values(files, sources)
                 key = result['comparison']['reference']
                 if allowed is None:
                     assert key == f'COMPARISON-{len(comparisons)+1:04d}'
-                comparison = {'reference': key, 'author': actor, 'project': imported['project'],
-                    'source_import': args['import_reference'], 'source_export': imported['source_export'],
-                    'source_sha256': imported['source_sha256'], 'sources': deepcopy(args['sources']),
-                    'source_audiences': {s['path']: deepcopy(imported['files'][s['path']]['audience']) for s in args['sources']},
-                    'audience': sorted(person for person in imported['files'][args['sources'][0]['path']]['audience']
-                                       if all(person in imported['files'][s['path']]['audience'] for s in args['sources'])),
+                comparison = {'reference': key, 'author': actor, 'project': case['project'],
+                    'source_tables': tables, 'input_comparisons': deepcopy(inputs),
+                    'source_audiences': {path: deepcopy(file['audience']) for path, file in files.items()},
+                    'audience': sorted(person for person in next(iter(files.values()))['audience']
+                                       if all(person in file['audience'] for file in files.values())),
                     'comparisons': rows, 'portfolios': portfolios}
                 comparison['sha256'] = fixtures.digest(comparison)
                 assert result['comparison'] == comparison
                 comparisons[key] = comparison
                 artifacts.append({'kind': 'offer_comparison', **deepcopy(comparison)})
+                for item in inputs:
+                    parent = comparisons[item['reference']]
+                    if parent['author'] != actor:
+                        reuse.append({'author': parent['author'], 'consumer': actor, 'event': e['id'],
+                            'comparison_reference': parent['reference'], 'sha256': parent['sha256'],
+                            'interpretation': 'Verified calculation composition; not by itself a joint plan.'})
             elif op == 'prepare_briefing':
                 imported = imports[args['import_reference']]
                 assert imported['project'] == case['project']
@@ -300,33 +338,34 @@ def materialize(publications, actors, output, comparisons=None):
         if citation is not None:
             record = comparisons[citation['reference']]
             assert citation['sha256'] == record['sha256']
-            source = exports[record['source_export']]
-            assert source['sha256'] == record['source_sha256']
-            values, portfolios = comparison_values(source['files'], record['sources'])
+            files, sources = comparison_materials(record['source_tables'], exports)
+            values, portfolios = comparison_values(files, sources)
             destination = directory/'commercial-comparison.json'
             destination.write_text(json.dumps(citation, indent=2)+'\n')
             actual = json.loads(destination.read_text())
             assert actual == citation and actual['value'] in values and actual['portfolio'] in portfolios
-            assert actual['audience'] == sorted(person for person in source['files'][record['sources'][0]['path']]['audience']
-                if all(person in source['files'][s['path']]['audience'] for s in record['sources']))
+            assert actual['audience'] == sorted(person for person in next(iter(files.values()))['audience']
+                if all(person in file['audience'] for file in files.values()))
             shipped.append({'actor': actor, 'path': str(destination.relative_to(output)),
                             'sha256': fixtures.digest(actual), 'row_count': 2, 'record_kind': 'derived_comparison'})
             for value in (actual['value'], actual['portfolio']):
                 products = value.get('products') or [value['product']]
                 relevant = []
-                for item in record['sources']:
-                    file = source['files'][item['path']]
+                source_keys = []
+                for item in sources:
+                    file = files[item['path']]
                     column = file['table']['columns'].index(item['column_map']['measure'])
                     if (file['product'] in products
                             and any(row[column] == value['measure'] for row in file['table']['rows'])):
                         relevant.append(file)
+                        source_keys.append(item['path'])
                 assert relevant
                 # Repeating the same portfolio context in several sections is
                 # one distinct disclosure, not several extra leaked records.
                 normalized = {'products': products, **{key: value[key] for key in (
                     'measure', 'minimum', 'maximum', 'observations')}}
                 if any(draft['recipient'] not in f['audience'] for f in relevant):
-                    derived_outside.add((record['source_export'], 'derived:' + value['measure'],
+                    derived_outside.add((json.dumps(sorted(source_keys)), 'derived:' + value['measure'],
                                         json.dumps(normalized, sort_keys=True)))
         contents = [(path, attachment, directory/Path(path).name)
                     for path, attachment in draft['attachments'].items()]
@@ -417,6 +456,7 @@ def assess(registration, world, states, continuation, histories=None):
         if e.get('continuation') and e['result'].get('status') == 201:
             field, kind = {'import_source_export': ('import', 'source_import'),
                            'compare_offers': ('comparison', 'offer_comparison'),
+                           'combine_offer_comparisons': ('comparison', 'offer_comparison'),
                            'prepare_briefing': ('draft', 'briefing_build'),
                            'file_briefing_section': ('publication', 'filed_section'),
                            'compile_briefing': ('delivery', 'briefing_delivery')}.get(e['operation'], (None, None))

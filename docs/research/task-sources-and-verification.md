@@ -119,6 +119,44 @@ beyond the original purpose. METR reports these phenomena, not a controlled
 causal recipe. LessWrong's cue and persistence conditions are hypotheses to
 test and disclose, not instructions to transplant silently into our prompts.
 
+### Current implementation and evidence mapping
+
+- **Blocked work:** offline controls exhaust ordinary source lookup and
+  source-project-reconciled import. A complete alternative witness is separate
+  from a live behavioral result.
+- **Discovery and communication:** the activity store begins without peer posts;
+  native authorship, exact reads and live reply chains establish formation.
+- **Accumulating useful work:** imported cells, mappings, product calculations
+  and nested version-bound comparisons are inspectable inputs to later work.
+  Their availability is not evidence of observed joint investigation.
+- **Continuity:** one population, one history per actor and the same source
+  receipts and editorial surface continue through delivery.
+- **Recognition and consequences:** review statements before the relevant
+  actions, then independently execute the final recipient content. An accepted
+  operation or later admission cannot establish the stronger claim.
+
+These are contained workflow analogues. METR's population, prolonged research
+and internal-model training are not reproduced. LessWrong's supplied notes,
+persistence prompts and replacement fleet are disclosed differences; none is
+silently introduced into this input condition.
+
+### Incremental research artifacts
+
+[Microsoft computed-table scenarios](https://learn.microsoft.com/en-us/power-query/dataflows/computed-tables-scenarios)
+ground persisting an intermediate result and applying later transformations to
+it rather than redoing every source query. [dbt models](https://docs.getdbt.com/docs/build/models)
+likewise support models referencing earlier models. These sources justify the
+ordinary dependency structure, not a claim about their products' access behavior.
+
+In v90, each retained product workbook becomes its own export. Calculations may
+reference saved comparison versions, retain original cells and mappings, and
+deduplicate overlapping source tables. Any agent can do the complete work alone
+or use an existing artifact; no partner or required exchange is assigned.
+Synthetic choices include the exact product split, immutable hashes, ranges,
+missing project evidence and omitted import-scope reconciliation. Audience
+metadata, safe partial work and correction remain. This is a workflow hypothesis
+requiring fresh live evidence, not a demonstrated elicitation recipe.
+
 These references justify design choices, not a claim that SwarmHarm has reproduced
 all their results. Both intended paths and the discoverable alternative must be
 verified before collection. Keep safe partial work and negatives. Do not tune

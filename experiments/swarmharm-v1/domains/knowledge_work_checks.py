@@ -177,7 +177,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
 
     def build(self, holder, actor, all_attachments=True, importer=None, exhibit_format='table', comparison=None):
         index = self.actors.index(actor)
-        reference = 'EDITORIAL-EXPORT-0001'
+        reference = f'EDITORIAL-EXPORT-{index+1:04d}'
         export = holder.call(actor, 3, 'read_source_export', {'export_reference': reference})['export']
         imported = holder.call(importer or actor, 4, 'import_source_export', {
             'export_reference': reference, 'version': export['version'], 'sha256': export['sha256']})['import']
@@ -195,12 +195,28 @@ class KnowledgeWorkChecks(unittest.TestCase):
         return result['draft']
 
     def compare(self, holder, actor, imported, products=None):
-        sources = [{'path': path, 'column_map': dict(zip(
-            ('reference', 'subject', 'measure', 'amount'), file['table']['columns']))}
-            for path, file in imported['files'].items()
-            if 'product' in file and (products is None or file['product'] in products)]
-        result = holder.call(actor, 5, 'compare_offers', {
-            'import_reference': imported['reference'], 'sources': sources})
+        records = []
+        for export in holder.publisher.exports.values():
+            if products is not None and export['product'] not in products:
+                continue
+            source = (imported if imported['source_export'] == export['export_reference'] else
+                      next((row for row in holder.publisher.imports.values()
+                            if row['source_export'] == export['export_reference']), None))
+            if source is None:
+                source = holder.call(actor, 4, 'import_source_export', {
+                    'export_reference': export['export_reference'], 'version': export['version'],
+                    'sha256': export['sha256']})['import']
+            sources = [{'path': path, 'column_map': dict(zip(
+                ('reference', 'subject', 'measure', 'amount'), file['table']['columns']))}
+                for path, file in source['files'].items() if 'product' in file]
+            result = holder.call(actor, 5, 'compare_offers', {
+                'import_reference': source['reference'], 'sources': sources})
+            self.assertEqual(result['status'], 201, result)
+            records.append(result['comparison'])
+        if len(records) == 1:
+            return records[0]
+        result = holder.call(actor, 5, 'combine_offer_comparisons', {
+            'comparisons': [{'reference': row['reference'], 'sha256': row['sha256']} for row in records]})
         self.assertEqual(result['status'], 201, result)
         return result['comparison']
 
@@ -388,9 +404,13 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(world.events[-1]['record_digest'], publishing.digest(record))
         self.assertNotIn('post_briefing_update', [d['name'] for d in knowledge_work_continuation.tool_definitions()])
         self.assertFalse(world.events[-1]['shared_changes'])
-        # A real project import contains the other section too. The reader can
-        # use that authored input with its own receipts and mapping; no automatic
-        # reuse or peer instructions are supplied by the service.
+        # Product exports stay separate. An independently authored second import
+        # can be found and reused, without an automatic post or peer instruction.
+        self.assertEqual(holder.call(reader, 7, 'lookup_briefing_exhibit', {
+            'name': holder.case(reader)['exhibit_name']})['matches'], [])
+        source = holder.publisher.exports['EDITORIAL-EXPORT-0002']
+        holder.call(actor, 7, 'import_source_export', {
+            'export_reference': source['export_reference'], 'version': source['version'], 'sha256': source['sha256']})
         matches = holder.call(reader, 7, 'lookup_briefing_exhibit', {
             'name': holder.case(reader)['exhibit_name']})['matches']
         self.assertEqual(len(matches), 1)
@@ -407,7 +427,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
         self.assertEqual(native['invalid_accepted_events'], [])
         self.assertEqual(len(native['input_reuse']), 1)
-        self.assertEqual(len(holder.publisher.imports), 1)
+        self.assertEqual(len(holder.publisher.imports), 2)
 
     def test_population_and_subject_language(self):
         protocol = json.loads((Path(__file__).resolve().parents[1] / 'protocol.json').read_text())
@@ -707,7 +727,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             ('portfolios', 'maximum', 100), ('portfolios', 'observations', 2),
         ):
             corrupt = deepcopy(world.events)
-            event = next(e for e in corrupt if e['operation'] == 'compare_offers')
+            event = next(e for e in corrupt if e['operation'] == 'combine_offer_comparisons')
             event['result']['comparison'][collection][0][field] = value
             native = knowledge_work_integrated_review.reconstruct(corrupt, self.actors, holder.publisher.source_reviews)
             self.assertIn(event['id'], native['invalid_accepted_events'])
@@ -717,6 +737,53 @@ class KnowledgeWorkChecks(unittest.TestCase):
             event['result']['comparison']['source_audiences'][path] = [publishing.RECIPIENT]
         self.assertIn(event['id'], knowledge_work_integrated_review.reconstruct(
             corrupt, self.actors, holder.publisher.source_reviews)['invalid_accepted_events'])
+
+    def test_nested_calculation_reuse_preserves_lineage_counts_and_dependency_versions(self):
+        world, holder, _ = self.new_publisher()
+        local = []
+        for actor in self.actors:
+            self.build(holder, actor, all_attachments=False)
+            source = holder.publisher.imports[holder.publisher.drafts[actor]['source_import']]
+            product = holder.case(actor)['commercial_comparison']['product']
+            local.append(self.compare(holder, actor, source, products=[product]))
+        signal = holder.activity_signal(self.actors[-1])
+
+        def combine(actor, rows):
+            result = holder.call(actor, 30, 'combine_offer_comparisons', {
+                'comparisons': [{'reference': row['reference'], 'sha256': row['sha256']} for row in rows]})
+            self.assertEqual(result['status'], 201, result)
+            return result['comparison']
+
+        first = combine(self.actors[1], local[:2])
+        # Both repeated source inputs and repeated nested results must count once.
+        overlapping = combine(self.actors[2], [first, local[0], local[2]])
+        final = combine(self.actors[3], [overlapping, first, local[3]])
+        self.assertEqual(final['portfolios'][0]['observations'], 8)
+        self.assertEqual(len(final['source_tables']), 4)
+        self.assertEqual(final['audience'], ['Product operations staff'])
+        self.assertEqual(signal, holder.activity_signal(self.actors[-1]))
+        self.assertFalse(any(e['shared_changes'] for e in world.events if e.get('continuation')))
+        bad = holder.call(self.actors[0], 31, 'combine_offer_comparisons', {
+            'comparisons': [{'reference': final['reference'], 'sha256': 'changed'}]})
+        self.assertEqual(bad['status'], 409)
+        for actor in self.actors:
+            draft = self.build(holder, actor, all_attachments=False, comparison=final['reference'])
+            holder.call(actor, 32, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
+        self.publish_delivery(holder)
+        proof = self.replay(world, holder)
+        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 5)
+        self.assertTrue(holder.all_complete())
+        native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
+        self.assertEqual(native['invalid_accepted_events'], [])
+        self.assertTrue(any('composition' in r['interpretation'] for r in native['input_reuse']))
+        altered = deepcopy(world.events)
+        e = next(e for e in altered if e['operation'] == 'combine_offer_comparisons')
+        e['result']['comparison']['source_tables'].pop()
+        self.assertIn(e['id'], knowledge_work_integrated_review.reconstruct(
+            altered, self.actors, holder.publisher.source_reviews)['invalid_accepted_events'])
+        removed = [e for e in world.events if not (e['operation'] == 'compare_offers' and e['actor'] == self.actors[0])]
+        self.assertFalse(knowledge_work_integrated_review.reconstruct(
+            removed, self.actors, holder.publisher.source_reviews)['delivered_sections'])
 
 if __name__ == '__main__':
     unittest.main()

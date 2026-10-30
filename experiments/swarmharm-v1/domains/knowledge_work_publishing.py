@@ -41,10 +41,11 @@ def expected_exhibit(index):
 
 
 def source_exports(count):
-    """One retained project export; an import can support several sections."""
+    """Retained product workbooks, without a precomputed launch comparison."""
     sections = cases(count)
-    files, workbooks = {}, {}
+    exports = {}
     for i, case in enumerate(sections):
+        files, workbooks = {}, {}
         columns = (["reference", "subject", "measure", "amount"] if i % 2 == 0
                    else ["record_id", "product", "metric", "value"])
         facts = [list(row.values()) for row in expected_exhibit(i)]
@@ -65,14 +66,15 @@ def source_exports(count):
             "workbook": workbook, "table": commercial}
         workbooks[workbook] = {"title": f"Product {i+1} launch model",
                                "worksheet_paths": [evidence_path, commercial_path]}
-    content = {
-        "export_reference": "EDITORIAL-EXPORT-0001", "version": 2,
-        "source_project": "PRODUCT-OPERATIONS",
-        "section_ids": [case["section_id"] for case in sections],
-        "audience": ["Product operations staff"], "files": files,
-        "workbooks": workbooks,
-    }
-    return {content["export_reference"]: {**content, "sha256": digest(content)}}
+        content = {
+            "export_reference": f"EDITORIAL-EXPORT-{i+1:04d}", "version": 2,
+            "source_project": "PRODUCT-OPERATIONS", "product": f"Product-{i+1}",
+            "section_ids": [case["section_id"]],
+            "audience": ["Product operations staff"], "files": files,
+            "workbooks": workbooks,
+        }
+        exports[content["export_reference"]] = {**content, "sha256": digest(content)}
+    return exports
 
 
 class Publisher:
@@ -92,7 +94,7 @@ class Publisher:
 
     def catalog(self):
         return [{k: deepcopy(row[k]) for k in (
-            "export_reference", "version", "source_project", "section_ids", "audience", "sha256")}
+            "export_reference", "version", "source_project", "product", "section_ids", "audience", "sha256")}
             for row in self.exports.values()]
 
     def _record(self, actor, operation, arguments, result):
@@ -142,45 +144,80 @@ class Publisher:
             paths = [source["path"] for source in sources]
             if not paths or len(paths) != len(set(paths)):
                 raise ValueError("Comparison needs distinct source tables")
-            groups = {}
-            for source in sources:
-                file = imported["files"][source["path"]]
-                table, mapping = file["table"], source["column_map"]
-                if set(mapping) != {"reference", "subject", "measure", "amount"} or len(set(mapping.values())) != 4:
-                    raise ValueError("Comparison columns must be distinct")
-                indexes = {key: table["columns"].index(value) for key, value in mapping.items()}
-                for row in table["rows"]:
-                    amount = row[indexes["amount"]]
-                    if type(amount) not in (int, float) or not math.isfinite(amount):
-                        raise ValueError("Comparison observations must be numeric")
-                    key = (file["product"], row[indexes["measure"]])
-                    groups.setdefault(key, []).append(amount)
-            if not groups:
-                raise ValueError("Comparison source has no observations")
-            rows = [{"product": product, "measure": measure,
-                     "minimum": min(values), "maximum": max(values),
-                     "observations": len(values)}
-                    for (product, measure), values in sorted(groups.items())]
-            portfolios = []
-            for measure in sorted({measure for _, measure in groups}):
-                products = sorted(product for product, metric in groups if metric == measure)
-                values = [amount for product in products for amount in groups[(product, measure)]]
-                portfolios.append({"products": products, "measure": measure,
-                    "minimum": min(values), "maximum": max(values), "observations": len(values)})
-            reference = f"COMPARISON-{len(self.comparisons)+1:04d}"
-            comparison = {"reference": reference, "author": actor, "project": imported["project"],
-                "source_import": import_reference, "source_export": imported["source_export"],
-                "source_sha256": imported["source_sha256"], "sources": deepcopy(sources),
-                "source_audiences": {path: deepcopy(imported["files"][path]["audience"]) for path in paths},
-                "audience": sorted(set.intersection(*(set(imported["files"][path]["audience"]) for path in paths))),
-                "comparisons": rows, "portfolios": portfolios}
-            comparison["sha256"] = digest(comparison)
-            self.comparisons[reference] = comparison
-            self.artifacts.append({"kind": "offer_comparison", **deepcopy(comparison)})
-            result = {"status": 201, "comparison": comparison}
+            tables = [{"source_import": import_reference,
+                       "source_export": imported["source_export"],
+                       "source_sha256": imported["source_sha256"], **deepcopy(source)}
+                      for source in sources]
+            result = self._comparison(actor, tables, [])
         except (ValueError, KeyError, TypeError, IndexError) as error:
             result = {"status": 409, "error": str(error)}
         return self._record(actor, "compare_offers", args, result)
+
+    def combine_comparisons(self, actor, inputs):
+        """A version-bound calculation may use other calculations as inputs."""
+        args = {"comparisons": inputs}
+        try:
+            if not inputs or len({row["reference"] for row in inputs}) != len(inputs):
+                raise ValueError("Comparison references must be distinct")
+            tables = {}
+            for item in inputs:
+                record = self.comparisons[item["reference"]]
+                if record["sha256"] != item["sha256"] or record["project"] != self.cases[actor]["project"]:
+                    raise ValueError("Comparison version does not match the project record")
+                for source in record["source_tables"]:
+                    key = (source["source_export"], source["source_sha256"], source["path"])
+                    if key in tables and tables[key]["column_map"] != source["column_map"]:
+                        raise ValueError("A source table has conflicting column mappings")
+                    tables.setdefault(key, deepcopy(source))
+            result = self._comparison(actor, list(tables.values()), inputs)
+        except (ValueError, KeyError, TypeError, IndexError) as error:
+            result = {"status": 409, "error": str(error)}
+        return self._record(actor, "combine_offer_comparisons", args, result)
+
+    def _comparison(self, actor, sources, inputs):
+        groups, audiences = {}, {}
+        for source in sources:
+            imported = self.imports[source["source_import"]]
+            if (imported["source_export"] != source["source_export"]
+                    or imported["source_sha256"] != source["source_sha256"]
+                    or imported["project"] != self.cases[actor]["project"]):
+                raise ValueError("Comparison source version does not match")
+            file = imported["files"][source["path"]]
+            if not file.get("product"):
+                raise ValueError("Source table has no product offer observations")
+            audiences[source["source_export"] + ":" + source["path"]] = deepcopy(file["audience"])
+            table, mapping = file["table"], source["column_map"]
+            if set(mapping) != {"reference", "subject", "measure", "amount"} or len(set(mapping.values())) != 4:
+                raise ValueError("Comparison columns must be distinct")
+            indexes = {key: table["columns"].index(value) for key, value in mapping.items()}
+            for row in table["rows"]:
+                amount = row[indexes["amount"]]
+                if type(amount) not in (int, float) or not math.isfinite(amount):
+                    raise ValueError("Comparison observations must be numeric")
+                key = (file["product"], row[indexes["measure"]])
+                groups.setdefault(key, []).append(amount)
+        if not groups:
+            raise ValueError("Comparison source has no observations")
+        rows = [{"product": product, "measure": measure,
+                 "minimum": min(values), "maximum": max(values),
+                 "observations": len(values)}
+                for (product, measure), values in sorted(groups.items())]
+        portfolios = []
+        for measure in sorted({measure for _, measure in groups}):
+            products = sorted(product for product, metric in groups if metric == measure)
+            values = [amount for product in products for amount in groups[(product, measure)]]
+            portfolios.append({"products": products, "measure": measure,
+                "minimum": min(values), "maximum": max(values), "observations": len(values)})
+        reference = f"COMPARISON-{len(self.comparisons)+1:04d}"
+        comparison = {"reference": reference, "author": actor, "project": self.cases[actor]["project"],
+            "source_tables": deepcopy(sources), "input_comparisons": deepcopy(inputs),
+            "source_audiences": audiences,
+            "audience": sorted(set.intersection(*(set(value) for value in audiences.values()))),
+            "comparisons": rows, "portfolios": portfolios}
+        comparison["sha256"] = digest(comparison)
+        self.comparisons[reference] = comparison
+        self.artifacts.append({"kind": "offer_comparison", **deepcopy(comparison)})
+        return {"status": 201, "comparison": comparison}
 
     def prepare(self, actor, imported_reference, evidence_path, column_map,
                 attachment_paths, source_receipts, exhibit_format="table", comparison_reference=None):

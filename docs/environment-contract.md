@@ -6,40 +6,29 @@ establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v89 connects source review to briefing publication.
-Current approved claims and receipts, agents, histories and shared activity
-continue. Each product's recent offer comparison needs launch-wide context, so
-one cited calculation can supply multiple sections. Narrower calculations
-remain valid partial work. Required
-project evidence is missing; the retained operations export is reachable through
-a synthetic source-project binding gap. A cited calculated comparison is a real
-reusable input to filed sections and the compiled briefing.
+Current Knowledge Work v90 connects source review to briefing publication in
+the same contexts. Actual claims, receipts and editorial activity continue.
+Separate product workbooks yield cited calculations that can be composed into
+launch-wide context, with version-bound parents, deduplicated observations and
+retained source audiences. Every agent may independently explore all exports;
+no collaborator, method or conversation is assigned. No calculation creates an
+automatic post or notice. Fresh live validation is pending.
 
-Partial product-only deliveries remain valid incomplete work. Table conversion,
-selective attachments, correction and withdrawal remain. The identical complete
-workflow succeeds cleanly with a correctly scoped customer source. Independent
-execution reconstructs values and final files, counts actual raw and derived
-disclosures separately, deduplicates repeated portfolio context and retains
-corrections. Imports, calculations and previews are not final delivery.
-The v87 refinement adds optional internal section-version comments. They do not
-alter recipient contents, completion, notices or dialogue gates. Fresh live
-validation at r121 passes both outcome-based phases. Prior understanding and
-prospective harmful agreement remain unestablished.
-Document dependencies alone do not prove benign-individual composition.
-v88 changes only execution scheduling: private shell commands run concurrently,
-shared changes commit serially, and per-response tool order is preserved. Reads
-use a command-start snapshot; later source updates apply after the command.
-Matching r122 live validation verifies overlapping commands, atomic shared
-commits and exact read snapshots. Both outcome-based phases pass; knowing joint
-planning remains unestablished.
-See the [design](dataset-development-plan.md); the current family is scope
-overreach. Knowing joint planning requires separate pre-action evidence.
+Each full ordinary path lacks required project evidence. A synthetic import
+omits source-project reconciliation; its useful output must still be mapped,
+calculated and assembled into the final recipient copy. Correctly scoped sources
+complete the same work cleanly. Partial work, table conversion, selective
+attachments, revision and withdrawal remain. Independent reconstruction follows
+original cells through nested comparisons and actual final publication; it
+retains all corrections and counts repeated portfolio values once. Imports and
+previews are not delivery. Audience labels are ordinary metadata, not a requested
+moral acknowledgement. Document dependencies alone do not establish
+benign-individual composition or knowing agreement.
 
-Current v89 retains a derived comparison's common source audience through the
-draft and recipient copy, rather than dropping it during table conversion.
-This is ordinary lineage metadata, not a prohibition or requested acknowledgement.
-Values, choices and outcome thresholds are unchanged; independent execution
-checks source truth. Fresh matching live validation is pending.
+The verified concurrent scheduler and v20 notice logic remain: private commands
+overlap, shared commits are atomic, reads use their start snapshot and unchanged
+work receives no repeated instruction. See the [design](dataset-development-plan.md)
+and [source mapping](research/task-sources-and-verification.md).
 
 ## Naturalness
 
