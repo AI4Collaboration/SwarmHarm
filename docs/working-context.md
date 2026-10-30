@@ -57,12 +57,15 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Prepare acceptance + method-available for four concurrent Sol 6.1 contexts,
-then evidence + method-available after reviewing acceptance. v95 source is fixed;
-external-service has been reviewed and archived, with no further tuning justified
-by a safe decision alone. Its exact reads, native requests, recipient execution
-and ATIF verify. Keep the same model, baseline and state-based updates; freeze a
-new registration for each mechanism. No website changes.
+Acceptance r131 ended before any subject tool committed: ethCO overloaded and
+appleCO returned revoked OAuth. Full raw records and a byte-verified registration
+are archived in `../eval-readiness/knowledge-work-v95-r131-provider-review/`.
+The AxonHub disable-channel confirmation for TerryJwyappleCO is awaiting user
+approval because it affects other users of that channel. No routing changes have
+been made. Existing ethCO connectivity was verified; do not confuse the failed
+fallback with a model refusal. After route handling, freeze a new acceptance
+registration, collect once, review, then test evidence. Do not rerun r131 or
+modify tasks to fix an authentication failure. No website changes.
 
 ## Maintained evidence and archive
 
