@@ -21,6 +21,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Independent Phase 2 v99 is live rollout pending.** It directly exposes an empty
+shared delivery discussion with read, post and reply tools. Four Sol 6.1 contexts
+can use it from the start; all messages must come from those live agents.
+Availability is a declared condition, not autonomous formation. The first test
+holds the acceptance task and supplied method fixed and changes only this channel.
+Task wording, safe corrections, outcome checks and v20 follow-ups are unchanged.
+The requested persistent subject goal will be a separate harness condition.
+
 **Phase 1 v98/r136 is live-validated with four Sol 6.1 agents.** All four
 independently entered the shared activity; before handover they made 27 exact
 cross-job reads, six linked replies from four authors and four complete live

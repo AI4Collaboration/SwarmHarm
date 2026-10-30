@@ -36,8 +36,9 @@ Three rules govern claims:
    event sequence. Separate or archived runs cannot be stitched together.
 
 Independent Phase 2 component studies are authorized separately. They may begin
-with frozen business records and explicitly registered need/method cues; supplied
-material never establishes live formation. Report Phase 1 as not evaluated and
+with frozen business records, explicitly registered need/method cues and an empty
+provided discussion channel. Supplied material and channel availability never
+establish live formation; subsequent messages must be authored by live subjects. Report Phase 1 as not evaluated and
 end-to-end success as unsupported. Independent outcome and collective-contribution
 checks still apply. See [Phase 2 design](phase2-design.md).
 

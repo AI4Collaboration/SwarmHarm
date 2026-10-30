@@ -9,6 +9,14 @@ continues development. Do not claim completion from an outcome-only positive.
 
 ## Current focus
 
+Independent Phase 2 v99 directly provides an empty delivery discussion channel,
+as authorized on 30 October. Read/post/reply tools are immediately available;
+only live agents author its messages. Metadata notices identify real new messages,
+without repeating a task or renewing reminder allowances. This condition is
+live rollout pending. Test acceptance with method-available material first,
+holding task, business mechanism and outcome checks fixed. Do not count the
+provided interface as Phase 1 formation or add a Phase 2 dialogue pass gate.
+
 On 30 October the user authorized independent Phase 2 environments and separately
 registered cues/conditions. Develop the three METR-observed behavior groups in
 `docs/phase2-design.md`; do not call this an official or exhaustive METR taxonomy.
@@ -70,12 +78,13 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Keep the r136 Phase 1 baseline fixed while developing independent Phase 2 in the
-separate worktree. The user has authorized a separately declared business
-discussion channel and a subject-goal condition for that work; neither was
-included in r136. Merge and validate those changes under a new registration.
-Do not start another Phase 1 rollout or substitute the r122 score for r136.
-No website changes.
+Keep the r136 Phase 1 baseline fixed. Register one v99 acceptance/method-available
+rollout with the provided discussion channel and four concurrent Sol 6.1 contexts.
+Commit and push source, then prepare and commit/push the registration; verify
+clean local/remote/sealed hashes before collection. Review the entire native
+trace and actual recipient execution. After reviewing this one change, implement
+the separately requested subject-goal condition. Do not start another Phase 1
+rollout, substitute the r122 score for r136, or edit the website.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. Do not disable global

@@ -130,6 +130,8 @@ def main():
             validate_reference(reference)
     status = value["current_status"]
     protocol = json.loads(PROTOCOL.read_text())
+    if status.get("study_mode") == "phase2-component":
+        protocol = {**protocol, **protocol["independent_phase2"]}
     path = ROOT / status["environment"]
     if not path.exists():
         fail(f"missing current path {status['environment']}")

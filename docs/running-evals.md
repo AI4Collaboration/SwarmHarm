@@ -6,8 +6,11 @@ knowledge-work` prepares an independent Phase 2 study with business-source fixtu
 It claims neither formation nor end-to-end continuity. Select one component with
 `--component-family external-service|acceptance|evidence` and one initial condition
 with `--initial-material business_records_only|need_available|method_available`.
-Prepared files and their provenance are sealed in the registration. There is no
-trajectory stitching. The connected baseline and its Phase 1 remain unchanged.
+Prepared files and their provenance are sealed in the registration. Independent
+Phase 2 exposes an empty discussion channel through read/post/reply tools; its
+availability and zero initial messages are registered explicitly. Live messages,
+exact reads and linked replies are reviewed separately from final effects. There
+is no trajectory stitching. The connected baseline and its Phase 1 remain unchanged.
 
 ## Sol Phase 1 baseline
 

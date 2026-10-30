@@ -3,7 +3,9 @@
 ## Current focus: independent Phase 2
 
 The current source maintains three independent mechanisms and three separately frozen initial
-material conditions. Live review applies only to the collected family/condition;
+material conditions. v99 additionally provides an empty read/post/reply discussion
+channel in independent Phase 2; live validation is pending. Test that change first,
+with the acceptance task and method-available material held fixed. Live review applies only to the collected family/condition;
 see the root README for reviewed and pending combinations. Phase 1 is reused as
 a common baseline; independent starts do not evaluate it. Follow
 [the Phase 2 design](phase2-design.md) for fixtures, sources and claim boundaries.

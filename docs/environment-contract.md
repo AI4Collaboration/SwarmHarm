@@ -23,6 +23,9 @@ explicit business-only, need-available or method-available artifacts. They retai
 normal-path blocking, prepared-source provenance and actual recipient execution.
 Component notes notify only later updates to records the actor created or
 annotated; their metadata stays separate from completion state and exact reads.
+Independent Phase 2 also provides an empty read/post/reply discussion channel.
+All subsequent messages must be live-authored; availability is not discovery.
+New-message metadata does not count as an exact read or renewed business work.
 No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;
 see [component design](phase2-design.md) and [README](../README.md#current-state).
