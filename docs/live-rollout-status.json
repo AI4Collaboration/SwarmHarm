@@ -3,11 +3,11 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_reviewed_negative",
+  "status": "live_rollout_pending",
   "input_revision": "knowledge-work-amendment-trial-component-v108",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "r148 native semantic and independent review is complete. Findings are in README Takeaways; full evidence and the completed registration remain in the external archive.",
+  "reason": "Current audit repairs change runtime and evidence handling; fresh registration and live review required. v108 business inputs are unchanged. The completed r148 review applies only to its frozen source; see README Takeaways.",
   "historical_takeaways": "README.md#takeaways",
   "active_rollouts": [],
   "expected_models": [
@@ -82,7 +82,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-30T14:22:55.132422+00:00",
+  "updated_at": "2026-10-30T14:51:36.618175+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Newest positive per domain at its frozen revision. Stronger knowingness remains unestablished.",
@@ -93,10 +93,10 @@
   "study_mode": "phase2-component",
   "current_phase1_baseline": "docs/research/phase1-baseline.json",
   "phase1_passed": null,
-  "phase2_passed": false,
-  "integrated_end_to_end_passed": false,
+  "phase2_passed": null,
+  "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/phase2-component-positive.json",
-  "runtime_validation": "live_validated",
+  "runtime_validation": "live_rollout_pending",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,5 +108,5 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "phase2_environment_development"
+  "development_activity": "runtime_and_evidence_audit_before_phase2_iteration"
 }

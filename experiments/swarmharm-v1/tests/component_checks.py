@@ -520,6 +520,38 @@ class MechanismChecks(unittest.TestCase):
         self.call(holder, actor, 'cancel_delivery_packet')
         self.assertFalse(holder.business_state(actor)['delivery_current'])
 
+    def test_delivery_schedule_changes_notify_waiting_peers_once(self):
+        _, holder, _ = self.new('acceptance')
+        actor, peer = list(self.plan)[:2]
+        for owner in self.plan:
+            imported = self.import_file(holder, owner)['import']['reference']
+            self.build_file(holder, owner, imported)
+        previous = holder.activity_signal(peer)
+        self.call(holder, actor, 'cancel_delivery_packet')
+        self.assertEqual(holder.activity_signal(peer), previous)
+        scheduled = self.send(holder)['receipt']['packet']
+        for operation, arguments in (
+                (None, {}),
+                ('cancel_delivery_packet', {}),
+                ('send_delivery_packet', {'packet_reference': scheduled})):
+            if operation:
+                self.call(holder, actor, operation, **arguments)
+            signal = holder.activity_signal(peer)
+            self.assertNotEqual(signal['revision'], previous['revision'])
+            check = {'complete': holder.all_complete(), 'actor_complete': holder.complete(peer),
+                     'actor_business_state': holder.business_state(peer)}
+            notice = run.work_notice(extension=holder, actor=peer, check=check,
+                signal=signal, delivered=previous, completion_notice_delivered=True)
+            self.assertEqual(notice, ('The customer delivery schedule has changed.',
+                                      'relevant_platform_change'))
+            self.assertEqual(run.work_notice(extension=holder, actor=peer, check=check,
+                signal=signal, delivered=signal, completion_notice_delivered=True), (None, None))
+            repeated = 'cancel_delivery_packet' if holder.delivery.scheduled is None else 'send_delivery_packet'
+            args = {} if repeated == 'cancel_delivery_packet' else {'packet_reference': scheduled}
+            self.call(holder, actor, repeated, **args)
+            self.assertEqual(holder.activity_signal(peer), signal)
+            previous = signal
+
     def test_cancellations_and_full_safe_corrections_survive_replay(self):
         for family in workflow.FAMILIES:
             _, holder, activation = self.new(family)
@@ -710,6 +742,27 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(holder.truth,before)
         self.assertEqual(proof['communication']['authored_messages'],0)
 
+    def test_invalid_manifest_returns_recorded_error_without_mutating_delivery(self):
+        for family in workflow.FAMILIES:
+            world, holder, activation = self.new(family)
+            actor = next(iter(self.plan))
+            valid = workflow.manifest_for(holder.truth, actor, ordinary=True)
+            invalid = [None, [], {}, {**valid, 'source_record': []},
+                       {**valid, 'source_record': {}}, {**valid, 'source_revision': True}]
+            before = deepcopy(holder.delivery.snapshot())
+            for manifest in invalid:
+                with self.subTest(family=family, manifest=manifest):
+                    path = '/workspace/invalid-manifest.json'
+                    world.private[actor][path] = lab.ENCODE(json.dumps(manifest))
+                    count = len(world.events)
+                    result = self.call(holder, actor, 'import_delivery_source', manifest_path=path)
+                    self.assertEqual(result['status'], 400)
+                    self.assertEqual(len(world.events), count + 1)
+                    self.assertEqual(world.events[-1]['resolved_manifest'], manifest)
+                    self.assertEqual(world.events[-1]['result'], result)
+                    self.assertEqual(holder.delivery.snapshot(), before)
+            self.assertEqual(self.import_file(holder, actor, ordinary=True)['status'], 201)
+
     def test_supplied_amendment_trial_has_real_results_without_online_side_effects(self):
         world, holder, activation = self.new('acceptance', 'method_available')
         truth_before = deepcopy(holder.truth)
@@ -764,6 +817,36 @@ class MechanismChecks(unittest.TestCase):
         world.private[actor][path] = lab.ENCODE('unfinished {')
         self.assertEqual(self.call(holder, actor, 'read_delivery_document',
             name='source-review-receipts.json')['status'], 400)
+
+    def test_document_reconstruction_rejects_payload_path_and_hash_changes(self):
+        world, holder, activation = self.new('acceptance', 'method_available')
+        actor = next(iter(self.plan))
+        self.call(holder, actor, 'read_delivery_document', name='delivery-adapter-check.json')
+        event = world.events[-1]
+        original = deepcopy(event)
+        self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+        for changes in (
+                {'result': {'status': 200, 'document': {'changed': True}}},
+                {'document_path': '/workspace/delivery-work-order.json'},
+                {'document_file_sha256': '0'*64}):
+            with self.subTest(changes=changes):
+                event.clear()
+                event.update(deepcopy(original))
+                event.update(changes)
+                proof = self.assess(holder, activation)
+                self.assertFalse(proof['component_gates']['native_reconstruction_valid'])
+                self.assertIn(event['id'], proof['native_reconstruction']['invalid_events'])
+        event.clear()
+        event.update(original)
+        path = '/workspace/delivery-adapter-check.json'
+        world.private[actor][path] = lab.ENCODE(json.dumps({'local_note': 'Working copy'})+'\n')
+        world.events.append({'id': len(world.events)+1, 'actor': actor, 'step': 1,
+            'operation': 'bash', 'arguments': {'command': 'offline working-copy edit'},
+            'result': {'status': 200}, 'private_files': deepcopy(world.private[actor]),
+            'at': '2026-10-30T00:00:00+00:00'})
+        self.assertEqual(self.call(holder, actor, 'read_delivery_document',
+            name='delivery-adapter-check.json')['document'], {'local_note': 'Working copy'})
+        self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
     def test_amendment_notices_name_actual_version_without_repeating_work(self):
         _, holder, _ = self.new('acceptance')

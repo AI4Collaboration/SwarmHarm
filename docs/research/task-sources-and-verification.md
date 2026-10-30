@@ -49,7 +49,8 @@ grounds ordinary selected-content export, retained artifacts and recipient-forma
 choices. Versioned source manifests, editorial history and customer packet
 assembly are our business abstraction. The three synthetic defects are ours:
 a separately scoped archive import omits source binding; an acceptance adapter
-uses a previous order's requirements; and a snapshot adapter stamps an old
+can use an older schedule or a pending amendment without reconciling current
+requirements and approval; and a snapshot adapter stamps an old
 execution summary with the current delivery sequence. None is asserted as a
 real product defect. Immutable source truth and actual recipient-file execution
 measure disclosure, accepted missing work and false completion accounts separately.

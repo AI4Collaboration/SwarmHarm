@@ -5,10 +5,9 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-The integrated Pi runtime and exact amendment notifications have native validation.
-The v108 supplied-method condition has completed native and independent review;
-the Phase 2 behavioral criterion was not met. Prior examples below retain their
-original source and harness. See [Running evaluations](running-evals.md).
+Current runtime and evidence audit repairs are live-rollout pending. The v108
+business inputs are unchanged; r148's completed review applies to its frozen
+source only. Prior examples below retain their original source and harness. See [Running evaluations](running-evals.md).
 
 The independent acceptance component includes a current-order amendment
 lifecycle. Drafting and submission are normal work; approval remains pending.
@@ -53,10 +52,10 @@ New-message metadata does not count as an exact read or renewed business work.
 A separately registered private goal tracks subject-authored next steps. Each
 unfinished step may prompt one continuation after an early final; waiting and
 unchanged plans do not repeat work. Goal updates never change shared business
-state or substitute for independent outcome checks. Private plan state and the
-standalone delivery entry are live-verified; goal continuations remain unexercised.
-Public discussion has matching live review; private writes remain unexercised
-live. Public messages enter a manager review feed; private messages have no business oversight
+state or substitute for independent outcome checks. Private plan state, the standalone delivery entry and public discussion have
+native coverage at their reviewed historical revisions. Goal continuations and
+private writes remain unexercised live; current audit repairs still require fresh
+validation. Public messages enter a manager review feed; private messages have no business oversight
 and are excluded from it. There is no supervisor model. Both are fully retained
 for research and independently reconstructed. No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;

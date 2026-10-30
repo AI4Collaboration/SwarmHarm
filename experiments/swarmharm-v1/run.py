@@ -177,6 +177,72 @@ def finish_actor_states(states, starts, *, reason, finished_at, now):
         state.update(finished_at=finished_at, termination_reason=reason,
                      elapsed_seconds=round(now-starts[actor], 2))
         state.pop('unfinished_followup_at', None)
+
+
+def preserve_pending_shells(world, shell_tasks, directory, *, reason):
+    """Retain shutdown executions without publishing or observing their results.
+
+    The pool must already be stopped. A shell mutates its private workstation
+    before the controller receives shell_ready; its registry snapshot is still
+    an uncommitted proposal. Neither is a delivered model observation here.
+    """
+    for future, (actor, message, call, args, index) in list(shell_tasks.items()):
+        require(future.done(), 'Stop the shell pool before preserving its results')
+        step=message['turn']
+        path=directory/actor/'trace'/f'{step:04d}-tool-{index}-undelivered.json'
+        record={'actor':actor,'step':step,'name':call['name'],
+            'call_id':message['call_id'].split('|',1)[0],
+            'arguments':call['arguments'],'termination_reason':reason,
+            'delivery_status':'not_delivered','shared_commit_applied':False,
+            'recorded_at':utc()}
+        private=None
+        if future.cancelled():
+            record['execution_status']='cancelled_before_execution'
+        else:
+            try:
+                execution=future.result()
+            except BaseException as error:
+                record.update(execution_status='failed',error={
+                    'type':type(error).__name__,'message':str(error)})
+            else:
+                record['execution']=execution
+                try:
+                    require(execution['actor']==actor and execution['command']==args['command'],
+                            'Workstation completion does not match its transaction')
+                    require(isinstance(execution['reply'],dict)
+                            and all(isinstance(execution['snapshot'][key],dict)
+                                    for key in ('/workspace','/registry')),
+                            'Workstation completion has no complete output and snapshot')
+                    private=deepcopy(execution['snapshot']['/workspace'])
+                    record['execution_status']='completed'
+                except (KeyError,TypeError,RuntimeError) as error:
+                    record.update(execution_status='invalid_result',error={
+                        'type':type(error).__name__,'message':str(error)})
+        world.running_shells.discard(actor)
+        # A publication that occurred during execution is already real state;
+        # keep it without changing the preserved start/end execution snapshots.
+        if private is not None:
+            world.private[actor]=private
+        world.private.setdefault(actor,{}).update(world.deferred_private_updates.pop(actor,{}))
+        require(not path.exists(), 'Shutdown must not replace execution evidence')
+        save(path,record)
+        if not future.cancelled():
+            event={'id':len(world.events)+1,'actor':actor,'step':step,
+                'start_group':world.plan[actor]['start_group'],
+                'operation':'workstation_execution_undelivered','arguments':deepcopy(args),
+                'execution_status':record['execution_status'],'delivery_status':'not_delivered',
+                'shared_commit_applied':False,'shared_changes':[],
+                'private_files':deepcopy(world.private[actor]),
+                'execution_record':str(path.relative_to(directory)),
+                'at':record['recorded_at']}
+            world.events.append(event)
+            if world.operator:
+                target=world.operator/'tool-commits'/f"{event['id']:06d}.json"
+                require(not target.exists(), 'Shutdown must not replace a tool event')
+                save(target,{'event':event,'summary':world.summary()})
+        del shell_tasks[future]
+
+
 def empty_tool_arguments(raw):
     value=json.loads(raw)
     return value=={} or value=={'parameters':{}}
@@ -1602,7 +1668,10 @@ def collect(root,registration_dir):
                     state['status']='interrupted';state['interrupted_at']=utc();export(actor)
             raise
         finally:
+            # No controller event handlers run after this point. Cancel queued
+            # shells, retain already executed work, then remove the workstations.
             shell_pool.shutdown(wait=True,cancel_futures=True)
+            preserve_pending_shells(world,shell_tasks,root/name,reason=termination_reason)
             for actor,agent in agents.items():
                 states[actor][f'{harness_folder}_exit_code']=agent.close()
             finish_actor_states(states,starts,reason=termination_reason,

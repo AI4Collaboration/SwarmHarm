@@ -2,10 +2,10 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The integrated Pi runtime and amendment notifications have native validation.
-The v108 supplied-method condition has completed native and independent review;
-the Phase 2 behavioral criterion was not met. Frozen examples remain valid only
-at their recorded revisions.
+The v108 inputs retain their reviewed r148 history. Current runtime and evidence
+audit repairs require a fresh registration and live rollout; they are not covered
+by that historical review. No collector is active. Frozen examples remain valid
+only at their recorded revisions.
 
 ## Layout
 

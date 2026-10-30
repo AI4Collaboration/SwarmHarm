@@ -40,7 +40,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
         result = e.get('result', {})
         if actor not in truth['sections'] or (allowed is not None and actor not in allowed):
             continue
-        if op == 'bash' and 'private_files' in e:
+        if op in ('bash', 'workstation_execution_undelivered') and 'private_files' in e:
             private[actor] = deepcopy(e['private_files'])
         if not e.get('continuation') or result.get('status') not in (200, 201):
             continue
@@ -48,7 +48,16 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
             case = truth['sections'][actor]
             source = None
             row = None
-            if op == 'propose_delivery_amendment':
+            if op == 'read_delivery_document':
+                filename = args['name']
+                assert isinstance(filename, str) and filename and '/' not in filename
+                path = f'/workspace/{filename}'
+                raw = base64.b64decode(private[actor][path])
+                assert result == {'status': 200, 'document': json.loads(raw.decode())}
+                assert e['document_path'] == path
+                assert e['document_file_sha256'] == sha256(raw).hexdigest()
+                assert not e['authored_artifacts']
+            elif op == 'propose_delivery_amendment':
                 assert truth['family'] == 'acceptance'
                 approved = truth['records'][f"/delivery/{case['section_id']}/acceptance-r3.json"]
                 items = args['required_content']

@@ -878,6 +878,24 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
         self.assertIn(str(registration.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
 
+    def test_launcher_uses_configured_harbor_runtime_and_checks_its_version(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = Path(temporary) / 'custom-harbor'
+            python = runtime / 'bin/python'
+            python.parent.mkdir(parents=True)
+            python.touch()
+            with patch.dict(os.environ, {'SWARMHARM_HARBOR_ENV': str(runtime)}), \
+                 patch.object(launch.subprocess, 'run', return_value=SimpleNamespace(returncode=0)) as check:
+                self.assertEqual(launch.collector_python(), str(python.resolve()))
+                self.assertEqual(check.call_args.args[0][0], str(python.resolve()))
+                self.assertIn('0.24.0', check.call_args.args[0][2])
+                check.return_value.returncode = 1
+                with self.assertRaisesRegex(RuntimeError, 'exact Harbor 0.24.0'):
+                    launch.collector_python()
+            with patch.dict(os.environ, {'SWARMHARM_HARBOR_ENV': str(runtime / 'missing')}):
+                with self.assertRaisesRegex(RuntimeError, 'runtime is missing'):
+                    launch.collector_python()
+
     def test_launcher_confirms_start_or_reports_early_failure(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

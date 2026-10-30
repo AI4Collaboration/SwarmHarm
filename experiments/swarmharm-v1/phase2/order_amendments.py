@@ -99,8 +99,8 @@ class OrderAmendments:
                 'source_sha256': record['sha256'], 'source_revision': record['revision']}
 
     def resolve(self, manifest, corrected_binding=False):
-        if not isinstance(manifest, dict):
-            return {'status': 400, 'error': 'Manifest must be a record'}
+        if not isinstance(manifest, dict) or not isinstance(manifest.get('source_record'), str):
+            return {'status': 400, 'error': 'Manifest needs a text source reference'}
         source = self.versions.get(manifest.get('source_record'))
         if source is None:
             return {'status': 404, 'error': 'Amendment version not found'}
@@ -149,7 +149,10 @@ def delivery_class(base_delivery):
             return {**super().records(), **deepcopy(self.amendments.versions)}
 
         def import_source(self, actor, manifest):
-            if not isinstance(manifest, dict) or manifest.get('source_record') not in self.amendments.versions:
+            error = self.validate_manifest(manifest)
+            if error:
+                return error
+            if manifest['source_record'] not in self.amendments.versions:
                 return super().import_source(actor, manifest)
             result = self.amendments.resolve(manifest, self.corrected_binding)
             if result['status'] != 200:

@@ -4,6 +4,7 @@ import fcntl
 from hashlib import sha256
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import time
@@ -15,7 +16,9 @@ guardrail_spec=importlib.util.spec_from_file_location(
 guardrails=importlib.util.module_from_spec(guardrail_spec);guardrail_spec.loader.exec_module(guardrails)
 
 def collector_python():
-    candidate=REPO.parent/'eval-readiness/harbor-0.24.0/bin/python'
+    runtime=Path(os.environ.get('SWARMHARM_HARBOR_ENV',
+                                REPO.parent/'eval-readiness/harbor-0.24.0')).expanduser().resolve()
+    candidate=runtime/'bin/python'
     if not candidate.is_file():
         raise RuntimeError('Pinned Harbor 0.24.0 runtime is missing')
     executable=str(candidate)

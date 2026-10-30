@@ -74,6 +74,75 @@ class FormatChecks(unittest.TestCase):
         changed = dict(rebuilt_call, arguments='{"command":"pwd"}')
         self.assertNotEqual(export_atif.canonical(response_call), export_atif.canonical(changed))
 
+    def test_atif_existing_export_must_match_native_reconstruction_and_study_scope(self):
+        for mode in ('phase1', 'phase2-component', 'connected'):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                folder = root / 'natural/actor'
+                trace = folder / 'trace'
+                trace.mkdir(parents=True)
+                inputs = [{'role': 'system', 'content': 'Workstation context'},
+                          {'role': 'user', 'content': 'Prepare the delivery.'}]
+                output = [{'type': 'message', 'role': 'assistant',
+                           'content': [{'type': 'output_text', 'text': 'Actual model text'}]}]
+                records = {
+                    root / 'registration.json': {'harness': {'kind': 'pi-sdk'}, 'study_mode': mode},
+                    trace / '0001.request.json': {'model': 'fixture', 'input': inputs,
+                        'tools': [{'type': 'function', 'name': 'read_delivery_record',
+                                   'description': 'Read a record.', 'parameters': {'type': 'object'}}]},
+                    trace / '0001.response.json': {'status': 'completed', 'output': output},
+                    folder / 'history.json': inputs + output,
+                    folder / 'result.json': {'status': 'completed'},
+                }
+                for path, value in records.items():
+                    path.write_text(json.dumps(value))
+                export_atif.export_actor(root, 'natural', 'actor')
+                dest = folder / 'agent/trajectory.json'
+                original = dest.read_bytes()
+                value = json.loads(original)
+                self.assertEqual(value['extra']['study_mode'], mode)
+                self.assertEqual(value['extra']['phase2_tools_seen'], mode == 'phase2-component')
+                self.assertNotIn('spans both phases', value['extra']['conversion'])
+                self.assertNotIn('spans Phase 1 and Phase 2', value['extra']['conversion'])
+                self.assertTrue(export_atif.export_actor(root, 'natural', 'actor')['preserved_existing_export'])
+                self.assertEqual(dest.read_bytes(), original)
+                value['steps'][-1]['message'] = 'This text is absent from the native record.'
+                dest.write_text(json.dumps(value))
+                altered = dest.read_bytes()
+                with self.assertRaisesRegex(AssertionError, 'differs from native reconstruction'):
+                    export_atif.export_actor(root, 'natural', 'actor')
+                self.assertEqual(dest.read_bytes(), altered)
+
+    def test_atif_binds_undelivered_execution_without_fabricating_observation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            folder = root / 'natural/actor'
+            trace = folder / 'trace'
+            trace.mkdir(parents=True)
+            inputs = [{'role': 'system', 'content': 'Workstation context'},
+                      {'role': 'user', 'content': 'Prepare the delivery.'}]
+            call = {'type': 'function_call', 'name': 'bash', 'call_id': 'shell-one',
+                    'arguments': '{"command":"write local report"}'}
+            pending = trace / '0001-tool-1-undelivered.json'
+            records = {
+                root / 'registration.json': {'harness': {'kind': 'pi-sdk'}, 'study_mode': 'phase1'},
+                trace / '0001.request.json': {'model': 'fixture', 'input': inputs, 'tools': []},
+                trace / '0001.response.json': {'status': 'completed', 'output': [call]},
+                folder / 'history.json': inputs + [call],
+                folder / 'result.json': {'status': 'operator_interrupted'},
+                pending: {'call_id': 'shell-one', 'delivery_status': 'not_delivered',
+                          'shared_commit_applied': False, 'execution': {'reply': {'stdout': 'written'}}},
+            }
+            for path, value in records.items():
+                path.write_text(json.dumps(value))
+            result = export_atif.export_actor(root, 'natural', 'actor')
+            value = json.loads((folder / 'agent/trajectory.json').read_text())
+            relative = str(pending.relative_to(folder))
+            self.assertEqual(value['extra']['undelivered_tool_records'], [relative])
+            self.assertEqual(value['extra']['source_sha256'][relative], export_atif.sha(pending))
+            self.assertFalse(value['steps'][-1].get('observation'))
+            self.assertEqual(result['tool_results'], 0)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

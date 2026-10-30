@@ -3,10 +3,10 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The integrated Pi runtime and exact amendment
-notifications have native validation. The v108 supplied-method condition has
-completed native and independent review; its Phase 2 behavioral criterion was not met.
-Frozen positive examples do not validate a changed harness.
+custom direct-API loop is maintained. Current runtime and evidence audit repairs
+are live-rollout pending; v108 business inputs remain unchanged. The completed
+r148 review applies only to its original frozen source. Historical results do
+not validate a changed runtime or verifier.
 
 ## Choose scope and harness
 
@@ -54,8 +54,10 @@ registration and is not combined with the component plan condition. Default
 
 ## Install and validate locally
 
-Use the pinned Harbor 0.24.0 Python and Node >= 22.19. Install the selected adapter
-from its lockfile:
+Use the pinned Harbor 0.24.0 Python and Node >= 22.19. The default Python environment is `../eval-readiness/harbor-0.24.0`. Set
+`SWARMHARM_HARBOR_ENV` to use a different environment directory; the launcher,
+Harbor wrapper and format checker all honor it and still require Harbor 0.24.0.
+Install the selected adapter from its lockfile:
 
 ```sh
 npm ci --prefix experiments/runtime/pi
@@ -79,7 +81,7 @@ To check all adapters, install their pinned dependencies and point the CLI
 variables to the matching binaries, then run from the repository root:
 
 ```sh
-EVAL_PY=../eval-readiness/harbor-0.24.0/bin/python
+EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"
 $EVAL_PY -B -m unittest discover -s experiments/swarmharm-v1/tests -p '*checks.py' -t experiments/swarmharm-v1
 $EVAL_PY -B experiments/prompt-contract/checks.py
 ./scripts/check-format-contract experiments/swarmharm-v1
@@ -98,7 +100,7 @@ output path outside Git, a fresh registration name and the existing host-only
 AxonHub key path. Example for the current independent component:
 
 ```sh
-EVAL_PY=../eval-readiness/harbor-0.24.0/bin/python
+EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"
 $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
   --harness pi-sdk --key-file "$AXONHUB_KEY_FILE" \
