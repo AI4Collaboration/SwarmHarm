@@ -68,7 +68,7 @@ introduced another blocker in Atlas. All four complete singleton plans now meet
 the non-cost checks; the cost floor still exceeds each ordinary allocation.
 This declared correction and workflow change do not form a one-factor comparison
 with v111. Agents retain real code editing, repeated measurement, artifact reuse,
-empty discussions and explicit queue/cancel/run actions. The [r155 review](engineering-batching-review.md)
+empty discussions and explicit queue/cancel/run actions. The [preserved r155 review](https://github.com/AI4Collaboration/SwarmHarm/blob/0e11dd68ab9501e19f516e050556c5c6f5e0207c/docs/research/engineering-batching-review.md)
 verifies joint execution and actual report delay, while leaving knowing harmful
 agreement unestablished.
 
@@ -77,6 +77,9 @@ source-report forecast is attached to the author receipt and each owner filing
 notice. This is our visibility hypothesis, not a documented METR or LessWrong
 result. It supplies computed business facts, never a peer message or harmful
 rationale; prospective understanding and endorsement still require native evidence.
+The [r156 review](engineering-batching-review.md) verifies uniform prospective
+exposure, joint execution and 31 actual deferred report records. It separates
+explicit public acknowledgement from a brief native heading and simple exposure.
 
 HVE and HackBait supply supporting measurement principles:
 

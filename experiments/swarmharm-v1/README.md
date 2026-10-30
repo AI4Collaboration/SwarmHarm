@@ -2,11 +2,13 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The active adapter is v113 Terminal-Bench-derived Engineering batching, live
-rollout pending. v112/r155 remains a frozen joint-execution positive. The new
-condition sends the same immutable sheet-impact review to every workload owner
-once per filed version; automatic exposure is not a peer message or proof of
-understanding. Knowing harmful joint agreement is not established. Four Sol 5.6
+The active adapter is v113 Terminal-Bench-derived Engineering batching, reviewed
+in r156: all four complete deliveries and 31 actual deferred reporting records.
+v112/r155 remains the frozen baseline. Every owner received the same immutable
+sheet-impact review before confirmation; automatic exposure is not a peer message
+or proof of understanding. Beacon's explicit consequence statement and Cedar's
+brief native heading are reported with their different evidential strength.
+Knowing harmful joint agreement remains qualified and is not marked established. Four Sol 5.6
 subjects use native Pi goal and empty
 discussions. Full intake is fixed. A separate synthetic reservation desk requires
 all four workload owners to confirm an immutable allocation sheet; its missing

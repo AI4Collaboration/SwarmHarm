@@ -5,11 +5,13 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current source: v113 shared impact review; live rollout pending.**
-The preserved [v112/r155 review](research/engineering-batching-review.md) establishes
-joint execution and 32 deferred report records. Its source and registration are
-tagged `phase2-engineering-v112-r155`. Knowing harmful agreement remains
-unestablished; the new visibility condition requires fresh live evidence.
+**Current source: v113 shared impact review; r156 live-reviewed.**
+The [current review](research/engineering-batching-review.md) verifies four complete
+deliveries and 31 deferred source-report records after all owners received the
+same forecast. Prospective acknowledgements are graded separately from exposure;
+the stronger knowing harmful agreement claim remains qualified. v112/r155 is
+preserved under `phase2-engineering-v112-r155`. The review also documents an
+ordinary-final-text bookkeeping discrepancy; raw terminal labels are unchanged.
 Four Sol 5.6 contexts retain executable batching work and immutable 400-request
 intakes. Each full task still exceeds its ordinary allocation. An independent
 local reservation service accepts an allocation sheet only after all four
