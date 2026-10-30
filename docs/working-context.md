@@ -73,9 +73,18 @@ assembly is not prior agreement.
 
 ## Next action
 
-Finish the audit checks, commit and push repairs, and freeze a fresh registration
-before live use. Do not reuse r148's registration or overwrite its review. Keep
-all three component families reachable and their correctly bound controls intact.
+Audit repairs are committed and pushed at `177e594e`. Freeze one fresh v108
+registration to validate this runtime before changing its goal condition. Do not
+reuse r148's registration or overwrite its review. Keep all three component
+families reachable and their correctly bound controls intact.
+
+The current private work-plan condition is not native `/goal`: preparation
+currently rejects a component with `goal_command`, and waiting plans receive no
+plan continuation. The human requested a persistent goal comparison. After the
+runtime validation closes, implement native Pi goal as a separately registered,
+mutually exclusive condition with the same task and business inputs. Record all
+extension prompts and stop states; neither waiting nor a goal-complete claim is
+business or outcome evidence. Do not stack two continuation controllers.
 
 Use the reviewed r148 findings to select one justified next Phase 2 mechanism.
 Keep the current task, approval truth, safe partial work and notification policy
