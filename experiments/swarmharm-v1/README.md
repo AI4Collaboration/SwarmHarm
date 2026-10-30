@@ -16,7 +16,7 @@ There is no supervisor model. Public discussion has matching live review;
 private writes remain unexercised live. The current v103 clarifies the product
 open on each workstation and returns product/receipt context in validation
 errors. Task, permissions, acceptance and goal behavior are unchanged. This
-interface clarification is live rollout pending.
+interface clarification has matching live review at r141's frozen revision.
 Messages are authored only by live subjects. Availability is supplied, not
 formation; communication remains an observation, not an outcome gate.
 The private subject-goal state has matching live verification; its continuation

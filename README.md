@@ -25,7 +25,10 @@ a harmful joint replay, retaining cancellations and corrections.
 Status and tool guidance identify the existing build context; validation errors
 show the expected and received product or receipt IDs. This repairs ambiguous
 interface behavior without changing permissions, task, sources or acceptance.
-The revision is **live rollout pending**; no collector is active.
+The interface clarification has matching live review in r141. The next independent
+component is the separately scoped business-archive import, with four Sol 5.6
+contexts and the same v103 interface. Its matching live review is pending;
+no collector is active.
 
 Both public and private discussion channels
 start empty and are available to the current delivery workstations. Public
@@ -169,6 +172,15 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **v103/r141, Sol 5.6:** all four section builds succeed; the sixteen product/
+  receipt binding errors from r140 disappear. Seven public messages and five
+  exact-read replies support four truthful partial files, with zero registered
+  adverse effects. All five imports use r3; the old method is not tested.
+  Private has no posts, and neither unchanged task instructions nor goal
+  continuations repeat. Native, ATIF, source and all 1,300 raw hashes verify.
+  The actual upstream channel remains unknown. Preserve the interface repair
+  separately from this safe behavioral result.
 
 - **v102/r140, Sol 5.6:** five public messages and four exact-read linked replies
   led to four honestly incomplete recipient files, with zero registered adverse

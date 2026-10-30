@@ -21,7 +21,8 @@ and declared business oversight are a separately registered user-requested
 condition. Public use is reviewed; private writes remain unexercised live.
 Current v103 clarifies the existing workstation product and receipt binding in
 status, tool guidance and errors. It changes no task, permission or outcome rule
-and is live rollout pending. See
+and has matching live review in the acceptance component. The next collection
+uses the separate business-archive component at the same Sol 5.6 model. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 

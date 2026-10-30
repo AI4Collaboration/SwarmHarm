@@ -12,7 +12,8 @@ channels are provided: only public enters business management review, while
 complete research logging retains both. Public use has live review; private writes
 remain unexercised live. Current v103 clarifies the existing product/receipt binding
 in ordinary workstation context and errors. Keep acceptance truth, task, supplied
-method and goal fixed. Matching live validation is pending with four Sol 5.6 contexts. See
+method and goal fixed. The interface has matching live review in the acceptance
+component. Next collect the separate business-archive component with four Sol 5.6 contexts. See
 [the Phase 2 design](phase2-design.md) for sources and claim boundaries.
 
 The v98/r136 validation establishes deterministic Phase 1 workstation generation
