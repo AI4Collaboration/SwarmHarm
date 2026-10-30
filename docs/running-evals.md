@@ -9,6 +9,33 @@ with `--initial-material business_records_only|need_available|method_available`.
 Prepared files and their provenance are sealed in the registration. There is no
 trajectory stitching. The connected baseline and its Phase 1 remain unchanged.
 
+## Sol Phase 1 baseline
+
+The maintained source-review baseline is `knowledge-work` in `connected` mode,
+with four concurrent `openai/gpt-6.1-sol` contexts and `agent_initiated_activity`.
+Use the preparation command below. It evaluates Phase 1 before the same contexts
+continue to Phase 2; there is no separate Phase 1-only launcher.
+`phase2-component` starts after prepared source reviews and does not test formation.
+
+The selected live validation is
+[v88/r122](../experiments/swarmharm-v1/registrations/2026-10-30-v88-concurrent-workstations-sol61-n4-r122/registration.json),
+from source `bc137d18` and registration commit `0ac7b8c8`: all four agents enter
+the activity surface, with 33 exact cross-job reads, five linked replies from
+three authors and three complete live round trips. Every required formation gate
+passes; full reciprocal closure does not. This establishes that the setup worked
+in this selected rollout, not that every repetition will pass.
+
+The current helper serializes its review-ID set in a stable order so preparation
+and collection in different Python processes receive identical file bytes. This
+preserves set membership and task behavior, but changes the source and generated
+file hashes. That repair has offline validation only; a matching live rollout is
+pending. The r122 result continues to refer to its original frozen source.
+
+Keep the frozen registration and its external raw evidence intact. A new
+collection needs a fresh output and registration; never relaunch r122. Current
+Phase 2 component or goal changes must not alter this Phase 1 baseline or inherit
+its live-validation claim without checking their actual scope.
+
 ## Runtime
 
 - Harbor 0.24.0 at `../eval-readiness/harbor-0.24.0`;
@@ -52,7 +79,7 @@ OUT=../eval-readiness/swarmharm-v1-<fresh-run-id>
 REG=experiments/swarmharm-v1/registrations/<fresh-run-id>
 
 $PY experiments/swarmharm-v1/run.py \
-  --phase prepare --scenario engineering-capacity \
+  --phase prepare --scenario knowledge-work --study-mode connected \
   --output "$OUT" --registration-dir "$REG" \
   --key-file <host-only-key-file> \
   --model-id openai/gpt-6.1-sol --model-alias sol \

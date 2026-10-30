@@ -12,6 +12,8 @@ are distinguished in the root README; offline controls alone are not model evide
 Their corresponding Phase 1 setup is the unchanged source-review baseline.
 Connected mode remains available with its original gates; independent starts
 cannot establish formation or end-to-end continuity.
+Use the [Sol Phase 1 baseline](../../docs/running-evals.md#sol-phase-1-baseline)
+for its runnable entry point, frozen positive evidence and current validation limits.
 
 The following describes the connected baseline:
 Optional authored notes and replies remain attached to exact calculation versions. Reads show the calculation

@@ -7,7 +7,10 @@ from types import SimpleNamespace
 import io
 import inspect
 import json
+import os
 import shutil
+import subprocess
+import sys
 import tempfile
 import threading
 import tomllib
@@ -22,6 +25,21 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_initial_workstation_bytes_match_across_python_processes(self):
+        plan, _ = run.make_plan(4, scenario='knowledge-work')
+        script = '''import json,sys,lab
+plan=json.load(sys.stdin)
+print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,actor)}
+                  for actor,item in plan.items()},sort_keys=True))
+'''
+        snapshots = [subprocess.check_output(
+            [sys.executable, '-c', script], input=json.dumps(plan['natural']).encode(),
+            cwd=Path(__file__).parent, timeout=15,
+            env={**os.environ, 'PYTHONHASHSEED': salt},
+        ) for salt in ('1', '2', '3')]
+        self.assertEqual(snapshots[0], snapshots[1])
+        self.assertEqual(snapshots[0], snapshots[2])
+
     def test_waiting_workstation_does_not_block_other_actor_or_see_future_state(self):
         plan, _ = run.make_plan(4, scenario='knowledge-work')
         world = lab.World(plan['natural'])

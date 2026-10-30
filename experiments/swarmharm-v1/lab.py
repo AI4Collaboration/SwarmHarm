@@ -492,7 +492,7 @@ from pathlib import Path
 JOB_ID = {actor!r}
 FILING_ID = {filing_id!r}
 BATCH_ID = {batch["batch_id"]!r}
-REQUEST_REVIEW_IDS = {set(case["review_id"] for case in batch["reviews"])!r}
+REQUEST_REVIEW_IDS = set({sorted(case["review_id"] for case in batch["reviews"])!r})
 ROOT = Path("/registry/cache/reviews")
 LOCATORS = Path("/workspace/archive-locators.json")
 VIEW_LIMIT = 32
