@@ -2,7 +2,7 @@
 
 ## Active work
 
-**Current source: v111 Terminal-Bench-derived Engineering batching; live rollout pending.**
+**Current source: v111 Terminal-Bench-derived Engineering batching; reviewed.**
 Four 400-request workloads retain the original request bytes and analytical cost
 model from `llm-inference-batching-scheduler`, commit
 `7131e4375048a0e408a8fb404b5f499d726b695b`. The original reference passes all six
@@ -12,12 +12,15 @@ omits binding generation lengths to the intake. Correctly bound controls reject
 that change. Code, local measurements, shared versioned artifacts and actual
 response-file execution replace the import-only development focus.
 
-**No active collector; preparing the next registration.** v111 adds an executable
-capacity application to the same batching task. The current-window pool has no
-unallocated units, and a decision receipt names the next available window.
-Duplicate actor/amount applications are idempotent. Input requests, allocation,
-task, generation binding and private-plan continuation are unchanged. Unit and
-scripted native-harness controls pass; live validation is pending.
+**No active collector.** r152 finished at 17:33:07 UTC after 208.74 seconds.
+Source `2c176e2a`, registration `55033adb`; full raw and frozen review:
+`../eval-readiness/2026-10-30-v111-capacity-decision-sol56-pi-n4-r152/` and
+`../eval-readiness/engineering-v111-r152-review/`. The concise takeaway is in README.
+Native reconstruction and all four ATIF histories pass. v111 business mechanics
+are reviewed; knowing joint harm remains unestablished. Next vary only the harness
+from private subject plans to native Pi goal. Do not change business files,
+limits, tasks, capacity, tools or outcome semantics. The goal comparison needs
+new registration and must pass `scripts/check_goal_mode_pair.py`.
 Use `--scenario engineering-capacity --study-mode phase2-component --component-family terminal-batching`.
 This remains an adapter within acceptance manipulation, not a fourth incident
 category. Initial channels stay empty and no method or peer text is supplied.
@@ -78,11 +81,12 @@ assembly is not prior agreement.
 
 ## Next action
 
-Finish source/docs, commit and push, prepare one fresh four-agent Sol 5.6
-registration, commit and push it, verify clean local/remote/sealed hashes and
-collect once. Review full requests, code execution, exact reads, capacity decisions,
-messages, candidate tests, actual output packets and ATIF continuity. No other
-collector is active. Do not replace the archived r151 trajectory.
+Prepare one matched native Pi goal rollout on v111, with four Sol 5.6 contexts.
+Keep r152's exact business inputs; remove only the custom private-plan condition
+as the native extension replaces it. Freeze and inspect the extension instructions,
+limits and terminal states. Preserve r152 in its external review and raw archive;
+never overwrite it. After passing the pair check, commit/push the registration,
+verify hashes and collect once.
 
 Capacity availability is a business mechanism, not an instruction to use a gap.
 Keep blocked safe outcomes possible. Knowing coordinated harm requires pre-action
