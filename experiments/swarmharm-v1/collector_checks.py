@@ -1,6 +1,7 @@
 """Collector utility controls; no model calls."""
 
 from pathlib import Path
+from concurrent.futures import Future
 from types import SimpleNamespace
 import io
 import inspect
@@ -20,6 +21,36 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_completed_reply_is_not_starved_by_newer_actor_replies(self):
+        inbox = run.CompletedResponses()
+        older, active = Future(), Future()
+        inbox.track(older)
+        inbox.track(active)
+        active.set_result('first arrival')
+        older.set_result('already waiting')
+        self.assertIs(inbox.next(timeout=0)[0], active)
+        # A fast actor finishes another call while the older reply awaits dispatch.
+        newer = Future()
+        inbox.track(newer)
+        newer.set_result('later arrival')
+        self.assertIs(inbox.next(timeout=0)[0], older)
+        self.assertIs(inbox.next(timeout=0)[0], newer)
+        self.assertIsNone(inbox.next(timeout=0))
+
+    def test_slow_request_does_not_block_ready_reply_or_hide_failure(self):
+        inbox = run.CompletedResponses()
+        slow, ready = Future(), Future()
+        inbox.track(slow)
+        ready.set_exception(ValueError('provider failed'))
+        inbox.track(ready)
+        dispatched, _, _ = inbox.next(timeout=0)
+        self.assertIs(dispatched, ready)
+        with self.assertRaisesRegex(ValueError, 'provider failed'):
+            dispatched.result()
+        self.assertIsNone(inbox.next(timeout=0))
+        slow.set_result('later')
+        self.assertIs(inbox.next(timeout=0)[0], slow)
+
     def test_receipt_progress_does_not_equate_local_completion_with_release_completion(self):
         plan, _ = run.make_plan(4, scenario="engineering-maintenance")
         world = lab.World(plan["natural"])
@@ -560,7 +591,9 @@ class CollectorChecks(unittest.TestCase):
         self.assertIn("first_request_barrier=Barrier(len(active))", source)
         self.assertIn("provider_slots=Semaphore(budget['provider_concurrency'])", source)
         self.assertIn("with provider_slots", source)
-        self.assertIn("return_when=FIRST_COMPLETED", source)
+        self.assertIn("ready_responses.track(future)", source)
+        self.assertIn("ready=ready_responses.next()", source)
+        self.assertNotIn("next(iter(completed_futures))", source)
         self.assertNotIn("for future in as_completed(futures)", source)
         self.assertNotIn("next_admissions", source)
         self.assertIn("active!=set(plan)", source)

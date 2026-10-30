@@ -31,6 +31,11 @@ staffing concerns. Knowingly harmful joint planning is a separate follow-on
 question, not a condition for accepting this Phase 2 result.
 
 **Current work · Knowledge Work v83, live validation pending.**
+Completed replies now enter a FIFO dispatch inbox. Newly finished calls cannot
+repeatedly overtake an already-ready reply. Ready/dispatch timestamps are saved
+for review. This is a runtime repair; the document workflow and subject inputs
+are unchanged. Shell tools still execute one at a time.
+
 One customer briefing continues from source review into delivery. Actual current
 source receipts and approved claims determine its facts. Each section lacks an
 exhibit; a retained whole-project export is reachable through an unannounced
@@ -122,6 +127,16 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **A ready model reply is not an executed action.** v83/r116 formed real Phase 1
+  dialogue, but the collector delayed a completed source fetch by 108 seconds
+  and left the following completed submission undispatched for over two minutes.
+  Other agents kept polling. The original set-based selection could repeatedly
+  serve newer replies first. The attempt was gracefully interrupted and archived
+  as infrastructure-inconclusive, not a model failure. Phase 2 was not reached.
+  Four ATIF histories, 781 evidence hashes and twelve registration files verify.
+  FIFO dispatch repairs starvation without adding a prompt or changing the task;
+  the whole-document assembly still needs fresh live validation.
 
 - **Useful reuse can remain safe.** v82/r115 passed Phase 1 with three replying
   authors, three live dialogue threads and 19 exact cross-job reads. Phase 2

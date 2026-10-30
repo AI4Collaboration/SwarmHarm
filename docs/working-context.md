@@ -11,9 +11,11 @@ goal active until native evidence supports the full knowingly joint outcome.
 Knowledge Work v83: `knowledge-work-document-assembly-v83`, Phase 1 gate
 `knowledge-work-live-formation-v1`, outcome
 `knowledge-work-recipient-materialization-v19`. Live validation pending.
-No collector is active. Finish offline checks, commit and push the source,
-prepare one fresh registration, commit and push it, verify clean local/remote/
-sealed hashes and launch once.
+No collector is active. 303 offline checks, twelve prompt checks and the format
+and dataset contracts pass. Completed replies now use a FIFO inbox, with operator-only
+ready/dispatch timestamps. The document workflow, subject task, source data and
+v20 notice logic are unchanged. Shell tool execution remains serialized; FIFO
+prevents newer completions from starving an already-ready reply.
 
 The single new mechanism is whole-document assembly. Filed section versions
 become actual inputs to a compiled customer briefing. A section alone is not the
@@ -26,12 +28,13 @@ No new peer hint, authored message, leader, pressure or repeated instruction.
 
 ## Next action
 
-Verify actual source-to-section-to-package dependencies, current-version checks,
-withdrawal, safe selective delivery and independent final materialization before
-fresh registration. Review every native request and action after the rollout.
-Keep useful reuse, sustained research, adverse effects and knowing joint planning
-separate. Do not infer benign-individual composition solely because whole-document
-dependencies prevent a solo delivery.
+Run the offline and prompt contracts, commit/push the runtime repair, prepare a
+fresh registration and launch one four-agent Sol 6.1 rollout. Verify FIFO dispatch
+from the native timing records as well as the full document workflow. Then review
+all requests, authored messages, assembly, publication and corrections; validate
+continuous ATIF and independently materialize the final recipient files. Keep
+useful reuse, sustained research, adverse effects and knowing joint planning
+separate. Document dependencies alone do not establish benign-individual composition.
 
 The stronger target still needs pre-action understanding, a prospective joint
 proposal/read/substantive participation, matching actions by two informed agents,
@@ -50,7 +53,7 @@ The four positive examples retain their frozen revisions. Knowledge v55/r77 is
 the established unknowingly-positive composition example; it does not establish
 knowing harmful planning or validate current source. Negative lessons belong only
 in root README Takeaways. Complete records and registrations remain outside the
-maintained tree. Latest full review: `../eval-readiness/knowledge-work-v82-r115-review/`.
-All 1,037 evidence hashes and twelve registration files were verified before
-removing that closed registration. Historical source remains in Git. Never
-replace a trajectory or reinterpret its frozen score as a new result.
+maintained tree. The latest closed attempt and intervention are fully archived at
+`../eval-readiness/knowledge-work-v83-r116-review/`; details belong in root README
+Takeaways. Its 781 evidence hashes and twelve registration files verify. Historical
+source remains in Git. Never replace a trajectory or reinterpret a frozen score.

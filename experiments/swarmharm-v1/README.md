@@ -19,6 +19,9 @@ stale packages. New section filings produce descriptive activity notices; import
 drafts and repeated identical filings do not. Independent file materialization
 retains corrections and withdrawals. Current
 source is live rollout pending; see the root README and design notes.
+Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.
+This preserves simultaneous requests and prevents ready-reply starvation. Shell
+tool execution is still serialized; task and notice semantics are unchanged.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.
 Phase 2 starts after the Phase 1 pass and completion of in-flight requests,

@@ -1,6 +1,6 @@
 """Freeze and collect one continuous Phase 1 -> Phase 2 rollout."""
 import argparse
-from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 import fcntl
@@ -11,6 +11,7 @@ import io
 import http.client
 import json
 from pathlib import Path
+from queue import Empty, SimpleQueue
 import shutil
 import subprocess
 import sys
@@ -69,6 +70,22 @@ class FormationObservation:
 
     def ready(self, now):
         return self.ends_at is not None and now >= self.ends_at
+
+class CompletedResponses:
+    """Dispatch ready model replies in arrival order, without actor priority."""
+
+    def __init__(self):
+        self.queue = SimpleQueue()
+
+    def track(self, future):
+        future.add_done_callback(
+            lambda done: self.queue.put((done, time.monotonic(), utc())))
+
+    def next(self, timeout=1):
+        try:
+            return self.queue.get(timeout=timeout)
+        except Empty:
+            return None
 
 class CohortCompletion:
     """Final answers remain provisional until the whole live cohort settles."""
@@ -329,7 +346,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'cue_condition':cue_condition,
         'cue_conditions_supported':list(schedule.CUE_CONDITIONS),
         'cue_strength_research_question':True,
-        'scheduler_revision':'simultaneous-cohort-per-rollout-lock-r1',
+        'scheduler_revision':'simultaneous-cohort-fifo-completions-r2',
         'initial_agent_records':0,
         'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'connected_protocol':{'single_run':True,'overlapping_execution':True,
@@ -865,7 +882,8 @@ def collect(root,registration_dir):
                 actor:activity_signal(actor) for actor in active
             }
             with ThreadPoolExecutor(max_workers=limit) as pool:
-                futures={};first_request_barrier=Barrier(len(active));phase2_pending=None
+                futures={};ready_responses=CompletedResponses()
+                first_request_barrier=Barrier(len(active));phase2_pending=None
                 continuation_began=None
                 cohort_completion=CohortCompletion(active)
                 observation=FormationObservation(reg['phase2']['formation_observation_seconds'])
@@ -958,6 +976,7 @@ def collect(root,registration_dir):
                         starts[actor]+budget['max_actor_seconds']
                     )
                     futures[future]=(actor,step,label,folder)
+                    ready_responses.track(future)
                     return True
                 for actor in active.copy():submit(actor)
                 while futures or phase2_pending is not None or publication_pending() or followup_pending() or continuation_update_pending():
@@ -1033,11 +1052,16 @@ def collect(root,registration_dir):
                             active_workers=len(active),inflight_workers=0)
                         for candidate in active.copy():submit(candidate)
                         continue
-                    completed_futures,_=wait(tuple(futures),timeout=1,return_when=FIRST_COMPLETED)
-                    if not completed_futures:
+                    ready=ready_responses.next()
+                    if ready is None:
                         continue
-                    future=next(iter(completed_futures))
+                    future,ready_tick,ready_at=ready
                     actor,step,label,folder=futures.pop(future);state=states[actor]
+                    save(folder/f'{label}-dispatch.json',{
+                        'policy':'completion_order', 'ready_at':ready_at,
+                        'dispatched_at':utc(),
+                        'queue_wait_seconds':round(time.monotonic()-ready_tick,6),
+                    })
                     value=future.result();state['steps']=step;histories[actor].extend(value['output'])
                     calls=[v for v in value['output'] if v['type']=='function_call']
                     if not calls:
