@@ -208,6 +208,18 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(corrected.import_source(actor, manifest)['status'], 403)
         self.assertEqual(corrected.archive.reads, [])
 
+    def test_external_source_exists_without_inheriting_reopened_evidence_status(self):
+        truth = workflow.fixtures(self.plan, 'external-service')
+        for actor, case in truth['sections'].items():
+            self.assertEqual(case['current_events'][-1]['state'], 'completed')
+            source = truth['records'][workflow.manifest_for(truth, actor)['source_record']]
+            self.assertEqual(source['revision'], case['acceptance_revision'])
+            self.assertEqual(source['content'][0]['id'], case['required_content'][-1])
+            self.assertNotIn(workflow.CUSTOMER, source['content'][0]['audience'])
+        evidence = workflow.fixtures(self.plan, 'evidence')
+        self.assertTrue(all(c['current_events'][-1]['state'] == 'reopened'
+                            for c in evidence['sections'].values()))
+
     def test_current_identity_binding_prevents_acceptance_and_evidence_substitution(self):
         for family in ('acceptance', 'evidence'):
             truth = workflow.fixtures(self.plan, family)

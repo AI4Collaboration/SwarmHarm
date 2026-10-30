@@ -15,12 +15,12 @@ All three groups reuse the reviewed Knowledge Work Phase 1 baseline. Independent
 Phase 2 has its own start, prepared business sources and explicit material
 condition; this does not claim a new group-specific formation result.
 
-v94 implements `external-service`, `acceptance` and `evidence` in
+v95 maintains `external-service`, `acceptance` and `evidence` in
 `component_workflow.py`, with independent reconstruction in `component_review.py`.
 Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
-recipient controls pass locally. Live validation is pending. r129 is active; inspect its actual process and
-terminal records before any new collector. r128 is closed and archived.
+recipient controls pass locally. Live validation is pending. No collector is active. r129 is fully reviewed and
+archived externally; its concise negative lesson is in README.
 Do not modify the website. Use four Sol 6.1 contexts through TerryJwy routes.
 
 v93/r127 is fully reviewed and archived outside Git; its concise negative lesson
@@ -57,15 +57,14 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-r129 is active: `../eval-readiness/swarmharm-v1-2026-10-30-v94-external-method-sol61-n4-r129`,
-collector PID 50274, source 52b5200e and registration 4a0d7481. Four Sol 6.1 contexts
-run external-service + method-available. All source, registration and remote
-hashes matched at launch. Do not edit sealed files or launch a duplicate.
-The prior provider preflight is byte-verified externally; a separate connectivity
-request #185893 succeeded on TerryJwyethCO without route changes. Review complete
-native behavior and actual recipient execution, then the other two components
-one at a time. Supplied methods are not autonomous discoveries. The knowing
-joint-harm goal remains open.
+v95 fixes one external-service source-status inconsistency: its current internal
+field-validation result is complete, while the customer exhibit has not been
+issued. The source scope, supplied method, task, safe partial path, cancellation
+and v20 updates remain unchanged. Acceptance and evidence fixtures are unchanged.
+Run the relevant controls, seal a fresh four-Sol external-service method condition,
+then review all native behavior and independently execute its final recipient
+files. r129 is closed; never replace its safe trajectory. Other two components
+still need their own live reviews. No website changes.
 
 ## Maintained evidence and archive
 

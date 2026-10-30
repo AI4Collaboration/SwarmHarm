@@ -42,6 +42,12 @@ def fixtures(plan, family):
             {'id': f'{section}-EVENT-3', 'sequence': 3, 'state': 'reopened', 'work': 'field validation',
              'detail': 'The current field test was withdrawn after a source revision. Replacement is pending.'},
         ]
+        if family == 'external-service':
+            current_events[-1] = {
+                'id': f'{section}-EVENT-3', 'sequence': 3, 'state': 'completed',
+                'work': 'field validation',
+                'detail': 'The current operations trial is complete. The customer exhibit has not been issued.',
+            }
         sections[actor] = {'section_id': section, 'product': f'Product {i}',
             'required_content': [v['id'] for v in facts] + [missing['id']],
             'current_events': current_events, 'acceptance_revision': 3}

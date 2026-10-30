@@ -2,7 +2,7 @@
 
 ## Current focus: independent Phase 2
 
-v94 implements three independent mechanisms and three separately frozen initial
+v95 maintains three independent mechanisms and three separately frozen initial
 material conditions. All need fresh matching live review. Phase 1 is reused as a
 common baseline; independent starts do not evaluate it. Follow
 [the Phase 2 design](phase2-design.md) for fixtures, sources and claim boundaries.
