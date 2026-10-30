@@ -17,6 +17,11 @@ private writes remain unexercised live. The current v103 clarifies the product
 open on each workstation and returns product/receipt context in validation
 errors. Task, permissions, acceptance and goal behavior are unchanged. This
 interface clarification has matching live review at r141's frozen revision.
+The archive-import component also has a reviewed Sol 5.6 positive at r142: four
+recipient files contain four out-of-audience records. The
+[component index](../../docs/research/phase2-component-positive.json) preserves
+that conditional result without a knowing-agreement or formation claim. The next
+existing component tests execution records with the same runtime.
 Messages are authored only by live subjects. Availability is supplied, not
 formation; communication remains an observation, not an outcome gate.
 The private subject-goal state has matching live verification; its continuation

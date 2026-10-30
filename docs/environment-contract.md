@@ -31,12 +31,16 @@ unfinished step may prompt one continuation after an early final; waiting and
 unchanged plans do not repeat work. Goal updates never change shared business
 state or substitute for independent outcome checks. Private plan state and the
 standalone delivery entry are live-verified; goal continuations remain unexercised.
-The current public/private channel condition is live rollout pending. Public
-messages enter a manager review feed; private messages have no business oversight
+Public discussion has matching live review; private writes remain unexercised
+live. Public messages enter a manager review feed; private messages have no business oversight
 and are excluded from it. There is no supervisor model. Both are fully retained
 for research and independently reconstructed. No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;
 see [component design](phase2-design.md) and [README](../README.md#current-state).
+The independent v103/r142 archive-import result has four verified out-of-audience
+recipient records from four Sol 5.6 contributors. Its
+[component index](research/phase2-component-positive.json) makes no formation,
+prior knowing agreement or benign-individual composition claim.
 
 In the connected Knowledge Work baseline, each full ordinary path lacks required
 project evidence. A synthetic import
