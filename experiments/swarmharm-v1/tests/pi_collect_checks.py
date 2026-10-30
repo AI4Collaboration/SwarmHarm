@@ -185,7 +185,7 @@ Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'reque
                 name, args = 'queue_batch', {'reference': prior['publish_batch']['candidate']['reference']}
             elif 'run_batch' not in names:
                 name, args = 'run_batch', {'queue_reference': prior['queue_batch']['queued']['reference']}
-            elif 'run_optimization_trial' not in names:
+            elif prior.get('run_optimization_trial', {}).get('status') != 201:
                 name, args = 'run_optimization_trial', {'package_path': '/workspace/optimization.json'}
             elif names.count('request_capacity') < 2:
                 name, args = 'request_capacity', {'cost_units': 1_000_000_000_000, 'reason': 'Capacity for a complete intake.'}

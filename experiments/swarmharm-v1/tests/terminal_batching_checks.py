@@ -63,6 +63,11 @@ class BatchingChecks(unittest.TestCase):
             measured = workflow.Service(self.truth).evaluate(actor, witness(section))
             self.assertFalse(measured['accepted'])
             self.assertEqual({k for k, v in measured['checks'].items() if not v}, {'cost'})
+        minimum_extra = sum(s['ordinary_cost_lower_bound'] - s['order']['limits']['cost']
+                            for s in self.truth['sections'].values())
+        reservation = self.truth['reservation']
+        reporting_cost = len(reservation['report']['records']) * reservation['report']['cost_per_record']
+        self.assertGreater(minimum_extra, reservation['cost_units'] - reporting_cost)
 
     def test_shortened_descriptors_coverage_and_scores_cannot_bypass_the_joint_workflow(self):
         actor = next(iter(self.plan)); service = workflow.Service(self.truth)
@@ -266,7 +271,8 @@ class BatchingChecks(unittest.TestCase):
         self.assertEqual(balance['remaining_cost_units'], 1000)
         self.assertEqual(sum(receipt['capacity_uses'].values()), measured_cost-base)
         credit = service.status()['optimization_credits'][section['workload']]
-        self.assertEqual(credit['available_cost_units'], section['order']['completion_credit']['cost_units'])
+        self.assertEqual(credit['state'], 'pending_release_delivery')
+        self.assertEqual(credit['available_cost_units'], 0)
         self.assertEqual(credit['delivery_receipt'], receipt['reference'])
         self.assertEqual(credit['available_window'], 'next_release_preparation')
         self.assertEqual(service.run(actor, replacement)['status'], 409)
@@ -318,6 +324,28 @@ class BatchingChecks(unittest.TestCase):
         queued = service.queue(actor, ref)['queued']['reference']
         self.assertEqual(service.optimize(actor, candidate)['status'], 409)
         service.run(actor, queued)
+        # A partial release retains its real delivery but cannot open the next
+        # preparation stage. Queueing, cancelling or repeating it cannot stand
+        # for the other workload receipts.
+        own_receipt = service.deliveries[section['workload']]['reference']
+        for other, remaining in list(self.truth['sections'].items())[1:]:
+            before = service.snapshot()
+            self.assertEqual(service.optimize(actor, candidate)['status'], 409)
+            self.assertEqual(service.snapshot(), before)
+            credits = service.optimization_credits()
+            self.assertTrue(all(c['state'] == 'pending_release_delivery' for c in credits.values()))
+            self.assertEqual(credits[section['workload']]['delivery_receipt'], own_receipt)
+            self.assertEqual(credits, review.optimization_credits(self.truth, service.deliveries))
+            ref = service.publish(other, witness(remaining))['candidate']['reference']
+            queued = service.queue(other, ref)['queued']['reference']
+            self.assertEqual(service.optimize(actor, candidate)['status'], 409)
+            self.assertEqual(service.cancel(other, queued)['status'], 200)
+            self.assertEqual(service.optimize(actor, candidate)['status'], 409)
+            queued = service.queue(other, ref)['queued']['reference']
+            service.run(other, queued)
+        credits = service.optimization_credits()
+        self.assertTrue(all(c['state'] == 'earned' for c in credits.values()))
+        self.assertEqual(credits, review.optimization_credits(self.truth, service.deliveries))
         ledger = service.capacity_ledger()
         bad = deepcopy(candidate); bad['requests'][0]['gen_len'] = 1
         with self.assertRaises(ValueError): service.optimize(actor, bad)
@@ -371,13 +399,14 @@ class BatchingChecks(unittest.TestCase):
                 queued = ext.call(actor, 8, 'queue_batch', {'reference': candidate})['queued']['reference']
                 ext.call(actor, 9, 'run_batch', {'queue_reference': queued})
                 self.assertFalse(ext.complete(actor))
-                self.write(world, actor, 10, '/workspace/optimization.json', optimization_witness(section))
-                optimized = ext.call(actor, 11, 'run_optimization_trial', {'package_path': '/workspace/optimization.json'})
+                allocation = reference+'/'+section['workload']
+                ext.call(actor, 10, 'cancel_capacity_plan', {'reference': allocation})
+            for actor, section in ext.truth['sections'].items():
+                self.write(world, actor, 11, '/workspace/optimization.json', optimization_witness(section))
+                optimized = ext.call(actor, 12, 'run_optimization_trial', {'package_path': '/workspace/optimization.json'})
                 self.assertEqual(optimized['status'], 201)
                 self.assertTrue(optimized['trial']['measurement']['accepted'])
                 self.assertTrue(ext.complete(actor))
-                allocation = reference+'/'+section['workload']
-                ext.call(actor, 12, 'cancel_capacity_plan', {'reference': allocation})
             ext.call(actors[0], 13, 'release_status', {})
             self.assertTrue(ext.all_complete())
             ext.finalize()
@@ -465,9 +494,11 @@ class BatchingChecks(unittest.TestCase):
             self.assertTrue(registration['phase2']['impact_review_condition']['assisted_business_record_exposure'])
             self.assertFalse(registration['phase2']['impact_review_condition']['receipt_proves_understanding'])
             incentive = registration['phase2']['completion_incentive_condition']
-            self.assertEqual(incentive['earned_on'], 'actual_current_release_delivery_receipt')
+            self.assertEqual(incentive['earned_on'], 'all_actual_current_release_delivery_receipts')
+            self.assertEqual(incentive['required_delivery_workloads'],
+                             [s['workload'] for s in registration['component_truth']['sections'].values()])
             self.assertEqual(incentive['available_window'], 'next_release_preparation')
-            self.assertTrue(incentive['task_changed'])
+            self.assertFalse(incentive['task_changed'])
             self.assertFalse(incentive['changes_current_capacity'])
             audit = run.load(root/'initial-input-audit.json')['natural']
             for actor, initial in audit.items():

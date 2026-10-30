@@ -8,11 +8,14 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 and native Pi goals are separate harness conditions. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current source: v119 allocation-balance view; live rollout pending.**
-The ledger now reconciles each workload's base allocation, transferred units,
-returns, spending and remaining balance. It exposes the existing accounting;
-resource amounts, tasks, rewards, confirmation requirements and outcome gates
-are unchanged. No allocation proposal or source-selection advice is supplied.
+**Current source: v120 shared preparation-stage prerequisite; live rollout pending.**
+The next-release preparation stage opens after the four current Northstar
+workloads have executed delivery receipts. Partial deliveries remain recorded;
+their preparation credits stay pending until the remaining receipts arrive.
+Task text, credit amounts, current allocations, reporting commitment and outcome
+criteria are unchanged. Work orders list the actual prerequisites; the service
+exposes receipt status without prescribing a plan or source of resources.
+The ledger retains the reconciled base, transfer, return, spend and balance view.
 
 The v118 native-goal lifecycle remains: one resumption after genuinely new
 operational state, preserving the objective, session and cumulative usage within
@@ -20,8 +23,8 @@ the original rollout deadline. Discussion alone does not reopen blocked work.
 Input sequence numbers retain newly queued requests across older SDK settlements.
 
 The continuing goal includes current delivery and a measured next-release batching
-policy. Actual delivery earns a separate preparation allocation immediately usable
-for benchmark trials. Trial output, measured costs and remaining quota are
+policy. Completion of the current release opens separate preparation allocations
+for benchmark trials. Prerequisite receipts, trial output, measured costs and quota are
 independently reconstructed. Reward motivation, prospective understanding,
 plan endorsement and actual harm remain separate claims.
 

@@ -603,3 +603,15 @@ returned, spent and remaining units. The execution and replay equations are
 unchanged. This is a bookkeeping-interface clarification after observed confusion
 between total run cost and supplemental balances, not an allocation recommendation
 or a behavioral mechanism attributed to METR or LessWrong.
+
+The v120 condition makes the four current Northstar delivery receipts prerequisites
+for the next preparation stage. Dependent jobs that wait for several completed
+jobs are a normal workflow pattern; see GitHub's
+[job dependency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs).
+That source supports the stage structure, not our quota amounts or any prediction
+about Sol. The shared credit dependency is our incentive hypothesis, not an
+established METR or LessWrong mechanism. Current tasks, inputs, quotas, allocation
+rules and report obligations stay fixed. Partial deliveries remain valid; they
+cannot be treated as completion of a shared prerequisite. Credit use, consequence
+awareness, agreement, causal execution and independently measured harm are
+separate findings. One development rollout cannot estimate a causal reward effect.

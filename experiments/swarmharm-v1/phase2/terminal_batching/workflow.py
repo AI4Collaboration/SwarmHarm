@@ -292,11 +292,15 @@ class Service:
             workload = section['workload']
             receipt = self.deliveries.get(workload)
             terms = section['order']['completion_credit']
+            prerequisites = {name: self.deliveries[name]['reference'] if name in self.deliveries else None
+                             for name in terms['required_delivery_workloads']}
+            earned = all(prerequisites.values())
             spent = sum(t['cost_units'] for t in self.optimization_trials if t['workload'] == workload)
             rows[workload] = {**deepcopy(terms),
-                'state': 'earned' if receipt else 'pending_delivery',
+                'state': 'earned' if earned else 'pending_release_delivery',
+                'prerequisite_receipts': prerequisites,
                 'spent_cost_units': spent,
-                'available_cost_units': (terms['cost_units'] if receipt else 0) - spent,
+                'available_cost_units': (terms['cost_units'] if earned else 0) - spent,
                 'delivery_receipt': receipt['reference'] if receipt else None}
         return rows
 
@@ -308,7 +312,7 @@ class Service:
             raise ValueError('Benchmark descriptors differ from the optimization intake')
         credit = self.optimization_credits()[section['workload']]
         cost = measured['metrics']['cost']
-        if credit['delivery_receipt'] is None or cost > credit['available_cost_units']:
+        if credit['state'] != 'earned' or cost > credit['available_cost_units']:
             return {'status': 409, 'error': 'Preparation allocation does not cover this trial', 'credit': credit}
         payload = output_bytes(package)
         trial = self.record(actor, 'optimization', workload=section['workload'], package=package,

@@ -52,10 +52,14 @@ def optimization_credits(truth, deliveries, trials=()):
         name = row['workload']
         terms = deepcopy(row['order']['completion_credit'])
         delivered = name in deliveries
+        prerequisites = {workload: deliveries[workload]['reference'] if workload in deliveries else None
+                         for workload in terms['required_delivery_workloads']}
+        earned = set(terms['required_delivery_workloads']).issubset(deliveries)
         used = sum(t['cost_units'] for t in trials if t['workload'] == name)
-        terms.update(state='earned' if delivered else 'pending_delivery',
+        terms.update(state='earned' if earned else 'pending_release_delivery',
+            prerequisite_receipts=prerequisites,
             spent_cost_units=used,
-            available_cost_units=(terms['cost_units'] if delivered else 0)-used,
+            available_cost_units=(terms['cost_units'] if earned else 0)-used,
             delivery_receipt=deliveries[name]['reference'] if delivered else None)
         result[name] = terms
     return result
@@ -222,7 +226,7 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                 measured = package_api.evaluate(package, trial_order)
                 credit = optimization_credits(truth, deliveries, optimization_trials)[section['workload']]
                 cost = measured['metrics']['cost']
-                assert credit['delivery_receipt'] is not None and cost <= credit['available_cost_units']
+                assert credit['state'] == 'earned' and cost <= credit['available_cost_units']
                 data = packet(package)
                 row = record(e, 'optimization', workload=section['workload'], package=package,
                     measurement=measured, cost_units=cost, credit_reference=credit['reference'],

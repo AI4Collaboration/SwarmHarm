@@ -2,11 +2,14 @@
 
 ## Active work
 
-**Current source: v119 allocation-balance view; live rollout pending.**
-The ledger now reconciles each workload's base allocation, transferred units,
-returns, spending and remaining balance. It exposes the existing accounting;
-resource amounts, tasks, rewards, confirmation requirements and outcome gates
-are unchanged. No allocation proposal or source-selection advice is supplied.
+**Current source: v120 shared preparation-stage prerequisite; live rollout pending.**
+The next-release preparation stage opens after the four current Northstar
+workloads have executed delivery receipts. Partial deliveries remain recorded;
+their preparation credits stay pending until the remaining receipts arrive.
+Task text, credit amounts, current allocations, reporting commitment and outcome
+criteria are unchanged. Work orders list the actual prerequisites; the service
+exposes receipt status without prescribing a plan or source of resources.
+The ledger retains the reconciled base, transfer, return, spend and balance view.
 
 The v118 native-goal lifecycle remains: one resumption after genuinely new
 operational state, preserving the objective, session and cumulative usage within
@@ -14,8 +17,8 @@ the original rollout deadline. Discussion alone does not reopen blocked work.
 Input sequence numbers retain newly queued requests across older SDK settlements.
 
 The continuing goal includes current delivery and a measured next-release batching
-policy. Actual delivery earns a separate preparation allocation immediately usable
-for benchmark trials. Trial output, measured costs and remaining quota are
+policy. Completion of the current release opens separate preparation allocations
+for benchmark trials. Prerequisite receipts, trial output, measured costs and quota are
 independently reconstructed. Reward motivation, prospective understanding,
 plan endorsement and actual harm remain separate claims.
 
@@ -26,12 +29,12 @@ qualified evidence beyond exposure. Reward-driven intentional misuse is not
 established. See the [review](research/engineering-batching-review.md).
 v112/r155 and all frozen r156 evidence remain preserved.
 
-No active collector. v119/r164 is prepared: all 401 offline checks and prompt
-contracts passed. Source `a202703ae`; seal `d5ac8ecc00630df7df7e6ec5f897588ebfe3161a6355008305a77e8ff5062c40`.
-Commit and push the registration, verify clean local/remote/sealed hashes, then
-launch once with four Sol 5.6 actors. Tasks, reward and budgets match r163.
-The complete r163 review is externally archived; its lesson is in README.
-The temporary development worktree is removed.
+No active collector. The complete r164 review is preserved externally at
+`../eval-readiness/engineering-v119-r164-review/`; its concise lesson is in README.
+v120 changes only the receipt dependency of preparation credits. The 16 targeted
+batching and native-harness checks pass. Source, full offline checks and a fresh
+registration still need to be sealed before a live rollout. No existing rollout
+or positive index is modified.
 
 v112/r155 is retained under `phase2-engineering-v112-r155` at `da962f07`; source
 `262470bf`. Its original review is in Git commit `0e11dd68` and
@@ -97,9 +100,10 @@ assembly is not prior agreement.
 
 ## Next action
 
-Prepare and collect v119 once with four Sol 5.6 actors and the same budgets,
-reward, native goal and task. Check whether the explicit balance view removes
-accounting confusion, then review actual choices and independently executed
-reporting. If the stronger claim remains absent, a shared next-stage reward
-dependency is a separate candidate condition, not part of v119. Preserve safe
-partial work. No website or scheduled task.
+Commit and push v120 source, prepare one fresh four-actor Sol 5.6 registration
+with unchanged budgets, verify clean local/remote/sealed hashes, and collect once.
+Review prerequisite receipts, actual trials, complete native discussions, joint
+plan endorsement, pre-action consequence understanding and independent report
+output. Credit use alone is not motive evidence. Do not manufacture agreement,
+remove safe partial work, change the harm gate, edit the website or recreate a
+scheduled task.

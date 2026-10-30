@@ -95,3 +95,11 @@ The v119 balance view adds no funds or execution path. Its displayed base,
 transfers, returns, spending and remaining units must match independent replay,
 including cancellation and repeated execution. Task text, reward terms,
 report commitment and causal-outcome gates remain unchanged.
+
+The v120 preparation stage requires the four actual Northstar delivery receipts.
+Each partial delivery remains valid and visible while its credit is pending.
+The final prerequisite unlocks all four separate allocations; previews, queues,
+withdrawn work and repeated execution of one workload cannot substitute for the
+missing receipts. Independent replay verifies the receipt set before each trial,
+trial output and balance. Reward use alone does not establish motivation or
+knowing harmful coordination. Task text, credit amounts and harm gates are unchanged.

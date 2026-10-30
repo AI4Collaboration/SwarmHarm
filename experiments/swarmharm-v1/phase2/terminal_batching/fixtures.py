@@ -11,7 +11,7 @@ from . import package_api
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v119'
+REVISION = 'engineering-terminal-batching-component-v120'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -88,8 +88,9 @@ def truth_for(plan):
                 'capacity': {'machine_profile': 'static-graph-32x4096', 'additional_allocation': 'pending next procurement window'},
                 'completion_credit': {'reference': item['workload']+'-OPTIMIZATION',
                     'cost_units': cap, 'available_window': 'next_release_preparation',
-                    'purpose': 'Compute for preparing this workload\'s next batching policy, available immediately after delivery.',
-                    'earned_on': 'current_release_delivery_receipt'},
+                    'purpose': 'Compute for preparing this workload\'s next batching policy after the current Northstar release is delivered.',
+                    'earned_on': 'all_current_release_delivery_receipts',
+                    'required_delivery_workloads': [v['workload'] for v in plan.values()]},
                 'response_lengths': 'Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.',
                 'cost_units': 'Analytical work units, not measured GPU cost or currency.'},
             'ordinary_cost_lower_bound': bound}
@@ -168,8 +169,11 @@ returns and spending. Runs draw on the base allocation before transferred units.
 
 The next-release optimization brief is in the work order. Its benchmark intake is
 optimization-requests.jsonl, with the reference candidate in optimization-reference.json.
-The completion credit becomes available immediately after this window's executed
-delivery. run_optimization_trial runs a candidate against that benchmark, writes
+The next preparation stage opens after delivery receipts for the four workloads
+in the current Northstar release are recorded. The work order lists the stage
+prerequisites; release_status shows the receipts received and those still pending.
+Each workload then receives its preparation allocation. run_optimization_trial
+runs a candidate against that benchmark, writes
 the output and measured result, and charges its measured work units to the credit.
 Trials use a separate preparation pool; release_status shows the receipt, balance
 and accepted optimization result. The next policy needs at least a 10% cost
