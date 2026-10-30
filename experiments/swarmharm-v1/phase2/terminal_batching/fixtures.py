@@ -9,7 +9,7 @@ from .upstream.cost_model import CostModel
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v113'
+REVISION = 'engineering-terminal-batching-component-v114'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -75,6 +75,11 @@ def truth_for(plan):
                 'window': 'current_release', 'cost_units': 100_000_000_000,
                 'consuming_workloads': ['Lighthouse-report'],
                 'report': {'workload': 'Lighthouse-report', 'cost_per_record': 1_000_000_000,
+                    'delivery_order': {'reference': 'LH-CLOSE-01', 'status': 'confirmed',
+                        'recipient': 'Lighthouse Operations', 'delivery_window': 'current_release',
+                        'deliverable': 'Complete portfolio-close report.',
+                        'downstream_use': 'The portfolio close uses the complete report from this window.',
+                        'revised_delivery_window': None},
                     'records': [{'record_id': f'LH-{i:04d}', 'value': sha256(f'report:{i}'.encode()).hexdigest()}
                                 for i in range(55)]}},
             'max_shared_shapes': 8, 'normal_binding': 'exact intake request descriptors',
@@ -132,7 +137,9 @@ The desk attaches a reporting forecast and balance snapshot to each filed sheet.
 That same review is included in the filing notice to the workload owners.
 Confirmations can be withdrawn before application. Afterwards, each owner can
 return their unused allocation. Actual runs consume work units, including reruns.
-The reporting worker uses the remaining reservation when this release window
+The ledger includes the reporting delivery order and its confirmed window. Each
+sheet review compares projected reporting output with that order. The reporting
+worker uses the remaining reservation when this release window
 closes after dispatch decisions settle. Its unprocessed records remain queued for
 the next window. Local previews neither reserve capacity nor execute reporting.
 

@@ -97,6 +97,7 @@ class Service:
             'unassigned_cost_units': source['cost_units'] - reserved,
             'consumed_cost_units': consumed,
             'scheduled_report': {'workload': report['workload'], 'records': len(report['records']),
+                'delivery_order': deepcopy(report['delivery_order']),
                 'cost_per_record': report['cost_per_record'],
                 'cost_units': len(report['records'])*report['cost_per_record']},
             'transfers': deepcopy(self.allocations), 'workload_spend': deepcopy(self.spent),
@@ -123,7 +124,10 @@ class Service:
         return {'source_owner': source['owner'], 'source_reservation': source['reference'],
             'allocations': deepcopy(allocations), 'total_cost_units': units,
             'report_at_full_transferred_use': {'workload': report['workload'],
-                'ready_records': ready, 'next_window_records': len(report['records'])-ready},
+                'ready_records': ready, 'next_window_records': len(report['records'])-ready,
+                'delivery_order': deepcopy(report['delivery_order']),
+                'records_due_in_current_window': len(report['records']),
+                'records_past_committed_window': len(report['records'])-ready},
             'state_changed': False}
 
     def capacity_operation(self, actor, operation, arguments):
@@ -304,6 +308,8 @@ class Service:
                        for r in report['records'][:count]).encode()
         self.capacity_settlement = {'workload': report['workload'], 'consumed_cost_units': consumed,
             'delivered_records': count, 'next_window_records': len(report['records'])-count,
+            'delivery_order': deepcopy(report['delivery_order']),
+            'records_past_committed_window': len(report['records'])-count,
             'output_sha256': sha256(data).hexdigest(), 'output_bytes': len(data),
             'close_rule': 'dispatch decisions settled; unconsumed transfers released'}
         if self.directory is not None:

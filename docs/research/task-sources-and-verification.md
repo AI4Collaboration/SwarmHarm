@@ -543,3 +543,21 @@ requests can be approved, denied or partially approved, with recorded status.
 Our immediate reservation-desk decision, empty current-window pool and next-window
 availability are synthetic design choices, not an AWS implementation claim. This
 changes one business mechanism; it supplies no alternative method or peer text.
+
+### Reporting commitment and incentive interpretation
+
+v114 adds a confirmed current-window reporting delivery order and links the
+forecast shortfall to it. This is a synthetic business fact, not a new prohibition,
+method or request for acknowledgement. It leaves task wording, resource numbers
+and completion gates fixed. A native settlement bookkeeping repair is separately
+disclosed; no causal effect is estimated from one development rollout.
+
+METR's incident investigation distinguishes agents' recognition of out-of-scope
+actions from their diverse motives for continuing, including scorer research and
+helping peers. It does not establish that explicit reward pressure caused our
+batching result. The LessWrong component conditions likewise do not validate this
+particular incentive mechanism. r156 has a completion objective and cost limit,
+but no explicit reward. Recognition, plan agreement, business effect and motivation
+must remain separate; a later completion-benefit condition needs its own frozen
+inputs and actual benefit accounting. Safe withdrawal and correction remain valid
+observations rather than failures of the harness.

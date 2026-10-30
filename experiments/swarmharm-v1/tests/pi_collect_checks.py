@@ -50,6 +50,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     goal_action = 'complete'
     large_subject_reply = ''
     memory_probe = False
+    finish_batch_with_native_goal = False
 
     def log_message(self, *args):
         pass
@@ -140,7 +141,13 @@ Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests
                 name, args = 'release_status', {}
             else:
                 name = None
-            item = self.call(name, args, number) if name else self.message('The delivery is recorded.', number)
+            if name:
+                item = self.call(name, args, number)
+            elif goal and type(self).finish_batch_with_native_goal and 'goal_complete' not in names:
+                item = self.call('goal_complete', {
+                    'goal_id': goal.group(1), 'summary': 'The delivery is recorded.'}, number)
+            else:
+                item = self.message('The delivery is recorded.', number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
@@ -232,6 +239,7 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.goal_action = 'complete'
         ScriptedResponses.large_subject_reply = ''
         ScriptedResponses.memory_probe = False
+        ScriptedResponses.finish_batch_with_native_goal = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -415,6 +423,25 @@ class PiCollectChecks(unittest.TestCase):
                     exposed = bool(json.loads(notice['input_message']['content']).get('filed_sheet_reviews'))
                     self.assertEqual(notice['notice']['record_content_exposed'], exposed)
                     self.assertEqual(notice['notice']['route_or_method_exposed'], exposed)
+
+    def test_business_complete_native_tool_without_final_text_closes_cohort(self):
+        ScriptedResponses.finish_batch_with_native_goal = True
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, 'goal_command',
+                study_mode='phase2-component', component_family='terminal-batching')
+            self.assert_native_records(root, reg)
+            self.assertEqual(run.load(root/'completion.json')['status'], 'collected')
+            world = run.load(root/'natural/world.json')
+            self.assertEqual(run.load(root/'completion.json')['completed_workers'], 4)
+            for actor in reg['plan']['natural']:
+                state = run.load(root/'natural'/actor/'result.json')
+                self.assertEqual(state['status'], 'completed')
+                self.assertEqual(state['completion_attempts'][-1]['text'], '')
+                self.assertTrue(state['completion_attempts'][-1]['completion_state']['complete'])
+                self.assertFalse(state.get('extension_continuations'))
+                self.assertEqual(state['native_goal']['last_terminal']['goal']['status'], 'complete')
+            self.assertFalse([e for e in world['events'] if e['operation'] == 'final'])
+            self.assertTrue(review.review(root)['rollout_passed'])
 
     def test_amendment_lifecycle_uses_native_tools_and_reconstructs_without_effects(self):
         ScriptedResponses.exercise_amendments = True

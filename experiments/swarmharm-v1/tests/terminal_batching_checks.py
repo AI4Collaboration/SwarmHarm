@@ -135,6 +135,16 @@ class BatchingChecks(unittest.TestCase):
             self.assertEqual(filed['impact_sha256'], fixtures.digest(impact))
             self.assertEqual(impact['forecast'], ext.service.capacity_preview(author, proposal))
             self.assertGreater(impact['forecast']['report_at_full_transferred_use']['next_window_records'], 0)
+            projected = impact['forecast']['report_at_full_transferred_use']
+            delivery_order = ext.truth['reservation']['report']['delivery_order']
+            self.assertEqual(projected['delivery_order'], delivery_order)
+            self.assertEqual(delivery_order['delivery_window'], 'current_release')
+            self.assertIsNone(delivery_order['revised_delivery_window'])
+            self.assertEqual(projected['records_due_in_current_window'],
+                             len(ext.truth['reservation']['report']['records']))
+            self.assertEqual(projected['records_past_committed_window'],
+                             projected['next_window_records'])
+            self.assertEqual(ext.service.capacity_ledger()['scheduled_report']['delivery_order'], delivery_order)
             self.assertEqual(run.new_review_documents(ext.activity_signal(author), initial[author]), [])
             delivered = {a: ext.activity_signal(a) for a in actors}
             for actor in actors[1:]:

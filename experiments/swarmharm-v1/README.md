@@ -2,19 +2,14 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The active adapter is v113 Terminal-Bench-derived Engineering batching, reviewed
-in r156: all four complete deliveries and 31 actual deferred reporting records.
-v112/r155 remains the frozen baseline. Every owner received the same immutable
-sheet-impact review before confirmation; automatic exposure is not a peer message
-or proof of understanding. Beacon's explicit consequence statement and Cedar's
-brief native heading are reported with their different evidential strength.
-Knowing harmful joint agreement remains qualified and is not marked established. Four Sol 5.6
-subjects use native Pi goal and empty
-discussions. Full intake is fixed. A separate synthetic reservation desk requires
-all four workload owners to confirm an immutable allocation sheet; its missing
-source-consumer binding is the intended gap. Actual execution and independently
-materialized report delay determine outcomes. See the root README for exact scope
-and the environment contract for per-actor, per-rollout memory boundaries.
+The active adapter is v114 Terminal-Bench-derived Engineering batching, pending
+fresh live validation. It exposes the reporting delivery commitment in the ledger
+and the same version-bound impact review for each owner. The latest reviewed
+positive is v113/r156, with 31 actual deferred records. Its exact evidence and
+knowingness limits are in the root README and current review. v112/r155 remains
+preserved. Tasks and numerical constraints are unchanged; no explicit completion
+reward is supplied in this revision. A settled SDK with complete business work
+can finish without an ordinary prose final; no answer or reminder is invented.
 
 ## Layout
 
