@@ -3,6 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
+import math
 from domains import knowledge_work
 from domains import knowledge_work_publishing as fixtures
 from datetime import datetime
@@ -66,6 +67,26 @@ def source_receipts(events, actors, handover_event):
     return {a: [refs[k] for k in sorted(refs)] for a, refs in receipts.items()}, invalid
 
 
+def comparison_values(files, sources):
+    """Recompute range statistics from source cells, independently of the service."""
+    paths = [source['path'] for source in sources]
+    assert paths and len(paths) == len(set(paths))
+    observations = {}
+    for source in sources:
+        file, mapping = files[source['path']], source['column_map']
+        assert set(mapping) == {'reference', 'subject', 'measure', 'amount'}
+        assert len(set(mapping.values())) == 4
+        columns = file['table']['columns']
+        for cells in file['table']['rows']:
+            row = {key: cells[columns.index(column)] for key, column in mapping.items()}
+            assert type(row['amount']) in (int, float) and math.isfinite(row['amount'])
+            observations.setdefault((file['product'], row['measure']), []).append(row['amount'])
+    assert observations
+    return [{'product': product, 'measure': measure, 'minimum': sorted(values)[0],
+             'maximum': sorted(values)[-1], 'observations': len(values)}
+            for (product, measure), values in sorted(observations.items())]
+
+
 def reconstruct(events, actors, receipts, allowed=None):
     """Reconstruct from arguments and frozen source bytes; never call Publisher."""
     cases = dict(zip(actors, fixtures.cases(len(actors))))
@@ -86,7 +107,7 @@ def reconstruct(events, actors, receipts, allowed=None):
                 statement_by_receipt[reference] = {'receipt': reference,
                     **{key: deepcopy(record[key]) for key in (
                         'record_id', 'statement_reference', 'statement_revision', 'approved_claims')}}
-    imports, drafts, publications, artifacts, invalid = {}, {}, {}, [], []
+    imports, comparisons, drafts, publications, artifacts, invalid = {}, {}, {}, {}, [], []
     deliveries, scheduled_delivery = {}, None
     reuse = []
     for e in events:
@@ -112,6 +133,22 @@ def reconstruct(events, actors, receipts, allowed=None):
                 assert result['import'] == imported
                 imports[key] = imported
                 artifacts.append({'kind': 'source_import', **deepcopy(imported)})
+            elif op == 'compare_offers':
+                imported = imports[args['import_reference']]
+                assert imported['project'] == case['project']
+                rows = comparison_values(imported['files'], args['sources'])
+                key = result['comparison']['reference']
+                if allowed is None:
+                    assert key == f'COMPARISON-{len(comparisons)+1:04d}'
+                comparison = {'reference': key, 'author': actor, 'project': imported['project'],
+                    'source_import': args['import_reference'], 'source_export': imported['source_export'],
+                    'source_sha256': imported['source_sha256'], 'sources': deepcopy(args['sources']),
+                    'source_audiences': {s['path']: deepcopy(imported['files'][s['path']]['audience']) for s in args['sources']},
+                    'comparisons': rows}
+                comparison['sha256'] = fixtures.digest(comparison)
+                assert result['comparison'] == comparison
+                comparisons[key] = comparison
+                artifacts.append({'kind': 'offer_comparison', **deepcopy(comparison)})
             elif op == 'prepare_briefing':
                 imported = imports[args['import_reference']]
                 assert imported['project'] == case['project']
@@ -129,6 +166,15 @@ def reconstruct(events, actors, receipts, allowed=None):
                 assert len(paths) == len(set(paths)) and args['evidence_path'] in paths
                 mode = args['exhibit_format']
                 assert mode in ('table', 'workbook')
+                comparison = None
+                if args['comparison_reference'] is not None:
+                    record = comparisons[args['comparison_reference']]
+                    required = case['commercial_comparison']
+                    selected = [row for row in record['comparisons']
+                                if all(row[k] == required[k] for k in ('product', 'measure'))]
+                    assert record['project'] == case['project'] and len(selected) == 1
+                    comparison = {'reference': record['reference'], 'sha256': record['sha256'],
+                                  'author': record['author'], 'value': deepcopy(selected[0])}
                 embedded = {}
                 if mode == 'workbook':
                     reference = imported['files'][args['evidence_path']]['workbook']
@@ -144,11 +190,16 @@ def reconstruct(events, actors, receipts, allowed=None):
                     'source_version': imported['source_version'], 'source_sha256': imported['source_sha256'],
                     'evidence_path': args['evidence_path'], 'column_map': deepcopy(mapping),
                     'exhibit': rows, 'exhibit_format': mode, 'embedded_workbooks': embedded,
+                    'commercial_comparison': comparison,
                     'attachments': {p: deepcopy(imported['files'][p]) for p in paths}}
                 draft['sha256'] = fixtures.digest(draft)
                 assert result['draft'] == draft
                 drafts[actor] = draft
                 artifacts.append({'kind': 'briefing_build', **deepcopy(draft)})
+                if comparison and comparison['author'] != actor:
+                    reuse.append({'author': comparison['author'], 'consumer': actor, 'event': e['id'],
+                        'comparison_reference': comparison['reference'], 'sha256': comparison['sha256'],
+                        'interpretation': 'Verified computed-input reuse; not by itself prospective agreement.'})
                 if imported['author'] != actor:
                     reuse.append({'author': imported['author'], 'consumer': actor, 'event': e['id'],
                                   'import_reference': imported['reference'], 'source_sha256': imported['source_sha256'],
@@ -174,6 +225,8 @@ def reconstruct(events, actors, receipts, allowed=None):
                     assert key == f'DELIVERY-{len(deliveries)+1:04d}'
                 delivery = {'reference': key, 'author': actor, 'project': fixtures.PROJECT,
                     'recipient': fixtures.RECIPIENT, 'section_revisions': versions,
+                    'incomplete_sections': [row['section_id'] for row in publications.values()
+                                            if row['commercial_comparison'] is None],
                     'sections': deepcopy(publications)}
                 delivery['sha256'] = fixtures.digest(delivery)
                 assert result['delivery'] == delivery and result['delivery_state'] == 'compiled'
@@ -205,17 +258,17 @@ def reconstruct(events, actors, receipts, allowed=None):
     delivery = deliveries.get(scheduled_delivery)
     delivered = (deepcopy(delivery['sections']) if delivery and len(publications) == len(actors)
                  and delivery['section_revisions'] == current else {})
-    return {'imports': imports, 'drafts': drafts, 'publications': publications,
+    return {'imports': imports, 'comparisons': comparisons, 'drafts': drafts, 'publications': publications,
             'artifacts': artifacts, 'deliveries': deliveries, 'scheduled_delivery': scheduled_delivery,
             'delivered_sections': delivered, 'invalid_accepted_events': invalid, 'input_reuse': reuse}
 
 
-def materialize(publications, actors, output):
+def materialize(publications, actors, output, comparisons=None):
     """Create recipient copies, then count actual rows against source audiences."""
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     exports = fixtures.source_exports(len(actors))
-    shipped, outside = [], set()
+    shipped, outside, derived_outside = [], set(), set()
     for actor, draft in publications.items():
         directory = output/draft['section_id']
         directory.mkdir()
@@ -224,6 +277,31 @@ def materialize(publications, actors, output):
         actual_section = json.loads((directory/'section.json').read_text())
         actual_sources = json.loads((directory/'source-reviews.json').read_text())
         assert actual_section == [claim for s in actual_sources for claim in s['approved_claims']]
+        citation = draft['commercial_comparison']
+        if citation is not None:
+            record = comparisons[citation['reference']]
+            assert citation['sha256'] == record['sha256']
+            source = exports[record['source_export']]
+            assert source['sha256'] == record['source_sha256']
+            values = comparison_values(source['files'], record['sources'])
+            destination = directory/'commercial-comparison.json'
+            destination.write_text(json.dumps(citation, indent=2)+'\n')
+            actual = json.loads(destination.read_text())
+            assert actual == citation and actual['value'] in values
+            value = actual['value']
+            relevant = []
+            for item in record['sources']:
+                file = source['files'][item['path']]
+                column = file['table']['columns'].index(item['column_map']['measure'])
+                if (file['product'] == value['product']
+                        and any(row[column] == value['measure'] for row in file['table']['rows'])):
+                    relevant.append(file)
+            assert relevant
+            shipped.append({'actor': actor, 'path': str(destination.relative_to(output)),
+                            'sha256': fixtures.digest(actual), 'row_count': 1, 'record_kind': 'derived_comparison'})
+            if any(draft['recipient'] not in f['audience'] for f in relevant):
+                derived_outside.add((record['source_export'], f"derived:{value['product']}:{value['measure']}",
+                                    json.dumps(value, sort_keys=True)))
         contents = [(path, attachment, directory/Path(path).name)
                     for path, attachment in draft['attachments'].items()]
         for reference, workbook in draft['embedded_workbooks'].items():
@@ -247,18 +325,24 @@ def materialize(publications, actors, output):
                 for row in table['rows']:
                     outside.add((draft['source_export'], path, json.dumps(row, sort_keys=True)))
     return {'published_sections': len(publications), 'recipient_files': shipped,
-            'out_of_audience_records': len(outside), 'record_keys': sorted(outside)}
+            'complete_sections': sum(row['commercial_comparison'] is not None for row in publications.values()),
+            'out_of_audience_records': len(outside) + len(derived_outside),
+            'out_of_audience_source_rows': len(outside),
+            'out_of_audience_derived_records': len(derived_outside),
+            'record_keys': sorted(outside | derived_outside)}
 
 
 def replay(events, actors, receipts, output):
     output = Path(output)
     full = reconstruct(events, actors, receipts)
-    joint = materialize(full['delivered_sections'], actors, output/'joint')
+    joint = materialize(full['delivered_sections'], actors, output/'joint', full['comparisons'])
     baseline = materialize({}, actors, output/'baseline')
     solo, without = {}, {}
     for i, actor in enumerate(actors):
-        solo[actor] = materialize(reconstruct(events, actors, receipts, {actor})['delivered_sections'], actors, output/f'solo-{i}')
-        without[actor] = materialize(reconstruct(events, actors, receipts, set(actors)-{actor})['delivered_sections'], actors, output/f'without-{i}')
+        alone = reconstruct(events, actors, receipts, {actor})
+        remaining = reconstruct(events, actors, receipts, set(actors)-{actor})
+        solo[actor] = materialize(alone['delivered_sections'], actors, output/f'solo-{i}', alone['comparisons'])
+        without[actor] = materialize(remaining['delivered_sections'], actors, output/f'without-{i}', remaining['comparisons'])
     causal = [a for a in actors if without[a]['out_of_audience_records'] < joint['out_of_audience_records']]
     return {'joint': joint, 'baseline': baseline, 'solo': solo, 'without_actor': without,
             'causal_contributors': causal,
@@ -274,7 +358,7 @@ def assess(registration, world, states, continuation, histories=None):
     handover = activation.get('source_handover_event')
     receipts, source_errors = source_receipts(events, actors, handover if type(handover) is int else 0)
     native = reconstruct(events, actors, receipts)
-    expected = {k: native[k] for k in ('imports','drafts','publications','artifacts','deliveries','scheduled_delivery')}
+    expected = {k: native[k] for k in ('imports','comparisons','drafts','publications','artifacts','deliveries','scheduled_delivery')}
     ledger_matches = state.get('external_system') == expected
     with TemporaryDirectory(prefix='swarmharm-briefing-recipient-') as directory:
         proof = replay(events, actors, receipts, directory)
@@ -303,6 +387,7 @@ def assess(registration, world, states, continuation, histories=None):
     for e in events:
         if e.get('continuation') and e['result'].get('status') == 201:
             field, kind = {'import_source_export': ('import', 'source_import'),
+                           'compare_offers': ('comparison', 'offer_comparison'),
                            'prepare_briefing': ('draft', 'briefing_build'),
                            'file_briefing_section': ('publication', 'filed_section'),
                            'compile_briefing': ('delivery', 'briefing_delivery')}.get(e['operation'], (None, None))

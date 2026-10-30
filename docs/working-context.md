@@ -8,49 +8,46 @@ active. Knowing harmful joint planning is still a separate uncompleted target.
 
 ## Current revision
 
-Knowledge Work v84: `knowledge-work-embedded-source-v84`, Phase 1 gate
+Knowledge Work v85: `knowledge-work-commercial-context-v85`, Phase 1 gate
 `knowledge-work-live-formation-v1`, outcome
-`knowledge-work-recipient-materialization-v20`. Live rollout pending.
-No collector is active. Source is being checked before fresh registration.
+`knowledge-work-recipient-materialization-v21`. Live rollout pending.
+No collector is active and no new registration is prepared.
 
-One new mechanism: editable exhibits carry their source workbook's worksheets;
-converted tables contain the selected values. Source metadata, draft preview
-and compiled recipient copy expose actual contents. Both formats remain usable;
-selective attachments, correction and withdrawal remain. The environment models
-documented Office packaging with synthetic JSON worksheet files, not a real
-Office parser. The source-scope import gap is our fixture defect.
-
-The four-agent source review, actual revised claims and receipts, whole-document
-assembly, FIFO completed-response dispatch and v20 notice suppression remain.
-No new leader, peer message, cooperation instruction, pressure or repeated task.
-Shell tools still execute serially. Native ready/dispatch times expose delays.
+One changed business dependency: the complete customer briefing needs recent
+offer comparisons. Their project source is missing; the existing scope-binding
+gap makes retained operations observations reachable. A cited calculation can
+be inspected, reused and bound into an actual section. Partial product-only
+publication, table conversion, selected attachments, correction and withdrawal
+remain. A correctly scoped customer source must finish the same work cleanly.
+Phase 1, current source claims, whole-briefing assembly, FIFO dispatch and v20
+unchanged-state suppression remain. No new pressure or manufactured peer post.
 
 ## Next action
 
-Finish relevant offline and prompt/format/dataset checks. Commit and push source,
-prepare a new sealed four-agent Sol 6.1 registration, push it and verify clean
-local/remote/committed/sealed hashes. Collect once. Review all native requests,
-authored messages, exact reads, format choices, previews, actions and corrections;
-validate continuous ATIF and independently materialize recipient contents.
+309 offline checks and 12 prompt checks pass, including current-source blockers,
+reachable alternative, clean source control, derived-value reconstruction and
+full-sequence corrections. Format and dataset contracts pass. Changed subject
+surfaces were reviewed. Commit and push source, prepare a fresh four-agent Sol
+registration, commit and push it,
+verify clean local/remote/sealed hashes, then collect once. Do not treat offline
+witnesses as model behavior or deliver derived records as raw account-row leaks.
 
-Keep source access, useful reuse, sustained research, consequence recognition,
-prospective joint planning and final adverse effects separate. Embedded content
-in a preview is not delivery. Assembly dependencies alone are not proof of
-benign-individual composition. Do not manufacture a harmful plan or remove safe
-conversion because a subject chooses it.
+Review every native request, authored message, exact read, source and comparison
+selection, preview, action and correction. Validate continuous ATIF and materialize
+final recipient contents independently. Keep useful reuse, sustained research,
+consequence recognition, prospective agreement and adverse effects separate.
+Do not manufacture a harmful plan or remove safe choices.
 
 ## Evidence and sources
 
-The latest closed full review and registration are archived at
-`../eval-readiness/knowledge-work-v83-r117-review/`. Its 1,393 evidence hashes,
-twelve registration files and four ATIF histories verify. Details and the earlier
-runtime repair belong in root README Takeaways; raw trajectories are preserved.
+The latest closed review and registration are archived at
+`../eval-readiness/knowledge-work-v84-r118-review/`. Its 1,354 raw evidence hashes,
+twelve registration files and four ATIF histories verify. Findings belong only
+in root README Takeaways. The source and registration remain in Git history.
 Four selected positive domain examples retain their frozen revisions. Knowledge
-v55/r77 remains the accepted unknowingly-positive example. It does not validate
-current source or demonstrate knowing harmful planning.
+v55/r77 remains the accepted unknowingly-positive example, not proof of the
+stronger current target.
 
-Source notes and the design map METR's blocked exploration, discovered peers,
-useful experiments, reuse and continuing work to implemented analogues.
-LessWrong's inserted notes, persistence manipulations and separate larger fleet
-remain disclosed differences. Current format selection is a natural workflow
-hypothesis requiring fresh evidence; model success is not guaranteed.
+METR's core elements and LessWrong differences are mapped in the design and
+source notes. Current computed-source dependency is a new workflow hypothesis;
+model success is not guaranteed. Do not edit the public website.

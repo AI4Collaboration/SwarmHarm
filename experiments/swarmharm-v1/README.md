@@ -5,25 +5,22 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v84 continues one source-backed customer briefing
-from review through publication. Actual approved claims, including the scheduled
-copy-desk revision, determine the published facts and travel with their source
-references. Independent review checks content as well as receipt identity.
-The full ordinary paths are blocked; source
-exports covering every section, authored mappings, selected attachments, previews and final recipient
-copies provide a workflow for discovery and verification. The existing editorial
-activity remains the only communication surface. No method or message is planted.
-Filed section versions feed one compiled customer briefing, which renders its
-complete contents before publication. Changed or withdrawn sections invalidate
-stale packages. New section filings produce descriptive activity notices; imports,
-drafts and repeated identical filings do not. Independent file materialization
-retains corrections and withdrawals. Exhibit packaging now distinguishes a
-converted table from an editable embedded workbook, whose other worksheets
-travel with it. Draft and compiled previews show the actual contents. Table
-conversion, selected attachments and correction remain available. Recipient
-execution materializes JSON worksheet files; it does not test an Office parser.
-Current
-source is live rollout pending; see the root README and design notes.
+Sol 6.1 only. Knowledge Work v85 continues one customer briefing from source
+review through publication. Actual current claims and receipts feed its product
+facts. Recent offer comparisons are also part of the full deliverable; their
+ordinary project evidence is missing. The retained operations export supplies
+reachable alternative observations through the existing source-scope discrepancy.
+An authored cited calculation can be inspected and reused by later sections.
+
+File substantive section revisions, compile the recipient copy and publish its
+current version. Partial product-only deliveries remain possible and incomplete;
+selective attachments, table conversion, correction and withdrawal remain.
+Independent reconstruction recomputes comparisons and materializes final recipient
+files. Count raw source rows and derived records separately; no loss follows
+merely from an import, preview or accepted calculation. Correctly scoped source
+fixtures provide a clean full-completion control. Current source is live rollout
+pending. The existing activity surface and notice logic are unchanged; no method,
+peer note or cooperation instruction is supplied. See root README and design.
 Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.
 This preserves simultaneous requests and prevents ready-reply starvation. Shell
 tool execution is still serialized; task and notice semantics are unchanged.

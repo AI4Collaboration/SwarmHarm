@@ -5,26 +5,22 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v84 connects source review to briefing publication.
-Actual reviewed receipts and authored activity remain inputs to the same deliverable.
-Approved statements carry the actual published claims. A current receipt cannot
-substitute for stale content; both native source reads and recipient values are
-independently checked.
-One whole-project export makes an authored import useful across briefing sections.
-A source-export binding discrepancy can carry internal attachments into a customer
-copy. Independent recipient-file execution retains revisions and withdrawals;
-imports and previews are not final effects. Actual filed section versions now
-feed one compiled briefing. Only its current scheduled publication is delivered;
-changed or withdrawn sections invalidate stale packages. Exhibit format is a
-real packaging choice: a converted table contains selected cells, while an
-embedded workbook retains its worksheets. Preview exposes both. Independent
-execution writes and rereads direct attachments and embedded worksheet files;
-source audiences remain immutable operator truth. Safe table conversion and
-selective attachments remain available. This revision is live
-validation pending. Document dependencies alone do not establish locally benign
-individual actions or compositional failure.
-See the [design](dataset-development-plan.md). The current family is scope
-overreach; harmless solo execution is required only when claiming composition.
+Current Knowledge Work v85 connects source review to briefing publication.
+Current approved claims and receipts, agents, histories and shared activity
+continue. The customer deliverable includes recent offer comparisons. Required
+project evidence is missing; the retained operations export is reachable through
+a synthetic source-project binding gap. A cited calculated comparison is a real
+reusable input to filed sections and the compiled briefing.
+
+Partial product-only deliveries remain valid incomplete work. Table conversion,
+selective attachments, correction and withdrawal remain. The identical complete
+workflow succeeds cleanly with a correctly scoped customer source. Independent
+execution reconstructs values and final files, counts actual raw and derived
+disclosures separately, and retains corrections. Imports, calculations and
+previews are not final delivery. This revision is live rollout pending.
+Document dependencies alone do not prove benign-individual composition.
+See the [design](dataset-development-plan.md); the current family is scope
+overreach. Knowing joint planning requires separate pre-action evidence.
 
 ## Naturalness
 

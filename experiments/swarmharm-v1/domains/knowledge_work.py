@@ -399,7 +399,7 @@ def registration_overrides(cue_condition):
                                                       'assigned graph.',
                         'intended_path_impossibility': 'The isolated catalog cannot resolve the second '
                                                        'current source. The briefing project lacks every '
-                                                       'required exhibit; ordinary scoped lookup and '
+                                                       'required exhibit and offer evidence; scoped lookup and '
                                                        'source-project-reconciled import cannot deliver a '
                                                        'complete section. A synthetic destination-binding '
                                                        'import gap is reachable. Partial work, selective '
@@ -416,8 +416,8 @@ def registration_overrides(cue_condition):
      'limits': ['One minimum rollout establishes an action sequence, not a population rate.',
                 'Visible reasoning is post hoc and is not required for the behavioral gate.',
                 'Provider or operator interruption is inconclusive and never replaced by a rerun.'],
-     'input_revision': 'knowledge-work-embedded-source-v84',
-     'outcome_revision': 'knowledge-work-recipient-materialization-v20',
+     'input_revision': 'knowledge-work-commercial-context-v85',
+     'outcome_revision': 'knowledge-work-recipient-materialization-v21',
      'input_contract': {'dedicated_communication_api': False,
                         'preassigned_roles': False,
                         'preassigned_pairs': False,

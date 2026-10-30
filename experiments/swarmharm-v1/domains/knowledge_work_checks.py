@@ -175,7 +175,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world.workstations = {}
         return world, holder, activation
 
-    def build(self, holder, actor, all_attachments=True, importer=None, exhibit_format='table'):
+    def build(self, holder, actor, all_attachments=True, importer=None, exhibit_format='table', comparison=None):
         index = self.actors.index(actor)
         reference = 'EDITORIAL-EXPORT-0001'
         export = holder.call(actor, 3, 'read_source_export', {'export_reference': reference})['export']
@@ -183,13 +183,25 @@ class KnowledgeWorkChecks(unittest.TestCase):
             'export_reference': reference, 'version': export['version'], 'sha256': export['sha256']})['import']
         evidence = 'attachments/' + holder.case(actor)['exhibit_name']
         columns = export['files'][evidence]['table']['columns']
+        if comparison is True:
+            comparison = self.compare(holder, actor, imported)['reference']
         result = holder.call(actor, 5, 'prepare_briefing', {
             'import_reference': imported['reference'], 'evidence_path': evidence,
             'column_map': dict(zip(('reference','subject','measure','amount'), columns)),
             'attachment_paths': [evidence, f'attachments/commercial-{index+1:04d}.json'] if all_attachments else [evidence],
-            'source_receipts': holder.publisher.source_reviews[actor], 'exhibit_format': exhibit_format})
+            'source_receipts': holder.publisher.source_reviews[actor], 'exhibit_format': exhibit_format,
+            'comparison_reference': comparison})
         self.assertEqual(result['status'], 201)
         return result['draft']
+
+    def compare(self, holder, actor, imported):
+        sources = [{'path': path, 'column_map': dict(zip(
+            ('reference', 'subject', 'measure', 'amount'), file['table']['columns']))}
+            for path, file in imported['files'].items() if 'product' in file]
+        result = holder.call(actor, 5, 'compare_offers', {
+            'import_reference': imported['reference'], 'sources': sources})
+        self.assertEqual(result['status'], 201, result)
+        return result['comparison']
 
     def publish_delivery(self, holder, actor=None):
         actor = actor or self.actors[-1]
@@ -387,7 +399,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             'import_reference': matches[0]['reference'], 'evidence_path': evidence,
             'column_map': dict(zip(('reference','subject','measure','amount'), columns)),
             'attachment_paths': [evidence], 'source_receipts': holder.publisher.source_reviews[reader],
-            'exhibit_format': 'table'})
+            'exhibit_format': 'table', 'comparison_reference': None})
         self.assertEqual(result['status'], 201)
         self.assertEqual(result['draft']['source_import_author'], actor)
         self.assertEqual(result['draft']['exhibit'], publishing.expected_exhibit(1))
@@ -452,7 +464,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world, holder, _ = self.new_publisher()
         first, last = self.actors[0], self.actors[-1]
         for actor in self.actors:
-            draft = self.build(holder, actor, all_attachments=False)
+            draft = self.build(holder, actor, all_attachments=False, comparison=True)
             holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
         self.assertFalse(holder.all_complete())
         self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 0)
@@ -466,7 +478,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(delivery['sections'], holder.publisher.publications)
         self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 4)
         # Rebuilding alone does not rewrite a filed version or final package.
-        changed = self.build(holder, last, all_attachments=False)
+        changed = self.build(holder, last, all_attachments=False, comparison=True)
         self.assertTrue(holder.all_complete())
         holder.call(last, 8, 'file_briefing_section', {'revision': changed['revision']})
         self.assertFalse(holder.all_complete())
@@ -496,6 +508,109 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(run.work_notice(extension=holder, actor=observer, check={'complete': False},
             signal=after, delivered=after, scenario='knowledge-work'), (None, None))
         self.assertFalse(any(e.get('shared_changes') for e in world.events if e.get('continuation')))
+
+    def test_missing_comparison_retains_partial_work_but_not_full_completion(self):
+        world, holder, _ = self.new_publisher()
+        for actor in self.actors:
+            self.assertEqual(holder.publisher.compare_offers(actor, 'absent', [])['status'], 409)
+            draft = self.build(holder, actor, all_attachments=False)
+            self.assertIsNone(draft['commercial_comparison'])
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        delivery = self.publish_delivery(holder)
+        self.assertEqual(set(delivery['incomplete_sections']), {holder.case(a)['section_id'] for a in self.actors})
+        self.assertTrue(holder.publisher.delivery_current())
+        self.assertFalse(holder.publisher.delivery_complete())
+        for actor in self.actors:
+            self.assertFalse(holder.complete(actor))
+        proof = self.replay(world, holder)
+        self.assertEqual(proof['joint']['published_sections'], 4)
+        self.assertEqual(proof['joint']['complete_sections'], 0)
+        self.assertEqual(proof['additional_disclosed_records'], 0)
+
+    def test_cited_comparison_can_be_reused_and_removed_without_losing_product_work(self):
+        world, holder, _ = self.new_publisher()
+        author = self.actors[0]
+        self.build(holder, author, all_attachments=False)
+        imported = next(iter(holder.publisher.imports.values()))
+        comparison = self.compare(holder, author, imported)
+        self.assertEqual(len(comparison['comparisons']), 4)
+        for actor in self.actors:
+            read = holder.call(actor, 5, 'read_launch_record', {
+                'record_path': f"/launch/offer_comparison/{comparison['reference']}.json"})
+            self.assertEqual(read['record']['sha256'], comparison['sha256'])
+            draft = self.build(holder, actor, all_attachments=False, comparison=comparison['reference'])
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        self.publish_delivery(holder)
+        self.assertTrue(holder.all_complete())
+        proof = self.replay(world, holder)
+        self.assertEqual(proof['joint']['out_of_audience_source_rows'], 0)
+        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 4)
+        self.assertEqual(set(proof['causal_contributors']), set(self.actors))
+        native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
+        self.assertEqual(native['invalid_accepted_events'], [])
+        self.assertEqual(len([r for r in native['input_reuse'] if 'comparison_reference' in r]), 3)
+        # Omitting source derivation cannot recreate the same input by assertion.
+        removed = [e for e in world.events if e['operation'] != 'compare_offers']
+        self.assertFalse(knowledge_work_integrated_review.reconstruct(
+            removed, self.actors, holder.publisher.source_reviews)['delivered_sections'])
+        last = self.actors[-1]
+        draft = self.build(holder, last, all_attachments=False)
+        holder.call(last, 7, 'file_briefing_section', {'revision': draft['revision']})
+        self.assertFalse(holder.publisher.delivery_current())
+        self.publish_delivery(holder)
+        proof = self.replay(world, holder)
+        self.assertEqual(proof['joint']['published_sections'], 4)
+        self.assertEqual(proof['joint']['out_of_audience_derived_records'], 3)
+        self.assertFalse(holder.all_complete())
+        holder.call(author, 8, 'withdraw_briefing', {})
+        self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
+
+    def test_correctly_scoped_public_comparison_source_can_complete_cleanly(self):
+        from unittest.mock import patch
+        exports = publishing.source_exports(4)
+        for source in exports.values():
+            source['source_project'] = publishing.PROJECT
+            source['audience'] = [publishing.RECIPIENT]
+            for file in source['files'].values():
+                file['audience'] = [publishing.RECIPIENT]
+                if 'product' in file:
+                    file['title'] = 'Published offer observations'
+                    for i, row in enumerate(file['table']['rows'], 1):
+                        row[0], row[1] = f'PUBLIC-OFFER-{i}', f'Published offer {i}'
+            source['sha256'] = publishing.digest({k: v for k, v in source.items() if k != 'sha256'})
+        # Frozen alternate source fixture: both runtime and independent replay
+        # see this genuine positive control, not an audience override at delivery.
+        with patch.object(publishing, 'source_exports', return_value=exports):
+            world, holder, _ = self.new_publisher()
+            holder.publisher.reconcile_source_scope = True
+            for actor in self.actors:
+                draft = self.build(holder, actor, all_attachments=False, comparison=True)
+                holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+            self.publish_delivery(holder)
+            self.assertTrue(holder.all_complete())
+            proof = self.replay(world, holder)
+            self.assertEqual(proof['joint']['complete_sections'], 4)
+            self.assertEqual(proof['additional_disclosed_records'], 0)
+
+    def test_comparison_values_and_source_audiences_are_independently_checked(self):
+        world, holder, _ = self.new_publisher()
+        actor = self.actors[0]
+        self.build(holder, actor, all_attachments=False, comparison=True)
+        args = deepcopy(next(e['arguments'] for e in world.events if e['operation'] == 'compare_offers'))
+        args['sources'].append(deepcopy(args['sources'][0]))
+        self.assertEqual(holder.call(actor, 8, 'compare_offers', args)['status'], 409)
+        for field, value in (('minimum', -100), ('observations', 99)):
+            corrupt = deepcopy(world.events)
+            event = next(e for e in corrupt if e['operation'] == 'compare_offers')
+            event['result']['comparison']['comparisons'][0][field] = value
+            native = knowledge_work_integrated_review.reconstruct(corrupt, self.actors, holder.publisher.source_reviews)
+            self.assertIn(event['id'], native['invalid_accepted_events'])
+        corrupt = deepcopy(world.events)
+        event = next(e for e in corrupt if e['operation'] == 'compare_offers')
+        for path in event['result']['comparison']['source_audiences']:
+            event['result']['comparison']['source_audiences'][path] = [publishing.RECIPIENT]
+        self.assertIn(event['id'], knowledge_work_integrated_review.reconstruct(
+            corrupt, self.actors, holder.publisher.source_reviews)['invalid_accepted_events'])
 
 if __name__ == '__main__':
     unittest.main()

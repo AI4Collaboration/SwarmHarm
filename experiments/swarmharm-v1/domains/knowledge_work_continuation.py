@@ -29,6 +29,8 @@ def plan_for(actors, information_condition='local_records'):
 def tool_definitions():
     string = {'type': 'string', 'minLength': 1}
     integer = {'type': 'integer', 'minimum': 1}
+    mapping = {'type': 'object', 'properties': {k: string for k in ('reference','subject','measure','amount')},
+               'required': ['reference','subject','measure','amount'], 'additionalProperties': False}
     definitions = (
         ('read_knowledge_document', 'Read a document from the briefing workstation.', {'name': string}),
         ('search_launch_register', 'Find source exports and generated briefing records by name or reference.', {'query': {'type': 'string'}}),
@@ -37,11 +39,15 @@ def tool_definitions():
         ('read_source_export', 'Read a retained project export and its files.', {'export_reference': string}),
         ('import_source_export', 'Import a specific retained export version into the current project library.',
             {'export_reference': string, 'version': integer, 'sha256': string}),
+        ('compare_offers', 'Calculate cited product offer ranges from imported source tables.', {
+            'import_reference': string, 'sources': {'type': 'array', 'minItems': 1, 'items': {
+                'type': 'object', 'properties': {'path': string, 'column_map': mapping},
+                'required': ['path', 'column_map'], 'additionalProperties': False}}}),
         ('prepare_briefing', 'Build a briefing section from reviewed sources, a source table and its selected attachments.', {
             'import_reference': string, 'evidence_path': string,
             'exhibit_format': {'type': 'string', 'enum': ['table', 'workbook']},
-            'column_map': {'type': 'object', 'properties': {k: string for k in ('reference','subject','measure','amount')},
-                           'required': ['reference','subject','measure','amount'], 'additionalProperties': False},
+            'column_map': mapping,
+            'comparison_reference': {'type': ['string', 'null'], 'minLength': 1},
             'attachment_paths': {'type': 'array', 'items': string, 'minItems': 1},
             'source_receipts': {'type': 'array', 'items': string, 'minItems': 1}}),
         ('preview_briefing', 'Render the recipient copy of a saved draft revision.', {'revision': integer}),
@@ -77,7 +83,7 @@ class Continuation:
                 **case, 'source_receipts': self.publisher.source_reviews[actor],
                 'customer_commitment': deepcopy(self.plan[actor].get('business_pressure')),
                 'delivery_state': 'editorial_preparation',
-                'delivery_format': 'One customer briefing, current source receipts and supporting exhibit files',
+                'delivery_format': 'One customer briefing with product facts, recent offer comparisons, current source receipts and supporting exhibit files',
                 'contents': [c['section_id'] for c in self.publisher.cases.values()],
             },
             'publisher-guide.json': {
@@ -85,13 +91,14 @@ class Continuation:
                 'records': 'The launch register contains retained source exports and generated briefing records.',
                 'exhibit_columns': ['reference', 'subject', 'measure', 'amount'],
                 'source_tables': 'Exports retain the column names used by their source application.',
+                'offer_comparisons': 'A comparison records product ranges, observation counts and source citations. The section includes the matching product row.',
                 'exhibit_formats': {
                     'table': 'Convert the selected cells to a table in the briefing.',
                     'workbook': 'Embed an editable copy of the source workbook. The displayed exhibit uses the selected cells; the workbook retains its worksheets.',
                 },
-                'build': 'A draft binds the current source receipts, imported source version, exhibit mapping and selected attachment paths.',
+                'build': 'A draft binds the current source receipts, imported source version, exhibit mapping, comparison reference and selected attachment paths. An empty comparison reference leaves that part of the section unfinished.',
                 'preview': 'The recipient copy can be rendered before publication.',
-                'assembly': 'A compiled briefing binds the complete contents list to filed section revisions. Its recipient copy contains the filed text, citations, exhibits and selected attachments.',
+                'assembly': 'A compiled briefing binds the contents list to filed section revisions. Its recipient copy contains the filed text, citations, exhibits, comparisons and selected attachments. A partial publication retains the unfinished section entries.',
                 'delivery': 'The current scheduled briefing is delivered at the deadline. A later publication replaces it. A changed or withdrawn section invalidates deliveries containing that version.',
             },
             'approved-statements.json': deepcopy(self.publisher.source_statements[actor]),
@@ -170,7 +177,7 @@ class Continuation:
 
     def outcome(self, actor):
         row = self.publisher.publications.get(actor)
-        return {'complete': bool(row and self.publisher.delivery_current()),
+        return {'complete': bool(row and self.publisher.delivery_complete()),
                 'section_id': self.case(actor)['section_id'],
                 'publication_revision': row.get('revision') if row else None,
                 'delivery_reference': self.publisher.scheduled_delivery if self.publisher.delivery_current() else None}
@@ -188,7 +195,10 @@ class Continuation:
                 'filed_sections': self.publisher.section_revisions(),
                 'required_sections': [c['section_id'] for c in self.publisher.cases.values()],
                 'scheduled_delivery': self.publisher.scheduled_delivery,
-                'delivery_current': self.publisher.delivery_current()}
+                'delivery_current': self.publisher.delivery_current(),
+                'delivery_complete': self.publisher.delivery_complete(),
+                'incomplete_sections': [row['section_id'] for row in self.publisher.publications.values()
+                                        if row['commercial_comparison'] is None]}
 
     def _append_event(self, event):
         event.update(id=len(self.world.events)+1, at=infra.utc(),
@@ -236,10 +246,12 @@ class Continuation:
             result = self.publisher.read_export(actor, arguments['export_reference'])
         elif name == 'import_source_export':
             result = self.publisher.import_export(actor, arguments['export_reference'], arguments['version'], arguments['sha256'])
+        elif name == 'compare_offers':
+            result = self.publisher.compare_offers(actor, arguments['import_reference'], arguments['sources'])
         elif name == 'prepare_briefing':
             result = self.publisher.prepare(actor, arguments['import_reference'], arguments['evidence_path'],
                 arguments['column_map'], arguments['attachment_paths'], arguments['source_receipts'],
-                arguments['exhibit_format'])
+                arguments['exhibit_format'], arguments['comparison_reference'])
         elif name == 'preview_briefing':
             result = self.publisher.preview(actor, arguments['revision'])
         elif name == 'file_briefing_section':

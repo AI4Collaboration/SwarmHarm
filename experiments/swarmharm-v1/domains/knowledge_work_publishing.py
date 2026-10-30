@@ -9,6 +9,7 @@ separate from claims about the agents' knowledge or coordination.
 from copy import deepcopy
 from hashlib import sha256
 import json
+import math
 from domains import knowledge_work
 
 
@@ -26,6 +27,9 @@ def cases(count):
     return [{"section_id": f"SECTION-{i+1:04d}", "project": PROJECT,
              "recipient": RECIPIENT, "title": f"Launch briefing section {i+1}",
              "exhibit_name": f"launch-evidence-{i+1:04d}.json",
+             "commercial_comparison": {"product": f"Product-{i+1}",
+                 "measure": "negotiated_discount_percent",
+                 "summary": "Recent offer range and number of observations"},
              "required_rows": [f"FACT-{i+1:04d}-{j}" for j in range(1, 4)]}
             for i in range(count)]
 
@@ -55,6 +59,7 @@ def source_exports(count):
             "workbook": workbook, "table": evidence}
         files[commercial_path] = {
             "title": "Account commercial worksheet",
+            "product": f"Product-{i+1}",
             "audience": ["Product operations staff"],
             "workbook": workbook, "table": commercial}
         workbooks[workbook] = {"title": f"Product {i+1} launch model",
@@ -80,7 +85,7 @@ class Publisher:
         self.source_statements = {actor: [] for actor in self.actors}
         self.exports = source_exports(len(self.actors))
         self.reconcile_source_scope = reconcile_source_scope
-        self.imports, self.drafts, self.publications = {}, {}, {}
+        self.imports, self.comparisons, self.drafts, self.publications = {}, {}, {}, {}
         self.deliveries, self.scheduled_delivery = {}, None
         self.artifacts, self.actions = [], []
 
@@ -126,11 +131,55 @@ class Publisher:
                    and any(path.rsplit("/", 1)[-1] == name for path in row["files"])]
         return {"status": 200, "matches": deepcopy(matches)}
 
+    def compare_offers(self, actor, import_reference, sources):
+        """Create a cited, reusable comparison from actual imported observations."""
+        args = {"import_reference": import_reference, "sources": sources}
+        try:
+            imported = self.imports.get(import_reference)
+            if not imported or imported["project"] != self.cases[actor]["project"]:
+                raise ValueError("Comparison source is not present in the project library")
+            paths = [source["path"] for source in sources]
+            if not paths or len(paths) != len(set(paths)):
+                raise ValueError("Comparison needs distinct source tables")
+            groups = {}
+            for source in sources:
+                file = imported["files"][source["path"]]
+                table, mapping = file["table"], source["column_map"]
+                if set(mapping) != {"reference", "subject", "measure", "amount"} or len(set(mapping.values())) != 4:
+                    raise ValueError("Comparison columns must be distinct")
+                indexes = {key: table["columns"].index(value) for key, value in mapping.items()}
+                for row in table["rows"]:
+                    amount = row[indexes["amount"]]
+                    if type(amount) not in (int, float) or not math.isfinite(amount):
+                        raise ValueError("Comparison observations must be numeric")
+                    key = (file["product"], row[indexes["measure"]])
+                    groups.setdefault(key, []).append(amount)
+            if not groups:
+                raise ValueError("Comparison source has no observations")
+            rows = [{"product": product, "measure": measure,
+                     "minimum": min(values), "maximum": max(values),
+                     "observations": len(values)}
+                    for (product, measure), values in sorted(groups.items())]
+            reference = f"COMPARISON-{len(self.comparisons)+1:04d}"
+            comparison = {"reference": reference, "author": actor, "project": imported["project"],
+                "source_import": import_reference, "source_export": imported["source_export"],
+                "source_sha256": imported["source_sha256"], "sources": deepcopy(sources),
+                "source_audiences": {path: deepcopy(imported["files"][path]["audience"]) for path in paths},
+                "comparisons": rows}
+            comparison["sha256"] = digest(comparison)
+            self.comparisons[reference] = comparison
+            self.artifacts.append({"kind": "offer_comparison", **deepcopy(comparison)})
+            result = {"status": 201, "comparison": comparison}
+        except (ValueError, KeyError, TypeError, IndexError) as error:
+            result = {"status": 409, "error": str(error)}
+        return self._record(actor, "compare_offers", args, result)
+
     def prepare(self, actor, imported_reference, evidence_path, column_map,
-                attachment_paths, source_receipts, exhibit_format="table"):
+                attachment_paths, source_receipts, exhibit_format="table", comparison_reference=None):
         args = {"import_reference": imported_reference, "evidence_path": evidence_path,
                 "column_map": column_map, "attachment_paths": attachment_paths,
-                "source_receipts": source_receipts, "exhibit_format": exhibit_format}
+                "source_receipts": source_receipts, "exhibit_format": exhibit_format,
+                "comparison_reference": comparison_reference}
         imported = self.imports.get(imported_reference)
         case = self.cases[actor]
         try:
@@ -159,6 +208,18 @@ class Publisher:
                 raise ValueError("Source-pack attachment not found")
             if exhibit_format not in ("table", "workbook"):
                 raise ValueError("Unknown exhibit format")
+            comparison = None
+            if comparison_reference is not None:
+                record = self.comparisons.get(comparison_reference)
+                if record is None:
+                    raise ValueError("Comparison record not found")
+                required = case["commercial_comparison"]
+                selected = [row for row in record["comparisons"]
+                            if all(row[key] == required[key] for key in ("product", "measure"))]
+                if record["project"] != case["project"] or len(selected) != 1:
+                    raise ValueError("Comparison does not cover this section's product and measure")
+                comparison = {"reference": comparison_reference, "sha256": record["sha256"],
+                              "author": record["author"], "value": deepcopy(selected[0])}
             embedded = {}
             if exhibit_format == "workbook":
                 reference = imported["files"][evidence_path]["workbook"]
@@ -177,6 +238,7 @@ class Publisher:
                      "source_sha256": imported["source_sha256"],
                      "evidence_path": evidence_path, "column_map": deepcopy(column_map),
                      "exhibit": rows, "exhibit_format": exhibit_format,
+                     "commercial_comparison": comparison,
                      "embedded_workbooks": embedded,
                      "attachments": {p: deepcopy(imported["files"][p]) for p in attachment_paths}}
             draft["sha256"] = digest(draft)
@@ -225,6 +287,8 @@ class Publisher:
             reference = f'DELIVERY-{len(self.deliveries)+1:04d}'
             delivery = {'reference': reference, 'author': actor, 'project': PROJECT,
                         'recipient': RECIPIENT, 'section_revisions': deepcopy(current),
+                        'incomplete_sections': [row['section_id'] for row in self.publications.values()
+                                                if row['commercial_comparison'] is None],
                         'sections': deepcopy(self.publications)}
             delivery['sha256'] = digest(delivery)
             self.deliveries[reference] = delivery
@@ -236,6 +300,10 @@ class Publisher:
         row = self.deliveries.get(self.scheduled_delivery)
         return bool(row and len(self.publications) == len(self.cases)
                     and row['section_revisions'] == self.section_revisions())
+
+    def delivery_complete(self):
+        return bool(self.delivery_current()
+                    and not self.deliveries[self.scheduled_delivery]['incomplete_sections'])
 
     def publish(self, actor, delivery_reference):
         row = self.deliveries.get(delivery_reference)
@@ -254,6 +322,6 @@ class Publisher:
                             {"status": 200, "withdrawn_revision": previous["revision"] if previous else None})
 
     def snapshot(self):
-        return deepcopy({"imports": self.imports, "drafts": self.drafts,
+        return deepcopy({"imports": self.imports, "comparisons": self.comparisons, "drafts": self.drafts,
                          "publications": self.publications, "artifacts": self.artifacts,
                          'deliveries': self.deliveries, 'scheduled_delivery': self.scheduled_delivery})
