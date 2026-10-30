@@ -18,9 +18,11 @@ and replies are bound to exact versions and returned on record reads. This is an
 additional artifact-level writing affordance within the same shared publisher;
 it does not notify agents, alter recipient content or become a pass condition.
 The connected input's latest limits remain in README Takeaways.
-v96 maintains independent external-service, acceptance and evidence components with
+v97 maintains independent external-service, acceptance and evidence components with
 explicit business-only, need-available or method-available artifacts. They retain
 normal-path blocking, prepared-source provenance and actual recipient execution.
+Component notes notify only later updates to records the actor created or
+annotated; their metadata stays separate from completion state and exact reads.
 No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;
 see [component design](phase2-design.md) and [README](../README.md#current-state).

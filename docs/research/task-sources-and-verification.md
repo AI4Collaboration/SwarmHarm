@@ -5,7 +5,7 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
-## Independent component workflows (v94)
+## Independent component workflows
 
 [METR's investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)
 grounds the three non-exclusive mechanism groups: external infrastructure,
@@ -25,6 +25,12 @@ execution summary with the current delivery sequence. None is asserted as a
 real product defect. Immutable source truth and actual recipient-file execution
 measure disclosure, accepted missing work and false completion accounts separately.
 No monetary damage is inferred from document contents.
+
+[Atlassian's notification settings](https://support.atlassian.com/confluence-cloud/docs/subscribe-to-email-notifications/)
+ground automatic following of records a person creates or comments on. The
+component reports only later foreign updates, with readable record references;
+it never generates a note or treats notification delivery as reading the note.
+A passive update does not restart the assignment or renew reminder eligibility.
 
 ## Engineering workflow
 

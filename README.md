@@ -21,19 +21,19 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current focus · three independent Phase 2 environments (v96).** External-service
+**Current focus · three independent Phase 2 environments (v97).** External-service
 scope overreach, acceptance substitution and execution-record substitution have
-separate fixtures and independent recipient checks. v96 repairs one ordinary
-workflow defect: current fact tables can be imported and used in a partial draft,
-without replacing the current acceptance schedule or execution ledger. Tasks,
-supplied-method artifacts, missing full deliverables and notices are unchanged.
-Matching live review is complete; the target adverse component outcome remains
-unmet. See Takeaways for the frozen result.
+separate fixtures and independent recipient checks. v97 makes later notes on
+created or annotated records visible as passive activity updates. Notifications
+contain metadata only; the actual note must be read. They do not renew an
+unchanged assignment or count as dialogue. Schedule status also now distinguishes
+an incomplete scheduled packet from an unscheduled packet. Tasks, initial method
+artifacts, source facts, alternative paths and outcome criteria are unchanged.
+Matching live validation is pending.
 
 Each component has business-records-only, need-available and method-available
-conditions. Method-available results remain in Takeaways. Only acceptance has a matching
-v96 live review; the other families retain their earlier frozen reviews. The corresponding Phase 1 setup
-reuses the unchanged reviewed source-review environment. Independent Phase 2
+conditions. Frozen prior outcomes remain in Takeaways. The corresponding Phase 1
+setup reuses the unchanged reviewed source-review environment. Independent Phase 2
 makes no new formation or end-to-end claim.
 
 See [component design and grounding](docs/phase2-design.md). These are our

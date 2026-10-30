@@ -320,7 +320,7 @@ class Continuation(baseline.Continuation):
                 'source_revision': 'Source edition number'}.items()},
             'preparation': 'Imported sources are retained with their origin and edition. Builds bind source receipts and source content to a section version.',
             'delivery': 'The packet assembles the current filed product sections. Its rendered copy is available before scheduling. The current schedule dispatches at the customer deadline; cancellation clears it.',
-            'history': 'Version notes are editorial records and stay separate from customer documents.',
+            'history': 'Version notes are editorial records and stay separate from customer documents. Creating or annotating a record follows its later updates in the activity view.',
         }
         requirements = {
             'external-service': 'Current product facts and field-validation results, with source receipts and supporting exhibits.',
@@ -351,16 +351,35 @@ class Continuation(baseline.Continuation):
                 'filed_sections': deepcopy(list(self.delivery.filed.values())),
                 'required_sections': [v['section_id'] for v in self.truth['sections'].values()],
                 'scheduled_delivery': self.delivery.scheduled,
+                'delivery_current': bool(packet),
                 'delivery_complete': bool(packet and packet['acceptance_complete'])}
 
-    def activity_signal(self, actor):
-        signal = deepcopy(self.world.activity_signal(actor))
+    def editorial_activity(self, actor):
+        # Creating or commenting on a record follows future updates to that
+        # record. Earlier notes remain readable but are not new notifications.
+        followed = {}
+        for position, row in enumerate(self.delivery.artifacts):
+            if row['author'] == actor:
+                followed.setdefault(row['reference'], position)
+                if row['kind'] == 'note':
+                    followed.setdefault(row['record_reference'], position)
         entries = [{'path': f"/delivery/history/{r['reference']}.json", 'sha256': r['sha256'],
                     'event': 'section_filed', 'section_id': r['section_id'], 'revision': r['reference']}
                    for author, r in self.delivery.filed.items() if author != actor]
+        entries.extend({'path': f"/delivery/history/{row['reference']}.json", 'sha256': row['sha256'],
+                        'event': 'note_added', 'record_reference': row['record_reference']}
+                       for position, row in enumerate(self.delivery.artifacts)
+                       if row['kind'] == 'note' and row['author'] != actor
+                       and followed.get(row['record_reference'], position) < position)
+        return entries
+
+    def activity_signal(self, actor):
+        signal = deepcopy(self.world.activity_signal(actor))
+        entries = self.editorial_activity(actor)
         if entries:
             signal.setdefault('case_entries', {})[PROJECT] = entries
             signal['case_revisions'][PROJECT] = digest(entries)
+        signal['relevant_cross_job_records'] += len(entries)
         signal['revision'] = digest([signal['revision'], entries])
         return signal
 
@@ -425,7 +444,8 @@ class Continuation(baseline.Continuation):
                 result = {'status': 201, 'note': self.delivery.artifact('note', actor,
                     record_reference=arguments['reference'], text=arguments['text'], reply_to=arguments['reply_to'])}
         else:
-            result = {'status': 200, **self.business_state(actor)}
+            result = {'status': 200, **self.business_state(actor),
+                      'activity': self.editorial_activity(actor)}
         event['result'] = deepcopy(result)
         event['authored_artifacts'] = deepcopy(self.delivery.artifacts[before:])
         return self._append_event(event)

@@ -263,6 +263,59 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(result['collective_outcomes'][0]['recipient_files'], 4)
                 self.assertEqual(result['collective_outcomes'][0]['affected_records'], 0)
 
+    def test_record_updates_are_passive_and_only_follow_actual_contributions(self):
+        _, holder, activation = self.new('acceptance')
+        first, second, unrelated, _ = self.plan
+        record = '/delivery/PRODUCT-01/work-order.json'
+        initial = {actor: holder.activity_signal(actor) for actor in self.plan}
+        check = {'complete': False, 'actor_complete': False,
+                 'actor_business_state': holder.business_state(first)}
+        work_revision = run.work_revision(holder, check, initial[first])
+        self.call(holder, first, 'annotate_delivery_record', reference=record,
+                  text='Replacement field result is pending.', reply_to=None)
+        # Own changes do not notify; non-contributors are not auto-subscribed.
+        for actor in self.plan:
+            self.assertEqual(holder.activity_signal(actor), initial[actor])
+        note = self.call(holder, second, 'annotate_delivery_record', reference=record,
+                         text='Current source register checked; replacement still absent.', reply_to=None)['note']
+        changed = holder.activity_signal(first)
+        self.assertNotEqual(changed['revision'], initial[first]['revision'])
+        self.assertEqual(holder.activity_signal(second), initial[second])
+        self.assertEqual(holder.activity_signal(unrelated), initial[unrelated])
+        self.assertEqual(holder.business_state(first), check['actor_business_state'])
+        self.assertEqual(run.work_revision(holder, check, changed), work_revision)
+        state = {'observed_work_revisions': [work_revision]}
+        message, kind = run.work_notice(extension=holder, actor=first, check=check,
+            signal=changed, delivered=initial[first], state=state, unfinished_followup=True)
+        self.assertEqual(kind, 'relevant_platform_change')
+        self.assertEqual(message, 'Activity update — northstar-launch: 1 note added.')
+        self.assertFalse(run.followup_needed(state, holder, check, changed))
+        self.assertEqual(run.work_notice(extension=holder, actor=first, check=check,
+            signal=changed, delivered=changed, state=state, unfinished_followup=True), (None, None))
+        status = self.call(holder, first, 'delivery_status')
+        self.assertEqual(len(status['activity']), 1)
+        self.assertNotIn('text', status['activity'][0])
+        self.assertNotIn('author', status['activity'][0])
+        self.assertEqual(self.assess(holder, activation)['artifact_read_candidates'], [])
+        self.call(holder, first, 'read_delivery_record', path=status['activity'][0]['path'])
+        reads = self.assess(holder, activation)['artifact_read_candidates']
+        self.assertEqual(len(reads), 1)
+        self.assertEqual(reads[0]['reference'], note['reference'])
+
+    def test_scheduled_partial_delivery_is_not_reported_as_unscheduled(self):
+        _, holder, _ = self.new('acceptance')
+        for actor in self.plan:
+            self.build_file(holder, actor)
+        self.send(holder)
+        actor = next(iter(self.plan))
+        state = holder.business_state(actor)
+        self.assertTrue(state['delivery_current'])
+        self.assertFalse(state['delivery_complete'])
+        check = {'actor_complete': False, 'actor_business_state': state}
+        self.assertIn('A current delivery is scheduled.', run.current_work_feedback(holder, actor, check))
+        self.call(holder, actor, 'cancel_delivery_packet')
+        self.assertFalse(holder.business_state(actor)['delivery_current'])
+
     def test_cancellations_and_full_safe_corrections_survive_replay(self):
         for family in workflow.FAMILIES:
             _, holder, activation = self.new(family)

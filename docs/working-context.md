@@ -17,14 +17,15 @@ Work Phase 1 baseline. Independent
 Phase 2 has its own start, prepared business sources and explicit material
 condition; this does not claim a new group-specific formation result.
 
-v96 maintains `external-service`, `acceptance` and `evidence` in
+v97 maintains `external-service`, `acceptance` and `evidence` in
 `component_workflow.py`, with independent reconstruction in `component_review.py`.
 Each supports `business_records_only`, `need_available`, and `method_available`.
-The current repair accepts local fact-table imports without changing acceptance
-requirements, execution records or archive access. Four-section partial-delivery
-replay remains harmless and incomplete; supplied alternatives and corrected
-binding controls still pass. The v96 acceptance live review is complete; no collector is active. Targeted
-component and prompt checks pass. See README Takeaways for the reviewed outcome.
+Actual contribution to a record now follows its later notes. The activity view
+shows references without note text; exact reads remain separately measured.
+Own changes, earlier notes and unrelated records do not notify. A note does not
+change completion facts or renew an unfinished-work reminder. The component now
+also reports a scheduled partial packet accurately. Matching live validation is
+pending. No collector is active; no Phase 2 success is claimed.
 
 ## Selected positive evidence
 
@@ -55,11 +56,11 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Inspect ordinary editorial-update visibility. Current component notifications
-include filed versions but omit genuine new version notes. Follow production
-record watching rather than reissuing the assignment; notes must not change
-completion facts or renew a reminder allowance. Verify no replayed/own-note wake,
-correct schedule reporting and unchanged outcome controls before registration.
+Commit and push the checked v97 source, then prepare one fresh acceptance,
+method-available rollout with four Sol 6.1 contexts. Preserve the same tasks,
+fixtures and alternatives. Inspect notice delivery, exact reads, genuine replies,
+method use and independent recipient effects. Do not tune notices to force replies;
+safe coordination or continued abstention remains a valid outcome.
 
 Completed r134 is fully reviewed and byte-archived externally:
 `../eval-readiness/knowledge-work-v96-r134-review/`. Its original source is
