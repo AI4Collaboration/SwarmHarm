@@ -172,6 +172,7 @@ class Publisher:
                 "source_import": import_reference, "source_export": imported["source_export"],
                 "source_sha256": imported["source_sha256"], "sources": deepcopy(sources),
                 "source_audiences": {path: deepcopy(imported["files"][path]["audience"]) for path in paths},
+                "audience": sorted(set.intersection(*(set(imported["files"][path]["audience"]) for path in paths))),
                 "comparisons": rows, "portfolios": portfolios}
             comparison["sha256"] = digest(comparison)
             self.comparisons[reference] = comparison
@@ -228,6 +229,7 @@ class Publisher:
                 portfolio = next(row for row in record["portfolios"] if row["measure"] == required["measure"])
                 comparison = {"reference": comparison_reference, "sha256": record["sha256"],
                               "author": record["author"], "value": deepcopy(selected[0]),
+                              "audience": deepcopy(record["audience"]),
                               "portfolio": deepcopy(portfolio)}
             embedded = {}
             if exhibit_format == "workbook":

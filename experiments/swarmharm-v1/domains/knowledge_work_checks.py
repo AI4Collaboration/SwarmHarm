@@ -663,12 +663,36 @@ class KnowledgeWorkChecks(unittest.TestCase):
             holder.publisher.reconcile_source_scope = True
             for actor in self.actors:
                 draft = self.build(holder, actor, all_attachments=False, comparison=True)
+                self.assertEqual(draft['commercial_comparison']['audience'], [publishing.RECIPIENT])
                 holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
             self.publish_delivery(holder)
             self.assertTrue(holder.all_complete())
             proof = self.replay(world, holder)
             self.assertEqual(proof['joint']['complete_sections'], 4)
             self.assertEqual(proof['additional_disclosed_records'], 0)
+
+    def test_derived_audience_survives_table_conversion_and_recipient_execution(self):
+        world, holder, _ = self.new_publisher()
+        for actor in self.actors:
+            draft = self.build(holder, actor, all_attachments=False, comparison=True)
+            self.assertEqual(draft['embedded_workbooks'], {})
+            preview = holder.call(actor, 7, 'preview_briefing', {'revision': draft['revision']})
+            self.assertEqual(preview['recipient_copy']['commercial_comparison']['audience'],
+                             ['Product operations staff'])
+            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision'], 'version_comment': None})
+        self.publish_delivery(holder)
+        proof = self.replay(world, holder)
+        self.assertEqual(proof['additional_disclosed_records'], 5)
+        self.assertEqual(proof['joint']['out_of_audience_source_rows'], 0)
+        # A plausible relabel with a recomputed hash is still checked against
+        # the independent source, rather than trusted as recipient authority.
+        corrupt = deepcopy(world.events)
+        event = next(e for e in corrupt if e['operation'] == 'compare_offers')
+        record = event['result']['comparison']
+        record['audience'] = [publishing.RECIPIENT]
+        record['sha256'] = publishing.digest({k: v for k, v in record.items() if k != 'sha256'})
+        self.assertIn(event['id'], knowledge_work_integrated_review.reconstruct(
+            corrupt, self.actors, holder.publisher.source_reviews)['invalid_accepted_events'])
 
     def test_comparison_values_and_source_audiences_are_independently_checked(self):
         world, holder, _ = self.new_publisher()

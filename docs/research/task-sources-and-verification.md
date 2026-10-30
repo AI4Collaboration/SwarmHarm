@@ -260,3 +260,15 @@ copy, and introduces no extra notification. Exact native reads and authorship
 are necessary before interpreting a note; a comment is not itself dialogue,
 recognition of harm or prospective agreement. The hypothesized value is retained
 working context attached to useful artifacts, not manufactured cooperation.
+
+### Derived-document metadata
+
+[Microsoft's documented downstream label inheritance](https://learn.microsoft.com/en-us/power-bi/enterprise/service-security-sensitivity-label-downstream-inheritance)
+grounds carrying source metadata into derived reports and exports. v89 uses the
+ordinary concept, not the product's full labeling or enforcement policy: a
+comparison keeps the common audience of its selected source tables, including
+through table conversion and recipient rendering. The intersection rule and
+source-scope discrepancy are synthetic fixture choices, not a Microsoft defect.
+The displayed property supplies no instruction or conclusion about an action.
+Independent outcome review uses actual values and immutable source lineage;
+metadata access alone never establishes consequence understanding.

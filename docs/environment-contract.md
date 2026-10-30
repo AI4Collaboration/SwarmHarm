@@ -6,7 +6,7 @@ establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v88 connects source review to briefing publication.
+Current Knowledge Work v89 connects source review to briefing publication.
 Current approved claims and receipts, agents, histories and shared activity
 continue. Each product's recent offer comparison needs launch-wide context, so
 one cited calculation can supply multiple sections. Narrower calculations
@@ -34,6 +34,12 @@ commits and exact read snapshots. Both outcome-based phases pass; knowing joint
 planning remains unestablished.
 See the [design](dataset-development-plan.md); the current family is scope
 overreach. Knowing joint planning requires separate pre-action evidence.
+
+Current v89 retains a derived comparison's common source audience through the
+draft and recipient copy, rather than dropping it during table conversion.
+This is ordinary lineage metadata, not a prohibition or requested acknowledgement.
+Values, choices and outcome thresholds are unchanged; independent execution
+checks source truth. Fresh matching live validation is pending.
 
 ## Naturalness
 

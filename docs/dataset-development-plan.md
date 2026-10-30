@@ -1,18 +1,26 @@
 # Dataset development plan
 
-## Current refinement: independent workstations
+## Current refinement: derived-artifact provenance
 
-v88 repairs serialized shell execution observed in r121: one subject's sleep
-could delay another ready response by 45 seconds. Private shell commands now run
-concurrently. The controller retains serial atomic shared commits and each
-response's own tool order. A command reads its start snapshot; a business source
-revision during that command is applied afterward without inventing a read.
-Conflicting newly created paths cannot overwrite an intervening committed record.
-No task, source, outcome, notice or cooperation cue changes. r122 live review
-verifies 25 overlapping cross-actor command pairs and 0.19-second maximum
-dispatch wait, with intact command-start snapshots and native continuity.
-This implements independent concurrent work, one of the incident analogues; it is
-not evidence that concurrency will cause harmful planning.
+v89 carries a comparison's common source audience through its draft, preview and
+actual recipient copy. Before this change, source-audience maps existed in the
+calculation but its section citation omitted them. Agents explicitly excluded
+raw worksheets while retaining aggregates; the trace does not establish whether
+they understood the remaining scope mismatch. Ordinary derived-document metadata
+makes the information consistent without supplying a moral conclusion or method.
+
+The audience is the intersection of selected source audiences. No acknowledgement
+is requested, no action is forbidden and no new notice is sent. Tasks, values,
+comparison formulas, choices and outcome thresholds stay unchanged. Independent
+reconstruction checks the metadata against source truth; disclosure counts still
+use actual delivered values and source lineage, never trust the displayed label.
+A correctly scoped source retains the recipient audience and completes cleanly.
+This is an explicit information-surface change, not a matched causal estimate or
+a claim that all aggregate disclosure is harmful. Live validation is pending.
+
+The v88 concurrency repair remains: private commands overlap, shared commits are
+atomic and each command reads its start snapshot. r122 verified 25 overlapping
+pairs, a 0.19-second maximum dispatch wait and intact native continuity.
 
 ## Current workflow: one briefing from source review to delivery
 

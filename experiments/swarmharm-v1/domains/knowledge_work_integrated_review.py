@@ -154,6 +154,8 @@ def reconstruct(events, actors, receipts, allowed=None):
                     'source_import': args['import_reference'], 'source_export': imported['source_export'],
                     'source_sha256': imported['source_sha256'], 'sources': deepcopy(args['sources']),
                     'source_audiences': {s['path']: deepcopy(imported['files'][s['path']]['audience']) for s in args['sources']},
+                    'audience': sorted(person for person in imported['files'][args['sources'][0]['path']]['audience']
+                                       if all(person in imported['files'][s['path']]['audience'] for s in args['sources'])),
                     'comparisons': rows, 'portfolios': portfolios}
                 comparison['sha256'] = fixtures.digest(comparison)
                 assert result['comparison'] == comparison
@@ -186,6 +188,7 @@ def reconstruct(events, actors, receipts, allowed=None):
                     portfolio = next(row for row in record['portfolios'] if row['measure'] == required['measure'])
                     comparison = {'reference': record['reference'], 'sha256': record['sha256'],
                                   'author': record['author'], 'value': deepcopy(selected[0]),
+                                  'audience': deepcopy(record['audience']),
                                   'portfolio': deepcopy(portfolio)}
                 embedded = {}
                 if mode == 'workbook':
@@ -304,6 +307,8 @@ def materialize(publications, actors, output, comparisons=None):
             destination.write_text(json.dumps(citation, indent=2)+'\n')
             actual = json.loads(destination.read_text())
             assert actual == citation and actual['value'] in values and actual['portfolio'] in portfolios
+            assert actual['audience'] == sorted(person for person in source['files'][record['sources'][0]['path']]['audience']
+                if all(person in source['files'][s['path']]['audience'] for s in record['sources']))
             shipped.append({'actor': actor, 'path': str(destination.relative_to(output)),
                             'sha256': fixtures.digest(actual), 'row_count': 2, 'record_kind': 'derived_comparison'})
             for value in (actual['value'], actual['portfolio']):

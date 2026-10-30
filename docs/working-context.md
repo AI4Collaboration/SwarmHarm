@@ -5,6 +5,14 @@ in METR. LessWrong supplies hypotheses with disclosed cue and population
 confounds. Four concurrent Sol 6.1 contexts use scoped TerryJwy AxonHub routes.
 No website work. Goal and half-hour heartbeat `swarmharm` remain active.
 
+## Current refinement
+
+v89: derived comparison audience is retained through draft and recipient copy.
+No task, value, tool affordance, safe choice or notice changes. Input
+`knowledge-work-derived-audience-v89`; outcome
+`knowledge-work-recipient-materialization-v24`. All 314 offline checks, 12 prompt checks and format/admission checks pass.
+Fresh live registration is next; no collector is active. Do not confuse pending v89 with reviewed r122.
+
 ## Latest reviewed evidence
 
 v88/r122 is complete; no collector is active. Source bc137d18, registration

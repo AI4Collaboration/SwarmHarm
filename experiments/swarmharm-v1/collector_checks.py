@@ -73,7 +73,8 @@ class CollectorChecks(unittest.TestCase):
         timing = world.events[-1]['workstation_execution']
         self.assertLessEqual(timing['snapshot_at'], world.events[-2]['at'])
         self.assertLessEqual(world.events[-2]['at'], timing['finished_at'])
-        self.assertFalse(world.events[-1].get('shared_reads'))
+        self.assertEqual(world.events[-1]['full_body_output_matches'], [])
+        self.assertEqual(world.events[-1]['message_body_output_matches'], [])
 
     def test_concurrent_shell_create_cannot_overwrite_a_new_shared_record(self):
         plan, _ = run.make_plan(4, scenario='knowledge-work')

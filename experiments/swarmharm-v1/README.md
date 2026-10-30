@@ -5,10 +5,11 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current v88 makes private workstation commands concurrent while
-keeping serial shared commits and exact command-start read snapshots. Matching
-r122 live validation verifies overlapping commands and both outcome-based phases. Optional
-version comments, task content, outcome logic and v20 notices remain unchanged.
+Sol 6.1 only. Current v89 preserves derived comparison audience metadata in
+calculations, drafts, previews and actual recipient files. A calculation's
+common audience is derived from its selected source tables. No task, operation,
+notification or safe choice changes. Fresh live validation is pending; r122
+remains the reviewed positive. Concurrent workstation execution is retained.
 Knowledge Work continues one customer briefing from source
 review through publication. Actual current claims and receipts feed its product
 facts. Recent offer comparisons are also part of the full deliverable; their
