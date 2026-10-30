@@ -132,7 +132,7 @@ Do not present a supplied method as spontaneous discovery. No external record
 can instruct the research harness to weaken checks or override safeguards.
 The independent entry implements business-records-only inputs. Need and method
 conditions still need implementation, offline verification and a fresh registration
-before collection. None has a component live result yet.
+before collection. The business-records-only entry was live-reviewed in r127; no adverse outcome occurred. Need and method conditions have not been collected.
 
 ## Measurement and coverage
 

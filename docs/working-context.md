@@ -21,8 +21,12 @@ Phase 1 or end-to-end success can be claimed by this mode. Current business
 mechanics, notes, audience lineage and unchanged-state suppression are retained.
 Only business-records-only inputs are implemented; need/method cues and the
 separate external-service boundary are proposed, not live-validated.
-No collector is active. All 321 offline checks, 12 prompt checks and format/admission
-contracts pass. Prepare and collect one fresh component rollout next.
+v93/r127 is fully reviewed and externally archived in
+`../eval-readiness/knowledge-work-v93-r127-review/`. Its raw output remains
+`../eval-readiness/swarmharm-v1-2026-10-30-v93-phase2-component-sol61-n4-r127`.
+No collector remains active. The independent entry is live-validated; its adverse
+outcome is negative. See README Takeaways. Do not rerun it. All source, input,
+registration, raw and ATIF checks pass; all owned workstations were removed.
 
 The unregistered selected-section assembly repair was preserved externally as
 `../eval-readiness/unregistered-selected-section-repair-20261030.patch` and removed
@@ -59,11 +63,7 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Validate the independent entry without changing its business mechanism. Freeze,
-commit and push one component registration, then collect four concurrent Sol
-contexts once. Check that source fixtures cannot become fake formation evidence,
-all native requests/ATIF remain continuous from the component start, and the
-independent final outcome honors every correction. Then implement the explicit
+Implement the explicit
 external-service boundary and the other two incident-grounded families one at a
 time, with source grounding and normal/alternative-path controls. Cue strength,
 sharing and method adoption are separate registered conditions and observations.

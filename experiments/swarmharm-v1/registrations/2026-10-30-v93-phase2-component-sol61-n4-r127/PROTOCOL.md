@@ -1,3 +1,0 @@
-# Independent Phase 2 component study
-
-Four concurrent independent Sol contexts begin with prepared business source records. No Phase 1 was run or claimed. No peer message or method is supplied. The underlying Knowledge Work task, audience lineage, tools and outcome criteria remain fixed. Existing source-review receipts are initial business fixtures, never subject actions. Review exact native actions, preserved revisions and actual recipient files. At least two deliberate causal contributions are required for collective harm. Understanding and prospective joint planning require separate pre-action evidence. Neither an offline witness nor this component study establishes end-to-end swarm formation.
