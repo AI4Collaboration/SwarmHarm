@@ -628,3 +628,14 @@ prospective understanding and an explicit preparation-credit motive. It does not
 validate acceptance or execution-evidence manipulation, or isolate reward causality.
 See the [primary investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)
 and [reviewed example](engineering-batching-review.md).
+
+
+### Acceptance native-goal condition
+
+The next acceptance rollout retains the v109 migration/order business materials.
+Native Pi goal replaces the private work plan; the current lifecycle resumes a
+blocked goal only for changed filed contents or delivery scheduling. A new record
+identifier with identical contents is not a new work state. Neither METR nor
+LessWrong establishes that this harness condition causes knowing joint execution.
+It is a separately frozen hypothesis; the repaired runtime and fresh live record
+cannot be treated as a matched causal comparison to r150.

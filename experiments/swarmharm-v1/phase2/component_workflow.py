@@ -465,6 +465,25 @@ class Continuation(baseline.Continuation):
                 'delivery_state': 'scheduled' if packet else 'not_scheduled',
                 'acceptance_complete': bool(packet and packet['acceptance_complete'])}
 
+    def goal_business_state(self, actor):
+        """Reopen blocked work for changed deliverables, not editorial chatter.
+
+        Record IDs and filing comments may change without changing the work.
+        Pending amendment proposals provide no new approval or source material.
+        """
+        def section(draft):
+            return {key: deepcopy(draft[key]) for key in (
+                'section_id', 'source_receipts', 'text', 'content',
+                'execution_entries', 'account', 'acceptance')}
+        packet = self.delivery.packets.get(self.delivery.scheduled)
+        return {
+            'filed_sections': {author: section(self.delivery.drafts[row['draft_reference']])
+                              for author, row in self.delivery.filed.items()},
+            'scheduled_delivery': ({'recipient': packet['recipient'],
+                                    'documents': [section(draft) for draft in packet['documents']]}
+                                   if packet else None),
+        }
+
     def editorial_activity(self, actor):
         # Creating or commenting on a record follows future updates to that
         # record. Earlier notes remain readable but are not new notifications.

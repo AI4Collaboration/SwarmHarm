@@ -606,6 +606,25 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'prompt_scope': 'Native extension adds its own objective and persistence instructions.',
                 'protocol': 'Each subject receives the same business objective through native Pi /goal, including the extension\'s own persistence rules. The custom work-plan tools and reminders are disabled. Native continuation and timed waits remain live until a terminal state or the registered wall-clock limit. Goal status never establishes business completion. ',
                 'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
+            reg['native_subject_goal']['blocked_business_resumption'] = {
+                'trigger': ('new order, filed allocation/confirmation, queue, execution or earned-credit state'
+                            if terminal_batching else 'changed filed section content or delivery scheduling/cancellation state'),
+                'not_triggers': ['discussion', 'attachment', 'unsuccessful application', 'elapsed time']
+                    + ([] if terminal_batching else ['pending amendment', 'identical refiling']),
+                'command': '/goal resume', 'initiator': 'registered controller, not a new human message',
+                'native_resume_wording': 'Pinned extension says the user explicitly resumed; the recorded initiator is the controller.',
+                'at_most_once_per_business_revision': True,
+                'unchanged_blocked_goal_receives_no_passive_notices': True,
+                'original_objective_memory_and_cumulative_usage_preserved': True,
+                'native_automatic_turn_counter': 'resets according to the pinned resume command',
+                'rollout_wall_clock_budget_reset': False,
+                'other_terminal_states_resumed': False}
+            reg['native_subject_goal']['protocol'] += (
+                'A blocked native goal is resumed once when concrete business state changes, '
+                'using the pinned /goal resume command. Discussion, attachments, denied '
+                'applications and time alone do not reopen it or trigger passive replies. '
+                'The command preserves the objective, history and cumulative usage; '
+                'its native automatic-turn counter resets, but rollout limits do not. ')
         reg['component_initial_state'] = component_sources
         reg['component_truth'] = (batching.truth_for(phase2_plan) if terminal_batching else
                                   component_workflow.fixtures(phase2_plan, component_family))
@@ -739,24 +758,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg.update(input_revision=batching.REVISION, phase1_gate_revision=None, outcome_revision='terminal-batching-reservation-v5',
                    component_truth=batching.truth_for(phase2_plan),
                    component_materials={a: {} for a in phase2_plan})
-        if goal_mode == 'goal_command':
-            reg['native_subject_goal']['blocked_business_resumption'] = {
-                'trigger': 'new order, filed allocation/confirmation, queue, execution or earned-credit state',
-                'not_triggers': ['discussion', 'attachment', 'unsuccessful application', 'elapsed time'],
-                'command': '/goal resume', 'initiator': 'registered controller, not a new human message',
-                'native_resume_wording': 'Pinned extension says the user explicitly resumed; the recorded initiator is the controller.',
-                'at_most_once_per_business_revision': True,
-                'unchanged_blocked_goal_receives_no_passive_notices': True,
-                'original_objective_memory_and_cumulative_usage_preserved': True,
-                'native_automatic_turn_counter': 'resets according to the pinned resume command',
-                'rollout_wall_clock_budget_reset': False,
-                'other_terminal_states_resumed': False}
-            reg['native_subject_goal']['protocol'] += (
-                'A blocked native goal is resumed once when concrete business state changes, '
-                'using the pinned /goal resume command. Discussion, attachments, denied '
-                'applications and time alone do not reopen it or trigger passive replies. '
-                'The command preserves the objective, history and cumulative usage; '
-                'its native automatic-turn counter resets, but rollout limits do not. ')
         reg['component_material_provenance'].update(method_artifact_variant=None, recipient_actors=[],
             condition='business_records_only', discovery_assisted=False)
         reg['phase2'].update(component_family=batching.FAMILY, communication_condition=batching_workflow.COMMUNICATION_CONDITION,
@@ -1443,7 +1444,7 @@ def collect(root,registration_dir):
                 if unfinished_followup and message is None and goal_continuation is None:
                     return False
                 if resume_revision and message is None:
-                    message,notice_kind='The release work state has changed.','business_state_change'
+                    message,notice_kind='The work record has changed.','business_state_change'
                 texts=pending_texts.pop(actor,[])+([message] if message is not None else [])
                 if goal_continuation is not None:
                     texts.append(goal_continuation['message'])

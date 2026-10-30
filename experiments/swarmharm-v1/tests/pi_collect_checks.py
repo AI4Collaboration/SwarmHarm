@@ -656,6 +656,7 @@ class PiCollectChecks(unittest.TestCase):
                     for item in request['input']) for request in requests), 2)
 
     def test_independent_component_uses_only_native_goal_condition(self):
+        ScriptedResponses.goal_action = 'blocked'
         with tempfile.TemporaryDirectory() as temporary, \
                 patch.object(run, 'work_notice', return_value=(None, None)):
             root, reg = self.collect(temporary, 'goal_command',
@@ -664,6 +665,8 @@ class PiCollectChecks(unittest.TestCase):
             self.assert_goal_request_accounting(root, reg)
             self.assertNotIn('subject_goal', reg)
             self.assertFalse(reg['native_subject_goal']['custom_private_plan_enabled'])
+            self.assertTrue(reg['native_subject_goal']['blocked_business_resumption'][
+                'unchanged_blocked_goal_receives_no_passive_notices'])
             audit = run.load(root / 'initial-input-audit.json')['natural']
             for actor in reg['plan']['natural']:
                 first = run.load(root / 'natural' / actor / 'trace/0001.request.json')
@@ -673,6 +676,10 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertNotIn(component_workflow.subject_goal.INSTRUCTION, _text(first['input'][0]))
                 task = next(item['content'] for item in audit[actor]['input'] if item['role'] == 'user')
                 self.assertIn(task, _text(first['input'][1]))
+                state = run.load(root/'natural'/actor/'result.json')
+                self.assertEqual(state['native_goal']['goal']['status'], 'blocked')
+                self.assertFalse(state.get('native_goal_resumptions'))
+                self.assertEqual(len(list((root/'natural'/actor/'trace').glob('*.request.json'))), 2)
             self.assertFalse(review.review(root)['rollout_passed'])
 
     def test_native_goal_wait_deadline_survives_without_business_notifications(self):

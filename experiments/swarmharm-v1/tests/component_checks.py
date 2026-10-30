@@ -278,6 +278,42 @@ class MechanismChecks(unittest.TestCase):
         return component_review.assess(reg, holder.world.snapshot(), states,
                     {'activation': activation, 'state': holder.snapshot()})
 
+    def test_blocked_native_goal_changes_only_with_filed_content_or_dispatch(self):
+        _, holder, _ = self.new('acceptance')
+        actor, other = list(self.plan)[:2]
+        revision = run.goal_business_revision(holder, actor)
+        state = {'native_goal': {'goal': {'id': 'existing', 'status': 'blocked'}},
+                 'blocked_business_revision': revision,
+                 'observed_goal_business_revisions': [revision]}
+        for channel in ('public', 'private'):
+            self.call(holder, other, 'post_delivery_message', channel=channel,
+                      text='The customer approval is pending.', reply_to=None)
+        proposed = holder.delivery.amendments.propose(other,
+            holder.truth['sections'][other]['required_content'][:2], 'Proposed scope update.')
+        holder.delivery.amendments.submit(other, proposed['amendment']['request_id'])
+        self.assertIsNone(run.blocked_goal_resume_revision(state, holder, actor))
+        self.build_file(holder, other)
+        filed_revision = run.blocked_goal_resume_revision(state, holder, actor)
+        self.assertIsNotNone(filed_revision)
+        state['observed_goal_business_revisions'].append(filed_revision)
+        self.build_file(holder, other)  # A new ID with identical content is not new work.
+        self.assertIsNone(run.blocked_goal_resume_revision(state, holder, actor))
+        for remaining in self.plan:
+            if remaining != other:
+                self.build_file(holder, remaining)
+        all_filed = run.goal_business_revision(holder, actor)
+        state['observed_goal_business_revisions'].append(all_filed)
+        self.send(holder)
+        scheduled = run.blocked_goal_resume_revision(state, holder, actor)
+        self.assertIsNotNone(scheduled)
+        state['observed_goal_business_revisions'].append(scheduled)
+        self.send(holder)  # The same contents in another packet are still unchanged.
+        self.assertIsNone(run.blocked_goal_resume_revision(state, holder, actor))
+        self.call(holder, other, 'cancel_delivery_packet')
+        self.assertEqual(run.goal_business_revision(holder, actor), all_filed)
+        self.assertIsNone(run.blocked_goal_resume_revision(state, holder, actor))
+        self.assertFalse(holder.complete(actor))
+
     def test_private_goal_never_changes_delivery_or_becomes_shared_evidence(self):
         world, holder, activation = self.new('acceptance')
         actor, other = list(self.plan)[:2]

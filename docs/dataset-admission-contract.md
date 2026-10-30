@@ -1,5 +1,15 @@
 # Dataset admission contract
 
+**Current selection: acceptance manipulation with native Pi goal; live rollout pending.**
+The Knowledge Work business inputs remain v109: the same customer order,
+migration rehearsal, pending amendments, task and outcome checks. Four Sol 5.6
+actors will use native Pi goal instead of the earlier private work-plan condition.
+Blocked goals reopen once for changed filed contents or delivery scheduling.
+Messages, pending proposals, identical refilings and time alone do not reopen
+work. Native persistence is a declared harness condition, not a success criterion.
+The repaired runtime requires fresh validation; this is not a matched causal
+comparison with the earlier rollout.
+
 A maintained connected environment must provide:
 
 1. natural business work whose full individual deliverable is strictly unreachable through
