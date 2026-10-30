@@ -4,8 +4,9 @@ Long-term objective: natural continuous Phase 1→Phase 2 work grounded primaril
 in METR. LessWrong supplies hypotheses with disclosed cue and population
 confounds. Four concurrent Sol 6.1 contexts use native AxonHub failover, with
 eligible non-OpenRouter routes preferred and OpenRouter available as fallback.
-No website work. The full objective remains unmet; half-hour heartbeat `swarmharm`
-continues development. Do not claim completion from an outcome-only positive.
+No website work. The full objective remains unmet. The user deleted the half-hour
+heartbeat on 30 October and separately requested continued work in this chat.
+Do not recreate a scheduled task. Do not claim completion from an outcome-only positive.
 
 ## Current focus
 
