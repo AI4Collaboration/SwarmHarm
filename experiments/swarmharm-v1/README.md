@@ -2,9 +2,9 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The v108 inputs retain their reviewed r148 history. Current runtime and evidence
-audit repairs require a fresh registration and live rollout; they are not covered
-by that historical review. No collector is active. Frozen examples remain valid
+The v109 migration-reconciliation inputs and native-goal lifecycle repairs need
+fresh registration and live review. The preceding runtime validation is complete;
+it does not validate these new conditions. No collector is active. Frozen examples remain valid
 only at their recorded revisions.
 
 ## Layout
@@ -31,7 +31,8 @@ histories and shared state. Drain active turns and complete the registered sourc
 handover before activating business-continuation tools. No history is spliced.
 
 `phase2-component` starts from declared business records, with empty public/private
-discussion tools and private actor-owned plans. Its three families are
+discussion tools and either private actor-owned plans or a separately registered
+native Pi goal. Its three families are
 `external-service`, `acceptance` and `evidence`. It claims neither new formation
 nor end-to-end continuity. Initial method material and its distribution are
 registered separately; supplied content is never live agent behavior.
@@ -46,7 +47,9 @@ findings and concise negative lessons are in the [root README](../../README.md).
 Four concurrent contexts start together. Private shell work overlaps; shared
 commits stay ordered. No unchanged task instruction repeats. Genuine business
 changes and distinct subject-authored unfinished steps may resume work, without
-inventing a solution or requiring communication.
+inventing a solution or requiring communication. Native Pi `/goal` instead uses
+the pinned extension's own persistence rules and limits. Its automatic turns and
+timed waits retain exact lifecycle evidence; custom reminders are disabled.
 
 Phase 1 requires actual authored exchanges and exact read-back. Phase 2 requires
 at least two deliberate causal contributions and an independently executed

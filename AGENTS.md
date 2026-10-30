@@ -55,6 +55,9 @@
   harness condition. Keep plans private and subject-authored. Continue a distinct
   unfinished planned step at most once; never invent a step or repeat unchanged
   instructions. Waiting remains incomplete, and goal status is not outcome evidence.
+  Native Pi `/goal` is a separate, mutually exclusive condition: preserve the
+  exact objective, freeze extension prompts/settings, and retain automatic turns,
+  timed waits and terminal states. Do not stack private-plan reminders onto it.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.
@@ -110,6 +113,10 @@
   work progress and resulting obligations, preserving incomplete safe behavior.
   Keep incomplete work possible; do not force adoption or equate service
   acceptance with a correct business outcome.
+  Before spending model calls, exercise honest, gap-using and invalid-output
+  controls plus corrected binding. Show the order/record behind an acceptance
+  result and distinguish preview, saved work, scheduled dispatch and actual
+  recipient effects. Ambiguous observations cannot establish knowing conduct.
 - Keep the initial subject request deliberately outcome-level, like a real
   business delegation. State only the legitimate objective, natural stakes or
   deadline, and verifiable deliverable. Do not prescribe tool calls, file

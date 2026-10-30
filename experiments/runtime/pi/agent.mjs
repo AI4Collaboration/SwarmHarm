@@ -2,7 +2,7 @@
 //
 // stdin  (controller -> agent): init, prompt, set_tools, tool replies, abort, shutdown
 // stdout (agent -> controller): ready, request, provider_response, tool_call, tool_result_error,
-//                               turn_end, retry, settled, closed, fatal
+//                               turn_end, retry, native_goal_state, settled, closed, fatal
 //
 // Pi owns the system prompt, request building, retries and session file. Every model-visible
 // tool is executed by the controller, which keeps the offline workstation and shared state.
@@ -27,9 +27,14 @@ function emit(value) {
 	process.stdout.write(`${JSON.stringify(value)}\n`);
 }
 
+function exitWithEvent(value, status) {
+	// The callback runs after this line and every preceding queued write drain.
+	// Exiting immediately can truncate a large request or response already emitted.
+	process.stdout.write(`${JSON.stringify(value)}\n`, () => process.exit(status));
+}
+
 function fatal(error) {
-	emit({ type: "fatal", message: String(error?.stack ?? error) });
-	process.exit(1);
+	exitWithEvent({ type: "fatal", message: String(error?.stack ?? error) }, 1);
 }
 
 // Pi's structured prompt minus its harness preamble and host documentation pointers.
@@ -104,6 +109,22 @@ function nextId(prefix) {
 	return `${prefix}-${requestId}`;
 }
 
+function nativeGoalSnapshot() {
+	// Use the current branch, not abandoned branches or the global goal-state file.
+	const entries = session.sessionManager.getBranch().filter((entry) =>
+		entry.type === "custom" && entry.customType === "goal-state");
+	const current = entries.at(-1);
+	const terminal = entries.findLast((entry) => entry.data?.goal &&
+		["complete", "blocked", "paused", "budget_limited", "usage_limited"].includes(entry.data.goal.status));
+	// Keep the pinned extension's fields and units unchanged. A cleared goal is not
+	// completion; its preceding terminal entry remains separately available.
+	return JSON.parse(JSON.stringify({
+		entry_id: current?.id ?? null,
+		goal: current?.data?.goal ?? null,
+		last_terminal: terminal ? { entry_id: terminal.id, goal: terminal.data.goal } : null,
+	}));
+}
+
 function toolDefinition(tool) {
 	return {
 		name: tool.name,
@@ -156,17 +177,6 @@ function controllerExtension(pi) {
 			response_id: message.responseId ?? null,
 			tool_calls: event.toolResults.length,
 			text: message.content.filter((block) => block.type === "text").map((block) => block.text).join("\n"),
-		});
-	});
-	pi.on("agent_settled", (event) => {
-		const last = session?.messages.findLast((message) => message.role === "assistant");
-		emit({
-			type: "settled",
-			turn,
-			aborted: event.aborted,
-			text: session?.getLastAssistantText() ?? "",
-			// Set only when the run ended on an error that outlasted Pi's retries.
-			error_message: last?.stopReason === "error" ? (last.errorMessage ?? "error") : null,
 		});
 	});
 }
@@ -246,9 +256,25 @@ channel.handlers.init = async (message) => {
 	}));
 	activateTools(config.active_tools);
 	session.subscribe((event) => {
-		if (event.type !== "auto_retry_start") return;
-		retryPending = true;
-		emit({ type: "retry", turn, attempt: event.attempt, max_attempts: event.maxAttempts, delay_ms: event.delayMs, error_message: event.errorMessage });
+		if (event.type === "auto_retry_start") {
+			retryPending = true;
+			emit({ type: "retry", turn, attempt: event.attempt, max_attempts: event.maxAttempts, delay_ms: event.delayMs, error_message: event.errorMessage });
+		} else if (event.type === "entry_appended" && event.entry.type === "custom" && event.entry.customType === "goal-state") {
+			emit({ type: "native_goal_state", turn, native_goal: nativeGoalSnapshot() });
+		} else if (event.type === "agent_settled") {
+			// SDK subscribers run after all extension handlers. The goal extension can
+			// already have queued a continuation, or retain a future wait deadline.
+			// Neither is controller quiescence, even before its next request arrives.
+			const last = session.messages.findLast((message) => message.role === "assistant");
+			emit({
+				type: "settled", turn, aborted: event.aborted,
+				text: session.getLastAssistantText() ?? "",
+				error_message: last?.stopReason === "error" ? (last.errorMessage ?? "error") : null,
+				native_goal: nativeGoalSnapshot(),
+				sdk_idle: session.isIdle,
+				sdk_pending_messages: session.pendingMessageCount,
+			});
+		}
 	});
 	await session.bindExtensions({
 		onError: (error) => emit({ type: "extension_error", error: String(error?.error ?? error?.message ?? error) }),
@@ -291,8 +317,7 @@ channel.handlers.shutdown = async () => {
 		await Promise.race([session.abort(), new Promise((resolve) => setTimeout(resolve, 5000))]);
 		session.dispose();
 	}
-	emit({ type: "closed" });
-	process.exit(0);
+	exitWithEvent({ type: "closed" }, 0);
 };
 
 process.on("uncaughtException", fatal);

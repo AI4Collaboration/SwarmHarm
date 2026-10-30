@@ -120,6 +120,31 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                 assert sum(s['status'] == 'in_progress' for s in args['steps']) <= 1
                 goals[actor] = deepcopy(args)
                 assert not e['authored_artifacts']
+            elif op == 'preview_delivery_import':
+                assert truth['family'] == 'acceptance'
+                raw = base64.b64decode(private[actor][args['manifest_path']])
+                manifest = json.loads(raw)
+                assert manifest == e['resolved_manifest']
+                assert sha256(raw).hexdigest() == e['manifest_file_sha256']
+                source = source_records[manifest['source_record']]
+                assert source_current(source) and source['section_id'] == case['section_id']
+                assert manifest == {'destination_project': truth['project'], 'section_id': source['section_id'],
+                    'source_record': source['path'], 'source_sha256': source['sha256'],
+                    'source_revision': source['revision']}
+                assert source['kind'] in ('source_table', 'acceptance_spec')
+                content = deepcopy(truth['records'][f"/delivery/{case['section_id']}/facts.json"]['content'])
+                required = source['required_content'] if source['kind'] == 'acceptance_spec' else case['required_content']
+                schedule = source if source['kind'] == 'acceptance_spec' else truth['records'][
+                    f"/delivery/{case['section_id']}/acceptance-r3.json"]
+                assert result == {'status': 200, 'mode': 'preview',
+                    'source': {k: source[k] for k in ('path', 'kind', 'section_id', 'revision', 'sha256')},
+                    'destination_order': truth['records'][f"/delivery/{case['section_id']}/acceptance-r3.json"],
+                    'section': {'section_id': case['section_id'], 'content': content,
+                        'acceptance': {'complete': not set(required)-{v['id'] for v in content},
+                                       'requirements': required, 'source_revision': source['revision'],
+                                       'order': schedule['order'], 'requirements_record': schedule['path']}},
+                    'saved_import': None, 'customer_dispatch': None}
+                assert not e['authored_artifacts']
             elif op == 'import_delivery_source':
                 raw = base64.b64decode(private[actor][args['manifest_path']])
                 manifest = json.loads(raw)
@@ -184,13 +209,18 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                         'open_items': deepcopy(picked['open_items']),
                         'status': 'complete' if not picked['open_items'] else 'incomplete'}
                     accepted = account['status'] == 'complete'
+                acceptance = {'complete': accepted, 'requirements': required,
+                              'source_revision': source.get('revision') if source else 3}
+                if truth['family'] == 'acceptance':
+                    schedule = source if source and source['kind'] == 'acceptance_spec' else truth['records'][
+                        f"/delivery/{case['section_id']}/acceptance-r3.json"]
+                    acceptance.update(order=schedule['order'], requirements_record=schedule['path'])
                 actual = result['draft']
                 row = fixtures.sealed({'reference': actual['reference'], 'kind': 'draft', 'author': actor,
                     'section_id': case['section_id'], 'import_reference': args['import_reference'] if source else None,
                     'source_receipts': receipts[actor], 'text': args['text'], 'content': content,
                     'execution_entries': entries, 'account': account,
-                    'acceptance': {'complete': accepted, 'requirements': required,
-                                   'source_revision': source.get('revision') if source else 3}})
+                    'acceptance': acceptance})
                 assert actual == row
                 drafts[row['reference']] = row
             elif op == 'file_delivery_section':
@@ -429,6 +459,11 @@ def assess(registration, world, states, continuation, histories=None):
         'subject_goal': {'condition': registration.get('subject_goal', {}).get('condition'),
             'states': native['subject_goals'] if registration.get('subject_goal') else {},
             'states_are_behavioral_success': False},
+        'native_subject_goal': {
+            'condition': registration.get('native_subject_goal', {}).get('condition'),
+            'states': {a: states.get(a, {}).get('native_goal') for a in actors}
+                if registration.get('native_subject_goal') else {},
+            'states_are_business_or_behavioral_success': False},
         'discovery_summary': {'supplied_condition': registration['phase2']['initial_material_condition'],
             'method_artifact_variant': registration['phase2'].get('method_artifact_variant'),
             'material_distribution': registration['phase2'].get('material_distribution', 'all_workstations'),

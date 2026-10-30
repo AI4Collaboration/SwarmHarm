@@ -6,8 +6,10 @@ import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import tempfile
 import threading
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 from contextlib import ExitStack
@@ -20,6 +22,16 @@ from phase2 import component_workflow
 
 PI = run.pi_agent
 GOAL_ID = re.compile(r'<goal_id>\n([^\n]+)\n</goal_id>')
+
+
+class PiBridgeChecks(unittest.TestCase):
+    def test_truncated_bridge_line_reports_failure_instead_of_losing_exit(self):
+        agent = object.__new__(PI.PiAgent)
+        agent.actor, agent.events = 'interrupted', PI.new_queue()
+        agent.process = SimpleNamespace(stdout=[b'{"type":"provider_response"'], wait=lambda: -9)
+        agent._read()
+        self.assertEqual(agent.events.get_nowait()[1]['type'], 'fatal')
+        self.assertEqual(agent.events.get_nowait()[1], {'type': 'exited', 'returncode': -9})
 
 
 def _text(item):
@@ -35,6 +47,8 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     fail_subject_requests = 0
     write_subject_goal = False
     exercise_amendments = False
+    goal_action = 'complete'
+    large_subject_reply = ''
 
     def log_message(self, *args):
         pass
@@ -68,6 +82,8 @@ class ScriptedResponses(BaseHTTPRequestHandler):
                 'output': [], 'error': {'code': 'server_error', 'message': 'Sorry, something went wrong.'}}}])
         if tools == ['confirm_service']:
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
+        elif type(self).large_subject_reply:
+            item = self.message(type(self).large_subject_reply, number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
@@ -86,8 +102,30 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             else:
                 item = self.call('withdraw_delivery_amendment', {
                     'request_id': previous['record']['request_id']}, number)
-        elif goal and 'goal_complete' in tools and len(outputs) == 1:
-            item = self.call('goal_complete', {'goal_id': goal.group(1), 'summary': 'Listed the workspace.'}, number)
+        elif goal and 'goal_complete' in tools and not any(
+                item.get('type') == 'function_call' and item.get('name') in ('goal_complete', 'goal_blocked')
+                for item in body['input']):
+            action = type(self).goal_action
+            automatic_inputs = sum(
+                item.get('role') == 'user' and '<!-- pi-goal-continuation:' in _text(item)
+                for item in body['input'])
+            waited = any(item.get('type') == 'function_call' and item.get('name') == 'goal_wait'
+                         for item in body['input'])
+            if action == 'automatic' and automatic_inputs < 2:
+                item = self.message('The work remains incomplete.', number)
+            elif action in ('timed_wait', 'indefinite_wait') and not waited:
+                arguments = {'goal_id': goal.group(1), 'reason': 'Waiting for the external business update.'}
+                if action == 'timed_wait':
+                    arguments['resume_after_ms'] = 10_000
+                item = self.call('goal_wait', arguments, number)
+            elif action == 'blocked':
+                # The extension validates this report's fields, not the claimed
+                # history. This fixture tests termination, not a real blocker.
+                item = self.call('goal_blocked', {
+                    'goal_id': goal.group(1), 'reason': 'External business input is unavailable.',
+                    'evidence': 'The scripted fixture has no external update.', 'repeated_turns': 3}, number)
+            else:
+                item = self.call('goal_complete', {'goal_id': goal.group(1), 'summary': 'Listed the workspace.'}, number)
         elif type(self).write_subject_goal and 'update_delivery_goal' in tools and len(outputs) == 1:
             item = self.call('update_delivery_goal', {
                 'state': 'active', 'steps': [{'description': 'Read the delivery record.',
@@ -134,6 +172,8 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.fail_subject_requests = 0
         ScriptedResponses.write_subject_goal = False
         ScriptedResponses.exercise_amendments = False
+        ScriptedResponses.goal_action = 'complete'
+        ScriptedResponses.large_subject_reply = ''
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -300,6 +340,164 @@ class PiCollectChecks(unittest.TestCase):
                 trajectory = run.load(root / 'natural' / actor / 'agent/trajectory.json')
                 calls = [call['function_name'] for step in trajectory['steps'] for call in step.get('tool_calls', [])]
                 self.assertIn('goal_complete', calls)
+
+    def test_shutdown_drains_large_emitted_events_before_closed(self):
+        """A reader barrier forces stdout backpressure without a timing sleep."""
+        events = PI.new_queue()
+        response_received = threading.Event()
+        release_reader = threading.Event()
+        put = events.put
+        def pause_after_response(value, *args, **kwargs):
+            put(value, *args, **kwargs)
+            if value[1]['type'] == 'provider_response':
+                response_received.set()
+                release_reader.wait(15)
+        events.put = pause_after_response
+        ScriptedResponses.large_subject_reply = 'Recorded synthetic output. ' * 40_000
+        with tempfile.TemporaryDirectory() as temporary:
+            agent = PI.PiAgent(
+                'flush-test', events, folder=temporary, model='offline/flush-test',
+                api_base=self.base, api_key='test-key', thinking_level='high',
+                max_output_tokens=16384, context_window=PI.CONTEXT_WINDOW,
+                request_timeout_ms=30_000, tools=[], active_tools=[],
+                job_context=None, goal_mode='off')
+            try:
+                PI.wait_ready(events, {'flush-test'})
+                agent.prompt('Return the recorded output.')
+                self.assertTrue(response_received.wait(10), 'The scripted response never arrived')
+                agent.send({'type': 'shutdown'})
+                # With the reader stopped, queued turn_end/settled text cannot
+                # drain. The process must wait for that reader, not exit early.
+                with self.assertRaises(subprocess.TimeoutExpired):
+                    agent.process.wait(timeout=1)
+            finally:
+                release_reader.set()
+                try:
+                    if response_received.is_set():
+                        agent.process.wait(timeout=10)
+                finally:
+                    agent.close()
+            received = []
+            while not events.empty():
+                received.append(events.get_nowait()[1])
+            self.assertEqual(agent.process.returncode, 0)
+            self.assertTrue(any(event['type'] == 'closed' for event in received))
+            turns = [event for event in received if event['type'] == 'turn_end']
+            self.assertEqual([event['text'] for event in turns], [ScriptedResponses.large_subject_reply])
+            self.assertTrue(any(event['type'] == 'provider_response' for event in received))
+
+    def assert_goal_request_accounting(self, root, reg):
+        """A settled gap must not drop requests already emitted by the native SDK."""
+        served = [body for body in ScriptedResponses.requests
+                  if [tool['name'] for tool in body.get('tools', [])] != ['confirm_service']]
+        requests = list((root / 'natural').glob('*/trace/*.request.json'))
+        responses = list((root / 'natural').glob('*/trace/*.response.json'))
+        self.assertEqual(len(requests), len(served))
+        self.assertEqual(len(responses), len(served))
+        self.assertEqual(run.load(root / 'completion.json')['model_requests_started'],
+                         len(ScriptedResponses.requests))
+        for actor in reg['plan']['natural']:
+            folder = root / 'natural' / actor
+            session = next((folder / 'pi/session').glob('*.jsonl'))
+            entries = [json.loads(line) for line in session.read_text().splitlines()]
+            native_answers = [entry for entry in entries
+                              if entry.get('message', {}).get('role') == 'assistant']
+            self.assertEqual(len(list((folder / 'trace').glob('*.response.json'))), len(native_answers))
+            state = run.load(folder / 'result.json')
+            goal_entries = [entry for entry in entries if entry.get('type') == 'custom'
+                            and entry.get('customType') == 'goal-state']
+            self.assertEqual([entry['id'] for entry in goal_entries],
+                             [entry['entry_id'] for entry in state['native_goal_events']])
+            self.assertEqual(state['native_goal']['goal'], goal_entries[-1]['data']['goal'])
+            terminals = [entry for entry in goal_entries if entry['data'].get('goal')
+                         and entry['data']['goal']['status'] != 'active']
+            self.assertEqual(state['native_goal']['last_terminal'],
+                             {'entry_id': terminals[-1]['id'], 'goal': terminals[-1]['data']['goal']}
+                             if terminals else None)
+            self.assertFalse(state.get('goal_continuations'))
+            self.assertFalse(state['completion_attempts'][-1]['completion_state']['complete'])
+
+    def native_goal_entries(self, root, actor):
+        session = next((root / 'natural' / actor / 'pi/session').glob('*.jsonl'))
+        return [entry for line in session.read_text().splitlines()
+                if (entry := json.loads(line)).get('type') == 'custom'
+                and entry.get('customType') == 'goal-state']
+
+    def test_native_goal_continuations_finish_before_controller_quiescence(self):
+        ScriptedResponses.goal_action = 'automatic'
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, 'work_notice', return_value=(None, None)):
+            root, reg = self.collect(temporary, 'goal_command')
+            self.assert_native_records(root, reg)
+            self.assert_goal_request_accounting(root, reg)
+            for actor in reg['plan']['natural']:
+                states = self.native_goal_entries(root, actor)
+                self.assertTrue(any(entry['data'].get('goal', {}).get('status') == 'complete'
+                                    for entry in states if entry['data'].get('goal')))
+                self.assertIsNone(states[-1]['data']['goal'])
+                requests = [run.load(path) for path in (root / 'natural' / actor / 'trace').glob('*.request.json')]
+                self.assertGreaterEqual(max(sum(
+                    item.get('role') == 'user' and '<!-- pi-goal-continuation:' in _text(item)
+                    for item in request['input']) for request in requests), 2)
+
+    def test_independent_component_uses_only_native_goal_condition(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, 'work_notice', return_value=(None, None)):
+            root, reg = self.collect(temporary, 'goal_command',
+                                     study_mode='phase2-component', component_family='acceptance')
+            self.assert_native_records(root, reg)
+            self.assert_goal_request_accounting(root, reg)
+            self.assertNotIn('subject_goal', reg)
+            self.assertFalse(reg['native_subject_goal']['custom_private_plan_enabled'])
+            audit = run.load(root / 'initial-input-audit.json')['natural']
+            for actor in reg['plan']['natural']:
+                first = run.load(root / 'natural' / actor / 'trace/0001.request.json')
+                self.assertFalse({'read_delivery_goal', 'update_delivery_goal'} &
+                                 {tool['name'] for tool in first['tools']})
+                self.assertTrue(set(PI.GOAL_TOOLS) <= {tool['name'] for tool in first['tools']})
+                self.assertNotIn(component_workflow.subject_goal.INSTRUCTION, _text(first['input'][0]))
+                task = next(item['content'] for item in audit[actor]['input'] if item['role'] == 'user')
+                self.assertIn(task, _text(first['input'][1]))
+            self.assertFalse(review.review(root)['rollout_passed'])
+
+    def test_native_goal_wait_deadline_survives_without_business_notifications(self):
+        ScriptedResponses.goal_action = 'timed_wait'
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, 'work_notice', return_value=(None, None)):
+            root, reg = self.collect(temporary, 'goal_command')
+            self.assert_native_records(root, reg)
+            self.assert_goal_request_accounting(root, reg)
+            self.assertGreaterEqual(run.load(root / 'completion.json')['elapsed_seconds'], 10)
+            for actor in reg['plan']['natural']:
+                states = self.native_goal_entries(root, actor)
+                waits = [entry['data']['goal']['waiting'] for entry in states
+                         if (entry['data'].get('goal') or {}).get('waiting')]
+                self.assertTrue(waits)
+                self.assertTrue(all(isinstance(wait['resumeAt'], (int, float)) for wait in waits))
+                self.assertTrue(any(entry['data'].get('goal', {}).get('status') == 'complete'
+                                    for entry in states if entry['data'].get('goal')))
+                self.assertIsNone(states[-1]['data']['goal'])
+
+    def test_native_goal_terminal_and_indefinite_wait_do_not_auto_resume(self):
+        for action in ('complete', 'blocked', 'indefinite_wait'):
+            with self.subTest(action=action), tempfile.TemporaryDirectory() as temporary, \
+                    patch.object(run, 'work_notice', return_value=(None, None)):
+                ScriptedResponses.requests = []
+                ScriptedResponses.goal_action = action
+                root, reg = self.collect(temporary, 'goal_command')
+                self.assert_native_records(root, reg)
+                self.assert_goal_request_accounting(root, reg)
+                for actor in reg['plan']['natural']:
+                    requests = list((root / 'natural' / actor / 'trace').glob('*.request.json'))
+                    self.assertEqual(len(requests), 2)
+                    last = self.native_goal_entries(root, actor)[-1]['data']['goal']
+                    if action == 'complete':
+                        self.assertIsNone(last)
+                    elif action == 'blocked':
+                        self.assertEqual(last['status'], 'blocked')
+                    else:
+                        self.assertEqual(last['status'], 'active')
+                        self.assertIsNone(last['waiting'].get('resumeAt'))
 
     def test_transient_provider_error_is_retried_within_the_same_request(self):
         ScriptedResponses.fail_subject_requests = 1

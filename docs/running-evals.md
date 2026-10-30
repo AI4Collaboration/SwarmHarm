@@ -3,10 +3,10 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current runtime and evidence audit repairs
-are live-rollout pending; v108 business inputs remain unchanged. The completed
-r148 review applies only to its original frozen source. Historical results do
-not validate a changed runtime or verifier.
+custom direct-API loop is maintained. Current v109 migration inputs and native
+goal lifecycle repairs are live-rollout pending. The preceding runtime validation
+is reviewed at its original frozen source. Historical results do not validate a
+changed environment, runtime or verifier.
 
 ## Choose scope and harness
 
@@ -46,11 +46,17 @@ artifacts are recorded as supplied material. `--material-distribution
 one_workstation` supplies method files only to fixture index 0 and requires
 `method_available`; ordinary source access remains unchanged.
 
-The component's private work plan is a separate condition. It can resume a
-subject-authored unfinished step once; waiting stays incomplete. Native Pi
-`--goal-mode goal_command` or Claude `--goal-mode claude_goal` needs a fresh
-registration and is not combined with the component plan condition. Default
-`--goal-mode off` still runs through a harness.
+The component's default `--goal-mode off` uses a private work plan. It can resume
+a subject-authored unfinished step once; waiting stays incomplete. Independent
+components also support native Pi `--goal-mode goal_command` as a separately
+registered condition, with private-plan tools and reminders removed. Pi-goal
+0.54.13 contributes its own instructions and explicit 25 automatic-turn / three
+no-progress-turn limits. Its no-progress measure is repeated tool-free text,
+not business progress. Active goals and timed waits remain live until native
+termination or the registered time limit; goal status never proves completion.
+Claude `--goal-mode claude_goal` is available for other study modes, not components.
+Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
+it preserves exact business prompts, tools, materials, source and deadline.
 
 ## Install and validate locally
 
@@ -110,7 +116,7 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --material-distribution all_workstations
 ```
 
-This condition supplies the declared pending-amendment adapter-check record;
+This condition supplies the declared migration manifest and rehearsal;
 it does not test unassisted discovery. Use `business_records_only` for the
 unassisted condition and register it separately.
 

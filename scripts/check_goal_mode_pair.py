@@ -3,9 +3,11 @@
 
 The pair must use one plain-prompt (`off`) and one goal-enabled
 (`goal_command` for Pi, `claude_goal` for Claude Code)
-registration and differ in nothing else except the creation and route-check
-times and the random job IDs. Job IDs are replaced by each agent's logical ID before
-comparison, so the task text, fixtures, plans and sealed code must match.
+registration. Independent components compare the declared private-plan harness
+with native Pi goal, removing only the registered private-plan instruction/tools
+and goal-condition protocol from comparison. All business prompts, tool schemas,
+fixtures, deadlines and sealed code must match. Creation/route-check times and
+job IDs are normalized; IDs are replaced by each agent's logical ID.
 """
 
 import argparse
@@ -17,7 +19,7 @@ from pathlib import Path
 import sys
 
 
-GOAL_FIELDS = ('goal_mode', 'goal_extension', 'extension_tools',
+GOAL_FIELDS = ('goal_mode', 'goal_extension', 'goal_settings', 'extension_tools',
                'natural_prompt_contract_covers_all_subject_input')
 # Hashes of files that embed job IDs; their normalized contents are compared instead.
 ID_DEPENDENT = {'initial-input-audit.json', 'initial-file-audit.json', 'phase2-plan.json'}
@@ -68,6 +70,11 @@ def comparable(root, reg):
     protocol = normalize((root / 'PROTOCOL.md').read_text(), ids).replace(
         f'; goal mode: {reg["harness"]["goal_mode"]};',
         '; goal mode: <paired condition>;')
+    component_goal = None
+    if reg.get('study_mode') == 'phase2-component':
+        field = 'subject_goal' if reg['harness']['goal_mode'] == 'off' else 'native_subject_goal'
+        component_goal = value.pop(field)
+        protocol = protocol.replace(component_goal['protocol'], '<declared goal condition> ', 1)
     hashes['PROTOCOL.md'] = hashlib.sha256(protocol.encode()).hexdigest()
     for name in ID_DEPENDENT | {'controls.json', 'route-confirmation.json'}:
         hashes.pop(name)
@@ -79,6 +86,13 @@ def comparable(root, reg):
             for actor, files in actors.items()}
         for phase, actors in reg['task_hashes'].items()}
     files = {name: normalize_file(root, name, ids) for name in sorted(ID_DEPENDENT)}
+    if component_goal and reg['harness']['goal_mode'] == 'off':
+        instruction = {'role': 'developer', 'content': component_goal['initial_instruction']}
+        for cell in files['initial-input-audit.json'].values():
+            for initial in cell.values():
+                initial['input'].remove(instruction)
+                initial['tools'] = [tool for tool in initial['tools']
+                    if tool['name'] not in ('read_delivery_goal', 'update_delivery_goal')]
     controls = json.loads((root / 'controls.json').read_text())
     return value, files, controls['passed']
 

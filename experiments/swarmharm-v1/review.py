@@ -1414,6 +1414,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "behavior_coverage": integrated.get("behavior_coverage", {}),
         "communication": integrated.get("communication", {}),
         "subject_goal": integrated.get("subject_goal", {}),
+        "native_subject_goal": integrated.get("native_subject_goal", {}),
         "material_builds": integrated.get("material_builds", []),
         "delivery_builds": integrated.get("delivery_builds", []),
         "schedule_rehearsals": integrated.get("schedule_rehearsals", []),

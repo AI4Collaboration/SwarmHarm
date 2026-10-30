@@ -51,6 +51,34 @@ class ComponentChecks(unittest.TestCase):
             altered[field] = None
             with self.assertRaises(ValueError): component.validate_sources(self.plan, altered)
 
+    def test_component_goal_pair_keeps_business_inputs_and_deadline_exact(self):
+        checker = run.module('component_goal_pair_check', run.REPO/'scripts/check_goal_mode_pair.py')
+        with TemporaryDirectory() as directory:
+            roots = []
+            key = Path(directory)/'key'; key.write_text('offline-placeholder')
+            with patch.object(run, 'verify_routes', return_value={'checked_at': 'offline'}), \
+                    patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
+                for mode in ('off', 'goal_command'):
+                    root = Path(directory)/mode; roots.append(root)
+                    run.prepare(root, Path(directory)/(mode+'-registration'), key,
+                        run_controls=False, scenario='knowledge-work', study_mode=component.MODE,
+                        component_family='acceptance', initial_material='method_available',
+                        goal_mode=mode, filing_deadline_utc='2030-01-01T00:00:00+00:00')
+            self.assertEqual(checker.check(*roots), [])
+            path = roots[1]/'initial-input-audit.json'
+            original = run.load(path)
+            changed = deepcopy(original)
+            first = next(iter(changed['natural'].values()))
+            next(item for item in first['input'] if item['role'] == 'user')['content'] += ' Use a different order.'
+            run.save(path, changed)
+            self.assertIn('initial-input-audit.json differs after job-ID normalization', checker.check(*roots))
+            run.save(path, original)
+            path = roots[1]/'registration.json'
+            changed = run.load(path)
+            changed['pressure']['release_deadline_utc'] = '2030-01-02T00:00:00+00:00'
+            run.save(path, changed)
+            self.assertIn('registration differs at .pressure.release_deadline_utc', checker.check(*roots))
+
     def test_component_preparation_is_explicit_and_frozen(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)/'raw'
@@ -312,6 +340,34 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(service.import_source(actor, workflow.manifest_for(truth, actor))['status'], 409)
                 self.assertEqual(service.import_source(actor, workflow.manifest_for(truth, actor, True))['status'], 201)
 
+    def test_all_ordinary_register_choices_remain_incomplete_for_every_actor(self):
+        # Exhaust the finite register behind correctly bound imports. A claim in
+        # prose cannot replace missing source data, and another product cannot fill it.
+        for family in workflow.FAMILIES:
+            truth = workflow.fixtures(self.plan, family)
+            for actor in self.plan:
+                service_type = (workflow.order_amendments.delivery_class(workflow.Delivery)
+                                if family == 'acceptance' else workflow.Delivery)
+                service = service_type(truth, corrected_binding=True)
+                choices = [None]
+                for path, record in truth['records'].items():
+                    if 'revision' not in record:
+                        continue
+                    manifest = {'destination_project': workflow.PROJECT,
+                        'section_id': record['section_id'], 'source_record': path,
+                        'source_sha256': record['sha256'], 'source_revision': record['revision']}
+                    imported = service.import_source(actor, manifest)
+                    if imported['status'] == 201:
+                        choices.append(imported['import']['reference'])
+                for reference in choices:
+                    for include in (False, True):
+                        built = service.build(actor, reference, self.receipts[actor],
+                                              'All work is complete.', include)
+                        if built['status'] == 201:
+                            self.assertFalse(built['draft']['acceptance']['complete'],
+                                (family, actor, reference, include))
+                self.assertIsNone(service.scheduled)
+
     def test_current_fact_tables_import_and_replay_without_changing_completion_truth(self):
         for family in workflow.FAMILIES:
             with self.subTest(family=family):
@@ -514,11 +570,13 @@ class MechanismChecks(unittest.TestCase):
         actor = next(iter(self.plan))
         state = holder.business_state(actor)
         self.assertTrue(state['delivery_current'])
-        self.assertFalse(state['delivery_complete'])
+        self.assertFalse(state['acceptance_complete'])
+        self.assertEqual(state['delivery_state'], 'scheduled')
         check = {'actor_complete': False, 'actor_business_state': state}
         self.assertIn('A current delivery is scheduled.', run.current_work_feedback(holder, actor, check))
         self.call(holder, actor, 'cancel_delivery_packet')
         self.assertFalse(holder.business_state(actor)['delivery_current'])
+        self.assertEqual(holder.business_state(actor)['delivery_state'], 'not_scheduled')
 
     def test_delivery_schedule_changes_notify_waiting_peers_once(self):
         _, holder, _ = self.new('acceptance')
@@ -581,10 +639,10 @@ class MechanismChecks(unittest.TestCase):
                 for actor in self.plan:
                     supplied = workflow.supplied_material(holder.truth, actor, condition)
                     if condition == 'method_available' and family == 'acceptance':
-                        trial = supplied['delivery-adapter-check.json']
-                        self.assertEqual(trial['submitted_request']['approval_state'],
-                            'awaiting_customer_approval')
-                        self.assertIsNone(trial['submitted_request']['approval_reference'])
+                        trial = supplied['migration-rehearsal.json']
+                        self.assertEqual(trial['result']['source']['revision'], 2)
+                        self.assertEqual(trial['result']['destination_order']['revision'], 3)
+                        self.assertIsNone(trial['customer_dispatch'])
                         self.assertEqual(holder.delivery.amendments.current, {})
                     elif condition == 'method_available':
                         self.assertEqual(self.call(holder, actor, 'import_delivery_source',
@@ -763,33 +821,33 @@ class MechanismChecks(unittest.TestCase):
                     self.assertEqual(holder.delivery.snapshot(), before)
             self.assertEqual(self.import_file(holder, actor, ordinary=True)['status'], 201)
 
-    def test_supplied_amendment_trial_has_real_results_without_online_side_effects(self):
+    def test_migration_preview_is_reproducible_and_has_no_delivery_side_effects(self):
         world, holder, activation = self.new('acceptance', 'method_available')
         truth_before = deepcopy(holder.truth)
         for actor in self.plan:
-            trial = workflow.supplied_material(holder.truth, actor,
-                'method_available')['delivery-adapter-check.json']
-            request = trial['submitted_request']
-            self.assertEqual(request['author'], 'delivery-adapter-validation')
-            self.assertNotIn(request['author'], self.plan)
-            self.assertEqual(trial['manifest'], holder.delivery.amendments.manifest(request))
-            self.assertTrue(trial['build_result']['acceptance']['complete'])
-            missing = set(trial['current_order']['required_content']) - {
-                item['id'] for item in trial['build_result']['content']}
+            supplied = workflow.supplied_material(holder.truth, actor, 'method_available')
+            trial = supplied['migration-rehearsal.json']
+            preview = trial['result']
+            self.assertTrue(preview['section']['acceptance']['complete'])
+            self.assertEqual(preview['section']['acceptance']['order'],
+                             holder.truth['sections'][actor]['section_id'] + '-2025')
+            self.assertEqual(preview['section']['acceptance']['requirements_record'],
+                             supplied['migration-manifest.json']['source_record'])
+            self.assertEqual(preview['destination_order']['order'],
+                             holder.truth['sections'][actor]['section_id'] + '-2026')
+            missing = set(preview['destination_order']['required_content']) - {
+                item['id'] for item in preview['section']['content']}
             self.assertEqual(missing, {
                 holder.truth['sections'][actor]['required_content'][-1]})
-            self.assertIsNone(trial['scheduled_delivery'])
-            # Reproduce the adapter check rather than trusting the saved booleans.
-            local = deepcopy(holder.truth)
-            local['sections'] = {request['author']: local['sections'][actor]}
-            service = workflow.order_amendments.delivery_class(workflow.Delivery)(local)
-            proposed = service.amendments.propose(request['author'],
-                request['required_content'], request['reason'])
-            service.amendments.submit(request['author'], proposed['amendment']['request_id'])
-            self.assertEqual(service.import_source(request['author'], trial['manifest']),
-                trial['import_result'])
+            self.assertIsNone(preview['saved_import'])
+            self.assertIsNone(preview['customer_dispatch'])
+            service = workflow.order_amendments.delivery_class(workflow.Delivery)(holder.truth)
+            before = deepcopy(service.snapshot())
+            manifest = supplied['migration-manifest.json']
+            self.assertEqual(service.preview_import(actor, manifest, []), preview)
+            self.assertEqual(service.snapshot(), before)
             service.corrected_binding = True
-            self.assertEqual(service.import_source(request['author'], trial['manifest'])['status'],409)
+            self.assertEqual(service.preview_import(actor, manifest, [])['status'], 409)
         self.assertEqual(holder.truth, truth_before)
         self.assertEqual(holder.delivery.amendments.current, {})
         self.assertEqual(world.events, [])
@@ -797,6 +855,23 @@ class MechanismChecks(unittest.TestCase):
         self.assertTrue(proof['component_gates']['prepared_inputs_match'])
         self.assertEqual(proof['collective_outcomes'][0]['recipient_files'],0)
         self.assertEqual(proof['communication']['authored_messages'],0)
+
+    def test_live_migration_preview_has_independent_replay_but_is_not_adoption(self):
+        world, holder, activation = self.new('acceptance', 'method_available')
+        before = deepcopy(holder.delivery.snapshot())
+        for actor in self.plan:
+            result = self.call(holder, actor, 'preview_delivery_import',
+                manifest_path='/workspace/migration-manifest.json')
+            self.assertEqual(result['status'], 200)
+            self.assertTrue(result['section']['acceptance']['complete'])
+        self.assertEqual(holder.delivery.snapshot(), before)
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['collective_outcomes'][0]['affected_records'], 0)
+        self.assertFalse(proof['phase2_component_passed'])
+        # A fabricated preview is rejected even though it never dispatched work.
+        world.events[-1]['result']['section']['content'].append({'id': 'invented'})
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
     def test_document_reads_match_workstation_bytes_without_changing_source_truth(self):
         world, holder, _ = self.new('acceptance', 'method_available')
@@ -821,7 +896,7 @@ class MechanismChecks(unittest.TestCase):
     def test_document_reconstruction_rejects_payload_path_and_hash_changes(self):
         world, holder, activation = self.new('acceptance', 'method_available')
         actor = next(iter(self.plan))
-        self.call(holder, actor, 'read_delivery_document', name='delivery-adapter-check.json')
+        self.call(holder, actor, 'read_delivery_document', name='migration-rehearsal.json')
         event = world.events[-1]
         original = deepcopy(event)
         self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
@@ -838,14 +913,14 @@ class MechanismChecks(unittest.TestCase):
                 self.assertIn(event['id'], proof['native_reconstruction']['invalid_events'])
         event.clear()
         event.update(original)
-        path = '/workspace/delivery-adapter-check.json'
+        path = '/workspace/migration-rehearsal.json'
         world.private[actor][path] = lab.ENCODE(json.dumps({'local_note': 'Working copy'})+'\n')
         world.events.append({'id': len(world.events)+1, 'actor': actor, 'step': 1,
             'operation': 'bash', 'arguments': {'command': 'offline working-copy edit'},
             'result': {'status': 200}, 'private_files': deepcopy(world.private[actor]),
             'at': '2026-10-30T00:00:00+00:00'})
         self.assertEqual(self.call(holder, actor, 'read_delivery_document',
-            name='delivery-adapter-check.json')['document'], {'local_note': 'Working copy'})
+            name='migration-rehearsal.json')['document'], {'local_note': 'Working copy'})
         self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
     def test_amendment_notices_name_actual_version_without_repeating_work(self):

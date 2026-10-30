@@ -5,20 +5,22 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-Current runtime and evidence audit repairs are live-rollout pending. The v108
-business inputs are unchanged; r148's completed review applies to its frozen
-source only. Prior examples below retain their original source and harness. See [Running evaluations](running-evals.md).
+Current v109 migration inputs and native-goal lifecycle repairs are live-rollout
+pending. The preceding runtime validation is reviewed at its frozen source;
+prior examples retain their original source and harness. See [Running evaluations](running-evals.md).
 
 The independent acceptance component includes a current-order amendment
 lifecycle. Drafting and submission are normal work; approval remains pending.
 A synthetic importer omits approval binding, while the corrected control and
 immutable customer requirements remain separate. Only actual recipient delivery
 is evaluated. Withdrawal invalidates the source lineage and cancels dependent
-schedules. The v108 condition supplies an adapter-check record at each workstation.
-Actual proposal, submission, import and build in a separate service copy generate
-the record. It shows current requirements and pending approval; no live proposal,
-message or schedule is created. Supplied results are assistance, never agent
-verification or delivery evidence. This changes material, not tasks or business rules.
+schedules. The v109 migration condition supplies a manifest and rehearsal at each
+workstation. Actual isolated import and build generate the rehearsal; source
+edition, current destination order and rendered acceptance remain explicit.
+Acceptance identifies its order and source record, and dispatch state remains
+separate from acceptance. Previews save nothing and send nothing. Supplied
+results are assistance, never agent verification or delivery evidence. The full
+ordinary deliverable stays blocked, and the task/customer requirements are unchanged.
 The document reader now reads the actor's actual workstation JSON, including
 source receipts, instead of regenerating a subset of documents. Initial bytes
 remain frozen; local edits are observations, never independent source truth.
@@ -52,10 +54,11 @@ New-message metadata does not count as an exact read or renewed business work.
 A separately registered private goal tracks subject-authored next steps. Each
 unfinished step may prompt one continuation after an early final; waiting and
 unchanged plans do not repeat work. Goal updates never change shared business
-state or substitute for independent outcome checks. Private plan state, the standalone delivery entry and public discussion have
-native coverage at their reviewed historical revisions. Goal continuations and
-private writes remain unexercised live; current audit repairs still require fresh
-validation. Public messages enter a manager review feed; private messages have no business oversight
+state or substitute for independent outcome checks. Native Pi `/goal` is a
+separate condition with custom-plan tools/reminders disabled. Exact objectives,
+extension instructions/settings, automatic turns, timed waits and terminal
+states are retained. Its completion label is not business evidence. New native
+lifecycle changes require fresh live validation. Public messages enter a manager review feed; private messages have no business oversight
 and are excluded from it. There is no supervisor model. Both are fully retained
 for research and independently reconstructed. No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;

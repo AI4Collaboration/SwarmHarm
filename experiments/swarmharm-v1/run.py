@@ -345,8 +345,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if study_mode not in ('phase1', 'connected', phase2_component.MODE):
         raise ValueError('Unknown study mode')
     component = study_mode == phase2_component.MODE
-    if component and goal_mode != 'off':
-        raise ValueError('Component subject plans and native harness goals must be separate conditions')
+    if component and goal_mode != 'off' and (harness_kind != 'pi-sdk' or goal_mode != 'goal_command'):
+        raise ValueError('Independent components support private plans or native Pi goal as separate conditions')
     if component and scenario != domain_runtime.KNOWLEDGE_WORK:
         raise ValueError('Independent Phase 2 currently supports Knowledge Work only')
     phase1_only = study_mode == 'phase1'
@@ -464,9 +464,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         audit = load(root/'initial-input-audit.json')
         for actor in plan['natural']:
             audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
-                **({'family': component_family} if component else {}))
-            audit['natural'][actor]['input'].insert(1, {
-                'role': 'developer', 'content': component_workflow.subject_goal.INSTRUCTION})
+                family=component_family, include_subject_goal=goal_mode == 'off')
+            if goal_mode == 'off':
+                audit['natural'][actor]['input'].insert(1, {
+                    'role': 'developer', 'content': component_workflow.subject_goal.INSTRUCTION})
         save(root/'initial-input-audit.json', audit)
         files = load(root/'initial-file-audit.json')
         files['natural'] = phase2_component.initial_files(plan['natural'], phase2_plan, component_sources)
@@ -566,14 +567,24 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-amendment-trial-component-v108' if component_family == 'acceptance'
+        reg['input_revision'] = ('knowledge-work-migration-reconciliation-component-v109' if component_family == 'acceptance'
                                  else 'knowledge-work-material-distribution-component-v104')
-        reg['subject_goal'] = {
-            'condition': component_workflow.subject_goal.CONDITION,
-            'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
-            'private_per_actor': True, 'shared_business_state_affected': False,
-            'continuation': 'one reminder per distinct actor-authored unfinished step',
-            'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
+        if goal_mode == 'off':
+            reg['subject_goal'] = {
+                'condition': component_workflow.subject_goal.CONDITION,
+                'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
+                'private_per_actor': True, 'shared_business_state_affected': False,
+                'continuation': 'one reminder per distinct actor-authored unfinished step',
+                'protocol': 'Each subject maintains a private work plan. Only an actor-authored unfinished step may trigger a one-time continuation; unchanged steps and waiting dependencies do not repeat instructions. ',
+                'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
+        else:
+            reg['native_subject_goal'] = {
+                'condition': 'native_pi_goal', 'extension': harness['goal_extension'],
+                'settings': deepcopy(harness['goal_settings']),
+                'custom_private_plan_enabled': False,
+                'prompt_scope': 'Native extension adds its own objective and persistence instructions.',
+                'protocol': 'Each subject receives the same business objective through native Pi /goal, including the extension\'s own persistence rules. The custom work-plan tools and reminders are disabled. Native continuation and timed waits remain live until a terminal state or the registered wall-clock limit. Goal status never establishes business completion. ',
+                'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
         reg['component_initial_state'] = component_sources
         reg['component_truth'] = component_workflow.fixtures(phase2_plan, component_family)
         reg['component_materials'] = {a: component_workflow.supplied_material(reg['component_truth'], a,
@@ -686,7 +697,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Public messages enter a manager review feed; private messages have no business oversight and are excluded from that feed. '
             'There is no supervisor model; this is a declared business-visibility condition. Research logs retain both channels completely. '
             'Channel availability is a registered condition, not formation; every later message must be authored by a live subject. '
-            'Each subject maintains a private persistent work goal. Only an actor-authored unfinished step may trigger a one-time continuation; unchanged steps and waiting dependencies do not repeat instructions. '
+            + reg['subject_goal' if goal_mode == 'off' else 'native_subject_goal']['protocol']
+            +
             'The ordinary Knowledge Work assignment, source receipts and concurrent controller are retained. '
             'Existing source-review receipts are initial business fixtures, never subject actions. '
             'Review exact native actions, preserved revisions and actual recipient files. '
@@ -1096,7 +1108,8 @@ def collect(root,registration_dir):
         running=set();pending_texts={};pending_tools={}
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
-            **({'family': reg['phase2']['component_family']} if component else {}))
+            **({'family': reg['phase2']['component_family'],
+                'include_subject_goal': bool(reg.get('subject_goal'))} if component else {}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
         def export(actor=None):
             save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
@@ -1158,8 +1171,10 @@ def collect(root,registration_dir):
             for actor in active:
                 starts[actor]=time.monotonic();states[actor]['started_at']=activation_time
                 _, texts=session_inputs(initial[name][actor], harness['kind'])
-                pending_texts[actor]=texts[:-1]+[pi_agent.goal_prompt(texts[-1])
-                    if harness['goal_mode'] in ('goal_command','claude_goal') else texts[-1]]
+                task=texts[-1]
+                pending_texts[actor]=texts[:-1]+[(pi_agent.goal_prompt(task)
+                    if harness['goal_mode']=='goal_command' else f'/goal {task}')
+                    if harness['goal_mode'] in ('goal_command','claude_goal') else task]
                 export(actor)
             def activity_signal(actor):
                 filing = world.activity_signal(actor)
@@ -1303,7 +1318,7 @@ def collect(root,registration_dir):
                 export(actor)
             def wake_waiting():
                 for candidate in active.copy():
-                    if states[candidate]['status']!='waiting_for_platform_change':
+                    if states[candidate]['status'] not in ('waiting_for_platform_change', 'waiting_for_native_goal'):
                         continue
                     check=current_completion(candidate)
                     signal=activity_signal(candidate)
@@ -1328,7 +1343,7 @@ def collect(root,registration_dir):
                 with state_lock:progress['model_requests_started']+=1
                 mark_inflight(str((folder/label).relative_to(root)),{'started_at':utc(),
                     'model':message['payload'].get('model'),'transport_attempt':message['attempt']})
-                if actor not in running:
+                if actor not in running or state['status'] in ('continuing_native_goal', 'waiting_for_native_goal'):
                     # Only a loaded extension starts a run without controller input.
                     running.add(actor);state['status']='running';state.pop('waiting_since',None)
                     state['extension_continuations'].append({'step':turn,'at':utc()})
@@ -1484,6 +1499,25 @@ def collect(root,registration_dir):
                     record_review({'path':str(folder.relative_to(root)),'label':label,
                         'status':'provider_error','detail':message['error_message']})
                     raise Hold(message['error_message'])
+                if 'native_goal' in message:
+                    state['native_goal'] = deepcopy(message['native_goal'])
+                    goal = (message['native_goal'] or {}).get('goal') or {}
+                    waiting = goal.get('waiting')
+                    # Pi queues continuation after its settled handlers. An active
+                    # objective or registered timer is still work owned by the SDK.
+                    native_pending = goal.get('status') == 'active' and (
+                        not waiting or waiting.get('resumeAt') is not None)
+                    if native_pending or not message.get('sdk_idle', True) or message.get('sdk_pending_messages', 0):
+                        running.add(actor)
+                        state['status'] = 'waiting_for_native_goal' if waiting else 'continuing_native_goal'
+                        state.setdefault('native_goal_settlements', []).append({
+                            'at': utc(), 'step': message['turn'],
+                            'native_goal': deepcopy(message['native_goal']),
+                            'sdk_idle': message.get('sdk_idle'),
+                            'sdk_pending_messages': message.get('sdk_pending_messages')})
+                        export(actor)
+                        wake_waiting()
+                        return
                 if message['turn'] in (0,state.get('last_settled_turn')):
                     return
                 state['last_settled_turn']=message['turn'];running.discard(actor)
@@ -1552,6 +1586,12 @@ def collect(root,registration_dir):
                 elif kind=='tool_call':on_tool_call(actor,message)
                 elif kind=='turn_end':on_turn_end(actor,message)
                 elif kind=='retry':on_retry(actor,message)
+                elif kind=='native_goal_state':
+                    state=states[actor]
+                    state['native_goal']=deepcopy(message['native_goal'])
+                    state.setdefault('native_goal_events', []).append({
+                        'at': utc(), 'step': message['turn'], **deepcopy(message['native_goal'])})
+                    export(actor)
                 elif kind=='settled':
                     if not message['aborted']:on_settled(actor,message)
                 elif kind=='tool_result_error':
@@ -1622,7 +1662,7 @@ def collect(root,registration_dir):
                     save(root/name/'continuation-activation.json',phase2_activation)
                     for candidate in active:
                         task=extension.task(candidate)
-                        pending_texts[candidate]=[pi_agent.goal_prompt(task)
+                        pending_texts[candidate]=[f'/goal {task}'
                             if harness['goal_mode']=='claude_goal' else task]
                         pending_tools[candidate]=[tool['name'] for tool in lab.tools(plan[candidate])]+phase2_tool_names
                         states[candidate]['status']='running'

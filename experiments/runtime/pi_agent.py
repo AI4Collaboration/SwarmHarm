@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import queue
 from queue import Empty
+import shlex
 import shutil
 import subprocess
 import threading
@@ -25,6 +26,8 @@ PREAMBLE = (
 WORKSPACE = '/workspace'
 GOAL_MODES = ('off', 'goal_command')
 GOAL_TOOLS = ['goal_complete', 'goal_blocked', 'goal_wait']
+GOAL_SETTINGS = {'rpc': {'enabled': False},
+                 'continuationLimits': {'automaticTurns': 25, 'noProgressTurns': 3}}
 # Pi checks requests against this locally; the provider enforces the real model limit.
 CONTEXT_WINDOW = 1_000_000
 # Pi defaults that would add unregistered model calls or rewrite history are off.
@@ -89,6 +92,8 @@ def harness_registration(goal_mode):
         'compat': COMPAT,
         'goal_mode': goal_mode,
         'goal_extension': (f'{GOAL_PACKAGE}@{GOAL_VERSION}' if goal_mode != 'off' else None),
+        'goal_settings': GOAL_SETTINGS if goal_mode != 'off' else None,
+        'goal_state_is_business_evidence': False,
         'extension_tools': GOAL_TOOLS if goal_mode != 'off' else [],
         # pi-goal adds its own objective contract and persistence rules to subject input.
         'natural_prompt_contract_covers_all_subject_input': goal_mode == 'off',
@@ -99,7 +104,8 @@ def harness_registration(goal_mode):
 
 
 def goal_prompt(task):
-    return f'/goal {task}'
+    # pi-goal parses command arguments; quote the objective so punctuation survives.
+    return '/goal ' + shlex.quote(task)
 
 
 class PiAgent:
@@ -111,6 +117,10 @@ class PiAgent:
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
+        if goal_mode != 'off':
+            goal_dir = self.folder / 'agent'
+            goal_dir.mkdir(exist_ok=True)
+            (goal_dir / 'pi-goal.json').write_text(json.dumps(GOAL_SETTINGS) + '\n')
         env = {
             'PATH': os.environ.get('PATH', ''),
             'HOME': str(self.folder / 'home'),
@@ -153,7 +163,11 @@ class PiAgent:
         for line in self.process.stdout:
             line = line.strip()
             if line:
-                self.events.put((self.actor, json.loads(line)))
+                try:
+                    message = json.loads(line)
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    message = {'type': 'fatal', 'message': 'Pi bridge emitted incomplete or invalid JSON.'}
+                self.events.put((self.actor, message))
         self.events.put((self.actor, {'type': 'exited', 'returncode': self.process.wait()}))
 
     def send(self, message):
