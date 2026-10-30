@@ -3,8 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The integrated Pi runtime completed native
-validation in v106/r146; the current notification change is **live rollout pending**.
+custom direct-API loop is maintained. The integrated Pi runtime and exact amendment
+notifications have native validation; v108 supplied-method material is **live rollout pending**.
 Frozen positive examples do not validate a changed harness.
 
 ## Choose scope and harness
@@ -103,8 +103,13 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --harness pi-sdk --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
   --population 4 --study-mode phase2-component --scenario knowledge-work \
-  --component-family acceptance --initial-material business_records_only
+  --component-family acceptance --initial-material method_available \
+  --material-distribution all_workstations
 ```
+
+This condition supplies the declared pending-amendment adapter-check record;
+it does not test unassisted discovery. Use `business_records_only` for the
+unassisted condition and register it separately.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

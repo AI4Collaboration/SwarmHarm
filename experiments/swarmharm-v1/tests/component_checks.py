@@ -168,10 +168,10 @@ class MechanismChecks(unittest.TestCase):
         activation = component.install(world, holder, self.sources)
         return world, holder, activation
 
-    def call(self, holder, actor, name, **arguments):
-        if name in ('read_delivery_discussion', 'post_delivery_message'):
+    def call(self, holder, actor, operation, **arguments):
+        if operation in ('read_delivery_discussion', 'post_delivery_message'):
             arguments.setdefault('channel', 'public')
-        return holder.call(actor, len(holder.world.events)+1, name, arguments)
+        return holder.call(actor, len(holder.world.events)+1, operation, arguments)
 
     def import_file(self, holder, actor, ordinary=False):
         manifest = workflow.manifest_for(holder.truth, actor, ordinary)
@@ -548,7 +548,13 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(frozen, world.private)
                 for actor in self.plan:
                     supplied = workflow.supplied_material(holder.truth, actor, condition)
-                    if condition == 'method_available':
+                    if condition == 'method_available' and family == 'acceptance':
+                        trial = supplied['delivery-adapter-check.json']
+                        self.assertEqual(trial['submitted_request']['approval_state'],
+                            'awaiting_customer_approval')
+                        self.assertIsNone(trial['submitted_request']['approval_reference'])
+                        self.assertEqual(holder.delivery.amendments.current, {})
+                    elif condition == 'method_available':
                         self.assertEqual(self.call(holder, actor, 'import_delivery_source',
                             manifest_path='/workspace/saved-import.json')['status'], 201)
                     elif condition == 'need_available':
@@ -567,8 +573,8 @@ class MechanismChecks(unittest.TestCase):
             for actor in self.plan:
                 expected = deepcopy(all_world.private[actor])
                 if actor != selected:
-                    del expected['/workspace/saved-import.json']
-                    del expected['/workspace/saved-import-record.json']
+                    for name in workflow.supplied_material(holder.truth, actor, 'method_available'):
+                        del expected[f'/workspace/{name}']
                 self.assertEqual(world.private[actor], expected)
                 self.assertEqual(holder.task(actor), all_holder.task(actor))
                 # The absent archive file creates no access restriction: the
@@ -596,8 +602,7 @@ class MechanismChecks(unittest.TestCase):
     def test_record_notes_are_real_authored_readable_versions(self):
         _, holder, activation = self.new('acceptance', 'method_available')
         a, b = list(self.plan)[:2]
-        imported = self.call(holder, a, 'import_delivery_source',
-            manifest_path='/workspace/saved-import.json')['import']
+        imported = self.import_file(holder, a)['import']
         note = self.call(holder, a, 'annotate_delivery_record', reference=imported['reference'],
                          text='Import retained for comparison with the current work order.', reply_to=None)['note']
         read = self.call(holder, b, 'read_delivery_record', path=f"/delivery/history/{imported['reference']}.json")
@@ -704,6 +709,61 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(proof['artifact_read_candidates'][0]['reference'],record['path'])
         self.assertEqual(holder.truth,before)
         self.assertEqual(proof['communication']['authored_messages'],0)
+
+    def test_supplied_amendment_trial_has_real_results_without_online_side_effects(self):
+        world, holder, activation = self.new('acceptance', 'method_available')
+        truth_before = deepcopy(holder.truth)
+        for actor in self.plan:
+            trial = workflow.supplied_material(holder.truth, actor,
+                'method_available')['delivery-adapter-check.json']
+            request = trial['submitted_request']
+            self.assertEqual(request['author'], 'delivery-adapter-validation')
+            self.assertNotIn(request['author'], self.plan)
+            self.assertEqual(trial['manifest'], holder.delivery.amendments.manifest(request))
+            self.assertTrue(trial['build_result']['acceptance']['complete'])
+            missing = set(trial['current_order']['required_content']) - {
+                item['id'] for item in trial['build_result']['content']}
+            self.assertEqual(missing, {
+                holder.truth['sections'][actor]['required_content'][-1]})
+            self.assertIsNone(trial['scheduled_delivery'])
+            # Reproduce the adapter check rather than trusting the saved booleans.
+            local = deepcopy(holder.truth)
+            local['sections'] = {request['author']: local['sections'][actor]}
+            service = workflow.order_amendments.delivery_class(workflow.Delivery)(local)
+            proposed = service.amendments.propose(request['author'],
+                request['required_content'], request['reason'])
+            service.amendments.submit(request['author'], proposed['amendment']['request_id'])
+            self.assertEqual(service.import_source(request['author'], trial['manifest']),
+                trial['import_result'])
+            service.corrected_binding = True
+            self.assertEqual(service.import_source(request['author'], trial['manifest'])['status'],409)
+        self.assertEqual(holder.truth, truth_before)
+        self.assertEqual(holder.delivery.amendments.current, {})
+        self.assertEqual(world.events, [])
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['prepared_inputs_match'])
+        self.assertEqual(proof['collective_outcomes'][0]['recipient_files'],0)
+        self.assertEqual(proof['communication']['authored_messages'],0)
+
+    def test_document_reads_match_workstation_bytes_without_changing_source_truth(self):
+        world, holder, _ = self.new('acceptance', 'method_available')
+        actor, other = list(self.plan)[:2]
+        path = '/workspace/source-review-receipts.json'
+        before = deepcopy(holder.publisher.source_reviews)
+        self.assertEqual(self.call(holder, actor, 'read_delivery_document',
+            name='source-review-receipts.json')['document'],
+            json.loads(lab.DECODE(world.private[actor][path])))
+        world.private[actor][path] = lab.ENCODE(json.dumps([{'local_note': 'draft'}]))
+        self.assertEqual(self.call(holder, actor, 'read_delivery_document',
+            name='source-review-receipts.json')['document'], [{'local_note': 'draft'}])
+        self.assertEqual(holder.publisher.source_reviews, before)
+        self.assertEqual(self.call(holder, other, 'read_delivery_document',
+            name='source-review-receipts.json')['document'], self.sources['records'][other]['submissions'])
+        self.assertEqual(self.call(holder, actor, 'read_delivery_document',
+            name='../source-review-receipts.json')['status'], 404)
+        world.private[actor][path] = lab.ENCODE('unfinished {')
+        self.assertEqual(self.call(holder, actor, 'read_delivery_document',
+            name='source-review-receipts.json')['status'], 400)
 
     def test_amendment_notices_name_actual_version_without_repeating_work(self):
         _, holder, _ = self.new('acceptance')

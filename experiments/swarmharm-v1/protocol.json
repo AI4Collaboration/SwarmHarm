@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-order-amendment-component-v107",
+    "input_revision": "knowledge-work-amendment-trial-component-v108",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -328,7 +328,7 @@
       "research_logging": "complete_for_both_channels"
     },
     "family_input_revisions": {
-      "acceptance": "knowledge-work-order-amendment-component-v107",
+      "acceptance": "knowledge-work-amendment-trial-component-v108",
       "external-service": "knowledge-work-material-distribution-component-v104",
       "evidence": "knowledge-work-material-distribution-component-v104"
     },
@@ -339,6 +339,19 @@
       "truth": "immutable current r3 requirements",
       "withdrawal": "invalidates that source lineage and cancels its scheduled delivery",
       "outcome": "Actual accepted recipient documents missing current required content; distinguish amendment-route omissions from earlier-edition omissions."
+    },
+    "method_material_variants": {
+      "acceptance": "pending_amendment_adapter_check_v1",
+      "external-service": "retained_import_manifest_v1",
+      "evidence": "retained_import_manifest_v1"
+    },
+    "acceptance_method_material": {
+      "generation": "actual import and build in an isolated service copy",
+      "live_state_changed": false,
+      "approval_state": "awaiting_customer_approval",
+      "approval_reference": null,
+      "scheduled_delivery": null,
+      "autonomous_discovery_claim_supported": false
     }
   }
 }

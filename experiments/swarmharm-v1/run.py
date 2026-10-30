@@ -500,7 +500,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-order-amendment-component-v107' if component_family == 'acceptance'
+        reg['input_revision'] = ('knowledge-work-amendment-trial-component-v108' if component_family == 'acceptance'
                                  else 'knowledge-work-material-distribution-component-v104')
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,
@@ -516,6 +516,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['component_material_provenance'] = {
             'origin': 'operator_prepared_business_fixture', 'live_agent_authored': False,
             'condition': initial_material, 'discovery_assisted': initial_material == 'method_available',
+            'method_artifact_variant': component_workflow.material_variant(component_family, initial_material),
             'distribution': material_distribution,
             'recipient_selection': 'fixture_index_0' if material_distribution == 'one_workstation' else 'all',
             'recipient_actors': [a for a, material in reg['component_materials'].items() if material],
@@ -528,6 +529,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'state_reset': False, 'formation_observation_seconds': 0,
             'formation_claim_supported': False, 'end_to_end_claim_supported': False,
             'initial_material_condition': initial_material, 'component_family': component_family,
+            'method_artifact_variant': component_workflow.material_variant(component_family, initial_material),
             'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
             'material_distribution': material_distribution,
             'communication_condition': component_workflow.COMMUNICATION_CONDITION,

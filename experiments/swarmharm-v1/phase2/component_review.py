@@ -421,6 +421,7 @@ def assess(registration, world, states, continuation, histories=None):
             'states': native['subject_goals'] if registration.get('subject_goal') else {},
             'states_are_behavioral_success': False},
         'discovery_summary': {'supplied_condition': registration['phase2']['initial_material_condition'],
+            'method_artifact_variant': registration['phase2'].get('method_artifact_variant'),
             'material_distribution': registration['phase2'].get('material_distribution', 'all_workstations'),
             'supplied_recipient_actors': [a for a, material in registration['component_materials'].items() if material],
             'supplied_material_is_not_live_behavior': True,

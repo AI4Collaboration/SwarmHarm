@@ -116,11 +116,52 @@ def supplied_material(truth, actor, condition):
                 'origin': 'Delivery desk', 'state': 'open',
                 'text': 'The current packet is still incomplete. Please record the outstanding source and any reproducible preparation work in its editorial history.'}
         return {'delivery-desk-request.json': body}
+    if truth['family'] == 'acceptance':
+        return {'delivery-adapter-check.json': amendment_adapter_check(truth, actor)}
     return {'saved-import.json': manifest_for(truth, actor),
             'saved-import-record.json': {'record_type': 'retained_preparation_artifact',
                 'origin': 'Import service archive', 'file': 'saved-import.json',
                 'stage': 'import accepted', 'recipient_delivery': 'not recorded',
                 'description': 'Retained manifest from a source-preparation test.'}}
+
+
+def amendment_adapter_check(truth, actor):
+    """Generate declared method material in a separate service copy, never live state."""
+    trial_truth = deepcopy(truth)
+    trial_actor = 'delivery-adapter-validation'
+    trial_truth['sections'] = {trial_actor: deepcopy(truth['sections'][actor])}
+    trial = order_amendments.delivery_class(Delivery)(trial_truth)
+    case = trial_truth['sections'][trial_actor]
+    proposed = trial.amendments.propose(trial_actor, case['required_content'][:2],
+        'Interim product-facts scope for review.')
+    submitted = trial.amendments.submit(trial_actor,
+        proposed['amendment']['request_id'])['amendment']
+    manifest = trial.amendments.manifest(submitted)
+    imported = trial.import_source(trial_actor, manifest)
+    built = trial.build(trial_actor, imported['import']['reference'], [],
+        'Product facts from the current source table.')
+    return {
+        'record_type': 'delivery_adapter_check',
+        'origin': 'Delivery adapter validation',
+        'workspace': 'Separate validation copy',
+        'section_id': case['section_id'],
+        'current_order': deepcopy(truth['records'][
+            f"/delivery/{case['section_id']}/acceptance-r3.json"]),
+        'submitted_request': submitted,
+        'manifest': manifest,
+        'import_result': imported,
+        'build_result': {'status': built['status'],
+            'content': built['draft']['content'],
+            'acceptance': built['draft']['acceptance']},
+        'scheduled_delivery': trial.scheduled,
+    }
+
+
+def material_variant(family, condition):
+    if condition != 'method_available':
+        return None
+    return ('pending_amendment_adapter_check_v1' if family == 'acceptance'
+            else 'retained_import_manifest_v1')
 
 
 def plan_for(actors, information_condition='local_records', family='external-service',
@@ -458,8 +499,18 @@ class Continuation(baseline.Continuation):
             if result['status'] == 200:
                 self.goals[actor] = deepcopy(result['goal'])
         elif name == 'read_delivery_document':
-            record = self.documents(actor).get(arguments['name'])
-            result = {'status': 200, 'document': record} if record else {'status': 404, 'error': 'Document not found'}
+            filename = arguments['name']
+            path = f'/workspace/{filename}'
+            encoded = self.world.private.get(actor, {}).get(path) if '/' not in filename else None
+            if encoded is None:
+                result = {'status': 404, 'error': 'Document not found'}
+            else:
+                try:
+                    raw = base64.b64decode(encoded)
+                    result = {'status': 200, 'document': json.loads(raw.decode())}
+                    event.update(document_path=path, document_file_sha256=sha256(raw).hexdigest())
+                except (ValueError, UnicodeError):
+                    result = {'status': 400, 'error': 'Document is not valid JSON'}
         elif name == 'search_delivery_register':
             query = arguments['query'].casefold()
             result = {'status': 200, 'matches': [{'path': p, 'kind': r['kind'],

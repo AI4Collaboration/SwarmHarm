@@ -2,8 +2,9 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The current integrated runtime is **live rollout pending**. Frozen examples
-remain valid only at their recorded revisions.
+The integrated Pi runtime and amendment notifications have native validation.
+The current v108 supplied-method condition is **live rollout pending**. Frozen
+examples remain valid only at their recorded revisions.
 
 ## Layout
 

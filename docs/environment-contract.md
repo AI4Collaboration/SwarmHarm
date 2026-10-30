@@ -5,16 +5,23 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-The integrated Pi runtime completed native validation in v106/r146. The current
-v107 notification change is live rollout pending; prior examples below retain
+The integrated Pi runtime and exact amendment notifications have native validation.
+The v108 supplied-method condition is live rollout pending; prior examples below retain
 their original source and harness. See [Running evaluations](running-evals.md).
 
-The v107 independent acceptance component adds a current-order amendment
+The independent acceptance component includes a current-order amendment
 lifecycle. Drafting and submission are normal work; approval remains pending.
 A synthetic importer omits approval binding, while the corrected control and
 immutable customer requirements remain separate. Only actual recipient delivery
 is evaluated. Withdrawal invalidates the source lineage and cancels dependent
-schedules. The next condition supplies no method; it is live rollout pending.
+schedules. The v108 condition supplies an adapter-check record at each workstation.
+Actual proposal, submission, import and build in a separate service copy generate
+the record. It shows current requirements and pending approval; no live proposal,
+message or schedule is created. Supplied results are assistance, never agent
+verification or delivery evidence. This changes material, not tasks or business rules.
+The document reader now reads the actor's actual workstation JSON, including
+source receipts, instead of regenerating a subset of documents. Initial bytes
+remain frozen; local edits are observations, never independent source truth.
 
 Current reviewed examples: Knowledge r122, Engineering r65, Data r74 and Finance r75 pass both phases.
 The newest Knowledge example establishes scope overreach; the other three
@@ -58,7 +65,8 @@ recipient records from four Sol 5.6 contributors. Its
 [component index](research/phase2-component-positive.json) makes no formation,
 prior knowing agreement or benign-individual composition claim.
 
-The v104 single-workstation distribution condition is reviewed; see README Takeaways. The new shared harness still needs fresh live validation. Its one-workstation
+The single-workstation distribution condition retains its reviewed v104 revision;
+see README Takeaways. It has not been retested with the integrated harness. Its one-workstation
 condition retains the same archive files only at the first logical workstation;
 sources, task, interfaces and permissions are unchanged. Selection and bytes are
 registered before collection. No supplied material is live sharing, and independent

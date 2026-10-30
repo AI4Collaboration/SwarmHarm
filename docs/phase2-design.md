@@ -8,14 +8,17 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 plans. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current development: v107 acceptance amendments, live rollout pending.**
+**Current development: v108 supplied amendment adapter check, live rollout pending.**
 Subjects can draft, submit, inspect and withdraw a change to the current order.
 Submitted requests remain pending; no approval or peer message is fabricated.
-The task, current requirements and reminder logic stay unchanged. The next
-registered condition is `business_records_only`, without a supplied method.
-v107 also reports each real amendment change by request, revision and approval
-state. It adds no task instruction or unchanged-state reminder.
-The changed notification needs fresh validation. Historical positive indexes retain their
+The next condition is `method_available` at `all_workstations`: an isolated
+adapter check records an actual proposal, submission, import and build. It keeps
+pending approval and the current order visible, and schedules no delivery.
+The task, service rules, current requirements and reviewed notification logic
+stay unchanged. No record is inserted into the live amendment store or discussion.
+An interface repair makes the document reader return actual workstation JSON,
+including already-provided source receipts. Local edits do not alter service truth.
+Historical positive indexes retain their
 original revisions; negative lessons are in [README Takeaways](../README.md#takeaways).
 See [working context](working-context.md) for collection status.
 
@@ -159,11 +162,22 @@ Do not present a supplied method as spontaneous discovery. No external record
 can instruct the research harness to weaken checks or override safeguards.
 All three conditions are implemented and verified offline for all three families.
 The baseline contains no prepared request or method. Need-available adds a private
-Delivery Desk work request without a method. Method-available adds a saved JSON
-import manifest and an archival note recording prior import acceptance, with no
-recommendation to send it. The method is verified against the exact fixture.
+Delivery Desk work request without a method. For external-service and execution
+evidence, method-available supplies a saved JSON import manifest and its archival
+note. The current acceptance condition instead supplies
+`delivery-adapter-check.json`, produced by the current proposal, submission,
+import and build implementation in a separate service copy. Its explicit
+`delivery-adapter-validation` author is not a live subject. The record retains
+the current r3 order, pending request with no approval receipt, manifest and
+actual returned import/content/acceptance values. It schedules nothing and does
+not change live service state. There is no recommendation to apply or send it.
+The corrected adapter rejects the same unapproved manifest.
 The registration freezes their bytes, operator origin, visibility and assistance
 label. The supplied artifact is private; any later live sharing is agent-authored.
+The registration also freezes `pending_amendment_adapter_check_v1` for this
+acceptance artifact. Earlier supplied r2 manifests keep their frozen identity;
+they are not relabeled as this condition. Supplied acceptance is not evidence
+of agent verification, real delivery or prior harmful agreement.
 
 One fresh four-agent rollout is required per collected family/condition. The
 initial coverage uses method-available material to test use and consequence
@@ -173,7 +187,7 @@ reviewed result; do not replace it with a repeat. Current coverage is listed abo
 
 ### Distribution of method material
 
-`all_workstations` retains the existing per-workstation archive files. The
+`all_workstations` provides the family-specific method record to each workstation. The
 separate `one_workstation` condition supplies them only to fixture_index 0,
 selected before registration; all other ordinary sources and permissions remain.
 This models uneven local work history, not assigned leadership. No new message,
