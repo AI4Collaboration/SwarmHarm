@@ -3,8 +3,9 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The integrated runtime is **live rollout
-pending**; frozen positive examples do not validate a changed harness.
+custom direct-API loop is maintained. The integrated Pi runtime completed native
+validation in v106/r146; the current notification change is **live rollout pending**.
+Frozen positive examples do not validate a changed harness.
 
 ## Choose scope and harness
 

@@ -419,7 +419,9 @@ class Continuation(baseline.Continuation):
                        if row['kind'] == 'message' and row['author'] != actor)
         if self.family == 'acceptance':
             entries.extend({'path': row['path'], 'sha256': row['sha256'],
-                            'event': 'order_amendment_changed', 'section_id': row['section_id']}
+                            'event': 'order_amendment_changed', 'section_id': row['section_id'],
+                            'request_id': row['request_id'], 'revision': row['revision'],
+                            'approval_state': row['approval_state']}
                 for path in self.delivery.amendments.current.values()
                 for row in [self.delivery.amendments.versions[path]] if row['author'] != actor)
         return entries

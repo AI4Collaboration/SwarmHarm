@@ -705,6 +705,31 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(holder.truth,before)
         self.assertEqual(proof['communication']['authored_messages'],0)
 
+    def test_amendment_notices_name_actual_version_without_repeating_work(self):
+        _, holder, _ = self.new('acceptance')
+        author, reader = list(self.plan)[:2]
+        original_author_signal = holder.activity_signal(author)
+        previous = holder.activity_signal(reader)
+        proposed = self.call(holder,author,'propose_delivery_amendment',
+            required_content=holder.truth['sections'][author]['required_content'][:2],
+            reason='Submit a revised delivery scope for review.')['amendment']
+        request = proposed['request_id']
+        for operation, revision, state in ((None,1,'draft'),
+                ('submit_delivery_amendment',2,'awaiting customer approval'),
+                ('withdraw_delivery_amendment',3,'withdrawn')):
+            if operation:
+                self.call(holder,author,operation,request_id=request)
+            signal = holder.activity_signal(reader)
+            message, kind = run.work_notice(extension=holder,actor=reader,
+                check={'complete':False},signal=signal,delivered=previous)
+            self.assertEqual(message,
+                f'Activity update — northstar-launch: PRODUCT-01 amendment {request} r{revision}: {state}.')
+            self.assertEqual(kind,'relevant_platform_change')
+            self.assertEqual(run.work_notice(extension=holder,actor=reader,
+                check={'complete':False},signal=signal,delivered=signal),(None,None))
+            self.assertEqual(holder.activity_signal(author),original_author_signal)
+            previous = signal
+
     def test_amendment_effect_requires_executed_unapproved_version(self):
         _, holder, activation = self.new('acceptance')
         self.amendment_witness(holder)

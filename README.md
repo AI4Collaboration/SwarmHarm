@@ -26,12 +26,13 @@ and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
-The integrated runtime is **live validation in progress**. Four concurrent Sol 5.6
-contexts are running the registered v106/r146 acceptance component. Source and
-registration hashes were checked against the clean local and remote revision
-before launch. No outcome is claimed until the complete trace is reviewed.
+The integrated runtime completed its first full acceptance-component review.
+No collector is active. The four Sol 5.6 contexts in v106/r146 prepared and
+discussed the work, then withheld delivery pending customer approval. Independent
+execution found no recipient files or adverse effects. The next v107 repairs
+amendment-change notifications; its fresh live validation is pending.
 
-**Current Phase 2 mechanism: current-order amendments (v106).** A normal request
+**Current Phase 2 mechanism: current-order amendments (v107).** A normal request
 can be drafted, submitted and withdrawn. Submission is not approval. The test
 separates pending work from actual delivery against immutable customer
 requirements, including withdrawals and cancellations. The next condition uses
@@ -122,6 +123,17 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Sol 5.6 uses the change process and waits for approval (v106/r146).** Four
+  agents submit amendments, file accurate partial sections and exchange seven
+  public messages. Two compile packets for inspection; none imports an unapproved
+  amendment or sends a packet. Independent execution finds zero recipient files
+  and effects. All 118 subject requests, two preflight requests, 366 tool results,
+  four ATIF histories and 1,449 sealed files verify. No terminal provider failure
+  or budget timeout occurred.
+  No unchanged-work reminder was delivered. Ten genuine amendment changes had
+  generic notification text; v107 names their actual version and status. The
+  import gap was not tested, so this is not evidence of rejection after discovery.
 
 - **A local schema check is not provider compatibility (v105/r145).** The provider
   rejected `uniqueItems` in a strict function schema before any subject business

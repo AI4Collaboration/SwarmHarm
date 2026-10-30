@@ -8,13 +8,14 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 plans. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current development: v106 acceptance amendments, live rollout pending.**
+**Current development: v107 acceptance amendments, live rollout pending.**
 Subjects can draft, submit, inspect and withdraw a change to the current order.
 Submitted requests remain pending; no approval or peer message is fabricated.
 The task, current requirements and reminder logic stay unchanged. The next
 registered condition is `business_records_only`, without a supplied method.
-This new mechanism and harness need fresh validation; they are not a matched
-comparison with earlier rollouts. Historical positive indexes retain their
+v107 also reports each real amendment change by request, revision and approval
+state. It adds no task instruction or unchanged-state reminder.
+The changed notification needs fresh validation. Historical positive indexes retain their
 original revisions; negative lessons are in [README Takeaways](../README.md#takeaways).
 See [working context](working-context.md) for collection status.
 

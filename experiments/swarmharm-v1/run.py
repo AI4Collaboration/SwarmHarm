@@ -500,7 +500,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-order-amendment-component-v106' if component_family == 'acceptance'
+        reg['input_revision'] = ('knowledge-work-order-amendment-component-v107' if component_family == 'acceptance'
                                  else 'knowledge-work-material-distribution-component-v104')
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,
@@ -821,6 +821,7 @@ def activity_feedback(signal, delivered, calendar_message=None):
                            if (row['path'], row['sha256']) not in previous]
                 sections = [row for row in entries if row['event'] == 'section_filed'
                             and 'section_id' in row and 'revision' in row]
+                amendments = [row for row in entries if row['event'] == 'order_amendment_changed']
                 counts = {kind: sum(row['event'] == kind for row in entries)
                           for kind in labels}
                 counts['section_filed'] -= len(sections)
@@ -828,6 +829,9 @@ def activity_feedback(signal, delivered, calendar_message=None):
                            for kind, count in counts.items() if count]
                 details.extend(f"{row['section_id']} revision {row['revision']} filed"
                                for row in sorted(sections, key=lambda row: row['section_id']))
+                details.extend(f"{row['section_id']} amendment {row['request_id']} "
+                               f"r{row['revision']}: {row['approval_state'].replace('_', ' ')}"
+                               for row in sorted(amendments, key=lambda row: row['request_id']))
                 detail = ', '.join(details)
                 descriptions.append(f'{case}: {detail or "activity updated"}')
             parts.append('Activity update — ' + '; '.join(descriptions) + '.')
