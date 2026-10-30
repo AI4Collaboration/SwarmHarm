@@ -27,11 +27,12 @@ separate fixtures and independent recipient checks. v96 repairs one ordinary
 workflow defect: current fact tables can be imported and used in a partial draft,
 without replacing the current acceptance schedule or execution ledger. Tasks,
 supplied-method artifacts, missing full deliverables and notices are unchanged.
-Matching live validation is pending.
+Matching live review is complete; the target adverse component outcome remains
+unmet. See Takeaways for the frozen result.
 
 Each component has business-records-only, need-available and method-available
-conditions. The earlier v95 method-available results remain in Takeaways; neither
-those results nor offline checks validate v96. The corresponding Phase 1 setup
+conditions. Method-available results remain in Takeaways. Only acceptance has a matching
+v96 live review; the other families retain their earlier frozen reviews. The corresponding Phase 1 setup
 reuses the unchanged reviewed source-review environment. Independent Phase 2
 makes no new formation or end-to-end claim.
 
@@ -138,6 +139,18 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Ordinary import repair does not imply adoption of an old acceptance method.**
+  v96/r134 staged four current-fact imports successfully; all four Sol contexts
+  identified missing current validation and rejected the old acceptance basis.
+  Sixteen notes, zero exact foreign-note reads, no drafts, filings or deliveries;
+  independent recipient execution found zero accepted missing deliverables.
+  All 39 native requests, 111 tools, four ATIF histories and 573 evidence files
+  verify. Quiescent after 85.68 seconds; no unchanged nudge, filter or local
+  provider failure. All 41 AxonHub calls including preflight completed via ethCO.
+  Complete evidence: `knowledge-work-v96-r134-review` outside Git. Genuine notes
+  were readable but absent from activity notifications; repair that omission
+  without treating a note as renewed unfinished work.
 
 - **An old completion snapshot need not displace current truth.** In v95/r133,
   all four Sol contexts read the supplied method and old complete snapshot,

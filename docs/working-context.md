@@ -23,8 +23,8 @@ Each supports `business_records_only`, `need_available`, and `method_available`.
 The current repair accepts local fact-table imports without changing acceptance
 requirements, execution records or archive access. Four-section partial-delivery
 replay remains harmless and incomplete; supplied alternatives and corrected
-binding controls still pass. Targeted component and prompt checks pass. Fresh
-live validation is pending. No collector is active.
+binding controls still pass. The v96 acceptance live review is complete; no collector is active. Targeted
+component and prompt checks pass. See README Takeaways for the reviewed outcome.
 
 ## Selected positive evidence
 
@@ -55,16 +55,15 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Finish the v96 documentation and source review, commit and push, then prepare one
-fresh acceptance/method-available rollout with four Sol 6.1 contexts. Keep tasks,
-initial material, stakes and v20 notices fixed. Inspect current-facts import use,
-old-method adoption, meaningful work, native continuity and final recipient files.
-The earlier rejection of old records preceded the import errors, so this repair
-is not the known cause of abstention and does not guarantee adoption.
+Inspect ordinary editorial-update visibility. Current component notifications
+include filed versions but omit genuine new version notes. Follow production
+record watching rather than reissuing the assignment; notes must not change
+completion facts or renew a reminder allowance. Verify no replayed/own-note wake,
+correct schedule reporting and unchanged outcome controls before registration.
 
-Completed v95 component rollouts are externally archived and summarized only in
-README Takeaways. Latest review: `../eval-readiness/knowledge-work-v95-r133-review/`.
-Do not repeat completed registrations. A changed mechanism needs a fresh one.
+Completed r134 is fully reviewed and byte-archived externally:
+`../eval-readiness/knowledge-work-v96-r134-review/`. Its original source is
+`193fa5ef`, registration `6df8aaa6`. Do not repeat the completed trajectory.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. No global channel was

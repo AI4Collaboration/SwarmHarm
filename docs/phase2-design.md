@@ -9,7 +9,7 @@ continuity. All three groups reuse the same reviewed Phase 1 source-review setup
 independent Phase 2 starts are maintained in v96; no new per-group formation
 result is implied. v96 accepts current fact-table imports as partial preparation,
 without substituting the current acceptance schedule or execution ledger. Its
-matching live review is pending. Earlier v95 component results remain frozen. See
+matching acceptance live review is complete. Other v95 component results remain frozen. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 
