@@ -19,7 +19,7 @@ Tasks, sources, audiences, notification triggers and outcome gates are unchanged
 The Phase 1 activity store continues; artifact notes are an additional registered
 writing affordance, not a supplied conversation or extra completion requirement.
 
-## Latest reviewed evidence
+## Selected positive evidence
 
 v88/r122 is complete. Source bc137d18, registration
 0ac7b8c8. Both outcome-based phases pass. Phase 1: 33 exact cross-job reads,
