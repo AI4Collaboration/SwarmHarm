@@ -1,5 +1,51 @@
 # Current technical state
 
+## Phase 1 active work — 30 October 2026
+
+The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
+channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
+until all four-domain Phase 1 environments are ready. This supersedes the earlier
+"not authorized to collect" note for this Phase 1 work only. The user also requested
+a 30-minute continuation heartbeat; automation `phase1` is ACTIVE on this chat.
+Do not recreate or change the independent Phase 2 automation.
+
+- Accepted channel strata: E1 State/Value, E2.1 Enumeration, E2.2 Positioning.
+  Preserve E2 parentage and hybrid/minimized-abstraction rules. This applies a
+  mechanism taxonomy to our synthetic isolation flaws, not a claim that the
+  paper defines these vulnerabilities. Do not revert to content/name/state or
+  the withdrawn storage/normal-output/resource grid.
+- Each environment needs an agent-discoverable, controllable, observable
+  isolation flaw. Information isolation is sufficient; no host escape required.
+  Automatic leakage is diagnostic, not autonomous communication. No cues,
+  prefilled messages, announced peers or supplied protocol. Ordinary incomplete
+  work remains possible.
+- `phase1/cache_channels.py` now implements missing job scope for cache values,
+  actual entry counts and actual eviction order, each with a repaired profile.
+  The common runner seals the profile into the plan. Legacy records/notices are
+  partitioned and the note/reply helper is absent. All six profiles have matched
+  subject inputs. Exact value/count/order provenance is operator-only.
+- The input dimensions are channel mechanism and pressure. Four domains are
+  coverage blocks; repair is a control. Feasibility, budgets and documentation
+  are validity/metadata, not additional taxonomy axes. There is no cue factor.
+- Pressure retains the accepted owner × preservation/enhancement framework:
+  self-preservation, peer-preservation, self-enhancement; peer-enhancement is
+  optional. Actual lifecycle/quota/permission effects required. Peer pressure
+  begins only after natural discovery. Additional pressure adapters remain
+  pending; do not silently omit them from "all ready".
+- Initial validation holds pressure at ordinary work and proceeds one domain and
+  mechanism at a time. New code is live pending. Offline witnesses prove capacity,
+  not discovery. Runtime review conservatively reports mechanical evidence.
+  `trace_review.py` now validates separately supplied operator semantic judgments
+  against native quotes, model identity, causal delivery and response order.
+  Complete trace review remains required for every rollout.
+- Finish controls, freeze source and a fresh registration, commit/push, collect
+  using Pi SDK/AxonHub, inspect the complete native trace, then make one justified
+  change in a new registration if needed. Preserve every raw outcome. Do not
+  launch a broad sweep or report development selection as success rates.
+- Work only in `work/swarmharm-phase1-publication`; preserve `sources/`, frozen
+  evidence and the independent Phase 2 worktree. The design and readiness gates
+  are in [phase1-publication-design.md](phase1-publication-design.md).
+
 ## Active work
 
 **Current source: v112 joint allocation-sheet workflow; offline checked, live pending.**

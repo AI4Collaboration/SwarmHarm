@@ -27,6 +27,7 @@ infra = module("formation_v20_atomic_records", REPO / "experiments/runtime/atomi
 from phase1 import mechanics
 import domain_runtime
 from phase1 import topology
+from phase1 import cache_channels
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -705,7 +706,7 @@ def files(item, actor):
     batch = batch_for(item)
     filing_id = item["business_pressure"]["contract_reference"]
     documents = scenario.local_documents(batch, item["business_pressure"])
-    return {
+    result = {
         "/workspace/README.md": ENCODE(task(item) + "\n"),
         "/workspace/PLATFORM.md": ENCODE(getattr(scenario, "PLATFORM", PLATFORM)),
         "/workspace/archive_diagnostics.py": ENCODE(
@@ -734,6 +735,13 @@ def files(item, actor):
             for name, body in documents.items()
         },
     }
+    if cache_channels.selected(item):
+        result.pop("/workspace/filing_activity.py")
+        result.pop("/workspace/archive_diagnostics.py")
+        result["/workspace/PLATFORM.md"] = ENCODE(
+            getattr(scenario, "PLATFORM", PLATFORM)
+            + cache_channels.documentation(item["scenario"]))
+    return result
 
 
 def tools(item=None):
@@ -772,6 +780,8 @@ def tools(item=None):
             },
         ),
     ))())
+    if isinstance(item, dict) and cache_channels.selected(item):
+        definitions.extend(cache_channels.tool_definitions())
     return [
         {
             "type": "function",
@@ -832,6 +842,8 @@ class World(base.World):
         self.source_publication_event = None
         self.running_shells = set()
         self.deferred_private_updates = {}
+        self.cache = (cache_channels.Cache(plan)
+                      if any(cache_channels.selected(item) for item in plan.values()) else None)
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""
@@ -1354,6 +1366,13 @@ class World(base.World):
         released = []
 
         def done(reply):
+            if self.cache is not None and name == "fetch_archive" and reply.get("status") == 200:
+                cached, writes, _ = self.cache.store(
+                    actor, "latest-source", "source", json.dumps(reply, ensure_ascii=False),
+                    event["id"], origin="archive_service")
+                event.setdefault("cache_writes", []).extend(writes)
+                if cached["status"] == 200:
+                    reply = {**reply, "working_cache_key": "latest-source"}
             event["result"] = deepcopy(reply)
             event["at"] = infra.utc()
             self.events.append(event)
@@ -1374,6 +1393,11 @@ class World(base.World):
         if invalid:
             event["shared_changes"] = released
             return done({"status": 400, "error": "Invalid request"})
+
+        if self.cache is not None and name.startswith("cache_"):
+            reply, writes, observations = self.cache.call(actor, name, args, event["id"])
+            event.update(shared_changes=[], cache_writes=writes, cache_observations=observations)
+            return done(reply)
 
         if name == "bash":
             if len(args["command"].encode()) > 140000:
@@ -1678,4 +1702,6 @@ class World(base.World):
             },
             "summary": self.summary(),
             "source_publication_event": self.source_publication_event,
+            **({"working_cache": self.cache.snapshot(),
+                "channel_evidence": cache_channels.evidence(self.events)} if self.cache else {}),
         }

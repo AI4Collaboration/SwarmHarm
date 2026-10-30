@@ -23,7 +23,7 @@ def plan_for(scenario):
 class ChannelDesignChecks(unittest.TestCase):
     def test_real_workstations_observe_only_the_selected_cross_domain_exposure(self):
         for scenario in channel_design.DOMAINS:
-            for profile in channel_design.EXECUTABLE_PROFILES:
+            for profile in channel_design.LEGACY_PROFILES:
                 with self.subTest(scenario=scenario, profile=profile):
                     plan = plan_for(scenario)
                     _, visibility = channel_design.compile_condition(profile, plan)
@@ -55,19 +55,22 @@ class ChannelDesignChecks(unittest.TestCase):
 
     def test_proposal_covers_all_four_domains_without_claiming_unbuilt_adapters(self):
         proposal = channel_design.proposal()
-        self.assertEqual(len(proposal['cells']), 36)
-        self.assertEqual(len({r['cell_id'] for r in proposal['cells']}), 36)
+        self.assertEqual(len(proposal['cells']), 24)
+        self.assertEqual(len({r['cell_id'] for r in proposal['cells']}), 24)
+        self.assertEqual({r['condition'] for r in proposal['cells']},
+                         {'vulnerable', 'repaired'})
         self.assertIsNone(proposal['rollouts_per_cell'])
         self.assertFalse(proposal['live_collection_authorized_by_this_file'])
         self.assertEqual({r['scenario'] for r in proposal['cells']}, set(channel_design.DOMAINS))
         for row in proposal['cells']:
-            expected = row['carrier'] == 'payload' and row['condition'] != 'carrier_revealed'
-            self.assertEqual(row['prepare_profile'] is not None, expected)
-        self.assertEqual(sum(r['prepare_profile'] is not None for r in proposal['cells']), 8)
+            self.assertIn(row['prepare_profile'], channel_design.cache_channels.PROFILES)
+            self.assertEqual(row['implementation'], 'implemented_live_rollout_pending')
+        self.assertEqual(sum(r['prepare_profile'] is not None for r in proposal['cells']), 24)
+        self.assertEqual(proposal['model'], 'openai/gpt-5.6-sol')
 
     def test_partition_cuts_bodies_and_notices_but_retains_own_records_in_every_domain(self):
         for scenario in channel_design.DOMAINS:
-            for profile in channel_design.EXECUTABLE_PROFILES:
+            for profile in channel_design.LEGACY_PROFILES:
                 with self.subTest(scenario=scenario, profile=profile):
                     plan = plan_for(scenario)
                     original = deepcopy(plan)
@@ -102,7 +105,7 @@ class ChannelDesignChecks(unittest.TestCase):
                 tmp = Path(temporary)
                 key = tmp / 'test-key'; key.write_text('offline-test-placeholder')
                 key.chmod(0o600)
-                for profile in channel_design.EXECUTABLE_PROFILES:
+                for profile in channel_design.LEGACY_PROFILES:
                     root = tmp / profile
                     registration = tmp / 'registrations' / profile
                     with patch.object(run, 'REGISTRATIONS', tmp / 'registrations'), \
@@ -144,6 +147,7 @@ class ChannelDesignChecks(unittest.TestCase):
                          {'study_mode': 'connected'},
                          {'study_mode': 'phase2-component'},
                          {'cue_condition': 'ambient_activity'},
+                         {'phase1_channel_profile': None, 'cue_condition': 'ambient_activity'},
                          {'topology_file': Path('/not-opened')}):
             with self.subTest(override=override), tempfile.TemporaryDirectory() as temporary:
                 tmp = Path(temporary)

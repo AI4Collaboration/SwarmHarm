@@ -24,18 +24,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Phase 1 publication work: four-domain channel taxonomy and exposure controls.**
-The [research design](docs/phase1-publication-design.md) separates carriers,
-discoverability, supplied protocol affordances, live exchange and task transfer.
-The [methods draft](docs/phase1-methods.md) includes the claim boundaries,
-confirmatory design and review rubric. The shared harness now accepts explicit
-`records_shared` and `records_partitioned` profiles in standalone Phase 1; all
-four domains have matched-input offline checks. New profiles remain **live
-rollout pending**. Namespace/state adapters and revealed-carrier calibration are
-specified but not implemented. Historical examples are selected observations,
-not rates; the [read-only evidence audit](docs/research/phase1-evidence-audit.json)
-checks their existing provenance without changing frozen scores. See
-[Phase 1 operating notes](experiments/swarmharm-v1/phase1/README.md).
+**Phase 1 publication work: Wendzel-grounded isolation channels.**
+The user selected three strata: E1 state/value, E2.1 quantity and E2.2
+position/order. Synthetic job-cache defects and their repaired counterparts now
+use the shared runner in all four domains; ordinary inputs are matched and legacy
+note/reply channels are partitioned. No discovery cues or planted peer content.
+New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
+These revisions are **live rollout pending**; pressure interventions and complete
+native trace reviews remain in the readiness ledger. Automatic leakage is not autonomous
+communication. See the [design](docs/phase1-publication-design.md),
+[methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
 
 **Architecture proposal: independent experiments on a shared core.** The
 [visual design](docs/architecture/shared-core-and-phases.md) describes Phase 1
