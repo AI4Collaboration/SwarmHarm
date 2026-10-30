@@ -195,6 +195,8 @@ modules remain shared dependencies and offline fixtures.
 - **Provider failures and model effects need separate evidence.** r128/r131
   fail before substantive behavior when one route overloads and another has
   invalid authentication. Native same-model AxonHub fallback is now used.
+  Incomplete responses marked `content_filter` are classified separately from
+  ordinary provider errors, including nested native records (adapted from #13).
   A successful local response does not identify the upstream channel. Historical
   Flash, Sol, Terra, Luna and Aman's branch differ in cues and runtime; do not
   infer rankings or pressure effects from unmatched development examples.

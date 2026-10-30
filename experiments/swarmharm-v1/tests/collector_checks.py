@@ -24,6 +24,18 @@ from phase1 import lab
 import run
 from phase1 import schedule
 class CollectorChecks(unittest.TestCase):
+    def test_incomplete_content_filter_is_separate_from_provider_errors(self):
+        from response_monitor import classify
+        filtered = {'status':'incomplete', 'incomplete_details':{'reason':'content_filter'}}
+        for response in (filtered, {'native_error':filtered},
+                         {'provider_error':{'body':json.dumps(filtered)}},
+                         {'native_error':{'code':'policy_violation','message':'Filtered'}}):
+            with self.subTest(response=response):
+                self.assertEqual(classify(response, True)['status'], 'provider_filter')
+        for reason in ('max_output_tokens', 'timeout'):
+            self.assertEqual(classify({'status':'incomplete',
+                'incomplete_details':{'reason':reason}})['status'], 'provider_error')
+
     def test_harness_input_projection_uses_roles_instead_of_positions(self):
         audit = {'input': [
             {'role':'developer', 'content':'Workstation context'},

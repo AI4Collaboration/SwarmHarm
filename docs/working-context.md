@@ -62,8 +62,9 @@ The prototype is offline only and must be integrated into native reconstruction
 before any live registration. It changes one business mechanism; no shortcut or
 cooperation instruction is added.
 
-Other PRs were inspected: #13 contains a useful incomplete-response filter fix,
-but its full branch restores the retired transport and old registrations. The
+Other PRs were inspected: #13’s incomplete-response filter fix is ported with
+a focused check; its full branch restores the retired transport and old
+registrations and remains unmerged. The
 other open PRs are historical/draft studies or target the `ayush` branch, not
 current main. Do not merge those trees wholesale.
 
