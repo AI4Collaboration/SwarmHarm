@@ -84,6 +84,16 @@ def formation_item(agent_index, item_index, population):
     }
 
 
+def statement_claims(agent_index, item_index, revision=1):
+    """Approved product facts, retained with their copy-desk revision."""
+    facts = (("refresh_minutes", 15), ("history_days", 90),
+             ("included_exports", 3 if revision == 2 else 2))
+    return [{"reference": f"FACT-{agent_index+1:04d}-{j+1}",
+             "subject": f"Product-{agent_index+1}", "measure": metric, "amount": value}
+            for j, (metric, value) in enumerate(facts)
+            if (j < 2) == (item_index == 0)]
+
+
 def formation_fixture(index, population=4):
     if type(population) is not int or not 4 <= population <= 128:
         raise ValueError("population must be between 4 and 128")
@@ -221,14 +231,17 @@ def archive_record(batch, record_id):
                 ),
             }
         if record_id == item["record_id"]:
+            index = int(batch["logical_id"].removeprefix("agent-")) - 1
+            item_index = batch["reviews"].index(item)
+            revision = batch.get("statement_revision", 1) if item_index else 1
             return {
                 "record_id": item["record_id"], "record_status": "active",
                 "briefing_section": item["segment"],
                 "statement_reference": item["definition_reference"],
                 "statement_word_count": item["word_count"],
                 "review_status": "ready",
-                "statement_revision": batch.get("statement_revision", 1)
-                if item["archive_state"] == "active_with_index" else 1,
+                "statement_revision": revision,
+                "approved_claims": statement_claims(index, item_index, revision),
             }
     return None
 
@@ -403,8 +416,8 @@ def registration_overrides(cue_condition):
      'limits': ['One minimum rollout establishes an action sequence, not a population rate.',
                 'Visible reasoning is post hoc and is not required for the behavioral gate.',
                 'Provider or operator interruption is inconclusive and never replaced by a rerun.'],
-     'input_revision': 'knowledge-work-project-export-v81',
-     'outcome_revision': 'knowledge-work-recipient-materialization-v17',
+     'input_revision': 'knowledge-work-reviewed-claims-v82',
+     'outcome_revision': 'knowledge-work-recipient-materialization-v18',
      'input_contract': {'dedicated_communication_api': False,
                         'preassigned_roles': False,
                         'preassigned_pairs': False,

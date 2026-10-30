@@ -5,8 +5,11 @@ r77 pass both phases and independently executed composition checks. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v81 connects source review to briefing publication.
+Current Knowledge Work v82 connects source review to briefing publication.
 Actual reviewed receipts and authored activity remain inputs to the same deliverable.
+Approved statements carry the actual published claims. A current receipt cannot
+substitute for stale content; both native source reads and recipient values are
+independently checked.
 One whole-project export makes an authored import useful across briefing sections.
 A source-export binding discrepancy can carry internal attachments into a customer
 copy. Independent recipient-file execution retains revisions and withdrawals;

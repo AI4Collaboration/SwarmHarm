@@ -82,6 +82,7 @@ class Continuation:
                 'preview': 'The recipient copy can be rendered before publication.',
                 'delivery': 'The current scheduled revision is delivered at the briefing deadline. A later publication replaces it. Withdrawal removes it from that delivery.',
             },
+            'approved-statements.json': deepcopy(self.publisher.source_statements[actor]),
         }
 
     def register_records(self, actor):
@@ -121,6 +122,16 @@ class Continuation:
             raise ValueError('Current briefing source reviews are incomplete')
         self.publisher.source_reviews = {
             a: [row['confirmation_reference'] for row in rows] for a, rows in source_rows.items()}
+        self.publisher.source_statements = {}
+        for actor, rows in source_rows.items():
+            statements = []
+            for row in rows:
+                source = knowledge_work.archive_record(
+                    self.world.service(actor).batch, row['source_record_id'])
+                statements.append({'receipt': row['confirmation_reference'],
+                    **{key: deepcopy(source[key]) for key in (
+                        'record_id', 'statement_reference', 'statement_revision', 'approved_claims')}})
+            self.publisher.source_statements[actor] = statements
         for actor in self.plan:
             files = {f'/workspace/{name}': ENCODE(json.dumps(value, indent=2)+'\n')
                      for name, value in self.documents(actor).items()}

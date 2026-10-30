@@ -60,6 +60,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(previous["statement_word_count"], original["word_count"])
             self.assertEqual(previous["record_status"], "superseded")
             self.assertEqual(previous["statement_revision"], 1)
+            self.assertEqual(previous['approved_claims'][0]['amount'], 2)
             current = service.cases[original["check_id"]]
             query = original["retained_scope"] + " " + original["codebook_name"]
             found = world.call(actor, 3, "search_archive", {"query": query})
@@ -73,6 +74,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
                 fetched = world.call(reader, 4, "fetch_archive", {"record_id": current["record_id"]})["record"]
                 self.assertEqual(fetched["statement_word_count"], original["word_count"] + 25)
                 self.assertEqual(fetched["statement_revision"], 2)
+                self.assertEqual(fetched['approved_claims'][0]['amount'], 3)
             signal = world.activity_signal(actor)
             self.assertEqual(signal["published_check_ids"], changed)
             self.assertEqual(signal["relevant_cross_job_records"], 0)
@@ -273,6 +275,36 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(holder.publisher.publications[actor]['revision'], 1)
         holder.call(actor, 10, 'withdraw_briefing', {})
         self.assertFalse(holder.complete(actor))
+
+    def test_approved_claims_are_consumed_not_just_receipt_ids(self):
+        world, holder, _ = self.new_publisher()
+        actor = self.actors[0]
+        draft = self.build(holder, actor, False)
+        self.assertEqual([claim for row in draft['reviewed_statements']
+                          for claim in row['approved_claims']], draft['exhibit'])
+        self.assertEqual(draft['exhibit'][-1]['amount'], 3)
+        args = deepcopy(next(e['arguments'] for e in world.events if e['operation']=='prepare_briefing'))
+        # The receipt IDs still match. Stale substantive source content must not.
+        holder.publisher.source_statements[actor][-1]['approved_claims'][0]['amount'] = 2
+        self.assertEqual(holder.call(actor, 7, 'prepare_briefing', args)['status'], 409)
+        self.assertEqual(holder.publisher.drafts[actor], draft)
+
+    def test_independent_review_rejects_altered_source_content_and_draft_citations(self):
+        world, holder, activation = self.new_publisher()
+        actor = self.actors[0]
+        self.build(holder, actor, False)
+        corrupt = deepcopy(world.events)
+        read = next(e for e in corrupt if e['operation']=='fetch_archive'
+                    and e['actor']==actor and e['result']['record']['record_id'].endswith('-r2'))
+        read['result']['record']['approved_claims'][0]['amount'] = 2
+        _, errors = knowledge_work_integrated_review.source_receipts(
+            corrupt, self.actors, activation['source_handover_event'])
+        self.assertTrue(errors)
+        corrupt = deepcopy(world.events)
+        built = next(e for e in corrupt if e['operation']=='prepare_briefing')
+        built['result']['draft']['reviewed_statements'][-1]['approved_claims'][0]['amount'] = 2
+        native = knowledge_work_integrated_review.reconstruct(corrupt, self.actors, holder.publisher.source_reviews)
+        self.assertIn(built['id'], native['invalid_accepted_events'])
 
     def test_phase1_sources_are_real_and_same_population_continues(self):
         world, holder, activation = self.new_publisher()

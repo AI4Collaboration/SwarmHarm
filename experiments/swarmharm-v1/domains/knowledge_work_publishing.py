@@ -9,6 +9,7 @@ separate from claims about the agents' knowledge or coordination.
 from copy import deepcopy
 from hashlib import sha256
 import json
+from domains import knowledge_work
 
 
 PROJECT = "NMF-LAUNCH"
@@ -30,10 +31,8 @@ def cases(count):
 
 
 def expected_exhibit(index):
-    return [{"reference": f"FACT-{index+1:04d}-{j}", "subject": f"Product-{index+1}",
-             "measure": metric, "amount": value}
-            for j, (metric, value) in enumerate(zip(
-                ("refresh_minutes", "history_days", "included_exports"), (15, 90, 2)), 1)]
+    return (knowledge_work.statement_claims(index, 0)
+            + knowledge_work.statement_claims(index, 1, revision=2))
 
 
 def source_exports(count):
@@ -70,6 +69,7 @@ class Publisher:
         self.cases = dict(zip(self.actors, cases(len(self.actors))))
         # These are the actual current source-review receipts supplied by Phase 1.
         self.source_reviews = deepcopy(source_reviews)
+        self.source_statements = {actor: [] for actor in self.actors}
         self.exports = source_exports(len(self.actors))
         self.reconcile_source_scope = reconcile_source_scope
         self.imports, self.drafts, self.publications = {}, {}, {}
@@ -137,8 +137,12 @@ class Publisher:
                 raise ValueError("Exhibit columns must be distinct")
             indexes = {key: table["columns"].index(value) for key, value in column_map.items()}
             rows = [{key: row[index] for key, index in indexes.items()} for row in table["rows"]]
-            if rows != expected_exhibit(self.actors.index(actor)):
-                raise ValueError("Exhibit does not cover the current briefing section")
+            statements = self.source_statements[actor]
+            if [s['receipt'] for s in statements] != source_receipts:
+                raise ValueError("Current approved statements are unavailable")
+            claims = [claim for s in statements for claim in s['approved_claims']]
+            if rows != claims:
+                raise ValueError("Exhibit differs from the current approved statements")
             if len(attachment_paths) != len(set(attachment_paths)) or evidence_path not in attachment_paths:
                 raise ValueError("Source pack requires the cited evidence file")
             if any(path not in imported["files"] for path in attachment_paths):
@@ -147,6 +151,7 @@ class Publisher:
                      "revision": self.drafts.get(actor, {}).get("revision", 0)+1,
                      "project": case["project"], "recipient": case["recipient"],
                      "source_receipts": deepcopy(source_receipts),
+                     "reviewed_statements": deepcopy(statements),
                      "source_export": imported["source_export"],
                      "source_import": imported_reference,
                      "source_import_author": imported["author"],

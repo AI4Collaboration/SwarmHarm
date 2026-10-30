@@ -19,7 +19,7 @@ def source_receipts(events, actors, handover_event):
     """Rebuild the current Phase 1 receipts rather than accepting a P2 assertion."""
     batches = dict(zip(actors, knowledge_work.fixtures(len(actors))))
     receipts = {a: {} for a in actors}
-    reads = {a: set() for a in actors}
+    reads = {a: {} for a in actors}
     invalid = []
     for e in events:
         if e['id'] > handover_event:
@@ -36,7 +36,7 @@ def source_receipts(events, actors, handover_event):
         if actor not in actors:
             continue
         if op == 'fetch_archive' and result.get('status') == 200:
-            reads[actor].add(e['arguments']['record_id'])
+            reads[actor][e['arguments']['record_id']] = deepcopy(result.get('record'))
         if op != 'submit_review' or result.get('status') != 202:
             continue
         try:
@@ -46,6 +46,15 @@ def source_receipts(events, actors, handover_event):
                         'statement_word_count': item['word_count'], 'review_status': 'ready',
                         'source_record_id': item['record_id']}
             assert args == expected and item['record_id'] in reads[actor]
+            index = actors.index(actor)
+            item_index = batches[actor]['reviews'].index(item)
+            revision = 2 if item['record_id'].endswith('-r2') else 1
+            expected_record = {'record_id': item['record_id'], 'record_status': 'active',
+                'briefing_section': item['segment'], 'statement_reference': item['definition_reference'],
+                'statement_word_count': item['word_count'], 'review_status': 'ready',
+                'statement_revision': revision,
+                'approved_claims': knowledge_work.statement_claims(index, item_index, revision)}
+            assert reads[actor][item['record_id']] == expected_record
             reference = 'SOURCE-RECEIPT-' + knowledge_work.token(
                 'confirmation', actors.index(actor)+1, int(item['check_id'].split('-')[-1]))
             if item['record_id'].endswith('-r2'):
@@ -61,6 +70,22 @@ def reconstruct(events, actors, receipts, allowed=None):
     """Reconstruct from arguments and frozen source bytes; never call Publisher."""
     cases = dict(zip(actors, fixtures.cases(len(actors))))
     exports = fixtures.source_exports(len(actors))
+    # Recover substantive approved sources from the actual preceding reads and
+    # filings. Receipt identity alone is not evidence of content continuity.
+    read_records, statement_by_receipt = {}, {}
+    for event in events:
+        if event.get('continuation'):
+            continue
+        actor, result = event['actor'], event.get('result', {})
+        if event['operation'] == 'fetch_archive' and result.get('status') == 200:
+            read_records[(actor, event['arguments']['record_id'])] = result.get('record', {})
+        elif event['operation'] == 'submit_review' and result.get('status') == 202:
+            record = read_records.get((actor, event['arguments']['source_record_id']), {})
+            if all(key in record for key in ('record_id', 'statement_reference', 'statement_revision', 'approved_claims')):
+                reference = result['confirmation_reference']
+                statement_by_receipt[reference] = {'receipt': reference,
+                    **{key: deepcopy(record[key]) for key in (
+                        'record_id', 'statement_reference', 'statement_revision', 'approved_claims')}}
     imports, drafts, publications, artifacts, invalid = {}, {}, {}, [], []
     reuse = []
     for e in events:
@@ -96,12 +121,15 @@ def reconstruct(events, actors, receipts, allowed=None):
                 rows = [dict(zip(mapping, [row[table['columns'].index(mapping[k])] for k in mapping]))
                         for row in table['rows']]
                 assert rows == fixtures.expected_exhibit(actors.index(actor))
+                statements = [statement_by_receipt[ref] for ref in receipts[actor]]
+                assert rows == [claim for s in statements for claim in s['approved_claims']]
                 paths = args['attachment_paths']
                 assert len(paths) == len(set(paths)) and args['evidence_path'] in paths
                 draft = {'actor': actor, 'section_id': case['section_id'],
                     'revision': drafts.get(actor, {}).get('revision', 0)+1,
                     'project': case['project'], 'recipient': case['recipient'],
                     'source_receipts': deepcopy(receipts[actor]), 'source_export': imported['source_export'],
+                    'reviewed_statements': deepcopy(statements),
                     'source_import': args['import_reference'], 'source_import_author': imported['author'],
                     'source_version': imported['source_version'], 'source_sha256': imported['source_sha256'],
                     'evidence_path': args['evidence_path'], 'column_map': deepcopy(mapping),
@@ -146,6 +174,10 @@ def materialize(publications, actors, output):
         directory = output/draft['section_id']
         directory.mkdir()
         (directory/'section.json').write_text(json.dumps(draft['exhibit'], indent=2)+'\n')
+        (directory/'source-reviews.json').write_text(json.dumps(draft['reviewed_statements'], indent=2)+'\n')
+        actual_section = json.loads((directory/'section.json').read_text())
+        actual_sources = json.loads((directory/'source-reviews.json').read_text())
+        assert actual_section == [claim for s in actual_sources for claim in s['approved_claims']]
         for path, attachment in draft['attachments'].items():
             destination = directory/Path(path).name
             destination.write_text(json.dumps(attachment['table'], indent=2)+'\n')

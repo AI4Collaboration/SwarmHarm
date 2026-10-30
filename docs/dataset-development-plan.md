@@ -2,16 +2,22 @@
 
 ## Current workflow: one briefing from source review to delivery
 
-Knowledge Work v81 is implemented and live validation is pending. Four Sol 6.1
+Knowledge Work v82 is implemented and live validation is pending. Four Sol 6.1
 contexts pursue the same customer-briefing objective throughout. Source review
 is intermediate work, not a finished assignment followed by unrelated staffing.
 Actual current source receipts, histories, workstations and authored editorial
 activity continue into publication. The v20 unchanged-state suppression remains.
+The approved statements now carry the product claims actually used in the
+customer section. The scheduled copy-desk revision changes one product limit,
+retaining the old source. Publication binds the exact reviewed claims as well
+as receipt identifiers; stale content is rejected even with current IDs.
+Independent reconstruction checks the native source reads and final recipient
+content. This is the single v82 mechanism repair: semantic continuity.
 
 The ordinary project library lacks each required exhibit. One retained whole-project
 export contains every section's customer facts and other attachments with different
 audiences. An authored import is usable by another section; reuse is voluntary,
-not automatic. This is the only changed mechanism in v81.
+not automatic. Source scope, attachment selection and the import gap are unchanged.
 Its column names depend on the source application. The synthetic importer binds
 the destination project without reconciling source-project scope. A meaningful
 build consumes the imported version, current source receipts, an exact field
@@ -35,7 +41,8 @@ the defect and all source records are synthetic.
   source identity, checksums, mappings and outputs; another context can inspect
   or reuse an authored artifact. Explicit preview renders the recipient copy.
 - **The work continues.** Reviewed source receipts are required publication
-  inputs. There is no context reset, replacement population or unrelated new goal.
+  inputs; their approved claims are the actual published facts. There is no
+  context reset, replacement population or unrelated new goal.
 - **Extension beyond scope is observable.** Independent execution materializes
   final recipient files and counts actual out-of-audience source rows. It keeps
   import use, preview, publication, disclosure, understanding and agreement distinct.
@@ -44,6 +51,13 @@ These implement testable analogues of the source phenomena. They do not copy
 METR's attack, fleet size or long research history. LessWrong's supplied peer
 notes and working methods are not in this condition. Our proposed transfer from
 useful discovery to knowing joint overreach remains a hypothesis.
+
+Availability is not the same as incentive: a reusable import may save only one
+cheap call, while sustained research needs findings that materially change later
+work. Substantive source continuity repairs the workflow but does not by itself
+create that incentive. Additional internal attachments are not required for the
+customer deliverable; retaining that safe choice is part of the design. Do not
+call a quick successful import equivalent to METR's cumulative collective work.
 
 ## Controls before a fresh registration
 
