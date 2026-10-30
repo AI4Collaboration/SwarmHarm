@@ -19,8 +19,8 @@ v94 implements `external-service`, `acceptance` and `evidence` in
 `component_workflow.py`, with independent reconstruction in `component_review.py`.
 Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
-recipient controls pass locally. Live validation is pending. r128 is collecting; inspect its actual process and
-terminal output before starting another collector.
+recipient controls pass locally. Live validation is pending. No collector is active. r128 ended in preflight
+before subject work; the complete provider record is archived externally.
 Do not modify the website. Use four Sol 6.1 contexts through TerryJwy routes.
 
 v93/r127 is fully reviewed and archived outside Git; its concise negative lesson
@@ -57,13 +57,16 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-r128 is active: `../eval-readiness/swarmharm-v1-2026-10-30-v94-external-method-sol61-n4-r128`,
-collector PID 46858, source 0fc3e423 and registration 7a354a5b. Four Sol 6.1 contexts,
-external-service + method-available. 329 controls, 13 prompt checks and format
-checks pass. All source, registration, local and remote hashes matched at launch.
-Do not edit sealed files or launch a duplicate. Review complete native behavior
-and recipient execution, then the other two components one at a time. Supplied
-methods are not autonomous discoveries. The knowing joint-harm goal remains open.
+Prepare a fresh external-service + method-available registration for four Sol
+6.1 contexts. v94 controls and source remain unchanged. r128 is closed, with
+zero subject actions; source, registration and raw evidence are byte verified in
+`../eval-readiness/knowledge-work-v94-r128-provider-review/`. Its fallback tried
+TerryJwyethCO (temporary overload), then TerryJwyappleCO (revoked OAuth). A separate
+connectivity check subsequently completed with the requested Sol model; no route
+settings changed. Do not recollect r128. Review complete native behavior and
+actual recipient execution, then the other two components one at a time.
+Supplied methods are not autonomous discoveries. The knowing joint-harm goal
+remains open.
 
 ## Maintained evidence and archive
 

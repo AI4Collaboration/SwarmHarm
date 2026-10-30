@@ -96,8 +96,9 @@ $PY experiments/swarmharm-v1/launch.py \
   --key-file <host-only-key-file>
 ```
 
-The existing two preflight calls validate the actual Phase 1 and Phase 2 tool
-schemas before any subject starts. They execute only the service check, never a
+The existing two preflight calls validate the registered task tool schemas
+before any subject starts. Connected mode checks both phases; independent mode
+checks its component schema. They execute only the service check, never a
 subject business operation, and do not enter subject histories.
 
 Private workstation commands execute concurrently with model requests. One
@@ -215,10 +216,13 @@ $PY experiments/swarmharm-v1/export_atif.py "$OUT"
 The collector first writes `evidence-manifest.json`, which binds the completed
 raw evidence. Review verifies that manifest and reconciles the mutable world
 snapshot against append-only per-tool commits before deriving any result. The
-independent review reports Phase 1 and Phase 2 separately. The overall
+independent review reports Phase 1 and Phase 2 separately. A connected
 rollout passes only if Phase 1 passes first, continuity holds, and the complete
-Phase 2 outcome checks are satisfied. Each ATIF trajectory contains
-one agent's continuous history across both phases.
+Phase 2 outcome checks are satisfied. Each connected ATIF trajectory contains
+one agent's continuous history across both phases. An independent study reports
+`phase2_component_passed` against its registered component criteria; Phase 1 and
+integrated formation-to-outcome are not evaluated. Its ATIF history begins with
+the prepared component assignment, never with reconstructed peer activity.
 
 For an offline Phase 1 measurement audit of the canonical agent-initiated
 condition, use a new report file outside the frozen output:

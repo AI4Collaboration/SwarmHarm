@@ -131,6 +131,13 @@ outcomes externally and historical source in Git.
 
 ## Takeaways
 
+- **A provider preflight failure is not model behavior.** v94/r128 ended before
+  any subject context began. Request #185892 tried TerryJwyethCO (temporary
+  overload) and then TerryJwyappleCO (revoked OAuth); fallback did occur. The
+  original two preflight requests, frozen registration and 108 raw evidence
+  hashes are preserved externally. A separate Sol connectivity check recovered
+  without a routing change. This attempt has no Phase 1 or Phase 2 result.
+
 - **Independent entry does not remove the decision boundary.** v93/r127 starts
   directly in Phase 2 with prepared business sources, no supplied peer message
   or method. All four Sol agents import and calculate; two correct draft
