@@ -832,6 +832,8 @@ class World(base.World):
         self.observation_error = None
         self.operator = Path(directory) if directory else None
         self.source_publication_event = None
+        self.running_shells = set()
+        self.deferred_private_updates = {}
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""
@@ -882,7 +884,9 @@ class World(base.World):
             }))
             self.private.setdefault(actor, files(self.plan[actor], actor))[local_path] = local_data
             private_updates[actor] = {local_path: local_data}
-            if actor in self.workstations:
+            if actor in self.running_shells:
+                self.deferred_private_updates.setdefault(actor, {})[local_path] = local_data
+            elif actor in self.workstations:
                 self.workstations[actor].hydrate({local_path: local_data}, False)
                 self.workstations[actor].pause()
         event = {
@@ -1309,7 +1313,35 @@ class World(base.World):
             })
         return None
 
-    def call(self, actor, step, name, args):
+    def begin_bash(self, actor, args):
+        """Capture one workstation transaction; the controller owns shared state."""
+        from jsonschema import Draft202012Validator
+
+        definition = next(tool for tool in tools(self.plan[actor]) if tool['name'] == 'bash')
+        if (not isinstance(args, dict)
+                or list(Draft202012Validator(definition['parameters']).iter_errors(args))
+                or len(args['command'].encode()) > 140000):
+            return None
+        if actor in self.running_shells:
+            raise RuntimeError('Workstation already executing a command')
+        station = self.bench(actor)
+        transaction = {'actor': actor, 'command': args['command'], 'station': station,
+                       'before': deepcopy(self._visible_shared(actor)), 'snapshot_at': infra.utc()}
+        self.running_shells.add(actor)
+        return transaction
+
+    @staticmethod
+    def execute_bash(transaction):
+        """Run only the private workstation off-thread; never mutate shared state."""
+        started = infra.utc()
+        reply, snapshot = transaction['station'].execute(
+            transaction['command'], {p: f['data'] for p, f in transaction['before'].items()})
+        return {'actor': transaction['actor'], 'command': transaction['command'],
+                'before': transaction['before'], 'reply': reply, 'snapshot': snapshot,
+                'snapshot_at': transaction['snapshot_at'], 'started_at': started,
+                'finished_at': infra.utc()}
+
+    def call(self, actor, step, name, args, *, bash_execution=None):
         from jsonschema import Draft202012Validator
 
         event = {
@@ -1347,10 +1379,27 @@ class World(base.World):
         if name == "bash":
             if len(args["command"].encode()) > 140000:
                 return done({"status": 400, "error": "Command too large"})
-            before = self._visible_shared(actor)
-            reply, snapshot = self.bench(actor).execute(
-                args["command"], {path: file["data"] for path, file in before.items()}
-            )
+            if bash_execution is None:
+                before = self._visible_shared(actor)
+                reply, snapshot = self.bench(actor).execute(
+                    args["command"], {path: file["data"] for path, file in before.items()}
+                )
+            else:
+                if (actor not in self.running_shells or bash_execution['actor'] != actor
+                        or bash_execution['command'] != args['command']):
+                    raise RuntimeError('Workstation completion does not match its transaction')
+                before = bash_execution['before']
+                reply, snapshot = bash_execution['reply'], bash_execution['snapshot']
+                self.running_shells.remove(actor)
+                event['workstation_execution'] = {k: bash_execution[k] for k in (
+                    'snapshot_at', 'started_at', 'finished_at')}
+                # A source publication during this command is real new state,
+                # but was not visible in its start-of-command snapshot.
+                updates = self.deferred_private_updates.pop(actor, {})
+                if updates:
+                    snapshot['/workspace'].update(updates)
+                    self.bench(actor).hydrate(updates, False)
+                    self.bench(actor).pause()
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
             oversized = [

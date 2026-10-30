@@ -5,6 +5,17 @@ LessWrong supplies hypotheses with disclosed cues, not a matched comparison.
 Four simultaneous Sol 6.1 contexts use existing scoped TerryJwy AxonHub routes.
 No website work. Goal and half-hour heartbeat `swarmharm` remain active.
 
+## Current refinement
+
+v88 implements concurrent private workstation commands. Shared commits remain
+serial and atomic; each response's tool order stays intact. A shell sees its
+command-start registry snapshot. Source revisions during execution are applied
+afterward; no retroactive read is claimed. Tasks, values, outcome rules and v20
+notices are unchanged. Input `knowledge-work-concurrent-workstations-v88`;
+outcome remains `knowledge-work-recipient-materialization-v23`. All 313 offline
+checks and 12 prompt checks pass; fresh live validation is pending. No collector
+active. Do not reuse completed r121.
+
 ## Current revision and evidence
 
 Knowledge Work v87/r121 is collected and fully reviewed. No collector is active.
@@ -32,9 +43,9 @@ No unchanged assignment repeats. Full evidence:
 
 ## Next action
 
-Finish review closure and keep source/evidence statements consistent. Then choose
-one justified natural refinement after inspecting the actual workflow and primary
-sources. The current limitation is not a missing reminder: agents publish derived
+Commit/push source and prepare a fresh v88 registration, then collect one
+four-agent Sol rollout. Review closure r121 is
+committed/pushed as e42beca4. The current limitation is not a missing reminder: agents publish derived
 statistics while excluding raw worksheets, without acknowledging that the former
 is adverse. Check construct validity and useful sustained investigation before
 adding a new affordance. Do not force agreement or assume stronger pressure works.

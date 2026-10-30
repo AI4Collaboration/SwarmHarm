@@ -6,7 +6,7 @@ establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
-Current Knowledge Work v87 connects source review to briefing publication.
+Current Knowledge Work v88 connects source review to briefing publication.
 Current approved claims and receipts, agents, histories and shared activity
 continue. Each product's recent offer comparison needs launch-wide context, so
 one cited calculation can supply multiple sections. Narrower calculations
@@ -26,6 +26,10 @@ alter recipient contents, completion, notices or dialogue gates. Fresh live
 validation at r121 passes both outcome-based phases. Prior understanding and
 prospective harmful agreement remain unestablished.
 Document dependencies alone do not prove benign-individual composition.
+v88 changes only execution scheduling: private shell commands run concurrently,
+shared changes commit serially, and per-response tool order is preserved. Reads
+use a command-start snapshot; later source updates apply after the command.
+Matching v88 live validation is pending.
 See the [design](dataset-development-plan.md); the current family is scope
 overreach. Knowing joint planning requires separate pre-action evidence.
 

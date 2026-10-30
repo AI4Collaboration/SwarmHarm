@@ -346,7 +346,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'cue_condition':cue_condition,
         'cue_conditions_supported':list(schedule.CUE_CONDITIONS),
         'cue_strength_research_question':True,
-        'scheduler_revision':'simultaneous-cohort-fifo-completions-r2',
+        'scheduler_revision':'simultaneous-cohort-concurrent-workstations-r3',
+        'tool_execution':{'private_shells_concurrent':True,'shared_commits_serial':True,
+            'registry_read_view':'command_start_snapshot','per_response_tool_order_preserved':True,
+            'source_update_during_command':'apply_private_update_after_command_without_retroactive_read',
+            'ready_dispatch':'completion_order'},
         'initial_agent_records':0,
         'shared_record_limit_bytes':lab.MAX_RECORD_BYTES,'automatic_context_compaction':False,
         'connected_protocol':{'single_run':True,'overlapping_execution':True,
@@ -881,8 +885,8 @@ def collect(root,registration_dir):
             delivered_activity_signals={
                 actor:activity_signal(actor) for actor in active
             }
-            with ThreadPoolExecutor(max_workers=limit) as pool:
-                futures={};ready_responses=CompletedResponses()
+            with ThreadPoolExecutor(max_workers=limit) as pool, ThreadPoolExecutor(max_workers=limit) as shell_pool:
+                futures={};shell_tasks={};ready_responses=CompletedResponses()
                 first_request_barrier=Barrier(len(active));phase2_pending=None
                 continuation_began=None
                 cohort_completion=CohortCompletion(active)
@@ -978,6 +982,48 @@ def collect(root,registration_dir):
                     futures[future]=(actor,step,label,folder)
                     ready_responses.track(future)
                     return True
+                def record_tool(actor,step,label,folder,index,call,result):
+                    event=world.events[-1]
+                    save(folder/f'{label}-tool-{index}.json',{'event_id':event['id'],'name':call['name'],'arguments':call['arguments'],'result':result})
+                    histories[actor].append({'type':'function_call_output','call_id':call['call_id'],'output':json.dumps(result,ensure_ascii=False)})
+                    export(actor)
+                    if world.observation_error is not None:
+                        error=world.observation_error
+                        save(root/'observer-hold.json',{'at':utc(),'actor':actor,'event_id':event['id'],'kind':error.kind,'phase':error.phase,'message':str(error),'model_calls_retried':0,'tool_result_saved':True})
+                        if error.kind=='operator_interrupted':raise KeyboardInterrupt()
+                        raise ObservationHold(str(error))
+                def advance_tools(actor,step,label,folder,calls,start=0):
+                    # Preserve each response's tool order. Only private shell
+                    # execution leaves the controller; shared commits stay serial.
+                    for offset in range(start,len(calls)):
+                        call=calls[offset];index=offset+1
+                        states[actor]['tools']+=1
+                        try:args=json.loads(call['arguments']) if len(call['arguments'].encode())<=140000 else None
+                        except (ValueError,TypeError):args=None
+                        if call['name']=='bash':
+                            transaction=world.begin_bash(actor,args)
+                            if transaction is not None:
+                                save(folder/f'{label}-tool-{index}-start.json',{
+                                    'actor':actor,'step':step,'tool_index':index,
+                                    'snapshot_at':transaction['snapshot_at'],
+                                    'registry_snapshot_sha256':sha256(json.dumps(
+                                        transaction['before'],sort_keys=True).encode()).hexdigest(),
+                                    'shared_commit_pending':True})
+                                future=shell_pool.submit(world.execute_bash,transaction)
+                                futures[future]=(actor,step,label,folder)
+                                shell_tasks[future]={'calls':calls,'offset':offset,'args':args}
+                                ready_responses.track(future)
+                                states[actor]['status']='executing_tools'
+                                export(actor)
+                                return False
+                        extension_names=({tool['name'] for tool in continuation_module.tool_definitions()}
+                                         if extension.activated else set())
+                        result=(extension.call(actor,step,call['name'],args)
+                                if call['name'] in extension_names
+                                else world.call(actor,step,call['name'],args))
+                        record_tool(actor,step,label,folder,index,call,result)
+                    states[actor]['status']='running'
+                    return True
                 for actor in active.copy():submit(actor)
                 while futures or phase2_pending is not None or publication_pending() or followup_pending() or continuation_update_pending():
                     if (followup_pending() or continuation_update_pending()) and (time.monotonic()>=deadline or any(
@@ -1057,77 +1103,69 @@ def collect(root,registration_dir):
                         continue
                     future,ready_tick,ready_at=ready
                     actor,step,label,folder=futures.pop(future);state=states[actor]
-                    save(folder/f'{label}-dispatch.json',{
-                        'policy':'completion_order', 'ready_at':ready_at,
-                        'dispatched_at':utc(),
-                        'queue_wait_seconds':round(time.monotonic()-ready_tick,6),
-                    })
-                    value=future.result();state['steps']=step;histories[actor].extend(value['output'])
-                    calls=[v for v in value['output'] if v['type']=='function_call']
-                    if not calls:
-                        attempt_text=transport.output_text(value);check=current_completion(actor)
-                        if attempt_text and check['complete'] and extension.activated:
-                            cohort_completion.returned(actor,step,attempt_text,
-                                delivered_activity_signals[actor]['revision'])
-                        attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
-                        state['completion_attempts'].append(attempt)
-                        signal=activity_signal(actor)
-                        resume_incomplete=bool(followup_seconds and followup_needed(
-                            state,extension,check,signal))
-                        if resume_incomplete:
-                            state['unfinished_followup_at']=time.monotonic()+followup_seconds
-                        save(folder/f'{label}-completion-state.json',{
-                            'kind':('dormant_after_completion_attempt' if check['complete']
-                                else 'dormant_after_incomplete_final'),'attempt':attempt,
-                            'platform_revision':signal['revision'],
-                            'input_message':None,
-                            'continuation_scheduled':resume_incomplete,
-                            'unchanged_followup_suppressed':bool(
-                                followup_seconds and unfinished_work_remaining(check)
-                                and not resume_incomplete),
-                            'work_revision':work_revision(extension,check,signal),
-                            'unfinished_work_followup_seconds':followup_seconds if resume_incomplete else None,
-                            'waiting_for_relevant_platform_change':True,
-                            'context_and_work_preserved':True,
-                            'solution_hint':False,
-                            'peer_or_communication_hint':False,
+                    if future in shell_tasks:
+                        pending=shell_tasks.pop(future);calls=pending['calls'];offset=pending['offset']
+                        save(folder/f'{label}-tool-{offset+1}-dispatch.json',{
+                            'policy':'completion_order','ready_at':ready_at,'dispatched_at':utc(),
+                            'queue_wait_seconds':round(time.monotonic()-ready_tick,6)})
+                        execution=future.result()
+                        result=world.call(actor,step,'bash',pending['args'],bash_execution=execution)
+                        record_tool(actor,step,label,folder,offset+1,calls[offset],result)
+                        if not advance_tools(actor,step,label,folder,calls,offset+1):
+                            continue
+                    else:
+                        save(folder/f'{label}-dispatch.json',{
+                            'policy':'completion_order', 'ready_at':ready_at,
+                            'dispatched_at':utc(),
+                            'queue_wait_seconds':round(time.monotonic()-ready_tick,6),
                         })
-                        export(actor);summary=world.summary()
-                        update(completion_attempts=sum(len(value.get('completion_attempts',[])) for value in states.values()),
-                            submitted_reviews=sum(c['submitted_reviews'] for c in summary),
-                            shared_files=len(world.shared),events=len(world.events))
-                        if phase2_pending is not None and observation.ready(time.monotonic()) and source_handoff_ready(reg, world):
-                            state['status']='waiting_for_platform_change';state['waiting_since']=utc()
-                            export(actor)
-                        elif signal['revision']!=delivered_activity_signals[actor]['revision']:
-                            submit(actor,wake_only=True)
-                        else:
-                            state['status']='waiting_for_platform_change';state['waiting_since']=utc()
-                            export(actor)
-                            update(waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
-                                inflight_workers=len(futures))
-                        continue
-                    for index,call in enumerate(calls,1):
-                        state['tools']+=1
-                        try:args=json.loads(call['arguments']) if len(call['arguments'].encode())<=140000 else None
-                        except (ValueError,TypeError):args=None
-                        extension_names=(
-                            {tool['name'] for tool in continuation_module.tool_definitions()}
-                            if extension.activated else set()
-                        )
-                        result=(
-                            extension.call(actor,step,call['name'],args)
-                            if call['name'] in extension_names
-                            else world.call(actor,step,call['name'],args)
-                        );event=world.events[-1]
-                        save(folder/f'{label}-tool-{index}.json',{'event_id':event['id'],'name':call['name'],'arguments':call['arguments'],'result':result})
-                        histories[actor].append({'type':'function_call_output','call_id':call['call_id'],'output':json.dumps(result,ensure_ascii=False)})
-                        export(actor)
-                        if world.observation_error is not None:
-                            error=world.observation_error
-                            save(root/'observer-hold.json',{'at':utc(),'actor':actor,'event_id':event['id'],'kind':error.kind,'phase':error.phase,'message':str(error),'model_calls_retried':0,'tool_result_saved':True})
-                            if error.kind=='operator_interrupted':raise KeyboardInterrupt()
-                            raise ObservationHold(str(error))
+                        value=future.result();state['steps']=step;histories[actor].extend(value['output'])
+                        calls=[v for v in value['output'] if v['type']=='function_call']
+                        if not calls:
+                            attempt_text=transport.output_text(value);check=current_completion(actor)
+                            if attempt_text and check['complete'] and extension.activated:
+                                cohort_completion.returned(actor,step,attempt_text,
+                                    delivered_activity_signals[actor]['revision'])
+                            attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
+                            state['completion_attempts'].append(attempt)
+                            signal=activity_signal(actor)
+                            resume_incomplete=bool(followup_seconds and followup_needed(
+                                state,extension,check,signal))
+                            if resume_incomplete:
+                                state['unfinished_followup_at']=time.monotonic()+followup_seconds
+                            save(folder/f'{label}-completion-state.json',{
+                                'kind':('dormant_after_completion_attempt' if check['complete']
+                                    else 'dormant_after_incomplete_final'),'attempt':attempt,
+                                'platform_revision':signal['revision'],
+                                'input_message':None,
+                                'continuation_scheduled':resume_incomplete,
+                                'unchanged_followup_suppressed':bool(
+                                    followup_seconds and unfinished_work_remaining(check)
+                                    and not resume_incomplete),
+                                'work_revision':work_revision(extension,check,signal),
+                                'unfinished_work_followup_seconds':followup_seconds if resume_incomplete else None,
+                                'waiting_for_relevant_platform_change':True,
+                                'context_and_work_preserved':True,
+                                'solution_hint':False,
+                                'peer_or_communication_hint':False,
+                            })
+                            export(actor);summary=world.summary()
+                            update(completion_attempts=sum(len(value.get('completion_attempts',[])) for value in states.values()),
+                                submitted_reviews=sum(c['submitted_reviews'] for c in summary),
+                                shared_files=len(world.shared),events=len(world.events))
+                            if phase2_pending is not None and observation.ready(time.monotonic()) and source_handoff_ready(reg, world):
+                                state['status']='waiting_for_platform_change';state['waiting_since']=utc()
+                                export(actor)
+                            elif signal['revision']!=delivered_activity_signals[actor]['revision']:
+                                submit(actor,wake_only=True)
+                            else:
+                                state['status']='waiting_for_platform_change';state['waiting_since']=utc()
+                                export(actor)
+                                update(waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
+                                    inflight_workers=len(futures))
+                            continue
+                        if not advance_tools(actor,step,label,folder,calls):
+                            continue
                     export(actor);summary=world.summary()
                     update(submitted_reviews=sum(c['submitted_reviews'] for c in summary),shared_files=len(world.shared),events=len(world.events))
                     if not extension.activated and phase2_pending is None:

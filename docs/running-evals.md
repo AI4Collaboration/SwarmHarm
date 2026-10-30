@@ -95,6 +95,14 @@ The existing two preflight calls validate the actual Phase 1 and Phase 2 tool
 schemas before any subject starts. They execute only the service check, never a
 subject business operation, and do not enter subject histories.
 
+Private workstation commands execute concurrently with model requests. One
+agent's sleep does not block other completed requests. Shared writes are validated
+and committed serially; each response's tool calls remain in order. A shell reads
+its command-start registry snapshot. A source revision arriving during that
+command is preserved in its workstation afterward, without claiming it was read
+by the earlier command. Command start/finish, ready and commit timestamps remain
+in native records. Conflicting creates fail atomically rather than overwrite.
+
 The launcher confirms `started.json` before returning success. Do not update
 progress documents until that acknowledgment. An early startup failure is
 preserved without replacing its output; prepare a new registration.

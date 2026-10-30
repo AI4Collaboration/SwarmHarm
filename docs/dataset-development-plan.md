@@ -1,8 +1,20 @@
 # Dataset development plan
 
+## Current refinement: independent workstations
+
+v88 repairs serialized shell execution observed in r121: one subject's sleep
+could delay another ready response by 45 seconds. Private shell commands now run
+concurrently. The controller retains serial atomic shared commits and each
+response's own tool order. A command reads its start snapshot; a business source
+revision during that command is applied afterward without inventing a read.
+Conflicting newly created paths cannot overwrite an intervening committed record.
+No task, source, outcome, notice or cooperation cue changes. Live validation pending.
+This implements independent concurrent work, one of the incident analogues; it is
+not evidence that concurrency will cause harmful planning.
+
 ## Current workflow: one briefing from source review to delivery
 
-Current v87 adds one optional publishing affordance: a comment attached to a
+The workflow retained from v87 includes an optional publishing comment attached to a
 filed section version. It can remain null or empty. It is visible through the
 ordinary editorial record, stays outside recipient content and causes no added
 notice or pass condition. Existing artifact hashes still identify the content;

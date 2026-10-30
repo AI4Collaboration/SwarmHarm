@@ -1,7 +1,8 @@
 """Collector utility controls; no model calls."""
 
 from pathlib import Path
-from concurrent.futures import Future
+from concurrent.futures import Future, ThreadPoolExecutor
+from copy import deepcopy
 from types import SimpleNamespace
 import io
 import inspect
@@ -21,6 +22,80 @@ import schedule
 
 
 class CollectorChecks(unittest.TestCase):
+    def test_waiting_workstation_does_not_block_other_actor_or_see_future_state(self):
+        plan, _ = run.make_plan(4, scenario='knowledge-work')
+        world = lab.World(plan['natural'])
+        actor, other = list(world.plan)[:2]
+        entered, release = threading.Event(), threading.Event()
+        private = lab.files(world.plan[actor], actor)
+        hydrated = {}
+
+        def execute(command, shared):
+            entered.set()
+            if not release.wait(5):
+                raise RuntimeError('test command was not released')
+            return ({'exit_code': 0, 'stdout': 'source revision not published at snapshot',
+                     'stderr': '', 'output_truncated': False, 'limit': None},
+                    {'/workspace': deepcopy(private), '/registry': dict(shared)})
+
+        station = SimpleNamespace(execute=execute, hydrate=lambda values, _: hydrated.update(values),
+                                  pause=lambda: None, name='test-workstation', closed=False)
+        world.workstations[actor] = station
+        world.private[actor] = deepcopy(private)
+        transaction = world.begin_bash(actor, {'command': 'sleep 20; cat source-publication.json'})
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(world.execute_bash, transaction)
+            try:
+                self.assertTrue(entered.wait(2))
+                with self.assertRaisesRegex(RuntimeError, 'already executing'):
+                    world.begin_bash(actor, {'command': 'pwd'})
+                # Both another job and the real source update progress while
+                # this workstation remains busy. Publication never hydrates it.
+                item = world.service(other).batch['reviews'][0]
+                result = world.call(other, 1, 'search_archive', {'query': item['quote_name']})
+                self.assertEqual(result['status'], 200)
+                self.assertFalse(future.done())
+                world.publish_final_build()
+                self.assertEqual(hydrated, {})
+                self.assertFalse(future.done())
+            finally:
+                release.set()
+            execution = future.result(timeout=2)
+        self.assertNotIn('/workspace/source-publication.json', execution['snapshot']['/workspace'])
+        result = world.call(actor, 1, 'bash', {'command': transaction['command']}, bash_execution=execution)
+        self.assertEqual(result['status'], 200)
+        self.assertIn('not published at snapshot', result['stdout'])
+        self.assertIn('/workspace/source-publication.json', world.private[actor])
+        self.assertEqual(hydrated['/workspace/source-publication.json'],
+                         world.private[actor]['/workspace/source-publication.json'])
+        self.assertFalse(world.running_shells)
+        self.assertEqual([e['id'] for e in world.events], list(range(1, len(world.events)+1)))
+        timing = world.events[-1]['workstation_execution']
+        self.assertLessEqual(timing['snapshot_at'], world.events[-2]['at'])
+        self.assertLessEqual(world.events[-2]['at'], timing['finished_at'])
+        self.assertFalse(world.events[-1].get('shared_reads'))
+
+    def test_concurrent_shell_create_cannot_overwrite_a_new_shared_record(self):
+        plan, _ = run.make_plan(4, scenario='knowledge-work')
+        world = lab.World(plan['natural'])
+        actor, other = list(world.plan)[:2]
+        world.private[actor] = lab.files(world.plan[actor], actor)
+        world.workstations[actor] = SimpleNamespace()
+        args = {'command': 'write one new record'}
+        transaction = world.begin_bash(actor, args)
+        path = '/registry/cache/reviews/source-note-conflict.json'
+        world.write_shared(path, lab.ENCODE('other committed value'), other, 'bash')
+        committed = deepcopy(world.shared[path])
+        execution = {'actor': actor, 'command': args['command'], 'before': transaction['before'],
+            'snapshot_at': transaction['snapshot_at'], 'started_at': run.utc(), 'finished_at': run.utc(),
+            'reply': {'stdout': '', 'stderr': '', 'exit_code': 0},
+            'snapshot': {'/workspace': deepcopy(world.private[actor]),
+                         '/registry': {path: lab.ENCODE('stale conflicting value')}}}
+        result = world.call(actor, 1, 'bash', args, bash_execution=execution)
+        self.assertEqual(result['status'], 403)
+        self.assertEqual(world.shared[path], committed)
+        self.assertEqual(world.events[-1]['shared_changes'], [])
+
     def test_completed_reply_is_not_starved_by_newer_actor_replies(self):
         inbox = run.CompletedResponses()
         older, active = Future(), Future()

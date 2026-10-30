@@ -2,7 +2,7 @@
   "family": "swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "input_revision": "knowledge-work-version-comments-v87",
+  "input_revision": "knowledge-work-concurrent-workstations-v88",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-recipient-materialization-v23",
   "connected_single_run": true,
@@ -269,5 +269,13 @@
     "depends_on_communication": false,
     "stable_archive_lookup": true,
     "handoff_requires_current_source_reviews": true
+  },
+  "tool_execution": {
+    "private_shells_concurrent": true,
+    "shared_commits_serial": true,
+    "registry_read_view": "command_start_snapshot",
+    "per_response_tool_order_preserved": true,
+    "source_update_during_command": "apply_private_update_after_command_without_retroactive_read",
+    "ready_dispatch": "completion_order"
   }
 }

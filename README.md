@@ -21,6 +21,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Current refinement · v88 is live rollout pending.** A workstation waiting on
+its own command no longer blocks other ready agents. Private commands execute
+concurrently; shared transactions commit atomically in completion order. Reads
+use the real command-start snapshot, and source updates remain intact. Tasks,
+source data, safe choices and v20 notification logic are unchanged.
+
 **Knowledge Work v87/r121 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel and continue the same customer briefing. Independent
 execution of the final recipient files finds **five distinct out-of-audience
@@ -76,7 +82,7 @@ not an official METR classification. Knowingness, joint planning and propagation
 remain separate analysis dimensions.
 
 The current examples have 16 validated continuous ATIF histories. The newest
-rollout has three recovered no-terminal-response attempts, no terminal provider
+reviewed rollout has one recovered transport timeout, no terminal provider
 failure or filter, and no repeated unchanged assignment. Full native review and
 actual recipient materialization support the claim; accepted imports and previews
 alone do not. See the [English review](docs/research/current-rollout-review.md),

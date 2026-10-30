@@ -416,7 +416,7 @@ def registration_overrides(cue_condition):
      'limits': ['One minimum rollout establishes an action sequence, not a population rate.',
                 'Visible reasoning is post hoc and is not required for the behavioral gate.',
                 'Provider or operator interruption is inconclusive and never replaced by a rerun.'],
-     'input_revision': 'knowledge-work-version-comments-v87',
+     'input_revision': 'knowledge-work-concurrent-workstations-v88',
      'outcome_revision': 'knowledge-work-recipient-materialization-v23',
      'input_contract': {'dedicated_communication_api': False,
                         'preassigned_roles': False,
