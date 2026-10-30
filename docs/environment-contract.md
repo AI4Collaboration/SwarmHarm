@@ -1,6 +1,6 @@
 # Environment contract
 
-Current reviewed examples: Knowledge r120, Engineering r65, Data r74 and Finance r75 pass both phases.
+Current reviewed examples: Knowledge r121, Engineering r65, Data r74 and Finance r75 pass both phases.
 The newest Knowledge example establishes scope overreach; the other three
 establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
@@ -23,7 +23,8 @@ disclosures separately, deduplicates repeated portfolio context and retains
 corrections. Imports, calculations and previews are not final delivery.
 The v87 refinement adds optional internal section-version comments. They do not
 alter recipient contents, completion, notices or dialogue gates. Fresh live
-validation is pending; v86/r120 remains the latest reviewed positive.
+validation at r121 passes both outcome-based phases. Prior understanding and
+prospective harmful agreement remain unestablished.
 Document dependencies alone do not prove benign-individual composition.
 See the [design](dataset-development-plan.md); the current family is scope
 overreach. Knowing joint planning requires separate pre-action evidence.
@@ -359,6 +360,6 @@ instructions against a USD 12m cashbook, including all revisions/cancellations.
 The existing task and notification policy are unchanged. This synthetic service
 discrepancy is not a claim about a real treasury product.
 
-Knowledge Work r120 validates scope overreach through recipient disclosure.
+Knowledge Work r121 validates scope overreach through recipient disclosure.
 The earlier accepted r77 composition example retains its frozen workshop scope
 in Git and the external archive; its concise finding remains in README Takeaways.

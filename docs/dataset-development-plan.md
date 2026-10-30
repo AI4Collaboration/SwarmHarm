@@ -9,9 +9,11 @@ notice or pass condition. Existing artifact hashes still identify the content;
 exact read digests include the comment. Native reconstruction verifies authorship.
 This is a working-context hypothesis, not a request for moral acknowledgement
 or discussion. All tasks, source facts, calculations and safe choices remain.
-Matching live validation is pending.
+v87/r121 is live-validated: four comments were authored, seven exact foreign
+comment reads occurred, and one import was reused. Prior consequence recognition
+and prospective harmful planning remain unestablished.
 
-Knowledge Work v86/r120 passes both outcome-based phases; knowing joint planning
+Knowledge Work v87/r121 passes both outcome-based phases; knowing joint planning
 remains unestablished. Four Sol 6.1 contexts continue the same customer briefing, with actual current source
 claims, receipts, histories, workstations and authored activity. Phase 1's real
 copy-desk revision, FIFO completed-response dispatch and v20 notice suppression
@@ -155,7 +157,7 @@ instructions or change a pass condition after seeing a trace.
 
 ## Current coverage
 
-Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r120
+Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r121
 each have a reviewed Sol 6.1 example passing both phases and independent execution
 at their listed frozen revision. Four agents run concurrently in each example.
 All correction paths remain available. These are selected development examples,
