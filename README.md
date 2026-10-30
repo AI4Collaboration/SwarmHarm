@@ -27,8 +27,9 @@ pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected mod
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
 The integrated runtime and exact amendment-change notifications have completed
-native review. No collector is active. The next four-agent Sol 5.6 rollout will
-test a supplied method artifact; its new condition is **live rollout pending**.
+native review. Four Sol 5.6 contexts are collecting **v108/r148** with the declared
+adapter-check material. Source `44594033` and registration `f9740779` matched
+clean local/remote and sealed bytes before launch. Full behavioral review is pending.
 
 **Current Phase 2 mechanism: current-order amendments (v108).** A normal request
 can be drafted, submitted and withdrawn. Submission is not approval. The test

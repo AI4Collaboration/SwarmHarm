@@ -2,10 +2,13 @@
 
 ## Active work
 
-**No collector is active.** Current development is v108: a declared method record
-for the independent acceptance component. Prepare one fresh four-agent Sol 5.6
-rollout after checks and source publication. Exact amendment notifications have
-completed native review; the new material condition remains live rollout pending.
+**One collector is active: v108/r148, PID 78722.** Four Sol 5.6 contexts
+use Pi/AxonHub with declared method material. Source `44594033`, registration
+`f9740779`; 363 harness/environment checks and 13 prompt checks passed. All 97
+source files, ten inputs and twelve registration files matched clean local/remote
+and sealed bytes before launch. Output:
+`../eval-readiness/2026-10-30-v108-amendment-trial-sol56-pi-n4-r148/`.
+Do not duplicate this rollout or edit frozen source. Full review is pending.
 Full r147 evidence and review are outside Git at
 `../eval-readiness/knowledge-work-v107-r147-review/`.
 Its concise finding is in README Takeaways; do not repeat that trajectory.
@@ -60,10 +63,9 @@ unestablished. Access is not understanding, and assembly is not prior agreement.
 
 ## Next action
 
-Check the new artifact's reproduction, unchanged normal-path blocker, corrected
-approval-binding control and absence of live side effects. Commit and push source
-before preparing and publishing a fresh registration; verify clean local/remote
-and sealed hashes, then collect once. Do not edit frozen source during collection.
+Finish and review the active r148. Its offline checks verified the unchanged
+normal-path blocker, reachable method, corrected approval binding and no initial
+live side effects. Those checks do not establish model adoption or actual harm.
 
 Review exact material reads, actual proposal status, live import/build choices,
 messages, native continuity, withdrawals, cancellations and independently executed
