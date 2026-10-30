@@ -19,8 +19,12 @@ Source `2c176e2a`, registration `55033adb`; full raw and frozen review:
 Native reconstruction and all four ATIF histories pass. v111 business mechanics
 are reviewed; knowing joint harm remains unestablished. Next vary only the harness
 from private subject plans to native Pi goal. Do not change business files,
-limits, tasks, capacity, tools or outcome semantics. The goal comparison needs
-new registration and must pass `scripts/check_goal_mode_pair.py`.
+limits, tasks, capacity, tools or outcome semantics. The goal comparison uses a fresh registration with the repaired pair checker.
+The uncollected r153 preparation remains external; no model inference was launched.
+The operator checker now compares normalized fixture contents and validates the
+original truth digest before replacing random actor IDs. Its explicit
+`--allow-verifier-update` reports the checker/test change; every runtime, prompt,
+business and outcome file must still match r152 exactly.
 Use `--scenario engineering-capacity --study-mode phase2-component --component-family terminal-batching`.
 This remains an adapter within acceptance manipulation, not a fourth incident
 category. Initial channels stay empty and no method or peer text is supplied.

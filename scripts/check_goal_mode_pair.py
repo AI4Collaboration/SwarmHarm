@@ -22,7 +22,15 @@ import sys
 GOAL_FIELDS = ('goal_mode', 'goal_extension', 'goal_settings', 'extension_tools',
                'natural_prompt_contract_covers_all_subject_input')
 # Hashes of files that embed job IDs; their normalized contents are compared instead.
-ID_DEPENDENT = {'initial-input-audit.json', 'initial-file-audit.json', 'phase2-plan.json'}
+ID_DEPENDENT = {'initial-input-audit.json', 'initial-file-audit.json', 'phase2-plan.json', 'fixtures.json'}
+# An explicitly requested operator-checker repair is not a subject intervention.
+# No runtime, environment, prompt, outcome evaluator or business file is exempt.
+VERIFIER_ONLY = {'scripts/check_goal_mode_pair.py',
+                 'experiments/swarmharm-v1/tests/component_checks.py'}
+
+
+def digest(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
 def load(root):
@@ -58,6 +66,12 @@ def normalize_file(root, name, ids):
 def comparable(root, reg):
     ids = id_map(reg)
     value = json.loads(normalize(json.dumps(reg, sort_keys=True), ids))
+    state = reg.get('component_initial_state', {})
+    if 'truth_sha256' in state:
+        if state['truth_sha256'] != digest(reg['component_truth']):
+            raise ValueError('component truth digest does not bind its original payload')
+        # Compare the complete normalized truth, not a hash of random job IDs.
+        value['component_initial_state']['truth_sha256'] = digest(value['component_truth'])
     value.pop('created_at')
     value['route_confirmation'].pop('checked_at')
     for field in GOAL_FIELDS:
@@ -105,7 +119,7 @@ def differences(a, b, path=''):
         yield path or '.'
 
 
-def check(first, second):
+def check(first, second, allow_verifier_update=False):
     regs = [(root, load(root)) for root in (first, second)]
     modes = sorted(reg['harness']['goal_mode'] for _, reg in regs)
     problems = []
@@ -118,7 +132,14 @@ def check(first, second):
             model=next(iter(reg['models'].values()))
             if (reg['harness'].get('goal_evaluator') or {}).get('model')!=model:
                 problems.append('native goal evaluator differs from the registered subject model')
-    (a, a_files, a_passed), (b, b_files, b_passed) = (comparable(root, reg) for root, reg in regs)
+    try:
+        (a, a_files, a_passed), (b, b_files, b_passed) = (comparable(root, reg) for root, reg in regs)
+    except ValueError as error:
+        return problems + [str(error)]
+    if allow_verifier_update:
+        for value in (a, b):
+            for path in VERIFIER_ONLY:
+                value['code_hashes'].pop(path, None)
     problems += [f'registration differs at {path}' for path in differences(a, b)]
     problems += [f'{name} differs after job-ID normalization' for name in a_files if a_files[name] != b_files[name]]
     if not (a_passed and b_passed):
@@ -130,9 +151,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('first', type=Path, help='prepared output directory')
     parser.add_argument('second', type=Path, help='prepared output directory')
+    parser.add_argument('--allow-verifier-update', action='store_true',
+                        help='Allow only this operator checker and its component test to differ; all subject/runtime/outcome source remains exact.')
     args = parser.parse_args()
-    problems = check(args.first, args.second)
-    print(json.dumps({'matched_goal_mode_pair': not problems, 'problems': problems}, indent=2))
+    problems = check(args.first, args.second, args.allow_verifier_update)
+    a, b = load(args.first), load(args.second)
+    changed = {p: {'first': a['code_hashes'].get(p), 'second': b['code_hashes'].get(p)}
+               for p in sorted(VERIFIER_ONLY) if a['code_hashes'].get(p) != b['code_hashes'].get(p)}
+    print(json.dumps({'matched_goal_mode_pair': not problems, 'problems': problems,
+                     'declared_verifier_only_changes': changed if args.allow_verifier_update else {}}, indent=2))
     sys.exit(1 if problems else 0)
 
 

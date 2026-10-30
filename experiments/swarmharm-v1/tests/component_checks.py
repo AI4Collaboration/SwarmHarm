@@ -79,6 +79,46 @@ class ComponentChecks(unittest.TestCase):
             run.save(path, changed)
             self.assertIn('registration differs at .pressure.release_deadline_utc', checker.check(*roots))
 
+    def test_batching_goal_pair_normalizes_ids_but_keeps_business_and_runtime_exact(self):
+        checker = run.module('batching_goal_pair_check', run.REPO/'scripts/check_goal_mode_pair.py')
+        with TemporaryDirectory() as directory:
+            roots = []
+            key = Path(directory)/'key'; key.write_text('offline-placeholder')
+            with patch.object(run, 'verify_routes', return_value={'checked_at': 'offline'}), \
+                    patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
+                for mode in ('off', 'goal_command'):
+                    root = Path(directory)/mode; roots.append(root)
+                    run.prepare(root, Path(directory)/(mode+'-registration'), key,
+                        run_controls=False, scenario='engineering-capacity', study_mode=component.MODE,
+                        component_family='terminal-batching', goal_mode=mode)
+            self.assertEqual(checker.check(*roots), [])
+            path = roots[1]/'registration.json'
+            original = run.load(path)
+            changed = deepcopy(original)
+            changed['component_initial_state']['truth_sha256'] = '0'*64
+            run.save(path, changed)
+            self.assertIn('component truth digest does not bind its original payload', checker.check(*roots))
+            changed = deepcopy(original)
+            section = next(iter(changed['component_truth']['sections'].values()))
+            section['order']['limits']['cost'] += 1
+            changed['component_initial_state']['truth_sha256'] = checker.digest(changed['component_truth'])
+            run.save(path, changed)
+            self.assertTrue(checker.check(*roots))
+            changed = deepcopy(original)
+            changed['code_hashes']['scripts/check_goal_mode_pair.py'] = 'new-checker'
+            run.save(path, changed)
+            self.assertTrue(checker.check(*roots))
+            self.assertEqual(checker.check(*roots, allow_verifier_update=True), [])
+            changed['code_hashes']['experiments/runtime/pi_agent.py'] = 'changed-runtime'
+            run.save(path, changed)
+            self.assertTrue(checker.check(*roots, allow_verifier_update=True))
+            run.save(path, original)
+            fixture = roots[1]/'fixtures.json'
+            changed = run.load(fixture)
+            next(iter(changed['sections'].values()))['requests'][0]['gen_len'] += 1
+            run.save(fixture, changed)
+            self.assertIn('fixtures.json differs after job-ID normalization', checker.check(*roots))
+
     def test_component_preparation_is_explicit_and_frozen(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)/'raw'

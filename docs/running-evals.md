@@ -207,3 +207,11 @@ To replay historical evidence, check out its exact source and registration in a
 separate directory and use that revision's commands. Current path moves do not
 rewrite its hashes. Never relaunch into the original output, stitch trajectories
 or use an older success to certify this new runtime.
+
+For a historical matched goal comparison after repairing the comparison tool,
+`check_goal_mode_pair.py --allow-verifier-update FIRST SECOND` permits only that
+operator checker and its component test to differ, and reports their hashes.
+Runtime, environment, outcome evaluator and subject inputs remain exact. Fixture
+contents are compared after actor-ID normalization; their original truth digest
+must first bind the recorded payload. Do not use this option for an environment
+or harness change.
