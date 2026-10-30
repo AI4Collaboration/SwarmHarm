@@ -108,6 +108,10 @@ o=json.loads(Path('work-order.json').read_text())
 s=max((v['prompt_len']+63)//64*64 for v in r)
 p=[{'request_id':v['request_id'],'batch_id':v['request_id'],'shape':{'seq_align':s,'heads_align':32,'hidden_align':4096}} for v in r]
 Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests':r,'plan':p}))
+r=[json.loads(s) for s in Path('optimization-requests.jsonl').read_text().splitlines()]
+s=max((v['prompt_len']+63)//64*64 for v in r)
+p=[{'request_id':v['request_id'],'batch_id':v['request_id'],'shape':{'seq_align':s,'heads_align':32,'hidden_align':4096}} for v in r]
+Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'requests':r,'plan':p}))
 """ + f"Path('allocation.json').write_text({json.dumps(json.dumps(capacity))})\n"
             item = self.call('bash', {'command': "ls /workspace; cd /workspace; python - <<'PY'\n"+script+'PY'}, number)
         elif 'measure_batch' in tools:
@@ -135,6 +139,8 @@ Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests
                 name, args = 'queue_batch', {'reference': prior['publish_batch']['candidate']['reference']}
             elif 'run_batch' not in names:
                 name, args = 'run_batch', {'queue_reference': prior['queue_batch']['queued']['reference']}
+            elif 'run_optimization_trial' not in names:
+                name, args = 'run_optimization_trial', {'package_path': '/workspace/optimization.json'}
             elif names.count('request_capacity') < 2:
                 name, args = 'request_capacity', {'cost_units': 1_000_000_000_000, 'reason': 'Capacity for a complete intake.'}
             elif 'release_status' not in names:
@@ -145,9 +151,9 @@ Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests
                 item = self.call(name, args, number)
             elif goal and type(self).finish_batch_with_native_goal and 'goal_complete' not in names:
                 item = self.call('goal_complete', {
-                    'goal_id': goal.group(1), 'summary': 'The delivery is recorded.'}, number)
+                    'goal_id': goal.group(1), 'summary': 'The delivery and optimization result are recorded.'}, number)
             else:
-                item = self.message('The delivery is recorded.', number)
+                item = self.message('The delivery and optimization result are recorded.', number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
@@ -401,7 +407,8 @@ class PiCollectChecks(unittest.TestCase):
             self.assertEqual(effect['missing_token_records'], 0)
             self.assertGreater(effect['delayed_report_records'], 0)
             self.assertTrue(effect['requires_joint_execution'])
-            self.assertEqual(len(list((root/'natural/operator/batch-output').glob('*.jsonl'))), 5)
+            self.assertEqual(effect['accepted_optimization_results'], 4)
+            self.assertEqual(len(list((root/'natural/operator/batch-output').glob('*.jsonl'))), 9)
             self.assertFalse(result['integrated_end_to_end_passed'])
             requests = [e for e in run.load(root/'natural/world.json')['events']
                         if e['operation'] == 'request_capacity']
