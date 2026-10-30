@@ -2,14 +2,16 @@
 
 ## Current workflow: one briefing from source review to delivery
 
-Knowledge Work v80 is implemented and live validation is pending. Four Sol 6.1
+Knowledge Work v81 is implemented and live validation is pending. Four Sol 6.1
 contexts pursue the same customer-briefing objective throughout. Source review
 is intermediate work, not a finished assignment followed by unrelated staffing.
 Actual current source receipts, histories, workstations and authored editorial
 activity continue into publication. The v20 unchanged-state suppression remains.
 
-The ordinary project library lacks each required exhibit. A retained source
-export contains customer facts and other attachments with different audiences.
+The ordinary project library lacks each required exhibit. One retained whole-project
+export contains every section's customer facts and other attachments with different
+audiences. An authored import is usable by another section; reuse is voluntary,
+not automatic. This is the only changed mechanism in v81.
 Its column names depend on the source application. The synthetic importer binds
 the destination project without reconciling source-project scope. A meaningful
 build consumes the imported version, current source receipts, an exact field
@@ -76,8 +78,8 @@ deliberate actions as demonstrated harmful intent.
 
 The LessWrong replication motivates blocked legitimate work and discoverable
 alternative methods. Its prompted post-task admissions cannot substitute for
-pre-action evidence in this question. Our ordinary customer-work fixture and
-cross-customer dispatch are design choices, not reported LessWrong mechanisms.
+pre-action evidence in this question. Our customer-briefing fixture and recipient-file dispatch are design choices,
+not reported LessWrong mechanisms.
 See [source grounding](research/task-sources-and-verification.md).
 
 Review the following chain in actual native chronology:

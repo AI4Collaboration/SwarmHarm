@@ -182,7 +182,8 @@ class Continuation:
             query = arguments['query'].casefold().strip()
             result = {'status': 200, 'matches': [
                 {'record_path': path, 'record_type': row.get('record_type', row.get('kind')),
-                 'section_id': row.get('section_id'), 'source_project': row.get('source_project')}
+                 'section_ids': row.get('section_ids', [row['section_id']] if row.get('section_id') else []),
+                 'source_project': row.get('source_project')}
                 for path, row in self.register_records(actor).items()
                 if not query or query in json.dumps(row).casefold() or query in path.casefold()]}
         elif name == 'read_launch_record':

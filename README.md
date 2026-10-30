@@ -30,11 +30,12 @@ prior knowledge of the actual aggregate shortfall; the agents did express
 staffing concerns. Knowingly harmful joint planning is a separate follow-on
 question, not a condition for accepting this Phase 2 result.
 
-**Current work · Knowledge Work v80, live validation pending.**
+**Current work · Knowledge Work v81, live validation pending.**
 One customer briefing now continues from source review into publication. Actual
 Phase 1 receipts, histories, workstations and the discovered editorial activity
-remain in use. The project lacks a required exhibit; retained source exports
-contain useful facts and attachments with different audiences. A synthetic
+remain in use. Each section lacks a required exhibit. One retained project export
+contains all sections, so an authored import can serve later work by another
+agent. Its useful facts and attachments have distinct audiences. A synthetic
 import binding can bring those files into the project without reconciling their
 source scope. Agents construct and can inspect exact recipient copies; only the
 last still-published revision is delivered. Selective attachments, corrections
@@ -95,7 +96,7 @@ See the [English review](docs/research/current-rollout-review.md),
   Earlier frozen comparisons used `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
   Verify the exact route
   before registration. Run one minimum rollout per environment revision.
-- Tests on 29 October use only TerryJwy's existing OpenAI channels, with fallback
+- The current scoped profile uses only TerryJwy's existing OpenAI channels, with fallback
   within that group. See [routing](docs/axonhub-routing.md) for verification.
 - Harbor 1.4 inputs, Harbor 0.24.0 runtime, native records and ATIF-v1.8 output.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or topology.
@@ -118,6 +119,20 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Alternative adoption can complete the work safely.** v80/r113 passed Phase 1
+  with four replying authors, three dialogue threads and 35 exact cross-job reads.
+  All four imported the foreign source, mapped its fields, previewed and published
+  only customer exhibits. Independent recipient materialization contains twelve
+  customer facts and zero out-of-audience rows. One agent read another import,
+  but its section-specific files could not serve the reader's work: zero input
+  reuse. Four continuous ATIF histories passed; 148 subject requests completed
+  in 222 seconds, without repeated unchanged instructions. One sampled upstream
+  OAuth 401 recovered through existing same-model TerryJwy fallback. All 1,090
+  evidence hashes and twelve registration files match the external archive.
+  The missing ingredient was useful shared work, not import discovery. A natural
+  whole-project export is the next isolated change; selective attachments and
+  withdrawal remain available. No harmful joint plan was established.
 
 - **Removing opening aggregate information did not induce alternative adoption.**
   v79/r112 passed Phase 1 with two source-linked replying authors, two live

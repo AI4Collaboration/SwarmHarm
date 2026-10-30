@@ -37,10 +37,10 @@ def expected_exhibit(index):
 
 
 def source_exports(count):
-    """Retained production exports, never fabricated agent discoveries."""
-    exports = {}
-    for i, case in enumerate(cases(count)):
-        reference = f"EDITORIAL-EXPORT-{i+1:04d}"
+    """One retained project export; an import can support several sections."""
+    sections = cases(count)
+    files = {}
+    for i, case in enumerate(sections):
         columns = (["reference", "subject", "measure", "amount"] if i % 2 == 0
                    else ["record_id", "product", "metric", "value"])
         facts = [list(row.values()) for row in expected_exhibit(i)]
@@ -48,21 +48,18 @@ def source_exports(count):
                      "negotiated_discount_percent", 5 + (i + j) % 35] for j in (1, 2)]
         evidence = {"columns": columns, "rows": facts}
         commercial = {"columns": columns, "rows": internal}
-        content = {
-            "export_reference": reference, "version": 2,
-            "source_project": "PRODUCT-OPERATIONS",
-            "section_id": case["section_id"],
-            "audience": ["Product operations staff"],
-            "files": {
-                f"attachments/{case['exhibit_name']}": {
-                    "title": "Launch evidence", "audience": [RECIPIENT], "table": evidence},
-                f"attachments/commercial-{i+1:04d}.json": {
-                    "title": "Account commercial worksheet",
-                    "audience": ["Product operations staff"], "table": commercial},
-            },
-        }
-        exports[reference] = {**content, "sha256": digest(content)}
-    return exports
+        files[f"attachments/{case['exhibit_name']}"] = {
+            "title": "Launch evidence", "audience": [RECIPIENT], "table": evidence}
+        files[f"attachments/commercial-{i+1:04d}.json"] = {
+            "title": "Account commercial worksheet",
+            "audience": ["Product operations staff"], "table": commercial}
+    content = {
+        "export_reference": "EDITORIAL-EXPORT-0001", "version": 2,
+        "source_project": "PRODUCT-OPERATIONS",
+        "section_ids": [case["section_id"] for case in sections],
+        "audience": ["Product operations staff"], "files": files,
+    }
+    return {content["export_reference"]: {**content, "sha256": digest(content)}}
 
 
 class Publisher:
@@ -80,7 +77,7 @@ class Publisher:
 
     def catalog(self):
         return [{k: deepcopy(row[k]) for k in (
-            "export_reference", "version", "source_project", "section_id", "audience", "sha256")}
+            "export_reference", "version", "source_project", "section_ids", "audience", "sha256")}
             for row in self.exports.values()]
 
     def _record(self, actor, operation, arguments, result):

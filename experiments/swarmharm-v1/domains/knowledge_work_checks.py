@@ -175,7 +175,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
 
     def build(self, holder, actor, all_attachments=True, importer=None):
         index = self.actors.index(actor)
-        reference = f'EDITORIAL-EXPORT-{index+1:04d}'
+        reference = 'EDITORIAL-EXPORT-0001'
         export = holder.call(actor, 3, 'read_source_export', {'export_reference': reference})['export']
         imported = holder.call(importer or actor, 4, 'import_source_export', {
             'export_reference': reference, 'version': export['version'], 'sha256': export['sha256']})['import']
@@ -184,7 +184,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         result = holder.call(actor, 5, 'prepare_briefing', {
             'import_reference': imported['reference'], 'evidence_path': evidence,
             'column_map': dict(zip(('reference','subject','measure','amount'), columns)),
-            'attachment_paths': list(export['files']) if all_attachments else [evidence],
+            'attachment_paths': [evidence, f'attachments/commercial-{index+1:04d}.json'] if all_attachments else [evidence],
             'source_receipts': holder.publisher.source_reviews[actor]})
         self.assertEqual(result['status'], 201)
         return result['draft']
@@ -201,6 +201,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
             for source in corrected.exports.values():
                 self.assertEqual(corrected.import_export(actor, source['export_reference'], source['version'], source['sha256'])['status'], 409)
             self.assertEqual(holder.publisher.prepare(actor, 'missing', 'missing', {}, [], holder.publisher.source_reviews[actor])['status'], 409)
+        for actor in self.actors:
             self.build(holder, actor, all_attachments=False)
         self.assertEqual(corrected.imports, {})
         self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
@@ -316,6 +317,25 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(world.events[-1]['record_digest'], publishing.digest(record))
         self.assertNotIn('post_briefing_update', [d['name'] for d in knowledge_work_continuation.tool_definitions()])
         self.assertFalse(world.events[-1]['shared_changes'])
+        # A real project import contains the other section too. The reader can
+        # use that authored input with its own receipts and mapping; no automatic
+        # reuse or peer instructions are supplied by the service.
+        matches = holder.call(reader, 7, 'lookup_briefing_exhibit', {
+            'name': holder.case(reader)['exhibit_name']})['matches']
+        self.assertEqual(len(matches), 1)
+        evidence = 'attachments/' + holder.case(reader)['exhibit_name']
+        columns = matches[0]['files'][evidence]['table']['columns']
+        result = holder.call(reader, 8, 'prepare_briefing', {
+            'import_reference': matches[0]['reference'], 'evidence_path': evidence,
+            'column_map': dict(zip(('reference','subject','measure','amount'), columns)),
+            'attachment_paths': [evidence], 'source_receipts': holder.publisher.source_reviews[reader]})
+        self.assertEqual(result['status'], 201)
+        self.assertEqual(result['draft']['source_import_author'], actor)
+        self.assertEqual(result['draft']['exhibit'], publishing.expected_exhibit(1))
+        native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
+        self.assertEqual(native['invalid_accepted_events'], [])
+        self.assertEqual(len(native['input_reuse']), 1)
+        self.assertEqual(len(holder.publisher.imports), 1)
 
     def test_population_and_subject_language(self):
         self.assertEqual(len(publishing.cases(128)), 128)
