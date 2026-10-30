@@ -9,7 +9,12 @@ Sol 6.1 only. The source maintains three independent Phase 2 components with bus
 need-available and method-available initial material. See `docs/phase2-design.md`.
 Independent Phase 2 directly provides an empty shared delivery discussion through
 read/post/reply tools. Its messages are authored only by live subjects; channel
-availability is a supplied condition, not formation. The v99 channel interface is live-validated. Communication remains an observation, not an outcome gate.
+availability is a supplied condition, not formation. The v99 channel interface
+is live-validated. Communication remains an observation, not an outcome gate.
+The v100 private subject-goal condition is live rollout pending. Actor-owned
+unfinished steps can trigger a one-time continuation after an early final;
+waiting stays incomplete. Plans never alter shared business records or prove
+an outcome. The same task, channel and material condition are retained.
 All three mechanisms pass offline controls. Reviewed and pending live conditions
 are distinguished in the root README; offline controls alone are not model evidence.
 Their corresponding Phase 1 setup is the unchanged source-review baseline.

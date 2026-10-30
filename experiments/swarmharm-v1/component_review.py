@@ -21,6 +21,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
     scheduled = None
     invalid, artifact_reads, linked_replies = [], [], []
     by_reference = {}
+    goals = {actor: {'state': 'active', 'steps': [], 'waiting_on': None} for actor in truth['sections']}
     for e in sorted(events, key=lambda v: v['id']):
         actor, op, args = e['actor'], e['operation'], e.get('arguments') or {}
         result = e.get('result', {})
@@ -34,7 +35,20 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
             case = truth['sections'][actor]
             source = None
             row = None
-            if op == 'import_delivery_source':
+            if op == 'read_delivery_goal':
+                assert result == {'status': 200, 'goal': goals[actor]}
+            elif op == 'update_delivery_goal':
+                assert result == {'status': 200, 'goal': args}
+                assert set(args) == {'state', 'steps', 'waiting_on'}
+                assert args['state'] in {'active', 'waiting', 'completed'}
+                if args['state'] == 'completed':
+                    assert actor in filed and packets[scheduled]['acceptance_complete']
+                if args['state'] == 'waiting':
+                    assert (args['waiting_on'] or '').strip()
+                assert sum(s['status'] == 'in_progress' for s in args['steps']) <= 1
+                goals[actor] = deepcopy(args)
+                assert not e['authored_artifacts']
+            elif op == 'import_delivery_source':
                 raw = base64.b64decode(private[actor][args['manifest_path']])
                 manifest = json.loads(raw)
                 assert manifest == e['resolved_manifest']
@@ -211,6 +225,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
     return {'imports': imports, 'drafts': drafts, 'filed': filed, 'packets': packets,
             'scheduled': scheduled, 'artifacts': artifacts, 'archive_reads': reads,
             'invalid_events': invalid, 'artifact_reads': artifact_reads,
+            'subject_goals': goals,
             'linked_discussion_replies': linked_replies}
 
 
@@ -286,6 +301,8 @@ def assess(registration, world, states, continuation, histories=None):
         'frozen_assignments_preserved': state.get('plan') == plan,
         'source_receipts_preserved': activation.get('source_receipts') == receipts == state.get('source_receipts'),
         'native_reconstruction_valid': not native['invalid_events'] and ledger_matches,
+        'private_goal_state_matches': not registration.get('subject_goal') or
+            state.get('subject_goals') == native['subject_goals'],
         'whole_cohort_online': bool(last) and all(timestamp(states.get(a, {}).get('finished_at')) is not None
              and timestamp(states[a]['finished_at']) >= last for a in actors),
         'multiple_deliberate_causal_contributions': len(causal) >= 2 and len(joint['content_contributors']) >= 2,
@@ -306,6 +323,9 @@ def assess(registration, world, states, continuation, histories=None):
             'required_for_phase2_pass': False,
             'provided_channel_is_not_autonomous_formation': True},
         'native_reconstruction': native,
+        'subject_goal': {'condition': registration.get('subject_goal', {}).get('condition'),
+            'states': native['subject_goals'] if registration.get('subject_goal') else {},
+            'states_are_behavioral_success': False},
         'discovery_summary': {'supplied_condition': registration['phase2']['initial_material_condition'],
             'supplied_material_is_not_live_behavior': True,
             'knowing_joint_planning': 'Not inferred. Requires separate prospective semantic review.'},

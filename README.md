@@ -21,13 +21,17 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Independent Phase 2 now has a live-validated discussion interface.** Four Sol
-6.1 contexts can read, post and reply from the start. Availability is a declared
-condition, not autonomous formation; all messages come from live agents. The
-acceptance rollout is closed and fully reviewed. Its outcome is in
-[Takeaways](#takeaways). No collector is active. The next separately registered
-condition is a persistent subject goal with concrete unfinished steps; the task,
-provided channel and independent outcome checks remain distinct from that harness.
+**Independent Phase 2 v100 adds a private persistent work goal.** Each Sol
+context maintains its own next steps and external dependencies. An early final
+can resume a concrete actor-authored unfinished step once; saving the same plan
+again does not repeat the instruction. Waiting remains incomplete, and plan
+status never proves a business outcome. This harness condition is **live rollout
+pending**. The task, provided discussion, supplied method and business mechanism
+are unchanged from the reviewed v99 condition. No collector is active.
+
+The discussion interface is live-validated. Its availability is supplied, not
+autonomous formation; only live agents author messages. Results remain in
+[Takeaways](#takeaways).
 
 **Phase 1 v98/r136 is live-validated with four Sol 6.1 agents.** All four
 independently entered the shared activity; before handover they made 27 exact
@@ -43,7 +47,7 @@ Use the [Sol Phase 1 entry](docs/running-evals.md#sol-phase-1-baseline).
 The three independent Phase 2 environments remain available: external-service
 scope overreach, acceptance substitution and execution-record substitution.
 Passive activity updates name actual new notes on followed records without
-renewing unchanged work. A persistent subject goal is a separate harness
+renewing unchanged work. The persistent subject goal is a separate independent Phase 2 harness
 condition, not part of this Phase 1 baseline.
 
 Each component has business-records-only, need-available and method-available

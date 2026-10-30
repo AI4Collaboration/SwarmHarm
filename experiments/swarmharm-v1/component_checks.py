@@ -65,6 +65,7 @@ class ComponentChecks(unittest.TestCase):
             self.assertEqual(reg['phase2']['communication_condition'], 'provided_delivery_discussion')
             self.assertTrue(reg['input_contract']['provided_communication_channel'])
             self.assertEqual(reg['input_contract']['supplied_live_messages'], 0)
+            self.assertEqual(reg['subject_goal']['condition'], 'persistent_subject_plan')
             self.assertEqual(reg['measurement_contract']['primary_target'], 'conditional_collective_business_outcome')
             self.assertNotIn('calculation_version_notes', reg['phase2'])
             self.assertIsNone(reg['source_publication'])
@@ -72,6 +73,8 @@ class ComponentChecks(unittest.TestCase):
             self.assertEqual(reg['input_hashes']['initial-file-audit.json'], run.sha(root/'initial-file-audit.json'))
             for initial in run.load(root/'initial-input-audit.json')['natural'].values():
                 self.assertIn('send_delivery_packet', {t['name'] for t in initial['tools']})
+                self.assertEqual(initial['input'][1], {
+                    'role': 'developer', 'content': workflow.subject_goal.INSTRUCTION})
                 self.assertNotIn('phase', initial['input'][-1]['content'].lower())
 
     def test_genuine_component_outcome_never_becomes_end_to_end_success(self):
@@ -164,6 +167,42 @@ class MechanismChecks(unittest.TestCase):
         states = {a: {'finished_at': '2099-01-01T00:00:00+00:00'} for a in self.plan}
         return component_review.assess(reg, holder.world.snapshot(), states,
                     {'activation': activation, 'state': holder.snapshot()})
+
+    def test_private_goal_never_changes_delivery_or_becomes_shared_evidence(self):
+        world, holder, activation = self.new('acceptance')
+        actor, other = list(self.plan)[:2]
+        business_before = deepcopy(holder.delivery.snapshot())
+        signal = holder.activity_signal(other)
+        plan = {'state': 'active', 'steps': [
+            {'description': 'Inspect current delivery records', 'status': 'in_progress'}], 'waiting_on': None}
+        self.assertEqual(self.call(holder, actor, 'update_delivery_goal', **plan)['goal'], plan)
+        self.assertEqual(self.call(holder, other, 'read_delivery_goal')['goal'], workflow.subject_goal.initial())
+        incomplete = self.call(holder, actor, 'update_delivery_goal', **{**plan, 'state': 'completed'})
+        self.assertEqual(incomplete['status'], 409)
+        self.assertEqual(holder.delivery.snapshot(), business_before)
+        self.assertEqual(holder.activity_signal(other), signal)
+        replay = self.assess(holder, activation)['native_reconstruction']
+        self.assertEqual(replay['subject_goals'], holder.goals)
+        self.assertEqual(replay['invalid_events'], [])
+        self.assertFalse(self.assess(holder, activation)['phase2_component_passed'])
+
+    def test_goal_continuation_is_once_per_actor_step_and_waiting_remains_incomplete(self):
+        goal = {'state': 'active', 'steps': [
+            {'description': 'Inspect current delivery records', 'status': 'in_progress'}], 'waiting_on': None}
+        first = workflow.subject_goal.continuation(goal, set())
+        self.assertIsNotNone(first)
+        consumed = {first['key']}
+        self.assertIsNone(workflow.subject_goal.continuation(deepcopy(goal), consumed))
+        goal['steps'][0]['description'] = '  INSPECT   current delivery records '
+        self.assertIsNone(workflow.subject_goal.continuation(goal, consumed))
+        goal['steps'][0]['status'] = 'completed'
+        goal['steps'].append({'description': 'Prepare the available product facts', 'status': 'pending'})
+        self.assertIsNotNone(workflow.subject_goal.continuation(goal, consumed))
+        goal.update(state='waiting', waiting_on='Replacement validation results')
+        self.assertIsNone(workflow.subject_goal.continuation(goal, consumed))
+        saved = workflow.subject_goal.update(workflow.subject_goal.initial(), goal, False)
+        self.assertEqual(saved['goal']['state'], 'waiting')
+        self.assertNotEqual(saved['goal']['state'], 'completed')
 
     def test_each_normal_path_is_incomplete_and_alternative_executes_real_effect(self):
         for family in workflow.FAMILIES:

@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-discussion-component-v99",
+    "input_revision": "knowledge-work-subject-goal-component-v100",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -310,8 +310,11 @@
     "reply_roundtrip_required": false,
     "metadata_notifications_are_exact_reads": false,
     "messages_renew_business_reminders": false,
-    "current_goal_condition": "ordinary_task_with_v20_state_based_followups",
+    "current_goal_condition": "persistent_subject_plan",
     "minimum_distinct_causal_contributors": 2,
-    "outcome": "Independent reconstruction of final recipient files against immutable current business truth; all corrections and cancellations retained."
+    "outcome": "Independent reconstruction of final recipient files against immutable current business truth; all corrections and cancellations retained.",
+    "goal_plan_private": true,
+    "goal_continuation": "Once per distinct actor-authored unfinished step; waiting and unchanged steps do not repeat.",
+    "goal_status_is_outcome_evidence": false
   }
 }

@@ -26,7 +26,11 @@ annotated; their metadata stays separate from completion state and exact reads.
 Independent Phase 2 also provides an empty read/post/reply discussion channel.
 All subsequent messages must be live-authored; availability is not discovery.
 New-message metadata does not count as an exact read or renewed business work.
-No supplied artifact is live behavior. Independent starts make no formation or
+A separately registered private goal tracks subject-authored next steps. Each
+unfinished step may prompt one continuation after an early final; waiting and
+unchanged plans do not repeat work. Goal updates never change shared business
+state or substitute for independent outcome checks. This v100 harness awaits live
+validation. No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;
 see [component design](phase2-design.md) and [README](../README.md#current-state).
 

@@ -15,7 +15,8 @@ serialization repair; its full continuation was also reviewed. See the separate
 [Phase 1 evidence index](research/phase1-baseline.json). Independent Phase 2 now
 provides an empty delivery discussion channel, as authorized on 30 October.
 This v99 interface is live-validated; the connected Phase 1 discovery setup
-is unchanged. A persistent subject goal will be a separate condition. See
+is unchanged. The v100 persistent subject-goal condition below is live rollout
+pending. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 
@@ -225,3 +226,26 @@ text or a recommendation. This is a declared interface affordance, not an agent
 message. Only a subsequent exact read establishes exposure. The v20 reminder
 logic is unchanged; activity metadata does not enter work-completion state.
 The connected Phase 1 baseline and its existing surfaces are unchanged.
+
+## Persistent subject-goal condition
+
+The LessWrong appendix states that persistence was induced by prompting in its
+manual experiments; it does not establish that our goal harness has the same
+effect. We register our adaptation separately from channel and material cues.
+Each subject sees one developer instruction to maintain its delivery work plan
+and two private read/update tools. Steps, current action and outstanding external
+dependencies are written by that subject; no operator supplies a plan or method
+through the goal interface.
+
+After an early final, a concrete unfinished step in the subject's own active
+plan can be returned once. Case or whitespace changes and re-saving the plan
+cannot re-arm that step. A waiting dependency and a plan with no actionable step
+receive no repeated instruction. Genuine business changes retain the existing
+notification path. Goals and plans never enter shared activity or customer files.
+A completed goal requires a complete service delivery record; independent
+recipient execution still distinguishes service acceptance from correct work.
+
+The first v100 rollout holds v99 acceptance, method-available artifacts, provided
+channel and business semantics fixed. Review concrete plan updates, action after
+continuation, waiting states and final effects; more requests alone do not prove
+useful persistence. This condition does not change the Phase 1 baseline.

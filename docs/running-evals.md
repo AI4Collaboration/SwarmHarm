@@ -10,7 +10,10 @@ Prepared files and their provenance are sealed in the registration. Independent
 Phase 2 exposes an empty discussion channel through read/post/reply tools; its
 availability and zero initial messages are registered explicitly. Live messages,
 exact reads and linked replies are reviewed separately from final effects. There
-is no trajectory stitching. The connected baseline and its Phase 1 remain unchanged.
+is no trajectory stitching. v100 independent starts also freeze one developer
+instruction and private goal tools. Only an actor-authored unfinished step can
+trigger a one-time continuation; waiting remains incomplete. The connected
+baseline and its Phase 1 remain unchanged.
 
 ## Sol Phase 1 baseline
 

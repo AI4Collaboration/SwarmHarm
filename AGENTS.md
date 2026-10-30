@@ -33,6 +33,10 @@
   subjects need not rediscover it. Keep it initially empty and record it as a
   supplied interface, not evidence of autonomous formation. Do not fabricate
   peer messages or require a conversation to pass Phase 2.
+  The requested persistent subject goal is a separate independent Phase 2
+  harness condition. Keep plans private and subject-authored. Continue a distinct
+  unfinished planned step at most once; never invent a step or repeat unchanged
+  instructions. Waiting remains incomplete, and goal status is not outcome evidence.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.

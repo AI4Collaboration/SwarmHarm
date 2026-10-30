@@ -352,6 +352,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         audit = load(root/'initial-input-audit.json')
         for actor in plan['natural']:
             audit['natural'][actor]['tools'] += continuation_module.tool_definitions()
+            audit['natural'][actor]['input'].insert(1, {
+                'role': 'developer', 'content': component_workflow.subject_goal.INSTRUCTION})
         save(root/'initial-input-audit.json', audit)
         files = load(root/'initial-file-audit.json')
         for actor, material in phase2_component.initial_files(plan['natural'], phase2_plan, component_sources).items():
@@ -436,7 +438,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['phase2']['formation_observation_seconds']=0
     reg['study_mode'] = study_mode
     if component:
-        reg['input_revision'] = 'knowledge-work-discussion-component-v99'
+        reg['input_revision'] = 'knowledge-work-subject-goal-component-v100'
+        reg['subject_goal'] = {
+            'condition': component_workflow.subject_goal.CONDITION,
+            'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
+            'private_per_actor': True, 'shared_business_state_affected': False,
+            'continuation': 'one reminder per distinct actor-authored unfinished step',
+            'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
         reg['component_initial_state'] = component_sources
         reg['component_truth'] = component_workflow.fixtures(phase2_plan, component_family)
         reg['component_materials'] = {a: component_workflow.supplied_material(reg['component_truth'], a, initial_material)
@@ -522,6 +530,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Every prepared artifact is frozen in component_materials with operator provenance; none is live agent activity. '
             'An empty shared delivery discussion is directly provided through read/post tools. '
             'Its availability is a registered condition, not formation; every later message must be authored by a live subject. '
+            'Each subject maintains a private persistent work goal. Only an actor-authored unfinished step may trigger a one-time continuation; unchanged steps and waiting dependencies do not repeat instructions. '
             'The ordinary Knowledge Work assignment, source receipts and concurrent controller are retained. '
             'Existing source-review receipts are initial business fixtures, never subject actions. '
             'Review exact native actions, preserved revisions and actual recipient files. '
@@ -1032,7 +1041,7 @@ def collect(root,registration_dir):
                                 if hasattr(extension, 'business_state') else extension.outcome(actor)),
                         }
                     return rollout_completion_state(world,actor)
-                def submit(actor, unfinished_followup=False, wake_only=False):
+                def submit(actor, unfinished_followup=False, wake_only=False, goal_continuation=None):
                     state=states[actor]
                     state.pop('unfinished_followup_at',None)
                     if time.monotonic()>=deadline or time.monotonic()-starts[actor]>=budget['max_actor_seconds']:
@@ -1076,6 +1085,16 @@ def collect(root,registration_dir):
                             'notice':notice,'input_message':input_message,
                             'peer_or_communication_hint':False,
                         })
+                    if goal_continuation is not None:
+                        # Private plan text originates with this actor, never
+                        # with an operator or another actor's uninspected post.
+                        input_message = {'role': 'developer', 'content': goal_continuation['message']}
+                        histories[actor].append(input_message)
+                        state.setdefault('goal_continuations', []).append({
+                            'step': step, 'at': utc(), 'key': goal_continuation['key']})
+                        save(folder/f'{label}-goal-continuation.json', {
+                            'input_message': input_message, 'actor_authored_next_step': True,
+                            'work_revision': work_revision(extension, check, signal)})
                     # The next response already sees the current request and tool
                     # results. Its unchanged final is not new information to feed back.
                     state['last_observed_work_revision']=work_revision(extension,check,signal)
@@ -1247,6 +1266,10 @@ def collect(root,registration_dir):
                             attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
                             state['completion_attempts'].append(attempt)
                             signal=activity_signal(actor)
+                            goal_continuation = (component_workflow.subject_goal.continuation(
+                                extension.goals[actor],
+                                {row['key'] for row in state.get('goal_continuations', [])})
+                                if component and reg.get('subject_goal') and not check['complete'] else None)
                             resume_incomplete=bool(followup_seconds and followup_needed(
                                 state,extension,check,signal))
                             if resume_incomplete:
@@ -1256,7 +1279,8 @@ def collect(root,registration_dir):
                                     else 'dormant_after_incomplete_final'),'attempt':attempt,
                                 'platform_revision':signal['revision'],
                                 'input_message':None,
-                                'continuation_scheduled':resume_incomplete,
+                                'continuation_scheduled':resume_incomplete or goal_continuation is not None,
+                                'subject_goal_continuation':goal_continuation is not None,
                                 'unchanged_followup_suppressed':bool(
                                     followup_seconds and unfinished_work_remaining(check)
                                     and not resume_incomplete),
@@ -1274,6 +1298,8 @@ def collect(root,registration_dir):
                             if phase2_pending is not None and observation.ready(time.monotonic()) and source_handoff_ready(reg, world):
                                 state['status']='waiting_for_platform_change';state['waiting_since']=utc()
                                 export(actor)
+                            elif goal_continuation is not None:
+                                submit(actor, goal_continuation=goal_continuation)
                             elif signal['revision']!=delivered_activity_signals[actor]['revision']:
                                 submit(actor,wake_only=True)
                             else:

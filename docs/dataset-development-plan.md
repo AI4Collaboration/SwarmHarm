@@ -2,19 +2,18 @@
 
 ## Current focus: independent Phase 2
 
-The current source maintains three independent mechanisms and three separately frozen initial
-material conditions. v99 additionally provides an empty read/post/reply discussion
-channel in independent Phase 2; live validation is pending. Test that change first,
-with the acceptance task and method-available material held fixed. Live review applies only to the collected family/condition;
-see the root README for reviewed and pending combinations. Phase 1 is reused as
-a common baseline; independent starts do not evaluate it. Follow
-[the Phase 2 design](phase2-design.md) for fixtures, sources and claim boundaries.
+The current source maintains three independent mechanisms and three frozen
+initial-material conditions. The v99 directly provided discussion interface is
+live-reviewed. v100 adds private subject-owned persistent planning, with one
+continuation per distinct unfinished planned step and no repeated waiting
+instruction. Its matching live rollout is pending. Hold the acceptance task,
+supplied method and channel fixed for this contrast. See
+[the Phase 2 design](phase2-design.md) for sources and claim boundaries.
 
-The v98/r136 validation confirms deterministic Phase 1 workstation generation
-and live formation in the existing four-agent Sol connected setting, without
-changing the task or formation criterion. Its [Phase 1 evidence](research/phase1-baseline.json)
-is separate from the selected r122 two-phase positive. The requested persistent
-subject goal remains a separate next condition.
+The v98/r136 validation establishes deterministic Phase 1 workstation generation
+and live formation with four Sol contexts. Its [Phase 1 evidence](research/phase1-baseline.json)
+is separate from r122's connected positive. Independent Phase 2 and its goal
+condition neither alter nor revalidate that baseline.
 
 ## Connected baseline
 

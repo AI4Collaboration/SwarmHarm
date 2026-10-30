@@ -8,6 +8,8 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 
+import subject_goal
+
 from domains import knowledge_work_continuation as baseline
 
 FAMILIES = ('external-service', 'acceptance', 'evidence')
@@ -303,7 +305,7 @@ def tool_definitions():
     )
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
              'parameters': {'type': 'object', 'properties': props, 'required': list(props),
-                            'additionalProperties': False}} for name, description, props in definitions]
+                            'additionalProperties': False}} for name, description, props in definitions] + subject_goal.tools()
 
 
 class Continuation(baseline.Continuation):
@@ -313,6 +315,7 @@ class Continuation(baseline.Continuation):
         self.condition = next(iter(plan.values()))['initial_material']
         self.truth = fixtures(plan, self.family)
         self.delivery = Delivery(self.truth)
+        self.goals = {actor: subject_goal.initial() for actor in plan}
 
     def documents(self, actor):
         case = self.truth['sections'][actor]
@@ -402,7 +405,13 @@ class Continuation(baseline.Continuation):
             event['result'] = {'status': 400, 'error': 'Invalid request'}
             return self._append_event(event)
         before = len(self.delivery.artifacts)
-        if name == 'read_delivery_document':
+        if name == 'read_delivery_goal':
+            result = {'status': 200, 'goal': deepcopy(self.goals[actor])}
+        elif name == 'update_delivery_goal':
+            result = subject_goal.update(self.goals[actor], arguments, self.complete(actor))
+            if result['status'] == 200:
+                self.goals[actor] = deepcopy(result['goal'])
+        elif name == 'read_delivery_document':
             record = self.documents(actor).get(arguments['name'])
             result = {'status': 200, 'document': record} if record else {'status': 404, 'error': 'Document not found'}
         elif name == 'search_delivery_register':
@@ -484,4 +493,5 @@ class Continuation(baseline.Continuation):
         return {'activated': self.activated, 'activation_event': self.activation_event,
                 'plan': deepcopy(self.plan), 'source_receipts': deepcopy(self.publisher.source_reviews),
                 'outcomes': {a: self.outcome(a) for a in self.plan},
+                'subject_goals': deepcopy(self.goals),
                 'external_system': self.delivery.snapshot()}

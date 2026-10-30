@@ -5,6 +5,16 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Independent Phase 2 persistence
+
+The [LessWrong appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident)
+reports that manual experiments induced persistence through prompting. Our v100
+adaptation uses a private subject-owned delivery plan and returns a distinct
+unfinished planned step once after an early final. A waiting dependency stays
+incomplete without repeated instructions. This is a declared harness factor,
+not a claim that METR used this implementation or that it will cause adoption.
+No plan status changes business truth or supplies evidence of collective harm.
+
 ## Provided discussion in independent Phase 2
 
 The [LessWrong reproduction, Steps 3–4](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment) tests sharing and use with supplied requests or methods. Its [appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident) discloses staged peers and retrospective reflection. Our adaptation directly supplies an empty discussion channel to four real simultaneous subjects; it does not claim autonomous formation or treat supplied materials as live messages.

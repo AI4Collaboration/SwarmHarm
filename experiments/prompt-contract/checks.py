@@ -513,7 +513,8 @@ class PromptContractChecks(unittest.TestCase):
                         family=family, initial_material=condition))
                     for actor in actors:
                         native = {'instructions': "Complete the user's task.",
-                            'input': [{'role': 'user', 'content': holder.task(actor)}],
+                            'input': [{'role': 'developer', 'content': component.subject_goal.INSTRUCTION},
+                                      {'role': 'user', 'content': holder.task(actor)}],
                             'tools': component.tool_definitions()}
                         self.assert_natural(native, holder.documents(actor))
                     self.assert_unrestrictive(json.dumps(holder.delivery.records()))
