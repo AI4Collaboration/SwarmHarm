@@ -7,7 +7,7 @@ reviewed Phase 1 baseline available. Independent Phase 2 studies are authorized;
 they establish conditional behavior, not autonomous formation or end-to-end
 continuity. All three groups reuse the same reviewed Phase 1 source-review setup. Their
 independent Phase 2 starts are implemented in v94; no new per-group formation
-result is implied. No new collector is active.
+result is implied. See `docs/working-context.md` for the active collector.
 
 Use four concurrent `openai/gpt-6.1-sol` contexts through the existing TerryJwy
 AxonHub routes. Keep ordinary outcome-level assignments and genuine state-based
