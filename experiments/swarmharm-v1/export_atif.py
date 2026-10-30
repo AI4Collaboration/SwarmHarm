@@ -1,4 +1,4 @@
-"""Export registered Pi or Claude SDK actors to validated ATIF-v1.8 trajectories."""
+"""Export registered Pi, Claude and Codex actors to validated ATIF-v1.8 trajectories."""
 import argparse,hashlib,json,sys
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
@@ -13,6 +13,16 @@ def text_of(content):
 def arguments(raw):
     try:return json.loads(raw)
     except (TypeError,ValueError):return raw
+def atif_tool_call(call):
+    parsed=arguments(call['arguments'])
+    value={'tool_call_id':call['call_id'],'function_name':call['name'],
+        'arguments':parsed if isinstance(parsed,dict) else {}}
+    if not isinstance(parsed,dict):
+        # ATIF requires an object. Keep the exact rejected input explicitly;
+        # the empty object is a placeholder, not a reconstructed argument set.
+        value['extra']={'raw_arguments':call['arguments'],'arguments_valid_object':False,
+            'arguments_representation':'empty object placeholder; see raw_arguments'}
+    return value
 def canonical(item):
     """The model-visible meaning of one Responses item; Pi rebuilds prior items on each request."""
     kind=item.get('type','message')
@@ -107,7 +117,7 @@ def export_actor(root,phase,actor):
                  if isinstance(harness['system_prompt'],dict) else 'controller custom system prompt; SDK-internal additions unobservable')
                 if is_sdk else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
-    for reqpath in requests:
+    for request_index,reqpath in enumerate(requests):
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
         tool_names=[tool['name'] for tool in req.get('tools',[])]
         updated=system_prompt_update(expected,req['input'],tool_names!=prompt_tools)
@@ -144,7 +154,7 @@ def export_actor(root,phase,actor):
         if usage:step['metrics']={k:v for k,v in {'prompt_tokens':usage.get('input_tokens'),'completion_tokens':usage.get('output_tokens'),'cached_tokens':(usage.get('input_tokens_details') or {}).get('cached_tokens')}.items() if v is not None}
         expected.extend(output);observations=[]
         if calls:
-            step['tool_calls']=[{'tool_call_id':c['call_id'],'function_name':c['name'],'arguments':arguments(c['arguments'])} for c in calls]
+            step['tool_calls']=[atif_tool_call(call) for call in calls]
             records={}
             for tp in sorted(reqpath.parent.glob(label+'-tool-*.json')):
                 record=read(tp);records[record['call_id']]=(tp,record)
@@ -156,8 +166,27 @@ def export_actor(root,phase,actor):
                 if c['call_id'] not in records:continue
                 tp,record=records[c['call_id']];assert record['name']==c['name'] and record['arguments']==c['arguments']
                 hashes[str(tp.relative_to(folder))]=sha(tp);out=json.dumps(record['result'],ensure_ascii=False)
-                expected.append({'type':'function_call_output','call_id':c['call_id'],'output':out});tools+=1
-                observations.append({'source_call_id':c['call_id'],'content':out})
+                tools+=1
+                if not is_codex:
+                    expected.append({'type':'function_call_output','call_id':c['call_id'],'output':out})
+                    observations.append({'source_call_id':c['call_id'],'content':out})
+            if is_codex:
+                step['extra']['controller_execution_order']=[
+                    call['call_id'] for call in executed_order if call['call_id'] in records]
+                incoming=(read(requests[request_index+1])['input']
+                    if request_index+1<len(requests) else history)
+                # Native evidence validates these results and their order.
+                # Controller execution order remains a separate fact above.
+                for item in appended_input(expected,incoming):
+                    if item.get('type')!='function_call_output':break
+                    assert item['call_id'] in {call['call_id'] for call in calls},'Tool result belongs to another response'
+                    if item['call_id'] in records:
+                        assert item['output']==json.dumps(records[item['call_id']][1]['result'],ensure_ascii=False),'Codex controller result changed'
+                    expected.append(item)
+                    observation={'source_call_id':item['call_id'],'content':item['output']}
+                    if item['call_id'] in records and not delivery[item['call_id']]['rendered_result_verified']:
+                        observation['extra']={'content_source':'controller_execution','rendered_result_verified':False}
+                    observations.append(observation)
             if observations:step['observation']={'results':observations}
         add('agent',text,**step);last_agent=len(steps)-1
         completion_path=reqpath.with_name(label+'-completion-state.json')

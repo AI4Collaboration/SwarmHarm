@@ -94,6 +94,13 @@ provider model IDs are unexposed. Model reroutes and reported compaction stop
 collection. The native CLI owns output-token limits; the response-completion
 timeout includes tool execution. Goal mode currently supports `off` only.
 
+Malformed or non-object tool arguments use an ATIF empty-object placeholder
+marked `arguments_valid_object: false`, with the exact input in `raw_arguments`.
+Raw traces are unchanged. Export preserves native tool-result order and records
+controller execution order separately. Interrupted rollouts retain committed
+executions, MCP completion and rendered delivery as separate facts. A controller
+result whose rendered delivery is unverified is labelled as controller evidence.
+
 Native CLI checks use a local protocol fixture and make no hosted model calls.
 The four-actor collector and same-thread tool reload have offline coverage.
 This support remains **live rollout pending** until a fresh selected model and

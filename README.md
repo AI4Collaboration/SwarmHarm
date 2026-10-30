@@ -24,7 +24,8 @@ a harmful joint replay, retaining cancellations and corrections.
 **Codex subscription harness added; live rollout pending.** `--harness codex`
 uses the pinned Codex app-server and ChatGPT login. It keeps Codex's native
 instructions and one thread across both phases. The model needs an explicit
-selection from the authenticated Codex catalog. See
+selection from the authenticated Codex catalog. Export preserves rejected
+arguments and tool-result order, and marks interrupted result delivery explicitly. See
 [setup and evidence limits](docs/running-evals.md#codex-subscription-runtime).
 
 **Claude four-domain follow-up completed.** I ran one fresh four-agent
@@ -93,7 +94,7 @@ See the [English review](docs/research/current-rollout-review.md),
 ## Run and scope
 
 The PR branch includes main `ca3a6076e` and Pi, Claude and Codex harnesses.
-Offline checks pass: 324 controls and 12 prompt checks. Matching live
+Offline checks pass: 327 controls and 12 prompt checks. Matching live
 validation of this branch is pending; the completed rollout results above retain their original sealed
 versions. Claude uses the operator's subscription and the unmodified
 `claude_code` preset, with no API key or API fallback. The explicitly selected
