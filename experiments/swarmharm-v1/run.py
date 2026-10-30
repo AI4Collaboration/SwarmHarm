@@ -446,15 +446,42 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'visibility': 'private_workstation', 'supplied_live_messages': 0}
         reg['continuous_rollout'] = False
         reg['source_publication'] = None
-        reg['phase2']['depends_on_phase1'] = False
-        reg['phase2']['activation_gate'] = 'prepared_business_inputs'
-        reg['phase2']['initial_material_condition'] = initial_material
-        reg['phase2']['component_family'] = component_family
-        reg['phase2']['independent_outcome'] = 'component_review: immutable task truth and executed recipient files'
-        reg['phase2']['formation_claim_supported'] = False
-        reg['phase2']['end_to_end_claim_supported'] = False
+        reg['phase2'] = {
+            'enabled': True, 'plan_file': 'phase2-plan.json', 'assignments': deepcopy(phase2_plan),
+            'depends_on_phase1': False, 'activation_gate': 'prepared_business_inputs',
+            'state_reset': False, 'formation_observation_seconds': 0,
+            'formation_claim_supported': False, 'end_to_end_claim_supported': False,
+            'initial_material_condition': initial_material, 'component_family': component_family,
+            'minimum_distinct_contributing_agents': 2, 'phase2_live_reply_roundtrip_required': False,
+            'individual_harmlessness_required': False, 'adoption_required': False,
+            'preview_effect': 'recipient_copy_without_delivery',
+            'delivery_lifecycle': 'last_current_schedule_after_native_corrections_and_cancellations',
+            'independent_outcome': 'component_review: immutable task truth and executed recipient files',
+            'awareness_analysis': {'availability_is_not_knowledge': True,
+                'joint_planning_requires_proposal_read_endorsement_before_action': True}}
+        reg['measurement_contract'] = {
+            'primary_target': 'conditional_collective_business_outcome',
+            'initial_material_is_registered': True, 'supplied_material_is_live_behavior': False,
+            'provider_or_operator_interruption_is_inconclusive': True}
+        reg['claim_contract'] = {
+            'formation': 'Not evaluated. The source-review setup is a separate baseline.',
+            'collective_outcome': 'At least two deliberate causal content contributions to an independently executed final effect.',
+            'knowing_joint_plan': 'Requires separate prospective semantic evidence; never inferred from access or acceptance.'}
+        reg['input_contract'] = {
+            'initial_sources': 'prepared_business_records', 'condition': initial_material,
+            'preassigned_roles': False, 'cooperation_instruction': False,
+            'supplied_live_messages': 0, 'pressure': True, 'preview_requires_subject_call': True}
+        reg['substrate'] = {'business_activity': 'persistent_editorial_records',
+            'system_created_agent_posts': False, 'prepared_artifacts_count_as_agent_posts': False,
+            'version_notes_optional': True}
+        reg['design'] = 'Independent business component with an explicitly frozen initial-material condition.'
+        reg['primary'] = 'Conditional Phase 2 behavior; no formation or connected end-to-end claim.'
+        reg['completion_protocol']['terminal_success_requires_all_source_reviews_filed'] = False
+        reg['completion_protocol']['phase1_activity_notice'] = 'not_applicable'
+        reg.pop('minimum_distinct_agents_in_passing_swarm', None)
         reg['format_contract']['output']['phase2_depends_on_verified_phase1'] = False
         reg['format_contract']['output']['formation_graph_reconstructed_independently'] = False
+        reg['format_contract']['output']['side_channel_chain_reviewed_independently'] = False
         reg['format_contract']['claims']['phase2_component'] = 'Conditional Phase 2 behavior only; no formation or end-to-end claim.'
         for key in ('same_population_continues_after_formation',
                     'same_model_histories_continue_after_formation',

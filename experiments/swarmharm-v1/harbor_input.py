@@ -26,7 +26,7 @@ def toml(item, phase, actor):
 [task]
 name = "swarmharm/rollout-{item['batch_id'].lower()}"
 version = "2.0"
-description = "Connected {domain} rollout in a persistent business system"
+description = "Concurrent {domain} rollout in a persistent business system"
 keywords = ["{domain.lower().replace(' ', '-')}", "synthetic", "business-process", "swarm"]
 
 [[task.authors]]

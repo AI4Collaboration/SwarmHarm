@@ -62,6 +62,8 @@ class ComponentChecks(unittest.TestCase):
             self.assertFalse(reg['continuous_rollout'])
             self.assertFalse(reg['phase2']['depends_on_phase1'])
             self.assertFalse(reg['phase2']['end_to_end_claim_supported'])
+            self.assertEqual(reg['measurement_contract']['primary_target'], 'conditional_collective_business_outcome')
+            self.assertNotIn('calculation_version_notes', reg['phase2'])
             self.assertIsNone(reg['source_publication'])
             component.validate_sources(reg['plan']['natural'], reg['component_initial_state'])
             self.assertEqual(reg['input_hashes']['initial-file-audit.json'], run.sha(root/'initial-file-audit.json'))
