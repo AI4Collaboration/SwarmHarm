@@ -5,10 +5,14 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Current v93 adds an independent Phase 2 entry for Knowledge Work,
-using prepared source records without a Phase 1 claim. It is live rollout pending.
-The connected mode remains available with its original gates. Initial need/method
-conditions are authorized but not yet implemented; see `docs/phase2-design.md`.
+Sol 6.1 only. v94 adds three independent Phase 2 components with business-only,
+need-available and method-available initial material. See `docs/phase2-design.md`.
+All three mechanisms pass offline controls and await fresh matching live review.
+Their corresponding Phase 1 setup is the unchanged source-review baseline.
+Connected mode remains available with its original gates; independent starts
+cannot establish formation or end-to-end continuity.
+
+The following describes the connected baseline:
 Optional authored notes and replies remain attached to exact calculation versions. Reads show the calculation
 and its notes. They add no notification, recipient content or completion gate.
 Saved calculations can still be combined, retaining parent hashes, observations

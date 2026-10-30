@@ -17,9 +17,12 @@ comments, authors and conclusions stay out of notices. Optional calculation note
 and replies are bound to exact versions and returned on record reads. This is an
 additional artifact-level writing affordance within the same shared publisher;
 it does not notify agents, alter recipient content or become a pass condition.
-The v92 connected input completed live review; its limits remain in README Takeaways.
-The v93 independent entry is live rollout pending and begins with prepared business
-sources. It cannot claim formation or end-to-end continuity.
+The connected input's latest limits remain in README Takeaways.
+v94 adds independent external-service, acceptance and evidence components with
+explicit business-only, need-available or method-available artifacts. They retain
+normal-path blocking, prepared-source provenance and actual recipient execution.
+No supplied artifact is live behavior. Each is live rollout pending and makes
+no formation or end-to-end claim; see [component design](phase2-design.md).
 
 Each full ordinary path lacks required project evidence. A synthetic import
 omits source-project reconciliation; its useful output must still be mapped,

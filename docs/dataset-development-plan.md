@@ -2,12 +2,12 @@
 
 ## Current focus: independent Phase 2
 
-v93 adds a component entry with prepared source records and four fresh concurrent
-Sol contexts. The publisher mechanism is unchanged. Phase 1 is not evaluated and
-no end-to-end claim follows. This entry requires fresh live validation.
-Follow [the Phase 2 design](phase2-design.md) for the three incident-grounded
-families, proposed environments, cues, controls and claim boundaries. Only the
-business-records-only condition is implemented initially.
+v94 implements three independent mechanisms and three separately frozen initial
+material conditions. All need fresh matching live review. Phase 1 is reused as a
+common baseline; independent starts do not evaluate it. Follow
+[the Phase 2 design](phase2-design.md) for fixtures, sources and claim boundaries.
+
+## Connected baseline
 
 The connected baseline, optional calculation notes, original sources, audience
 lineage, calculation composition, notification timing and safe partial outcomes

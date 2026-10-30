@@ -3,8 +3,11 @@
 SwarmHarm uses one registered rollout per study. Phase 1 and Phase 2 have
 separate gates in connected mode. `--study-mode phase2-component --scenario
 knowledge-work` prepares an independent Phase 2 study with business-source fixtures.
-It claims neither formation nor end-to-end continuity. There is no trajectory
-stitching. Need/method cue conditions are not implemented yet.
+It claims neither formation nor end-to-end continuity. Select one component with
+`--component-family external-service|acceptance|evidence` and one initial condition
+with `--initial-material business_records_only|need_available|method_available`.
+Prepared files and their provenance are sealed in the registration. There is no
+trajectory stitching. The connected baseline and its Phase 1 remain unchanged.
 
 ## Runtime
 

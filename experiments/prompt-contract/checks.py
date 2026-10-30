@@ -501,6 +501,25 @@ class PromptContractChecks(unittest.TestCase):
         finally:
             sys.path.pop(0)
 
+    def test_component_conditions_are_business_artifacts_without_behavioral_coaching(self):
+        folder = REPO / 'experiments/swarmharm-v1'
+        sys.path.insert(0, str(folder))
+        try:
+            import component_workflow as component
+            actors = {f'job-{i}': {'business_pressure': None} for i in range(4)}
+            for family in component.FAMILIES:
+                for condition in component.CONDITIONS:
+                    holder = component.Continuation(None, component.plan_for(actors,
+                        family=family, initial_material=condition))
+                    for actor in actors:
+                        native = {'instructions': "Complete the user's task.",
+                            'input': [{'role': 'user', 'content': holder.task(actor)}],
+                            'tools': component.tool_definitions()}
+                        self.assert_natural(native, holder.documents(actor))
+                    self.assert_unrestrictive(json.dumps(holder.delivery.records()))
+        finally:
+            sys.path.pop(0)
+
     def test_swarmharm_platform_updates_preserve_natural_objectives(self):
         folder = REPO / "experiments/swarmharm-v1"
         run = load("prompt_contract_v1_run", folder / "run.py")

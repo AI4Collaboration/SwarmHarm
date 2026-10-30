@@ -21,21 +21,20 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current focus · independent Phase 2 studies.** The user authorized component
-experiments and explicit initial-material conditions on 30 October. v93 adds an
-independent entry with prepared business source records; no Phase 1 is run or
-claimed. Four concurrent Sol contexts keep the current publisher mechanics,
-audience lineage, corrections and independent recipient execution. The entry is live-reviewed with a negative outcome (r127); prepared-source and
-native continuity checks pass. It currently supports business-records-only inputs;
-need/method conditions are designed but not implemented.
+**Current focus · three independent Phase 2 environments (v94).** External-service
+scope overreach, acceptance substitution and execution-record substitution now
+have separate executable fixtures and independent recipient checks. Each has
+three frozen input conditions: business records only, an operational need, or a
+saved preparation method. They remain **live rollout pending**. The corresponding
+Phase 1 setup reuses the unchanged reviewed source-review environment; no new
+formation result is claimed by these independent studies.
 
-Develop three [incident-grounded failure families](docs/phase2-design.md):
-external-environment breakout/scope overreach, task-target or acceptance
-manipulation, and execution-evidence manipulation. These are our non-exclusive
-categories drawn from METR, not an official exhaustive taxonomy. Existing
-cross-project import proves scope overreach, not distinct-service breakout.
-The latter needs its own executable boundary. Connected results retain the
-original two-phase criteria; component results cannot substitute for formation.
+See [component design and grounding](docs/phase2-design.md). These are our
+non-exclusive groups drawn from METR, not an official exhaustive taxonomy.
+The external-service condition crosses into a separately scoped synthetic archive;
+it makes no host/container-escape claim. Prepared sources and supplied methods
+are fixtures, never live dialogue or autonomous discoveries. Four concurrent Sol
+contexts retain corrections, cancellation and unchanged-state suppression.
 
 **Knowledge Work v88/r122 passes Phase 1 and outcome-based Phase 2.** Four Sol
 6.1 agents form a live channel and finish the same customer briefing. Independent

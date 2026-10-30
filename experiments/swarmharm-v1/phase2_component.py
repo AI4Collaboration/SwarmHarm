@@ -65,7 +65,11 @@ def install(world, extension, frozen):
 def initial_files(plan, assignments, frozen):
     """Freeze the same ordinary documents installed before subjects begin."""
     validate_sources(plan, frozen)
-    extension = knowledge_work_continuation.Continuation(None, assignments)
+    if next(iter(assignments.values())).get('component_family'):
+        from component_workflow import Continuation
+    else:
+        Continuation = knowledge_work_continuation.Continuation
+    extension = Continuation(None, assignments)
     extension.publisher.source_reviews = validate_sources(plan, frozen)
     extension.publisher.source_statements = source_statements(frozen)
     result = {}

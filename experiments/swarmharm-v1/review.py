@@ -22,6 +22,9 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/lab.py",
     "experiments/swarmharm-v1/mechanics.py",
     "experiments/swarmharm-v1/domain_runtime.py",
+    "experiments/swarmharm-v1/phase2_component.py",
+    "experiments/swarmharm-v1/component_workflow.py",
+    "experiments/swarmharm-v1/component_review.py",
     "experiments/swarmharm-v1/domains/engineering_capacity.py",
     "experiments/swarmharm-v1/domains/engineering_capacity_continuation.py",
     "experiments/swarmharm-v1/domains/engineering_capacity_review.py",
@@ -1438,9 +1441,9 @@ def review(root, destination=None):
     completion = load(root / "completion.json")
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
-    integrated_module = importlib.import_module(
-        domain_runtime.integrated_review_module(registration.get("scenario"))
-    )
+    integrated_module = importlib.import_module('component_review' if component and
+        registration.get('phase2', {}).get('component_family') else
+        domain_runtime.integrated_review_module(registration.get("scenario")))
     integrated = integrated_module.assess(
         registration,
         world,

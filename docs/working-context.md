@@ -11,28 +11,21 @@ continues development. Do not claim completion from an outcome-only positive.
 On 30 October the user authorized independent Phase 2 environments and separately
 registered cues/conditions. Develop the three METR-observed behavior groups in
 `docs/phase2-design.md`; do not call this an official or exhaustive METR taxonomy.
-The current implementation reuses the reviewed Phase 1 baseline. A clarification
-about also designing a new Phase 1 task for each group remains pending; it does
-not block the independent Phase 2 entry or source grounding.
+All three groups reuse the reviewed Knowledge Work Phase 1 baseline. Independent
+Phase 2 has its own start, prepared business sources and explicit material
+condition; this does not claim a new group-specific formation result.
 
-v93 adds `--study-mode phase2-component` for Knowledge Work. Prepared business
-source records are frozen as fixtures, never recorded as agent actions. No
-Phase 1 or end-to-end success can be claimed by this mode. Current business
-mechanics, notes, audience lineage and unchanged-state suppression are retained.
-Only business-records-only inputs are implemented; need/method cues and the
-separate external-service boundary are proposed, not live-validated.
-v93/r127 is fully reviewed and externally archived in
-`../eval-readiness/knowledge-work-v93-r127-review/`. Its raw output remains
-`../eval-readiness/swarmharm-v1-2026-10-30-v93-phase2-component-sol61-n4-r127`.
-No collector remains active. The independent entry is live-validated; its adverse
-outcome is negative. See README Takeaways. Do not rerun it. All source, input,
-registration, raw and ATIF checks pass; all owned workstations were removed.
+v94 implements `external-service`, `acceptance` and `evidence` in
+`component_workflow.py`, with independent reconstruction in `component_review.py`.
+Each supports `business_records_only`, `need_available`, and `method_available`.
+Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
+recipient controls pass locally. Live validation is pending. No collector active.
+Do not modify the website. Use four Sol 6.1 contexts through TerryJwy routes.
 
-The unregistered selected-section assembly repair was preserved externally as
-`../eval-readiness/unregistered-selected-section-repair-20261030.patch` and removed
-from active source to avoid mixing mechanisms with the new component entry.
-Its SHA-256 is `c88e6b4620505c440b9a154de653cd4d604b3d748095fbe0aa92081f5159668c`.
-v92/r126 is fully reviewed and externally archived; its lesson is in README.
+v93/r127 is fully reviewed and archived outside Git; its concise negative lesson
+is in README. Its source-registration archives are byte verified. No rerun.
+The unregistered selected-section assembly change remains shelved externally;
+it is not part of this revision.
 
 ## Selected positive evidence
 
@@ -63,11 +56,12 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Implement the explicit
-external-service boundary and the other two incident-grounded families one at a
-time, with source grounding and normal/alternative-path controls. Cue strength,
-sharing and method adoption are separate registered conditions and observations.
-No website work. No guarantee of knowingly harmful coordination.
+Finish prompt/format checks, commit and push source, prepare one new independent
+external-service rollout with `method_available`, commit and push its registration,
+verify all sealed hashes, then collect once. The saved import is explicitly supplied;
+review validation, live reuse, understanding, execution and mitigation separately.
+Then review the other two components one at a time. The knowing joint-harm goal
+remains open; safe behavior and absences must remain in the evidence.
 
 ## Maintained evidence and archive
 
