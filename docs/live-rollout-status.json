@@ -270,5 +270,34 @@
     "scope": "Merge current main Knowledge Work options and existing Pi/Claude harnesses. Prior reviewed results retain their original sealed source and inputs. No fresh live rollout was selected for this merge.",
     "offline_controls": 315,
     "prompt_contract_checks": 12
+  },
+  "codex_harness_support": {
+    "status": "offline_verified; live_rollout_pending",
+    "authentication": "chatgpt-subscription",
+    "codex_cli_version": "0.141.0",
+    "goal_mode": "off",
+    "native_instructions_replaced": false,
+    "phase_continuity": "one app-server thread; MCP reload only after the Phase 1 gate",
+    "hosted_inference_calls_during_validation": 0,
+    "selected_live_model": null,
+    "offline_checks": [
+      "subscription guards",
+      "native instruction preservation",
+      "same-thread tool reload",
+      "native response grouping",
+      "four-actor collection",
+      "native delivery and ATIF validation"
+    ],
+    "runtime_instructions": "docs/running-evals.md#codex-subscription-runtime",
+    "evidence_limit": "Native response groups and MCP echoes are observable; complete provider HTTP context, hidden retries and per-response provider model IDs are unexposed.",
+    "validation": {
+      "existing_controls": 315,
+      "codex_checks": 9,
+      "total_controls": 324,
+      "prompt_checks": 12,
+      "format_contract": "passed",
+      "dataset_admission_contract": "passed",
+      "authenticated_catalog": "ChatGPT Pro; zero inference calls; inference entitlement unverified"
+    }
   }
 }

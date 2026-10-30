@@ -1,7 +1,9 @@
 """Export registered Pi or Claude SDK actors to validated ATIF-v1.8 trajectories."""
-import argparse,hashlib,json
+import argparse,hashlib,json,sys
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
+from codex_evidence import native_evidence as codex_native_evidence
 
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
@@ -87,21 +89,23 @@ def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('[0-9][0-9][0-9][0-9].request.json'))
     assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];uncommitted=[];tools=0
     is_claude=read(root/'registration.json').get('harness',{}).get('kind')=='claude-code'
-    assert is_claude==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
-    if is_claude:
+    is_codex=read(root/'registration.json').get('harness',{}).get('kind')=='codex'
+    is_sdk=is_claude or is_codex
+    assert is_sdk==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
+    if is_sdk:
         harness=read(root/'registration.json')['harness']
         if isinstance(harness['system_prompt'],dict):
             assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
-        native_hashes,delivery=claude_native_evidence(folder,requests);hashes.update(native_hashes)
+        native_hashes,delivery=(codex_native_evidence if is_codex else claude_native_evidence)(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools;phase2_tools_seen=False
     platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
-        'harness':'claude-code' if is_claude else 'pi-sdk',
+        'harness':'codex' if is_codex else 'claude-code' if is_claude else 'pi-sdk',
         'scope':('SDK system prompt preset configuration; rendered prompt text is not captured'
                  if isinstance(harness['system_prompt'],dict) else 'controller custom system prompt; SDK-internal additions unobservable')
-                if is_claude else 'provider request'})
+                if is_sdk else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for reqpath in requests:
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
@@ -147,7 +151,7 @@ def export_actor(root,phase,actor):
             # SDK handlers may be dispatched in a different order from content
             # blocks. Preserve the controller's actual sequential event order.
             executed_order=(sorted(calls,key=lambda c:records[c['call_id']][1]['event_id']
-                if c['call_id'] in records else float('inf')) if is_claude else calls)
+                if c['call_id'] in records else float('inf')) if is_sdk else calls)
             for c in executed_order:
                 if c['call_id'] not in records:continue
                 tp,record=records[c['call_id']];assert record['name']==c['name'] and record['arguments']==c['arguments']
@@ -179,6 +183,25 @@ def export_actor(root,phase,actor):
         for step in value['steps']:
             if step['source']=='agent':
                 step['extra']['record_kind']='controller_projection_from_sdk_messages'
+                step['extra']['tool_result_delivery']={call['tool_call_id']:delivery[call['tool_call_id']]
+                    for call in step.get('tool_calls',[]) if call['tool_call_id'] in delivery}
+    if is_codex:
+        value['agent']['name']='SwarmHarm continuous rollout collector (Codex / ChatGPT subscription)'
+        value['extra'].pop('pi_session_file')
+        value['extra'].update({
+            'codex_session':state['codex_session']['session_id'],
+            'provider_http_payloads_captured':False,
+            'provider_context_continuity_verified':False,
+            'system_prompt_config':harness['system_prompt'],
+            'goal_mode':harness['goal_mode'],
+            'request_count_scope':harness['request_count_scope'],
+            'conversion':'One Codex app-server thread spans both phases. Native raw output items are grouped by token-usage response boundaries. Partial projections permit controller tool execution before the boundary; they retain the same causal model step. MCP delivery and the complete rendered body are checked against controller executions. Full provider HTTP context and failed requests without output are unobservable.',
+        })
+        for step in value['steps']:
+            if step['source']=='system' and step.get('extra',{}).get('native_field')=='input[0]':
+                step['extra']['scope']='Native Codex instruction configuration; this descriptor is not model input'
+            if step['source']=='agent':
+                step['extra']['record_kind']='controller_projection_from_codex_app_server'
                 step['extra']['tool_result_delivery']={call['tool_call_id']:delivery[call['tool_call_id']]
                     for call in step.get('tool_calls',[]) if call['tool_call_id'] in delivery}
     validated=Trajectory.model_validate(value).to_json_dict();dest=folder/'agent'/'trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)

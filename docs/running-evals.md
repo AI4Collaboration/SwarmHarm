@@ -44,6 +44,61 @@ Retain actual OpenRouter response/generation provenance separately. The historic
 `axonhub` catalog field in route metadata denotes the configured gateway check;
 its saved endpoint is the actual selected OpenRouter URL.
 
+## Codex subscription runtime
+
+`--harness codex` uses Codex CLI 0.141.0 through its
+[app-server protocol](https://developers.openai.com/codex/app-server).
+Set `SWARMHARM_CODEX` to the pinned binary and sign in with `codex login`.
+The adapter reads the file-backed ChatGPT login in `CODEX_HOME/auth.json`
+(default `~/.codex/auth.json`).
+The adapter requires ChatGPT subscription auth and rejects API keys and custom
+OpenAI routing. Preparation checks the authenticated catalog without inference;
+catalog membership does not establish access to inference.
+
+A live rollout needs an explicit native model ID and effort. No Codex model
+has been selected for live collection here. The installed catalog does not
+contain the native ID `gpt-6.1-sol`; do not substitute another model.
+With a selected catalog ID, add these options to normal preparation:
+
+```sh
+--harness codex --model-alias codex --model-id "$CODEX_MODEL_ID" \
+--reasoning-effort high --goal-mode off --scenario financial-analysis
+```
+
+Omit API endpoints and key files for preparation, collection and launch.
+The stock Codex instructions have no replacement or append. One private
+app-server thread persists per actor. After the Phase 1 gate, MCP tool reload
+adds the business tools to that same thread. Business notices arrive as user
+input after the current native tool loop finishes.
+
+The registered tool profile disables host execution, patching, apps, plugins,
+browser/computer tools and subagents. It retains native planning and MCP
+resource helpers. The profile accepts text only; the pinned CLI rejects its
+native image tool before reading a host file. Business tools run in offline
+workstations. Native instruction fields remain byte-equivalent to the stock
+catalog; the catalog, profile, CLI identity and source hashes are frozen.
+
+Each actor gets a private access-token snapshot with at least 90 minutes left.
+Refresh credentials stay on the operator's host. Refresh the host login before
+preparation if the snapshot lifetime is insufficient. Auth failures stop the
+rollout. Credentials are never archived or supplied through business tools.
+
+Raw JSON-RPC, native thread/session records and the non-secret runtime profile
+stay outside Git. ATIF export checks thread identity, user-input echoes, native
+output, MCP result delivery and complete rendered tool bodies. A truncated body
+stops collection. Partial response records let tools execute before the native
+response boundary while keeping every call from that response on the same
+causal step. Response counts refer to observed native groups; failed calls
+without output, hidden retries, full provider HTTP context and per-response
+provider model IDs are unexposed. Model reroutes and reported compaction stop
+collection. The native CLI owns output-token limits; the response-completion
+timeout includes tool execution. Goal mode currently supports `off` only.
+
+Native CLI checks use a local protocol fixture and make no hosted model calls.
+The four-actor collector and same-thread tool reload have offline coverage.
+This support remains **live rollout pending** until a fresh selected model and
+frozen registration finish collection and review.
+
 ## Claude subscription runtime
 
 The Claude condition uses `claude-opus-5-5`, medium effort and goal mode off.

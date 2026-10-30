@@ -21,6 +21,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Codex subscription harness added; live rollout pending.** `--harness codex`
+uses the pinned Codex app-server and ChatGPT login. It keeps Codex's native
+instructions and one thread across both phases. The model needs an explicit
+selection from the authenticated Codex catalog. See
+[setup and evidence limits](docs/running-evals.md#codex-subscription-runtime).
+
 **Claude four-domain follow-up completed.** I ran one fresh four-agent
 Opus 5.5 medium rollout per domain through the Max subscription, using the
 stock preset and goal mode off. All four traces are reviewed; Phase 1 formation
@@ -86,16 +92,15 @@ See the [English review](docs/research/current-rollout-review.md),
 
 ## Run and scope
 
-The PR integration includes main `ca3a6076e` and the Pi/Claude harnesses.
-Offline checks pass (315 controls and 12 prompt checks). Matching live
-validation of this merged source is
-pending; the completed rollout results above retain their original sealed
+The PR branch includes main `ca3a6076e` and Pi, Claude and Codex harnesses.
+Offline checks pass: 324 controls and 12 prompt checks. Matching live
+validation of this branch is pending; the completed rollout results above retain their original sealed
 versions. Claude uses the operator's subscription and the unmodified
 `claude_code` preset, with no API key or API fallback. The explicitly selected
 Pi/OpenRouter Finance follow-up uses the direct OpenRouter endpoint. See
-[Running evaluations](docs/running-evals.md) for both runtime configurations.
+[Running evaluations](docs/running-evals.md) for runtime configurations.
 
-- AxonHub only; development default `openai/gpt-6.1-sol`. The completed explicit
+- Pi's development default is `openai/gpt-6.1-sol` through AxonHub. The completed explicit
   comparison also used `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
   Verify the exact route
   before registration. Run one minimum rollout per environment revision.

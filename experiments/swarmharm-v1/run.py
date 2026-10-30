@@ -23,6 +23,8 @@ HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[1]
 REGISTRATIONS=HERE/'registrations'
 sys.path.insert(0,str(HERE))
+sys.path.insert(0,str(REPO/'experiments/runtime'))
+import codex_agent
 import lab
 import harbor_input
 import schedule
@@ -209,6 +211,8 @@ def code_paths():
             'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
             'runtime/claude/package.json','runtime/claude/package-lock.json','runtime/claude/checks.mjs',
             'runtime/claude/catalog.mjs')]
+        +[REPO/'experiments/runtime'/name for name in (
+            'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py')]
         +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
           REPO/'scripts/check_goal_mode_pair.py']
     )
@@ -265,14 +269,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reasoning_effort=DEFAULT_REASONING, information_condition="local_records"):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
-    if harness_kind not in ('pi-sdk','claude-code'):
+    if harness_kind not in ('pi-sdk','claude-code','codex'):
         raise ValueError('Unknown agent harness')
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
     if harness_kind=='pi-sdk':
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
-        raise ValueError('The Claude subscription harness does not accept an API key file')
+        raise ValueError('Subscription harnesses do not accept an API key file')
     if root.exists():raise FileExistsError('Use a fresh output directory.')
     if registration_dir.exists():raise FileExistsError('Use a fresh registration directory.')
     scenario=domain_runtime.normalize(scenario)
@@ -280,7 +284,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Unknown information condition')
     if information_condition != 'local_records' and scenario != domain_runtime.KNOWLEDGE_WORK:
         raise ValueError('Staffing-register condition requires the Knowledge Work scenario')
-    if harness_kind=='claude-code':
+    if harness_kind=='codex':
+        harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
+        routes={'checked_at':utc(),'provider':'chatgpt-subscription','models':MODELS,
+            'api_key_billing':False,'catalog':codex_agent.subscription_catalog(
+                next(iter(MODELS.values())),reasoning_effort),
+            'evidence_limit':codex_agent.EVIDENCE_LIMIT}
+    elif harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
         harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
         routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
@@ -311,7 +321,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
-    if harness_kind=='claude-code':
+    if harness_kind in ('claude-code','codex'):
+        if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
     else:
         budget['max_transport_attempts_per_request']=harness['settings']['retry']['maxRetries']+1
@@ -365,10 +376,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'api_base':None if harness_kind=='claude-code' else AXONHUB_API_BASE,
-        'endpoint':None if harness_kind=='claude-code' else AXONHUB_ENDPOINT,
+        'api_base':None if harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
+        'endpoint':None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
         'credential_source':('Operator Claude subscription login; no API key or API fallback.'
-            if harness_kind=='claude-code' else 'Existing host-only AxonHub key; never supplied to subjects.'
+            if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
+            if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
@@ -705,9 +717,11 @@ def collect(root,registration_dir):
     global AXONHUB_KEY_FILE
     reg=load(root/'registration.json')
     is_claude=reg.get('harness',{}).get('kind')=='claude-code'
-    if is_claude and AXONHUB_KEY_FILE is not None:
-        raise ValueError('The registered Claude subscription harness does not accept an API key file')
-    if not is_claude:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
+    is_codex=reg.get('harness',{}).get('kind')=='codex'
+    subscription=is_claude or is_codex
+    if subscription and AXONHUB_KEY_FILE is not None:
+        raise ValueError('The registered subscription harness does not accept an API key file')
+    if not subscription:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
     scenario=domain_runtime.normalize(reg.get('scenario'))
     require(not (root/'started.json').exists(),'Never replace trajectories.')
     require(reg.get('phase2',{}).get('depends_on_phase1') is True,
@@ -729,18 +743,21 @@ def collect(root,registration_dir):
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     harness=reg['harness']
-    require(harness['kind'] in ('pi-sdk','claude-code'),'Unknown registered agent harness.')
-    agent_runtime=claude_agent if is_claude else pi_agent
-    agent_class=claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
-    harness_folder='claude' if is_claude else 'pi'
-    if is_claude:
+    require(harness['kind'] in ('pi-sdk','claude-code','codex'),'Unknown registered agent harness.')
+    agent_runtime=codex_agent if is_codex else claude_agent if is_claude else pi_agent
+    agent_class=codex_agent.CodexAgent if is_codex else claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
+    harness_folder='codex' if is_codex else 'claude' if is_claude else 'pi'
+    if is_codex:
+        require(harness['authentication']=='chatgpt-subscription','Codex requires subscription authentication.')
+        codex_agent.verify_runtime(harness)
+    elif is_claude:
         require(harness['authentication']=='claude-subscription','Claude requires subscription authentication.')
         claude_agent.verify_runtime(harness)
     else:
         require(pi_agent.installed_versions()==harness['installed'],'Installed Pi runtime differs from the registration.')
         require(pi_agent.node_version()==harness['node_version'],'Node.js differs from the registration.')
-    api_key=None if is_claude else AXONHUB_KEY_FILE.read_text().strip()
-    api_base=None if is_claude else registration_api_base(reg)
+    api_key=None if subscription else AXONHUB_KEY_FILE.read_text().strip()
+    api_base=None if subscription else registration_api_base(reg)
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
     continuation_path = HERE / (domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=module('swarmharm_v1_continuation',continuation_path)
@@ -748,7 +765,8 @@ def collect(root,registration_dir):
     state_lock=Lock()
     began=time.monotonic();deadline=began+budget['max_batch_seconds'];progress={
         'status':'running','phase':'preflight','completed_workers':0,
-        'model_requests_started':0,'inflight_requests':{}}
+        'model_requests_started':0,'inflight_requests':{},
+        **({'request_count_scope':harness['request_count_scope']} if is_codex else {})}
     def update(**values):
         with state_lock:
             progress.update(values,updated_at=utc(),elapsed_seconds=round(time.monotonic()-began,2))
@@ -807,7 +825,8 @@ def collect(root,registration_dir):
                     tools=lab.tools(item)+continuation_module.tool_definitions(),
                     active_tools=[tool['name'] for tool in lab.tools(item)],
                     job_context=initial[name][actor]['input'][0]['content'],
-                    goal_mode=harness['goal_mode'])
+                    goal_mode=harness['goal_mode'],
+                    **({'registered_harness':harness} if is_codex else {}))
             for actor,value in agent_runtime.wait_ready(events,active).items():
                 save(root/name/actor/f'{harness_folder}-system-prompt.json',{'system_prompt':value['system_prompt'],
                     'active_tools':value['active_tools'],'commands':value['commands']})
@@ -1013,7 +1032,8 @@ def collect(root,registration_dir):
                     'classification':classification,'at':utc()})
                 record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
                 mark_inflight(path,None)
-                histories[actor].extend(deepcopy(value.get('output',[])))
+                if is_codex:histories[actor]=deepcopy(message['history'])
+                else:histories[actor].extend(deepcopy(value.get('output',[])))
                 export(actor)
                 if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
                 if classification['status']=='text_refusal_candidate':print(json.dumps({'alert':'text_refusal_candidate','request':path}),flush=True)
@@ -1093,7 +1113,9 @@ def collect(root,registration_dir):
                 if phase2_pending is not None and observation.ready(time.monotonic()):
                     return
                 wake_waiting()
-                submit(actor)
+                # Codex owns its tool loop until turn/completed. Deliver any
+                # new business notice after settlement, without steering it mid-turn.
+                if not is_codex:submit(actor)
             def on_retry(actor,message):
                 states[actor]['provider_retries'].append({
                     'step':message['turn'],'attempt':message['attempt'],'max_attempts':message['max_attempts'],
@@ -1155,6 +1177,16 @@ def collect(root,registration_dir):
             def handle(actor,message):
                 kind=message['type']
                 if kind=='request':on_request(actor,message)
+                elif kind=='response_update':
+                    require(is_codex,'Only Codex emits partial native response groups')
+                    label=f"{message['turn']:04d}";value=message['response']
+                    validate_response_model({'model':reg['models'][states[actor]['provider']]},value)
+                    turn_records[(actor,message['turn'])]['attempts'][1]['response']=value
+                    save(root/name/actor/'trace'/f'{label}.response.json',value)
+                    histories[actor]=deepcopy(message['history']);export(actor)
+                    classification=monitor.classify(value)
+                    if classification['status'] in ('provider_filter','native_refusal'):
+                        raise Hold(classification['status'])
                 elif kind=='provider_response':on_response(actor,message)
                 elif kind=='tool_call':on_tool_call(actor,message)
                 elif kind=='turn_end':on_turn_end(actor,message)
@@ -1283,7 +1315,8 @@ def collect(root,registration_dir):
             max_output_tokens=budget['max_output_tokens_per_response'],
             context_window=harness['context_window'],
             request_timeout_ms=budget['request_timeout_seconds']*1000,
-            tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off')
+            tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off',
+            **({'registered_harness':harness} if is_codex else {}))
         try:
             agent_runtime.wait_ready(events,['preflight'])
             agent.prompt('Check service availability using confirm_service.')
@@ -1352,10 +1385,10 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
-    p.add_argument('--harness',choices=('pi-sdk','claude-code'),default='pi-sdk',
-        help='Claude Code uses the operator Claude subscription, without an API key.')
+    p.add_argument('--harness',choices=('pi-sdk','claude-code','codex'),default='pi-sdk',
+        help='Claude Code and Codex use operator subscriptions, without an API key.')
     p.add_argument('--model-id',
-        help='AxonHub model ID (default openai/gpt-6.1-sol), or required explicit Claude model ID.')
+        help='AxonHub model ID (default openai/gpt-6.1-sol), or required native subscription model ID.')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
         help='Effort frozen at preparation; collection uses the registered value.')
     p.add_argument('--upstream-model-id',
@@ -1391,10 +1424,10 @@ if __name__=='__main__':
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
-        if a.harness=='claude-code':
-            if not a.model_id:p.error('--model-id is required for the Claude subscription harness')
+        if a.harness in ('claude-code','codex'):
+            if not a.model_id:p.error('--model-id is required for subscription harnesses')
             if a.key_file or a.api_base!=AXONHUB_API_BASE or a.upstream_model_id:
-                p.error('Claude subscriptions do not accept --key-file, --api-base or --upstream-model-id')
+                p.error('Subscriptions do not accept --key-file, --api-base or --upstream-model-id')
         model_id=a.model_id or 'openai/gpt-6.1-sol'
         MODELS={a.model_alias:model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}

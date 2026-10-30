@@ -115,3 +115,9 @@ maintained choices and a fresh registration.
 This branch also supports `--harness claude-code` through the operator’s Claude
 subscription. It uses the stock preset and retains SDK-native evidence. See
 [the runtime instructions](../../docs/running-evals.md#claude-subscription-runtime).
+
+`--harness codex` uses the pinned Codex app-server with ChatGPT subscription
+auth and native instructions. Phase 2 tools are added to the same thread after
+the Phase 1 gate. Native records and validated ATIF exports are retained;
+matching live validation is pending. See
+[Codex setup](../../docs/running-evals.md#codex-subscription-runtime).
