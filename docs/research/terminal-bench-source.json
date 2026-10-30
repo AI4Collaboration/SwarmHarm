@@ -1,0 +1,51 @@
+{
+  "upstream_repository": "https://github.com/harbor-framework/terminal-bench-2-1",
+  "upstream_commit": "7131e4375048a0e408a8fb404b5f499d726b695b",
+  "task": "llm-inference-batching-scheduler",
+  "license": "Apache-2.0",
+  "status": "selected_source_original_offline_verified_adaptation_not_implemented",
+  "maintained_domain": "Engineering",
+  "subject_model_selected": "openai/gpt-5.6-sol",
+  "proposed_population": 4,
+  "upstream_task_scope": "Solvable single-agent shape-aware inference batching task; not an existing collective-misalignment environment.",
+  "upstream_task_files_sha256": {
+    "tasks/llm-inference-batching-scheduler/.gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+    "tasks/llm-inference-batching-scheduler/README.md": "ecc9dd635357c184742cf72fc1e452a8946e207b183fc9a7eebbcf07133b911f",
+    "tasks/llm-inference-batching-scheduler/environment/Dockerfile": "10a6193904ee0022ac098504182989893b196dfc74e626a3ca48534a8eacde48",
+    "tasks/llm-inference-batching-scheduler/environment/task_file/input_data/requests_bucket_1.jsonl": "8b3cf1e2b06074162038064dd2c114abe308acd32cec7d365ee63ee81978f7de",
+    "tasks/llm-inference-batching-scheduler/environment/task_file/input_data/requests_bucket_2.jsonl": "e15e2d4c4d55f875c42a6042610d6282f6c0657c39d3e0d0f087268252525cb5",
+    "tasks/llm-inference-batching-scheduler/environment/task_file/scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tasks/llm-inference-batching-scheduler/environment/task_file/scripts/baseline_packer.py": "547d230d5e6d93197803480cb81cab0ec6ac63fcfa0a24b246f549523f216c4e",
+    "tasks/llm-inference-batching-scheduler/environment/task_file/scripts/cost_model.py": "0cf417fd5ff0112defcd46970d37a290c0763c5a9092e91cb3ebb86c3f20e6ce",
+    "tasks/llm-inference-batching-scheduler/instruction.md": "0817374767533fbf51bb93345ee1bba266263c216c6cc55c096e71b4a1d37dfc",
+    "tasks/llm-inference-batching-scheduler/solution/solve.sh": "cb9efb586d76a893c3027e62029e286eb6c7583dc92dbf1840a3adc236a926d7",
+    "tasks/llm-inference-batching-scheduler/task.toml": "52aaac942f917e6a91ff658e0272195bd1cd842d41d71e302414c52603cc588b",
+    "tasks/llm-inference-batching-scheduler/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tasks/llm-inference-batching-scheduler/tests/cost_model_for_tests.py": "d3e810a99d40327fb8317f6512d879c52c6aeebdf5dcdc0c5e117c7df61c9ab9",
+    "tasks/llm-inference-batching-scheduler/tests/test.sh": "005f980332355e2fe143d4ff4aac11828adf070594bbe7055399c238f06953ca",
+    "tasks/llm-inference-batching-scheduler/tests/test_outputs.py": "80b06b7c4ba0db28832b767d48be74bb462d7f5df5798d9cb58c4f1160d96ffa"
+  },
+  "source_validation": {
+    "mode": "offline_original_test_functions_no_model_calls",
+    "requests": 1600,
+    "original_test_functions_passed": 6,
+    "input_hashes_unchanged": true,
+    "missing_and_duplicate_request_controls_rejected": true,
+    "evidence": "../research-audit-2026-10-30/tb-batching-results/results.json",
+    "evidence_sha256": "318cd68f08ecace4ca909770896f951d49251f54eb3accee6fe65d59cd4f7ec4",
+    "docker_image_id": "sha256:2724223b2314ba2f1862c2d5f45c9abfa7954382f4a514401ce7e1bbddee7d1b",
+    "network": "none",
+    "cpus": 1,
+    "memory_gib": 2,
+    "limits": "Reference-solution feasibility only. No official benchmark score, collective behavior, actual GPU expense or business loss is established."
+  },
+  "adaptation_requirements": [
+    "same_registered_harness",
+    "four_private_concurrent_contexts",
+    "shared_persistent_execution_state",
+    "normal_path_blocker_with_solvable_control",
+    "reachable_alternative_with_correct_binding_control",
+    "independent_final_effect_replay_preserving_corrections",
+    "two_deliberate_causal_contributors_for_collective_claim"
+  ]
+}

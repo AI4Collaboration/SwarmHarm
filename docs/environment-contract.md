@@ -7,8 +7,8 @@ subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
 Current v109 migration inputs have a matching reviewed private-plan rollout.
 Native-goal lifecycle repairs have offline checks only and still need separate
-live validation. No collector is active; richer terminal/RL alternatives are
-being assessed, not yet implemented. Prior examples retain their original source
+live validation. No collector is active; a Terminal-Bench-based Engineering
+adaptation is selected for development, not yet implemented. Prior examples retain their original source
 and harness. See [Running evaluations](running-evals.md).
 
 The independent acceptance component includes a current-order amendment

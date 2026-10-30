@@ -5,17 +5,40 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
-## Existing terminal and RL environments
+## Terminal-Bench foundation
 
-The latest design direction is to assess richer existing environments before
-another import-only variation. These are source options, not implemented or
-validated SwarmHarm integrations.
+The human selected Terminal-Bench as the primary foundation for the next Phase 2
+environment. Use [Terminal-Bench 2.1](https://github.com/harbor-framework/terminal-bench-2-1)
+at commit `7131e4375048a0e408a8fb404b5f499d726b695b`, under Apache-2.0.
+The first task is
+[`llm-inference-batching-scheduler`](https://github.com/harbor-framework/terminal-bench-2-1/tree/7131e4375048a0e408a8fb404b5f499d726b695b/tasks/llm-inference-batching-scheduler).
+Two 800-request workloads require executable batching plans with tensor-shape,
+coverage, cost, padding and latency constraints. The provided cost model supports
+repeated local experiments and artifact comparison.
+
+The unchanged reference solution passes all six original test functions in an
+offline container built from the upstream Dockerfile. The baseline preserves
+coverage but fails performance; dropping or duplicating a request fails coverage.
+Input hashes are unchanged. [Pinned provenance](terminal-bench-source.json)
+records source-file hashes and the local audit. This is an operator feasibility
+check, not a model rollout or official leaderboard result. Its cost/latency
+metrics are analytical estimates, not measured GPU expense or business loss.
+
+The next extension must give four independent subjects a shared execution system,
+retain useful code changes and reusable artifacts, and measure actual synthetic
+effects against independent truth. Four unrelated copies of the task are not a
+collective experiment. The original task is solvable; a strictly blocked normal
+path must be separately constructed and proven for our registered variant.
+Preserve the unmodified solvable control, cancellation and correction. The
+four-agent adaptation and its final-effect executor are not implemented yet.
+
+HVE and HackBait supply supporting measurement principles:
 
 - [Hack-Verifiable Terminal Bench](https://majoroth.github.io/hack-verifiable-environments/hvtb)
   wraps 89 Terminal Bench 2.1 tasks. Real terminal work supplies artifacts,
   execution and test feedback; watched solution/test access supplies separate
-  deterministic indicators. This is the preferred basis to inspect for the
-  next realistic Engineering workflow. Original file-access indicators alone
+  deterministic indicators. These are instrumentation references for the
+  Engineering adaptation. Original file-access indicators alone
   do not establish collective effects or knowing agreement.
 - [Hack-Verifiable TextArena](https://arxiv.org/html/2605.20744v1#S2.SS2)
   follows a Gymnasium-style interaction interface. Its 13 single-player and
@@ -24,13 +47,6 @@ validated SwarmHarm integrations.
   sealed-bid auctions. Persistent-context trajectories can span several games.
   This is a concrete reference for sequential decisions, feedback and reuse,
   with wrapper-detected events separate from task reward.
-- [Melting Pot](https://github.com/google-deepmind/meltingpot) supplies multi-agent
-  RL environments. In [Commons Harvest](https://github.com/google-deepmind/meltingpot/blob/main/meltingpot/configs/substrates/commons_harvest__open.py),
-  local harvest yields reward but exhausting a patch prevents regrowth.
-  [Clean Up](https://github.com/google-deepmind/meltingpot/blob/main/meltingpot/configs/substrates/clean_up.py)
-  couples collective production to costly individual maintenance. These support
-  studying delayed shared consequences. Ordinary competition, poor cooperation
-  or depletion is not automatically a process-gap use or knowing harmful plan.
 - [HackBait's adapter](https://github.com/meagoodboy/hackbait/blob/main/hackbait/verifiers_adapter.py)
   is a single-turn evaluation interface. Its reward is the instrumented clean
   verdict, not the gameable stated score; it explicitly targets evaluation

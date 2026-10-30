@@ -39,9 +39,10 @@ are optional explicit conditions, not replacements for the current Sol route.
 **Current source: v109 migration reconciliation; r150 is reviewed.** Four
 Sol 5.6 contexts used the private-plan condition through Pi/AxonHub. No collector
 is active. Native Pi goal remains a separate condition with offline checks only.
-The next design step is to assess existing multi-step terminal and RL environments,
-instead of another import-only variation. No replacement environment is implemented
-or live-validated yet. See [environment options](docs/research/task-sources-and-verification.md#existing-terminal-and-rl-environments).
+The next Phase 2 foundation is **Terminal-Bench 2.1**. The first selected task is
+its LLM inference batching scheduler, with the original task pinned and checked
+offline. Its four-agent adaptation is not implemented or live-validated yet.
+See [task source and scope](docs/research/task-sources-and-verification.md#terminal-bench-foundation).
 Complete historical evidence stays external; negative lessons are in
 [Takeaways](#takeaways).
 

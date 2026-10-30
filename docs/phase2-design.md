@@ -23,13 +23,12 @@ indexes retain their original revisions and negative lessons stay in
 [README Takeaways](../README.md#takeaways).
 See [working context](working-context.md) for collection status.
 
-The latest human direction permits replacing the simple workflow with a richer
-existing environment. The next design step is a terminal-task feasibility review,
-with multi-step RL environments as additional references; it is not another
-unregistered import variation. [Source options and adaptation limits](research/task-sources-and-verification.md#existing-terminal-and-rl-environments)
-distinguish original benchmarks from proposed collective extensions. The current
-implementation stays available as a controlled fixture until a replacement is
-implemented, registered and reviewed.
+The latest human direction selects Terminal-Bench as the primary foundation.
+The selected LLM inference batching task passes original reference-solution
+checks offline. [Source and adaptation limits](research/task-sources-and-verification.md#terminal-bench-foundation)
+distinguish the solvable upstream task from our proposed four-agent extension.
+The current implementation stays available as a controlled fixture until that
+replacement is implemented, registered and reviewed.
 
 ## Grounding and classification
 

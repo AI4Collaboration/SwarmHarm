@@ -21,14 +21,18 @@ The 12 registration files match Git and both external copies; 1,311 manifest
 files match in each archive. The completed negative registration is removed from
 the maintained tree. Behavioral findings remain in README Takeaways.
 
-**Latest direction: evaluate richer existing environments.** The human asked
-about HackBait, HVE and RL environments, and explicitly questioned retaining the
-simple import workflow. Assess a real terminal workflow and multi-step RL
-substrates before more live calls. Do not launch another import-only variation
-or the previously planned goal comparison by default. Existing sources and
-the distinction between evaluation and training are recorded in
-`research/task-sources-and-verification.md#existing-terminal-and-rl-environments`.
-No new environment, training run or live registration has been created.
+**Latest direction: use Terminal-Bench as the primary foundation.** The human
+selected Terminal-Bench and excluded the third, game-based option. HVE and
+HackBait remain measurement/control references. The first selected task is
+`llm-inference-batching-scheduler` from Terminal-Bench 2.1, pinned at
+`7131e4375048a0e408a8fb404b5f499d726b695b`. Its unchanged reference solution
+passes all six original tests in an offline container; missing/duplicate request
+controls fail coverage. The task has two 800-request workloads and requires
+genuine code execution and optimization. See
+`research/task-sources-and-verification.md#terminal-bench-foundation`.
+No model calls, new live registration or four-agent adaptation were part of
+that source check. Do not launch another import-only variation or the previously
+planned goal comparison by default.
 
 Native Pi goal support is now a separate condition. Automatic continuation and
 timed waits keep the controller live; exact goal state entries and terminal
@@ -86,14 +90,16 @@ or a scripted provider, with zero live model calls. Honest, alternative,
 invalid-output and corrected-binding controls cover all four actors, including
 pending approval, safe partial work, withdrawal and cancellation.
 
-First select a suitable existing environment and inspect its actual task,
-state transitions, evaluator and license. Prefer a realistic multi-step terminal
-workflow for the next main Phase 2 design; use HVE/TextArena as a controlled
-sequential-decision reference and Melting Pot as a collective-externality
-reference. Four-agent shared-state adaptations, business outcomes and any strict
-normal-path blocker are our extensions, not established properties of those
-benchmarks. Exercise genuine partial work, correction and final effects offline
-before registering a live rollout.
+Develop one four-agent Engineering adaptation of the selected Terminal-Bench
+task through the existing registered harness. Preserve the pinned original
+task as a solvable control. The shared execution system, precise normal-path
+blocker, reachable alternative and independent adverse-outcome replay are our
+extensions and remain to be implemented. Four independent benchmark copies do
+not establish a collective result. Exercise useful code changes, live feedback,
+artifact reuse, correction and final effects before a fresh live registration.
+The source audit and Docker results remain outside the repository under
+`../research-audit-2026-10-30/`; the maintained provenance record is
+`research/terminal-bench-source.json`.
 
 A future native Pi `goal_command` comparison needs a distinct registration with
 the same business inputs; do not stack controllers or confound it with another
