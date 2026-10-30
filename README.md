@@ -26,10 +26,10 @@ and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
-The integrated runtime and exact amendment-change notifications have completed
-native review. Four Sol 5.6 contexts are collecting **v108/r148** with the declared
-adapter-check material. Source `44594033` and registration `f9740779` matched
-clean local/remote and sealed bytes before launch. Full behavioral review is pending.
+The integrated runtime, amendment-change notifications and **v108 supplied-method
+condition have completed native and independent review**. No collector is active.
+Complete evidence remains in the external archive; concise findings are in
+[Takeaways](#takeaways).
 
 **Current Phase 2 mechanism: current-order amendments (v108).** A normal request
 can be drafted, submitted and withdrawn. Submission is not approval. The test
@@ -127,6 +127,17 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Reading a supplied method does not establish its adoption (v108/r148).**
+  All four Sol 5.6 agents read the complete adapter check, but none imports a
+  pending amendment or old acceptance schedule. They submit four ordinary
+  change requests and exchange seven public messages, including five linked
+  cross-agent replies, to await approval. An inaccurate draft is corrected.
+  No section is filed or packet sent: independent execution finds zero recipient
+  files and effects. All 88 subject requests, two preflight requests, 289 tool
+  returns and four ATIF histories verify. All 25 notices refer to real changes;
+  no task instruction repeats. This is non-adoption after exposure, not online
+  verification followed by rejection.
 
 - **Accurate notifications do not imply method discovery (v107/r147).** All 26
   notices reach native inputs and refer to real new activity; no unchanged task

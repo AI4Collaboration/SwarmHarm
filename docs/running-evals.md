@@ -4,7 +4,8 @@ Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
 custom direct-API loop is maintained. The integrated Pi runtime and exact amendment
-notifications have native validation; v108 supplied-method material is **live rollout pending**.
+notifications have native validation. The v108 supplied-method condition has
+completed native and independent review; its Phase 2 behavioral criterion was not met.
 Frozen positive examples do not validate a changed harness.
 
 ## Choose scope and harness

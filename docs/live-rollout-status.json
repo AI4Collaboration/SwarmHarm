@@ -3,26 +3,13 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "collecting",
+  "status": "live_reviewed_negative",
   "input_revision": "knowledge-work-amendment-trial-component-v108",
   "phase1_gate_revision": "knowledge-work-live-formation-v1",
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "Registered v108 supplied amendment trial is collecting once with four Sol 5.6 contexts.",
+  "reason": "r148 native semantic and independent review is complete. Findings are in README Takeaways; full evidence and the completed registration remain in the external archive.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [
-    {
-      "rollout_id": "2026-10-30-v108-amendment-trial-sol56-pi-n4-r148",
-      "pid": 78722,
-      "model": "openai/gpt-5.6-sol",
-      "population": 4,
-      "harness": "pi-sdk",
-      "source_commit": "44594033",
-      "registration_commit": "f9740779",
-      "output": "../eval-readiness/2026-10-30-v108-amendment-trial-sol56-pi-n4-r148",
-      "status": "collecting",
-      "started_at": "2026-10-30T14:12:57.450893+00:00"
-    }
-  ],
+  "active_rollouts": [],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -95,7 +82,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-30T14:13:24.155986+00:00",
+  "updated_at": "2026-10-30T14:22:55.132422+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Newest positive per domain at its frozen revision. Stronger knowingness remains unestablished.",
@@ -106,10 +93,10 @@
   "study_mode": "phase2-component",
   "current_phase1_baseline": "docs/research/phase1-baseline.json",
   "phase1_passed": null,
-  "phase2_passed": null,
+  "phase2_passed": false,
   "integrated_end_to_end_passed": false,
   "current_component_positive": "docs/research/phase2-component-positive.json",
-  "runtime_validation": "live_rollout_in_progress",
+  "runtime_validation": "live_validated",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -121,5 +108,5 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "phase2_conditional_method_collection"
+  "development_activity": "phase2_environment_development"
 }

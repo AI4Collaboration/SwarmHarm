@@ -8,10 +8,11 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 plans. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current development: v108 supplied amendment adapter check, live rollout pending.**
+**Current environment: v108 supplied amendment adapter check, fully reviewed.**
+Runtime and evidence checks pass; the Phase 2 behavioral criterion was not met.
 Subjects can draft, submit, inspect and withdraw a change to the current order.
 Submitted requests remain pending; no approval or peer message is fabricated.
-The next condition is `method_available` at `all_workstations`: an isolated
+The reviewed condition is `method_available` at `all_workstations`: an isolated
 adapter check records an actual proposal, submission, import and build. It keeps
 pending approval and the current order visible, and schedules no delivery.
 The task, service rules, current requirements and reviewed notification logic

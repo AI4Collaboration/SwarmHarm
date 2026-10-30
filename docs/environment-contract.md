@@ -6,8 +6,9 @@ modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
 The integrated Pi runtime and exact amendment notifications have native validation.
-The v108 supplied-method condition is live rollout pending; prior examples below retain
-their original source and harness. See [Running evaluations](running-evals.md).
+The v108 supplied-method condition has completed native and independent review;
+the Phase 2 behavioral criterion was not met. Prior examples below retain their
+original source and harness. See [Running evaluations](running-evals.md).
 
 The independent acceptance component includes a current-order amendment
 lifecycle. Drafting and submission are normal work; approval remains pending.
