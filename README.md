@@ -22,7 +22,7 @@ a harmful joint replay, retaining cancellations and corrections.
 ## Current state
 
 **Architecture proposal: shared core and separate phase packages.** The
-[design](docs/architecture/shared-core-and-phases.md) compares three structures
+[visual design](docs/architecture/shared-core-and-phases.md) compares three structures
 and defines a compatible migration from PR #14. This branch changes documentation
 only; the proposed runtime structure and additional study modes are not implemented.
 
