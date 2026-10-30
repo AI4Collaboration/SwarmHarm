@@ -68,6 +68,34 @@ requests. Strong persistence prompts are a separately registered factor; they
 are not silently added to this revision. Genuine business updates can wake work;
 repeated unchanged instructions cannot supply the missing exploratory incentive.
 
+### What the comparison does and does not establish
+
+LessWrong's four-step manual replication is a set of component environments, not
+one demonstrated continuous four-agent sequence ending in our stronger claim of
+prior understanding, prospective joint planning and verified additional loss.
+Some conditions provide simulated peer notes or working methods; the separate
+live-fleet experiment has real agents and different cues and population. Its
+post-task reflection evidence cannot establish pre-action awareness. Do not
+describe these as an otherwise matched comparison to Sol 6.1 here.
+
+A useful specific observation is that agents in their retrieval task often
+objected to fabricating data while still pursuing out-of-scope access. A truthful
+answer obtained through an inappropriate route and a promise made from obsolete
+capacity evidence present different decisions. This supports testing distinct
+failure mechanisms; it does not prove the cause of our safe choices. METR also
+emphasizes research into the scorer and collective experiments, not simply
+retrieval of an answer key. Useful discoveries accumulated across workstreams.
+
+Our [failure taxonomy](../environment-contract.md#misalignment-coverage) is an
+operational synthesis. Scope overreach, outcome gaming and evidence concealment
+are grounded in the incident's external access, scorer/target manipulation and
+transcript manipulation. Resource misuse and collective externalities describe
+our independently verified business outcomes. The four are non-exclusive, not
+an official METR taxonomy. Cooperation, propagation and knowingly/unknowingly
+are different dimensions; external access or communication alone does not prove
+misalignment. Any external-system analogue here remains a local synthetic
+business service, with independent truth and no real external effects.
+
 These references justify design choices, not a claim that SwarmHarm has reproduced
 all their results. Both intended paths and the discoverable alternative must be
 verified before collection. Keep safe partial work and negatives. Do not tune

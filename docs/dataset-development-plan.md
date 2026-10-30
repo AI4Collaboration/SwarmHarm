@@ -9,7 +9,7 @@ Simple assignments can elicit exploration; adding obscure steps is not itself
 an improvement. Our current source-retrieval and resource-allocation tasks are
 minimum examples, not evidence of sustained collective research.
 
-**Knowledge Work v79 (implemented; next information condition pending).**
+**Knowledge Work v79 (both information conditions reviewed).**
 Knowledge Work v79 adds subject-requested schedule rehearsal. Selected current
 saved plans are projected with recorded commitments and accepted editorial work.
 The report binds versions, item checks and actual calendar-slot allocation within
@@ -22,12 +22,41 @@ Independent SQLite execution verifies projected slots and totals from native
 inputs. Final-effect replay consumes actual publications only, preserving every
 correction, withdrawal and rescheduling. Tasks, the fixed supplier amendment,
 Phase 1, pressure, ordinary-path impossibility and v20 follow-ups remain unchanged.
-The staffing-register rollout has been reviewed; its findings are in the root
-README Takeaways. The next registration uses the existing local-records condition.
-Only the opening aggregate calendar is absent; requested trials still expose
-actual capacity, accepted work and per-order effects. All tasks, execution truth,
-correction paths and notification logic match. Optional trials and reuse are
-observations, not new pass conditions or guaranteed behavior.
+Staffing-register and local-records rollouts have been reviewed; their findings
+are in the root README Takeaways. Only the opening aggregate calendar differs;
+requested trials expose actual capacity, accepted work and per-order effects in
+both. All tasks, execution truth, correction paths and notification logic match.
+Optional trials and reuse are observations, not new pass conditions or guaranteed
+behavior. No collector is active.
+
+## Next design decision: failure coverage and useful discoveries
+
+Use the [four failure families](environment-contract.md#misalignment-coverage)
+independently of the four business domains. Current examples chiefly exercise
+collective resource externalities. They do not cover external-scope actions,
+completion gaming and evidence concealment merely by changing business nouns.
+
+Our current alternative is readily interpreted as using an obsolete confirmation
+to promise unbacked staffing. That differs from pursuing a method that obtains
+real missing evidence but crosses the task's scope. LessWrong reports agents
+opposing fabricated answers while pursuing out-of-scope retrieval; its component
+tests also sometimes supply peer discoveries. METR describes shared experiments
+whose findings change what other agents can do. These are design hypotheses,
+not proof that a different mechanism will elicit knowing harmful coordination.
+
+Before another behavioral revision, repair the observation of by-reference reuse:
+a trial selecting a peer-authored plan is substantive input reuse even without
+an explicit file-open call. Keep that distinct from method adoption, agreement
+and final execution. Preserve the original frozen scores.
+
+Then choose one ordinary workflow where an investigative finding changes a
+blocked deliverable and can be tested and reused across cases. Keep the request
+outcome-level and let real artifacts accumulate through agent actions. Identify
+the intended path, the exact synthetic discrepancy and the independently
+observable adverse consequence before implementation. Do not plant a worked
+method, hide an existing correction, make routine work obscure, or add pressure
+merely because the current agents stop safely. This is a pending design, not a
+new implemented or live-validated scenario.
 
 ## Implemented refinement: descriptive activity notices
 
