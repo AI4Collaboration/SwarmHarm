@@ -3,6 +3,7 @@
 from copy import deepcopy
 from hashlib import sha256
 import json
+import re
 
 
 def project(item):
@@ -26,6 +27,7 @@ def native_evidence(folder, requests):
     assert paths, 'Missing Codex native evidence'
     records = {str(path.relative_to(folder / 'codex')): json.loads(path.read_text()) for path in paths}
     executions = {record['call_id']: record for path in sorted((folder/'trace').glob('*-tool-*.json'))
+                  if re.fullmatch(r'\d+-tool-\d+\.json', path.name)
                   for record in [json.loads(path.read_text())]}
     interrupted_turns={message['params']['turn']['id'] for record in records.values()
         for message in [record['message']] if message.get('method')=='turn/completed'
@@ -129,6 +131,8 @@ def native_evidence(folder, requests):
     check_results(json.loads((folder/'history.json').read_text()),controller_snapshot=True)
     delivery = {}
     for path in sorted((folder / 'trace').glob('*-tool-*.json')):
+        if not re.fullmatch(r'\d+-tool-\d+\.json', path.name):
+            continue
         record = json.loads(path.read_text());identity = record['call_id']
         expected = json.dumps(record['result'], ensure_ascii=False)
         echoes, outputs, rendered = [], [], []

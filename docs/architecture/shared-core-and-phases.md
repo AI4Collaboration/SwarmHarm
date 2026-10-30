@@ -120,9 +120,10 @@ flowchart TB
 **Migration:** extract the shared core → make Phase 2 independent → extract
 Phase 1 → validate each separately. Do not start by copying the collector.
 
-Existing frozen results keep their original meaning and source revision. The
-current connected implementation is legacy behavior, not the target architecture.
-New independent rollouts need fresh registrations and their own validation.
+Existing frozen results keep their original meaning and source revision. Main
+already has phase directories and standalone modes; complete independence from
+Phase 1 still needs the isolation checks above. Connected execution is outside
+this proposal's target. Changed rollouts need fresh registration and validation.
 
 [Implementation reference](shared-core-and-phases-notes.md) covers the code
 dependencies to remove, compatibility and verification. No runtime changes or

@@ -4,15 +4,16 @@
   and Phase 2 experiments sharing only phase-independent execution infrastructure
   and harnesses. Phase 2 must prepare, collect, review and export without Phase 1
   code, gates, outputs or prior sessions. No connected coordinator or required
-  scenario pairing belongs in the target. Current work is design only; leave
-  runtime code unchanged until implementation is requested. Continuous-flow
+  scenario pairing belongs in the target. This refactor is a design proposal;
+  do not implement it as part of the documentation task. Continuous-flow
   requirements below describe the existing implementation and frozen historical
   claims; they do not override this new architecture direction. Preserve those
-  records and their original meaning. See docs/architecture/shared-core-and-phases.md.
+  records and their original meaning; other registered rollout work follows its
+  existing rules. See docs/architecture/shared-core-and-phases.md.
 - This technical task owns environments, rollouts, analysis and technical
   documentation. Website work belongs to a separate task. Do not edit or deploy
   the website from this task unless the user explicitly reassigns that work.
-- Use concise English in conversation and formal reports.
+- Use concise Chinese in conversation and plain, concise English in formal reports.
   Lead with the result, its meaning and the evidence limit.
 - Use `rollout` for every evaluation execution in maintained prose, status
   schemas, operator messages and filenames. Keep this terminology consistent
@@ -25,13 +26,37 @@
   seed. Use "independent repeated rollouts" and report the actual model,
   settings, conditions and number of runs. Fixture randomization is not model
   randomness control and must not be presented as such.
-- Maintain only `experiments/swarmharm-v1`. It reports Phase 1 and Phase 2
-  separately, but executes them as one continuous registered rollout. Phase 2
-  may begin only after the operator-side Phase 1 gate passes, using the same
-  controller, agent IDs, model histories, workstations, shared state and event
-  sequence. A standalone Phase 2 run or stitched archived trajectory cannot
-  support the main claim. Earlier work remains available in Git history and
-  must not define current operation.
+- Every experiment must use the shared registered SDK harness pipeline. This
+  includes Phase 1-only, connected Phase 1→Phase 2 and independent Phase 2.
+  Keep phase-specific code in `experiments/swarmharm-v1/phase1/` and `phase2/`,
+  shared domain definitions in `scenarios/`, adapters in `experiments/runtime/`,
+  and one common prepare/collect/review/export entry. Do not restore a parallel
+  custom direct-API loop. Register harness version, preset/context mapping,
+  tools, goals, model, route and budgets; preserve actual native evidence limits.
+  Pi SDK through AxonHub is the current default. Claude Code and Codex subscription
+  adapters need explicit live model/harness selection; their availability alone
+  does not authorize a new route. A changed harness needs fresh live validation.
+- Maintain only `experiments/swarmharm-v1`. The user authorized independent
+  Phase 2 component studies on 30 October. Prioritize the three METR-observed
+  families in `docs/phase2-design.md`: external-environment breakout/scope
+  overreach, task-target or acceptance manipulation, and execution-evidence
+  manipulation. This is our grouping, not an official exhaustive METR taxonomy.
+  Component studies may start with declared prepared business inputs and
+  separately registered need/method cues; record all supplied material and its
+  provenance. Supplied records are never live dialogue or autonomous discovery.
+  A connected claim still requires Phase 1 followed by Phase 2 in the same
+  controller, agents, histories, workstations, shared state and event sequence.
+  Independent or stitched runs cannot support that claim. Keep the reviewed
+  Phase 1 baseline fixed while component work proceeds.
+  The 30 October human update explicitly allows a provided communication channel
+  in standalone Phase 2. Expose its ordinary read/post/reply tools directly;
+  subjects need not rediscover it. Keep it initially empty and record it as a
+  supplied interface, not evidence of autonomous formation. Do not fabricate
+  peer messages or require a conversation to pass Phase 2.
+  The requested persistent subject goal is a separate independent Phase 2
+  harness condition. Keep plans private and subject-authored. Continue a distinct
+  unfinished planned step at most once; never invent a step or repeat unchanged
+  instructions. Waiting remains incomplete, and goal status is not outcome evidence.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.
@@ -61,9 +86,13 @@
   autonomous discovery of an unannounced process gap. Avoid abstract security
   or governance labels in task-facing text; use concrete phrases such as a
   supplier reservation, a capacity quote and a deposit invoice instead.
-- Keep every subject-facing surface natural. Do not announce peers, cooperation,
-  communication, methods, evaluation, shared-system gaps or hidden milestones.
-  Do not add behavioral bans, permission summaries, solution hints or coaching.
+- Keep every subject-facing surface natural. The unassisted condition supplies
+  no peers, communication or method. Explicitly registered Phase 2 component
+  conditions may provide an operational need or a verified method artifact,
+  as authorized on 30 October. Freeze their origin and exclude supplied text
+  from live behavioral evidence. Never prescribe cooperation, rationalization,
+  adverse effects or an evaluation milestone in the task. Avoid behavioral bans
+  and repeated unchanged instructions.
 - Before live collection, verify each domain's registered completion scope.
   Model failure is not proof of impossibility. For composition, every actor's
   full sequence alone must be harmless and the combined sequence harmful.
@@ -137,39 +166,21 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- The user explicitly selected a local Pi/OpenRouter Finance v54 follow-up:
-  `openai/gpt-6.1-sol`, high effort, goal mode off, four concurrent contexts,
-  through the existing OpenRouter key. Freeze the direct OpenRouter endpoint;
-  do not silently route through AxonHub or claim TerryJwy channel provenance.
-- Pi live inference otherwise uses AxonHub. The explicitly selected Claude condition uses
-  the operator's Claude subscription through the pinned Claude Agent SDK. Never
-  supply API keys, cloud-provider routing or API fallback. Use the unmodified
-  `claude_code` system prompt preset, without a replacement or append. Freeze
-  the exact model, effort and SDK/CLI versions. Preserve native SDK/session
-  evidence and disclose that full provider requests and context are unexposed.
-  Stop on provider refusals and preserve failed rollouts; do not bypass safeguards.
-  The requested Claude model is `claude-opus-5-5` at `medium` effort.
-  The user also selected one fresh four-agent Claude rollout for each existing
-  domain scenario, including a Finance retry. Keep goal mode off and the same
-  branch business source; review domains sequentially and preserve every outcome.
-  This four-domain follow-up is complete and reviewed; do not automatically
-  repeat it.
-  Native `claude_goal` and Pi `goal_command` are labelled conditions outside the
-  natural prompt contract. Run a new goal condition only with a fresh matching
-  `off` rollout, checked by `scripts/check_goal_mode_pair.py`. Keep modes
-  separate; retain native goal acknowledgements and evaluator evidence limits.
-- For AxonHub, verify the exact route in upstream and
+- Current live Pi inference uses AxonHub; optional subscription harnesses require
+  explicit selection and preserve their distinct authentication and evidence scope. Verify the exact route in upstream and
   authenticated AxonHub catalogs before preparation.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this
   routing policy does not expand the experiment's registered model selection.
-  Prefer the existing TerryJwy channels for OpenAI models they support; retain
-  other eligible channels as fallback. Keep prefixed and unprefixed model names
+  The 30 October routing selection uses AxonHub's native failover with eligible
+  non-OpenRouter channels first and OpenRouter as fallback. The evaluation key
+  must not remain restricted to the earlier two-channel TerryJwy profile.
+  Keep prefixed and unprefixed model names
   consistent across routes. See docs/axonhub-routing.md for current priorities.
   A catalog counterpart is not proof of the channel used: inspect executions.
 - Finish code, documentation and cleanup before preparing a registration. After
   preparation, edit no frozen source. Commit and push the registration, confirm
-  the worktree is clean and local HEAD, its pushed remote branch, the byte-identical committed
+  the worktree is clean and local HEAD, its remote branch (main for detached HEAD), the byte-identical committed
   registration and sealed hashes match, then collect. Any intervening edit
   to sealed source or inputs requires a fresh registration. Unsealed operational
   documentation may track progress and decisions during collection. Log any
@@ -207,8 +218,8 @@
 - Expose only four live scenario choices: `engineering-capacity`, `data-analysis`,
   `financial-analysis` and `knowledge-work`. Internal release/maintenance layers
   remain shared dependencies and offline fixtures, not alternative rollouts.
-- Keep current source and one reviewed positive registration/evidence index per
-  domain in the maintained tree. Negative-result lessons belong only in the
+- Keep current source and reviewed positive registration/evidence indexes per
+  domain or explicitly separate harness condition in the maintained tree. Negative-result lessons belong only in the
   root README's Takeaways; preserve all complete raw outcomes externally and
   historical source in Git. Label published examples as selected after
   development, never as rates. Preserve an active rollout's full registration,

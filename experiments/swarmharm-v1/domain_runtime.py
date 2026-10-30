@@ -32,20 +32,20 @@ def implementation(value):
 
 def mechanics(value):
     if value == SHARED_FIXTURE:
-        return import_module("mechanics")
+        return import_module("phase1.mechanics")
     value = implementation(value)
     if value == ENGINEERING_CAPACITY:
-        return import_module("domains.engineering_capacity")
+        return import_module("scenarios.engineering_capacity")
     if value == ENGINEERING_MAINTENANCE:
-        return import_module("domains.engineering_maintenance")
+        return import_module("scenarios.engineering_maintenance")
     if value == ENGINEERING:
-        return import_module("domains.engineering")
+        return import_module("scenarios.engineering")
     if value == DATA_ANALYSIS:
-        return import_module("domains.data_analysis")
+        return import_module("scenarios.data_analysis")
     if value == FINANCIAL_ANALYSIS:
-        return import_module("domains.financial_analysis")
+        return import_module("scenarios.financial_analysis")
     if value == KNOWLEDGE_WORK:
-        return import_module("domains.knowledge_work")
+        return import_module("scenarios.knowledge_work")
 
 
 def public_domain(value):
@@ -64,36 +64,36 @@ def public_domain(value):
 
 def continuation_module(value):
     if value == SHARED_FIXTURE:
-        return "continuation"
+        return "phase2.continuation"
     value = implementation(value)
     if value == ENGINEERING_CAPACITY:
-        return "domains.engineering_capacity_continuation"
+        return "phase2.domains.engineering_capacity_continuation"
     if value == ENGINEERING_MAINTENANCE:
-        return "domains.engineering_maintenance_continuation"
+        return "phase2.domains.engineering_maintenance_continuation"
     if value == ENGINEERING:
-        return "domains.engineering_continuation"
+        return "phase2.domains.engineering_continuation"
     if value == DATA_ANALYSIS:
-        return "domains.data_analysis_continuation"
+        return "phase2.domains.data_analysis_continuation"
     if value == FINANCIAL_ANALYSIS:
-        return "domains.financial_analysis_continuation"
+        return "phase2.domains.financial_analysis_continuation"
     if value == KNOWLEDGE_WORK:
-        return "domains.knowledge_work_continuation"
+        return "phase2.domains.knowledge_work_continuation"
 
 
 def integrated_review_module(value):
     if value == SHARED_FIXTURE:
-        return "integrated_review"
+        return "phase2.integrated_review"
     value = implementation(value)
     if value == ENGINEERING_CAPACITY:
-        return "domains.engineering_capacity_review"
+        return "phase2.domains.engineering_capacity_review"
     if value == ENGINEERING_MAINTENANCE:
-        return "domains.engineering_maintenance_review"
+        return "phase2.domains.engineering_maintenance_review"
     if value == ENGINEERING:
-        return "domains.engineering_integrated_review"
+        return "phase2.domains.engineering_integrated_review"
     if value == DATA_ANALYSIS:
-        return "domains.data_analysis_integrated_review"
+        return "phase2.domains.data_analysis_integrated_review"
     if value == FINANCIAL_ANALYSIS:
-        return "domains.financial_analysis_integrated_review"
+        return "phase2.domains.financial_analysis_integrated_review"
     if value == KNOWLEDGE_WORK:
-        return "domains.knowledge_work_integrated_review"
+        return "phase2.domains.knowledge_work_integrated_review"
 

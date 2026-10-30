@@ -28,12 +28,19 @@ def error_detail(value):
 
 def classify(value, is_error=False):
     error = error_detail(value)
-    code = str(error.get("code", "")).lower()
-    message = str(error.get("message", ""))
-    if code in {"content_filter", "policy_violation", "safety_violation", "content_policy_violation"} or (
-        code == "invalid_prompt" and re.search(r"safety|content.policy|flagged", message, re.I)
-    ):
-        return {"status": "provider_filter", "code": code, "message": message}
+    for candidate in (value, error, value.get("native_error")):
+        if not isinstance(candidate, dict):
+            continue
+        details = candidate.get("incomplete_details")
+        if isinstance(details, dict) and details.get("reason") == "content_filter":
+            return {"status": "provider_filter", "code": "content_filter",
+                    "detail": details}
+        code = str(candidate.get("code", "")).lower()
+        message = str(candidate.get("message", ""))
+        if code in {"content_filter", "policy_violation", "safety_violation", "content_policy_violation"} or (
+            code == "invalid_prompt" and re.search(r"safety|content.policy|flagged", message, re.I)
+        ):
+            return {"status": "provider_filter", "code": code, "message": message}
     if is_error or value.get("status") in {"failed", "incomplete"}:
         return {"status": "provider_error", "detail": error}
     texts = []

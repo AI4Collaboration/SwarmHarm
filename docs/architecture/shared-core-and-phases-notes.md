@@ -2,8 +2,9 @@
 
 Start with the [visual design](shared-core-and-phases.md).
 
-Design proposal, corrected on 30 October 2026. Base: PR #14,
-`ee5114bae85023b2b4a76299f92e6f8b2ec7d864`. Runtime code remains unchanged.
+Design proposal, corrected on 30 October 2026. Original baseline: PR #14,
+`ee5114bae85023b2b4a76299f92e6f8b2ec7d864`. The documentation branch now includes
+main `f6af6461b`; this PR makes no runtime changes relative to that base.
 
 ## Decision and scope
 
@@ -38,11 +39,12 @@ For example, Finance's `ReviewService` belongs to Phase 1; `FundingService`,
 starting funding records and settlement replay belong to Phase 2. Phase 2 must
 not obtain them through a mixed module that transitively imports Phase 1.
 
-Sources: [collector](../../experiments/swarmharm-v1/run.py),
-[world](../../experiments/swarmharm-v1/lab.py),
-[Finance continuation](../../experiments/swarmharm-v1/domains/financial_analysis_continuation.py),
-[Finance reviewer](../../experiments/swarmharm-v1/domains/financial_analysis_integrated_review.py),
-[exporter](../../experiments/swarmharm-v1/export_atif.py).
+Sources at the original baseline:
+[collector](https://github.com/AI4Collaboration/SwarmHarm/blob/ee5114bae/experiments/swarmharm-v1/run.py),
+[world](https://github.com/AI4Collaboration/SwarmHarm/blob/ee5114bae/experiments/swarmharm-v1/lab.py),
+[Finance continuation](https://github.com/AI4Collaboration/SwarmHarm/blob/ee5114bae/experiments/swarmharm-v1/domains/financial_analysis_continuation.py),
+[Finance reviewer](https://github.com/AI4Collaboration/SwarmHarm/blob/ee5114bae/experiments/swarmharm-v1/domains/financial_analysis_integrated_review.py),
+[exporter](https://github.com/AI4Collaboration/SwarmHarm/blob/ee5114bae/experiments/swarmharm-v1/export_atif.py).
 
 ## Ownership and interfaces
 
@@ -198,9 +200,16 @@ direction for this design. Natural-task, evidence, credential and independent
 effect requirements still apply. Update registration, protocol and admission
 schemas together during implementation; none may hide a Phase 1 prerequisite.
 
-Upstream `main` was inspected earlier at
-`2f582c76068cc7d68ee3f4cbad5eaaefc00b1c76`. Its component initialization is useful
-reference, not proof that every scenario is independent or supported on our
-branch. Reconcile selected upstream changes separately from extraction; do not
-overwrite the three-harness collector or silently change business fixtures.
-Newer `main` has not been merged.
+PR #14 has merged. Main `f6af6461b` now contains `phase1/`, `phase2/`, shared
+`scenarios/` and standalone modes using the registered harness pipeline. The
+documentation branch includes that revision, with no runtime difference from it.
+The dependency inventory above describes the original PR #14 baseline and must
+be re-audited against current main before implementation; some steps may already
+be complete. Existing standalone support does not prove the stronger acceptance
+test that preparation, collection, review and export work with Phase 1 unavailable.
+
+Build on the existing separation. Map its files to these responsibilities before
+adding packages or moving them again. Preserve current fixtures, harnesses,
+registrations and active rollout evidence; do not replace upstream implementation
+with the old collector. Connected support currently remains in main; its removal
+or deprecation is a later implementation decision, not part of this design PR.

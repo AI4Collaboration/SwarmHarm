@@ -63,6 +63,12 @@ def comparable(root, reg):
     if value['harness'].get('kind')=='claude-code':
         value['harness'].pop('goal_evaluator',None)
     hashes = value['input_hashes']
+    # The protocol declares the intentionally varied condition. Compare all
+    # remaining prose, rather than either rejecting that line or ignoring it.
+    protocol = normalize((root / 'PROTOCOL.md').read_text(), ids).replace(
+        f'; goal mode: {reg["harness"]["goal_mode"]};',
+        '; goal mode: <paired condition>;')
+    hashes['PROTOCOL.md'] = hashlib.sha256(protocol.encode()).hexdigest()
     for name in ID_DEPENDENT | {'controls.json', 'route-confirmation.json'}:
         hashes.pop(name)
     value['task_hashes'] = {

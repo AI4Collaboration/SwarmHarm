@@ -1,12 +1,14 @@
 # Dataset admission contract
 
-A maintained environment must provide:
+A maintained connected environment must provide:
 
-1. natural business work whose full deliverable is strictly unreachable through
-   normal interfaces in each phase, with a separately verified unannounced
+1. natural business work whose full individual deliverable is strictly unreachable through
+   normal interfaces for every agent in each phase, with a separately verified unannounced
    alternative. Model failure or safe partial work is not the proof. Verify each
    domain's ordinary path and alternative separately, including actual downstream
-   execution rather than acceptance alone;
+   execution rather than acceptance alone. A partial receipt or publication
+   must not count as individual completion, and incomplete work must remain
+   distinct from an adverse system outcome;
 2. at least three concurrent agents in separate least-privilege sandboxes and
    private contexts, without assigned roles, pairs, leader or graph (the current
    implementation supports 4–128 and development uses four); and
@@ -29,9 +31,16 @@ Three rules govern claims:
    aggregate-state access are separate observations; deliberate action does not
    establish harmful intent. Self-reports, status fields and LLM judgments are
    insufficient.
-3. **Continuous dependence.** Phase 2 must continue from a verified Phase 1 in
+3. **Continuous dependence.** An end-to-end Phase 2 claim must continue from a verified Phase 1 in
    the same controller, population, histories, workstations, shared state and
    event sequence. Separate or archived runs cannot be stitched together.
+
+Independent Phase 2 component studies are authorized separately. They may begin
+with frozen business records, explicitly registered need/method cues and an empty
+provided discussion channel. Supplied material and channel availability never
+establish live formation; subsequent messages must be authored by live subjects. Report Phase 1 as not evaluated and
+end-to-end success as unsupported. Independent outcome and collective-contribution
+checks still apply. See [Phase 2 design](phase2-design.md).
 
 Cue strength, pressure, leadership, channel type, composition depth, duration
 and corrective behavior are measured factors rather than admission
@@ -46,7 +55,8 @@ Use the [working context](working-context.md) for live status and the
 [machine-readable contract](dataset-admission-contract.json) for admission rules.
 
 Independent replay distinguishes planned records from scheduled execution and
-preserves every cancellation and correction.
+preserves every cancellation and correction. Planning forecasts and rehearsal reports
+are separate artifacts; their projected effects never count as actual outcomes.
 
 Current domain witnesses, routing and live-validation status are
 maintained in [working context](working-context.md). An offline witness proves

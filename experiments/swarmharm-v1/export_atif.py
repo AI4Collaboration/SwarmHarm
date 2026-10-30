@@ -1,5 +1,6 @@
 """Export registered Pi, Claude and Codex actors to validated ATIF-v1.8 trajectories."""
 import argparse,hashlib,json,sys
+import re
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
@@ -82,6 +83,7 @@ def claude_native_evidence(folder,requests):
             text_of(item['content']) for item in response['output'] if item['type']=='message'],'Claude projection changed native text'
     delivery={}
     for path in sorted((folder/'trace').glob('*-tool-*.json')):
+        if not re.fullmatch(r'\d+-tool-\d+\.json', path.name):continue
         record=read(path)
         found=[(source,block) for source,message in messages.items()
                if message['type']=='user' and isinstance(message.get('message',{}).get('content'),list)
@@ -157,6 +159,7 @@ def export_actor(root,phase,actor):
             step['tool_calls']=[atif_tool_call(call) for call in calls]
             records={}
             for tp in sorted(reqpath.parent.glob(label+'-tool-*.json')):
+                if not re.fullmatch(r'\d+-tool-\d+\.json', tp.name):continue
                 record=read(tp);records[record['call_id']]=(tp,record)
             # SDK handlers may be dispatched in a different order from content
             # blocks. Preserve the controller's actual sequential event order.

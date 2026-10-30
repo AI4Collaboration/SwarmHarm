@@ -10,37 +10,42 @@ from pathlib import Path
 import re
 import shutil
 
-import lab
+from phase1 import lab
 import domain_runtime
 
 
 REPO = Path(__file__).resolve().parents[2]
 EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/review.py",
-    "experiments/swarmharm-v1/integrated_review.py",
-    "experiments/swarmharm-v1/harm_mechanics.py",
-    "experiments/swarmharm-v1/lab.py",
-    "experiments/swarmharm-v1/mechanics.py",
+    "experiments/swarmharm-v1/phase2/integrated_review.py",
+    "experiments/swarmharm-v1/phase2/harm_mechanics.py",
+    "experiments/swarmharm-v1/phase1/lab.py",
+    "experiments/swarmharm-v1/phase1/mechanics.py",
     "experiments/swarmharm-v1/domain_runtime.py",
-    "experiments/swarmharm-v1/domains/engineering_capacity.py",
-    "experiments/swarmharm-v1/domains/engineering_capacity_continuation.py",
-    "experiments/swarmharm-v1/domains/engineering_capacity_review.py",
-    "experiments/swarmharm-v1/domains/engineering.py",
-    "experiments/swarmharm-v1/domains/engineering_continuation.py",
-    "experiments/swarmharm-v1/domains/engineering_integrated_review.py",
-    "experiments/swarmharm-v1/domains/engineering_maintenance.py",
-    "experiments/swarmharm-v1/domains/engineering_maintenance_continuation.py",
-    "experiments/swarmharm-v1/domains/engineering_maintenance_review.py",
-    "experiments/swarmharm-v1/domains/maintenance_data.py",
-    "experiments/swarmharm-v1/domains/data_analysis.py",
-    "experiments/swarmharm-v1/domains/data_analysis_continuation.py",
-    "experiments/swarmharm-v1/domains/data_analysis_integrated_review.py",
-    "experiments/swarmharm-v1/domains/financial_analysis.py",
-    "experiments/swarmharm-v1/domains/financial_analysis_continuation.py",
-    "experiments/swarmharm-v1/domains/financial_analysis_integrated_review.py",
-    "experiments/swarmharm-v1/domains/knowledge_work.py",
-    "experiments/swarmharm-v1/domains/knowledge_work_continuation.py",
-    "experiments/swarmharm-v1/domains/knowledge_work_integrated_review.py",
+    "experiments/swarmharm-v1/phase2/phase2_component.py",
+    "experiments/swarmharm-v1/phase2/component_workflow.py",
+    "experiments/swarmharm-v1/phase2/component_review.py",
+    "experiments/swarmharm-v1/phase2/order_amendments.py",
+    "experiments/swarmharm-v1/scenarios/engineering_capacity.py",
+    "experiments/swarmharm-v1/phase2/domains/engineering_capacity_continuation.py",
+    "experiments/swarmharm-v1/phase2/domains/engineering_capacity_review.py",
+    "experiments/swarmharm-v1/scenarios/engineering.py",
+    "experiments/swarmharm-v1/phase2/domains/engineering_continuation.py",
+    "experiments/swarmharm-v1/phase2/domains/engineering_integrated_review.py",
+    "experiments/swarmharm-v1/scenarios/engineering_maintenance.py",
+    "experiments/swarmharm-v1/phase2/domains/engineering_maintenance_continuation.py",
+    "experiments/swarmharm-v1/phase2/domains/engineering_maintenance_review.py",
+    "experiments/swarmharm-v1/phase2/domains/maintenance_data.py",
+    "experiments/swarmharm-v1/scenarios/data_analysis.py",
+    "experiments/swarmharm-v1/phase2/domains/data_analysis_continuation.py",
+    "experiments/swarmharm-v1/phase2/domains/data_analysis_integrated_review.py",
+    "experiments/swarmharm-v1/scenarios/financial_analysis.py",
+    "experiments/swarmharm-v1/phase2/domains/financial_analysis_continuation.py",
+    "experiments/swarmharm-v1/phase2/domains/financial_analysis_integrated_review.py",
+    "experiments/swarmharm-v1/scenarios/knowledge_work.py",
+    "experiments/swarmharm-v1/phase2/domains/knowledge_work_publishing.py",
+    "experiments/swarmharm-v1/phase2/domains/knowledge_work_continuation.py",
+    "experiments/swarmharm-v1/phase2/domains/knowledge_work_integrated_review.py",
 )
 SCOPE_PATTERN = re.compile(
     r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook|"
@@ -1362,7 +1367,7 @@ def reassess_phase1(root, destination):
         "evidence_manifest_sha256": manifest_hash,
         "frozen_review_sha256": digest(root / "independent-review.json"),
         "evaluator_hashes": {path: digest(REPO / path) for path in (
-            "experiments/swarmharm-v1/lab.py", "experiments/swarmharm-v1/review.py")},
+            "experiments/swarmharm-v1/phase1/lab.py", "experiments/swarmharm-v1/review.py")},
         "frozen_phase1_passed": frozen["phase1"]["phase1_formation_passed"],
         "reassessed_phase1_passed": phase1["phase1_formation_passed"],
         "runtime_gate_passed": runtime_formation_evidence(registration, revised)["passed"],
@@ -1395,8 +1400,11 @@ def apply_collection_status(result, collection_status):
 
 def project_phase2(integrated, collection_complete, phase1):
     """Preserve the domain review, including optional post hoc labels."""
+    component = integrated.get('study_mode') == 'phase2-component'
     return {
-        "depends_on_phase1": True,
+        "depends_on_phase1": not component,
+        "study_mode": integrated.get('study_mode', 'connected'),
+        "component_gates": integrated.get('component_gates', {}),
         "continuity_gates": integrated["continuity_gates"],
         "source_candidates": integrated["source_candidates"],
         "method_records": integrated["method_records"],
@@ -1405,10 +1413,16 @@ def project_phase2(integrated, collection_complete, phase1):
         "collective_outcomes": integrated["collective_outcomes"],
         "behavior_coverage": integrated.get("behavior_coverage", {}),
         "communication": integrated.get("communication", {}),
+        "subject_goal": integrated.get("subject_goal", {}),
+        "material_builds": integrated.get("material_builds", []),
+        "delivery_builds": integrated.get("delivery_builds", []),
+        "schedule_rehearsals": integrated.get("schedule_rehearsals", []),
+        "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
+        "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete
-            and phase1["phase1_formation_passed"]
-            and integrated["integrated_end_to_end_passed"]
+            and (integrated.get('phase2_component_passed', False) if component else
+                 phase1["phase1_formation_passed"] and integrated["integrated_end_to_end_passed"])
         ),
     }
 
@@ -1421,32 +1435,40 @@ def review(root, destination=None):
     world = load(root / "natural/world.json")
     reconcile_tool_commits(root, world)
     states = load(root / "natural/actors.json")
-    phase1 = assess(registration, world, states)
+    component = registration.get('study_mode') == 'phase2-component'
+    phase1_only = registration.get('study_mode') == 'phase1'
+    phase1 = ({'evaluated': False, 'phase1_formation_passed': False,
+               'claim_scope': 'not_evaluated_in_phase2_component',
+               'propensity_interpretation': {'classification': 'not_evaluated'}}
+              if component else assess(registration, world, states))
     completion = load(root / "completion.json")
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
-    integrated_module = importlib.import_module(
-        domain_runtime.integrated_review_module(registration.get("scenario"))
-    )
-    integrated = integrated_module.assess(
-        registration,
-        world,
-        states,
-        load(root / "natural/continuation.json"),
-        {
-            actor: load(root / "natural" / actor / "history.json")
-            for actor in registration["plan"]["natural"]
-        },
-    )
+    if phase1_only:
+        integrated={'integrated_end_to_end_passed':False,'scope':'Standalone Phase 1; no Phase 2 claim.'}
+    else:
+        integrated_module = importlib.import_module('phase2.component_review' if component and
+            registration.get('phase2', {}).get('component_family') else
+            domain_runtime.integrated_review_module(registration.get("scenario")))
+        integrated = integrated_module.assess(
+            registration,
+            world,
+            states,
+            load(root / "natural/continuation.json"),
+            {
+                actor: load(root / "natural" / actor / "history.json")
+                for actor in registration["plan"]["natural"]
+            },
+        )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
+    phase2 = ({'evaluated':False, 'passed':False, 'claim_scope':'not_evaluated_in_phase1'}
+              if phase1_only else project_phase2(integrated, collection_complete, phase1))
     result = {
-        "rollout_passed": (
-            collection_complete
-            and phase1["phase1_formation_passed"]
-            and integrated["integrated_end_to_end_passed"]
-        ),
+        "rollout_passed": (collection_complete and phase1["phase1_formation_passed"] if phase1_only else phase2['passed']),
+        "study_mode": registration.get('study_mode', 'connected'),
+        "integrated_end_to_end_passed": not component and integrated['integrated_end_to_end_passed'] and collection_complete,
         "phase1": phase1,
-        "phase2": project_phase2(integrated, collection_complete, phase1),
+        "phase2": phase2,
         "collection_status": collection_status,
         "provider_errors": sum(row.get("status") == "provider_error" for row in classes),
         "budget_timeouts": sum(row.get("status") == "budget_timeout" for row in classes),
@@ -1456,10 +1478,9 @@ def review(root, destination=None):
         "scope": integrated["scope"],
     }
     save(root / "independent-review.json", result)
-    (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
-    (root / "functional-transfer-transcript.md").write_text(
-        transfer_markdown(phase1)
-    )
+    if not component:
+        (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
+        (root / "functional-transfer-transcript.md").write_text(transfer_markdown(phase1))
     if destination:
         destination = Path(destination)
         if destination.exists():
