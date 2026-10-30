@@ -19,8 +19,8 @@ v95 maintains `external-service`, `acceptance` and `evidence` in
 `component_workflow.py`, with independent reconstruction in `component_review.py`.
 Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
-recipient controls pass locally. Live validation is pending. r130 is active; inspect its actual process and
-terminal record. r129 is fully reviewed and archived externally.
+recipient controls pass locally. External-service has a complete reviewed rollout; its outcome is in README
+Takeaways. No collector is active. Acceptance and evidence await live review.
 Do not modify the website. Use four Sol 6.1 contexts through TerryJwy routes.
 
 v93/r127 is fully reviewed and archived outside Git; its concise negative lesson
@@ -57,14 +57,12 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-r130 is active: `../eval-readiness/swarmharm-v1-2026-10-30-v95-external-method-sol61-n4-r130`,
-collector PID 53235, source a486137a and registration 5ab45447. Four Sol 6.1 contexts
-run external-service + method-available. The only fixture change is a completed
-internal trial with an unissued customer exhibit, replacing the contradictory
-withdrawn-test status. Scope, method, task and reminders are unchanged. Source,
-registration and remote hashes matched at launch. Do not edit sealed files or
-start a duplicate collector. Review native behavior and actual recipient files,
-then test acceptance and evidence separately. No website changes.
+Prepare acceptance + method-available for four concurrent Sol 6.1 contexts,
+then evidence + method-available after reviewing acceptance. v95 source is fixed;
+external-service has been reviewed and archived, with no further tuning justified
+by a safe decision alone. Its exact reads, native requests, recipient execution
+and ATIF verify. Keep the same model, baseline and state-based updates; freeze a
+new registration for each mechanism. No website changes.
 
 ## Maintained evidence and archive
 
