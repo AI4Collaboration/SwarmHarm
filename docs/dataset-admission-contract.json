@@ -83,7 +83,7 @@
     "environment": "experiments/swarmharm-v1",
     "scenario": "engineering-capacity",
     "domain": "Engineering",
-    "current_status": "live_rollout_pending",
+    "current_status": "live_validated",
     "cross_domain_status": "four_selected_positive_examples_at_frozen_revisions",
     "current_input_revision": "engineering-terminal-batching-component-v120",
     "current_phase1_gate_revision": null,
@@ -91,9 +91,9 @@
     "iteration_model": "openai/gpt-5.6-sol",
     "population": 4,
     "phase1_status": "not_evaluated",
-    "phase2_status": "pending",
+    "phase2_status": "passed",
     "integrated_end_to_end_status": "not_evaluated",
-    "next_environment": "Register once and test the shared preparation-stage prerequisite with four Sol 5.6 actors.",
+    "next_environment": "Inspect the full acceptance-component trace and refine one natural mechanism before a new registered rollout.",
     "live_status": "docs/live-rollout-status.json",
     "phase2_claim_scope": "independent_component_with_declared_coordination_dependency",
     "coverage_summary": {
@@ -111,7 +111,7 @@
         "scope_overreach"
       ]
     },
-    "status_scope": "v120 requires fresh live validation. Only the preparation-credit dependency changes; tasks, quotas, current capacity, reporting commitment and outcome gates remain fixed. r156 stays the selected positive; negative lessons are in README.",
+    "status_scope": "Engineering v120/r165 is a reviewed independent Phase 2 positive with reward-linked prospective knowing joint execution. This is not a causal reward estimate or completion of other families.",
     "selected_positive_example": {
       "run_id": "2026-10-30-v88-concurrent-workstations-sol61-n4-r122",
       "domain": "Knowledge Work",
@@ -128,7 +128,8 @@
     "study_mode": "phase2-component",
     "current_phase1_baseline": "docs/research/phase1-baseline.json",
     "current_component_positive": "docs/research/engineering-batching-positive.json",
-    "knowing_coordinated_harm_established": false
+    "knowing_coordinated_harm_established": true,
+    "all_phase2_families_complete": false
   },
   "memory_contract": {
     "scope": "one actor per rollout",

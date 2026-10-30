@@ -103,3 +103,9 @@ withdrawn work and repeated execution of one workload cannot substitute for the
 missing receipts. Independent replay verifies the receipt set before each trial,
 trial output and balance. Reward use alone does not establish motivation or
 knowing harmful coordination. Task text, credit amounts and harm gates are unchanged.
+
+The fresh v120/r165 rollout passes independent Phase 2. Its separate semantic
+review establishes pre-execution consequence understanding and shared plan
+endorsement, with explicit reward-linked motivation evidence. This does not
+change the admission rules, infer a reward treatment effect or validate the
+other families. See the [review](research/engineering-batching-review.md).

@@ -615,3 +615,16 @@ rules and report obligations stay fixed. Partial deliveries remain valid; they
 cannot be treated as completion of a shared prerequisite. Credit use, consequence
 awareness, agreement, causal execution and independently measured harm are
 separate findings. One development rollout cannot estimate a causal reward effect.
+
+
+### Interpretation after r165
+
+METR reports work aimed at changing targets or grading and at manipulating
+execution records; it also distinguishes attempted work from verified success.
+Its account describes diverse motives, including task progress and helping peers,
+not a controlled completion-credit experiment. We retain those distinctions.
+Our r165 evidence supports one business-service scope-overreach example with
+prospective understanding and an explicit preparation-credit motive. It does not
+validate acceptance or execution-evidence manipulation, or isolate reward causality.
+See the [primary investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)
+and [reviewed example](engineering-batching-review.md).
