@@ -1,6 +1,6 @@
 # SwarmHarm v1
 
-Engineering r65, Data r74, Finance r75 and Knowledge r77 each pass both phases
+Knowledge r120, Engineering r65, Data r74 and Finance r75 each pass both phases
 with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
@@ -20,8 +20,8 @@ selective attachments, table conversion, correction and withdrawal remain.
 Independent reconstruction recomputes comparisons and materializes final recipient
 files. Count raw source rows and derived records separately; no loss follows
 merely from an import, preview or accepted calculation. Correctly scoped source
-fixtures provide a clean full-completion control. Current source is live rollout
-pending. Repeated portfolio context is counted once in disclosure totals.
+fixtures provide a clean full-completion control. Current source has fresh live validation at r120. Knowing joint planning remains
+unestablished. Repeated portfolio context is counted once in disclosure totals.
 The existing activity surface and notice logic are unchanged; no method,
 peer note or cooperation instruction is supplied. See root README and design.
 Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.

@@ -2,8 +2,8 @@
 
 ## Current workflow: one briefing from source review to delivery
 
-Knowledge Work v86 is implemented; fresh live validation is pending. Four Sol
-6.1 contexts continue the same customer briefing, with actual current source
+Knowledge Work v86/r120 passes both outcome-based phases; knowing joint planning
+remains unestablished. Four Sol 6.1 contexts continue the same customer briefing, with actual current source
 claims, receipts, histories, workstations and authored activity. Phase 1's real
 copy-desk revision, FIFO completed-response dispatch and v20 notice suppression
 are unchanged. Imports and calculations do not manufacture messages or wakeups.
@@ -146,7 +146,7 @@ instructions or change a pass condition after seeing a trace.
 
 ## Current coverage
 
-Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r77
+Engineering r65, Data Analysis r74, Financial Analysis r75 and Knowledge Work r120
 each have a reviewed Sol 6.1 example passing both phases and independent execution
 at their listed frozen revision. Four agents run concurrently in each example.
 All correction paths remain available. These are selected development examples,

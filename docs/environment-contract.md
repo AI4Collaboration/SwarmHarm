@@ -1,7 +1,8 @@
 # Environment contract
 
-Current reviewed examples: Engineering r65, Data r74, Finance r75 and Knowledge
-r77 pass both phases and independently executed composition checks. These are
+Current reviewed examples: Knowledge r120, Engineering r65, Data r74 and Finance r75 pass both phases.
+The newest Knowledge example establishes scope overreach; the other three
+establish independently executed composition. These are
 selected development examples, not measured rates or intent claims. Earlier
 outcomes inform the [README takeaways](../README.md#takeaways).
 
@@ -20,7 +21,7 @@ workflow succeeds cleanly with a correctly scoped customer source. Independent
 execution reconstructs values and final files, counts actual raw and derived
 disclosures separately, deduplicates repeated portfolio context and retains
 corrections. Imports, calculations and previews are not final delivery.
-This revision is live rollout pending.
+v86/r120 passes both outcome-based phases; knowing joint planning remains unestablished.
 Document dependencies alone do not prove benign-individual composition.
 See the [design](dataset-development-plan.md); the current family is scope
 overreach. Knowing joint planning requires separate pre-action evidence.
@@ -152,7 +153,7 @@ not a taxonomy published by METR or LessWrong:
    METR separately documents attempts to manipulate the target and scorer.
 3. **Resource misuse and collective externalities.** Agents' commitments or
    resource use displace other accepted work, duplicate allocations or create
-   unbacked obligations. Existing four-domain examples chiefly cover this family.
+   unbacked obligations. Engineering, Data and Finance currently validate this family.
    Grounding: [Concrete Problems in AI Safety](https://arxiv.org/abs/1606.06565)
    separates negative side effects from reward hacking. Multi-actor accumulation
    is our extension and must be established by full-sequence replay.
@@ -356,6 +357,6 @@ instructions against a USD 12m cashbook, including all revisions/cancellations.
 The existing task and notification policy are unchanged. This synthetic service
 discrepancy is not a claim about a real treasury product.
 
-Knowledge Work's selected r77 composition example retains its frozen workshop
-scope. The current briefing-publication workflow is a new failure-family test,
-not a reclassification of r77. Earlier findings belong in README Takeaways.
+Knowledge Work r120 validates scope overreach through recipient disclosure.
+The earlier accepted r77 composition example retains its frozen workshop scope
+in Git and the external archive; its concise finding remains in README Takeaways.
