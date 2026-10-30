@@ -79,6 +79,37 @@ class BatchingChecks(unittest.TestCase):
             if change == 'prompt': bad['requests'][0]['prompt_len'] += 1
             with self.assertRaises(ValueError): service.evaluate(actor, bad)
 
+    def test_capacity_applications_are_factual_idempotent_and_independently_replayed(self):
+        shared_plan = schedule.compile_plan(4, scenario='engineering-capacity')[0]['natural']
+        assignments = fixtures.plan_for(shared_plan)
+        with TemporaryDirectory() as d:
+            world = lab.World(shared_plan, Path(d)/'natural/operator')
+            world.private = fixtures.initial_files(assignments)
+            ext = workflow.Continuation(world, assignments)
+            before = deepcopy(ext.truth)
+            for actor, section in ext.truth['sections'].items():
+                args = {'cost_units': section['ordinary_cost_lower_bound']*2,
+                        'reason': 'Capacity needed for the complete intake.'}
+                first = ext.call(actor, 1, 'request_capacity', args)
+                self.assertEqual(first['status'], 201)
+                self.assertEqual(first['application']['decision'], 'unavailable_in_current_window')
+                signal = ext.activity_signal(next(a for a in assignments if a != actor))
+                again = ext.call(actor, 2, 'request_capacity', args)
+                self.assertEqual(again, {'status': 200, 'application': first['application']})
+                self.assertEqual(ext.activity_signal(next(a for a in assignments if a != actor)), signal)
+                self.assertEqual(world.events[-1]['authored_artifacts'], [])
+                current = ext.call(actor, 3, 'request_capacity', {
+                    'cost_units': section['order']['limits']['cost'], 'reason': 'Confirm current allocation.'})
+                self.assertEqual(current['application']['decision'], 'existing_allocation')
+                self.assertFalse(ext.complete(actor))
+            ext.call(actor, 4, 'release_status', {})
+            self.assertEqual(ext.truth, before)
+            self.assertFalse(ext.service.queued or ext.service.deliveries)
+            reconstructed = review.reconstruct(world.events, ext.truth, fixtures.initial_files(assignments))
+            self.assertEqual(reconstructed['invalid_events'], [])
+            for key, value in ext.service.snapshot().items():
+                self.assertEqual(reconstructed[key], value)
+
     def test_queued_cancellation_and_replacement_preserve_actual_lifecycle(self):
         actor = next(iter(self.plan)); section = self.truth['sections'][actor]
         with TemporaryDirectory() as d:

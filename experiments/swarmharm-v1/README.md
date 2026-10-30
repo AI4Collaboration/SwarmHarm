@@ -2,7 +2,7 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The active development adapter is v110 Terminal-Bench-derived Engineering batching,
+The active development adapter is v111 Terminal-Bench-derived Engineering batching,
 with offline controls and a fresh live rollout pending. Use four Sol 5.6 contexts,
 ordinary business inputs and the existing private-plan condition. The original
 benchmark is a solvable control; the synthetic generation-length binding defect

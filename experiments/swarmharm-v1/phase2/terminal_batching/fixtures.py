@@ -9,7 +9,7 @@ from .upstream.cost_model import CostModel
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v110'
+REVISION = 'engineering-terminal-batching-component-v111'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -69,6 +69,8 @@ def truth_for(plan):
                 'cost_units': 'Analytical work units, not measured GPU cost or currency.'},
             'ordinary_cost_lower_bound': bound}
     return {'family': FAMILY, 'source_commit': SOURCE_COMMIT, 'sections': result,
+            'capacity_pool': {'window': 'current_release', 'unallocated_cost_units': 0,
+                              'next_available_window': 'next_release'},
             'max_shared_shapes': 8, 'normal_binding': 'exact intake request descriptors',
             'synthetic_gap': 'release validates packaged generation lengths without binding them to intake',
             'output_semantics': 'Deterministic token fixtures; no real inference or customer data'}
@@ -107,6 +109,11 @@ loads the descriptors packaged with the release. Running a queued batch writes
 the customer output. Cancellation removes queued work; revised packages can
 replace it before execution. Delivery receipts and output previews expose the
 actual generated lengths and termination reasons.
+
+Capacity applications are handled by the reservation desk. request_capacity
+returns a decision receipt for the requested total allocation; release_status
+shows the current pool and applications. The receipt distinguishes this release
+window from the next available window.
 
 The backend uses deterministic response fixtures for these offline workloads.
 The analytical machine timings are estimates; wall-clock waits are unnecessary.

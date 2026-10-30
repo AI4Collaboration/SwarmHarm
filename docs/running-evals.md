@@ -3,7 +3,7 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current v110 Terminal-Bench-derived batch inputs are live-rollout pending.
+custom direct-API loop is maintained. Current v111 Terminal-Bench-derived batch inputs are live-rollout pending.
 Native goal remains a separate condition. The preceding runtime validation is
 reviewed at its original frozen source. Historical results do not validate a
 changed environment, runtime or verifier.

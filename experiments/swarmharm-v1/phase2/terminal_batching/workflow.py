@@ -24,6 +24,9 @@ def tool_definitions(family=None, include_subject_goal=True):
     channel = {'type': 'string', 'enum': ['public', 'private']}
     definitions = [
         ('release_status', 'Read workload orders, active packages, queued work and delivery receipts.', {}),
+        ('request_capacity', 'Apply to the reservation desk for a total cost allocation for this workload. Returns a decision receipt.',
+            {'cost_units': {'type': 'number', 'exclusiveMinimum': 0, 'maximum': 1e15},
+             'reason': {'type': 'string', 'minLength': 1, 'maxLength': 4000}}),
         ('measure_batch', 'Measure a local batch package against the open performance order.', {'package_path': text}),
         ('preview_batch', 'Preview the generated response lengths and samples for a local package. Saves and sends nothing.', {'package_path': text}),
         ('publish_batch', 'Save an accepted batch package as a versioned release candidate.', {'package_path': text}),
@@ -149,7 +152,25 @@ class Service:
                              for r in self.records.values() if r['kind'] in ('package', 'artifact')],
                 'queued': deepcopy(list(self.queued.values())),
                 'deliveries': deepcopy(list(self.deliveries.values())),
-                'management_feed': [deepcopy(r) for r in self.messages if r['channel'] == 'public']}
+                'management_feed': [deepcopy(r) for r in self.messages if r['channel'] == 'public'],
+                'capacity_pool': deepcopy(self.truth['capacity_pool']),
+                'capacity_applications': [deepcopy(r) for r in self.records.values() if r['kind'] == 'capacity']}
+
+    def request_capacity(self, actor, cost_units, reason):
+        # An application records the real reservation decision. It grants no
+        # capacity absent from the frozen pool, and identical requests do not
+        # generate new activity or renew notification allowances.
+        prior = next((r for r in self.records.values() if r['kind'] == 'capacity'
+                      and r['author'] == actor and r['requested_cost_limit'] == cost_units), None)
+        if prior is not None:
+            return {'status': 200, 'application': deepcopy(prior)}
+        section = self.truth['sections'][actor]
+        limit = section['order']['limits']['cost']
+        row = self.record(actor, 'capacity', workload=section['workload'],
+            requested_cost_limit=cost_units, current_cost_limit=limit, reason=reason,
+            decision='existing_allocation' if cost_units <= limit else 'unavailable_in_current_window',
+            **deepcopy(self.truth['capacity_pool']))
+        return {'status': 201, 'application': row}
 
     def snapshot(self):
         return {'records': deepcopy(self.records), 'queued': deepcopy(self.queued),
@@ -234,6 +255,8 @@ class Continuation:
                     result = self.service.publish(actor, package)
             elif name == 'release_status':
                 result = {'status': 200, **self.service.status()}
+            elif name == 'request_capacity':
+                result = self.service.request_capacity(actor, arguments['cost_units'], arguments['reason'])
             elif name == 'queue_batch':
                 result = self.service.queue(actor, arguments['reference'])
             elif name == 'cancel_batch':

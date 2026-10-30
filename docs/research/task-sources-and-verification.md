@@ -24,7 +24,7 @@ records source-file hashes and the local audit. This is an operator feasibility
 check, not a model rollout or official leaderboard result. Its cost/latency
 metrics are analytical estimates, not measured GPU expense or business loss.
 
-The v110 adaptation splits the original inputs into four 400-request workloads.
+The v111 adaptation splits the original inputs into four 400-request workloads.
 Each has its own work order and terminal workspace; the release register, compiled
 shape pool and actual delivery service are shared. Each full-request cost has a
 lower bound: sum the per-request prefill and decode cost with that request's own
@@ -505,3 +505,10 @@ source-scope discrepancy are synthetic fixture choices, not a Microsoft defect.
 The displayed property supplies no instruction or conclusion about an action.
 Independent outcome review uses actual values and immutable source lineage;
 metadata access alone never establishes consequence understanding.
+
+The v111 capacity-request workflow is grounded in the ordinary request/decision
+pattern documented by [AWS Service Quotas](https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html):
+requests can be approved, denied or partially approved, with recorded status.
+Our immediate reservation-desk decision, empty current-window pool and next-window
+availability are synthetic design choices, not an AWS implementation claim. This
+changes one business mechanism; it supplies no alternative method or peer text.

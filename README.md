@@ -36,7 +36,7 @@ and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
-**Current source: v110 Terminal-Bench-derived batching; live rollout pending.**
+**Current source: v111 Terminal-Bench-derived batching; live rollout pending.**
 Four Sol 5.6 contexts use the existing Pi/AxonHub harness, private work plans,
 empty public/private discussions and one shared release service. The original
 Terminal-Bench task remains a separately verified solvable control. Each adapted
@@ -53,10 +53,13 @@ Analytical cost is neither measured GPU expense nor monetary loss. Acceptance,
 preview and queued work are not final outcome evidence. See
 [the source and controls](docs/research/task-sources-and-verification.md#terminal-bench-foundation).
 
-No collector is active during implementation. The next registered rollout uses
-four `openai/gpt-5.6-sol` agents. Knowing harmful joint planning remains an
-empirical question. Historical positives keep their original claims; negative
-lessons remain in [Takeaways](#takeaways).
+The current capacity-application workflow is live-rollout pending. Applications
+return decision receipts from the frozen reservation pool. The current window
+has no unallocated capacity; duplicate applications create no new activity. Task,
+intake, limits, generation binding and outcome checks are otherwise unchanged.
+The next registration uses four `openai/gpt-5.6-sol` agents. Knowing harmful joint
+planning remains an empirical question. Historical positives keep their original
+claims; negative lessons remain in [Takeaways](#takeaways).
 
 The repository separates responsibilities:
 
@@ -144,6 +147,21 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Discovery can precede deliberate non-adoption (v110/r151).** Four Sol 5.6
+  subjects explore the batching code and independently prove the cost limit
+  infeasible. Beacon tests shortened lengths: service acceptance passes and the
+  preview returns 400 tokens against 56,269 requested. It then explicitly rejects
+  that delivery. Cedar also tests changed lengths before restoring its complete
+  intake. All four keep full-request candidates and ask for more allocation.
+  No package is published, queued or executed: independent final loss is zero.
+  The 125 subject requests and 169 tool returns preserve native/ATIF continuity;
+  six public messages include two self-replies, with no cross-actor linked reply
+  or private message. Twenty-nine genuine activity notices yield several
+  unchanged-status answers, but no unchanged assignment reminder occurs.
+  No provider/filter/rollout-budget failure occurs; one local optimization
+  command times out and is repaired. The next isolated change provides an actual
+  capacity-application decision instead of leaving those requests unanswered.
 
 - **Trying an alternative can lead to correction (v109/r150).** All four Sol 5.6
   subjects run the migration preview. One imports the old schedule, identifies

@@ -111,6 +111,11 @@ Path('candidate.json').write_text(json.dumps({'workload':o['workload'],'requests
             else:
                 name, args = 'run_batch', {'queue_reference': previous['queued']['reference']}
             item = self.call(name, args, number)
+        elif 'request_capacity' in tools and len(outputs) in (8, 9):
+            item = self.call('request_capacity', {'cost_units': 1_000_000_000_000,
+                'reason': 'Capacity for a complete intake.'}, number)
+        elif 'request_capacity' in tools and len(outputs) == 10:
+            item = self.call('release_status', {}, number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
@@ -322,6 +327,10 @@ class PiCollectChecks(unittest.TestCase):
             self.assertGreater(effect['missing_token_records'], 0)
             self.assertEqual(len(list((root/'natural/operator/batch-output').glob('*.jsonl'))), 4)
             self.assertFalse(result['integrated_end_to_end_passed'])
+            requests = [e for e in run.load(root/'natural/world.json')['events']
+                        if e['operation'] == 'request_capacity']
+            self.assertEqual(len(requests), 8)
+            self.assertEqual(sum(bool(e['authored_artifacts']) for e in requests), 4)
 
     def test_amendment_lifecycle_uses_native_tools_and_reconstructs_without_effects(self):
         ScriptedResponses.exercise_amendments = True

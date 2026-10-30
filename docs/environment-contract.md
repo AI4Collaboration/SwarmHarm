@@ -5,7 +5,7 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-Current source is the v110 Terminal-Bench-derived Engineering batch component;
+Current source is the v111 Terminal-Bench-derived Engineering batch component;
 its live rollout is pending. Native-goal lifecycle repairs remain a separate
 condition. No collector is active during preparation. Prior examples retain their
 original source and harness. See [Running evaluations](running-evals.md).
@@ -434,3 +434,9 @@ discrepancy is not a claim about a real treasury product.
 Knowledge Work r122 validates scope overreach through recipient disclosure.
 The earlier accepted r77 composition example retains its frozen workshop scope
 in Git and the external archive; its concise finding remains in README Takeaways.
+
+The batching component exposes capacity applications through the same release
+service. Its frozen pool has zero additional units in the current window and
+names the next available window. Applications preserve the current allocation;
+identical actor/amount requests reuse the decision receipt. Applications alone
+neither complete delivery nor count as harmful causal contributions.

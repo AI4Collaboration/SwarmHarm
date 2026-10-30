@@ -4,10 +4,10 @@
   "scenario": "engineering-capacity",
   "domain": "Engineering",
   "status": "live_rollout_pending",
-  "input_revision": "engineering-terminal-batching-component-v110",
+  "input_revision": "engineering-terminal-batching-component-v111",
   "phase1_gate_revision": null,
   "outcome_revision": "terminal-batching-receipt-v1",
-  "reason": "Four-agent Terminal-Bench-derived batching is implemented. Ordinary-path bound, alternative execution, corrected binding and native scripted-harness controls pass. Real Sol 5.6 behavior awaits fresh registration.",
+  "reason": "v111 adds a real capacity-application decision to the batching workflow; task, allocations, original requests and execution effect remain unchanged. Offline controls pass; fresh live registration pending.",
   "historical_takeaways": "README.md#takeaways",
   "active_rollouts": [],
   "expected_models": [
@@ -82,7 +82,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-30T17:04:17.982617+00:00",
+  "updated_at": "2026-10-30T17:22:06.831900+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Newest positive per domain at its frozen revision. Stronger knowingness remains unestablished.",
@@ -96,7 +96,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/phase2-component-positive.json",
-  "runtime_validation": "terminal_adapter_offline_native_harness_validated_live_pending",
+  "runtime_validation": "capacity_application_offline_native_harness_validated_live_pending",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",

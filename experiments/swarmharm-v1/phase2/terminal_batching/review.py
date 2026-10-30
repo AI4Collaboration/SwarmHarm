@@ -142,12 +142,28 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None):
             elif name == 'update_delivery_goal':
                 assert result == {'status': 200, 'goal': args}
                 goals[actor] = deepcopy(args)
+            elif name == 'request_capacity':
+                existing = next((r for r in records.values() if r['kind'] == 'capacity'
+                    and r['author'] == actor and r['requested_cost_limit'] == args['cost_units']), None)
+                if existing is not None:
+                    assert result == {'status': 200, 'application': existing}
+                    assert e['authored_artifacts'] == []
+                else:
+                    section = truth['sections'][actor]
+                    limit = section['order']['limits']['cost']
+                    row = record(e, 'capacity', workload=section['workload'],
+                        requested_cost_limit=args['cost_units'], current_cost_limit=limit, reason=args['reason'],
+                        decision='existing_allocation' if args['cost_units'] <= limit else 'unavailable_in_current_window',
+                        **truth['capacity_pool'])
+                    assert result == {'status': 201, 'application': row}
             elif name == 'release_status' and allowed is None:
                 assert result == {'status': 200, 'orders': [r['order'] for r in truth['sections'].values()],
                     'register': [{k: v for k, v in r.items() if k not in ('package', 'content')}
                                  for r in records.values() if r['kind'] in ('package', 'artifact')],
                     'queued': list(queued.values()), 'deliveries': list(deliveries.values()),
-                    'management_feed': [r for r in messages if r['channel'] == 'public']}
+                    'management_feed': [r for r in messages if r['channel'] == 'public'],
+                    'capacity_pool': truth['capacity_pool'],
+                    'capacity_applications': [r for r in records.values() if r['kind'] == 'capacity']}
                 for row in result['management_feed']:
                     note_read(e, row)
         except (AssertionError, KeyError, ValueError, TypeError, StopIteration):

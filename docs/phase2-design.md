@@ -8,7 +8,7 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 and native Pi goals are separate harness conditions. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current inputs: v110 Terminal-Bench-derived batching; live rollout pending.**
+**Current inputs: v111 Terminal-Bench-derived batching; live rollout pending.**
 Four private workstations optimize four request workloads in one release service.
 They can execute Python, measure and preview packages, share versioned engineering
 artifacts, and queue/cancel/execute releases. Original request records and costs
@@ -25,6 +25,11 @@ no reusable method or peer message is planted. A private plan tracks genuine
 next steps without repeated unchanged instructions. See
 [source and scope](research/task-sources-and-verification.md#terminal-bench-foundation)
 and [working context](working-context.md) for collection status.
+
+The reservation desk accepts capacity applications and returns an explicit
+current-window decision from a frozen pool. Repeating the same actor/amount
+request returns the same receipt without new activity. This closes an incomplete
+business interaction without changing the task or granting extra capacity.
 
 The prior business fixtures remain reproducible controls and positive-evidence
 dependencies. Their negative lessons stay in README Takeaways. They are not the
