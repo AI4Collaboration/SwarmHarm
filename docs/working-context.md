@@ -17,15 +17,25 @@ Work Phase 1 baseline. Independent
 Phase 2 has its own start, prepared business sources and explicit material
 condition; this does not claim a new group-specific formation result.
 
-v97 maintains `external-service`, `acceptance` and `evidence` in
-`component_workflow.py`, with independent reconstruction in `component_review.py`.
-Each supports `business_records_only`, `need_available`, and `method_available`.
-Actual contribution to a record now follows its later notes. The activity view
-shows references without note text; exact reads remain separately measured.
-Own changes, earlier notes and unrelated records do not notify. A note does not
-change completion facts or renew an unfinished-work reminder. The component now
-also reports a scheduled partial packet accurately. Matching live validation is
-pending. No collector is active; no Phase 2 success is claimed.
+The current v98 source fixes nondeterministic review-ID serialization in the
+Phase 1 activity helper. Task semantics, the formation gate and v20 follow-ups
+are unchanged. Validate one fresh four-context Sol connected rollout before
+claiming current-byte live success. The selected r122 remains valid at its
+original frozen revision. The current registration labels are synchronized;
+older sealed labels and scores remain untouched.
+
+The v97 acceptance/method-available rollout r135 has finished its complete native,
+ATIF, routing and independent recipient review. The registration is byte-archived
+at `../eval-readiness/knowledge-work-v97-r135-review/`; its lesson is in README
+Takeaways. Do not repeat it. No collector is active.
+
+The human also requested a persistent goal for the evaluated agent. That means
+a separately registered subject harness condition, not a root Codex goal. A
+blocker report remains progress, not completed business work. Design continuation
+around concrete remaining work or a distinct actor-chosen next step; do not repeat
+unchanged instructions, claim goal completion at quiescence, erase safe outcomes,
+or put a harmful outcome, shortcut or cooperation requirement into the goal.
+This condition is not implemented or included in the Phase 1 baseline validation.
 
 ## Selected positive evidence
 
@@ -56,23 +66,18 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Commit and push the checked v97 source, then prepare one fresh acceptance,
-method-available rollout with four Sol 6.1 contexts. Preserve the same tasks,
-fixtures and alternatives. Inspect notice delivery, exact reads, genuine replies,
-method use and independent recipient effects. Do not tune notices to force replies;
-safe coordination or continued abstention remains a valid outcome.
-
-Completed r134 is fully reviewed and byte-archived externally:
-`../eval-readiness/knowledge-work-v96-r134-review/`. Its original source is
-`193fa5ef`, registration `6df8aaa6`. Do not repeat the completed trajectory.
+Push the checked Phase 1 serialization fix and cleanup. Prepare one fresh connected
+Knowledge Work registration with four Sol 6.1 agents and
+`agent_initiated_activity`, retaining the existing tasks and follow-ups. Push the
+registration, verify clean local/remote/sealed hashes, collect once and review the
+entire trace, exact reads/replies and actual downstream effects. Preserve a
+negative result; do not substitute the earlier r122 score for the new rollout.
+Then implement the requested subject-goal condition separately for independent
+Phase 2. No website changes.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
-allowlist, non-OpenRouter priority and same-model fallback. No global channel was
-disabled and no route approval is pending. Connectivity request #185988 recovered
-appleCO's 401 via ethCO. All 81 requests across r132/r133, including four preflight
-calls, completed via ethCO; OpenRouter fallback is eligible but unobserved here.
-Routing proof: `../eval-readiness/axonhub-native-fallback-probe-20261030T084157Z/`.
-Do not modify the website.
+allowlist, non-OpenRouter priority and same-model fallback. Do not disable global
+channels. Record actual executions for each rollout.
 
 ## Maintained evidence and archive
 

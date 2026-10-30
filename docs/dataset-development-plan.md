@@ -2,11 +2,15 @@
 
 ## Current focus: independent Phase 2
 
-v97 maintains three independent mechanisms and three separately frozen initial
+The current source maintains three independent mechanisms and three separately frozen initial
 material conditions. Live review applies only to the collected family/condition;
 see the root README for reviewed and pending combinations. Phase 1 is reused as
 a common baseline; independent starts do not evaluate it. Follow
 [the Phase 2 design](phase2-design.md) for fixtures, sources and claim boundaries.
+
+The immediate v98 validation concerns deterministic Phase 1 workstation generation
+in the existing four-agent Sol connected setting. It changes no task or formation
+criterion. The requested persistent subject goal remains a separate next condition.
 
 ## Connected baseline
 
