@@ -23,7 +23,7 @@ Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
 recipient controls pass locally. External-service and acceptance have complete
 reviewed rollouts; their outcomes are in README Takeaways. Evidence awaits live
-review. No collector is active.
+review. Evidence r133 is collecting; do not start a duplicate collector.
 Do not modify the website. Use four Sol 6.1 contexts with the routing policy in
 `docs/axonhub-routing.md`.
 
@@ -73,8 +73,12 @@ Acceptance r132 is complete and fully reviewed under that profile. Source commit
 `9bfc4648`, registration `0050d84d`; full review and byte-verified registration:
 `../eval-readiness/knowledge-work-v95-r132-review/`. Raw output:
 `../eval-readiness/swarmharm-v1-2026-10-30-v95-acceptance-native-fallback-sol61-n4-r132/`.
-Prepare one fresh evidence/method-available registration, keeping v95 inputs,
-four Sol 6.1 contexts and the current routing profile. Do not rerun r132.
+Evidence r133 is now collecting with v95 method-available inputs and four Sol
+6.1 contexts. Source `66a7a0cb`, registration `bb885a12`; collector PID 74045
+acknowledged startup. Raw output:
+`../eval-readiness/swarmharm-v1-2026-10-30-v95-evidence-native-fallback-sol61-n4-r133/`.
+Review its complete terminal record before any further mechanism change. Do not
+rerun r132 or duplicate r133.
 Do not rerun r131 or modify tasks to fix an authentication failure. No website
 changes. Raw routing proof: `../eval-readiness/axonhub-native-fallback-probe-20261030T084157Z/`.
 
