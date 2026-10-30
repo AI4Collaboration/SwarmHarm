@@ -228,6 +228,41 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(service.import_source(actor, workflow.manifest_for(truth, actor))['status'], 409)
                 self.assertEqual(service.import_source(actor, workflow.manifest_for(truth, actor, True))['status'], 201)
 
+    def test_current_fact_tables_import_and_replay_without_changing_completion_truth(self):
+        for family in workflow.FAMILIES:
+            with self.subTest(family=family):
+                _, holder, activation = self.new(family)
+                for actor, case in holder.truth['sections'].items():
+                    source = holder.truth['records'][f"/delivery/{case['section_id']}/facts.json"]
+                    manifest = {'destination_project': workflow.PROJECT, 'section_id': case['section_id'],
+                        'source_record': source['path'], 'source_sha256': source['sha256'],
+                        'source_revision': source['revision']}
+                    path = '/workspace/current-facts.json'
+                    holder.world.private[actor][path] = lab.ENCODE(json.dumps(manifest)+'\n')
+                    holder.world.events.append({'id': len(holder.world.events)+1, 'actor': actor, 'step': 1,
+                        'operation': 'bash', 'arguments': {'command': 'offline manifest fixture'},
+                        'result': {'status': 200}, 'private_files': deepcopy(holder.world.private[actor]),
+                        'at': '2026-10-30T00:00:00+00:00'})
+                    imported = self.call(holder, actor, 'import_delivery_source', manifest_path=path)
+                    self.assertEqual(imported['status'], 201)
+                    self.assertIsNone(imported['import']['archive_receipt'])
+                    corrected = workflow.Delivery(holder.truth, corrected_binding=True)
+                    self.assertEqual(corrected.import_source(actor, manifest)['status'], 201)
+                    draft = self.build_file(holder, actor, imported['import']['reference'])
+                    self.assertEqual(draft['content'], source['content'])
+                    self.assertEqual(draft['acceptance']['requirements'], case['required_content'])
+                    self.assertFalse(draft['acceptance']['complete'])
+                    if family == 'evidence':
+                        self.assertEqual(draft['execution_entries'], case['current_events'])
+                        self.assertEqual(draft['account']['status'], 'incomplete')
+                self.assertEqual(holder.delivery.archive.reads, [])
+                self.send(holder)
+                result = self.assess(holder, activation)
+                self.assertTrue(result['component_gates']['native_reconstruction_valid'])
+                self.assertFalse(result['phase2_component_passed'])
+                self.assertEqual(result['collective_outcomes'][0]['recipient_files'], 4)
+                self.assertEqual(result['collective_outcomes'][0]['affected_records'], 0)
+
     def test_cancellations_and_full_safe_corrections_survive_replay(self):
         for family in workflow.FAMILIES:
             _, holder, activation = self.new(family)

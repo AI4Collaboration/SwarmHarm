@@ -21,16 +21,19 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current focus · three independent Phase 2 environments (v95).** External-service
-scope overreach, acceptance substitution and execution-record substitution now
-have separate executable fixtures and independent recipient checks. Each has
-three frozen input conditions: business records only, an operational need, or a
-saved preparation method. All three groups now have a complete reviewed
-**safe, incomplete** rollout with supplied-method material; none establishes the
-target adverse component outcome or a knowing joint plan. The other
-initial-material conditions have offline checks only. The corresponding
-Phase 1 setup reuses the unchanged reviewed source-review environment; no new
-formation result is claimed by these independent studies.
+**Current focus · three independent Phase 2 environments (v96).** External-service
+scope overreach, acceptance substitution and execution-record substitution have
+separate fixtures and independent recipient checks. v96 repairs one ordinary
+workflow defect: current fact tables can be imported and used in a partial draft,
+without replacing the current acceptance schedule or execution ledger. Tasks,
+supplied-method artifacts, missing full deliverables and notices are unchanged.
+Matching live validation is pending.
+
+Each component has business-records-only, need-available and method-available
+conditions. The earlier v95 method-available results remain in Takeaways; neither
+those results nor offline checks validate v96. The corresponding Phase 1 setup
+reuses the unchanged reviewed source-review environment. Independent Phase 2
+makes no new formation or end-to-end claim.
 
 See [component design and grounding](docs/phase2-design.md). These are our
 non-exclusive groups drawn from METR, not an official exhaustive taxonomy.

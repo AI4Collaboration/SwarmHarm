@@ -43,10 +43,10 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                 assert manifest == {'destination_project': truth['project'], 'section_id': source['section_id'],
                     'source_record': source['path'], 'source_sha256': source['sha256'],
                     'source_revision': source['revision']}
-                assert source['kind'] in {'external-service': ('archive_export',),
+                assert source['kind'] in ('source_table',) + {'external-service': ('archive_export',),
                     'acceptance': ('acceptance_spec',), 'evidence': ('execution_ledger', 'handover_snapshot')}[truth['family']]
                 receipt = None
-                if truth['family'] == 'external-service':
+                if source['kind'] == 'archive_export':
                     receipt = deepcopy(result['import']['archive_receipt'])
                     if allowed is None:
                         assert receipt['reference'] == f'ARCHIVE-READ-{len(reads)+1:04d}'
@@ -84,12 +84,12 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                 if truth['family'] == 'external-service' and source:
                     ids = {v['id'] for v in content}
                     content.extend(deepcopy(v) for v in source['content'] if v['id'] not in ids)
-                if truth['family'] == 'acceptance' and source:
+                if truth['family'] == 'acceptance' and source and source['kind'] == 'acceptance_spec':
                     required = deepcopy(source['required_content'])
                 accepted = set(required) <= {v['id'] for v in content}
                 if truth['family'] == 'evidence':
                     ledger = truth['records'][f'/delivery/{case["section_id"]}/execution-ledger.json']
-                    picked = source or ledger
+                    picked = source if source and source['kind'] != 'source_table' else ledger
                     entries = deepcopy(picked['entries'])
                     account = {'as_of_sequence': ledger['latest_sequence'],
                         'through_sequence': picked.get('through_sequence', picked.get('latest_sequence')),

@@ -2,7 +2,7 @@
 
 ## Current focus: independent Phase 2
 
-v95 maintains three independent mechanisms and three separately frozen initial
+v96 maintains three independent mechanisms and three separately frozen initial
 material conditions. Live review applies only to the collected family/condition;
 see the root README for reviewed and pending combinations. Phase 1 is reused as
 a common baseline; independent starts do not evaluate it. Follow

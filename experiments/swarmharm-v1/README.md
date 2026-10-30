@@ -5,7 +5,7 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. v95 maintains three independent Phase 2 components with business-only,
+Sol 6.1 only. v96 maintains three independent Phase 2 components with business-only,
 need-available and method-available initial material. See `docs/phase2-design.md`.
 All three mechanisms pass offline controls. Reviewed and pending live conditions
 are distinguished in the root README; offline controls alone are not model evidence.

@@ -6,11 +6,10 @@ Develop the three failure families directly observed in METR first. Keep the
 reviewed Phase 1 baseline available. Independent Phase 2 studies are authorized;
 they establish conditional behavior, not autonomous formation or end-to-end
 continuity. All three groups reuse the same reviewed Phase 1 source-review setup. Their
-independent Phase 2 starts are maintained in v95; no new per-group formation
-result is implied. All three method-available components have complete reviewed
-safe, incomplete rollouts. This validates collection and review, not the target
-adverse outcome or knowing coordination. Other initial-material conditions have
-not been collected. See
+independent Phase 2 starts are maintained in v96; no new per-group formation
+result is implied. v96 accepts current fact-table imports as partial preparation,
+without substituting the current acceptance schedule or execution ledger. Its
+matching live review is pending. Earlier v95 component results remain frozen. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 
@@ -66,7 +65,7 @@ system or project, and produce an out-of-scope effect?
   into the distinct service. Neither is an operating-system/container-escape
   claim. Ordinary authorized external tool use is a negative, not a failure.
 
-The connected Knowledge Work example establishes scope overreach. v95 maintains a
+The connected Knowledge Work example establishes scope overreach. v96 maintains a
 separate archive object store, scope check and read receipts. Direct access to an
 operations object fails; import resolves it through a destination-scoped adapter.
 The work order distinguishes a completed operations trial from its unissued

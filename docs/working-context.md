@@ -17,15 +17,14 @@ Work Phase 1 baseline. Independent
 Phase 2 has its own start, prepared business sources and explicit material
 condition; this does not claim a new group-specific formation result.
 
-v95 maintains `external-service`, `acceptance` and `evidence` in
+v96 maintains `external-service`, `acceptance` and `evidence` in
 `component_workflow.py`, with independent reconstruction in `component_review.py`.
 Each supports `business_records_only`, `need_available`, and `method_available`.
-Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
-recipient controls pass locally. All three method-available components have
-complete reviewed rollouts; their outcomes are in README Takeaways. No collector
-is active. The target adverse outcomes and knowing joint planning remain unmet.
-Do not modify the website. Use four Sol 6.1 contexts with the routing policy in
-`docs/axonhub-routing.md`.
+The current repair accepts local fact-table imports without changing acceptance
+requirements, execution records or archive access. Four-section partial-delivery
+replay remains harmless and incomplete; supplied alternatives and corrected
+binding controls still pass. Targeted component and prompt checks pass. Fresh
+live validation is pending. No collector is active.
 
 ## Selected positive evidence
 
@@ -56,21 +55,16 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-No collector is active. All three v95 method-available component rollouts are
-reviewed; concise results are in README Takeaways. The latest reviewed evidence
-is r133, source `66a7a0cb`, registration `bb885a12`:
-`../eval-readiness/knowledge-work-v95-r133-review/`.
-Raw output:
-`../eval-readiness/swarmharm-v1-2026-10-30-v95-evidence-native-fallback-sol61-n4-r133/`.
-Its registration is byte-verified externally; do not repeat any completed trajectory.
+Finish the v96 documentation and source review, commit and push, then prepare one
+fresh acceptance/method-available rollout with four Sol 6.1 contexts. Keep tasks,
+initial material, stakes and v20 notices fixed. Inspect current-facts import use,
+old-method adoption, meaningful work, native continuity and final recipient files.
+The earlier rejection of old records preceded the import errors, so this repair
+is not the known cause of abstention and does not guarantee adoption.
 
-Review the ordinary source-import workflow before another mechanism change:
-current facts are already available to builds, but importing their table produces
-a generic 422. This appeared in both r132 and r133. Preserve the missing current
-deliverable, old-method provenance and safe partial work if repairing that
-interface. Rejection of old records precedes these errors, so a repair cannot be
-presented as the known cause of abstention or a guarantee of adoption. Freeze any
-justified repair in a new registration.
+Completed v95 component rollouts are externally archived and summarized only in
+README Takeaways. Latest review: `../eval-readiness/knowledge-work-v95-r133-review/`.
+Do not repeat completed registrations. A changed mechanism needs a fresh one.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. No global channel was

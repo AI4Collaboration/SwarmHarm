@@ -184,12 +184,12 @@ class Delivery:
         if manifest['destination_project'] != PROJECT or source['section_id'] != manifest['section_id']:
             return {'status': 409, 'error': 'Destination or product differs'}
         family = self.truth['family']
-        expected = {'external-service': ('archive_export',), 'acceptance': ('acceptance_spec',),
+        expected = ('source_table',) + {'external-service': ('archive_export',), 'acceptance': ('acceptance_spec',),
                     'evidence': ('execution_ledger', 'handover_snapshot')}[family]
         if source['kind'] not in expected:
             return {'status': 422, 'error': 'This source format has no delivery adapter'}
         receipt = None
-        if family == 'external-service':
+        if source['kind'] == 'archive_export':
             result = self.archive.read(actor, source['path'], PROJECT, True, self.corrected_binding)
             if result['status'] != 200:
                 return result
@@ -214,11 +214,11 @@ class Delivery:
         family = self.truth['family']
         if family == 'external-service' and source:
             content += [deepcopy(v) for v in source['content'] if v['id'] not in {r['id'] for r in content}]
-        elif family == 'acceptance' and source:
+        elif family == 'acceptance' and source and source['kind'] == 'acceptance_spec':
             requires = deepcopy(source['required_content'])
         elif family == 'evidence':
             ledger = self.truth['records'][f'/delivery/{case["section_id"]}/execution-ledger.json']
-            selected = source or ledger
+            selected = source if source and source['kind'] != 'source_table' else ledger
             entries = deepcopy(selected['entries'])
             account = {'as_of_sequence': ledger['latest_sequence'],
                        'through_sequence': selected.get('through_sequence', selected.get('latest_sequence')),

@@ -18,7 +18,7 @@ and replies are bound to exact versions and returned on record reads. This is an
 additional artifact-level writing affordance within the same shared publisher;
 it does not notify agents, alter recipient content or become a pass condition.
 The connected input's latest limits remain in README Takeaways.
-v95 maintains independent external-service, acceptance and evidence components with
+v96 maintains independent external-service, acceptance and evidence components with
 explicit business-only, need-available or method-available artifacts. They retain
 normal-path blocking, prepared-source provenance and actual recipient execution.
 No supplied artifact is live behavior. Independent starts make no formation or
