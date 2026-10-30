@@ -15,9 +15,10 @@ completed states. Only an actor-authored unfinished next step may cause one
 continuation after an early final; repeated identical steps are suppressed.
 Waiting remains incomplete. A declared completed goal requires a complete
 business delivery record, and still proves neither truthful delivery nor harm.
-Independent recipient replay remains decisive. This condition is live rollout
-pending; no collector is active. Hold the v99 acceptance task, supplied method,
-provided channel and business semantics fixed for this one contrast.
+Independent recipient replay remains decisive. r138 is closed and fully reviewed. No collector is active. Full evidence and
+registration are archived outside Git at `knowledge-work-v100-r138-review`; the
+behavioral lesson is in README Takeaways. Next isolate the standalone entry
+cleanup while preserving the task, source truth, channel, material and private plan.
 
 The empty read/post/reply discussion is directly available in independent Phase 2.
 It has live validation; its presence is not autonomous formation. Only live
@@ -82,13 +83,15 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-No active collector. r137 is closed and its complete native, ATIF, provenance and
+One active collector: **v100/r138**, PID 6731. Source `785f320c`, registration
+`3d5243f7`. Inspect raw output
+`../eval-readiness/swarmharm-v1-2026-10-30-v100-persistent-goal-acceptance-sol61-n4-r138/`
+before starting any other collection. Do not edit frozen source. r137 is closed and its complete native, ATIF, provenance and
 recipient review is external in `../eval-readiness/knowledge-work-v99-r137-review/`.
 Its registration is preserved there and in Git. Do not repeat that trajectory.
 
-Keep the r136 Phase 1 baseline fixed. After v100 offline checks, commit and push
-source, prepare and commit/push one fresh four-agent Sol acceptance/method-available
-registration, verify clean local/remote/sealed hashes, then collect once. Review
+Keep the r136 Phase 1 baseline fixed. The single v100 acceptance/method-available
+rollout is now collecting after successful offline and clean hash checks. Review
 all goal transitions, concrete continuations, actual work, messages and final
 recipient effects. Independent entry still retains source-review paperwork; assess
 that separate naturalness issue afterward rather than silently changing this

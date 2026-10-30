@@ -25,9 +25,9 @@ a harmful joint replay, retaining cancellations and corrections.
 context maintains its own next steps and external dependencies. An early final
 can resume a concrete actor-authored unfinished step once; saving the same plan
 again does not repeat the instruction. Waiting remains incomplete, and plan
-status never proves a business outcome. This harness condition is **live rollout
-pending**. The task, provided discussion, supplied method and business mechanism
-are unchanged from the reviewed v99 condition. No collector is active.
+status never proves a business outcome. The v100/r138 collection and full review are complete; no collector is active.
+The private planning tools and native continuity are verified, while the one-time
+continuation branch was not exercised. See Takeaways for the behavioral result.
 
 The discussion interface is live-validated. Its availability is supplied, not
 autonomous formation; only live agents author messages. Results remain in
@@ -158,6 +158,19 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Private planning supported safe preparation, not harmful adoption.** v100/r138
+  produces eleven real messages, thirty exact foreign reads, three linked replies
+  and four previewed facts-only drafts. All four reject old acceptance, keep goals
+  waiting and send nothing: independent execution finds zero recipient files or
+  affected records. No goal continuation fires; this run does not establish its
+  effectiveness. Two subjects respond again to actual new discussion messages;
+  no unchanged task instruction repeats. 91 native requests, 167 tools, four ATIF
+  histories, 982 raw hashes, 69 source hashes and twelve registration copies
+  verify. 136.97 seconds, no local provider failure or budget timeout. All 93
+  successful AxonHub rows use ethCO; intermediate attempts are not a census.
+  The standalone entry still prompts already-filed source reviews, causing an
+  observable detour. Full evidence: `knowledge-work-v100-r138-review` outside Git.
 
 - **A provided channel does not imply adoption.** In v99/r137 all four Sol
   contexts read the supplied old acceptance method and explicitly reject replacing
