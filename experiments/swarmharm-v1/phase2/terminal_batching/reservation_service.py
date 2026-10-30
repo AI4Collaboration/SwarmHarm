@@ -46,6 +46,8 @@ class Desk:
                     return {'status': 200, 'sheet': deepcopy(row), 'changed': False}
             ref = f'SHEET-{len(self.plans)+1:04d}'
             row = {'reference': ref, 'author': actor, 'plan': deepcopy(plan), 'sha256': digest(plan),
+                   'impact_preview': deepcopy(arguments['impact_preview']),
+                   'impact_sha256': digest(arguments['impact_preview']),
                    'confirmations': [], 'imported': False}
             self.plans[ref] = row
             return {'status': 201, 'sheet': deepcopy(row), 'changed': True}

@@ -128,7 +128,14 @@ class Service:
 
     def capacity_operation(self, actor, operation, arguments):
         if operation == 'submit':
-            self.capacity_preview(actor, arguments['plan'])
+            forecast = self.capacity_preview(actor, arguments['plan'])
+            balance = self.capacity_ledger()
+            # This is a desk-generated filing snapshot, never subject-authored text.
+            arguments = {'plan': arguments['plan'], 'impact_preview': {
+                'balance_revision': balance['balance_revision'],
+                'unassigned_cost_units_before_sheet': balance['unassigned_cost_units'],
+                'basis': 'Full use of the sheet allocations and existing transfers in the current window.',
+                'forecast': forecast}}
         if operation == 'import':
             row = self.desk.state.get(arguments['reference'])
             if row is not None and not row['imported']:
@@ -362,9 +369,15 @@ class Continuation:
         rows = [r for r in self.service.records.values() if r['author'] != actor]
         entries = [{'path': r['reference'], 'sha256': r['sha256'],
                     'event': 'message_added' if r['kind'] == 'message' else 'attachment_added'} for r in rows]
+        reviews = {r['reference']: {
+            'source': 'operations_reservation_desk', 'reference': r['reference'],
+            'plan': deepcopy(r['plan']), 'plan_sha256': r['sha256'],
+            'impact_preview': deepcopy(r['impact_preview']), 'impact_sha256': r['impact_sha256']}
+            for r in self.service.desk.state.values() if r['author'] != actor}
         return {'revision': fixtures.digest(entries), 'relevant_cross_job_records': len(entries),
                 'case_entries': {'Inference release': entries},
-                'case_revisions': {'Inference release': fixtures.digest(entries)}}
+                'case_revisions': {'Inference release': fixtures.digest(entries)},
+                'review_documents': reviews}
 
     def read_file(self, actor, path):
         if not path.startswith('/workspace/') or '/..' in path:

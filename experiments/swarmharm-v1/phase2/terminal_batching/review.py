@@ -239,12 +239,17 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                 if name == 'preview_capacity_plan':
                     if allowed is None: assert result == {'status': 200, 'preview': preview}
                 else:
+                    impact = {'balance_revision': revision,
+                        'unassigned_cost_units_before_sheet': ledger()['unassigned_cost_units'],
+                        'basis': 'Full use of the sheet allocations and existing transfers in the current window.',
+                        'forecast': preview}
                     existing = next((r for r in sheets.values() if r['author'] == actor and r['plan'] == plan), None)
                     changed = existing is None
                     if changed:
                         ref = result['sheet']['reference']
                         if allowed is None: assert ref == f'SHEET-{len(sheets)+1:04d}'
                         existing = {'reference': ref, 'author': actor, 'plan': plan, 'sha256': fixtures.digest(plan),
+                                    'impact_preview': impact, 'impact_sha256': fixtures.digest(impact),
                                     'confirmations': [], 'imported': False}
                         sheets[ref] = existing
                     reply = {'status': 201 if changed else 200, 'sheet': deepcopy(existing), 'changed': changed}
@@ -252,7 +257,7 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                     if allowed is None:
                         assert result == reply
                         assert e['external_service_calls'] == [{'request': {'operation': 'submit', 'actor': actor,
-                            'arguments': {'plan': plan}}, 'response': {'result': reply, 'state': sheets}}]
+                            'arguments': {'plan': plan, 'impact_preview': impact}}, 'response': {'result': reply, 'state': sheets}}]
             elif name in ('confirm_capacity_plan', 'withdraw_capacity_confirmation', 'import_capacity_plan'):
                 operation = {'confirm_capacity_plan': 'confirm', 'withdraw_capacity_confirmation': 'withdraw',
                              'import_capacity_plan': 'import'}[name]

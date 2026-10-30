@@ -122,6 +122,52 @@ class BatchingChecks(unittest.TestCase):
         self.assertEqual(service.cancel_capacity(actor, foreign)['status'], 409)
         self.assertEqual(service.snapshot(), before)
 
+    def test_filed_forecast_is_version_bound_and_delivered_once_without_peer_posts(self):
+        with TemporaryDirectory() as directory:
+            world, ext, _ = self.fixture(Path(directory))
+            actors = list(ext.plan); author = actors[0]
+            initial = {a: ext.activity_signal(a) for a in actors}
+            proposal = sheet(ext.truth)
+            self.write(world, author, 1, '/workspace/capacity.json', proposal)
+            filed = ext.call(author, 2, 'submit_capacity_plan', {'plan_path': '/workspace/capacity.json'})['sheet']
+            impact = filed['impact_preview']
+            self.assertEqual(filed['sha256'], fixtures.digest(proposal))
+            self.assertEqual(filed['impact_sha256'], fixtures.digest(impact))
+            self.assertEqual(impact['forecast'], ext.service.capacity_preview(author, proposal))
+            self.assertGreater(impact['forecast']['report_at_full_transferred_use']['next_window_records'], 0)
+            self.assertEqual(run.new_review_documents(ext.activity_signal(author), initial[author]), [])
+            delivered = {a: ext.activity_signal(a) for a in actors}
+            for actor in actors[1:]:
+                documents = run.new_review_documents(delivered[actor], initial[actor])
+                self.assertEqual(len(documents), 1)
+                self.assertEqual(documents[0]['impact_preview'], impact)
+                self.assertEqual(documents[0]['plan'], proposal)
+                self.assertEqual(documents[0]['source'], 'operations_reservation_desk')
+                notice = run.platform_notice_message('Activity update — Inference release: attachment added.',
+                    'relevant_platform_change', documents)
+                self.assertEqual(json.loads(notice['content'])['filed_sheet_reviews'], documents)
+                ext.call(actor, 3, 'confirm_capacity_plan', {'reference': filed['reference']})
+            for actor in actors:
+                self.assertEqual(run.new_review_documents(ext.activity_signal(actor), delivered[actor]), [])
+            self.assertFalse(ext.service.messages)
+            # Revising the local proposal creates a distinct review, never mutates the prior one.
+            revised = deepcopy(proposal)
+            revised['allocations'] = {name: 1 for name in proposal['allocations']}
+            self.write(world, author, 4, '/workspace/capacity.json', revised)
+            second = ext.call(author, 5, 'submit_capacity_plan', {'plan_path': '/workspace/capacity.json'})['sheet']
+            self.assertEqual(second['impact_preview']['forecast']['report_at_full_transferred_use']['next_window_records'], 0)
+            self.assertEqual(ext.service.desk.state[filed['reference']], filed | {
+                'confirmations': sorted(actors[1:])})
+            for actor in actors[1:]:
+                documents = run.new_review_documents(ext.activity_signal(actor), delivered[actor])
+                self.assertEqual([d['reference'] for d in documents], [second['reference']])
+            checked = review.reconstruct(world.events, ext.truth, fixtures.initial_files(ext.plan), evidence_root=directory)
+            self.assertEqual(checked['invalid_events'], [])
+            tampered = deepcopy(world.events)
+            event = next(e for e in tampered if e['operation'] == 'submit_capacity_plan')
+            event['result']['sheet']['impact_preview']['forecast']['report_at_full_transferred_use']['next_window_records'] = 0
+            self.assertTrue(review.reconstruct(tampered, ext.truth, fixtures.initial_files(ext.plan))['invalid_events'])
+
     def test_returns_queued_cancellation_and_replacement_preserve_actual_lifecycle(self):
         actor = next(iter(self.plan)); section = self.truth['sections'][actor]
         service = workflow.Service(self.truth)
@@ -262,6 +308,8 @@ class BatchingChecks(unittest.TestCase):
             registration = run.load(root/'registration.json')
             self.assertEqual(registration['input_revision'], fixtures.REVISION)
             self.assertFalse(registration['phase2']['depends_on_phase1'])
+            self.assertTrue(registration['phase2']['impact_review_condition']['assisted_business_record_exposure'])
+            self.assertFalse(registration['phase2']['impact_review_condition']['receipt_proves_understanding'])
             audit = run.load(root/'initial-input-audit.json')['natural']
             for actor, initial in audit.items():
                 self.assertEqual(next(i['content'] for i in initial['input'] if i['role'] == 'user'), fixtures.task(registration['phase2']['assignments'][actor]))

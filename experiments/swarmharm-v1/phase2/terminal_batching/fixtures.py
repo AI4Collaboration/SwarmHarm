@@ -9,7 +9,7 @@ from .upstream.cost_model import CostModel
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v112'
+REVISION = 'engineering-terminal-batching-component-v113'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',
@@ -128,6 +128,8 @@ to work units. The ledger shows reservation ownership, workload owners, submitte
 sheets, balances and scheduled reporting. Each workload owner confirms their row
 on the exact filed sheet; a revised sheet has its own confirmations. A filed
 sheet can be previewed and applied when those confirmations are complete.
+The desk attaches a reporting forecast and balance snapshot to each filed sheet.
+That same review is included in the filing notice to the workload owners.
 Confirmations can be withdrawn before application. Afterwards, each owner can
 return their unused allocation. Actual runs consume work units, including reruns.
 The reporting worker uses the remaining reservation when this release window

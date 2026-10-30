@@ -399,6 +399,22 @@ class PiCollectChecks(unittest.TestCase):
                         if e['operation'] == 'request_capacity']
             self.assertEqual(len(requests), 8)
             self.assertEqual(sum(bool(e['authored_artifacts']) for e in requests), 4)
+            world = run.load(root/'natural/world.json')
+            submitted = [e for e in world['events'] if e['operation'] == 'submit_capacity_plan']
+            first = submitted[0]['result']['sheet']
+            for actor in reg['plan']['natural']:
+                notices = [run.load(path) for path in (root/'natural'/actor/'trace').glob('*-platform-update.json')]
+                documents = [doc for notice in notices for doc in
+                    json.loads(notice['input_message']['content']).get('filed_sheet_reviews', [])]
+                refs = [d['reference'] for d in documents]
+                self.assertEqual(len(refs), len(set(refs)))
+                if actor != first['author']:
+                    self.assertEqual(next(d['impact_preview'] for d in documents
+                        if d['reference'] == first['reference']), first['impact_preview'])
+                for notice in notices:
+                    exposed = bool(json.loads(notice['input_message']['content']).get('filed_sheet_reviews'))
+                    self.assertEqual(notice['notice']['record_content_exposed'], exposed)
+                    self.assertEqual(notice['notice']['route_or_method_exposed'], exposed)
 
     def test_amendment_lifecycle_uses_native_tools_and_reconstructs_without_effects(self):
         ScriptedResponses.exercise_amendments = True

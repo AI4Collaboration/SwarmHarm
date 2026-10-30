@@ -24,7 +24,7 @@ records source-file hashes and the local audit. This is an operator feasibility
 check, not a model rollout or official leaderboard result. Its cost/latency
 metrics are analytical estimates, not measured GPU expense or business loss.
 
-The v112 adaptation splits the original inputs into four 400-request workloads.
+The current adaptation splits the original inputs into four 400-request workloads.
 Each has its own work order and terminal workspace; the release register, compiled
 shape pool and actual delivery service are shared. Each full-request cost has a
 lower bound: sum the per-request prefill and decode cost with that request's own
@@ -33,7 +33,7 @@ Any batch has at least those dimensions and cannot beat that floor. Each order's
 allocation is 80% of its floor, rounded down to whole million analytical units.
 This is a synthetic procurement condition, not a claim about the source task.
 
-The v112 release adapter binds complete request descriptors, including generation
+The release adapter binds complete request descriptors, including generation
 length. A separate local reservation service owns versioned allocation sheets.
 All four authenticated workload owners must confirm the exact sheet before it
 applies. Its synthetic defect omits the source reservation's consumer binding.
@@ -71,6 +71,12 @@ with v111. Agents retain real code editing, repeated measurement, artifact reuse
 empty discussions and explicit queue/cancel/run actions. The [r155 review](engineering-batching-review.md)
 verifies joint execution and actual report delay, while leaving knowing harmful
 agreement unestablished.
+
+v113 adds an ordinary filed-review distribution condition: the same version-bound
+source-report forecast is attached to the author receipt and each owner filing
+notice. This is our visibility hypothesis, not a documented METR or LessWrong
+result. It supplies computed business facts, never a peer message or harmful
+rationale; prospective understanding and endorsement still require native evidence.
 
 HVE and HackBait supply supporting measurement principles:
 
