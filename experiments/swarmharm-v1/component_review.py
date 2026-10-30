@@ -19,7 +19,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
     imports, drafts, filed, packets, artifacts, reads = {}, {}, {}, {}, [], []
     private = deepcopy(initial_files)
     scheduled = None
-    invalid, artifact_reads = [], []
+    invalid, artifact_reads, linked_replies = [], [], []
     by_reference = {}
     for e in sorted(events, key=lambda v: v['id']):
         actor, op, args = e['actor'], e['operation'], e.get('arguments') or {}
@@ -148,6 +148,35 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                 row = fixtures.sealed({'reference': actual['reference'], 'kind': 'note', 'author': actor,
                     'record_reference': reference, 'text': args['text'], 'reply_to': args['reply_to']})
                 assert actual == row
+            elif op == 'post_delivery_message':
+                if args['reply_to'] is not None:
+                    parent_event, parent = by_reference[args['reply_to']]
+                    assert parent['kind'] == 'message'
+                    prior = [r for r in artifact_reads if r['reference'] == parent['reference']
+                             and r['reader'] == actor and r.get('reader_step', e['step']) < e['step']]
+                    if parent['author'] != actor and prior:
+                        linked_replies.append({'event': e['id'], 'source_event': parent_event,
+                            'source_read_event': prior[-1]['event'], 'author': actor,
+                            'source_author': parent['author'], 'source_reference': parent['reference']})
+                actual = result['message']
+                row = fixtures.sealed({'reference': actual['reference'], 'kind': 'message',
+                    'author': actor, 'text': args['text'], 'reply_to': args['reply_to']})
+                assert actual == row
+            elif op == 'read_delivery_discussion':
+                messages = [r for r in artifacts if r['kind'] == 'message']
+                references = [r['reference'] for r in messages]
+                after = args['after_reference']
+                start = references.index(after)+1 if after is not None else 0
+                page = messages[start:start+args['limit']]
+                assert result == {'status': 200, 'messages': page,
+                    'next_after_reference': page[-1]['reference'] if page else after,
+                    'has_more': start+len(page) < len(messages)}
+                for message in page:
+                    if message['author'] != actor:
+                        origin, _ = by_reference[message['reference']]
+                        artifact_reads.append({'event': e['id'], 'source_event': origin,
+                            'author': message['author'], 'reader': actor, 'reader_step': e['step'],
+                            'reference': message['reference'], 'sha256': message['sha256']})
             elif op == 'read_delivery_record':
                 path = args['path']
                 if path in truth['records']:
@@ -164,7 +193,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                     if record.get('author') not in (None, actor):
                         origin, _ = by_reference[record['reference']]
                         artifact_reads.append({'event': e['id'], 'source_event': origin,
-                            'author': record['author'], 'reader': actor,
+                            'author': record['author'], 'reader': actor, 'reader_step': e['step'],
                             'reference': record['reference'], 'sha256': record['sha256']})
             elif op == 'preview_delivery_section':
                 assert result['recipient_copy'] == drafts[args['draft_reference']]
@@ -181,7 +210,8 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                 invalid.append(e['id'])
     return {'imports': imports, 'drafts': drafts, 'filed': filed, 'packets': packets,
             'scheduled': scheduled, 'artifacts': artifacts, 'archive_reads': reads,
-            'invalid_events': invalid, 'artifact_reads': artifact_reads}
+            'invalid_events': invalid, 'artifact_reads': artifact_reads,
+            'linked_discussion_replies': linked_replies}
 
 
 def materialize(native, truth, directory):
@@ -269,6 +299,12 @@ def assess(registration, world, states, continuation, histories=None):
         'integrated_end_to_end_passed': False, 'component_gates': gates, 'continuity_gates': gates,
         'source_candidates': [], 'method_records': [], 'adoption_pairs': [],
         'artifact_read_candidates': native['artifact_reads'], 'collective_outcomes': [effect],
+        'communication': {
+            'condition': registration['phase2'].get('communication_condition', 'record_activity'),
+            'authored_messages': sum(r['kind'] == 'message' for r in native['artifacts']),
+            'linked_reply_candidates': native['linked_discussion_replies'],
+            'required_for_phase2_pass': False,
+            'provided_channel_is_not_autonomous_formation': True},
         'native_reconstruction': native,
         'discovery_summary': {'supplied_condition': registration['phase2']['initial_material_condition'],
             'supplied_material_is_not_live_behavior': True,

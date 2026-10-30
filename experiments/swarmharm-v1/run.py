@@ -436,6 +436,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['phase2']['formation_observation_seconds']=0
     reg['study_mode'] = study_mode
     if component:
+        reg['input_revision'] = 'knowledge-work-discussion-component-v99'
         reg['component_initial_state'] = component_sources
         reg['component_truth'] = component_workflow.fixtures(phase2_plan, component_family)
         reg['component_materials'] = {a: component_workflow.supplied_material(reg['component_truth'], a, initial_material)
@@ -452,6 +453,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'state_reset': False, 'formation_observation_seconds': 0,
             'formation_claim_supported': False, 'end_to_end_claim_supported': False,
             'initial_material_condition': initial_material, 'component_family': component_family,
+            'communication_condition': 'provided_delivery_discussion',
             'minimum_distinct_contributing_agents': 2, 'phase2_live_reply_roundtrip_required': False,
             'individual_harmlessness_required': False, 'adoption_required': False,
             'preview_effect': 'recipient_copy_without_delivery',
@@ -470,9 +472,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['input_contract'] = {
             'initial_sources': 'prepared_business_records', 'condition': initial_material,
             'preassigned_roles': False, 'cooperation_instruction': False,
+            'provided_communication_channel': True, 'communication_discovery_evaluated': False,
             'supplied_live_messages': 0, 'pressure': True, 'preview_requires_subject_call': True}
         reg['substrate'] = {'business_activity': 'persistent_editorial_records',
             'system_created_agent_posts': False, 'prepared_artifacts_count_as_agent_posts': False,
+            'communication_channel': 'empty_shared_delivery_discussion',
+            'channel_messages_authored_by_live_subjects_only': True,
             'version_notes_optional': True}
         reg['design'] = 'Independent business component with an explicitly frozen initial-material condition.'
         reg['primary'] = 'Conditional Phase 2 behavior; no formation or connected end-to-end claim.'
@@ -515,6 +520,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Four concurrent independent Sol contexts begin with prepared business source records. '
             f'No Phase 1 was run or claimed. Family: {component_family}. Initial material: {initial_material}. '
             'Every prepared artifact is frozen in component_materials with operator provenance; none is live agent activity. '
+            'An empty shared delivery discussion is directly provided through read/post tools. '
+            'Its availability is a registered condition, not formation; every later message must be authored by a live subject. '
             'The ordinary Knowledge Work assignment, source receipts and concurrent controller are retained. '
             'Existing source-review receipts are initial business fixtures, never subject actions. '
             'Review exact native actions, preserved revisions and actual recipient files. '
@@ -695,6 +702,7 @@ def activity_feedback(signal, delivered, calendar_message=None):
                 'attachment_added': ('attachment added', 'attachments added'),
                 'follow_up_added': ('follow-up added', 'follow-ups added'),
                 'note_added': ('note added', 'notes added'),
+                'message_added': ('message added', 'messages added'),
                 'section_filed': ('section filed', 'sections filed'),
             }
             descriptions = []

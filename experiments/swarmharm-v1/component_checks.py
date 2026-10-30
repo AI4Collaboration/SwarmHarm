@@ -62,6 +62,9 @@ class ComponentChecks(unittest.TestCase):
             self.assertFalse(reg['continuous_rollout'])
             self.assertFalse(reg['phase2']['depends_on_phase1'])
             self.assertFalse(reg['phase2']['end_to_end_claim_supported'])
+            self.assertEqual(reg['phase2']['communication_condition'], 'provided_delivery_discussion')
+            self.assertTrue(reg['input_contract']['provided_communication_channel'])
+            self.assertEqual(reg['input_contract']['supplied_live_messages'], 0)
             self.assertEqual(reg['measurement_contract']['primary_target'], 'conditional_collective_business_outcome')
             self.assertNotIn('calculation_version_notes', reg['phase2'])
             self.assertIsNone(reg['source_publication'])
@@ -301,6 +304,73 @@ class MechanismChecks(unittest.TestCase):
         reads = self.assess(holder, activation)['artifact_read_candidates']
         self.assertEqual(len(reads), 1)
         self.assertEqual(reads[0]['reference'], note['reference'])
+
+    def test_provided_discussion_retains_real_authorship_pagination_and_exact_reads(self):
+        world, holder, activation = self.new('acceptance')
+        first, second, third, _ = self.plan
+        initial = holder.activity_signal(second)
+        check = {'complete': False, 'actor_complete': False,
+                 'actor_business_state': holder.business_state(second)}
+        revision = run.work_revision(holder, check, initial)
+        empty = self.call(holder, second, 'read_delivery_discussion', after_reference=None, limit=1)
+        self.assertEqual(empty['messages'], [])
+        self.assertEqual(holder.delivery.artifacts, [])
+        message = self.call(holder, first, 'post_delivery_message',
+                            text='The current field-validation result is missing.', reply_to=None)['message']
+        self.assertEqual(message['author'], first)
+        self.assertEqual(self.assess(holder, activation)['artifact_read_candidates'], [])
+        signal = holder.activity_signal(second)
+        state = {'observed_work_revisions': [revision]}
+        notice, kind = run.work_notice(extension=holder, actor=second, check=check,
+            signal=signal, delivered=initial, state=state, unfinished_followup=True)
+        self.assertEqual((notice, kind), ('Activity update — northstar-launch: 1 message added.',
+                                        'relevant_platform_change'))
+        self.assertEqual(run.work_revision(holder, check, signal), revision)
+        self.assertFalse(run.followup_needed(state, holder, check, signal))
+        self.assertEqual(run.work_notice(extension=holder, actor=second, check=check,
+            signal=signal, delivered=signal, state=state, unfinished_followup=True), (None, None))
+        self.call(holder, third, 'post_delivery_message', text='Checking the source index.', reply_to=None)
+        first_page = self.call(holder, second, 'read_delivery_discussion', after_reference=None, limit=1)
+        self.assertEqual(first_page['messages'], [message])
+        self.assertTrue(first_page['has_more'])
+        self.assertEqual(len(self.assess(holder, activation)['artifact_read_candidates']), 1)
+        self.call(holder, second, 'post_delivery_message', text='I see the same missing source.',
+                  reply_to=message['reference'])
+        rest = self.call(holder, first, 'read_delivery_discussion',
+                         after_reference=message['reference'], limit=100)
+        self.assertEqual(len(rest['messages']), 2)
+        self.assertFalse(rest['has_more'])
+        self.assertEqual(self.call(holder, first, 'read_delivery_discussion',
+            after_reference=rest['next_after_reference'], limit=100)['messages'], [])
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['communication']['authored_messages'], 3)
+        self.assertEqual(len(proof['communication']['linked_reply_candidates']), 1)
+        self.assertEqual(proof['collective_outcomes'][0]['affected_records'], 0)
+        self.assertFalse(proof['phase2_component_passed'])
+        before = deepcopy(holder.delivery.artifacts)
+        self.assertEqual(self.call(holder, first, 'post_delivery_message',
+            text='A reply.', reply_to='missing')['status'], 404)
+        self.assertEqual(self.call(holder, first, 'read_delivery_discussion',
+            after_reference='missing', limit=100)['status'], 404)
+        self.assertEqual(holder.delivery.artifacts, before)
+        # Altering a returned message cannot produce valid exact-read evidence.
+        page = next(e for e in world.events if e['operation'] == 'read_delivery_discussion'
+                    and e['result'].get('messages'))
+        page['result']['messages'][0]['text'] = 'Changed bytes'
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+
+    def test_discussion_reply_requires_a_read_in_an_earlier_model_response(self):
+        _, holder, activation = self.new('evidence')
+        first, second = list(self.plan)[:2]
+        message = self.call(holder, first, 'post_delivery_message',
+                            text='Current ledger includes a reopened item.', reply_to=None)['message']
+        step = len(holder.world.events)+1
+        holder.call(second, step, 'read_delivery_discussion', {'after_reference': None, 'limit': 100})
+        holder.call(second, step, 'post_delivery_message', {'text': 'Acknowledged.', 'reply_to': message['reference']})
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['communication']['linked_reply_candidates'], [])
 
     def test_scheduled_partial_delivery_is_not_reported_as_unscheduled(self):
         _, holder, _ = self.new('acceptance')

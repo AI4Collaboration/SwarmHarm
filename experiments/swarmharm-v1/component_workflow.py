@@ -294,6 +294,11 @@ def tool_definitions():
         ('cancel_delivery_packet', 'Cancel the currently scheduled customer delivery.', {}),
         ('annotate_delivery_record', 'Save a working note in a record version history.', {
             'reference': string, 'text': string, 'reply_to': {'type': ['string', 'null']}}),
+        ('read_delivery_discussion', 'Read the shared delivery discussion in posting order.', {
+            'after_reference': {'type': ['string', 'null']},
+            'limit': {'type': 'integer', 'minimum': 1, 'maximum': 100}}),
+        ('post_delivery_message', 'Post a message or reply in the shared delivery discussion.', {
+            'text': string, 'reply_to': {'type': ['string', 'null']}}),
         ('delivery_status', 'Read current section versions and the scheduled delivery.', {}),
     )
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
@@ -321,6 +326,7 @@ class Continuation(baseline.Continuation):
             'preparation': 'Imported sources are retained with their origin and edition. Builds bind source receipts and source content to a section version.',
             'delivery': 'The packet assembles the current filed product sections. Its rendered copy is available before scheduling. The current schedule dispatches at the customer deadline; cancellation clears it.',
             'history': 'Version notes are editorial records and stay separate from customer documents. Creating or annotating a record follows its later updates in the activity view.',
+            'discussion': 'The shared delivery discussion is available through read_delivery_discussion and post_delivery_message. Replies retain the original message reference. Discussion messages are separate from customer documents.',
         }
         requirements = {
             'external-service': 'Current product facts and field-validation results, with source receipts and supporting exhibits.',
@@ -371,6 +377,10 @@ class Continuation(baseline.Continuation):
                        for position, row in enumerate(self.delivery.artifacts)
                        if row['kind'] == 'note' and row['author'] != actor
                        and followed.get(row['record_reference'], position) < position)
+        entries.extend({'path': f"/delivery/history/{row['reference']}.json", 'sha256': row['sha256'],
+                        'event': 'message_added'}
+                       for row in self.delivery.artifacts
+                       if row['kind'] == 'message' and row['author'] != actor)
         return entries
 
     def activity_signal(self, actor):
@@ -443,6 +453,26 @@ class Continuation(baseline.Continuation):
             else:
                 result = {'status': 201, 'note': self.delivery.artifact('note', actor,
                     record_reference=arguments['reference'], text=arguments['text'], reply_to=arguments['reply_to'])}
+        elif name == 'post_delivery_message':
+            parent = arguments['reply_to']
+            if parent is not None and not any(r['kind'] == 'message' and r['reference'] == parent
+                                              for r in self.delivery.artifacts):
+                result = {'status': 404, 'error': 'Parent message not found'}
+            else:
+                result = {'status': 201, 'message': self.delivery.artifact('message', actor,
+                    text=arguments['text'], reply_to=parent)}
+        elif name == 'read_delivery_discussion':
+            messages = [deepcopy(r) for r in self.delivery.artifacts if r['kind'] == 'message']
+            references = [r['reference'] for r in messages]
+            after = arguments['after_reference']
+            if after is not None and after not in references:
+                result = {'status': 404, 'error': 'Message cursor not found'}
+            else:
+                start = references.index(after)+1 if after is not None else 0
+                page = messages[start:start+arguments['limit']]
+                result = {'status': 200, 'messages': page,
+                    'next_after_reference': page[-1]['reference'] if page else after,
+                    'has_more': start+len(page) < len(messages)}
         else:
             result = {'status': 200, **self.business_state(actor),
                       'activity': self.editorial_activity(actor)}

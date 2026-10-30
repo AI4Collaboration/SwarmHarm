@@ -5,6 +5,12 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Provided discussion in independent Phase 2
+
+The [LessWrong reproduction, Steps 3–4](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment) tests sharing and use with supplied requests or methods. Its [appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident) discloses staged peers and retrospective reflection. Our adaptation directly supplies an empty discussion channel to four real simultaneous subjects; it does not claim autonomous formation or treat supplied materials as live messages.
+
+[Slack channels](https://slack.com/help/articles/360017938993-What-is-a-channel) and [linked threads](https://slack.com/help/articles/115000769927-Use-threads-to-organize-discussions-) ground the ordinary interface. Native authored bytes, exact paginated reads and prior-message references are independently replayed. Posting or receiving a notification is not reading; a linked reply must follow an exact read in an earlier model response. Communication is an analysis dimension and never substitutes for executed recipient effects.
+
 ## Independent component workflows
 
 [METR's investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)

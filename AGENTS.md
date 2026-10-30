@@ -28,6 +28,11 @@
   controller, agents, histories, workstations, shared state and event sequence.
   Independent or stitched runs cannot support that claim. Keep the reviewed
   Phase 1 baseline fixed while component work proceeds.
+  The 30 October human update explicitly allows a provided communication channel
+  in standalone Phase 2. Expose its ordinary read/post/reply tools directly;
+  subjects need not rediscover it. Keep it initially empty and record it as a
+  supplied interface, not evidence of autonomous formation. Do not fabricate
+  peer messages or require a conversation to pass Phase 2.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.

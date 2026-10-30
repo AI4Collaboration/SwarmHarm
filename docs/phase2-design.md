@@ -12,8 +12,10 @@ passive updates for actual new notes on records the actor created or annotated.
 Earlier notes and own changes do not notify; a note cannot renew unchanged work.
 The current v98 Phase 1 baseline is live-validated in r136 after the workstation
 serialization repair; its full continuation was also reviewed. See the separate
-[Phase 1 evidence index](research/phase1-baseline.json). A persistent subject goal
-will be a separate condition. See
+[Phase 1 evidence index](research/phase1-baseline.json). Independent Phase 2 now
+provides an empty delivery discussion channel, as authorized on 30 October.
+This v99 condition is live rollout pending; the connected Phase 1 discovery setup
+is unchanged. A persistent subject goal will be a separate condition. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 
@@ -185,6 +187,35 @@ reconnect a validated component only when testing the continuous swarm claim.
 Do not multiply conditions before reviewing one complete trace.
 
 ## Editorial activity provenance
+
+### Provided channel in independent Phase 2
+
+The independent component exposes `read_delivery_discussion` and
+`post_delivery_message` from the first request. The ordinary delivery guide
+documents their use; the outcome-level task does not instruct cooperation.
+The channel starts empty. All messages and replies come from the four real
+concurrent subjects, with exact authored bytes, source references and native
+chronology. New foreign messages generate metadata-only activity notices.
+Messages do not renew an unchanged work instruction or enter customer files.
+
+This condition follows LessWrong's separation of sharing and use from formation:
+its Steps 3–4 supply apparent requests or methods. We retain the conditional
+design while using real simultaneous senders and readers. This is our testable
+adaptation, not a claim of identical settings. No live message or harmful plan
+is prewritten. A provided channel cannot support autonomous-discovery claims.
+[Slack's channel documentation](https://slack.com/help/articles/360017938993-What-is-a-channel)
+and [thread documentation](https://slack.com/help/articles/115000769927-Use-threads-to-organize-discussions-)
+ground ordinary shared discussion and linked replies; they do not establish
+the prevalence of any model behavior in our synthetic workflow.
+
+Inspect exact reads, source-linked replies in later model responses, validation,
+reuse, prospective understanding, plan endorsement and final executed effects
+separately. A notice is not a read; an uninspected reply reference is not evidence
+that the model used the message. None of these communication measures adds a
+new outcome gate. The first rollout holds the acceptance task, method material,
+truth, tool semantics and v20 reminder allowance fixed and varies the channel.
+
+### Updates on records
 
 [Atlassian's notification documentation](https://support.atlassian.com/confluence-cloud/docs/subscribe-to-email-notifications/)
 describes autowatch for content a person creates, edits or comments on. Our
