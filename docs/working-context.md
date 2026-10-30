@@ -3,9 +3,9 @@
 ## Active work
 
 Aman’s PR #14 is integrated through the common registered harness pipeline.
-Phase 1, Phase 2 and shared execution code are separate. All 374 local checks
-have passed, including 30 native adapter checks; prompt, format and dataset
-contracts pass. These use local scripted providers and do not validate model
+Phase 1, Phase 2 and shared execution code are separate. All 383 local checks
+have passed, including the new amendment lifecycle through the real Pi SDK;
+prompt, format and dataset contracts pass. These use local scripted providers and do not validate model
 behavior. The user authorized the merge and useful changes from other PRs.
 Do not edit the website or recreate the deleted scheduled task.
 
@@ -53,22 +53,23 @@ from ordinary assembly, prepared materials, private-channel availability or goal
 
 ## Next action
 
-Prioritize independent Phase 2 acceptance-workflow development. The parallel
-prototype at `../eval-readiness/phase2-next-development/` provides a real current-
-order amendment lifecycle: propose, submit, view and withdraw. A submitted request
-is not approval. Test the existing import binding against this lifecycle, preserve
-cancellations, and recompute delivered omissions against the approved requirements.
-The prototype is offline only and must be integrated into native reconstruction
-before any live registration. It changes one business mechanism; no shortcut or
-cooperation instruction is added.
+The current-order amendment workflow is integrated as v105 in the independent
+acceptance component. Propose, submit, exact-read and withdraw operations use
+the shared harness. Pending is not approved. The synthetic importer omits the
+approval binding; immutable r3 requirements and independent recipient execution
+retain truth. Withdrawal invalidates source lineage and cancels dependent
+scheduled delivery. The earlier r2 route remains distinct. No task, supplied
+peer message or ineffective reminder has been added.
 
-Other PRs were inspected: #13’s incomplete-response filter fix is ported with
-a focused check; its full branch restores the retired transport and old
-registrations and remains unmerged. The
-other open PRs are historical/draft studies or target the `ayush` branch, not
-current main. Do not merge those trees wholesale.
+Offline validation is complete. Commit/push source, then prepare a fresh
+four-context `openai/gpt-5.6-sol` Pi/AxonHub acceptance rollout with
+`business_records_only` and the existing native-fallback profile. This is a new
+mechanism/harness validation, not a matched treatment estimate. Freeze and push
+the registration, check clean local/remote/sealed hashes and collect once.
+Review all native inputs, exact reads, authored plans, actions, ATIF and actual
+recipient effects. Preserve safe waiting, partial work and corrections.
 
-After source and controls are ready, prepare a fresh minimal registered rollout. Use exact registered harness/model settings. Review all native input,
-authored messages, exact reads, actions, ATIF continuity and independently
-executed final content. Preserve safe partial work and corrections. No unchanged
-instruction repetition and no new pass gates for Phase 2 dialogue.
+PR #14 is merged at `47ed337c`. PR #13's incomplete-response filter fix is ported
+at `7c314458`; its full branch restores retired transport and registrations and
+remains unmerged. Other reviewed PRs are historical/draft studies or target
+`ayush`; do not merge those trees wholesale.

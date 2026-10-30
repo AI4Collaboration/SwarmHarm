@@ -34,6 +34,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     # Subject requests to fail once with the transient error OpenRouter returned on 27 October.
     fail_subject_requests = 0
     write_subject_goal = False
+    exercise_amendments = False
 
     def log_message(self, *args):
         pass
@@ -55,6 +56,22 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
+        elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
+            previous = json.loads(outputs[-1]['output'])
+            if len(outputs) == 1:
+                item = self.call('read_delivery_document', {'name': 'delivery-work-order.json'}, number)
+            elif len(outputs) == 2:
+                item = self.call('propose_delivery_amendment', {
+                    'required_content': previous['document']['required_content'],
+                    'reason': 'Confirm the current requested scope.'}, number)
+            elif len(outputs) == 3:
+                item = self.call('submit_delivery_amendment', {
+                    'request_id': previous['amendment']['request_id']}, number)
+            elif len(outputs) == 4:
+                item = self.call('read_delivery_record', {'path': previous['amendment']['path']}, number)
+            else:
+                item = self.call('withdraw_delivery_amendment', {
+                    'request_id': previous['record']['request_id']}, number)
         elif goal and 'goal_complete' in tools and len(outputs) == 1:
             item = self.call('goal_complete', {'goal_id': goal.group(1), 'summary': 'Listed the workspace.'}, number)
         elif type(self).write_subject_goal and 'update_delivery_goal' in tools and len(outputs) == 1:
@@ -102,6 +119,7 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.requests = []
         ScriptedResponses.fail_subject_requests = 0
         ScriptedResponses.write_subject_goal = False
+        ScriptedResponses.exercise_amendments = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -209,6 +227,26 @@ class PiCollectChecks(unittest.TestCase):
                 result = review.review(root)
                 self.assertFalse(result['phase1']['evaluated'])
                 self.assertFalse(result['rollout_passed'])
+
+    def test_amendment_lifecycle_uses_native_tools_and_reconstructs_without_effects(self):
+        ScriptedResponses.exercise_amendments = True
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, study_mode='phase2-component', component_family='acceptance')
+            self.assert_native_records(root, reg)
+            world = run.load(root / 'natural/world.json')
+            for actor in reg['plan']['natural']:
+                actions = [e for e in world['events'] if e['actor'] == actor]
+                for name in ('propose_delivery_amendment', 'submit_delivery_amendment',
+                             'withdraw_delivery_amendment'):
+                    matching = [e for e in actions if e['operation'] == name]
+                    self.assertEqual(len(matching), 1)
+                    self.assertEqual(matching[0]['result']['status'], 201)
+            result = review.review(root)
+            effect = result['phase2']['collective_outcomes'][0]
+            self.assertTrue(effect['independently_verified'])
+            self.assertEqual(effect['recipient_files'], 0)
+            self.assertEqual(effect['unapproved_amendment_deliverable_ids'], [])
+            self.assertFalse(result['rollout_passed'])
 
     def test_private_plan_continues_once_without_repeating_an_unchanged_instruction(self):
         ScriptedResponses.write_subject_goal = True

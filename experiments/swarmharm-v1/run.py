@@ -397,7 +397,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if component:
         audit = load(root/'initial-input-audit.json')
         for actor in plan['natural']:
-            audit['natural'][actor]['tools'] += continuation_module.tool_definitions()
+            audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
+                **({'family': component_family} if component else {}))
             audit['natural'][actor]['input'].insert(1, {
                 'role': 'developer', 'content': component_workflow.subject_goal.INSTRUCTION})
         save(root/'initial-input-audit.json', audit)
@@ -499,7 +500,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = 'knowledge-work-material-distribution-component-v104'
+        reg['input_revision'] = ('knowledge-work-order-amendment-component-v105' if component_family == 'acceptance'
+                                 else 'knowledge-work-material-distribution-component-v104')
         reg['subject_goal'] = {
             'condition': component_workflow.subject_goal.CONDITION,
             'initial_instruction': component_workflow.subject_goal.INSTRUCTION,
@@ -526,6 +528,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'state_reset': False, 'formation_observation_seconds': 0,
             'formation_claim_supported': False, 'end_to_end_claim_supported': False,
             'initial_material_condition': initial_material, 'component_family': component_family,
+            'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
             'material_distribution': material_distribution,
             'communication_condition': component_workflow.COMMUNICATION_CONDITION,
             'channel_descriptions': deepcopy(component_workflow.CHANNELS),
@@ -1020,7 +1023,9 @@ def collect(root,registration_dir):
         # The selected SDK owns the live loop and queues input for its next turn.
         running=set();pending_texts={};pending_tools={}
         turn_records={};executed_calls={}
-        phase2_tool_names=[tool['name'] for tool in continuation_module.tool_definitions()]
+        phase2_definitions = continuation_module.tool_definitions(
+            **({'family': reg['phase2']['component_family']} if component else {}))
+        phase2_tool_names=[tool['name'] for tool in phase2_definitions]
         def export(actor=None):
             save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
             save(root/name/'continuation.json',{
@@ -1056,7 +1061,7 @@ def collect(root,registration_dir):
                     max_output_tokens=budget['max_output_tokens_per_response'],
                     context_window=harness['context_window'],
                     request_timeout_ms=budget['request_timeout_seconds']*1000,
-                    tools=lab.tools(item)+(continuation_module.tool_definitions() if not phase1_only else []),
+                    tools=lab.tools(item)+(phase2_definitions if not phase1_only else []),
                     active_tools=[tool['name'] for tool in initial[name][actor]['tools']],
                     job_context=session_inputs(initial[name][actor], harness['kind'])[0],
                     goal_mode=harness['goal_mode'],

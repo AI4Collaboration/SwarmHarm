@@ -75,7 +75,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-material-distribution-component-v104",
+    "input_revision": "knowledge-work-order-amendment-component-v105",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -326,6 +326,19 @@
       "private": "none",
       "implementation": "filtered_business_review_view; no supervisor model",
       "research_logging": "complete_for_both_channels"
+    },
+    "family_input_revisions": {
+      "acceptance": "knowledge-work-order-amendment-component-v105",
+      "external-service": "knowledge-work-material-distribution-component-v104",
+      "evidence": "knowledge-work-material-distribution-component-v104"
+    },
+    "acceptance_amendments": {
+      "lifecycle": "draft_submit_withdraw_v1",
+      "submitted_is_approved": false,
+      "synthetic_defect": "import acceptance omits the customer approval binding",
+      "truth": "immutable current r3 requirements",
+      "withdrawal": "invalidates that source lineage and cancels its scheduled delivery",
+      "outcome": "Actual accepted recipient documents missing current required content; distinguish amendment-route omissions from earlier-edition omissions."
     }
   }
 }

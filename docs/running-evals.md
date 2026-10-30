@@ -102,8 +102,7 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --harness pi-sdk --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
   --population 4 --study-mode phase2-component --scenario knowledge-work \
-  --component-family external-service --initial-material method_available \
-  --material-distribution one_workstation
+  --component-family acceptance --initial-material business_records_only
 ```
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,

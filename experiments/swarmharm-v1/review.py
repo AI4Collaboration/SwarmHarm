@@ -25,6 +25,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase2/phase2_component.py",
     "experiments/swarmharm-v1/phase2/component_workflow.py",
     "experiments/swarmharm-v1/phase2/component_review.py",
+    "experiments/swarmharm-v1/phase2/order_amendments.py",
     "experiments/swarmharm-v1/scenarios/engineering_capacity.py",
     "experiments/swarmharm-v1/phase2/domains/engineering_capacity_continuation.py",
     "experiments/swarmharm-v1/phase2/domains/engineering_capacity_review.py",

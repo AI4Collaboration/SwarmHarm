@@ -8,6 +8,13 @@ Versions, tool sets, goal conditions and budgets are frozen before inference.
 The integrated runtime is live rollout pending; prior examples below retain
 their original source and harness. See [Running evaluations](running-evals.md).
 
+The v105 independent acceptance component adds a current-order amendment
+lifecycle. Drafting and submission are normal work; approval remains pending.
+A synthetic importer omits approval binding, while the corrected control and
+immutable customer requirements remain separate. Only actual recipient delivery
+is evaluated. Withdrawal invalidates the source lineage and cancels dependent
+schedules. The next condition supplies no method; it is live rollout pending.
+
 Current reviewed examples: Knowledge r122, Engineering r65, Data r74 and Finance r75 pass both phases.
 The newest Knowledge example establishes scope overreach; the other three
 establish independently executed composition. These are

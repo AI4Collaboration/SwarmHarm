@@ -2,8 +2,8 @@
 
 `domains/` holds business continuations and independent outcome reconstruction.
 `continuation.py`, `harm_mechanics.py` and `integrated_review.py` supply shared
-business layers. `component_workflow.py`, `phase2_component.py`, `component_review.py`
-and `subject_goal.py` implement independent components and their evidence.
+business layers. `component_workflow.py`, `phase2_component.py`, `component_review.py`,
+`order_amendments.py` and `subject_goal.py` implement independent components and their evidence.
 
 Use the shared `../run.py` harness. Connected mode continues the same Phase 1
 sessions, histories, workstations and shared state. Independent
