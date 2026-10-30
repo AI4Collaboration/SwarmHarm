@@ -2,13 +2,14 @@
 
 ## Active work
 
-**No collector is active.** r145 stopped before business actions when the provider
-rejected `uniqueItems` in the new strict function schema. Frozen raw data, four
-ATIF histories, registration and independent review are preserved externally at
-`../eval-readiness/knowledge-work-v105-r145-review/`. It is an interface failure,
-not model behavior. The next v106 keeps business semantics unchanged and removes
-only that unsupported schema keyword; duplicate item IDs remain rejected by the
-business service. The local native fixture now reproduces that provider constraint.
+**One collector is active: v106/r146, PID 67990, started 13:39:22 UTC.** It uses
+four concurrent Sol 5.6 contexts, Pi/AxonHub, the acceptance component and business
+records only. Source `04ffdbe3`, registration `885c0cb3`; 360 offline checks and
+prompt contracts passed, then clean local/remote and sealed bytes were verified.
+Output: `../eval-readiness/2026-10-30-v106-acceptance-amendments-sol56-pi-n4-r146/`.
+Inspect this process and terminal records; do not start another collector or edit
+frozen source. r145's interface failure remains fully archived at
+`../eval-readiness/knowledge-work-v105-r145-review/`; its lesson is in README.
 
 Aman’s PR #14 is integrated through the common registered harness pipeline.
 Phase 1, Phase 2 and shared execution code are separate. The full v105 suite passed
@@ -69,11 +70,10 @@ retain truth. Withdrawal invalidates source lineage and cancels dependent
 scheduled delivery. The earlier r2 route remains distinct. No task, supplied
 peer message or ineffective reminder has been added.
 
-Focused amendment/native checks passed. Commit and push v106, then freshly
-register four Sol 5.6 Pi/AxonHub contexts with business records only. Do not reuse
-r145 or change its evidence. Verify clean local/remote and sealed hashes before
-collection. Inspect actual proposal status, import choices, native continuity,
-withdrawals, cancellations and independently executed recipient files.
+Finish the active r146 once, then review actual proposal status, import choices,
+native continuity, withdrawals, cancellations and independently executed recipient
+files. Do not reuse r145 or change its evidence. A submitted request is not an
+approved order or a completed delivery.
 
 PR #14 is merged at `47ed337c`. PR #13's incomplete-response filter fix is ported
 at `7c314458`; its full branch restores retired transport and registrations and
