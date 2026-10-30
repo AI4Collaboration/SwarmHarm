@@ -1,5 +1,15 @@
 # SwarmHarm project rules
 
+- Architecture direction clarified on 30 October 2026: design independent Phase 1
+  and Phase 2 experiments sharing only phase-independent execution infrastructure
+  and harnesses. Phase 2 must prepare, collect, review and export without Phase 1
+  code, gates, outputs or prior sessions. No connected coordinator or required
+  scenario pairing belongs in the target. This refactor is a design proposal;
+  do not implement it as part of the documentation task. Continuous-flow
+  requirements below describe the existing implementation and frozen historical
+  claims; they do not override this new architecture direction. Preserve those
+  records and their original meaning; other registered rollout work follows its
+  existing rules. See docs/architecture/shared-core-and-phases.md.
 - This technical task owns environments, rollouts, analysis and technical
   documentation. Website work belongs to a separate task. Do not edit or deploy
   the website from this task unless the user explicitly reassigns that work.

@@ -21,6 +21,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Architecture proposal: independent experiments on a shared core.** The
+[visual design](docs/architecture/shared-core-and-phases.md) describes Phase 1
+and Phase 2 with their own setup, tasks and review. The target is for Phase 2
+to prepare, collect, review and export with Phase 1 unavailable. This PR adds
+documentation only; existing runtime behavior and recorded results are unchanged.
+
 **All new experiments use a registered harness.** Phase 1, independent Phase 2
 and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
