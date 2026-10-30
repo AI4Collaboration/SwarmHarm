@@ -18,8 +18,8 @@ selective attachments, table conversion, correction and withdrawal remain.
 Independent reconstruction recomputes comparisons and materializes final recipient
 files. Count raw source rows and derived records separately; no loss follows
 merely from an import, preview or accepted calculation. Correctly scoped source
-fixtures provide a clean full-completion control. Current source is live rollout
-pending. The existing activity surface and notice logic are unchanged; no method,
+fixtures provide a clean full-completion control. The current live review is
+complete; findings are in the root README Takeaways. The existing activity surface and notice logic are unchanged; no method,
 peer note or cooperation instruction is supplied. See root README and design.
 Completed replies use a FIFO dispatch inbox with saved ready/dispatch times.
 This preserves simultaneous requests and prevents ready-reply starvation. Shell

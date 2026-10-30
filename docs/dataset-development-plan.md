@@ -2,7 +2,7 @@
 
 ## Current workflow: one briefing from source review to delivery
 
-Knowledge Work v85 is implemented; fresh live validation is pending. Four Sol
+Knowledge Work v85 has completed live review. Four Sol
 6.1 contexts continue the same customer briefing, with actual current source
 claims, receipts, histories, workstations and authored activity. Phase 1's real
 copy-desk revision, FIFO completed-response dispatch and v20 notice suppression

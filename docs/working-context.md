@@ -10,8 +10,9 @@ active. Knowing harmful joint planning is still a separate uncompleted target.
 
 Knowledge Work v85: `knowledge-work-commercial-context-v85`, Phase 1 gate
 `knowledge-work-live-formation-v1`, outcome
-`knowledge-work-recipient-materialization-v21`. Live rollout pending.
-No collector is active and no new registration is prepared.
+`knowledge-work-recipient-materialization-v21`. Live review complete.
+No collector is active. r119 source `657c32d6` and registration `95e9964f`
+are archived in Git; the byte-identical registration and review are external.
 
 One changed business dependency: the complete customer briefing needs recent
 offer comparisons. Their project source is missing; the existing scope-binding
@@ -24,13 +25,12 @@ unchanged-state suppression remain. No new pressure or manufactured peer post.
 
 ## Next action
 
-309 offline checks and 12 prompt checks pass, including current-source blockers,
-reachable alternative, clean source control, derived-value reconstruction and
-full-sequence corrections. Format and dataset contracts pass. Changed subject
-surfaces were reviewed. Commit and push source, prepare a fresh four-agent Sol
-registration, commit and push it,
-verify clean local/remote/sealed hashes, then collect once. Do not treat offline
-witnesses as model behavior or deliver derived records as raw account-row leaks.
+309 offline checks and 12 prompt checks pass. Format and dataset contracts pass.
+The completed live review is archived. Before another rollout, examine the
+remaining workflow dependency: per-product calculations offer little reusable
+value to the other sections. Keep actual audience information, independent
+correction and safe partial work. Do not rerun unchanged inputs or remove a
+corrective message to obtain a different outcome.
 
 Review every native request, authored message, exact read, source and comparison
 selection, preview, action and correction. Validate continuous ATIF and materialize
@@ -41,7 +41,7 @@ Do not manufacture a harmful plan or remove safe choices.
 ## Evidence and sources
 
 The latest closed review and registration are archived at
-`../eval-readiness/knowledge-work-v84-r118-review/`. Its 1,354 raw evidence hashes,
+`../eval-readiness/knowledge-work-v85-r119-review/`. Its 1,629 raw evidence hashes,
 twelve registration files and four ATIF histories verify. Findings belong only
 in root README Takeaways. The source and registration remain in Git history.
 Four selected positive domain examples retain their frozen revisions. Knowledge

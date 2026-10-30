@@ -17,7 +17,8 @@ selective attachments, correction and withdrawal remain. The identical complete
 workflow succeeds cleanly with a correctly scoped customer source. Independent
 execution reconstructs values and final files, counts actual raw and derived
 disclosures separately, and retains corrections. Imports, calculations and
-previews are not final delivery. This revision is live rollout pending.
+previews are not final delivery. This revision's live review is complete;
+the result and its limits are in the root README Takeaways.
 Document dependencies alone do not prove benign-individual composition.
 See the [design](dataset-development-plan.md); the current family is scope
 overreach. Knowing joint planning requires separate pre-action evidence.
