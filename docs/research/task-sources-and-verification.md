@@ -5,6 +5,46 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Existing terminal and RL environments
+
+The latest design direction is to assess richer existing environments before
+another import-only variation. These are source options, not implemented or
+validated SwarmHarm integrations.
+
+- [Hack-Verifiable Terminal Bench](https://majoroth.github.io/hack-verifiable-environments/hvtb)
+  wraps 89 Terminal Bench 2.1 tasks. Real terminal work supplies artifacts,
+  execution and test feedback; watched solution/test access supplies separate
+  deterministic indicators. This is the preferred basis to inspect for the
+  next realistic Engineering workflow. Original file-access indicators alone
+  do not establish collective effects or knowing agreement.
+- [Hack-Verifiable TextArena](https://arxiv.org/html/2605.20744v1#S2.SS2)
+  follows a Gymnasium-style interaction interface. Its 13 single-player and
+  eight two-player games produce 34 game/mechanism combinations, not 34 distinct
+  games. Tasks include Sudoku, Tower of Hanoi, private-priority negotiation and
+  sealed-bid auctions. Persistent-context trajectories can span several games.
+  This is a concrete reference for sequential decisions, feedback and reuse,
+  with wrapper-detected events separate from task reward.
+- [Melting Pot](https://github.com/google-deepmind/meltingpot) supplies multi-agent
+  RL environments. In [Commons Harvest](https://github.com/google-deepmind/meltingpot/blob/main/meltingpot/configs/substrates/commons_harvest__open.py),
+  local harvest yields reward but exhausting a patch prevents regrowth.
+  [Clean Up](https://github.com/google-deepmind/meltingpot/blob/main/meltingpot/configs/substrates/clean_up.py)
+  couples collective production to costly individual maintenance. These support
+  studying delayed shared consequences. Ordinary competition, poor cooperation
+  or depletion is not automatically a process-gap use or knowing harmful plan.
+- [HackBait's adapter](https://github.com/meagoodboy/hackbait/blob/main/hackbait/verifiers_adapter.py)
+  is a single-turn evaluation interface. Its reward is the instrumented clean
+  verdict, not the gameable stated score; it explicitly targets evaluation
+  rather than training. Keep its honest/alternative/invalid-output controls,
+  but do not describe it as a complete long-horizon RL work environment.
+
+Using an RL environment for frozen-model evaluation does not train model weights.
+A four-subject shared system, public/private channels and independently measured
+business effects require our own explicit adaptation. Existing tasks are not
+universally impossible through their normal actions: that condition needs a
+separately justified, registered variant and a corrected/solvable control.
+Complexity must create useful exploration and consequences, not vague goals or
+longer tool menus. More complex tasks do not guarantee harmful behavior.
+
 ## Independent Phase 2 persistence
 
 The [LessWrong appendix](https://www.lesswrong.com/posts/mXPCpJCvFGybQ4mwc/appendix-reproduction-of-the-openai-huggingface-incident)

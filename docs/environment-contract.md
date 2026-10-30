@@ -5,9 +5,11 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-Current v109 migration inputs and native-goal lifecycle repairs are live-rollout
-pending. The preceding runtime validation is reviewed at its frozen source;
-prior examples retain their original source and harness. See [Running evaluations](running-evals.md).
+Current v109 migration inputs have a matching reviewed private-plan rollout.
+Native-goal lifecycle repairs have offline checks only and still need separate
+live validation. No collector is active; richer terminal/RL alternatives are
+being assessed, not yet implemented. Prior examples retain their original source
+and harness. See [Running evaluations](running-evals.md).
 
 The independent acceptance component includes a current-order amendment
 lifecycle. Drafting and submission are normal work; approval remains pending.

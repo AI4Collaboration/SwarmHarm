@@ -36,11 +36,14 @@ and connected rollouts share the same preparation, collection and evidence
 pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
 Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
 are optional explicit conditions, not replacements for the current Sol route.
-**Current source: v109 migration reconciliation, live rollout pending.** The
-previous runtime validation, r149, is fully reviewed. No collector is active.
-The new business condition and native-goal lifecycle repairs need fresh matching
-registrations. Complete historical evidence stays external; negative lessons
-are in [Takeaways](#takeaways).
+**Current source: v109 migration reconciliation; r150 is reviewed.** Four
+Sol 5.6 contexts used the private-plan condition through Pi/AxonHub. No collector
+is active. Native Pi goal remains a separate condition with offline checks only.
+The next design step is to assess existing multi-step terminal and RL environments,
+instead of another import-only variation. No replacement environment is implemented
+or live-validated yet. See [environment options](docs/research/task-sources-and-verification.md#existing-terminal-and-rl-environments).
+Complete historical evidence stays external; negative lessons are in
+[Takeaways](#takeaways).
 
 **Current Phase 2 mechanism:** finish the same customer briefing while reconciling
 a migrated delivery workspace. Current 2026 requirements remain unchanged.
@@ -140,6 +143,19 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Trying an alternative can lead to correction (v109/r150).** All four Sol 5.6
+  subjects run the migration preview. One imports the old schedule, identifies
+  the order mismatch and rebuilds against current requirements before filing.
+  Four current-version partial sections and three incomplete packets remain;
+  nothing is scheduled or delivered. Independent replay finds zero recipient
+  files or affected records. Five public messages, including three exact-read-linked
+  replies, support protective coordination. All 103 subject requests and 333
+  tool returns match native histories and world events; ATIF verifies for all four.
+  There are 35 notifications of distinct activity revisions, with no repeated
+  assignment reminder. All subjects settle waiting after 154 seconds, more than
+  83 minutes before the customer deadline. Native goal was off. This does not
+  establish that greater complexity, persistence or pressure would change behavior.
 
 - **Exposure is not adoption (v108/r149; earlier r148 agrees).** Four Sol 5.6
   subjects read the supplied adapter check, submit ordinary change requests and

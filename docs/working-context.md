@@ -2,7 +2,7 @@
 
 ## Active work
 
-**Current source: v109 migration reconciliation; live rollout pending.** The
+**Current source: v109 migration reconciliation; live reviewed negative.** The
 human requested stricter HackBait/HVE-grounded checks before spending model calls.
 Keep the business objective and current customer requirements; reconcile the
 migrated workspace through retained editions, a manifest and actual read-only
@@ -12,11 +12,23 @@ method-available condition supplies `migration-manifest.json` and
 `migration_rehearsal_v1`. No live proposal, peer message or delivery is supplied.
 This is conditional method availability, not autonomous discovery.
 
-**No collector is active.** The prior runtime validation, v108/r149, completed
-full native, independent and ATIF review. Raw evidence and review remain outside
-Git at `../eval-readiness/2026-10-30-v108-runtime-repair-sol56-pi-n4-r149/` and
-`../eval-readiness/knowledge-work-v108-r149-review/`; findings belong only in
-README Takeaways. Preserve its frozen scores and do not repeat its trajectory.
+**No active collector.** r150 closed at 16:03:47 UTC and its full native history,
+ATIF continuity and independent outcome have been reviewed. Source `d69237d0`
+and registration `8bbc2249` preserve the original inputs. Raw evidence is in
+`../eval-readiness/2026-10-30-v109-migration-reconciliation-sol56-pi-n4-r150/`;
+the complete review is in `../eval-readiness/knowledge-work-v109-r150-review/`.
+The 12 registration files match Git and both external copies; 1,311 manifest
+files match in each archive. The completed negative registration is removed from
+the maintained tree. Behavioral findings remain in README Takeaways.
+
+**Latest direction: evaluate richer existing environments.** The human asked
+about HackBait, HVE and RL environments, and explicitly questioned retaining the
+simple import workflow. Assess a real terminal workflow and multi-step RL
+substrates before more live calls. Do not launch another import-only variation
+or the previously planned goal comparison by default. Existing sources and
+the distinction between evaluation and training are recorded in
+`research/task-sources-and-verification.md#existing-terminal-and-rl-environments`.
+No new environment, training run or live registration has been created.
 
 Native Pi goal support is now a separate condition. Automatic continuation and
 timed waits keep the controller live; exact goal state entries and terminal
@@ -74,10 +86,18 @@ or a scripted provider, with zero live model calls. Honest, alternative,
 invalid-output and corrected-binding controls cover all four actors, including
 pending approval, safe partial work, withdrawal and cancellation.
 
-Commit/push the checked source, then register one four-context Sol 5.6 v109
-private-plan rollout (`goal_mode=off`) to test the migration condition. A native
-Pi `goal_command` comparison is a distinct registration with the same business
-inputs; do not stack controllers or confound it with another environment change.
+First select a suitable existing environment and inspect its actual task,
+state transitions, evaluator and license. Prefer a realistic multi-step terminal
+workflow for the next main Phase 2 design; use HVE/TextArena as a controlled
+sequential-decision reference and Melting Pot as a collective-externality
+reference. Four-agent shared-state adaptations, business outcomes and any strict
+normal-path blocker are our extensions, not established properties of those
+benchmarks. Exercise genuine partial work, correction and final effects offline
+before registering a live rollout.
+
+A future native Pi `goal_command` comparison needs a distinct registration with
+the same business inputs; do not stack controllers or confound it with another
+environment change.
 Use `scripts/check_goal_mode_pair.py` for a matched claim and freeze the same
 business deadline. Review native extension prompts/settings and stop states.
 The default deadline is preparation time plus 90 minutes: quiescence before it

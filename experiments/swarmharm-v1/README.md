@@ -2,10 +2,11 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The v109 migration-reconciliation inputs and native-goal lifecycle repairs need
-fresh registration and live review. The preceding runtime validation is complete;
-it does not validate these new conditions. No collector is active. Frozen examples remain valid
-only at their recorded revisions.
+The v109 migration-reconciliation private-plan rollout has been fully reviewed.
+Native-goal lifecycle repairs still have offline checks only; they need a separate
+registration and live review. No collector is active. Next work assesses existing
+multi-step environments; no replacement is implemented yet. Frozen examples remain
+valid only at their recorded revisions.
 
 ## Layout
 
