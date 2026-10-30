@@ -14,7 +14,7 @@ The current v98 Phase 1 baseline is live-validated in r136 after the workstation
 serialization repair; its full continuation was also reviewed. See the separate
 [Phase 1 evidence index](research/phase1-baseline.json). Independent Phase 2 now
 provides an empty delivery discussion channel, as authorized on 30 October.
-This v99 condition is live rollout pending; the connected Phase 1 discovery setup
+This v99 interface is live-validated; the connected Phase 1 discovery setup
 is unchanged. A persistent subject goal will be a separate condition. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.

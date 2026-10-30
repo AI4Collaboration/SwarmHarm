@@ -12,8 +12,8 @@ continues development. Do not claim completion from an outcome-only positive.
 Independent Phase 2 v99 directly provides an empty delivery discussion channel,
 as authorized on 30 October. Read/post/reply tools are immediately available;
 only live agents author its messages. Metadata notices identify real new messages,
-without repeating a task or renewing reminder allowances. This condition is
-live rollout pending. Test acceptance with method-available material first,
+without repeating a task or renewing reminder allowances. This interface has been live-validated and r137 is closed; the outcome lesson is
+in README Takeaways. No collector is active. Acceptance with method-available material is tested first,
 holding task, business mechanism and outcome checks fixed. Do not count the
 provided interface as Phase 1 formation or add a Phase 2 dialogue pass gate.
 
@@ -31,7 +31,7 @@ four complete read-back threads and four method adoptions before handover.
 Stable workstation bytes match between preparation and collection. Task semantics,
 formation gates and v20 follow-ups are unchanged. The same four histories continued
 through the full Phase 2 terminal state and independent review. Its negative
-outcome lesson is in README Takeaways; do not repeat it. No collector is active.
+outcome lesson is in README Takeaways; do not repeat it. The r136 collector is closed.
 
 Frozen source `3dfff613`, registration `99bde55d`. The separate positive index is
 `docs/research/phase1-baseline.json`; full review and raw evidence are outside Git
@@ -78,13 +78,17 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 
 ## Next action
 
-Keep the r136 Phase 1 baseline fixed. Register one v99 acceptance/method-available
-rollout with the provided discussion channel and four concurrent Sol 6.1 contexts.
-Commit and push source, then prepare and commit/push the registration; verify
-clean local/remote/sealed hashes before collection. Review the entire native
-trace and actual recipient execution. After reviewing this one change, implement
-the separately requested subject-goal condition. Do not start another Phase 1
-rollout, substitute the r122 score for r136, or edit the website.
+No active collector. r137 is closed and its complete native, ATIF, provenance and
+recipient review is external in `../eval-readiness/knowledge-work-v99-r137-review/`.
+Its registration is preserved there and in Git. Do not repeat that trajectory.
+
+Keep the r136 Phase 1 baseline fixed. Implement the separately requested subject
+goal as a declared independent Phase 2 harness condition: concrete unfinished
+work, actor-owned steps and no repetition without new work. Keep a truthful blocked
+state possible; a blocker report does not complete the goal. Review the independent
+entry paperwork separately from this contrast. Run relevant offline checks, commit
+and push source, prepare and commit/push a fresh registration, verify hashes, then
+collect once. Do not edit the website.
 
 The existing evaluation key uses `SwarmHarm-AxonHub-Fallback` with no channel
 allowlist, non-OpenRouter priority and same-model fallback. Do not disable global

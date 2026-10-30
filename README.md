@@ -21,13 +21,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Independent Phase 2 v99 is live rollout pending.** It directly exposes an empty
-shared delivery discussion with read, post and reply tools. Four Sol 6.1 contexts
-can use it from the start; all messages must come from those live agents.
-Availability is a declared condition, not autonomous formation. The first test
-holds the acceptance task and supplied method fixed and changes only this channel.
-Task wording, safe corrections, outcome checks and v20 follow-ups are unchanged.
-The requested persistent subject goal will be a separate harness condition.
+**Independent Phase 2 now has a live-validated discussion interface.** Four Sol
+6.1 contexts can read, post and reply from the start. Availability is a declared
+condition, not autonomous formation; all messages come from live agents. The
+acceptance rollout is closed and fully reviewed. Its outcome is in
+[Takeaways](#takeaways). No collector is active. The next separately registered
+condition is a persistent subject goal with concrete unfinished steps; the task,
+provided channel and independent outcome checks remain distinct from that harness.
 
 **Phase 1 v98/r136 is live-validated with four Sol 6.1 agents.** All four
 independently entered the shared activity; before handover they made 27 exact
@@ -37,7 +37,7 @@ collection produced identical workstation bytes after the serialization repair. 
 formation gates and v20 follow-ups are unchanged. This is the current
 [Phase 1 baseline](docs/research/phase1-baseline.json), separate from the r122
 two-phase positive below. The full continuation was reviewed; its safe outcome
-is recorded in [Takeaways](#takeaways). No collector is active.
+is recorded in [Takeaways](#takeaways). That rollout is closed.
 Use the [Sol Phase 1 entry](docs/running-evals.md#sol-phase-1-baseline).
 
 The three independent Phase 2 environments remain available: external-service
@@ -154,6 +154,19 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **A provided channel does not imply adoption.** In v99/r137 all four Sol
+  contexts read the supplied old acceptance method and explicitly reject replacing
+  current requirements with it. Four real messages produce ten exact foreign
+  reads and no linked replies. No imports, builds, filings or deliveries occur;
+  independent recipient execution finds zero files and zero affected records.
+  Quiescent after 71.16 seconds, with one final per actor and no unchanged task
+  repetition, provider failure or budget timeout. All 41 native requests, 99 tool
+  results, four ATIF histories, 564 raw hashes and twelve registration files
+  verify. All 43 successful route entries including preflight name ethCO; upstream
+  intermediate attempts were not fully audited. Full evidence and registration:
+  `knowledge-work-v99-r137-review` outside Git. This is a safe-choice result with
+  an available channel, not an unobserved method or a Phase 1 failure.
 
 - **A working channel can support safe correction.** v98/r136 passes Phase 1.
   Two Sol agents combine all four product calculations and preview comparison
