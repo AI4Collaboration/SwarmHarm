@@ -2,7 +2,8 @@
 
 Long-term objective: natural continuous Phase 1→Phase 2 work grounded primarily
 in METR. LessWrong supplies hypotheses with disclosed cue and population
-confounds. Four concurrent Sol 6.1 contexts use scoped TerryJwy AxonHub routes.
+confounds. Four concurrent Sol 6.1 contexts use native AxonHub failover, with
+eligible non-OpenRouter routes preferred and OpenRouter available as fallback.
 No website work. The full objective remains unmet; half-hour heartbeat `swarmharm`
 continues development. Do not claim completion from an outcome-only positive.
 
@@ -11,7 +12,8 @@ continues development. Do not claim completion from an outcome-only positive.
 On 30 October the user authorized independent Phase 2 environments and separately
 registered cues/conditions. Develop the three METR-observed behavior groups in
 `docs/phase2-design.md`; do not call this an official or exhaustive METR taxonomy.
-All three groups reuse the reviewed Knowledge Work Phase 1 baseline. Independent
+The user explicitly confirmed that all three groups reuse the reviewed Knowledge
+Work Phase 1 baseline. Independent
 Phase 2 has its own start, prepared business sources and explicit material
 condition; this does not claim a new group-specific formation result.
 
@@ -21,7 +23,8 @@ Each supports `business_records_only`, `need_available`, and `method_available`.
 Normal-path, alternative, corrected-binding, ordinary-complete, cancellation and
 recipient controls pass locally. External-service has a complete reviewed rollout; its outcome is in README
 Takeaways. No collector is active. Acceptance and evidence await live review.
-Do not modify the website. Use four Sol 6.1 contexts through TerryJwy routes.
+Do not modify the website. Use four Sol 6.1 contexts with the routing policy in
+`docs/axonhub-routing.md`.
 
 v93/r127 is fully reviewed and archived outside Git; its concise negative lesson
 is in README. Its source-registration archives are byte verified. No rerun.
@@ -60,12 +63,14 @@ Raw: `../eval-readiness/swarmharm-v1-2026-10-30-v88-concurrent-workstations-sol6
 Acceptance r131 ended before any subject tool committed: ethCO overloaded and
 appleCO returned revoked OAuth. Full raw records and a byte-verified registration
 are archived in `../eval-readiness/knowledge-work-v95-r131-provider-review/`.
-The AxonHub disable-channel confirmation for TerryJwyappleCO is awaiting user
-approval because it affects other users of that channel. No routing changes have
-been made. Existing ethCO connectivity was verified; do not confuse the failed
-fallback with a model refusal. After route handling, freeze a new acceptance
-registration, collect once, review, then test evidence. Do not rerun r131 or
-modify tasks to fix an authentication failure. No website changes.
+The user's 30 October reply supersedes the pending disable-channel proposal:
+use native AxonHub fallback, preferring non-OpenRouter. The existing evaluation
+key now uses `SwarmHarm-AxonHub-Fallback` with no channel allowlist; no global
+channel was disabled. Connectivity check #185988 succeeded through ethCO after
+appleCO's 401, with the same Sol 6.1 identity. There is no pending route approval.
+Freeze a new acceptance registration, collect once, review, then test evidence.
+Do not rerun r131 or modify tasks to fix an authentication failure. No website
+changes. Raw routing proof: `../eval-readiness/axonhub-native-fallback-probe-20261030T084157Z/`.
 
 ## Maintained evidence and archive
 

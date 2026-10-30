@@ -142,8 +142,10 @@
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this
   routing policy does not expand the experiment's registered model selection.
-  Prefer the existing TerryJwy channels for OpenAI models they support; retain
-  other eligible channels as fallback. Keep prefixed and unprefixed model names
+  The 30 October routing selection uses AxonHub's native failover with eligible
+  non-OpenRouter channels first and OpenRouter as fallback. The evaluation key
+  must not remain restricted to the earlier two-channel TerryJwy profile.
+  Keep prefixed and unprefixed model names
   consistent across routes. See docs/axonhub-routing.md for current priorities.
   A catalog counterpart is not proof of the channel used: inspect executions.
 - Finish code, documentation and cleanup before preparing a registration. After

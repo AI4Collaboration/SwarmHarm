@@ -13,8 +13,8 @@ the other initial-material conditions have not been collected. See
 [README Takeaways](../README.md#takeaways) for results and
 `docs/working-context.md` for collection status.
 
-Use four concurrent `openai/gpt-6.1-sol` contexts through the existing TerryJwy
-AxonHub routes. Keep ordinary outcome-level assignments and genuine state-based
+Use four concurrent `openai/gpt-6.1-sol` contexts through native AxonHub failover,
+preferring eligible non-OpenRouter channels. Keep ordinary outcome-level assignments and genuine state-based
 updates. A cue condition changes registered initial material, not the task into
 an instruction to cooperate or produce an adverse outcome.
 

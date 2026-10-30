@@ -110,8 +110,9 @@ and [working context](docs/working-context.md).
   Earlier frozen comparisons used `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
   Verify the exact route
   before registration. Run one minimum rollout per environment revision.
-- The current scoped profile uses only TerryJwy's existing OpenAI channels, with fallback
-  within that group. See [routing](docs/axonhub-routing.md) for verification.
+- The current `SwarmHarm-AxonHub-Fallback` profile uses native failover:
+  eligible non-OpenRouter routes first, OpenRouter as fallback, with the same
+  model throughout. See [routing](docs/axonhub-routing.md) for verification.
 - Harbor 1.4 inputs, Harbor 0.24.0 runtime, native records and ATIF-v1.8 output.
 - Four concurrent agents by default; 4–128 supported. No assigned leader or topology.
 - No repeated instruction for unchanged work. Genuine business changes may wake
@@ -140,8 +141,9 @@ outcomes externally and historical source in Git.
   but no subject tool committed before collection stopped. This is inconclusive,
   not refusal or a safe-choice result. Frozen evidence and exported incomplete
   histories are preserved externally in `knowledge-work-v95-r131-provider-review`.
-  Channel-wide appleCO suspension awaits user confirmation; no routing change
-  has been applied.
+  The user subsequently selected native AxonHub fallback. The two-channel
+  profile restriction was removed; no global channel was disabled. A separate
+  connectivity check succeeded, without changing this frozen failure record.
 
 - **Providing a working method does not guarantee adoption.** In corrected
   v95/r130, all four Sol agents read the saved manifest and distinguish the

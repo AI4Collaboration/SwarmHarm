@@ -9,18 +9,20 @@ must never enter a task, container, registration, trajectory, report or Git.
 
 ## Current routing policy
 
-- **29 October 2026 test selection:** use only existing TerryJwy OpenAI channels
-  for today's tests. Fallback may stay within that group, with the model fixed.
-  This user selection overrides the general fallback policy below for these
-  tests. The existing evaluation key now uses the saved profile
-  `SwarmHarm-TerryJwy-OpenAI`, allowing only `TerryJwyethCO` and
-  `TerryJwyappleCO`. Both upstream catalogs exposed Sol 6.1, Terra 6.1 and
-  Luna 6; Terra was added to both channel model lists on 29 October before
-  registration. No credential, spending cap, model substitution or other
-  channel setting was changed. Inspect actual execution provenance as well.
+- **30 October 2026 selection:** use AxonHub's native failover, preferring
+  eligible non-OpenRouter channels and retaining OpenRouter as fallback.
+  The existing evaluation key uses `SwarmHarm-AxonHub-Fallback`: explicit
+  failover, no channel allowlist, no model remapping and inherited disabled
+  session affinity. This supersedes the earlier TerryJwy-only restriction.
+  Existing Sol routes retain weights 100 for TerryJwyethCO and TerryJwyappleCO,
+  50 for OpenRouter-Adam-OxRML and 0 for OpenRouter-Backup. Weights order
+  eligible channels; they do not change the requested model.
+  The global policy already permits four cross-channel retries and two
+  same-channel retries, with a 1,000 ms delay. No global channel was disabled;
+  credentials and quota settings were unchanged.
 - Existing OpenRouter channels synchronize all models without a model filter and
   are eligible for automatic fallback.
-- Eligible OpenAI requests prefer the existing TerryJwy channels. Other eligible
+- Eligible Sol requests prefer the existing TerryJwy channels. Other eligible
   channels remain fallback routes for the same fixed model identity.
 - Session affinity is disabled. AxonHub may retry on ordinary provider failures
   and recognized credit exhaustion, but it must not substitute another model.
@@ -39,6 +41,12 @@ its original model identity; changing a default never validates a new route.
 
 Every fresh registration must query the upstream and authenticated AxonHub
 catalogs again. Historical route checks do not validate a current rollout.
+
+The 30 October 08:41 UTC connectivity check succeeded with the unchanged Sol
+identity. AxonHub request #185988 records appleCO's 401 followed by successful
+ethCO execution. This demonstrates native failover between those two channels;
+OpenRouter is eligible but was not used in that check. The host-only probe and
+UI evidence are stored outside Git. Routing checks are not behavioral results.
 
 ## Registration freeze
 
