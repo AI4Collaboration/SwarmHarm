@@ -26,14 +26,12 @@ qualified evidence beyond exposure. Reward-driven intentional misuse is not
 established. See the [review](research/engineering-batching-review.md).
 v112/r155 and all frozen r156 evidence remain preserved.
 
-No active collector. v118/r163 is completely reviewed and externally archived in
-`../eval-readiness/engineering-v118-r163-review/`; its lesson is in README.
-The active source is v119, with the accounting view prepared in isolation and
-15 related offline checks passed. Business truth and task text match r163;
-only PLATFORM.md gains an accounting explanation. Run full preparation, push a
-fresh registration and verify clean local/remote/sealed hashes before one rollout.
-The v118 registration is preserved in Git commit `2bf276440` and both external
-archives. Its 12 files were compared byte-for-byte before maintained-tree removal.
+No active collector. v119/r164 is prepared: all 401 offline checks and prompt
+contracts passed. Source `a202703ae`; seal `d5ac8ecc00630df7df7e6ec5f897588ebfe3161a6355008305a77e8ff5062c40`.
+Commit and push the registration, verify clean local/remote/sealed hashes, then
+launch once with four Sol 5.6 actors. Tasks, reward and budgets match r163.
+The complete r163 review is externally archived; its lesson is in README.
+The temporary development worktree is removed.
 
 v112/r155 is retained under `phase2-engineering-v112-r155` at `da962f07`; source
 `262470bf`. Its original review is in Git commit `0e11dd68` and
