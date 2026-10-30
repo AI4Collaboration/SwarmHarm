@@ -1,148 +1,129 @@
-# One shared core. Two separate phases.
+# Independent experiments. Shared core and harnesses.
 
 **Design only — runtime code is unchanged.**
 Branch: `codex/shared-core-phases`, based on PR #14 (`ee5114bae`).
 
-## 1. The structure
+**Phase 2 runs by itself.** It does not start Phase 1, wait for its gate,
+or load its outputs. This replaces the earlier connected-flow proposal.
 
-Each phase owns its business logic. Both use the **same collector and harness interface**.
+## 1. What is shared?
 
 ```mermaid
 flowchart TB
-    S["Study + scenario<br/>Choose which phases to execute"] --> C
-    P1["phase1/<br/>Tasks · tools · formation checks"] <--> C
-    P2["phase2/<br/>Tasks · tools · outcome checks"] <--> C
-    C["SHARED CORE<br/>Scheduling · sessions · shared world · evidence"] <--> H
+    P1["PHASE 1 EXPERIMENT<br/>Own setup · tasks · tools · review"] -->|uses| C
+    P2["PHASE 2 EXPERIMENT<br/>Own setup · tasks · tools · review"] -->|uses| C
+    C["SHARED CORE CODE<br/>Scheduling · workstations · recording · cleanup"] --> H
     H["Shared harness interface"] --> PI["Pi"]
     H --> CL["Claude"]
     H --> CX["Codex"]
 ```
 
-Arrows show runtime interaction, not Python imports. Each rollout selects **one harness**.
-Neither phase needs to know which harness it uses.
+**Shared code, separate executions.** Each rollout gets its own sessions,
+business state and output directory. There is no Phase 1 → Phase 2 handoff.
 
-## 2. Why this design?
-
-```mermaid
-flowchart TB
-    A["Separate collectors"] --> A1["Duplicate scheduling<br/>and evidence logic"]
-    A1 --> A2["Reject"]
-    B["Shared core + phase packages"] --> B1["One execution path<br/>Separate places to work"]
-    B1 --> B2["CHOSEN"]
-    D["General workflow engine"] --> D1["Plugin and workflow machinery<br/>for only two phases"]
-    D1 --> D2["Defer"]
-```
-
-The current collector mixes these responsibilities in one 1,440-line file.
-Changing folder names alone would keep that coupling.
-
-## 3. How a rollout would execute
-
-All modes use the shared core. **Phase 1-only and Phase 2 component modes are future additions on this branch.**
+## 2. Which architecture?
 
 ```mermaid
 flowchart TB
-    M{"Study mode"}
-    M -->|connected — existing default| C1["Phase 1"]
-    C1 --> G{"Formation gate passes<br/>before termination?"}
-    G -->|Yes| D["Finish in-flight work"]
-    D --> C2["Phase 2<br/>Same agents and histories"]
-    G -->|No| N["Preserve outcome<br/>Phase 2 not assessed"]
-    M -->|phase1 — proposed| P1["Phase 1 only"]
-    P1 --> R1["Formation result"]
-    M -->|phase2-component — proposed| I["Fresh agents<br/>Frozen business inputs"]
-    I --> P2["Phase 2 only"]
-    P2 --> R2["Conditional outcome<br/>No formation claim"]
+    A["Copy the collector<br/>into both experiments"] --> A1["Reject<br/>Two cores to maintain"]
+    B["Independent experiments<br/>One shared core"] --> B1["CHOSEN<br/>Independent work, reusable infrastructure"]
+    D["Connected phase pipeline"] --> D1["Reject<br/>Phase 2 depends on Phase 1"]
 ```
 
-The harness choice is independent: **Pi, Claude or Codex** follows the selected mode.
-Each mode/scenario combination still needs its own validation.
+Separate experiment entry points are fine. They call the same execution engine;
+they do not contain separate copies of its loop.
 
-## 4. Separate code, continuous sessions
-
-For a connected rollout, changing phases changes the assignment and available tools.
-It does **not** create another population.
+## 3. How Phase 2 starts on its own
 
 ```mermaid
-sequenceDiagram
-    participant P1 as Phase 1
-    participant C as Shared core
-    participant A as Agent sessions
-    participant P2 as Phase 2
-    C->>A: Start all agents together
-    P1->>C: Initial tasks and tools
-    C->>A: Deliver business work
-    A-->>C: Native events and tool calls
-    C->>P1: Evidence for formation check
-    P1-->>C: Passing gate with evidence
-    C->>A: Let in-flight work finish
-    P2->>C: Continuation tasks and tools
-    C->>A: Update tools and deliver new work
-    Note over C,A: Same sessions and histories<br/>Same workstations and shared state
-    A-->>C: Continue the same rollout
+flowchart TB
+    I["Phase 2 inputs<br/>Business records · tasks · tool definitions"] --> V
+    V["Validate and freeze<br/>Phase 2 configuration and inputs"] --> W
+    W["Create fresh workstations<br/>and business state"] --> A
+    A["Start fresh agent sessions<br/>Pi, Claude or Codex"] --> R
+    R["Execute Phase 2 work<br/>Record native events and tool actions"] --> O
+    O["Phase 2 review<br/>Recompute business effects from evidence"]
 ```
 
-If transition setup fails, preserve the partial state and stop. Do not silently
-restart sessions or stitch together separate histories.
+Any required starting records belong to **Phase 2's own fixtures**. They are
+ordinary input data, not fabricated Phase 1 messages or a simulated Phase 1 pass.
+Phase 2 tools are available from the start.
 
-## 5. Where we work
+## 4. What were “domains”?
+
+Just the existing business scenario categories: **Engineering, Data Analysis,
+Financial Analysis and Knowledge Work**. They are not another runtime layer.
+
+Each experiment keeps the scenarios it needs. There is no mandatory pairing
+between a Phase 1 scenario and a Phase 2 scenario, and no shared `domains/` layer
+in the proposed structure.
 
 ```text
 experiments/
-├── runtime/                  ← shared Pi, Claude and Codex adapters
+├── runtime/                    ← shared Pi / Claude / Codex adapters
 └── swarmharm-v1/
-    ├── run.py                ← existing command stays
+    ├── run.py                  ← selects ONE experiment
     ├── launch.py
     ├── review.py
     ├── export_atif.py
     └── swarmharm/
-        ├── contracts.py      ← agreed interfaces
-        ├── core/             ← collector, shared world, evidence
-        ├── studies/          ← connected / phase1 / phase2-component
-        ├── phase1/           ← Phase 1 tasks, tools, checks, tests
-        ├── phase2/           ← Phase 2 tasks, tools, checks, tests
-        ├── domains/          ← genuinely shared business definitions
-        └── scenarios.py      ← pairs the phases for each scenario
+        ├── contracts.py        ← common experiment interface
+        ├── core/               ← shared execution infrastructure
+        ├── phase1/
+        │   ├── experiment.py   ← Phase 1 setup and lifecycle
+        │   ├── scenarios/      ← its tasks, tools and starting records
+        │   ├── review.py
+        │   └── tests/
+        └── phase2/
+            ├── experiment.py   ← Phase 2 setup and lifecycle
+            ├── scenarios/      ← its tasks, tools and starting records
+            ├── review.py
+            └── tests/
 ```
+
+No `studies/connected.py`, cross-phase transition manager or shared scenario pairing.
+The shared core accepts an experiment through the common interface.
+
+## 5. How we work in parallel
 
 ```mermaid
 flowchart TB
-    I["Agree on interfaces<br/>Extract shared core"] --> P1["Phase 1 work<br/>phase1/"]
+    I["Agree on experiment interface<br/>Extract shared infrastructure"] --> P1["Phase 1 work<br/>phase1/"]
     I --> P2["Phase 2 work<br/>phase2/"]
     I --> H["Harness work<br/>runtime/"]
-    P1 --> T["Integrate and check compatibility"]
-    P2 --> T
-    H --> T
-    T --> M["Add study modes one at a time"]
-    M --> V["Fresh registered live validation"]
+    P1 --> T1["Phase 1 checks<br/>and separate rollout"]
+    P2 --> T2["Phase 2 checks<br/>and separate rollout"]
+    H --> TH["Shared adapter contract checks"]
 ```
 
-**Parallel work starts after the interfaces settle.** One owner integrates shared
-contract changes. Phase packages do not import each other or provider SDKs.
-
-Concurrent rollouts also stay isolated:
+Neither experiment waits for the other's development or results.
+One owner integrates changes to the shared interfaces.
 
 ```mermaid
 flowchart TB
-    SRC["Same shared implementation"] --> A["Rollout A<br/>Frozen checkout A"]
-    SRC --> B["Rollout B<br/>Frozen checkout B"]
-    A --> AO["Collector A · sessions A<br/>Output A · lock A"]
-    B --> BO["Collector B · sessions B<br/>Output B · lock B"]
+    SRC["Same core implementation"] --> A["Phase 1 rollout<br/>Own frozen checkout"]
+    SRC --> B["Phase 2 rollout<br/>Own frozen checkout"]
+    A --> AO["Sessions A · state A<br/>Output A · lock A"]
+    B --> BO["Sessions B · state B<br/>Output B · lock B"]
 ```
 
-## 6. What must survive the refactor
+## 6. How we prove the separation
 
-| Preserve | Check before moving on |
+| Check | Required result |
 | --- | --- |
-| Existing commands, prompts, tools and authentication | Compare with PR #14 fixtures |
-| Agent identity and history across phases | Test the transition with all three adapters |
-| Native traces and output layout | Keep execution and delivery evidence distinct |
-| Frozen registrations and results | New source needs a new registration |
-| Imports, tests and source hashes | Include nested packages before moving files |
+| Make the Phase 1 package unavailable | Phase 2 still prepares, collects, reviews and exports |
+| Start with no previous rollout files | Phase 2 initializes from its own inputs |
+| Inspect Phase 2 registration and startup | No Phase 1 gate, history, result or tool dependency |
+| Select Pi, Claude or Codex | Same Phase 2 interface; native harness behavior preserved |
+| Execute both experiments concurrently | Separate sessions, state, outputs and locks |
 
-**First implementation step:** extract the shared interfaces and source inventory.
-Then extract the collector; then split phase code. Add new modes afterward.
+**Migration:** extract the shared core → make Phase 2 independent → extract
+Phase 1 → validate each separately. Do not start by copying the collector.
 
-[Implementation reference](shared-core-and-phases-notes.md) contains the exact
-contracts, migration checks and upstream integration notes. Newer `main` has not
-been merged. No rollout is launched by this proposal.
+Existing frozen results keep their original meaning and source revision. The
+current connected implementation is legacy behavior, not the target architecture.
+New independent rollouts need fresh registrations and their own validation.
+
+[Implementation reference](shared-core-and-phases-notes.md) covers the code
+dependencies to remove, compatibility and verification. No runtime changes or
+rollouts are part of this design update.
