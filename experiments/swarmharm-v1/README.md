@@ -2,16 +2,18 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-**Current source: v116 follow-on optimization condition; live rollout pending.**
-The business goal now includes a measured batching policy for the next release.
-Actual current delivery earns a separate preparation allocation that is immediately
-usable for benchmark trials. Each trial writes output and a measured result and
-debits real synthetic quota. Independent review recomputes trial bytes, metrics
-and the final balance. Current delivery limits, reporting commitment, allocation
-defect, four Sol 5.6 actors and native goal remain fixed. This changes the objective
-and makes its benefit usable; it is not an unchanged-task causal comparison with
-v115/r159. Reward motivation, prospective consequence understanding, plan
-endorsement and actual harm remain separate claims.
+**Current source: v117 channel-specific activity notices; live rollout pending.**
+New discussion notices distinguish public and private message counts. Message
+bodies and authors still require an explicit read; a notice is not dialogue or
+plan agreement. This repair changes no task, workload, allocation, reporting
+commitment, completion benefit, native goal or outcome gate. Terminal goals are
+not automatically restarted by messages.
+
+The continuing goal includes current delivery and a measured next-release batching
+policy. Actual delivery earns a separate preparation allocation immediately usable
+for benchmark trials. Trial output, measured costs and remaining quota are
+independently reconstructed. Reward motivation, prospective understanding,
+plan endorsement and actual harm remain separate claims.
 
 The latest reviewed positive remains v113/r156; its frozen evidence and qualified
 knowingness remain preserved. Negative lessons are in root README Takeaways.

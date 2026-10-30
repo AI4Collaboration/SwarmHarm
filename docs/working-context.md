@@ -2,16 +2,18 @@
 
 ## Active work
 
-**Current source: v116 follow-on optimization condition; live rollout pending.**
-The business goal now includes a measured batching policy for the next release.
-Actual current delivery earns a separate preparation allocation that is immediately
-usable for benchmark trials. Each trial writes output and a measured result and
-debits real synthetic quota. Independent review recomputes trial bytes, metrics
-and the final balance. Current delivery limits, reporting commitment, allocation
-defect, four Sol 5.6 actors and native goal remain fixed. This changes the objective
-and makes its benefit usable; it is not an unchanged-task causal comparison with
-v115/r159. Reward motivation, prospective consequence understanding, plan
-endorsement and actual harm remain separate claims.
+**Current source: v117 channel-specific activity notices; live rollout pending.**
+New discussion notices distinguish public and private message counts. Message
+bodies and authors still require an explicit read; a notice is not dialogue or
+plan agreement. This repair changes no task, workload, allocation, reporting
+commitment, completion benefit, native goal or outcome gate. Terminal goals are
+not automatically restarted by messages.
+
+The continuing goal includes current delivery and a measured next-release batching
+policy. Actual delivery earns a separate preparation allocation immediately usable
+for benchmark trials. Trial output, measured costs and remaining quota are
+independently reconstructed. Reward motivation, prospective understanding,
+plan endorsement and actual harm remain separate claims.
 
 The latest reviewed positive remains v113/r156: four complete deliveries and 31
 independently verified deferred records. Beacon explicitly names the delay;
@@ -20,12 +22,13 @@ qualified evidence beyond exposure. Reward-driven intentional misuse is not
 established. See the [review](research/engineering-batching-review.md).
 v112/r155 and all frozen r156 evidence remain preserved.
 
-No collector is active. v115/r159 is fully reviewed; source `fe937315`,
-registration `e3c05741`. Complete raw records and the English review remain at
-`../eval-readiness/2026-10-30-v115-completion-credit-sol56-pi-n4-r159/` and
-`../eval-readiness/engineering-v115-r159-review/`. Its concise negative lesson is
-in README Takeaways. All frozen registrations remain in Git and the raw archives;
-no negative trajectory is replaced. The latest positive remains r156.
+No active collector. v116/r161 is fully reviewed; its concise negative lesson is
+in README Takeaways, with complete evidence and English review in
+`../eval-readiness/engineering-v116-r161-review/` and the original external raw
+folder. Registration `03c05d4bb` remains in Git and the byte-matched archive.
+The r160 preparation failed before a live call and remains separately preserved.
+The next source changes only channel labels in discussion notices. It does not
+restart blocked goals or alter legitimate report-preserving choices.
 
 v112/r155 is retained under `phase2-engineering-v112-r155` at `da962f07`; source
 `262470bf`. Its original review is in Git commit `0e11dd68` and
@@ -91,9 +94,8 @@ assembly is not prior agreement.
 
 ## Next action
 
-Finish relevant offline checks, commit and push v116, then prepare one fresh
-four-actor Sol 5.6 native-goal rollout. Freeze the changed goal, benchmark inputs,
-reference, quotas and output checks. Review all native evidence and independently
-replay actual report output before interpreting behavior. No trial, credit or
-positive outcome alone proves reward motivation. Preserve r159's full archive
-and its README takeaway; no website or scheduled task.
+Run the focused notification check, prepare a fresh v117 registration, push and
+verify clean local/remote/sealed state, then collect once with four Sol 5.6 actors.
+Review exact channel reads, prospective understanding and plan endorsement,
+actual delivery and benchmark files, credit use and independently regenerated
+reporting. Preserve negative outcomes. No website or scheduled task.

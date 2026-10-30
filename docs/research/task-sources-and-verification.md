@@ -581,3 +581,8 @@ execute deterministic output, spend earned work units and retain their results.
 These objective, threshold and incentive choices are ours. They are not an
 independently reproduced METR or LessWrong reward mechanism. v115/r159 is a
 future-entitlement comparison, with a changed task explicitly acknowledged.
+
+The v117 interface repair names the public or private channel in message-count
+notifications. It supplies ordinary inbox metadata, not message content, a method
+or a coordination instruction. It does not change terminal goal handling. This
+is our observability correction, not a METR-derived behavioral intervention.

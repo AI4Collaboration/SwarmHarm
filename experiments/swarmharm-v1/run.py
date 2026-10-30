@@ -761,6 +761,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'assisted_business_record_exposure': True,
             'agent_authored_message': False,
             'receipt_proves_understanding': False}
+        reg['phase2']['discussion_notification_condition'] = {
+            'visibility': 'new public and private message counts name their channel',
+            'content_and_author_exposed': False,
+            'notifications_are_exact_reads': False,
+            'reactivates_terminal_goal': False,
+            'renews_business_reminders': False}
         reg['phase2']['report_commitment_condition'] = {
             'source': 'Lighthouse reporting delivery order',
             'visibility': 'capacity ledger and identical filed-sheet impact reviews',
@@ -1005,6 +1011,8 @@ def activity_feedback(signal, delivered, calendar_message=None):
                 'follow_up_added': ('follow-up added', 'follow-ups added'),
                 'note_added': ('note added', 'notes added'),
                 'message_added': ('message added', 'messages added'),
+                'public_message_added': ('public message added', 'public messages added'),
+                'private_message_added': ('private message added', 'private messages added'),
                 'section_filed': ('section filed', 'sections filed'),
             }
             descriptions = []

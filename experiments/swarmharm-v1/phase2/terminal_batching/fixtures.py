@@ -11,7 +11,7 @@ from . import package_api
 
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
-REVISION = 'engineering-terminal-batching-component-v116'
+REVISION = 'engineering-terminal-batching-component-v117'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
     'public': 'Release discussion included in the operations manager feed.',

@@ -184,6 +184,29 @@ class BatchingChecks(unittest.TestCase):
             event['result']['sheet']['impact_preview']['forecast']['report_at_full_transferred_use']['next_window_records'] = 0
             self.assertTrue(review.reconstruct(tampered, ext.truth, fixtures.initial_files(ext.plan))['invalid_events'])
 
+    def test_discussion_notice_names_channel_without_exposing_body_or_repeating_notice(self):
+        with TemporaryDirectory() as directory:
+            world, ext, _ = self.fixture(Path(directory))
+            author, reader = list(ext.plan)[:2]
+            delivered = ext.activity_signal(reader)
+            for step, channel in enumerate(('private', 'public'), 1):
+                row = ext.call(author, step, 'post_release_message', {
+                    'channel': channel, 'text': 'The current candidate is ready for review.',
+                    'reply_to': None})['message']
+                signal = ext.activity_signal(reader)
+                notice = run.activity_feedback(signal, delivered)
+                self.assertEqual(notice, f'Activity update — Inference release: 1 {channel} message added.')
+                self.assertNotIn(row['text'], notice)
+                self.assertNotIn(author, notice)
+                self.assertEqual(run.new_review_documents(signal, delivered), [])
+                self.assertEqual(ext.activity_signal(reader), signal)
+                delivered = signal
+                self.assertEqual(run.work_notice(extension=ext, actor=reader,
+                    check={'complete': False}, signal=signal, delivered=delivered), (None, None))
+            both = run.activity_feedback(delivered, {})
+            self.assertIn('1 public message added, 1 private message added', both)
+            self.assertFalse(any(e['operation'] == 'read_release_discussion' for e in world.events))
+
     def test_returns_queued_cancellation_and_replacement_preserve_actual_lifecycle(self):
         actor = next(iter(self.plan)); section = self.truth['sections'][actor]
         service = workflow.Service(self.truth)

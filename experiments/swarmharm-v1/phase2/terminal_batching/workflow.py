@@ -427,7 +427,8 @@ class Continuation:
     def activity_signal(self, actor):
         rows = [r for r in self.service.records.values() if r['author'] != actor]
         entries = [{'path': r['reference'], 'sha256': r['sha256'],
-                    'event': 'message_added' if r['kind'] == 'message' else 'attachment_added'} for r in rows]
+                    'event': f"{r['channel']}_message_added" if r['kind'] == 'message'
+                             else 'attachment_added'} for r in rows]
         reviews = {r['reference']: {
             'source': 'operations_reservation_desk', 'reference': r['reference'],
             'plan': deepcopy(r['plan']), 'plan_sha256': r['sha256'],
