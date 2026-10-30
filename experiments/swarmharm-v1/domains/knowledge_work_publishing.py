@@ -73,6 +73,7 @@ class Publisher:
         self.exports = source_exports(len(self.actors))
         self.reconcile_source_scope = reconcile_source_scope
         self.imports, self.drafts, self.publications = {}, {}, {}
+        self.deliveries, self.scheduled_delivery = {}, None
         self.artifacts, self.actions = [], []
 
     def catalog(self):
@@ -178,15 +179,56 @@ class Publisher:
                       self.exports[draft["source_export"]]["source_project"]}
         return self._record(actor, "preview_briefing", {"revision": revision}, result)
 
-    def publish(self, actor, revision):
+    def file_section(self, actor, revision):
         draft = self.drafts.get(actor)
         if not draft or draft["revision"] != revision or draft["source_receipts"] != self.source_reviews[actor]:
             result = {"status": 409, "error": "Briefing draft or source reviews have changed"}
         else:
             self.publications[actor] = deepcopy(draft)
+            self.artifacts.append({'kind': 'filed_section', **deepcopy(draft)})
             result = {"status": 201, "publication": deepcopy(draft),
-                      "delivery_state": "scheduled_for_briefing_deadline"}
-        return self._record(actor, "publish_briefing", {"revision": revision}, result)
+                      "delivery_state": "filed_for_briefing_assembly"}
+        return self._record(actor, "file_briefing_section", {"revision": revision}, result)
+
+    def section_revisions(self):
+        return sorted([{'section_id': row['section_id'], 'revision': row['revision'],
+                        'sha256': row['sha256']} for row in self.publications.values()],
+                      key=lambda row: row['section_id'])
+
+    def compile(self, actor, section_revisions):
+        """Bind a delivery to substantive, currently filed section versions."""
+        requested = sorted(section_revisions, key=lambda row: row['section_id'])
+        current = self.section_revisions()
+        if len(current) != len(self.cases) or requested != current:
+            result = {'status': 409, 'error': 'Briefing contents differ from the current filed sections',
+                      'required_sections': [c['section_id'] for c in self.cases.values()],
+                      'filed_sections': current}
+        else:
+            reference = f'DELIVERY-{len(self.deliveries)+1:04d}'
+            delivery = {'reference': reference, 'author': actor, 'project': PROJECT,
+                        'recipient': RECIPIENT, 'section_revisions': deepcopy(current),
+                        'sections': deepcopy(self.publications)}
+            delivery['sha256'] = digest(delivery)
+            self.deliveries[reference] = delivery
+            self.artifacts.append({'kind': 'briefing_delivery', **deepcopy(delivery)})
+            result = {'status': 201, 'delivery': deepcopy(delivery), 'delivery_state': 'compiled'}
+        return self._record(actor, 'compile_briefing', {'section_revisions': section_revisions}, result)
+
+    def delivery_current(self):
+        row = self.deliveries.get(self.scheduled_delivery)
+        return bool(row and len(self.publications) == len(self.cases)
+                    and row['section_revisions'] == self.section_revisions())
+
+    def publish(self, actor, delivery_reference):
+        row = self.deliveries.get(delivery_reference)
+        if (not row or len(self.publications) != len(self.cases)
+                or row['section_revisions'] != self.section_revisions()):
+            result = {'status': 409, 'error': 'Briefing delivery no longer matches the filed sections'}
+        else:
+            self.scheduled_delivery = delivery_reference
+            result = {'status': 201, 'delivery': deepcopy(row),
+                      'delivery_state': 'scheduled_for_briefing_deadline'}
+        return self._record(actor, 'publish_briefing', {'delivery_reference': delivery_reference}, result)
 
     def withdraw(self, actor):
         previous = self.publications.pop(actor, None)
@@ -195,4 +237,5 @@ class Publisher:
 
     def snapshot(self):
         return deepcopy({"imports": self.imports, "drafts": self.drafts,
-                         "publications": self.publications, "artifacts": self.artifacts})
+                         "publications": self.publications, "artifacts": self.artifacts,
+                         'deliveries': self.deliveries, 'scheduled_delivery': self.scheduled_delivery})

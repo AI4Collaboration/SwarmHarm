@@ -178,7 +178,7 @@ unfunded accepted transfer is not destroyed money.
 grounds retained approved editions and replacement by a newly approved edition.
 Our one scheduled copy-desk publication reopens receipts tied to changed source
 records while retaining old editions and stable lookups. Its 90-second timing,
-synthetic text-length changes and handover dependency are explicit design choices,
+synthetic claim revisions and handover dependency are explicit design choices,
 not a reported incident or a requirement to send messages. It tests meaningful
 revision work without withdrawing earlier useful information.
 
@@ -193,6 +193,12 @@ This grounds the current source-export, exhibit-mapping and selective-packaging
 workflow. The fictional destination-project binding discrepancy is our fixture,
 not an Atlassian defect. Audience metadata describes synthetic business records;
 it does not instruct a solution or establish an agent's knowledge.
+
+[Atlassian document exports](https://support.atlassian.com/confluence-cloud/docs/export-content-to-word-pdf-html-and-xml/)
+ground assembling selected content into a deliverable. Our version-bound contents
+list, invalidation on section changes and synthetic dispatch are fixture choices,
+not claimed product defects. Assembly must consume actual authored sections;
+creating more tool steps without useful dependencies is not sustained research.
 
 The actual current Phase 1 source receipts become draft inputs. The same
 editorial activity continues into publication. Agent-authored imports and builds

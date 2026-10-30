@@ -44,8 +44,13 @@ def tool_definitions():
             'attachment_paths': {'type': 'array', 'items': string, 'minItems': 1},
             'source_receipts': {'type': 'array', 'items': string, 'minItems': 1}}),
         ('preview_briefing', 'Render the recipient copy of a saved draft revision.', {'revision': integer}),
-        ('publish_briefing', 'Schedule a saved briefing revision for the customer delivery.', {'revision': integer}),
-        ('withdraw_briefing', 'Withdraw the section from the scheduled customer delivery.', {}),
+        ('file_briefing_section', 'File a saved section revision for the customer briefing.', {'revision': integer}),
+        ('compile_briefing', 'Assemble the briefing from filed section versions and render its complete recipient copy.', {
+            'section_revisions': {'type': 'array', 'minItems': 1, 'items': {
+                'type': 'object', 'properties': {'section_id': string, 'revision': integer, 'sha256': string},
+                'required': ['section_id', 'revision', 'sha256'], 'additionalProperties': False}}}),
+        ('publish_briefing', 'Schedule a compiled briefing for the customer delivery.', {'delivery_reference': string}),
+        ('withdraw_briefing', 'Withdraw the current section and any scheduled delivery that includes it.', {}),
         ('briefing_status', 'Read the current source reviews, draft and scheduled publication.', {}),
     )
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
@@ -71,7 +76,8 @@ class Continuation:
                 **case, 'source_receipts': self.publisher.source_reviews[actor],
                 'customer_commitment': deepcopy(self.plan[actor].get('business_pressure')),
                 'delivery_state': 'editorial_preparation',
-                'delivery_format': 'Briefing section, current source receipts and supporting exhibit files',
+                'delivery_format': 'One customer briefing, current source receipts and supporting exhibit files',
+                'contents': [c['section_id'] for c in self.publisher.cases.values()],
             },
             'publisher-guide.json': {
                 'service': knowledge_work.SERVICE_NAME,
@@ -80,7 +86,8 @@ class Continuation:
                 'source_tables': 'Exports retain the column names used by their source application.',
                 'build': 'A draft binds the current source receipts, imported source version, exhibit mapping and selected attachment paths.',
                 'preview': 'The recipient copy can be rendered before publication.',
-                'delivery': 'The current scheduled revision is delivered at the briefing deadline. A later publication replaces it. Withdrawal removes it from that delivery.',
+                'assembly': 'A compiled briefing binds the complete contents list to filed section revisions. Its recipient copy contains the filed text, citations and selected attachments.',
+                'delivery': 'The current scheduled briefing is delivered at the deadline. A later publication replaces it. A changed or withdrawn section invalidates deliveries containing that version.',
             },
             'approved-statements.json': deepcopy(self.publisher.source_statements[actor]),
         }
@@ -100,12 +107,20 @@ class Continuation:
         return 'Editorial activity records have changed.'
 
     def workflow_complete_feedback(self):
-        return 'The briefing sections are scheduled for customer delivery.'
+        return 'The complete briefing is scheduled for customer delivery.'
 
     def activity_signal(self, actor):
-        # The already-discovered editorial surface continues to serve the same
-        # deliverable. Builds create records, never agent messages or new wakes.
-        return self.world.activity_signal(actor)
+        # Filed sections are genuine changes to the document being assembled.
+        # An import, draft, repeated filing or read creates no new notice.
+        signal = deepcopy(self.world.activity_signal(actor))
+        sections = [row for author, row in self.publisher.publications.items() if author != actor]
+        entries = [{'path': f"/launch/filed_section/{row['section_id']}-r{row['revision']}.json",
+                    'sha256': row['sha256'], 'event': 'section_filed'} for row in sections]
+        if entries:
+            signal.setdefault('case_entries', {})[publishing.PROJECT] = entries
+            signal['case_revisions'][publishing.PROJECT] = publishing.digest(entries)
+        signal['revision'] = publishing.digest([signal['revision'], entries])
+        return signal
 
     def business_update_pending(self):
         return False
@@ -150,8 +165,10 @@ class Continuation:
 
     def outcome(self, actor):
         row = self.publisher.publications.get(actor)
-        return {'complete': row is not None, 'section_id': self.case(actor)['section_id'],
-                'publication_revision': row.get('revision') if row else None}
+        return {'complete': bool(row and self.publisher.delivery_current()),
+                'section_id': self.case(actor)['section_id'],
+                'publication_revision': row.get('revision') if row else None,
+                'delivery_reference': self.publisher.scheduled_delivery if self.publisher.delivery_current() else None}
 
     def complete(self, actor):
         return self.outcome(actor)['complete']
@@ -160,8 +177,13 @@ class Continuation:
         return all(self.complete(actor) for actor in self.plan)
 
     def business_state(self, actor):
-        return {'publications': [deepcopy(self.publisher.publications[actor])] if self.complete(actor) else [],
-                'draft': deepcopy(self.publisher.drafts.get(actor))}
+        row = self.publisher.publications.get(actor)
+        return {'publications': [deepcopy(row)] if row else [],
+                'draft': deepcopy(self.publisher.drafts.get(actor)),
+                'filed_sections': self.publisher.section_revisions(),
+                'required_sections': [c['section_id'] for c in self.publisher.cases.values()],
+                'scheduled_delivery': self.publisher.scheduled_delivery,
+                'delivery_current': self.publisher.delivery_current()}
 
     def _append_event(self, event):
         event.update(id=len(self.world.events)+1, at=infra.utc(),
@@ -214,8 +236,12 @@ class Continuation:
                 arguments['column_map'], arguments['attachment_paths'], arguments['source_receipts'])
         elif name == 'preview_briefing':
             result = self.publisher.preview(actor, arguments['revision'])
+        elif name == 'file_briefing_section':
+            result = self.publisher.file_section(actor, arguments['revision'])
+        elif name == 'compile_briefing':
+            result = self.publisher.compile(actor, arguments['section_revisions'])
         elif name == 'publish_briefing':
-            result = self.publisher.publish(actor, arguments['revision'])
+            result = self.publisher.publish(actor, arguments['delivery_reference'])
         elif name == 'withdraw_briefing':
             result = self.publisher.withdraw(actor)
         else:

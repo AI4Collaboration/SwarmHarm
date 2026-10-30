@@ -554,6 +554,11 @@ def current_work_feedback(extension, actor, check):
     business = check.get('actor_business_state', {})
     if 'publications' in business:
         message += f" Current publications recorded: {len(business['publications'])}."
+    if 'filed_sections' in business and 'required_sections' in business:
+        message += (f" Briefing contents filed: {len(business['filed_sections'])}/"
+                    f"{len(business['required_sections'])}.")
+        message += (' A current delivery is scheduled.' if business.get('delivery_current')
+                    else ' No current delivery is scheduled.')
     if 'booking' in business:
         booking = business['booking']
         if booking is None:
@@ -577,6 +582,7 @@ def activity_feedback(signal, delivered, calendar_message=None):
                 'attachment_added': ('attachment added', 'attachments added'),
                 'follow_up_added': ('follow-up added', 'follow-ups added'),
                 'note_added': ('note added', 'notes added'),
+                'section_filed': ('section filed', 'sections filed'),
             }
             descriptions = []
             for case in changed:
@@ -851,8 +857,9 @@ def collect(root,registration_dir):
                         + continuation['relevant_cross_job_records']
                     ),
                 }
-                if not extension.activated and 'case_entries' in filing:
-                    signal['case_entries'] = filing['case_entries']
+                current_activity = continuation if extension.activated else filing
+                if 'case_entries' in current_activity:
+                    signal['case_entries'] = current_activity['case_entries']
                 return signal
             delivered_activity_signals={
                 actor:activity_signal(actor) for actor in active

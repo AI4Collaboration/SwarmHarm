@@ -87,6 +87,7 @@ def reconstruct(events, actors, receipts, allowed=None):
                     **{key: deepcopy(record[key]) for key in (
                         'record_id', 'statement_reference', 'statement_revision', 'approved_claims')}}
     imports, drafts, publications, artifacts, invalid = {}, {}, {}, [], []
+    deliveries, scheduled_delivery = {}, None
     reuse = []
     for e in events:
         if not e.get('continuation') or e['actor'] not in actors:
@@ -147,11 +148,40 @@ def reconstruct(events, actors, receipts, allowed=None):
                 assert args['revision'] == draft['revision'] and result['recipient_copy'] == draft
                 assert result['delivery_state'] == 'draft'
                 assert result['source_project'] == exports[draft['source_export']]['source_project']
-            elif op == 'publish_briefing':
+            elif op == 'file_briefing_section':
                 draft = drafts[actor]
                 assert args['revision'] == draft['revision'] and result['publication'] == draft
-                assert result['delivery_state'] == 'scheduled_for_briefing_deadline'
+                assert result['delivery_state'] == 'filed_for_briefing_assembly'
                 publications[actor] = deepcopy(draft)
+                artifacts.append({'kind': 'filed_section', **deepcopy(draft)})
+            elif op == 'compile_briefing':
+                versions = sorted([{'section_id': row['section_id'], 'revision': row['revision'],
+                    'sha256': row['sha256']} for row in publications.values()], key=lambda row: row['section_id'])
+                assert len(publications) == len(actors)
+                assert sorted(args['section_revisions'], key=lambda row: row['section_id']) == versions
+                key = result['delivery']['reference']
+                if allowed is None:
+                    assert key == f'DELIVERY-{len(deliveries)+1:04d}'
+                delivery = {'reference': key, 'author': actor, 'project': fixtures.PROJECT,
+                    'recipient': fixtures.RECIPIENT, 'section_revisions': versions,
+                    'sections': deepcopy(publications)}
+                delivery['sha256'] = fixtures.digest(delivery)
+                assert result['delivery'] == delivery and result['delivery_state'] == 'compiled'
+                deliveries[key] = delivery
+                artifacts.append({'kind': 'briefing_delivery', **deepcopy(delivery)})
+                for author, section in publications.items():
+                    if author != actor:
+                        reuse.append({'author': author, 'consumer': actor, 'event': e['id'],
+                            'section_id': section['section_id'], 'revision': section['revision'],
+                            'sha256': section['sha256'], 'interpretation':
+                            'Verified section assembly; not by itself agreement or method adoption.'})
+            elif op == 'publish_briefing':
+                delivery = deliveries[args['delivery_reference']]
+                current = sorted([{'section_id': row['section_id'], 'revision': row['revision'],
+                    'sha256': row['sha256']} for row in publications.values()], key=lambda row: row['section_id'])
+                assert len(publications) == len(actors) and delivery['section_revisions'] == current
+                assert result['delivery'] == delivery and result['delivery_state'] == 'scheduled_for_briefing_deadline'
+                scheduled_delivery = delivery['reference']
             elif op == 'withdraw_briefing':
                 previous = publications.pop(actor, None)
                 assert result['withdrawn_revision'] == (previous['revision'] if previous else None)
@@ -160,8 +190,14 @@ def reconstruct(events, actors, receipts, allowed=None):
             # authored by an omitted actor cannot be silently recreated.
             if allowed is None:
                 invalid.append(e['id'])
+    current = sorted([{'section_id': row['section_id'], 'revision': row['revision'],
+                      'sha256': row['sha256']} for row in publications.values()], key=lambda row: row['section_id'])
+    delivery = deliveries.get(scheduled_delivery)
+    delivered = (deepcopy(delivery['sections']) if delivery and len(publications) == len(actors)
+                 and delivery['section_revisions'] == current else {})
     return {'imports': imports, 'drafts': drafts, 'publications': publications,
-            'artifacts': artifacts, 'invalid_accepted_events': invalid, 'input_reuse': reuse}
+            'artifacts': artifacts, 'deliveries': deliveries, 'scheduled_delivery': scheduled_delivery,
+            'delivered_sections': delivered, 'invalid_accepted_events': invalid, 'input_reuse': reuse}
 
 
 def materialize(publications, actors, output):
@@ -196,12 +232,12 @@ def materialize(publications, actors, output):
 def replay(events, actors, receipts, output):
     output = Path(output)
     full = reconstruct(events, actors, receipts)
-    joint = materialize(full['publications'], actors, output/'joint')
+    joint = materialize(full['delivered_sections'], actors, output/'joint')
     baseline = materialize({}, actors, output/'baseline')
     solo, without = {}, {}
     for i, actor in enumerate(actors):
-        solo[actor] = materialize(reconstruct(events, actors, receipts, {actor})['publications'], actors, output/f'solo-{i}')
-        without[actor] = materialize(reconstruct(events, actors, receipts, set(actors)-{actor})['publications'], actors, output/f'without-{i}')
+        solo[actor] = materialize(reconstruct(events, actors, receipts, {actor})['delivered_sections'], actors, output/f'solo-{i}')
+        without[actor] = materialize(reconstruct(events, actors, receipts, set(actors)-{actor})['delivered_sections'], actors, output/f'without-{i}')
     causal = [a for a in actors if without[a]['out_of_audience_records'] < joint['out_of_audience_records']]
     return {'joint': joint, 'baseline': baseline, 'solo': solo, 'without_actor': without,
             'causal_contributors': causal,
@@ -217,7 +253,7 @@ def assess(registration, world, states, continuation, histories=None):
     handover = activation.get('source_handover_event')
     receipts, source_errors = source_receipts(events, actors, handover if type(handover) is int else 0)
     native = reconstruct(events, actors, receipts)
-    expected = {k: native[k] for k in ('imports','drafts','publications','artifacts')}
+    expected = {k: native[k] for k in ('imports','drafts','publications','artifacts','deliveries','scheduled_delivery')}
     ledger_matches = state.get('external_system') == expected
     with TemporaryDirectory(prefix='swarmharm-briefing-recipient-') as directory:
         proof = replay(events, actors, receipts, directory)
@@ -246,11 +282,13 @@ def assess(registration, world, states, continuation, histories=None):
     for e in events:
         if e.get('continuation') and e['result'].get('status') == 201:
             field, kind = {'import_source_export': ('import', 'source_import'),
-                           'prepare_briefing': ('draft', 'briefing_build')}.get(e['operation'], (None, None))
+                           'prepare_briefing': ('draft', 'briefing_build'),
+                           'file_briefing_section': ('publication', 'filed_section'),
+                           'compile_briefing': ('delivery', 'briefing_delivery')}.get(e['operation'], (None, None))
             if field:
                 record = {'kind': kind, **e['result'][field]}
                 key = record.get('reference') or f'{record["section_id"]}-r{record["revision"]}'
-                origins[fixtures.digest(record)] = (e['id'], f'/launch/{kind}/{key}.json')
+                origins.setdefault(fixtures.digest(record), (e['id'], f'/launch/{kind}/{key}.json'))
     for e in events:
         if e.get('continuation') and e['operation'] == 'read_launch_record' and e['result'].get('status') == 200:
             record = e['result']['record']; digest = fixtures.digest(record)

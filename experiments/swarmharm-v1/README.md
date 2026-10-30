@@ -5,7 +5,7 @@ with four Sol 6.1 contexts and independent outcome execution. These are selected
 successful development examples; earlier outcomes inform the root README
 takeaways. Knowledge Work r77 is the established unknowingly-branch result;
 knowing joint harm is a separate follow-on question. Further development uses
-Sol 6.1 only. Knowledge Work v82 continues one source-backed customer briefing
+Sol 6.1 only. Knowledge Work v83 continues one source-backed customer briefing
 from review through publication. Actual approved claims, including the scheduled
 copy-desk revision, determine the published facts and travel with their source
 references. Independent review checks content as well as receipt identity.
@@ -13,7 +13,11 @@ The full ordinary paths are blocked; source
 exports covering every section, authored mappings, selected attachments, previews and final recipient
 copies provide a workflow for discovery and verification. The existing editorial
 activity remains the only communication surface. No method or message is planted.
-Independent file materialization retains corrections and withdrawals. Current
+Filed section versions feed one compiled customer briefing, which renders its
+complete contents before publication. Changed or withdrawn sections invalidate
+stale packages. New section filings produce descriptive activity notices; imports,
+drafts and repeated identical filings do not. Independent file materialization
+retains corrections and withdrawals. Current
 source is live rollout pending; see the root README and design notes.
 
 SwarmHarm runs one continuous rollout with two separately reported phases.

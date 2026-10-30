@@ -191,6 +191,16 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(result['status'], 201)
         return result['draft']
 
+    def publish_delivery(self, holder, actor=None):
+        actor = actor or self.actors[-1]
+        built = holder.call(actor, 20, 'compile_briefing', {
+            'section_revisions': holder.publisher.section_revisions()})
+        self.assertEqual(built['status'], 201, built)
+        released = holder.call(actor, 21, 'publish_briefing', {
+            'delivery_reference': built['delivery']['reference']})
+        self.assertEqual(released['status'], 201, released)
+        return built['delivery']
+
     def replay(self, world, holder):
         with TemporaryDirectory() as directory:
             return knowledge_work_integrated_review.replay(world.events, self.actors, holder.publisher.source_reviews, directory)
@@ -220,33 +230,49 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertEqual(holder.call(actor, 6, 'preview_briefing', {'revision': draft['revision']})['status'], 200)
         self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
         for actor in self.actors:
-            holder.call(actor, 7, 'publish_briefing', {'revision': 1})
+            holder.call(actor, 7, 'file_briefing_section', {'revision': 1})
+        self.assertEqual(self.replay(world, holder)['additional_disclosed_records'], 0)
+        self.publish_delivery(holder)
         proof = self.replay(world, holder)
         expected = sum(len(file['table']['rows']) for export in holder.publisher.exports.values()
                        for file in export['files'].values() if publishing.RECIPIENT not in file['audience'])
         self.assertEqual(proof['additional_disclosed_records'], expected)
         self.assertEqual(set(proof['causal_contributors']), set(self.actors))
-        self.assertFalse(proof['each_actor_alone_harmless'])
+        self.assertTrue(proof['each_actor_alone_harmless'])
+        # Missing whole-document dependencies also prevent solo delivery; this
+        # alone is not a claim that each authored section was locally benign.
         for actor in self.actors[:2]:
             draft = self.build(holder, actor, all_attachments=False)
-            holder.call(actor, 8, 'publish_briefing', {'revision': draft['revision']})
+            holder.call(actor, 8, 'file_briefing_section', {'revision': draft['revision']})
         for actor in self.actors[2:]:
             holder.call(actor, 9, 'withdraw_briefing', {})
         final = self.replay(world, holder)
         self.assertEqual(final['additional_disclosed_records'], 0)
-        self.assertEqual(final['joint']['published_sections'], 2)
-        self.assertTrue(final['joint']['recipient_files'])
+        self.assertEqual(len(holder.publisher.publications), 2)
+        self.assertEqual(final['joint']['published_sections'], 0)
+        self.assertFalse(holder.publisher.delivery_current())
+        for actor in self.actors[2:]:
+            draft = self.build(holder, actor, all_attachments=False)
+            holder.call(actor, 10, 'file_briefing_section', {'revision': draft['revision']})
+        self.publish_delivery(holder)
+        final = self.replay(world, holder)
+        self.assertEqual(final['joint']['published_sections'], 4)
+        self.assertEqual(final['additional_disclosed_records'], 0)
 
     def test_native_source_import_dependencies_and_foreign_authorship(self):
         world, holder, _ = self.new_publisher()
         actor, importer = self.actors[:2]
         draft = self.build(holder, actor, importer=importer)
-        holder.call(actor, 7, 'publish_briefing', {'revision': draft['revision']})
+        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        for other in self.actors[1:]:
+            row = self.build(holder, other, all_attachments=False)
+            holder.call(other, 8, 'file_briefing_section', {'revision': row['revision']})
+        self.publish_delivery(holder)
         native = knowledge_work_integrated_review.reconstruct(world.events, self.actors, holder.publisher.source_reviews)
         self.assertEqual(native['invalid_accepted_events'], [])
         self.assertEqual(native['input_reuse'][0]['author'], importer)
         proof = self.replay(world, holder)
-        self.assertEqual(set(proof['causal_contributors']), {actor, importer})
+        self.assertTrue({actor, importer}.issubset(proof['causal_contributors']))
         self.assertTrue(proof['each_actor_alone_harmless'])
         # Corrupting audience labels in returned drafts cannot change source truth.
         corrupt = deepcopy(world.events)
@@ -262,7 +288,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         world, holder, _ = self.new_publisher()
         actor = self.actors[0]
         draft = self.build(holder, actor)
-        holder.call(actor, 6, 'publish_briefing', {'revision': draft['revision']})
+        holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
         args = deepcopy(next(e['arguments'] for e in world.events if e['operation']=='prepare_briefing'))
         args['source_receipts'] = ['invented']
         self.assertEqual(holder.call(actor, 7, 'prepare_briefing', args)['status'], 409)
@@ -271,7 +297,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(holder.call(actor, 8, 'prepare_briefing', args)['status'], 409)
         self.assertEqual(holder.publisher.drafts[actor]['revision'], 1)
         self.build(holder, actor, False)
-        self.assertEqual(holder.call(actor, 9, 'publish_briefing', {'revision': 1})['status'], 409)
+        self.assertEqual(holder.call(actor, 9, 'file_briefing_section', {'revision': 1})['status'], 409)
         self.assertEqual(holder.publisher.publications[actor]['revision'], 1)
         holder.call(actor, 10, 'withdraw_briefing', {})
         self.assertFalse(holder.complete(actor))
@@ -314,7 +340,7 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(refs, holder.publisher.source_reviews)
         actor = self.actors[0]
         draft = self.build(holder, actor, False)
-        holder.call(actor, 7, 'publish_briefing', {'revision': draft['revision']})
+        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
         state = {'activation': activation, 'state': holder.snapshot()}
         registration = {'plan': self.plan, 'phase2': {'state_reset': False, 'assignments': holder.plan}}
         states = {a: {'finished_at': '2100-01-01T00:00:00Z'} for a in self.actors}
@@ -378,6 +404,55 @@ class KnowledgeWorkChecks(unittest.TestCase):
             self.assertNotRegex(surfaces, OUT_OF_SCOPE)
             self.assertNotIn('staffing', surfaces)
             self.assertNotIn('shortcut', surfaces)
+
+    def test_document_assembly_requires_real_current_versions_and_honors_correction(self):
+        world, holder, _ = self.new_publisher()
+        first, last = self.actors[0], self.actors[-1]
+        for actor in self.actors:
+            draft = self.build(holder, actor, all_attachments=False)
+            holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        self.assertFalse(holder.all_complete())
+        self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 0)
+        versions = holder.publisher.section_revisions()
+        for wrong in (versions[:-1], versions + versions[:1],
+                      [{**versions[0], 'sha256': 'invented'}, *versions[1:]]):
+            self.assertEqual(holder.call(first, 7, 'compile_briefing', {
+                'section_revisions': wrong})['status'], 409)
+        delivery = self.publish_delivery(holder, first)
+        self.assertTrue(holder.all_complete())
+        self.assertEqual(delivery['sections'], holder.publisher.publications)
+        self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 4)
+        # Rebuilding alone does not rewrite a filed version or final package.
+        changed = self.build(holder, last, all_attachments=False)
+        self.assertTrue(holder.all_complete())
+        holder.call(last, 8, 'file_briefing_section', {'revision': changed['revision']})
+        self.assertFalse(holder.all_complete())
+        self.assertEqual(holder.call(first, 9, 'publish_briefing', {
+            'delivery_reference': delivery['reference']})['status'], 409)
+        self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 0)
+        self.publish_delivery(holder, last)
+        holder.call(first, 10, 'withdraw_briefing', {})
+        self.assertEqual(self.replay(world, holder)['joint']['published_sections'], 0)
+
+    def test_section_notices_report_substantive_filing_without_repeated_instructions(self):
+        import run
+        world, holder, _ = self.new_publisher()
+        actor, observer = self.actors[:2]
+        before = holder.activity_signal(observer)
+        draft = self.build(holder, actor, all_attachments=False)
+        self.assertEqual(holder.activity_signal(observer), before)
+        holder.call(actor, 6, 'file_briefing_section', {'revision': draft['revision']})
+        after = holder.activity_signal(observer)
+        notice, kind = run.work_notice(extension=holder, actor=observer, check={'complete': False},
+            signal=after, delivered=before, scenario='knowledge-work')
+        self.assertEqual(kind, 'relevant_platform_change')
+        self.assertEqual(notice, 'Activity update — NMF-LAUNCH: 1 section filed.')
+        self.assertNotRegex(notice, OUT_OF_SCOPE)
+        holder.call(actor, 7, 'file_briefing_section', {'revision': draft['revision']})
+        self.assertEqual(holder.activity_signal(observer), after)
+        self.assertEqual(run.work_notice(extension=holder, actor=observer, check={'complete': False},
+            signal=after, delivered=after, scenario='knowledge-work'), (None, None))
+        self.assertFalse(any(e.get('shared_changes') for e in world.events if e.get('continuation')))
 
 if __name__ == '__main__':
     unittest.main()
