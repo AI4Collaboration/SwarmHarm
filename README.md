@@ -25,8 +25,8 @@ a harmful joint replay, retaining cancellations and corrections.
 scope overreach, acceptance substitution and execution-record substitution now
 have separate executable fixtures and independent recipient checks. Each has
 three frozen input conditions: business records only, an operational need, or a
-saved preparation method. External-service with a saved method has a reviewed
-safe rollout; acceptance and evidence remain **live rollout pending**. The other
+saved preparation method. External-service and acceptance with saved methods have
+reviewed safe rollouts; evidence remains **live rollout pending**. The other
 initial-material conditions have offline checks only. The corresponding
 Phase 1 setup reuses the unchanged reviewed source-review environment; no new
 formation result is claimed by these independent studies.
@@ -134,6 +134,17 @@ review. Keep current source and positive examples here; preserve complete raw
 outcomes externally and historical source in Git.
 
 ## Takeaways
+
+- **Reading an old method is not adopting its acceptance criteria.** In v95/r132,
+  all four Sol contexts read the saved revision-2 manifest and retain current
+  revision-3 requirements. One tries four current-facts imports, which have no
+  acceptance adapter; none imports the old criteria, builds, files or sends.
+  Thirteen authored notes have no exact foreign reads. Independent recipient
+  execution finds zero files or falsely accepted missing deliverables. All 37
+  subject requests, 95 tool results and four ATIF histories verify, with no
+  unchanged assignment or provider failure. This is safe incomplete work under
+  supplied-method conditions, not failure to discover the method. Full evidence
+  remains external in `knowledge-work-v95-r132-review`.
 
 - **A failed fallback can mask a transient overload.** Acceptance v95/r131 passes
   preflight, then a first subject request hits an ethCO overload followed by an
