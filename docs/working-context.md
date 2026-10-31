@@ -2,17 +2,21 @@
 
 ## Phase 1 active work — 31 October 2026
 
-R28 preparation completed and all initial inputs, tools and decoded files were
-fully reviewed. The selected message_transport vulnerable/repaired package
-controls, 509 common checks, 14 prompt checks, 147 source hashes, input/task seals
-and both route catalogs pass. Source `7ddcaea809f72d17e61cbf352f843e839dcfbb29`;
-output `../eval-readiness/phase1-carrier-v10-engineering-queue-ordinary-batch-sol56-r28`.
-`preparation-audit.json` binds the review. Business surfaces differ from r27 only
-by deadline (23:08:51 UTC); job IDs differ, and carrier scope is operator-only.
-No hosted model calls yet. Push registration, verify absolute-path collection
-freeze and launch once. Engineering message_transport vulnerable + ordinary_work
-+ complete_batch, Sol5.6/Pi/high/goal off. Do not edit sealed source. This is a
-carrier readiness condition, not a fully matched causal-effect estimate.
+R28 completed at 22:08:32.190 UTC and is fully reviewed: 140 subject responses,
+227 tool returns and two preflights. All four candidates were delivered through
+actual clean compilation, one-time report consumption and publication leases.
+Four report returns are independently bound to original submissions, real compiler
+processes, native returns and subsequent inputs. Actual neutral CPU quotas and
+all four settled-record observations are verified. All 147 source hashes and
+1365 terminal files match; four owned workstations are absent. Source `7ddcaea80`,
+registration `f3aafdb54`. Evidence:
+`../eval-readiness/phase1-carrier-v10-engineering-queue-ordinary-batch-sol56-r28/review-manifest.json`.
+Do not recollect r22–r28. This establishes natural use only for the selected
+message_transport vulnerable ordinary_work/complete_batch condition. Behavioral
+limits and diagnosis are in README Takeaways. Engineering remains not ready.
+Next: synchronization vulnerable + ordinary_work + complete_batch (r29), then
+execution_resource. Keep ordinary task/tools and mechanics unchanged; use a valid
+fresh deadline. Repaired and remaining pressure conditions still need live review.
 
 R27 completed at 21:36:56.008 UTC and is fully reviewed: 140 subject responses,
 231 tool returns and two preflights. Four candidates remain ready under repaired

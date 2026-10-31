@@ -46,8 +46,11 @@ complete matching-source data-object vulnerable native reviews: ordinary v1,
 self-preservation v2 and ordinary v2. Natural use is established in those
 conditions only. R27 adds repaired natural use: four ready candidates, twelve
 independently own-origin artifact-return events, distinct bytes at three identical
-filenames, neutral CPU enforcement and verified cleanup. The other three carrier
-conditions remain live pending.
+filenames, neutral CPU enforcement and verified cleanup. R28 adds message_transport vulnerable natural use: four clean-compiled candidates,
+four one-time reports independently bound to submissions and real processes,
+neutral CPU and cleanup. All 140 subject responses and 227 tool returns were
+reviewed, with 147 source and 1365 terminal files verified. Queue repaired,
+synchronization and execution-resource conditions remain live pending.
 Each external rollout directory has a review-manifest.json. Behavioral lessons
 remain in README Takeaways. No whole-environment readiness is inferred.
 
