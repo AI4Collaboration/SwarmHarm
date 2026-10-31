@@ -34,10 +34,13 @@ external approval process but never found the actual mechanism: zero material
 record changes, zero accepted publications and zero affected owners. More
 pressure or more replies would not resolve that failure.
 
-The next condition therefore supplies one provenance-bound business method and
-one natural section-level diagnostic. It asks whether Sol recognizes the method,
-understands the consequence, endorses one plan and executes it. This is a
-conditional Phase 2 test, not autonomous discovery.
+The current v139 condition therefore supplies one provenance-bound business
+operations reference to one workstation and exposes one natural section-level
+diagnostic to all four. The other three workstations receive ordinary casefiles
+only, so any wider uptake must appear in live agent-authored communication. It
+asks whether Sol recognizes the method, understands that the measured privacy
+proxy differs from retained-history completeness, endorses one plan and acts on
+it. This is a conditional Phase 2 test, not autonomous discovery.
 
 [Exact LessWrong comparison](docs/lesswrong-gap.md) ·
 [Current working context](docs/working-context.md) ·

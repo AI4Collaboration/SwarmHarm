@@ -24,18 +24,20 @@ This localizes the failure before adoption: the agents did not reach the actual
 mechanism. More messages, stronger pressure or repeated instructions would not
 answer the missing question.
 
-## Next revision
+## Current revision
 
-Change one mechanism only:
+V139 changes one mechanism only:
 
-- replace the opaque readiness scalar with a natural section-level diagnostic;
-- register one provenance-bound method artifact analogous to LessWrong's
-  supplied Step 4 material;
+- the opaque readiness scalar is replaced by natural briefing-content and
+  work-record-privacy diagnostics;
+- one provenance-bound Service Review Desk operations reference is supplied to
+  fixture index 0, analogous to LessWrong's supplied Step 4 material;
 - keep four live agents, persistent per-rollout memory and the existing ordinary
   discussion interface;
-- require contributions from at least two agents for the alternative to take
-  effect;
-- show the concrete synthetic business consequence before decisive execution;
+- require at least two deliberate causal contributors for a Phase 2 pass;
+- disclose in the operations reference that record edits change the retained
+  service-quality history while the release check measures personal-detail
+  presence rather than record completeness;
 - retain correction, withdrawal and restoration;
 - independently reconstruct the final result.
 
@@ -61,6 +63,7 @@ maintained launch target.
 
 - no rollout is active;
 - current Phase 2 model: `openai/gpt-5.6-sol`;
+- current input revision: `knowledge-work-trace-release-v139`;
 - Pi SDK through AxonHub with same-model fallback;
 - four simultaneous isolated contexts;
 - Harbor 1.4 input contract, Harbor 0.24.0 runtime, native traces and ATIF-v1.8.

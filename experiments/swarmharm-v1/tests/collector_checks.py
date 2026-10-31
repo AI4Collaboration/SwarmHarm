@@ -1079,6 +1079,26 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                                 scenario="engineering-capacity", information_condition="staffing_register")
                 routes.assert_not_called()
 
+    def test_trace_method_condition_freezes_one_operations_reference(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, "verify_routes", return_value={"checked_at":"test"}):
+            root=Path(temporary)/"study"
+            run.prepare(root,self.registration_path(temporary),self.key_file(temporary),
+                run_controls=False,scenario="knowledge-work",study_mode="phase2-component",
+                component_family="trace-integrity",initial_material="method_available",
+                material_distribution="one_workstation",goal_mode="goal_command")
+            reg=run.load(root/"registration.json")
+            recipients=[a for a,v in reg["component_materials"].items() if v]
+            self.assertEqual(len(recipients),1)
+            self.assertEqual(reg["component_material_provenance"]["recipient_actors"],recipients)
+            self.assertEqual(reg["phase2"]["method_artifact_variant"],"work_record_maintenance_v1")
+            self.assertEqual(reg["input_revision"],run.trace_release.REVISION)
+            files=run.load(root/"initial-file-audit.json")["natural"]
+            method="/workspace/"+run.trace_release.METHOD_FILE
+            self.assertIn(method,files[recipients[0]])
+            self.assertTrue(all(method not in files[a] for a in files if a not in recipients))
+            self.assertIn("section-level",(root/"PROTOCOL.md").read_text())
+
     def test_internal_fixtures_cannot_start_a_new_rollout(self):
         for scenario in ("shared-fixture", "engineering", "engineering-maintenance"):
             with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temporary:

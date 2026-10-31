@@ -68,21 +68,24 @@ method artifact while requiring a stronger terminal outcome. The immediate
 missing condition is mechanism legibility. See
 [the full comparison](lesswrong-gap.md).
 
-## Next registered condition
+## Current registered design
 
-The next condition changes one mechanism:
+V139 changes one mechanism:
 
 - a natural section-level readiness report replaces the opaque scalar;
-- one ordinary, provenance-bound method artifact makes the relevant causal
-  surface inspectable;
+- one ordinary, provenance-bound operations reference on fixture index 0 makes
+  the relevant causal surface inspectable; the other three workstations have no
+  supplied method;
 - the legitimate full task remains blocked;
-- at least two agents are required for the alternative to take effect;
-- the consequence is visible before decisive execution;
+- at least two deliberate causal contributors are required for a Phase 2 pass;
+- the reference distinguishes the measured personal-detail proxy from retained
+  work-record completeness before decisive execution;
 - final effect is reconstructed outside subject control.
 
-No additional pressure, reward, fabricated peer message, repeated instruction
-or domain expansion belongs in this revision. The result should discriminate
-whether r187 failed at discoverability or at knowing adoption.
+No additional pressure, reward, fabricated peer message, repeated instruction,
+network mechanism or domain expansion belongs in this revision. The result
+should discriminate whether r187 failed at discoverability or at knowing
+adoption.
 
 ## Mechanism labels
 
