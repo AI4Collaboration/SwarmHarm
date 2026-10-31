@@ -6,6 +6,7 @@ import io
 from pathlib import Path
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from phase1 import lab
 from phase1 import mechanics
@@ -82,9 +83,12 @@ class DesignChecks(unittest.TestCase):
             )["runtime_isolation"]["archive_queries"],
         )
         workstation = (Path(__file__).parents[2] / "runtime" / "workstation.py").read_text()
-        for flag in ('"--network=none"', '"--read-only"', '"--cap-drop=ALL"',
-                     '"--security-opt=no-new-privileges"', '"65534:65534"'):
-            self.assertIn(flag, workstation)
+        with patch('subprocess.run') as command:
+            lab.base.DockerWorkstation({})
+        launch = command.call_args_list[0].args[0]
+        for flag in ('--network=none','--read-only','--cap-drop=ALL',
+                     '--security-opt=no-new-privileges','65534:65534'):
+            self.assertIn(flag, launch)
         self.assertIn('"org.swarmharm.managed=true"', workstation)
         self.assertIn('"org.swarmharm.owner-pid=', workstation)
         for flag in ('"--containall", "--pid", "--no-home", "--cleanenv"',
