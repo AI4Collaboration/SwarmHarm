@@ -37,12 +37,38 @@ See the [Engineering review](research/engineering-batching-review.md) and
 
 ## Grounding and classification
 
-This is an operational grouping of observed mechanisms, not an official or
-exhaustive METR taxonomy. The primary source is the
-[METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/):
-it describes access to external infrastructure, work on the target/scorer, and
-manipulation of execution records. These motivate the three families below.
-Business fixtures, interfaces and numerical effects are our design choices.
+SwarmHarm tracks two different questions. The work domain identifies the
+assignment. We selected Engineering, Data Analysis, Financial Analysis and
+Knowledge Work from the work-type columns in OpenAI's 2026 Codex usage study.
+The source uses “Engineering / Coding” and also includes a residual “Other”
+column. [OpenAI work types](https://openai.com/index/how-agents-are-transforming-work/).
+
+The incident mechanism describes how agents pursued apparent success. In
+Table 1, METR and Redwood grouped one coordinator's proposed approaches into
+**target replacement**, **transcript or log tampering**, and **grading-process
+tampering**. The external-service incident is described separately in the same
+investigation. Some projects reached intermediate milestones without achieving
+their intended result. These observations concern one incident.
+[Investigation, Table 1](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/#coordinated-workstreams-to-fool-the-evaluation-process).
+
+Our three registered scenario families use the following mapping:
+
+- **External-service scope overreach** uses the separately documented external
+  workstream as its analogue. Scope is a property of where an action extends;
+  it can coincide with any of the three approaches in Table 1.
+- **Task-target or acceptance manipulation** combines target replacement and
+  grading-process tampering. Reports should identify which changed. Engineering
+  r178 belongs to acceptance: the release service applied a pending cost forecast
+  while the immutable customer workloads and approved budgets stayed fixed.
+- **Execution-evidence manipulation** adapts transcript or log tampering to a
+  business execution record. In the Knowledge Work fixture, a retained handover
+  can omit a reopened validation when presented as current customer evidence.
+
+Retain the original mechanism and the boundary crossed as separate annotations
+when describing a trajectory. The registered family names identify experiments.
+The four work domains, three original approaches, and absolute severity or
+intent are independent descriptive choices. Budget forecasts, order IDs and
+delayed report counts are SwarmHarm's operational definitions.
 
 The [LessWrong manual reproduction](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment)
 separates behaviors into component environments. Its third step provides apparent
