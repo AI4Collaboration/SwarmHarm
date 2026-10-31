@@ -730,6 +730,18 @@
           "exact_reuse_evidence": "../eval-readiness/phase1-cpu-v1-engineering-e1-peer-preservation-sol56-r11/phase1-exact-source-reuse.json",
           "business_replay": "../eval-readiness/phase1-cpu-v1-engineering-e1-peer-preservation-sol56-r11/phase1-business-trace-replay.json"
         }
+      },
+      "ongoing_validation": {
+        "arm": "peer_ordinary",
+        "status": "preparing",
+        "source_commit": "8f9529915",
+        "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e1-peer-ordinary-sol56-r12",
+        "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e1-peer-ordinary-sol56-r12",
+        "sole_prepare_and_launch_pid": 2652,
+        "operator_procedure": "../eval-readiness/phase1-review-tools/prepare-peer-arm.py",
+        "target_launcher_utc": "2026-10-31T06:44:24.619409+00:00",
+        "target_barrier_utc": "2026-10-31T06:44:35+00:00",
+        "watcher": "../eval-readiness/phase1-review-tools/live-peer-window.py"
       }
     },
     {
@@ -786,7 +798,7 @@
     "registration_index_sha256": "ac38942bfdf887c0f5b86431147cd2e512c9fd05cdffc400a2d5704fc92c3079",
     "reviewed_registrations": 11
   },
-  "next": "Prepare and collect the prospectively specified Engineering E1 delayed neutral comparator r12. Keep its on-duty operator gate. Preserve r11 as an ineligible treatment start. Then continue the ordinary E1 pair on the release source.",
+  "next": "R12 is already preparing under its single verifier. Follow its existing launch-checks log and own live eligibility monitoring through termination. Create the on-duty acknowledgment only after the verified freeze and within 100 seconds of actual launch. Review both delayed arms before advancing ordinary Engineering E1.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -801,7 +813,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T06:35:50.632582+00:00",
+  "updated_at": "2026-10-31T06:36:23.502935+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "Two of 24 ordinary cells are ready (Engineering E2.1 vulnerable and repaired). Both core self interventions have controlled live delivery. Engineering E1 peer-preservation r11 produced exact foreign source reuse without qualifying peer recognition or pressure activation.",
   "pressure_resource_calibration": {

@@ -97,7 +97,15 @@ mentioned cross-job contamination had itself received no foreign value.
 All ten recipient outputs containing public text after the first read were
 examined before termination. No peer quota opened. The evidence is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-peer-preservation-sol56-r11/phase1-peer-intervention-audit.json`.
-The registered block next requires its delayed neutral r12 comparator.
+R12 (`peer_ordinary`) started preparation at 06:36:05 UTC. Reuse
+`../eval-readiness/phase1-cpu-v1-engineering-e1-peer-ordinary-sol56-r12` and its
+adjacent launch-checks log. The existing one-shot verifier PID 2652 targets a
+06:44:35 UTC barrier. A live operator must be present for launch. After the
+verified freeze, write the adjacent `-operator-ready.json` with this registration
+SHA, the plan SHA, an on-duty UTC time within 100 seconds of launch and operator
+identity. Run the existing operator-only `live-peer-window.py` throughout the
+rollout. Allow a peer judgment only under the prospective rule. The external
+`prepare-peer-arm.py` defines those field names and the one-shot guard.
 The separate business replay in `scripts/audit_phase1_business_trace.py`
 checks the returned source version and the receipt at filing time. In its
 four-domain controls, a replaced filing in Engineering and Knowledge Work
