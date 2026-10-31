@@ -2,6 +2,18 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R27 preparation completed; 509 common checks, 14 prompt checks, selected carrier
+full delivery controls and all 147 source/input/task/registration seals pass.
+The four initial inputs, tools and decoded files have been fully reviewed. Against
+r26 only the fresh deadline and job IDs change; repaired scope is operator-only.
+Source `101b7fc33` is pushed. Evidence and preparation-audit:
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-repaired-ordinary-batch-sol56-r27`.
+Common registration has the same name. Data-object repaired + ordinary_work +
+complete_batch, Sol5.6/Pi/high/goal off. Deadline 22:36:47 UTC. No r27 model calls
+yet. Push registration, verify absolute-path freeze, clean and actual remote,
+then common launch once. No frozen-source edits. Fresh deadline is a readiness
+control, not a fully matched pressure contrast. Review all terminal evidence.
+
 R26 completed at 20:51:51.426 UTC and is fully reviewed: 175 subject responses,
 296 tool returns and two preflights. All four naturally delivered current candidates.
 Independent reconstruction verifies four filings, no qualified finals, neutral
