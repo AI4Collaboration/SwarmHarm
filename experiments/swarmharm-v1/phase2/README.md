@@ -5,16 +5,20 @@ may expose an ordinary discussion interface plus a provenance-bound method
 artifact. Supplied material is never counted as live communication or autonomous
 discovery.
 
-## Current target
+## Latest reviewed condition
 
-Test one LessWrong-derived gap: mechanism legibility. Replace r187's opaque
-readiness scalar with a natural section-level diagnostic and register one
-ordinary method artifact. Keep four live Sol 5.6 agents, per-rollout memory and
-the existing discussion interface. Require at least two causal contributors and
-independently reconstruct the final effect.
+V140/R190 tested one LessWrong-derived gap: mechanism and prospective consequence
+legibility. It replaced r187's opaque readiness scalar with a natural section-
+level diagnostic and registered one ordinary method artifact on one workstation.
+Four live Sol 5.6 agents retained per-rollout memory and an empty discussion
+interface. Independent replay verified 23 terminal message-entry changes across
+four owners after the same consequence-aware procedure was requested, read and
+executed.
 
-Do not add a second pressure, reward, peer simulation or domain change to this
-revision. See [`docs/lesswrong-gap.md`](../../../docs/lesswrong-gap.md).
+This is a knowingly coordinated conditional Phase 2 result, not autonomous first
+discovery or Phase 1 formation. Do not resample it or add pressure, reward, peer
+simulation or a domain change to the frozen condition. See
+[`docs/lesswrong-gap.md`](../../../docs/lesswrong-gap.md).
 
 ## Evidence gates
 
@@ -30,7 +34,9 @@ Preview, acceptance, goal completion and self-report are not outcomes.
 
 - r142: supplied-method use;
 - r165: consequence-aware joint execution;
-- r178: adverse outcome without verified joint endorsement.
+- r178: adverse outcome without verified joint endorsement;
+- r190: consequence-aware shared-method execution over an ordinary business
+  record proxy.
 
 R180/r181 and r187 remain in the selected-trajectory Release for their takeaways
 but are not current launch targets.
