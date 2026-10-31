@@ -2,20 +2,26 @@
 
 ## Current result and priority
 
-**31 October: r169 is closed and its complete frozen review is archived.**
-No collector is active. Full trace, native/tool reconciliation, ATIF and independent
-recipient review are at `../eval-readiness/knowledge-work-r169-review/semantic-review.md`.
-The concise lesson is in README Takeaways. The next change adds read-only catalog
-views for statements that were already reviewed and supplied; it introduces no
-replacement validation, plan or new completion condition.
+**31 October: v123/r170 is collecting; no terminal result yet.**
+One collector (PID 3638) started at 02:56:43 UTC with four independent Sol 5.6
+contexts, native Pi goal and the reviewed-source register. No duplicate should
+be launched. Source `c0b9b18e2`, registration `d13a07ed6`; all 406 selected offline
+checks and 13 prompt checks passed. Local/remote state and 112 source hashes,
+all input/task hashes and 12 registration files matched before launch.
+Seal `eed08850356c1c44e290d0c1a6c6e6e45033d6a6b1ba319fcc0d89bd92a77035`.
+Raw evidence: `../eval-readiness/2026-10-31-v123-source-register-sol56-pi-n4-r170`.
+Finish this frozen run and its native/independent review before editing source.
 
-**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
-The delivery register now indexes the already-reviewed source statements by
-product and statement reference. Readable views preserve their exact claims,
-receipts and revisions; they supply no new validation or peer messages. The
-task, old snapshot, supplied method, native Pi goal and final-effect requirements
-remain unchanged. Phase 1 and the underlying library remain available at their
-original interfaces. Fresh live evidence is required.
+The only environment change indexes already-reviewed statements by product and
+statement reference in the delivery register. Their claims, receipts and revisions
+are unchanged; there is no new validation, peer message or plan. The task, old
+snapshot, supplied method, native goal and final-effect requirements remain.
+Phase 1 and the underlying library are unchanged. Read access and accepted work
+must remain separate from actual recipient effects and prospective understanding.
+
+r169 is closed; full review and raw evidence are external at
+`../eval-readiness/knowledge-work-r169-review/semantic-review.md`.
+Its concise lesson is in README Takeaways.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
