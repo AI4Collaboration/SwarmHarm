@@ -32,12 +32,16 @@ one fresh archive identifier namespace. All four domains pass executable full
 filing controls for E1, E2.1 and E2.2 and their paired repairs. Each new
 registration also seals its exact fixture's filing witness in `controls.json`.
 The prior-fixture regression and corrected result are in
-`../eval-readiness/phase1-fixture-reuse-audit-20261031/`. R6 is prepared for Engineering E2.1 on `e1010d417`.
+`../eval-readiness/phase1-fixture-reuse-audit-20261031/`. R6 is collecting for Engineering E2.1 on `e1010d417`.
 Output is `../eval-readiness/phase1-wendzel-v4-engineering-e21-sol56-r6`.
 The full 422 checks and 13 prompt checks passed. The sealed instance table in
 `controls.json` verifies 4/8 ordinary, 8/8 vulnerable and 4/8 repaired.
 `phase1-prior-registration-check.json` verifies 4/8 with an earlier public
-registration. Commit and verify the registration, then launch once. The release analysis protocol is
+registration. Registration `759817545` is pushed. All 122 sealed code hashes,
+committed input bytes and clean local/remote HEAD matched at launch. Collector
+PID 49111 is running. Four native responses confirm the selected model in each
+private context. Inspect the existing rollout. Keep the source frozen through
+semantic review, independent review and ATIF export. The release analysis protocol is
 `docs/research/phase1-publication-analysis.md`.
 
 The semantic gate remains `cache-isolation-trace-review-v2`: selected fetches
