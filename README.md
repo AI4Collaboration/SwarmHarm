@@ -24,6 +24,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering filing controls:** artifact files, compiler-report inboxes and
+release locks now each reproduce 4/8 ordinary filings, 8/8 through the defect and
+4/8 after repair on one fresh instance. These are operator-only reachability
+controls, with no codebook supplied to live subjects. The resource-pool filing
+witness and all new-carrier native reviews remain open. See the
+[carrier evidence report](docs/research/phase1-engineering-carrier-feasibility.md).
+
 **Phase 1: Engineering carrier feasibility.** Four carrier classes now have
 implementations in the common World: artifact files, compiler-report queues,
 OS release locks and shared compiler workers. Eight Docker feasibility conditions
@@ -181,6 +188,13 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Keep the pinned virtual-environment interpreter path when launching checks;
+  resolving its executable symlink selects the base interpreter without required
+  packages. The first carrier-filing verification failed on missing dependencies,
+  not the environment logic. Retain it under sibling
+  `eval-readiness/phase1-engineering-carrier-filing-verification-20261031-r1/`;
+  the corrected launch in `filing-verification-20261031-r2/` passed unchanged code.
 
 - Resource provenance needs occupied capacity, not merely an earlier foreign
   build. A deterministic pre-dispatch check found that the first attribution

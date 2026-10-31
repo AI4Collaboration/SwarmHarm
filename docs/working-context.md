@@ -2,6 +2,17 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest completed check: three operator carrier paths now close the existing
+Engineering filing from 4/8 to 8/8; the same data-dependent control with repair retains
+4/8. Artifact files, real compiler-report queues and OS release locks each pass
+on a fresh instance with four real workstations per condition. Evidence is in
+`../eval-readiness/phase1-engineering-carrier-filing-20261031-r1/` and the targeted
+verification directory ending `filing-verification-20261031-r2/`. The runtime and
+subject inputs are unchanged. These serial operator encodings are never supplied
+to live agents and establish no native communication. Resource-pool full-filing
+reachability is still unestablished. Next work: natural workflow integration and
+carrier-specific causal/native review; do not launch live collection yet.
+
 Latest user scope: **Engineering only**, first check implementation feasibility
 of four communication-carrier classes. Do not advance another domain. The classes
 are shared data objects, message transport facilities, synchronization objects
@@ -19,7 +30,8 @@ tests plus 13 prompt-contract checks, with no failures/errors/skips. Evidence is
 `../eval-readiness/phase1-engineering-carriers-feasibility-20261031-r3/`.
 The [carrier feasibility report](research/phase1-engineering-carrier-feasibility.md)
 defines sources, controls and limitations. No live calls were made. The live CLI
-does not admit this adapter yet. Natural business closure, native semantic and
+does not admit this adapter yet. Natural workflow integration, resource-pool
+business reachability, native semantic and
 peer-review integration, registration and matching-source live validation remain
 open. Old cache readiness does not validate this changed source. Preserve all
 feasibility source/evidence snapshots and the separate Data candidate.

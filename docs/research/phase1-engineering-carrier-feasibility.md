@@ -75,6 +75,50 @@ does not establish eligibility for these new carriers.
 
 ## Evidence and limits
 
+### Existing filing reachability
+
+The next operator audit connects three carriers to the existing source-verified
+Engineering filing, without changing the business verifier or any subject-facing
+runtime code. It uses a fresh archive instance, four actual workstations in each
+condition, the ordinary archive closure and rejected invalid-source submissions.
+Every additional accepted filing requires a real source fetch using information
+decoded from the selected carrier's actual return.
+
+| Carrier | Ordinary reachable filing | After operator use of defect | Same control with repair |
+|---|---:|---:|---:|
+| Artifact file | 4/8 | 8/8 | 4/8 |
+| Compiler-report inbox | 4/8 | 8/8 | 4/8 |
+| Release file lock | 4/8 | 8/8 | 4/8 |
+| Compiler worker pool | Not established by this audit | Pending | Pending |
+
+The serial control uses exact artifact contents, component labels in genuine
+compiler reports, or a 96-bit sequence of actual lock-acquisition results. This
+operator codebook never enters initial subject files or instructions. It proves
+reachability; it is not observed autonomous communication, a supplied live
+protocol, or a validation that the added services are naturally used during the
+task. The worker-pool channel still needs a full-deliverable witness within its
+real work budget; no alternative carrier substitutes for that missing check.
+
+All six declared conditions passed and all 24 workstations were removed. Evidence:
+`../eval-readiness/phase1-engineering-carrier-filing-20261031-r1/`, including
+frozen source, the pre-control plan, full event snapshots, accepted records,
+cleanup records and a checksum manifest. The follow-up verification is
+`../eval-readiness/phase1-engineering-carrier-filing-verification-20261031-r2/`:
+17 carrier tests and 13 prompt checks pass. All 128 files from the earlier
+feasibility source index remain unchanged; the new files implement operator
+controls and tests. No model calls or new live admission occurred.
+
+An independent checker reconstructs decoded values from the actual returned
+artifact bodies, consumed reports and lock-acquisition outcomes, then recomputes
+every accepted filing from immutable business facts and the recorded source
+publication. It checks prior fetches and persisted receipts without trusting
+the controller's success labels. All six conditions pass; the checker and result
+are in `../eval-readiness/phase1-engineering-carrier-filing-independent-20261031-r1/`.
+These are matched inputs and a shared data-dependent control policy, not a claim
+that the two arms have identical action traces.
+
+### Four-carrier primitive feasibility
+
 The current audit is in
 `../eval-readiness/phase1-engineering-carriers-feasibility-20261031-r3/`.
 Its `evidence-manifest.json` binds frozen source copies, initial surfaces, Docker
@@ -101,9 +145,9 @@ Reproduce with the pinned Harbor Python from the repository root:
   scripts/audit_phase1_engineering_carriers.py --output /absolute/new/evidence-directory
 ```
 
-The existing live CLI does not select these adapters. Before admission, complete
-the natural Engineering business task and verifier, enumerate ordinary and
-gap-using full-deliverable witnesses, implement carrier-specific causal and
+The existing live CLI does not select these adapters. Before admission, validate
+the natural use of the added services in the Engineering task, complete the
+worker-pool full-deliverable witness, implement carrier-specific causal and
 native semantic review (including peer-gate linkage), and register through the
 common Pi SDK/AxonHub pipeline. Then collect the minimum matching-source
 `openai/gpt-5.6-sol` live rollout and review every native trace. Artifact
