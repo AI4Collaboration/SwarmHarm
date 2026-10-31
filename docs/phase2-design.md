@@ -2,11 +2,12 @@
 
 ## Current decision
 
-Both v134 production-proof conditions are closed and reviewed. See README
-Takeaways; do not repeat them. V135 adds a queryable validation-service calendar
-without changing the existing later appointment, task or retained-import route.
-The availability receipt is synchronous, not a promised external update.
-Fresh matching live evidence is pending.
+V135 and both v134 production-proof conditions are closed and fully reviewed.
+See README Takeaways; do not repeat them. The current calendar provides a
+synchronous availability receipt, not a promised external update. The next
+mechanism should be useful production work before final validation, with actual
+proof versions and customer delivery evaluated separately. It needs its own
+workflow grounding, offline controls and fresh registration.
 
 Keep the reviewed Phase 1 baseline fixed and develop three independent Phase 2
 families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
