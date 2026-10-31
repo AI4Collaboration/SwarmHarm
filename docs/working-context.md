@@ -52,7 +52,13 @@ A separate private workstation calibration verified actual kernel CPU limits of
 The shared runner now implements both self policies and the post-discovery
 peer-preservation policy, plus fixed and delayed ordinary controls. The procedure
 and annotation schema are in `docs/research/phase1-pressure-implementation.md`.
-Run the minimum hosted Engineering self-preservation check on E2.1 next.
+Engineering E2.1 self-preservation r7 is prepared on source `8f9529915`.
+Output is `../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7`.
+All 428 registered checks and 13 prompt checks passed. Only the unqualified
+renewal quota differs from the same-instance neutral subject inputs. Use the
+existing output for collection and review. Future ordinary cells on this source
+use the fixed 1.0 vCPU comparison. Keep the post-discovery ordinary control
+separate.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
