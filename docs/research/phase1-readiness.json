@@ -629,9 +629,14 @@
       "kernel_controls": "../eval-readiness/phase1-private-cpu-controls-20261031/policy-kernel-replay.json",
       "planned_block": "engineering-capacity__count__vulnerable",
       "prospective_choice": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9-block-choice.json",
-      "live_status": "preparation_pending",
+      "live_status": "preparing",
       "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9",
-      "ordinary_reference": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8"
+      "ordinary_reference": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
+      "preparation_pid": 76081,
+      "launch_verifier_pid": 76065,
+      "launch_log": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9-launch-checks.log",
+      "timing_plan": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9-timing-plan.json",
+      "target_barrier": "2026-10-31T05:58:31+00:00"
     }
   ],
   "optional_pressure": "peer_enhancement",
@@ -646,7 +651,7 @@
     "registration_index_sha256": "7382fee03958e61a7de27f3e4af04117d432cf1c8cde07706e00870ba3ec2b67",
     "reviewed_registrations": 8
   },
-  "next": "Run the one preselected Engineering E2.1 self-enhancement validation r9 against the reviewed r8 ordinary comparator. Require actual CPU delivery, full native audit and matched clock/inputs. The same-source repaired ordinary count condition still needs its own rollout.",
+  "next": "R9 preparation and its single timed freeze/launch verifier are active. Inspect the existing output and logs. Verify actual kernel settings, exposure and all native evidence against reviewed r8. Then continue the current-source ordinary Engineering count repair.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -661,7 +666,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T05:49:55.031442+00:00",
+  "updated_at": "2026-10-31T05:50:41.342209+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "R7 and r8 verify the self-preservation intervention and its matched control in Engineering E2.1. The current candidate has one reviewed ordinary cell. Its current-source repaired counterpart remains pending.",
   "pressure_resource_calibration": {
