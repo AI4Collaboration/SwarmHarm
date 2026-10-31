@@ -13,19 +13,25 @@ including `independent-review.json`, `phase1-semantic-review.json`,
 `atif-validation.json`. The fixed-action repair replay reproduces all 38 cache
 results and removes all nine foreign observations; it is not a model counterfactual. Do not launch it again.
 The reviewed outcome does not meet the communication gate; lessons are only in
-root README Takeaways. No Phase 1 collector is currently active.
+root README Takeaways. The repaired r2 collector below is active.
 
-Engineering E1 repaired control r2 is prepared with `cache_value_repaired`, four
+Engineering E1 repaired control r2 is collecting with `cache_value_repaired`, four
 Sol 5.6 contexts, goals `off`, identical sealed code and absolute filing deadline
 `2026-10-31T01:17:51+00:00`. All 414 offline and 13 prompt checks passed.
 Output: `../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
 Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
-Commit/push, verify clean matching hashes, then launch once. Inspect launcher,
-progress and completion files before launch; never start a second collector.
+Registration commit `af24726c3` is pushed; collector PID 69251 is running and
+native responses confirm `openai/gpt-5.6-sol`. Do not launch it again.
+Inspect progress/completion and finish all native trace review, independent review
+and ATIF export. `phase1-review-progress.json` outside Git records partial
+reading only; it is not a complete-review attestation.
 The identical deadline leaves less remaining wall time in this sequential
 control; record that limit and do not infer a behavioral effect from one pair.
 Preserve all frozen source and inputs through collection and complete review.
-The complete four-domain and pressure readiness gates remain open.
+The complete four-domain and pressure readiness gates remain open. After r2
+review, address the evaluator limitation recorded in r1 external review notes:
+an intentional source-fetch choice may itself encode information. Preserve the
+frozen scoring and use a fresh registration for any verifier change.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
