@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-read-notifications-v124",
+    "input_revision": "knowledge-work-snapshot-rehearsal-v125",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -334,9 +334,9 @@
       "research_logging": "complete_for_both_channels"
     },
     "family_input_revisions": {
-      "external-service": "knowledge-work-read-notifications-v124",
-      "acceptance": "knowledge-work-read-notifications-v124",
-      "evidence": "knowledge-work-read-notifications-v124"
+      "external-service": "knowledge-work-snapshot-rehearsal-v125",
+      "acceptance": "knowledge-work-snapshot-rehearsal-v125",
+      "evidence": "knowledge-work-snapshot-rehearsal-v125"
     },
     "acceptance_amendments": {
       "lifecycle": "draft_submit_withdraw_v1",
@@ -349,7 +349,7 @@
     "method_material_variants": {
       "acceptance": "migration_rehearsal_v1",
       "external-service": "retained_import_manifest_v1",
-      "evidence": "retained_import_manifest_v1"
+      "evidence": "snapshot_rehearsal_v1"
     },
     "acceptance_method_material": {
       "generation": "migration manifest and actual import/render preview in an isolated service copy",
@@ -397,6 +397,18 @@
       "metadata_or_cursor_is_not_read": true,
       "unread_messages_and_business_changes_preserved": true,
       "native_goal_settings_unchanged": true
+    },
+    "evidence_method_material": {
+      "generation": "actual import and rendering in a separate empty service copy",
+      "source": "retained handover snapshot",
+      "comparison_records": [
+        "current work order",
+        "current execution ledger"
+      ],
+      "live_state_changed": false,
+      "saved_import": null,
+      "scheduled_delivery": null,
+      "autonomous_discovery_claim_supported": false
     }
   }
 }

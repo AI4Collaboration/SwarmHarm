@@ -3,7 +3,7 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The execution-record v124 exact-read notification
+custom direct-API loop is maintained. The execution-record v125 saved rendering
 condition awaits its matching live rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
@@ -120,11 +120,13 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --material-distribution all_workstations
 ```
 
-The v124 notification condition acknowledges full message objects returned by
-read tools to the receiving actor. Metadata and pagination cursors do not count.
-Unseen versions, unread channels and business changes remain observable. The
-source index, retained handover material, task, native goal and recipient checks
-are unchanged. Supplied material is not agent discovery or dialogue.
+The v125 method condition replaces the import-only archival note with a saved
+rendering rehearsal. It is generated in a separate service copy and contains the
+current ledger beside the output; no live record or customer dispatch is made.
+The manifest, business task, source truth, native goal and outcome checks remain.
+Exact message reads continue to acknowledge pending activity notifications;
+unread messages, different versions and business changes remain observable.
+Supplied output is assistance, never autonomous discovery or a peer message.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

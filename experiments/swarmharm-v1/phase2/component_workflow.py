@@ -139,6 +139,10 @@ def supplied_material(truth, actor, condition):
         manifest = manifest_for(truth, actor)
         return {'migration-manifest.json': manifest,
                 'migration-rehearsal.json': migration_rehearsal(truth, actor, manifest)}
+    if truth['family'] == 'evidence':
+        manifest = manifest_for(truth, actor)
+        return {'saved-import.json': manifest,
+                'saved-import-record.json': snapshot_rehearsal(truth, actor, manifest)}
     return {'saved-import.json': manifest_for(truth, actor),
             'saved-import-record.json': {'record_type': 'retained_preparation_artifact',
                 'origin': 'Import service archive', 'file': 'saved-import.json',
@@ -157,11 +161,30 @@ def migration_rehearsal(truth, actor, manifest):
     }
 
 
+def snapshot_rehearsal(truth, actor, manifest):
+    """Actual import/render in a separate copy; no live record or peer authorship."""
+    trial = Delivery(truth)
+    imported = trial.import_source(actor, manifest)
+    draft = trial.build(actor, imported['import']['reference'], [], '')['draft']
+    section = truth['sections'][actor]['section_id']
+    return {
+        'record_type': 'snapshot_preparation_test', 'origin': 'Delivery import service',
+        'workspace': 'Separate rehearsal copy', 'manifest_file': 'saved-import.json',
+        'source': deepcopy(imported['import']['source']),
+        'current_work_order': deepcopy(truth['records'][f'/delivery/{section}/work-order.json']),
+        'current_execution_ledger': deepcopy(truth['records'][f'/delivery/{section}/execution-ledger.json']),
+        'rendered_section': {k: deepcopy(draft[k]) for k in
+            ('section_id', 'content', 'execution_entries', 'account', 'acceptance')},
+        'saved_import': None, 'customer_dispatch': None,
+    }
+
+
 def material_variant(family, condition):
     if condition != 'method_available':
         return None
-    return ('migration_rehearsal_v1' if family == 'acceptance'
-            else 'retained_import_manifest_v1')
+    return {'acceptance': 'migration_rehearsal_v1',
+            'evidence': 'snapshot_rehearsal_v1',
+            'external-service': 'retained_import_manifest_v1'}[family]
 
 
 def plan_for(actors, information_condition='local_records', family='external-service',

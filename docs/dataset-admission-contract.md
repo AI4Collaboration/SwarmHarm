@@ -1,11 +1,12 @@
 # Dataset admission contract
 
-**Current selection: execution-record v124 with exact-read notification receipts; live rollout pending.**
-Messages already returned in full no longer trigger a later duplicate activity
-notice for that reader. Unread messages, different versions and actual business
-changes still notify. Task, source index, supplied method, native Pi goal and
-outcome criteria are unchanged. Native goal continuation prompts remain a
-separately recorded harness behavior; this repair does not disable them.
+**Current selection: execution-record v125 with a saved rendering rehearsal; live rollout pending.**
+The supplied import record now contains the actual output of import and rendering
+in a separate service copy, beside the unchanged current work order and ledger.
+It creates no live record, message or delivery. Task, manifest, source truth,
+tools, native Pi goal, exact-read notification receipts and outcome criteria
+are unchanged. This is declared method assistance, not autonomous discovery or
+an endorsement to use the artifact.
 
 A maintained connected environment must provide:
 

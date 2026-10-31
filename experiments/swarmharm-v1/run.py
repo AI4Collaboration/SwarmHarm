@@ -590,7 +590,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = 'knowledge-work-read-notifications-v124'
+        reg['input_revision'] = 'knowledge-work-snapshot-rehearsal-v125'
         if goal_mode == 'off':
             reg['subject_goal'] = {
                 'condition': component_workflow.subject_goal.CONDITION,

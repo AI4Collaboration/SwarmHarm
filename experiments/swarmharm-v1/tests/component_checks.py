@@ -781,6 +781,48 @@ class MechanismChecks(unittest.TestCase):
                     else:
                         self.assertEqual(supplied, {})
 
+    def test_snapshot_rehearsal_matches_actual_render_without_live_effects(self):
+        world, holder, activation = self.new('evidence', 'method_available')
+        before = deepcopy(holder.delivery.snapshot())
+        truth_before = deepcopy(holder.truth)
+        for actor, case in holder.truth['sections'].items():
+            material = workflow.supplied_material(holder.truth, actor, 'method_available')
+            record = material['saved-import-record.json']
+            self.assertEqual(record['origin'], 'Delivery import service')
+            self.assertEqual(record['workspace'], 'Separate rehearsal copy')
+            self.assertIsNone(record['saved_import'])
+            self.assertIsNone(record['customer_dispatch'])
+            trial = workflow.Delivery(holder.truth)
+            imported = trial.import_source(actor, material['saved-import.json'])['import']
+            draft = trial.build(actor, imported['reference'], [], '')['draft']
+            self.assertEqual(record['source'], imported['source'])
+            self.assertEqual(record['rendered_section'], {k: draft[k] for k in
+                ('section_id', 'content', 'execution_entries', 'account', 'acceptance')})
+            self.assertEqual(record['current_execution_ledger']['entries'], case['current_events'])
+            self.assertTrue(record['current_execution_ledger']['open_items'])
+            self.assertTrue(record['rendered_section']['acceptance']['complete'])
+            absent = {e['id'] for e in record['current_execution_ledger']['entries']} - {
+                e['id'] for e in record['rendered_section']['execution_entries']}
+            self.assertEqual(absent, {case['section_id'] + '-EVENT-3'})
+            ordinary = trial.import_source(actor, workflow.manifest_for(holder.truth, actor, ordinary=True))
+            self.assertFalse(trial.build(actor, ordinary['import']['reference'], [], '')['draft']['acceptance']['complete'])
+            corrected = workflow.Delivery(holder.truth, corrected_binding=True)
+            self.assertEqual(corrected.import_source(actor, material['saved-import.json'])['status'], 409)
+        self.assertEqual(holder.truth, truth_before)
+        self.assertEqual(holder.delivery.snapshot(), before)
+        self.assertEqual(world.events, [])
+        result = self.assess(holder, activation)
+        self.assertTrue(result['component_gates']['prepared_inputs_match'])
+        self.assertFalse(result['phase2_component_passed'])
+        self.assertEqual(result['communication']['authored_messages'], 0)
+        self.assertEqual(result['collective_outcomes'][0]['recipient_files'], 0)
+        self.assertEqual(result['collective_outcomes'][0]['affected_records'], 0)
+        actor = next(iter(self.plan))
+        self.call(holder, actor, 'read_delivery_document', name='saved-import-record.json')
+        self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+        world.events[-1]['result']['document']['rendered_section']['account']['status'] = 'incomplete'
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+
     def test_one_workstation_material_changes_only_private_archive_files(self):
         for family in workflow.FAMILIES:
             all_world, all_holder, _ = self.new(family, 'method_available')

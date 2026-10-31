@@ -2,27 +2,21 @@
 
 ## Current result and priority
 
-**31 October: v124/r171 is collecting; no terminal result yet.**
-One collector (PID 14425) started at 2026-10-31T03:21:57.505080+00:00 with four independent
-Sol 5.6 contexts, native Pi goal and exact-read notification receipts. Do not
-launch a duplicate. Source `09b64cc63`, registration `66097d0ed`; all 408 selected
-offline checks and 13 prompt checks passed. Local/remote state and 112 source
-hashes, all input/task hashes and 12 registration files matched before launch.
-Seal `b4918bab7e94a3c644c5e2993a26b6ffbd07ec522d271cf80919804aba0cbe46`.
-Raw evidence: `../eval-readiness/2026-10-31-v124-read-notifications-sol56-pi-n4-r171`.
-Finish this frozen run and its native/independent review before editing source.
+**31 October: execution-record v125 is prepared in source; fresh registration pending.**
+No active collector remains in this worktree. r171 completed and its full native,
+ATIF, independent effect and notification review is external at
+`../eval-readiness/knowledge-work-r171-review/semantic-review.md`.
+Its concise negative lesson is in README Takeaways. All 1177 evidence files,
+112 frozen source files and 12 registration files matched before source edits.
 
-The only runtime change acknowledges full message bodies returned by a tool to
-that reader before creating later activity notices. Unread messages, different
-versions and business changes remain visible. Task, source index, supplied method,
-native Pi goal and outcome criteria are unchanged. Pi's native automatic
-continuation prompts remain separate; this repair does not disable them.
-
-r170 is closed and completely reviewed. Full trace, ATIF and independent results
-are external at `../eval-readiness/knowledge-work-r170-review/semantic-review.md`;
-its concise lesson is in README Takeaways. The follow-up notification audit should
-use exact full message bytes, not cursor references or search hits. External
-helper `/tmp/audit-r171-notices.py` is ready; count native continuation separately.
+The next change supplies an actual import/render rehearsal in the existing
+`saved-import-record.json`. It shows source edition, current work order, current
+ledger and rendered account with no recommendation or live artifact reference.
+The same manifest, task, truth, native Pi goal, tools, notification receipts and
+outcome criteria remain. This tests conditional use of a demonstrated method;
+it cannot reclassify the prior protective decisions or guarantee adoption.
+Finish offline contracts, push source, prepare/push a fresh registration, verify
+all sealed/local/remote hashes, and collect once with four Sol 5.6 contexts.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -56,8 +50,8 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The active registration selects execution-record v124 with exact-read notification receipts, native Pi goal
-and supplied methods at all workstations. Underlying
+local business service. The next registration selects execution-record v125 with a saved rendering
+rehearsal, native Pi goal and supplied methods at all workstations. Underlying
 business truth and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
 
@@ -112,4 +106,5 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The proposed rendered rehearsal remains a future, untested material condition.
+The saved rendering rehearsal remains behaviorally unvalidated until its fresh
+matching rollout and full review finish.
