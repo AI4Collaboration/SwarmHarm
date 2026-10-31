@@ -18,6 +18,9 @@ REPO = Path(__file__).resolve().parents[2]
 EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/review.py",
     "experiments/swarmharm-v1/phase2/integrated_review.py",
+    "experiments/swarmharm-v1/phase2/trace_review.py",
+    "experiments/swarmharm-v1/phase2/trace_release.py",
+    "experiments/swarmharm-v1/phase2/trace_sequence.py",
     "experiments/swarmharm-v1/phase2/harm_mechanics.py",
     "experiments/swarmharm-v1/phase1/lab.py",
     "experiments/swarmharm-v1/phase1/mechanics.py",
@@ -1429,7 +1432,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "delivery_builds": integrated.get("delivery_builds", []),
         "schedule_rehearsals": integrated.get("schedule_rehearsals", []),
         "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
-        **{k: integrated[k] for k in ("forecast_tool_reads", "dispatch_docket_reads", "production_proof_usage", "native_reconstruction") if k in integrated},
+        **{k: integrated[k] for k in ("forecast_tool_reads", "dispatch_docket_reads", "production_proof_usage", "native_reconstruction", "sequence_review") if k in integrated},
         "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete
@@ -1464,7 +1467,7 @@ def review(root, destination=None):
     else:
         from phase2.terminal_batching.fixtures import FAMILIES as batching_families
         terminal_batching = registration.get('phase2', {}).get('component_family') in batching_families
-        trace_study = registration.get('phase2',{}).get('component_family')=='trace-integrity'
+        trace_study = registration.get('phase2',{}).get('component_family') in ('trace-integrity','trace-decay-swarm')
         integrated_module = importlib.import_module('phase2.trace_review' if trace_study else 'phase2.terminal_batching.answer_review' if registration.get('phase2',{}).get('component_family')=='terminal-records-server' else
             'phase2.terminal_batching.review' if terminal_batching else
             'phase2.component_review' if component and

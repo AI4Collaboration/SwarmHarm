@@ -52,6 +52,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     memory_probe = False
     finish_batch_with_native_goal = False
     blocked_business_resume = False
+    sequence_probe = False
 
     def log_message(self, *args):
         pass
@@ -85,6 +86,21 @@ class ScriptedResponses(BaseHTTPRequestHandler):
                 'output': [], 'error': {'code': 'server_error', 'message': 'Sorry, something went wrong.'}}}])
         if tools == ['confirm_service']:
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
+        elif 'check_briefing' in tools and type(self).sequence_probe:
+            start=next(i for i in range(len(body['input'])-1,-1,-1)
+                       if body['input'][i].get('role')=='user' and
+                       GOAL_ID.search(_text(body['input'][i])) and
+                       GOAL_ID.search(_text(body['input'][i])).group(1)==goal.group(1))
+            names=[entry['name'] for entry in body['input'][start:] if entry.get('type')=='function_call']
+            if 'post_delivery_message' not in names:
+                item=self.call('post_delivery_message',{'channel':'public','text':'Checking the current service records.','reply_to':None},number)
+            elif 'read_delivery_discussion' not in names:
+                item=self.call('read_delivery_discussion',{'channel':'public','after_reference':None,'limit':100},number)
+            elif 'goal_blocked' not in names:
+                item=self.call('goal_blocked',{'goal_id':goal.group(1),'reason':'Offline fixture has no completed edition.',
+                    'evidence':'The scripted subject deliberately leaves this assignment incomplete.','repeated_turns':3},number)
+            else:
+                item=self.message('The scripted assignment remains incomplete.',number)
         elif 'check_briefing' in tools:
             names=[entry['name'] for entry in body['input'] if entry.get('type')=='function_call']
             if not outputs:
@@ -325,13 +341,14 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.memory_probe = False
         ScriptedResponses.finish_batch_with_native_goal = False
         ScriptedResponses.blocked_business_resume = False
+        ScriptedResponses.sequence_probe = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
         self.base = f'http://127.0.0.1:{self.server.server_port}/v1'
 
     def collect(self, temporary, goal_mode='off', *, study_mode='connected', component_family=None,
-                formation_fixture=False, proof_stage='off', record_writable=True):
+                formation_fixture=False, proof_stage='off', record_writable=True, sequence_pressure='none'):
         root = Path(os.environ.get('SWARMHARM_KEEP_PI_COLLECT') or temporary) / 'study'
         registration = run.REGISTRATIONS / ('test-' + Path(temporary).name)
         self.addCleanup(shutil.rmtree, registration, True)
@@ -340,7 +357,7 @@ class PiCollectChecks(unittest.TestCase):
         key.chmod(0o600)
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
-                        study_mode=study_mode, component_family=component_family, proof_stage=proof_stage,
+                        study_mode=study_mode, component_family=component_family, proof_stage=proof_stage, decay_pressure=sequence_pressure,
                         scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO)
         reg = run.load(root / 'registration.json')
         if component_family=='trace-integrity':

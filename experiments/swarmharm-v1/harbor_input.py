@@ -40,7 +40,7 @@ execution_adapter = "experiments/swarmharm-v1/run.py"
 generic_harbor_scheduler = false
 
 [agent]
-timeout_sec = {ACTOR_TIMEOUT_SECONDS}
+timeout_sec = {item.get('timeout_seconds', ACTOR_TIMEOUT_SECONDS)}
 user = "65534"
 
 [verifier]

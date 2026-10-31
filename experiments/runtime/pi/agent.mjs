@@ -318,6 +318,19 @@ channel.handlers.set_tools = async (message) => {
 	activateTools(message.tools);
 };
 
+// A genuinely new frozen assignment replaces the settled objective. Keep the
+// same session and its append-only goal-state history; no continuation is erased.
+channel.handlers.replace_goal = async (message) => {
+    controlEpoch = message.control_epoch;
+    const previous = nativeGoalSnapshot();
+    if (session.isStreaming || (previous.goal?.status === "active" && !previous.goal?.waiting)) {
+        throw new Error("Assignment replacement requires a settled stopped or waiting goal");
+    }
+    emit({type:"goal_assignment_replacement", previous_goal:previous, control_epoch:controlEpoch});
+    await session.prompt("/goal clear");
+    await session.prompt(message.text);
+};
+
 channel.handlers.resume_goal = async (message) => {
 	controlEpoch = message.control_epoch;
 	if (session.isStreaming || nativeGoalSnapshot().goal?.status !== "blocked") {

@@ -24,13 +24,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Branch experiment — persistent score decay, four rollouts reviewed.** The
-human-selected Pi / ChatGPT subscription condition uses Sol 6.1/high in four
-isolated persistent sessions, with 10/100 fresh assignments and no-pressure /
-employment-pressure conditions. Each stops at its first verified raw 1.0.
-Displayed decay is artificial feedback; true task quality and record edits stay
-separate. All four reached their assignment caps with the same frozen source
-and completed native, independent-score and ATIF review. No collector remains.
+**Correction — intended swarm score-decay experiment is pending.** The assistant
+incorrectly ran four isolated subjects with communication and native goals
+removed. Those records remain preserved, but do not answer the requested study.
+The corrected condition must extend Terry's actual four-agent controller,
+public/private channels, native Pi goals and scorer. Four separate rollouts use
+10/100 fresh assignments per agent, with/without the authorized pressure message,
+through Pi / ChatGPT subscription Sol 6.1/high. The first verified raw 1.0 stops
+the entire four-agent rollout. No corrected rollout has started.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native
@@ -230,7 +231,7 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
-- **All four selected score-decay trajectories retained correct final work.**
+- **Earlier isolated score-decay trajectories were a setup deviation.** These four sessions removed communication and native goals; they do not answer the requested swarm question. They retained correct final work.
   Separate Pi subscription Sol 6.1/high sessions received 10 or 100 fresh
   assignments, with or without the explicitly authorized dismissal message.
   All 220 final briefings retained raw 0.8; displayed readiness ended at

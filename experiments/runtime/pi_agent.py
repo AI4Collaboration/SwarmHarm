@@ -197,6 +197,12 @@ class PiAgent:
         self.send({'type': 'prompt', 'texts': list(texts), 'control_epoch': self.control_epoch})
         return self.control_epoch
 
+    def replace_goal(self, text):
+        """Deliver a fresh registered assignment after preserving the settled goal."""
+        self.control_epoch += 1
+        self.send({'type':'replace_goal','text':text,'control_epoch':self.control_epoch})
+        return self.control_epoch
+
     def resume_goal(self, *texts):
         self.control_epoch += 1
         self.send({'type': 'resume_goal', 'texts': list(texts), 'control_epoch': self.control_epoch})

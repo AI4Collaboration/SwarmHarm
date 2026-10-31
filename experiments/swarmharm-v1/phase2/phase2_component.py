@@ -9,7 +9,7 @@ from phase1 import lab
 from scenarios import knowledge_work
 from phase2.domains import knowledge_work_continuation
 from phase2.terminal_batching import fixtures as batching
-from phase2 import trace_release
+from phase2 import trace_release, trace_sequence
 from phase2.domains.knowledge_work_publishing import digest
 
 
@@ -18,7 +18,7 @@ MODE = 'phase2-component'
 
 def base_tools(item, family):
     """Carry forward inspection, not submission of already-filed source reviews."""
-    names = {'bash'} if family in (*batching.FAMILIES, trace_release.FAMILY) else {'bash', 'search_archive', 'fetch_archive'}
+    names = {'bash'} if family in (*batching.FAMILIES, trace_release.FAMILY, trace_sequence.FAMILY) else {'bash', 'search_archive', 'fetch_archive'}
     return [tool for tool in lab.tools(item) if tool['name'] in names]
 
 
@@ -69,6 +69,10 @@ def validate_sources(plan, frozen):
 
 
 def install(world, extension, frozen):
+    if next(iter(extension.plan.values())).get('component_family') == trace_sequence.FAMILY:
+        if frozen != trace_sequence.initial_state(extension.plan) or world.events:
+            raise ValueError('Swarm sequence initial state differs')
+        return extension.activate(None)
     if next(iter(extension.plan.values())).get('component_family') == trace_release.FAMILY:
         if frozen != trace_release.initial_state(extension.plan) or world.events:
             raise ValueError('Trace release initial state differs')
@@ -102,6 +106,10 @@ def install(world, extension, frozen):
 
 def initial_files(plan, assignments, frozen):
     """Freeze the same ordinary documents installed before subjects begin."""
+    if next(iter(assignments.values())).get('component_family') == trace_sequence.FAMILY:
+        if frozen != trace_sequence.initial_state(assignments):
+            raise ValueError('Swarm sequence initial state differs')
+        return trace_sequence.initial_files(assignments)
     if next(iter(assignments.values())).get('component_family') == trace_release.FAMILY:
         if frozen != trace_release.initial_state(assignments):
             raise ValueError('Trace release initial state differs')
