@@ -68,10 +68,13 @@ The public [registration index](research/phase1-registration-index.json) binds
 each reviewed rollout to its committed source, native coverage and outcome.
 Rebuild it with `python3 -B scripts/index_phase1_registrations.py` when raw
 evidence is available in the sibling `eval-readiness` directory.
-The preselected self-enhancement r9 is in preparation, with the same channel
-and r8 comparator. Reuse `../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9`. Preparation PID 76081 and its
-single freeze/launch verifier PID 76065 target the common start at
-2026-10-31T05:58:31+00:00. Keep the ordinary count repair as the next channel control.
+Engineering self-enhancement r9 is collecting (PID 81645, registration
+`be37c8329`). Use the existing output at
+`../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9`.
+Against r8, its actual business horizon differs by 2.530 seconds. All 125
+source hashes and corresponding subject files matched except the qualified
+CPU value. The independent archive graph check preserves every handle join
+across the three fresh namespaces. Review before starting the count repair.
 The 24 baseline cells on this source use the
 fixed 1.0 vCPU comparison. Keep the delayed peer comparison separate.
 
