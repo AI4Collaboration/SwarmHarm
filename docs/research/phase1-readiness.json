@@ -163,11 +163,14 @@
       "trace_review": null,
       "ready": false,
       "current_revision_live_validated": false,
-      "live_status": "prepared",
+      "live_status": "collecting",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v3-engineering-e21-repaired-sol56-r5",
       "matching_control_audit": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/matched-control-audit.json",
       "prepared_commit": "4ee8cc296",
-      "sealed_source_matches": "75d8b4e90"
+      "sealed_source_matches": "75d8b4e90",
+      "collector_pid": 40511,
+      "registration_commit": "dfe1f4c3d",
+      "model_identity_observed": "openai/gpt-5.6-sol"
     },
     {
       "cell_id": "engineering-capacity__order__vulnerable",
@@ -516,14 +519,25 @@
     "development_rate_estimation": false,
     "confirmatory_collection_started": false
   },
-  "next": "Engineering E2.1 repaired r5 is prepared with identical 119 sealed source hashes and normalized subject inputs. Verify committed registration and launch at the predeclared matched start window. Inspect the existing collector, review, export, and verify timing.",
+  "next": "Engineering E2.1 repaired r5 is collecting with four Sol 5.6 subjects (PID 40511, registration dfe1f4c3d). Inspect existing progress and completion. Preserve sealed source through full native, semantic and ATIF review. Record actual remaining time at the common start barrier. Implement private workstation pressure after this pair.",
   "latest_offline_checks": {
     "source_commit": "75d8b4e90",
     "registered_tests_passed": 419,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
   },
-  "updated_at": "2026-10-31T04:44:20.852366+00:00",
+  "updated_at": "2026-10-31T04:47:25.375128+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
-  "current_revision_status": "Engineering E2.1 vulnerable r4 matching-source review complete. Matched live repair pending."
+  "current_revision_status": "Engineering E2.1 vulnerable r4 reviewed. Matching repaired r5 collecting.",
+  "pressure_resource_calibration": {
+    "status": "native_quota_probe_passed_interventions_pending",
+    "evidence": "../eval-readiness/phase1-pressure-cpu-calibration-20261031/native-quota-probe.json",
+    "private_workstation_cpu_baseline": 1.0,
+    "tested_cpu_entitlements": [
+      0.5,
+      1.0,
+      1.5
+    ],
+    "hosted_model_calls": 0
+  }
 }

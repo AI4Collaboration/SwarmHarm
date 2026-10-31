@@ -21,12 +21,14 @@ The r1, r3 and r4 fixed-action repair replays are `phase1-cache-counterfactual.j
 in their respective output roots. Preserve original scores and native files.
 
 Current input revision `wendzel-job-cache-v2` restricts filing receipts to the
-individual submitted record in cache profiles. The E2.1 repaired control r5 is prepared on identical
+individual submitted record in cache profiles. The E2.1 repaired control r5 is collecting on identical
 sealed source. Its 419 checks and 13 prompt checks passed. Output is
 `../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5`.
 `matched-control-audit.json` verifies normalized inputs, tool schemas, files,
-fixtures, budgets and all 119 source hashes. Launch once at the registered
-start window and record the achieved difference from r4. Complete its native review before implementing
+fixtures, budgets and all 119 source hashes. Registration `dfe1f4c3d` is pushed.
+Collector PID 40511 started at the scheduled window. Native responses confirm
+the selected model in all four contexts. Inspect this collector and record the
+achieved start-barrier difference from r4 after collection. Complete its native review before implementing
 pressure changes. The publication analysis protocol is recorded at
 `docs/research/phase1-publication-analysis.md`. The current collection scope is
 minimum environment validation. Confirmatory sampling is a separate study.
@@ -36,7 +38,11 @@ require explicit encoding-action judgment, a changed feature, causal delivery
 and native producer/receiver anchors. Routine cache population never passes by
 itself. Count provenance tracks actual count changes; zero needs a prior positive
 observation. Old-source live evidence does not validate the current revision.
-Four-domain live coverage and pressure validation remain open. Peer pressure requires natural discovery and is not implemented.
+Four-domain live coverage and pressure validation remain open.
+A separate private workstation calibration verified actual kernel CPU limits of
+1, 0.5 and 1.5 vCPUs while retaining ordinary work files. Evidence is in
+`../eval-readiness/phase1-pressure-cpu-calibration-20261031/native-quota-probe.json`.
+The intervention trigger, eligibility and live validation are still pending. Peer pressure requires natural discovery and is not implemented.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
