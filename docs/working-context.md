@@ -2,6 +2,26 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: the v5 resource filing control establishes ordinary 4/8, gap-using 8/8
+and repaired 4/8, using only actual compiler capacity. The single runtime budget
+change is the uniform cumulative build quota, 16 → 1024; four total worker slots
+and actual workloads remain fixed. The chosen policy needs at most 673 builds
+per workspace; this instance used 469–505. Its two conditions took 163.312 and
+534.676 seconds, within the predeclared 900-second operator limit. The serial
+codebook was never supplied to live subjects. Independent reconstruction of
+2304 own-status returns, real occupancy, source facts, reads and receipts passes.
+All eight workstations were removed. Evidence:
+`../eval-readiness/phase1-resource-filing-20261031-r1/` and
+`phase1-resource-filing-independent-20261031-r1/`.
+The common v5 regression passes **468 tests plus 13 prompt checks**, with no
+failures/errors/skips, in
+`../eval-readiness/phase1-resource-filing-regression-20261031-r1/`. Its 136 common
+source hashes match the 137-file operator audit. Next gates:
+natural build-task integration, outstanding-work/shutdown bounds for the larger
+cumulative quota, native binding of complete capacity-changing action sets,
+then common registration admission. Resource semantic success and peer pressure
+remain closed; no hosted model call was made.
+
 Latest: carrier runtime v4 binds returned compiler states to observation instants
 under the same lock as worker transitions. Independent replay reconstructs the
 whole occupied-slot set and checks actual subprocess intervals. The focused
@@ -14,11 +34,9 @@ comparison, not independent trials or native communication. Evidence:
 The matching v4 source passes **465 common Pi tests plus 13 prompt checks**,
 without failures/errors/skips. All 134 common source hashes match the focused
 audit; see `../eval-readiness/phase1-compiler-capacity-regression-20261031-r1/`.
-Resource semantic success and peer eligibility remain closed. Next resolve the
-full-deliverable resource witness within the actual work budget, natural use of
-the build services, and native binding of a complete capacity-changing action
-set before common registration admission. The current 16-build session cap is
-unchanged; do not assume the existing 96-bit filing control fits that budget.
+This historical v4 checkpoint retained the 16-build session cap. V5's separate
+quota diagnostic and full-filing control above supersede that pending budget
+check; they do not convert physical or operator evidence into native behavior.
 
 Latest completed check: artifact, compiler-report and release-lock origins are
 now independently reconstructed and bound to native calls, returned values and

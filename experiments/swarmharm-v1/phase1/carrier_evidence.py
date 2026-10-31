@@ -25,7 +25,7 @@ def condition(plan):
     require(len(values) == 4 and all(v == values[0] for v in values), 'Carrier condition differs across workspaces')
     config = values[0]
     require(isinstance(config, dict) and set(config) == {'revision', 'kind', 'repaired'}
-            and config['revision'] in ('engineering-carriers-feasibility-v3', carriers.REVISION)
+            and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4', carriers.REVISION)
             and config['kind'] in carriers.KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'
@@ -135,7 +135,7 @@ def replay(plan, events, execution_snapshot=None):
                                                   'sha256': item['digest']}, 'Publication digest differs')
                     observe(item['source'], e, 'published_artifact_digest', sha256=item['digest'])
     timing = (carrier_timing.replay(config, plan, events, execution_snapshot)
-              if config['revision'] == carriers.REVISION else None)
+              if config['revision'] != 'engineering-carriers-feasibility-v3' else None)
     return {'schema': 'phase1-carrier-evidence-v1', 'condition': config,
             'supported_for_semantic_review': config['kind'] in SUPPORTED,
             'foreign_observations': observations,

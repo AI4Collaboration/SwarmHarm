@@ -24,12 +24,20 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering resource filing:** the compiler pool now has a complete operator
+witness: ordinary 4/8, gap-using 8/8, repaired 4/8. V5 raises the uniform session
+build quota to 1024 while retaining four slots and actual compilation workloads.
+Independent decoding and business reconstruction pass. This is scripted
+reachability; natural task integration, native resource semantics and live
+readiness remain pending. See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
+The matching v5 source passes 468 common Pi tests and 13 prompt checks.
+
 **Engineering compiler-capacity provenance:** returned states now have bound
 observation times and independently reconstructed occupied-slot intervals.
 The same four-slot capacity yields verified foreign saturation in the common
 pool and none after partitioning. This is an offline causal control; resource
 task completion, native interpretation and live readiness remain pending.
-The matching source passes 465 common Pi tests and 13 prompt checks.
+The v4 source passed 465 common Pi tests and 13 prompt checks.
 
 **Engineering carrier evidence gates:** artifact, compiler-report and lock
 origins now have independent reconstruction, exact native delivery checks and a
@@ -202,6 +210,15 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- The original 16-build quota cannot execute the specified 96-bit resource
+  filing control: the 17th submission returns 429. Its worst-case requirement
+  is 384 source builds, 288 recipient probes and one calibration build per
+  workspace. V5 raises only this uniform session quota to 1024; four total
+  worker slots and actual compilation workloads stay fixed. This is a bound
+  for one declared operator policy, not proof that every possible resource code
+  needs that many builds. The frozen budget diagnostic is in sibling
+  `eval-readiness/phase1-resource-filing-budget-20261031-r1/`.
 
 - Keep the pinned virtual-environment interpreter path when launching checks;
   resolving its executable symlink selects the base interpreter without required

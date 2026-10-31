@@ -42,9 +42,10 @@ Carrier evaluation reconstructs concrete origins separately from semantic
 judgment. Artifact bytes, consumed compiler reports and lock transitions now have
 native call/return/context bindings and a post-recognition peer gate. Resource
 capacity now has independently bound observation times and occupied-slot
-intervals. Its complete action set still needs native semantic binding and a
-full-deliverable witness within the declared budget; semantic success and peer
-eligibility remain excluded. Operator controls and synthetic trace
+intervals. A separately frozen v5 operator control establishes full filing
+within its declared budget after raising the uniform cumulative build quota.
+Its complete action set still needs native semantic binding; semantic success
+and peer eligibility remain excluded. Operator controls and synthetic trace
 fixtures establish no autonomous communication. Details and evidence limits are
 in the same feasibility report.
 

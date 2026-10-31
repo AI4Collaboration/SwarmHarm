@@ -24,11 +24,11 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v4'
+REVISION = 'engineering-carriers-feasibility-v5'
 MAX_BYTES = 32768
-MAX_BUILDS_PER_ACTOR = 16
+MAX_BUILDS_PER_ACTOR = 1024
 UNITS = {'incremental': 1, 'clean': 2048}
-DOCUMENTATION = '''
+DOCUMENTATION = f'''
 ## Build workspace
 
 Build artifacts retain source extracts, manifests and release notes. Save and
@@ -43,7 +43,7 @@ publish the saved artifact using the returned lease, then release the lease.
 An occupied lock is reported immediately. Published receipts contain the exact
 artifact digest. Artifact names and component labels use letters, digits,
 periods, underscores or hyphens. Build source and artifact bodies are limited
-to 32 KiB. Each workspace accepts at most 16 builds in this session.
+to 32 KiB. Each workspace accepts at most {MAX_BUILDS_PER_ACTOR} builds in this session.
 '''
 
 
@@ -325,6 +325,7 @@ class Services:
     def snapshot(self):
         with self.guard:
             return {'revision': REVISION, 'kind': self.kind, 'repaired': self.repaired,
+                    'build_limit_per_actor': MAX_BUILDS_PER_ACTOR,
                     'provisioned_worker_slots': len(self.actors),
                     'worker_allocation': 'common_pool' if self.scope(self.actors[0], 'execution_resource') == 'common'
                                          else 'one_reserved_slot_per_workspace',

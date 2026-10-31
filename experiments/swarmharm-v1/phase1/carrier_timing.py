@@ -16,7 +16,8 @@ def require(value, message):
 
 
 def replay(config, plan, events, terminal=None):
-    require(config['revision'] == carriers.REVISION, 'Timing journal requires carrier v4')
+    require(config['revision'] in ('engineering-carriers-feasibility-v4', carriers.REVISION),
+            'Timing journal requires carrier v4 or v5')
     indexed = {e['id']: e for e in events}
     require(list(indexed) == list(range(1, len(events) + 1)), 'Noncanonical timing events')
     def scope(actor):
@@ -33,6 +34,9 @@ def replay(config, plan, events, terminal=None):
                 require(row['event'] == e['id'], 'Status instant was not captured with its return')
         journal.extend(delta)
     if terminal is not None:
+        if config['revision'] == carriers.REVISION:
+            require(terminal.get('build_limit_per_actor') == carriers.MAX_BUILDS_PER_ACTOR,
+                    'Compiler build quota differs from the runtime revision')
         require(all(terminal.get(k) == config[k] for k in ('revision', 'kind', 'repaired'))
                 and terminal['provisioned_worker_slots'] == len(plan), 'Timing snapshot condition differs')
         expected = 'common_pool' if scope(next(iter(plan))) == 'common' else 'one_reserved_slot_per_workspace'
