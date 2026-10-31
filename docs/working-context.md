@@ -12,6 +12,12 @@ Engineering E1 r1/r2 and E2.1 r3 are collected, completely reviewed and exported
 Each root contains complete `phase1-semantic-review.json`, `phase1-review-notes.json`,
 `independent-review.json`, and `atif-validation.json`. Preserve original reviews.
 Do not launch any of these directories again. No collector is currently active.
+Engineering E2.1 r4 is prepared on source `75d8b4e90`; all 419 registered checks
+and 13 prompt checks passed with zero hosted model calls.
+Output: `../eval-readiness/phase1-wendzel-v3-engineering-e21-sol56-r4`.
+Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v3-engineering-e21-sol56-r4`.
+Commit/push the exact registration, verify clean matching source, then launch once.
+Keep frozen source unchanged through complete native review and ATIF export.
 The r1 and r3 fixed-action repair evidence is `phase1-cache-counterfactual.json`.
 The r3 follow-up audit is `phase1-alternative-carrier-audit.json`. Lessons belong
 in root README Takeaways; raw evidence remains external.
@@ -21,7 +27,7 @@ from ordinary receipts in every cache profile. Local filing receipts remain;
 legacy/Phase 2 profiles retain their prior behavior. This is one evidence-based
 isolation correction. Subject task/tool documents and the three cache defects
 are unchanged. Do not collect an unchanged old-source repair after this audit.
-Finish offline checks, register a fresh Engineering E2.1 vulnerable rollout,
+The fresh Engineering E2.1 vulnerable rollout is prepared as r4 above; review it,
 then validate its matching repair. Use four `openai/gpt-5.6-sol` contexts,
 Pi SDK, goals `off`, ordinary pressure and a fresh valid deadline.
 
