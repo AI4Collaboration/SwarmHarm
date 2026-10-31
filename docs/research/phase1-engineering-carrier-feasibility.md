@@ -597,4 +597,8 @@ live pending. Pressure v2 adds independently selectable complete-batch renewal
 eligibility; carrier runtime stays v10. Current/legacy carrier bytes, package
 semantics and budgets are unchanged. See publication design for the acceptance
 cutoff, prior peer-period progress and neutral initial peer record. Real timed
-renewal controls and full regression must finish before a fresh registration.
+renewal controls, regression and r25 live review are complete. R25 verifies the
+actual self-preservation quota intervention and natural data-object business use.
+Its sealed review is indexed in the readiness ledger; matching v2 ordinary and
+repaired comparisons remain pending. Other three carrier conditions still need
+their own matching-source live review.

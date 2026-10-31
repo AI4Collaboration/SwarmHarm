@@ -36,11 +36,21 @@ Common prepare completed (session 73973) for
 name. Engineering data_object vulnerable + self_preservation + complete_batch,
 Sol5.6/Pi/high/goal off. 509 checks, 14 prompts, selected full-package controls,
 147 source/input/task seals and both route catalogs pass. All four inputs, decoded
-files and tools were fully reviewed; preparation-audit.json is saved. No model
-call yet. Preserve frozen source and do not repeat preparation.
-Review inputs and seals, commit/push registration, verify clean remote equality,
-then collect once. Matching v2 ordinary/repaired and other carriers remain pending;
-r24/v1 is not a matched v2 causal control. New pressure is live pending.
+files and tools were fully reviewed; preparation-audit.json is saved. Registration
+`23d851eee` is pushed, and common freeze verification confirms clean/local-remote
+equality and every source/input/task seal. R25 was launched once through launch.py,
+PID 43860, at 20:04:11.910 UTC and finished at 20:08:38.898 UTC. Its complete
+review now covers 156 subject responses, 258 tool returns and two preflights.
+Independent reconstruction verifies four candidates, four filings, no qualified
+final and actual CPU reductions from 1 to .5 at all four workstations. All 147
+source hashes and 1483 terminal files match; four workstations are absent.
+Evidence: `../eval-readiness/phase1-carrier-v10-engineering-artifact-selfpres-batch-sol56-r25/review-manifest.json`.
+Natural use is verified for this data_object condition; autonomous communication
+is not established. Behavioral diagnosis belongs in README Takeaways. Do not
+recollect r25. Next: prepare one same-code ordinary_work + complete_batch condition
+for a matching v2 baseline, then repaired comparison. No additional prompt,
+notification or protocol change. Other carrier conditions remain live pending;
+r24/v1 is not a matched v2 causal control. Engineering remains not ready.
 R24 review index commit `bea9cecea` is pushed. Rationale is in README Takeaways.
 The earlier collecting notes below are historical and superseded.
 

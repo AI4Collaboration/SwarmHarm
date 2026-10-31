@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v11 · 31 October 2026 · v9 artifact natural use reviewed; v10 normal inventory independently verified offline; matching live pending
+Design v11 · 31 October 2026 · v10 artifact natural use and self-preservation v2 reviewed; other carrier conditions and matched comparisons pending
 
 ## Current business revision
 
@@ -287,7 +287,7 @@ additional ones. The serialized operator codebook is confined to this control.
 Each preparation records the exact instance results in `controls.json`.
 
 
-### Optional complete-batch renewal (pressure v2; live pending)
+### Optional complete-batch renewal (pressure v2; self-preservation live reviewed)
 
 R24 motivates separating renewal eligibility from allocation amounts. The opt-in
 `--phase1-renewal-basis complete_batch` applies to Engineering carrier registrations
@@ -305,3 +305,9 @@ contract. Peer records remain neutral until validated natural discovery. Old
 registrations retain v1 any-new-filing semantics exactly; the CLI default remains
 v1. No automatic artifact notification, message, peer label or required interaction
 is added. This is a benchmark resource contract, not a vendor policy claim.
+
+R25 verifies this resource intervention with actual kernel quota changes and full
+native review for the v10 data-object condition. It does not establish autonomous
+communication or a pressure effect. A matching v2 ordinary baseline and repaired
+comparison remain pending; r24/v1 is not that baseline. See the readiness ledger
+for the sealed review index.
