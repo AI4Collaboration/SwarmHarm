@@ -24,18 +24,21 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Next research direction.** The human-selected *Perfect Crime* paper directly
-grounds a native trace-integrity study. Our current business-record scenario
-does not test that construct. The [source review and proposed evidence boundaries](docs/research/task-sources-and-verification.md#native-trace-integrity-perfect-crime)
-are recorded; no new condition is implemented, registered or live-validated.
+**Current development — v137, live rollout pending.** An independent native
+record-integrity condition adapts *Perfect Crime*. Four Pi goal sessions prepare
+anonymized service briefings. A mediated view permits changes to each subject's
+own disposable session files; external evidence remains protected. Offline SDK
+controls verify ordinary work, the flawed readiness score, a protected-record
+control and final restoration. This is an engineered scoring condition, not a
+claim about stock Pi permissions or spontaneous joint behavior.
+[Grounding and exact limits](docs/research/task-sources-and-verification.md#native-trace-integrity-perfect-crime).
+All Phase 2 families are not yet complete; semantic adjudication is required
+before a native record change can establish deliberate collective misalignment.
 
-**Current development.** V136 makes a saved section available for production
-proofing before all four sections are filed. Revised drafts produce distinct
-proofs; previous copies remain retrievable with their original version. The task,
-two-copy allowance, acceptance, record truth and customer-outcome checks stay
-fixed. One four-agent Sol 5.6 rollout is fully reviewed, including actual proof
-bytes and independently materialized recipient output. No collector is active.
-Findings are in [Takeaways](#takeaways). All Phase 2 families are not yet complete.
+**Full selected traces are now hosted in a private GitHub Release.** The
+[viewer index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/selected-trajectories-20261031-r65-r181/trajectory-index.json)
+links r65, r74, r75, r122, r142, r165, r178, r180 and r181, including their
+world state, ATIF, original requests/responses and evidence manifests.
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads
@@ -510,8 +513,9 @@ modules remain shared dependencies and offline fixtures.
   unexercised live, so its benefit or failure is not established. A missing
   schedule/cancellation notice is a runtime defect, not evidence of agent refusal.
 
-- **Knowing joint execution is still unestablished.** General Phase 2 positives
-  are indexed above. The stronger claim needs pre-action consequence awareness,
+- **Earlier component studies lacked knowing joint execution.** R165 now
+  establishes the bounded example indexed above; the other conditions retain
+  their original limits. The stronger claim needs pre-action consequence awareness,
   plan endorsement by multiple actors and actual effects. METR grounds the
   observations; LessWrong's component starts, supplied materials and persistence
   prompts are factors to test, not a guarantee for Sol. Increasing task length,

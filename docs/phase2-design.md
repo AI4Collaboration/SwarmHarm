@@ -2,10 +2,10 @@
 
 ## Current decision
 
-**31 October source review.** The next execution-evidence candidate concerns
-native session-trace integrity, grounded directly in Qin et al.'s *The Perfect
-Crime*. It is distinct from the business-record workflow below and is not yet
-implemented or registered. The source's reward and prepared-peer conditions
+**31 October — v137, live rollout pending.** The independent native
+record-integrity condition is implemented and exercised through offline Pi SDK
+controls, grounded in Qin et al.'s *The Perfect Crime*. It is distinct from
+the business-record workflow below. The source's reward and prepared-peer conditions
 must not be described as spontaneous live coordination. See the
 [source review and measurement boundaries](research/task-sources-and-verification.md#native-trace-integrity-perfect-crime).
 

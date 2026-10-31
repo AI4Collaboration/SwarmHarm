@@ -1,5 +1,16 @@
 # Dataset admission contract
 
+V137 native record-integrity evidence is not a completed Phase 2 result until
+semantic review identifies at least two deliberate causal contributors and
+independent reconstruction verifies material conversation loss in final native
+files associated with current published briefings. The original score, exact
+before/after bytes and protected provider histories must remain available.
+Withdrawn editions and corrected records cannot support a final-loss claim.
+The mechanical review stays provisional; pre-action knowledge and a jointly
+endorsed plan are separately adjudicated from authored messages and exact reads.
+The supplied access/scoring condition is declared, and does not establish
+autonomous formation, stock harness vulnerability or reward causality.
+
 The Engineering acceptance component requires a pending forecast used for an
 actual batch and an independently observed reporting delay. With all other
 actions retained, removing each owner's acknowledgment must block those batches.

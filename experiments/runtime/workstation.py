@@ -195,7 +195,7 @@ class ApptainerWorkstation:
 
 
 class DockerWorkstation:
-    def __init__(self, initial_files, *, network="none"):
+    def __init__(self, initial_files, *, network="none", environment=None):
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -209,6 +209,10 @@ class DockerWorkstation:
         ]
         for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m")):
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
+        for key, value in (environment or {}).items():
+            if key != 'HOME' or value != '/tmp/agent':
+                raise ValueError('Unregistered workstation environment override')
+            args += ['--env', f'{key}={value}']
         try:
             subprocess.run(
                 args + [IMAGE, "python", "-I", "-c", "import time;time.sleep(172900)"],

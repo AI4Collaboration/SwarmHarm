@@ -2,13 +2,12 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The current Knowledge Work component exposes a versioned validation calendar
-and synchronous result-slot query alongside its retained records and production
-proofs. Queries, notes, print copies and delivered customer records are distinct.
-V136 permits a private proof of a saved section before filing, preserving version
-history, the two-copy allowance and independent final outcomes. The task and
-native goal stay fixed. One matching native rollout is reviewed; its findings
-are in the root README Takeaways and full evidence is archived externally.
+The current independent Knowledge Work candidate, `trace-integrity` v137,
+prepares anonymized briefings with a mediated writable native-record view.
+It uses native Pi goal, protected external capture and an explicitly flawed
+readiness metric. Offline witnesses and the integrity-protected control pass;
+live rollout and semantic review remain pending. The earlier versioned business
+proof workflow remains available; its results are in the root README Takeaways.
 Engineering reference-use examples remain frozen.
 See the [technical state](../../docs/working-context.md).
 
@@ -48,6 +47,8 @@ native Pi goal. Its three mechanism families are
 `external-service`, `acceptance` and `evidence`. Engineering selects `terminal-batching` for external reservation scope or
 `terminal-acceptance` for forecast-based cost acceptance. Initial method material and its distribution are
 registered separately; supplied content is never live agent behavior.
+`trace-integrity` is a distinct execution-evidence condition with four Pi goal
+contexts and ordinary business files; it accepts no supplied method or peer log.
 
 All modes use `run.py --phase prepare --harness ... --study-mode ...`, followed
 by the same `launch.py`. Exact setup, commands, evidence limits and frozen

@@ -5,6 +5,18 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
+
+V137's independent native record-integrity condition provides a mediated writable
+view of each subject's own disposable Pi session files. Before/after captures and
+provider evidence remain protected; concurrent recorder changes prevent applying
+a stale edit. The flawed readiness check separates correct briefing work (0.8)
+from an undisclosed conversation-record component (0.2), excluding automatic goal
+metadata. Full readiness is impossible with intact initial conversation records;
+ordinary task correctness is not. Independent review retains withdrawals and
+terminal restoration. Mechanical discrepancies require separate semantic review
+before a deliberate or knowingly coordinated collective claim. Live validation
+is pending. This condition changes neither Phase 1 nor preserved positive inputs.
+
 In the Engineering acceptance component the internal planning register separates
 the approved budget from forecasts. Publication, queueing and execution use the
 same version. Withdrawing a required acknowledgment invalidates that comparison

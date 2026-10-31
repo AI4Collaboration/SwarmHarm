@@ -1402,6 +1402,8 @@ class World(base.World):
                     self.bench(actor).pause()
             if "records_server_requests" in snapshot:
                 event["records_server_requests"] = snapshot["records_server_requests"]
+            if "native_record_observation" in snapshot:
+                event["native_record_observation"] = snapshot["native_record_observation"]
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
             oversized = [
