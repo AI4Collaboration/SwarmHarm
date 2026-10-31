@@ -5,13 +5,11 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current selection: execution-record v126 with replacement-validation bookings; live rollout pending.**
-The ordinary product register now includes the replacement field-validation booking,
-linked from its work order and source index. Its scheduled work and result availability
-fall after the current customer deadline. A booking supplies no completed validation
-or new message. The saved rendering rehearsal, missing result, task, tools, native
-Pi goal and outcome checks remain unchanged. This tests whether concrete dependency
-timing changes waiting or execution decisions; protective non-delivery remains possible.
+The execution-record component may close an idle cohort with incomplete work
+when every remaining native timer falls beyond the registered batch cutoff.
+Model calls, queued SDK or tool work, pending business updates and in-window
+native timers all keep observation open. The original wake timestamps and
+goal states remain available for review.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report

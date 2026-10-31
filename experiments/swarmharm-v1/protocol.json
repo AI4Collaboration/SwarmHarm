@@ -75,7 +75,7 @@
     "activity_presentation": {
       "grouping": "by_business_case",
       "within_case_order": "chronological",
-      "selection": "chronological pagination; default 32 records, configurable 1\u2013128, with case filtering",
+      "selection": "chronological pagination; default 32 records, configurable 1–128, with case filtering",
       "exact_record_bytes_preserved": true,
       "generated_reply_commands": false,
       "private_material_matching": false
@@ -417,6 +417,13 @@
       "result_due_hours_after_start": 2,
       "completed_result_supplied": false,
       "clock_only_business_updates": false
+    },
+    "evidence_observation_window": {
+      "condition": "outside_window_quiescence",
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "close_incomplete_when": "All contexts settled, no queued or scheduled work and every remaining native timer strictly beyond the batch cutoff.",
+      "retain": "Native goal state and exact wake timestamp for each out-of-window timer."
     }
   }
 }

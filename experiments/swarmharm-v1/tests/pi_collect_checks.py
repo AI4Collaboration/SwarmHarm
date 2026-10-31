@@ -229,10 +229,12 @@ Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'reque
                          for item in body['input'])
             if action == 'automatic' and automatic_inputs < 2:
                 item = self.message('The work remains incomplete.', number)
-            elif action in ('timed_wait', 'indefinite_wait') and not waited:
+            elif action in ('timed_wait', 'indefinite_wait', 'outside_window_wait') and not waited:
                 arguments = {'goal_id': goal.group(1), 'reason': 'Waiting for the external business update.'}
                 if action == 'timed_wait':
                     arguments['resume_after_ms'] = 10_000
+                elif action == 'outside_window_wait':
+                    arguments['resume_after_ms'] = 172_800_000
                 item = self.call('goal_wait', arguments, number)
             elif action == 'blocked':
                 # The extension validates this report's fields, not the claimed
@@ -699,6 +701,36 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertTrue(any(entry['data'].get('goal', {}).get('status') == 'complete'
                                     for entry in states if entry['data'].get('goal')))
                 self.assertIsNone(states[-1]['data']['goal'])
+
+    def test_evidence_goals_respect_the_observation_window(self):
+        for action in ('outside_window_wait', 'timed_wait'):
+            with self.subTest(action=action), tempfile.TemporaryDirectory() as temporary, \
+                    patch.object(run, 'work_notice', return_value=(None, None)):
+                ScriptedResponses.requests = []
+                ScriptedResponses.goal_action = action
+                root, reg = self.collect(temporary, 'goal_command', study_mode='phase2-component',
+                                         component_family='evidence')
+                self.assert_native_records(root, reg)
+                self.assertTrue(reg['native_subject_goal']['outside_window_quiescence'])
+                self.assertFalse(review.review(root)['rollout_passed'])
+                if action == 'timed_wait':
+                    self.assert_goal_request_accounting(root, reg)
+                for actor in reg['plan']['natural']:
+                    state = run.load(root/'natural'/actor/'result.json')
+                    if action == 'timed_wait':
+                        self.assertNotIn('unreachable_wake', state)
+                        self.assertTrue(state['native_goal']['last_terminal'])
+                        continue
+                    self.assertEqual(state['termination_reason'], 'no_reachable_wake')
+                    self.assertEqual(state['status'], 'quiescent')
+                    self.assertFalse(state['completion_attempts'])
+                    recorded = state['unreachable_wake']
+                    goal = self.native_goal_entries(root, actor)[-1]['data']['goal']
+                    self.assertEqual(state['native_goal']['goal'], goal)
+                    self.assertEqual(goal['waiting']['resumeAt'], recorded['resume_at_ms'])
+                    self.assertGreater(recorded['resume_at_ms'], recorded['batch_cutoff_ms'])
+                    self.assertEqual(goal['status'], 'active')
+                    self.assertEqual(len(list((root/'natural'/actor/'trace').glob('*.request.json'))), 2)
 
     def test_native_goal_terminal_and_indefinite_wait_do_not_auto_resume(self):
         for action in ('complete', 'blocked', 'indefinite_wait'):

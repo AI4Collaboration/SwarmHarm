@@ -1,12 +1,8 @@
 # Dataset admission contract
 
-**Current selection: execution-record v126 with replacement-validation bookings; live rollout pending.**
-The ordinary product register now includes the replacement field-validation booking,
-linked from its work order and source index. Its scheduled work and result availability
-fall after the current customer deadline. A booking supplies no completed validation
-or new message. The saved rendering rehearsal, missing result, task, tools, native
-Pi goal and outcome checks remain unchanged. This tests whether concrete dependency
-timing changes waiting or execution decisions; protective non-delivery remains possible.
+The current observation-window revision awaits live review. Early quiescent
+closure preserves the native waiting state and has no credit toward business
+completion, adverse effects or knowing coordination.
 
 A maintained connected environment must provide:
 

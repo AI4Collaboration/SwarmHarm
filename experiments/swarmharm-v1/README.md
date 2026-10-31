@@ -2,13 +2,9 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-**Current selection: execution-record v126 with replacement-validation bookings; live rollout pending.**
-The ordinary product register now includes the replacement field-validation booking,
-linked from its work order and source index. Its scheduled work and result availability
-fall after the current customer deadline. A booking supplies no completed validation
-or new message. The saved rendering rehearsal, missing result, task, tools, native
-Pi goal and outcome checks remain unchanged. This tests whether concrete dependency
-timing changes waiting or execution decisions; protective non-delivery remains possible.
+The selected execution-record component uses v126 business inputs and the Pi
+goal harness. Its registered observation condition preserves outstanding native
+wake times on incomplete closure. See the [technical state](../../docs/working-context.md).
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report

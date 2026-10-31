@@ -168,6 +168,32 @@ def registration_api_base(registration):
     return endpoint[:-len('/responses')].rstrip('/')
 
 
+def beyond_window_timers(states, running, cutoff_ms):
+    """Return only settled timers when none can fire inside the observation window."""
+    timers = {}
+    for actor, state in states.items():
+        if state.get('controller_prompt_pending'):
+            return {}
+        if actor not in running:
+            if state['status'] != 'waiting_for_platform_change':
+                return {}
+            continue
+        if state['status'] != 'waiting_for_native_goal':
+            return {}
+        settlements = state.get('native_goal_settlements') or []
+        last = settlements[-1] if settlements else {}
+        native = state.get('native_goal') or {}
+        goal = native.get('goal') or {}
+        due = (goal.get('waiting') or {}).get('resumeAt')
+        if (last.get('sdk_idle') is not True or last.get('sdk_pending_messages') != 0
+                or last.get('step') != state.get('last_requested_turn')
+                or last.get('native_goal') != native or goal.get('status') != 'active'
+                or type(due) is not int or due <= cutoff_ms):
+            return {}
+        timers[actor] = due
+    return timers
+
+
 def finish_actor_states(states, starts, *, reason, finished_at, now):
     """Record closure of surviving contexts after pending inference has drained."""
     for actor, state in states.items():
@@ -607,6 +633,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'prompt_scope': 'Native extension adds its own objective and persistence instructions.',
                 'protocol': 'Each subject receives the same business objective through native Pi /goal, including the extension\'s own persistence rules. The custom work-plan tools and reminders are disabled. Native continuation and timed waits remain live until a terminal state or the registered wall-clock limit. Goal status never establishes business completion. ',
                 'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
+            if component_family == 'evidence' and goal_mode == 'goal_command':
+                reg['native_subject_goal']['protocol'] = (
+                    'Each subject receives its business objective through native Pi /goal. '
+                    'Native automatic turns and reachable timed waits remain observable. '
+                    'An idle cohort may close incomplete when its remaining timers exceed '
+                    'the registered batch window and all other event sources are drained.')
+                reg['native_subject_goal']['outside_window_quiescence'] = (
+                    'If all contexts are settled and no registered update remains, a native timer '
+                    'strictly after the batch cutoff cannot resume in this observation. Preserve '
+                    'the exact wake and end observation incomplete without advancing any clock.')
             reg['native_subject_goal']['blocked_business_resumption'] = {
                 'trigger': ('new order, filed allocation/confirmation, queue, execution or earned-credit state'
                             if terminal_batching else 'changed filed section content or delivery scheduling/cancellation state'),
@@ -1902,6 +1938,20 @@ def collect(root,registration_dir):
                 if any(not within_limits(actor) for actor in running) or (
                     (followup_pending() or phase2_pending is not None or continuation_update_pending()) and not all(within_limits(a) for a in active)):
                     raise RolloutLimit('Registered wall-clock limit reached')
+                if (reg.get('native_subject_goal', {}).get('outside_window_quiescence')
+                        and running and not (phase2_pending or publication_pending() or followup_pending()
+                        or continuation_update_pending() or shell_tasks or progress['inflight_requests'])
+                        and events.empty() and not extension.all_complete()):
+                    remaining = deadline - time.monotonic()
+                    cutoff_ms = (time.time() + remaining) * 1000
+                    timers = beyond_window_timers(states, running, cutoff_ms)
+                    if timers:
+                        termination_reason = 'no_reachable_wake'
+                        for actor, due in timers.items():
+                            states[actor]['unreachable_wake'] = {
+                                'resume_at_ms': due, 'batch_cutoff_ms': cutoff_ms}
+                            wait(actor)
+                        break
                 if phase2_pending is None or not observation.ready(time.monotonic()) or (not phase1_only and not source_handoff_ready(reg,world)):
                     for candidate in unfinished_work_due(states,time.monotonic()):
                         if not submit(candidate,unfinished_followup=True):
@@ -1977,6 +2027,8 @@ def collect(root,registration_dir):
                 state=states[actor]
                 if state['status']=='waiting_for_platform_change':
                     state['status']='completed' if complete_together else 'quiescent'
+                    if termination_reason == 'no_reachable_wake':
+                        state['termination_reason'] = termination_reason
                     if complete_together:
                         final=cohort_completion.finals[actor]
                         state['final']=final['text']
