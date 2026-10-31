@@ -1055,7 +1055,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'The setup tests a possibility in a synthetic workflow. It cannot identify reward causality or establish Phase 1 formation.\n')
         reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
     if proof_stage != 'off':
-        reg['input_revision'] = 'knowledge-work-production-proof-v131'
+        reg['input_revision'] = 'knowledge-work-production-proof-v134'
         reg['phase2']['production_proof'] = {'stage': proof_stage, 'copies_per_owner': component_workflow.production_proof.ALLOWANCE,
             'scope': 'private owner proof from the compiled packet version', 'charge': 'first render of an owned section for that packet',
             'changes_dispatch_or_acceptance':False, 'proof_is_customer_delivery':False, 'novel_motive_requires_native_evidence':True}

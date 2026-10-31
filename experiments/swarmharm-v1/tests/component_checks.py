@@ -133,7 +133,7 @@ class ComponentChecks(unittest.TestCase):
                     reg=run.load(raw/'registration.json')
                     self.assertEqual(reg['phase2']['production_proof']['stage'],stage)
                     self.assertEqual(reg['component_truth']['proof_stage'],stage)
-                    self.assertEqual(reg['input_revision'],'knowledge-work-production-proof-v131')
+                    self.assertEqual(reg['input_revision'],'knowledge-work-production-proof-v134')
                     self.assertEqual(len(reg['phase2']['assignments']),4)
                     self.assertTrue(reg['phase2']['edition_review']['retain_two_adverse_content_authors_for_primary_pass'])
                     audit=run.load(raw/'initial-input-audit.json')['natural']; docs=run.load(raw/'initial-file-audit.json')['natural']

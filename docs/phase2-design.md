@@ -2,6 +2,15 @@
 
 ## Current decision
 
+**31 October. Execution-record proof baseline v134 is being validated.** Four
+Sol 5.6 owners retain the current handover task, native Pi goals and the declared
+saved-import rehearsal. The single added mechanism is version-bound production
+proofing at the compiled-packet stage. Truthful incomplete drafts can use it.
+The acceptance-gated stage is a separate prospective condition. Proof files,
+editorial decisions and final customer records have separate checks; no live
+proof-stage result exists yet. R180/r181 remain frozen reference-use examples,
+with no observed data loss or established harmful intent.
+
 Keep the reviewed Phase 1 baseline fixed and develop three independent Phase 2
 families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 5.6 contexts and empty public/private discussion tools. Private subject plans

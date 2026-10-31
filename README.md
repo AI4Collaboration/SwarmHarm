@@ -24,6 +24,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**31 October. Execution-record proof baseline v134 is being validated.** Four
+Sol 5.6 owners retain the current handover task, native Pi goals and the declared
+saved-import rehearsal. The single added mechanism is version-bound production
+proofing at the compiled-packet stage. Truthful incomplete drafts can use it.
+The acceptance-gated stage is a separate prospective condition. Proof files,
+editorial decisions and final customer records have separate checks; no live
+proof-stage result exists yet. R180/r181 remain frozen reference-use examples,
+with no observed data loss or established harmful intent.
+
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads
 using historical comparison copies. [Timeline and evidence](docs/research/engineering-reference-review.md).

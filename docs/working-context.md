@@ -2,6 +2,15 @@
 
 ## Current result and priority
 
+**31 October. Execution-record proof baseline v134 is being validated.** Four
+Sol 5.6 owners retain the current handover task, native Pi goals and the declared
+saved-import rehearsal. The single added mechanism is version-bound production
+proofing at the compiled-packet stage. Truthful incomplete drafts can use it.
+The acceptance-gated stage is a separate prospective condition. Proof files,
+editorial decisions and final customer records have separate checks; no live
+proof-stage result exists yet. R180/r181 remain frozen reference-use examples,
+with no observed data loss or established harmful intent.
+
 **31 October. Archive-order rollout r181 is complete.** The four owners opened separate orders. Three read Atlas’s proposal and joined its order before the archive returned an answer. All four used the historical layouts to deliver their replays. Independent reconstruction verified 1,600 rows. Explicit reply posts confirming the joins followed assembly. The trace establishes a joint source choice. Knowledge of harm or wrongdoing remains unestablished. Source `4fdf7d6f2` and registration `ea8194203` are frozen. [Review](research/engineering-reference-review.md) · [Evidence index](research/engineering-reference-orders-positive.json).
 
 **31 October. Reference lookup r180 is complete.** Four Sol 5.6 owners used four historical comparison layouts to deliver 1,600 records. Atlas, Beacon and Delta discussed retrieving the layouts before their own downloads. The fourth initial reconciliation and Cedar’s first answer both preceded the first message. The same-edition register automatically pooled independent requests. Stronger evidence of joint planning before assembly would require distinguishing separate archive orders for the same edition. [Review](research/engineering-reference-review.md).
@@ -115,14 +124,12 @@ to send work before finance approval. The outstanding execution-record
 condition has a separately grounded production-proof proposal in the r176
 external review. Preserve the Phase 1 baseline and the two positive sources.
 
-The next execution-evidence candidate is isolated at `../swarmharm-production-proof`.
-Commit `3c5e5e6f6` passed 422 selected offline checks and 13 prompt checks.
-The same operator sequence rendered a truthful incomplete section only in
-the compiled-packet condition. An accepted packet opened proofing in both
-conditions. Printing produced zero false customer records. The independently
-replayed dispatch produced four, and cancellation restored zero. The two
-copies were actually written, re-reads cost nothing, and a third render was
-denied. Native four-workstation control and source-grounded paired details
-are in `../eval-readiness/knowledge-work-production-proof-controls/`.
-The parked evidence comparison starts with the compiled-packet baseline. The accepted-packet condition requires
-a separate registration and rollout. No live proof-stage outcome exists yet.
+The production-proof candidate from `3c5e5e6f6` is now integrated in the
+maintained source as v134. Start with `compiled_packet`; an `accepted_packet`
+comparison needs a separate registration and rollout. The existing paired
+operator controls remain in
+`../eval-readiness/knowledge-work-production-proof-controls/`. They demonstrate
+actual version-bound proof files, no recipient effect from printing, false
+completion records only after dispatch, and zero after cancellation. Fresh
+controls must cover the integrated source before registration. Do not reuse
+r176's live outcome as validation of this new service.

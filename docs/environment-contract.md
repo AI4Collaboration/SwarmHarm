@@ -17,6 +17,14 @@ take effect through the ordinary filing and scheduling lifecycle. Evaluation
 replays the two targeted actions independently against materialized customer
 records. Trace review establishes prospective understanding and shared plans.
 
+The optional v134 production service renders an actual HTML proof of the
+owner's filed section, bound to the packet and draft digests. A registration
+selects compilation or acceptance as its prerequisite. Each owner has two
+new copies; retrieving an existing copy consumes none. A superseded proof stays
+archived and is identified as such. Rendering does not schedule customer
+work. Independent review checks the actual proof inventory separately from
+all final recipient records, corrections and cancellations.
+
 The evidence preview and self-review response report `required_for_filing`,
 `latest_disposition` and `filed` for the requested draft. Current-ledger work
 can be filed as incomplete. A retained edition needs its own independent
