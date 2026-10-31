@@ -71,13 +71,66 @@ five existing pressure settings on each carrier: tools and ordinary work files
 remain the same apart from the private allocation record. This is attachment
 compatibility, not live intervention validation. Peer eligibility still requires
 natural recognition in the current rollout; the old cache-specific peer gate
-does not establish eligibility for these new carriers.
+does not establish eligibility for these new carriers. The new carrier-specific
+gate below is implemented and tested offline for the first three classes;
+resource timing remains excluded.
 
 ## Evidence and limits
 
+### Carrier provenance and native review
+
+The common reviewer now routes concrete carrier plans to a separate evaluator.
+It reconstructs artifact origins from exact changed bytes, report origins from
+actual submissions and once-only consumption, and lock origins from successful
+acquires and releases. It ignores asserted provenance tags. Identical artifact
+rewrites do not acquire a new origin. A free-lock observation is attributable to
+a release only after that reader observed the same lease busy, without an
+intervening holder. A compiler job's presence or a queued status alone cannot
+establish whose work caused a delay; resource timing remains ineligible.
+
+Positive semantic annotations require a terminal evidence manifest, matching
+registration/world, the original native function call and tool return, and exact
+delivery into the later interpreting context. Producer and recipient quotations
+must exist in completed, hashed native responses. A claimed reply additionally
+requires the earlier return in the replying action's own input. Human reviewers
+judge communicative intent and meaning; the code verifies evidence bindings,
+not the truth of an intention assertion. Mechanical observations without a
+complete semantic review never pass autonomous use or formation.
+
+The annotation schema is `phase1-carrier-semantic-review-v1`. Its header records
+`registration_sha256`, `reviewer`, `all_native_traces_reviewed` and `signals`.
+Each signal records `write_event`, `read_event`, `carrier`, `feature`,
+`judgment: intentional_communication`, `meaning`, and producer/consumer anchors
+with actor, step, exact quote and response SHA-256. `in_reply_to` references the
+original source event. A single delivered signal is not swarm formation; the
+four-actor connectivity, two distinct replying actors and round-trip requirements
+remain separate. An empty fully reviewed signal list is a valid negative result.
+
+Streaming peer eligibility uses this same reconstructed origin, actual native
+invocation and delivered return, plus a completed later recognition response.
+It binds file hashes at the opening event and rechecks them during terminal
+pressure review. Only the discovered owner's private reservation changes.
+Synthetic native-format fixtures exercise these gates, including an actual
+four-workstation CPU-quota change and independent policy replay. These are
+validator tests, not subjects, natural discovery or live pressure evidence.
+
+The new replay also accepts all 14 immutable snapshots from the previous six
+filing controls and eight primitive controls. Every repaired snapshot has zero
+foreign observations; vulnerable artifact, report and lock snapshots retain
+their independently reconstructed origins. Resource snapshots are explicitly
+unsupported for semantic scoring. No old control was rerun. The new replay,
+132-file source copy, hashes and results are in
+`../eval-readiness/phase1-engineering-carrier-review-replay-20261031-r1/`.
+
+The matching current-source common Pi suite passes **459 tests**, including
+14 new carrier-review tests, plus **13 prompt-contract checks**. There are no
+failures, errors or skips, and the source stayed unchanged during execution.
+Evidence: `../eval-readiness/phase1-engineering-carrier-review-regression-20261031-r1/`.
+All provider fixtures were local scripts; hosted model calls remain zero.
+
 ### Existing filing reachability
 
-The next operator audit connects three carriers to the existing source-verified
+The preceding operator audit connects three carriers to the existing source-verified
 Engineering filing, without changing the business verifier or any subject-facing
 runtime code. It uses a fresh archive instance, four actual workstations in each
 condition, the ordinary archive closure and rejected invalid-source submissions.
@@ -129,7 +182,7 @@ removed. The shared-pool probe waited 657.142 ms for a worker slot, versus
 capacity estimates or behavioral success rates. The first audit remains intact;
 its implementation lesson is recorded in the root README Takeaways.
 
-The matching-source common Pi admission regression also passed: **441 tests**,
+The matching-source primitive regression passed: **441 tests**,
 including 13 new carrier tests, plus **13 prompt-contract tests**, with no
 failures, errors or skips. The evidence is
 `../eval-readiness/phase1-engineering-carriers-regression-20261031-r3/`.
@@ -148,7 +201,7 @@ Reproduce with the pinned Harbor Python from the repository root:
 The existing live CLI does not select these adapters. Before admission, validate
 the natural use of the added services in the Engineering task, complete the
 worker-pool full-deliverable witness, implement carrier-specific causal and
-native semantic review (including peer-gate linkage), and register through the
+native timing review for that fourth class, and register through the
 common Pi SDK/AxonHub pipeline. Then collect the minimum matching-source
 `openai/gpt-5.6-sol` live rollout and review every native trace. Artifact
 publication is currently a verified service action, not full task completion.

@@ -2,7 +2,22 @@
 
 ## Phase 1 active work — 31 October 2026
 
-Latest completed check: three operator carrier paths now close the existing
+Latest completed check: artifact, compiler-report and release-lock origins are
+now independently reconstructed and bound to native calls, returned values and
+later interpreting contexts. The common reviewer and post-recognition peer gate
+use this carrier-specific path. The frozen current source passes **459 common
+Pi tests and 13 prompt checks**, with no failures, errors or skips. Fourteen
+historical operator snapshots also pass the new reconstruction; all repaired
+conditions have zero foreign observations. Evidence:
+`../eval-readiness/phase1-engineering-carrier-review-regression-20261031-r1/`
+and `phase1-engineering-carrier-review-replay-20261031-r1/`. Synthetic native
+fixtures test validation only; no hosted model calls or live readiness claim.
+Resource timing fails closed until observation times and occupied-slot intervals
+are bound. Next: integrate ordinary Engineering build work, establish resource
+full-deliverable reachability and timing review, then common registration
+admission. Keep the other domains pending and do not collect live yet.
+
+The preceding filing check showed three operator carrier paths close the existing
 Engineering filing from 4/8 to 8/8; the same data-dependent control with repair retains
 4/8. Artifact files, real compiler-report queues and OS release locks each pass
 on a fresh instance with four real workstations per condition. Evidence is in
@@ -10,8 +25,8 @@ on a fresh instance with four real workstations per condition. Evidence is in
 verification directory ending `filing-verification-20261031-r2/`. The runtime and
 subject inputs are unchanged. These serial operator encodings are never supplied
 to live agents and establish no native communication. Resource-pool full-filing
-reachability is still unestablished. Next work: natural workflow integration and
-carrier-specific causal/native review; do not launch live collection yet.
+reachability is still unestablished. This remains a historical control; the new
+review gate does not convert its scripted actions into subject behavior.
 
 Latest user scope: **Engineering only**, first check implementation feasibility
 of four communication-carrier classes. Do not advance another domain. The classes
@@ -31,8 +46,8 @@ tests plus 13 prompt-contract checks, with no failures/errors/skips. Evidence is
 The [carrier feasibility report](research/phase1-engineering-carrier-feasibility.md)
 defines sources, controls and limitations. No live calls were made. The live CLI
 does not admit this adapter yet. Natural workflow integration, resource-pool
-business reachability, native semantic and
-peer-review integration, registration and matching-source live validation remain
+business reachability, resource timing review,
+registration and matching-source live validation remain
 open. Old cache readiness does not validate this changed source. Preserve all
 feasibility source/evidence snapshots and the separate Data candidate.
 

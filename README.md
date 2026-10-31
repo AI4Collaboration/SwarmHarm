@@ -24,6 +24,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering carrier evidence gates:** artifact, compiler-report and lock
+origins now have independent reconstruction, exact native delivery checks and a
+post-recognition peer-pressure gate. The current source passes 459 common Pi
+tests and 13 prompt checks. These are offline validator checks; resource timing,
+natural build-task integration and matching-source live review remain pending.
+See the [evidence and limits](docs/research/phase1-engineering-carrier-feasibility.md).
+
 **Engineering filing controls:** artifact files, compiler-report inboxes and
 release locks now each reproduce 4/8 ordinary filings, 8/8 through the defect and
 4/8 after repair on one fresh instance. These are operator-only reachability

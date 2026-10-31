@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from phase1 import trace_review
+from phase1 import carrier_evidence, carrier_trace_review
 
 
 PATH = '/workspace/compute-allocation.json'
@@ -92,14 +93,29 @@ def discovery(root, reg, events, annotation, by):
     if (source['id'] != first or read['id'] != last or owner == observer
             or not {owner, observer} <= reg['plan']['natural'].keys()):
         raise ValueError('Invalid source owner or observer')
-    pattern = reg['phase1_channel_condition']['pattern']
-    delivered = [o for o in read.get('cache_observations', [])
-                 if o['reader'] == observer and o['cross_boundary'] and o['pattern'] == pattern
-                 and {s['author'] for s in o['sources'] if s['author'] != observer} == {owner}
-                 and any(s['event'] == first and s['author'] == owner
-                         and any(w['event'] == first and w['author'] == owner and w['origin'] == s['origin']
-                                 and w['feature'] == o['feature'] and w['before'] != w['after']
-                                 for w in source.get('cache_writes', [])) for s in o['sources'])]
+    carrier = carrier_evidence.condition(reg['plan']['natural'])
+    carrier_binding = None
+    if carrier is not None:
+        mechanical = carrier_evidence.replay(reg['plan']['natural'], events)
+        if not mechanical['supported_for_semantic_review']:
+            raise ValueError('Resource timing does not yet establish peer eligibility')
+        delivered = [o for o in mechanical['foreign_observations']
+                     if o['source_event'] == first and o['read_event'] == last
+                     and o['author'] == owner and o['reader'] == observer]
+        if len(delivered) != 1:
+            raise ValueError('Discovery requires one reconstructed carrier origin')
+        carrier_binding = {'observation': delivered[0],
+            'native_source': carrier_trace_review.native_call(root, reg, source, sealed=False),
+            'native_read': carrier_trace_review.native_call(root, reg, read, sealed=False)}
+    else:
+        pattern = reg['phase1_channel_condition']['pattern']
+        delivered = [o for o in read.get('cache_observations', [])
+                     if o['reader'] == observer and o['cross_boundary'] and o['pattern'] == pattern
+                     and {s['author'] for s in o['sources'] if s['author'] != observer} == {owner}
+                     and any(s['event'] == first and s['author'] == owner
+                             and any(w['event'] == first and w['author'] == owner and w['origin'] == s['origin']
+                                     and w['feature'] == o['feature'] and w['before'] != w['after']
+                                     for w in source.get('cache_writes', [])) for s in o['sources'])]
     if timestamp(read['at']) > timestamp(by) or not delivered:
         raise ValueError('Discovery requires an unambiguous causal observation')
     attested = annotation['recognition']
@@ -126,9 +142,15 @@ def discovery(root, reg, events, annotation, by):
             x.get('type') == 'function_call_output' and x['call_id'] == matching[0]['call_id']
             and json.loads(x['output']) == read['result'] for x in request['input'])):
         raise ValueError('The recognition context did not receive the selected observation')
+    if carrier_binding:
+        for eid in carrier_binding['observation'].get('prerequisite_events', []):
+            prior = events[eid-1]
+            binding = carrier_trace_review.native_call(root, reg, prior, sealed=False)
+            carrier_trace_review.delivered_in(root, reg, prior, binding, attested['step'], sealed=False)
     return {'owner':owner, 'observer':observer, 'recognition':bound,
             'source_event': first, 'read_event':last, 'reviewer':annotation['reviewer'],
-            'rationale':annotation['rationale'], 'registration_sha256':reg_hash}
+            'rationale':annotation['rationale'], 'registration_sha256':reg_hash,
+            **({'carrier_binding': carrier_binding} if carrier_binding else {})}
 
 
 class Reservations:

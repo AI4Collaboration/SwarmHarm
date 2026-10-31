@@ -14,6 +14,7 @@ from phase1 import lab
 from phase1 import channel_design
 from phase1 import pressure_review
 from phase1 import trace_review
+from phase1 import carrier_evidence, carrier_trace_review
 import domain_runtime
 
 
@@ -31,6 +32,9 @@ EVALUATOR_PATHS = (
     "experiments/runtime/workstation.py",
     "experiments/swarmharm-v1/phase1/cache_channels.py",
     "experiments/swarmharm-v1/phase1/trace_review.py",
+    "experiments/swarmharm-v1/phase1/engineering_carriers.py",
+    "experiments/swarmharm-v1/phase1/carrier_evidence.py",
+    "experiments/swarmharm-v1/phase1/carrier_trace_review.py",
     "experiments/swarmharm-v1/phase1/channel-taxonomy.json",
     "experiments/swarmharm-v1/phase1/topology.py",
     "experiments/swarmharm-v1/domain_runtime.py",
@@ -1474,8 +1478,14 @@ def review(root, destination=None):
     component = registration.get('study_mode') == 'phase2-component'
     phase1_only = registration.get('study_mode') == 'phase1'
     cache_condition = registration.get('phase1_channel_condition', {}).get('profile') in channel_design.cache_channels.PROFILES
+    carrier_condition = carrier_evidence.condition(registration['plan']['natural'])
+    if carrier_condition is not None and not phase1_only:
+        raise ValueError('Concrete carrier review currently requires standalone Phase 1')
     annotation_path = root / 'phase1-semantic-review.json'
-    phase1 = (trace_review.assess(root, registration, world,
+    phase1 = (carrier_trace_review.assess(root, registration, world,
+                                        load(annotation_path) if annotation_path.exists() else None)
+              if carrier_condition is not None else
+              trace_review.assess(root, registration, world,
                                 load(annotation_path) if annotation_path.exists() else None)
               if cache_condition else
               {'evaluated': False, 'phase1_formation_passed': False,
@@ -1529,6 +1539,7 @@ def review(root, destination=None):
     save(root / "independent-review.json", result)
     if not component:
         (root / "communication-transcript.md").write_text(
+            carrier_trace_review.markdown(phase1) if carrier_condition is not None else
             trace_review.markdown(phase1) if cache_condition else transcript_markdown(phase1))
         (root / "functional-transfer-transcript.md").write_text(transfer_markdown(phase1))
     if destination:

@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v6 · 31 October 2026 · Engineering carrier feasibility complete; live validation pending
+Design v7 · 31 October 2026 · Engineering carrier feasibility and three-class evidence gates implemented; live validation pending
 
 ## Question and boundary
 
@@ -37,6 +37,14 @@ Shared document contents belong to data objects; document lock occupancy belongs
 to synchronization. The current user scope is Engineering only. All four paths
 pass offline feasibility; business integration and matching-source live review
 remain outstanding. E1/E2.1/E2.2 describe encoding and cannot replace these classes.
+
+Carrier evaluation reconstructs concrete origins separately from semantic
+judgment. Artifact bytes, consumed compiler reports and lock transitions now have
+native call/return/context bindings and a post-recognition peer gate. Resource
+timing remains excluded until actual observation times and occupied-slot
+intervals are bound independently. Operator controls and synthetic trace
+fixtures establish no autonomous communication. Details and evidence limits are
+in the same feasibility report.
 
 The encoding source is [Wendzel et al., ACM Computing Surveys (2025), §5.4–5.5 and Figure 4](https://d-nb.info/1363160842/34),
 with the [author-maintained catalogue](https://www.uni-ulm.de/in/omi/forschung/projekte/patterns/patterns-1/).
