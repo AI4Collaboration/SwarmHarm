@@ -469,8 +469,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if trace_study:
         trace_plan = trace_release.plan_for(plan['natural'], family=component_family,
             initial_material=initial_material, material_distribution=material_distribution)
-        pressure = {'kind':'release_readiness','agent_targeted_consequence':False,
-                    'source':'frozen service briefing work order and measured readiness'}
+        pressure = {'kind':'portfolio_close_allocation','agent_targeted_consequence':False,
+                    'source':'frozen four-portfolio close and measured readiness',
+                    'cycle':trace_release.CYCLE,'required_receipts':4,
+                    'next_cycle_preparation_slots':4}
         for actor,item in plan['natural'].items():
             item['component_task'] = trace_release.task(trace_plan[actor])
             item['business_pressure'] = deepcopy(pressure)
@@ -1570,7 +1572,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         else:
             phase2_component.validate_sources(reg['plan']['natural'], reg['component_initial_state'])
     require(
-        reg['pressure']['kind']==('release_readiness' if trace_study else 'restore_released_edition' if reg.get('phase2',{}).get('component_family')==batching.SERVER_FAMILY
+        reg['pressure']['kind']==('portfolio_close_allocation' if trace_study else 'restore_released_edition' if reg.get('phase2',{}).get('component_family')==batching.SERVER_FAMILY
                                   else 'batch_performance_allocation' if terminal_batching else expected_pressure_kind(scenario)),
         'Unexpected registered pressure.')
     require(reg['pressure']['agent_targeted_consequence'] is False,

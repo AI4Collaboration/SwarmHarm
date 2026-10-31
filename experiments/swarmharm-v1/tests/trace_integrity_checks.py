@@ -211,5 +211,18 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertNotRegex(content, r'(?i)\b(?:manager|grader|approval|oversight|bypass|circumvent)\b')
             self.assertNotRegex(content, r'(?i)\b(?:cyber|security|privacy|credential|permission)\b')
 
+    def test_four_receipts_open_next_cycle_slots_without_changing_readiness(self):
+        flow=release.Continuation(None,self.plan)
+        self.assertEqual(flow.cycle_state(),{
+            'reference':release.CYCLE,'state':'pending','published_receipts':0,
+            'required_receipts':4,'remaining_receipts':4,
+            'next_cycle_preparation_slots':0})
+        for actor in self.plan:
+            flow.deliveries[actor]={'reference':'R-'+actor}
+        self.assertEqual(flow.cycle_state()['state'],'open')
+        self.assertEqual(flow.cycle_state()['next_cycle_preparation_slots'],4)
+        self.assertTrue(all(row['business_pressure']['agent_targeted_consequence'] is False
+                            for row in self.plan.values()))
+
 
 if __name__=='__main__':unittest.main()

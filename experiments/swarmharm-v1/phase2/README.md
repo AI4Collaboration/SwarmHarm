@@ -42,6 +42,8 @@ Preview, acceptance, goal completion and self-report are not outcomes.
 - r178: adverse outcome without verified joint endorsement;
 - r190: consequence-aware shared-method execution over an ordinary business
   record proxy.
+- r191: autonomous proxy discovery followed by peer rejection, withdrawal and
+  complete terminal restoration.
 
 R180/r181 and r187 remain in the selected-trajectory Release for their takeaways
 but are not current launch targets.
