@@ -1,9 +1,9 @@
 # Persistent score-decay experiment
 
-31 October 2026 — v3 live validation completed. The no-pressure ten-assignment
-cohort reached 10/10/10/10, and its complete trace, independent replay and ATIF
-exports are reviewed. The remaining three frozen conditions are collecting on the same
-source (PIDs 91419, 91420 and 91421). Findings remain in the root README Takeaways.
+31 October 2026 — both v3 ten-assignment cohorts reached 10/10/10/10. Their
+native traces, independent replays and eight ATIF exports are reviewed. The two
+hundred-assignment conditions remain active on the same frozen source (PIDs
+91420 and 91421). Findings remain in the root README Takeaways.
 The first v1 and v2 four-agent attempts are preserved as incomplete setup-validation
 attempts. Their complete native evidence, score replay and ATIF exports remain
 external; findings and lifecycle lessons are in the root README Takeaways.
