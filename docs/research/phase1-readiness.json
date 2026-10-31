@@ -798,7 +798,15 @@
       "live_rollout": null,
       "trace_review": null,
       "ready": false,
-      "current_revision_live_validated": false
+      "current_revision_live_validated": false,
+      "current_ordinary_validation": {
+        "status": "frozen_awaiting_native_review",
+        "source_commit": "8f9529915",
+        "registration_commit": "20d7d28ed3cfe0d18230a747f7ab0aedb8e132f5",
+        "evidence_directory": "../eval-readiness/phase1-cpu-v1-data-analysis-e21-ordinary-sol56-r21",
+        "registration_sha256": "3eab64ac044bffe894752b9a7c91ff9750d9f845768b763862db1c4446dad8bd",
+        "target_barrier_utc": "2026-10-31T10:02:04+00:00"
+      }
     },
     {
       "cell_id": "data-analysis__count__repaired",
@@ -1290,7 +1298,7 @@
       "sha256": "5cc516a7ea927fae4c6b0be1e568c89eaa6e00e5c18440fbcee3435b5373fc53"
     }
   },
-  "next": "Continue the existing-source Data Analysis E2.1 ordinary pair, vulnerable then repaired. In parallel complete the retained-index candidate regression and causal audit before a fresh value pair. Preserve both inactive delayed pressure attachments and keep pressure readiness separate.",
+  "next": "Collect and review the existing Data Analysis E2.1 vulnerable r21 using its current watcher. Its repaired comparison is next. In parallel finish the isolated retained-index candidate regressions and native causal audit. Candidate files have not changed the active release source.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1305,7 +1313,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T09:53:30.432988+00:00",
+  "updated_at": "2026-10-31T10:01:09.388394+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "2/12 scenario/channel pairs have passed. 4/24 isolation conditions are ready and 8/24 have complete current-source ordinary reviews. Pressure attachment and delivery are tracked separately.",
   "pressure_resource_calibration": {
@@ -1462,7 +1470,7 @@
   "data_value_file_candidate": {
     "scenario": "data-analysis",
     "channel": "E1",
-    "status": "candidate_shared_runner_targeted_checks_passed_full_regression_in_progress",
+    "status": "hardened_targeted_checks_passed_shared_regression_pending",
     "original_pair_status": "unchanged_current_value_pair_unready",
     "evidence_directory": "../eval-readiness/phase1-data-retained-index-prototype-20261031",
     "checksums": {
@@ -1489,6 +1497,14 @@
     "live_admission_sha256": "d2b9a0fdd2c424fed40a93e336fe02c3f7540c5680b75d5d9c7c075d155a6c18",
     "targeted_regression": "../eval-readiness/phase1-data-retained-index-prototype-20261031/runner-targeted-tests.log",
     "candidate_full_regression_log": "../eval-readiness/phase1-data-retained-index-prototype-20261031/candidate-full-regression.log",
-    "next_verification": "Finish full regressions, check edited local file provenance, implement and verify the candidate fixed-action read audit before committing a release revision. A separate fresh hosted pair is required."
+    "next_verification": "The hardened regression waits for the initial regression receipt and r21 terminal manifest. Preserve the old candidate snapshot, validate all 432 tests and prompt contracts, update candidate admission source hashes, and verify file-specific fixed-action replay before applying any change to the active source or starting a new hosted value pair.",
+    "hardened_source": "../eval-readiness/phase1-data-retained-index-prototype-20261031/candidate-source",
+    "full_regression": "../eval-readiness/phase1-data-retained-index-prototype-20261031/candidate-full-regression.json",
+    "hardening_plan": "../eval-readiness/phase1-data-retained-index-prototype-20261031/hardening-plan.json",
+    "hardening_plan_sha256": "dfb9db599cbbe138df8d7525305679cb0b9d92563c9cfa7471770cd51889f4f7",
+    "hardened_targeted_regression": "../eval-readiness/phase1-data-retained-index-prototype-20261031/hardened-pressure-targeted-tests.log",
+    "hardened_targeted_regression_sha256": "e4874fed8e4b5991c2db5fe0ede101919df3ed275ea96f60ab00dd0424519f3f",
+    "queued_hardened_regression": "../eval-readiness/phase1-data-retained-index-prototype-20261031/hardened-suite.py",
+    "runtime_diagnostic": "The first checkout regression has a missing pinned Harbor location in the launcher test. The hardened repeat sets SWARMHARM_HARBOR_ENV to the actual shared Harbor 0.24.0 runtime."
   }
 }

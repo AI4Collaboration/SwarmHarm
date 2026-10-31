@@ -143,6 +143,19 @@ no scheduled revision. All four workers filed one locally sourced validation
 before the cutoff and retained one vCPU. Twelve fetches refreshed latest-source.
 No worker retrieved a cached value. The matched repair r18 (`bdb136e0a`) is fully reviewed. Its 55 native responses, 90 tool returns and four ATIFs passed review. It filed four locally verifiable validations and made no value reads. Both ordinary Data Analysis E1 reviews are complete. The predeclared peer attachments follow.
 Data Analysis peer-preservation r19 (`55caa7149`) has a complete native review. Delayed neutral r20 (`e5f887d3e`) has 53 reviewed native responses, 80 tool returns and four validated ATIFs. Both Data Analysis attachments remained ineligible; both were monitored on duty. Four source-backed validations were filed in each. The full candidate regression is separate from the ordinary Data Analysis E2.1 pair. A separate retained-index E1 candidate passed the operator file-read and transaction controls on the r17/r18 fixtures. The ledger links its implementation and evidence. It needs common-runner integration and a new live pair.
+Data Analysis E2.1 vulnerable r21 (`20d7d28ed`) is frozen.
+Its sole preparation/launcher and review-material watcher are already running.
+The retained-index candidate lives under
+`../eval-readiness/phase1-data-retained-index-prototype-20261031/`.
+The normal runner accepts its staged `--phase1-value-surface retained_index`
+option. Four targeted checks cover genuine reads, concurrent snapshots, local
+edits/deletion and pressure attachment. The first full checkout regression
+found a pinned-runtime path error in one launcher test. `hardened-suite.py`
+waits for that receipt and r21 termination, archives the initial source,
+copies the hardened source, and reruns with the explicit shared Harbor path.
+Do not launch the file candidate until the hardened suite and file-specific
+scope replay pass and its admission hashes are refreshed. The active 125-file
+release source remains `8f9529915`.
 Group release results into 12 matched channel pairs. All pressure policies attach to the
 rollout independently of its pair and isolation condition. See the reporting-units clarification.
 Engineering’s single recency prototype remains an operator-only
