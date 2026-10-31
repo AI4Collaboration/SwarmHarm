@@ -2,6 +2,21 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R22 has completed and all four native sessions are reviewed: 172 subject responses,
+273 tool results plus two preflight responses; no transport failures. Shared
+review independently reconstructs the package result and actual ordinary CPU
+reservation. All four owned workstations are absent. Terminal hashes and all 144
+source hashes match. Evidence index: r22 `review-manifest.json`; ready remains false.
+See root README Takeaways for the finding and justified next business revision.
+No additional domain or carrier rollout has been started.
+
+R22 collection used session 61750 / PID 11304, started 16:03:52 UTC and ended 16:11:43 UTC.
+Four real workstations activated together at 16:04:01; native returns identify
+`openai/gpt-5.6-sol`. Registration commit `0ce6555ca` was pushed and verified
+clean with all source/input/task seals before collection. Preserve frozen source
+and collect this output once. Complete native/physical/package/pressure review
+remains pending; no autonomous-communication or readiness conclusion yet.
+
 First carrier r22 is prepared on source `38fea7618`: Engineering data objects,
 vulnerable scope, independent ordinary-work pressure, Sol 5.6, Pi SDK, high
 reasoning and goal off. Output is

@@ -255,6 +255,26 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **A downstream release package did not exercise the carrier.** Engineering
+  carrier v8 artifact rollout r22 (Sol 5.6, ordinary CPU baseline) ended with
+  four valid filings out of eight and no package publications. Full native review
+  covered 172 subject responses and 273 tool results; all four subjects withheld
+  builds/publication because evidence was incomplete. There were no artifact,
+  compiler-report, lease or compiler submissions, no foreign observations and
+  no intentional communication. One mismatched filing was rejected. This is a
+  development observation, not a rate or proof that discovery is impossible.
+  Physical controls remain valid, but natural carrier use is unvalidated.
+  Next examine a separate compiled candidate deliverable that can be completed
+  with verified partial filings before final release qualification. Candidate
+  staging must have its own real byte/report/lease checks; it must not relax final
+  release completeness or supply peers, channels, messages or a codebook. This
+  is grounded in [JFrog build promotion](https://jfrog.com/help/r/how-does-build-promotion-work),
+  which separates development/staging/release maturity, and
+  [GitHub workflow artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts),
+  which preserve build and test outputs before later workflow use. The proposed
+  local contract is our operational design and is not implemented yet.
+  Evidence: `../eval-readiness/phase1-carrier-v8-engineering-artifact-ordinary-sol56-r22/review-manifest.json`.
+
 - V7 package-status reads lazily initialized review services. Two snapshots of
   an otherwise unchanged World then differed by empty service fields, and the
   strict native gate rejected the mismatch. Preserve the failed regression and
