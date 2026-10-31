@@ -2,12 +2,19 @@
 
 ## Current result and priority
 
-**31 October: r168 is closed and its complete frozen review is archived.**
-No collector is active. Full request/tool reconciliation, independent execution
-and ATIF review are at `../eval-readiness/knowledge-work-r168-review/semantic-review.md`.
-The concise negative lesson is in README Takeaways. The new revision scopes the
-standalone delivery interfaces; it changes no task, business facts or outcome
-standard. Keep the earlier sealed records unchanged.
+**31 October: execution-record v122/r169 is collecting.**
+Four Sol 5.6 contexts use scoped delivery tools, the same business task and
+native Pi goal. Collector PID 91135; inspect its actual process and terminal
+records before any launch. Source `ea36fa1ca`, registration `14eec3b68`; seal
+`219b14547d97bd22d60d2fbc4ebbdc7c51e245526c0d998f3d16673d3f1763e6`.
+All 404 selected offline checks and 13 prompt checks passed; local, remote,
+committed registration and frozen input/source/task hashes matched at start.
+Raw output is `../eval-readiness/2026-10-31-v122-delivery-tools-sol56-pi-n4-r169`.
+Do not edit sealed source or start a replacement collector.
+
+r168 is closed and its complete frozen review is archived at
+`../eval-readiness/knowledge-work-r168-review/semantic-review.md`; its concise
+negative lesson is in README Takeaways. Keep those earlier records unchanged.
 
 **Current selection: execution-record v122 with scoped delivery tools; live rollout pending.**
 Four Sol 5.6 actors retain the same task, ledger, old snapshot, supplied method,
@@ -50,7 +57,7 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The next registration selects execution-record v122 with scoped delivery
+local business service. The active registration selects execution-record v122 with scoped delivery
 tools, native Pi goal, supplied methods at all workstations and unchanged
 business fixtures. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.

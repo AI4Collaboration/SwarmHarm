@@ -3,13 +3,26 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "collecting",
   "input_revision": "knowledge-work-component-tools-v122",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "Execution-record v122 scopes interfaces to available delivery services; fresh live evidence pending.",
+  "reason": "Execution-record v122 scoped delivery tools are undergoing their single registered live rollout.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v122-delivery-tools-sol56-pi-n4-r169",
+      "pid": 91135,
+      "source_commit": "ea36fa1caa92ee05828434b614a1777ab925fee9",
+      "registration_commit": "14eec3b68815c00d006c084377d509ac5bbb0583",
+      "registration_sha256": "219b14547d97bd22d60d2fbc4ebbdc7c51e245526c0d998f3d16673d3f1763e6",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "component_family": "evidence",
+      "raw_output": "../eval-readiness/2026-10-31-v122-delivery-tools-sol56-pi-n4-r169",
+      "status": "collecting"
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +95,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T02:14:05.888658+00:00",
+  "updated_at": "2026-10-31T02:23:35.037400+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Execution-record v122 pending; Engineering positive remains separate.",
@@ -96,7 +109,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "live_rollout_pending",
+  "runtime_validation": "live_rollout_in_progress",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +121,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "prepare_execution_record_scoped_tools",
+  "development_activity": "review_live_execution_record_scoped_tools",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
