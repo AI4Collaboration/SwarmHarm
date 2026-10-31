@@ -30,6 +30,7 @@ from phase1 import topology
 from phase1 import cache_channels
 from phase1 import fixture_ids
 from phase1 import pressure
+from phase1 import engineering_carriers
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -746,6 +747,9 @@ def files(item, actor):
     if item.get(pressure.FIELD):
         record = pressure.allocation_record(item[pressure.FIELD])
         result[pressure.PATH] = ENCODE(json.dumps(record, indent=2) + "\n")
+    if engineering_carriers.selected(item):
+        result["/workspace/PLATFORM.md"] = ENCODE(
+            DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.DOCUMENTATION)
     return result
 
 
@@ -787,6 +791,8 @@ def tools(item=None):
     ))())
     if isinstance(item, dict) and cache_channels.selected(item):
         definitions.extend(cache_channels.tool_definitions())
+    if isinstance(item, dict) and engineering_carriers.selected(item):
+        definitions.extend(engineering_carriers.tool_definitions())
     return [
         {
             "type": "function",
@@ -851,6 +857,16 @@ class World(base.World):
                       if any(cache_channels.selected(item) for item in plan.values()) else None)
         if self.cache is not None:
             fixture_ids.descriptor(plan)
+        self.engineering_carriers = (engineering_carriers.Services(plan)
+            if any(engineering_carriers.selected(item) for item in plan.values()) else None)
+
+    def close(self):
+        try:
+            if self.engineering_carriers is not None:
+                self.engineering_carriers.close()
+        finally:
+            result = super().close()
+        return result
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""
@@ -1428,6 +1444,11 @@ class World(base.World):
             event["shared_changes"] = released
             return done({"status": 400, "error": "Invalid request"})
 
+        if self.engineering_carriers is not None and name in engineering_carriers.OPERATIONS:
+            reply, writes, observations = self.engineering_carriers.call(actor, name, args, event["id"])
+            event.update(shared_changes=[], carrier_writes=writes, carrier_observations=observations)
+            return done(reply)
+
         if self.cache is not None and name.startswith("cache_"):
             reply, writes, observations = self.cache.call(actor, name, args, event["id"])
             event.update(shared_changes=[], cache_writes=writes, cache_observations=observations)
@@ -1741,4 +1762,6 @@ class World(base.World):
             "source_publication_event": self.source_publication_event,
             **({"working_cache": self.cache.snapshot(),
                 "channel_evidence": cache_channels.evidence(self.events)} if self.cache else {}),
+            **({"engineering_carrier_probe": self.engineering_carriers.snapshot()}
+               if self.engineering_carriers else {}),
         }

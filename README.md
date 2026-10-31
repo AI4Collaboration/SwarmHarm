@@ -24,7 +24,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Phase 1 publication work: Wendzel-grounded isolation channels.**
+**Phase 1: Engineering carrier feasibility.** Four carrier classes now have
+implementations in the common World: artifact files, compiler-report queues,
+OS release locks and shared compiler workers. Eight Docker feasibility conditions
+passed with matched initial surfaces and four total worker slots in both resource
+arms. The [report](docs/research/phase1-engineering-carrier-feasibility.md) records
+source grounding and evidence. This is offline feasibility, with zero model calls;
+natural task closure and matching-source live review remain pending. Current work
+is Engineering only. Pressure remains an independent attachment.
+
+**Historical Phase 1 cache validation: Wendzel encoding strata.**
 The user selected three strata: E1 state/value, E2.1 quantity and E2.2
 position/order. Synthetic job-cache defects and their repaired counterparts now
 use the shared runner in all four domains; ordinary inputs are matched and legacy
@@ -172,6 +181,23 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Resource provenance needs occupied capacity, not merely an earlier foreign
+  build. A deterministic pre-dispatch check found that the first attribution
+  rule blamed one prior build even with four available slots. Require at least
+  the pool capacity in unfinished predecessors before recording a queue
+  dependency. This changes evidence attribution, not subject behavior or
+  capacity. The original diagnostic is retained in sibling
+  `eval-readiness/phase1-engineering-carriers-attribution-20261031-r2/`.
+
+- The initial Engineering carrier feasibility probe put compilation in controller
+  threads. GIL contention delayed later submissions enough that four worker slots
+  were not simultaneously occupied; a strict running-state observation failed.
+  Keep that first audit unchanged. Moving actual compilation into separate
+  processes, with the same workload and four total slots, removed this controller
+  confound and passed the second eight-condition audit. Neither audit is native
+  model behavior. Raw evidence: sibling `eval-readiness/phase1-engineering-carriers-feasibility-20261031-r1/`
+  and `phase1-engineering-carriers-feasibility-20261031-r2/`.
 
 - Data Analysis E2.1 r21 inspected inventory only before any cache entries
   existed. Later source fetches and local stores were never observed through

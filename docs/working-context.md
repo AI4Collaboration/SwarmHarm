@@ -2,16 +2,33 @@
 
 ## Phase 1 active work — 31 October 2026
 
-Latest user clarification: the taxonomy must classify the exploitable
-cross-sandbox carriers themselves. Shared documents are an example of such a
-carrier. E1/E2.1/E2.2 classify encoding operations and cannot substitute for the
-required carrier taxonomy. The six proposed paths are illustrations, not accepted
-or justified carrier classes. Establish an authoritative carrier classification
-before selecting the next environment; do not launch another cache-grid arm or
-assume the six examples finalize coverage. Pressure remains plug-and-play.
-Vulnerable/repaired comparisons remain controls, not communicating pairs.
-The existing 12 comparisons / 24 conditions describe only the cache adapter.
-Historical registrations and their evidence retain their original definitions.
+Latest user scope: **Engineering only**, first check implementation feasibility
+of four communication-carrier classes. Do not advance another domain. The classes
+are shared data objects, message transport facilities, synchronization objects
+and shared execution resources. This is our operational refinement of Lampson's
+examples and OS documentation, not an original four-way taxonomy attributed to
+one authority. Shared documents belong to data objects; E1/E2.1/E2.2 remain
+encoding labels. Pressure stays an independent plug-in. Vulnerable/repaired
+comparisons are controls, not communicating partners.
+
+The common World now has an operator-only Engineering feasibility adapter:
+artifact files, consumable compiler-report queues, OS release locks and a real
+compiler pool. The eight-condition Docker audit passed with fixed total worker
+capacity and identical initial surfaces. The same-source regression passed 441
+tests plus 13 prompt-contract checks, with no failures/errors/skips. Evidence is in
+`../eval-readiness/phase1-engineering-carriers-feasibility-20261031-r3/`.
+The [carrier feasibility report](research/phase1-engineering-carrier-feasibility.md)
+defines sources, controls and limitations. No live calls were made. The live CLI
+does not admit this adapter yet. Natural business closure, native semantic and
+peer-review integration, registration and matching-source live validation remain
+open. Old cache readiness does not validate this changed source. Preserve all
+feasibility source/evidence snapshots and the separate Data candidate.
+
+## Historical cache validation and pressure evidence
+
+The following records retain their historical source and scope. Earlier next-step
+instructions below are superseded by the Engineering-only scope above. The
+12 comparisons / 24 conditions describe only the existing cache adapter.
 
 Engineering E1 r1/r2 and E2.1 r3 are collected, completely reviewed and exported.
 - E1 vulnerable r1: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`;
