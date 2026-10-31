@@ -2,6 +2,17 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R30 preparation is complete: 509 common checks, 14 prompts, actual resource
+vulnerable/repaired full-package controls and 147 source/input/task/reg seals
+pass. All four initial inputs and decoded files are reviewed against r29; tools
+are byte-identical and business text changes only the valid deadline to
+2026-11-01 00:08:56 UTC. No new cue. Source `fa6d3d2a4`, output
+`../eval-readiness/phase1-carrier-v10-engineering-resource-ordinary-batch-sol56-r30`.
+The external preparation-audit.json is saved. Execution_resource vulnerable +
+ordinary_work + complete_batch, Sol5.6/Pi/high/goal off. No model calls yet.
+Commit/push registration, verify clean/actual remote and all seals, then launch
+once through the common entry. Do not edit sealed sources or repeat controls.
+
 R29 completed at 22:36:35.383 UTC and is fully reviewed: 137 subject responses,
 238 tool returns and two preflights; zero transport failures. Four candidates are
 ready, four filings accepted, and one partial final remains in_review. Independent
