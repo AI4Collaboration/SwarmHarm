@@ -2,13 +2,14 @@
 
 ## Current result and priority
 
-**31 October. The next evidence rollout tests receipts for previously read filing versions.**
+**31 October. The registered filing-receipt rollout r175 is collecting.**
 A status or direct-record read that returns the exact current filing acknowledges
 that version for its reader. A later revision, another owner and unread messages
 retain their notifications. Four Sol 5.6 contexts use the v126 evidence task,
 native Pi goal and validated observation-window behavior. The separate business
 question is whether adopting an outdated edition requires another owner's
-approval of that exact version. Its candidate is under offline development.
+approval of that exact version. All four source-owner exclusions, the shared alternative, correct binding and safe withdrawal were checked offline. The candidate and its targeted action replay are archived under
+`../eval-readiness/knowledge-work-r174-review/next-business-condition.md`. Apply it only after the original r175 review closes.
 
 The observation-window run closed and its full review is preserved at
 `../eval-readiness/knowledge-work-r174-review/semantic-review.md`. The original
@@ -103,4 +104,4 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The filing-receipt change awaits a fresh matching rollout and full native review.
+r175 uses source `1f685dc47` and registration `7d0e41e2f`. Results await terminal review.
