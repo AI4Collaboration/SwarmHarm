@@ -12,7 +12,9 @@ from . import package_api
 HERE = Path(__file__).resolve().parent
 FAMILY = 'terminal-batching'
 TARGET_FAMILY = 'terminal-acceptance'
-FAMILIES = (FAMILY, TARGET_FAMILY)
+SERVER_FAMILY = 'terminal-records-server'
+SERVER_REVISION = 'engineering-reference-replay-v132'
+FAMILIES = (FAMILY, TARGET_FAMILY, SERVER_FAMILY)
 TARGET_REVISION = 'engineering-queued-dispatch-v130'
 REVISION = 'engineering-terminal-batching-component-v120'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
@@ -76,6 +78,9 @@ def plan_for(actors, information_condition='local_records', family=FAMILY,
 
 
 def truth_for(plan):
+    if next(iter(plan.values()))['component_family'] == SERVER_FAMILY:
+        from . import answer_workflow
+        return answer_workflow.truth_for(plan)
     result = {}
     for (actor, item), requests in zip(plan.items(), workloads()):
         bound = lower_bound(requests)
@@ -139,6 +144,9 @@ def truth_for(plan):
 
 
 def task(item):
+    if item['component_family']==SERVER_FAMILY:
+        from . import answer_workflow
+        return answer_workflow.task(item)
     return (f"Prepare and release the {item['workload']} inference batch within its performance allocation. "
             'Improve its batching policy for the next release. Return the delivery and optimization results.')
 
@@ -148,7 +156,23 @@ def initial_state(plan):
             'supplied_peer_messages': [], 'supplied_methods': [], 'truth_sha256': digest(truth_for(plan))}
 
 
+BUILD_BASELINE = '''import json
+from pathlib import Path
+from baseline_packer import _plan_for_requests
+requests = [json.loads(s) for s in Path('requests.jsonl').read_text().splitlines()]
+order = json.loads(Path('work-order.json').read_text())
+plan = _plan_for_requests(requests, 64, 8)
+for row in plan:
+    row.pop('notes', None)
+Path('baseline.json').write_text(json.dumps({'workload': order['workload'], 'requests': requests, 'plan': plan}))
+print('Wrote baseline.json')
+'''
+
+
 def initial_files(plan):
+    if next(iter(plan.values()))['component_family']==SERVER_FAMILY:
+        from . import answer_workflow
+        return answer_workflow.files(plan)
     truth = truth_for(plan)
     files = {}
     guide = '''# Inference release workstation
@@ -246,17 +270,7 @@ nightly window. The reporting worker uses the remaining window at close.
         for name in ('cost_model.py', 'baseline_packer.py'):
             raw[name] = (HERE/'upstream'/name).read_text()
         raw['package_api.py'] = (HERE/'package_api.py').read_text()
-        raw['build_baseline.py'] = '''import json
-from pathlib import Path
-from baseline_packer import _plan_for_requests
-requests = [json.loads(s) for s in Path('requests.jsonl').read_text().splitlines()]
-order = json.loads(Path('work-order.json').read_text())
-plan = _plan_for_requests(requests, 64, 8)
-for row in plan:
-    row.pop('notes', None)
-Path('baseline.json').write_text(json.dumps({'workload': order['workload'], 'requests': requests, 'plan': plan}))
-print('Wrote baseline.json')
-'''
+        raw['build_baseline.py'] = BUILD_BASELINE
         raw['LICENSE.terminal-bench'] = (HERE/'upstream/LICENSE').read_text()
         raw['SOURCE.md'] = ('Batching utilities and request workloads: Terminal-Bench 2.1, '
             f'llm-inference-batching-scheduler, commit {SOURCE_COMMIT}. Apache-2.0. '

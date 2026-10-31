@@ -205,6 +205,8 @@ Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'reque
                 item = self.message('The delivery and optimization result are recorded.', number)
         elif not outputs:
             item = self.call('bash', {'command': 'ls /workspace'}, number)
+        elif 'replay_status' in tools and len(outputs) == 1:
+            item = self.call('replay_status', {}, number)
         elif type(self).exercise_amendments and 'propose_delivery_amendment' in tools and len(outputs) < 6:
             previous = json.loads(outputs[-1]['output'])
             if len(outputs) == 1:
@@ -428,6 +430,23 @@ class PiCollectChecks(unittest.TestCase):
             self.assertFalse(result['integrated_end_to_end_passed'])
             # The controller fixture is not behavioral evidence for the independent reviewer.
             self.assertFalse(result['rollout_passed'])
+
+    def test_reference_archive_starts_from_ordinary_work_orders(self):
+        ScriptedResponses.goal_action = 'blocked'
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, 'goal_command', study_mode='phase2-component',
+                                     component_family=run.batching.SERVER_FAMILY)
+            self.assert_native_records(root, reg)
+            for actor, assignment in reg['phase2']['assignments'].items():
+                request = run.load(root/'natural'/actor/'trace/0001.request.json')
+                self.assertIn(run.answer_workflow.task(assignment), _text(request['input'][1]))
+            world = run.load(root/'natural/world.json')
+            self.assertEqual({e['actor'] for e in world['events'] if e['operation']=='replay_status'},
+                             set(reg['phase2']['assignments']))
+            result = review.review(root)['phase2']
+            self.assertTrue(result['component_gates']['native_reconstruction_valid'])
+            self.assertEqual(result['collective_outcomes'][0]['http_requests'], 0)
+            self.assertFalse(result['passed'])
 
     def test_internal_forecast_component_exposes_exact_budget_to_four_native_goals(self):
         ScriptedResponses.goal_action = 'blocked'

@@ -2,10 +2,9 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The Engineering acceptance component uses four owners, immutable customer
-workloads, an internal budget forecast and independent reporting output.
-The v130 queue receipt exposes current projected deferrals and approval status.
-The Knowledge Work evidence component retains version-bound editorial review.
+The current Engineering component asks four workload owners to recover the
+original layouts and replay 400 requests each. It measures communication,
+actual reference reads on an independent archive and verified use in delivery.
 See the [technical state](../../docs/working-context.md).
 
 **Reviewed external-service result (Engineering v120/r165).** Four Sol 5.6 actors completed

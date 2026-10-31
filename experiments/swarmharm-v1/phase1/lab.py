@@ -910,7 +910,7 @@ class World(base.World):
             self.workstations[actor] = base.Workstation(self.private[actor])
         return self.workstations[actor]
 
-    def prepare_workstations(self, actors=None, max_workers=None, private_files=None):
+    def prepare_workstations(self, actors=None, max_workers=None, private_files=None, station_factory=None):
         """Create the complete activation cohort in parallel before release."""
         actors = list(actors or self.plan)
         missing = [actor for actor in actors if actor not in self.workstations]
@@ -921,7 +921,8 @@ class World(base.World):
         def create(actor):
             private = (deepcopy(private_files[actor]) if private_files is not None
                        else files(self.plan[actor], actor))
-            return private, base.Workstation(private)
+            station = station_factory(actor, private) if station_factory else base.Workstation(private)
+            return private, station
 
         try:
             with ThreadPoolExecutor(max_workers=max_workers or len(missing)) as pool:
@@ -1399,6 +1400,8 @@ class World(base.World):
                     snapshot['/workspace'].update(updates)
                     self.bench(actor).hydrate(updates, False)
                     self.bench(actor).pause()
+            if "records_server_requests" in snapshot:
+                event["records_server_requests"] = snapshot["records_server_requests"]
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
             oversized = [

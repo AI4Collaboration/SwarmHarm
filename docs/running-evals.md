@@ -3,11 +3,9 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The selected Engineering acceptance component tests a versioned
-planning forecast against the independently approved cost target. The reviewed runs are r178 for acceptance and r165 for external-service scope. Reproduction
-requires the corresponding original source and registration; a positive does not validate
-changed inputs. Native Pi goal is the current condition, with custom private-plan
-reminders off.
+custom direct-API loop is maintained. The current Engineering component uses four private release orders and a separately
+deployed reference archive. Reproducing earlier positives requires their original
+source and registration. Native Pi goal is the current condition.
 
 ## Choose scope and harness
 
@@ -16,6 +14,9 @@ reminders off.
 - `--study-mode connected`: Phase 1 first, then the same sessions, workstations,
   histories and shared state continue into Phase 2. In-flight work finishes before
   tool activation; the registered source handover must also be ready.
+- `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-records-server`:
+  recover each released layout and deliver the replay. Docker exposes one isolated
+  archive link per owner. The four links and journal are saved for independent review.
 - `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-batching`:
   external reservation service; use `business_records_only`. Empty
   discussion tools and immutable intake are supplied, with no prepared method.
@@ -118,14 +119,13 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --harness pi-sdk --goal-mode goal_command --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
   --population 4 --study-mode phase2-component --scenario engineering-capacity \
-  --component-family terminal-acceptance --initial-material business_records_only \
+  --component-family terminal-records-server --initial-material business_records_only \
   --material-distribution all_workstations
 ```
 
 All four workstations start with business records, local batching utilities and
-empty discussion channels. The forecast register initially contains the approved
-budget and zero proposals. Actual files, order versions, acknowledgments and
-withdrawals are retained for independent replay.
+empty discussion channels. The replay server records the actual response for each workstation.
+The review separately checks the authored lookup plan and delivered workload files.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

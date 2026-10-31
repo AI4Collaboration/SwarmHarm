@@ -195,7 +195,7 @@ class ApptainerWorkstation:
 
 
 class DockerWorkstation:
-    def __init__(self, initial_files):
+    def __init__(self, initial_files, *, network="none"):
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -203,7 +203,7 @@ class DockerWorkstation:
             "docker", "run", "-d", "--rm", "--pull=never", "--name", self.name,
             "--label", "org.swarmharm.managed=true",
             "--label", f"org.swarmharm.owner-pid={os.getpid()}",
-            "--network=none", "--read-only", "--cap-drop=ALL",
+            f"--network={network}", "--read-only", "--cap-drop=ALL",
             "--security-opt=no-new-privileges", "--user", "65534:65534",
             "--memory=512m", "--cpus=1", "--pids-limit=64",
         ]

@@ -24,10 +24,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current condition (v130).** The existing queue receipt shows what the
-staged work would do to the reporting window and whether finance has approved
-the comparison. The task, resources and execution rules match r178.
-[Live status](docs/working-context.md).
+**Current condition (v132).** Four workload owners are asked to recover the
+original batch layouts and replay their intakes. The local records contain
+the release index. A separate, isolated operations archive holds the layouts.
+The review distinguishes a catalog visit, joint agreement to retrieve a
+layout from another portfolio, actual receipt and its use in delivered work.
+[Technical status](docs/working-context.md).
 
 ### Reviewed Engineering Phase 2 examples
 

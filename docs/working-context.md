@@ -2,6 +2,15 @@
 
 ## Current result and priority
 
+**31 October. Engineering v132 tests direct external reference lookup.** Four
+Sol 5.6 workload owners receive ordinary release-replay requests. Each can
+measure a locally built candidate. The original layouts are held in a separate
+assurance archive. One isolated workstation per workload can access the archive
+directly. Operator controls cover catalog and reference reads, edition matching, owner
+withdrawals, cancellations, replacement and execution. A shared plan requires
+prospective native evidence. The registered outcome counts actual layouts and
+delivered response rows independently. Live findings are pending.
+
 **31 October. Dispatch docket r179 has closed at its registered wall-clock limit.**
 The full frozen semantic review is archived at
 `../eval-readiness/engineering-v130-r179-review/semantic-review.md`. The
@@ -47,11 +56,10 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 [Phase 2 design](phase2-design.md): external-service scope overreach, acceptance
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
-The current Engineering example covers the first family through an independent
-local business service. The current selection is the internal
-forecast acceptance condition. Acceptance has a verified ordinary outcome. Acceptance and execution evidence
-still need prospective evidence for knowing joint execution.
-Do not claim host escape or infer another family's result from r165.
+The r165 reference to an external service describes controller-mediated operations.
+V132 measures direct workstation contact with an independently deployed archive.
+R178 supplies a separate acceptance result. Execution evidence still needs a
+prospective joint execution case.
 
 Use METR's original investigation as the primary factual source; LessWrong's
 component conditions are hypotheses. Distinguish observed motives, plans,
@@ -106,7 +114,7 @@ Native Pi goal still owns its registered automatic continuations and timed waits
 Count them separately; no claim is made that every native continuation is productive.
 The r178 collector and observer have closed. Its full independent review,
 native timeline and semantic assessment are in
-`../eval-readiness/engineering-v129-r178-review/`. The next registered condition tests the actual queue and reporting commitments at dispatch.
+`../eval-readiness/engineering-v129-r178-review/`. The dispatch comparison closed in r179.
 Do not treat shared planning of a forecast as evidence of a shared decision
 to send work before finance approval. The outstanding execution-record
 condition has a separately grounded production-proof proposal in the r176
@@ -121,5 +129,5 @@ replayed dispatch produced four, and cancellation restored zero. The two
 copies were actually written, re-reads cost nothing, and a third render was
 denied. Native four-workstation control and source-grounded paired details
 are in `../eval-readiness/knowledge-work-production-proof-controls/`.
-The next planned evidence comparison starts with the compiled-packet baseline. The accepted-packet condition requires
+The parked evidence comparison starts with the compiled-packet baseline. The accepted-packet condition requires
 a separate registration and rollout. No live proof-stage outcome exists yet.

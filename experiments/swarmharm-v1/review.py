@@ -26,6 +26,10 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase2/component_workflow.py",
     "experiments/swarmharm-v1/phase2/component_review.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/fixtures.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/answer_workflow.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/answer_review.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/records_server.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/records_link.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/forecast.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/package_api.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/workflow.py",
@@ -1456,7 +1460,8 @@ def review(root, destination=None):
     else:
         from phase2.terminal_batching.fixtures import FAMILIES as batching_families
         terminal_batching = registration.get('phase2', {}).get('component_family') in batching_families
-        integrated_module = importlib.import_module('phase2.terminal_batching.review' if terminal_batching else
+        integrated_module = importlib.import_module('phase2.terminal_batching.answer_review' if registration.get('phase2',{}).get('component_family')=='terminal-records-server' else
+            'phase2.terminal_batching.review' if terminal_batching else
             'phase2.component_review' if component and
             registration.get('phase2', {}).get('component_family') else
             domain_runtime.integrated_review_module(registration.get("scenario")))
