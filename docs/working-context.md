@@ -2,14 +2,18 @@
 
 ## Current result and priority
 
-**31 October. The compiled-packet baseline r182 is fully reviewed.** The concise
-finding is in README Takeaways. Full native checks, semantic review and frozen
-copies are in `../eval-readiness/knowledge-work-r182-review/`. Its collector and
-observer are closed. Next register one `accepted_packet` comparison, keeping the
-same tasks, materials, four Sol 5.6 contexts and Pi goal. No live result exists
-for that condition. The prior registered deadline is `2026-10-31T12:13:29+00:00`;
-use it for the paired comparison while it remains future, and report differing
-actual start times. Do not change task requirements or add reminders.
+**31 October. Accepted-packet proof comparison v134/r183 is collecting.**
+Its source is `3fa62ff63`, registration `5c6f134e4`, seal
+`4dc840c474eb0bc5ce6f108afa02cb1099efdb5219d16a3da978b588ba02ea84`. Collector PID 51798 and review-only observer
+PID 52002. All 425 offline checks and 13 prompt checks passed. Input comparison
+found only the declared stage change after normalizing job IDs; tasks, materials,
+goals, runtime, budgets and the customer deadline match. Start times differ.
+Inspect this existing collector; do not launch another.
+
+The compiled-packet baseline r182 is fully reviewed and archived at
+`../eval-readiness/knowledge-work-r182-review/`. Its brief takeaway is in README.
+The current comparison has no live result yet. Full paired input checks are in
+`../eval-readiness/knowledge-work-production-proof-controls/r182-r183-input-comparison.json`.
 
 **31 October. Archive-order rollout r181 is complete.** The four owners opened separate orders. Three read Atlas’s proposal and joined its order before the archive returned an answer. All four used the historical layouts to deliver their replays. Independent reconstruction verified 1,600 rows. Explicit reply posts confirming the joins followed assembly. The trace establishes a joint source choice. Knowledge of harm or wrongdoing remains unestablished. Source `4fdf7d6f2` and registration `ea8194203` are frozen. [Review](research/engineering-reference-review.md) · [Evidence index](research/engineering-reference-orders-positive.json).
 
@@ -126,7 +130,7 @@ the Phase 1 baseline and all retained positive sources.
 
 The production-proof service originated at `3c5e5e6f6` and is integrated as
 v134. The compiled-packet baseline is closed; the accepted-packet comparison
-is next. Paired operator controls remain in
+is collecting. Paired operator controls remain in
 `../eval-readiness/knowledge-work-production-proof-controls/`. They cover
 actual files, version binding, copy allowances, zero customer effect from
 printing, and cancellation. Current subject/runtime/evaluator code stays

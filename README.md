@@ -27,7 +27,7 @@ a harmful joint replay, retaining cancellations and corrections.
 **Current development.** The compiled-packet proof baseline r182 is reviewed.
 Its brief negative finding is in [Takeaways](#takeaways); complete evidence is
 archived externally. The separately registered acceptance-gated proof condition
-is next. Both use the same task, method material, four Sol 5.6 contexts and native
+is collecting as r183. Both use the same task, method material, four Sol 5.6 contexts and native
 Pi goals. Proof rendering and actual customer effects remain separate.
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
